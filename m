@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4C81A6E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE0B1A6E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388871AbgDMVR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 17:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
+        id S2388937AbgDMVRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 17:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388862AbgDMVRI (ORCPT
+        with ESMTP id S2388926AbgDMVRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 17:17:08 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72AEC0A3BE2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:17:07 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id h11so3851800plr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:17:07 -0700 (PDT)
+        Mon, 13 Apr 2020 17:17:39 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC835C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:17:38 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id r14so5082381pfl.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:content-transfer-encoding:in-reply-to:references
          :subject:from:cc:to:date:message-id:user-agent;
-        bh=eC2MEHdLAsuZgsM6/ln+QWOcxR9o897nfctxg2dELsk=;
-        b=FOe16klEN59gHf8DsemBbvY3xk8S/CsK6R046piFKeROmNPkOeYqJdgM7fstOlZhb9
-         iDyn/hdH7byLxSVS85oAQkXRAjRV/u2jQdeCnKK4EYoxrHaYvVoG8RUKfXAu8oLYlDZu
-         fBVxJnUvBEZMIZK6n+4Vt2X72Td1wX1VH+SP0=
+        bh=DkFXK9v0exA4G4YcoWc+xbEiRjzLLK+eOt9DRlAzn/0=;
+        b=W/IJ9QtzeOvKUPUFofeH1yOLCsu6opUycc0sSKNqLwR+8qN+dHPEgUb0NDdg0oFUYy
+         wNXoH8vH5uwI5EbvAnjV48iAY3AGoM8NSqSPlUn9R6Zxh46gtVVwInbFrmMikazboleB
+         ByR48x+7toeu9FRO+FZGFHBsnRHm65xR0715k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:content-transfer-encoding
          :in-reply-to:references:subject:from:cc:to:date:message-id
          :user-agent;
-        bh=eC2MEHdLAsuZgsM6/ln+QWOcxR9o897nfctxg2dELsk=;
-        b=YVCNW7BfuMxbOPcpZSB98yKDEXvMvdto6OuOJ8vGVPKmPpe6VwgWJ3yx0P+v1M6UFA
-         k8uzEUYFeoSIM10Tsm8zk0wcL01tnCq/9HwDI5zES3J/TnmeCikrMhu2iY5/D93MZQ5T
-         /Mr92sVLppze2u9LGILDjNJkBsG4zS87p4hC/ZxBKTptN/S4/WSBs7VnG2iTt80M/TCA
-         ZwTuzAcPLhDTOuL3wDR6M0S0Jy1u37a++YM7eWoH3d6/B5NIo6mSl2nNtSeWkyMaF09V
-         4kbl8pjSCIjTFG8f5P2sF5ywDv5llZARpzOE9+POq6RRnkFHYSDd11+e2du2p+xax2s3
-         /O3g==
-X-Gm-Message-State: AGi0PuahFT3JUrFqn/Q5rbPuob5rziyoKxzwS9Xj9XDZ/SAb5jMEnsEU
-        23vavmHT6DFiYy3Wz6FkpUvIinZXnCY=
-X-Google-Smtp-Source: APiQypK5YeG3+cIFNKOKytz3S6ftOZYnIEwkaXMhVzUezQHx6huazKccZyOWUp0WHXouALSMQUH6Ig==
-X-Received: by 2002:a17:90a:d78b:: with SMTP id z11mr23780945pju.34.1586812627228;
-        Mon, 13 Apr 2020 14:17:07 -0700 (PDT)
+        bh=DkFXK9v0exA4G4YcoWc+xbEiRjzLLK+eOt9DRlAzn/0=;
+        b=mMoV/ioIkjajY2sCJ6SL8N4OahpOn4pOwyZOaJy8ouzagdCntbTitGGgcByFmr2aUk
+         +MuOvrlQrJ175r0mfsyUXzDE/bW0mj5N9zWBTl/AZ9pR8hKNAit3+EqPpsp/EqbOofeB
+         PePFNRoaBuTud1CCzunbli41/4t/8spauxxA/0k1oc+Jmv/CnIpi80tWay2KFJg3v6m/
+         GR9rK5rFzQVYxVfjCi8mJwVEPCIGMSJ8JSO7aFBzptWvnuvzDvGVi7jgqC2HA3qlkYDZ
+         CpysaH5YYdoit1zYwuceLR5Ypxi2yyu/pu24hQb9gkpligHC4qiAVYu/3vJ3VV8XVedx
+         qW0A==
+X-Gm-Message-State: AGi0PubaUORV1EwSn1YRNJYEKC+87b0yzVeTz7puuopoN4rksBZIiu1P
+        VH6LFt/RvIFqCZGIlPBcs9eULzCy1IY=
+X-Google-Smtp-Source: APiQypKMJYVEMRyl16Tv6WhTVZnxVKiOSOT3Awd2c9FyrCwjVEiri7UREk8AA4GygsU6Ta+uW0b4yA==
+X-Received: by 2002:aa7:8101:: with SMTP id b1mr20026578pfi.322.1586812658266;
+        Mon, 13 Apr 2020 14:17:38 -0700 (PDT)
 Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id q200sm8752985pgq.68.2020.04.13.14.17.06
+        by smtp.gmail.com with ESMTPSA id x3sm9071634pfq.95.2020.04.13.14.17.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 14:17:06 -0700 (PDT)
+        Mon, 13 Apr 2020 14:17:37 -0700 (PDT)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1586703004-13674-3-git-send-email-mkshah@codeaurora.org>
-References: <1586703004-13674-1-git-send-email-mkshah@codeaurora.org> <1586703004-13674-3-git-send-email-mkshah@codeaurora.org>
-Subject: Re: [PATCH v17 2/6] soc: qcom: rpmh: Update dirty flag only when data changes
+In-Reply-To: <1586703004-13674-4-git-send-email-mkshah@codeaurora.org>
+References: <1586703004-13674-1-git-send-email-mkshah@codeaurora.org> <1586703004-13674-4-git-send-email-mkshah@codeaurora.org>
+Subject: Re: [PATCH v17 3/6] soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new data
 From:   Stephen Boyd <swboyd@chromium.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
@@ -59,29 +59,28 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Maulik Shah <mkshah@codeaurora.org>
 To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
         dianders@chromium.org, evgreen@chromium.org
-Date:   Mon, 13 Apr 2020 14:17:05 -0700
-Message-ID: <158681262575.84447.6103170873953765147@swboyd.mtv.corp.google.com>
+Date:   Mon, 13 Apr 2020 14:17:36 -0700
+Message-ID: <158681265694.84447.13031031594080430034@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maulik Shah (2020-04-12 07:50:00)
-> Currently rpmh ctrlr dirty flag is set for all cases regardless of data
-> is really changed or not. Add changes to update dirty flag when data is
-> changed to newer values. Update dirty flag everytime when data in batch
-> cache is updated since rpmh_flush() may get invoked from any CPU instead
-> of only last CPU going to low power mode.
+Quoting Maulik Shah (2020-04-12 07:50:01)
+> TCSes have previously programmed data when rpmh_flush() is called.
+> This can cause old data to trigger along with newly flushed.
 >=20
-> Also move dirty flag updates to happen from within cache_lock and remove
-> unnecessary INIT_LIST_HEAD() call and a default case from switch.
+> Fix this by cleaning SLEEP and WAKE TCSes before new data is flushed.
+>=20
+> With this there is no need to invoke rpmh_rsc_invalidate() call from
+> rpmh_invalidate().
+>=20
+> Simplify rpmh_invalidate() by moving invalidate_batch() inside.
 >=20
 > Fixes: 600513dfeef3 ("drivers: qcom: rpmh: cache sleep/wake state request=
 s")
 > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> Reviewed-by: Srinivas Rao L <lsrao@codeaurora.org>
-> Reviewed-by: Evan Green <evgreen@chromium.org>
 > Reviewed-by: Douglas Anderson <dianders@chromium.org>
 > ---
 
