@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF311A64FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B4E1A64F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgDMKFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:05:55 -0400
-Received: from mga05.intel.com ([192.55.52.43]:63632 "EHLO mga05.intel.com"
+        id S1728563AbgDMKFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:05:43 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63626 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728364AbgDMKFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:05:00 -0400
-IronPort-SDR: QP2UIeRApfJdQUy26JJze3qxxFM1/jBLGZk8rRNVUme66CeRzTDCFIPkKekIdI022okenRnd7u
- wfOJrRArQASg==
+        id S1728410AbgDMKFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 06:05:17 -0400
+IronPort-SDR: AShcXmRT+21nbrpiCG2DaAMYtuQQjLbTa3+Jeq2vAJVeaazlchxGA3k+9d9eYgmLy3V/XRae0c
+ S8HaNru5LSSA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 03:04:54 -0700
-IronPort-SDR: n8PBSwTUDigaajs2PeudinO86a5TZgFJJ1s8S6JJnX8rkBPQxXXZyCA+YNpQ7WJmwUXQ7sLzSU
- c9hZYXniHjeA==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 03:04:57 -0700
+IronPort-SDR: cLZHmO+l+QKfmjoFjz3dZ1MGe5wuaWm/RPlyh8Ulv1B9c46mfYFCPsX0/iFhX7tTTOwgvuXTQ9
+ 25V3V9bdAysQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="426640499"
+   d="scan'208";a="426640509"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 13 Apr 2020 03:04:51 -0700
+  by orsmga005.jf.intel.com with ESMTP; 13 Apr 2020 03:04:54 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 9EFFF1B4; Mon, 13 Apr 2020 13:04:50 +0300 (EEST)
+        id A788B1F5; Mon, 13 Apr 2020 13:04:50 +0300 (EEST)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
 Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
@@ -34,9 +34,9 @@ Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
         William Kucharski <william.kucharski@oracle.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 4/6] khugepaged: Drain LRU add pagevec after swapin
-Date:   Mon, 13 Apr 2020 13:04:45 +0300
-Message-Id: <20200413100447.20073-5-kirill.shutemov@linux.intel.com>
+Subject: [PATCH 5/6] khugepaged: Allow to collapse a page shared across fork
+Date:   Mon, 13 Apr 2020 13:04:46 +0300
+Message-Id: <20200413100447.20073-6-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200413100447.20073-1-kirill.shutemov@linux.intel.com>
 References: <20200413100447.20073-1-kirill.shutemov@linux.intel.com>
@@ -47,33 +47,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__collapse_huge_page_isolate() may fail due to extra pin in the LRU add
-pagevec. It's pretty common for swapin case: we swap in pages just to
-fail due to the extra pin.
+The page can be included into collapse as long as it doesn't have extra
+pins (from GUP or otherwise).
 
-Drain LRU add pagevec on successful swapin.
+Logic to check the refcound is moved to a separate function.
+Note that the function is ready to deal with compound pages. It's
+preparation for the following patch.
+
+VM_BUG_ON_PAGE() was removed from __collapse_huge_page_copy() as the
+invariant it checks is no longer valid: the source can be mapped
+multiple times now.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- mm/khugepaged.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ mm/khugepaged.c | 41 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 11 deletions(-)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index ee66c140c2d6..e3e41c2768d8 100644
+index e3e41c2768d8..f9864644c3b7 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -934,6 +934,11 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+@@ -529,6 +529,24 @@ static void release_pte_pages(pte_t *pte, pte_t *_pte)
  	}
- 	vmf.pte--;
- 	pte_unmap(vmf.pte);
-+
-+	/* Drain LRU add pagevec to remove extra pin on the swapped in pages */
-+	if (swapped_in)
-+		lru_add_drain();
-+
- 	trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 1);
- 	return true;
  }
+ 
++static bool is_refcount_suitable(struct page *page)
++{
++	int expected_refcount, refcount;
++
++	refcount = page_count(page);
++	expected_refcount = total_mapcount(page);
++	if (PageSwapCache(page))
++		expected_refcount += compound_nr(page);
++
++	if (IS_ENABLED(CONFIG_DEBUG_VM) && expected_refcount > refcount) {
++		pr_err("expected_refcount: %d, refcount: %d\n",
++				expected_refcount, refcount);
++		dump_page(page, "Unexpected refcount");
++	}
++
++	return page_count(page) == expected_refcount;
++}
++
+ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 					unsigned long address,
+ 					pte_t *pte)
+@@ -581,11 +599,17 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 		}
+ 
+ 		/*
+-		 * cannot use mapcount: can't collapse if there's a gup pin.
+-		 * The page must only be referenced by the scanned process
+-		 * and page swap cache.
++		 * Check if the page has any GUP (or other external) pins.
++		 *
++		 * The page table that maps the page has been already unlinked
++		 * from the page table tree and this process cannot get
++		 * an additinal pin on the page.
++		 *
++		 * New pins can come later if the page is shared across fork,
++		 * but not for the this process. It is fine. The other process
++		 * cannot write to the page, only trigger CoW.
+ 		 */
+-		if (page_count(page) != 1 + PageSwapCache(page)) {
++		if (!is_refcount_suitable(page)) {
+ 			unlock_page(page);
+ 			result = SCAN_PAGE_COUNT;
+ 			goto out;
+@@ -672,7 +696,6 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
+ 		} else {
+ 			src_page = pte_page(pteval);
+ 			copy_user_highpage(page, src_page, address, vma);
+-			VM_BUG_ON_PAGE(page_mapcount(src_page) != 1, src_page);
+ 			release_pte_page(src_page);
+ 			/*
+ 			 * ptl mostly unnecessary, but preempt has to
+@@ -1201,12 +1224,8 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 			goto out_unmap;
+ 		}
+ 
+-		/*
+-		 * cannot use mapcount: can't collapse if there's a gup pin.
+-		 * The page must only be referenced by the scanned process
+-		 * and page swap cache.
+-		 */
+-		if (page_count(page) != 1 + PageSwapCache(page)) {
++		/* Check if the page has any GUP (or other external) pins */
++		if (!is_refcount_suitable(page)) {
+ 			result = SCAN_PAGE_COUNT;
+ 			goto out_unmap;
+ 		}
 -- 
 2.26.0
 
