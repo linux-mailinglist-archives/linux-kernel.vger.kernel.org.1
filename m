@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEA71A6C0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659681A6B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387715AbgDMSYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:24:53 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:41490 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387695AbgDMSYw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:24:52 -0400
-X-Greylist: delayed 1588 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 14:24:51 EDT
-Received: from relay12.mail.gandi.net (unknown [217.70.178.232])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id AD16D3A76F2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 17:39:42 +0000 (UTC)
-Received: from consensus.lan (cm-84.210.220.251.getinternet.no [84.210.220.251])
-        (Authenticated sender: fredrik@strupe.net)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 59DBC200004;
-        Mon, 13 Apr 2020 17:39:21 +0000 (UTC)
-From:   Fredrik Strupe <fredrik@strupe.net>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Fredrik Strupe <fredrik@strupe.net>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>
-Subject: [PATCH v2] arm: ptrace: Fix mask for thumb breakpoint hook
-Date:   Mon, 13 Apr 2020 19:38:41 +0200
-Message-Id: <20200413173841.29651-1-fredrik@strupe.net>
-X-Mailer: git-send-email 2.20.1
+        id S1732952AbgDMRkO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Apr 2020 13:40:14 -0400
+Received: from mga14.intel.com ([192.55.52.115]:20065 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732941AbgDMRkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 13:40:13 -0400
+IronPort-SDR: a/wTV2e7FoIt+Egf2Zt/11NpncYYf5yQcPBFNB3/Vc/qV2sqNNHyMMAKIpUqpuZJJhKRSxn17R
+ cunqoaA4MLog==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 10:39:12 -0700
+IronPort-SDR: wiAHJ4KIneuxAP4rm2G7cyHYAquz0lH6F6nhpgNXS0G2CkN2ZzOWn58IDdWhhczoInuhY10Cl7
+ Hw5m1tjuH3bQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="276969663"
+Received: from orsmsx109.amr.corp.intel.com ([10.22.240.7])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Apr 2020 10:39:12 -0700
+Received: from orsmsx114.amr.corp.intel.com ([169.254.8.205]) by
+ ORSMSX109.amr.corp.intel.com ([169.254.11.20]) with mapi id 14.03.0439.000;
+ Mon, 13 Apr 2020 10:39:11 -0700
+From:   "Prakhya, Sai Praneeth" <sai.praneeth.prakhya@intel.com>
+To:     "Chatre, Reinette" <reinette.chatre@intel.com>,
+        David Binderman <dcb314@hotmail.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: RE: linux-5.7-rc1/tools/testing/selftests/resctrl/cqm_test.c:89:15:
+ error: Buffer is accessed out of bounds
+Thread-Topic: linux-5.7-rc1/tools/testing/selftests/resctrl/cqm_test.c:89:15: error:
+ Buffer is accessed out of bounds
+Thread-Index: AQHWEbDfJ6fzYiZKSEetFvBTCfNON6h3TNdA
+Date:   Mon, 13 Apr 2020 17:39:11 +0000
+Message-ID: <FFF73D592F13FD46B8700F0A279B802F57374492@ORSMSX114.amr.corp.intel.com>
+References: <DB7PR08MB38010E1B93EEE780A48EBBB39CDD0@DB7PR08MB3801.eurprd08.prod.outlook.com>
+ <fcc738e6-0cff-d605-2e28-cd756921c981@intel.com>
+In-Reply-To: <fcc738e6-0cff-d605-2e28-cd756921c981@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-call_undef_hook() in traps.c applies the same instr_mask for both 16-bit
-and 32-bit thumb instructions. If instr_mask then is only 16 bits wide
-(0xffff as opposed to 0xffffffff), the first half-word of 32-bit thumb
-instructions will be masked out. This makes the function match 32-bit
-thumb instructions where the second half-word is equal to instr_val,
-regardless of the first half-word.
+> -----Original Message-----
+> From: Reinette Chatre <reinette.chatre@intel.com>
+> Sent: Monday, April 13, 2020 9:31 AM
+> To: David Binderman <dcb314@hotmail.com>; Yu, Fenghua
+> <fenghua.yu@intel.com>; shuah@kernel.org; Linux Kernel Mailing List <linux-
+> kernel@vger.kernel.org>; linux-kselftest@vger.kernel.org; Prakhya, Sai Praneeth
+> <sai.praneeth.prakhya@intel.com>
+> Subject: Re: linux-5.7-rc1/tools/testing/selftests/resctrl/cqm_test.c:89:15:
+> error: Buffer is accessed out of bounds
+> 
+> +Sai
+> 
+> On 4/13/2020 2:43 AM, David Binderman wrote:
+> > Hello there,
+> >
+> > Source code is
+> >
+> >    while (fgets(temp, 1024, fp)) {
+> >
+> > but
+> >
+> >     char *token_array[8], temp[512];
+> >
+> > Use of compiler flag -D_FORTIFY_SOURCE=2 would have found the problem.
+> > For example:
+> >
+> > # include <stdio.h>
+> >
+> > extern void g( int);
+> >
+> > void
+> > f( FILE * fp)
+> > {
+> > 	char buf[ 100];
+> >
+> > 	while (fgets( buf, 200, fp) != 0)
+> > 	{
+> > 		g( 1);
+> > 	}
+> > }
+> >
+> > gives
+> >
+> > $ /home/dcb/gcc/results/bin/gcc -c -g -O2 -D_FORTIFY_SOURCE=2
+> > apr13c.cc In file included from /usr/include/stdio.h:867,
+> >                  from apr13c.cc:2:
+> > In function 'char* fgets(char*, int, FILE*)',
+> >     inlined from 'void f(FILE*)' at apr13c.cc:11:14:
+> > /usr/include/bits/stdio2.h:263:26: warning: call to '__fgets_chk_warn'
+> > declared with attribute warning: fgets called with bigger size than
+> > length of destination buffer [-Wattribute-warning]
+> >
+> > I suggest switch on compiler flag -D_FORTIFY_SOURCE=2 in all
+> > development builds.
+> >
+> 
+> Thank you very much for catching this David.
+> 
+> Sai: could you include this fix in your upcoming series of fixes? Using the pattern
+> of "fgets(buf, sizeof(buf), ...)" instead of hard coding the size should be helpful
+> here.
 
-The result in this case is that all undefined 32-bit thumb instructions
-with the second half-word equal to de01 (udf #1) work as breakpoints
-and will raise a SIGTRAP instead of a SIGILL, instead of just the one
-intended 16-bit instruction. An example of such an instruction is
-eaa0b650, which is unallocated according to Arm ARM and should raise a
-SIGILL, but instead raises a SIGTRAP.
+Reinette: Sure! I will include this fix. Just FYI, I did notice this and have fixed it in V1 patches that I sent out earlier.
 
-This patch fixes the issue by setting all the bits in instr_mask, which
-will still match the intended 16-bit thumb instruction (where the
-upper half is always 0), but not any 32-bit thumb instructions.
+David: Thanks for bringing this up. I wasn't aware of the gcc flag you had mentioned. I will add it.
 
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@armlinux.org.uk>
----
- arch/arm/kernel/ptrace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index b606cded90cd..4cc6a7eff635 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -219,8 +219,8 @@ static struct undef_hook arm_break_hook = {
- };
- 
- static struct undef_hook thumb_break_hook = {
--	.instr_mask	= 0xffff,
--	.instr_val	= 0xde01,
-+	.instr_mask	= 0xffffffff,
-+	.instr_val	= 0x0000de01,
- 	.cpsr_mask	= PSR_T_BIT,
- 	.cpsr_val	= PSR_T_BIT,
- 	.fn		= break_trap,
--- 
-2.20.1
-
+Regards,
+Sai
