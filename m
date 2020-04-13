@@ -2,81 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9411A6626
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770D11A6B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgDMMFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:05:09 -0400
-Received: from m17617.mail.qiye.163.com ([59.111.176.17]:44314 "EHLO
-        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729365AbgDMMFF (ORCPT
+        id S1729419AbgDMMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 08:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729407AbgDMMOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 08:05:05 -0400
-Received: from wangqing-virtual-machine.localdomain (unknown [157.0.31.122])
-        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id 00A902624A4;
-        Mon, 13 Apr 2020 20:05:00 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        jinho lim <jordan.lim@samsung.com>,
-        Wang Qing <wangqing@vivo.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH 2/2] [V2 2/2]ARM64:fixed dump_backtrace() when task running on another cpu
-Date:   Mon, 13 Apr 2020 20:04:24 +0800
-Message-Id: <1586779466-4439-3-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586779466-4439-1-git-send-email-wangqing@vivo.com>
-References: <1586779466-4439-1-git-send-email-wangqing@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVPQkxCQkJCS01OSEJCSVlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NzI6Ohw4Hjg3AgtLCk4JPzFP
-        CTUwCkxVSlVKTkNNTExCTktKSENKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZSk5M
-        VUtVSEpVSklJWVdZCAFZQUhJS083Bg++
-X-HM-Tid: 0a71736db2e99375kuws00a902624a4
+        Mon, 13 Apr 2020 08:14:44 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE4BC03BC83
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 05:08:05 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id c23so4369079pgj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 05:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=BIBvMgUnvDgGZghMH04dMf9slrG7wjbl7QR/9HSXTJo=;
+        b=uRy1s7EGEp8BkdEjZAQpmQo3cCodNSSvRaev6POOo+mew8bO4EAHrfOWQQCMqUIfiY
+         tZZomzvqBubP3hpBJx91Tdt7UlfEGizPkNnPi08th3i0O5OFPQatYf26n4Im3rKwpkGr
+         t8/MUJBK0cfSnwBxkBatfcLTOPDR+jrAR6UBZoq/c451VLHjzEDrv1ro4Qx2+27AVnC6
+         2m8eIMS2J6shbLRpbcoIJFgG9Uk45VJDxRJwVk5uPLlVljS1M1Jvq0Qm/tKVOhqhaztq
+         XwxsXZ08txZzy1uLTHGR0LTpgNi2Sf2ehPE3WQf8OYlML6Xo6KslCbYr0XiTty5KaEAA
+         5PDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BIBvMgUnvDgGZghMH04dMf9slrG7wjbl7QR/9HSXTJo=;
+        b=iExMwoRufWoOEUJPhY7irmRctgJHYedTjTy/aI69qMMMkcAqTSMaZ9tVEqRAHIu31x
+         OhOwJvM18TufPeCFgkmpkhBBBkchXakvtd5LgfZ/AQg8ZnV7+bgXb4tfd6DS3wCqKgNZ
+         AhcThz9XiHcnuOHFyyIqbRJFXP4ZOby++PBTPl9jC8Xt3UqifWVpf2DDKD02gC+wGSzV
+         c8GXC4DqJ7u9KM3IzvswoEarYbeBooKJoMB6V9so5IISbRvEgxHez9LMg6Bf3aGbG0lP
+         BQTZ0DRmBTmSYxZPafMUldrmfq6sl6oyp/DT08DS0zOvJqDcuTqqVzRZBt7Lcdl380rK
+         +Tnw==
+X-Gm-Message-State: AGi0Pub5IZDXaCm/1yLDm1oy8k3qBRelPB6dyDVc04sXpnQk84zfKype
+        QC/EIN+sD3DyGZ6xl8rzurVA
+X-Google-Smtp-Source: APiQypLIoeYk9G74CAvG8xdvpdDVlfoDimcpFm6oRfnwQBcwTRX6j+ysTHd1tHSRhBTGCvlmc+VtHw==
+X-Received: by 2002:a63:2cd5:: with SMTP id s204mr16420791pgs.71.1586779684515;
+        Mon, 13 Apr 2020 05:08:04 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:621d:5eab:c98c:e94e:e075:c316])
+        by smtp.gmail.com with ESMTPSA id i187sm8493136pfg.33.2020.04.13.05.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 05:08:03 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     hemantk@codeaurora.org, jhugo@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        smohanad@codeaurora.org, dan.carpenter@oracle.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 1/2] bus: mhi: core: Fix parsing of mhi_flags
+Date:   Mon, 13 Apr 2020 17:37:40 +0530
+Message-Id: <20200413120741.2832-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot get FP and PC when the task is running on another CPU,
-task->thread.cpu_context is the last time the task was switched out,
-it's better to give a reminder than to provide wrong information.
+With the current parsing of mhi_flags, the following statement always
+return false:
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+eob = !!(flags & MHI_EOB);
+
+This is due to the fact that 'enum mhi_flags' starts with index 0 and we
+are using direct AND operation to extract each bit. Fix this by using
+BIT() macro to extract each bit and make the mhi_flags index start from 1.
+
+Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- arch/arm64/kernel/traps.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/bus/mhi/core/main.c | 6 +++---
+ include/linux/mhi.h         | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index cf402be..831b8fd 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -106,6 +106,13 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
- 		start_backtrace(&frame,
- 				(unsigned long)__builtin_frame_address(0),
- 				(unsigned long)dump_backtrace);
-+	} else if (task_running_oncpu(tsk)) {
-+		/*
-+		 * The task is running in another cpu, we cannot get it.
-+		 */
-+		pr_warn("tsk: %s is running in CPU%d, Don't call trace!\n",
-+			tsk->comm, task_cpu(tsk));
-+		return;
- 	} else {
- 		/*
- 		 * task blocked in __switch_to
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index eb4256b81406..4165a853c189 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1090,9 +1090,9 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+ 	if (ret)
+ 		return ret;
+ 
+-	eob = !!(flags & MHI_EOB);
+-	eot = !!(flags & MHI_EOT);
+-	chain = !!(flags & MHI_CHAIN);
++	eob = !!(flags & BIT(0));
++	eot = !!(flags & BIT(1));
++	chain = !!(flags & BIT(2));
+ 	bei = !!(mhi_chan->intmod);
+ 
+ 	mhi_tre = tre_ring->wp;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index ad1996001965..22185fecbbf2 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -53,7 +53,7 @@ enum mhi_callback {
+  * @MHI_CHAIN: Linked transfer
+  */
+ enum mhi_flags {
+-	MHI_EOB,
++	MHI_EOB = 1,
+ 	MHI_EOT,
+ 	MHI_CHAIN,
+ };
 -- 
-2.7.4
+2.17.1
 
