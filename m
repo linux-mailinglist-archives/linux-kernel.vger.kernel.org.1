@@ -2,76 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7881A6493
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519A51A64AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgDMJXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        id S1728368AbgDMJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727796AbgDMJXu (ORCPT
+        by vger.kernel.org with ESMTP id S1727886AbgDMJ3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:23:50 -0400
-X-Greylist: delayed 375 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 05:23:50 EDT
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A017CC008617;
-        Mon, 13 Apr 2020 02:23:48 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q16so3061867pje.1;
-        Mon, 13 Apr 2020 02:23:48 -0700 (PDT)
+        Mon, 13 Apr 2020 05:29:41 -0400
+X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 05:29:41 EDT
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2511C008617
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:24:37 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t11so7983987ils.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:24:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LgPdHxZlhSC4v+zs/0AEa3wK9zKFB/PRFiLsEr99XBA=;
-        b=qm7THPT1ebhpY0cu+H+IZfi8W0+nhCKo3W1RJY2zgd2FkXZd8v+BUqMZ8UGgG1wXZD
-         TOk0XAG9IcwzpyneHCH7cIZSLewQsmgN4hTvX96TJnGDrACrYtvhM8YS6cn0cNP+paBc
-         rAvU+Li8dzTLEBewh9L0HYVYte1l1g1G33mW977AyZlDvHL4aTuBHBAOBihSo8zSBGQx
-         gZNbgnDW3bwke9d8k96T4XZXpeeCVS+zbQAPFSiIpryo3EeOZZi7P5B4TfFpYkwUzJFR
-         AaOmRFTy/5JvZwPehJlN9Mw7ckiuTLc501sCk84fZOEz68JUi8f21dolYx/gnLgtuQdC
-         bv2A==
+        bh=U9xxTNwOkKebXQdrj7e3IgHeXx4Dib7AVZXHCVRHOH8=;
+        b=unKP9RXbUz90EHX5WxmTHsCCH9XxfAAbFg3/LOMgsay5e07ojds+iWLocS9bocDjY5
+         tF0EHr8PudIxMzaJUrJsstirJaTCRARtPuGZErdINVTgp/tIVjm6B+9v8z43zZRgOIlR
+         +BBtl8OihBbqPgRdtuqFmSVfk/Uk5wnwNSQoSrfuy/mFosmpBsVUIlAOEV3trFpyultB
+         2eUehxYDp0vPgi4JPqyHdocBceIejRErvV9FbU/tCjto5YWzg+u/wh+eyEb8hs/Pe5ss
+         PB12xiNU6ldMIz/e2wjYRL9KxBXMJMPnXx99JlgwhLnjcNV5Pl8yVhy980/PsVGC8BQU
+         h7oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LgPdHxZlhSC4v+zs/0AEa3wK9zKFB/PRFiLsEr99XBA=;
-        b=ST9MBvKQ6QA9t4pmeSdWKNQcDsRt3SidaN/nixo3igfle240Wqa1nf9rIQjMzrRYmc
-         RhMEFB3bV9NkRbmJdLDudZv0P9f+FjpKbbsBzU1l+PWz4X3MNG4O6Y1NnUBK8OBrVGh+
-         6SAI59w8dWraJJP07aP733yfd7UjDHsQvRpv4Afx4MOGWfs2elSJlzTflxcCZ1PR7SMA
-         qNKIxb5IkBiWM2Z1mQfAgyEd8A9y6GmoyqHiMTL5wWpabfcgQZF2j6ABSz8Ucw+gBzDd
-         EozrXrne8+bqcNOnLkAroEv/Y3V6uN4LAv9jafzerktII4UuY11yk3YVtEPN+Fl8IRCA
-         gUDQ==
-X-Gm-Message-State: AGi0PubWtCXtKWgx271E3OCVnwjqxkU9qrdOari2hr3tE+JnzCbU0U91
-        i0kmnIbfYME4/9BpPqzt4tHXfQTVBtZirHqKYwI=
-X-Google-Smtp-Source: APiQypLL/Wfg4Lp/+ohZlO4zV3KFFCVU24f2uryhyiPohL3pUIEuiUaUmKAr6opmbdZ8UEzmiQy3c2aNzlj8pcl0vZE=
-X-Received: by 2002:a17:90a:e982:: with SMTP id v2mr21162774pjy.1.1586769827768;
- Mon, 13 Apr 2020 02:23:47 -0700 (PDT)
+        bh=U9xxTNwOkKebXQdrj7e3IgHeXx4Dib7AVZXHCVRHOH8=;
+        b=r5vPFroo9eU7/E6pLbF0mPymiquXOdfs/6twms2Lii7E/O9KJYBH9DdZ1zVDURXFGo
+         jCDeg7Z8l+0LiBezKtUF3gp7AzcKGP1rEKoC6mskCvu6/8sc/i/6/SYgXoh4o99ne80f
+         YlY8jsOFU0CFiK2gUUu2jQ6RDJqkiglWE85+GdnVN+qezgDatJOEUQXniovu72fWn2x9
+         kFgAkVB+9B33iscBj1UuAi5FfnZDuIW1LkR7RbmC50JHlDMBXCiECOlHqfBfXdaou/Fq
+         WJw5wh+5IOQ6NP8LxU9mwW60OzgepV5/EPW5t/7IRj5MT/+tY7WGc/6FFVnJFK6DW3/m
+         xvMA==
+X-Gm-Message-State: AGi0PuaJ0eBTfMvpPX9Wm45+jKDSI09U6ht06al5g4c63966gqOkcS9Z
+        dkmteQHIQSom4CZqpl7ArFVBN5VhHk3MPrvxoN4=
+X-Google-Smtp-Source: APiQypL9UBtedvu07pcimMLGLeAhVL4l87I0tDC2GNz5jhpG1yZQGooCRdGQL/IIHIImGUgpbOKUlz6y3o46fEO6s3M=
+X-Received: by 2002:a92:d2c5:: with SMTP id w5mr15430488ilg.143.1586769876957;
+ Mon, 13 Apr 2020 02:24:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <1581789069-5232-1-git-send-email-gupt21@gmail.com>
- <1581789069-5232-2-git-send-email-gupt21@gmail.com> <CALUj-gvM+mupR6qhh=ruyFzY7VL8zGHpcJ9N0oLk4mT-UG_r6A@mail.gmail.com>
-In-Reply-To: <CALUj-gvM+mupR6qhh=ruyFzY7VL8zGHpcJ9N0oLk4mT-UG_r6A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 13 Apr 2020 12:23:36 +0300
-Message-ID: <CAHp75VdDnUTbPJOjF7btQeaog+_Ni7Zon-bbBB0hNuQRZ8Vt2g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] tty/serial: ttvys: add null modem driver for emulation
-To:     rishi gupta <gupt21@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>, Jiri Slaby <jslaby@suse.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20200219171225.5547-1-idryomov@gmail.com> <CAHp75Vf24yNeLEweq_70AUzKwbdyurB6ze9739Qy9djA9dSefg@mail.gmail.com>
+ <CAOi1vP9gfMoU14Ax+VLksQ+_3yOO3m3bh0Uh02SUMfPFDDEW9g@mail.gmail.com>
+ <CAOi1vP8NN=8e8kW6g7KegUt52auJoE53ZCdEQHv2DMqFe1=g0Q@mail.gmail.com>
+ <CAOi1vP9t=kq0M91rJXbXa1pj43eczsHw+0Y5Km30tQP5AJrs2g@mail.gmail.com>
+ <CAHp75VfvUN=E-_n8VAKQ9nQ7mr2hbjS38bYCBbCdh02pxphOwg@mail.gmail.com>
+ <CAOi1vP-K-AwzPqdHHDFDvef_nLPx3pr2NnQnSo5Emvsc1hF7Cg@mail.gmail.com>
+ <20200408150643.GD3676135@smile.fi.intel.com> <CAHk-=wgndVg4U2rh_6e8YBuhN+78wEiyTuCRTqfWuSZzGC6f_w@mail.gmail.com>
+ <0fd21b6115b647baac23ee926b4c76f8@AcuMS.aculab.com>
+In-Reply-To: <0fd21b6115b647baac23ee926b4c76f8@AcuMS.aculab.com>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Mon, 13 Apr 2020 11:24:30 +0200
+Message-ID: <CAOi1vP9p4dC1HfzmgP_GR=p4p8LWfxPQTGfHf3QaCFp6vF-V2Q@mail.gmail.com>
+Subject: Re: [PATCH v2] vsprintf: don't obfuscate NULL and error pointers
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Petr Mladek <pmladek@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Tobin C . Harding" <me@tobin.cc>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 10:23 PM rishi gupta <gupt21@gmail.com> wrote:
+On Fri, Apr 10, 2020 at 11:40 AM David Laight <David.Laight@aculab.com> wrote:
 >
-> Humble ping for feedback please!
+> From: Linus Torvalds
+> > Sent: 08 April 2020 17:23
+> > On Wed, Apr 8, 2020 at 8:08 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > For the better understanding the current state of affairs I suggest to respin
+> > > new version after rc1 and we will see again.
+>
+> If the hash of a pointer ends up being one of the values that
+> wouldn't be hashed, perhaps it should be hashed again.
+> That will remove any possible confusion.
 
-No top-posting, please.
+Hi David,
 
-Rebase your series on top of v5.7-rc1 and resend as v3.
+That seems sensible, but out of scope of this patch IMO.
 
--- 
-With Best Regards,
-Andy Shevchenko
+My goal was to fix a 5.2 regression for NULL pointers.  I tacked on
+IS_ERR pointers because they aren't actual addresses either and hashing
+them makes zero sense.  Although simple to implement, I'm afraid that
+introducing additional rounds of hashing would drag this patch further
+(it's already got bogged down in the test suite structure discussion).
+
+Thanks,
+
+                Ilya
