@@ -2,108 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64651A690B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F201A6911
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730609AbgDMPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 11:43:17 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8074 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728597AbgDMPnQ (ORCPT
+        id S1730723AbgDMPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 11:46:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54662 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728597AbgDMPqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:43:16 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85e9488800f3-3c2e1; Mon, 13 Apr 2020 23:42:57 +0800 (CST)
-X-RM-TRANSID: 2ee85e9488800f3-3c2e1
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.0.102] (unknown[112.1.172.56])
-        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15e948880e98-3d466;
-        Mon, 13 Apr 2020 23:42:57 +0800 (CST)
-X-RM-TRANSID: 2ee15e948880e98-3d466
-Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
-To:     minyard@acm.org
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
- <20200413113225.GB3587@minyard.net>
- <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
- <20200413142348.GD3587@minyard.net>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <3894dab2-0660-999c-6f4c-4b5b9ff57773@cmss.chinamobile.com>
-Date:   Mon, 13 Apr 2020 23:44:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 13 Apr 2020 11:46:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DFh1R3160819;
+        Mon, 13 Apr 2020 15:46:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=AHrJxL4X55srYQ+/3yvE8f7O6waLCDsvPFXc6+i5JFI=;
+ b=k+Hrf5//t57+qcRZXt48Z0JhBsNs9FAH4NYnt8sHRHCWrsdI8ZBkqKEHnf+iGG3icxJQ
+ gOLdvSp6IjtUUWD63qIARZmJDrphbOh09n3galr0d/kFKFUfUwBH61Eetu4q7mpCDQp6
+ JBtve1Vp7+UaPFAOhG8mKujfuU7fKppwpAW9kB5m0+mWxo4B/2/xw8S1ML5BQZRhFeaD
+ NkAtfSvbl4wQmkfnRfvUnOdIyFc7oR47rBtfmibejr9ksMN84qKG6z05xddf3hyqDlRw
+ m2sJDCzZN+EJzbKxeLsX0v+PSs+BKrwauhfBF5J2NcNJrOpYHA4iMH4JXCrREYPuiV5s ZQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30b5aqy9hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 15:46:27 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DFfhAC158885;
+        Mon, 13 Apr 2020 15:46:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30bqceerwn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 15:46:27 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03DFkOE3003326;
+        Mon, 13 Apr 2020 15:46:24 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Apr 2020 08:46:24 -0700
+Date:   Mon, 13 Apr 2020 08:46:19 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V7 4/9] fs/xfs: Make DAX mount option a tri-state
+Message-ID: <20200413154619.GT6742@magnolia>
+References: <20200413054046.1560106-1-ira.weiny@intel.com>
+ <20200413054046.1560106-5-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200413142348.GD3587@minyard.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413054046.1560106-5-ira.weiny@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130119
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130119
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Corey:
+On Sun, Apr 12, 2020 at 10:40:41PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> As agreed upon[1].  We make the dax mount option a tri-state.  '-o dax'
+> continues to operate the same.  We add 'always', 'never', and 'inode'
+> (default).
+> 
+> [1] https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from v6:
+> 	Use 2 flag bits rather than a field.
+> 	change iflag to inode
+> 
+> Changes from v5:
+> 	New Patch
+> ---
+>  fs/xfs/xfs_mount.h |  3 ++-
+>  fs/xfs/xfs_super.c | 44 ++++++++++++++++++++++++++++++++++++++++----
+>  2 files changed, 42 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
+> index 88ab09ed29e7..d581b990e59a 100644
+> --- a/fs/xfs/xfs_mount.h
+> +++ b/fs/xfs/xfs_mount.h
+> @@ -233,7 +233,8 @@ typedef struct xfs_mount {
+>  						   allocator */
+>  #define XFS_MOUNT_NOATTR2	(1ULL << 25)	/* disable use of attr2 format */
+>  
+> -#define XFS_MOUNT_DAX		(1ULL << 62)	/* TEST ONLY! */
+> +#define XFS_MOUNT_DAX		(1ULL << 62)
+> +#define XFS_MOUNT_NODAX		(1ULL << 63)
+>  
+>  /*
+>   * Max and min values for mount-option defined I/O
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 2094386af8ac..d7bd8f5e00c9 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -47,6 +47,32 @@ static struct kset *xfs_kset;		/* top-level xfs sysfs dir */
+>  static struct xfs_kobj xfs_dbg_kobj;	/* global debug sysfs attrs */
+>  #endif
+>  
+> +enum {
+> +	XFS_DAX_INODE = 0,
+> +	XFS_DAX_ALWAYS = 1,
+> +	XFS_DAX_NEVER = 2,
+> +};
+> +
+> +static void xfs_mount_set_dax_mode(struct xfs_mount *mp, u32 val)
+> +{
+> +	if (val == XFS_DAX_INODE) {
+> +		mp->m_flags &= ~(XFS_MOUNT_DAX | XFS_MOUNT_NODAX);
+> +	} else if (val == XFS_DAX_ALWAYS) {
+> +		mp->m_flags &= ~XFS_MOUNT_NODAX;
+> +		mp->m_flags |= XFS_MOUNT_DAX;
+> +	} else if (val == XFS_DAX_NEVER) {
+> +		mp->m_flags &= ~XFS_MOUNT_DAX;
+> +		mp->m_flags |= XFS_MOUNT_NODAX;
+> +	}
+> +}
+> +
+> +static const struct constant_table dax_param_enums[] = {
+> +	{"inode",	XFS_DAX_INODE },
+> +	{"always",	XFS_DAX_ALWAYS },
+> +	{"never",	XFS_DAX_NEVER },
+> +	{}
 
-On 2020/4/13 22:23, Corey Minyard wrote:
->> Can I consider that the patch will be applied in 5.8？
-> It's in my queue, so that's the plan.
->
->>>    I
->>> changed the title to be "Avoid unnecessary check".
->> You have modified it, which means I don't need to submit a new patch？
-> Correct.
+I think that the dax_param_enums table (and the unnamed enum defining
+XFS_DAX_*) probably ought to be part of the VFS so that you don't have
+to duplicate these two pieces whenever it's time to bring ext4 in line
+with XFS.
 
-Thank you very much, I am waiting for the applied.
+That probably doesn't need to be done right away, though...
 
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-Then, I have some questions to ask you:
-
-     I have checked the file bt-bmc.c carefully, and found that there 
-are another two problems.Please help me analyze them, if you think it is 
-feasible, then I will submit the patch.
-
-     Q1: About Format Problem
-
-            In the 469~471 line, the first letter should be indented, 
-please check if the writing here is reasonable?
+--D
 
 
-     Q2: About the function bt_bmc_config_irq()
-
-           1）In the function bt_bmc_probe(), the return value of 
-bt_bmc_config_irq() made no judgement, whether it is suitable? （If your 
-view is don't need to judge, the following will change.）
-
-
-           2）According to the kernel interface of platform_get_irq(),the 
-return value is negative,
-
-                    if (!bt_bmc->irq)
-                         return -ENODEV;
-
-                so the check here is invalid.The standard way to write is:
-
-                      if (bt_bmc->irq < 0)
-                           return bt_bmc->irq;
-
-                But consider if failed, "bt_bmc->irq" must be assigned 
-to "0"，the easiest way is to delete the        403~404 line, handled 
-directly by the function devm_request_irq().
-
-
-         Q3：About dev_warm()
-
-                 KERN_WARNING is higher than KERN_INFO, the same to 
-dev_warn() and dev_info(). When the function bt_bmc_probe() uses 
-dev_info() to print error message, the dev_warm() in the line of 409 
-should be redundant.
-
-
-I am waiting for your replay, and thank you for your guidance.
-
-Tang Bin
-
-
-
+> +};
+> +
+>  /*
+>   * Table driven mount option parser.
+>   */
+> @@ -59,7 +85,7 @@ enum {
+>  	Opt_filestreams, Opt_quota, Opt_noquota, Opt_usrquota, Opt_grpquota,
+>  	Opt_prjquota, Opt_uquota, Opt_gquota, Opt_pquota,
+>  	Opt_uqnoenforce, Opt_gqnoenforce, Opt_pqnoenforce, Opt_qnoenforce,
+> -	Opt_discard, Opt_nodiscard, Opt_dax,
+> +	Opt_discard, Opt_nodiscard, Opt_dax, Opt_dax_enum,
+>  };
+>  
+>  static const struct fs_parameter_spec xfs_fs_parameters[] = {
+> @@ -103,6 +129,7 @@ static const struct fs_parameter_spec xfs_fs_parameters[] = {
+>  	fsparam_flag("discard",		Opt_discard),
+>  	fsparam_flag("nodiscard",	Opt_nodiscard),
+>  	fsparam_flag("dax",		Opt_dax),
+> +	fsparam_enum("dax",		Opt_dax_enum, dax_param_enums),
+>  	{}
+>  };
+>  
+> @@ -129,7 +156,6 @@ xfs_fs_show_options(
+>  		{ XFS_MOUNT_GRPID,		",grpid" },
+>  		{ XFS_MOUNT_DISCARD,		",discard" },
+>  		{ XFS_MOUNT_LARGEIO,		",largeio" },
+> -		{ XFS_MOUNT_DAX,		",dax" },
+>  		{ 0, NULL }
+>  	};
+>  	struct xfs_mount	*mp = XFS_M(root->d_sb);
+> @@ -185,6 +211,13 @@ xfs_fs_show_options(
+>  	if (!(mp->m_qflags & XFS_ALL_QUOTA_ACCT))
+>  		seq_puts(m, ",noquota");
+>  
+> +	if (mp->m_flags & XFS_MOUNT_DAX)
+> +		seq_puts(m, ",dax=always");
+> +	else if (mp->m_flags & XFS_MOUNT_NODAX)
+> +		seq_puts(m, ",dax=never");
+> +	else
+> +		seq_puts(m, ",dax=inode");
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1244,7 +1277,10 @@ xfs_fc_parse_param(
+>  		return 0;
+>  #ifdef CONFIG_FS_DAX
+>  	case Opt_dax:
+> -		mp->m_flags |= XFS_MOUNT_DAX;
+> +		xfs_mount_set_dax_mode(mp, XFS_DAX_ALWAYS);
+> +		return 0;
+> +	case Opt_dax_enum:
+> +		xfs_mount_set_dax_mode(mp, result.uint_32);
+>  		return 0;
+>  #endif
+>  	default:
+> @@ -1451,7 +1487,7 @@ xfs_fc_fill_super(
+>  		if (!rtdev_is_dax && !datadev_is_dax) {
+>  			xfs_alert(mp,
+>  			"DAX unsupported by block device. Turning off DAX.");
+> -			mp->m_flags &= ~XFS_MOUNT_DAX;
+> +			xfs_mount_set_dax_mode(mp, XFS_DAX_NEVER);
+>  		}
+>  		if (xfs_sb_version_hasreflink(&mp->m_sb)) {
+>  			xfs_alert(mp,
+> -- 
+> 2.25.1
+> 
