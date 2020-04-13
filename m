@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E2F1A6ADB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE2A1A6AEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732393AbgDMRE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732349AbgDMREo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:04:44 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F8C02063A;
-        Mon, 13 Apr 2020 17:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586797483;
-        bh=ISb9wr/yPKrfewUQACkHyT9WS5iqliM2PiGjRAwlLmE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qaOBvA8AKlyeNCbkd4Zs0mpBeGdTHZabxXBQs1uXf5W57T4mBhXl81I56EcXMKufU
-         RMDpB+1ENeCyLMExQMPcol4CbLOh4UreDPiRFxNw3dE+MpLumWWbj8UmEymGp9rC+P
-         ec/gCH95x5UgjGxHzr9Xgm7Z1j4RfIH4vYXP8jBk=
-Date:   Mon, 13 Apr 2020 18:04:39 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>
-Subject: Re: [PATCH] iio: light: isl29125: fix
- iio_triggered_buffer_{predisable,postenable} positions
-Message-ID: <20200413180439.61cbf7b6@archlinux>
-In-Reply-To: <5ced40e32260e5e99ca37dcf8ecdc77b25eb5153.camel@analog.com>
-References: <20200304082425.18600-1-alexandru.ardelean@analog.com>
-        <5ced40e32260e5e99ca37dcf8ecdc77b25eb5153.camel@analog.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1732463AbgDMRFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732369AbgDMREt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 13:04:49 -0400
+X-Greylist: delayed 2991 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Apr 2020 10:04:44 PDT
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3D6C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=nthD7hLIwbiHeyFNzH25utLfX0DBvZR/iBIyaq9rJo8=; b=MhN9aGSTvwKDekidmpqmJaWXbp
+        vNUZOIT6r9VN12kuKGlFRkc4Mc0nERXWph1qCPyofygRpUVkAx4fW8G7awHFEuzjLq+TUiLwLC6oQ
+        DaM+hWU80X6pt63hBmTcN2Kbn2bUIeNL2a4yFcHwh5q22AIR69LwrMP03Hj+hTosjxx6trD3a59yU
+        zGSSz185KV1YZCHWt6sP6I641S+jKPx/YSxjJPbp+GMNyelltySronvlWN/zom7gSYBcXT/iRyWmt
+        sGpVB1ueS98GItO6iqdDxbwzPSQJQsiv6SAI1q9mZwM4AhgapKTfdgYUJIsF89Vs5jtdcxfX8DUv/
+        nHtgftMA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jO2Vm-0000ON-L3; Mon, 13 Apr 2020 17:04:43 +0000
+Subject: Re: [PATCH v2,1/3] driver: rpmon: new driver Remote Processor Monitor
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+References: <20200411095301.18780-1-wenhu.wang@vivo.com>
+ <20200412112405.24116-1-wenhu.wang@vivo.com>
+ <20200412112405.24116-2-wenhu.wang@vivo.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <816c6ed0-9b37-f43a-24ad-e742ca24c8ba@infradead.org>
+Date:   Mon, 13 Apr 2020 10:04:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200412112405.24116-2-wenhu.wang@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Mar 2020 11:42:31 +0000
-"Ardelean, Alexandru" <alexandru.Ardelean@analog.com> wrote:
+Hi--
 
-> On Wed, 2020-03-04 at 10:24 +0200, Alexandru Ardelean wrote:
-> > The iio_triggered_buffer_{predisable,postenable} functions attach/detach
-> > the poll functions.
-> > 
-> > For the predisable hook, the disable code should occur before detaching
-> > the poll func, and for the postenable hook, the poll func should be
-> > attached before the enable code.
-> > 
-> > This change reworks the predisable/postenable hooks so that the pollfunc is
-> > attached/detached in the correct position.
-> > It also balances the calls a bit, by grouping the preenable and the
-> > iio_triggered_buffer_postenable() into a single
-> > isl29125_buffer_postenable() function.  
+On 4/12/20 4:24 AM, Wang Wenhu wrote:
+> RPMON is a driver framework. It supports remote processor monitor
+> from user level. The baisc components are a character device
+
+                       basic
+
+> with sysfs interfaces for user space communication and different
+> kinds of message drivers introduced modularly, which are used to
+> communicate with remote processors.
 > 
-> ping on this patch
+> As for user space, one can get notifications of different events
+> of remote processors, like their registrations, through standard
+> file read operation of the file discriptors related to the exported
 
-Long enough.  Applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to play with it.
+                                  descriptors
 
-Thanks,
-
-Jonathan
-
+> character devices. Actions can also be taken into account via
+> standard write operations to the devices. Besides, the sysfs class
+> attributes could be accessed conveniently.
 > 
-> > 
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > ---
-> >  drivers/iio/light/isl29125.c | 28 +++++++++++++++++++---------
-> >  1 file changed, 19 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/iio/light/isl29125.c b/drivers/iio/light/isl29125.c
-> > index e37894f0ae0b..95611f5eff01 100644
-> > --- a/drivers/iio/light/isl29125.c
-> > +++ b/drivers/iio/light/isl29125.c
-> > @@ -213,13 +213,24 @@ static const struct iio_info isl29125_info = {
-> >  	.attrs = &isl29125_attribute_group,
-> >  };
-> >  
-> > -static int isl29125_buffer_preenable(struct iio_dev *indio_dev)
-> > +static int isl29125_buffer_postenable(struct iio_dev *indio_dev)
-> >  {
-> >  	struct isl29125_data *data = iio_priv(indio_dev);
-> > +	int err;
-> > +
-> > +	err = iio_triggered_buffer_postenable(indio_dev);
-> > +	if (err)
-> > +		return err;
-> >  
-> >  	data->conf1 |= ISL29125_MODE_RGB;
-> > -	return i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
-> > +	err = i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
-> >  		data->conf1);
-> > +	if (err) {
-> > +		iio_triggered_buffer_predisable(indio_dev);
-> > +		return err;
-> > +	}
-> > +
-> > +	return 0;
-> >  }
-> >  
-> >  static int isl29125_buffer_predisable(struct iio_dev *indio_dev)
-> > @@ -227,19 +238,18 @@ static int isl29125_buffer_predisable(struct iio_dev
-> > *indio_dev)
-> >  	struct isl29125_data *data = iio_priv(indio_dev);
-> >  	int ret;
-> >  
-> > -	ret = iio_triggered_buffer_predisable(indio_dev);
-> > -	if (ret < 0)
-> > -		return ret;
-> > -
-> >  	data->conf1 &= ~ISL29125_MODE_MASK;
-> >  	data->conf1 |= ISL29125_MODE_PD;
-> > -	return i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
-> > +	ret = i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
-> >  		data->conf1);
-> > +
-> > +	iio_triggered_buffer_predisable(indio_dev);
-> > +
-> > +	return ret;
-> >  }
-> >  
-> >  static const struct iio_buffer_setup_ops isl29125_buffer_setup_ops = {
-> > -	.preenable = isl29125_buffer_preenable,
-> > -	.postenable = &iio_triggered_buffer_postenable,
-> > +	.postenable = isl29125_buffer_postenable,
-> >  	.predisable = isl29125_buffer_predisable,
-> >  };
-> >    
+> Message drivers act as engines to communicate with remote processors.
+> Currently RPMON_QMI is available which uses QMI infrastructures
+> on Qualcomm SoC Platforms.
+> 
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+
+The rest of the changes to patch 1/3 look good. Thanks.
+
+
+> ---
+> Changes since v1:
+>  - Addressed review comments from Randy
+> 
+> ---
+>  drivers/Kconfig        |   2 +
+>  drivers/Makefile       |   1 +
+>  drivers/rpmon/Kconfig  |  26 +++
+>  drivers/rpmon/Makefile |   1 +
+>  drivers/rpmon/rpmon.c  | 506 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/rpmon.h  |  68 ++++++
+>  6 files changed, 604 insertions(+)
+>  create mode 100644 drivers/rpmon/Kconfig
+>  create mode 100644 drivers/rpmon/Makefile
+>  create mode 100644 drivers/rpmon/rpmon.c
+>  create mode 100644 include/linux/rpmon.h
+
+
+-- 
+~Randy
 
