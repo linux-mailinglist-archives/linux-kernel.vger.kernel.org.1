@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A9A1A6594
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA381A659B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbgDMLWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:22:04 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:27765 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728964AbgDMLWD (ORCPT
+        id S1728991AbgDML3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728625AbgDML3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:22:03 -0400
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 03DBLm3q031241
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:21:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 03DBLm3q031241
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1586776909;
-        bh=SRh+8Znpw6pp1tH1BSalCes/6Y1eOsSFzMJTg0CB2c4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fWlvJeFA0Fn+GyVeE83p5aWw8prnxyHHbzmg2LzyaBlk0SSlUPphRTQ6oS8aFmH78
-         AzlthjfwcfdedHfpTS2TvK7abnYqcz0BUO0a6Lo9CRJNHF/cw3E3BvZCSe+hAZk8GB
-         1xCg+TCnfWs7H39oxBy4u55xFnKCdJWiRa3rYp5ypztTM5RYUN/VTXur3/J/SlFimH
-         i/LAx1NuLdUGThCz89xY3KcpXZNOSBq2g4RIkEHZDxKrU/L4NncN+beBg67N/Hy2RJ
-         y/0wnJA5/WLsuIrtQTvguTha2VVdEyr9qvoRUWspQP1FOO8Yw+iCfqI6GulLzbRHC4
-         /Nms02BCBnnjg==
-X-Nifty-SrcIP: [209.85.222.54]
-Received: by mail-ua1-f54.google.com with SMTP id c7so2970451uap.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:21:49 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYtgRIAYwb7mT/fjq7xnQkfJqq/bKaQpCOmwEIU83s1/KafHrEC
-        vGNFfbocW9Mz0JWRwToA7Kqo91WxIkDBpmLkDMI=
-X-Google-Smtp-Source: APiQypICbt79R/Z7ZzQGzhFwWLlFDSZ3QFBKv8qcrLpiPtqU6IBHzKFTYanS5UvxfUUwGjBi21OySMZM393b389YiyY=
-X-Received: by 2002:ab0:2085:: with SMTP id r5mr11032980uak.95.1586776908098;
- Mon, 13 Apr 2020 04:21:48 -0700 (PDT)
+        Mon, 13 Apr 2020 07:29:42 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48D2C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:21:39 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id m8so8353417lji.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TfybxCS9KvV17UPheJnqSM+e/cLRrV8TeDHR7AgRiYw=;
+        b=y88rwGl/RjfrMbIPOK7+s+NQx1aoXwZDd8G3Aln6CMeD6UrIUasDet6IZZcqT9dOg3
+         l4Nv3vQFImsFKN8Wer2g6roOIKKoWwGPTIPRR2BDmBgiuGNzPbldm5GlyKxYeioexKSM
+         oGygbWZZ+ma2QaheiQrXtpCSqLrG1Ue+y1CEC5+cpb5b2ujPN3zfjQNxtDr5KIgCSYPo
+         +Rj0dQk0vBVucBeDXA94ZYtSYVmc7M6iasr8XMAVU7DJ08AjFPmtZGSbwo7oeH4C6MtN
+         W/eUnnA5mlK8b3G1nJCBEJp7l89bzD+tCMbv/jN17QQ5fXLGWtDv4POsulXDupmsSIlP
+         SEqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TfybxCS9KvV17UPheJnqSM+e/cLRrV8TeDHR7AgRiYw=;
+        b=udCdTPZ/siUferSw9L2OQ+QlSAOoVZ8ieqzmvi6snF6CeLbLY60OcUkPzktnhiJvOD
+         euNrRYg18KM577e3u59MdCOQmQPUjjYHx3y8bq+C64JIeyVQrCwvgbV91gZPQZPMdElx
+         JhirTfDYxHe4DfeiuuT37ZnfVaepQlIltxJzrsaguONLFa18FnJL9P4U0Z5LrEfp6kR4
+         9MX50kPY5NwkzX8Bgs/u/KK+BDk+F08X1q2Gtb08NI1bCTRzGaKkzCxnzSEtGLPOQeEQ
+         tAj1moPyxoG86i49jkmRce2a6c0M/6B6yaSnbdG1gj8KcJdhSdHZSSkR6Syie+htaYVt
+         TQ1A==
+X-Gm-Message-State: AGi0PuZGXmDTjY7AMCV1/wStPLYdQFVoQFFWrA/BEf6zxUz68/o/LPID
+        pmet+DwMThm87/LXP3hKQvjS+NhyqTVF8yXowbYKKQ==
+X-Google-Smtp-Source: APiQypKZxajlMe0BodxfJkVJg9NJCcYeXNTqOwy0OQAXKiMOpmeX9tR3Jo8ny+juQeVyUWeXVPsZc/KvhmVF+uDhGws=
+X-Received: by 2002:a2e:a495:: with SMTP id h21mr10092859lji.123.1586776897822;
+ Mon, 13 Apr 2020 04:21:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200413093552.25102-1-geert@linux-m68k.org>
-In-Reply-To: <20200413093552.25102-1-geert@linux-m68k.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 13 Apr 2020 20:21:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARzn1eOpxA4xS9TkSE9LPMJfv0ByEg8_RNTcY1N-YLWFQ@mail.gmail.com>
-Message-ID: <CAK7LNARzn1eOpxA4xS9TkSE9LPMJfv0ByEg8_RNTcY1N-YLWFQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Drop redundant generic-y += hardirq.h
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CA+G9fYsRGvkqtpdGv_aVr+Hn17KgYq04Q=EE=pB774qVxRqOeg@mail.gmail.com>
+ <20200412214150.GB38470@xz-x1>
+In-Reply-To: <20200412214150.GB38470@xz-x1>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 13 Apr 2020 16:51:25 +0530
+Message-ID: <CA+G9fYvARTCKjbfHYEbfOjtn_s7desuAToOF4g+Z_fztzZ-myw@mail.gmail.com>
+Subject: Re: i386: selftests: vm: compaction_test: BUG: kernel NULL pointer
+ dereference, address: 00000000
+To:     Peter Xu <peterx@redhat.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Leonardo Bras <leonardo@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jules Irenge <jbi.octave@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hillf Danton <hdanton@sina.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 6:42 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Mon, 13 Apr 2020 at 03:12, Peter Xu <peterx@redhat.com> wrote:
+> And since this one is very easy to reproduce, I finally noticed that
+> we have wrongly enabled uffd-wp on x86_32, which is definely not going
+> to work... Because we'll use bit 2 of swap entry assuming that's the
+> uffd-wp bit, while that's part of swp offset on 32bit systems.
 >
-> The cleanup in commit 630f289b7114c0e6 ("asm-generic: make more
-> kernel-space headers mandatory") did not take into account the recently
-> added line for hardirq.h in commit acc45648b9aefa90 ("m68k: Switch to
-> asm-generic/hardirq.h"), leading to the following message during the
-> build:
+> Naresh, could you try whether below change fixes the issue for you?
 >
->     scripts/Makefile.asm-generic:25: redundant generic-y found in arch/m68k/include/asm/Kbuild: hardirq.h
->
-> Fix this by dropping the now redundant line.
->
-> Fixes: 630f289b7114c0e6 ("asm-generic: make more kernel-space headers mandatory")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-
-
-
-> ---
-> Feel free to take this one directly, as I have no other m68k fixes
-> queued for v5.7 yet.
->
->  arch/m68k/include/asm/Kbuild | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-> index a0765aa60ea9aa8d..1bff55aa2d54e2ce 100644
-> --- a/arch/m68k/include/asm/Kbuild
-> +++ b/arch/m68k/include/asm/Kbuild
-> @@ -1,7 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  generated-y += syscall_table.h
->  generic-y += extable.h
-> -generic-y += hardirq.h
->  generic-y += kvm_para.h
->  generic-y += local64.h
->  generic-y += mcs_spinlock.h
-> --
-> 2.17.1
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 8d078642b4be..7ac524d1316e 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -149,7 +149,7 @@ config X86
+>         select HAVE_ARCH_TRACEHOOK
+>         select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+>         select HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD if X86_64
+> -       select HAVE_ARCH_USERFAULTFD_WP         if USERFAULTFD
+> +       select HAVE_ARCH_USERFAULTFD_WP         if X86_64 && USERFAULTFD
+>         select HAVE_ARCH_VMAP_STACK             if X86_64
+>         select HAVE_ARCH_WITHIN_STACK_FRAMES
+>         select HAVE_ASM_MODVERSIONS
 >
 
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
--- 
-Best Regards
-Masahiro Yamada
+The above patch tested and did not notice the crash.
++ cd /opt/kselftests/default-in-kernel/vm/
++ ./compaction_test
+No of huge pages allocated = 297
++ ./compaction_test
+[   46.059785] kauditd_printk_skb: 15 callbacks suppressed
+[   46.059786] audit: type=1334 audit(1586776582.927:25): prog-id=17 op=UNLOAD
+[   46.071997] audit: type=1334 audit(1586776582.927:26): prog-id=16 op=UNLOAD
+No of huge pages allocated = 160
+
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/1362495#L1308
+
+Build artifacts.
+https://builds.tuxbuild.com/w0ol7cCsGan0wzPp7bNqkg/
+
+- Naresh
