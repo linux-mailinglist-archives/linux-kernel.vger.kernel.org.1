@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299AC1A6ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E371D1A6AE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732419AbgDMRFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S1732454AbgDMRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732373AbgDMREu (ORCPT
+        by vger.kernel.org with ESMTP id S1732378AbgDMREv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:04:50 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11340C00860D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:04:50 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mn19so4041517pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:04:50 -0700 (PDT)
+        Mon, 13 Apr 2020 13:04:51 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A4BC0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:04:51 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id h11so3589516plr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PZM04ZbYiFIjAv7GG0eoywCOXLJ3nJU1dPqZFxYiM54=;
-        b=XJLmHV8BFPN0w3ZfFbumxZ5ivffYLzBB2I/hFasM9oUCz+J/Z1p1Y3lZskM7mUBlEV
-         7DOstP44n7DScCdKRw7ufvv87lmSyV79jUEOBRPTLxHWQ5VTsYomoRv24xbc0HRSMO3L
-         elWJHOLz8DcVaZ5PAkF003zQ1smXOFLl6vTuA=
+        bh=xNVrx/cI7Cu2aF2a/gD7IMs8PmBNgX56QvuSL2GOgsU=;
+        b=U/e6j/f2nuhIpQcM4lGNm4mG6gg2uZF/vFx/YsAipQh6wEYucIh8IJxvdNhsijNsNK
+         HhJKGyfUZB1pZWPO9vCaxin77wWWMyy+bNJhuxIwmZhmQlCJoegvL2+SQdR03DnDvS3f
+         A1drOrlR1tfi/taZdfgTcK7q3+JQbvSmRnfOI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PZM04ZbYiFIjAv7GG0eoywCOXLJ3nJU1dPqZFxYiM54=;
-        b=KFZPbxvHnp+1xvqZSDXO2Yd2LV/XyWyYyPglJxuaac+7VlP7g0DCyKbTiKrRxoalRV
-         bwz7uC3uVPp3J10iut6Rrh0hnJG5x+LJyJE9qDgKTXYEbZ4zjGABNRxLn63S5r0iCF6G
-         ykFYGWy6Tyq/kIr34vTHYAdPet+V3YPaWqMwM1Kbxirok8s4uKE4F8nX1AR07VoRqrxG
-         DkDD50iR/4CFgDO3Ic9TfboyqkbcgBKdEyD0MbemE9Gmjmema9ui4Fg/Z9sZz75kfN7o
-         sh+OtkJMrPUgpxxSnlkAWmySIkkqio91XuvALo/wU1cIFjBekxI+lDMe9n4A+U1IuiIt
-         Tabw==
-X-Gm-Message-State: AGi0PubLAhA2DBdzkGxSeoXq99NXXtPHt5g4K6P3qqfaCBZ6lVG43jZn
-        kHdjrpK311q4yJNHQ6pKeMznGw==
-X-Google-Smtp-Source: APiQypL8k44Hgn+x9Kq4HREdWFg0ANCXjwLr3IPByI5U0qYV5QOldcYjbs2kvYAgiX1LJolO03zlwA==
-X-Received: by 2002:a17:90b:f16:: with SMTP id br22mr5759322pjb.89.1586797489556;
-        Mon, 13 Apr 2020 10:04:49 -0700 (PDT)
+        bh=xNVrx/cI7Cu2aF2a/gD7IMs8PmBNgX56QvuSL2GOgsU=;
+        b=ZYDcOld3CpOqjb7DyAa8yOmvAW462mrgD06zn+2NF0BS3fMgtvwD3WtWK8tB8rCUaJ
+         +elcEuVrHxh/EkCzXl+9XmNCEZJv0cJj84W0zpP7YKxPHHbfAN2ibsxIiMVvmMKev5dC
+         Bd4h+xiho5CCnMx36s4iYMFYEPvbQGg3BQxWG4GO4moJswTg10So0+w1mElEC0r1xxTd
+         JeiEnL0BzzIe7lfkXBXLwODsPGhKYRrM6Gio7GLm3DKwsabjleXC6CrD2hycWmrjelsx
+         +WgFoHJL6F+OEKcIg2tFzB9X5hURHRVYTYs7gV/HvYNrqdyct5hAHSsJNm3V5IDxMHNJ
+         g8yg==
+X-Gm-Message-State: AGi0PuYlT/BvPgYWSnDfSuF+d7qNJINIehF6XgIdmEqIVezY7vAaZXq7
+        DIVAv7qemOiYcE8z+lZDQbb1QQ==
+X-Google-Smtp-Source: APiQypIi0psKyslevtOfZ9WzW7UTKWqNYR8/2uGXcyDi3BKC73uBASSVCF3GMo2wooVKUt7nJO6Dtg==
+X-Received: by 2002:a17:902:8b87:: with SMTP id ay7mr18674684plb.281.1586797490877;
+        Mon, 13 Apr 2020 10:04:50 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id p62sm1634414pfb.93.2020.04.13.10.04.48
+        by smtp.gmail.com with ESMTPSA id p62sm1634414pfb.93.2020.04.13.10.04.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 10:04:49 -0700 (PDT)
+        Mon, 13 Apr 2020 10:04:50 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -54,9 +54,9 @@ Cc:     swboyd@chromium.org, mka@chromium.org,
         Lina Iyer <ilina@codeaurora.org>,
         Douglas Anderson <dianders@chromium.org>,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 07/10] drivers: qcom: rpmh-rsc: tcs_is_free() can just check tcs_in_use
-Date:   Mon, 13 Apr 2020 10:04:12 -0700
-Message-Id: <20200413100321.v4.7.Icf2213131ea652087f100129359052c83601f8b0@changeid>
+Subject: [PATCH v4 08/10] drivers: qcom: rpmh-rsc: Don't double-check rpmh payload
+Date:   Mon, 13 Apr 2020 10:04:13 -0700
+Message-Id: <20200413100321.v4.8.I8e187cdfb7a31f5bb7724f1f937f2862ee464a35@changeid>
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 In-Reply-To: <20200413170415.32463-1-dianders@chromium.org>
 References: <20200413170415.32463-1-dianders@chromium.org>
@@ -67,12 +67,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tcs_is_free() had two checks in it: does the software think that the
-TCS is free and does the hardware think that the TCS is free.  I
-couldn't figure out in which case the hardware could think that a TCS
-was in-use but software thought it was free.  Apparently there is no
-case and the extra check can be removed.  This apparently has already
-been done in a downstream patch.
+The calls rpmh_rsc_write_ctrl_data() and rpmh_rsc_send_data() are only
+ever called from rpmh.c.  We know that rpmh.c already error checked
+the message.  There's no reason to do it again in rpmh-rsc.
 
 Suggested-by: Maulik Shah <mkshah@codeaurora.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
@@ -80,38 +77,60 @@ Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
 Tested-by: Maulik Shah <mkshah@codeaurora.org>
 ---
 
-Changes in v4: None
+Changes in v4:
+- Add "payload" to end of ("Don't double-check rpmh") patch subject
+
 Changes in v3:
-- Replace ("...warn if state mismatch") w/ ("...just check tcs_in_use")
+- ("Don't double-check rpmh") replaces ("Warning if tcs_write...")
 
-Changes in v2:
-- Comment tcs_is_free() new for v2; replaces old patch 6.
+Changes in v2: None
 
- drivers/soc/qcom/rpmh-rsc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/soc/qcom/rpmh-rsc.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
 diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index f0a7ada0c16f..4e76e5349c44 100644
+index 4e76e5349c44..4f2a72fdac2c 100644
 --- a/drivers/soc/qcom/rpmh-rsc.c
 +++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -177,7 +177,6 @@ static void write_tcs_reg_sync(struct rsc_drv *drv, int reg, int tcs_id,
-  * @tcs_id: The global ID of this TCS.
-  *
-  * Returns true if nobody has claimed this TCS (by setting tcs_in_use).
-- * If the TCS looks free, checks that the hardware agrees.
-  *
-  * Must be called with the drv->lock held or the tcs_lock for the TCS being
-  * tested. If only the tcs_lock is held then it is possible that this
-@@ -188,8 +187,7 @@ static void write_tcs_reg_sync(struct rsc_drv *drv, int reg, int tcs_id,
-  */
- static bool tcs_is_free(struct rsc_drv *drv, int tcs_id)
- {
--	return !test_bit(tcs_id, drv->tcs_in_use) &&
--	       read_tcs_reg(drv, RSC_DRV_STATUS, tcs_id);
-+	return !test_bit(tcs_id, drv->tcs_in_use);
+@@ -633,7 +633,7 @@ static int tcs_write(struct rsc_drv *drv, const struct tcs_request *msg)
  }
  
  /**
+- * rpmh_rsc_send_data() - Validate the incoming message + write to TCS block.
++ * rpmh_rsc_send_data() - Write / trigger active-only message.
+  * @drv: The controller.
+  * @msg: The data to be sent.
+  *
+@@ -658,12 +658,6 @@ int rpmh_rsc_send_data(struct rsc_drv *drv, const struct tcs_request *msg)
+ {
+ 	int ret;
+ 
+-	if (!msg || !msg->cmds || !msg->num_cmds ||
+-	    msg->num_cmds > MAX_RPMH_PAYLOAD) {
+-		WARN_ON(1);
+-		return -EINVAL;
+-	}
+-
+ 	do {
+ 		ret = tcs_write(drv, msg);
+ 		if (ret == -EBUSY) {
+@@ -734,16 +728,6 @@ int rpmh_rsc_write_ctrl_data(struct rsc_drv *drv, const struct tcs_request *msg)
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	if (!msg || !msg->cmds || !msg->num_cmds ||
+-	    msg->num_cmds > MAX_RPMH_PAYLOAD) {
+-		pr_err("Payload error\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Data sent to this API will not be sent immediately */
+-	if (msg->state == RPMH_ACTIVE_ONLY_STATE)
+-		return -EINVAL;
+-
+ 	tcs = get_tcs_for_msg(drv, msg);
+ 	if (IS_ERR(tcs))
+ 		return PTR_ERR(tcs);
 -- 
 2.26.0.110.g2183baf09c-goog
 
