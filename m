@@ -2,186 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8DF1A6C3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E24E1A6C43
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733121AbgDMSwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        id S1733136AbgDMS50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 14:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733112AbgDMSwh (ORCPT
+        by vger.kernel.org with ESMTP id S1727828AbgDMS5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:52:37 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA52EC0A3BDC;
-        Mon, 13 Apr 2020 11:52:37 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 103so10181773otv.0;
-        Mon, 13 Apr 2020 11:52:37 -0700 (PDT)
+        Mon, 13 Apr 2020 14:57:24 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653DBC008748
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:57:24 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 131so7350005lfh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:57:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xC3x0yRcgUpqkBQhYGspeGLwB9d9vOWv+kQdwmDFIYk=;
-        b=IgxuuZRwoOsuo5lS8HrLEy3dHrJ8MoK5xyRYnt9I1YdQ8MnuA3vJjpXRLYDJACtokz
-         2BRT2ctu0wRwrbuPq+G/Nvno2QYLro6FeqP6aZ2JN9k6NBfmjtwNFwvbbWpe41rZV7Ct
-         Bh3aJ/sJcCUZe7OoTrQzOV2Ez5z9+9jEdUzggJ1U6Zciz28QpxP4JeoadZCHcDY7ES7l
-         LQWUR92cASEYS4r+YcT/6F3sofRQjDi34BOm88Gl3gI1jE6Z94gCCdl85lvVBUyYTOdE
-         UpFzsvG0XhQEAtC0AqwUjSY2g+u/iwFTvG9DXe4pTXCs8J6svRaYYmc3UdP/NVO2OET8
-         EsTw==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=nnFhaYdn8r144w8Y8HQM6rwFTDCQ2TRjM0zl6Xk6Hbs=;
+        b=yuZ5KYO8vk9sY0oppJp4fk/tUdUNLVbdp3hmeGyTprfOlJbFWhbbynnrM66UJJ56V2
+         Lc1PZ2+dFgQoAxrRphjf//X9FZmzv4LM8Qq0gkeouKl/S6KN3uZJNUvQfHfRunEJxNYj
+         v5sUTFrv8iOAHopDd+BHqDZfphZw0VeOjEIOJ1oi3RbdPdinTPvbsTowuWioIPtKUXsl
+         yD+8BlrQozryzTNEvyeWojrRr6bikU+Uk+qi86EclWtq0n5/ITyPNH2cmUaUGA8ALmX6
+         VCto1hUfqsfWu3OeJkD4ONBv+xKHCKoTyixraQrAx2RiBRvJuqfhYVEnLorg67EJuctM
+         nbxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xC3x0yRcgUpqkBQhYGspeGLwB9d9vOWv+kQdwmDFIYk=;
-        b=pVnXTYy2A9pJ2JnCEuEnt7ncFaV3GzOVzuT0dvUEXqcyPDuqr1kjZRm7ABKuGZhYRq
-         Eff/ix0eekPQw8f6akDhbPa6euz+ESEPDA/JU39CE4m8syW28tyDIgN3RwpWfs/y4F83
-         ayxxgTINZMMI0vicEeKUDv3rfET4nA+OuhQtardZK1OvbuwRft5FkC6dMQUoNmcPJZMv
-         MFf7QDaFiAchOzDXByzCPJbVYMe0VSZ+GOfVXor01a8As/AY0h2KB42ZYT/Cc6+J7pz/
-         +NbFGWTBO719rYYy2Voo98S+sR6Wh44z/jAGh4BnQuDNdr6ChygwHt0NQ8YBcCw9KAcN
-         s65w==
-X-Gm-Message-State: AGi0PuZPuY67UcRWu3zvyii14WV5B+Do0TKCEf7PlY8XXNr9UEXNO/Lo
-        5NDAMv7/tNjfWQ+ZTfHiBXM=
-X-Google-Smtp-Source: APiQypIASkLqrCad3LTHgKfEnGZ92poqy7f3+DANLMdN/Fse/aVtD4kzlXdMBHfPe+6h3+/HEWN0wg==
-X-Received: by 2002:a4a:9c41:: with SMTP id c1mr15471481ook.43.1586803956871;
-        Mon, 13 Apr 2020 11:52:36 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::3])
-        by smtp.gmail.com with ESMTPSA id w19sm4948336otj.57.2020.04.13.11.52.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 Apr 2020 11:52:36 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 11:52:34 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, macro@linux-mips.org,
-        clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] MIPS: Truncate link address into 32bit for 32bit
- kernel
-Message-ID: <20200413185234.GA12413@ubuntu-s3-xlarge-x86>
-References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=nnFhaYdn8r144w8Y8HQM6rwFTDCQ2TRjM0zl6Xk6Hbs=;
+        b=ucw0gkzBREmj6ScwP/xGYQOIX22QRkKGy0lbQCYm7pY3mK6T9O8v2f5VigO68wfIO8
+         o3Bzbv5Qq4N7Xl4MzGFyJKvdWhaaH4xhYRSrvOFzXoZRh4DwktU/g/qqct7y+7yhM9kr
+         Da/9GUhM3JdnTQDRH++Ppgx/Rjpsd/HE2ZK73WvCV9ujmhEImdOk64L6RChjrekPIDhp
+         XscZ++14fXefTcrhc679QeIc6DvDyRP514RD08TWfUvQnPvk5xjNiOYe2walbyTbC68Z
+         2fVnYEWvjMZbLsxDtXy8E6Od8JXB0FyanGZxsxMNYR0mzi3ZLluJFRXC7BW4yKIfF4wD
+         J1iQ==
+X-Gm-Message-State: AGi0PuZG6PGS+WZ8DEFVbmayrGJtuiF3Cje3Qfx3aJv0QyJ3QkJlEl9B
+        v3gWl2yHCbVnIUaRx68tQUymbfAr7PYgXwHdMbwatA==
+X-Google-Smtp-Source: APiQypIMkmyGlF3uCVpf3EjDwPW+WmpqbHG8XbB06TkJ1rIxipqbhKw8fK48Vz7k9u3QMh/yUAngrRulqJXAEhL6d+4=
+X-Received: by 2002:a05:6512:d1:: with SMTP id c17mr11465758lfp.167.1586804242634;
+ Mon, 13 Apr 2020 11:57:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 14 Apr 2020 00:27:10 +0530
+Message-ID: <CA+G9fYsDgghO+4zMY-AF2RgUmAfjZyA+tjeg5m5F1rEgEtw5fg@mail.gmail.com>
+Subject: BUG: spinlock bad magic - lock: msm_uart_ports
+To:     linux-arm-msm@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        agross@kernel.org,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        lkft-triage@lists.linaro.org,
+        Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
+The kernel BUG reported on arm64 Dragonboard 410c (APQ 8016 SBC)
+while booting Linux mainline kernel 5.6.0
 
-On Mon, Apr 13, 2020 at 02:26:49PM +0800, Jiaxun Yang wrote:
-> LLD failed to link vmlinux with 64bit load address for 32bit ELF
-> while bfd will strip 64bit address into 32bit silently.
-> To fix LLD build, we should truncate load address provided by platform
-> into 32bit for 32bit kernel.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/786
-> Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
-> Cc: Fangrui Song <maskray@google.com>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> --
-> V2: Take MaskRay's shell magic.
-> 
-> V3: After spent an hour on dealing with special character issue in
-> Makefile, I gave up to do shell hacks and write a util in C instead.
-> Thanks Maciej for pointing out Makefile variable problem.
-> 
-> v4: Finally we managed to find a Makefile method to do it properly
-> thanks to Kees. As it's too far from the initial version, I removed
-> Review & Test tag from Nick and Fangrui and Cc instead.
-> ---
->  arch/mips/Makefile             | 12 +++++++++++-
->  arch/mips/kernel/vmlinux.lds.S |  2 +-
->  2 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> index e1c44aed8156..18495568f03e 100644
-> --- a/arch/mips/Makefile
-> +++ b/arch/mips/Makefile
-> @@ -288,9 +288,19 @@ ifdef CONFIG_64BIT
->    endif
->  endif
->  
-> +# When linking a 32-bit executable the LLVM linker cannot cope with a
-> +# 32-bit load address that has been sign-extended to 64 bits.  Simply
-> +# remove the upper 32 bits then, as it is safe to do so with other
-> +# linkers.
-> +ifdef CONFIG_64BIT
-> +	load-ld			= $(load-y)
-> +else
-> +	load-ld			= $(subst 0xffffffff,0x,$(load-y))
-> +endif
-> +
->  KBUILD_AFLAGS	+= $(cflags-y)
->  KBUILD_CFLAGS	+= $(cflags-y)
-> -KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y)
-> +KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y) -DVMLINUX_LINK_ADDRESS=$(load-ld)
->  KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
->  
->  bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
-> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-> index a5f00ec73ea6..5226cd8e4bee 100644
-> --- a/arch/mips/kernel/vmlinux.lds.S
-> +++ b/arch/mips/kernel/vmlinux.lds.S
-> @@ -55,7 +55,7 @@ SECTIONS
->  	/* . = 0xa800000000300000; */
->  	. = 0xffffffff80300000;
->  #endif
-> -	. = VMLINUX_LOAD_ADDRESS;
-> +	. = VMLINUX_LINK_ADDRESS;
->  	/* read-only */
->  	_text = .;	/* Text and read-only data */
->  	.text : {
-> -- 
-> 2.26.0.rc2
-> 
+The kernel configs (with extra fragments) and full boot log links
+provided below.
 
-This version does not quite work:
+boot log:
+-----------
+[ 0.000000] Linux version 5.6.0 (oe-user@oe-host) (gcc version 7.3.0
+(GCC), GNU ld (GNU Binutils) 2.30.0.20180208) #1 SMP PREEMPT Sun Apr
+12 11:44:21 UTC 2020
+[ 0.000000] Machine model: Qualcomm Technologies, Inc. APQ 8016 SBC
+[ 0.000000] efi: UEFI not found.
+<>
+[    2.550066] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    2.564493] SuperH (H)SCI(F) driver initialized
+[    2.568321] msm_serial 78af000.serial: msm_serial: detected port #1
+[    2.568457] msm_serial 78af000.serial: uartclk = 19200000
+[    2.568724] 78af000.serial: ttyMSM1 at MMIO 0x78af000 (irq = 9,
+base_baud = 1200000) is a MSM
+[    2.572081] msm_serial 78b0000.serial: msm_serial: detected port #0
+[    2.572210] msm_serial 78b0000.serial: uartclk = 7372800
+[    2.572423] 78b0000.serial: ttyMSM0 at MMIO 0x78b0000 (irq = 10,
+base_baud = 460800) is a MSM
+[    2.572508] BUG: spinlock bad magic on CPU#3, swapper/0/1
+[    2.572534]  lock: msm_uart_ports+0x0/0x7e0, .magic: 00000000,
+.owner: <none>/-1, .owner_cpu: 0
+[    2.572552] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.6.0 #1
+[    2.572565] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    2.572578] Call trace:
+[    2.572594]  dump_backtrace+0x0/0x1e0
+[    2.572609]  show_stack+0x24/0x30
+[    2.572627]  dump_stack+0xe8/0x150
+[    2.572643]  spin_dump+0x84/0xb8
+[    2.572658]  do_raw_spin_lock+0xf8/0x120
+[    2.572675]  _raw_spin_lock_irqsave+0x68/0x80
+[    2.572692]  uart_add_one_port+0x3ac/0x4e8
+[    2.572709]  msm_serial_probe+0x168/0x208
+[    2.572725]  platform_drv_probe+0x58/0xa8
+[    2.572739]  really_probe+0x290/0x498
+[    2.572754]  driver_probe_device+0x12c/0x148
+[    2.572768]  device_driver_attach+0x74/0x98
+[    2.572782]  __driver_attach+0xc4/0x178
+[    2.572798]  bus_for_each_dev+0x84/0xd8
+[    2.572811]  driver_attach+0x30/0x40
+[    2.572827]  bus_add_driver+0x170/0x258
+[    2.572841]  driver_register+0x64/0x118
+[    2.572856]  __platform_driver_register+0x54/0x60
+[    2.572872]  msm_serial_init+0x40/0x70
+[    2.572887]  do_one_initcall+0x94/0x460
+[    2.572904]  kernel_init_freeable+0x274/0x2dc
+[    2.572920]  kernel_init+0x18/0x110
+[    2.572936]  ret_from_fork+0x10/0x18
+[    2.572966] msm_serial: console setup on port #0
+[    3.664259] printk: console [ttyMSM0] enabled
 
-ld.lld: error: section .text at 0xFFFFFFFF80990000 of size 0x388C exceeds available address space
-ld.lld: error: section .MIPS.abiflags at 0xFFFFFFFF80993890 of size 0x18 exceeds available address space
-ld.lld: error: section .rodata.str1.1 at 0xFFFFFFFF809938A8 of size 0x164 exceeds available address space
-ld.lld: error: section .eh_frame at 0xFFFFFFFF80993A0C of size 0x2C exceeds available address space
-ld.lld: error: section .data at 0xFFFFFFFF80993A40 of size 0x38EFD0 exceeds available address space
-ld.lld: error: section .got at 0xFFFFFFFF80D22A10 of size 0x8 exceeds available address space
-ld.lld: error: section .bss at 0xFFFFFFFF80E22A20 of size 0x402010 exceeds available address space
-ld.lld: error: section .sbss at 0xFFFFFFFF81224A30 of size 0x8 exceeds available address space
-make[2]: *** [/home/nathan/src/linux/arch/mips/boot/compressed/Makefile:104: vmlinuz] Error 1
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/1361080#L3679
+https://lkft.validation.linaro.org/scheduler/job/1361079#L3730
 
-I think something like this is needed but I do not know if it is proper.
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-mainline/2607/config
+dtb:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-mainline/2607/Image.gz--5.6+git0+b753101a4a-r0-apq8016-sbc-20200412114028-2607.dtb
 
-Cheers,
-Nathan
-
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 18495568f03e..68c0f22fefc0 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -304,6 +304,7 @@ KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y) -DVMLINUX_LINK_ADDRESS=$(loa
- KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
- 
- bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
-+		  VMLINUX_LINK_ADDRESS=$(load-ld) \
- 		  VMLINUX_ENTRY_ADDRESS=$(entry-y) \
- 		  PLATFORM="$(platform-y)" \
- 		  ITS_INPUTS="$(its-y)"
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 0df0ee8a298d..3d391256ab7e 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -90,7 +90,7 @@ ifneq ($(zload-y),)
- VMLINUZ_LOAD_ADDRESS := $(zload-y)
- else
- VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
--		$(obj)/vmlinux.bin $(VMLINUX_LOAD_ADDRESS))
-+		$(obj)/vmlinux.bin $(VMLINUX_LINK_ADDRESS))
- endif
- UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
- 
+--
+Linaro LKFT
+https://lkft.linaro.org
