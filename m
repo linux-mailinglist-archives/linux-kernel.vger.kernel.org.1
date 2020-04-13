@@ -2,218 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C22541A62F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167DA1A62F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgDMGOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 02:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:48264 "EHLO
+        id S1727975AbgDMGPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 02:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgDMGOD (ORCPT
+        with ESMTP id S1726138AbgDMGPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 02:14:03 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA93C0A3BE0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:14:02 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id n24so325681plp.13
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=lwW9dDHboCKlwty3GK0oBbeC2zYSo6LldkhEtYkcgDM=;
-        b=g7y1bs+BFxl81E84mu1n/MJ/hbN3SNQaxrh4Hfg8oyQJ71yxSAn2PL5f+REf6pjCRm
-         QoC1IRJwAma0lavJVbSj8eD7nb+Z0P6bgLtMCexrSmeojZkNvtYU2qhipQ/PO2leUZ3I
-         VWlFtuS5bkBpXuKX8fdNmW7X3DoYZ8W5Z5/U80Q8qTjyNRvpNW8JrkcH1sNFcdQRIoOd
-         Yjxu7WueKR+BZKiHdieCNeH38ILT349Ah60DKdzQjPEsdOx2gXy8HGVm7TCgZks+08uk
-         kUQgkgbllinaeoEYsbwGPyVWOvcvFKoyjdD9FfNzAHJHmzj5tjka//fbMoiBFimLY49E
-         mG+g==
+        Mon, 13 Apr 2020 02:15:17 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99D0C008673
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:15:14 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id p69so9598349iod.13
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:15:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=lwW9dDHboCKlwty3GK0oBbeC2zYSo6LldkhEtYkcgDM=;
-        b=Wq92G/yqnHKJoKnIvDs6WFvDJ4fc8qM0stq1T6UTDajBOAGwPBAx8DvFnKydL8MOOF
-         wILcm1igRuwv1AqPmzB+WcRoSjRh5hiKhHg5eSAyYaKwa3T88xWHycWJmAxLTTh/9m/G
-         G1YM8fd4TMVFtvlZHixY7kKGkBuduCe8+51R4nR4f7LW5NSuIJ2OCXUycb0014AAlK/r
-         LsICuxKTX+25AVweUbh6jxm7cyWWI8jm8gN06UhuUXGR6XYwpwumRw9LrcTXLhSyivzI
-         xmSUzjyrPwbASyrsaNSBx26R9cjXhNMncJaECSY25Z8xqzFe4JZwKWqsoioZNknX4qNy
-         hT4g==
-X-Gm-Message-State: AGi0PuYPZFg3+7AgMfZCss6TsbaTGSxw2lFQBQRMlffAGW+vPbMyi8Uh
-        ytzLglAMSeVmcBJRa4hqIxU=
-X-Google-Smtp-Source: APiQypIDtWYZGzVQBXG6hKaoTe8SA/lCU1E00DKCRq5BjOV2IquAw6vDL4yTUAe/Tf/CD2tDd5ox5A==
-X-Received: by 2002:a17:902:6503:: with SMTP id b3mr6797296plk.20.1586758441630;
-        Sun, 12 Apr 2020 23:14:01 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.19])
-        by smtp.gmail.com with ESMTPSA id w5sm7712645pfw.154.2020.04.12.23.13.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Apr 2020 23:14:01 -0700 (PDT)
-From:   Baolin Wang <baolin.wang7@gmail.com>
-To:     lee.jones@linaro.org, arnd@arndb.de, broonie@kernel.org
-Cc:     baolin.wang7@gmail.com, orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 3/3] soc: sprd: Add Spreadtrum special bits updating support
-Date:   Mon, 13 Apr 2020 14:13:21 +0800
-Message-Id: <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1586757922.git.baolin.wang7@gmail.com>
-References: <cover.1586757922.git.baolin.wang7@gmail.com>
-In-Reply-To: <cover.1586757922.git.baolin.wang7@gmail.com>
-References: <cover.1586757922.git.baolin.wang7@gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=hZnovlyZtwDPt3BKlPSdR2ANOMYrJFMgs7FxVxmw4ZY=;
+        b=WpJi0OwRdzlzAOVt+9DPJBEKv2laetviKZW2PmS0DWGdDbM3a0rlqB6E+IdCkxT22G
+         qodX7BCkt1XTsHQ6b8RUlils1nQgzyindPVvngKjEzgEUZzhsr07xJf95i54pgso6cz2
+         AWoQWcs2h4H1RaXmadkCdjXnhC21HV8jIWXfmXT9YRbEleCwBJ4kt47EOEIxwHpySqxX
+         NCER1EngLG1ZiR/zeu126V30sDv4o41+0cwv/mScKi/HkoQlT+wqlQsNEncNFCJPOAhT
+         RF1r505eYRGYI/Ur7+gl0EKuqHsxtEQLURn7D/cy8P9vs5/0qW0g1KQs7/IEr+TcADix
+         NQsg==
+X-Gm-Message-State: AGi0PuYNgWo3Q5QZhQsbILkmVCogmpD+PX64iU0RNhJD5NMscuNGxMT3
+        YKI6u5wA9+cANzbamjwe2b+Rfc1GswbjQA3WY3ltBTjVUBaM
+X-Google-Smtp-Source: APiQypI1DX3eCch75C6Hn90dygVJhYx78BvFMSqdyOf8gzAZY8AhtRlaie/49UnEKT9YDIvxRgsPd91QzsedFygLntitGz8xkyOo
+MIME-Version: 1.0
+X-Received: by 2002:a02:93cf:: with SMTP id z73mr14821825jah.136.1586758513747;
+ Sun, 12 Apr 2020 23:15:13 -0700 (PDT)
+Date:   Sun, 12 Apr 2020 23:15:13 -0700
+In-Reply-To: <000000000000bb471d05a2f246d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e73c805a326018b@google.com>
+Subject: Re: WARNING in hwsim_new_radio_nl
+From:   syzbot <syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spreadtrum platform uses a special set/clear method to update
-registers' bits, which can remove the race of updating the global
-registers between the multiple subsystems. Thus we can register
-a physical regmap bus into syscon core to support this.
+syzbot has found a reproducer for the following crash on:
 
-Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
----
- drivers/soc/Kconfig            |  1 +
- drivers/soc/Makefile           |  1 +
- drivers/soc/sprd/Kconfig       | 16 +++++++
- drivers/soc/sprd/Makefile      |  2 +
- drivers/soc/sprd/sprd_syscon.c | 76 ++++++++++++++++++++++++++++++++++
- 5 files changed, 96 insertions(+)
- create mode 100644 drivers/soc/sprd/Kconfig
- create mode 100644 drivers/soc/sprd/Makefile
- create mode 100644 drivers/soc/sprd/sprd_syscon.c
+HEAD commit:    4f8a3cc1 Merge tag 'x86-urgent-2020-04-12' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=110243b3e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3bfbde87e8e65624
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4aee3f42d7584d76761
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=100825afe00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10df613fe00000
 
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index 425ab6f7e375..8cfbf2dc518d 100644
---- a/drivers/soc/Kconfig
-+++ b/drivers/soc/Kconfig
-@@ -23,5 +23,6 @@ source "drivers/soc/versatile/Kconfig"
- source "drivers/soc/xilinx/Kconfig"
- source "drivers/soc/zte/Kconfig"
- source "drivers/soc/kendryte/Kconfig"
-+source "drivers/soc/sprd/Kconfig"
- 
- endmenu
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 36452bed86ef..7d156a6dd536 100644
---- a/drivers/soc/Makefile
-+++ b/drivers/soc/Makefile
-@@ -29,3 +29,4 @@ obj-$(CONFIG_PLAT_VERSATILE)	+= versatile/
- obj-y				+= xilinx/
- obj-$(CONFIG_ARCH_ZX)		+= zte/
- obj-$(CONFIG_SOC_KENDRYTE)	+= kendryte/
-+obj-$(CONFIG_ARCH_SPRD)		+= sprd/
-diff --git a/drivers/soc/sprd/Kconfig b/drivers/soc/sprd/Kconfig
-new file mode 100644
-index 000000000000..38d1f5971a28
---- /dev/null
-+++ b/drivers/soc/sprd/Kconfig
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# SPRD SoC drivers
-+#
-+
-+menu "Spreadtrum SoC drivers"
-+	depends on ARCH_SPRD || COMPILE_TEST
-+
-+config SPRD_SYSCON
-+	tristate "Spreadtrum syscon support"
-+	depends on ARCH_SPRD || COMPILE_TEST
-+	help
-+	  Say yes here to add support for the Spreadtrum syscon driver,
-+	  which is used to implement the atomic method of bits updating.
-+
-+endmenu
-diff --git a/drivers/soc/sprd/Makefile b/drivers/soc/sprd/Makefile
-new file mode 100644
-index 000000000000..4d7715553cf6
---- /dev/null
-+++ b/drivers/soc/sprd/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_SPRD_SYSCON) += sprd_syscon.o
-diff --git a/drivers/soc/sprd/sprd_syscon.c b/drivers/soc/sprd/sprd_syscon.c
-new file mode 100644
-index 000000000000..0cfd43afeaff
---- /dev/null
-+++ b/drivers/soc/sprd/sprd_syscon.c
-@@ -0,0 +1,76 @@
-+//SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Spreadtrum Communications Inc.
-+ */
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/regmap.h>
-+
-+#define SPRD_REG_SET_OFFSET	0x1000
-+#define SPRD_REG_CLR_OFFSET	0x2000
-+
-+/*
-+ * The Spreadtrum platform defines a special set/clear method to update
-+ * registers' bits, which means it can write values to the register's SET
-+ * address (offset is 0x1000) to set bits, and write values to the register's
-+ * CLEAR address (offset is 0x2000) to clear bits.
-+ *
-+ * This set/clear method can help to remove the race of accessing the global
-+ * registers between the multiple subsystems instead of using hardware
-+ * spinlocks.
-+ */
-+static int sprd_syscon_update_bits(void *context, unsigned int reg,
-+				   unsigned int mask, unsigned int val)
-+{
-+	void __iomem *base = context;
-+	unsigned int set, clr;
-+
-+	set = val & mask;
-+	clr = ~set & mask;
-+
-+	if (set)
-+		writel(set, base + reg + SPRD_REG_SET_OFFSET);
-+
-+	if (clr)
-+		writel(clr, base + reg + SPRD_REG_CLR_OFFSET);
-+
-+	return 0;
-+}
-+
-+static int sprd_syscon_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	void __iomem *base = context;
-+
-+	*val = readl(base + reg);
-+	return 0;
-+}
-+
-+static int sprd_syscon_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	void __iomem *base = context;
-+
-+	writel(val, base + reg);
-+	return 0;
-+}
-+
-+static struct regmap_bus sprd_syscon_regmap = {
-+	.fast_io = true,
-+	.reg_write = sprd_syscon_write,
-+	.reg_read = sprd_syscon_read,
-+	.reg_update_bits = sprd_syscon_update_bits,
-+	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
-+};
-+
-+static int sprd_syscon_init(void)
-+{
-+	syscon_register_phys_regmap_bus(&sprd_syscon_regmap);
-+
-+	return 0;
-+}
-+core_initcall_sync(sprd_syscon_init);
-+
-+MODULE_DESCRIPTION("Spreadtrum syscon support");
-+MODULE_AUTHOR("Baolin Wang <baolin.wang@unisoc.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com
+
+netlink: 98586 bytes leftover after parsing attributes in process `syz-executor425'.
+------------[ cut here ]------------
+precision 33020 too large
+WARNING: CPU: 1 PID: 6998 at lib/vsprintf.c:2471 set_precision lib/vsprintf.c:2471 [inline]
+WARNING: CPU: 1 PID: 6998 at lib/vsprintf.c:2471 vsnprintf+0x1467/0x1aa0 lib/vsprintf.c:2547
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 6998 Comm: syz-executor425 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:221
+ __warn+0x209/0x210 kernel/panic.c:582
+ report_bug+0x1ac/0x2d0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:set_precision lib/vsprintf.c:2471 [inline]
+RIP: 0010:vsnprintf+0x1467/0x1aa0 lib/vsprintf.c:2547
+Code: a6 bb fd 48 8d 5c 24 48 e9 8e fc ff ff e8 01 a6 bb fd c6 05 bf 06 b0 05 01 48 c7 c7 c1 d3 f2 88 44 89 fe 31 c0 e8 29 ba 8d fd <0f> 0b e9 b7 f6 ff ff e8 dd a5 bb fd c6 05 9a 06 b0 05 01 48 c7 c7
+RSP: 0018:ffffc90001647780 EFLAGS: 00010246
+RAX: 2f9f2ace1f35b900 RBX: ffffc900016477c8 RCX: ffff88809d86c2c0
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000286
+RBP: 80fc0000ffffff02 R08: dffffc0000000000 R09: fffffbfff1628ea5
+R10: fffffbfff1628ea5 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000000 R14: ffffffff88ea3058 R15: 00000000000080fc
+ kvasprintf+0x59/0xf0 lib/kasprintf.c:22
+ kasprintf+0x6a/0x90 lib/kasprintf.c:59
+ hwsim_new_radio_nl+0x95c/0xf30 drivers/net/wireless/mac80211_hwsim.c:3672
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:673 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:718 [inline]
+ genl_rcv_msg+0x1054/0x1530 net/netlink/genetlink.c:735
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2469
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:746
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x4f9/0x7c0 net/socket.c:2362
+ ___sys_sendmsg net/socket.c:2416 [inline]
+ __sys_sendmsg+0x2a6/0x360 net/socket.c:2449
+ do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x4401f9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffecc373af8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004401f9
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a80
+R13: 0000000000401b10 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
