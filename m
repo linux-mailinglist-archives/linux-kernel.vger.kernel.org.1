@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2E71A6788
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F271A6836
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730334AbgDMOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:06:45 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2311 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730285AbgDMOGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:06:43 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 11DA4C60BE33694BA829;
-        Mon, 13 Apr 2020 22:06:39 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
- 22:06:31 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] drm/radeon: remove defined but not used variables in ci_dpm.c
-Date:   Mon, 13 Apr 2020 22:33:00 +0800
-Message-ID: <20200413143300.23244-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1730824AbgDMOdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728807AbgDMOde (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:33:34 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D57C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:33:34 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id t11so6684882lfe.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WkSc13XnIRhL4+ZUuijkRluVT9uWdnyORe6lvTinvZY=;
+        b=O89/YgNd5uJICHIp2X25SXcmmKCSBNVn8Amwx2LqQhftu8+t0faMHTjHXlskQucL9x
+         JqcbzH8SyyPC7T5eUbdId77ZEoe5MMrO2rfPwBtm/6Ao7E2u4FvLU6bH7gEl6LvPU2Av
+         6Z2PyIkdZ5cHS29xtAk9AxaeYBGk8MvQ8TN30IFJww1DXuQF1gfX29xVh7wrpU2T8MGB
+         28Y/qdpvIhbj8d3scqThJPtBTVnvwfkzfsgZyr6+lqQ74sp7rMfQ6EaobWiJjm4pFM4x
+         kClbGXCYbGxFdQvj1DcqIEcDsrk9bf70lR+3QLLeEijpBwqjXYvolPRFShjJiCnPeUOs
+         89nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WkSc13XnIRhL4+ZUuijkRluVT9uWdnyORe6lvTinvZY=;
+        b=kzwyyUnzfHclLUA4GvyoOjOfwY7YmG95Zfu7Fk7nl98kG6wDEu+HoztQ19Y1jVuC2i
+         az4N/iMYBK/W6/dZS0FDpoSnt0UyG7WwEoUnYklBaeZYcD6a42PN43RQktvBfrUVFGyr
+         5W9J7/qz6NOJWHBqtYA4wDGUV1UWMyb0cCbt9kruIUOydlPwKwmfd6X9ebaITJs7cqxr
+         CcmHK1JlUPDL9XNAHao/vCZv0pOmSlWbXNbmxC5j068G/e1TMGm006+os8dUtqT5yHxt
+         lUPLz4aIKGLk7o/yacrv4Et+Yn9/DYRPUpD8JYBb9W6w8vSLD53yk7NurI83ldra2ic4
+         Vd1w==
+X-Gm-Message-State: AGi0PuY28/ARSoZH0TixmSkf4HYtL8DOUQ1Gm8Ev/gFyAyDmAlznOd6V
+        I/lw78EAwDFHH1dutmzDdnz/drlz3nV9cZZYAtI=
+X-Google-Smtp-Source: APiQypKJOKM5XzMIn8wgC5XLI8lHpZcP9f77EyY0Uq+KOppBVFMdmlqDYFa439/ZRFsPSrUyUETMhopdZDfWDvRqSRw=
+X-Received: by 2002:a19:760a:: with SMTP id c10mr10702283lff.126.1586788412524;
+ Mon, 13 Apr 2020 07:33:32 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:a05:6512:10cb:0:0:0:0 with HTTP; Mon, 13 Apr 2020 07:33:32
+ -0700 (PDT)
+Reply-To: bankderictormrsired@aol.com
+From:   BANK DIRECTOR <ahmedabdallh123321@gmail.com>
+Date:   Mon, 13 Apr 2020 14:33:32 +0000
+Message-ID: <CAB6rh+A+n+GYmh0D5pdSwnqgSodt8nZTnRoBi3Jv+oYuNghFzA@mail.gmail.com>
+Subject: I need your urgently response.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
-
-drivers/gpu/drm/radeon/ci_dpm.c:82:36: warning: ‘defaults_saturn_pro’
-defined but not used [-Wunused-const-variable=]
- static const struct ci_pt_defaults defaults_saturn_pro =
-                                    ^~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/radeon/ci_dpm.c:68:36: warning: ‘defaults_bonaire_pro’
-defined but not used [-Wunused-const-variable=]
- static const struct ci_pt_defaults defaults_bonaire_pro =
-                                    ^~~~~~~~~~~~~~~~~~~~
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/gpu/drm/radeon/ci_dpm.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
-index a9257bed3484..134aa2b01f90 100644
---- a/drivers/gpu/drm/radeon/ci_dpm.c
-+++ b/drivers/gpu/drm/radeon/ci_dpm.c
-@@ -65,13 +65,6 @@ static const struct ci_pt_defaults defaults_bonaire_xt =
- 	{ 0x17C, 0x172, 0x180, 0x1BC, 0x1B3, 0x1BD, 0x206, 0x200, 0x203, 0x25D, 0x25A, 0x255, 0x2C3, 0x2C5, 0x2B4 }
- };
- 
--static const struct ci_pt_defaults defaults_bonaire_pro =
--{
--	1, 0xF, 0xFD, 0x19, 5, 45, 0, 0x65062,
--	{ 0x8C,  0x23F, 0x244, 0xA6,  0x83,  0x85,  0x86,  0x86,  0x83,  0xDB,  0xDB,  0xDA,  0x67,  0x60,  0x5F  },
--	{ 0x187, 0x193, 0x193, 0x1C7, 0x1D1, 0x1D1, 0x210, 0x219, 0x219, 0x266, 0x26C, 0x26C, 0x2C9, 0x2CB, 0x2CB }
--};
--
- static const struct ci_pt_defaults defaults_saturn_xt =
- {
- 	1, 0xF, 0xFD, 0x19, 5, 55, 0, 0x70000,
-@@ -79,13 +72,6 @@ static const struct ci_pt_defaults defaults_saturn_xt =
- 	{ 0x187, 0x187, 0x187, 0x1C7, 0x1C7, 0x1C7, 0x210, 0x210, 0x210, 0x266, 0x266, 0x266, 0x2C9, 0x2C9, 0x2C9 }
- };
- 
--static const struct ci_pt_defaults defaults_saturn_pro =
--{
--	1, 0xF, 0xFD, 0x19, 5, 55, 0, 0x30000,
--	{ 0x96,  0x21D, 0x23B, 0xA1,  0x85,  0x87,  0x83,  0x84,  0x81,  0xE6,  0xE6,  0xE6,  0x71,  0x6A,  0x6A  },
--	{ 0x193, 0x19E, 0x19E, 0x1D2, 0x1DC, 0x1DC, 0x21A, 0x223, 0x223, 0x26E, 0x27E, 0x274, 0x2CF, 0x2D2, 0x2D2 }
--};
--
- static const struct ci_pt_config_reg didt_config_ci[] =
- {
- 	{ 0x10, 0x000000ff, 0, 0x0, CISLANDS_CONFIGREG_DIDT_IND },
--- 
-2.21.1
-
+I am contacting you to assist retrieve a huge deposit of Ten Million
+Five Hundred Thousand Dollars left in the bank by my client(Late)
+Eng.Robert Wilson,before its get confiscated by the bank. Due to the
+confidentiality of this information,I would want you to send me your
+private email where I can send you a comprehensive information of
+(Late) Eng.Robert Wilson,and every other information you may need to
+retrieve the fund in the bank.Here is my contact email.
+bankderictormrsired@aol.com )
