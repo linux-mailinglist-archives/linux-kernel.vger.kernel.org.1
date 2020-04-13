@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CB71A64BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9071D1A64D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgDMJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
+        id S1727972AbgDMJyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727792AbgDMJjr (ORCPT
+        by vger.kernel.org with ESMTP id S1727830AbgDMJyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:39:47 -0400
-X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 05:39:47 EDT
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DADC00860D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:31:45 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so6082755lfc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=22ry+294zZcqaoEVkMcWEawZi6DDugMuA4lCNKrgbiM=;
-        b=BWhN9CNUIFwnRIEzUe/BwAX9gwW7YYJZCyOYxczVx74YIU7V0mC7z2OcM35UyP4e1p
-         4oOxRRQucYbYOo8AiCmMAGW2yCJUIihy25350/EbU/I375sSwG7o78dsiV8hysjDDbOa
-         DCnUiVrCWoS2EZjk23MnwjFyE6krOT3x7Sgxkcs7aHT2ffdKiX8lkj0vMnmWerfoO+2i
-         7zWqbpEpLBQKObzkG36N8VsFPvN5FgXPc9jylTJvXndqQyp2RHqSXY8Jmqsv+lNrTK9M
-         QWJIsmnIw6LotVNSi1iGc+NY6cZD7jfb5lTAXo0ikhgxxY6x18NMuTetmUhmdg4P5gRK
-         IQkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=22ry+294zZcqaoEVkMcWEawZi6DDugMuA4lCNKrgbiM=;
-        b=rfR0GjXjOOH4jzUafWAaAf6RYTdA/Yae7gugOBg2A5gLh6cD8yzGRvO5QmMb9ARBhz
-         /PJoXLJQMQUHvbZfRS6UDKWP2RQHuPklcuyH12v4/gAzpMAno+Cjh2YDLLWRBUyorH4k
-         q1fnOdHIZLgBFrCznyjdg5RPPm9cteoSemf+EYCBbXIasA9hQjrMyPM/quzxuYfEwnSe
-         FSEUvRwwq067sTvcm4IiPlU9jfk7AE2wXbgykrQEJUd41IPLddbNj8+Vyykc5vpTAhvD
-         Tw4bw42b08D2vViA3IZKr6PgNS4DZRE9CnlHNzJEKDiuvqDnO0oxA0DnZAtU6hAda4Bu
-         lqgQ==
-X-Gm-Message-State: AGi0PuZHUJTM4XkbEDXdL/SdYiOWxwE6R1CxYK+xht0KqL/mg5JQFyVA
-        68bN51vTe1qyb/tV+5rNO+gDISlK/Qi3cg==
-X-Google-Smtp-Source: APiQypLU2XLKZjsSZmZYU4dGrsmyNyLhGMWhvQXMiwFm5FV0dumbDAT+1S0NQ6VdA0RQSuVQGrkBvQ==
-X-Received: by 2002:ac2:4554:: with SMTP id j20mr10171876lfm.91.1586770304122;
-        Mon, 13 Apr 2020 02:31:44 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:449a:6c6f:9d43:1ad8:e18f:9ec1? ([2a00:1fa0:449a:6c6f:9d43:1ad8:e18f:9ec1])
-        by smtp.gmail.com with ESMTPSA id u1sm6665830ljo.65.2020.04.13.02.31.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 02:31:43 -0700 (PDT)
-Subject: Re: [PATCH v3 1/5] PCI: OF: Don't remap iospace on unsupported
- platform
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Paul Burton <paulburton@kernel.org>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200330114239.1112759-1-jiaxun.yang@flygoat.com>
- <20200413053222.3976680-1-jiaxun.yang@flygoat.com>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <10ef1a19-c2e5-60fc-b3c8-64547017f758@cogentembedded.com>
-Date:   Mon, 13 Apr 2020 12:31:38 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200413053222.3976680-1-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 13 Apr 2020 05:54:41 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00FCC008749
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:47:48 -0700 (PDT)
+Received: from ramsan ([84.195.182.253])
+        by laurent.telenet-ops.be with bizsmtp
+        id S9ij220085USYZQ019ijFR; Mon, 13 Apr 2020 11:42:43 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jNvc3-0007LZ-3o; Mon, 13 Apr 2020 11:42:43 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jNvVQ-0006Xc-VO; Mon, 13 Apr 2020 11:35:52 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Drop redundant generic-y += hardirq.h
+Date:   Mon, 13 Apr 2020 11:35:52 +0200
+Message-Id: <20200413093552.25102-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+The cleanup in commit 630f289b7114c0e6 ("asm-generic: make more
+kernel-space headers mandatory") did not take into account the recently
+added line for hardirq.h in commit acc45648b9aefa90 ("m68k: Switch to
+asm-generic/hardirq.h"), leading to the following message during the
+build:
 
-On 13.04.2020 8:32, Jiaxun Yang wrote:
+    scripts/Makefile.asm-generic:25: redundant generic-y found in arch/m68k/include/asm/Kbuild: hardirq.h
 
-> There are some platforms doesn't support iospace remapping
+Fix this by dropping the now redundant line.
 
-    That don't support.
+Fixes: 630f289b7114c0e6 ("asm-generic: make more kernel-space headers mandatory")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Feel free to take this one directly, as I have no other m68k fixes
+queued for v5.7 yet.
 
-> like MIPS. However, our PCI code will try to remap iospace
-> unconditionally and reject io resources on these platforms.
-> 
-> So we should remove iospace remapping check and use a range
-> check instead on these platforms.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-[...]
+ arch/m68k/include/asm/Kbuild | 1 -
+ 1 file changed, 1 deletion(-)
 
-MBR, Sergei
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index a0765aa60ea9aa8d..1bff55aa2d54e2ce 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table.h
+ generic-y += extable.h
+-generic-y += hardirq.h
+ generic-y += kvm_para.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-- 
+2.17.1
+
