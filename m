@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4401A6883
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E611A688C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729675AbgDMPMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 11:12:06 -0400
-Received: from mga18.intel.com ([134.134.136.126]:10948 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728109AbgDMPMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:12:03 -0400
-IronPort-SDR: ueho4ZPEHhnjcyGHYvE7m3YPjtdQFjeFC8Wyz1WzPD793IGU1wj8f9imEeeY3HxwXab5Oc85he
- 1LPdzymQTSGg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 08:12:02 -0700
-IronPort-SDR: 5ovm+3aNlY5JeFBIp9hCB57sR/i0YZc9XXs/RuhyVpRwbXl7IbEuP2IyUpzW3KpyM647xsdQE/
- fjV2Ufjl/PXA==
-X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="453186629"
-Received: from ahduyck-mobl1.amr.corp.intel.com (HELO [10.254.29.128]) ([10.254.29.128])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 08:12:02 -0700
-Subject: Re: [RFC PATCH 4/4] mm: Add PG_zero support
-To:     Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <20200412090945.GA19582@open-light-1.localdomain>
- <20200412101223.GK21484@bombadil.infradead.org>
-From:   Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Message-ID: <5eb37d79-6420-fcb9-2b4c-6cc6194afcd9@linux.intel.com>
-Date:   Mon, 13 Apr 2020 08:11:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1730936AbgDMPMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 11:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729696AbgDMPMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 11:12:37 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5BDC0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 08:12:36 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id u13so10025406wrp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 08:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=miTpPmRVhDhvijKW/x5oMYTRNn8wvs0mLO5J0nr2084=;
+        b=U7eqRinwsYrq6IXBxzyvvKAcVM+VYOkoiiIpkOLjJI/+uGkiQ2ae19esSWNmX7/55x
+         HLE1SQmDAHBajHl1h3Zvpge1o1RT3GQVhMVRodlQW3VO5iGEcuqlvLsRnqh6mH1AdUYj
+         vagO0XSwWvclpM/77+sVeGD6j9xh08Wsz+91K3i9dj20TbwbY4DX0Qn994aJVc5XwUVK
+         M0o3YAn9eyqIVMFO923iGZfMpmTUdxTDGhleGVq4wnNC+1pZDSMSTPfdFATABJHIQwPx
+         dthoumPisb59N7MwkZXcwAHOOnNbLsLCO1EA7iiaSQ4Wto8XAePzLitKlTn3lj43zuDR
+         rKWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=miTpPmRVhDhvijKW/x5oMYTRNn8wvs0mLO5J0nr2084=;
+        b=cE+Iqj8mbqmPOjaLalxZPiHA/UkdTQlQ3ZDOCpXFjH+66ZDWzx7sJ2fbHWwv/KQ6Yv
+         RnsNQzk+hx4MNgEtggPwnH5wCI4BWqyrBJDEpcI1UUXxvh1S9L7zNMJLYTMfqmluNqqw
+         B/ykSMZZVE7fKcGZOJjhqdHwUM/Suhfq9HF2YrI1rN5DubldU+y+5z1o31AZWym1kL0b
+         0LFPpY4X7Ya1pFQzBnkL9u8XC1qtAB2E5h2Xr9DBsblJeq/Q5mMZ8gEmBpnL75pXZ083
+         W3bGPrZLtBNRt5yTejNxJLD4vxv134SNKvlnqf0vQqSeythhU1pESQiQNUvlHKuPCxS1
+         4Wcg==
+X-Gm-Message-State: AGi0PubhKxezHTYEP5/vNFMJCEZjBy2pSOUXK/DGKKOJM+GjrXVDufZj
+        CL8TqpqiESTP0zu1VgA27VHc2efWkRUueJtJSHM=
+X-Google-Smtp-Source: APiQypIlLep4ObkUpbnYLb9374cQ+lM33eeD4kNIbr7Zh/DtnITfyepbEUmDzUasVC3tnJvdqsT5XjWr66ibsXXlM/s=
+X-Received: by 2002:a5d:498d:: with SMTP id r13mr14736737wrq.374.1586790755179;
+ Mon, 13 Apr 2020 08:12:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200412101223.GK21484@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200409012815.22309-1-mail@aurabindo.in>
+In-Reply-To: <20200409012815.22309-1-mail@aurabindo.in>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 13 Apr 2020 11:12:23 -0400
+Message-ID: <CADnq5_O+xg1Lro4UP3+_4GdkDQk-HzJaXMWzWWSn0ZiYG9Xt7A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] drm/amd/amdgpu: Add print format prefix
+To:     Aurabindo Pillai <mail@aurabindo.in>
+Cc:     Christian Koenig <christian.koenig@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Chunming Zhou <David1.Zhou@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/2020 3:12 AM, Matthew Wilcox wrote:
-> On Sun, Apr 12, 2020 at 05:09:49AM -0400, liliangleo wrote:
->> Zero out the page content usually happens when allocating pages,
->> this is a time consuming operation, it makes pin and mlock
->> operation very slowly, especially for a large batch of memory.
->>
->> This patch introduce a new feature for zero out pages before page
->> allocation, it can help to speed up page allocation.
->>
->> The idea is very simple, zero out free pages when the system is
->> not busy and mark the page with PG_zero, when allocating a page,
->> if the page need to be filled with zero, check the flag in the
->> struct page, if it's marked as PG_zero, zero out can be skipped,
->> it can save cpu time and speed up page allocation.
-> 
-> We are very short on bits in the page flags.  If we can implement this
-> feature without using another one, this would be good.
-> 
-> If the bit is only set on pages which are PageBuddy(), we can definitely
-> find space for it as an alias of another bit.
+On Wed, Apr 8, 2020 at 9:42 PM Aurabindo Pillai <mail@aurabindo.in> wrote:
+>
+> Changes in v2
+>
+> * Add dev_fmt format prefix
+> * Removed hardcoded module names in pr_* and dev_* prints
+>
+> Aurabindo Pillai (3):
+>   drm/amd/amdgpu: add prefix for pr_* prints
+>   drm/amd/amdgpu: add print prefix for dev_* variants
+>   drm/amd/amdgpu: remove hardcoded module name in prints
 
+Applied.  thanks!
 
-I had considered doing something similar several months back because one 
-of the side effects in the VM is that most of the pages appear to have 
-been zeroed by page reporting. However the problem is that in order to 
-handle the zeroing case you have to push the flag outside the PageBuddy 
-region, and you cannot guarantee that the page is even expected to be 
-zeroed since it might have been zeroed before it was freed, so it is 
-just adding work of having to clear an extra flag some time after 
-allocation.
+Alex
 
-In addition, unlike madvising the page away there is a pretty 
-significant performance penalty for having to clear the page a second 
-time when the page is split or merged.
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu.h              | 12 ++++++++++++
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c |  6 +++---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c       |  4 ++--
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c          |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c            |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c            |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c            |  2 +-
+>  7 files changed, 21 insertions(+), 9 deletions(-)
+>
+> --
+> 2.26.0
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
