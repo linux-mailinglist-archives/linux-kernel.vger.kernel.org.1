@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52B11A669B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196DA1A66A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729668AbgDMM7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54472 "EHLO mail.kernel.org"
+        id S1729725AbgDMNBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 09:01:00 -0400
+Received: from mga09.intel.com ([134.134.136.24]:34510 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727820AbgDMM7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 08:59:35 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45F6C206DA;
-        Mon, 13 Apr 2020 12:59:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586782774;
-        bh=idXQW+yIFFWo5382aZ8Okt15T8N6elOKHZ6SROy0oy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lUND/la/4JHwJIFtbVLUTRYdQTposg/JMgwISwidYD7maBiNemQJr3gdA69GY3i2q
-         ku+nASaD9cnWajqfJO0q+H0gUOHN9IF6qvN1CZ9KMwjtSIi2CnCM4V/4s5YshBh/dF
-         GyjB6neqbZOMAiJLA323fQWQSvOQYNivgZPlwxKo=
-Date:   Mon, 13 Apr 2020 14:59:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oscar Carter <oscar.carter@gmx.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: vt6656: Return error code in
- vnt_rf_write_embedded function
-Message-ID: <20200413125932.GA3150182@kroah.com>
-References: <20200413101931.6334-1-oscar.carter@gmx.com>
+        id S1729674AbgDMNA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 09:00:58 -0400
+IronPort-SDR: xUTCq/jWK495gEb4VBijUyTY8aPj2iJOJuQUdoN/HZ+34tKPaOuIVQ2HGt6FCOQshlqCZHKjhg
+ cla48knxIq9g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 06:00:56 -0700
+IronPort-SDR: VIcIbSHG1U1ojTmjU3Gns1TngHKd+Zk0VvGgpSvkGn3lxcOsCA0rU12GeAo6KBY0vFeGJwlHhI
+ opTS5Yg1g8/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="276896082"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Apr 2020 06:00:55 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Anchal Agarwal <anchalag@amazon.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mm: swap: use fixed-size readahead during swapoff
+References: <20200413111810.GA801367@xps-13>
+Date:   Mon, 13 Apr 2020 21:00:34 +0800
+In-Reply-To: <20200413111810.GA801367@xps-13> (Andrea Righi's message of "Mon,
+        13 Apr 2020 13:18:10 +0200")
+Message-ID: <87a73f7d71.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413101931.6334-1-oscar.carter@gmx.com>
+Content-Type: text/plain; charset=ascii
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 12:19:31PM +0200, Oscar Carter wrote:
-> Use the error code returned by the vnt_control_out function as the
-> returned value of the vnt_rf_write_embedded function instead of a
-> boolean value.
-> 
-> Then, fix all vnt_rf_write_embedded calls removing the "and" operations
-> and replace with a direct assignment to the ret variable and add a check
-> condition after every call.
-> 
-> Also replace the boolean values true or false in the vnt_rf_set_txpower
-> function to 0 or error code EINVAL to follow the coding style guide.
-> 
-> The vnt_rf_set_txpower function is called only in the vnt_rf_setpower
-> function that already returns error codes. The calls to this function
-> (vnt_rf_set_txpower) not use the returned values, so they not need to be
-> fixed.
-> 
-> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> ---
->  drivers/staging/vt6656/rf.c | 99 ++++++++++++++++++++++++-------------
->  1 file changed, 64 insertions(+), 35 deletions(-)
+Andrea Righi <andrea.righi@canonical.com> writes:
 
-This too did not apply :(
+[snip]
+
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index ebed37bbf7a3..c71abc8df304 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/migrate.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/swap_slots.h>
+> +#include <linux/oom.h>
+>  #include <linux/huge_mm.h>
+>  
+>  #include <asm/pgtable.h>
+> @@ -507,6 +508,14 @@ static unsigned long swapin_nr_pages(unsigned long offset)
+>  	max_pages = 1 << READ_ONCE(page_cluster);
+>  	if (max_pages <= 1)
+>  		return 1;
+> +	/*
+> +	 * If current task is using too much memory or swapoff is running
+> +	 * simply use the max readahead size. Since we likely want to load a
+> +	 * lot of pages back into memory, using a fixed-size max readhaead can
+> +	 * give better performance in this case.
+> +	 */
+> +	if (oom_task_origin(current))
+> +		return max_pages;
+>  
+>  	hits = atomic_xchg(&swapin_readahead_hits, 0);
+>  	pages = __swapin_nr_pages(prev_offset, offset, hits, max_pages,
+
+Thinks this again.  If my understanding were correct, the accessing
+pattern during swapoff is sequential, why swap readahead doesn't work?
+If so, can you root cause that firstly?
+
+Best Regards,
+Huang, Ying
