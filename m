@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0141A66E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC221A6682
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbgDMMxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:53:36 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39736 "EHLO mga11.intel.com"
+        id S1729605AbgDMMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 08:52:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52678 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729595AbgDMMw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 08:52:28 -0400
-IronPort-SDR: ns5/yz+ESFchvQZqgZif5XvU5nd8zIgSVVd1oWceB7WxqF0reWwERRfaCzIbIZroD+VBkpqoBo
- uOIk28S8kJ8g==
+        id S1728762AbgDMMwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 08:52:30 -0400
+IronPort-SDR: reywnKbstnR22dNVbpCODGnnYRiNWX7IMeafmLBdHB7asbgB99+Z/g9fong0nBvhgvg6QJCel8
+ CAb1JQoiF05w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 05:52:28 -0700
-IronPort-SDR: whnCIKx9oBomX8HuAbYV6UNAdteeXJCadxARVU27nwOKUsE0TtY7tWJkuy0xWaJw5L5Ixfw2c6
- QIPO4juBZJLQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 05:52:28 -0700
+IronPort-SDR: 1GdQ/fz3WeapP34bJBOSesvpHCFj8Fo7CxSP8PLrSIA3qA2MP0CL1GvUkAV0yFRB9w7XQ7D/ht
+ TSoQAscxskRQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="252864081"
+   d="scan'208";a="426678123"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 13 Apr 2020 05:52:25 -0700
+  by orsmga005.jf.intel.com with ESMTP; 13 Apr 2020 05:52:25 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id EEDBA1F5; Mon, 13 Apr 2020 15:52:21 +0300 (EEST)
+        id 02307236; Mon, 13 Apr 2020 15:52:21 +0300 (EEST)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
 Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
@@ -34,9 +34,9 @@ Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
         William Kucharski <william.kucharski@oracle.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv3, RESEND 5/8] khugepaged: Allow to collapse a page shared across fork
-Date:   Mon, 13 Apr 2020 15:52:17 +0300
-Message-Id: <20200413125220.663-6-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv3, RESEND 6/8] khugepaged: Allow to collapse PTE-mapped compound pages
+Date:   Mon, 13 Apr 2020 15:52:18 +0300
+Message-Id: <20200413125220.663-7-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200413125220.663-1-kirill.shutemov@linux.intel.com>
 References: <20200413125220.663-1-kirill.shutemov@linux.intel.com>
@@ -47,96 +47,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page can be included into collapse as long as it doesn't have extra
-pins (from GUP or otherwise).
-
-Logic to check the refcound is moved to a separate function.
-Note that the function is ready to deal with compound pages. It's
-preparation for the following patch.
-
-VM_BUG_ON_PAGE() was removed from __collapse_huge_page_copy() as the
-invariant it checks is no longer valid: the source can be mapped
-multiple times now.
+We can collapse PTE-mapped compound pages. We only need to avoid
+handling them more than once: lock/unlock page only once if it's present
+in the PMD range multiple times as it handled on compound level. The
+same goes for LRU isolation and putback.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- mm/khugepaged.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
+ mm/khugepaged.c | 99 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 65 insertions(+), 34 deletions(-)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index e3e41c2768d8..f9864644c3b7 100644
+index f9864644c3b7..11d500396d85 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -529,6 +529,24 @@ static void release_pte_pages(pte_t *pte, pte_t *_pte)
+@@ -515,17 +515,30 @@ void __khugepaged_exit(struct mm_struct *mm)
+ 
+ static void release_pte_page(struct page *page)
+ {
+-	dec_node_page_state(page, NR_ISOLATED_ANON + page_is_file_cache(page));
++	mod_node_page_state(page_pgdat(page),
++			NR_ISOLATED_ANON + page_is_file_cache(page),
++			-compound_nr(page));
+ 	unlock_page(page);
+ 	putback_lru_page(page);
+ }
+ 
+-static void release_pte_pages(pte_t *pte, pte_t *_pte)
++static void release_pte_pages(pte_t *pte, pte_t *_pte,
++		struct list_head *compound_pagelist)
+ {
++	struct page *page, *tmp;
++
+ 	while (--_pte >= pte) {
+ 		pte_t pteval = *_pte;
+-		if (!pte_none(pteval) && !is_zero_pfn(pte_pfn(pteval)))
+-			release_pte_page(pte_page(pteval));
++
++		page = pte_page(pteval);
++		if (!pte_none(pteval) && !is_zero_pfn(pte_pfn(pteval)) &&
++				!PageCompound(page))
++			release_pte_page(page);
++	}
++
++	list_for_each_entry_safe(page, tmp, compound_pagelist, lru) {
++		list_del(&page->lru);
++		release_pte_page(page);
  	}
  }
  
-+static bool is_refcount_suitable(struct page *page)
-+{
-+	int expected_refcount, refcount;
-+
-+	refcount = page_count(page);
-+	expected_refcount = total_mapcount(page);
-+	if (PageSwapCache(page))
-+		expected_refcount += compound_nr(page);
-+
-+	if (IS_ENABLED(CONFIG_DEBUG_VM) && expected_refcount > refcount) {
-+		pr_err("expected_refcount: %d, refcount: %d\n",
-+				expected_refcount, refcount);
-+		dump_page(page, "Unexpected refcount");
-+	}
-+
-+	return page_count(page) == expected_refcount;
-+}
-+
+@@ -549,7 +562,8 @@ static bool is_refcount_suitable(struct page *page)
+ 
  static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
  					unsigned long address,
- 					pte_t *pte)
-@@ -581,11 +599,17 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+-					pte_t *pte)
++					pte_t *pte,
++					struct list_head *compound_pagelist)
+ {
+ 	struct page *page = NULL;
+ 	pte_t *_pte;
+@@ -579,13 +593,21 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 			goto out;
+ 		}
+ 
+-		/* TODO: teach khugepaged to collapse THP mapped with pte */
++		VM_BUG_ON_PAGE(!PageAnon(page), page);
++
+ 		if (PageCompound(page)) {
+-			result = SCAN_PAGE_COMPOUND;
+-			goto out;
+-		}
++			struct page *p;
++			page = compound_head(page);
+ 
+-		VM_BUG_ON_PAGE(!PageAnon(page), page);
++			/*
++			 * Check if we have dealt with the compound page
++			 * already
++			 */
++			list_for_each_entry(p, compound_pagelist, lru) {
++				if (page == p)
++					goto next;
++			}
++		}
+ 
+ 		/*
+ 		 * We can do it before isolate_lru_page because the
+@@ -614,19 +636,15 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 			result = SCAN_PAGE_COUNT;
+ 			goto out;
+ 		}
+-		if (pte_write(pteval)) {
+-			writable = true;
+-		} else {
+-			if (PageSwapCache(page) &&
+-			    !reuse_swap_page(page, NULL)) {
+-				unlock_page(page);
+-				result = SCAN_SWAP_CACHE_PAGE;
+-				goto out;
+-			}
++		if (!pte_write(pteval) && PageSwapCache(page) &&
++				!reuse_swap_page(page, NULL)) {
+ 			/*
+-			 * Page is not in the swap cache. It can be collapsed
+-			 * into a THP.
++			 * Page is in the swap cache and cannot be re-used.
++			 * It cannot be collapsed into a THP.
+ 			 */
++			unlock_page(page);
++			result = SCAN_SWAP_CACHE_PAGE;
++			goto out;
  		}
  
  		/*
--		 * cannot use mapcount: can't collapse if there's a gup pin.
--		 * The page must only be referenced by the scanned process
--		 * and page swap cache.
-+		 * Check if the page has any GUP (or other external) pins.
-+		 *
-+		 * The page table that maps the page has been already unlinked
-+		 * from the page table tree and this process cannot get
-+		 * an additinal pin on the page.
-+		 *
-+		 * New pins can come later if the page is shared across fork,
-+		 * but not for the this process. It is fine. The other process
-+		 * cannot write to the page, only trigger CoW.
- 		 */
--		if (page_count(page) != 1 + PageSwapCache(page)) {
-+		if (!is_refcount_suitable(page)) {
- 			unlock_page(page);
- 			result = SCAN_PAGE_COUNT;
+@@ -638,16 +656,23 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 			result = SCAN_DEL_PAGE_LRU;
  			goto out;
-@@ -672,7 +696,6 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
+ 		}
+-		inc_node_page_state(page,
+-				NR_ISOLATED_ANON + page_is_file_cache(page));
++		mod_node_page_state(page_pgdat(page),
++				NR_ISOLATED_ANON + page_is_file_cache(page),
++				compound_nr(page));
+ 		VM_BUG_ON_PAGE(!PageLocked(page), page);
+ 		VM_BUG_ON_PAGE(PageLRU(page), page);
+ 
++		if (PageCompound(page))
++			list_add_tail(&page->lru, compound_pagelist);
++next:
+ 		/* There should be enough young pte to collapse the page */
+ 		if (pte_young(pteval) ||
+ 		    page_is_young(page) || PageReferenced(page) ||
+ 		    mmu_notifier_test_young(vma->vm_mm, address))
+ 			referenced++;
++
++		if (pte_write(pteval))
++			writable = true;
+ 	}
+ 	if (likely(writable)) {
+ 		if (likely(referenced)) {
+@@ -661,7 +686,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 	}
+ 
+ out:
+-	release_pte_pages(pte, _pte);
++	release_pte_pages(pte, _pte, compound_pagelist);
+ 	trace_mm_collapse_huge_page_isolate(page, none_or_zero,
+ 					    referenced, writable, result);
+ 	return 0;
+@@ -670,13 +695,14 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
+ 				      struct vm_area_struct *vma,
+ 				      unsigned long address,
+-				      spinlock_t *ptl)
++				      spinlock_t *ptl,
++				      struct list_head *compound_pagelist)
+ {
++	struct page *src_page, *tmp;
+ 	pte_t *_pte;
+ 	for (_pte = pte; _pte < pte + HPAGE_PMD_NR;
+ 				_pte++, page++, address += PAGE_SIZE) {
+ 		pte_t pteval = *_pte;
+-		struct page *src_page;
+ 
+ 		if (pte_none(pteval) || is_zero_pfn(pte_pfn(pteval))) {
+ 			clear_user_highpage(page, address);
+@@ -696,7 +722,8 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
  		} else {
  			src_page = pte_page(pteval);
  			copy_user_highpage(page, src_page, address, vma);
--			VM_BUG_ON_PAGE(page_mapcount(src_page) != 1, src_page);
- 			release_pte_page(src_page);
+-			release_pte_page(src_page);
++			if (!PageCompound(src_page))
++				release_pte_page(src_page);
  			/*
  			 * ptl mostly unnecessary, but preempt has to
-@@ -1201,12 +1224,8 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 			 * be disabled to update the per-cpu stats
+@@ -713,6 +740,11 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
+ 			free_page_and_swap_cache(src_page);
+ 		}
+ 	}
++
++	list_for_each_entry_safe(src_page, tmp, compound_pagelist, lru) {
++		list_del(&src_page->lru);
++		release_pte_page(src_page);
++	}
+ }
+ 
+ static void khugepaged_alloc_sleep(void)
+@@ -971,6 +1003,7 @@ static void collapse_huge_page(struct mm_struct *mm,
+ 				   struct page **hpage,
+ 				   int node, int referenced, int unmapped)
+ {
++	LIST_HEAD(compound_pagelist);
+ 	pmd_t *pmd, _pmd;
+ 	pte_t *pte;
+ 	pgtable_t pgtable;
+@@ -1071,7 +1104,8 @@ static void collapse_huge_page(struct mm_struct *mm,
+ 	mmu_notifier_invalidate_range_end(&range);
+ 
+ 	spin_lock(pte_ptl);
+-	isolated = __collapse_huge_page_isolate(vma, address, pte);
++	isolated = __collapse_huge_page_isolate(vma, address, pte,
++			&compound_pagelist);
+ 	spin_unlock(pte_ptl);
+ 
+ 	if (unlikely(!isolated)) {
+@@ -1096,7 +1130,8 @@ static void collapse_huge_page(struct mm_struct *mm,
+ 	 */
+ 	anon_vma_unlock_write(vma->anon_vma);
+ 
+-	__collapse_huge_page_copy(pte, new_page, vma, address, pte_ptl);
++	__collapse_huge_page_copy(pte, new_page, vma, address, pte_ptl,
++			&compound_pagelist);
+ 	pte_unmap(pte);
+ 	__SetPageUptodate(new_page);
+ 	pgtable = pmd_pgtable(_pmd);
+@@ -1193,11 +1228,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
  			goto out_unmap;
  		}
  
--		/*
--		 * cannot use mapcount: can't collapse if there's a gup pin.
--		 * The page must only be referenced by the scanned process
--		 * and page swap cache.
--		 */
--		if (page_count(page) != 1 + PageSwapCache(page)) {
-+		/* Check if the page has any GUP (or other external) pins */
-+		if (!is_refcount_suitable(page)) {
- 			result = SCAN_PAGE_COUNT;
- 			goto out_unmap;
- 		}
+-		/* TODO: teach khugepaged to collapse THP mapped with pte */
+-		if (PageCompound(page)) {
+-			result = SCAN_PAGE_COMPOUND;
+-			goto out_unmap;
+-		}
++		page = compound_head(page);
+ 
+ 		/*
+ 		 * Record which node the original page is from and save this
 -- 
 2.26.0
 
