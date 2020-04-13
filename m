@@ -1,148 +1,121 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3A71A644A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:47:29 +0200 (CEST)
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCCD1A6409
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgDMIf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:35:56 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:47085 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728025AbgDMIfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:35:52 -0400
-Received: by mail-ot1-f65.google.com with SMTP id w12so7507682otm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AvGw2BENomW5mAjLN7te1eswf7XokhztvBZamCcaYj0=;
-        b=uD8A8qgO9EqAhRj5jnTHJFUY7v3Kp1X0ZbRX5+kzzkRJbOVFzZMvIiC0vrd8AEbXu6
-         j4U+LKqu1BGr1U7Iyv+gVYNLgnS1VGVayNBYCS2IHfvT2MLP6CobSya5jv/iUGy3TLgI
-         nm1wc59YKGg1s266n/VVhr39Z0sn1jSlMGTUPUvRSslX08GMWK3H9oihKMZDUGRoCDcD
-         xIAoJTdKpJInqVJYXUnt5AxEf7Yhxw6+V3EFPF7Fd1q8HNMdrOnUyEE4AQi1AgQodiaM
-         2vFiaW3n8RvkIVFYrU1b0b3Z7ncEW4wNV2ia112RomwbVmIeuZQ8f08i5g2dGbk/dqaj
-         Tb2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AvGw2BENomW5mAjLN7te1eswf7XokhztvBZamCcaYj0=;
-        b=UDh2hX9CzP6n5IIfoDBKd7M/2LjNWrGYx8xlBcADYKlpMJ5Oi9TiAOwJvclHw0DyWB
-         H0SwziWHWMgeDigfDMOtIBQzyRVYHImkBL5CuIHb433s6xxUlbO7bLxt1+2zNEIjVb0p
-         NmTSugV6a8l+xF5p5Krmrdc0QxTz6qtAMKOtanuygje6VwKkp3VQtcxCAh2jXd602nfr
-         GMLuPN9GAwkeULHX/9aZXj15n7sS42lSwh886SVZFIwGVe/zPZDBqEzfReCIkMuT+1gp
-         zlcvGMuiCmTBGmgSR0Zu0e42m0SexpXmLjQjyEv5TN5p4mcrZvERXOppBQ1itraD787b
-         Tvpw==
-X-Gm-Message-State: AGi0PubItOrbjX0Y/+MNZE0vvGGmMTJmgZS3BduqnYMprELeBE1aWsNd
-        snkWPutYlJRlq8Ha+K6emnwjw81Bl15vOxn6o1xpcg==
-X-Google-Smtp-Source: APiQypLGyU2+5UH8I4pQFfkdm4IeQucZnCldFkCGft+bJP32qprqeDoFkHg65jEskDU5xzjopyRhE7fXAcHOLPADm9w=
-X-Received: by 2002:a9d:4b84:: with SMTP id k4mr3987928otf.233.1586766950301;
- Mon, 13 Apr 2020 01:35:50 -0700 (PDT)
+        id S1729360AbgDMIYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 04:24:49 -0400
+Received: from mga03.intel.com ([134.134.136.65]:39213 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727971AbgDMIYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 04:24:49 -0400
+IronPort-SDR: R6mhYIUAu2mc7PssFRcMuzIlQkAVc0WmroHYGHRmi++ZYGJCa+OHm2me+TMJULnKG5vM+fBxhc
+ yr153wpGQx+A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 01:24:48 -0700
+IronPort-SDR: 89OuDTtVm7GFv4SzRRMrenZSTb2zYhZCJ/a2q2ZWqGGEak0vg31sUCDLb6kKpDrKjcybHD+WQC
+ xQNibDVPwHgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="454141300"
+Received: from keyon-x299.sh.intel.com (HELO [10.239.159.75]) ([10.239.159.75])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Apr 2020 01:24:44 -0700
+Subject: Re: [PATCH] ASoC: bdw-rt5650: incorrect rate of PCM data
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        linux-kernel@vger.kernel.org
+References: <1586765358-18474-1-git-send-email-brent.lu@intel.com>
+From:   Keyon Jie <yang.jie@linux.intel.com>
+Message-ID: <751b03e3-c4de-cbcb-e1b6-dc6f3f572aab@linux.intel.com>
+Date:   Mon, 13 Apr 2020 16:35:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <CANpmjNMR4BgfCxL9qXn0sQrJtQJbEPKxJ5_HEa2VXWi6UY4wig@mail.gmail.com>
- <AC8A5393-B817-4868-AA85-B3019A1086F9@lca.pw> <CANpmjNPqQHKUjqAzcFym5G8kHX0mjProOpGu8e4rBmuGRykAUg@mail.gmail.com>
- <C4FED226-E3DE-44AE-BBED-2B56B9F5B12F@lca.pw>
-In-Reply-To: <C4FED226-E3DE-44AE-BBED-2B56B9F5B12F@lca.pw>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 13 Apr 2020 10:35:38 +0200
-Message-ID: <CANpmjNPSLkiEer3xQHHxJm_4o5Em0i3bvM7TMmNO46Vzv2cwWQ@mail.gmail.com>
-Subject: Re: KCSAN + KVM = host reset
-To:     Qian Cai <cai@lca.pw>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "paul E. McKenney" <paulmck@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1586765358-18474-1-git-send-email-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Apr 2020 at 21:57, Qian Cai <cai@lca.pw> wrote:
->
->
->
-> > On Apr 10, 2020, at 7:35 AM, Marco Elver <elver@google.com> wrote:
-> >
-> > On Fri, 10 Apr 2020 at 13:25, Qian Cai <cai@lca.pw> wrote:
-> >>
-> >>
-> >>
-> >>> On Apr 10, 2020, at 5:47 AM, Marco Elver <elver@google.com> wrote:
-> >>>
-> >>> That would contradict what you said about it working if KCSAN is
-> >>> "off". What kernel are you attempting to use in the VM?
-> >
-> > Ah, sorry this was a typo,
-> >  s/working if KCSAN/not working if KCSAN/
-> >
-> >> Well, I said set KCSAN debugfs to =E2=80=9Coff=E2=80=9D did not help, =
-i.e., it will reset the host running kvm.sh. It is the vanilla ubuntu 18.04=
- kernel in VM.
-> >>
-> >> github.com/cailca/linux-mm/blob/master/kvm.sh
-> >
-> > So, if you say that CONFIG_KCSAN_INTERRUPT_WATCHER=3Dn works, that
-> > contradicts it not working when KCSAN is "off". Because if KCSAN is
-> > off, it never sets up any watchpoints, and whether or not
-> > KCSAN_INTERRUPT_WATCHER is selected or not shouldn't matter. Does that
-> > make more sense?
->
-> Yes, you are right. CONFIG_KCSAN_INTERRUPT_WATCHER=3Dn does not
-> make it work. It was a mistake when I tested it because there was a stale=
- svm.o
-> leftover from the previous run, and then it will not trigger a rebuild (a=
- bug?) when
-> only modify the Makefile to remove KCSAN_SANITIZE :=3D n. Sorry for the m=
-isleading
-> information. I should be checking if svm.o was really recompiled in the f=
-irst place.
->
-> Anyway, I=E2=80=99ll send a patch to add __no_kcsan for svm_vcpu_run() be=
-cause I tried
-> to narrow down more with a kcsan_[disable|enable]_current() pair, but it =
-does NOT
-> work even by enclosing the almost whole function below until Marcro has m=
-ore ideas?
 
-This is expected. Instrumentation is not removed if you add
-kcsan_{disable,enable}_current() (it has the same effect as a
-localized "off"). Since it seems just the instrumentation and
-associated calls before every memory access is enough, this won't
-work. The attribute __no_kcsan removes instrumentation entirely from
-the function. If the non-instrumented code should be reduced, it is
-conceivable to take the problematic portion of code and factor it into
-a function that has attribute '__no_kcsan_or_inline'.
+On 2020/4/13 下午4:09, Brent Lu wrote:
+> Implement a constrain to exclude 3-channel capture since only 2 and 4
+> channel capture are supported on the platform.
+
+The patch looks good to me, except that the subject seems unrelated? you 
+are changing the channel number, not the sample rate?
 
 Thanks,
--- Marco
+~Keyon
 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 2be5bbae3a40..e58b2d5a575c 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3286,6 +3286,7 @@ static void svm_vcpu_run(struct kvm_vcpu *vcpu)
->         svm->vmcb->save.rsp =3D vcpu->arch.regs[VCPU_REGS_RSP];
->         svm->vmcb->save.rip =3D vcpu->arch.regs[VCPU_REGS_RIP];
->
-> +       kcsan_disable_current();
->         /*
->          * A vmexit emulation is required before the vcpu can be executed
->          * again.
-> @@ -3410,6 +3411,7 @@ static void svm_vcpu_run(struct kvm_vcpu *vcpu)
->                 svm_handle_mce(svm);
->
->         mark_all_clean(svm->vmcb);
-> +       kcsan_enable_current();
->  }
->  STACK_FRAME_NON_STANDARD(svm_vcpu_run);
->
->
->
->
->
->
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>   sound/soc/intel/boards/bdw-rt5650.c | 31 +++++++++++++++++++++++++++++++
+>   1 file changed, 31 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+> index af2f502..eedbdad 100644
+> --- a/sound/soc/intel/boards/bdw-rt5650.c
+> +++ b/sound/soc/intel/boards/bdw-rt5650.c
+> @@ -83,6 +83,36 @@ static struct snd_soc_jack_pin mic_jack_pin = {
+>   	.mask	= SND_JACK_MICROPHONE,
+>   };
+>   
+> +static const unsigned int channels[] = {
+> +	2, 4,
+> +};
+> +
+> +static const struct snd_pcm_hw_constraint_list constraints_channels = {
+> +	.count = ARRAY_SIZE(channels),
+> +	.list = channels,
+> +	.mask = 0,
+> +};
+> +
+> +static int bdw_fe_startup(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +
+> +	/*
+> +	 * On this platform for PCM device we support,
+> +	 * 2 or 4 channel capture
+> +	 */
+> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+> +		snd_pcm_hw_constraint_list(runtime, 0,
+> +					   SNDRV_PCM_HW_PARAM_CHANNELS,
+> +					   &constraints_channels);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_soc_ops bdw_rt5650_fe_ops = {
+> +	.startup = bdw_fe_startup,
+> +};
+> +
+>   static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+>   			struct snd_pcm_hw_params *params)
+>   {
+> @@ -234,6 +264,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+>   		.name = "System PCM",
+>   		.stream_name = "System Playback",
+>   		.dynamic = 1,
+> +		.ops = &bdw_rt5650_fe_ops,
+>   #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+>   		.init = bdw_rt5650_rtd_init,
+>   #endif
+> 
