@@ -2,76 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462091A66CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250C61A66CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729787AbgDMNNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 09:13:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45768 "EHLO mga02.intel.com"
+        id S1729349AbgDMNSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 09:18:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:41416 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728750AbgDMNNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 09:13:36 -0400
-IronPort-SDR: niPVWaW2RkcRfRqeeUygZIHkyiZDaStXBQD3OHnQ3oUOEs39NVonbUjucnIy2ftT/4+3JceP09
- rrLxn4B8IvnA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 06:13:35 -0700
-IronPort-SDR: EBarXwOJVuLuIhZVVqFQ5Ln6ll8U7Rpxf8g0h9ogMC3BvyKdu46ZUNzdUW5NOpgy6c7bXX4gTX
- 0FE9zkRtP9Gw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="399603024"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by orsmga004.jf.intel.com with ESMTP; 13 Apr 2020 06:13:34 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Anchal Agarwal <anchalag@amazon.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm: swap: use fixed-size readahead during swapoff
-References: <20200413111810.GA801367@xps-13>
-Date:   Mon, 13 Apr 2020 21:13:33 +0800
-In-Reply-To: <20200413111810.GA801367@xps-13> (Andrea Righi's message of "Mon,
-        13 Apr 2020 13:18:10 +0200")
-Message-ID: <875ze37cle.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1728216AbgDMNSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 09:18:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2F131FB;
+        Mon, 13 Apr 2020 06:18:05 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC2583F68F;
+        Mon, 13 Apr 2020 06:18:04 -0700 (PDT)
+Subject: Re: [PATCH 2/2] drm/panfrost: add devfreq regulator support
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200411200632.4045-1-peron.clem@gmail.com>
+ <20200411200632.4045-2-peron.clem@gmail.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <c96f31a2-6ff4-31aa-aaac-2ce9eafb3bfe@arm.com>
+Date:   Mon, 13 Apr 2020 14:18:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20200411200632.4045-2-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrea Righi <andrea.righi@canonical.com> writes:
+On 11/04/2020 21:06, Clément Péron wrote:
+> OPP table can defined both frequency and voltage.
+> 
+> Register the mali regulator if it exist.
+> 
+> Signed-off-by: Clément Péron <peron.clem@gmail.com>
+> ---
+>   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 34 ++++++++++++++++++---
+>   drivers/gpu/drm/panfrost/panfrost_device.h  |  1 +
+>   2 files changed, 31 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> index 62541f4edd81..2dc8e2355358 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> @@ -78,12 +78,26 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+>   	struct device *dev = &pfdev->pdev->dev;
+>   	struct devfreq *devfreq;
+>   	struct thermal_cooling_device *cooling;
+> +	const char *mali = "mali";
+> +	struct opp_table *opp_table = NULL;
+> +
+> +	/* Regulator is optional */
+> +	opp_table = dev_pm_opp_set_regulators(dev, &mali, 1);
 
-> The global swap-in readahead policy takes in account the previous access
-> patterns, using a scaling heuristic to determine the optimal readahead
-> chunk dynamically.
->
-> This works pretty well in most cases, but like any heuristic there are
-> specific cases when this approach is not ideal, for example the swapoff
-> scenario.
->
-> During swapoff we just want to load back into memory all the swapped-out
-> pages and for this specific use case a fixed-size readahead is more
-> efficient.
->
-> The specific use case this patch is addressing is to improve swapoff
-> performance when a VM has been hibernated, resumed and all memory needs
-> to be forced back to RAM by disabling swap (see the test case below).
+This looks like it applies before 3e1399bccf51 ("drm/panfrost: Add 
+support for multiple regulators") which is currently in drm-misc-next 
+(and linux-next). You want something more like:
 
-Why do you need to swapoff after resuming?  The swap device isn't used
-except hibernation?  I guess the process is,
+     opp_table = dev_pm_opp_set_regulators(dev,
+                                           pfdev->comp->supply_names,
+                                           pfdev->comp->num_supplies);
 
-1) add swap device to VM
-2) hibernate
-3) resume
-4) swapoff
+Otherwise a platform with multiple regulators won't work correctly.
 
-Some pages are swapped out in step 2?  If os, can we just set
-/proc/sys/vm/swappiness to 0 to avoid swapping in step 2?
+Also running on my firefly (RK3288) board I get the following warning:
 
-Best Regards,
-Huang, Ying
+    debugfs: Directory 'ffa30000.gpu-mali' with parent 'vdd_gpu' already 
+present!
+
+This is due to the regulator debugfs entries getting created twice (once 
+in panfrost_regulator_init() and once here).
+
+I have been taking a look at doing the same thing (I picked up Martin 
+Blumenstingl's patch series[1]), but haven't had much time to focus on 
+this recently.
+
+Thanks,
+
+Steve
+
+[1] 
+https://lore.kernel.org/dri-devel/20200112001623.2121227-1-martin.blumenstingl@googlemail.com/
+
+
+> +	if (IS_ERR(opp_table)) {
+> +		ret = PTR_ERR(opp_table);
+> +		if (ret != -ENODEV) {
+> +			DRM_DEV_ERROR(dev, "Failed to set regulator: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +	pfdev->devfreq.opp_table = opp_table;
+>   
+>   	ret = dev_pm_opp_of_add_table(dev);
+> -	if (ret == -ENODEV) /* Optional, continue without devfreq */
+> -		return 0;
+> -	else if (ret)
+> -		return ret;
+> +	if (ret) {
+> +		if (ret == -ENODEV) /* Optional, continue without devfreq */
+> +			ret = 0;
+> +		goto err_opp_reg;
+> +	}
+>   
+>   	panfrost_devfreq_reset(pfdev);
+>   
+> @@ -119,6 +133,12 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+>   err_opp:
+>   	dev_pm_opp_of_remove_table(dev);
+>   
+> +err_opp_reg:
+> +	if (pfdev->devfreq.opp_table) {
+> +		dev_pm_opp_put_regulators(pfdev->devfreq.opp_table);
+> +		pfdev->devfreq.opp_table = NULL;
+> +	}
+> +
+>   	return ret;
+>   }
+>   
+> @@ -126,7 +146,13 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
+>   {
+>   	if (pfdev->devfreq.cooling)
+>   		devfreq_cooling_unregister(pfdev->devfreq.cooling);
+> +
+>   	dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
+> +
+> +	if (pfdev->devfreq.opp_table) {
+> +		dev_pm_opp_put_regulators(pfdev->devfreq.opp_table);
+> +		pfdev->devfreq.opp_table = NULL;
+> +	}
+>   }
+>   
+>   void panfrost_devfreq_resume(struct panfrost_device *pfdev)
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> index 06713811b92c..f6b0c779dfe5 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> @@ -86,6 +86,7 @@ struct panfrost_device {
+>   	struct {
+>   		struct devfreq *devfreq;
+>   		struct thermal_cooling_device *cooling;
+> +		struct opp_table *opp_table;
+>   		ktime_t busy_time;
+>   		ktime_t idle_time;
+>   		ktime_t time_last_update;
+> 
+
