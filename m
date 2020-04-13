@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12C21A649C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACEF1A649E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgDMJYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        id S1728333AbgDMJZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728234AbgDMJYn (ORCPT
+        by vger.kernel.org with ESMTP id S1728222AbgDMJYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Apr 2020 05:24:43 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41023C0A3BDC;
-        Mon, 13 Apr 2020 02:17:34 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o1so2742367pjs.4;
-        Mon, 13 Apr 2020 02:17:34 -0700 (PDT)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75473C008769
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:18:22 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k21so8087017ljh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:18:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Es/1kSX+2DTfIEl11xOgF+dKXSLyBYadIDMkf6JWRY=;
-        b=uD88jc+H5svxYWnFnmOVmZGhizFVGLAqr3CGeRWDO71LcsasJpC+gS6bTbGRjKJPM3
-         oZ9POJtkVxjLCFTbcL+p8nnQySxbLL31W4FoXcAJX3ZzjWVGDARV0SImqIOX2W/pEOon
-         VNWH55nNVoBjMsIDFb8wwRfiKr0nqmZqI1/dBsNbIj2R9CC6u/yGTisg10eG5ytX8cMI
-         EvG8HXr+df/G5G78N96KOfukqqYSuC0n4PXJR38NSI3N1XwImkZhSlFym87QkkP6mlcN
-         uuEiLWJ+0805c7VirFoRpj+kz8ZQJXGK5w90D5bDCpywG0dKP5HsHGALfFUSO/gVPw4l
-         oR6A==
+        d=globallogic.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=lHubTvQBvGK3a1f0dL5uuc3R9QqieZy5ygx33SyVyOU=;
+        b=T0yOasC4EK+K/uSP6q/VHtsWfhYkDjRADF7V9g4F5+Z4DUWC5frjadvL0F6P0vsPe/
+         ktgqKhj3YQk6Z/Vu29R3XivuTQsAlMUbGlD9RbD/i5QgrMhdJJEmMf5MGsF+UjZiJ6gH
+         63TaszCvMTswnknyawfP/PU/lt66yzBxp8dwd9WKCqUeOHQQ/Vi1le4ng01Kw6hCaJ/r
+         BAJpA6jmFGMDM+ppj4MAPHGRZOR3qQ6xwqur4z1ZcXugdhBHcgHFp8zUGLPSy4S0FxlR
+         NGHoeaL4W/NWuJqRAV1ddVOGub1Bc3b7HNdYnZyUMkVJG6ev9+STqZuby5um6fFpqqJy
+         lm9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Es/1kSX+2DTfIEl11xOgF+dKXSLyBYadIDMkf6JWRY=;
-        b=PboJL/GaMRxuS+S8dzjyhq521H20gI6TkBUiQMEji9oHiBj4QZpVYjzPnxXl8qlgv4
-         pqxbLhIMs4qFm2b25pN7s2HgCtsV0NWTDaihxesL08L+UvW4kVQ73Q7L3XneLwryOy1W
-         +4Ym2qLLxCwHCi4sZeMSL7GRErWrB/Xvxkmu9R+8WlNKg4TnDlU/e5yfHGLd1DURtNnv
-         uCsH9V62WouYdHsfpLZg04IqKP7/Q65MDm3T4Sw1Mwt8s7HrH4MtR4KTT4FLsv4sy3wq
-         0Quob7c2CmDPk+kj7V7dmeBYSB1bbqZF/ctLZPfeDDUmVBKWRnCeS2isnKDG0p3vJnVb
-         erZw==
-X-Gm-Message-State: AGi0PuYxMGyNCL9mX62yKq5PU84rOFXNbLT3ydVduh8gf4i2IWv+jzAb
-        AUSr5CfINISJ55BMDHzvmKPbYAkd27E19LNj5CY=
-X-Google-Smtp-Source: APiQypKrhwIBdb9K5xK6+BTvgkhgXaWgjvsbqf2WCnQLazfGOFLVhIlgZpBJQNARmhWX7ScRLGvI/AGMLB5ktOM49e0=
-X-Received: by 2002:a17:902:9306:: with SMTP id bc6mr16330033plb.255.1586769453549;
- Mon, 13 Apr 2020 02:17:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200412180923.30774-1-mani@kernel.org>
-In-Reply-To: <20200412180923.30774-1-mani@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 13 Apr 2020 12:17:21 +0300
-Message-ID: <CAHp75VfDUoFMWg42OFHZtKQ972eoR3UDLVAs+BQjJm3h3-fOGw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Add software flow control support for STM32 UART
-To:     mani@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lHubTvQBvGK3a1f0dL5uuc3R9QqieZy5ygx33SyVyOU=;
+        b=Y6Cxl+hp3vIkfl8oKZhja7Ig4mDueaCxcPKTaWsbbZMPjRQvSqOMEuRAB3sGrIvj6J
+         0Hgz5PHLRdxHezjaBfOrHJyYBIWcqD5SCGRfTfVnq3OzRUZ+kLS0uyYVXkzTFS/Ql/vu
+         D45AB5N8BALtoQ+M72GAhePue39OtUP4WS1VhiJmlIr82feU5xhfUfYwAz5QNkxFQPQP
+         g0ZiPxN8wUtwkKnPnN5Zaoyw8/E4X7qws7gIncWRVX1fFkVkwAoXQDtUyhKKfO32QucY
+         cG9rM0nVeonxU0QZqjVgrGCVz2YtJrjuaQG+kqV78e4bihw+dtqHHx1hb/crMc7RZ7K0
+         yFzw==
+X-Gm-Message-State: AGi0PuZ6gwru726KtweJeHghZ9LLqP3SR4duOC04hTX/B2gCeuSJeT8j
+        UIvqB7lp1MOi+OTKY8qUn24KUqyC3y5TfQ==
+X-Google-Smtp-Source: APiQypImlQL77/NsGdTM2O6q1MEpHE6CFMfh4ANSEsdt5fRmb4aUSjEpYhVF5ciGCXbqj8qUKhLhhg==
+X-Received: by 2002:a2e:b6c2:: with SMTP id m2mr9982617ljo.59.1586769500639;
+        Mon, 13 Apr 2020 02:18:20 -0700 (PDT)
+Received: from localhost.localdomain ([159.224.5.60])
+        by smtp.googlemail.com with ESMTPSA id e16sm8339049ljh.18.2020.04.13.02.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 02:18:20 -0700 (PDT)
+From:   Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Cc:     Luis Oliveira <lolivei@synopsys.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Michael Rodin <mrodin@de.adit-jv.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Todor Tomov <todor.tomov@linaro.org>,
+        Suresh Udipi <sudipi@jp.adit-jv.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.org>,
+        Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+Subject: [PATCH 0/4] ov5647 driver improvement
+Date:   Mon, 13 Apr 2020 12:17:43 +0300
+Message-Id: <cover.1586758372.git.roman.kovalivskyi@globallogic.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 7:06 AM <mani@kernel.org> wrote:
->
-> From: Manivannan Sadhasivam <mani@kernel.org>
->
-> Hello,
->
-> This patchset adds software flow control support for STM32 UART controller.
-> This is necessary for the upcoming STM32MP1 based board called Stinger96
-> IoT-Box. On that board, a bluetooth chip is connected to one of the UART
-> controller but the CTS/RTS lines got swapped mistakenly. So in order to
-> workaround that hardware bug and also to support the usecase of using only
-> Tx/Rx pins, this patchset adds software flow control support.
->
-> This patchset has been validated w/ Stinger96 IoT-Box connected to Murata
-> WiFi-BT combo chip.
->
+Driver for ov5647 camera sensor lacks some important functionality, such
+as ability to query device format and resolution or operations with
+power down mode. Patches from Raspberry kernel source tree[1] fixes
+those issues and improves quality of mentioned driver.
 
-I think it's a mix of terminology or so. Looking into the patches I
-found that it's required to have GPIOs for SW flow control.
-No, SW flow control does not require any additional signals, except RxD/TxD.
+[1] - https://github.com/raspberrypi/linux
 
-On top of that, it seems you adding mctrl-gpio functionality. Why
-can't you use that one? And thus no bindings needs to be updated.
+Dave Stevenson (4):
+  media: ov5647: Add set_fmt and get_fmt calls.
+  media: ov5647: Add support for PWDN GPIO.
+  media: ov5647: Add support for non-continuous clock mode
+  media: ov5647: Use gpiod_set_value_cansleep
 
-> Thanks,
-> Mani
->
-> Manivannan Sadhasivam (2):
->   dt-bindings: serial: Add binding for software flow control in STM32
->     UART
->   tty: serial: Add software flow control support for STM32 USART
->
->  .../bindings/serial/st,stm32-uart.yaml        |  15 +-
->  drivers/tty/serial/stm32-usart.c              | 143 +++++++++++++++++-
->  drivers/tty/serial/stm32-usart.h              |   4 +
->  3 files changed, 155 insertions(+), 7 deletions(-)
->
-> --
-> 2.17.1
->
-
+ drivers/media/i2c/ov5647.c | 67 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 64 insertions(+), 3 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
