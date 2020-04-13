@@ -2,137 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF7D1A6645
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515931A6652
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729453AbgDMMTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:19:37 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15646 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgDMMTd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 08:19:33 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9458680001>; Mon, 13 Apr 2020 05:17:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 13 Apr 2020 05:19:32 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 13 Apr 2020 05:19:32 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Apr
- 2020 12:19:32 +0000
-Received: from [10.24.37.103] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Apr
- 2020 12:19:28 +0000
-Subject: Re: [TEGRA194_CPUFREQ Patch 2/3] cpufreq: Add Tegra194 cpufreq driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rjw@rjwysocki.net>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <talho@nvidia.com>, <linux-pm@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>,
+        id S1729477AbgDMMWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 08:22:55 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55336 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728344AbgDMMWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 08:22:55 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6B73DF5F703402750F59;
+        Mon, 13 Apr 2020 20:22:52 +0800 (CST)
+Received: from linux-kDCJWP.huawei.com (10.175.104.212) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 13 Apr 2020 20:22:45 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
-        <mperttunen@nvidia.com>
-References: <1575394348-17649-1-git-send-email-sumitg@nvidia.com>
- <1575394348-17649-2-git-send-email-sumitg@nvidia.com>
- <20200326115023.xy3n5bl7uetuw7mx@vireshk-i7>
- <d233b26b-6b50-7d41-9f33-a5dc151e0e7d@nvidia.com>
- <20200406025549.qfwzlk3745y3r274@vireshk-i7>
- <3ab4136c-8cca-c2f9-d286-b82dac23e720@nvidia.com>
- <20200408055301.jhvu5bc2luu3b5qr@vireshk-i7>
- <08307e54-0e14-14a3-7d6a-d59e1e04a683@nvidia.com>
- <20200409074415.twpzu2n4frqlde7b@vireshk-i7>
- <00390070-38a1-19aa-ca59-42c4658bee7e@nvidia.com>
- <20200413062141.a6hmwipexhv3sctq@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <64b609f1-efb1-425f-a91a-27a492bd3ec4@nvidia.com>
-Date:   Mon, 13 Apr 2020 17:50:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        <kvmarm@lists.cs.columbia.edu>
+CC:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        "James Morse" <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jay Zhou <jianjay.zhou@huawei.com>,
+        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in small chunks
+Date:   Mon, 13 Apr 2020 20:20:23 +0800
+Message-ID: <20200413122023.52583-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20200413062141.a6hmwipexhv3sctq@vireshk-i7>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586780264; bh=sm196NiMqA8gyR8DT4vdRI+KvcOo8ha9TmgFSKUPb3I=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=SagSxSkltbuOB5/r68bXwwj2Py22FS0okY336BB5sSpzMGJd+D4SfPeDrbLizmuLi
-         FL3tnoxu3StWADbYI1GhBsP9wJIoxZ94WO+1lfqHNV6qQjHaYITR8Dng3YGYwpsdqB
-         CBgUXEv4fhMD+z8G7TsKXaGLnByZEWvjK4ygbim5H44rSzc2FCxRfvtpLLbz/8dYbD
-         m8LYWPG47mTzvFPYr5EEYsjlfHTCod5MqtPdKHqrdXpPlVFyl+9IjxuoH0Lv/nnAht
-         +ETx8yIwVHTH/LBs+15idwsSoSdYWZI4aixVx24qtttaWYIpxtGYZzsPt2VQtUHD+t
-         gux1X9yQKzipA==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.212]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is already support of enabling dirty log graually in small chunks
+for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
+small chunks"). This adds support for arm64.
 
+x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
+is eanbled. However, for arm64, both huge pages and normal pages can be
+write protected gradually by userspace.
 
-On 13/04/20 11:51 AM, Viresh Kumar wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On 09-04-20, 16:51, Sumit Gupta wrote:
->> We are using "read_counters_work" as local variable. So every invocation the
->> function will have its own copy of counters for corresponding cpu. That's
->> why are doing INIT_WORK_ONSTACK here.
-> 
-> Why? To support parallel calls to reading the freq ?
-> 
-Yes.
+Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
+Linux VMs with different page size. The memory pressure is 127G in each
+case. The time taken of memory_global_dirty_log_start in QEMU is listed
+below:
 
->>>>>>>>>> +     queue_work_on(cpu, read_counters_wq, &read_counters_work.work);
->>>>>>>>>> +     flush_work(&read_counters_work.work);
->>>>>>>>>
->>>>>>>>> Why can't this be done in current context ?
->>>>>>>>>
->>>>>>>> We used work queue instead of smp_call_function_single() to have long delay.
->>>>>>>
->>>>>>> Please explain completely, you have raised more questions than you
->>>>>>> answered :)
->>>>>>>
->>>>>>> Why do you want to have long delays ?
->>>>>>>
->>>>>> Long delay value is used to have the observation window long enough for
->>>>>> correctly reconstructing the CPU frequency considering noise.
->>>>>> In next patch version, changed delay value to 500us which in our tests is
->>>>>> considered reliable.
->>>>>
->>>>> I understand that you need to put a udelay() while reading the freq from
->>>>> hardware, that is fine, but why do you need a workqueue for that? Why can't you
->>>>> just read the values directly from the same context ?
->>>>>
->>>> The register to read frequency is per core and not accessible to other
->>>> cores. So, we have to execute the function remotely as the target core to
->>>> read frequency might be different from current.
->>>> The functions for that are smp_call_function_single or queue_work_on.
->>>> We used queue_work_on() to avoid long delay inside ipi interrupt context
->>>> with interrupts disabled.
->>>
->>> Okay, I understand this now, finally :)
->>>
->>> But if the interrupts are disabled during some call, won't workqueues face the
->>> same problem ?
->>>
->> Yes, we are trying to minimize the case.
-> 
-> But how do you know workqueues will perform better than
-> smp_call_function_single() ? Just asking for clarity on this as normally
-> everyone tries to do smp_call_function_single().
-> 
-This was done considering long delay value as explained previously.
-Do you think that smp_call_function_single() would be better than work 
-queue here?
+Page Size      Before    After Optimization
+  4K            650ms         1.8ms
+  2M             4ms          1.8ms
+  1G             2ms          1.8ms
 
-> --
-> viresh
-> 
+Besides the time reduction, the biggest income is that we will minimize
+the performance side effect (because of dissloving huge pages and marking
+memslots dirty) on guest after enabling dirty log.
+
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+---
+ Documentation/virt/kvm/api.rst    |  2 +-
+ arch/arm64/include/asm/kvm_host.h |  3 +++
+ virt/kvm/arm/mmu.c                | 12 ++++++++++--
+ 3 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index efbbe570aa9b..0017f63fa44f 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
+ dirty logging can be enabled gradually in small chunks on the first call
+ to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
+ KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
+-x86 for now).
++x86 and arm64 for now).
+ 
+ KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
+ KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 32c8a675e5a4..a723f84fab83 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -46,6 +46,9 @@
+ #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
+ #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+ 
++#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
++				     KVM_DIRTY_LOG_INITIALLY_SET)
++
+ DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
+ 
+ extern unsigned int kvm_sve_max_vl;
+diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+index e3b9ee268823..1077f653a611 100644
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+ 	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
+ 	 * memory slot is write protected.
+ 	 */
+-	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
+-		kvm_mmu_wp_memory_region(kvm, mem->slot);
++	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
++		/*
++		 * If we're with initial-all-set, we don't need to write
++		 * protect any pages because they're all reported as dirty.
++		 * Huge pages and normal pages will be write protect gradually.
++		 */
++		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
++			kvm_mmu_wp_memory_region(kvm, mem->slot);
++		}
++	}
+ }
+ 
+ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+-- 
+2.19.1
+
