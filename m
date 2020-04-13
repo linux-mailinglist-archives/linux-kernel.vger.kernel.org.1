@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7385B1A6599
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01241A65A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728980AbgDMLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:25:29 -0400
-Received: from outils.crapouillou.net ([89.234.176.41]:39716 "EHLO
-        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728964AbgDMLZ2 (ORCPT
+        id S1729030AbgDMLep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728960AbgDMLeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:25:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1586777124; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Spmp5Tk3iEtqE4TakLgDMzw0KFx8MfCsUhQrPLM9+cs=;
-        b=P0DJOk6HriC0s37BJhSot3nEJqW2fb8W7qlyZeMRoJn9JhXtfv0uEs5Tn61Mbt+dBuQauX
-        nnfNSp8T0JGD24iqzKo3mE/rdZ4wROBre3Igkpw2HAnNSWbh0U739h7NFpReT1b/pbiAOU
-        md7+/hp4ReBv+29kdl5L/2OK2h963Gw=
-Date:   Mon, 13 Apr 2020 13:25:13 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: DRM interaction problems on Ingenic CI20 / jz4780 with dw-hdmi
- and ingenic-drm
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        Yakir Yang <ykk@rock-chips.com>,
-        Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>,
-        Paul Boddie <paul@boddie.org.uk>, linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        MIPS Creator CI20 Development 
-        <mips-creator-ci20-dev@googlegroups.com>
-Message-Id: <125Q8Q.9F49TXF6ZICX1@crapouillou.net>
-In-Reply-To: <ED77DCA8-FF50-4E9E-A4B8-688262774723@goldelico.com>
-References: <ED77DCA8-FF50-4E9E-A4B8-688262774723@goldelico.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        Mon, 13 Apr 2020 07:34:44 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6212C008769;
+        Mon, 13 Apr 2020 04:26:14 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x4so9023104wmj.1;
+        Mon, 13 Apr 2020 04:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=E9gKS0aLx/dN6WOsH21xjxRHRrDTUSuyvEQfHIY2zUE=;
+        b=k8EnH2XlPIgFLTq8Kd1IeXoNfmLrb8FV90H0m3xvqZ3Qg4zgLhGDk/ldL+XaoAAaZE
+         bb8FROY9p3+PIVCAermxDm4ojx7VsP7qr60+hpLYO7FZJIqKIZuwZ7Px0Wj1SxzbVfAi
+         yvVwVy+9tOqBw1vItQU7ao62MGW9CXYef2ZIGsD7yL4csxTzNQu1JG7LMOydEJzyn4Fh
+         scZV+UV0hKF1OHjJx0C4fdWfWKxEx4UwUjEHcuYyDt+GXAT0YJKvH9JertNdyJTAVRdg
+         fOe4zQcOhKNXeG9m8VN8tTqXs6+T2xl9zObQYQ6LCzuMPdH7hv4XGn8w3a8e6wjtQjHs
+         7f9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=E9gKS0aLx/dN6WOsH21xjxRHRrDTUSuyvEQfHIY2zUE=;
+        b=RMutIYlWeHJQ2kXAGSsNRGeAUWTTpRteQ1rudn+fraLDJcwNyErQWb7Vxu9fHsnjS7
+         jynlQIaJTw86yuKYC011O9yJQNJ+C8LCm5roVyOlWmMe9QQrSSV5rik9faBnKUMrJpaE
+         Pp6Y1NYSn3mtnUVJPxCkmMhbt3LIdrtyCw/3D4J2oLd4h9mQF3OkCiT6z/B95NcEZsGG
+         QY8LgdfmmNTsyx0oQpBD8a6/wsgkmjzasgcJMeWkAMjL8Y3po/Fjotgoa15jzJ6PH3j3
+         g8pBZY1MFT5uPlPLjp+lGdjrtWE7G+pxLDQeh8kjEW+bfe167u6Nt4EZmEWgKjRwec3c
+         391g==
+X-Gm-Message-State: AGi0PubvV7k3WHEEl+WL9+exjOelLTIrxnQQrAoOeW7HAgztyn4DnYMg
+        CYEo0a1abn5XBhVEg17Wbio=
+X-Google-Smtp-Source: APiQypIMdVL3KR2SMkYkC4jJZSxngZnkiVynUBtLFJ/LfyzHcGY3cDM4BrItamm6lD6gS9WhQNvwMw==
+X-Received: by 2002:a1c:208c:: with SMTP id g134mr17236290wmg.96.1586777173455;
+        Mon, 13 Apr 2020 04:26:13 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2da9:2f00:3165:1687:284f:4993])
+        by smtp.gmail.com with ESMTPSA id k184sm14012725wmf.9.2020.04.13.04.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 04:26:12 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH RFC v2] MAINTAINERS: add headers and doc to SCHEDULER
+Date:   Mon, 13 Apr 2020 13:26:03 +0200
+Message-Id: <20200413112603.5257-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolaus,
+Various files in include/linux/sched/ and include/uapi/linux/sched/ are
+identified as part of THE REST according to MAINTAINERS, but they really
+belong to SCHEDULER.
+
+Add those headers and Documentation to the SCHEDULER entry.
+
+This was identified with a small script that finds all files belonging to
+THE REST according to the current MAINTAINERS file, and I investigated
+upon its output.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+RFC v1: https://lore.kernel.org/lkml/20200308174931.9118-1-lukas.bulwahn@gmail.com/
+  - no feedback.
+
+RFC v2:
+  - v1 does not apply after reordering MAINTAINERS, i.e., commit 4400b7d68f6e
+    ("MAINTAINERS: sort entries by entry name") and commit 3b50142d8528
+    ("MAINTAINERS: sort field names for all entries").
+  - does not need to reorder entries anymore.
+  - applies cleanly on v5.7-rc1
 
 
-Le sam. 11 avril 2020 =E0 16:14, H. Nikolaus Schaller=20
-<hns@goldelico.com> a =E9crit :
-> Hi,
-> we (Paul Boddie and me) are working to get HDMI functional on the
-> Ingenic CI20 board with jz4780 SoC which uses a specialization of
-> the dw-hdmi driver.
->=20
->=20
-> So far we have identified two issues.
->=20
-> The first is that HPD interrupts are not properly processed.
->=20
-> drm_helper_hpd_irq_event() is called by HPD events but
-> dev->mode_config.poll_enabled is false.
->=20
-> Therefore the interrupt is ignored and nothing happens.
->=20
-> Now I wonder about the logic behind checking for poll_enabled.
-> I understand that a driver can do either polling or irq or both.
->=20
-> Therefore handling the irq_event shouldn't be disabled by poll_enabled
-> being false. Otherwise we can only do: nothing, polling, polling+irq
-> but not irq alone.
->=20
-> The jz4780 hdmi subsystem (drm/bridge/dw-hdmi.c) uses
->=20
-> 	connector->polled =3D DRM_CONNECTOR_POLL_HPD;
->=20
-> but shouldn't this enable polling? Note that there seems to be
-> no (direct) call to drm_kms_helper_poll_init().
->=20
-> If we set dev->mode_config.poll_enabled =3D true in
-> drm_helper_hpd_irq_event() things start to work.
->=20
-> Please can you clarify what would be best practise here to
-> get HPD event handling working.
->=20
->=20
-> The other issue is in dw-hdmi.c:
->=20
-> We found out that ingenic_drm_encoder_atomic_check() fails because
->=20
-> info->num_bus_formats =3D=3D 0
->=20
-> and not 1. This blocks further initialization.
->=20
-> The reason seems to be that dw_hdmi_bridge_attach() does not call
-> drm_display_info_set_bus_formats() with a proper format like
-> other drivers (e.g. drm/bridge/ti-tfp410.c) are doing.
->=20
-> We have patched to set a single bus format MEDIA_BUS_FMT_RGB888_1X24
-> and then DRM setup seems to work (although we still have no valid
-> HDMI signal but that is likely something else).
->=20
-> Please can you explain how setting the bus format should be fixed
-> in dw-hdmi.c.
->=20
-> If these questions should be forwarded to other specialists, please
-> do so.
+ MAINTAINERS | 3 +++
+ 1 file changed, 3 insertions(+)
 
-It should be sent to the DRI mailing list, you missed the most=20
-important one.
-
--Paul
-
->=20
-> BR and thanks,
-> Nikolaus Schaller
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e64e5db31497..8546910db0ba 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14905,10 +14905,13 @@ R:	Mel Gorman <mgorman@suse.de> (CONFIG_NUMA_BALANCING)
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
++F:	Documentation/scheduler/
+ F:	include/linux/preempt.h
+ F:	include/linux/sched.h
++F:	include/linux/sched/
+ F:	include/linux/wait.h
+ F:	include/uapi/linux/sched.h
++F:	include/uapi/linux/sched/
+ F:	kernel/sched/
+ 
+ SCR24X CHIP CARD INTERFACE DRIVER
+-- 
+2.17.1
 
