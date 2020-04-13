@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B03F1A6436
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD321A6453
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgDMIf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:40852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727123AbgDMIK5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:10:57 -0400
-Received: from huawei.com (szxga07-in.huawei.com [45.249.212.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C33C008749;
-        Mon, 13 Apr 2020 01:02:06 -0700 (PDT)
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6DA2B36F7FB45CCDE9FA;
-        Mon, 13 Apr 2020 16:02:04 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
- 16:01:54 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <brking@us.ibm.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] scsi: ipr: remove unneeded semicolon
-Date:   Mon, 13 Apr 2020 16:28:22 +0800
-Message-ID: <20200413082822.24356-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+        id S1728435AbgDMIfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 04:35:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:60863 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727795AbgDMIez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 04:34:55 -0400
+IronPort-SDR: odkCGTvyB8UjCzKWLrUJ3FfJP/p13xW+1OfF8VR58J2MkpPqiPebo3DuBHQMofM3IQmDbyAuUo
+ lr63i/9XxwIg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 01:34:55 -0700
+IronPort-SDR: XkPBaEPk3nYKkijQE0zTcybK4lHwfULNgyRdgi64MnHpbewtkjOe0HJmutO6/sflQDAWZZzaHC
+ qF1yJLGFfZAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="252813717"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by orsmga003.jf.intel.com with ESMTP; 13 Apr 2020 01:34:52 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: bdw-rt5650: remove 3-channel capture support
+Date:   Mon, 13 Apr 2020 16:28:53 +0800
+Message-Id: <1586766533-18557-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+Implement a constrain to exclude 3-channel capture since only 2 and 4
+channel capture are supported on the platform.
 
-drivers/scsi/ipr.c:1167:2-3: Unneeded semicolon
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- drivers/scsi/ipr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bdw-rt5650.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
-index d48a8fa997b9..0db37b4f7265 100644
---- a/drivers/scsi/ipr.c
-+++ b/drivers/scsi/ipr.c
-@@ -1164,7 +1164,7 @@ static void ipr_update_ata_class(struct ipr_resource_entry *res, unsigned int pr
- 	default:
- 		res->ata_class = ATA_DEV_UNKNOWN;
- 		break;
--	};
-+	}
- }
+diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+index af2f502..eedbdad 100644
+--- a/sound/soc/intel/boards/bdw-rt5650.c
++++ b/sound/soc/intel/boards/bdw-rt5650.c
+@@ -83,6 +83,36 @@ static struct snd_soc_jack_pin mic_jack_pin = {
+ 	.mask	= SND_JACK_MICROPHONE,
+ };
  
- /**
++static const unsigned int channels[] = {
++	2, 4,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static int bdw_fe_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/*
++	 * On this platform for PCM device we support,
++	 * 2 or 4 channel capture
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		snd_pcm_hw_constraint_list(runtime, 0,
++					   SNDRV_PCM_HW_PARAM_CHANNELS,
++					   &constraints_channels);
++
++	return 0;
++}
++
++static const struct snd_soc_ops bdw_rt5650_fe_ops = {
++	.startup = bdw_fe_startup,
++};
++
+ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_hw_params *params)
+ {
+@@ -234,6 +264,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+ 		.name = "System PCM",
+ 		.stream_name = "System Playback",
+ 		.dynamic = 1,
++		.ops = &bdw_rt5650_fe_ops,
+ #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+ 		.init = bdw_rt5650_rtd_init,
+ #endif
 -- 
-2.21.1
+2.7.4
 
