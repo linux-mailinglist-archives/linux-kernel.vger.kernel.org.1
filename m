@@ -2,224 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADA31A6A2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C371A6A35
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731757AbgDMQp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731735AbgDMQpN (ORCPT
+        id S1731815AbgDMQs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:48:57 -0400
+Received: from sonic308-36.consmr.mail.ne1.yahoo.com ([66.163.187.59]:45111
+        "EHLO sonic308-36.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731785AbgDMQsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:45:13 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880D2C0A3BDC;
-        Mon, 13 Apr 2020 09:45:13 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 131so7017530lfh.11;
-        Mon, 13 Apr 2020 09:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2YVpEsdAD3gdou5O12iibPQ3XhGh37dAHJSGf0NXN0w=;
-        b=YP83sfYkJzjjL19EAeyMmpmI97iR/GfkRrCy6ay6bm3o6v6P9RxZbQiSkOfz+GbOmY
-         DTqA1h9WVANaT5ADT/C+SLfLBfwZCEsrB9bsHsTNBIEQyZ18pOBwJmbvApGhxBhY86KK
-         67jaP7Y031u5l3u7dBNCAYL+Bhv0alpKIjvw0/1dW3bISdLgMwxZz0b07ZsiOap82ulA
-         7ulpP1iRJECuGuPeXn840GpJJ3JzhJctzeYYEsZkL+1biT4EKtLUug2DMKTnvmAsS0dP
-         ysjZWFSHzAybk9J8CT4rOHJ3w1S1qxgeMeNdtEZva3xr8iAOa5ej2s357w2AaPS0h0US
-         VEKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2YVpEsdAD3gdou5O12iibPQ3XhGh37dAHJSGf0NXN0w=;
-        b=r28lMVNblZZeTmm9KI5NHmUks5fRu3985SM+vs2WIiXOv15yk/hZMIAOKBzbBwlZ54
-         IxJzvOo6yZ8DxDs9athPeMEVcVrYJ04wdfaHjxXtNs3CgJkzjJQxtIgB3RNfEhsqZ5Oe
-         ug6wwfHCRFxHwwgwrWWHeJKVdmExen1Xq0cLwTxsat/KdDAdH0Q7uxKLuVeVr11OfFNl
-         Xq90MaXgX2ZZzKgJ7coOtLPfNbYaAdcGU2/hXbnvvmZYQstwZBVLgMyAcPx6RIV1CT81
-         8grQ5iXrapT6wiVI1ieXdCLRFnhPJnqYqpT9ayCjtj5EE0e4qcD1mKCLrBiz04iponwd
-         aBYg==
-X-Gm-Message-State: AGi0PuZ9zPrv7hu11SxGrj0l8mKosuP/taVVRjn4gZwRSz8Llm1DsBA3
-        UI1wQdhEsSUuN0VdCQ7xzy/HOOhG6t8S8g==
-X-Google-Smtp-Source: APiQypJniJ22q9ejT6dHNBXLjaeOMXx81p9W4vXAMZiLxguhcg8uVdZVBz7Hmz6Om+kNT50l6LRtYA==
-X-Received: by 2002:a05:6512:1109:: with SMTP id l9mr2428352lfg.12.1586796311588;
-        Mon, 13 Apr 2020 09:45:11 -0700 (PDT)
-Received: from localhost ([213.191.183.145])
-        by smtp.gmail.com with ESMTPSA id f4sm2256280lfa.24.2020.04.13.09.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 09:45:10 -0700 (PDT)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH 3/3] ARM: dts: qcom: msm8974-klte: Add max77826 pmic node
-Date:   Mon, 13 Apr 2020 19:44:40 +0300
-Message-Id: <20200413164440.1138178-4-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200413164440.1138178-1-iskren.chernev@gmail.com>
-References: <20200413164440.1138178-1-iskren.chernev@gmail.com>
+        Mon, 13 Apr 2020 12:48:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1586796520; bh=bElmMGeGrTv4UdyeT/oxmt1v3extMJthOFW7mXr0BPk=; h=Date:From:To:Cc:Subject:References:From:Subject; b=G6N26eb/yIVXiQw0qE6W8f1AUrYzP2Vnj639Wh1dRrPcss2DmnvhpM6jv3pahSdqrFPJylW7ww6buFHDad/XWvsA0ORW2x4Pqk2m7Rl3wB//SK75W/34y8J46ioDHOwyfgZuoNAirliNbZMXd2ssFqHczVm6uwjizaz8w4+roui8RAImkHC1G8HM0eLi+lIN+UpXYFFzsHxk0/fpUN7p1G+a08pwx9Q5aXfZHZH6JmyFThQVGq3uLKmzFlPLEIMb4NFQpKquxYjJdjfNPnsB8XJgTLhVI0idEPo/POaX9oGrUXioupjEW8jrcagzTy6jliHX7oUMzGd4K7n/idELdQ==
+X-YMail-OSG: LNqYr_cVM1k37p0BEArws0j2SMpuYOmfY_EMhqarqChYwpxuxB8KFGB5vV9fJsz
+ iIhnJb3jaXvCGfE2aSt4doan7aJ6dnzbyn89vnjq_SV8cDsINa2Fqtq5gc4ss64xsowGwGkY0CFL
+ bkDlKb.TBuK5i6h5kMoSuaco4ej32E_P1gf2QALa7eJ4GjX3kPp1EPZiOY7t91D7aYL8_D_qdt3H
+ vO3CrC3b3OzsJM2iIxCQTrZhgw_xhCgXknUXKldyXSCljK.xwsr6ptXFP0ShFiClnDhnnzQSeb8U
+ 8moIDJ0FYYVSUa5fkj9bVqabZrzyVLc1F11Q19S1nCLBWPK3XhvJyJYWLAXyfcB.b.GvP2KFnYxd
+ .622OG1af5W_BeM9zU.B0c_zanoiWMHY5iDCE4YL7hr0Z9_vvXrbkIdlZzinFy1cDN.jqFa6Audw
+ gINBZnjZwlUDG_kWvj7oLaD6DBTOlN5FSKkY3TqJCvii_60QSyGPbhVDbzMpyoK9WrDLrc9Qdcxv
+ vplOG2bPeK6hS1GT4th80ccQjURFsuAX4URg1Ud7Pg.Rgy5_m3ChN8gh_gPG6s6yro2abNq1zTVk
+ 5MiCxH5yW6Um1DLHst.PQPVBq0jsOJJINwuE52hU5csMNA1iS878f2XIdgfuJ80uGTw9C0Suq7MV
+ jUQPvf7Jn.r0CPz6wIduG5MdgGa5MUc6EaQ9Uk2BgNfahC6Cjhlm1NdcNMBrpoQKcFCw2MeCoqOX
+ XtKpIYf0Cwkg3P_imu2PoQSeZEBtLzT7fk1O2mdzN7Add.8_6nITJWcVQ9tLbKVk5cO0HzcmEX7G
+ Wk3y05Z.DkCwSpSMcv1Pt2tu2Jm5sCTeBqMvJeRrc0sWL2q8Z_Hv.ZmxNrFPZ7yIhNm3tp7M33Oi
+ YUy0yCJ2V8JL71R14dSZ9slsRCO26FHABrYpmPfindFDov.JMXs7_zdnKFTDtVehI.Pf1xUAh8WP
+ eGk0o2xRK12vs3jQejL8E3_HS7MSqPRXf9.2YkjO9Mbn3MXzicXwMk00MgoB8EV_tGnMZCtZIwYw
+ foZddko11qm3tQQONrDFvdKb9qax0V2OWdPkraYbNgpukrtllXThKRQhV2u34MzH3hmr3_urqUQs
+ ClkLC64opRM.mNzxEj.VxatPE83c0L5SREGkqlyOHuHTA9bofUTDAb02wx7mVSNIOH8CIyvO8GS_
+ 71HVoS2qnZAM_.wmbp1Lyyow_1hO6MGdI42Gg8O2AH5E5faSJVUDvjfsVcv2SiaiCKIOZvlOKCxX
+ v9jYAeL6UkGR0Yy3ugJ6EPuNc1WvWQi9gkbZ6aNb7RshbfeE_dscpY1d691.OuEZa2dVD.of3eIn
+ DqS2tCYzshoHXS.Hq5wHrwSAUsFwh12D8q0VPrMoQ3E0aTchM7X7hCVNafw95qXWfliTAppfKhiM
+ EUiz_SVqm8in1o_lrVJUImDS0i2fBFlWRye6G2WZC.oU45UJJqcfnqc5_0WiZN8Ktf.JESTnVovd
+ BytjHtcq9zOOXZcUjJ_3yQ73uipcIyH3TcxKvspLA2cqw95M.gQwTZc76yQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Mon, 13 Apr 2020 16:48:40 +0000
+Received: by smtp424.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 700b38ef91bca85d70b21427f6befc3c;
+          Mon, 13 Apr 2020 16:46:38 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 00:46:08 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Miao Xie <miaoxie@huawei.com>, Fang Wei <fangwei1@huawei.com>,
+        Lasse Collin <lasse.collin@tukaani.org>
+Subject: [ANNOUNCE] erofs-utils: release 1.1
+Message-ID: <20200413164544.GA5578@hsiangkao-HP-ZHAN-66-Pro-G1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200413164544.GA5578.ref@hsiangkao-HP-ZHAN-66-Pro-G1>
+X-Mailer: WebService/1.1.15620 hermes_aol Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This introduces the MAX77826 PMIC that powers some pheripherals on the
-klte, like the touchpad, touchkeys and camera.
+Hi folks,
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- .../boot/dts/qcom-msm8974-samsung-klte.dts    | 110 ++++++++++++++++++
- arch/arm/boot/dts/qcom-msm8974.dtsi           |  11 ++
- 2 files changed, 121 insertions(+)
+A new version erofs-utils 1.1 is available at:
+git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git tags/v1.1
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-index eaa1001d0a46..f6d3a9dcf0de 100644
---- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-@@ -21,4 +21,114 @@ serial@f991e000 {
- 		status = "ok";
- 	};
- 
-+	pinctrl@fd510000 {
-+		i2c6_pins: i2c6 {
-+			mux {
-+				pins = "gpio29", "gpio30";
-+				function = "blsp_i2c6";
-+
-+				drive-strength = <2>;
-+				bias-disable;
-+			};
-+		};
-+	};
-+
-+	i2c@f9928000 {
-+		status = "okay";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&i2c6_pins>;
-+
-+		pmic@60 {
-+			reg = <0x60>;
-+			compatible = "maxim,max77826-regulator";
-+
-+			regulators {
-+				max77826_ldo1: LDO1 {
-+					regulator-min-microvolt = <1200000>;
-+					regulator-max-microvolt = <1200000>;
-+				};
-+
-+				max77826_ldo2: LDO2 {
-+					regulator-min-microvolt = <1000000>;
-+					regulator-max-microvolt = <1000000>;
-+				};
-+
-+				max77826_ldo3: LDO3 {
-+					regulator-min-microvolt = <1200000>;
-+					regulator-max-microvolt = <1200000>;
-+				};
-+
-+				max77826_ldo4: LDO4 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <1800000>;
-+				};
-+
-+				max77826_ldo5: LDO5 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <1800000>;
-+				};
-+
-+				max77826_ldo6: LDO6 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				max77826_ldo7: LDO7 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <1800000>;
-+				};
-+
-+				max77826_ldo8: LDO8 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				max77826_ldo9: LDO9 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <1800000>;
-+				};
-+
-+				max77826_ldo10: LDO10 {
-+					regulator-min-microvolt = <2800000>;
-+					regulator-max-microvolt = <2950000>;
-+				};
-+
-+				max77826_ldo11: LDO11 {
-+					regulator-min-microvolt = <2700000>;
-+					regulator-max-microvolt = <2950000>;
-+				};
-+
-+				max77826_ldo12: LDO12 {
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				max77826_ldo13: LDO13 {
-+					regulator-min-microvolt = <3300000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				max77826_ldo14: LDO14 {
-+					regulator-min-microvolt = <3300000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				max77826_ldo15: LDO15 {
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <1800000>;
-+				};
-+
-+				max77826_buck: BUCK {
-+					regulator-min-microvolt = <1225000>;
-+					regulator-max-microvolt = <1225000>;
-+				};
-+
-+				max77826_buckboost: BUCKBOOST {
-+					regulator-min-microvolt = <3400000>;
-+					regulator-max-microvolt = <3400000>;
-+				};
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom-msm8974.dtsi
-index 2ea2308d91b3..51f5f904f9eb 100644
---- a/arch/arm/boot/dts/qcom-msm8974.dtsi
-+++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
-@@ -974,6 +974,17 @@ blsp_i2c3: i2c@f9925000 {
- 			#size-cells = <0>;
- 		};
- 
-+		blsp_i2c6: i2c@f9928000 {
-+			status = "disabled";
-+			compatible = "qcom,i2c-qup-v2.1.1";
-+			reg = <0xf9928000 0x1000>;
-+			interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gcc GCC_BLSP1_QUP6_I2C_APPS_CLK>, <&gcc GCC_BLSP1_AHB_CLK>;
-+			clock-names = "core", "iface";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
-+
- 		blsp_i2c8: i2c@f9964000 {
- 			status = "disabled";
- 			compatible = "qcom,i2c-qup-v2.1.1";
--- 
-2.26.0
+It's actually a maintenance release including the following updates:
+  - (mkfs.erofs) add a manual for mkfs.erofs;
+  - (mkfs.erofs) add superblock checksum support;
+  - (mkfs.erofs) add filesystem UUID support;
+  - (mkfs.erofs) add exclude files support;
+  - (mkfs.erofs) fix compiling issues under some specific conditions,
+                 mainly reported by various buildbots;
+  - (mkfs.erofs) minor code cleanups;
+
+EROFS LZMA support is still ongoing, and the previous preliminary
+progress is available at
+ https://lore.kernel.org/r/20200229045017.12424-1-hsiangkao@aol.com
+and
+ https://lore.kernel.org/r/20200306020252.9041-1-hsiangkao@aol.com
+some minor updates I'd like to send out with the next WIP version.
+
+In addition, as discussed with Lasse before, XZ Utils liblzma would
+probably support fixed-sized output compression officially later
+as well. But it may need some more time then.
+
+Recently I have little time for features due to struggling with my
+upcoming English test which has been greatly impacted (delayed) by
+corona. While I'm still keeping up with community by email and
+available for all potential issues and/or responses if any.
+
+Thanks,
+Gao Xiang
 
