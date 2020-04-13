@@ -1,91 +1,100 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [23.128.96.19])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B9D1A63F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:13:32 +0200 (CEST)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id C546F1A63D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgDMINY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:40870 "EHLO
+        id S1729470AbgDMHxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:37240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729272AbgDMIK6 (ORCPT
+        with ESMTP id S1727480AbgDMHxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:10:58 -0400
-Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr [80.12.242.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 983EAC00860B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:01:22 -0700 (PDT)
-Received: from [192.168.1.41] ([90.126.162.40])
-        by mwinf5d60 with ME
-        id S7t9220070scBcy037tHSA; Mon, 13 Apr 2020 09:53:51 +0200
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 13 Apr 2020 09:53:51 +0200
-X-ME-IP: 90.126.162.40
-Subject: Re: [PATCH] net: mvneta: Fix a typo
-To:     Joe Perches <joe@perches.com>, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20200412212034.4532-1-christophe.jaillet@wanadoo.fr>
- <6ecfa6cb686af1452101c0b727c9eb34d5582610.camel@perches.com>
- <eea1b700-4559-c8d1-1960-1858ed3d90ef@wanadoo.fr>
- <f1033e80969fce39d9cc97fb924f7d68e5f96f74.camel@perches.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <4b5efa7f-6bd9-c64c-e42f-20e76df2c3f5@wanadoo.fr>
-Date:   Mon, 13 Apr 2020 09:53:00 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <f1033e80969fce39d9cc97fb924f7d68e5f96f74.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Mon, 13 Apr 2020 03:53:44 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E97C008651;
+        Mon, 13 Apr 2020 00:53:42 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k11so8657169wrp.5;
+        Mon, 13 Apr 2020 00:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=spiyZxT4E+JmLBsDsV1seik/2tk8bWL3YTlzlnavzgI=;
+        b=f7pV8rfFH7lOGO3h5/nULD5HFllQxOEL05FTUF2SiEU7MAF1JJPc8mKH7k/3mp1dKC
+         FdUtjdGVIhPaaHxiz+2ZaWsvZCsBdBLkUc0vwbtipe+jfJJ55AY7x9j9o7z3iU3ftoEb
+         Bv3Ej6Xplpkv9hOYt6QwjKJzP4A3G62gst9hKhD5eBAYTvgF9Wr4JygtFDUu1AyZxBEn
+         wNjlO5+VD0sorsLos6LHRByHb8qvslGj1FTporIbvRQfVEods0O9oLMrmXmySRNdjWmj
+         QcA6UC/bsomklfXgRa3zN0/xG2DhA+CKHljfC40QOQW0cpHOsm/s4JnXCNvoy3PfS2Za
+         3XdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=spiyZxT4E+JmLBsDsV1seik/2tk8bWL3YTlzlnavzgI=;
+        b=DIMJWxM4zBkKNwQ6oMnScO2gTlJCd+r3SgpUlLO4gpNWyo9Ie+BZt3Mj85LlYmkR9Z
+         B3hfhU9kTwcwk1ULP0xNNblvPOYaFEHsoJCxbSvNnGuXJFMMXwKX4/NgMAvCAqpwFZYW
+         Gfob1fCSvP1XWaG8ZG7H9IUZRzCD1cl9MwkxOPAtM8fhVa03yhH7xM1MeCgOa6yIz5Cn
+         K5uAui3L2y/CccFwe16om9VvBG3ociv8fmrFE0EZh90JhaC1Y4pD0suG97iCfgEG38nL
+         nzDUusyGIiUvMViJBLPFIRfyDwmVbCLV5IddqVIZD3AKQJGpfUosDlwjtG0pJ8gPUgeF
+         DPYQ==
+X-Gm-Message-State: AGi0Pua9lwaUaflpYSub3eCaYGYNoiLQb1lojdsk2ZS86JgSvjxtDu1X
+        xF/s4nrl/90CiV0vg3kG3aU=
+X-Google-Smtp-Source: APiQypI3ADIddYujUXFFd3J7qJbmarkuNkmp+vZH8NiU3NHgBxky845LmO+SMRcLmZhfAGYfIIblKg==
+X-Received: by 2002:a5d:6785:: with SMTP id v5mr3023648wru.376.1586764421177;
+        Mon, 13 Apr 2020 00:53:41 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2da9:2f00:c0be:812e:7fb0:ebe0])
+        by smtp.gmail.com with ESMTPSA id s14sm14009619wme.33.2020.04.13.00.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 00:53:40 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Maxime Ripard <maxime@cerno.tech>, Rob Herring <robh+dt@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: point to display schemas in DRM DRIVERS FOR ALLWINNER A10
+Date:   Mon, 13 Apr 2020 09:53:29 +0200
+Message-Id: <20200413075329.10717-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 13/04/2020 à 09:15, Joe Perches a écrit :
-> On Mon, 2020-04-13 at 08:56 +0200, Christophe JAILLET wrote:
->> Le 12/04/2020 à 23:35, Joe Perches a écrit :
->>> On Sun, 2020-04-12 at 23:20 +0200, Christophe JAILLET wrote:
->>>> s/mvmeta/mvneta/
->>> nice. how did you find this?
->> Hi,
->>
->> This is based on a bash script I've made a while ago (see [1])
->> I've slightly updated it, but the idea is still the same. I search
->> strings in a file with some variation on the file name (2 inverted
->> chars, 1 missing char or 1 modified char).
->>
->> The output is horrible, and a lot of filtering should be done.
->> It is much like noise, with MANY false positives. But I manage to dig
->> some interesting stuff out of it.
->>
->> If interested in the updated script, just ask, but except the concept
->> itself, I'm not sure than anything else worth anything and is should be
->> rewritten from scratch.
->>
->> The update includes some tweaks in order to search into Kconfig files
->> instead.
->>
->> CJ
->>
->> [1]: https://marc.info/?l=kernel-janitors&m=156382201306781&w=4
-> Nice.
->
-> I was wondering if you used levenshtein distance or something else.
->
-> https://en.wikipedia.org/wiki/Levenshtein_distance
->
->
-Well, kind of hand-written version :)
+Commit f5a98bfe7b37 ("dt-bindings: display: Convert Allwinner display
+pipeline to schemas") replaced sunxi/sun4i-drm.txt with
+allwinner,sun*.yaml files in Documentation/devicetree/bindings/display/,
+but did not adjust DRM DRIVERS FOR ALLWINNER A10.
 
-If of any interest:
-https://marc.info/?l=linux-driver-devel&m=141798041130581&w=4
+Since then, ./scripts/get_maintainer.pl --self-test complains:
 
-I don't remember having played with it myself, but it looks interesting.
+  warning: no file matches \
+  F: Documentation/devicetree/bindings/display/sunxi/sun4i-drm.txt
 
-CJ
+Point to allwinner display schemas in DRM DRIVERS FOR ALLWINNER A10.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Maxime, please ack.
+Rob, please pick this non-urgent minor clean-up patch.
+
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e64e5db31497..1f6c9bec872a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5552,7 +5552,7 @@ M:	Chen-Yu Tsai <wens@csie.org>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+-F:	Documentation/devicetree/bindings/display/sunxi/sun4i-drm.txt
++F:	Documentation/devicetree/bindings/display/allwinner,sun*.yaml
+ F:	drivers/gpu/drm/sun4i/
+ 
+ DRM DRIVERS FOR AMLOGIC SOCS
+-- 
+2.17.1
 
