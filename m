@@ -2,120 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EE21A6CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 22:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687B81D21ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388220AbgDMUDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 16:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388207AbgDMUDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 16:03:38 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C301020656;
-        Mon, 13 Apr 2020 20:03:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586808218;
-        bh=8JRSPtfFtwYpSXe+i9+/qeDQ6wtXz30+2CN05Ky2K6c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yh8bmdrKCvHdJ3KwdaOzWcbYWbjRFePxlpjXNzEDybKoB30og5rJZe1DikW0Z7Orw
-         tvW9XV3nzIAO3u+utBZZC1ivs0JF5PO2gbC63YJV/8Z8cMWhp6Z35K2cK6D3VIhMpq
-         +p3L9RaTVEoaU4iDjjUZRy5e7yRw1Lz9Hd+7LSvQ=
-Date:   Mon, 13 Apr 2020 16:03:36 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Metzger, Markus T" <markus.t.metzger@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simark@simark.ca>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 00/17] Enable FSGSBASE instructions
-Message-ID: <20200413200336.GA11216@sasha-vm>
-References: <1570212969-21888-1-git-send-email-chang.seok.bae@intel.com>
- <alpine.DEB.2.21.1911151926380.28787@nanos.tec.linutronix.de>
- <20191115191200.GD22747@tassilo.jf.intel.com>
- <A78C989F6D9628469189715575E55B236B50834A@IRSMSX104.ger.corp.intel.com>
- <CALCETrXc=-k3fQyxjBok0npjTMr6-Ho7+pkvzDUdG=b52Qz=9g@mail.gmail.com>
- <A78C989F6D9628469189715575E55B236B508C1A@IRSMSX104.ger.corp.intel.com>
- <CALCETrWb9jvwOPuupet4n5=JytbS-x37bnn=THniv_d8cNvf_Q@mail.gmail.com>
- <29FD6626-4347-4B79-A027-52E44C7FDE55@intel.com>
+        id S1731230AbgEMWWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:22:55 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:61120 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730064AbgEMWWz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 18:22:55 -0400
+IronPort-SDR: EUXn1FF1fld46AxqYPlXjGVDni15fiVVf7WZaIxR0KWp5mKwGNTZ5QbJSwCumUIoo+PufCxiJ9
+ Uwmto+Llz4o7cs60+8VCecY93UrqRsDjPz0CSr5zq7wRL2NVd1gk/D6b1Z784BkTD1rECW1DU4
+ 7sUFB/e2Zv7ULeUPdbV0Ox+z2XvudikEgClVx7iIrzf9zncCc1cZhWF32yIXWP4eTURVj60oG+
+ aD4pEvh8KvQLfXvgzRGUMgGQErc+2LM0Iv6+DJC7eGEFFJAOlSBqAaiQQtUO7p/J4Wl3VM9ok4
+ RC0=
+X-IronPort-AV: E=Sophos;i="5.73,389,1583164800"; 
+   d="scan'208";a="137620218"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 14 May 2020 06:22:51 +0800
+IronPort-SDR: ek8MfYEWbJxzPumTz5+YzHupT+9hPLS03gd+ZR4p+vK2L0Oy9VWZ5a0ZMQPRRAUfyszM4Trr05
+ XEr/jPPVQbyck0zr0jBFCG1yEsL0HgmBQ=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:13:04 -0700
+IronPort-SDR: P6iHcdhszLsClPNdpv1NcHMOyBxAVgrnPi6v7K9XBEBtlLdV4rv3b1Yo7QIpoqtPlNnrzHQ+tH
+ r351/X+wTE5g==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun52) ([10.149.66.28])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:22:50 -0700
+X-Received: from MN2PR04MB5792.namprd04.prod.outlook.com (2603:10b6:a03:1a0::17)
+ by BYAPR04MB5176.namprd04.prod.outlook.com with HTTPS via
+ BY5PR16CA0004.NAMPRD16.PROD.OUTLOOK.COM; Wed, 13 May 2020 22:18:41 +0000
+X-Received: from BN6PR04CA0094.namprd04.prod.outlook.com (2603:10b6:404:c9::20)
+ by MN2PR04MB5792.namprd04.prod.outlook.com (2603:10b6:208:a5::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Wed, 13 May
+ 2020 22:18:40 +0000
+X-Received: from BN3NAM04FT010.eop-NAM04.prod.protection.outlook.com
+ (2603:10b6:404:c9:cafe::d3) by BN6PR04CA0094.outlook.office365.com
+ (2603:10b6:404:c9::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend
+ Transport; Wed, 13 May 2020 22:18:40 +0000
+Authentication-Results: spf=none (sender IP is 216.71.153.141)
+ smtp.mailfrom=linux-mips.org; wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=linux-mips.org;
+X-Received: from esa3.hgst.iphmx.com (216.71.153.141) by
+ BN3NAM04FT010.mail.protection.outlook.com (10.152.92.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3000.19 via Frontend Transport; Wed, 13 May 2020 22:18:39 +0000
+Authentication-Results-Original: esa3.hgst.iphmx.com; dkim=none (message not
+ signed) header.i=none; spf=None smtp.mailfrom=macro@linux-mips.org; spf=None
+ smtp.helo=postmaster@cvs.linux-mips.org
+X-Ironport-Dmarc-Check-Result: validskip
+IronPort-SDR: HeQbNWBerY+NlTTft4NC8QBsMf9L8cOywOsihBwdjnAAMc4tkUId/GGfnY67ZsBYc628MOzysw
+ MrAUVpGNHU3ZjY7O2cqoMmhHb7/a3GGjQK3XR4imZnwZpTPF7BXQAK4ucUNr2KuDCa/mZeScvz
+ 8LDEndB+DGbWOWaQWFu/srq6qHK+lWu9pF5+xAuO6g+DsQhn2Y7NgtTHvLE1Vel7ioQTo7m5Z+
+ FV0pXbbpevUeOClRonHYA3ZvEB1NdFD2YNseehxFKBSxJmxDfAlolYeHDA+WXc9YZ8SOr5+pTL
+ AUJK79S7cxviOHYbmO4iB36g
+IronPort-PHdr: =?us-ascii?q?9a23=3Apf+k6h16MmIYrXJnsmDT+DRfVm0co7zxezQtwd?=
+ =?us-ascii?q?8ZseIRLPad9pjvdHbS+e9qxAeQG9mCtrQV1qGO7ejJYi8p2d65qncMcZhBBV?=
+ =?us-ascii?q?cuqP49uEgeOvODElDxN/XwbiY3T4xoXV5h+GynYwAOQJ6tL1LdrWev4jEMBx?=
+ =?us-ascii?q?7xKRR6JvjvGo7Vks+7y/2+94fcbglVhDexe7d/IRW5oQnNt8QdnJdvJLs2xh?=
+ =?us-ascii?q?bVuHVDZv5YxXlvJVKdnhb84tm/8Zt++ClOuPwv6tBNX7zic6s3UbJXAjImM3?=
+ =?us-ascii?q?so5MLwrhnMURGP5noHXWoIlBdDHhXI4wv7Xpf1tSv6q/Z91SyHNsD4Ubw4RT?=
+ =?us-ascii?q?Kv5LpwRRT2lCkIKSI28GDPisxxkq1bpg6hpwdiyILQeY2ZKeZycr/Ycd4cWG?=
+ =?us-ascii?q?FPXNteVzZZD42yb4UBEfcPMuRboYnzqFQBsQCzBRWwCO/z1jNEmmP60bM83u?=
+ =?us-ascii?q?88EQ/GxgsgH9cWvXjaq9v6LrsdUeGrw6nK0D7Mb+la0irh5ojPcxEgoe2DXb?=
+ =?us-ascii?q?Fxccbf1EIiEAbFgU+Mpoz/ODOYzeANs2md7+p9WuOjkmsnqwBpoji03MssjZ?=
+ =?us-ascii?q?PJho0Mx13C6C52z5o7K8eiR05nfd6rDoFQtyeCOoZrTc0vQWFmtigmx7MIuZ?=
+ =?us-ascii?q?C2fTUHxZs7yhPeZfKJfJSF7w79WOqNPTp1mX1odKyjixqu9UWty+LxWtS23V?=
+ =?us-ascii?q?hFrydIlMTHuH4K1xzW8MeHS/1981+l2TmSzADf8PpELlsymKHGKJAh2qY9mo?=
+ =?us-ascii?q?ccvEnABCP6hkX7gLKMekgg+uWk8fnrb7vlq5KaKoR6kBvxMr40lcy6Gek4Mh?=
+ =?us-ascii?q?YBX2yc+emkyLLj41b5TK9Ojv03lKnZrZ/bKd0epq64Gw9VyZwv6xGlDzepyN?=
+ =?us-ascii?q?gYnH8HI0xZeB+fkoTkNFLDLOrmAfq/nligijNmyvDcMrH8DJjALWDPkLL7cr?=
+ =?us-ascii?q?Z8705cxhAzzdda559MD7EOOu78WlX2tNHDCh85Mgq0w/voCdlk04MeWHqPAr?=
+ =?us-ascii?q?SDPKPVq1+I6fojI/OQa48NpDb9N/8l6ubrjXAjhVAdZ66p0IAZaX+lAvtqOV?=
+ =?us-ascii?q?mWYX3pgoRJLWBfnAs3XPHswGyLVzEbM3SzVrIh4HcqAYSpJYnHV4+qiaDH1y?=
+ =?us-ascii?q?C+SM54fGdDXxqpGHzpeofMZLFEUiWAM8Rik3ZMAb2oQJUm/RWvshLqjr9mNv?=
+ =?us-ascii?q?GS/TcX48GwnONp7vHewElhvQd/CN6QhiTUFzkuxDEhWiM20aZjoEd01laE1+?=
+ =?us-ascii?q?1CjudFEcBIvq0RAAohPMWaz+NhF5bzQgLEbpGCT1P1CtmlADRkSNU3zpdOZk?=
+ =?us-ascii?q?tmANytg1jF2DbiGL4akbGHRdQ0/6vQ0mK3JpN7zHDLh+E6l1dzZMxJOCW9g7?=
+ =?us-ascii?q?JnsQ3aBorHiUKcwqOjfr4b9CrM8nqTiG+PpFoeVxR/Au3eRX5KQEzQoJzi41?=
+ =?us-ascii?q?/aCb+jDbNyKgxa1cuLMbdHcPXik04AQPblJcSbZmOpgCG3HxnRnOG2YYHnen?=
+ =?us-ascii?q?sQ0GDmMGZewlpB23GAOEB+Czyo+CTeAydyU1P3Y0b8t+J5rSHzSEh81AyMY0?=
+ =?us-ascii?q?B7n7Oo5h4Yg+CdQPIPz9dm8G8grTtzBlO0w9PRDZKJuQNgeKxWZd517k1A0C?=
+ =?us-ascii?q?rVsAl0P5roKK4qg1cVaQNfu0LoygUyD4RYio4ttnxrqWg6YaOU3VVddi+JiJ?=
+ =?us-ascii?q?X5O7nZMG73r1ikb6/b3E2b0c7Do/tfrq5l8hOy4UfwTRpxlhcvm8NY2Had+J?=
+ =?us-ascii?q?jQWQcJWMm3Ukks6157v7Hfcm824IaHsB8keaSyrDLG3MokQeU/zRP1NdJWO7?=
+ =?us-ascii?q?mDPAvzFdAKQs2vMPdsnEKmJEFhXqga5OsvMsWqeuHTkquiN/xntDani3lXpY?=
+ =?us-ascii?q?V8ylnK8DBzAL2Az9MOxPeW2RGCXjH3gQK6qs7AnoZAdGhITFCywiXlGoNdI5?=
+ =?us-ascii?q?ZKU91TWDWIJMu6jpVznJe2HX5X70LlBksG3d/vch2XPRT72kVL2EIbrGbvkD?=
+ =?us-ascii?q?akzzFyjzAir7aOuU6Gi+Xkeh0dP2dXRW5kxV7yKImwhtoeUQCmdQ8s3Bei4E?=
+ =?us-ascii?q?/7weBcqsEdZyHLRlxUeiHtM2x4eqCurfyGYshS+NYtsD1MFuOmbhHSS7LwpQ?=
+ =?us-ascii?q?cbzzK2H2Zaw2NeFXnisZH4khpmzWOFeS8v/DyDJJg2lEqZvYeMFrZL0zELRT?=
+ =?us-ascii?q?d1k2zaHVHnedmm5snSlo/Dt/D4XGWkBfgxOWHmy52NsCyj6ChkGxq6yrq2k9?=
+ =?us-ascii?q?b9FiA+0Cnmx5xvVD3T6hHmbcO4ssbyefIiZURuCFLmvoBiHZpil4IrmJwK8X?=
+ =?us-ascii?q?MEndOR/HwagSL2MM1An6XkYzBeIFxDi86Q6w/j1kp5K3uPzI+sTW2T9cxnY8?=
+ =?us-ascii?q?jjMzEmnxkl5sUPM5+6qblNnC97uF299FyDZfl7gydYzPo28zgdme5b4FNwnB?=
+ =?us-ascii?q?XYOagbGAxjBQKplxmM6Irm/q5JfyCrcL6txA97nMi6SraYrVMEVQ=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0ExAADGcbxefYpf+5RmHQEBAQEJARI?=
+ =?us-ascii?q?BBQUBQIEzCAELAYF8KIFGJQMEC4xyYIdfJZllgXsPATsEAQGERAKCKwY2CQ4?=
+ =?us-ascii?q?CAwEBAQMCBQEBAQQBAQECAQEBAwIBAQEBAhABARY6NGBTgUeBQSwJBgMBO4I?=
+ =?us-ascii?q?7KQGDYgEBAQIBEig/EAtGVwY1hVwFIKQyAYEoPgIjAT8BDIEFiX6BNIpwgTg?=
+ =?us-ascii?q?BjFUGgUE/gREzA4IsLj6KQgSRGQGhZAcDgk2YNB2dSa9eOIFYfQiDJUwBAgE?=
+ =?us-ascii?q?CAQwBAgIBAQECAQEIAQEBAZFjAQKNIENnAgYIAQEDCY9EAQE?=
+X-IPAS-Result: =?us-ascii?q?A0ExAADGcbxefYpf+5RmHQEBAQEJARIBBQUBQIEzCAELA?=
+ =?us-ascii?q?YF8KIFGJQMEC4xyYIdfJZllgXsPATsEAQGERAKCKwY2CQ4CAwEBAQMCBQEBA?=
+ =?us-ascii?q?QQBAQECAQEBAwIBAQEBAhABARY6NGBTgUeBQSwJBgMBO4I7KQGDYgEBAQIBE?=
+ =?us-ascii?q?ig/EAtGVwY1hVwFIKQyAYEoPgIjAT8BDIEFiX6BNIpwgTgBjFUGgUE/gREzA?=
+ =?us-ascii?q?4IsLj6KQgSRGQGhZAcDgk2YNB2dSa9eOIFYfQiDJUwBAgECAQwBAgIBAQECA?=
+ =?us-ascii?q?QEIAQEBAZFjAQKNIENnAgYIAQEDCY9EAQE?=
+X-IronPort-AV: E=Sophos;i="5.73,389,1583164800"; 
+   d="scan'208";a="141966936"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-Received: from eddie.linux-mips.org (HELO cvs.linux-mips.org) ([148.251.95.138])
+  by esa3.hgst.iphmx.com with ESMTP; 14 May 2020 06:18:35 +0800
+X-Received: (from localhost user: 'macro', uid#1010) by eddie.linux-mips.org
+        with ESMTP id S23991633AbgEMWSeGV0RN (ORCPT <rfc822;macro@wdc.com>);
+        Thu, 14 May 2020 00:18:34 +0200
+Date:   Mon, 13 Apr 2020 21:06:33 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc:     linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Borislav Petkov <bp@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] MIPS: Truncate link address into 32bit for 32bit
+ kernel
+In-Reply-To: <20200413153205.4ee52239@flygoat-x1e>
+Message-ID: <alpine.LFD.2.21.2004132103080.851719@eddie.linux-mips.org>
+References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>        <alpine.LFD.2.21.2004130736410.851719@eddie.linux-mips.org> <20200413153205.4ee52239@flygoat-x1e>
+Content-Type: text/plain; charset=US-ASCII
+X-ReSent-Date: Wed, 13 May 2020 23:18:28 +0100 (BST)
+X-Resent-Sender: "Maciej W. Rozycki" <macro@linux-mips.org>
+X-ReSent-From: "Maciej W. Rozycki" <macro@linux-mips.org>
+X-ReSent-To: "Maciej W. Rozycki" <macro@wdc.com>
+X-ReSent-Subject: Re: [PATCH v4] MIPS: Truncate link address into 32bit for
+ 32bit kernel
+X-ReSent-Message-ID: <alpine.LFD.2.21.2005132318280.1120869@eddie.linux-mips.org>
+X-Return-Path: macro@linux-mips.org
+X-MS-Exchange-Organization-ExpirationStartTime: 13 May 2020 22:18:39.4640
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id: d2ad998a-6c22-4203-5a33-08d7f78b968e
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Organization-MessageDirectionality: Originating
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:216.71.153.141;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esa3.hgst.iphmx.com;PTR:esa3.hgst.iphmx.com;CAT:NONE;SFTY:;SFS:(4636009)(33430700002)(33440700001)(42186006)(54906003)(4744005)(107886003)(34756004)(4326008)(336012)(6862004)(86362001)(82310400002)(5660300002)(26005)(8936002)(7636003)(8676002)(1096003)(7596003)(356005)(1736002);DIR:INB;SFP:;
+X-MS-PublicTrafficType: Email
+X-MS-Exchange-Organization-AuthSource: BN3NAM04FT010.eop-NAM04.prod.protection.outlook.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-OriginatorOrg: sharedspace.onmicrosoft.com
+X-MS-Office365-Filtering-Correlation-Id: d2ad998a-6c22-4203-5a33-08d7f78b968e
+X-MS-TrafficTypeDiagnostic: MN2PR04MB5792:
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-Organization-SCL: 1
+X-Microsoft-Antispam: BCL:0;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 22:18:39.1492
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2ad998a-6c22-4203-5a33-08d7f78b968e
+X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=b61c8803-16f3-4c35-9b17-6f65f441df86;Ip=[216.71.153.141];Helo=[esa3.hgst.iphmx.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB5792
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:02.4793614
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.2979.027
+X-Microsoft-Antispam-Mailbox-Delivery: ucf:1;jmr:0;auth:0;dest:C;OFR:CustomRules;ENG:(20160514016)(750127)(520002050)(944506383)(944626516);
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?BeZKYrivPibrinq1rb02RlwUIwoVPyyw9tCxNDK76plsWNOdXB6wSmHT8LP5?=
+ =?us-ascii?Q?BKoEYI/+dCU9EeU8wl5nIQB4leVDVJkNCt+RBHxchu6YfNmntrYZ36euiOnn?=
+ =?us-ascii?Q?Y1VW6jHgnEQDTG1KF4qH+BaJNs90LMBU8chmnKvSjxtFsuKDXoPGO+5uiTTW?=
+ =?us-ascii?Q?4PI0j1oaPPUhDlRb3QMPhzhgwxrJxrWi6kKFagMdEgI/9JsJxILNlcekgTXP?=
+ =?us-ascii?Q?Yw4iLR0vjYxDkZAwjaixeHvYlpJ6uqAsHjNypaz8R+3NesMFBbGuDE4+juPe?=
+ =?us-ascii?Q?+/1ZqTcXChDSW04/dAp1r/hmvFWD8fl3BppT0mv907eSHrpjD/7nb7F6LbQz?=
+ =?us-ascii?Q?WjUXXfS3UED53TeEN1ivsGynz8w8XK8BrW76eOO5RtV7FLynIehY44S5gWke?=
+ =?us-ascii?Q?NKiHKaPmKupeNP4hbP5qMsZ/Vv1npBLBJksFlvO7RXbEd9cIqAGms1iav2OK?=
+ =?us-ascii?Q?8pUkLBjQ0WIUykSALxFLXpI86piJG62s10101rCQlXp3rMWwnayi4fvx6kq3?=
+ =?us-ascii?Q?tu4btTos8zROlSHeTERFCTr/FUbvskzPbHdlfDT6m1rXDIZh3r/U7SvNF4bv?=
+ =?us-ascii?Q?EAzb2HdedbWreEBA9lepZg4o1bBaKfCGkEPyJbd3dzz5HnECF7kLVcl8onU2?=
+ =?us-ascii?Q?Io5FShkf1/PEOpJ7HTHKUrChXtGqLa3O+0tg9p6xso6pRZhLDeuDC8PR9hCt?=
+ =?us-ascii?Q?lmrDCaEdafFaurDTOrbn++JqWAVPS7smmPf+wqkfBcrPboQAtzTaBTYeXOMW?=
+ =?us-ascii?Q?xrTad7Q8aBALiOjN7yk5tcg4w+1kQEDcCXIsqyHFqRRy6i3fTIDIhaP+iP4P?=
+ =?us-ascii?Q?78RgsVChCJDjOKVj6mtXZinYo08b+bCjyzjyhjGPZSzAulosBvYGaDfWkfnq?=
+ =?us-ascii?Q?pjNMK8DW0P7JO8wvlWPaH24RU1qhA0P6iVpVyRKXbGPfBjUb87u0aMBsWY6/?=
+ =?us-ascii?Q?ciBiNlwzS6+Mk0WsXZwEHOaQo3FnnmwmVZQ+wGQ7UShogDPyuwD2Pm8ZziPc?=
+ =?us-ascii?Q?p1bPtaal9kajni6EAOXmhhCmsMwvhXM9wujtnJqKy90nlxgfbPTDWMErkvEk?=
+ =?us-ascii?Q?l4jS3BGrHYERE9mZuImrQPnv10SS3gkCPlMRLenlR+4Sattv4dey4TgcSV9O?=
+ =?us-ascii?Q?GzftDPaC+m89JEBT4M0dbAfnr5NDMmGxfAV3GHNVFobKGYaF9D6V1vZh1t8f?=
+ =?us-ascii?Q?0AwTWxJiJeoZV5sxegN/sGcLl487G3plDPltNQ=3D=3D?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <29FD6626-4347-4B79-A027-52E44C7FDE55@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 06:02:17PM +0000, Bae, Chang Seok wrote:
->
->> On Dec 4, 2019, at 12:20, Andy Lutomirski <luto@kernel.org> wrote:
->>
->> I think it could make sense to add a whole new ptrace() command to
->> tell the tracee to, in effect, MOV a specified value to a segment
->> register.  This call would have the actual correct semantics in which
->> it would return an error code if the specified value is invalid and
->> would return 0 on success.  And then a second ptrace() call could be
->> issued to read out FSBASE or GSBASE if needed.  Would this be useful?
->> What gdb commands would invoke it?
->
->We consider new commands to access GDT/LDT that hpa posted before [1] may be
->helpful. If the kernel provides the interfaces to ptracer, we expect GDB for
->both 32-/64-bits can make such changes for inferior calls:
->(1) When FS/GS selector only updated,
->	GDB used to write the selector value via SETREGS. Now it can read the
->	base value from the new APIs and write the base also. This change does
->	not harm today's kernel, and it retains the legacy behavior on
->	FSGSBASE-enabled kernels in the future.
->(2) When FS/GS base only updated,
->(3) When both FS/GS selector and base updated,
->	GDB has no change from what it used to do. The new FSGSBASE-enabled
->	kernel improves the behavior by keeping the base regardless of a
->	selector.
->
->The proposed change in GDB would do an additional GETREGS for every SETREGS
->to obtain the old value. Other ptrace-users may need a similar patch if
->sensitive to the outcome from writing FS/GS selector, but last time when we
->surveyed for other tools [2, 3], we didn't find the issue. We also didn't
->find actual users who rely on legacy behavior in practice.
->
->We'd like to hear a clear opinion of whether the GDB changes along with the
->new ptrace APIs are necessary and sufficient as preparing the FSGSBASE
->support in the kernel.
+On Mon, 13 Apr 2020, Jiaxun Yang wrote:
 
-Hi folks,
+> > > diff --git a/arch/mips/kernel/vmlinux.lds.S
+> > > b/arch/mips/kernel/vmlinux.lds.S index a5f00ec73ea6..5226cd8e4bee
+> > > 100644 --- a/arch/mips/kernel/vmlinux.lds.S
+> > > +++ b/arch/mips/kernel/vmlinux.lds.S
+> > > @@ -55,7 +55,7 @@ SECTIONS
+> > >  	/* . = 0xa800000000300000; */
+> > >  	. = 0xffffffff80300000;
+> > >  #endif
+> > > -	. = VMLINUX_LOAD_ADDRESS;
+> > > +	. = VMLINUX_LINK_ADDRESS;  
+> > 
+> >  The CONFIG_BOOT_ELF64 cruft right above it looks interesting to me,
+> > never have ever been used.  We have had the current arrangement since:
+> 
+> It confused me either.
+> It's only used by SGI so probably it's time to rename it as
+> BOOT_SEG_ELF64.
 
-Let me try to revive this work as I think that it's blocked due to
-misunderstanding of the current situation.
+ Well, as seen above the first assignment is immediately overridden by the 
+second and the rest of the conditional are comments.  So as I say it's not 
+used ever, not even any SGI configuration, and from Git history it looks 
+like it has never been.
 
-What I gather from the Intel folks is that the GDB folks are okay with
-the change as is and don't expect to be doing any changes on their end.
-
-The intel folks are interested in resolving this, but haven't heard back
-on their proposed plan (above).
-
-Thomas/Andy want to make sure that we are doing the right thing and are
-not breaking anything:
-
-   1. The ptrace modifications are correct (we do the right thing around
-   updating FS/GS).
-   2. The ptrace changes don't break existing userspace. I think that
-   the Intel folks confirmed it above.
+  Maciej
 
 
-Is my attempt at understanding the current situation correct?
-
--- 
-Thanks,
-Sasha
