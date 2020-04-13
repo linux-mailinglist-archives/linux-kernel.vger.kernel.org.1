@@ -2,126 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EC61A685F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131BE1A6865
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730882AbgDMOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:51:05 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:60958 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730888AbgDMOu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:50:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586789456; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uvf3bpTwOKniLL1tkFEZ8lUYaBxnlGE9DNXjmA347Xc=;
- b=JVE0Oy/nbYlWJ2cLaPDvDLUAfV066FdCQDNMkvnkmXf9zUeA08NlACv4BRhWZy1UZ2z2PdNJ
- BibB5/HMk3DptM0ViEtYVolDnwGEB99e5CvecAMiAncPyiZ8QujRhmoprcaDv9WynkXRILhO
- oIJaQ/M0oY6qo6qsQxeWZQZRU0k=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e947c4a.7f33307f5ab0-smtp-out-n01;
- Mon, 13 Apr 2020 14:50:50 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 85830C433BA; Mon, 13 Apr 2020 14:50:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A50E3C433F2;
-        Mon, 13 Apr 2020 14:50:47 +0000 (UTC)
+        id S1729350AbgDMO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:59:37 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44171 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728537AbgDMO7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:59:37 -0400
+IronPort-SDR: u5Gxx2Xwnw5YqXkn4KIxiIq4+p1S56TRFc+RMwgSrKiiOLLtk0grLtV6Jv6o+qlGNH4WO3IOAB
+ 8AkTqolE5hHw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 07:59:35 -0700
+IronPort-SDR: aI6JttEEMa41lRBY8hOt/RYwq8ioflIi4h97v53mJHsF34Js3T9zjSVwSanM/mCzFcMSJ3fNoU
+ TvivJygdSS/A==
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="453180994"
+Received: from ahduyck-mobl1.amr.corp.intel.com (HELO [10.254.29.128]) ([10.254.29.128])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 07:59:35 -0700
+Subject: Re: [RFC PATCH 1/4] mm: reduce the impaction of page reporing worker
+To:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20200412090756.GA19574@open-light-1.localdomain>
+From:   Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Message-ID: <c0bd9b1b-a0e7-5c88-ab99-e867ef25c935@linux.intel.com>
+Date:   Mon, 13 Apr 2020 07:59:18 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200412090756.GA19574@open-light-1.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 13 Apr 2020 20:20:47 +0530
-From:   kgunda@codeaurora.org
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Rob Herring <robh@kernel.org>, bjorn.andersson@linaro.org,
-        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
-        pavel@ucw.cz, mark.rutland@arm.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>, linux-arm-msm@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH V4 1/4] backlight: qcom-wled: convert the wled bindings to
- .yaml format
-In-Reply-To: <20200406085024.GF30614@dell>
-References: <1584985618-25689-1-git-send-email-kgunda@codeaurora.org>
- <1584985618-25689-2-git-send-email-kgunda@codeaurora.org>
- <20200331175401.GA9791@bogus>
- <ac8f25113a3bb233c11fd7cd9e62c2cf@codeaurora.org>
- <20200403114651.m6rholzufzqinanc@holly.lan> <20200406085024.GF30614@dell>
-Message-ID: <4fb0643342e512a248f57198cbafe50c@codeaurora.org>
-X-Sender: kgunda@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-06 14:20, Lee Jones wrote:
-> On Fri, 03 Apr 2020, Daniel Thompson wrote:
+On 4/12/2020 2:08 AM, liliangleo wrote:
+> When scaning the free list, 'page_reporting_cycle' may hold the
+> zone->lock for a long time when there are no reported page in the
+> free list. Setting PAGE_REPORTING_MIN_ORDER to a lower oder will
+> make this issue worse.
 > 
->> On Fri, Apr 03, 2020 at 04:45:49PM +0530, kgunda@codeaurora.org wrote:
->> > On 2020-03-31 23:24, Rob Herring wrote:
->> > > On Mon, Mar 23, 2020 at 11:16:55PM +0530, Kiran Gunda wrote:
->> > > > diff --git
->> > > > a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
->> > > > b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
->> > > > new file mode 100644
->> > > > index 0000000..8a388bf
->> > > > --- /dev/null
->> > > > +++ b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
->> > > > @@ -0,0 +1,184 @@
->> > > > +# SPDX-License-Identifier: GPL-2.0-only
->> > > > +%YAML 1.2
->> > > > +---
->> > > > +$id: http://devicetree.org/schemas/leds/backlight/qcom-wled.yaml#
->> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> > > > +
->> > > > +title: Binding for Qualcomm Technologies, Inc. WLED driver
->> > > > +
->> > > > +maintainers:
->> > > > +  - Lee Jones <lee.jones@linaro.org>
->> > >
->> > > Should be the h/w owner (you), not who applies patches.
->> > >
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> > <snip>
->> > will address in next post.
->> 
->> If you agree on all points raised I doubt there is any need for a 
->> point
->> by point reply since everyone who reads it will have to scroll down
->> simply to find out that you agree on all points.
->> 
->> Better just to acknowledge the feedback and reply to the first one
->> saying you'll agree on all points and will address all feedback in the
->> next revision (and then trim the reply to keep it short).
+> Two ways were used to reduce the impact:
+>     1. Release zone lock periodicly
+>     2. Yield cpu voluntarily if needed.
 > 
-> Or better still, just submit the next revision with all the fixes. :)
-Noted.
+> Signed-off-by: liliangleo <liliangleo@didiglobal.com>
+
+One of the reasons why I had limited this to no lower than pageblock 
+order was in order to keep number of pages we would have to walk in each 
+list on the smaller side.
+
+Also the lock ends up being released every time we report a batch of 
+pages. It might make more sense to look at calling cond_resched after a 
+batch as been submitted rather than try to introduce a new loop around 
+page_reporting_cycle.
+
+> ---
+>   mm/page_reporting.c | 35 ++++++++++++++++++++++++++++++++---
+>   1 file changed, 32 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> index 3bbd471cfc81..3a7084e508e1 100644
+> --- a/mm/page_reporting.c
+> +++ b/mm/page_reporting.c
+> @@ -6,11 +6,14 @@
+>   #include <linux/export.h>
+>   #include <linux/delay.h>
+>   #include <linux/scatterlist.h>
+> +#include <linux/sched.h>
+>   
+>   #include "page_reporting.h"
+>   #include "internal.h"
+>   
+>   #define PAGE_REPORTING_DELAY	(2 * HZ)
+> +#define MAX_SCAN_NUM 1024
+> +
+>   static struct page_reporting_dev_info __rcu *pr_dev_info __read_mostly;
+>   
+>   enum {
+> @@ -115,7 +118,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+>   	unsigned int page_len = PAGE_SIZE << order;
+>   	struct page *page, *next;
+>   	long budget;
+> -	int err = 0;
+> +	int err = 0, scan_cnt = 0;
+>   
+>   	/*
+>   	 * Perform early check, if free area is empty there is
+> @@ -145,8 +148,14 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+>   	/* loop through free list adding unreported pages to sg list */
+>   	list_for_each_entry_safe(page, next, list, lru) {
+>   		/* We are going to skip over the reported pages. */
+> -		if (PageReported(page))
+> +		if (PageReported(page)) {
+> +			if (++scan_cnt >= MAX_SCAN_NUM) {
+> +				err = scan_cnt;
+> +				break;
+> +			}
+>   			continue;
+> +		}
+> +
+>   
+>   		/*
+>   		 * If we fully consumed our budget then update our
+
+Why add yet another loopvariable, why not just move our budget test to 
+before the PageReported check and then increase the value?
+
+> @@ -219,6 +228,26 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+>   	return err;
+>   }
+>   
+> +static int
+> +reporting_order_type(struct page_reporting_dev_info *prdev, struct zone *zone,
+> +		     unsigned int order, unsigned int mt,
+> +		     struct scatterlist *sgl, unsigned int *offset)
+> +{
+> +	int ret = 0;
+> +	unsigned long total = 0;
+> +
+> +	might_sleep();
+> +	do {
+> +		cond_resched();
+> +		ret = page_reporting_cycle(prdev, zone, order, mt,
+> +					   sgl, offset);
+> +		if (ret > 0)
+> +			total += ret;
+> +	} while (ret > 0 && total < zone->free_area[order].nr_free);
+> +
+> +	return ret;
+> +}
+> +
+
+The idea behind page reporting is it is supposed to happen while the 
+system is idle. As such we don't need to be in a hurry. I would get rid 
+of the loop and just let the natural placing take over so that we are 
+only processing something like 1/8 of the nr_free with each pass.
+
+>   static int
+>   page_reporting_process_zone(struct page_reporting_dev_info *prdev,
+>   			    struct scatterlist *sgl, struct zone *zone)
+> @@ -245,7 +274,7 @@ page_reporting_process_zone(struct page_reporting_dev_info *prdev,
+>   			if (is_migrate_isolate(mt))
+>   				continue;
+>   
+> -			err = page_reporting_cycle(prdev, zone, order, mt,
+> +			err = reporting_order_type(prdev, zone, order, mt,
+>   						   sgl, &offset);
+>   			if (err)
+>   				return err;
+> 
