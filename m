@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C3F1A6DC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB361A6DCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388782AbgDMVHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 17:07:33 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:49312 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388773AbgDMVHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 17:07:31 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id A5F2520020;
-        Mon, 13 Apr 2020 23:07:27 +0200 (CEST)
-Date:   Mon, 13 Apr 2020 23:07:21 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Lyude Paul <lyude@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/9] drm/vblank: Add vblank works
-Message-ID: <20200413210721.GA802@ravnborg.org>
-References: <20200318004159.235623-1-lyude@redhat.com>
- <20200318004159.235623-2-lyude@redhat.com>
- <20200318134657.GV2363188@phenom.ffwll.local>
- <e4fb0c39ec024d60587e5e1e70b171b99eb537f4.camel@redhat.com>
- <faf63d8a9ed23c16af69762f59d0dca6b2bf085f.camel@redhat.com>
- <96cb912809f99d04cd5cdd46c77b66b8c1163380.camel@redhat.com>
- <20200413204243.GL60335@mtj.duckdns.org>
+        id S2388792AbgDMVJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 17:09:26 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:45059 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388773AbgDMVJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 17:09:24 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 58a86fa8;
+        Mon, 13 Apr 2020 20:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to
+        :content-type; s=mail; bh=GJhanwEeipb7zodQ50+5hF7m83c=; b=DjJ+Ow
+        L+mRbSnAeyT5MVG3smFb7WXY/bYUj8yX0nwfmcIfi67ceRogayi6QwjD9omFGwV4
+        8Yy/fVUC5ktFpwA2V66seTqKEPmmu/ZhuCRUhrFM1JNwtZDVRUB0WAw+TcjAJBZD
+        uhSdWZM7nRubxNS5HjHSp6+/Z7k/nPPSlCTg1rc1Gu2hkO/guXKaCXDToQ0erYCj
+        34qR9q0PD+vxdndWzb1ToTPzcxPxX4b8o0607YtXDyLV4qioQ/wNPA4B2bKqmxp9
+        7tlzb87xPWqnebeQknbzG5/Np2A9cEfBO2bezRIf13APBk+11gEvFreIOOBkixPd
+        3ZYog/+LsfL5ukfg==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e2bd287b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Mon, 13 Apr 2020 20:59:31 +0000 (UTC)
+Received: by mail-il1-f172.google.com with SMTP id e4so7619943ils.4;
+        Mon, 13 Apr 2020 14:09:15 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZPxauZRwoBFtbj8zhYiXx17Lv2VjtVIB7U3gMV8UDOgIN+f05C
+        SzCLviLQKFqqpfOF71IAYNQ6AjsHQ3P5cx5eZ+4=
+X-Google-Smtp-Source: APiQypJCLeSpS94nQ2mW7IqNggzIAnxsuBr35zrilZtRQ3Khy5xH0OVu0prrddC4LXjW95CUnRVZ+vmU+pJaj54jXvQ=
+X-Received: by 2002:a92:d98c:: with SMTP id r12mr547554iln.224.1586812155136;
+ Mon, 13 Apr 2020 14:09:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413204243.GL60335@mtj.duckdns.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=eMA9ckh1 c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8
-        a=cV37oKmrZChnzrZEKpEA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+References: <20200407063345.4484-1-Jason@zx2c4.com>
+In-Reply-To: <20200407063345.4484-1-Jason@zx2c4.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 13 Apr 2020 15:09:04 -0600
+X-Gmail-Original-Message-ID: <CAHmME9qL0hJASP=LAX3bViqmEUH1Fu4tw_9UaxfPgCXygBPk3Q@mail.gmail.com>
+Message-ID: <CAHmME9qL0hJASP=LAX3bViqmEUH1Fu4tw_9UaxfPgCXygBPk3Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] x86/mce/therm_throt: remove unused
+ platform_thermal_notify function pointer
+To:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        srinivas.pandruvada@linux.intel.com, bberg@redhat.com, bp@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun
+Hi Srinivas & Co,
 
-> 
-> And, thanks a lot for the vblank explanation. I really enjoyed readin it. :)
+Could you have a look at this three part series please? Friendly poke.
 
-You were not the only one who liked it :-)
-
-We ended up with an updated explanation in drm_vblank.c:
-https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/drm_vblank.c
-
-Including some nice ascii art in the final version.
-
-It will hit upstream in next merge window.
-
-	Sam
+Jason
