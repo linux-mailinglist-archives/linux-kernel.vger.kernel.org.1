@@ -2,313 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D801A6BE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6338F1A6BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387634AbgDMSHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387625AbgDMSH2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:07:28 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A208C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:07:28 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id s3so2787538qvk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eYVEC8x9/ZJs/cJ45Aj5p7ZwEmZ1E13BchE174aWIpw=;
-        b=BONlUzW5lB0GMqGIqY6nr+G0zxsPf6cfqeBoTKZbydbyfRIMLY3fzC3ceofshhChMr
-         wDNA8JwKxOOVIp5VHRMrEjsxv+YX58RveKX/dERvRxJeyOAXL87jL/0lUzYWuogGTY3M
-         R72M4+vU84VbWeEZeN+jXGLgITNa5YfMKNUhy8HNfPfwQqnQDCw17IUyv6W/5Qjd4NKa
-         ZZYXSuSgzniM/RtWzcNhwVMp/8wqCah+IqXiqGt+ZWF9l6Q+lCSn3V6VbJpE1/HdsMQ9
-         OG+VLT1Y05gcAsWm9J9yACdffUBEvcW8jh4vRF6cvjmoFhVmjOULPb3V7Mo0sYULS7wY
-         dEpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eYVEC8x9/ZJs/cJ45Aj5p7ZwEmZ1E13BchE174aWIpw=;
-        b=P/sSnxJjn5Xib36My56jYzya2Ia/gh+EbjqTXL5rWBZ1O6NByW9osU14pETPG9vxPg
-         VlU+e8YbWS+7mpjLUNs4OOpLFRK48GHKE5joFvyUfeuE0gWPxqVhM/TndoK9WY5OlLWX
-         G1xkvJci5Yjr3uLr8fx0DvgrC8ByX4g3RHnWMYmYTPzNwTVwQGbRPLo0Se2sm+auoOPX
-         vnKI7hiX19BF7is0uAg26cK9TUsJym/jmiKzjhzzxNZYcZAsziEFs3S6LFUq++/Kpbcv
-         2rtDeYG8C0/Y9hA4xERT6PW3lkVQuMgDpNo1I+ekOKIZY6zS9w+ajw87poSMNG2sckju
-         G5Dw==
-X-Gm-Message-State: AGi0PuYlohKFFBp3inX3iyy0nb7YrMfEiTq/CwfYFcRZuRnjTZ4MLpDZ
-        kUhcmu0RejMdvMpDsATIzkQ72A==
-X-Google-Smtp-Source: APiQypLOprNu3jC1zBZbfI8LfTj0Vfl4/vK+u676W75THOCcq4B7MNG7YgJsnqm/uL7I4pV7v8Izfg==
-X-Received: by 2002:a05:6214:1413:: with SMTP id n19mr9391447qvx.186.1586801247296;
-        Mon, 13 Apr 2020 11:07:27 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id n67sm9033598qte.79.2020.04.13.11.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 11:07:26 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 14:07:25 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20200413180725.GA99267@cmpxchg.org>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
- <20200116215222.GA64230@cmpxchg.org>
- <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
+        id S2387652AbgDMSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 14:08:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:12741 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387625AbgDMSHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 14:07:55 -0400
+IronPort-SDR: sKboh4/Y7aTpmZiguA/viJDnB/Onuj2n1w6U3PO1VU5GE8HWnYalFkRM+5E3XHzqUC7kTrN83K
+ VzOFal+Sriyw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 11:07:55 -0700
+IronPort-SDR: XnU/oKghhk93OP1z9CxvGAh0ddFLpKhKu5c6Whx6OH+EaCzbI5w/dNdxxkWxgeRao2LJ6cH+9Z
+ drasZ0jwu20g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="256250288"
+Received: from sarsteda-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.40.211])
+  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2020 11:07:34 -0700
+Date:   Mon, 13 Apr 2020 21:07:32 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-integrity@vger.kernel.org, stable@vger.kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Free IRQ if probing fails
+Message-ID: <20200413180732.GA11147@linux.intel.com>
+References: <20200412170412.324200-1-jarkko.sakkinen@linux.intel.com>
+ <b909aaee-3fff-4dca-40f4-4c5348474426@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
+In-Reply-To: <b909aaee-3fff-4dca-40f4-4c5348474426@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 06:48:22PM +0800, Alex Shi wrote:
-> > In a previous review, I pointed out the following race condition
-> > between page charging and compaction:
-> > 
-> > compaction:				generic_file_buffered_read:
-> > 
-> > 					page_cache_alloc()
-> > 
-> > !PageBuddy()
-> > 
-> > lock_page_lruvec(page)
-> >   lruvec = mem_cgroup_page_lruvec()
-> >   spin_lock(&lruvec->lru_lock)
-> >   if lruvec != mem_cgroup_page_lruvec()
-> >     goto again
-> > 
-> > 					add_to_page_cache_lru()
-> > 					  mem_cgroup_commit_charge()
-> > 					    page->mem_cgroup = foo
-> > 					  lru_cache_add()
-> > 					    __pagevec_lru_add()
-> > 					      SetPageLRU()
-> > 
-> > if PageLRU(page):
-> >   __isolate_lru_page()
-> > 
-> > As far as I can see, you have not addressed this. You have added
-> > lock_page_memcg(), but that prevents charged pages from moving between
-> > cgroups, it does not prevent newly allocated pages from being charged.
-> > 
-> > It doesn't matter how many times you check the lruvec before and after
-> > locking - if you're looking at a free page, it might get allocated,
-> > charged and put on a new lruvec after you're done checking, and then
-> > you isolate a page from an unlocked lruvec.
-> > 
-> > You simply cannot serialize on page->mem_cgroup->lruvec when
-> > page->mem_cgroup isn't stable. You need to serialize on the page
-> > itself, one way or another, to make this work.
-> > 
-> > 
-> > So here is a crazy idea that may be worth exploring:
-> > 
-> > Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
-> > linked list.
-> > 
-> > Can we make PageLRU atomic and use it to stabilize the lru_lock
-> > instead, and then use the lru_lock only serialize list operations?
-> > 
-> > I.e. in compaction, you'd do
-> > 
-> > 	if (!TestClearPageLRU(page))
-> > 		goto isolate_fail;
-> > 	/*
-> > 	 * We isolated the page's LRU state and thereby locked out all
-> > 	 * other isolators, including cgroup page moving, page reclaim,
-> > 	 * page freeing etc. That means page->mem_cgroup is now stable
-> > 	 * and we can safely look up the correct lruvec and take the
-> > 	 * page off its physical LRU list.
-> > 	 */
-> > 	lruvec = mem_cgroup_page_lruvec(page);
-> > 	spin_lock_irq(&lruvec->lru_lock);
-> > 	del_page_from_lru_list(page, lruvec, page_lru(page));
-> > 
-> > Putback would mostly remain the same (although you could take the
-> > PageLRU setting out of the list update locked section, as long as it's
-> > set after the page is physically linked):
-> > 
-> > 	/* LRU isolation pins page->mem_cgroup */
-> > 	lruvec = mem_cgroup_page_lruvec(page)
-> > 	spin_lock_irq(&lruvec->lru_lock);
-> > 	add_page_to_lru_list(...);
-> > 	spin_unlock_irq(&lruvec->lru_lock);
-> > 
-> > 	SetPageLRU(page);
-> > 
-> > And you'd have to carefully review and rework other sites that rely on
-> > PageLRU: reclaim, __page_cache_release(), __activate_page() etc.
-> > 
-> > Especially things like activate_page(), which used to only check
-> > PageLRU to shuffle the page on the LRU list would now have to briefly
-> > clear PageLRU and then set it again afterwards.
-> > 
-> > However, aside from a bit more churn in those cases, and the
-> > unfortunate additional atomic operations, I currently can't think of a
-> > fundamental reason why this wouldn't work.
-> > 
-> > Hugh, what do you think?
-> > 
+On Mon, Apr 13, 2020 at 12:04:25PM +0200, Hans de Goede wrote:
+> Hi Jarkko,
 > 
-> Hi Johannes
+> On 4/12/20 7:04 PM, Jarkko Sakkinen wrote:
+> > Call devm_free_irq() if we have to revert to polling in order not to
+> > unnecessarily reserve the IRQ for the life-cycle of the driver.
+> > 
+> > Cc: stable@vger.kernel.org # 4.5.x
+> > Reported-by: Hans de Goede <hdegoede@redhat.com>
+> > Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > ---
+> >   drivers/char/tpm/tpm_tis_core.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> > index 27c6ca031e23..ae6868e7b696 100644
+> > --- a/drivers/char/tpm/tpm_tis_core.c
+> > +++ b/drivers/char/tpm/tpm_tis_core.c
+> > @@ -1062,9 +1062,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+> >   		if (irq) {
+> >   			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
+> >   						 irq);
+> > -			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
+> > +			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
+> >   				dev_err(&chip->dev, FW_BUG
+> >   					"TPM interrupt not working, polling instead\n");
+> > +				devm_free_irq(chip->dev.parent, priv->irq,
+> > +					      chip);
+> > +			}
 > 
-> As to the idea of TestClearPageLRU, we except the following scenario
->     compaction                       commit_charge
->                                      if (TestClearPageLRU)
->         !TestClearPageLRU                 lock_page_lruvec
->             goto isolate_fail;            del_from_lru_list
->                                           unlock_page_lruvec
+> My initial plan was actually to do something similar, but if the probe code
+> is actually ever fixed to work as intended again then this will lead to a
+> double free as then the IRQ-test path of tpm_tis_send() will have called
+> disable_interrupts() which already calls devm_free_irq().
 > 
-> But there is a difficult situation to handle:
+> You could check for chip->irq != 0 here to avoid that.
 > 
->    compaction                        commit_charge
->         TestClearPageLRU
->                                     !TestClearPageLRU
-> 
->                                     page possible state:
->                                     a, reclaiming, b, moving between lru list, c, migrating, like in compaction
->                                     d, mlocking,   e, split_huge_page,
-> 
-> If the page lru bit was cleared in commit_charge with lrucare,
-> we still have no idea if the page was isolated by the reason from a~e
-> or the page is never on LRU, to deal with different reasons is high cost.
-> 
-> So as to the above issue you mentioned, Maybe the better idea is to
-> set lrucare when do mem_cgroup_commit_charge(), since the charge action
-> is not often. What's your idea of this solution?
+> But it all is rather messy, which is why I went with the "#if 0" approach
+> in my patch.
 
-Hm, yes, the lrucare scenario is a real problem. If it can isolate the
-page, fine, but if not, it changes page->mem_cgroup on a page that
-somebody else has isolated, having indeed no idea who they are and how
-they are going to access page->mem_cgroup.
+I think it is right way to fix it. It is a bug independent of the issue
+we are experiencing.
 
-Right now it's safe because of secondary protection on top of
-isolation: split_huge_page keeps the lru_lock held throughout;
-reclaim, cgroup migration, page migration, compaction etc. hold the
-page lock which locks out swapcache charging.
+However, what you are suggesting should be done in addition. Do you have
+a patch in place or do you want me to refine mine?
 
-But it complicates the serialization model immensely and makes it
-subtle and error prone.
-
-I'm not sure how unconditionally taking the lru_lock when charging
-would help. Can you lay out what you have in mind in prototype code,
-like I'm using below, for isolation, putback, charging, compaction?
-
-That said, charging actually is a hotpath. I'm reluctant to
-unconditionally take the LRU lock there. But if you can make things a
-lot simpler this way, it could be worth exploring.
-
-In the PageLRU locking scheme, I can see a way to make putback safe
-wrt lrucare charging, but I'm not sure about isolation:
-
-putback:
-lruvec = page->mem_cgroup->lruvecs[pgdat]
-spin_lock(lruvec->lru_lock)
-if lruvec != page->mem_cgroup->lruvecs[pgdat]:
-  /*
-   * commit_charge(lrucare=true) can charge an uncharged swapcache
-   * page while we had it isolated. This changes page->mem_cgroup,
-   * but it can only happen once. Look up the new cgroup.
-   */
-  spin_unlock(lruvec->lru_lock)
-  lruvec = page->mem_cgroup->lruvecs[pgdat]
-  spin_lock(lruvec->lru_lock)
-add_page_to_lru_list(page, lruvec, ...)
-SetPageLRU(page);
-spin_unlock(lruvec->lru_lock)
-
-commit_charge:
-if (lrucare)
-  spin_lock(root_memcg->lru_lock)
-  /*
-   * If we can isolate the page, we'll move it to the new
-   * cgroup's LRU list. If somebody else has the page
-   * isolated, we need their putback to move it to the
-   * new cgroup. If they see the old cgroup - the root -
-   * they will spin until we're done and recheck.
-   */
-  if ((lru = TestClearPageLRU(page)))
-    del_page_from_lru_list()
-page->mem_cgroup = new;
-if (lrucare)
-  spin_unlock(root_memcg->lru_lock)
-  if (lru)
-    spin_lock(new->lru_lock)
-    add_page_to_lru_list()
-    spin_unlock(new->lru_lock);
-    SetPageLRU(page)
-
-putback would need to 1) recheck once after acquiring the lock and 2)
-SetPageLRU while holding the lru_lock after all. But it works because
-we know the old cgroup: if the putback sees the old cgroup, we know
-it's the root cgroup, and we have that locked until we're done with
-the update. And if putback manages to lock the old cgroup before us,
-we will spin until the isolator is done, and then either be able to
-isolate it ourselves or, if racing with yet another isolator, hold the
-lock and delay putback until we're done.
-
-But isolation actually needs to lock out charging, or it would operate
-on the wrong list:
-
-isolation:                                     commit_charge:
-if (TestClearPageLRU(page))
-                                               page->mem_cgroup = new
-  // page is still physically on
-  // the root_mem_cgroup's LRU. We're
-  // updating the wrong list:
-  memcg = page->mem_cgroup
-  spin_lock(memcg->lru_lock)
-  del_page_from_lru_list(page, memcg)
-  spin_unlock(memcg->lru_lock)
-
-lrucare really is a mess. Even before this patch series, it makes
-things tricky and subtle and error prone.
-
-The only reason we're doing it is for when there is swapping without
-swap tracking, in which case swap reahadead needs to put pages on the
-LRU but cannot charge them until we have a faulting vma later.
-
-But it's not clear how practical such a configuration is. Both memory
-and swap are shared resources, and isolation isn't really effective
-when you restrict access to memory but then let workloads swap freely.
-
-Plus, the overhead of tracking is tiny - 512k per G of swap (0.04%).
-
-Maybe we should just delete MEMCG_SWAP and unconditionally track swap
-entry ownership when the memory controller is enabled. I don't see a
-good reason not to, and it would simplify the entire swapin path, the
-LRU locking, and the page->mem_cgroup stabilization rules.
+/Jarkko
