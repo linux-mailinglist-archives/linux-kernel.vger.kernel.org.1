@@ -2,130 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F8A1A6CBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 21:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49041A6CC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 21:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388061AbgDMToe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 15:44:34 -0400
-Received: from mga14.intel.com ([192.55.52.115]:29540 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388034AbgDMToe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 15:44:34 -0400
-IronPort-SDR: Ae2xt0TSgl1+VtNBnJm1r1VQfZsEIvN07r3gehnhzZAmsi2zfYsfM3u8A0Ft3KGcmrI1CQJCtp
- TBS5JqkT5Guw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 12:44:33 -0700
-IronPort-SDR: v+q6zP5bKPmHA88y6ZiO81BAf42afIm8n0sGOl7dCToUlDBSth6eGFpgqbf2PNOyTnsccQEh+U
- NlVotKwkBJsQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,380,1580803200"; 
-   d="scan'208";a="256275264"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2020 12:44:32 -0700
-Date:   Mon, 13 Apr 2020 12:44:32 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
-Message-ID: <20200413194432.GD1649878@iweiny-DESK2.sc.intel.com>
-References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-8-ira.weiny@intel.com>
- <20200413160929.GW6742@magnolia>
+        id S2388084AbgDMTpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 15:45:12 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:27440 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387774AbgDMTpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 15:45:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586807100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hMsxrdI4xTHwEusPbmzBwjW19IlDU9V3qa/txFWUpeU=;
+        b=UFTGNcpsaTgnCK3bIHVCWhaUBpc8hdu283P303wcM6MNoBaooUyoFlJHfoJu56acN74Y5u
+        BQtCvmkRQ84KSgfSSIKZzxC6WqU21P6OJbVeK4FUQgAFsW5+v8CI/gRhL0zHAVosiQoI6o
+        KtxuBjGDyClMP5T2Ug5Edbbjx/ci0Cw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-43lNVQMiPDS8d0AtrfVEfA-1; Mon, 13 Apr 2020 15:44:56 -0400
+X-MC-Unique: 43lNVQMiPDS8d0AtrfVEfA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EF188010F1;
+        Mon, 13 Apr 2020 19:44:54 +0000 (UTC)
+Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 857EA5E001;
+        Mon, 13 Apr 2020 19:44:47 +0000 (UTC)
+Date:   Mon, 13 Apr 2020 13:44:47 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        Don Dutile <ddutile@redhat.com>
+Subject: Re: [PATCH v1 2/2] vfio/pci: Emulate PASID/PRI capability for VFs
+Message-ID: <20200413134447.2620f747@w520.home>
+In-Reply-To: <20200409073533.GB2435@myrica>
+References: <1584880394-11184-1-git-send-email-yi.l.liu@intel.com>
+        <1584880394-11184-3-git-send-email-yi.l.liu@intel.com>
+        <20200402165954.48d941ee@w520.home>
+        <A2975661238FB949B60364EF0F2C25743A2204FE@SHSMSX104.ccr.corp.intel.com>
+        <20200403112545.6c115ba3@w520.home>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D80E13D@SHSMSX104.ccr.corp.intel.com>
+        <20200407095801.648b1371@w520.home>
+        <20200408040021.GS67127@otc-nc-03>
+        <20200408101940.3459943d@w520.home>
+        <20200409073533.GB2435@myrica>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413160929.GW6742@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 09:09:29AM -0700, Darrick J. Wong wrote:
-> > Subject: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
-> 
-> CACNE -> CACHE.
-> 
-> On Sun, Apr 12, 2020 at 10:40:44PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > DAX effective mode changes (setting of S_DAX) require inode eviction.
-> > 
-> > Define a flag which can be set to inform the VFS layer that inodes
-> > should not be cached.  This will expedite the eviction of those nodes
-> > requiring reload.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  include/linux/fs.h | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index a818ced22961..e2db71d150c3 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> >   *
-> >   * I_CREATING		New object's inode in the middle of setting up.
-> >   *
-> > + * I_DONTCACHE		Do not cache the inode
-> 
-> "Do not cache" is a bit vague, how about:
-> 
-> "Evict the inode when the last reference is dropped.
-> Do not put it on the LRU list."
-> 
-> Also, shouldn't xfs_ioctl_setattr be setting I_DONTCACHE if someone
-> changes FS_XFLAG_DAX (and there are no mount option overrides)?  I don't
-> see any user of I_DONTCACHE in this series.
-> 
-> (Also also, please convert XFS_IDONTCACHE, since it's a straightforward
-> conversion...)
+On Thu, 9 Apr 2020 09:35:33 +0200
+Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
 
-AFAICT XFS_IDONTCACHE is not exactly the same because it can be cleared if
-someone access' the inode before it is evicted.  Dave mentioned that we could
-probably do this but I was not 100% sure if that would change some other
-behavior.
-
-I'm happy to remove XFS_IDONTCACHE if we are sure that it will not regress
-something in the bulkstat code?  (I don't know exactly what bulkstat does so
-I'm not expert here...  Was just doing what seemed safest)
-
-Ira
-
-> 
-> --D
-> 
-> > + *
-> >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> >   */
-> >  #define I_DIRTY_SYNC		(1 << 0)
-> > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> >  #define I_WB_SWITCH		(1 << 13)
-> >  #define I_OVL_INUSE		(1 << 14)
-> >  #define I_CREATING		(1 << 15)
-> > +#define I_DONTCACHE		(1 << 16)
-> >  
-> >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-> >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
-> > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
-> >  extern int generic_delete_inode(struct inode *inode);
-> >  static inline int generic_drop_inode(struct inode *inode)
-> >  {
-> > -	return !inode->i_nlink || inode_unhashed(inode);
-> > +	return !inode->i_nlink || inode_unhashed(inode) ||
-> > +		(inode->i_state & I_DONTCACHE);
-> >  }
-> >  
-> >  extern struct inode *ilookup5_nowait(struct super_block *sb,
-> > -- 
-> > 2.25.1
+> On Wed, Apr 08, 2020 at 10:19:40AM -0600, Alex Williamson wrote:
+> > On Tue, 7 Apr 2020 21:00:21 -0700
+> > "Raj, Ashok" <ashok.raj@intel.com> wrote:
+> >   
+> > > Hi Alex
+> > > 
+> > > + Bjorn  
 > > 
+> >  + Don
+> >   
+> > > FWIW I can't understand why PCI SIG went different ways with ATS, 
+> > > where its enumerated on PF and VF. But for PASID and PRI its only
+> > > in PF. 
+> > > 
+> > > I'm checking with our internal SIG reps to followup on that.
+> > > 
+> > > On Tue, Apr 07, 2020 at 09:58:01AM -0600, Alex Williamson wrote:  
+> > > > > Is there vendor guarantee that hidden registers will locate at the
+> > > > > same offset between PF and VF config space?     
+> > > > 
+> > > > I'm not sure if the spec really precludes hidden registers, but the
+> > > > fact that these registers are explicitly outside of the capability
+> > > > chain implies they're only intended for device specific use, so I'd say
+> > > > there are no guarantees about anything related to these registers.    
+> > > 
+> > > As you had suggested in the other thread, we could consider
+> > > using the same offset as in PF, but even that's a better guess
+> > > still not reliable.
+> > > 
+> > > The other option is to maybe extend driver ops in the PF to expose
+> > > where the offsets should be. Sort of adding the quirk in the 
+> > > implementation. 
+> > > 
+> > > I'm not sure how prevalent are PASID and PRI in VF devices. If SIG is resisting 
+> > > making VF's first class citizen, we might ask them to add some verbiage
+> > > to suggest leave the same offsets as PF open to help emulation software.  
+> > 
+> > Even if we know where to expose these capabilities on the VF, it's not
+> > clear to me how we can actually virtualize the capability itself.  If
+> > the spec defines, for example, an enable bit as r/w then software that
+> > interacts with that register expects the bit is settable.  There's no
+> > protocol for "try to set the bit and re-read it to see if the hardware
+> > accepted it".  Therefore a capability with a fixed enable bit
+> > representing the state of the PF, not settable by the VF, is
+> > disingenuous to the spec.  
+> 
+> Would it be OK to implement a lock down mechanism for the PF PASID
+> capability, preventing changes to the PF cap when the VF is in use by
+> VFIO?  The emulation would still break the spec: since the PF cap would
+> always be enabled the VF configuration bits would have no effect, but it
+> seems preferable to having the Enable bit not enable anything.
+
+I think we absolutely need some mechanism to make sure the PF driver
+doesn't change the PASID enable bit while we're using it.  A PASID user
+registration perhaps.  And yes, that doesn't necessarily map to being
+able to actually disable PASID, but it sounds like Kevin and Ashok have
+some ideas how the emulation could use the IOMMU settings to achieve
+that more precisely.
+
+> > If what we're trying to do is expose that PASID and PRI are enabled on
+> > the PF to a VF driver, maybe duplicating the PF capabilities on the VF
+> > without the ability to control it is not the right approach.  Maybe we
+> > need new capabilities exposing these as slave features that cannot be
+> > controlled?  We could define our own vendor capability for this, but of
+> > course we have both the where to put it in config space issue, as well
+> > as the issue of trying to push an ad-hoc standard.  vfio could expose
+> > these as device features rather than emulating capabilities, but that
+> > still leaves a big gap between vfio in the hypervisor and the driver in
+> > the guest VM.  That might still help push the responsibility and policy
+> > for how to expose it to the VM as a userspace problem though.  
+> 
+> Userspace might have more difficulty working around the issues mentioned
+> in this thread. They would still need a guarantee that the PF PASID
+> configuration doesn't change at runtime, and they wouldn't have the
+> ability to talk to a vendor driver to figure out where to place the fake
+> PASID capability.
+
+Couldn't we do this with the DEVICE_FEATURE ioctl we just added?  A
+user could set a PASID user or get a capability offset, where vfio-pci
+would plumb these through to whatever PF/vendor driver provides that
+interface, just as if it was implemented in the vfio-pci driver.  But
+that still lets us leave the policy of inserting a capability and using
+the IOMMU to implement the bits to the user/QEMU.  Thanks,
+
+Alex
+
