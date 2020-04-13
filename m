@@ -2,104 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE2A1A6AEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBBE1A6AFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732463AbgDMRFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732369AbgDMREt (ORCPT
+        id S1732504AbgDMRGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:06:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59764 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732482AbgDMRGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:04:49 -0400
-X-Greylist: delayed 2991 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Apr 2020 10:04:44 PDT
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3D6C0A3BE2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=nthD7hLIwbiHeyFNzH25utLfX0DBvZR/iBIyaq9rJo8=; b=MhN9aGSTvwKDekidmpqmJaWXbp
-        vNUZOIT6r9VN12kuKGlFRkc4Mc0nERXWph1qCPyofygRpUVkAx4fW8G7awHFEuzjLq+TUiLwLC6oQ
-        DaM+hWU80X6pt63hBmTcN2Kbn2bUIeNL2a4yFcHwh5q22AIR69LwrMP03Hj+hTosjxx6trD3a59yU
-        zGSSz185KV1YZCHWt6sP6I641S+jKPx/YSxjJPbp+GMNyelltySronvlWN/zom7gSYBcXT/iRyWmt
-        sGpVB1ueS98GItO6iqdDxbwzPSQJQsiv6SAI1q9mZwM4AhgapKTfdgYUJIsF89Vs5jtdcxfX8DUv/
-        nHtgftMA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jO2Vm-0000ON-L3; Mon, 13 Apr 2020 17:04:43 +0000
-Subject: Re: [PATCH v2,1/3] driver: rpmon: new driver Remote Processor Monitor
-To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com
-References: <20200411095301.18780-1-wenhu.wang@vivo.com>
- <20200412112405.24116-1-wenhu.wang@vivo.com>
- <20200412112405.24116-2-wenhu.wang@vivo.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <816c6ed0-9b37-f43a-24ad-e742ca24c8ba@infradead.org>
-Date:   Mon, 13 Apr 2020 10:04:41 -0700
+        Mon, 13 Apr 2020 13:06:22 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DH56CR151699;
+        Mon, 13 Apr 2020 17:05:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=R/QHTJEbvK5wYmg2dWl63irRcFp2irztNeFiTFWafoM=;
+ b=kktfuV3K3lSuFHBc31Ythkb5SLenATE1abhmvREP6KJho8IZK25DiUJDRqDQpY80dSlB
+ zPKH4s1foBQcVIjdX6VteTFGLWt1In4vXh6UzrVmtOnamoWJsw+sNkaoGUEteL7Wj6Id
+ TSK835Gllrv0py7zpZNvy9pWpkHJe18XhM0YR+R855Lxj/R5mtRO/U8RN0GwMx1Q8Im/
+ c9b28/VAT/sCGDL4wnkRBwLKlEoDTQEILj5wqFoG9ey6BDT5YsIgFU0yG4+FjoBk4xb/
+ nbySP3Xdz35peCoj4Mbp7NAABCO8dUFBIWIufIqDvvSWCR9DwJBRLWf5sZIItwDNTtMR qw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30b5ukyrq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 17:05:05 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DH1t0h105739;
+        Mon, 13 Apr 2020 17:05:05 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30bqpck4ag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 17:05:05 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03DH4vor012212;
+        Mon, 13 Apr 2020 17:04:57 GMT
+Received: from [192.168.1.206] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Apr 2020 10:04:56 -0700
+Subject: Re: [PATCH v2 1/4] hugetlbfs: add arch_hugetlb_valid_size
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S.Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Longpeng <longpeng2@huawei.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200401183819.20647-1-mike.kravetz@oracle.com>
+ <20200401183819.20647-2-mike.kravetz@oracle.com>
+ <20200410191613.GD3172@xz-x1>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <8d2f8066-98af-4db2-8ffa-f78533a50674@oracle.com>
+Date:   Mon, 13 Apr 2020 10:04:54 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200412112405.24116-2-wenhu.wang@vivo.com>
+In-Reply-To: <20200410191613.GD3172@xz-x1>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 bulkscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 4/12/20 4:24 AM, Wang Wenhu wrote:
-> RPMON is a driver framework. It supports remote processor monitor
-> from user level. The baisc components are a character device
-
-                       basic
-
-> with sysfs interfaces for user space communication and different
-> kinds of message drivers introduced modularly, which are used to
-> communicate with remote processors.
+On 4/10/20 12:16 PM, Peter Xu wrote:
+> On Wed, Apr 01, 2020 at 11:38:16AM -0700, Mike Kravetz wrote:
+>> diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+>> index 2eb6c234d594..81606223494f 100644
+>> --- a/arch/arm64/include/asm/hugetlb.h
+>> +++ b/arch/arm64/include/asm/hugetlb.h
+>> @@ -59,6 +59,8 @@ extern void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+>>  extern void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr,
+>>  				 pte_t *ptep, pte_t pte, unsigned long sz);
+>>  #define set_huge_swap_pte_at set_huge_swap_pte_at
+>> +bool __init arch_hugetlb_valid_size(unsigned long size);
+>> +#define arch_hugetlb_valid_size arch_hugetlb_valid_size
 > 
-> As for user space, one can get notifications of different events
-> of remote processors, like their registrations, through standard
-> file read operation of the file discriptors related to the exported
+> Sorry for chimming in late.
 
-                                  descriptors
+Thank you for taking a look!
 
-> character devices. Actions can also be taken into account via
-> standard write operations to the devices. Besides, the sysfs class
-> attributes could be accessed conveniently.
+> Since we're working on removing arch-dependent codes after all.. I'm
+> thinking whether we can define arch_hugetlb_valid_size() once in the
+> common header (e.g. linux/hugetlb.h), then in mm/hugetlb.c:
 > 
-> Message drivers act as engines to communicate with remote processors.
-> Currently RPMON_QMI is available which uses QMI infrastructures
-> on Qualcomm SoC Platforms.
+> bool __init __attribute((weak)) arch_hugetlb_valid_size(unsigned long size)
+> {
+> 	return size == HPAGE_SIZE;
+> }
 > 
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> We can simply redefine arch_hugetlb_valid_size() in arch specific C
+> files where we want to override the default.  Would that be slightly
+> cleaner?
 
-The rest of the changes to patch 1/3 look good. Thanks.
+I think both the #define X X and weak attribute methods are acceptable.
+I went with the #define method only because it was most familiar to me.
+Using the weak attribute method does appear to be cleaner.  I'll code it up.
 
-
-> ---
-> Changes since v1:
->  - Addressed review comments from Randy
-> 
-> ---
->  drivers/Kconfig        |   2 +
->  drivers/Makefile       |   1 +
->  drivers/rpmon/Kconfig  |  26 +++
->  drivers/rpmon/Makefile |   1 +
->  drivers/rpmon/rpmon.c  | 506 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/rpmon.h  |  68 ++++++
->  6 files changed, 604 insertions(+)
->  create mode 100644 drivers/rpmon/Kconfig
->  create mode 100644 drivers/rpmon/Makefile
->  create mode 100644 drivers/rpmon/rpmon.c
->  create mode 100644 include/linux/rpmon.h
-
-
+Anyone else have a preference?
 -- 
-~Randy
-
+Mike Kravetz
