@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95C41A659D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F251A65B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbgDMLcU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Apr 2020 07:32:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4890 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728886AbgDMLcU (ORCPT
+        id S1729116AbgDMLjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729067AbgDMLjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:32:20 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03DBWICI043134
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:32:19 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30bae4hqk6-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:32:19 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <naveen.n.rao@linux.vnet.ibm.com>;
-        Mon, 13 Apr 2020 12:31:28 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 13 Apr 2020 12:31:26 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03DBVoHY53739626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Apr 2020 11:31:50 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 914CEA4040;
-        Mon, 13 Apr 2020 11:31:50 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 165EAA4053;
-        Mon, 13 Apr 2020 11:31:50 +0000 (GMT)
-Received: from localhost (unknown [9.85.126.225])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 13 Apr 2020 11:31:49 +0000 (GMT)
-Date:   Mon, 13 Apr 2020 17:01:45 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH] tools headers: Move powerpc and s390 syscall table check
- to check-headers.sh
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Hendrik Brueckner <brueckner@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.vnet.ibm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20200220063740.785913-1-naveen.n.rao@linux.vnet.ibm.com>
-In-Reply-To: <20200220063740.785913-1-naveen.n.rao@linux.vnet.ibm.com>
+        Mon, 13 Apr 2020 07:39:43 -0400
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 07:39:43 EDT
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48752C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:32:29 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id o25so7083556oic.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Yjxhwc7xO8dRTa7YxVKX58/8YD5/oKTDwOCqnBzm3qo=;
+        b=Zo1oRY57tv4YrwtBlQ7gS8Od+a4xDPlozTzEdvBL1kO22irGRWxUGWxM79Te+9SolO
+         nhzNRltFYj6zEufhIbhWHRlJmgq0VPMNlhQAJdm0UMKcWCXHSQZj0b9kYIDruh/jGbhl
+         PYzOyMTx1K4iuEw2TBjefrgspIZbo7TZtpgCVazbuqsFswnaN5aXc+p5XQKWfJJ8FkzC
+         Kid4Uopgf9ZeRj42Eg26Q0n/93ihPgP74oALMV0VNmePO+n8BVLAfoEClXNaJiUksKKV
+         RUE1UDZCsdDSEGFsIsR+MJRjOrBdNK8+O+eYzVsGxhQUxinzXYjGOhKOjkEr5LdM58Sp
+         RXeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=Yjxhwc7xO8dRTa7YxVKX58/8YD5/oKTDwOCqnBzm3qo=;
+        b=FDi+diMGetAbjiL0So/Lo+9gBESMzPTwwoTObYjMzqRDSXJ7Wyel2P8Tvda+qLX6PJ
+         y9clsZuVj/HKklA/dFSGvxAzLAv6ob5fXzRY/9AkAP/TqWGpKLS7J9YmPtsbt4p4vF/5
+         K+oebZLSkkpyskpgajVH9vPd1ENDBDRTTmcFpg9xzTWXlTe+6tPiPaYx6l3t/xtArMvP
+         3jkzoKbs9MHiL7B+FZ6EouO/BOMSNdxQWNl7+8kse4qHj72WKTMwFNeKEFNsrCsyUWIW
+         SXVFDgBEY8l7eU22WLO61ZeCbgrNjSJA8PP3zDrWyfEcUmG5716X99NGrFuNbwY13GGe
+         WZqw==
+X-Gm-Message-State: AGi0PubxCqTEQX9F75R/5r0bXIVKTFSZ5Z8TyNBuvMhC+81ojsx+eJ9Z
+        mSuo5D7Rj+9EnW3aib0olQ==
+X-Google-Smtp-Source: APiQypKwLilEFG0hFelMFqiOXPyzs1c/25/gdgVN8sZrJK+uma2ezsGDVkVQ/p0ZneKQB02NJQPmEw==
+X-Received: by 2002:a54:4f0a:: with SMTP id e10mr11539844oiy.127.1586777548305;
+        Mon, 13 Apr 2020 04:32:28 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.149.130])
+        by smtp.gmail.com with ESMTPSA id i9sm4361897otf.1.2020.04.13.04.32.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 04:32:27 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by serve.minyard.net (Postfix) with ESMTPSA id 69A5C18016D;
+        Mon, 13 Apr 2020 11:32:26 +0000 (UTC)
+Date:   Mon, 13 Apr 2020 06:32:25 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
+Message-ID: <20200413113225.GB3587@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-13-gb675b421
- (https://github.com/astroidmail/astroid)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-TM-AS-GCONF: 00
-x-cbid: 20041311-0008-0000-0000-0000036FD553
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041311-0009-0000-0000-00004A917FCA
-Message-Id: <1586777427.30yicdm2kt.naveen@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-13_04:2020-04-13,2020-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- mlxscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- malwarescore=0 spamscore=0 priorityscore=1501 phishscore=0 mlxlogscore=864
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004130080
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Naveen N. Rao wrote:
-> It is good to know changes in headers and syscall tables across all
-> architectures so that the changes can be sync'ed at once. Move check for
-> arch-specific syscall table changes from tools/perf/arch for powerpc and
-> s390, to the generic check-headers.sh script, similar to how we do the
-> check for x86.
+On Wed, Apr 08, 2020 at 07:59:58PM +0800, Tang Bin wrote:
+> bt_bmc_probe() is only called with an openfirmware platform device.
+> Therefore there is no need to check that the passed in device is NULL or
+> that it has an openfirmware node.
+
+I waited until after the merge window closed, this is queued for 5.8.  I
+changed the title to be "Avoid unnecessary check".  "Judgement",
+although technically correct, has a legal or moral connotation.
+
+Thanks,
+
+-corey
+
 > 
-> Suggested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 > ---
-
-Arnaldo,
-Is this patch good? Do you want to see any changes in this?
-
-- Naveen
-
+> Changes from v2:
+>  - improve the commit message.
+> 
+> Changes from v1:
+>  - improve the commit message.
+> ---
+>  drivers/char/ipmi/bt-bmc.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
+> index d36aeacb2..890ad55aa 100644
+> --- a/drivers/char/ipmi/bt-bmc.c
+> +++ b/drivers/char/ipmi/bt-bmc.c
+> @@ -430,9 +430,6 @@ static int bt_bmc_probe(struct platform_device *pdev)
+>  	struct device *dev;
+>  	int rc;
+>  
+> -	if (!pdev || !pdev->dev.of_node)
+> -		return -ENODEV;
+> -
+>  	dev = &pdev->dev;
+>  	dev_info(dev, "Found bt bmc device\n");
+>  
+> -- 
+> 2.20.1.windows.1
+> 
+> 
+> 
