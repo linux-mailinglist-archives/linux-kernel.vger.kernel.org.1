@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0EC1A677E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C711A678B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbgDMOFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:05:07 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:51933 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730262AbgDMOFF (ORCPT
+        id S1730347AbgDMOHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:07:37 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36620 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730285AbgDMOHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:05:05 -0400
-Received: by mail-il1-f199.google.com with SMTP id i13so10676019ilq.18
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:05:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=dSAaCUxfmH3RsO4S6JaqC9sPiFMT1emTj9SauC2DHLk=;
-        b=fdC46RIExKTw9SmxCzjZJTqGSSA2r08zRI5ymDmYbBevrGZVVBfVavTTo5oRxlzqlR
-         zaY3xroGVtr84zNomLLijGywTUj/Im29aZLvRycV5VyFTAAXEENBz0Ki25cagvxMsnoG
-         icAMhVoDJbvBgPjkOSbZ9PA//pCoiE7Q5k9+a1LM6jPpB28Jvf8PM9lUfuToLVQYm7lK
-         ne/qt48EOdLRqonIipef8d9Rp1iIRA6kK652gU3lFMRA4O7YyPVFXrFdrG0AsPZH9TGe
-         vJ/cz4bBK2xsk+Tk90YriuXwy84dTu+FlV4JXD2e8WqQ9mI6gfNsv1wmFXgEnh6LGAxq
-         NcQw==
-X-Gm-Message-State: AGi0PuYxJBTZpORno/A0xYfvXmzSYtr2Ptp/f3T2rEl+mgAtZE3LV4Ze
-        F8hUu2SAlPnBgErPuyqMH7gXGdh/qetHy0mkIMy+rZsyIFwi
-X-Google-Smtp-Source: APiQypLR1F78iaVNLapYRHoDrHWZAKXWioEFmpkhtSEmyxWdBCDJ9YMPc5xSsHv6bj/OoSxNP8wJr0eMQai+nXX/+ecVqEcBkG0h
+        Mon, 13 Apr 2020 10:07:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586786855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YhNF3hI0xae/6/dg2QNRSGwFQztJmmvyxBBDiwMMhPM=;
+        b=Vcuqo/ZgOmKVkPUv3K8vnQ+/aPHXiXyLHOQley86Pr0zLcB/ozpw/EPCz/J03AyXT9ulM1
+        wAsM73ivIm+JEAAINnZS0Fec2eTQDIzNMVpgJIxnLyuoOpWiHivrGqbNqHJMuXzjz5F8fq
+        3SUuxfipNJM9sxjv4igxRgvJzJOFTW8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-b9q1jI89PgqqV41xqp8qrw-1; Mon, 13 Apr 2020 10:07:31 -0400
+X-MC-Unique: b9q1jI89PgqqV41xqp8qrw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B41F8801A02;
+        Mon, 13 Apr 2020 14:07:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-224.rdu2.redhat.com [10.10.112.224])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C30B60BE0;
+        Mon, 13 Apr 2020 14:07:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200409130434.6736-1-ardb@kernel.org>
+References: <20200409130434.6736-1-ardb@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     dhowells@redhat.com, linux-efi@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
+        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [GIT PULL 0/9] EFI fixes for v5.7-rc
 MIME-Version: 1.0
-X-Received: by 2002:a02:7b05:: with SMTP id q5mr16487082jac.105.1586786703461;
- Mon, 13 Apr 2020 07:05:03 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 07:05:03 -0700
-In-Reply-To: <000000000000bb471d05a2f246d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cb517b05a32c917b@google.com>
-Subject: Re: WARNING in hwsim_new_radio_nl
-From:   syzbot <syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, mathew.j.martineau@linux.intel.com,
-        matthieu.baerts@tessares.net, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2936362.1586786844.1@warthog.procyon.org.uk>
+Date:   Mon, 13 Apr 2020 15:07:24 +0100
+Message-ID: <2936363.1586786844@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this bug to:
+I've been seeing the:
 
-commit 01cacb00b35cb62b139f07d5f84bcf0eeda8eff6
-Author: Paolo Abeni <pabeni@redhat.com>
-Date:   Fri Mar 27 21:48:51 2020 +0000
+        exit_boot() failed!
+        efi_main() failed!
 
-    mptcp: add netlink-based PM
+thing.  This fixes it.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10225bb3e00000
-start commit:   4f8a3cc1 Merge tag 'x86-urgent-2020-04-12' of git://git.ke..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=12225bb3e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14225bb3e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3bfbde87e8e65624
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4aee3f42d7584d76761
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=100825afe00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10df613fe00000
+Tested-by: David Howells <dhowells@redhat.com>
 
-Reported-by: syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com
-Fixes: 01cacb00b35c ("mptcp: add netlink-based PM")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
