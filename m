@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE211A6538
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF311A64FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgDMKGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:06:01 -0400
-Received: from mga09.intel.com ([134.134.136.24]:25279 "EHLO mga09.intel.com"
+        id S1727885AbgDMKFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:05:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63632 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728346AbgDMKE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:04:59 -0400
-IronPort-SDR: J0UgBzZzKKGwhCZKF585P+tqRRaVhF5VyFYwyGs+T80uw7xK0AGgk3z0/3dvUPYBgETJgjxoBU
- Dtq3EiW+/5Kg==
+        id S1728364AbgDMKFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 06:05:00 -0400
+IronPort-SDR: QP2UIeRApfJdQUy26JJze3qxxFM1/jBLGZk8rRNVUme66CeRzTDCFIPkKekIdI022okenRnd7u
+ wfOJrRArQASg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 03:04:53 -0700
-IronPort-SDR: 3mWnaOO+JmTSCPuCTOnFOfK1CGZY/AlNXPoIlCr28ClP3WBwQVVzwkoWA3tPapr9JTw5De68rV
- h/wVa3xF/QmQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 03:04:54 -0700
+IronPort-SDR: n8PBSwTUDigaajs2PeudinO86a5TZgFJJ1s8S6JJnX8rkBPQxXXZyCA+YNpQ7WJmwUXQ7sLzSU
+ c9hZYXniHjeA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="243499890"
+   d="scan'208";a="426640499"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Apr 2020 03:04:51 -0700
+  by orsmga005.jf.intel.com with ESMTP; 13 Apr 2020 03:04:51 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 8D698E1; Mon, 13 Apr 2020 13:04:50 +0300 (EEST)
+        id 9EFFF1B4; Mon, 13 Apr 2020 13:04:50 +0300 (EEST)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
 Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
@@ -34,9 +34,9 @@ Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
         William Kucharski <william.kucharski@oracle.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 3/6] khugepaged: Drain all LRU caches before scanning pages
-Date:   Mon, 13 Apr 2020 13:04:44 +0300
-Message-Id: <20200413100447.20073-4-kirill.shutemov@linux.intel.com>
+Subject: [PATCH 4/6] khugepaged: Drain LRU add pagevec after swapin
+Date:   Mon, 13 Apr 2020 13:04:45 +0300
+Message-Id: <20200413100447.20073-5-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200413100447.20073-1-kirill.shutemov@linux.intel.com>
 References: <20200413100447.20073-1-kirill.shutemov@linux.intel.com>
@@ -47,30 +47,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having a page in LRU add cache offsets page refcount and gives
-false-negative on PageLRU(). It reduces collapse success rate.
+__collapse_huge_page_isolate() may fail due to extra pin in the LRU add
+pagevec. It's pretty common for swapin case: we swap in pages just to
+fail due to the extra pin.
 
-Drain all LRU add caches before scanning. It happens relatively
-rare and should not disturb the system too much.
+Drain LRU add pagevec on successful swapin.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- mm/khugepaged.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/khugepaged.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 5968ec5ddd6b..ee66c140c2d6 100644
+index ee66c140c2d6..e3e41c2768d8 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -2059,6 +2059,8 @@ static void khugepaged_do_scan(void)
- 
- 	barrier(); /* write khugepaged_pages_to_scan to local stack */
- 
-+	lru_add_drain_all();
+@@ -934,6 +934,11 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+ 	}
+ 	vmf.pte--;
+ 	pte_unmap(vmf.pte);
 +
- 	while (progress < pages) {
- 		if (!khugepaged_prealloc_page(&hpage, &wait))
- 			break;
++	/* Drain LRU add pagevec to remove extra pin on the swapped in pages */
++	if (swapped_in)
++		lru_add_drain();
++
+ 	trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 1);
+ 	return true;
+ }
 -- 
 2.26.0
 
