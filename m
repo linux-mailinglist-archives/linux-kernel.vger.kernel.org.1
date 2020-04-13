@@ -2,267 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCF51A6811
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2421A681D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730654AbgDMOX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730678AbgDMOXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:23:45 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D586620774;
-        Mon, 13 Apr 2020 14:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586787825;
-        bh=Jw8CToBNxqhP0LZZ015ew8C1ps35bePadIPNe5joEAI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AKjC0EbZVV9Q4hROQLMSGY92t9FZWgeOjZ49yXglSdcBRXVmLX+11C5wprDeAq++v
-         F5K1Zz0w0hnZQsf/29eteRKk6oqqg+4y+S1f/0T9y/BJmmgwwzyfNGWTTFJC4nMsMU
-         QeDbgW3h6Xj/ajz7FzpmCDoBlB9QpYhaxLI3zzi0=
-Date:   Mon, 13 Apr 2020 16:23:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, Jiri Slaby <jslaby@suse.cz>
-Subject: Linux 5.5.17
-Message-ID: <20200413142343.GA3548396@kroah.com>
+        id S1730756AbgDMOYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730687AbgDMOXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:23:51 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA640C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:23:51 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id d7so2432967oif.9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:23:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=zgppeRMxVpIfTJVA3qGRUdRIsFdXnQrzqcTneOFy0VQ=;
+        b=JO5dvR2szf5ab4R86+km40ex7EHd2y5Ot0J5exoIs5vUF3QEwyEgZc71+KfcKuw7kn
+         QArJRgB8V8fxIucSWTw7lKEpaJ4ybHQ260rlWZE9wUeRDTeW6LG2lq3tWfN9rWMsHhpf
+         laFzd58X1lA179xxhELHYe98pYbTb3fILdtVDoAEdG9a3qkjyTKlYX4dDaA3xrzrlQ4J
+         nV6n6Y5mHjzKPFcuFi5aQEZyO6ysDGf6ezA4dDkqgPYwd1QNqS5Lba1F8IocYBFazcLT
+         TraEzJuR5DtX07lNFNmwHkZTupJnR7xLAY1t+1RwQ1SrYiaAKYq5/ZxWC3n6BYbjRH0N
+         +3IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=zgppeRMxVpIfTJVA3qGRUdRIsFdXnQrzqcTneOFy0VQ=;
+        b=GNBwswW7YrNfeN+xtch0PadNyeKPHx6KQdbc2urgGKioJagJflbnNaMleZUI1ytJ7J
+         JSSXZvZljcOkbuS3vW53z4BE5/ruu022VnQdh1nBz67CZfSC3ogEnMrk7LrhbPrJLD9t
+         Mim5O75avU/7oxjSoD48Khqyh93GcQkb/0ICbxTJAR+xCk+9n6zchNnolWflTZD4J89S
+         ZkHwPSKe6m7fhlSooTARHmeheybyFKQAo4ACk/OMmd4WMxHAs5lxeWQ55RIm7CESDDg4
+         qILhBdHngViuLu8zvgZa2OdxX/O/vIsbc3w4QE/V1SCvV4TcNXkARbVjxq0RdFk3cpaM
+         qSoQ==
+X-Gm-Message-State: AGi0PuYGU7u7e5IZtUkTpCeKuwK55trG1PzrsDlUoSr3+bG6BUZA88yV
+        wNY5gSw7/wlRBVnPgFxI3w==
+X-Google-Smtp-Source: APiQypJXWJZ4G3NyASimxCreOzU+hPt7KjyQITSZwlrNmWLk6GM6HoAZfdkGKl0DwhOVywzy4ibVXQ==
+X-Received: by 2002:aca:cf0d:: with SMTP id f13mr11506745oig.162.1586787830992;
+        Mon, 13 Apr 2020 07:23:50 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.149.130])
+        by smtp.gmail.com with ESMTPSA id f45sm4780968otf.30.2020.04.13.07.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 07:23:50 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by serve.minyard.net (Postfix) with ESMTPSA id 64CD4181888;
+        Mon, 13 Apr 2020 14:23:49 +0000 (UTC)
+Date:   Mon, 13 Apr 2020 09:23:48 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
+Message-ID: <20200413142348.GD3587@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
+ <20200413113225.GB3587@minyard.net>
+ <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 13, 2020 at 07:56:44PM +0800, Tang Bin wrote:
+> Hi, Corey:
+> 
+> On 2020/4/13 19:32, Corey Minyard wrote:
+> > On Wed, Apr 08, 2020 at 07:59:58PM +0800, Tang Bin wrote:
+> > > bt_bmc_probe() is only called with an openfirmware platform device.
+> > > Therefore there is no need to check that the passed in device is NULL or
+> > > that it has an openfirmware node.
+> > I waited until after the merge window closed, this is queued for 5.8.
+> Can I consider that the patch will be applied in 5.8？
 
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's in my queue, so that's the plan.
 
-I'm announcing the release of the 5.5.17 kernel.
+> >   I
+> > changed the title to be "Avoid unnecessary check".
+> You have modified it, which means I don't need to submit a new patch？
 
-All users of the 5.5 kernel series must upgrade.
+Correct.
 
-The updated 5.5.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linu=
-x-5.5.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stable.git;a=3Ds=
-ummary
+> >   "Judgement",
+> > although technically correct, has a legal or moral connotation.
+> 
+> I'm sorry, I won't use that word again.
 
-thanks,
+It's not a problem.  English is a language with a lot of things like
+this.
 
-greg k-h
+-corey
 
-------------
-
- Makefile                                              |    2=20
- arch/arm/mach-imx/Kconfig                             |    2=20
- arch/s390/include/asm/lowcore.h                       |    4=20
- arch/s390/include/asm/processor.h                     |    1=20
- arch/s390/include/asm/setup.h                         |    7=20
- arch/s390/kernel/asm-offsets.c                        |    2=20
- arch/s390/kernel/entry.S                              |   65 +++++---
- arch/s390/kernel/process.c                            |    1=20
- arch/s390/kernel/setup.c                              |    3=20
- arch/s390/kernel/smp.c                                |    2=20
- arch/s390/mm/vmem.c                                   |    4=20
- block/blk-mq.c                                        |    8 +
- drivers/acpi/sleep.c                                  |    4=20
- drivers/acpi/sleep.h                                  |    1=20
- drivers/acpi/wakeup.c                                 |   81 ++++++++++
- drivers/base/core.c                                   |    8 -
- drivers/char/hw_random/imx-rngc.c                     |    4=20
- drivers/char/random.c                                 |   20 --
- drivers/infiniband/core/cma.c                         |   14 +
- drivers/infiniband/core/ucma.c                        |   49 ++++++
- drivers/infiniband/hw/hfi1/sysfs.c                    |   26 ++-
- drivers/infiniband/hw/mlx5/main.c                     |    6=20
- drivers/infiniband/sw/siw/siw_cm.c                    |  137 ++++---------=
------
- drivers/iommu/intel-iommu.c                           |   15 -
- drivers/mtd/ubi/fastmap-wl.c                          |   15 +
- drivers/net/can/slcan.c                               |    4=20
- drivers/net/dsa/bcm_sf2.c                             |    9 -
- drivers/net/dsa/mt7530.c                              |    3=20
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c       |    5=20
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c  |   23 +++
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.h  |    1=20
- drivers/net/ethernet/mellanox/mlxsw/spectrum_flower.c |    9 -
- drivers/net/ethernet/realtek/r8169_main.c             |   34 ++--
- drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c  |    2=20
- drivers/net/phy/at803x.c                              |    4=20
- drivers/net/phy/micrel.c                              |    7=20
- drivers/net/tun.c                                     |   10 -
- drivers/platform/x86/intel_int0002_vgpio.c            |   10 +
- drivers/usb/dwc3/gadget.c                             |    2=20
- drivers/video/fbdev/core/fbcon.c                      |    3=20
- fs/ceph/super.c                                       |   57 ++++---
- fs/ceph/super.h                                       |    2=20
- include/linux/acpi.h                                  |    5=20
- include/linux/mlx5/mlx5_ifc.h                         |    6=20
- include/linux/swab.h                                  |    1=20
- include/uapi/linux/swab.h                             |   10 +
- lib/find_bit.c                                        |   16 --
- mm/slub.c                                             |    2=20
- net/bluetooth/rfcomm/tty.c                            |    4=20
- net/ipv6/addrconf.c                                   |    4=20
- net/sched/cls_tcindex.c                               |   45 +++++
- sound/soc/codecs/tas2562.c                            |    2=20
- sound/soc/jz4740/jz4740-i2s.c                         |    2=20
- tools/accounting/getdelays.c                          |    2=20
- 54 files changed, 500 insertions(+), 265 deletions(-)
-
-Alex Vesker (1):
-      IB/mlx5: Replace tunnel mpls capability bits for tunnel_offloads
-
-Anson Huang (1):
-      ARM: imx: Enable ARM_ERRATA_814220 for i.MX6UL and i.MX7D
-
-Arnd Bergmann (1):
-      ARM: imx: only select ARM_ERRATA_814220 for ARMv7-A
-
-Avihai Horon (1):
-      RDMA/cm: Update num_paths in cma_resolve_iboe_route error flow
-
-Bart Van Assche (1):
-      blk-mq: Keep set->nr_hw_queues and set->map[].nr_queues in sync
-
-Bernard Metzler (1):
-      RDMA/siw: Fix passive connection establishment
-
-Christian Borntraeger (1):
-      include/uapi/linux/swab.h: fix userspace breakage, use __BITS_PER_LON=
-G for swap
-
-Chuanhong Guo (1):
-      net: dsa: mt7530: fix null pointer dereferencing in port5 setup
-
-Cong Wang (2):
-      net_sched: add a temporary refcnt for struct tcindex_data
-      net_sched: fix a missing refcnt in tcindex_init()
-
-David Ahern (1):
-      tools/accounting/getdelays.c: fix netlink attribute length
-
-Florian Fainelli (2):
-      net: dsa: bcm_sf2: Do not register slave MDIO bus with OF
-      net: dsa: bcm_sf2: Ensure correct sub-node is parsed
-
-Greg Kroah-Hartman (1):
-      Linux 5.5.17
-
-Hans de Goede (2):
-      ACPI: PM: Add acpi_[un]register_wakeup_handler()
-      platform/x86: intel_int0002_vgpio: Use acpi_register_wakeup_handler()
-
-Heiner Kallweit (1):
-      r8169: change back SG and TSO to be disabled by default
-
-Herat Ramani (1):
-      cxgb4: fix MPS index overwrite when setting MAC address
-
-Hou Tao (1):
-      ubi: fastmap: Free unused fastmap anchor peb during detach
-
-Ilya Dryomov (1):
-      ceph: canonicalize server path in place
-
-Jarod Wilson (1):
-      ipv6: don't auto-add link-local address to lag ports
-
-Jason A. Donenfeld (1):
-      random: always use batched entropy for get_random_u{32,64}
-
-Jason Gunthorpe (2):
-      RDMA/ucma: Put a lock around every call to the rdma_cm layer
-      RDMA/cma: Teach lockdep about the order of rtnl and lock
-
-Jisheng Zhang (1):
-      net: stmmac: dwmac1000: fix out-of-bounds mac address reg setting
-
-Jonghwan Choi (1):
-      ASoC: tas2562: Fixed incorrect amp_level setting.
-
-Kaike Wan (2):
-      IB/hfi1: Call kobject_put() when kobject_init_and_add() fails
-      IB/hfi1: Fix memory leaks in sysfs registration and unregistration
-
-Kees Cook (1):
-      slub: improve bit diffusion for freelist ptr obfuscation
-
-Lu Baolu (1):
-      iommu/vt-d: Allow devices with RMRRs to use identity domain
-
-Martin Kaiser (1):
-      hwrng: imx-rngc - fix an error path
-
-Oleksij Rempel (2):
-      net: phy: micrel: kszphy_resume(): add delay after genphy_resume() be=
-fore accessing PHY registers
-      net: phy: at803x: fix clock sink configuration on ATH8030 and ATH8035
-
-Paul Cercueil (1):
-      ASoC: jz4740-i2s: Fix divider written at incorrect offset in register
-
-Petr Machata (1):
-      mlxsw: spectrum_flower: Do not stop at FLOW_ACTION_VLAN_MANGLE
-
-Qiujun Huang (2):
-      Bluetooth: RFCOMM: fix ODEBUG bug in rfcomm_dev_ioctl
-      fbcon: fix null-ptr-deref in fbcon_switch
-
-Rahul Lakkireddy (1):
-      cxgb4: free MQPRIO resources in shutdown path
-
-Richard Palethorpe (1):
-      slcan: Don't transmit uninitialized stack data in padding
-
-Saravana Kannan (1):
-      driver core: Reevaluate dev->links.need_for_probe as suppliers are ad=
-ded
-
-Sven Schnelle (1):
-      s390: prevent leaking kernel address in BEAR
-
-Thinh Nguyen (1):
-      usb: dwc3: gadget: Wrap around when skip TRBs
-
-Will Deacon (1):
-      tun: Don't put_page() for all negative return values from XDP program
-
-Xiubo Li (1):
-      ceph: remove the extra slashes in the server path
-
-Yury Norov (1):
-      uapi: rename ext2_swab() to swab() and share globally in swab.h
-
-
---bg08WKrSYDhXBjb5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEZH8oZUiU471FcZm+ONu9yGCSaT4FAl6Ude8ACgkQONu9yGCS
-aT73AhAApNCPZhMBC3IVpU3vD5AWt8Zzm4JGIPb7T2/r2cebiAueZMGlyCT2Enap
-NLJZZiBVMVhsi8oQUxFeZi+pqUXfLevvARs8cNqTJ7hEuRH5sIvEDwVlq8ZqxkPk
-7Ssyg8bkaU1aV97qAN6nxKoWPCS6OJTgHMVBuGW9lX3gIwTGEr25JKpcLtQtIpSL
-cKH0g9/YTKLkNM2wA1hwQR7rxNbF4b8nFZZrdQPiT+OLcqwld9MWMqAU6PWxqtZD
-bvxpf3tsqtDiRtvQJ15FOUOz0skkdHiidMzy3XGPEXLfCk5J6ALLIJ4c3Bmd0OO4
-X2sVkeSg5mhs4ENk031O7bR1o7OUG3JM901MK9w0eGj3RjaKcQlYdo4HL0yqNdvL
-sRau5GGnqwCQTiTJtSMfJhbBkFkAYCXOlBcXXygwNNbYid5s7V0qy7EF59oSZAaZ
-2O5x+Od3FnONwrOxhCUeSYo3//jufV9Zu224syz/6++32dUcc+Ybsv7Sx5q2jtRB
-DtJfKr36dyVZ+4dm9rjrgG7WOKcc78nwIzW6HoNOutgEMWGz9aHuvd2ZaqtyxbSb
-x/HJeOGixJGzzmv8OxYmdHL0Xg5VIAZ3rSb4V87EGVuLilG47aKc3u23uFcuYrzc
-MUKgPBesl6obYCRxdQrPZomw6VcMryUx1+pMbu7YVs/GflIMTBI=
-=FxUT
------END PGP SIGNATURE-----
-
---bg08WKrSYDhXBjb5--
+> 
+> 
+> Thanks for your instruction.
+> 
+> Tang Bin
+> 
+> > 
+> 
+> 
