@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861921A6866
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6731A6868
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgDMPAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 11:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        id S1730888AbgDMPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 11:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728537AbgDMPAm (ORCPT
+        with ESMTP id S1728537AbgDMPBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:00:42 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D5DC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 08:00:42 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id i3so9555855ioo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 08:00:42 -0700 (PDT)
+        Mon, 13 Apr 2020 11:01:12 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87E7C0A3BDC;
+        Mon, 13 Apr 2020 08:01:10 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 131so6737128lfh.11;
+        Mon, 13 Apr 2020 08:01:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jy5m+JSS9axJA1aUUKOnEP/2vQVM4tf4Fj0Xx7p6asY=;
-        b=ih91VCggyLJYHB7AGsZ6Y8UgWmptcPgtxL/1bWcQ8c/TQyLZQtdr2eutN35JVVwRre
-         yrJAdJNp6g3V9UQYxxeVqx7oav9aXe1HtrKTcwzYIV44+WtEsy60H8kap/u1JGWJ/EyS
-         n1BHb3Hu1G3mxgX2vzJoMzpj0AMXtCTu1uC8q+SnCVz3O4Z7nbYlE+Or/UvGoiaoqdDf
-         BdRFU5b04t8W/+rM4BrcF+VITmOGwwbY2lGxYjMtixXJXXyjGaacOybrQNd/QmGnNxOz
-         T4cfwAb6TiCcOvibfRFjYGrYGqFQHO4jTVNm4acIJZpOYOxpwI9zi7qtQL9A/Qh+MnMl
-         OW8Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ru0QSPI9P9UnB6fBmE8CYo+keKBVUlIYNIIDkobQ4LQ=;
+        b=Y6rUG6M+j0aiSfmg6JaVatWMejLQsTEbkp+Py4z65rU+aUir3yH4IntWg02ep3JdhB
+         Usx5lvplfJa0s5cxCQggtxc7W1wuy/8j1mK4AZtTraerenGI/fqV/T+OEco9I8hWTw3G
+         H5eZJiTMnm9GprAVPGhUU7X7wHFEgQoqJDxH1gSMg4mpw4wjthr9obdVLEixRldPLNnf
+         XW/AIcU3Kw0c7BABMeRaSSqzB//NmqUeCTH+hoMqFLxXYzFcNL0yf5+hERb3K+Zb1/T1
+         oO1zLQ4iHnn+63mj5PtkZjuKKVjSrvSA7ffFDGrGQdVV2vvFVpai2yo/VXtWCSj+XtIx
+         wcvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jy5m+JSS9axJA1aUUKOnEP/2vQVM4tf4Fj0Xx7p6asY=;
-        b=d6keKedf2U/kTylbYZjodOEgfraXSYs70qZ0qa0iHaLQSWbdp25bLHdhLs5C0YCv+7
-         VEnH6D1HLbSFk995kRwYr3fxhNWmNTEWFNiqF63bj9T0WI38DK+ZmOwv3Epl0SH1ZCjK
-         keZ8FC6uJFw3wIEdSB59KqebMp/40x1+pKEoI42bQyTImEknaPW2Xva1IwNdDO85F4h6
-         DQt8xlKRtPvx5+lfem3jmps8OqN36yzpvurHT7vvmEW6QnkXWVhcwr0pI5KZWsHLiqPg
-         WyjYbfd5AvkyUVi1IFdWAleq2C4eJtDgq57/tpu5CKubHMq1dpgSlM/4feSD/YqxONJV
-         IvZw==
-X-Gm-Message-State: AGi0PuZfj/A8pmbYQaIxlwuKCUCFDYQS0jb4fl7IVrjbogycTzW0ujnG
-        SOiA19OH85+RmF7lMddwLwd7BdRQzd3TI+f0QkXJjqiz7jRJsXpN
-X-Google-Smtp-Source: APiQypJnvqVsqGf2509fS+CvuSUhzf5Rmrje0bxZeL6I5VgIZYAnEUO6Ygp01Sen4+8CSk4PHw9K6hMdtr/ZHTk9srQ=
-X-Received: by 2002:a02:650f:: with SMTP id u15mr16677578jab.53.1586790041299;
- Mon, 13 Apr 2020 08:00:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ru0QSPI9P9UnB6fBmE8CYo+keKBVUlIYNIIDkobQ4LQ=;
+        b=lN9GcXayvEg4PNXmLwRpfz7PMMOlj9k/o9d7FZaSSKOQh2/0nX5u3CHAbt+BBeJd4H
+         48CXHLJIO+JbzmffdCyLPxlajiDFgUDEFqnrBk5XGNRElNNVb3WKd5P0SKIEW7tknFcK
+         XMIHnvM1XKq1bn7CU/q3EJH2HDakyqNOUh/ZhN7ZccI7KDKkwGJcDlj/AbeIFY3S+h5q
+         0QKuqo7rN2BlQzCJut17hmoG0UiuVNc0UG52IfK23uEg7fvdN0M4AGvGaczPikOw8dpS
+         NYfaY9AuG9UzYW6HxcQ2Tf8CjyzIXW45sDY+egt8VUIZp6uQrFOHNNXlD6UVoNAmyWoQ
+         YJTQ==
+X-Gm-Message-State: AGi0PuYGN9StUygYG2BWk0Mgtl7qwlKUA2sulFLnjJWLI7/QTeZseVbS
+        JBxP2T3eSS7vRD4jBYFFthhbafIU
+X-Google-Smtp-Source: APiQypJuMbGzqumA19vjCipPNUMuK6knNtWelRmhSmQ7RHP5iQyyKfnbir6+7o6qjvFvRW6ssE2yTw==
+X-Received: by 2002:a19:ee06:: with SMTP id g6mr9366702lfb.90.1586790069000;
+        Mon, 13 Apr 2020 08:01:09 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id b28sm8190875lfo.46.2020.04.13.08.01.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2020 08:01:08 -0700 (PDT)
+Subject: Re: [PATCH v2 11/22] memory: tegra: Register as interconnect provider
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
+References: <20200330010904.27643-1-digetx@gmail.com>
+ <20200330010904.27643-12-digetx@gmail.com>
+ <70f724d6-5cb2-0ebe-ffc1-5dbb77d9dc74@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8d8dd1aa-71b3-e090-5637-578e23150bf1@gmail.com>
+Date:   Mon, 13 Apr 2020 18:01:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200406121008.62903-1-songmuchun@bytedance.com> <xm26imico4wg.fsf@google.com>
-In-Reply-To: <xm26imico4wg.fsf@google.com>
-From:   =?UTF-8?B?5a6L54mn5pil?= <songmuchun@bytedance.com>
-Date:   Mon, 13 Apr 2020 23:00:04 +0800
-Message-ID: <CAMZfGtXjvKdKUVtNKWqLd01PATArMezumm+gX+edLXuRtQ6eiA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] sched/fair: Fix call walk_tg_tree_from()
- without hold rcu_lock
-To:     Benjamin Segall <bsegall@google.com>, mingo@kernel.org,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <70f724d6-5cb2-0ebe-ffc1-5dbb77d9dc74@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 2:17 AM <bsegall@google.com> wrote:
->
-> Muchun Song <songmuchun@bytedance.com> writes:
->
-> > The walk_tg_tree_from() caller must hold rcu_lock, but the caller
-> > do not call rcu_read_lock() in the unthrottle_cfs_rq(). The
-> > unthrottle_cfs_rq() is used in 3 places. There are
-> > distribute_cfs_runtime(), unthrottle_offline_cfs_rqs() and
-> > tg_set_cfs_bandwidth(). The former 2 already hold the rcu lock,
-> > but the last one does not. So fix it with calling rcu_read_lock()
-> > in the unthrottle_cfs_rq().
->
-> It might be a tiny bit better to put it in the tg_set_cfs_bandwidth
-> instead, but the other two sources were kinda by accident, so this is
-> reasonable too.
->
-> Reviewed-by: Ben Segall <bsegall@google.com>
->
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  kernel/sched/fair.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 6f05843c76d7d..870853c47b63c 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -4782,7 +4782,9 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
-> >       raw_spin_unlock(&cfs_b->lock);
-> >
-> >       /* update hierarchical throttle state */
-> > +     rcu_read_lock();
-> >       walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)rq);
-> > +     rcu_read_unlock();
-> >
-> >       if (!cfs_rq->load.weight)
-> >               return;
+Hello Georgi,
 
-Ping guys?
+13.04.2020 15:43, Georgi Djakov пишет:
+...
+>> +	if (IS_ENABLED(CONFIG_INTERCONNECT)) {
+> 
+> The interconnect framework can be also a module and the then the build will fail.
 
--- 
-Yours,
-Muchun
+That's a good catch!
+
+>> +		err = tegra_mc_interconnect_setup(mc);
+> 
+> Maybe register the interconnect provider as a platform sub-device instead?
+
+The sub-device sound like a bit too much of hassle. I'm curious whether
+we could try to make all the tegra-memory drivers modular, please let me
+try..
