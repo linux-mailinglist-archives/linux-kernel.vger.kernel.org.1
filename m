@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B03A1A63CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34241A63D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729431AbgDMHuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:36464 "EHLO
+        id S1729458AbgDMHuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:36560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgDMHuO (ORCPT
+        with ESMTP id S1727480AbgDMHuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:50:14 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1CDC008651
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 00:50:12 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id o9so9906389ila.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 00:50:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tQceCnQqY/aLl6gDcc2Z8ka0DsHJea8y/PyAYUwdDBo=;
-        b=F9Vcfmh2HyTtmStoooa5T+exLM+P1JeKcFL2QYM/GD9sRHnzM9NOG7S19JCdWSRyKI
-         0CBLnaXbwZgyt11lc0z8P6gsbutm85LvTehGd4hlxRq56CqjUBLbmFtXvFekjAJ8dnnk
-         us/jfZ7EqbKM/lsRi2Wq1xDJ8nA1qyKtshwoJYSV3gk1NeGJmrikA2sAEENx8X5Yf5hZ
-         SU83oPJc9Qypl3lJjLlLiDlWwh3QU4RZl3ZzgRhgZU3yWRWq0JyTMt3Q1wQw/+Ww9rC1
-         WsyJ5VVJt4l7Qv3M6dlkLmqUbHTVXOgK/DOdVJH+t5I3wxxISLdlNzpSLhLlHLWKYriu
-         kstg==
-X-Gm-Message-State: AGi0PuY0eudDXZ26LKM7lS9LUPqAvPOi5ENoY5c4FzATPccAjdKgTvOM
-        Fry5VN5Mzf/P2H33wPVMhYOgapSTW1qbm6LRZF/Xom2yj3Uy
-X-Google-Smtp-Source: APiQypISXdqIE1ACm9Pt4Gp4cIPdcjo8s87kQ9UckHNBghw8x2QbCK3u34EouEW1uUL7J09ZNzZaOG8xQTmvvtzo0S+ce2PGrtz1
-MIME-Version: 1.0
-X-Received: by 2002:a02:1444:: with SMTP id 65mr15475150jag.84.1586764211610;
- Mon, 13 Apr 2020 00:50:11 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 00:50:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002ce79705a3275559@google.com>
-Subject: WARNING in unaccount_page_cache_page (2)
-From:   syzbot <syzbot+2854d22c7dd957a6519a@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 13 Apr 2020 03:50:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com [207.211.31.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5095C008651
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 00:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586764238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=lYN6NWfIRfj/yIGOoBz/hWKpypYJrD0ZyvpeCaMLxg8=;
+        b=Jm26BeDwGw/jilSjNgxFzkLQmOQ3VZQuDsnYgltiBuiWnvjouZ+IiQI5Cd7BHMwI1Gfas0
+        SlHslx02LN/WA7ZxPsRKnTkchn+0oDMcGK5H/usr/7IgdFHd7djfVHME6RZT4xbQzJ85dN
+        YmoqQ4N+lh+ux4HDEXrznc/pjO1vEwQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-RHGsbDOdMDWecL_D8MqgFA-1; Mon, 13 Apr 2020 03:50:34 -0400
+X-MC-Unique: RHGsbDOdMDWecL_D8MqgFA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75B491005513;
+        Mon, 13 Apr 2020 07:50:33 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0364B5C64E;
+        Mon, 13 Apr 2020 07:50:32 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     ubizjak@gmail.com
+Subject: [PATCH] KVM: SVM: fix compilation with modular PSP and non-modular KVM
+Date:   Mon, 13 Apr 2020 03:50:31 -0400
+Message-Id: <20200413075032.5546-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Use svm_sev_enabled() in order to cull all calls to PSP code.  Otherwise,
+compilation fails with undefined symbols if the PSP device driver is compiled
+as a module and KVM is not.
 
-syzbot found the following crash on:
-
-HEAD commit:    ae46d2aa mm/gup: Let __get_user_pages_locked() return -EIN..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b60343e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ca75979eeebf06c2
-dashboard link: https://syzkaller.appspot.com/bug?extid=2854d22c7dd957a6519a
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2854d22c7dd957a6519a@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8402 at mm/filemap.c:222 unaccount_page_cache_page+0x631/0xd60 mm/filemap.c:222
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 8402 Comm: syz-executor.4 Not tainted 5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- __warn.cold+0x2f/0x35 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- fixup_bug arch/x86/kernel/traps.c:170 [inline]
- do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:unaccount_page_cache_page+0x631/0xd60 mm/filemap.c:222
-Code: 02 00 0f 85 3a 06 00 00 48 8b 1b 31 ff 48 c1 eb 03 83 e3 01 48 89 de e8 9d 01 e2 ff 48 85 db 0f 84 d9 fb ff ff e8 ff ff e1 ff <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 80 3c 02
-RSP: 0018:ffffc90001287688 EFLAGS: 00010012
-RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90011a34000
-RDX: 000000000000ec1b RSI: ffffffff81913191 RDI: 0000000000000007
-RBP: ffffea0001165dc0 R08: ffff88804a3ce240 R09: fffff9400022cbb9
-R10: ffffea0001165dc7 R11: fffff9400022cbb8 R12: 0000000000000000
-R13: ffff8880a3f6bbe0 R14: ffffea0001165dc0 R15: ffffea00022cd088
- delete_from_page_cache_batch+0x1a6/0xec0 mm/filemap.c:355
- truncate_inode_pages_range+0x58b/0x1760 mm/truncate.c:366
- kill_bdev+0xd1/0x100 fs/block_dev.c:87
- loop_set_status+0x315/0x1370 drivers/block/loop.c:1272
- loop_set_status_old+0x223/0x310 drivers/block/loop.c:1468
- lo_ioctl+0x308/0x1410 drivers/block/loop.c:1612
- __blkdev_driver_ioctl block/ioctl.c:322 [inline]
- blkdev_ioctl+0x25b/0x660 block/ioctl.c:718
- block_ioctl+0xf9/0x140 fs/block_dev.c:1996
- vfs_ioctl fs/ioctl.c:47 [inline]
- ksys_ioctl+0x11a/0x180 fs/ioctl.c:763
- __do_sys_ioctl fs/ioctl.c:772 [inline]
- __se_sys_ioctl fs/ioctl.c:770 [inline]
- __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:770
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c889
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f83d100ac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f83d100b6d4 RCX: 000000000045c889
-RDX: 0000000020000440 RSI: 0000000000004c02 RDI: 0000000000000003
-RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 00000000000003f4 R14: 00000000004c6902 R15: 000000000076bf0c
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Reported-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/kvm/svm/sev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 0e3fc311d7da..364ffe32139c 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1117,7 +1117,7 @@ int __init sev_hardware_setup(void)
+ 	/* Maximum number of encrypted guests supported simultaneously */
+ 	max_sev_asid = cpuid_ecx(0x8000001F);
+ 
+-	if (!max_sev_asid)
++        if (!svm_sev_enabled())
+ 		return 1;
+ 
+ 	/* Minimum ASID value that should be used for SEV guest */
+@@ -1156,6 +1156,9 @@ int __init sev_hardware_setup(void)
+ 
+ void sev_hardware_teardown(void)
+ {
++        if (!svm_sev_enabled())
++                return;
++
+ 	bitmap_free(sev_asid_bitmap);
+ 	bitmap_free(sev_reclaim_asid_bitmap);
+ 
+-- 
+2.18.2
+
