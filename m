@@ -2,61 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDA91A656E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7E71A657A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgDMK6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:58:14 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:40301 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728295AbgDMK6O (ORCPT
+        id S1728909AbgDMLJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728090AbgDMLJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:58:14 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35e9445b3399-3962c; Mon, 13 Apr 2020 18:57:56 +0800 (CST)
-X-RM-TRANSID: 2ee35e9445b3399-3962c
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75e9445b24ab-2bbe4;
-        Mon, 13 Apr 2020 18:57:55 +0800 (CST)
-X-RM-TRANSID: 2ee75e9445b24ab-2bbe4
-Subject: Re: [PATCH] net: ethernet: ixp4xx: Add error handling
- inixp4xx_eth_probe()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     khalasa@piap.pl, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200412092728.8396-1-tangbin@cmss.chinamobile.com>
- <20200412113538.517669d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <e9c6ab77-973c-31f1-8a16-d5b476bbc30c@cmss.chinamobile.com>
-Date:   Mon, 13 Apr 2020 18:59:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 13 Apr 2020 07:09:41 -0400
+X-Greylist: delayed 524 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 07:09:41 EDT
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7901FC0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:00:57 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id i19so3837525qtp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:00:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Y9qeYS77awcXKXnbUv+cj5nzUb83V6esqPketlEQr3o=;
+        b=I+wFQ1ugWbjcai58iOdxd/U/dYdGxJB3G44RebhdeWHWX9FjPfo/VCwBpT5+4nkL1W
+         IV8BH9VUE0rLNBqscv4bvU3ilsFBLe3vMck+0rd7T17rnAg68VF5YflEbPvzNAOBJmWO
+         MDVoR6S/DXTKvm70FZNiCpH6F7UzykjCpidYVsjwlFqUhA58Um16S9TSzGarRGcQN6ED
+         4R2LDDrr6ZQWwikCcoCwTTx1hg/KPTRENyncbIjWUxMfCqx2onh4xawAvQX1L9Olrqsx
+         kH2e6xD92wXtDfYhSRxWjXjfS9XopU2GFVRUmublFwMwLnZHA5wi3U0JZJfY6kRksfB9
+         7hSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Y9qeYS77awcXKXnbUv+cj5nzUb83V6esqPketlEQr3o=;
+        b=RO+G3H7HOoc5sWnM2+lgPvF46aqcym0JKuhEGubDF6/yOUKGatXrnUmcO0xIkrFgyl
+         BbK0EfAphEFhmb0vhZC+vu+iUINg8j/YgpHiL2Acu3Al4bldZRpx7NS1QfPAv7Du8TO4
+         UdfMd+n4NRcgZ8JRCWng/wZve41kVOogb4N79ZhL9Mv2PlCD3yVolUch5whsFShGisrS
+         LQvhwxAMe4ZT8ONAvzJ2N0TRvicpbFCW8AunNtBkY7YdxAs5tfaI/eA2dl30Tfi7zfPy
+         ohQ2ORzesQWVEcpinjxrcUZfdeG5xbk3bdOe+Zncgk7JeKSOCwDQE1IVZUI+peRCG7oA
+         R9kg==
+X-Gm-Message-State: AGi0PubxDONLTO9u8BgfgKm0y8Xu/IAgPxCKYet3/carJTc/UDyzyuSc
+        qa6d7Vic0qnVEci6sRgasxLL3pwnhV0P6rQJMPo=
+X-Google-Smtp-Source: APiQypJb/7RuvfWWYtYBJa/4moWt11EYiaz99fHtesCE3DZp60+mDAkhS3240MhXzAd0/yd5E10btK8ZHLeIodM8+aw=
+X-Received: by 2002:ac8:7609:: with SMTP id t9mr10608932qtq.155.1586775656132;
+ Mon, 13 Apr 2020 04:00:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200412113538.517669d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Received: by 2002:a0c:aa84:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 04:00:55
+ -0700 (PDT)
+Reply-To: mrsannabruun111@gmail.com
+From:   "Mrs. Anna H. Bruun" <dr.dimvikmichael112@gmail.com>
+Date:   Mon, 13 Apr 2020 11:00:55 +0000
+Message-ID: <CAAYSbLoKFjcgH0Aj7JVOdBUPSJPX=_E99D4e9XCHG_YTJ9PmVA@mail.gmail.com>
+Subject: GOOD DAY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
+Hello Dear,
 
-On 2020/4/13 2:35, Jakub Kicinski wrote:
-> Please provide an appropriate Fixes: tag.
+Am Mrs. Anna H. Bruun I know that this message will be a surprise to
+you. Firstly, I am married to Mr. Patrick Bruun, A gold merchant who
+owns a small gold mine in Burkina Faso; He died of Cardiovascular
+Disease in mid-March 2011. During his lifetime, he deposited the sum
+of Eight million, Five hundred thousand Euros. in a bank in
+Ouagadougou the capital city of Burkina Faso in West Africa. The
+deposited money was from the sale of the shares, death benefits
+payment and entitlements of my deceased husband by his company.
 
-Should be:
+I am sending this message to you praying that it will reach you in
+good health since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently I am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I need your urgent answer to know if you will be
+able to execute this project, and I will give you more information on
+how the fund will be transferred to your bank account.
 
-Fixes: f458ac47 ("ARM/net: ixp4xx: Pass ethernet physical base as 
-resource").
-
-
-Thanks,
-
-Tang Bin
-
-
-
-
+Thanks
+Mrs. Anna H.
