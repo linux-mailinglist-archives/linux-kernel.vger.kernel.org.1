@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531C61A649F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7E41A64A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728352AbgDMJZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S1728275AbgDMJYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728233AbgDMJYn (ORCPT
+        by vger.kernel.org with ESMTP id S1728226AbgDMJYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:24:43 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F635C00860C
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:18:26 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id m2so6033642lfo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:18:26 -0700 (PDT)
+        Mon, 13 Apr 2020 05:24:42 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335B3C00860F
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:18:29 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id k28so6022615lfe.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=globallogic.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=g64ft+x3hBUoNKaOlNsqOIBji2tCG8A8Sg8KRFe28Yc=;
-        b=kg6ykZxF9Sg3DIKw4sLTc7wrIYsnOS1F0G3B6b4/E+yNNiTq6/CUotfvSeyDIOHR/r
-         ZrqNeqfJCLBa5UDqK/KZ/paCvMlYMjG5l3Ol+rNJCXYNmbekl6Srhf9uct55aVBtcIa6
-         fvfATh+tuQNfDPPfLbCF/0GFaYwvDxefnNZXI5H+bASe3vkZJT906W1tQ5K0CNmVfCgK
-         +otgCvqFVk+vo/OLeUyQQbig/uffIqcMqN/K3C+tL0AS4APDyvw7uXpvA0PFgnmp1zMC
-         pzQd0M4fDUvFrYYRoWlVOQa5BX7/JIDLHSRdp+lXPr0Huj5jxzzbhovTAnF3EYVxV2/h
-         9J7w==
+        bh=Dazg0uCSqaIHQUhsMcqRqSvCcoSDDbmA2fiSqaBN9MM=;
+        b=IGBO35OFdsIktkEWxvs2u4uJJPxlcgyZgAtOmQLDnMg9+1yf2x6K4oow82u3Vlikj4
+         qyRasUsMsWEzeVunT6ep688hAfUTx3p1Ce7s93jQ+yNgHVwkPBClqTLofhCwfPw6Hc0C
+         L3tXbx24BUqaoG3IrXoDbIGfTt746UnzFEMJNf5RGfElay0pVSBBwKn5eWVnq3tPAj5+
+         2Y0yWyJpilbcfw6QMj5hxIP7rJcXmxpzi6TJDXMQ8ml0lpav44aUEbOtUYD2KK/U6e2p
+         BDP0Bk+FEb8MMXT3lYkvqBclo/Ov6Ki7F6DEXnOINF4F6fscfQdZZ1PJ8IiOAvGDp3JH
+         K0Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=g64ft+x3hBUoNKaOlNsqOIBji2tCG8A8Sg8KRFe28Yc=;
-        b=T2pr56gkGV0TGD6k4E6BXkIfZ18cFDhuEHmawmkSyTU495QEncmhbYY7w479yVeuMW
-         YYNZFClI+LdLn7tIeTgRmAgCAv1yP51xRuEQGkJXcsa+XpRxYIxGYdvs9wmsF48jsyIQ
-         l63Ks0zWy4La3yd28zhq/sdu8ggAoz2pMcX/4G/zMm9cMyV4na+3TIdwQcXrh+oQ52gM
-         l8vJJ6xs6FcpFORbaVAqsEPReLOVGgQSyMclqtWQxrIuTT87if/3YuAN23EUKholT/fS
-         3c+1lh1Wn3imQNuXhCWGRMiT+EGudzpWSYoJEy8/vJA7H7HZjZEOy2nK5oymNNLqt7vy
-         HZuw==
-X-Gm-Message-State: AGi0PuZ4XbtTqcQpYWuK5yc13+UmPyq5aIT6RV730Q44F0cdF/83TKGu
-        KM2dYWkOd7jpoAXmh7tVm9EX/iAtBpf0YA==
-X-Google-Smtp-Source: APiQypKsD9OoGak6fki/X4BhtvzdRdt8QcUcFqDWZ/kirBl+F7dY0/BGOtgEXs30BbUHtznkTZvNTQ==
-X-Received: by 2002:a05:6512:1095:: with SMTP id j21mr10024855lfg.118.1586769504807;
-        Mon, 13 Apr 2020 02:18:24 -0700 (PDT)
+        bh=Dazg0uCSqaIHQUhsMcqRqSvCcoSDDbmA2fiSqaBN9MM=;
+        b=WTytEnAFvxwSd+rQIa/VHSBc5AVQk6CWISHbIpoLTOt5u9i/tBlKudOK7u1XxR1zKE
+         uGGOjyyxq5vXB3w79s6R3J45dg9IQWOe9Bm99/oV4oJmVl29hyAO9NAMMQz+4jvRS+K0
+         GetkIBph5Ti9U6IRJw2VO/sK9S9doZh/63MWRWhIc9bsQ7l5GiMfzpOFJu0RK86uAan6
+         eDRdMRfodzV4eU8ljiggNub2g++/otQWFxL6RUFKApe5c2GicgT97ZSBxnYKLS6H/D50
+         qdW4UUtJzp+KaJBH843mQxrsJkuNqEbe7dNQwXCpZLj1ZUb8A6bzEvsOKGoDnKEakeZ/
+         ie4g==
+X-Gm-Message-State: AGi0Pua+0f6MaL/HYFbQuYT104meDSFJD3sQ0DfsxjOwiLASpLowvaZQ
+        mkuRv5dR87fhrAQiB6scpiFq/0BR4WpLag==
+X-Google-Smtp-Source: APiQypJtWZRgeuhBdwNVv/BYkC/v97z1lki6YGoNZ8np1IQMVGV5tfmu6geF0iOgUiJOhok3iuHfpQ==
+X-Received: by 2002:a19:114:: with SMTP id 20mr9943824lfb.169.1586769507484;
+        Mon, 13 Apr 2020 02:18:27 -0700 (PDT)
 Received: from localhost.localdomain ([159.224.5.60])
-        by smtp.googlemail.com with ESMTPSA id e16sm8339049ljh.18.2020.04.13.02.18.23
+        by smtp.googlemail.com with ESMTPSA id e16sm8339049ljh.18.2020.04.13.02.18.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 02:18:24 -0700 (PDT)
+        Mon, 13 Apr 2020 02:18:27 -0700 (PDT)
 From:   Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
 To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org
@@ -66,9 +66,9 @@ Cc:     Luis Oliveira <lolivei@synopsys.com>,
         Eugeniu Rosca <erosca@de.adit-jv.com>,
         Dave Stevenson <dave.stevenson@raspberrypi.org>,
         Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
-Subject: [PATCH 1/4] media: ov5647: Add set_fmt and get_fmt calls.
-Date:   Mon, 13 Apr 2020 12:17:44 +0300
-Message-Id: <8a4c0d157d26251c9916b32866e6a4a91c023ef9.1586759968.git.roman.kovalivskyi@globallogic.com>
+Subject: [PATCH 2/4] media: ov5647: Add support for PWDN GPIO.
+Date:   Mon, 13 Apr 2020 12:17:45 +0300
+Message-Id: <f88b99899eb5e680607349b37eb3679dbd12433e.1586759968.git.roman.kovalivskyi@globallogic.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1586758372.git.roman.kovalivskyi@globallogic.com>
 References: <cover.1586758372.git.roman.kovalivskyi@globallogic.com>
@@ -81,52 +81,100 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Stevenson <dave.stevenson@raspberrypi.org>
 
-There's no way to query the subdevice for the supported
-resolutions. Add set_fmt and get_fmt implementations. Since there's
-only one format supported set_fmt does nothing and get returns single
-format.
+Add support for an optional GPIO connected to PWDN on the sensor. This
+allows the use of hardware standby mode where internal device clock
+and circuit activities are halted.
+
+Please nothe that power is off when PWDN is high.
 
 Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
 Signed-off-by: Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
 ---
- drivers/media/i2c/ov5647.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/media/i2c/ov5647.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
 diff --git a/drivers/media/i2c/ov5647.c b/drivers/media/i2c/ov5647.c
-index e7d2e5b4ad4b..3e587eb0a30e 100644
+index 3e587eb0a30e..c39e3d20e3ef 100644
 --- a/drivers/media/i2c/ov5647.c
 +++ b/drivers/media/i2c/ov5647.c
-@@ -463,8 +463,30 @@ static int ov5647_enum_mbus_code(struct v4l2_subdev *sd,
- 	return 0;
- }
+@@ -21,6 +21,7 @@
  
-+static int ov5647_set_get_fmt(struct v4l2_subdev *sd,
-+			      struct v4l2_subdev_pad_config *cfg,
-+			      struct v4l2_subdev_format *format)
-+{
-+	struct v4l2_mbus_framefmt *fmt = &format->format;
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -35,6 +36,13 @@
+ 
+ #define SENSOR_NAME "ov5647"
+ 
++/*
++ * From the datasheet, "20ms after PWDN goes low or 20ms after RESETB goes
++ * high if reset is inserted after PWDN goes high, host can access sensor's
++ * SCCB to initialize sensor."
++ */
++#define PWDN_ACTIVE_DELAY_MS	20
 +
-+	if (format->pad != 0)
-+		return -EINVAL;
-+
-+	/* Only one format is supported, so return that */
-+	memset(fmt, 0, sizeof(*fmt));
-+	fmt->code = MEDIA_BUS_FMT_SBGGR8_1X8;
-+	fmt->colorspace = V4L2_COLORSPACE_SRGB;
-+	fmt->field = V4L2_FIELD_NONE;
-+	fmt->width = 640;
-+	fmt->height = 480;
-+
-+	return 0;
-+}
-+
- static const struct v4l2_subdev_pad_ops ov5647_subdev_pad_ops = {
- 	.enum_mbus_code = ov5647_enum_mbus_code,
-+	.set_fmt =	  ov5647_set_get_fmt,
-+	.get_fmt =	  ov5647_set_get_fmt,
+ #define MIPI_CTRL00_CLOCK_LANE_GATE		BIT(5)
+ #define MIPI_CTRL00_BUS_IDLE			BIT(2)
+ #define MIPI_CTRL00_CLOCK_LANE_DISABLE		BIT(0)
+@@ -86,6 +94,7 @@ struct ov5647 {
+ 	unsigned int			height;
+ 	int				power_count;
+ 	struct clk			*xclk;
++	struct gpio_desc		*pwdn;
  };
  
- static const struct v4l2_subdev_ops ov5647_subdev_ops = {
+ static inline struct ov5647 *to_state(struct v4l2_subdev *sd)
+@@ -355,6 +364,11 @@ static int ov5647_sensor_power(struct v4l2_subdev *sd, int on)
+ 	if (on && !ov5647->power_count)	{
+ 		dev_dbg(&client->dev, "OV5647 power on\n");
+ 
++		if (ov5647->pwdn) {
++			gpiod_set_value(ov5647->pwdn, 0);
++			msleep(PWDN_ACTIVE_DELAY_MS);
++		}
++
+ 		ret = clk_prepare_enable(ov5647->xclk);
+ 		if (ret < 0) {
+ 			dev_err(&client->dev, "clk prepare enable failed\n");
+@@ -392,6 +406,8 @@ static int ov5647_sensor_power(struct v4l2_subdev *sd, int on)
+ 			dev_dbg(&client->dev, "soft stby failed\n");
+ 
+ 		clk_disable_unprepare(ov5647->xclk);
++
++		gpiod_set_value(ov5647->pwdn, 1);
+ 	}
+ 
+ 	/* Update the power count. */
+@@ -603,6 +619,10 @@ static int ov5647_probe(struct i2c_client *client)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Request the power down GPIO asserted */
++	sensor->pwdn = devm_gpiod_get_optional(&client->dev, "pwdn",
++					       GPIOD_OUT_HIGH);
++
+ 	mutex_init(&sensor->lock);
+ 
+ 	sd = &sensor->sd;
+@@ -616,7 +636,15 @@ static int ov5647_probe(struct i2c_client *client)
+ 	if (ret < 0)
+ 		goto mutex_remove;
+ 
++	if (sensor->pwdn) {
++		gpiod_set_value(sensor->pwdn, 0);
++		msleep(PWDN_ACTIVE_DELAY_MS);
++	}
++
+ 	ret = ov5647_detect(sd);
++
++	gpiod_set_value(sensor->pwdn, 1);
++
+ 	if (ret < 0)
+ 		goto error;
+ 
 -- 
 2.17.1
 
