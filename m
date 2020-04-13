@@ -2,182 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F70E1A6338
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138E61A6367
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728865AbgDMGxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 02:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:54704 "EHLO
+        id S1729134AbgDMHEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:56556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727546AbgDMGxA (ORCPT
+        with ESMTP id S1727841AbgDMHEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 02:53:00 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07FCC008651;
-        Sun, 12 Apr 2020 23:52:58 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h25so7702940lja.10;
-        Sun, 12 Apr 2020 23:52:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=obx+dgHWtJ+1SmS5nRQdHXALDhbm+OoO8gaF5G34Y6g=;
-        b=Ylx+UI57UMaItJSNaHrmSCBTsp8MTvIoeG+yFhELcHVTOCotrj+JnfujPbwWPlz8mu
-         mPOwVLUV3ZUX8lyK+/4pPbyD1ChVeJ8BPnIkO/KaDNfZrCbOGmu4Myc3zjz5AaVvSxoq
-         YW6AfSVO3t69PQUMY3lAsn+4ILrolNOIr03CQkyJFtEX+B7ezjYdjcha3Q7FoqI58KN7
-         WEg1Sb63OY82K1DTm9Oh6Mkq94lKJrguk7AOZy4Cf1R1FCz0FF8y3GRbcPtSu+LpQL90
-         d10Ekjk0/ufHkPCsJknjlK5sbBaumnoq5OVtpwlwpsCsWwBhQgL2LvVY0pMTjr9WIbF+
-         hIIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=obx+dgHWtJ+1SmS5nRQdHXALDhbm+OoO8gaF5G34Y6g=;
-        b=A3qaPLrvZfLhSwBNtviJx0zaaFtzADW/4AaZBgjWFtxMMRBqYH8QZN6Q023f6Bsi+Y
-         DoDW2wyFLgubpgJUcHUZTBTO8kOjRboQfgEShaZAypYSi6Iz6FNEydHIHZkmG7h+VQOZ
-         ZUFsq6kiKf0LUUfe7NrACHsEFI+Bm/23YdmLmrecX3F4GKj74Dx3D5deOZIa/iDUKrvI
-         hEYi3c12ILCkeJT+Ug2OLtB2JJtxstYFcxuWDzxbf9+fyvkb9at+KmsMXhamga8OMTZD
-         r0bL7A+n3vy1fVkXLMcgGGKxN6cORFPLCaSq765eDuGpWqqLGUX/XS10KlWZmLARmabW
-         m5ZA==
-X-Gm-Message-State: AGi0Pubzlus3bkDuaN5M5F0rxOy8IF1GtxODdZ/tvXjTjaEXfdXanAG1
-        AGPA1m88dWRnfH0CLf5AG6QXgWIXPzJzxGtZLuc=
-X-Google-Smtp-Source: APiQypKuExun26bef57tFMBC0VASpQa9TO67TMeZBmY+f4n/zZ8Cd8v7LctbSsl2eIyIEMKAZtGbpKcis4zSbRUqjiY=
-X-Received: by 2002:a2e:330e:: with SMTP id d14mr9669168ljc.153.1586760777124;
- Sun, 12 Apr 2020 23:52:57 -0700 (PDT)
+        Mon, 13 Apr 2020 03:04:35 -0400
+Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr [80.12.242.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D087FC008651
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 00:04:33 -0700 (PDT)
+Received: from [192.168.1.41] ([90.126.162.40])
+        by mwinf5d60 with ME
+        id S6wB220060scBcy036wEHe; Mon, 13 Apr 2020 08:57:01 +0200
+X-ME-Helo: [192.168.1.41]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 13 Apr 2020 08:57:01 +0200
+X-ME-IP: 90.126.162.40
+Subject: Re: [PATCH] net: mvneta: Fix a typo
+To:     Joe Perches <joe@perches.com>, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20200412212034.4532-1-christophe.jaillet@wanadoo.fr>
+ <6ecfa6cb686af1452101c0b727c9eb34d5582610.camel@perches.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <eea1b700-4559-c8d1-1960-1858ed3d90ef@wanadoo.fr>
+Date:   Mon, 13 Apr 2020 08:56:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <9ed34afa9fb42e0c234065cac5401d7826942b55.1586744073.git.baolin.wang7@gmail.com>
- <202004131350.ewIW96s2%lkp@intel.com>
-In-Reply-To: <202004131350.ewIW96s2%lkp@intel.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Mon, 13 Apr 2020 14:52:45 +0800
-Message-ID: <CADBw62oRnPr6K0C_1QsQdpZGMJvaQ4dymnVDxgfPsRt9m=t72A@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] mmc: host: sdhci: Implement the request_atomic() API
-To:     kbuild test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6ecfa6cb686af1452101c0b727c9eb34d5582610.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le 12/04/2020 à 23:35, Joe Perches a écrit :
+> On Sun, 2020-04-12 at 23:20 +0200, Christophe JAILLET wrote:
+>> s/mvmeta/mvneta/
+> nice. how did you find this?
+
+
 Hi,
 
-On Mon, Apr 13, 2020 at 1:42 PM kbuild test robot <lkp@intel.com> wrote:
->
-> Hi Baolin,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on v5.7-rc1 next-20200412]
-> [cannot apply to arm-soc/for-next]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->
-> url:    https://github.com/0day-ci/linux/commits/Baolin-Wang/Introduce-the-request_atomic-for-the-host/20200413-105346
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 8f3d9f354286745c751374f5f1fcafee6b3f3136
-> config: x86_64-randconfig-s2-20200413 (attached as .config)
-> compiler: gcc-5 (Ubuntu 5.5.0-12ubuntu1) 5.5.0 20171010
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
+This is based on a bash script I've made a while ago (see [1])
+I've slightly updated it, but the idea is still the same. I search 
+strings in a file with some variation on the file name (2 inverted 
+chars, 1 missing char or 1 modified char).
 
-This patch set is based on Adrian's patch set. Thanks.
-https://www.spinics.net/lists/linux-mmc/msg58529.html
+The output is horrible, and a lot of filtering should be done.
+It is much like noise, with MANY false positives. But I manage to dig 
+some interesting stuff out of it.
 
->
-> All error/warnings (new ones prefixed by >>):
->
->    In file included from include/linux/build_bug.h:5:0,
->                     from include/linux/bitfield.h:10,
->                     from drivers/mmc/host/sdhci.c:12:
->    drivers/mmc/host/sdhci.c: In function 'sdhci_request_atomic':
->    drivers/mmc/host/sdhci.c:2076:6: error: implicit declaration of function 'sdhci_present_error' [-Werror=implicit-function-declaration]
->      if (sdhci_present_error(host, mrq->cmd, true)) {
->          ^
->    include/linux/compiler.h:58:52: note: in definition of macro '__trace_if_var'
->     #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
->                                                        ^
-> >> drivers/mmc/host/sdhci.c:2076:2: note: in expansion of macro 'if'
->      if (sdhci_present_error(host, mrq->cmd, true)) {
->      ^
->    drivers/mmc/host/sdhci.c:2081:8: error: implicit declaration of function 'sdhci_manual_cmd23' [-Werror=implicit-function-declaration]
->      cmd = sdhci_manual_cmd23(host, mrq) ? mrq->sbc : mrq->cmd;
->            ^
->    drivers/mmc/host/sdhci.c:2090:2: error: invalid use of void expression
->      if (!sdhci_send_command(host, cmd))
->      ^
->    drivers/mmc/host/sdhci.c:2090:2: error: invalid use of void expression
->    In file included from include/linux/build_bug.h:5:0,
->                     from include/linux/bitfield.h:10,
->                     from drivers/mmc/host/sdhci.c:12:
-> >> include/linux/compiler.h:61:16: error: invalid use of void expression
->      static struct ftrace_branch_data  \
->                    ^
->    include/linux/compiler.h:58:69: note: in expansion of macro '__trace_if_value'
->     #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
->                                                                         ^
->    include/linux/compiler.h:56:28: note: in expansion of macro '__trace_if_var'
->     #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
->                                ^
->    drivers/mmc/host/sdhci.c:2090:2: note: in expansion of macro 'if'
->      if (!sdhci_send_command(host, cmd))
->      ^
->    cc1: some warnings being treated as errors
->
-> vim +/if +2076 drivers/mmc/host/sdhci.c
->
->   2066
->   2067  int sdhci_request_atomic(struct mmc_host *mmc, struct mmc_request *mrq)
->   2068  {
->   2069          struct sdhci_host *host = mmc_priv(mmc);
->   2070          struct mmc_command *cmd;
->   2071          unsigned long flags;
->   2072          int ret = 0;
->   2073
->   2074          spin_lock_irqsave(&host->lock, flags);
->   2075
-> > 2076          if (sdhci_present_error(host, mrq->cmd, true)) {
->   2077                  sdhci_finish_mrq(host, mrq);
->   2078                  goto out_finish;
->   2079          }
->   2080
->   2081          cmd = sdhci_manual_cmd23(host, mrq) ? mrq->sbc : mrq->cmd;
->   2082
->   2083          /*
->   2084           * The HSQ may send a command in interrupt context without polling
->   2085           * the busy signaling, which means we should return BUSY if controller
->   2086           * has not released inhibit bits to allow HSQ trying to send request
->   2087           * again in non-atomic context. So we should not finish this request
->   2088           * here.
->   2089           */
->   2090          if (!sdhci_send_command(host, cmd))
->   2091                  ret = -EBUSY;
->   2092          else
->   2093                  sdhci_led_activate(host);
->   2094
->   2095  out_finish:
->   2096          spin_unlock_irqrestore(&host->lock, flags);
->   2097          return ret;
->   2098  }
->   2099  EXPORT_SYMBOL_GPL(sdhci_request_atomic);
->   2100
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+If interested in the updated script, just ask, but except the concept 
+itself, I'm not sure than anything else worth anything and is should be 
+rewritten from scratch.
 
+The update includes some tweaks in order to search into Kconfig files 
+instead.
 
+CJ
 
--- 
-Baolin Wang
+[1]: https://marc.info/?l=kernel-janitors&m=156382201306781&w=4
+
