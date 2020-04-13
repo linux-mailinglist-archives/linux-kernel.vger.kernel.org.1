@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5703E1A6312
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895181A631C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgDMGap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 02:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:51072 "EHLO
+        id S1728608AbgDMGgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 02:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:51944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727547AbgDMGap (ORCPT
+        with ESMTP id S1727536AbgDMGgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 02:30:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2800FC008673;
-        Sun, 12 Apr 2020 23:30:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g6so4055380pgs.9;
-        Sun, 12 Apr 2020 23:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=b7+FE76CrAbv5/Ztny79Na77dk/ZlKbkr1Vw0gozAZk=;
-        b=t3QyUVmofB/LxJYTmuH4EW8oCoXGwEFD+QkS+7y1z6JaT1weNzVFYjQv0KQYme6fKY
-         GwxfggGIvPgP487KP7nrSd5sT+1T+SwEBGGt8ozgqrMaRBO6FOibksLyZSx2zgyNjZ+L
-         TVnZwDg+7LaUD0qCiWAHHSkeDB9NEPk1o9c+pLeA24L72hPbDUBOxuc5Azul2Wixqlcj
-         WoZNMBoUfNgX8uJ1zjTuLGmPAYqYQfJiwFBNzxb8x7UZcaIDqu+61eWzVdsZcz9IqD6S
-         9o5h5H5OeXs6fZxkhICKGhm6FbskaK0+MXggudlnhAVpqxINNTI2bMjVfN4DQeLPWzku
-         JeZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=b7+FE76CrAbv5/Ztny79Na77dk/ZlKbkr1Vw0gozAZk=;
-        b=OcGfd6YLHG0Y9DEnUx9rDsxC134UdhwaX2WBuovx1eliPtmZ8xGaDeyBLJreG8eyHO
-         CtHTdAgFtuYmFhDP7ZprQzJtyxvofnujVttDpvYaMWr3CPUiBpNeFZ/Ka+ePR+Y+tqI5
-         73q5hTjTxsT/87R0YhjiYDESh32HzRqXk0sGBpX6nUxS/COfmfjs+7XzUmFAuG2dd9d7
-         g6k2JLt6Z4jGnUJEBwJfPn0nLr3T4wqyFhMkSX+ys0Kg/y+U9hWZ4QwValxzqed16mqv
-         LnTR0tpYYvbUNK8OClZONaFH4VPgkPEJXbrQI55yYwEWBEnin3l+nm8gscRwBnSsSwlb
-         ryuQ==
-X-Gm-Message-State: AGi0Pubs7AqJ91peT3uySaT9Hq5Qf3gi5RJsYtl074qh+niPm6m5gG8x
-        EIKyxoYlWfccoFUp8aunTRs=
-X-Google-Smtp-Source: APiQypIMMmaSuobJaTPNM0QJ3WTO4JlQhK7yxLHjgNC+EcZIc7aimYlP+URBewW9DSu9sa2sYUjRvQ==
-X-Received: by 2002:a63:7a15:: with SMTP id v21mr16274168pgc.416.1586759444700;
-        Sun, 12 Apr 2020 23:30:44 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.19])
-        by smtp.gmail.com with ESMTPSA id w10sm6594286pfd.128.2020.04.12.23.30.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Apr 2020 23:30:44 -0700 (PDT)
-From:   Baolin Wang <baolin.wang7@gmail.com>
-To:     broonie@kernel.org
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com, baolin.wang7@gmail.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: sprd: adi: Use IS_ENABLED() to validate configs
-Date:   Mon, 13 Apr 2020 14:30:25 +0800
-Message-Id: <e38807eadd5550add8eb90dd3f8fbe2cfc39cc13.1586759322.git.baolin.wang7@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 13 Apr 2020 02:36:19 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F07C008673
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:36:18 -0700 (PDT)
+Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03D6XShj060956;
+        Mon, 13 Apr 2020 15:33:28 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
+ Mon, 13 Apr 2020 15:33:28 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
+Received: from ccsecurity.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03D6XOwp060692
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 13 Apr 2020 15:33:28 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jiri Slaby <jslaby@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: [PATCH v3] Add kernel config option for tweaking kernel behavior.
+Date:   Mon, 13 Apr 2020 15:33:17 +0900
+Message-Id: <20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the Spreadtrum wachdog is loaded as a module, we still need set default
-watchdog reboot mode in case the rebooting is caused by watchdog. But now
-we can not set the watchdog reboot mode by using '#ifdef' to validate
-the watchdog configuration, thus we can change to use IS_ENABLED() to
-fix this issue.
+Existing kernel config options are defined based on "whether you want to
+enable this module/feature or not". And such granularity is sometimes
+too rough-grained for fuzzing tools which try to find bugs inside each
+module/feature.
 
-Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+While syzkaller (one of fuzzing tools) is finding many bugs, sometimes
+syzkaller examines stupid operations. Some examples of such operations
+are: changing console loglevel which in turn makes it impossible to get
+kernel messages when a crash happens, freezing filesystems which in turn
+causes khungtaskd to needlessly complain, programmatically sending
+Ctrl-Alt-Del which in turn causes the system to needlessly reboot.
+Currently we prevent syzkaller from examining stupid operations by
+blacklisting syscall arguments and/or disabling whole functionality
+using existing kernel config options. But such approach is difficult to
+maintain and needlessly prevents fuzzers from testing kernel code. [1]
+
+We want fuzzers to test as much coverage as possible while we want
+fuzzers not to try stupid operations. To achieve this goal, we want
+cooperation from kernel side, and build-time branching (i.e. kernel
+config options) will be the simplest and the most reliable.
+
+Therefore, this patch introduces a kernel config option which allows
+selecting fine-grained kernel config options for tweaking kernel's
+behavior. Each fine-grained kernel config option will be added by future
+patches. For ease of management, grouping kernel config options for
+allowing e.g. syzkaller to select all fine-grained kernel config options
+which e.g. syzkaller wants would be added by future patches.
+
+[1] https://lkml.kernel.org/r/CACT4Y+a6KExbggs4mg8pvoD554PcDqQNW4sM15X-tc=YONCzYw@mail.gmail.com
+
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Dmitry Vyukov <dvyukov@google.com>
 ---
- drivers/spi/spi-sprd-adi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/Kconfig.debug | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/spi/spi-sprd-adi.c b/drivers/spi/spi-sprd-adi.c
-index 87dadb6b8ebf..88e6543648cb 100644
---- a/drivers/spi/spi-sprd-adi.c
-+++ b/drivers/spi/spi-sprd-adi.c
-@@ -319,7 +319,7 @@ static int sprd_adi_transfer_one(struct spi_controller *ctlr,
+Changes since v2 ( https://lkml.kernel.org/r/20200307135822.3894-1-penguin-kernel@I-love.SAKURA.ne.jp ):
+  Reduce the role of this kernel config option from "enable everything
+  which would be useful for fuzz testing" to "simply serve as a gate for
+  hiding individual kernel config option", for we should use individual
+  kernel config option for tweaking individual kernel behavior.
+
+Changes since v1 ( https://lkml.kernel.org/r/20191216095955.9886-1-penguin-kernel@I-love.SAKURA.ne.jp ):
+  Drop users of this kernel config option.
+  Update patch description.
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 50c1f5f08e6f..a7c3ebc21428 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2223,4 +2223,15 @@ config HYPERV_TESTING
  
- static void sprd_adi_set_wdt_rst_mode(struct sprd_adi *sadi)
- {
--#ifdef CONFIG_SPRD_WATCHDOG
-+#if IS_ENABLED(CONFIG_SPRD_WATCHDOG)
- 	u32 val;
+ endmenu # "Kernel Testing and Coverage"
  
- 	/* Set default watchdog reboot mode */
++menuconfig TWEAK_KERNEL_BEHAVIOR
++	bool "Tweak kernel behavior"
++	help
++	  Saying Y here allows modifying kernel behavior via kernel
++	  config options which will become visible by selecting this
++	  config option.
++
++if TWEAK_KERNEL_BEHAVIOR
++
++endif # TWEAK_KERNEL_BEHAVIOR
++
+ endmenu # Kernel hacking
 -- 
-2.17.1
+2.18.2
 
