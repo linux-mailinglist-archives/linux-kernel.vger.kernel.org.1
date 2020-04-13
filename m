@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975961A64D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5FF1A64D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgDMJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:55:09 -0400
-Received: from mailoutvs59.siol.net ([185.57.226.250]:50672 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727793AbgDMJzI (ORCPT
+        id S1728491AbgDMJzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:55:20 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:42414 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727793AbgDMJzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:55:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id AE7DA522D78;
-        Mon, 13 Apr 2020 11:55:05 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id j0F5mj0SWgUP; Mon, 13 Apr 2020 11:55:05 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 665E1522D84;
-        Mon, 13 Apr 2020 11:55:05 +0200 (CEST)
-Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id E25A6522CFD;
-        Mon, 13 Apr 2020 11:55:03 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/sun4i: hdmi ddc clk: Fix size of m divider
-Date:   Mon, 13 Apr 2020 11:54:57 +0200
-Message-Id: <20200413095457.1176754-1-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.26.0
+        Mon, 13 Apr 2020 05:55:19 -0400
+Received: from [5.157.111.77] (port=45414 helo=[192.168.77.66])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1jNvo9-00A9CE-It; Mon, 13 Apr 2020 11:55:13 +0200
+Subject: Re: [RFC PATCH v2 5/6] i2c: of: mark a whole array of regs as
+ reserved
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
+        Kieran Bingham <kieran@ksquared.org.uk>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
+References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+ <20200318150059.21714-6-wsa+renesas@sang-engineering.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <c4e41b0a-4b9a-0db9-94dc-bbbc2f013133@lucaceresoli.net>
+Date:   Mon, 13 Apr 2020 11:55:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200318150059.21714-6-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-m divider in DDC clock register is 4 bits wide. Fix that.
+Hi,
 
-Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- drivers/gpu/drm/sun4i/sun4i_hdmi.h         | 2 +-
- drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 18/03/20 16:00, Wolfram Sang wrote:
+> Back then, 'reg' properties in I2C DT bindings only contained one
+> address and this address was assigned a device and, thus, blocked.
+> Meanwhile, chips using multiple addresses are common and the 'reg'
+> property can be an array described by 'reg-names'. This code enhances
+> I2C DT parsing, so it will reserve all addresses described in an array.
+> They will be bound to the 'dummy' driver as 'reserved' iff the first
+> address can be assigned successfully. If that is not the case, the array
+> is not further considered. If one later address of the array can not be
+> assigned, it will be reported but we don't bail out. The driver has to
+> decide if that address is critical or not.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/i2c/i2c-core-of.c | 70 +++++++++++++++++++++++++--------------
+>  1 file changed, 46 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/i2c/i2c-core-of.c b/drivers/i2c/i2c-core-of.c
+> index f2d09ea0d336..67eb2cd305cf 100644
+> --- a/drivers/i2c/i2c-core-of.c
+> +++ b/drivers/i2c/i2c-core-of.c
+> @@ -16,25 +16,18 @@
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> +#include <linux/of_address.h>
+>  #include <linux/of_device.h>
+>  #include <linux/sysfs.h>
+>  
+>  #include "i2c-core.h"
+>  
+> -int of_i2c_get_board_info(struct device_node *node, struct i2c_board_info *info)
+> +static void of_i2c_decode_board_info(struct device_node *node, u32 addr,
+> +				     bool first_addr, struct i2c_board_info *info)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi.h b/drivers/gpu/drm/sun4i/s=
-un4i_hdmi.h
-index 7ad3f06c127e..00ca35f07ba5 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi.h
-@@ -148,7 +148,7 @@
- #define SUN4I_HDMI_DDC_CMD_IMPLICIT_WRITE	3
-=20
- #define SUN4I_HDMI_DDC_CLK_REG		0x528
--#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0x7) << 3)
-+#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0xf) << 3)
- #define SUN4I_HDMI_DDC_CLK_N(n)			((n) & 0x7)
-=20
- #define SUN4I_HDMI_DDC_LINE_CTRL_REG	0x540
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c b/drivers/gpu/drm=
-/sun4i/sun4i_hdmi_ddc_clk.c
-index 2ff780114106..12430b9d4e93 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
-@@ -33,7 +33,7 @@ static unsigned long sun4i_ddc_calc_divider(unsigned lo=
-ng rate,
- 	unsigned long best_rate =3D 0;
- 	u8 best_m =3D 0, best_n =3D 0, _m, _n;
-=20
--	for (_m =3D 0; _m < 8; _m++) {
-+	for (_m =3D 0; _m < 16; _m++) {
- 		for (_n =3D 0; _n < 8; _n++) {
- 			unsigned long tmp_rate;
-=20
---=20
-2.26.0
+While I confirm the patch looks generally OK, let me add the name of
+this function is not quite self-explaining. The difference between "get"
+and "decode" has nothing to do with the different actions these
+functions do, i.e. the new function gets (or: decodes) info about  a
+single address that is passed, the old "get" function gets the info for
+the first address.
 
+I'd suggest the new function be named of_i2c_get_board_info_one_addr or
+similar. Not super nice, a bit long, but self-explanatory.
+
+-- 
+Luca
