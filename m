@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120401A6C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0CB1A6C07
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732980AbgDMSUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728022AbgDMSUO (ORCPT
+        id S2387706AbgDMSWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 14:22:50 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41728 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387695AbgDMSWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:20:14 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCACC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:20:14 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id w11so4795406pga.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OOnXvBD+1tH8qvIGf2uSojwZ4oLg81q4MCieLQpC63U=;
-        b=oeuT1AV0ime5Fh4Rm1OT+N4p5ZprfDIRamr/sJ4vSfypoagGnjNeHMoAvTBInH8kl6
-         w+vZ6BSLnN1/4u8FEXKAtpk/emslIy0rFdStcDetjHj4xedGp8HdCntv+FZxm5eKhtvs
-         efuKf2pCVQOGr2QoXZ/JRNmPe0dmSoCYbdaUYZa1sAxCz/K0pXeTwoKlHl/bkeaXSLsp
-         jF8vaZ1AAn+9GrlceQrjN0fnUYq7TGvgMAfgYK1mdp5VH5Vo4/MkvJmFMCv/3aoFm6CN
-         1+EWzvfMTkgAJiYLzm8Wgff7B+O6d4czS2URiYRa/5KGgT+13iULt6+UB8A+845DKYdw
-         LqXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OOnXvBD+1tH8qvIGf2uSojwZ4oLg81q4MCieLQpC63U=;
-        b=FdR6FWNIxAXiNmmlF+ehweIlebKl/rrslVKtOZXNl2CsWtwMbEydx2SwW0lt/mqPiQ
-         8AhvgwJRNCtW3HSahiRRt7/KMaDsxO2CIdOtz3SQmMOsqilZzd9DS7cH8M2AeBN26J68
-         0oILUHpUtvzCLakkPa07Xvvz0m+Jxl7t6ngaHfBFibPWa56FIRK6+JFvYiI4ReTFh0uE
-         oO8cI8GazHsOS4oibYCL+czaQsYuR4wytakUuDwZTTOzWzWtrGulUprh9UqHEyipQopy
-         /jw+gcmDc8T861lOlosQpaTXjQWlMTKfDFCohFoopX2KUZeR6RseB1XhfeH0Fx7j7K9V
-         /6yw==
-X-Gm-Message-State: AGi0PuY1fZ0xT8dAOPXcjrLqKrFXHdufw5PXjLBiA3ACA/0+U62jE1pT
-        euYoZZMjXOEvWTOTqIrNrDrJYHcs8kkhYlPHY643xg==
-X-Google-Smtp-Source: APiQypJwUNJu1vlLEjikzzfaLZvsRT9M+9FSian5AttKj5c01LY2XFIqQOuHAme5EAkTGljALMbupJwwZf5FUfYE8Fw=
-X-Received: by 2002:a65:6704:: with SMTP id u4mr18738485pgf.263.1586802013753;
- Mon, 13 Apr 2020 11:20:13 -0700 (PDT)
+        Mon, 13 Apr 2020 14:22:49 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DIAhrG057732;
+        Mon, 13 Apr 2020 18:22:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=d9rweeiKACYb4np+ASa2+QDpz4eFlzgf4GMZTwV2Hn0=;
+ b=XD5w0XjMxhpdntlgLTKtVxcY54pjudt353DUfO9Vmek68E6eHp5uTBzFNbG/13l/M6Zw
+ qPPhk8SeOp94kIL3fWGajEgrTaVsBRvbUsHoZW8Gz18v+3XH88rlXN+uc+5KRZml3dG+
+ mR6vH34g32CeQQ7CYRbDbp2UioF7NNLuoiI5+wmhibsZlBJKqHvWxwZ0uXfodQGWn3mU
+ WlYwefCneA0IWs4k0BUpAkaMdbnwFBJ+FkP6SXbeS+L1p43KFIcWVeRgQMIhg4r/HV2l
+ cYGq0QRStkJxQCuf1g2yjRHIIZMF3ZYBZR8/dU+Da71U6zrvJvwzhN67acmXAcbu50hN BA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30b5ar05m1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 18:22:43 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DI84AL111325;
+        Mon, 13 Apr 2020 18:20:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30bqpcu37v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 18:20:42 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03DIKfV7020077;
+        Mon, 13 Apr 2020 18:20:41 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Apr 2020 11:20:41 -0700
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Chaitra P B <chaitra.basappa@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 23/35] docs: fusion: mptbase.c: get rid of a doc build warning
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <cover.1586359676.git.mchehab+huawei@kernel.org>
+        <9ca049c2d25689c56448afddf4f0d1e619fa87f7.1586359676.git.mchehab+huawei@kernel.org>
+Date:   Mon, 13 Apr 2020 14:20:38 -0400
+In-Reply-To: <9ca049c2d25689c56448afddf4f0d1e619fa87f7.1586359676.git.mchehab+huawei@kernel.org>
+        (Mauro Carvalho Chehab's message of "Wed, 8 Apr 2020 17:46:15 +0200")
+Message-ID: <yq17dyjxn61.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-References: <20200413020538.31322-1-masahiroy@kernel.org>
-In-Reply-To: <20200413020538.31322-1-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Apr 2020 11:20:02 -0700
-Message-ID: <CAKwvOdk3-o2-Zom-Ejt0HP3vn+QWBYkJo+kPNzamofc-eH-FjA@mail.gmail.com>
-Subject: Re: [PATCH] arc: remove #ifndef CONFIG_AS_CFI_SIGNAL_FRAME
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Allison Randal <allison@lohutok.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=996 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130139
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 7:06 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> CONFIG_AS_CFI_SIGNAL_FRAME is never defined for ARC.
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Thanks for the patch.  I worry there may be many preprocessor checks
-in the kernel that are always true/false.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Mauro,
 
+> Use a table for the enum list, to avoid this warning:
+>
+> 	./drivers/message/fusion/mptbase.c:5058: WARNING: Definition list ends without a blank line; unexpected unindent.
 
-> ---
->
->  arch/arc/kernel/unwind.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/arch/arc/kernel/unwind.c b/arch/arc/kernel/unwind.c
-> index 27ea64b1fa33..f87758a6851b 100644
-> --- a/arch/arc/kernel/unwind.c
-> +++ b/arch/arc/kernel/unwind.c
-> @@ -1178,11 +1178,9 @@ int arc_unwind(struct unwind_frame_info *frame)
->  #endif
->
->         /* update frame */
-> -#ifndef CONFIG_AS_CFI_SIGNAL_FRAME
->         if (frame->call_frame
->             && !UNW_DEFAULT_RA(state.regs[retAddrReg], state.dataAlign))
->                 frame->call_frame = 0;
-> -#endif
->         cfa = FRAME_REG(state.cfa.reg, unsigned long) + state.cfa.offs;
->         startLoc = min_t(unsigned long, UNW_SP(frame), cfa);
->         endLoc = max_t(unsigned long, UNW_SP(frame), cfa);
-> --
-> 2.25.1
->
-
+Applied to 5.8/scsi-queue, thanks!
 
 -- 
-Thanks,
-~Nick Desaulniers
+Martin K. Petersen	Oracle Linux Engineering
