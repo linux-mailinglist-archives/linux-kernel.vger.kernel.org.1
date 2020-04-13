@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7FB1A6363
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E0F1A636C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbgDMHAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:55966 "EHLO
+        id S1729149AbgDMHHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:57002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727692AbgDMHAu (ORCPT
+        with ESMTP id S1727544AbgDMHHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:00:50 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB9C008651;
-        Mon, 13 Apr 2020 00:00:49 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h69so1551491pgc.8;
-        Mon, 13 Apr 2020 00:00:49 -0700 (PDT)
+        Mon, 13 Apr 2020 03:07:07 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0816C008651;
+        Mon, 13 Apr 2020 00:07:05 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id 65so9217289wrl.1;
+        Mon, 13 Apr 2020 00:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Kfy/ROQ7gtXLXzXKgSpMRgFDcYEAd8k4j64w9UUThVk=;
-        b=XYrT913rsTzhy3QwXikOs/GzZx59MEF6RbPx7FH9kaLVOEE8nO928g0cvW2dXDefkm
-         /h90ME84J09Y44EKCfDwP7EVMaGtpqfnixocf/IAN83UiWsLPaqhxhV8uNO1VO8KH4g6
-         G1sZeTw1D5jSD/rtXKftLB1VFyKaOcqfJh5j0YX+/HMRE4lXHvsG5va4UHOsPgPnt30T
-         8RFCUgSCQKPcAYpn/EhtcVMK8rSXS+ow8MHX1nEb7vHTWVpTu72WgGnxmL1lvIPtzTQU
-         HtvoItp1pW8nxpaOjgp+gx6wbOzZH6/65Wzyk3WUD/0WWL9DzPs3K8aFQEgz/yc/QjfJ
-         rL7A==
+        h=from:to:cc:subject:date:message-id;
+        bh=AAv/DZIIqObpFGeuaX2msSUs1tzPRF/Ik5oZ/oe4Msw=;
+        b=GxPUIOQc1pkI91EKUzGLU+h8wVXFyWA+PWpEfNbqlfBG6isc+YN+GtlVCFModDU+lU
+         3/xJ0tGwG8EnhevVYL1Xm1vzZxBEhJcOX0/0e+AJ+yqet4iyAXxQJDTcuTonUc140Hwv
+         5x/dbuMt4LhpHeRKNlAbMomCi2Z1qig2UJ7oGWp1AdmXAwse5kj1xiQWknMQDVAsDHaS
+         BGEzUPwQas933q7whObeYE30gOYv8dzjUrp3uPTeg8kEhDS0Hj7WGqAgbsN97IZaED+z
+         SllAMWJ516LMKa1PNwXKwG3FJqnAqRSR51jhKd7WJEspSjUQ/ZX0MQGVRHiMJqwV4iSr
+         IdfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Kfy/ROQ7gtXLXzXKgSpMRgFDcYEAd8k4j64w9UUThVk=;
-        b=ZaMSzVdYPwDT7CfGicuqlJFdDBVVj7fGxr9ytrZ7p7Sa4px/cgOHuDEmhg/2M5pNGY
-         za4BLdyt2k9NijAyUBdS4RXqfYzI7XgcJEKSS5ZPZnUTM5cEmc1BBp24ab5GBSi8e0oD
-         K37a7fcOHsVwDwMmAMUUsrLIaYJN3PGHlrKsYDp9YPgYMODVVwK/a4tCOK9jFRgcKvFf
-         vSs1Udh8QEFbLUqFor8mAm7DZWufLaegDwhUeL/xqz83ACfeC8aZfwUWa0duMoJiB6ok
-         dpgPF3PgbCu+U/EmaVREprtKqUoOq8PokpqiuvJaoYPU0rs97TxseuXkd4gKMJmLLlR0
-         pA8g==
-X-Gm-Message-State: AGi0PuYGM6KXlGQDHmFApMK4ezeA7Hmg8k17V7NLoMKTMqe7IyfUdknH
-        SqG+EJYeiSMiYn3zAKEgqjI=
-X-Google-Smtp-Source: APiQypJkaYl+NqjsZJuSnP7/Kdsz5tEB3wmizLHj6zJSqYGAcE5ED0p58ZTn/TgOYz0CWWp4WaZLTw==
-X-Received: by 2002:a65:5b05:: with SMTP id y5mr16522768pgq.239.1586761248942;
-        Mon, 13 Apr 2020 00:00:48 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id p4sm7815670pfg.163.2020.04.13.00.00.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AAv/DZIIqObpFGeuaX2msSUs1tzPRF/Ik5oZ/oe4Msw=;
+        b=saNOb+C5mz0FP1Brds8n5OCQkJ4tdV92Y6dlQCNxxy8oFob9T64DZtoU4iYlebMlTZ
+         4CMbVtFFsel0Y7o0Jv0sEj33+LVSP+/iiwrM2hP3z+Yj/i+dJ9CzG1QbY73CjWIQp+da
+         gP6kKoUC9pmsQtvQEW1o1b9K/LgFE/yQyghrbe9FVdan4prEvq4d7SrhI4qTmgwUEMd4
+         ft5u5EYtPcoAJ3bBInqln75DA+WtOAtaj40RBIPHljPQlHos6m1XWdEP/ZZouKtOoIfP
+         cO+o03u/TaBJwAaqzz9OdiJ7KDpDFkVJIwCRZCP5DIqNk7kuBhtAOYMr8qZjcJ5g9SZN
+         EJpQ==
+X-Gm-Message-State: AGi0PuYlC24tNHgTv1nT7wPjyUGOGsFClUxL6KH+xcpaDSqgg8dBEJCN
+        sCUk+zyfSl74hAnZHF/5Bu4=
+X-Google-Smtp-Source: APiQypLTafHisWQ43wHE8ka6qzevNdAkeaCgrnVZbGgzHgnjRaYxOf9JhrdyAQuGeO8eF3HBAoDsWg==
+X-Received: by 2002:adf:cd12:: with SMTP id w18mr17078764wrm.311.1586761624661;
+        Mon, 13 Apr 2020 00:07:04 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2da9:2f00:c0be:812e:7fb0:ebe0])
+        by smtp.gmail.com with ESMTPSA id q18sm7173352wmj.11.2020.04.13.00.07.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 00:00:48 -0700 (PDT)
-From:   zhang.lyra@gmail.com
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [RFC PATCH v1 2/2] dt-bindings: arm: Add description to the new property for-s2idle-only
-Date:   Mon, 13 Apr 2020 15:00:14 +0800
-Message-Id: <20200413070014.12960-3-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200413070014.12960-1-zhang.lyra@gmail.com>
-References: <20200413070014.12960-1-zhang.lyra@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 13 Apr 2020 00:07:03 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2] MAINTAINERS: correct typo in new NXP LAYERSCAPE GEN4
+Date:   Mon, 13 Apr 2020 09:06:49 +0200
+Message-Id: <20200413070649.7014-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Commit 3edeb49525bb ("dt-bindings: PCI: Add NXP Layerscape SoCs PCIe Gen4
+controller") includes a new entry in MAINTAINERS, but slipped in a typo in
+one of the file entries.
 
-Add a new property for-s2idle-only. The idle-state marked with this
-property will be set with CPUIDLE_FLAG_S2IDLE during initialization
-and it would be expected to be found as deepest state for s2idle
-rather than other cases like play_idle().
+Hence, since then, ./scripts/get_maintainer.pl --self-test complains:
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+  warning: no file matches F: \
+    drivers/pci/controller/mobibeil/pcie-layerscape-gen4.c
+
+Correct the typo in PCI DRIVER FOR NXP LAYERSCAPE GEN4 CONTROLLER.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/idle-states.yaml | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Rob, please pick this patch (it is not urgent, though).
 
-diff --git a/Documentation/devicetree/bindings/arm/idle-states.yaml b/Documentation/devicetree/bindings/arm/idle-states.yaml
-index ea805c1e6b20..cec47b3a447f 100644
---- a/Documentation/devicetree/bindings/arm/idle-states.yaml
-+++ b/Documentation/devicetree/bindings/arm/idle-states.yaml
-@@ -263,7 +263,6 @@ patternProperties:
-     description: |
-       Each state node represents an idle state description and must be defined
-       as follows.
--
-       The idle state entered by executing the wfi instruction (idle_standby
-       SBSA,[3][4]) is considered standard on all ARM platforms and therefore
-       must not be listed.
-@@ -283,6 +282,15 @@ patternProperties:
-              lost on state entry, otherwise it is retained.
-         type: boolean
+v1: https://lore.kernel.org/lkml/20200314142559.13505-1-lukas.bulwahn@gmail.com/
+  - already received: Reviewed-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+  - Bjorn Helgaas' suggestion to squash this into commit 3edeb49525bb
+    ("dt-bindings: PCI: Add NXP Layerscape SoCs PCIe Gen4 controller") before
+    merging upstream did not happen.
+
+v1 -> v2:
+  - v1 does not apply after reordering MAINTAINERS, i.e., commit 4400b7d68f6e
+    ("MAINTAINERS: sort entries by entry name") and commit 3b50142d8528
+    ("MAINTAINERS: sort field names for all entries").
+  - PATCH v2 applies on v5.7-rc1 now. Please pick v2 instead of v1.
+
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e64e5db31497..0fd27329e6f7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12941,7 +12941,7 @@ L:	linux-pci@vger.kernel.org
+ L:	linux-arm-kernel@lists.infradead.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/pci/layerscape-pcie-gen4.txt
+-F:	drivers/pci/controller/mobibeil/pcie-layerscape-gen4.c
++F:	drivers/pci/controller/mobiveil/pcie-layerscape-gen4.c
  
-+      for-s2idle-only:
-+        description:
-+          This indicates that the state only can be found as deepest state
-+          for s2idle rather than other cases like play_idle(). In general,
-+          the state having this property should have longer min-residency
-+          than the cpuidle target min-residency which CPU QoS constraints
-+          defines, to avoid being used by runtime cpuidle.
-+        type: boolean
-+
-       entry-latency-us:
-         description:
-           Worst case latency in microseconds required to enter the idle state.
+ PCI DRIVER FOR RENESAS R-CAR
+ M:	Marek Vasut <marek.vasut+renesas@gmail.com>
 -- 
-2.20.1
+2.17.1
 
