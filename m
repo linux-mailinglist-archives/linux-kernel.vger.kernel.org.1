@@ -2,211 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A65B1A6BB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A528C1A6BBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387487AbgDMR4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:56:45 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11989 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387436AbgDMR4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:56:44 -0400
-IronPort-SDR: qrPlIhJdYlEsZRL9hM/8umkntQYmNpI1E2QTKcNLGyG1EqcLPkbTfNtcaGdewWOomTw792EDK5
- fwtobT42/NYg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 10:56:43 -0700
-IronPort-SDR: ybBueqj+4xLRWQU4b+M0VpnOSB2dXDEeAp9jGUn3Fcaw1R8sbFd1qzWLAcHuMCjFfafiCvlzuF
- bc9KTYT4OIeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="399682976"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 13 Apr 2020 10:56:42 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jO3K5-0008VL-T3; Tue, 14 Apr 2020 01:56:41 +0800
-Date:   Tue, 14 Apr 2020 01:56:34 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/kcsan] BUILD SUCCESS
- 3b02a051d25d9600e9d403ad3043aed7de00160e
-Message-ID: <5e94a7d2.f6Bk89AubGryLaUH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2387506AbgDMR5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387498AbgDMR5e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 13:57:34 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F64CC0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:57:33 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id c5so4777795pgi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FBJb5sqjJ8vOREAZLQxqAw0hd2Q6mzHw1XH+BWE4S8E=;
+        b=XLwbkay2J5oAJWs36C6cPK2HFxTO3KM3W/zQs6rCSmGQaK4xerLfeznksjryD1/MuP
+         wQKKt0Rjsy+dZYJ1EiF+YWQdZppOPhJKa7lRlf42mRg38VxpAHCFT+Gu79yUpOKiULGR
+         9+uCXLityF76wxykB9c6hkQSYjd7o4T9op2vPzpXDSD39N0nq1aFcbhQ/zBnkLEYscYr
+         +neMn8NUo6vKgDYY7wNZUeDtQrBkwACnMyG01nirfJptwFBN/nyijS4oY1E941zr0cog
+         uF3mNO4eQ/En21OOBWDu2AlVJUdqwvcrdkfujshC7QjGTD2MOHBD2/xBORppxlqigzw3
+         q9CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FBJb5sqjJ8vOREAZLQxqAw0hd2Q6mzHw1XH+BWE4S8E=;
+        b=N4ZtAYrP53oRD4Qtl2Z02P/MYSJCAmyKZNpwaLCgATx0x7WBFlSXUjWQ7QsgH+bhgT
+         gDGckFbP8Wmh5oobs8te0JgOzJHqOlKFe5784QVK4Z7YWTmRxXwHbqvypTdRYP1Ke9tG
+         KgOqLpnrHWCKhuPwuOx5LHLMpvH4HV0EflNxThWJ1aFnT11gueT1Z+97S4vx/ycFARiJ
+         Rv79YxU3fQs6dy4EYKKqvHSbhy2Z368UE/NofrM8rpUTf3dAN0YrrgzSyJxB+y5pVo1/
+         X7KcYBaM55fujcWJ5LCrFvXLecJMJ+A1wXenZTAIXI+x/ZqGUYpuWLVU3osyeRij2c8b
+         7bIg==
+X-Gm-Message-State: AGi0PuYa7rhlXoOwXuVkGWqXBjkLFDzy6seA9DkiJO3ClgQUsuTdlLd4
+        DmXKWWauvS55AsHSk9r6FFAV2w==
+X-Google-Smtp-Source: APiQypK6cKhDRMHxFaHeoAg59jflJori9ZnZXsx30TY30ANqzFw43ayR1RkRqyTeoHnE0A26J4LGjQ==
+X-Received: by 2002:a63:f50c:: with SMTP id w12mr17922741pgh.253.1586800652111;
+        Mon, 13 Apr 2020 10:57:32 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id a2sm1281987pgk.90.2020.04.13.10.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 10:57:31 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 11:56:50 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>, mike.leach@linaro.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCHv2 0/3] Add coresight support for QCOM SC7180 SoC
+Message-ID: <20200413175650.GD28804@xps15>
+References: <cover.1586263250.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <cover.1586263250.git.saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/kcsan
-branch HEAD: 3b02a051d25d9600e9d403ad3043aed7de00160e  Merge tag 'v5.7-rc1' into locking/kcsan, to resolve conflicts and refresh
+On Thu, Apr 09, 2020 at 05:13:35PM +0530, Sai Prakash Ranjan wrote:
+> Patch 1 adds the ETM UCI IDs for Kryo 4XX CPU cores.
+> Patch 2 adds the DT nodes for coresight components on SC7180.
+> Patch 3 replaces ETM PIDs with UCI IDs for Kryo385 CPUs on SDM845.
 
-elapsed time: 524m
+I have picked up patches 1 and 3.
 
-configs tested: 152
-configs skipped: 0
+Thanks,
+Mathieu
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-h8300                    h8300h-sim_defconfig
-sparc64                          allmodconfig
-s390                             allyesconfig
-arc                                 defconfig
-parisc                generic-64bit_defconfig
-ia64                                defconfig
-powerpc                             defconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-mips                 randconfig-a001-20200413
-nds32                randconfig-a001-20200413
-riscv                randconfig-a001-20200413
-m68k                 randconfig-a001-20200413
-parisc               randconfig-a001-20200413
-alpha                randconfig-a001-20200413
-h8300                randconfig-a001-20200413
-nios2                randconfig-a001-20200413
-c6x                  randconfig-a001-20200413
-microblaze           randconfig-a001-20200413
-sparc64              randconfig-a001-20200413
-csky                 randconfig-a001-20200413
-openrisc             randconfig-a001-20200413
-s390                 randconfig-a001-20200413
-sh                   randconfig-a001-20200413
-xtensa               randconfig-a001-20200413
-x86_64               randconfig-b002-20200413
-x86_64               randconfig-c001-20200413
-x86_64               randconfig-c002-20200413
-x86_64               randconfig-c003-20200413
-i386                 randconfig-c001-20200413
-i386                 randconfig-c002-20200413
-i386                 randconfig-c003-20200413
-x86_64               randconfig-d001-20200413
-x86_64               randconfig-d002-20200413
-x86_64               randconfig-d003-20200413
-i386                 randconfig-d001-20200413
-i386                 randconfig-d002-20200413
-i386                 randconfig-d003-20200413
-x86_64               randconfig-e001-20200413
-i386                 randconfig-e002-20200413
-i386                 randconfig-e001-20200413
-x86_64               randconfig-e002-20200413
-i386                 randconfig-e003-20200413
-x86_64               randconfig-e003-20200413
-i386                 randconfig-f003-20200413
-i386                 randconfig-f002-20200413
-x86_64               randconfig-f003-20200413
-x86_64               randconfig-f001-20200413
-x86_64               randconfig-f002-20200413
-i386                 randconfig-f001-20200413
-x86_64               randconfig-g001-20200413
-x86_64               randconfig-g002-20200413
-x86_64               randconfig-g003-20200413
-i386                 randconfig-g001-20200413
-i386                 randconfig-g002-20200413
-i386                 randconfig-g003-20200413
-x86_64               randconfig-h001-20200413
-i386                 randconfig-h003-20200413
-i386                 randconfig-h002-20200413
-i386                 randconfig-h001-20200413
-x86_64               randconfig-h002-20200413
-ia64                 randconfig-a001-20200413
-arc                  randconfig-a001-20200413
-arm                  randconfig-a001-20200413
-sparc                randconfig-a001-20200413
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> v2:
+>  * Placed the DT properties for ports in one line as suggested by Stephen.
+>  * Add UCI IDs for SC7180 and SDM845(Kryo385 CPUs) as suggested by Suzuki.
+> 
+> Sai Prakash Ranjan (3):
+>   coresight: etm4x: Add support for Qualcomm SC7180 SoC
+>   arm64: dts: qcom: sc7180: Add Coresight support
+>   coresight: etm4x: Replace ETM PIDs with UCI IDs for Kryo385
+> 
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi          | 471 ++++++++++++++++++
+>  drivers/hwtracing/coresight/coresight-etm4x.c |   6 +-
+>  2 files changed, 475 insertions(+), 2 deletions(-)
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
