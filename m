@@ -1,73 +1,54 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A091A6889
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:12:49 +0200 (CEST)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id 784B61A61E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 06:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgDMPMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 11:12:39 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:31754 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729680AbgDMPMe (ORCPT
+        id S1727689AbgDMEVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 00:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:58792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbgDMEVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:12:34 -0400
-Received: from localhost.localdomain ([93.22.151.169])
-        by mwinf5d63 with ME
-        id SFCX2200J3fYTYl03FCY5q; Mon, 13 Apr 2020 17:12:32 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 13 Apr 2020 17:12:32 +0200
-X-ME-IP: 93.22.151.169
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] clk: renesas: r9a06g032: Fix some typo in comments
-Date:   Mon, 13 Apr 2020 06:17:09 +0200
-Message-Id: <20200413041709.3630-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 13 Apr 2020 00:21:02 -0400
+X-Greylist: delayed 1037 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 12 Apr 2020 21:21:03 PDT
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20762C0A3BE0;
+        Sun, 12 Apr 2020 21:21:03 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id A011D127AFC12;
+        Sun, 12 Apr 2020 21:21:02 -0700 (PDT)
+Date:   Sun, 12 Apr 2020 21:21:01 -0700 (PDT)
+Message-Id: <20200412.212101.1714447481929250845.davem@davemloft.net>
+To:     christophe.jaillet@wanadoo.fr
+Cc:     thomas.petazzoni@bootlin.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] net: mvneta: Fix a typo
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200412212034.4532-1-christophe.jaillet@wanadoo.fr>
+References: <20200412212034.4532-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 12 Apr 2020 21:21:02 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This file seems to be for R9A06G032 only. So replace reference to
-R9A09G032 by R9A06G032 to avoid confusion.
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Sun, 12 Apr 2020 23:20:34 +0200
 
-AFAIK, R9A09G032 does'nt exist.
+> s/mvmeta/mvneta/
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/clk/renesas/r9a06g032-clocks.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Applied, but please reply to Jakub's feedback explaining how you
+found this.
 
-diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
-index 1907ee195a08..d900f6bf53d0 100644
---- a/drivers/clk/renesas/r9a06g032-clocks.c
-+++ b/drivers/clk/renesas/r9a06g032-clocks.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * R9A09G032 clock driver
-+ * R9A06G032 clock driver
-  *
-  * Copyright (C) 2018 Renesas Electronics Europe Limited
-  *
-@@ -338,8 +338,8 @@ clk_rdesc_get(struct r9a06g032_priv *clocks,
- }
- 
- /*
-- * This implements the R9A09G032 clock gate 'driver'. We cannot use the system's
-- * clock gate framework as the gates on the R9A09G032 have a special enabling
-+ * This implements the R9A06G032 clock gate 'driver'. We cannot use the system's
-+ * clock gate framework as the gates on the R9A06G032 have a special enabling
-  * sequence, therefore we use this little proxy.
-  */
- struct r9a06g032_clk_gate {
--- 
-2.20.1
-
+Thank you.
