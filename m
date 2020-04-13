@@ -2,96 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5802E1A6854
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3801E1A6859
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgDMOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:49:32 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37339 "EHLO
+        id S1730881AbgDMOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:50:50 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56605 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728185AbgDMOta (ORCPT
+        by vger.kernel.org with ESMTP id S1729311AbgDMOus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:49:30 -0400
+        Mon, 13 Apr 2020 10:50:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586789369;
+        s=mimecast20190719; t=1586789446;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uWFIUTP14rr06BBJf7/lRX/qB9hDoGM3irEGOnU8QDY=;
-        b=H6YfiAIiJrlwxl3OhnlAnqjlK17V3IuiwjWK5EJQxjeJbk0WWsQ72sh6TGeFiV2IpsaSrV
-        Fwba6VhOtuSErSK4mKKbJWCYVUY/My/A48uoZEkc6ggwwehJDibhgMPX/qYlUJefO4HZmP
-        LR0v6gk4ITVzMDeLWpV0ne4eKjuHFMc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-ucynfrusNL-k6vaR3IKi2Q-1; Mon, 13 Apr 2020 10:49:21 -0400
-X-MC-Unique: ucynfrusNL-k6vaR3IKi2Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6592DB63;
-        Mon, 13 Apr 2020 14:49:19 +0000 (UTC)
-Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 968A05C1B2;
-        Mon, 13 Apr 2020 14:49:15 +0000 (UTC)
-Date:   Mon, 13 Apr 2020 08:49:15 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 0/4] mm: Add PG_zero support
-Message-ID: <20200413084915.1bae0007@w520.home>
-In-Reply-To: <f9a3be0b-fe8d-ca25-f0df-4b9fd1f0fed5@intel.com>
-References: <20200412090728.GA19572@open-light-1.localdomain>
-        <f9a3be0b-fe8d-ca25-f0df-4b9fd1f0fed5@intel.com>
+        bh=kr9KTKBU+/+uofMSqlPA49Feo8xCOB4FV94CTTUBStM=;
+        b=Ie3xJGh2HXXs48PTp4+nVDP+w5Ls9wNGKrWOfDDBrItha44fdOidDK1IVJ9BV015QE8U5b
+        Z9Lb+SRh8BbAyvNakFh9XdZrmaauPq2oU9Fa0MPb2NXp45piF8JSDNDGqxzKAEaY0IL9Ne
+        jCFX4IF2wsyKLoj/YJGZnozDRGicmBQ=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-V9VchQAgPjOpLTsvryhp7w-1; Mon, 13 Apr 2020 10:50:43 -0400
+X-MC-Unique: V9VchQAgPjOpLTsvryhp7w-1
+Received: by mail-qt1-f199.google.com with SMTP id n89so9157966qte.15
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:50:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kr9KTKBU+/+uofMSqlPA49Feo8xCOB4FV94CTTUBStM=;
+        b=IwWXYqL7TY9rxjXjYcdZsDlMtBOcz4La5/eO4h23+VdrJ9RkQxs0+26w5ww3gTkVIs
+         Rq+mqG3q9Qz6aA0UNZnG24ShB+kelhZok6SnsV7Awy2GasaxBV/xAwWvZ0HwRXNZQ2O0
+         1TGJOEsT1hnPPCH7k9JXkCOmAzO8ztotoIZuHswn5HCREmOmX1RPHJnvbgFar0Uav+sF
+         3g7WkEXl2efgTAkvD0OhrKRAU6U/N2nxm2j/8a+6Vyy+SY1KqfiF8r53tpF7ieuke9Dz
+         XcbwlJvDaWW53CHD+0bYQjmjalEtnGnm2v/vmRVoW5bZIVf725UaT1hDofusqhfkwUb2
+         nzMA==
+X-Gm-Message-State: AGi0PuY00QSgNS85NVPhJomuNGMSYYIR+2Oi1tPBQFLhbHk57ECUQEnK
+        xQYngAhggLaA7AnrejLEJ7Ym/Eowcjrr4LFH/+kYONHwZobEumPyxOMG9jVFdspl6hgmsZGT+u/
+        rUp6qcEd5d9CmcbDiWTP1qxF5cSAPQdLN6blS8/LA
+X-Received: by 2002:a37:a090:: with SMTP id j138mr17159945qke.168.1586789443340;
+        Mon, 13 Apr 2020 07:50:43 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIS1bM7/cnw0/cmr0zxcGu/p79bSOTSNpyLGH30P81IUc3vIXTO+mjh49kiiytoU5bQ/OGlrY1RcCqeUjyOqso=
+X-Received: by 2002:a37:a090:: with SMTP id j138mr17159916qke.168.1586789443027;
+ Mon, 13 Apr 2020 07:50:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200403165119.5030-1-eperezma@redhat.com> <20200413071044-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200413071044-mutt-send-email-mst@kernel.org>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Mon, 13 Apr 2020 16:50:06 +0200
+Message-ID: <CAJaqyWcOmzxfOodudSjrZa1SeYDZKiO3MFMy_w44cL_eaBhYDA@mail.gmail.com>
+Subject: Re: [PATCH 0/8] tools/vhost: Reset virtqueue on tests
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Apr 2020 18:43:07 -0700
-Dave Hansen <dave.hansen@intel.com> wrote:
+On Mon, Apr 13, 2020 at 1:13 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, Apr 03, 2020 at 06:51:11PM +0200, Eugenio P=C3=A9rez wrote:
+> > This series add the tests used to validate the "vhost: Reset batched
+> > descriptors on SET_VRING_BASE call" series, with a small change on the
+> > reset code (delete an extra unneded reset on VHOST_SET_VRING_BASE).
+> >
+> > They are based on the tests sent back them, the ones that were not
+> > included (reasons in that thread). This series changes:
+> >
+> > * Delete need to export the ugly function in virtio_ring, now all the
+> > code is added in tools/virtio (except the one line fix).
+> > * Add forgotten uses of vhost_vq_set_backend. Fix bad usage order in
+> > vhost_test_set_backend.
+> > * Drop random reset, not really needed.
+> > * Minor changes updating tests code.
+> >
+> > This serie is meant to be applied on top of
+> > 5de4e0b7068337cf0d4ca48a4011746410115aae in
+> > git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git.
+>
+> Is this still needed?
 
-> On 4/12/20 2:07 AM, liliangleo wrote:
-> > Zero out the page content usually happens when allocating pages,
-> > this is a time consuming operation, it makes pin and mlock
-> > operation very slowly, especially for a large batch of memory.
-> > 
-> > This patch introduce a new feature for zero out pages before page
-> > allocation, it can help to speed up page allocation.  
-> 
-> I think the bar for getting something like this merged is going to be
-> pretty high.  We have a long history of zeroing close to page use for
-> cache warmth reasons.  Starting up big VMs which won't soon touch the
-> memory they are allocating is basically the most pathological case
-> against our approach since they don't *care* about cache warmth.
-> 
-> I'm also not sure it's something we _want_ to optimize for.
-> 
-> VFIO's unconditional page pinning is the real problem here IMNHO.  They
-> don't *really* need to pin the memory.  We just don't have good
-> paravirtualized IOMMU support or want to pay the runtime cost for
-> pin/unpin operations.  You *could* totally have speedy VM startup if
-> only the pages being accessed or having DMA performed to them were
-> allocated.  But, the hacks that are in place mean that everything must
-> be pinned.
+("tools/virtio: fix virtio_test.c") indentation is actually cosmetic.
+("vhost: Not cleaning batched descs in VHOST_SET_VRING_BASE ioctl")
+just avoid to clean batches descriptors for a third time (they are
+cleaned on backend removal and addition).
 
-Maybe in an SEV or Secure Boot environment we can assume the VM guest
-OS uses the IOMMU exclusively for DMA, but otherwise the IOMMU is
-optional (at least for x86, other archs do require IOMMU support
-afaik).  Therefore, how would we know which pages to pin when there are
-only limited configs where we might be able to lean on the vIOMMU to
-this extent?  Thanks,
+("vhost: Fix bad order in vhost_test_set_backend at enable") is
+actually a fix, the test does not work properly without it. And
+("tools/virtio: Reset index in virtio_test --reset.") Makes the test
+work more similar than the actual VM does in a reset.
 
-Alex
+("tools/virtio: Use __vring_new_virtqueue in virtio_test.c") and
+("tools/virtio: Extract virtqueue initialization in vq_reset") are
+convenience commits to reach the previous two.
+
+Lastly, ("tools/virtio: Use tools/include/list.h instead of stubs")
+just removes stub code, I did it when I try to test vdpa code and it
+seems to me a nice to have, but we can drop it from the patchset if
+you don't see that way.
+
+> The patches lack Signed-off-by and
+> commit log descriptions, reference commit Ids without subject.
+> See Documentation/process/submitting-patches.rst
+>
+
+Sorry, I will try to keep an eye on that from now on. I will send a v2
+with Signed-off-by and extended descriptions if you see it ok.
+
+Thanks!
+
+> > Eugenio P=C3=A9rez (8):
+> >   tools/virtio: fix virtio_test.c indentation
+> >   vhost: Not cleaning batched descs in VHOST_SET_VRING_BASE ioctl
+> >   vhost: Replace vq->private_data access by backend accesors
+> >   vhost: Fix bad order in vhost_test_set_backend at enable
+> >   tools/virtio: Use __vring_new_virtqueue in virtio_test.c
+> >   tools/virtio: Extract virtqueue initialization in vq_reset
+> >   tools/virtio: Reset index in virtio_test --reset.
+> >   tools/virtio: Use tools/include/list.h instead of stubs
+> >
+> >  drivers/vhost/test.c        |  8 ++---
+> >  drivers/vhost/vhost.c       |  1 -
+> >  tools/virtio/linux/kernel.h |  7 +----
+> >  tools/virtio/linux/virtio.h |  5 ++--
+> >  tools/virtio/virtio_test.c  | 58 +++++++++++++++++++++++++++----------
+> >  tools/virtio/vringh_test.c  |  2 ++
+> >  6 files changed, 51 insertions(+), 30 deletions(-)
+> >
+> > --
+> > 2.18.1
+>
 
