@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6274D1A670F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7BA1A6709
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729980AbgDMNc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 09:32:58 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:46043 "EHLO rere.qmqm.pl"
+        id S1729962AbgDMNcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 09:32:46 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:63324 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729913AbgDMNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 09:32:28 -0400
+        id S1729922AbgDMNcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 09:32:31 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4918gG5x96z2Dm;
-        Mon, 13 Apr 2020 15:32:26 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4918gJ3Msdz2Fw;
+        Mon, 13 Apr 2020 15:32:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1586784746; bh=WExwcmcV3+srt757VL+0Gk++xEQ7oGqZQCkIUrEiT1s=;
+        t=1586784748; bh=jOswEKU7i79mQ5w2Qdg1LzFaQcsH2Fj/+9CwRqdDBhA=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=XvYv+oF9IGNF7BaJr9WGJrQ94EWzQf2xyP7j83g1ukY3TQvcDr+Pmq0RgX7/L7Vm6
-         v2C1ooeSNxIazXhZKu4hRbBWdsEzf7q1fSkhPwdJitgumYXnWs+bBOuQMHvorHmfRP
-         SmZS7fE0gfXqtzJ2sQ47HmUE7UwtQ9RMSnKI8x/xMtHEIl1yrH+uXCyJIZGkWovJVr
-         mHe0JqRPnmct3UpBjGavltJXhVdXnauX4Gck2slV117CGiN63XSKjfgR4a1Tm0tumg
-         jv+xphpw+j69Dtc8cLcnenCBafJAs6wM4cMA5I9rllTNgYJBAyelQvmUmciTLKSZ/5
-         XHYttd8XChqFw==
+        b=oIfP/W7WK9rtawcxXpgxUacPO+mUWJc0+me5sPeB9V13Klk4fPOal+s5hpu5d8b1n
+         Ua8EvHv8qhQntZP9WhGU+M4tiGtVXcPOSW5E+mGOF8LEFc57dYLHpbS3Z6bz4JsyxM
+         ins+OlgElyASn/FsnT0KcoYHvfhDSLYiSoiJd/6Lfi5bHC3FFkJlcKH+byv1EiZSDB
+         J7udXqqht6wQaRohOlLlUbzk5ePf60rqgjU875PnEmEDc+hRFZYEl8jH9lK4LM1zi8
+         WnzAEiJhZvAfDyLsjq087p4YPsxU/lBdKoieiWLO2kT4SYQwqMlCltyBYP7NjL+ROO
+         KqJAKetufw6kw==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Mon, 13 Apr 2020 15:32:26 +0200
-Message-Id: <f442f4e0e79d4acaff8481729bee73d33f77a9ef.1586784389.git.mirq-linux@rere.qmqm.pl>
+Date:   Mon, 13 Apr 2020 15:32:27 +0200
+Message-Id: <69650370cea763a06843020220373fd8086ee01f.1586784389.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1586784389.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1586784389.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v3 7/9] input: elants: support 0x66 reply opcode for reporting
- touches
+Subject: [PATCH v3 9/9] dt-bindings: input: elants-i2c: Document eKTF3624
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -51,64 +50,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dmitry Osipenko <digetx@gmail.com>
 
-eKTF3624 touchscreen firmware uses two variants of the reply opcodes for
-reporting touch events: one is 0x63 (used by older firmware) and other is
-0x66 (used by newer firmware). The 0x66 variant is equal to 0x63 of
-eKTH3500, while 0x63 needs small adjustment of the touch pressure value.
-
-Nexus 7 tablet device has eKTF3624 touchscreen and it uses 0x66 opcode for
-reporting touch events, let's support it now. Other devices, eg. ASUS TF300T,
-use 0x63.
-
-Note: CMD_HEADER_REK is used for replying to calibration requests, it has
-the same 0x66 opcode number which eKTF3624 uses for reporting touches.
-The calibration replies are handled separately from the the rest of the
-commands in the driver by entering into ELAN_WAIT_RECALIBRATION state
-and thus this change shouldn't change the old behavior.
+The eKTF3624 hardware is similar to eKTH3500.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/input/touchscreen/elants_i2c.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/input/elants_i2c.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index 2b936e920874..9751139e8507 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -60,6 +60,15 @@
- #define QUEUE_HEADER_NORMAL	0X63
- #define QUEUE_HEADER_WAIT	0x64
+diff --git a/Documentation/devicetree/bindings/input/elants_i2c.txt b/Documentation/devicetree/bindings/input/elants_i2c.txt
+index 45fab32bbc19..1bc60303f0ea 100644
+--- a/Documentation/devicetree/bindings/input/elants_i2c.txt
++++ b/Documentation/devicetree/bindings/input/elants_i2c.txt
+@@ -1,7 +1,7 @@
+ Elantech I2C Touchscreen
  
-+/*
-+ * Depending on firmware version, eKTF3624 touchscreens may utilize one of
-+ * these opcodes for the touch events: 0x63 and 0x66. The 0x63 is used by
-+ * older firmware version and differs from 0x66 such that touch pressure
-+ * value needs to be adjusted. The 0x66 opcode of newer firmware is equal
-+ * to 0x63 of eKTH3500.
-+ */
-+#define QUEUE_HEADER_NORMAL2	0x66
-+
- /* Command header definition */
- #define CMD_HEADER_WRITE	0x54
- #define CMD_HEADER_READ		0x53
-@@ -1050,7 +1059,6 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
- 		switch (ts->buf[FW_HDR_TYPE]) {
- 		case CMD_HEADER_HELLO:
- 		case CMD_HEADER_RESP:
--		case CMD_HEADER_REK:
- 			break;
- 
- 		case QUEUE_HEADER_WAIT:
-@@ -1070,6 +1078,7 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
- 			break;
- 
- 		case QUEUE_HEADER_NORMAL:
-+		case QUEUE_HEADER_NORMAL2:
- 			report_count = ts->buf[FW_HDR_COUNT];
- 			if (report_count == 0 || report_count > 3) {
- 				dev_err(&client->dev,
+ Required properties:
+-- compatible: must be "elan,ekth3500".
++- compatible: must be "elan,ekth3500" or "elan,ektf3624".
+ - reg: I2C address of the chip.
+ - interrupts: interrupt to which the chip is connected (see interrupt
+   binding[0]).
 -- 
 2.20.1
 
