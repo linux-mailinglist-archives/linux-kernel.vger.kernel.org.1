@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4040C1A66FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE2A1A66FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgDMNb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 09:31:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35861 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729860AbgDMNbz (ORCPT
+        id S1729898AbgDMNcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 09:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729860AbgDMNcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 09:31:55 -0400
-Received: from mail-wm1-f72.google.com ([209.85.128.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1jNzBo-0003if-SJ
-        for linux-kernel@vger.kernel.org; Mon, 13 Apr 2020 13:31:53 +0000
-Received: by mail-wm1-f72.google.com with SMTP id h22so1147809wml.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 06:31:52 -0700 (PDT)
+        Mon, 13 Apr 2020 09:32:12 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B69C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 06:32:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id o81so3750916wmo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 06:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZGD5Q+AXHBbgDKOxDpFZnvNrU6j32BnvOPI9sVfvoXE=;
+        b=tZWCOxYosT4QgOPDg1ECJP3TUsbKjixOHf8sivKvCtjMsmcRo5oyv19fLWWhDnd2Z5
+         BldXQl1SsyfscrTL1ygRSsfPx2Q8FbLPtgXDUh0xYV4WrQ1DcErNw2EmiIQD2nJc7PiW
+         YN4bOKjuiVw7OFr+sKGnMeuU3Y3i4odVp2kvle8bp/bHeoncJ3lilEaYvr3ApjszX6Xh
+         7sjSPCZuYlBo+8xhMBTkCoeAYzMWbREoOgf3lNRjI/9D8VQNl+qouCjuqpuwRXIpQdto
+         q1D8CCuWHP2yZyf7zA+GWdGKPo8W1oFEUUJQSLVHNs8hZamEPEqFW89NSGl/KCEEsdA7
+         XjpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QaapbS3AwpMQJO1PlO7vQLfoDd/t8Pv7NCHZnFtR9R8=;
-        b=LDpcY0SHRN54MQX1X8AwMrYsgg+sSUCtgRKkt+ap34wfwLbeRacgzxMAT8Zjio7kC4
-         ZAriknCkgoRvCVHWlTHRmAmuM51Cz3YLE0OUIHVbE8sBLpkJWAQrkh4yXZuEXgRWrCqx
-         bkx564XK6AaN1L+kEfBQZe7tOEV6er5dLmj9fOImKFJlrmF5B7EmFju7dQiFoF5bBHOu
-         7oqxX/bWWByebxUvitRDIWi8KR/4MWxHphq7Qm6xJCKX8CRE+b1sOj7KiqYaODCuS9vN
-         cRH2hd1OsbuR9xqxHtn1gJkrITWZ6tyxZw/yPX/Th+oEEwQl30FMcfCBd22+GDUt//29
-         CSZg==
-X-Gm-Message-State: AGi0PuY4LSwRhxjtb0OeduQsjvEkMYAIi4+vq0Rsjlpjjij+aayyQ8lW
-        PqfyIIunovh9MM6NzPrRbjiu8owoR/RUd5fzE/Wt1f2SfxlpXJT/2c1Tn715ahyePrwPCIRgkWG
-        iQMRIYGoZa6Z3SdunbgVZVoRoCoGFylgTkQYhuzQ0pg==
-X-Received: by 2002:a7b:c247:: with SMTP id b7mr18717041wmj.35.1586784712514;
-        Mon, 13 Apr 2020 06:31:52 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJbHqcshOES1POOpbSkrd5awhLm8EajB366CYNGu2GARJYA8cZtN4ZuoZfz+7mcb6QHwtl+7A==
-X-Received: by 2002:a7b:c247:: with SMTP id b7mr18717027wmj.35.1586784712276;
-        Mon, 13 Apr 2020 06:31:52 -0700 (PDT)
-Received: from localhost (host123-127-dynamic.36-79-r.retail.telecomitalia.it. [79.36.127.123])
-        by smtp.gmail.com with ESMTPSA id h17sm3289803wmm.6.2020.04.13.06.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 06:31:51 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 15:31:50 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Anchal Agarwal <anchalag@amazon.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: swap: use fixed-size readahead during swapoff
-Message-ID: <20200413133150.GA810380@xps-13>
-References: <20200413111810.GA801367@xps-13>
- <87a73f7d71.fsf@yhuang-dev.intel.com>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=ZGD5Q+AXHBbgDKOxDpFZnvNrU6j32BnvOPI9sVfvoXE=;
+        b=QM5+I9134SMxsRvNtHQJeflodJfhYqbtOtB2Renn69UxtkuKGd0Z2/Bre/4Yr48/py
+         ucLu2kDKtMCieZRT9TZ/1dFnFBTtkI7gSwe4mFa2woy1ao8LTmyoM53H0fyNxiAYcrGj
+         zu0frGUEymzjwxmjyKm8KRJWrd98IqZOun0wGGiG+FdJYp3FESmitGrJWjaETVgDYfN1
+         5HLLx4fEiXrHqizTLAyxq34Hu9K0XdDREcRQYNj+54Ac6KTEZzISrWwAFk/MgrVrygB2
+         iwgIdu6X25mA5wxodHnL2jt9/1jNBFmhm65NhMmTDtvV18FQqw5Ia8J+NTfBhJrXTzb4
+         BvQw==
+X-Gm-Message-State: AGi0PuZtMjGXx2hEPT7sy0Ivlu6bMYkVtAYMZNIq+qW2ua2l/enGySHg
+        ypVWNIAuA85spAxh8o8OX2/Nu1Nh3ckQWjcD+V0=
+X-Google-Smtp-Source: APiQypL7aHLU/YaOW2mDM/eUG1Gf02eTUtrdeBsIofn8cvA9CukGV7gAB1W4Q9d+xezlZCh620GcuCupkgOv23rdQJo=
+X-Received: by 2002:a7b:c4c9:: with SMTP id g9mr18481651wmk.171.1586784729100;
+ Mon, 13 Apr 2020 06:32:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a73f7d71.fsf@yhuang-dev.intel.com>
+Reply-To: sebastient766@gmail.com
+Received: by 2002:a5d:4bcd:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 06:32:08
+ -0700 (PDT)
+From:   =?UTF-8?B?TXIuU8OpYmFzdGllbiBUb25p?= <sebastient766@gmail.com>
+Date:   Mon, 13 Apr 2020 06:32:08 -0700
+X-Google-Sender-Auth: Wy4nQAHcni-EXrA-IK5ViH0oQ6Y
+Message-ID: <CAG3TQM1N3_Kdz-yHhUa+dkdryoqPYvFpYxggN9d9C7-OWjSmUA@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 09:00:34PM +0800, Huang, Ying wrote:
-> Andrea Righi <andrea.righi@canonical.com> writes:
-> 
-> [snip]
-> 
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index ebed37bbf7a3..c71abc8df304 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -20,6 +20,7 @@
-> >  #include <linux/migrate.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/swap_slots.h>
-> > +#include <linux/oom.h>
-> >  #include <linux/huge_mm.h>
-> >  
-> >  #include <asm/pgtable.h>
-> > @@ -507,6 +508,14 @@ static unsigned long swapin_nr_pages(unsigned long offset)
-> >  	max_pages = 1 << READ_ONCE(page_cluster);
-> >  	if (max_pages <= 1)
-> >  		return 1;
-> > +	/*
-> > +	 * If current task is using too much memory or swapoff is running
-> > +	 * simply use the max readahead size. Since we likely want to load a
-> > +	 * lot of pages back into memory, using a fixed-size max readhaead can
-> > +	 * give better performance in this case.
-> > +	 */
-> > +	if (oom_task_origin(current))
-> > +		return max_pages;
-> >  
-> >  	hits = atomic_xchg(&swapin_readahead_hits, 0);
-> >  	pages = __swapin_nr_pages(prev_offset, offset, hits, max_pages,
-> 
-> Thinks this again.  If my understanding were correct, the accessing
-> pattern during swapoff is sequential, why swap readahead doesn't work?
-> If so, can you root cause that firstly?
+FROM MR.S=C3=89BASTIEN TONI
+AUDIT& ACCOUNT MANAGER
+BANK OF AFRICA (B.O.A)
+OUAGADOUGOU BURKINA FASO
+WEST AFRICA.
 
-Theoretically if the pattern is sequential the current heuristic should
-already select a big readahead size, but apparently it's not doing that.
+Dear Friend,
 
-I'll repeat my tests tracing the readahead size during swapoff to see
-exactly what's going on here.
+With due respect, I have decided to contact you on abusiness
+transaction  that will be benefit both of us. At the bank last account
+and  auditing evaluation, my staffs came across an old account which
+was being maintained by a foreign client who we learn was among the
+deceased passengers of motor accident on November.2003, the deceased
+was unable to run this account since his death. The account has
+remained dormant without the knowledge of his family since it was put
+in a  safe deposit account in the bank for future investment by the
+client.
 
-Thanks,
--Andrea
+Since his demise, even the members of his family haven't applied for
+claims  over this fund and it has been in the safe deposit account
+until I  discovered that it cannot be claimed since our client is
+aforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be
+done.I  decided to seek ways through which to transfer this money out
+of the bank  and
+out of the country too.
+
+The total amount in the account is 18.6 million with my positions as
+staffs  of the bank, I am handicapped because I cannot operate foreign
+accounts and  cannot lay bonafide claim over this money. The client
+was a foreign  national and you will only be asked to act as his next
+of kin and I will  supply you all the necessary information and bank
+datas to assist you in being able to transfer this fund to any bank of
+your  choice where this money could be transferred into.The total sum
+will be shared as follows: 50% for me, 50% for you and expenses
+incidental occur  during the transfer will be incur by both of us. The
+transfer is risk free on both sides hence you are going to follow my
+instruction till the fund  transfer to your account. Since I work in
+this bank that is why
+you should  be confident in the success of this transaction because
+you will be updated with information as at when desired.
+
+I will like you to keep this transaction secret and confidential as I
+am  hoping to retire with my share of this money at the end of
+transaction  which will be when this money is safety in your account.
+I will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May  God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(sebastient766@gmail.com)Please for further information and inquires
+feel free to contact me back immediately for more explanation and
+better  understanding I want you to assure me your capability of
+handling this  project with trust by providing me your following
+information details such as:
+
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
+
+Yours sincerely,
+Mr.S=C3=A9bastien Toni
