@@ -2,111 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770D11A6B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E27F1A663E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbgDMMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729407AbgDMMOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729414AbgDMMOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 13 Apr 2020 08:14:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE4BC03BC83
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 05:08:05 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id c23so4369079pgj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 05:08:05 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726582AbgDMMOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 08:14:43 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 08:14:43 EDT
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4443BC03BC84
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 05:08:08 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g32so4363307pgb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 05:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=BIBvMgUnvDgGZghMH04dMf9slrG7wjbl7QR/9HSXTJo=;
-        b=uRy1s7EGEp8BkdEjZAQpmQo3cCodNSSvRaev6POOo+mew8bO4EAHrfOWQQCMqUIfiY
-         tZZomzvqBubP3hpBJx91Tdt7UlfEGizPkNnPi08th3i0O5OFPQatYf26n4Im3rKwpkGr
-         t8/MUJBK0cfSnwBxkBatfcLTOPDR+jrAR6UBZoq/c451VLHjzEDrv1ro4Qx2+27AVnC6
-         2m8eIMS2J6shbLRpbcoIJFgG9Uk45VJDxRJwVk5uPLlVljS1M1Jvq0Qm/tKVOhqhaztq
-         XwxsXZ08txZzy1uLTHGR0LTpgNi2Sf2ehPE3WQf8OYlML6Xo6KslCbYr0XiTty5KaEAA
-         5PDw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=wj+YzA/86Frd7Zd8PQVfNidgsoO9NUSMQrAh2tNMoqA=;
+        b=dG9sYOZUsDVAhsdHt6BN2RGAy6u4VjKhSrkwCY7tmN9DkDCxfHjm0G04Gf7NxoN/QY
+         /R89MOOvJfcw+PM4/H0w4RsO6sis/w5RWOWFSGD6n6A2spje73hMrzS5qIrPBBXcfkeI
+         yeeB0J+JBRj5FXEsrguoTEQmQ7v61tCzMfR1mqOlDZ9Vp9b+3yGMDvZw63zF//CNPTgn
+         /cfEqB3cFt/E6djM0copsYuxrMpl5YeOx099jlDqolposKjQhiTRxZreGsSPxWU9vl9Y
+         cYbCkPy9aoQ5lHe+WUVZT5BbVGJlM9qUCamzyUhvZO8y7i5KOrVxpTdYx2TQay9QzW0T
+         A/+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BIBvMgUnvDgGZghMH04dMf9slrG7wjbl7QR/9HSXTJo=;
-        b=iExMwoRufWoOEUJPhY7irmRctgJHYedTjTy/aI69qMMMkcAqTSMaZ9tVEqRAHIu31x
-         OhOwJvM18TufPeCFgkmpkhBBBkchXakvtd5LgfZ/AQg8ZnV7+bgXb4tfd6DS3wCqKgNZ
-         AhcThz9XiHcnuOHFyyIqbRJFXP4ZOby++PBTPl9jC8Xt3UqifWVpf2DDKD02gC+wGSzV
-         c8GXC4DqJ7u9KM3IzvswoEarYbeBooKJoMB6V9so5IISbRvEgxHez9LMg6Bf3aGbG0lP
-         BQTZ0DRmBTmSYxZPafMUldrmfq6sl6oyp/DT08DS0zOvJqDcuTqqVzRZBt7Lcdl380rK
-         +Tnw==
-X-Gm-Message-State: AGi0Pub5IZDXaCm/1yLDm1oy8k3qBRelPB6dyDVc04sXpnQk84zfKype
-        QC/EIN+sD3DyGZ6xl8rzurVA
-X-Google-Smtp-Source: APiQypLIoeYk9G74CAvG8xdvpdDVlfoDimcpFm6oRfnwQBcwTRX6j+ysTHd1tHSRhBTGCvlmc+VtHw==
-X-Received: by 2002:a63:2cd5:: with SMTP id s204mr16420791pgs.71.1586779684515;
-        Mon, 13 Apr 2020 05:08:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=wj+YzA/86Frd7Zd8PQVfNidgsoO9NUSMQrAh2tNMoqA=;
+        b=CMRsuUara0G2TM2qGks2kYoxjMnAmb1tdUBbcuyQv2GkDk2nVrNWlblpQ3c0O293d/
+         Inm/D/NZmeOyW4dj3MT4JfvWFngumeu1yaEFy7hnJ+HRkLCvRRyHiFu+CkRez2SyarJH
+         kK8m6SkbN0rAmVCBmm8uYXCTpNxpGiYFbxPJojKMKqH2ZOpfTi06gQMrKsdAg/WSmrwP
+         hh3zFeahl9AWGlB51/uzof8VTEHxRGs2FW7l+Xu937YwGdfjq7nL5bbvEPZ3BqhFsdD9
+         E1oiDQhJKnCmhbUtXHgibPEYkvDu/zXAFRl/SEnzxWWPCRpYw8l6wYpj1Ohd8VH+Jzqx
+         cmnQ==
+X-Gm-Message-State: AGi0Pua7XLySl2lc8oM3k/yZ/SyeBvJ7CfWM2szC2p/3uHAeobO4Pozo
+        SPTx1gAjVk3XGq4b3+zaORmcTaoaqg==
+X-Google-Smtp-Source: APiQypLVbVZy3eG1BQGA3TqwQvzB8FXO6P1puwgwbPzXylzHbBtdhA9hnLrP3OJm/6/SOygpRQzHBw==
+X-Received: by 2002:a63:cc45:: with SMTP id q5mr16453175pgi.270.1586779687807;
+        Mon, 13 Apr 2020 05:08:07 -0700 (PDT)
 Received: from localhost.localdomain ([2409:4072:621d:5eab:c98c:e94e:e075:c316])
-        by smtp.gmail.com with ESMTPSA id i187sm8493136pfg.33.2020.04.13.05.08.00
+        by smtp.gmail.com with ESMTPSA id i187sm8493136pfg.33.2020.04.13.05.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 05:08:03 -0700 (PDT)
+        Mon, 13 Apr 2020 05:08:07 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     hemantk@codeaurora.org, jhugo@codeaurora.org
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         smohanad@codeaurora.org, dan.carpenter@oracle.com,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 1/2] bus: mhi: core: Fix parsing of mhi_flags
-Date:   Mon, 13 Apr 2020 17:37:40 +0530
-Message-Id: <20200413120741.2832-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 2/2] bus: mhi: core: Fix double lock of 'mhi_chan->lock'
+Date:   Mon, 13 Apr 2020 17:37:41 +0530
+Message-Id: <20200413120741.2832-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200413120741.2832-1-manivannan.sadhasivam@linaro.org>
+References: <20200413120741.2832-1-manivannan.sadhasivam@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the current parsing of mhi_flags, the following statement always
-return false:
-
-eob = !!(flags & MHI_EOB);
-
-This is due to the fact that 'enum mhi_flags' starts with index 0 and we
-are using direct AND operation to extract each bit. Fix this by using
-BIT() macro to extract each bit and make the mhi_flags index start from 1.
+mhi_queue_buf() will grab the 'mhi_chan->lock' for doing the doorbell
+access. Hence the lock needs to be dropped before the call.
 
 Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
 Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/main.c | 6 +++---
- include/linux/mhi.h         | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/bus/mhi/core/main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index eb4256b81406..4165a853c189 100644
+index 4165a853c189..ed995137c3a0 100644
 --- a/drivers/bus/mhi/core/main.c
 +++ b/drivers/bus/mhi/core/main.c
-@@ -1090,9 +1090,9 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
- 	if (ret)
- 		return ret;
- 
--	eob = !!(flags & MHI_EOB);
--	eot = !!(flags & MHI_EOT);
--	chain = !!(flags & MHI_CHAIN);
-+	eob = !!(flags & BIT(0));
-+	eot = !!(flags & BIT(1));
-+	chain = !!(flags & BIT(2));
- 	bei = !!(mhi_chan->intmod);
- 
- 	mhi_tre = tre_ring->wp;
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index ad1996001965..22185fecbbf2 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -53,7 +53,7 @@ enum mhi_callback {
-  * @MHI_CHAIN: Linked transfer
-  */
- enum mhi_flags {
--	MHI_EOB,
-+	MHI_EOB = 1,
- 	MHI_EOT,
- 	MHI_CHAIN,
- };
+@@ -538,6 +538,11 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+ 			 * from dropping the packet
+ 			 */
+ 			if (mhi_chan->pre_alloc) {
++				/*
++				 * mhi_queue_buf() will grab the mhi_chan->lock
++				 * so let's drop it here and grab it later
++				 */
++				read_unlock_bh(&mhi_chan->lock);
+ 				if (mhi_queue_buf(mhi_chan->mhi_dev,
+ 						  mhi_chan->dir,
+ 						  buf_info->cb_buf,
+@@ -547,6 +552,7 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+ 						mhi_chan->chan);
+ 					kfree(buf_info->cb_buf);
+ 				}
++				read_lock_bh(&mhi_chan->lock);
+ 			}
+ 		}
+ 		break;
 -- 
 2.17.1
 
