@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9071D1A64D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AD51A64BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgDMJyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727830AbgDMJyl (ORCPT
+        id S1728413AbgDMJhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:37:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27622 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728050AbgDMJhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:54:41 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00FCC008749
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:47:48 -0700 (PDT)
-Received: from ramsan ([84.195.182.253])
-        by laurent.telenet-ops.be with bizsmtp
-        id S9ij220085USYZQ019ijFR; Mon, 13 Apr 2020 11:42:43 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jNvc3-0007LZ-3o; Mon, 13 Apr 2020 11:42:43 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jNvVQ-0006Xc-VO; Mon, 13 Apr 2020 11:35:52 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Drop redundant generic-y += hardirq.h
-Date:   Mon, 13 Apr 2020 11:35:52 +0200
-Message-Id: <20200413093552.25102-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        Mon, 13 Apr 2020 05:37:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586770671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SGRl8QigNCMEctxjQ4r6IljMkZq1Kqqri1Hlxh7uGgk=;
+        b=bhGuNrjgtxGCwGNlFmA1G3QHmBHCPrJbMacDXttZ+lHmFNQglU51WDqzZ/eRjCXmTC5HXo
+        bpqMHm9Gq+PBkuPHMUuRhXvWB280w3GUgKCbXlj5E8dRK7rP2yzU28pIoIW2G/BgV4b4cH
+        EJK+rHIxnVhrImhNcrSx4kpxuf+DER0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-gn_bCVhtP_KIDWurWq3pbg-1; Mon, 13 Apr 2020 05:37:46 -0400
+X-MC-Unique: gn_bCVhtP_KIDWurWq3pbg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDE908018A1;
+        Mon, 13 Apr 2020 09:37:45 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-79.pek2.redhat.com [10.72.13.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A964E1001925;
+        Mon, 13 Apr 2020 09:37:40 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, eli@mellanox.com
+Subject: [PATCH] vdpa: fix comment of vdpa_register_device()
+Date:   Mon, 13 Apr 2020 17:37:38 +0800
+Message-Id: <20200413093738.28467-1-jasowang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cleanup in commit 630f289b7114c0e6 ("asm-generic: make more
-kernel-space headers mandatory") did not take into account the recently
-added line for hardirq.h in commit acc45648b9aefa90 ("m68k: Switch to
-asm-generic/hardirq.h"), leading to the following message during the
-build:
+The function should be called only after a success calling for
+vdpa_alloc_device().
 
-    scripts/Makefile.asm-generic:25: redundant generic-y found in arch/m68k/include/asm/Kbuild: hardirq.h
-
-Fix this by dropping the now redundant line.
-
-Fixes: 630f289b7114c0e6 ("asm-generic: make more kernel-space headers mandatory")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: Eli Cohen <eli@mellanox.com>
+Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
-Feel free to take this one directly, as I have no other m68k fixes
-queued for v5.7 yet.
+ drivers/vdpa/vdpa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/m68k/include/asm/Kbuild | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-index a0765aa60ea9aa8d..1bff55aa2d54e2ce 100644
---- a/arch/m68k/include/asm/Kbuild
-+++ b/arch/m68k/include/asm/Kbuild
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table.h
- generic-y += extable.h
--generic-y += hardirq.h
- generic-y += kvm_para.h
- generic-y += local64.h
- generic-y += mcs_spinlock.h
--- 
-2.17.1
+diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+index e9ed6a2b635b..ff6562f602e0 100644
+--- a/drivers/vdpa/vdpa.c
++++ b/drivers/vdpa/vdpa.c
+@@ -116,7 +116,7 @@ EXPORT_SYMBOL_GPL(__vdpa_alloc_device);
+=20
+ /**
+  * vdpa_register_device - register a vDPA device
+- * Callers must have a succeed call of vdpa_init_device() before.
++ * Callers must have a succeed call of vdpa_alloc_device() before.
+  * @vdev: the vdpa device to be registered to vDPA bus
+  *
+  * Returns an error when fail to add to vDPA bus
+--=20
+2.20.1
 
