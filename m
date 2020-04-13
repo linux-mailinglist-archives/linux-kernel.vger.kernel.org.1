@@ -2,113 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A80411A62F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55331A62FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgDMGOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 02:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:48340 "EHLO
+        id S1728129AbgDMGVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 02:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgDMGOb (ORCPT
+        with ESMTP id S1727719AbgDMGVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 02:14:31 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EC1C008651;
-        Sun, 12 Apr 2020 23:14:30 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id h6so8304267iok.11;
-        Sun, 12 Apr 2020 23:14:30 -0700 (PDT)
+        Mon, 13 Apr 2020 02:21:46 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AB5C008654
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:21:46 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id c5so4056806pgi.7
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jCqUMGGUenYfmoVwgXjhS0dJxR72enCIJgvwl4G68tE=;
-        b=Ez9wTmvQupP6PCsa3kb0IT4H0YnWLMVJ7dULcMYhdhFyPNDI6i9aoyJ18sZvHLp5ib
-         e7p9AaT/1GxNduOtUoxauDlrKktGguez4444hsjbx3EiB3km7QQ6MW7C0WXx4c4yHY6e
-         q8feJk5hlTO35r+oO9CTSdHpPSvVr2SDHyb0RxgZHSrIkZG2S7cwHa3CKORf4RqGwGRf
-         tbTwFak5o6klQ/RIarADkIAu6Vadg924JUVeMMiGEi5tsa0rJBgcaoHGp2FbknZ5DtFi
-         cLleJEQcATQLb9G84TwF2HPgcz8NmwZylLRKWyT0VKXBMutadMEf1/NOyJLylvoZo1x2
-         W1uA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=La50agcb/2KWA0YXVPyR15X/cVxbH5EFFNzow2CasCk=;
+        b=U4AhDKmpTjiiQCZMx8qJ1pvV8qHN5/3QPa+VuBSFlJKps1DI9ITUMc5Vs0rjFqGEFk
+         jnergkSEQGWU+5Kxd+rABuZrt2Uj2pIFjr97R4gXPKNC2B/tXBLXUEMn3jWZTCMxTC+d
+         Y4KwetQ/ZEN+5oNXk8NX3XVPtMRJjfP50fHutrzSmg8Ifet9woNEzC0a/qi0yLFeVccx
+         yRgkeliuuX2KAd5dT6IYcQ6e99JJXkCFk5kQixdxmzcrT9s3llqQkdUclDJTvA9sLQPS
+         owAhwVjvH/loJKinZhJcY6sV48c57edrdQub9pYTPcZQAbuOoulrCTh1pW59H8Tz2tlK
+         lW2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jCqUMGGUenYfmoVwgXjhS0dJxR72enCIJgvwl4G68tE=;
-        b=a8bKUj0g0qBtrwBFK2cZlpVGuQYAKJwN/l/249rNyYvpCJbyXsyykhKBobak3nVE74
-         +eAsCZ+q51WC3elSxp3f2p1xGkTCGuR7MNW96TNQqJtl/80PYqBzfJHfhnj7vWMZK/q9
-         9cWYQizF+BxJ2TnHAKFfqdQW2UAhAoEPBkpta5MhRaBXBvzQkKx3tH3h75RKznmteoVB
-         oHm+M9Vwo6kWDjRtdg/BKzHCgz7r2+dqEEG3dUsyQIOOAqL6rtwo0W+aV6uUCt7cLTSr
-         3B/o7j8jtOv0STUwVtpU3Nnvoo0JMfvjtyy5BUrbhOFHq8LFS6S5PhgoeYSs9PAEkCr8
-         r8Sg==
-X-Gm-Message-State: AGi0PuaHOs/rDXN9V+wtCb3Xp6GHUweuXf2B6umU4ZJ2KfaWWbuF6766
-        kq5PhixoPNqM+/ymCbLyOFaLNQo8qBa78H0KH3o=
-X-Google-Smtp-Source: APiQypJr/7Y30/qSupKKzUhtTFP/1OZ364sIEHdlKIG9QjTV+/CC/CPY7e/niHiYgcLG+4mAzQzIjH6B/rwqfxLrrwU=
-X-Received: by 2002:a6b:8b4b:: with SMTP id n72mr15041934iod.72.1586758470225;
- Sun, 12 Apr 2020 23:14:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=La50agcb/2KWA0YXVPyR15X/cVxbH5EFFNzow2CasCk=;
+        b=HgUjPHaZJQFiu+ytmxA43STDBUhbLYugfCaqNnEqtSiTmtm97gzblXlpIKUU7tJ1Og
+         2oXQVuGOileeVAQfW8ulyXtX0MPOYfiAh29J8N8vCNt+8Xu0eMBIrYoYqClcrnMJgBoW
+         PQ7C+IK5Ngv3l2s0qbsv6uo2EhBPuDgUOxK2B+YU78zUl9er4U8JApi6il4Yy6307Ub6
+         iKd/+xmJriICmgNOOe66Z/EtgTWzOPyHqSbxRpE36y70zirO1hPGKnPAMa9x7ncTy3vv
+         cpXKe24CuKODEnD410Sr4n6yXbShnhNKCPbcM7qGZ9Z3EMuAJ00Z64mLcBOlwNopw++4
+         pCMw==
+X-Gm-Message-State: AGi0PubZQybiQNQmGSC3MuFS3CaUBqppQRU83uOOLTodPeOJFGFvRODf
+        igLQVkXfMs9Tk9E28dhvwEJzyA==
+X-Google-Smtp-Source: APiQypJQcvb09jM8vKcT10ou779L5BrE/iVeMVqorUgMs0rxNdmOzAZ2huH75ZLiRKpYDW7+F1nNsw==
+X-Received: by 2002:a63:a50c:: with SMTP id n12mr16740745pgf.274.1586758905511;
+        Sun, 12 Apr 2020 23:21:45 -0700 (PDT)
+Received: from localhost ([122.171.118.46])
+        by smtp.gmail.com with ESMTPSA id d203sm2351825pfd.79.2020.04.12.23.21.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 12 Apr 2020 23:21:44 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 11:51:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, will@kernel.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, talho@nvidia.com,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bbasu@nvidia.com, mperttunen@nvidia.com
+Subject: Re: [TEGRA194_CPUFREQ Patch 2/3] cpufreq: Add Tegra194 cpufreq driver
+Message-ID: <20200413062141.a6hmwipexhv3sctq@vireshk-i7>
+References: <1575394348-17649-1-git-send-email-sumitg@nvidia.com>
+ <1575394348-17649-2-git-send-email-sumitg@nvidia.com>
+ <20200326115023.xy3n5bl7uetuw7mx@vireshk-i7>
+ <d233b26b-6b50-7d41-9f33-a5dc151e0e7d@nvidia.com>
+ <20200406025549.qfwzlk3745y3r274@vireshk-i7>
+ <3ab4136c-8cca-c2f9-d286-b82dac23e720@nvidia.com>
+ <20200408055301.jhvu5bc2luu3b5qr@vireshk-i7>
+ <08307e54-0e14-14a3-7d6a-d59e1e04a683@nvidia.com>
+ <20200409074415.twpzu2n4frqlde7b@vireshk-i7>
+ <00390070-38a1-19aa-ca59-42c4658bee7e@nvidia.com>
 MIME-Version: 1.0
-References: <20200402081614.5696-1-rppt@kernel.org>
-In-Reply-To: <20200402081614.5696-1-rppt@kernel.org>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Mon, 13 Apr 2020 14:21:38 +0800
-Message-ID: <CAAhV-H7+swFnqoVk9VS=4UoM+OVW4PX5G0mqSPAbM1WfXC44rA@mail.gmail.com>
-Subject: Re: [PATCH] mips: define pud_index() regardless of page table folding
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, maobibo <maobibo@loongson.cn>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00390070-38a1-19aa-ca59-42c4658bee7e@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Huacai Chen <chenhc@lemote.com>
+On 09-04-20, 16:51, Sumit Gupta wrote:
+> We are using "read_counters_work" as local variable. So every invocation the
+> function will have its own copy of counters for corresponding cpu. That's
+> why are doing INIT_WORK_ONSTACK here.
 
-On Thu, Apr 2, 2020 at 4:17 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Commit 31168f033e37 ("mips: drop __pXd_offset() macros that duplicate
-> pXd_index() ones") is correct that pud_index() & __pud_offset() are the
-> same when pud_index() is actually provided, however it does not take into
-> account the __PAGETABLE_PUD_FOLDED case. This has broken MIPS KVM
-> compilation because it relied on availability of pud_index().
->
-> Define pud_index() regardless of page table folded. It will evaluate to
-> actual index for 4-level pagetables and to 0 for folded PUD level.
->
-> Link: https://lore.kernel.org/lkml/20200331154749.5457-1-pbonzini@redhat.com
-> Reported-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/mips/include/asm/pgtable-64.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-> index f92716cfa4f4..ee5dc0c145b9 100644
-> --- a/arch/mips/include/asm/pgtable-64.h
-> +++ b/arch/mips/include/asm/pgtable-64.h
-> @@ -172,6 +172,8 @@
->
->  extern pte_t invalid_pte_table[PTRS_PER_PTE];
->
-> +#define pud_index(address)     (((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
-> +
->  #ifndef __PAGETABLE_PUD_FOLDED
->  /*
->   * For 4-level pagetables we defines these ourselves, for 3-level the
-> @@ -210,8 +212,6 @@ static inline void p4d_clear(p4d_t *p4dp)
->         p4d_val(*p4dp) = (unsigned long)invalid_pud_table;
->  }
->
-> -#define pud_index(address)     (((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
-> -
->  static inline unsigned long p4d_page_vaddr(p4d_t p4d)
->  {
->         return p4d_val(p4d);
-> --
-> 2.25.1
->
+Why? To support parallel calls to reading the freq ?
+
+> > > > > > > > > +     queue_work_on(cpu, read_counters_wq, &read_counters_work.work);
+> > > > > > > > > +     flush_work(&read_counters_work.work);
+> > > > > > > > 
+> > > > > > > > Why can't this be done in current context ?
+> > > > > > > > 
+> > > > > > > We used work queue instead of smp_call_function_single() to have long delay.
+> > > > > > 
+> > > > > > Please explain completely, you have raised more questions than you
+> > > > > > answered :)
+> > > > > > 
+> > > > > > Why do you want to have long delays ?
+> > > > > > 
+> > > > > Long delay value is used to have the observation window long enough for
+> > > > > correctly reconstructing the CPU frequency considering noise.
+> > > > > In next patch version, changed delay value to 500us which in our tests is
+> > > > > considered reliable.
+> > > > 
+> > > > I understand that you need to put a udelay() while reading the freq from
+> > > > hardware, that is fine, but why do you need a workqueue for that? Why can't you
+> > > > just read the values directly from the same context ?
+> > > > 
+> > > The register to read frequency is per core and not accessible to other
+> > > cores. So, we have to execute the function remotely as the target core to
+> > > read frequency might be different from current.
+> > > The functions for that are smp_call_function_single or queue_work_on.
+> > > We used queue_work_on() to avoid long delay inside ipi interrupt context
+> > > with interrupts disabled.
+> > 
+> > Okay, I understand this now, finally :)
+> > 
+> > But if the interrupts are disabled during some call, won't workqueues face the
+> > same problem ?
+> > 
+> Yes, we are trying to minimize the case.
+
+But how do you know workqueues will perform better than
+smp_call_function_single() ? Just asking for clarity on this as normally
+everyone tries to do smp_call_function_single().
+
+-- 
+viresh
