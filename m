@@ -2,129 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EEE1A679E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC701A67A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgDMONb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:13:31 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:64640 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730415AbgDMONa (ORCPT
+        id S1730443AbgDMOOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:14:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22781 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730417AbgDMOOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:13:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586787209; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=xYDfmi3y4GT8mtW5rchs7Qjl6eBp/KfvShM945Y8we0=; b=ITsIJNOmR9wh8zbe+tqClfmUBYLjAJgrbzyPGQyqXr+eFx9KfOPpc5KaIHAibtajSxTIW/el
- wJLMXoQPYGW12HtGzmXPs8v0l+3tzIPu18l/o9qcwlpYOOtadTUkYUm6UYz1jukaWYseSwMf
- aeBdeYG2apCPlBG5qMgVLh4FJp0=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e947389.7fdcdfcccb90-smtp-out-n03;
- Mon, 13 Apr 2020 14:13:29 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CACC2C433BA; Mon, 13 Apr 2020 14:13:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from [10.111.193.245] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4169AC433F2;
-        Mon, 13 Apr 2020 14:13:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4169AC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 02/21] tty: serial: qcom_geni_serial: Use OPP API to set
- clk/perf state
-To:     Akash Asthana <akashast@codeaurora.org>, viresh.kumar@linaro.org,
-        sboyd@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
- <1586353607-32222-3-git-send-email-rnayak@codeaurora.org>
- <5eb6c05e-893a-ef8a-c53e-a775b2f837d1@codeaurora.org>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <d9b3ebcb-90b0-c596-3832-2669bdb35b9b@codeaurora.org>
-Date:   Mon, 13 Apr 2020 19:43:16 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 13 Apr 2020 10:14:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586787283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9pz4ecCGHpD54VRs30aCWNG0g9ZT3H7m50d0kjdfWfs=;
+        b=fD9zVjsEb4Gp3NZaS9CpwAwDvBDV9Coeb3s0tTDtkoFXvaRlZrTEdJxRWGpwv3ToEJSLs0
+        KxQ5RcRZQk+R3RhFq4wrJFq0NpuIi4J9iMk9SUxM7HPbt0DQI806OgdbCW5o+whCriCw1Q
+        WUrz68zkfOJroUz0cd5zNv2nZWHCWfk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-CvR-o-1PMPuf_GA8HkEPQg-1; Mon, 13 Apr 2020 10:14:33 -0400
+X-MC-Unique: CvR-o-1PMPuf_GA8HkEPQg-1
+Received: by mail-qv1-f72.google.com with SMTP id y18so2692811qvx.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:14:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9pz4ecCGHpD54VRs30aCWNG0g9ZT3H7m50d0kjdfWfs=;
+        b=hgrsJCqaOiym+aMK+dJ9pX1smwmgQEuQGyQfTtU0GQ8/IOE2HcIGAnuQgdLk01GFsQ
+         4g9sw9ILyhDWxwKWC1NywZwhpmHHzN6HG9yIZiOkOJjEMtSo/T1XAh3yYVvdu5NZiALy
+         95swEP9sxskLKI+pCaicAgNAZEX75uYzY8E3Vc0HRJrIbIoyySYsWHTk0YdGoZa6G9rI
+         IIsO9WB7x74elznDbfirCqpddH0684IrlCiXV1lDCPgGfIeyKp56idYyd9QVW8bgX7Zt
+         fez90e2JL7WwBXxSl3f101a8QthMzuvXamIMKyYnorYDFfPUwTsLrgG7PK962odXttm9
+         GHnA==
+X-Gm-Message-State: AGi0PubhiaicuoMWhQ8GjDAR3wOVsSfYImupqI/CDYSI6IsoWzM+hmve
+        a5YpHxU5+eXHuPN+bcDipkWlVuEDVtVKDibdc7xJG22dENgKkW4G39TROcMwR2iamgnJ0jBevQT
+        twnjbs/rNPOzJpzqeLMV/Sed2
+X-Received: by 2002:a37:bb01:: with SMTP id l1mr16169738qkf.37.1586787272940;
+        Mon, 13 Apr 2020 07:14:32 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLcyXUmdwZ9EVtC8gVeFjagGEC3vAwbmtSkkop0oHmZV9eVJO4cB8zuzUmSpI+KklOCOl2lAQ==
+X-Received: by 2002:a37:bb01:: with SMTP id l1mr16169713qkf.37.1586787272633;
+        Mon, 13 Apr 2020 07:14:32 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id w2sm2374972qtv.42.2020.04.13.07.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 07:14:31 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 10:14:29 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Leonardo Bras <leonardo@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jules Irenge <jbi.octave@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hillf Danton <hdanton@sina.com>
+Subject: Re: i386: selftests: vm: compaction_test: BUG: kernel NULL pointer
+ dereference, address: 00000000
+Message-ID: <20200413141429.GE38470@xz-x1>
+References: <CA+G9fYsRGvkqtpdGv_aVr+Hn17KgYq04Q=EE=pB774qVxRqOeg@mail.gmail.com>
+ <20200412214150.GB38470@xz-x1>
+ <CA+G9fYvARTCKjbfHYEbfOjtn_s7desuAToOF4g+Z_fztzZ-myw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <5eb6c05e-893a-ef8a-c53e-a775b2f837d1@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvARTCKjbfHYEbfOjtn_s7desuAToOF4g+Z_fztzZ-myw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[]..
-
->> @@ -1318,13 +1321,16 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
->>       if (of_property_read_bool(pdev->dev.of_node, "cts-rts-swap"))
->>           port->cts_rts_swap = true;
->> +    port->se.opp = dev_pm_opp_set_clkname(&pdev->dev, "se");
->> +    dev_pm_opp_of_add_table(&pdev->dev);
->> +
->>       uport->private_data = drv;
->>       platform_set_drvdata(pdev, port);
->>       port->handle_rx = console ? handle_rx_console : handle_rx_uart;
->>       ret = uart_add_one_port(drv, uport);
->>       if (ret)
->> -        return ret;
->> +        goto err;
->>       irq_set_status_flags(uport->irq, IRQ_NOAUTOEN);
->>       ret = devm_request_irq(uport->dev, uport->irq, qcom_geni_serial_isr,
->> @@ -1332,7 +1338,7 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
->>       if (ret) {
->>           dev_err(uport->dev, "Failed to get IRQ ret %d\n", ret);
->>           uart_remove_one_port(drv, uport);
->> -        return ret;
->> +        goto err;
->>       }
->>       /*
->> @@ -1349,11 +1355,14 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
->>           if (ret) {
->>               device_init_wakeup(&pdev->dev, false);
->>               uart_remove_one_port(drv, uport);
->> -            return ret;
->> +            goto err;
->>           }
->>       }
->>       return 0;
->> +err:
->> +    dev_pm_opp_of_remove_table(&pdev->dev);
-> do we need to call "dev_pm_opp_put_clkname" here and in remove to release clk resource grabbed by
+On Mon, Apr 13, 2020 at 04:51:25PM +0530, Naresh Kamboju wrote:
+> On Mon, 13 Apr 2020 at 03:12, Peter Xu <peterx@redhat.com> wrote:
+> > And since this one is very easy to reproduce, I finally noticed that
+> > we have wrongly enabled uffd-wp on x86_32, which is definely not going
+> > to work... Because we'll use bit 2 of swap entry assuming that's the
+> > uffd-wp bit, while that's part of swp offset on 32bit systems.
+> >
+> > Naresh, could you try whether below change fixes the issue for you?
+> >
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 8d078642b4be..7ac524d1316e 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -149,7 +149,7 @@ config X86
+> >         select HAVE_ARCH_TRACEHOOK
+> >         select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+> >         select HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD if X86_64
+> > -       select HAVE_ARCH_USERFAULTFD_WP         if USERFAULTFD
+> > +       select HAVE_ARCH_USERFAULTFD_WP         if X86_64 && USERFAULTFD
+> >         select HAVE_ARCH_VMAP_STACK             if X86_64
+> >         select HAVE_ARCH_WITHIN_STACK_FRAMES
+> >         select HAVE_ASM_MODVERSIONS
+> >
 > 
-> dev_pm_opp_set_clkname(&pdev->dev, "se");?
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> The above patch tested and did not notice the crash.
+> + cd /opt/kselftests/default-in-kernel/vm/
+> + ./compaction_test
+> No of huge pages allocated = 297
+> + ./compaction_test
+> [   46.059785] kauditd_printk_skb: 15 callbacks suppressed
+> [   46.059786] audit: type=1334 audit(1586776582.927:25): prog-id=17 op=UNLOAD
+> [   46.071997] audit: type=1334 audit(1586776582.927:26): prog-id=16 op=UNLOAD
+> No of huge pages allocated = 160
+> 
+> Full test log,
+> https://lkft.validation.linaro.org/scheduler/job/1362495#L1308
+> 
+> Build artifacts.
+> https://builds.tuxbuild.com/w0ol7cCsGan0wzPp7bNqkg/
 
-Thanks for catching this, I did indeed try to call dev_pm_opp_put_clkname() but the way clk_put
-is handled in it seems buggy. I need to go back and fix it. Besides I realized dev_pm_opp_of_remove_table()
-does go ahead and do a clk_put on the clock.
-
-Viresh, whats the right way to clean up
-
->> +    port->se.opp = dev_pm_opp_set_clkname(&pdev->dev, "se");
->> +    dev_pm_opp_of_add_table(&pdev->dev);
-
-is it
-1. dev_pm_opp_of_remove_table()
-    dev_pm_opp_put_clkname()
-
-or
-2. dev_pm_opp_put_clkname()
-    dev_pm_opp_of_remove_table()
-
-or, what this patch is currently doing, which is just calling dev_pm_opp_of_remove_table()?
-
-Note that both 1. and 2. today result in a crash, since they don't handle clk_put very well.
-I can send in a fix if you think dev_pm_opp_put_clkname is needed and in a certain order.
+Thanks!  I'll post a formal patch soon.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Peter Xu
+
