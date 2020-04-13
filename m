@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AE51A63BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8361A63C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgDMHcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:33228 "EHLO
+        id S1729396AbgDMHfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727612AbgDMHcV (ORCPT
+        with ESMTP id S1727480AbgDMHfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:32:21 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1853C008651;
-        Mon, 13 Apr 2020 00:32:20 -0700 (PDT)
-Received: from flygoat-x1e (unknown [IPv6:240e:390:49e:92c0::d68])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id EEB2820D11;
-        Mon, 13 Apr 2020 07:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1586763139; bh=bhQVP41inNwzZ4QYRL2kZVsflSK4XBShSyjAeWvLFKA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WwQyW3eYa2lybRg3oCYp1RfX49ZM16W8iuJsja/D/MbTjwhPTHL/27832nqi1mmE7
-         YrT2DZ4r/gne+9PV10KNIrGNDxcp08eWnHYWEw9vuEI1GL5qRqW0FLuOrSjJHEWY+6
-         yMvl+TVtWx6CyBDaX0pTTMCoA8oGdf7HRzib0ALNQo7mG1zR0iJ0BLVhcLIbC5JAJV
-         37QRkfTkMZlrQBRqzKimYzzBYR8Y3iT6+pYpL5PNYPFtVj/hyOTCjKkRjpwQ3LroSY
-         OhEbudeVM+ogVIpHPzFLQPnQig3oy+ZkYTVnlz1xzJaNzqE1X34nxyUGnU8W9kMP8X
-         F1BddQw4pHgKg==
-Date:   Mon, 13 Apr 2020 15:32:05 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] MIPS: Truncate link address into 32bit for 32bit
- kernel
-Message-ID: <20200413153205.4ee52239@flygoat-x1e>
-In-Reply-To: <alpine.LFD.2.21.2004130736410.851719@eddie.linux-mips.org>
-References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
-        <alpine.LFD.2.21.2004130736410.851719@eddie.linux-mips.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Mon, 13 Apr 2020 03:35:02 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA292C008651;
+        Mon, 13 Apr 2020 00:35:01 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g12so1224173wmh.3;
+        Mon, 13 Apr 2020 00:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=jNvpxtX/L+YMcC9uGmkISLCwGkRZNFiP+NPeaB0ugAk=;
+        b=CAaTOHhrXd2f0/o9O0vjmpdMKqGTeG7I5T0YM4fecMsoVwj6PytUIeE6mJKgmIcvH4
+         s9VlGD8cefVpVIb13UaC3kqH4HxbsszpnJ8WjpO1RmLigkzYCHO7nFfa6d9CvP5sycmi
+         dSQoAoCDstvKUbhs8WBEZ/eMLne8IBfZqya52u8s8u87RHIlxDbLYouseoUyDcuttzWu
+         gCz0iK54/pEvIUzzfe+U7iNls/UBZgI+3MQY/1KkY9R5c91WCq3DcPhctk1R1mPCYVMh
+         cht9VNr5zHT5y4Fr8ktYv22GjDg3dxkA4sAVzw44Cldi9zoHSplxggVqsiUid1phBPIX
+         u+8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jNvpxtX/L+YMcC9uGmkISLCwGkRZNFiP+NPeaB0ugAk=;
+        b=ceAV+i6gNUOYEySt9MuG60h3xrtBGzE4rh2ZTloVaypUDlw5dJ5/rSiRlWxan5ItFN
+         KHmK5/Te9vhfCiBeUFGHoz7lMDA2SxxZMhMhnzx8lhSfiYvaaFTpCul8BG8ROnqBBEKJ
+         WZpZvaC3JP8x79hcdCZQFOGf6x0EVI60yenb0eGvBETXungpuCUETaUDSWgh3EclZMwg
+         933dYx8BRvkBXe8M54ZSw9U3+yYlblNcihCZeW0N3fMxJ3nasZCaupXLQKm/gF3wfLAz
+         zsuq7/YFPoUhN1tAbDtTNGMkZvbs8BTO4T7w0GAiUpwpwfe4PwLwp+iSGSu8kl5BIKRi
+         AGsg==
+X-Gm-Message-State: AGi0PuadQDqXpq8VkuFjWQAp5mJuIXNk5gCNLxFHVDvJ6TcMfWPIDnHo
+        WAYnnhKzM+zH2LY+jkQhs2M=
+X-Google-Smtp-Source: APiQypI/zPo1GszUY9LqyhxKcL6TzejRe+86z7SOxoStPUo7xJSmZS5DYRN/oVfDW9ELOOvAspC5tw==
+X-Received: by 2002:a1c:7416:: with SMTP id p22mr1053662wmc.80.1586763300441;
+        Mon, 13 Apr 2020 00:35:00 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2da9:2f00:c0be:812e:7fb0:ebe0])
+        by smtp.gmail.com with ESMTPSA id q9sm13673845wrp.61.2020.04.13.00.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 00:34:59 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@suse.de>,
+        Yash Shah <yash.shah@sifive.com>, linux-edac@vger.kernel.org,
+        Sebastian Duda <sebastian.duda@fau.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH RESEND] MAINTAINERS: rectify EDAC-SIFIVE entry
+Date:   Mon, 13 Apr 2020 09:34:47 +0200
+Message-Id: <20200413073447.9284-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Apr 2020 07:59:29 +0100 (BST)
-"Maciej W. Rozycki" <macro@linux-mips.org> wrote:
+Commit 9209fb51896f ("riscv: move sifive_l2_cache.c to drivers/soc") moved
+arch/riscv/mm/sifive_l2_cache.c to drivers/soc/sifive/sifive_l2_cache.c
+and adjusted the MAINTAINERS EDAC-SIFIVE entry but slipped in a mistake.
 
-> On Mon, 13 Apr 2020, Jiaxun Yang wrote:
-> 
-> > LLD failed to link vmlinux with 64bit load address for 32bit ELF
-> > while bfd will strip 64bit address into 32bit silently.
-> > To fix LLD build, we should truncate load address provided by
-> > platform into 32bit for 32bit kernel.  
-> 
-> Reviewed-by: Maciej W. Rozycki <macro@linux-mips.org>
-> 
-> > diff --git a/arch/mips/kernel/vmlinux.lds.S
-> > b/arch/mips/kernel/vmlinux.lds.S index a5f00ec73ea6..5226cd8e4bee
-> > 100644 --- a/arch/mips/kernel/vmlinux.lds.S
-> > +++ b/arch/mips/kernel/vmlinux.lds.S
-> > @@ -55,7 +55,7 @@ SECTIONS
-> >  	/* . = 0xa800000000300000; */
-> >  	. = 0xffffffff80300000;
-> >  #endif
-> > -	. = VMLINUX_LOAD_ADDRESS;
-> > +	. = VMLINUX_LINK_ADDRESS;  
-> 
->  The CONFIG_BOOT_ELF64 cruft right above it looks interesting to me,
-> never have ever been used.  We have had the current arrangement since:
+Since then, ./scripts/get_maintainer.pl --self-test complains:
 
-It confused me either.
-It's only used by SGI so probably it's time to rename it as
-BOOT_SEG_ELF64.
+  warning: no file matches F: drivers/soc/sifive_l2_cache.c
 
-Wish someone could clarify what is it.
+Rectify the EDAC-SIFIVE entry in MAINTAINERS now.
 
-Thanks.
+Co-developed-by: Sebastian Duda <sebastian.duda@fau.de>
+Signed-off-by: Sebastian Duda <sebastian.duda@fau.de>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Paul, please pick this patch.
 
-> 
-> commit 923ec3d20eef9e36456868b590873ce39f17fe71
-> Author: Ralf Baechle <ralf@linux-mips.org>
-> Date:   Wed Nov 6 22:16:38 2002 +0000
-> 
->     Define load address in linker script instead of relying on the
->     deprecated and notoriously unreliable option -Ttext.
-> 
-> and previously `-Ttext' was used with this script anyway, though not
-> very long, as the script was entirely ignored until:
-> 
-> commit 7a782968041ffc4c2d89816238e2f8ea5cceddba
-> Author: Ralf Baechle <ralf@linux-mips.org>
-> Date:   Thu Oct 31 23:54:21 2002 +0000
-> 
->     Merge with Linux 2.5.36.
-> 
->   Maciej
+v1: https://lore.kernel.org/lkml/20200304144045.15060-1-lukas.bulwahn@gmail.com/
+  - was not picked up.
 
---
-Jiaxun Yang
+v1-resend: applies on v5.7-rc1
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e64e5db31497..e28676766b26 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6172,7 +6172,7 @@ M:	Yash Shah <yash.shah@sifive.com>
+ L:	linux-edac@vger.kernel.org
+ S:	Supported
+ F:	drivers/edac/sifive_edac.c
+-F:	drivers/soc/sifive_l2_cache.c
++F:	drivers/soc/sifive/sifive_l2_cache.c
+ 
+ EDAC-SKYLAKE
+ M:	Tony Luck <tony.luck@intel.com>
+-- 
+2.17.1
+
