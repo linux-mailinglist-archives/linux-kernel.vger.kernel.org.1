@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F42C1A63A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE9D1A6379
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgDMH0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:60290 "EHLO
+        id S1729179AbgDMHSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:58768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727612AbgDMH0P (ORCPT
+        with ESMTP id S1727544AbgDMHSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:26:15 -0400
-Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2657C008651;
-        Mon, 13 Apr 2020 00:26:14 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="5.72,377,1580745600"; 
-   d="scan'208";a="88939532"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 13 Apr 2020 15:26:13 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id A6AFD50A9999;
-        Mon, 13 Apr 2020 15:15:42 +0800 (CST)
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.83) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 13 Apr 2020 15:26:13 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.31) by
- G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.89) with Microsoft SMTP Server
- id 14.3.439.0; Mon, 13 Apr 2020 15:26:09 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-To:     <rostedt@goodmis.org>, <mingo@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-trace-devel@vger.kernel.org>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>
-Subject: [PATCH] tracing: Fix the race between registering 'snapshot' event trigger and triggering 'snapshot' operation
-Date:   Mon, 13 Apr 2020 15:12:52 +0800
-Message-ID: <20200413071252.13720-1-yangx.jy@cn.fujitsu.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 13 Apr 2020 03:18:02 -0400
+Received: from smtprelay.hostedemail.com (smtprelay0112.hostedemail.com [216.40.44.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2E2C008651;
+        Mon, 13 Apr 2020 00:18:02 -0700 (PDT)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 56D5F4DC3;
+        Mon, 13 Apr 2020 07:18:01 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:196:355:379:599:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1622:1711:1730:1747:1777:1792:2198:2199:2393:2525:2561:2564:2682:2685:2731:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4184:4250:4321:5007:6671:8985:9025:10004:10400:10450:10455:10848:11232:11658:11914:12043:12297:12438:12555:12663:12740:12895:12986:13007:13069:13311:13357:13439:13618:13894:14180:14181:14659:14721:19904:19999:21060:21080:21324:21433:21627:30029:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:17,LUA_SUMMARY:none
+X-HE-Tag: trees54_28c6c4fb2e643
+X-Filterd-Recvd-Size: 2146
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 13 Apr 2020 07:18:00 +0000 (UTC)
+Message-ID: <f1033e80969fce39d9cc97fb924f7d68e5f96f74.camel@perches.com>
+Subject: Re: [PATCH] net: mvneta: Fix a typo
+From:   Joe Perches <joe@perches.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        thomas.petazzoni@bootlin.com, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Date:   Mon, 13 Apr 2020 00:15:53 -0700
+In-Reply-To: <eea1b700-4559-c8d1-1960-1858ed3d90ef@wanadoo.fr>
+References: <20200412212034.4532-1-christophe.jaillet@wanadoo.fr>
+         <6ecfa6cb686af1452101c0b727c9eb34d5582610.camel@perches.com>
+         <eea1b700-4559-c8d1-1960-1858ed3d90ef@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: A6AFD50A9999.ACC61
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
-or snapshot_count_trigger()) when register_snapshot_trigger() has completed
-registration but doesn't allocate spare buffer for 'snapshot' event trigger.
-'snapshot' operation always detects the lack of allocated buffer in the rare
-case so make register_snapshot_trigger() allocate spare buffer first.
+On Mon, 2020-04-13 at 08:56 +0200, Christophe JAILLET wrote:
+> Le 12/04/2020 à 23:35, Joe Perches a écrit :
+> > On Sun, 2020-04-12 at 23:20 +0200, Christophe JAILLET wrote:
+> > > s/mvmeta/mvneta/
+> > nice. how did you find this?
+> 
+> Hi,
+> 
+> This is based on a bash script I've made a while ago (see [1])
+> I've slightly updated it, but the idea is still the same. I search 
+> strings in a file with some variation on the file name (2 inverted 
+> chars, 1 missing char or 1 modified char).
+> 
+> The output is horrible, and a lot of filtering should be done.
+> It is much like noise, with MANY false positives. But I manage to dig 
+> some interesting stuff out of it.
+> 
+> If interested in the updated script, just ask, but except the concept 
+> itself, I'm not sure than anything else worth anything and is should be 
+> rewritten from scratch.
+> 
+> The update includes some tweaks in order to search into Kconfig files 
+> instead.
+> 
+> CJ
+> 
+> [1]: https://marc.info/?l=kernel-janitors&m=156382201306781&w=4
 
-trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
------------------------------------------------------------
-cat trace
-...
-ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
-     <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
-     <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
------------------------------------------------------------
+Nice.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- kernel/trace/trace_events_trigger.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+I was wondering if you used levenshtein distance or something else.
 
-diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index dd34a1b46a86..00e54cdcef3e 100644
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -1088,9 +1088,13 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
- 			  struct event_trigger_data *data,
- 			  struct trace_event_file *file)
- {
--	int ret = register_trigger(glob, ops, data, file);
-+	int alloc_ret, ret;
- 
--	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
-+	alloc_ret = tracing_alloc_snapshot_instance(file->tr);
-+
-+	ret = register_trigger(glob, ops, data, file);
-+
-+	if (ret > 0 && alloc_ret != 0) {
- 		unregister_trigger(glob, ops, data, file);
- 		ret = 0;
- 	}
--- 
-2.25.1
-
+https://en.wikipedia.org/wiki/Levenshtein_distance
 
 
