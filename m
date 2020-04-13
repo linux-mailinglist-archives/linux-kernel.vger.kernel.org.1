@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD061A6CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 22:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5CB1A6D10
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 22:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733214AbgDMULK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 16:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727816AbgDMULH (ORCPT
+        id S1733268AbgDMUOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 16:14:53 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:13878 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733229AbgDMUOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 16:11:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F309C0A3BDC;
-        Mon, 13 Apr 2020 13:11:06 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id e16so4015309pjp.1;
-        Mon, 13 Apr 2020 13:11:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LZqafRmRyQFCaiVXl6/7KpQLXAfpOOpFwxoy3qp4Wzo=;
-        b=hBeooTLLnG54arHcFVqwFhOl1MSgWJ4FhzUtM+sQZPihXrROPFPV2lnHuZ0pGySA8I
-         urXtzC0sB4meF1fs4fMKK2pL+/Bqf3dBmA3dg4mNrDYsFuPmn4VUQ8xhL9mb2mooWd4E
-         x2nPBzbFJKztHKSEoIDE4hTSoVaVcln1WbG7g3g5Jwc66+4Jt1G1I/+Rh0Mo6RPwBxSC
-         kc3b39fvUkquG01Z2KtnpGCg2Pa6XqFKkwE2AadgpddodUClLJQNCFPNNh8QwfvAyv6r
-         CDgiw3nvaivXxy7nKQ/1qJGfY5SJP30o7EFRClHKr2zXs3SjXOR7QjuJVDXijsQu4hxU
-         aF6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LZqafRmRyQFCaiVXl6/7KpQLXAfpOOpFwxoy3qp4Wzo=;
-        b=AKUCPALX2z2FUaVmlJK2cLbZubN8Vb6bkyr2vf+rdLlCRkQgeiGV4t1iO/GaU+wAnY
-         4H1RpW07rLZK1KpV1tbp7zMFCG3LhebJW/FkUkC+PE2BVp3yHPtIpiSu0qqxk2G3BcSe
-         +MNtEukJRtj63gX4NxaflMrPYBqfWhnUHXBd/qhBRFH9HeG8Rpa2a8GUxFCIrynpWP6c
-         kvBdL/aP/NX7QBWgaheBfj7UUl62PLztNyKc0SYo+OCkG2ZO+TRofOlcAobgwgFljjXN
-         BP/aB3oIRIahFltyrK/aLbg2Z0jBFlMxD9rZZG9VQFdFoWitXt9RzaPJMyx2q9m6KfBk
-         mThA==
-X-Gm-Message-State: AGi0PuYdnFBSW90QHFegWBUlO/KKFHPX34lKFl+2N7/1+4bYTG/dItRJ
-        YkRxxRPqLdWqHA4WwN8vS3BkDERSmTsgxKcXypI=
-X-Google-Smtp-Source: APiQypINs7COjR3S1/ugzSWIcMYXhZLkL2dyDG4xs6MC97WDLSg7ekcSNiRGo6qgUndOlT4SrKpI4lG4HPbClh15hPA=
-X-Received: by 2002:a17:90a:ff06:: with SMTP id ce6mr457333pjb.1.1586808665986;
- Mon, 13 Apr 2020 13:11:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200413173656.28522-1-sravanhome@gmail.com> <20200413173656.28522-5-sravanhome@gmail.com>
-In-Reply-To: <20200413173656.28522-5-sravanhome@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 13 Apr 2020 23:10:54 +0300
-Message-ID: <CAHp75VeYFY1CW4AH+D4HAgzppMZ5J8dL8kKPYmcwsXNVGNSYjQ@mail.gmail.com>
-Subject: Re: [PATCH v8 4/6] power: supply: Add support for mps mp2629 battery charger
-To:     Saravanan Sekar <sravanhome@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 13 Apr 2020 16:14:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586808888; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=dQ3ANcP/pX6ryr1N5RQms0oXAaxrTwW5UvzmiW5OdgQ=; b=PaA2G/Bro3zOdJuOkFOYn62Do+MMRG1WIvjtlhxN3FsAbQTjIrTuO1OUS5/jDtadUVYLZbms
+ e6E1J1B5lVet4LzznxoxF8Q+NazXQYe1gGtaGXw+SQE66848z/Fjw/g1QcJkcvZK4eG3IsPp
+ /Mbl4qL9njIpqJkUB8FHZpG8zMo=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e94c82c.7f8e7509b650-smtp-out-n04;
+ Mon, 13 Apr 2020 20:14:36 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7D264C44788; Mon, 13 Apr 2020 20:14:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5DF57C433F2;
+        Mon, 13 Apr 2020 20:14:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5DF57C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        robh+dt@kernel.org, mark.rutland@arm.com, p.zabel@pengutronix.de,
+        mgautam@codeaurora.org, vkoul@kernel.org, sboyd@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v7 0/5] Add SS/HS-USB changes for Qualcomm SM8150 chipset
+Date:   Mon, 13 Apr 2020 13:14:21 -0700
+Message-Id: <1586808866-21350-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 8:37 PM Saravanan Sekar <sravanhome@gmail.com> wrote:
->
-> The mp2629 provides switching-mode battery charge management for
-> single-cell Li-ion or Li-polymer battery. Driver supports the
-> access/control input source and battery charging parameters.
+This series adds support for the Synopsis 7nm HSPHY USB driver being
+used in QCOM chipsets.  The HSPHY register map differs compared to 
+other PHY revisions.  In addition, modifications and updates are done
+to the QMP driver to add new registers/offsets, and to update the
+initialization sequence for enabling the SSUSB path on SM8150.
 
-...
+Changes in v7:
+ - Use _relaxed() variants for writel/readl calls in
+   phy-qcom-snps-femto-v2.c
+ - Remove comments in the phy init function
+ - Use devm_platform_ioremap_resource instead of devm_ioremap_resource
+ - Fix chipset naming in Kconfig
+ - Address minor fixups in the YAML file (remove status in example, fix
+   "Hi-speed" to "High-speed", add a newline at the end)
 
-> +static int mp2629_charger_probe(struct platform_device *pdev)
-> +{
+Changes in v6:
+ - Addressed coding style errors in phy-qcom-snps-femto-v2.c
 
-> +       irq = platform_get_irq(to_platform_device(pdev->dev.parent), 0);
+Changes in v5:
+ - Reorganize IF check for when to use the proper PWRDOWN CTRL offset
+ - Rename UFS specific offset definitions in the QMP PHY driver to clearly
+   denote they are UFS specific
+ - Rename the phy-qcom-snps-7nm driver to phy-qcom-snps-femto-v2
 
-Why not to use temporary variable dev?
+Changes in v4:
+ - Fix POWERDOWN offset for QMP PHY exit routine, and check for
+   has_phy_dp_com_ctrl instead of !has_phy_com_ctrl
 
-This should be platform_get_irq_optional().
+Changes in v3:
+ - Use devm_reset_control_get_exclusive instead of referencing index for
+   reset handle
 
-> +       if (irq) {
-> +               ret = devm_request_irq(dev, irq, mp2629_irq_handler,
-> +                                IRQF_TRIGGER_RISING, "mp2629-charger",
-> +                                charger);
-> +               if (ret) {
-> +                       dev_err(dev, "failed to request gpio IRQ\n");
-> +                       goto iio_fail;
-> +               }
-> +       }
+Changes in v2:
+ - Fixed YAML errors caught by dt_binding_check
 
-> +}
+Jack Pham (1):
+  phy: qcom-qmp: Add SM8150 QMP USB3 PHY support
+
+Wesley Cheng (4):
+  dt-bindings: phy: Add binding for qcom,usb-snps-femto-v2
+  phy: qcom-snps: Add SNPS USB PHY driver for QCOM based SOCs
+  phy: qcom-qmp: Use proper PWRDOWN offset for sm8150 USB
+  phy: qcom-qmp: Rename UFS PCS QMP v4 registers
+
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml       |  77 ++++++
+ drivers/phy/qualcomm/Kconfig                       |  10 +
+ drivers/phy/qualcomm/Makefile                      |   1 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 193 +++++++++++++-
+ drivers/phy/qualcomm/phy-qcom-qmp.h                | 238 +++++++++++++++--
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c      | 283 +++++++++++++++++++++
+ 6 files changed, 766 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+ create mode 100644 drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
