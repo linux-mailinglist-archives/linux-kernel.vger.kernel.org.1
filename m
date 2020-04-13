@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BC01A64EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818F41A64FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgDMKEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S1728017AbgDMKGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728140AbgDMKEl (ORCPT
+        by vger.kernel.org with ESMTP id S1728186AbgDMKEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:04:41 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9453CC0A3BDC
+        Mon, 13 Apr 2020 06:04:44 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5793C008749
         for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:58:18 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id o81so3266141wmo.2
+Received: by mail-wm1-x342.google.com with SMTP id a201so9021624wme.1
         for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=KmcsA4T+S+WWzjH6BirzHHu1f070Cb4n75Vt4bzQ7mw=;
-        b=TVnoFVdP7i6NzzFLwMjWxM3xlqFbcIBq1o9J7E/bTBQ0uzOW8+UegM9N09q07Gb8Pt
-         MtHvv7jPmDm/EdqTc8LOg/VtKYICEGws/lMAkblH+kM813ZU0JoJaasghx3IwTGcKd0E
-         42OvmNEcHZQ5VCaiHTIO84mRy6CrDZH8EYAeCVp6AgaElvoo718tEt+wJ/84V0XUhhxN
-         f4duhfvRg/ia9fT3MeUk6BGznNj5Tixq/bRylfXGr/Iior1h1ImD3+qM5aYCgzxIx0Zi
-         yW2DdRaVcQZ3x6NikAgM+x5H/bYYq4FjWTKQPFlyunUiyUqYCPVn2Bmk98TFUkVTHkTB
-         0DAg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=ZwalgJuNdjnU0AH+11/7zFoA2oqP3wkRvVgbyS9b41k=;
+        b=hic0LQuAXzvi55O0zIA1+YYH0IaWo9xC6vNrqNKXLLE6t0L6s65KOJhN2ySvxwcaE2
+         UfpBNhMUnreUZzRG1E2zPrmC6E882yDFM38Nqmou6PyCY3k8V+xPS7+g12jaoJ40sbtd
+         Na78pDLRDN972JR27+HedgP0hp2YZr+kaZn7+6ffaTRd5EpINuUaixRJk+H8oTDDVm0x
+         1zgcOCRHq9S4JbpMWp9Ov9y8sZ3zgzPPIg2qqd4fzqCI7cLTI0AbSyXIXKxCAFObL179
+         r0l+C857kcmKVfYtAQon5Het54zWNG1nzv3p8J10WWj9y1jJ5kbLOXTccIXAHxj2DJ0h
+         OQcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KmcsA4T+S+WWzjH6BirzHHu1f070Cb4n75Vt4bzQ7mw=;
-        b=Rzwds2e1mW4LGNtE/n1VjlPi5/WNfzWQAnvOVeNIjoFdgvpUrxbF0FbZ/hH3EouF01
-         EO5H9bBPrFMsvnEFPgW5Xp8CPK7EyDArRdSbu86WJfRZ40FxqC9U0IZIZTi3rY7K/hQQ
-         K9iFus/Db0NgOwFemFkWsgDeUSJZDKg8aifLH9SKPqnl/HHmmNMPk8Rvdg9qit/7HdfP
-         ajX0Ngfm8372VHWONkMGUZQnbVIJol2SAhzwMz5nNNZo3UBiwWgqgExRy/tGLZnJsGip
-         n/AiXrhyjHOmE5acVNn5IATXkuiWHvptuLRkzmQkrZKZ2A7LhdPu623S8X/yJCbTqY7R
-         zMIQ==
-X-Gm-Message-State: AGi0PuYpsfigWyUJZ1pnOAUTbyOF49ctd9iXNw6r1qgSuJNHVfBfGAMy
-        4gEiV6qOpB/Mk9AaCTOdoLYGOQ==
-X-Google-Smtp-Source: APiQypJWhZgB3lIgt3ffPi7fAbvHp4h7OWcPtzktkowmrfegct/r94XOEfrUl2q5rZ1a2eCTjGu2EA==
-X-Received: by 2002:a1c:7d15:: with SMTP id y21mr17172416wmc.57.1586771896214;
-        Mon, 13 Apr 2020 02:58:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=ZwalgJuNdjnU0AH+11/7zFoA2oqP3wkRvVgbyS9b41k=;
+        b=c6f0yFR4eeEmz2Aur1gpXAxUvwTH1z18DCVRiqzATOWjO3XsjzhiqO4d7dTzZ/ivT/
+         wJW1k4DMf/MqRlcI6NLjgMsbmSnKbRYF/4vmyAc3k0daRAvQejyXvJsJft961nPS8/Xm
+         tw6XtbFz2YBpNQZ+nNS4/3+YL1ycu6u5VQhs+K/1SVwuPiIbRpmCPkPzVX4wJsWagzon
+         71vM+pyn2N7J5BhZTuvr4bQLTTdFjo35aaJvF04wLI3jD54UdrjEfoZs5w4WJBuTY153
+         8D+GaboaU9WtQShK3i+PPdMSR5Xt8PjU053eGcDcmeIuvZSGKQloVRGfk2BFsa4yhA/7
+         m4aw==
+X-Gm-Message-State: AGi0PuYyn9GgP7hWnSnUVNglMHJmZcBBbHbTaN1dCNmkIXe2kzyC1Bfp
+        0NiFgFU1L2vgVOiqtM4qlMf1bA==
+X-Google-Smtp-Source: APiQypJGFd0fTWn2WQshxc7mhyVpmXdUe15UiicQpmsE/HOuu386yGM2whwLZD+UKBrpdMA2K809kg==
+X-Received: by 2002:a1c:750a:: with SMTP id o10mr17606357wmc.124.1586771897331;
+        Mon, 13 Apr 2020 02:58:17 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id v21sm13594491wmj.8.2020.04.13.02.58.14
+        by smtp.googlemail.com with ESMTPSA id v21sm13594491wmj.8.2020.04.13.02.58.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Apr 2020 02:58:15 -0700 (PDT)
+        Mon, 13 Apr 2020 02:58:16 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     davem@davemloft.net, herbert@gondor.apana.org.au,
         mripard@kernel.org, wens@csie.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 0/9] crypto: sun8i-ce: support TRNG, PRNG and hashes
-Date:   Mon, 13 Apr 2020 09:58:00 +0000
-Message-Id: <1586771889-3299-1-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH 1/9] crypto: rng - add missing __crypto_rng_cast to the rng header
+Date:   Mon, 13 Apr 2020 09:58:01 +0000
+Message-Id: <1586771889-3299-2-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1586771889-3299-1-git-send-email-clabbe@baylibre.com>
+References: <1586771889-3299-1-git-send-email-clabbe@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+This patch add __crypto_rng_cast() to the rng header like other
+__algo_cast functions.
 
-The main goal of this serie is to add support for TRNG, PRNG and hashes
-to the sun8i-ce.
-The whole serie is tested with CRYPTO_EXTRA_TESTS enabled and loading
-tcrypt.
-The PRNG and TRNG are tested with rngtest.
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ include/crypto/rng.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Note that the first patch is common with the recent sun8i-ss PRNG+hashes serie.
-
-Regards
-
-Corentin Labbe (9):
-  crypto: rng - add missing __crypto_rng_cast to the rng header
-  crypto: sun8i-ce: move iv data to request context
-  crypto: sun8i-ce: split into prepare/run/unprepare
-  crypto: sun8i-ce: handle different error registers
-  crypto: sun8i-ce: rename has_t_dlen_in_bytes to cipher_t_dlen_in_bytes
-  crypto: sun8i-ce: support hash algorithms
-  crypto: sun8i-ce: Add stat_bytes debugfs
-  crypto: sun8i-ce: Add support for the PRNG
-  crypto: sun8i-ce: Add support for the TRNG
-
- drivers/crypto/allwinner/Kconfig              |  26 ++
- drivers/crypto/allwinner/sun8i-ce/Makefile    |   3 +
- .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  99 ++++-
- .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 365 ++++++++++++++-
- .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 415 ++++++++++++++++++
- .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 191 ++++++++
- .../crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 123 ++++++
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 135 +++++-
- include/crypto/rng.h                          |   5 +
- 9 files changed, 1323 insertions(+), 39 deletions(-)
- create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
- create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
- create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-
+diff --git a/include/crypto/rng.h b/include/crypto/rng.h
+index 8b4b844b4eef..0e140f132efe 100644
+--- a/include/crypto/rng.h
++++ b/include/crypto/rng.h
+@@ -198,4 +198,9 @@ static inline int crypto_rng_seedsize(struct crypto_rng *tfm)
+ 	return crypto_rng_alg(tfm)->seedsize;
+ }
+ 
++static inline struct crypto_rng *__crypto_rng_cast(struct crypto_tfm *tfm)
++{
++	return container_of(tfm, struct crypto_rng, base);
++}
++
+ #endif
 -- 
 2.24.1
 
