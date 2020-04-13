@@ -1,70 +1,82 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DCD1A63E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:55:38 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 7162E1A6485
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgDMHzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:37624 "EHLO
+        id S1729351AbgDMIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 04:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgDMHza (ORCPT
+        with ESMTP id S1727971AbgDMIWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:55:30 -0400
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBDFC008651
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 00:55:30 -0700 (PDT)
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6806FF8B2A26912A7069;
-        Mon, 13 Apr 2020 15:55:27 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
- 15:55:18 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <dhowells@redhat.com>, <akpm@linux-foundation.org>,
-        <gregkh@linuxfoundation.org>, <yanaijie@huawei.com>,
-        <linux@rasmusvillemoes.dk>, <tglx@linutronix.de>,
-        <linux-kernel@vger.kernel.org>
-CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] user.c: make uidhash_table static
-Date:   Mon, 13 Apr 2020 16:21:46 +0800
-Message-ID: <20200413082146.22737-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        Mon, 13 Apr 2020 04:22:04 -0400
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353FDC014CDB;
+        Mon, 13 Apr 2020 01:22:04 -0700 (PDT)
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7784520692;
+        Mon, 13 Apr 2020 08:22:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586766123;
+        bh=myCwX7QCUQ1jF+vQX9y7N4B7bRpg4u9sExHyAT0PwI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLL70XPoduJaJyvsD6kgwZyNb0YMq1Vs/8JKD/02q8F63Zz5kqWhUbSBJyao6AVbB
+         E7ufNDOY1luG5RR1jWKGpTMm2IhYdyztgpBeUgv2tOcjnPwT9h+H3cBDfZOIVPUGTT
+         clibTJq5Ht3fdEkPgpEPKhDAOKo3IUEj/YPn+Bl0=
+Date:   Mon, 13 Apr 2020 10:22:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.6 00/38] 5.6.4-rc1 review
+Message-ID: <20200413082201.GC2792388@kroah.com>
+References: <20200411115459.324496182@linuxfoundation.org>
+ <CA+G9fYuC0s59WRDmBzy7gx62snosjDAX6EigYSGmvX+46cRASw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYuC0s59WRDmBzy7gx62snosjDAX6EigYSGmvX+46cRASw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+On Sun, Apr 12, 2020 at 11:08:18AM +0530, Naresh Kamboju wrote:
+> On Sat, 11 Apr 2020 at 17:52, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.6.4 release.
+> > There are 38 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.4-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 
-kernel/user.c:85:19: warning: symbol 'uidhash_table' was not declared.
-Should it be static?
+Thanks for testing all of these and letting me know.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- kernel/user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/user.c b/kernel/user.c
-index 5235d7f49982..b1635d94a1f2 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -82,7 +82,7 @@ EXPORT_SYMBOL_GPL(init_user_ns);
- #define uidhashentry(uid)	(uidhash_table + __uidhashfn((__kuid_val(uid))))
- 
- static struct kmem_cache *uid_cachep;
--struct hlist_head uidhash_table[UIDHASH_SZ];
-+static struct hlist_head uidhash_table[UIDHASH_SZ];
- 
- /*
-  * The uidhash_lock is mostly taken from process context, but it is
--- 
-2.21.1
-
+greg k-h
