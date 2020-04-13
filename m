@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B81D1A6566
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7923C1A6556
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728788AbgDMKtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728783AbgDMKtm (ORCPT
+        id S1728738AbgDMKq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:46:57 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:44217 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727776AbgDMKq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:49:42 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC24CC008769
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 03:42:57 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x25so8947378wmc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 03:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LxLLEtf7L3c0hGSdxGKFQpoT2uSSCcGo15k+Gpv2wKY=;
-        b=zUF41G4Bw1k5BI7yxQOyGjqBkuZxS+Ym+5PwQuckymqcszDP0yg01AMt969Epq5Vrw
-         o+XLhiUcYrW5uFacawoOf7cgJkpmIzXrXPIFXGnylG+wHD/1P702tGWcoejMGPB+Be+m
-         czt7Y/HD+OS4aFtdINPw4bHxAQVgLXqQDmRQ+rULttDNeouAWOJ64xAZTf7cbdJB+jp4
-         WFCfMKBLl80lanTUqj/AYjQwhdht/VMS4O9RQmd1nHsNhVpAICF7Lq7NjtNJrqeKoPUS
-         F7Lg+nIbrwVjSkItk6XSqmy34wiDkPYx61bEuU7Q6JdSi7wu91rQDtvvCVOGsfY8ziKq
-         9gXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LxLLEtf7L3c0hGSdxGKFQpoT2uSSCcGo15k+Gpv2wKY=;
-        b=gwPS960i97M0Uub7CFMSTQF2yvlaihuTRiWWilA37j/NBm0jeoM49bZY4dfUctdwH1
-         HsCS0ri/v190yiK8AB1LknQSbbQoTfshVK2K/tW+vlYc+9NyK1O4Zwb9xCY2yM4hMAU+
-         1JMg5qdqUmiwjZajGn0dbm+LW3YddZjlOewOUmTar8gzYaN3n8Hai9k8CbymfBFrVHau
-         Dm57/cEUVcBF4F6u7A/zyjt58irOCbZQWufMC+Fme5/YZDVaZ4CeL5IVJ6DBY54217fh
-         G6Ep+DDeea8jxU06U2/lVyNaP0hP2jrDeuV01uNcbRW8rLeoNwO3CWpGIaQBFeptvUp3
-         GoDA==
-X-Gm-Message-State: AGi0PuYmc1kGlV01OEcSJ6yhOlXfLQdOhgjy3PiHI6PzBEC/NObdaljd
-        rOPXipPU5vJy41AsbGjhMtvr8RayDbg=
-X-Google-Smtp-Source: APiQypLAlI/vijmodM4EggLCa7l/yBBo2uK2IiTLS6PklWMZRCHtdF6ZbMuDZ33wavGWnr0g/uWHVQ==
-X-Received: by 2002:a1c:bb08:: with SMTP id l8mr19632154wmf.168.1586774576391;
-        Mon, 13 Apr 2020 03:42:56 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id k8sm12530599wrm.52.2020.04.13.03.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 03:42:55 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefani Seibold <stefani@seibold.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [RESEND PATCH] MAINTAINERS: add an entry for kfifo
-Date:   Mon, 13 Apr 2020 12:42:50 +0200
-Message-Id: <20200413104250.26683-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.25.0
+        Mon, 13 Apr 2020 06:46:56 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1FA72240004;
+        Mon, 13 Apr 2020 10:46:52 +0000 (UTC)
+Date:   Mon, 13 Apr 2020 12:46:52 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudiu.Beznea@microchip.com
+Cc:     a.zummo@towertech.it, robh+dt@kernel.org, mark.rutland@arm.com,
+        Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] ARM: dts: sam9x60: add rtt
+Message-ID: <20200413104652.GE3628@piout.net>
+References: <1586536019-12348-1-git-send-email-claudiu.beznea@microchip.com>
+ <1586536019-12348-5-git-send-email-claudiu.beznea@microchip.com>
+ <20200410222658.GB3628@piout.net>
+ <c4d46198-488b-c5d6-2a66-865a16840dc4@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4d46198-488b-c5d6-2a66-865a16840dc4@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 13/04/2020 08:51:12+0000, Claudiu.Beznea@microchip.com wrote:
+> 
+> 
+> On 11.04.2020 01:26, Alexandre Belloni wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 10/04/2020 19:26:58+0300, Claudiu Beznea wrote:
+> >> Add RTT.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> >> ---
+> >>  arch/arm/boot/dts/at91-sam9x60ek.dts | 5 +++++
+> >>  arch/arm/boot/dts/sam9x60.dtsi       | 7 +++++++
+> >>  2 files changed, 12 insertions(+)
+> >>
+> >> diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
+> >> index ab3d2d9a420a..4020e79a958e 100644
+> >> --- a/arch/arm/boot/dts/at91-sam9x60ek.dts
+> >> +++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+> >> @@ -617,6 +617,11 @@
+> >>       };
+> >>  };
+> >>
+> >> +&rtt {
+> >> +     atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
+> >> +     status = "okay";
+> > 
+> > Is there any point using a gpbr register while there is already a much
+> > better RTC in the system?
+> 
+> Only to have it also enabled.
+> 
 
-Kfifo has been written by Stefani Seibold and she's implicitly expected to
-Ack any changes to it.  She's not however officially listed as kfifo
-maintainer which leads to delays in patch review.  This patch proposes to
-add an explicit entry for kfifo to MAINTAINERS file.
+Why would one use the RTT while the RTC is far superior?
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
-I'm not sure why this patch hasn't made it into v5.7 - it's been in next
-for weeks now. :(
+> > 
+> > In any case, this diff should be merge with the other at91-sam9x60ek.dts
+> > change instead of being with the dtsi change.
+> 
+> The changes in this patch are related to enabling the RTT. The other dts
+> change is related to enabling gpbr. The RTT uses that enabled gpbr -> one
+> change per patch.
+> 
+> If you still want to merge then, I'll do it, but then it becomes mixed.
+> 
 
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+This patch is already mixing add the gpbr in sam9x60ek and add the node
+in sam9x60.dtsi which is worse.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..f0f30b2cafa4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9412,6 +9412,13 @@ F:	include/linux/keyctl.h
- F:	include/uapi/linux/keyctl.h
- F:	security/keys/
- 
-+KFIFO
-+M:	Stefani Seibold <stefani@seibold.net>
-+S:	Maintained
-+F:	lib/kfifo.c
-+F:	include/linux/kfifo.h
-+F:	samples/kfifo/
-+
- KGDB / KDB /debug_core
- M:	Jason Wessel <jason.wessel@windriver.com>
- M:	Daniel Thompson <daniel.thompson@linaro.org>
+Just have one patch adding the rtt node to the sam9x60.dtsi and then a
+patch adding the RTT to sam9x60ek. Because the RTT uses the gpbr, it is
+a good time to add enable the gpbr, this is a single functionnal change.
+
+Let's say that for some reason, the RTT patch on sam9x60ek has to be
+reverted, then the RTT node is still defined which is good for all the
+other eventual users.
+
+
 -- 
-2.25.0
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
