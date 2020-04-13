@@ -2,114 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BD21A65F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493231A65FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgDMLxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgDMLxK (ORCPT
+        id S1729280AbgDMLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:55:06 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:40736 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727907AbgDMLzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:53:10 -0400
-X-Greylist: delayed 353 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 07:53:09 EDT
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D170C03BC88;
-        Mon, 13 Apr 2020 04:53:09 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id z65so11681238ede.0;
-        Mon, 13 Apr 2020 04:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YcI5BgHcI8+PEm1TIf305+wY+78vpeLYiqAUOMKmCLY=;
-        b=srKMMj5E5btl7EDgNRotSH8CXWYnKfGMImdJNqDh91f8Rv1vZ7lRrE0WsNfJh/MYgW
-         D52LS7TTE6OM+eyZggDWqG+xt7VThDdofdeZBiT4H/NUAO3K+zMGo5QGuw4XIa6zPv0r
-         NtmuzQ5S9tuDP9RZmqbh0W6/G+RPfUmRvJW7Ir+gWGteM22ihV7smVL7FYp/gExiEFkd
-         x/K7xJXeLlPhTSeTP38GJncVYDksl/NOqZKqnM22i4D4wJ2PgE94nOaZNoG9ie+CS0a2
-         H1DH6hHVpnfoNZFpeA4BZ306Z7bIbDuqxyu41zrSoAJe4fRfu1VVc9mveule7MEfHyHS
-         V2Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YcI5BgHcI8+PEm1TIf305+wY+78vpeLYiqAUOMKmCLY=;
-        b=ATfAv6Qppy0WWGc+BKUyeicyoZ9S2knC95+I7qx/b9/nCgHVyQTbjAnj9kmr+3msQx
-         tsXRFuwhRRyM1wYtauF1emN0WESux+Y58DM9yjXPnVnJfe8UeBy8E5iaqZF//igAF+ma
-         DC6qYQm5fm1/dA1AhBQZ9XXQnAjJhylOTnzwmfmb4fAWpXp2ZEXHzv+hq1bND2eIZD3M
-         W1ZpiRIA7cn+OwfsWnr5Rx8DP4GMCN55npnC6wgGgHbqaJrebFEMy7wCUxeXtvGI/S40
-         6QQUWOOvfrxnAeRaEL/RAAF9kbUwCcwoA6TkZu70lmPEikkKGQT/oHSQq6OV97l3KzCb
-         MXxA==
-X-Gm-Message-State: AGi0PuaxEjASwiBfL2cQBqXUWdlFUql8U+N+HFvNe8uRWjsdRFt2PRlo
-        Y1d4K/SrRKbvMKU94+4NbPO/0nqMslo=
-X-Google-Smtp-Source: APiQypJ/CBvkwGG9Yyj5knUDqEB3O733BnUPqBkLIME3imONmpvkwjEuOpYdkHxsPlx5hLQ0F9KLmw==
-X-Received: by 2002:a17:906:374b:: with SMTP id e11mr16232681ejc.283.1586778787976;
-        Mon, 13 Apr 2020 04:53:07 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2da9:2f00:3165:1687:284f:4993])
-        by smtp.gmail.com with ESMTPSA id l91sm1285275ede.64.2020.04.13.04.53.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 04:53:07 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@suse.de>,
-        Yash Shah <yash.shah@sifive.com>, linux-edac@vger.kernel.org,
-        Sebastian Duda <sebastian.duda@fau.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v3] MAINTAINERS: place sifive_l2_cache.c only in SIFIVE DRIVERS
-Date:   Mon, 13 Apr 2020 13:52:55 +0200
-Message-Id: <20200413115255.7100-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 13 Apr 2020 07:55:04 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35e94530be9e-3a131; Mon, 13 Apr 2020 19:54:51 +0800 (CST)
+X-RM-TRANSID: 2ee35e94530be9e-3a131
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [172.20.21.224] (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35e94530b271-c5fbd;
+        Mon, 13 Apr 2020 19:54:51 +0800 (CST)
+X-RM-TRANSID: 2ee35e94530b271-c5fbd
+Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
+To:     minyard@acm.org
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
+ <20200413113225.GB3587@minyard.net>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
+Date:   Mon, 13 Apr 2020 19:56:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200413113225.GB3587@minyard.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9209fb51896f ("riscv: move sifive_l2_cache.c to drivers/soc") moved
-arch/riscv/mm/sifive_l2_cache.c to drivers/soc/sifive/sifive_l2_cache.c
-and adjusted the MAINTAINERS EDAC-SIFIVE entry but slipped in a mistake.
+Hi, Corey:
 
-Since then, ./scripts/get_maintainer.pl --self-test complains:
+On 2020/4/13 19:32, Corey Minyard wrote:
+> On Wed, Apr 08, 2020 at 07:59:58PM +0800, Tang Bin wrote:
+>> bt_bmc_probe() is only called with an openfirmware platform device.
+>> Therefore there is no need to check that the passed in device is NULL or
+>> that it has an openfirmware node.
+> I waited until after the merge window closed, this is queued for 5.8.
+Can I consider that the patch will be applied in 5.8？
+>   I
+> changed the title to be "Avoid unnecessary check".
+You have modified it, which means I don't need to submit a new patch？
+>   "Judgement",
+> although technically correct, has a legal or moral connotation.
 
-  warning: no file matches F: drivers/soc/sifive_l2_cache.c
-
-Boris suggested that sifive_l2_cache.c is considered part of the SIFIVE
-DRIVERS, not part of EDAC-SIFIVE. So, we can simply drop this entry, and
-by the sifive keyword pattern in SIFIVE PATTERNS, it is automatically part
-of the SIFIVE DRIVERS.
-
-Suggested-by: Borislav Petkov <bp@alien8.de>
-Co-developed-by: Sebastian Duda <sebastian.duda@fau.de>
-Signed-off-by: Sebastian Duda <sebastian.duda@fau.de>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Paul, please pick this patch.
-
-v1: https://lore.kernel.org/lkml/20200304144045.15060-1-lukas.bulwahn@gmail.com/
-  - was not picked up.
-
-v1-resend: https://lore.kernel.org/lkml/20200413073447.9284-1-lukas.bulwahn@gmail.com/
-
-v2: https://lore.kernel.org/lkml/20200413114702.6372-1-lukas.bulwahn@gmail.com/
- - reworked based on Boris comment
-
-v3: v2 was broken, I forgot to commit the actual change. Now properly reworked.
+I'm sorry, I won't use that word again.
 
 
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+Thanks for your instruction.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..63839a920e1b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6172,7 +6172,6 @@ M:	Yash Shah <yash.shah@sifive.com>
- L:	linux-edac@vger.kernel.org
- S:	Supported
- F:	drivers/edac/sifive_edac.c
--F:	drivers/soc/sifive_l2_cache.c
- 
- EDAC-SKYLAKE
- M:	Tony Luck <tony.luck@intel.com>
--- 
-2.17.1
+Tang Bin
+
+>
+
 
