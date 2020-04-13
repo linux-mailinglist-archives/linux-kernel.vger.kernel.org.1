@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39541A64CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC87A1A64CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgDMJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:43:20 -0400
-Received: from mx05.melco.co.jp ([192.218.140.145]:44831 "EHLO
-        mx05.melco.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727968AbgDMJnU (ORCPT
+        id S1728458AbgDMJtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728015AbgDMJtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:43:20 -0400
-Received: from mr05.melco.co.jp (mr05 [133.141.98.165])
-        by mx05.melco.co.jp (Postfix) with ESMTP id 43C223A41B2;
-        Mon, 13 Apr 2020 18:43:17 +0900 (JST)
-Received: from mr05.melco.co.jp (unknown [127.0.0.1])
-        by mr05.imss (Postfix) with ESMTP id 4913Zs1Nj0zRkCc;
-        Mon, 13 Apr 2020 18:43:17 +0900 (JST)
-Received: from mf03_second.melco.co.jp (unknown [192.168.20.183])
-        by mr05.melco.co.jp (Postfix) with ESMTP id 4913Zs14R8zRkB1;
-        Mon, 13 Apr 2020 18:43:17 +0900 (JST)
-Received: from mf03.melco.co.jp (unknown [133.141.98.183])
-        by mf03_second.melco.co.jp (Postfix) with ESMTP id 4913Zs0qm8zRk8h;
-        Mon, 13 Apr 2020 18:43:17 +0900 (JST)
-Received: from JPN01-OS2-obe.outbound.protection.outlook.com (unknown [104.47.92.54])
-        by mf03.melco.co.jp (Postfix) with ESMTP id 4913Zs0Q9pzRjQG;
-        Mon, 13 Apr 2020 18:43:17 +0900 (JST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cHa6KfzfvM+RMjUrytfSDMJi0GyZsT0LDuqX9y/hyc4UqvnEFUNXiVeo3DqnLvYynledzDIdc/4fYnhtC7rOixiZLCEm7iXDsnNNsFx1lxn6mSkX6HKaWquq33C+LqVDLKQQp/bTWXFY7WYeEJ0Q7tdXMb5J1riYkkDcjdYVvIiqxg2HYrPO1bRb7GmexmR0WULUpoK+8iL0zEGYZlzTyq4CKM+A4BX+Ei4BosmK8kTVBtai1lq4EbdArE/rww1Fyn4qOn1kYq1Yvy8NGbz4xvWszIl9mb1an5xf1g8V26LnhsaLHzv4jmZo5ryR962Jr4KZCv3OL5dphTFAKUfpdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kgnmufpCnzJ/I6SF/doJLgd5ZXOX4DEJoXWiwSYORsc=;
- b=P398//Uwk5LTQWmgSxiNvXXzHtP2iNlvwLuz8vsHSTeJbuAvShhohpIjIPWLWdnmiY0mQ6VyGrGUe5N8dQpy1njel3eY8yx1Y0LYvwu28t41ZzcNjBL0UUNuwAaJfmr2irOvDcNcgRvXcBQamy6UmnAc8l1ACaHfiKBI0IRMj3pNFvz5qQKeG7OMZR8oYF0nohzc5RuAPZwtjzHYv95gTKpB31B5N96lDWknNbAz3eyYK7lh5fMelkUFIM2NpV9Gskip3qu2WoT8h9R55RtcEG4X4XYJBR3ktoByRtkjzEcLYy2PzsQivVz9NNq0AAHVFwkpshO/B5+62//JIt5KwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dc.mitsubishielectric.co.jp; dmarc=pass action=none
- header.from=dc.mitsubishielectric.co.jp; dkim=pass
- header.d=dc.mitsubishielectric.co.jp; arc=none
+        Mon, 13 Apr 2020 05:49:41 -0400
+X-Greylist: delayed 456 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 05:49:41 EDT
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44430C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:42:05 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id v9so1494514ljk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mitsubishielectricgroup.onmicrosoft.com;
- s=selector2-mitsubishielectricgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kgnmufpCnzJ/I6SF/doJLgd5ZXOX4DEJoXWiwSYORsc=;
- b=UTM0Fn2tO50bN11TdFMEZwDasTXHv7uEW3Y3ghgEsEohYslsSO+2oBrmzgiI7kX5GrvqDG0Z94qKB7QKqJElyvp8hZ6oR5kksC82+d/eOUifFhTrV2Bmdeajzfn+hjXAeBy1Cr2yPDY64HiSMNUJBrHDGcgHqviVAz73evTBNRs=
-Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com (52.133.161.22) by
- TY1PR01MB1852.jpnprd01.prod.outlook.com (52.133.164.12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2900.19; Mon, 13 Apr 2020 09:43:16 +0000
-Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com
- ([fe80::c5d6:a88e:62c6:4b96]) by TY1PR01MB1578.jpnprd01.prod.outlook.com
- ([fe80::c5d6:a88e:62c6:4b96%3]) with mapi id 15.20.2878.022; Mon, 13 Apr 2020
- 09:43:16 +0000
-From:   "Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp" 
-        <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
-CC:     "Mori.Takahiro@ab.MitsubishiElectric.co.jp" 
-        <Mori.Takahiro@ab.MitsubishiElectric.co.jp>,
-        "Motai.Hirotaka@aj.MitsubishiElectric.co.jp" 
-        <Motai.Hirotaka@aj.MitsubishiElectric.co.jp>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] exfat: replace 'time_ms' with 'time_10ms'
-Thread-Topic: [PATCH v2] exfat: replace 'time_ms' with 'time_10ms'
-Thread-Index: AQHWDXnb7kFzLdIDe0GisWVV38Nr1KhvFNoAgAenMeA=
-Date:   Mon, 13 Apr 2020 09:41:22 +0000
-Deferred-Delivery: Mon, 13 Apr 2020 09:43:00 +0000
-Message-ID: <TY1PR01MB157894A971A781BE900C5A7590DD0@TY1PR01MB1578.jpnprd01.prod.outlook.com>
-References: <20200408074610.35591-1-Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
- <20200408112152.GP21484@bombadil.infradead.org>
-In-Reply-To: <20200408112152.GP21484@bombadil.infradead.org>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-melpop: 1
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp; 
-x-originating-ip: [121.80.0.162]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1139211b-162b-4bc6-6c27-08d7df8f1784
-x-ms-traffictypediagnostic: TY1PR01MB1852:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY1PR01MB1852A3B0D56E133AD400A46D90DD0@TY1PR01MB1852.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 037291602B
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1578.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(346002)(136003)(366004)(396003)(376002)(4326008)(66446008)(5660300002)(86362001)(71200400001)(52536014)(64756008)(66556008)(66476007)(66946007)(109986005)(316002)(55016002)(54906003)(9686003)(76116006)(4744005)(6666004)(2906002)(478600001)(6506007)(7696005)(33656002)(8676002)(81156014)(26005)(8936002)(186003)(95630200002);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: dc.MitsubishiElectric.co.jp does
- not designate permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C8EM0RZ+Y5q2gWFmvNrbgFL+uTFi7QjxiER1VKNVG+AUUtdatzWCRchX2I+kh+u7+Z831Q1Tddm54hqP4BBHFDRjq73Z1z4Hmkl2T6ngEEjr5qGQMY/1XQ4jvPhNFsHeHKEDi8O2M53Fu40TQX0OHBIT/SELQcEp02Bvm7cMpPhFYG1l8UWEvqf4/E2ZCSlBstnHlRL0s0AEEWJWIGhVWpZjqqnJAJ2C7krtNwU0p96SQbi2qa0kvvIieGoA2o3Axt7AaKLXiE+jmu3A/Qqp+df6Z7t4gX+FOnBQ7LyNlKxvIl0RfG6EmOpFQEBVyiOY8iVmkOP/FdtiBM+Dh3r87tknikPUqiNnBKiMkM3QCSfcTrPBh4IjzyuDjKwb/p6heT/2ZSXYlSPGjKPJDwlnqUWeA4SbF8nePOirIXjIULDoxPPpp9OPfHyPwi5Lpok3A/UyArKLVwx1I8rZ7HNIpqbS9fi6T1c8Lb1SfotrmusnFy3YXZWD0X22cEu9Zi34
-x-ms-exchange-antispam-messagedata: UpX2Iv3ndNO+qmcHwVt9P+yv/FnHTyQDU3eo/igacvixlw20g0K6SYjLoRsOtWbXg+Jf6oaj6MeDmChzVb11sCRY4mGpFLpJmJKEX+O94mx4OXCc9eSuKoB9rZbSq5i0mLdXADKhJZKcyuzrlBMT7A==
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5EVtSWTpW2gBZAVG9ya8rnghhWuRsTFGgq4qSDI6w6g=;
+        b=SuIpP+w+r+qMR9OHa1Bp4wwQC6uIAMRhhzW1Rxk6cHq3gO6nqkA/hulf5DEzztSqHj
+         wJGe77kLD8NMfLQM2zJFSUm87BD9GW75pydTfyd8u5BIoeV6jtQXVV2/pHN2Ht9uU023
+         y/i/hZ7v/Hf4OlnIWGwLF9DBtOGONHZQ/Cg6tUC0fKaFhcdewe1idzlJfSm6ZGvqXG0Z
+         W2ZjDUDM39RS8HYJty0vc8/pmg/NR79rTnfgHGb1Eb2QCUFdazEtbTlht6CzuAdoHpyo
+         XRgBuPYVHrBfi/+Yira39hWBe8qpUKC3Vx2kOh3x+YSo0wLceegv8XcUif+My7kdIy5e
+         gWuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5EVtSWTpW2gBZAVG9ya8rnghhWuRsTFGgq4qSDI6w6g=;
+        b=Qj8vB+toSvTsIh95m8KIIED2q2uUY7mjmuGlj9OcqcbTne0sKEaVGjuyZK8byivU5d
+         s9gE9WNbXso92n+5B6oXEHjbNQ6W612ubMp1zE789ut0/fVA2UvIAhQsq3atYNe96Hzy
+         bw+DPR2wLyAg0ZF9isA1XIzx1oQledYgbwYgfFcgBkdIULzT7NEJoKM5UFxhqWC2+JvP
+         hSl6AMPFYMN8M/GOryA9QA2B5WyQpRULGLGYPjZkntJhJbliGFzLARSPyi6PC9UFPgnl
+         XOiw2W9v432JBcBEAM2iGdcoQmNgfQbK6SKOytpMVu4SL45wx6fjQaXmvaLbhPEQulRb
+         TzMg==
+X-Gm-Message-State: AGi0PubAks3HqZEMhIJGwIZdZCI1vKEXnOHli2Whbn+r7Jg87irBp+f9
+        7/xbDuX9+3M3oNFpljicdGhv3g==
+X-Google-Smtp-Source: APiQypIyIFcgHREegUey45rm8BQoRKlq4QMlIcs+yf0PgL2iZ92N/aJM6blxjp3mghWys2omt9d82w==
+X-Received: by 2002:a2e:140d:: with SMTP id u13mr1384446ljd.152.1586770923586;
+        Mon, 13 Apr 2020 02:42:03 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id a15sm6720609ljp.44.2020.04.13.02.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 02:42:02 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 7840210230F; Mon, 13 Apr 2020 12:42:04 +0300 (+03)
+Date:   Mon, 13 Apr 2020 12:42:04 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCHv2 5/8] khugepaged: Allow to callapse a page shared across
+ fork
+Message-ID: <20200413094204.a2gpsjhugy5dznjy@box>
+References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
+ <20200403112928.19742-6-kirill.shutemov@linux.intel.com>
+ <5a57635b-ed75-8f09-6f0c-5623f557fc55@nvidia.com>
+ <20200410155543.i66uz6pbynfvkhak@box>
+ <df772934-b5e5-8578-9b47-3f17bf9b8896@nvidia.com>
 MIME-Version: 1.0
-X-OriginatorOrg: dc.MitsubishiElectric.co.jp
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1139211b-162b-4bc6-6c27-08d7df8f1784
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2020 09:43:16.3486
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c5a75b62-4bff-4c96-a720-6621ce9978e5
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YW5qVCCdY1Kx6D7mMWVh+F9X4EHPUHL6x1ZQFp0/MsIuqd8hjZhW31xPTmphOovxtzuEejIbbaMjCnrkZKQZBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1PR01MB1852
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df772934-b5e5-8578-9b47-3f17bf9b8896@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Please leave at least 24 hours between sending new versions so that
-> you can collect all feedback relating to your change, and we don't see
-> discussion fragment between different threads.
+On Fri, Apr 10, 2020 at 01:59:22PM -0700, John Hubbard wrote:
+> I think I understood what you were saying. The problem is that was ignoring
+> a couple of points, especially in an RDMA situation: 1) the page can be
+> pinned by various drivers, on behalf of other processes, even if the original
+> process is being torn down, and 2) it doesn't really matter which process pins
+> a page--the end result is that it's pinned.
 
-Thanks for good advice!
+Well, no. It is critical that nobody gets new pins after this point on
+behalf of *this* process as we about change what is mapped on this virtual
+address range. We must avoid the situation that khugepaged screws
+legitimate GUP users and make what process see differs from what GUP see.
 
-> > +		ts->tv_sec +=3D (time_10ms * 10) / 1000;
-> > +		ts->tv_nsec =3D (time_10ms * 10) % 1000 * NSEC_PER_MSEC;
->=20
-> I find this more confusing than the original.
+Pins on behalf of other processes after the point are not relevant to us.
 
-The parentheses were intended to group conversions into milliseconds,=20
-but were not necessary from an "operator precedence" perspective.
+I will keep the comment as is for now. As you can see I'm struggling
+communicating my point. Any better wording is welcome.
 
-
->=20
-> 		ts->tv_sec +=3D time_10ms / 100;
-> 		ts->tv_nsec =3D (time_10ms % 100) * 10 * NSEC_PER_MSEC;
->=20
-> is easier to understand for me, not least because I don't need to worry
-> about the operator precedence between % and *.
-
-If I use '100' for the divisor of '10ms', I find it difficult to understand=
-=20
-the meaning of the operation.
-
-When using '100' for the divisor, I think cs (centi-sec) is easier to under=
-stand than 10ms.
-Which do you prefer, time_10ms or time_cs?
-
-
-BR
----
-Kohada Tetsuhiro <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
+-- 
+ Kirill A. Shutemov
