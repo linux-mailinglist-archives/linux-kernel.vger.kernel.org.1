@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3BD1A634B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104991A6332
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 08:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgDMG5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 02:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:55458 "EHLO
+        id S1728839AbgDMGvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 02:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:54382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728874AbgDMG5g (ORCPT
+        with ESMTP id S1727546AbgDMGvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 02:57:36 -0400
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com (mail-eopbgr40066.outbound.protection.outlook.com [40.107.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAF5C008651
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 23:57:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hgnJw+rSwlHlCGDYrOQTfnAbdEDNa2akLDZzzwwO8N97E9FcSzq07E77ehHEdrOXqq/slXu+s4D9dPz/LUZV2QxPaa1fn8W/Su4ba8ErRP430fHW4WfOFcbZZwgj26gMduQy0B02IEXuB8PT1e3VVpk1r/0owE/qe0usAd3JtHUDDkQ2IxDzCS4AuvriY5megdgLV5mVuGfJ7ab617aMsNAU6d5QL6Z+fML2j5ejISQrpyMJcNoMp5JlLbb6VmYfyus1dLxA0RzjVfWuosElaSPEwIdcOypecCUnRNg/cgeOa/EpuHkpCPTNfhISnh0hXfUMLEBj+WEM2rHdCLQcdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G5bNGB4Vj1ndOSm2R0ZXcZjkYN8QJ6Q5K/dcnYYyrK4=;
- b=ih89WqhdW+cHoO0VuDC4zgOV5A3qMIKOWWbupY4zUBk9JK1bceh7NXwe20utq/K+jDeddp6uHnFpn4cSiMIMc/+z2+pMpt8q34fN6XVIxw5dFt9ZGTnhMaP3lkqw7+wozmYZeYfXGoJfFE5zpu3AOfZztah79ocfa9bziobIw73/Jq7qA2KRmlfiLdHpPXrjqYcrmh4VlbEEGKu1hSjTZnpCw3oiHSwFQxeMkUaEjpzVmw0k1xda+J0E/eG9E08QRABRgLzTsCVOx09kN1C1ZWqCN7qy0DBYnIijvDiiaEzQfIQJcgFJ0oE87TlDAOYQb++58Zgde29gpMAZpKl42Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G5bNGB4Vj1ndOSm2R0ZXcZjkYN8QJ6Q5K/dcnYYyrK4=;
- b=qGb06RJymLFHu1u+ZThbRleLNA9P4J7wh7PqxhmN5mEjTD2rsaQaQY4KZmHi3EIiZOgSDWvUP/QZe611IU7nFfd/MCtD/1TN+EJOZKRPOYHNq7Xvq5qjSOoxRSj0XpRhlRJ9IgtFYv1+COm4fjEkgij5/sQAMM/3zmS5Jw/iK4I=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-Received: from AM0PR04MB4481.eurprd04.prod.outlook.com (2603:10a6:208:70::15)
- by AM0PR04MB4564.eurprd04.prod.outlook.com (2603:10a6:208:74::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Mon, 13 Apr
- 2020 06:57:34 +0000
-Received: from AM0PR04MB4481.eurprd04.prod.outlook.com
- ([fe80::ad44:6b0d:205d:f8fc]) by AM0PR04MB4481.eurprd04.prod.outlook.com
- ([fe80::ad44:6b0d:205d:f8fc%7]) with mapi id 15.20.2900.026; Mon, 13 Apr 2020
- 06:57:34 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, sboyd@kernel.org,
-        robh+dt@kernel.org
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        Anson.Huang@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, abel.vesa@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2 4/4] ARM: imx: cpuidle-imx7ulp: Stop mode disallowed when HSRUN
-Date:   Mon, 13 Apr 2020 14:49:08 +0800
-Message-Id: <1586760548-23046-5-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586760548-23046-1-git-send-email-peng.fan@nxp.com>
-References: <1586760548-23046-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0143.apcprd06.prod.outlook.com
- (2603:1096:1:1f::21) To AM0PR04MB4481.eurprd04.prod.outlook.com
- (2603:10a6:208:70::15)
+        Mon, 13 Apr 2020 02:51:00 -0400
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07086C008651;
+        Sun, 12 Apr 2020 23:51:00 -0700 (PDT)
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71F3120774;
+        Mon, 13 Apr 2020 06:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586760659;
+        bh=itKlPWSDIUfhI/V0PdIrWdvWF2mjKklAzi7kXAkEZiI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lW3fo4YIURoALAvNoGs50jvKKZweTovFobX14fD0uBwlVuO4RyTv0pyyCDG7MpSE5
+         dnwQO0jwz1kaTBAwdAL3oEbM/3LoOGVflmF3Otd1Du4AeCZasNdsRzrTFIsifP197H
+         FXYfFraBDh2np0cyUdjy2ZyLMzx3XOI1ZexOvtYk=
+Received: by mail-wm1-f48.google.com with SMTP id y24so8995533wma.4;
+        Sun, 12 Apr 2020 23:50:59 -0700 (PDT)
+X-Gm-Message-State: AGi0Puatkcsnh6f8zXG8czwHmN17w2u+HBB18tIfEbEotj92iww2p/Mf
+        YmDQqiwtJn6VEyn+qLMrtkepIuqC1PYAFJnTwrI=
+X-Google-Smtp-Source: APiQypKIXDrIWUMhun56k6+tJYD42DUVxbckoIRpXheJTy2siWfYFqEyrdTvndxnQqeH0hqwHeJDnfIGKI9HD42tuII=
+X-Received: by 2002:a05:600c:2214:: with SMTP id z20mr18682592wml.189.1586760657834;
+ Sun, 12 Apr 2020 23:50:57 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR06CA0143.apcprd06.prod.outlook.com (2603:1096:1:1f::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2900.15 via Frontend Transport; Mon, 13 Apr 2020 06:57:30 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 44ffc4fa-0533-4cc0-511d-08d7df77f154
-X-MS-TrafficTypeDiagnostic: AM0PR04MB4564:|AM0PR04MB4564:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB4564FBE802C76011877F154988DD0@AM0PR04MB4564.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:64;
-X-Forefront-PRVS: 037291602B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4481.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(4326008)(86362001)(8936002)(478600001)(9686003)(316002)(16526019)(26005)(6512007)(6506007)(6666004)(52116002)(186003)(8676002)(81156014)(6486002)(69590400007)(66476007)(66556008)(2616005)(956004)(36756003)(5660300002)(66946007)(2906002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M8bQ6w+3ovmmvW2CpEYxoyC3f38saQDP+Ftaqn81zuuCFmROCAY27ZuR6PUloSzBaaMvj5wOf/WtTjVe9fRzhxpPpAfONxHIUFnOu0hTjp68D00cxmMYkXJ/N+zHKAXVAtAsymjH11FCNb3Qjxk2iL2MgshtrDwsD4nLKlN7+H/MP8W4Wd2njRobiSiW1S/6SuRY0iBN3M+UZnXiK+G84FryRGYgiRsTe18RYuunxtM75gpuNAQ1Cw0vYEaGJ8MVB66R4N7/BQDTSETeCwuBSPmch9jJIxX/jDo31MHN9jI1tYANSuLiH6gyeJrRu6/x9LH1jHfBa6TsRCCA+NiM+PAfRxDe1im/jO8033oxjh/eDfA6HVUv7WfxbWPZTUlV9tq2/nW6W1ZOPdwlSm3/5dxuSpVsmJCykd1Wc9d/3rmQsobH6LNQVnjJUgGfraypRAq1dCC+KZPeAzismQxZ3hrlMbe+MwKUNep+T9mHMbtCDGZsZFldeVkVeTIysqp+
-X-MS-Exchange-AntiSpam-MessageData: ocnVeYye+I3gXEAzkGIA3zEbNMBnSvgWz68vt/2ELxD5GUU8rixLJK4x73E3KwZMsdrty5NrOHV+7MAYpWe+xSl7zVjKY8vv2JPsTrVNOJW7rOrUu0AeicyottOHMmhij5omOVN7U/2kdsEs3rxBuw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44ffc4fa-0533-4cc0-511d-08d7df77f154
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2020 06:57:34.1670
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WI56JPmiNZuHbR7+kCFMSkqpW6X4eQtPhQ9qqCHbfAr80dbmSPhOGgtQj8huIHLeeAqg6+h0CRvwU34DIwZhnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4564
+References: <20200412034931.9558-1-f.fainelli@gmail.com> <20200412112756.687ff227@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ae06b4c6-6818-c053-6f33-55c96f88a4ae@gmail.com> <BN8PR12MB3266A47DE93CEAEBDB4F288AD3DD0@BN8PR12MB3266.namprd12.prod.outlook.com>
+In-Reply-To: <BN8PR12MB3266A47DE93CEAEBDB4F288AD3DD0@BN8PR12MB3266.namprd12.prod.outlook.com>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Mon, 13 Apr 2020 14:50:47 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65wjtphcN4DEM4mfv+=U5KUmsTujVoPb9L0idwy=ysDZw@mail.gmail.com>
+Message-ID: <CAGb2v65wjtphcN4DEM4mfv+=U5KUmsTujVoPb9L0idwy=ysDZw@mail.gmail.com>
+Subject: Re: [PATCH net] net: stmmac: Guard against txfifosz=0
+To:     Jose Abreu <Jose.Abreu@synopsys.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Mon, Apr 13, 2020 at 2:42 PM Jose Abreu <Jose.Abreu@synopsys.com> wrote:
+>
+> From: Florian Fainelli <f.fainelli@gmail.com>
+> Date: Apr/12/2020, 19:31:55 (UTC+00:00)
+>
+> >
+> >
+> > On 4/12/2020 11:27 AM, Jakub Kicinski wrote:
+> > > On Sat, 11 Apr 2020 20:49:31 -0700 Florian Fainelli wrote:
+> > >> After commit bfcb813203e619a8960a819bf533ad2a108d8105 ("net: dsa:
+> > >> configure the MTU for switch ports") my Lamobo R1 platform which uses
+> > >> an allwinner,sun7i-a20-gmac compatible Ethernet MAC started to fail
+> > >> by rejecting a MTU of 1536. The reason for that is that the DMA
+> > >> capabilities are not readable on this version of the IP, and there is
+> > >> also no 'tx-fifo-depth' property being provided in Device Tree. The
+> > >> property is documented as optional, and is not provided.
+> > >>
+> > >> The minimum MTU that the network device accepts is ETH_ZLEN - ETH_HLEN,
+> > >> so rejecting the new MTU based on the txfifosz value unchecked seems a
+> > >> bit too heavy handed here.
+> > >
+> > > OTOH is it safe to assume MTUs up to 16k are valid if device tree lacks
+> > > the optional property? Is this change purely to preserve backward
+> > > (bug-ward?) compatibility, even if it's not entirely correct to allow
+> > > high MTU values? (I think that'd be worth stating in the commit message
+> > > more explicitly.) Is there no "reasonable default" we could select for
+> > > txfifosz if property is missing?
+> >
+> > Those are good questions, and I do not know how to answer them as I am
+> > not familiar with the stmmac HW design, but I am hoping Jose can respond
+> > on this patch. It does sound like providing a default TX FIFO size would
+> > solve that MTU problem, too, but without a 'tx-fifo-depth' property
+> > specified in Device Tree, and with the "dma_cap" being empty for this
+> > chip, I have no idea what to set it to.
+>
+> Unfortunately, allwinner uses GMAC which does not have any mean to detect
+> TX FIFO Size. Default value in HW is 2k but this can not be the case in
+> these platforms if HW team decided to change it.
 
-When cpu runs in HSRUN mode, cpuidle is not allowed to run into
-Stop mode. So add imx7ulp_get_mode to get thr cpu run mode,
-and use WAIT mode instead, when cpu in HSRUN mode.
+I looked at all the publicly available datasheets and Allwinner uses
+4K TX FIFO and 16K RX FIFO in all SoCs. Not sure if this would help.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
+ChenYu
 
-V2:
- None
-
- arch/arm/mach-imx/common.h          |  1 +
- arch/arm/mach-imx/cpuidle-imx7ulp.c | 14 +++++++++++---
- arch/arm/mach-imx/pm-imx7ulp.c      | 10 ++++++++++
- 3 files changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/mach-imx/common.h b/arch/arm/mach-imx/common.h
-index 5aa5796cff0e..db542da4fe67 100644
---- a/arch/arm/mach-imx/common.h
-+++ b/arch/arm/mach-imx/common.h
-@@ -104,6 +104,7 @@ void imx6_set_int_mem_clk_lpm(bool enable);
- void imx6sl_set_wait_clk(bool enter);
- int imx_mmdc_get_ddr_type(void);
- int imx7ulp_set_lpm(enum ulp_cpu_pwr_mode mode);
-+u32 imx7ulp_get_mode(void);
- 
- void imx_cpu_die(unsigned int cpu);
- int imx_cpu_kill(unsigned int cpu);
-diff --git a/arch/arm/mach-imx/cpuidle-imx7ulp.c b/arch/arm/mach-imx/cpuidle-imx7ulp.c
-index ca86c967d19e..e7009d10b331 100644
---- a/arch/arm/mach-imx/cpuidle-imx7ulp.c
-+++ b/arch/arm/mach-imx/cpuidle-imx7ulp.c
-@@ -15,10 +15,18 @@
- static int imx7ulp_enter_wait(struct cpuidle_device *dev,
- 			    struct cpuidle_driver *drv, int index)
- {
--	if (index == 1)
-+	u32 mode;
-+
-+	if (index == 1) {
- 		imx7ulp_set_lpm(ULP_PM_WAIT);
--	else
--		imx7ulp_set_lpm(ULP_PM_STOP);
-+	} else {
-+		mode = imx7ulp_get_mode();
-+
-+		if (mode == 3)
-+			imx7ulp_set_lpm(ULP_PM_WAIT);
-+		else
-+			imx7ulp_set_lpm(ULP_PM_STOP);
-+	}
- 
- 	cpu_do_idle();
- 
-diff --git a/arch/arm/mach-imx/pm-imx7ulp.c b/arch/arm/mach-imx/pm-imx7ulp.c
-index 393faf1e8382..1410ccfc71bd 100644
---- a/arch/arm/mach-imx/pm-imx7ulp.c
-+++ b/arch/arm/mach-imx/pm-imx7ulp.c
-@@ -63,6 +63,16 @@ int imx7ulp_set_lpm(enum ulp_cpu_pwr_mode mode)
- 	return 0;
- }
- 
-+u32 imx7ulp_get_mode(void)
-+{
-+	u32 mode;
-+
-+	mode = readl_relaxed(smc1_base + SMC_PMCTRL) & BM_PMCTRL_RUNM;
-+	mode >>= BP_PMCTRL_RUNM;
-+
-+	return mode;
-+}
-+
- void __init imx7ulp_pm_init(void)
- {
- 	struct device_node *np;
--- 
-2.16.4
-
+> Anyway, your patch looks sane to me. But if you start seeing TX Queue
+> Timeout for higher MTU values then you'll need to add tx-fifo-depth
+> property.
+>
+> ---
+> Thanks,
+> Jose Miguel Abreu
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
