@@ -2,194 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BA41A6E76
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A1B1A6E7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389164AbgDMVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 17:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
+        id S2389180AbgDMVgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 17:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389146AbgDMVeX (ORCPT
+        by vger.kernel.org with ESMTP id S2389040AbgDMVgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 17:34:23 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74491C0A3BDC;
-        Mon, 13 Apr 2020 14:34:23 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id d27so2643150wra.1;
-        Mon, 13 Apr 2020 14:34:23 -0700 (PDT)
+        Mon, 13 Apr 2020 17:36:51 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BF2C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:36:51 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id e16so4103913pjp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:36:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WDLpX6un52/AMwecGbJF0+8vb65HmQ8qFANqOY0XK7Y=;
-        b=IuYqFbiHvSBMhlKLU88FQD6ph6l8u5128kLqE8SenvYihQJEPGmJINrkyvIh6vpW2u
-         /atBvA75QL7UmEbyidSfCXE9VeE6SdB9IhYX6B3aHhwgMX0tmJ1dGgq1iHOBxSuH5Ezk
-         VCWc51OJuo2eWBiWuYxF2kVCeRK0CX7KJ1dT2S+MSOGnulH5DMjtn5pZ88A/Y0yof0T2
-         UcJ+AiMZeX97qHo6+sK6kWsJjsp0iuoGeKviv5k/BbU7JcMcpQXEn6SjrQEbaon0dw6S
-         y7IERsJ3FCFJptrbidN9ACEH4G0Eg5BXm3yzzlYa9opYGLDAD1VPzulRpYMvxfhhzH+p
-         vOlg==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=Bl9Mhh+Xx5XvDq6coWRx01rYWy0QhTE2WmyFT1dTfWM=;
+        b=QAClugwrpKbhTcAyDaQ2FnuTc1aNxmUvP4einQzMQ9MXuX+IuKkvX/9CmEiok1+Owo
+         adw0FBTQYVkTI+cS4K1CzUi+sItnZhnkPUH8RtLhSJu0bEdD7Gm+dlzxNckt5pcnQQIS
+         Vl32eHXaSDU0A+Sjj4tpS28C+mow7vf05ifyQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WDLpX6un52/AMwecGbJF0+8vb65HmQ8qFANqOY0XK7Y=;
-        b=bgX5qGR3TMooU5ruQwb0em7W4TjwaE0SNh3KtvyC7CAbNFVBGJSKiT2FYh4zISOt2n
-         bRTmfUzkw97XBVazHZkGdLd/xE5RM1z2kBHY8CAmND1s2nPvMzuiSj17sg08An0xnAg4
-         0EEpxsIxkKdhKZ4nKuVYo3jSNYJQwm7xUGNPw3rCsVoszvpYT//bOENtREJNJSFT0DI4
-         85/BBjjdg7ocVMC5DWlOqSaJdLA/yrCmX2j2dsZTtHUhCIl2K3wCCMCuiQc0DSeQRMd3
-         TOKcev90P5lUVojB+IBYZ7Q1FWGpPmOQZDNE6D9V/2rZ7U3j0Is5LO/eBtDrTKqpJOGb
-         AyUg==
-X-Gm-Message-State: AGi0PuZQ0v+xGeXG3A8blRagFRQb27aAab40lBzoKHV9QTkd9xRLL6AI
-        h5W+ShgjlNSBcvqRl8WapPdpP7li6mWDmQ==
-X-Google-Smtp-Source: APiQypIaudaXPJ6rENC31BASdvEjjHEOZ24liPPj6hbZ7Im0hP2KXUJDynYo1n+j8lgnYgsqwzYqNQ==
-X-Received: by 2002:a5d:5230:: with SMTP id i16mr14472562wra.71.1586813661849;
-        Mon, 13 Apr 2020 14:34:21 -0700 (PDT)
-Received: from [192.168.1.39] (116.red-83-42-57.dynamicip.rima-tde.net. [83.42.57.116])
-        by smtp.gmail.com with ESMTPSA id b11sm16503963wrq.26.2020.04.13.14.34.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 14:34:21 -0700 (PDT)
-Subject: Re: [PATCH] kvm_host: unify VM_STAT and VCPU_STAT definitions in a
- single place
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org
-References: <20200413140332.22896-1-eesposit@redhat.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
-Autocrypt: addr=f4bug@amsat.org; keydata=
- mQINBDU8rLoBEADb5b5dyglKgWF9uDbIjFXU4gDtcwiga9wJ/wX6xdhBqU8tlQ4BroH7AeRl
- u4zXP0QnBDAG7EetxlQzcfYbPmxFISWjckDBFvDbFsojrZmwF2/LkFSzlvKiN5KLghzzJhLO
- HhjGlF8deEZz/d/G8qzO9mIw8GIBS8uuWh6SIcG/qq7+y+2+aifaj92EdwU79apZepT/U3vN
- YrfcAuo1Ycy7/u0hJ7rlaFUn2Fu5KIgV2O++hHYtCCQfdPBg/+ujTL+U+sCDawCyq+9M5+LJ
- ojCzP9rViLZDd/gS6jX8T48hhidtbtsFRj/e9QpdZgDZfowRMVsRx+TB9yzjFdMO0YaYybXp
- dg/wCUepX5xmDBrle6cZ8VEe00+UQCAU1TY5Hs7QFfBbjgR3k9pgJzVXNUKcJ9DYQP0OBH9P
- ZbZvM0Ut2Bk6bLBO5iCVDOco0alrPkX7iJul2QWBy3Iy9j02GnA5jZ1Xtjr9kpCqQT+sRXso
- Vpm5TPGWaWljIeLWy/qL8drX1eyJzwTB3A36Ck4r3YmjMjfmvltSZB1uAdo1elHTlFEULpU/
- HiwvvqXQ9koB15U154VCuguvx/Qnboz8GFb9Uw8VyawzVxYVNME7xw7CQF8FYxzj6eI7rBf2
- Dj/II6wxWPgDEy3oUzuNOxTB7sT3b/Ym76yOJzWX5BylXQIJ5wARAQABtDFQaGlsaXBwZSBN
- YXRoaWV1LURhdWTDqSAoRjRCVUcpIDxmNGJ1Z0BhbXNhdC5vcmc+iQJVBBMBCAA/AhsPBgsJ
- CAcDAgYVCAIJCgsEFgIDAQIeAQIXgBYhBPqr514SkXIh3P1rsuPjLCzercDeBQJd660aBQks
- klzgAAoJEOPjLCzercDe2iMP+gMG2dUf+qHz2uG8nTBGMjgK0aEJrKVPodFA+iedQ5Kp3BMo
- jrTg3/DG1HMYdcvQu/NFLYwamUfUasyor1k+3dB23hY09O4xOsYJBWdilkBGsJTKErUmkUO2
- 3J/kawosvYtJJSHUpw3N6mwz/iWnjkT8BPp7fFXSujV63aZWZINueTbK7Y8skFHI0zpype9s
- loU8xc4JBrieGccy3n4E/kogGrTG5jcMTNHZ106DsQkhFnjhWETp6g9xOKrzZQbETeRBOe4P
- sRsY9YSG2Sj+ZqmZePvO8LyzGRjYU7T6Z80S1xV0lH6KTMvq7vvz5rd92f3pL4YrXq+e//HZ
- JsiLen8LH/FRhTsWRgBtNYkOsd5F9NvfJtSM0qbX32cSXMAStDVnS4U+H2vCVCWnfNug2TdY
- 7v4NtdpaCi4CBBa3ZtqYVOU05IoLnlx0miKTBMqmI05kpgX98pi2QUPJBYi/+yNu3fjjcuS9
- K5WmpNFTNi6yiBbNjJA5E2qUKbIT/RwQFQvhrxBUcRCuK4x/5uOZrysjFvhtR8YGm08h+8vS
- n0JCnJD5aBhiVdkohEFAz7e5YNrAg6kOA5IVRHB44lTBOatLqz7ntwdGD0rteKuHaUuXpTYy
- CRqCVAKqFJtxhvJvaX0vLS1Z2dwtDwhjfIdgPiKEGOgCNGH7R8l+aaM4OPOd
-Message-ID: <03a481a8-bcf2-8755-d113-71ef393508bf@amsat.org>
-Date:   Mon, 13 Apr 2020 23:34:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=Bl9Mhh+Xx5XvDq6coWRx01rYWy0QhTE2WmyFT1dTfWM=;
+        b=AOLIwrZ8ne9I5OtincE2ebHy3dVHdDUtY1RSDHD2f4LYegYTgy2KfPrEOYpXdU+QnW
+         vH0U6vBFvUOE49JASwbOYCFYYzOR0AFuG347IKXXoWp4FCUEu7YRqXP7uXe9Yn2cPda6
+         REUuY4LVbdJx8MO5DPgZ395INKqkLKyrg7zyQ89KhzPyl+UnOYqWo95hgxvmexWDDPO6
+         B8XnFA85UJJPmieeO56V8LOTAhy5hnT9A0LMMJptO4F31u1R9rw3xKs1jG9CJPjZqXZ/
+         cmwCY2DDDr04hCIJg131EcYbtCOiDzmOGYxSk1Rudz6w4eEc7Yaa/bUJiAzlUL3fhGVe
+         GtEg==
+X-Gm-Message-State: AGi0PuZxnsYZRmGD6q8QOadfXj/BLS490IAj3LHsiUCJex2ArVW0uQn7
+        tVZNXqvYpEgX7XXf/nrW4jTHyw==
+X-Google-Smtp-Source: APiQypJpAdW6OQk3JJdMFIGbSzOhbxmSaQLBdHOwqDOMyP5ORWijk1z7sJKbfdDLr14mkcgdaBDCjw==
+X-Received: by 2002:a17:902:ff05:: with SMTP id f5mr842027plj.320.1586813810958;
+        Mon, 13 Apr 2020 14:36:50 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id e22sm8629230pgh.14.2020.04.13.14.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 14:36:50 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20200413140332.22896-1-eesposit@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200413100321.v4.3.Ie88ce5ccfc0c6055903ccca5286ae28ed3b85ed3@changeid>
+References: <20200413170415.32463-1-dianders@chromium.org> <20200413100321.v4.3.Ie88ce5ccfc0c6055903ccca5286ae28ed3b85ed3@changeid>
+Subject: Re: [PATCH v4 03/10] drivers: qcom: rpmh-rsc: Fold tcs_ctrl_write() into its single caller
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        evgreen@chromium.org, Lina Iyer <ilina@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>
+Date:   Mon, 13 Apr 2020 14:36:49 -0700
+Message-ID: <158681380955.84447.4248338073528400701@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Emanuele,
-
-On 4/13/20 4:03 PM, Emanuele Giuseppe Esposito wrote:
-> The macros VM_STAT and VCPU_STAT are redundantly implemented in multiple
-> files, each used by a different architecure to initialize the debugfs
-> entries for statistics. Since they all have the same purpose, they can be
-> unified in a single common definition in include/linux/kvm_host.h
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Quoting Douglas Anderson (2020-04-13 10:04:08)
+> I was trying to write documentation for the functions in rpmh-rsc and
+> I got to tcs_ctrl_write().  The documentation for the function would
+> have been: "This is the core of rpmh_rsc_write_ctrl_data(); all the
+> caller does is error-check and then call this".
+>=20
+> Having the error checks in a separate function doesn't help for
+> anything since:
+> - There are no other callers that need to bypass the error checks.
+> - It's less documenting.  When I read tcs_ctrl_write() I kept
+>   wondering if I need to handle cases other than ACTIVE_ONLY or cases
+>   with more commands than could fit in a TCS.  This is obvious when
+>   the error checks and code are together.
+> - The function just isn't that long, so there's no problem
+>   understanding the combined function.
+>=20
+> Things were even more confusing because the two functions names didn't
+> make obvious (at least to me) their relationship.
+>=20
+> Simplify by folding one function into the other.
+>=20
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+> Tested-by: Maulik Shah <mkshah@codeaurora.org>
 > ---
->  arch/arm64/kvm/guest.c    | 23 +++++++--------
->  arch/mips/kvm/mips.c      | 61 +++++++++++++++++++--------------------
->  arch/powerpc/kvm/book3s.c |  3 --
->  arch/powerpc/kvm/booke.c  |  3 --
->  arch/s390/kvm/kvm-s390.c  |  3 --
->  arch/x86/kvm/x86.c        |  3 --
->  include/linux/kvm_host.h  |  3 ++
->  7 files changed, 43 insertions(+), 56 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
-> index 23ebe51410f0..3e3aee8b37c0 100644
-> --- a/arch/arm64/kvm/guest.c
-> +++ b/arch/arm64/kvm/guest.c
-> @@ -29,20 +29,17 @@
->  
->  #include "trace.h"
->  
-> -#define VM_STAT(x) { #x, offsetof(struct kvm, stat.x), KVM_STAT_VM }
-> -#define VCPU_STAT(x) { #x, offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU }
-> -
->  struct kvm_stats_debugfs_item debugfs_entries[] = {
-> -	VCPU_STAT(halt_successful_poll),
-> -	VCPU_STAT(halt_attempted_poll),
-> -	VCPU_STAT(halt_poll_invalid),
-> -	VCPU_STAT(halt_wakeup),
-> -	VCPU_STAT(hvc_exit_stat),
-> -	VCPU_STAT(wfe_exit_stat),
-> -	VCPU_STAT(wfi_exit_stat),
-> -	VCPU_STAT(mmio_exit_user),
-> -	VCPU_STAT(mmio_exit_kernel),
-> -	VCPU_STAT(exits),
-> +	{ "halt_successful_poll", VCPU_STAT(halt_successful_poll) },
-> +	{ "halt_attempted_poll", VCPU_STAT(halt_attempted_poll) },
-> +	{ "halt_poll_invalid", VCPU_STAT(halt_poll_invalid) },
-> +	{ "halt_wakeup", VCPU_STAT(halt_wakeup) },
-> +	{ "hvc_exit_stat", VCPU_STAT(hvc_exit_stat) },
-> +	{ "wfe_exit_stat", VCPU_STAT(wfe_exit_stat) },
-> +	{ "wfi_exit_stat", VCPU_STAT(wfi_exit_stat) },
-> +	{ "mmio_exit_user", VCPU_STAT(mmio_exit_user) },
-> +	{ "mmio_exit_kernel", VCPU_STAT(mmio_exit_kernel) },
-> +	{ "exits", VCPU_STAT(exits) },
->  	{ NULL }
->  };
->  
-[...]
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 6d58beb65454..e02d38c7fff1 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1130,6 +1130,9 @@ struct kvm_stats_debugfs_item {
->  #define KVM_DBGFS_GET_MODE(dbgfs_item)                                         \
->  	((dbgfs_item)->mode ? (dbgfs_item)->mode : 0644)
->  
-> +#define VM_STAT(x, ...) offsetof(struct kvm, stat.x), KVM_STAT_VM, ## __VA_ARGS__
-> +#define VCPU_STAT(x, ...) offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU, ## __VA_ARGS__
 
-I find this macro expanding into multiple fields odd... Maybe a matter
-of taste. Sugggestion, have the macro define the full structure, as in
-the arm64 arch:
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-#define VM_STAT(n, x, ...) { n, offsetof(struct kvm, stat.x),
-KVM_STAT_VM, ## __VA_ARGS__ }
-
-Ditto for VCPU_STAT().
-
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> index 439a0eadabf1..d9177324c6a2 100644
+> --- a/drivers/soc/qcom/rpmh-rsc.c
+> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> @@ -628,7 +612,18 @@ int rpmh_rsc_write_ctrl_data(struct rsc_drv *drv, co=
+nst struct tcs_request *msg)
+>         if (msg->state =3D=3D RPMH_ACTIVE_ONLY_STATE)
+>                 return -EINVAL;
+> =20
+> -       return tcs_ctrl_write(drv, msg);
+> +       tcs =3D get_tcs_for_msg(drv, msg);
+> +       if (IS_ERR(tcs))
+> +               return PTR_ERR(tcs);
 > +
->  extern struct kvm_stats_debugfs_item debugfs_entries[];
->  extern struct dentry *kvm_debugfs_dir;
->  
-> 
+> +       spin_lock_irqsave(&tcs->lock, flags);
+> +       /* find the TCS id and the command in the TCS to write to */
+> +       ret =3D find_slots(tcs, msg, &tcs_id, &cmd_id);
+
+It may be better to inline find_slots() too. It's only used here and
+that tcs_id =3D 0, cmd_id =3D 0 line at the top of this function is
+annoying.
