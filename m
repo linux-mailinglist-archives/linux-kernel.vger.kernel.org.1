@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196DA1A66A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74351A66B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 15:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729725AbgDMNBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 09:01:00 -0400
-Received: from mga09.intel.com ([134.134.136.24]:34510 "EHLO mga09.intel.com"
+        id S1729748AbgDMNHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 09:07:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:41340 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729674AbgDMNA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 09:00:58 -0400
-IronPort-SDR: xUTCq/jWK495gEb4VBijUyTY8aPj2iJOJuQUdoN/HZ+34tKPaOuIVQ2HGt6FCOQshlqCZHKjhg
- cla48knxIq9g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 06:00:56 -0700
-IronPort-SDR: VIcIbSHG1U1ojTmjU3Gns1TngHKd+Zk0VvGgpSvkGn3lxcOsCA0rU12GeAo6KBY0vFeGJwlHhI
- opTS5Yg1g8/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="276896082"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Apr 2020 06:00:55 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Anchal Agarwal <anchalag@amazon.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm: swap: use fixed-size readahead during swapoff
-References: <20200413111810.GA801367@xps-13>
-Date:   Mon, 13 Apr 2020 21:00:34 +0800
-In-Reply-To: <20200413111810.GA801367@xps-13> (Andrea Righi's message of "Mon,
-        13 Apr 2020 13:18:10 +0200")
-Message-ID: <87a73f7d71.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1727954AbgDMNHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 09:07:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 499131FB;
+        Mon, 13 Apr 2020 06:07:39 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 090573F68F;
+        Mon, 13 Apr 2020 06:07:37 -0700 (PDT)
+Subject: Re: [PATCH 1/2] drm/panfrost: missing remove opp table in case of
+ failure
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200411200632.4045-1-peron.clem@gmail.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <694c3bd0-1588-ed28-d282-8e83fc6a06f5@arm.com>
+Date:   Mon, 13 Apr 2020 14:07:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20200411200632.4045-1-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrea Righi <andrea.righi@canonical.com> writes:
+On 11/04/2020 21:06, Clément Péron wrote:
+> In case of failure we need to remove OPP table.
+> 
+> Use Linux classic error handling with goto usage.
+> 
+> Signed-off-by: Clément Péron <peron.clem@gmail.com>
 
-[snip]
+Reviewed-by: Steven Price <steven.price@arm.com>
 
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index ebed37bbf7a3..c71abc8df304 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -20,6 +20,7 @@
->  #include <linux/migrate.h>
->  #include <linux/vmalloc.h>
->  #include <linux/swap_slots.h>
-> +#include <linux/oom.h>
->  #include <linux/huge_mm.h>
->  
->  #include <asm/pgtable.h>
-> @@ -507,6 +508,14 @@ static unsigned long swapin_nr_pages(unsigned long offset)
->  	max_pages = 1 << READ_ONCE(page_cluster);
->  	if (max_pages <= 1)
->  		return 1;
-> +	/*
-> +	 * If current task is using too much memory or swapoff is running
-> +	 * simply use the max readahead size. Since we likely want to load a
-> +	 * lot of pages back into memory, using a fixed-size max readhaead can
-> +	 * give better performance in this case.
-> +	 */
-> +	if (oom_task_origin(current))
-> +		return max_pages;
->  
->  	hits = atomic_xchg(&swapin_readahead_hits, 0);
->  	pages = __swapin_nr_pages(prev_offset, offset, hits, max_pages,
+> ---
+>   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 16 ++++++++++++----
+>   1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> index 413987038fbf..62541f4edd81 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+> @@ -90,8 +90,11 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+>   	cur_freq = clk_get_rate(pfdev->clock);
+>   
+>   	opp = devfreq_recommended_opp(dev, &cur_freq, 0);
+> -	if (IS_ERR(opp))
+> -		return PTR_ERR(opp);
+> +	if (IS_ERR(opp)) {
+> +		DRM_DEV_ERROR(dev, "Failed to set recommended OPP\n");
+> +		ret = PTR_ERR(opp);
+> +		goto err_opp;
+> +	}
+>   
+>   	panfrost_devfreq_profile.initial_freq = cur_freq;
+>   	dev_pm_opp_put(opp);
+> @@ -100,8 +103,8 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+>   					  DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
+>   	if (IS_ERR(devfreq)) {
+>   		DRM_DEV_ERROR(dev, "Couldn't initialize GPU devfreq\n");
+> -		dev_pm_opp_of_remove_table(dev);
+> -		return PTR_ERR(devfreq);
+> +		ret = PTR_ERR(devfreq);
+> +		goto err_opp;
+>   	}
+>   	pfdev->devfreq.devfreq = devfreq;
+>   
+> @@ -112,6 +115,11 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+>   		pfdev->devfreq.cooling = cooling;
+>   
+>   	return 0;
+> +
+> +err_opp:
+> +	dev_pm_opp_of_remove_table(dev);
+> +
+> +	return ret;
+>   }
+>   
+>   void panfrost_devfreq_fini(struct panfrost_device *pfdev)
+> 
 
-Thinks this again.  If my understanding were correct, the accessing
-pattern during swapoff is sequential, why swap readahead doesn't work?
-If so, can you root cause that firstly?
-
-Best Regards,
-Huang, Ying
