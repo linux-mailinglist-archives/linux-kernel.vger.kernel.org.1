@@ -2,418 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DD11A6AA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9522C1A6AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732195AbgDMQzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:55:24 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:59634 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732186AbgDMQzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:55:22 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <heiko@sntech.de>)
-        id 1jO2Mb-0002yy-E2; Mon, 13 Apr 2020 18:55:13 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, xxm@rock-chips.com,
-        kever.yang@rock-chips.com
-Subject: Re: [PATCH v3] iio: adc: rockchip_saradc: Add support iio buffers
-Date:   Mon, 13 Apr 2020 18:55:12 +0200
-Message-ID: <4304017.Osc3njyXrW@diego>
-In-Reply-To: <20200413174434.55b2941a@archlinux>
-References: <20200412224251.2919182-1-heiko@sntech.de> <20200413174434.55b2941a@archlinux>
+        id S1732236AbgDMQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732216AbgDMQ5e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 12:57:34 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4075EC0A3BDC;
+        Mon, 13 Apr 2020 09:57:34 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s8so10842068wrt.7;
+        Mon, 13 Apr 2020 09:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=Xk2BsSDKDhxiXf1W9gwjsfp/DxSiKFq+bcaV0hQZsPk=;
+        b=Ek6w3+2LwAgiEFDyJrzJ5+hBEeixOiDyTWppwlRHynKI7HKyY00VBh54AtmkM/tBT/
+         HXgnDqaRJLaacub59m4ZAc8rIviUGL+EQAXy92qTwWo5CZ1vfpUeNZZX3/7Ide5puFIT
+         Kg+AeTnkWlOwIFcQUYsUNJBC97RbveeDwLjyX18UgS+LAxOdjASYYAPjizDBWTIH22xy
+         7a07z57tP6vAEbV8ngk8wuWHoAk6boUQQljYzOlGG/nbehfLgm0l0MTftg2tp45F1ECa
+         vZCOtBbB/JbCFOrVcerRRIvoWd1SwAPF3IXGFk4hWVoh/d8+wEravjuDH/1xGD9lOvU7
+         Z80g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=Xk2BsSDKDhxiXf1W9gwjsfp/DxSiKFq+bcaV0hQZsPk=;
+        b=iAiGzkdhmhhel9FmT4nLQxL+oTsWZfpcICNezJkwc0EpiQS7KRjrwhsMOWeu7dkMmu
+         wnDO6BBeD2dtqCuaSDlfgx16cd2A1/UCYQvRVG/whYw6XwZWurEeKXN1J7wQoImDe9KA
+         mN72Wk6DFvuKDb/SFmE2CR9RjXkwd5dLidKmuT7zZLrcYpHW7Ch2z0gDUdlCVESLpS7H
+         Yvv/kVEX805MtcD6i9Kt6TEJlkQ2J3ULwTXnJwSYpbvRTwACZRuYh8qyhsB4qRuS0IZj
+         5xb18Y8t6qyibdnjVxB+uMh009WDjkFkug7ydPMRgF3CQHRGlHP7rEl0pN6/fWivW8Ao
+         WqtA==
+X-Gm-Message-State: AGi0PuaZZeVvDnAuC/Fxy9kPQxkyRIh2XmS9KoChRy5mVHExhWAnvP1O
+        pCwbc9Q9dAnRJ0l+DcShYr2cC7eNwXU=
+X-Google-Smtp-Source: APiQypISXbG9dV2fcRgzor6zakpBuK4UFfevcf7Gl4GEg01N/eKgMDCWdKixZp165gs6Dd+lmJyz5g==
+X-Received: by 2002:adf:f750:: with SMTP id z16mr18108334wrp.115.1586797052925;
+        Mon, 13 Apr 2020 09:57:32 -0700 (PDT)
+Received: from [192.168.43.75] ([109.126.129.227])
+        by smtp.gmail.com with ESMTPSA id d7sm15565513wrr.77.2020.04.13.09.57.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2020 09:57:32 -0700 (PDT)
+Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
+ target handling
+To:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
+        josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
+References: <20200413162758.97252-1-tj@kernel.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
+Date:   Mon, 13 Apr 2020 19:56:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q
+Content-Type: multipart/mixed; boundary="naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO";
+ protected-headers="v1"
+From: Pavel Begunkov <asml.silence@gmail.com>
+To: Tejun Heo <tj@kernel.org>, axboe@kernel.dk
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
+ josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
+Message-ID: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
+Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
+ target handling
+References: <20200413162758.97252-1-tj@kernel.org>
+In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
 
-Am Montag, 13. April 2020, 18:44:34 CEST schrieb Jonathan Cameron:
-> On Mon, 13 Apr 2020 00:42:51 +0200
-> Heiko Stuebner <heiko@sntech.de> wrote:
-> 
-> > From: Simon Xue <xxm@rock-chips.com>
-> > 
-> > Add the ability to also support access via (triggered) buffers
-> > next to the existing direct mode.
-> > 
-> > Device in question is the Odroid Go Advance that connects a joystick
-> > to two of the saradc channels for X and Y axis and the new (and still
-> > pending) adc joystick driver of course wants to use triggered buffers
-> > from the iio subsystem.
-> > 
-> > Signed-off-by: Simon Xue <xxm@rock-chips.com>
-> > [some simplifications and added commit description]
-> > Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-> 
-> Comments inline.
-> 
-> The issue with mixing managed and unmanaged allocations needs tidying up.
-> Sorry if I missed that one before; I probably didn't open up the current
-> driver to sanity check it :(
-> 
-> Jonathan
-> 
-> > ---
-> > changes in v3:
-> > - split buffer struct into values and timestamp area similar to dln2-adc
-> >   and make sure timestamp gets 8-byte aligned - ALIGN uses 4 as it aligns
-> >   u16 elements not bytes - hopefully I got it right this time ;-)
-> > changes in v2:
-> > - use devm_iio_triggered_buffer_setup
-> > - calculate data array size from channel number (curtesy of at91-sama5d2_adc)
-> > 
-> >  drivers/iio/adc/Kconfig           |   2 +
-> >  drivers/iio/adc/rockchip_saradc.c | 146 ++++++++++++++++++++++--------
-> >  2 files changed, 112 insertions(+), 36 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> > index 12bb8b7ca1ff..8d2dd60614c6 100644
-> > --- a/drivers/iio/adc/Kconfig
-> > +++ b/drivers/iio/adc/Kconfig
-> > @@ -809,6 +809,8 @@ config ROCKCHIP_SARADC
-> >  	tristate "Rockchip SARADC driver"
-> >  	depends on ARCH_ROCKCHIP || (ARM && COMPILE_TEST)
-> >  	depends on RESET_CONTROLLER
-> > +	select IIO_BUFFER
-> > +	select IIO_TRIGGERED_BUFFER
-> >  	help
-> >  	  Say yes here to build support for the SARADC found in SoCs from
-> >  	  Rockchip.
-> > diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
-> > index 582ba047c4a6..0713363a4b43 100644
-> > --- a/drivers/iio/adc/rockchip_saradc.c
-> > +++ b/drivers/iio/adc/rockchip_saradc.c
-> > @@ -15,7 +15,11 @@
-> >  #include <linux/delay.h>
-> >  #include <linux/reset.h>
-> >  #include <linux/regulator/consumer.h>
-> > +#include <linux/iio/buffer.h>
-> >  #include <linux/iio/iio.h>
-> > +#include <linux/iio/trigger.h>
-> > +#include <linux/iio/trigger_consumer.h>
-> > +#include <linux/iio/triggered_buffer.h>
-> >  
-> >  #define SARADC_DATA			0x00
-> >  
-> > @@ -32,9 +36,12 @@
-> >  #define SARADC_DLY_PU_SOC_MASK		0x3f
-> >  
-> >  #define SARADC_TIMEOUT			msecs_to_jiffies(100)
-> > +#define SARADC_MAX_CHANNELS		6
-> > +
-> > +/* buffer elements are u16, timestamp needs to be 8-byte aligned */
-> > +#define SARADC_BUFFER_NUM_U16	ALIGN(SARADC_MAX_CHANNELS, 4)
-> I may be going crazy but I think that will get you the 'start' of the
-> timestamp, not the length including it.
-> 
-> We should be seeing 24 bytes here = 12 u16s.  Sanity check the value.
-> 
-> Running through the stack of defines.
-> #define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
-> #define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
-> #define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
-> 
-> ALIGN(6, 4) == __ALIGN_KERNEL(6, 4)
->             == __ALIGN_KERNEL_MASK(6, 3)
->             == (((6 + 3) & ~3) 
-> which is 9 with the bottom two bits masked or b1001 & b1100 = 8 not 12
-> 
-> So I think you are looking for
-> ALIGN(SARADC_MAX_CHANNELS + sizeof(u64) / sizeof(u16), 4)
-> which will be ((10 + 3) & ~3) b1101 & b1100 = 12
+--naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-hmm, getting the start of the timestamp was actually what I intended ;-)
-The dln2-adc driver did that fancy struct definition for its data. which
-I stole, see the part from blow:
+On 13/04/2020 19:27, Tejun Heo wrote:
+> Changes from v1[1]
+>=20
+> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
+>   rq->stats_sectors instead as suggested by Pavel Begunkov.
 
-> > +	struct {
-> > +		u16 values[SARADC_BUFFER_NUM_U16];
-> > +		int64_t timestamp;
-> > +	} data;
+rq->stats_sectors is set only when there is QUEUE_FLAG_STATS, see
+blk_mq_start_request(). I don't see blk-iocost requiring it. Did I miss s=
+omething?
 
-So SARADC_BUFFER_NUM really is meant to only contain the
-number of actual buffer data - I guess I should explain that out better
-in the comment. Because defining this separate makes this so much
-more readable when we're not trying to implicitly add the timestamp
-space.
+>=20
+> This patchset improves the following two iocost control behaviors.
+>=20
+> * iocost was failing to punish heavy shared IO generators (file metadat=
+a, memory
+>   reclaim) through use_delay mechanism - use_delay automatically decays=
+ which
+>   works well for iolatency but doesn't match how iocost behaves. This l=
+ed to
+>   e.g. memory bombs which generate a lot of swap IOs to use over their =
+allotted
+>   amount. This is fixed by adding non-decaying use_delay mechanism.
+>=20
+> * The same latency targets were being applied regardless of the IO size=
+s. While
+>   this works fine for loose targets, it gets in the way when trying to =
+tigthen
+>   them - a latency target adequate for a 4k IO is too short for a 1 meg=
+ IO.
+>   iocost now discounts the size portion of cost when testing whether a =
+given IO
+>   met or missed its latency target.
+>=20
+> While at it, it also makes minor changse to iocost_monitor.py.
+>=20
+> This patchset contains the following five patches.
+>=20
+>  0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
+>  0002-blk-iocost-account-for-IO-size-when-testing-latencie.patch
+>  0003-iocost_monitor-exit-successfully-if-interval-is-zero.patch
+>  0004-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
+>=20
+> and is also available in the following git branch.
+>=20
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-del=
+ay-latency-v2
+>=20
+> diffstat follows. Thanks.
+>=20
+>  block/Kconfig                  |    1=20
+>  block/blk-cgroup.c             |    6 ++++
+>  block/blk-iocost.c             |   56 +++++++++++++++++++++++++++++---=
+---------
+>  include/linux/blk-cgroup.h     |   43 ++++++++++++++++++++++++-------
+>  tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++-------------=
+---
+>  5 files changed, 106 insertions(+), 48 deletions(-)
+>=20
+> --
+> tejun
+>=20
+> [1] http://lkml.kernel.org/r/20200408201450.3959560-1-tj@kernel.org
+>=20
 
-And a size_of(data) for that struct then returned nicely these 24 bytes
-in my tests.
+--=20
+Pavel Begunkov
 
 
-> >  
-> >  struct rockchip_saradc_data {
-> > -	int				num_bits;
-> >  	const struct iio_chan_spec	*channels;
-> >  	int				num_channels;
-> >  	unsigned long			clk_rate;
-> > @@ -49,8 +56,37 @@ struct rockchip_saradc {
-> >  	struct reset_control	*reset;
-> >  	const struct rockchip_saradc_data *data;
-> >  	u16			last_val;
-> > +	const struct iio_chan_spec *last_chan;
-> >  };
-> >  
-> > +static void rockchip_saradc_power_down(struct rockchip_saradc *info)
-> > +{
-> > +	/* Clear irq & power down adc */
-> > +	writel_relaxed(0, info->regs + SARADC_CTRL);
-> > +}
-> > +
-> > +static int rockchip_saradc_conversion(struct rockchip_saradc *info,
-> > +				   struct iio_chan_spec const *chan)
-> > +{
-> > +	reinit_completion(&info->completion);
-> > +
-> > +	/* 8 clock periods as delay between power up and start cmd */
-> > +	writel_relaxed(8, info->regs + SARADC_DLY_PU_SOC);
-> > +
-> > +	info->last_chan = chan;
-> > +
-> > +	/* Select the channel to be used and trigger conversion */
-> > +	writel(SARADC_CTRL_POWER_CTRL
-> > +			| (chan->channel & SARADC_CTRL_CHN_MASK)
-> > +			| SARADC_CTRL_IRQ_ENABLE,
-> > +		   info->regs + SARADC_CTRL);
-> > +
-> > +	if (!wait_for_completion_timeout(&info->completion, SARADC_TIMEOUT))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
-> >  				    struct iio_chan_spec const *chan,
-> >  				    int *val, int *val2, long mask)
-> > @@ -62,24 +98,12 @@ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
-> >  	case IIO_CHAN_INFO_RAW:
-> >  		mutex_lock(&indio_dev->mlock);
-> >  
-> > -		reinit_completion(&info->completion);
-> > -
-> > -		/* 8 clock periods as delay between power up and start cmd */
-> > -		writel_relaxed(8, info->regs + SARADC_DLY_PU_SOC);
-> > -
-> > -		/* Select the channel to be used and trigger conversion */
-> > -		writel(SARADC_CTRL_POWER_CTRL
-> > -				| (chan->channel & SARADC_CTRL_CHN_MASK)
-> > -				| SARADC_CTRL_IRQ_ENABLE,
-> > -		       info->regs + SARADC_CTRL);
-> > -
-> > -		if (!wait_for_completion_timeout(&info->completion,
-> > -						 SARADC_TIMEOUT)) {
-> > -			writel_relaxed(0, info->regs + SARADC_CTRL);
-> > +		ret = rockchip_saradc_conversion(info, chan);
-> > +		if (ret) {
-> > +			rockchip_saradc_power_down(info);
-> >  			mutex_unlock(&indio_dev->mlock);
-> > -			return -ETIMEDOUT;
-> > +			return ret;
-> >  		}
-> > -
-> >  		*val = info->last_val;
-> >  		mutex_unlock(&indio_dev->mlock);
-> >  		return IIO_VAL_INT;
-> > @@ -91,7 +115,7 @@ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
-> >  		}
-> >  
-> >  		*val = ret / 1000;
-> > -		*val2 = info->data->num_bits;
-> > +		*val2 = chan->scan_type.realbits;
-> >  		return IIO_VAL_FRACTIONAL_LOG2;
-> >  	default:
-> >  		return -EINVAL;
-> > @@ -104,10 +128,9 @@ static irqreturn_t rockchip_saradc_isr(int irq, void *dev_id)
-> >  
-> >  	/* Read value */
-> >  	info->last_val = readl_relaxed(info->regs + SARADC_DATA);
-> > -	info->last_val &= GENMASK(info->data->num_bits - 1, 0);
-> > +	info->last_val &= GENMASK(info->last_chan->scan_type.realbits - 1, 0);
-> >  
-> > -	/* Clear irq & power down adc */
-> > -	writel_relaxed(0, info->regs + SARADC_CTRL);
-> > +	rockchip_saradc_power_down(info);
-> >  
-> >  	complete(&info->completion);
-> >  
-> > @@ -118,51 +141,55 @@ static const struct iio_info rockchip_saradc_iio_info = {
-> >  	.read_raw = rockchip_saradc_read_raw,
-> >  };
-> >  
-> > -#define ADC_CHANNEL(_index, _id) {				\
-> > +#define ADC_CHANNEL(_index, _id, _res) {			\
-> >  	.type = IIO_VOLTAGE,					\
-> >  	.indexed = 1,						\
-> >  	.channel = _index,					\
-> >  	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
-> >  	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
-> >  	.datasheet_name = _id,					\
-> > +	.scan_index = _index,					\
-> > +	.scan_type = {						\
-> > +		.sign = 'u',					\
-> > +		.realbits = _res,				\
-> > +		.storagebits = 16,				\
-> > +		.endianness = IIO_LE,				\
-> > +	},							\
-> >  }
-> >  
-> >  static const struct iio_chan_spec rockchip_saradc_iio_channels[] = {
-> > -	ADC_CHANNEL(0, "adc0"),
-> > -	ADC_CHANNEL(1, "adc1"),
-> > -	ADC_CHANNEL(2, "adc2"),
-> > +	ADC_CHANNEL(0, "adc0", 10),
-> > +	ADC_CHANNEL(1, "adc1", 10),
-> > +	ADC_CHANNEL(2, "adc2", 10),
-> >  };
-> >  
-> >  static const struct rockchip_saradc_data saradc_data = {
-> > -	.num_bits = 10,
-> >  	.channels = rockchip_saradc_iio_channels,
-> >  	.num_channels = ARRAY_SIZE(rockchip_saradc_iio_channels),
-> >  	.clk_rate = 1000000,
-> >  };
-> >  
-> >  static const struct iio_chan_spec rockchip_rk3066_tsadc_iio_channels[] = {
-> > -	ADC_CHANNEL(0, "adc0"),
-> > -	ADC_CHANNEL(1, "adc1"),
-> > +	ADC_CHANNEL(0, "adc0", 12),
-> > +	ADC_CHANNEL(1, "adc1", 12),
-> >  };
-> >  
-> >  static const struct rockchip_saradc_data rk3066_tsadc_data = {
-> > -	.num_bits = 12,
-> >  	.channels = rockchip_rk3066_tsadc_iio_channels,
-> >  	.num_channels = ARRAY_SIZE(rockchip_rk3066_tsadc_iio_channels),
-> >  	.clk_rate = 50000,
-> >  };
-> >  
-> >  static const struct iio_chan_spec rockchip_rk3399_saradc_iio_channels[] = {
-> > -	ADC_CHANNEL(0, "adc0"),
-> > -	ADC_CHANNEL(1, "adc1"),
-> > -	ADC_CHANNEL(2, "adc2"),
-> > -	ADC_CHANNEL(3, "adc3"),
-> > -	ADC_CHANNEL(4, "adc4"),
-> > -	ADC_CHANNEL(5, "adc5"),
-> > +	ADC_CHANNEL(0, "adc0", 10),
-> > +	ADC_CHANNEL(1, "adc1", 10),
-> > +	ADC_CHANNEL(2, "adc2", 10),
-> > +	ADC_CHANNEL(3, "adc3", 10),
-> > +	ADC_CHANNEL(4, "adc4", 10),
-> > +	ADC_CHANNEL(5, "adc5", 10),
-> >  };
-> >  
-> >  static const struct rockchip_saradc_data rk3399_saradc_data = {
-> > -	.num_bits = 10,
-> >  	.channels = rockchip_rk3399_saradc_iio_channels,
-> >  	.num_channels = ARRAY_SIZE(rockchip_rk3399_saradc_iio_channels),
-> >  	.clk_rate = 1000000,
-> > @@ -193,6 +220,42 @@ static void rockchip_saradc_reset_controller(struct reset_control *reset)
-> >  	reset_control_deassert(reset);
-> >  }
-> >  
-> > +static irqreturn_t rockchip_saradc_trigger_handler(int irq, void *p)
-> > +{
-> > +	struct iio_poll_func *pf = p;
-> > +	struct iio_dev *i_dev = pf->indio_dev;
-> > +	struct rockchip_saradc *info = iio_priv(i_dev);
-> > +	struct {
-> > +		u16 values[SARADC_BUFFER_NUM_U16];
-> > +		int64_t timestamp;
-> > +	} data;
-> > +	int ret;
-> > +	int i, j = 0;
-> > +
-> > +	mutex_lock(&i_dev->mlock);
-> > +
-> > +	for_each_set_bit(i, i_dev->active_scan_mask, i_dev->masklength) {
-> > +		const struct iio_chan_spec *chan = &i_dev->channels[i];
-> > +
-> > +		ret = rockchip_saradc_conversion(info, chan);
-> > +		if (ret) {
-> > +			rockchip_saradc_power_down(info);
-> > +			goto out;
-> > +		}
-> > +
-> > +		data.values[j] = info->last_val;
-> > +		j++;
-> > +	}
-> > +
-> > +	iio_push_to_buffers_with_timestamp(i_dev, &data, iio_get_time_ns(i_dev));
-> > +out:
-> > +	mutex_unlock(&i_dev->mlock);
-> > +
-> > +	iio_trigger_notify_done(i_dev->trig);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> >  static int rockchip_saradc_probe(struct platform_device *pdev)
-> >  {
-> >  	struct rockchip_saradc *info = NULL;
-> > @@ -221,6 +284,11 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
-> >  
-> >  	info->data = match->data;
-> >  
-> > +	if (info->data->num_channels > SARADC_MAX_CHANNELS) {
-> > +		dev_err(&pdev->dev, "max channels exceeded");
-> > +		return -EINVAL;
-> 
-> How can that happen?  Bug in the addition of a new device type?
-> If it's just paranoia against future code, perhaps add a comment to
-> say that.
+--naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO--
 
-yep that is "paranoia" for the case someone adds a fancy new 20 channel
-saradc variant and forgets to adapt the constant.
+--hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I'll add a comment.
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> > +	}
-> > +
-> >  	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >  	info->regs = devm_ioremap_resource(&pdev->dev, mem);
-> >  	if (IS_ERR(info->regs))
-> > @@ -315,6 +383,12 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
-> >  	indio_dev->channels = info->data->channels;
-> >  	indio_dev->num_channels = info->data->num_channels;
-> >  
-> > +	ret = devm_iio_triggered_buffer_setup(&indio_dev->dev, indio_dev, NULL,
-> > +					      rockchip_saradc_trigger_handler,
-> > +					      NULL);
-> > +	if (ret)
-> > +		goto err_clk;
-> > +
-> 
-> Please avoid mixing an matching between device managed an unmanaged interfaces.
-> It means the driver is not 'obviously correct' and hence harder to review.
-> 
-> Two choices here.  Either use devm_add_action_or_reset to automatically
-> disable each clock + regulator in the managed release path, drop all the error
-> handling and remove (note this should be a precursor patch), or use
-> iio_triggered_buffer_setup and manually call iio_triggered_buffer_cleanup
-> in the right place in the remove function.
+iQIzBAEBCAAdFiEE+6JuPTjTbx479o3OWt5b1Glr+6UFAl6Umb8ACgkQWt5b1Glr
++6UL3Q//cYxPSPCP602xbhfwteRZw+0SsyigabnibOPeoindiN7zG1pRZqRqVdBA
+s0H7GfBW8f+DhVSPlgKYSYu4XQMwLRo1/adRJMeLtRvNh8b0CCdENXafKcMty5hK
+y0r9/PeMV/xlYb+aRUYFVwwMfX/B35nPnJ0NydCZz6ZYRFgkFz/27YppfsZY1tyk
+SBj+jWmBZgGmQoqoPwoCF8HN0KVb/8UIfx3be5b3KGAaB+pcYz26MJjKFufwap6r
+31oNhC3GcXSR5GrlsJauwYB5641H3IdP+1a4jg6cvrGN0+h/THVB98JwgImmz6WJ
+tWe6uiYXvDCrSdC9QNIJqIv3FiXaF/8pJMv4utJICPcB5xkq0cvz1yx+Zdca6o0b
+ybD/7AAcXMOaWbKYxffji/jpChJM0kPdUhDNr79MLoNr7fUusoocxRmPwkWG+jBe
+by8O/pGMsKOz3JXELwtWysQy0y/HqQSVYW8x58tdKXj0ACxSKwJqAgDzS5xdOJ1Y
+qgauGp4Kx3SwvE0oqV0bC5TKXVxS0q1PCg1XTKicnT7QjQqXYYJdZLf2PkDlqmEE
+Ug0P0dfH/ucNAXtv6lz/xfIgvfJnOtg+AHTBE1ol3gSRRbGccCVmrAxwYVcO+wFQ
+fVayxegf7IY55PMAPMuNMVCovTih6+DgOgOnc3czO3Y0mi3MYzI=
+=D3I7
+-----END PGP SIGNATURE-----
 
-I'll go with the devm_* approach, less complexity is better than adding more ;-)
-
-
-Heiko
-
-> >  	ret = iio_device_register(indio_dev);
-> >  	if (ret)
-> >  		goto err_clk;
-> 
-> 
-
-
-
-
+--hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q--
