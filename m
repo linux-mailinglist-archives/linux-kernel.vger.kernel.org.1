@@ -2,151 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4291A75EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09B81A75EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436666AbgDNIYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436525AbgDNIVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:21:03 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A314C0A3BE2;
-        Tue, 14 Apr 2020 01:21:03 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOGoW-0006L4-HP; Tue, 14 Apr 2020 10:21:00 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 35F121C0086;
-        Tue, 14 Apr 2020 10:21:00 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 08:20:59 -0000
-From:   "tip-bot2 for afzal mohammed" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] genirq: Remove setup_irq() and remove_irq()
-Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        id S2436698AbgDNIYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:24:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:50778 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436548AbgDNIWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:22:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82AE91FB;
+        Tue, 14 Apr 2020 01:21:57 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 539AC3F73D;
+        Tue, 14 Apr 2020 01:21:48 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 09:21:36 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, dietmar.eggemann@arm.com,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robert Richter <rric@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: =?utf-8?q?=3C0aa8771ada1ac8e1312f6882980c9c08bd023148=2E15853?=
- =?utf-8?q?20721=2Egit=2Eafzal=2Emohd=2Ema=40gmail=2Ecom=3E?=
-References: =?utf-8?q?=3C0aa8771ada1ac8e1312f6882980c9c08bd023148=2E158532?=
- =?utf-8?q?0721=2Egit=2Eafzal=2Emohd=2Ema=40gmail=2Ecom=3E?=
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Steve Winslow <swinslow@gmail.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Peter Xu <peterx@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 01/11] MIPS: setup: Drop prefill_possible_map
+Message-ID: <20200414082123.GA6459@bogus>
+References: <20200412032123.3896114-1-jiaxun.yang@flygoat.com>
+ <20200412032123.3896114-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Message-ID: <158685245979.28353.320778403882789166.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200412032123.3896114-2-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Sun, Apr 12, 2020 at 11:20:31AM +0800, Jiaxun Yang wrote:
+> All the plat_smp_setup are setting up possible cpus in their
+> platform code. So prefill_possible_map is actually overwriting
+> platform's setup, which seems unreasonable.
+> 
 
-Commit-ID:     07d8350ede4c4c29634b26c163a1eecdf39dfcfb
-Gitweb:        https://git.kernel.org/tip/07d8350ede4c4c29634b26c163a1eecdf39dfcfb
-Author:        afzal mohammed <afzal.mohd.ma@gmail.com>
-AuthorDate:    Fri, 27 Mar 2020 21:41:16 +05:30
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 14 Apr 2020 10:08:50 +02:00
+Why don't you rearrange the code so that this still remains as is and
+the platforms can override if they need. If you do so, you don't need
+the change in 04/11 as I suggested previously.
 
-genirq: Remove setup_irq() and remove_irq()
-
-Now that all the users of setup_irq() & remove_irq() have been replaced by
-request_irq() & free_irq() respectively, delete them.
-
-Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lkml.kernel.org/r/0aa8771ada1ac8e1312f6882980c9c08bd023148.1585320721.git.afzal.mohd.ma@gmail.com
-
----
- include/linux/irq.h |  2 +--
- kernel/irq/manage.c | 44 +--------------------------------------------
- 2 files changed, 46 deletions(-)
-
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 9315fbb..c63c2aa 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -573,8 +573,6 @@ enum {
- #define IRQ_DEFAULT_INIT_FLAGS	ARCH_IRQ_INIT_FLAGS
- 
- struct irqaction;
--extern int setup_irq(unsigned int irq, struct irqaction *new);
--extern void remove_irq(unsigned int irq, struct irqaction *act);
- extern int setup_percpu_irq(unsigned int irq, struct irqaction *new);
- extern void remove_percpu_irq(unsigned int irq, struct irqaction *act);
- 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index fe40c65..453a8a0 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1690,34 +1690,6 @@ out_mput:
- 	return ret;
- }
- 
--/**
-- *	setup_irq - setup an interrupt
-- *	@irq: Interrupt line to setup
-- *	@act: irqaction for the interrupt
-- *
-- * Used to statically setup interrupts in the early boot process.
-- */
--int setup_irq(unsigned int irq, struct irqaction *act)
--{
--	int retval;
--	struct irq_desc *desc = irq_to_desc(irq);
--
--	if (!desc || WARN_ON(irq_settings_is_per_cpu_devid(desc)))
--		return -EINVAL;
--
--	retval = irq_chip_pm_get(&desc->irq_data);
--	if (retval < 0)
--		return retval;
--
--	retval = __setup_irq(irq, desc, act);
--
--	if (retval)
--		irq_chip_pm_put(&desc->irq_data);
--
--	return retval;
--}
--EXPORT_SYMBOL_GPL(setup_irq);
--
- /*
-  * Internal function to unregister an irqaction - used to free
-  * regular and special interrupts that are part of the architecture.
-@@ -1859,22 +1831,6 @@ static struct irqaction *__free_irq(struct irq_desc *desc, void *dev_id)
- }
- 
- /**
-- *	remove_irq - free an interrupt
-- *	@irq: Interrupt line to free
-- *	@act: irqaction for the interrupt
-- *
-- * Used to remove interrupts statically setup by the early boot process.
-- */
--void remove_irq(unsigned int irq, struct irqaction *act)
--{
--	struct irq_desc *desc = irq_to_desc(irq);
--
--	if (desc && !WARN_ON(irq_settings_is_per_cpu_devid(desc)))
--		__free_irq(desc, act->dev_id);
--}
--EXPORT_SYMBOL_GPL(remove_irq);
--
--/**
-  *	free_irq - free an interrupt allocated with request_irq
-  *	@irq: Interrupt line to free
-  *	@dev_id: Device identity to free
+-- 
+Regards,
+Sudeep
