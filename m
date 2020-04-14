@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9131A8619
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4916F1A8605
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732788AbgDNQx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55518 "EHLO mail.kernel.org"
+        id S2440784AbgDNQxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:53:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440340AbgDNQtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:16 -0400
+        id S2440372AbgDNQtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:17 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42236221F6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 50535221F9;
         Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586882943;
-        bh=HotOvguNSrEPHftfF9hKyBfJBsne6Ihdoy/T4tXbhYE=;
+        bh=flQ66rWLqLJ9tP/xDtQuASEFxj/jeRx5dEzURVCNupI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=prVWUfSoL29beoF3B8BnWxinw0hgTYZ9QutzwrR5I+mcnioelfXrouule3uEC+8r5
-         8/ZE53E7GLZhJxItuhFPRr1px26DEdXpmaj99q8plWyON67f+8mLBpAeEyl33tY5b2
-         VQAWbSypRYasYtJaQq8C3MxOFRFyK5GDv81Na4Rc=
+        b=Q0JY4DW9t2PKzK1LpWDCW4AhW1GDqNINIMiwomqLyT1rVVNZ4kR45t6n4W80bAwV1
+         +YD8udW+6wogJ4b6qNd1fHABzBwHnKQBsXn5nvAe6ML/TXErwq6tzA/Ob2S28hRhEM
+         mGB51bHwj54EjaDIXfZtSGyY+ODXdGoe9g2mcIR8=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jOOk9-0068nN-Hg; Tue, 14 Apr 2020 18:49:01 +0200
+        id 1jOOk9-0068nT-IZ; Tue, 14 Apr 2020 18:49:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 31/33] fs: inode.c: get rid of docs warnings
-Date:   Tue, 14 Apr 2020 18:48:57 +0200
-Message-Id: <e8da46a0e57f2af6d63a0c53665495075698e28a.1586881715.git.mchehab+huawei@kernel.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>
+Subject: [PATCH v2 32/33] futex: get rid of a kernel-docs build warning
+Date:   Tue, 14 Apr 2020 18:48:58 +0200
+Message-Id: <57788af7889161483e0c97f91c079cfb3986c4b3.1586881715.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
 References: <cover.1586881715.git.mchehab+huawei@kernel.org>
@@ -45,42 +47,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use *foo makes the toolchain to think that this is an emphasis, causing
-those warnings:
+Adjust whitespaces and blank lines in order to get rid of this:
 
-	./fs/inode.c:1609: WARNING: Inline emphasis start-string without end-string.
-	./fs/inode.c:1609: WARNING: Inline emphasis start-string without end-string.
-	./fs/inode.c:1615: WARNING: Inline emphasis start-string without end-string.
-
-So, use, instead, ``*foo``, in order to mark it as a literal block.
+	./kernel/futex.c:491: WARNING: Definition list ends without a blank line; unexpected unindent.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- fs/inode.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/futex.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 93d9252a00ab..37226a9cfa4f 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1606,14 +1606,14 @@ EXPORT_SYMBOL(iput);
-  *	@inode:  inode owning the block number being requested
-  *	@block: pointer containing the block to find
+diff --git a/kernel/futex.c b/kernel/futex.c
+index b59532862bc0..b4b9f960b610 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -486,10 +486,13 @@ static u64 get_inode_sequence_number(struct inode *inode)
+  * The key words are stored in @key on success.
   *
-- *	Replaces the value in *block with the block number on the device holding
-+ *	Replaces the value in ``*block`` with the block number on the device holding
-  *	corresponding to the requested block number in the file.
-  *	That is, asked for block 4 of inode 1 the function will replace the
-- *	4 in *block, with disk block relative to the disk start that holds that
-+ *	4 in ``*block``, with disk block relative to the disk start that holds that
-  *	block of the file.
+  * For shared mappings (when @fshared), the key is:
++ *
+  *   ( inode->i_sequence, page->index, offset_within_page )
++ *
+  * [ also see get_inode_sequence_number() ]
   *
-  *	Returns -EINVAL in case of error, 0 otherwise. If mapping falls into a
-- *	hole, returns 0 and *block is also set to 0.
-+ *	hole, returns 0 and ``*block`` is also set to 0.
-  */
- int bmap(struct inode *inode, sector_t *block)
- {
+  * For private mappings (or when !@fshared), the key is:
++ *
+  *   ( current->mm, address, 0 )
+  *
+  * This allows (cross process, where applicable) identification of the futex
 -- 
 2.25.2
 
