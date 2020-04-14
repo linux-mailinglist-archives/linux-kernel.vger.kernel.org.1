@@ -2,122 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADE51A8420
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6F71A8425
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391282AbgDNQE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:04:59 -0400
-Received: from mga03.intel.com ([134.134.136.65]:30959 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391254AbgDNQEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:04:10 -0400
-IronPort-SDR: M/xsaHrEmI6bxTLkO+jqUFZgxjpm1iLeVC/gaB9lhrbaHo/R45H44+8xlzanQj8vC0aRAcYlLu
- 6c1fC0L4rJ4g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 09:04:07 -0700
-IronPort-SDR: JPmVlV3ND9Xn87O4ueaT4dwiU5HpXLw64/OwsZMmuFE450xcAlAYC0qYmoATBfWS8hXr1sfFnZ
- sPAtVpoFWbDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
-   d="scan'208";a="242035655"
-Received: from shiyaowa-mobl.ger.corp.intel.com (HELO localhost) ([10.249.43.105])
-  by orsmga007.jf.intel.com with ESMTP; 14 Apr 2020 09:04:04 -0700
-Date:   Tue, 14 Apr 2020 19:04:04 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-integrity@vger.kernel.org, stable@vger.kernel.org,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tpm/tpm_tis: Free IRQ if probing fails
-Message-ID: <20200414160404.GA32775@linux.intel.com>
-References: <20200412170412.324200-1-jarkko.sakkinen@linux.intel.com>
- <b909aaee-3fff-4dca-40f4-4c5348474426@redhat.com>
- <20200413180732.GA11147@linux.intel.com>
- <7df7f8bd-c65e-1435-7e82-b9f4ecd729de@redhat.com>
- <20200414071349.GA8403@linux.intel.com>
- <d6684575-ce91-fe72-6035-11834a05cd54@redhat.com>
+        id S2391307AbgDNQF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:05:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22065 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2391295AbgDNQFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:05:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586880307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hZ2ZtNnGXnyUgL1WENewzG8fdgRXTiQCFKmqoVMaPAQ=;
+        b=XdzuMuJK1jKJuXP8dg8mvq22iCxURdVHENZzZF7DejPw7TBuj3x3wb64Ov6BoUbFH1svuo
+        bG3WRpKvBcR0gxW4EVFgVR9JeGsLXXqSI2D87BiAy+224csztppScp0L2h6X7I3lGAcf63
+        ZYjBNqDJio5+VE1O++1hTeDAQWfkP0k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-ugqth5v9OAOHZ9ntkLmB5Q-1; Tue, 14 Apr 2020 12:05:05 -0400
+X-MC-Unique: ugqth5v9OAOHZ9ntkLmB5Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25EE18017F6;
+        Tue, 14 Apr 2020 16:05:04 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.194.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F33DC1036D2F;
+        Tue, 14 Apr 2020 16:04:41 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 18:04:39 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Wainer dos Santos Moschetta <wainersm@redhat.com>
+Subject: Re: [PATCH 03/10] KVM: selftests: Add util to delete memory region
+Message-ID: <20200414160439.ca52vt5jgri7jcxw@kamzik.brq.redhat.com>
+References: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+ <20200410231707.7128-4-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6684575-ce91-fe72-6035-11834a05cd54@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200410231707.7128-4-sean.j.christopherson@intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:26:32AM +0200, Hans de Goede wrote:
-> Hi,
+On Fri, Apr 10, 2020 at 04:17:00PM -0700, Sean Christopherson wrote:
+> Add a utility to delete a memory region, it will be used by x86's
+> set_memory_region_test.
 > 
-> On 4/14/20 9:13 AM, Jarkko Sakkinen wrote:
-> > On Mon, Apr 13, 2020 at 08:11:15PM +0200, Hans de Goede wrote:
-> > > Hi,
-> > > 
-> > > On 4/13/20 8:07 PM, Jarkko Sakkinen wrote:
-> > > > On Mon, Apr 13, 2020 at 12:04:25PM +0200, Hans de Goede wrote:
-> > > > > Hi Jarkko,
-> > > > > 
-> > > > > On 4/12/20 7:04 PM, Jarkko Sakkinen wrote:
-> > > > > > Call devm_free_irq() if we have to revert to polling in order not to
-> > > > > > unnecessarily reserve the IRQ for the life-cycle of the driver.
-> > > > > > 
-> > > > > > Cc: stable@vger.kernel.org # 4.5.x
-> > > > > > Reported-by: Hans de Goede <hdegoede@redhat.com>
-> > > > > > Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
-> > > > > > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > > > > > ---
-> > > > > >     drivers/char/tpm/tpm_tis_core.c | 5 ++++-
-> > > > > >     1 file changed, 4 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-> > > > > > index 27c6ca031e23..ae6868e7b696 100644
-> > > > > > --- a/drivers/char/tpm/tpm_tis_core.c
-> > > > > > +++ b/drivers/char/tpm/tpm_tis_core.c
-> > > > > > @@ -1062,9 +1062,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
-> > > > > >     		if (irq) {
-> > > > > >     			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
-> > > > > >     						 irq);
-> > > > > > -			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
-> > > > > > +			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
-> > > > > >     				dev_err(&chip->dev, FW_BUG
-> > > > > >     					"TPM interrupt not working, polling instead\n");
-> > > > > > +				devm_free_irq(chip->dev.parent, priv->irq,
-> > > > > > +					      chip);
-> > > > > > +			}
-> > > > > 
-> > > > > My initial plan was actually to do something similar, but if the probe code
-> > > > > is actually ever fixed to work as intended again then this will lead to a
-> > > > > double free as then the IRQ-test path of tpm_tis_send() will have called
-> > > > > disable_interrupts() which already calls devm_free_irq().
-> > > > > 
-> > > > > You could check for chip->irq != 0 here to avoid that.
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 56 +++++++++++++------
+>  2 files changed, 40 insertions(+), 17 deletions(-)
 > 
-> Erm in case you haven't figured it out yet this should be priv->irq != 0, sorry.
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 2f329e785c58..d4c3e4d9cd92 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -114,6 +114,7 @@ int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
+>  void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
+>  void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
+>  void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
+> +void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot);
+>  void vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpuid);
+>  vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
+>  			  uint32_t data_memslot, uint32_t pgd_memslot);
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 105ee9bc09f0..ab5b7ea60f4b 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -433,34 +433,38 @@ void kvm_vm_release(struct kvm_vm *vmp)
+>  		"  vmp->kvm_fd: %i rc: %i errno: %i", vmp->kvm_fd, ret, errno);
+>  }
+>  
+> +static void __vm_mem_region_delete(struct kvm_vm *vm,
+> +				   struct userspace_mem_region *region)
+> +{
+> +	int ret;
+> +
+> +	list_del(&region->list);
+> +
+> +	region->region.memory_size = 0;
+> +	ret = ioctl(vm->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
+> +	TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed, "
+> +		    "rc: %i errno: %i", ret, errno);
+> +
+> +	sparsebit_free(&region->unused_phy_pages);
+> +	ret = munmap(region->mmap_start, region->mmap_size);
+> +	TEST_ASSERT(ret == 0, "munmap failed, rc: %i errno: %i", ret, errno);
+> +
+> +	free(region);
+> +}
+> +
+>  /*
+>   * Destroys and frees the VM pointed to by vmp.
+>   */
+>  void kvm_vm_free(struct kvm_vm *vmp)
+>  {
+>  	struct userspace_mem_region *region, *tmp;
+> -	int ret;
+>  
+>  	if (vmp == NULL)
+>  		return;
+>  
+>  	/* Free userspace_mem_regions. */
+> -	list_for_each_entry_safe(region, tmp, &vmp->userspace_mem_regions, list) {
+> -		list_del(&region->list);
+> -
+> -		region->region.memory_size = 0;
+> -		ret = ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION,
+> -			&region->region);
+> -		TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed, "
+> -			"rc: %i errno: %i", ret, errno);
+> -
+> -		sparsebit_free(&region->unused_phy_pages);
+> -		ret = munmap(region->mmap_start, region->mmap_size);
+> -		TEST_ASSERT(ret == 0, "munmap failed, rc: %i errno: %i",
+> -			    ret, errno);
+> -
+> -		free(region);
+> -	}
+> +	list_for_each_entry_safe(region, tmp, &vmp->userspace_mem_regions, list)
+> +		__vm_mem_region_delete(vmp, region);
+>  
+>  	/* Free sparsebit arrays. */
+>  	sparsebit_free(&vmp->vpages_valid);
+> @@ -775,6 +779,24 @@ void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa)
+>  		    ret, errno, slot, new_gpa);
+>  }
+>  
+> +/*
+> + * VM Memory Region Delete
+> + *
+> + * Input Args:
+> + *   vm - Virtual Machine
+> + *   slot - Slot of the memory region to delete
+> + *
+> + * Output Args: None
+> + *
+> + * Return: None
+> + *
+> + * Delete a memory region.
+> + */
+> +void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot)
+> +{
+> +	__vm_mem_region_delete(vm, memslot2region(vm, slot));
+> +}
+> +
+>  /*
+>   * VCPU mmap Size
+>   *
+> -- 
+> 2.26.0
+>
 
-Yup.
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
-> > > > > 
-> > > > > But it all is rather messy, which is why I went with the "#if 0" approach
-> > > > > in my patch.
-> > > > 
-> > > > I think it is right way to fix it. It is a bug independent of the issue
-> > > > we are experiencing.
-> > > > 
-> > > > However, what you are suggesting should be done in addition. Do you have
-> > > > a patch in place or do you want me to refine mine?
-> > > 
-> > > I do not have a patch ready for this, if you can refine yours that would
-> > > be great.
-> > 
-> > Thanks! Just wanted to confirm.
-> 
-> And thank you for working on a (temporary?) fix for this.
-
-As far as I see it, it is orthogonal fix that needs to be backported
-to stable kernels. This bug predates the issue we're seeing now.
-
-/Jarkko
