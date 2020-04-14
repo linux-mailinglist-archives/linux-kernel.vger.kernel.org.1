@@ -2,74 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9229E1A7454
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351D41A785F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406436AbgDNHJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 03:09:48 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:42988 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728832AbgDNHJr (ORCPT
+        id S2438321AbgDNK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:26:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60126 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2438286AbgDNKVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:09:47 -0400
-Received: by mail-oi1-f195.google.com with SMTP id d7so4558424oif.9;
-        Tue, 14 Apr 2020 00:09:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Z5zt2CUahX5IsPzgShiRFj23zj/g56lthuN3s9ga2E=;
-        b=fsFjPs6Y14mHhPJvwHG2nVoLYDeiYpwPqBi643pwYF8SsT936r5ZjyTw0+nzLN8NBZ
-         bswe+kkXZn0SDEeHK/9XVIKGOBfwSLqfmYS1dj8PRhVEHMIwg/zKaAfuLZiFpW+5ZK/O
-         KN/7iWu3GIKwYlMTlkPKL/E+/90in7Sd3M89Vk80M3lzlHeNoq8n2ehSg321k79a2ryB
-         uv/88vIUAGMGWxkRZTWcbtZI0GEvxTlxAbnH5vvR9DkzUWxI5kPU3NEkmEB9b7B/Jnw4
-         ZqBZ3BWnlrJP5JK1U+4Dnmo9G1RyWDi6UXnZ41hPQu7CidyZPpU8ntDcuW1il1Es9QUp
-         zXLA==
-X-Gm-Message-State: AGi0PubIsK/GfVSGqwICoMA8o+/vfisRtQV4MnHM4RjGUpf/GrnRQUuX
-        HffUSV6qfJErxPRTp4ybrRnILZdG98eMRPf6EFA=
-X-Google-Smtp-Source: APiQypJPAEdSB0/mCpnigVvRvJ7XIRVHn8kPh4UNvKk3GhriQALdtPNdVHc6H4U6yfJQ1kTqUN+mE1pGe6RO8Ue6wUc=
-X-Received: by 2002:aca:f541:: with SMTP id t62mr257295oih.148.1586848186462;
- Tue, 14 Apr 2020 00:09:46 -0700 (PDT)
+        Tue, 14 Apr 2020 06:21:21 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EA35YJ060749;
+        Tue, 14 Apr 2020 06:20:22 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30cwm05pdd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Apr 2020 06:20:22 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03EA3etk063999;
+        Tue, 14 Apr 2020 06:20:21 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30cwm05pcw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Apr 2020 06:20:21 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03EAFWfA003461;
+        Tue, 14 Apr 2020 10:20:20 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma02wdc.us.ibm.com with ESMTP id 30b5h67qs2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Apr 2020 10:20:20 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EAKJ8n52101384
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 10:20:19 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AFAAC6059;
+        Tue, 14 Apr 2020 10:20:19 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0C80C6055;
+        Tue, 14 Apr 2020 10:20:18 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.109.81])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 14 Apr 2020 10:20:18 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id F27BF2E301A; Tue, 14 Apr 2020 12:41:49 +0530 (IST)
+Date:   Tue, 14 Apr 2020 12:41:49 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        mpe@ellerman.id.au, skiboot@lists.ozlabs.org, oohall@gmail.com,
+        ego@linux.vnet.ibm.com, linuxram@us.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: Re: [PATCH v6 0/3] powerpc/powernv: Introduce interface for
+ self-restore support
+Message-ID: <20200414071149.GD24277@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200326071034.12838-1-psampat@linux.ibm.com>
 MIME-Version: 1.0
-References: <20200413041709.3630-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20200413041709.3630-1-christophe.jaillet@wanadoo.fr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Apr 2020 09:09:35 +0200
-Message-ID: <CAMuHMdXoVGkRh63=H6P29JSS6yNCyKZdsAX1_qUNC_mH=aymyw@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: r9a06g032: Fix some typo in comments
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326071034.12838-1-psampat@linux.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-14_02:2020-04-13,2020-04-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004140083
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 5:12 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
-> This file seems to be for R9A06G032 only. So replace reference to
-> R9A09G032 by R9A06G032 to avoid confusion.
->
-> AFAIK, R9A09G032 does'nt exist.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Hello Pratik,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in clk-renesas-for-v5.8.
+On Thu, Mar 26, 2020 at 12:40:31PM +0530, Pratik Rajesh Sampat wrote:
+> v5: https://lkml.org/lkml/2020/3/17/944
+> Changelog
+> v5-->v6
+> 1. Updated background, motivation and illuminated potential design
+> choices
+> 2. Re-organization of patch-set
+>   a. Split introducing preference for optimization from 1/1 to patch 3/3
+>   b. Merge introducing self-save API and parsing the device-tree
+>   c. Introduce a supported mode called KERNEL_SAVE_RESTORE which
+>      outlines and makes kernel supported SPRs for save-restore more
+>      explicit
+> 
+[..snip..]
 
-Gr{oetje,eeting}s,
+> Presenting the design choices in front of us:
+> 
+> Design-Choice 1:
+> ----------------
+> A simple implementation is to just replace self-restore calls with
+> self-save as it is direct super-set.
+> 
+> Pros:
+> A simple design, quick to implement
+> 
+> 
+> Cons:
+> * Breaks backward compatibility. Self-restore has historically been
+>   supported in the firmware and an old firmware running on an new
+>   kernel will be incompatible and deep stop states will be cut.
+> * Furthermore, critical SPRs which need to be restored
+>   before 0x100 vector like HID0 are not supported by self-save.
+> 
+> Design-Choice 2:
+> ----------------
+> Advertise both self-restore and self-save from OPAL including the set
+> of registers that each support. The kernel can then choose which API
+> to go with.
+> For the sake of simplicity, in case both modes are supported for an
+> SPR by default self-save would be called for it.
+> 
+> Pros:
+> * Backwards compatible
+> 
+> Cons:
+> Overhead in parsing device tree with the SPR list
+> 
+> Possible optimization with Approach2:
+> -------------------------------------
+> There are SPRs whose values don't tend to change over time and invoking
+> self-save on them, where the values are gotten each time may turn out to
+> be inefficient. In that case calling a self-restore where passing the
+> value makes more sense as, if the value is same, the memory location
+> is not updated.
+> SPRs that dont change are as follows:
+> SPRN_HSPRG0,
+> SPRN_LPCR,
+> SPRN_PTCR,
+> SPRN_HMEER,
+> SPRN_HID0,
 
-                        Geert
+We can just pick self-save wherever available and fallback to
+self-restore when self-save support is not avaiable for any SPR.
+The optimization that you mention here can be revisited if the
+additional latency due to self-save becomes observable (Note that both
+stop4 and stop5 have wakeup latency between 200-500us).
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> The values of PSSCR and MSR change at runtime and hence, the kernel
+> cannot determine during boot time what their values will be before
+> entering a particular deep-stop state.
+> 
+> Therefore, a preference based interface is introduced for choosing
+> between self-save or self-restore between for each SPR.
+> The per-SPR preference is only a refinement of
+> approach 2 purely for performance reasons. It can be dropped if the
+> complexity is not deemed worth the returns.
+> 
+> Patches Organization
+> ====================
+> Design Choice 2 has been chosen as an implementation to demonstrate in
+> the patch series.
+> 
+> Patch1:
+> Devises an interface which lists all the interested SPRs, along with
+> highlighting the support of mode.
+> It is an isomorphic patch to replicate the functionality of the older
+> self-restore firmware for the new interface
+> 
+> Patch2:
+> Introduces the self-save API and leverages upon the struct interface to
+> add another supported mode in the mix of saving and restoring. It also
+> enforces that in case both modes are supported self-save is chosen over
+> self-restore
+> 
+> The commit also parses the device-tree and populate support for
+> self-save and self-restore in the supported mask
+> 
+> Patch3:
+> Introduce an optimization to allow preference to choose between one more
+> over the one when both both modes are supported. This optimization can
+> allow for better performance for the SPRs that don't change in value and
+> hence self-restore is a better alternative, and in cases when it is
+> known for values to change self-save is more convenient.
+> 
+> Pratik Rajesh Sampat (3):
+>   powerpc/powernv: Introduce interface for self-restore support
+>   powerpc/powernv: Introduce support and parsing for self-save API
+>   powerpc/powernv: Preference optimization for SPRs with constant values
+> 
+>  .../bindings/powerpc/opal/power-mgt.txt       |  18 +
+>  arch/powerpc/include/asm/opal-api.h           |   3 +-
+>  arch/powerpc/include/asm/opal.h               |   1 +
+>  arch/powerpc/platforms/powernv/idle.c         | 385 +++++++++++++++---
+>  arch/powerpc/platforms/powernv/opal-call.c    |   1 +
+>  5 files changed, 351 insertions(+), 57 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
