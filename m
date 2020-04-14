@@ -2,63 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063761A7780
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF641A7791
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437704AbgDNJkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:40:51 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8075 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728305AbgDNJku (ORCPT
+        id S2437736AbgDNJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729503AbgDNJqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:40:50 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85e958509904-50b11; Tue, 14 Apr 2020 17:40:25 +0800 (CST)
-X-RM-TRANSID: 2ee85e958509904-50b11
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65e958509cef-73c4e;
-        Tue, 14 Apr 2020 17:40:25 +0800 (CST)
-X-RM-TRANSID: 2ee65e958509cef-73c4e
-Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
-To:     minyard@acm.org
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
- <20200413113225.GB3587@minyard.net>
- <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
- <20200413142348.GD3587@minyard.net>
- <3894dab2-0660-999c-6f4c-4b5b9ff57773@cmss.chinamobile.com>
- <20200413215941.GF3587@minyard.net>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <73acd099-f9b3-8eeb-f580-297de2321953@cmss.chinamobile.com>
-Date:   Tue, 14 Apr 2020 17:42:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Apr 2020 05:46:25 -0400
+X-Greylist: delayed 173 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Apr 2020 02:46:24 PDT
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5301::6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20C2C0A3BD0;
+        Tue, 14 Apr 2020 02:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586857583;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=wffEAJzLw5r0Krn8zuK2Pz6LtbsEFk3IEtvF5z6tdE0=;
+        b=OTU6wspYXuBjm1dcx+QStTAVoXJDAOeN+cvXm3Hr9L25TPRj5mR4rUDDl8XKzBhpyD
+        jsekrKKXz3D1zTRp1YGjMo0DrQ3+s1idXv4Muiswa9yZx/SCqoMbilqpsHj/cBfwde33
+        +f8Gi9k1QGBgu5eG94qUMxJnNXZChx0wHHOwFb+Crqm2AGgCqjkXAzBmQ9gwjY7fAQdj
+        hzgVc9hEt9UQZ6UmKXyyIxqopmPKZmXK6bL4otPlMUs2ofr5skNsupogxIEd6pZyAXie
+        oRpX7qdzqaLl8MkhDM0grel6MNDHoN9YXBA5HPRMEBMwypViyj9BIEcMupEzPvqGhgmc
+        Yafw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/CaIo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+        with ESMTPSA id u043b8w3E9hNd2c
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 14 Apr 2020 11:43:23 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 11:43:17 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 2/2] ARM: defconfig: u8500: Enable CONFIG_GP2AP002
+Message-ID: <20200414094317.GA5896@gerhold.net>
+References: <20200405173252.67614-1-stephan@gerhold.net>
+ <20200405173252.67614-2-stephan@gerhold.net>
+ <CACRpkdYW930B-riUi5OnmsDCJD_piJ+321rgB40bq93ndzSp5A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200413215941.GF3587@minyard.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYW930B-riUi5OnmsDCJD_piJ+321rgB40bq93ndzSp5A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Corey:
+On Tue, Apr 14, 2020 at 11:08:38AM +0200, Linus Walleij wrote:
+> On Sun, Apr 5, 2020 at 7:34 PM Stephan Gerhold <stephan@gerhold.net> wrote:
+> 
+> > sharp,gp2ap002s00f is used as a proximity sensor in
+> > samsung-golden and samsung-skomer.
+> >
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> 
+> Ooops I saw now that I already had this in my "Skomer and misc"
+> enablement patch. (rebasing my trees today).
+> 
+> I can put this in front of that patch and take it out of mine if you
+> prefer stepwise enablement.
+> 
 
-On 2020/4/14 5:59, Corey Minyard wrote:
-> That is all correct as it is.  If there is an irq specified and it can't
-> be requested, that is a problem.  If there is no irq specified, that is
-> fine, just info is good.
-
-Okay, I know what you mean, and I will submit the corresponding patch 
-tonight according to the questions I raised.
+Do you mean the "ARM: defconfig: u8500: Enable new drivers for ux500"
+patch? It doesn't matter which commit/patch adds it, as long as it ends
+up in the u8500_defconfig :)
 
 Thanks,
-
-Tang Bin
-
-
-
+Stephan
