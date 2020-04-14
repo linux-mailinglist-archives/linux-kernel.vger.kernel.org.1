@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A931A784B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0481A785E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438229AbgDNKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:17:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42074 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438217AbgDNKRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:17:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A99E6AAFD;
-        Tue, 14 Apr 2020 10:17:06 +0000 (UTC)
-Message-ID: <f88988c4059799dd21c4c0bf9d13df494eff2c4f.camel@suse.de>
-Subject: Re: [PATCH] staging: vc04_services: bcm2835-audio: Make function
- arguments alignment match open parenthesis
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     R Veera Kumar <vkor@vkten.in>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 14 Apr 2020 12:17:05 +0200
-In-Reply-To: <20200413165905.6081-1-vkor@vkten.in>
-References: <20200413165905.6081-1-vkor@vkten.in>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-HvMJdd4MlU6lzP+RDzxu"
-User-Agent: Evolution 3.34.2 
+        id S2438312AbgDNKY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:24:57 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45635 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438287AbgDNKVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 06:21:21 -0400
+Received: by mail-wr1-f65.google.com with SMTP id t14so435278wrw.12;
+        Tue, 14 Apr 2020 03:21:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=EYaPeiECDQ5ZXShj8p9XCOhGGkLuneAOUv8e9e/QTQQ=;
+        b=BXtTxS6Nh9AGjbv+xl5m6pltKvjPF5MhpJyV1UeseGEI/3AHg1SbjFEAJPQkYpH/e+
+         BpVlbG7cEeX/35AMpXYA0cXNHEcpp31zKtJJOrlFVhYYNB3gJoknc2whOpbMj1MYkboM
+         46nFM2olpVR8VbTH8/LfUQDxDhSW7/p8DIYkO191Jhvbjx/jGxD8E3ADjVWsLN3VbB0L
+         +e1VU9+4OU+CFpfgN35AWFitjrjgEIPP6ShTFolWQQtNbqXAr+J+3F27WOWnP6KLaWBq
+         SZ41OVXt2S/3+rrmSfKR2Azdxh2Ao5UsQZ2ZlCZ4x5iShADVesNsmVmM2XxgfQmn8ZSH
+         FWXA==
+X-Gm-Message-State: AGi0PuYqkrFEOMhwiA4h3McYK0tM57tlSLOH0syLHo/SZ/Qscq3ntRhy
+        OW1f/n/0Z/F9anFIMi4xVfg=
+X-Google-Smtp-Source: APiQypJfL641U3oiX9dTXxf/ghp8OKYDWYbORn6FwzR3xNZYsyAebrfet+aQW3p3qkLc/MCFbrsuHA==
+X-Received: by 2002:a5d:6584:: with SMTP id q4mr11223043wru.403.1586859664926;
+        Tue, 14 Apr 2020 03:21:04 -0700 (PDT)
+Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
+        by smtp.gmail.com with ESMTPSA id t16sm17621540wmi.27.2020.04.14.03.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 03:21:04 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 11:21:02 +0100
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, mikelley@microsoft.com,
+        haiyangz@microsoft.com
+Subject: [GIT PULL] Hyper-V fixes for 5.7-rc1
+Message-ID: <20200414102102.7jci4pzsp5tdoifr@debian>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---=-HvMJdd4MlU6lzP+RDzxu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Please pull from the tag hyperv-fixes-signed for the first batch of
+Hyper-V fixes for 5.7-rc.
 
-On Mon, 2020-04-13 at 22:29 +0530, R Veera Kumar wrote:
-> Make function arguments alignment match open parenthesis.
-> Found using checkpatch.pl.
->=20
-> Signed-off-by: R Veera Kumar <vkor@vkten.in>
-> ---
+The following changes since commit fb33c6510d5595144d585aa194d377cf74d31911:
 
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+  Linux 5.6-rc6 (2020-03-15 15:01:23 -0700)
 
-Thanks,
-Nicolas
+are available in the Git repository at:
 
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
 
---=-HvMJdd4MlU6lzP+RDzxu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+for you to fetch changes up to f3a99e761efa616028b255b4de58e9b5b87c5545:
 
------BEGIN PGP SIGNATURE-----
+  x86/Hyper-V: Report crash data in die() when panic_on_oops is set (2020-04-11 17:19:07 +0100)
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6VjaEACgkQlfZmHno8
-x/7QNAf+KEkgvllarl1bp7iHEIeawYA2hzu5cIUgBMq3Qn9pI9VDHNI3I8DG4EQb
-gOHmJHG635oIvSU3ZVXbgSPRdomFsuXGO7t6te5WdYuhkNVkNyuSuVioOJk6Qdfx
-54HT/S9tPICxf3lMZ7ga2JlSDFlHOEtdFEGy7yi6c+miPwkscp1/c6vOxDojOEp1
-0Z9iPRSVTGAjKPJOF0Pik1S5cEwowScrdFF2m7Oku0F6ae71sv0eJ+8rZGmqP8Bj
-ypzQVcXJYr9pIAGnq/8tRlt4d+IzSSPKxUpTcZZ67RBC/3opTf183ajZGOCTjZd1
-CMKcxOYHmJdhwso9ulwPstE+ogLEaA==
-=UMAf
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+hyperv-fixes for 5.7-rc1
 
---=-HvMJdd4MlU6lzP+RDzxu--
+  - Patch series from Tianyu Lan to fix crash reporting on Hyper-V
+  - Three miscellaneous cleanup patches
 
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      hv: hyperv_vmbus.h: Replace zero-length array with flexible-array member
+
+Olaf Hering (1):
+      x86: hyperv: report value of misc_features
+
+Tianyu Lan (6):
+      x86/Hyper-V: Unload vmbus channel in hv panic callback
+      x86/Hyper-V: Free hv_panic_page when fail to register kmsg dump
+      x86/Hyper-V: Trigger crash enlightenment only once during system crash.
+      x86/Hyper-V: Report crash register data or kmsg before running crash kernel
+      x86/Hyper-V: Report crash register data when sysctl_record_panic_msg is not set
+      x86/Hyper-V: Report crash data in die() when panic_on_oops is set
+
+YueHaibing (1):
+      hv_debugfs: Make hv_debug_root static
+
+ arch/x86/hyperv/hv_init.c      |  6 +++-
+ arch/x86/kernel/cpu/mshyperv.c | 14 ++++++++--
+ drivers/hv/channel_mgmt.c      |  3 ++
+ drivers/hv/hv_debugfs.c        |  2 +-
+ drivers/hv/hyperv_vmbus.h      |  2 +-
+ drivers/hv/vmbus_drv.c         | 62 ++++++++++++++++++++++++++++++------------
+ include/asm-generic/mshyperv.h |  2 +-
+ 7 files changed, 67 insertions(+), 24 deletions(-)
