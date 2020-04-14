@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F5E1A7F66
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107BF1A7F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389375AbgDNORy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:17:54 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47131 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389221AbgDNORq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:17:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586873864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5QHCeqfyaSTGSDpETLFfXGP1uAtSb/Pgabn5X7MN5Pk=;
-        b=P4U8A6tI8EwFQfn1hpmYUJ1yVciVxWLMKfcN99rOFuBzsWgPVg0AL6ADGHNxX1/q1lQKKG
-        w1/UShY1959/VP3lK4LfclqBFJ4JthBBx266yJ+lug9vEAH0h9+84J7rAspNHvX2cI+qGo
-        U6eYOMz1D/j5eQBd0/LKqyifbpPYrrI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-Jlm4Y5WyOaymaL1KWDTuAw-1; Tue, 14 Apr 2020 10:17:43 -0400
-X-MC-Unique: Jlm4Y5WyOaymaL1KWDTuAw-1
-Received: by mail-wm1-f72.google.com with SMTP id q5so2427276wmc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 07:17:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5QHCeqfyaSTGSDpETLFfXGP1uAtSb/Pgabn5X7MN5Pk=;
-        b=A/W1Ya9eh25KI/yfV7f2a0uvBtRQVTmyIm4xtFiGjZs1Rp0U7CgX4P7fDTZJDyTIgo
-         YDtNlaVzeAvGB+xgYyWwpzCQ3+ZI7mdXN1XNLmOO0q7KtOz3UjQnoRnrPLHlN4QK8bln
-         HZbQgThX/DNc8xtkLI44bzcJ6nfOtlvhrW3BEx27qsSZXbgLMaFUR2S2Gr2k9xdrtvK8
-         00xrk2zkXpSYOGmki8FRLmR5B4MMMc9LSMNOL5Smsa2gX5xcqt3tfBYaFM5iwIfb37jM
-         MDbKOnHfEBNK2fI5+wgjJ9ZzMJzJxaPv+hcKjaUFfwwTB1b0A6iFaC/HhtBLdUUw5kUw
-         rx/w==
-X-Gm-Message-State: AGi0Pua3ARON/sXQrxvpjFSFcbfsuHakXtAvS+Nir5wJSGGzc+F5VKdZ
-        XyW0WjSXseogoKuz+491ku8WgvgajSjK9+cU1oZx88+2G4S/f+cw0WzVqlHeE/38mvYscINwj7g
-        /MDm/sBGDlDlK3fAPDLmgvyJA
-X-Received: by 2002:adf:fdc6:: with SMTP id i6mr24657323wrs.252.1586873861747;
-        Tue, 14 Apr 2020 07:17:41 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI+UgxXH7zNgeu1lrXmzwADbPtn6APUxuWMZS+2tZLsQnFrsp36SqmAnx3rOKiAgXZepSgYPw==
-X-Received: by 2002:adf:fdc6:: with SMTP id i6mr24657307wrs.252.1586873861531;
-        Tue, 14 Apr 2020 07:17:41 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
-        by smtp.gmail.com with ESMTPSA id a10sm19252822wrm.87.2020.04.14.07.17.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 07:17:40 -0700 (PDT)
-Subject: Re: [RFC][PATCH 00/36] objtool: Make recordmcount a subcommand
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Matt Helsley <mhelsley@vmware.com>, linux-kernel@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Miroslav Benes <mbenes@suse.cz>
-References: <cover.1586468801.git.mhelsley@vmware.com>
- <3a3f70df-07b0-91d9-33e1-e997e72b0c5c@redhat.com>
- <20200414093506.7b91bbbb@gandalf.local.home>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <064f41bd-0dfe-e875-df7c-214184c29fa7@redhat.com>
-Date:   Tue, 14 Apr 2020 15:17:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2389535AbgDNOSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:18:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:2867 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389449AbgDNOSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 10:18:42 -0400
+IronPort-SDR: n43S6aWBfOIE+rassvK5ChimVM5f/sKoFm/U5zFWXK4ExS4a4hx7GQ8lmrbqydVkkSX/Slg1xB
+ LxL/XMBsT7QA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 07:18:41 -0700
+IronPort-SDR: 8WT6N8GvHPslDndi0ySiMxgySi7g+kqKVAHKVdF4HU1IZhPuzfzp4N1R6P0bjWy4k/uyJl34Qx
+ bB8G2jheDpbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
+   d="scan'208";a="288229034"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Apr 2020 07:18:39 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jOMOc-0000XZ-F6; Tue, 14 Apr 2020 22:18:38 +0800
+Date:   Tue, 14 Apr 2020 22:17:42 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: drivers/gpu/drm/bridge/display-connector.c:34:48: warning: Clarify
+ calculation precedence for '&' and '?'. [clarifyCalculation]
+Message-ID: <202004142240.uydqaASd%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200414093506.7b91bbbb@gandalf.local.home>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   8f3d9f354286745c751374f5f1fcafee6b3f3136
+commit: 0c275c30176b2e7871c6ac5fb0ed548f81e0fa27 drm/bridge: Add bridge driver for display connectors
+date:   7 weeks ago
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
 
 
-On 4/14/20 2:35 PM, Steven Rostedt wrote:
-> On Tue, 14 Apr 2020 08:24:15 +0100
-> Julien Thierry <jthierry@redhat.com> wrote:
-> 
->> If all you need from objtool it the elf parsing code, wouldn't it make
->> more sense to move that out of objtool, as a utility library that both
->> objtool and recordmcount could use (and perhaps other tools in the future?)
->>
->> In patch 3 you seem to mention that other tools already have their own
->> code to parse elf. So instead of converting everything as an objtool
->> subcommand, maybe just have the library with the required functionality.
->>
->> Any opinions on the above? What do people prefer?
-> 
-> I think we discussed this before (and originally that was the plan), but I
-> believe one of the goals for bringing recordmcount into objtool is to speed
-> up the processing. Instead of having to read the elf sections for each use
-> case, we do it once, and then execute all the necessary operations for that
-> build.
-> 
-> If we just have a elf parsing library, then each object file is going to
-> have that read redundantly for each operation that is done on it.
-> 
-> I was hoping to have objtool handle all the operations needed that required
-> reading elf headers.
-> 
+cppcheck warnings: (new ones prefixed by >>)
 
-That makes sense, however, having each operation as an objtool 
-subcommand doesn't solve that issue, right? Each invocation of objtool 
-will re-read the elf object.
+>> drivers/gpu/drm/ttm/ttm_bo.c:409:9: warning: Identical condition and return expression 'r', return value is always 0 [identicalConditionAfterEarlyExit]
+    return r;
+           ^
+   drivers/gpu/drm/ttm/ttm_bo.c:396:6: note: If condition 'r' is true, the function will return/exit
+    if (r)
+        ^
+   drivers/gpu/drm/ttm/ttm_bo.c:409:9: note: Returning identical expression 'r'
+    return r;
+           ^
+   drivers/gpu/drm/ttm/ttm_bo.c:100:9: warning: The scope of the variable 'ret' can be reduced. [variableScope]
+    int i, ret, mem_type;
+           ^
+   drivers/gpu/drm/ttm/ttm_bo.c:572:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
+    int ret;
+        ^
+   drivers/gpu/drm/ttm/ttm_bo.c:913:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
+    int ret;
+        ^
+   drivers/gpu/drm/ttm/ttm_bo.c:1241:7: warning: The scope of the variable 'locked' can be reduced. [variableScope]
+    bool locked;
+         ^
+   drivers/gpu/drm/ttm/ttm_bo.c:1623:31: warning: The scope of the variable 'man' can be reduced. [variableScope]
+    struct ttm_mem_type_manager *man;
+                                 ^
+   drivers/gpu/drm/ttm/ttm_bo.c:1822:28: warning: Local variable 'ctx' shadows outer argument [shadowArgument]
+     struct ttm_operation_ctx ctx = { false, false };
+                              ^
+   drivers/gpu/drm/ttm/ttm_bo.c:1775:74: note: Shadowed declaration
+   int ttm_bo_swapout(struct ttm_bo_global *glob, struct ttm_operation_ctx *ctx)
+                                                                            ^
+   drivers/gpu/drm/ttm/ttm_bo.c:1822:28: note: Shadow variable
+     struct ttm_operation_ctx ctx = { false, false };
+                              ^
+--
+>> drivers/gpu/drm/drm_bridge.c:1006:7: warning: Local variable 'ret' shadows outer variable [shadowVariable]
+     int ret;
+         ^
+   drivers/gpu/drm/drm_bridge.c:994:6: note: Shadowed declaration
+    int ret;
+        ^
+   drivers/gpu/drm/drm_bridge.c:1006:7: note: Shadow variable
+     int ret;
+         ^
+--
+>> drivers/gpu/drm/bridge/display-connector.c:34:48: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+    return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
+                                                  ^
+--
+>> drivers/gpu/drm/tidss/tidss_scale_coefs.c:159:15: warning: struct member 'Anonymous0::name' is never used. [unusedStructMember]
+     const char *name;
+                 ^
+--
+   drivers/gpu/drm/tidss/tidss_dispc.c:1929:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
+    int ret;
+        ^
+>> drivers/gpu/drm/tidss/tidss_dispc.c:2312:11: warning: Shifting signed 32-bit value by 31 bits is implementation-defined behaviour [shiftTooManyBitsSigned]
+      v |= 1 << 31;
+             ^
 
-I guess having all the relevant code in objtool as subcommand would be a 
-first step towards that goal.
+vim +34 drivers/gpu/drm/bridge/display-connector.c
 
-> But if that's not what objtool maintainers want, then we can certainly go
-> back to looking at pulling out the elf headers, and have each tool be a
-> standalone again.
-> 
+    30	
+    31	static int display_connector_attach(struct drm_bridge *bridge,
+    32					    enum drm_bridge_attach_flags flags)
+    33	{
+  > 34		return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
+    35	}
+    36	
 
-I'm no maintainer nor know their feeling about this and I haven't been 
-part of the initial discussion. My main concern was about the approach 
-of moving existing subcommand code to arch specific folders.
-
-Thanks for the explanations.
-
-Cheers,
-
--- 
-Julien Thierry
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
