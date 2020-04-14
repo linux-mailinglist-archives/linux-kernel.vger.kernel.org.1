@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C4E1A8B92
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0131A8BBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505259AbgDNTxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:53:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46409 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505250AbgDNTxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:53:38 -0400
-IronPort-SDR: rYE20Kx336l/e+i8TOVnQQ5/qI6DNckykS750Moj2LriV6mhwyWRysH4HzfegcfdRtOq1oLuH8
- cKQY4srsvBcA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:53:37 -0700
-IronPort-SDR: K8PzKGe3/jwdy9SXZ7JQqasIBrAoadMme1gQ19RmYmMAkShCgfhcK6r5YaWJVvvgVnvXuPicff
- XdpRA5fKzmWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="277378888"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.0.57]) ([10.213.0.57])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2020 12:53:34 -0700
-Subject: Re: [PATCH] ASoC: Intel: sst: ipc command timeout
-To:     "Lu, Brent" <brent.lu@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc:     Kate Stewart <kstewart@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        "amadeuszx.slawinski@linux.intel.com" 
-        <amadeuszx.slawinski@linux.intel.com>
-References: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
- <4f495cf1-4740-cf3b-196f-cc850c503b43@linux.intel.com>
- <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-From:   Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <c8309abf-cbfb-a3db-5aa7-2e2f748a6d34@intel.com>
-Date:   Tue, 14 Apr 2020 21:53:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S2505357AbgDNT7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731053AbgDNT7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:59:45 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on20619.outbound.protection.outlook.com [IPv6:2a01:111:f400:7d00::619])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE099C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:54:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j6xL0GrY/tFoNahqe+hs1n/qqY28teNHmaKNZ+aIWV2qRott0LHC0zeUz2Ksrn2Kbp5uk6Au+/DJ3VEzjfC/sysTQuk0qM9qakwLJnBdNqXrSRo4YqZSXsOFTUCVM5B8OsdKqL7xI0MTwTfB8OOjLejHkfoq35UU9R5MYAJv9+3fkl8onNveBhUMHK6aMajcnjeYzPkUi8QBMb1K/lYxGpsgAfO1Na35I9Xc6SS1y8cQOHnzbmh4sRPKUqygah1NhZU5o4rcQ3E7W+wAzcVQO1UwwSR7tyTfS5YqeIgEroepxgIPrOwl/RQWi4V56LgkEI18LcKPAOQ1IvFGo+SiXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NAbA7TrEcUnypmMqfcDxi3hA4qK/qCuWGuM1yqv9xNM=;
+ b=BeQP0W25zWF7WpctH6E9kvuqSIK/NhKNAdv5+UVvU2iDeKc5jtb4jLrgGi5TrTtydvyMvQhRVZ1fX3n9oKf4VNxZ79UsTamzEWLDU2UWh2ixu8LLUN76oSKoDokE7M1mFZVuXhuvmkg2tyE8eYNAf3WkjltazqAkV3sDuoLFsUQJOzS4DHPk6NQZ4sw1pSbuB90KWMQHKE7uvvpNYxtHIkmrdVKKnBGmXkyau8sC1A9lLpaG9rjdpc9bb03uEO+iYaYCRZd2Vyerr0Rh2J7dNEfA5j4T9lhZwNnd69iJ3As0JvDzAelRJJluF3ZPQ52WMdAOIyH0rHYRM0ZEaUtiiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NAbA7TrEcUnypmMqfcDxi3hA4qK/qCuWGuM1yqv9xNM=;
+ b=UBzHBSnQcVFu0Flrm6GKq83vIVxCxLhEdtx+XXEOIJbkHY2nov7ctPIr/9Pe7RBGZm9kzX5e1xPgO3i6tXo4QHbZnDGxvCZvoCfJhP6PBUFNhUdn+zOtxSuo3qonGkAHfGmwbNnA5j4vcB8bJJqme/CUTSBPbRxMl7d/0ZtpN6c=
+Received: from VI1PR04MB6941.eurprd04.prod.outlook.com (2603:10a6:803:12e::23)
+ by VI1PR04MB4573.eurprd04.prod.outlook.com (2603:10a6:803:73::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.17; Tue, 14 Apr
+ 2020 19:54:29 +0000
+Received: from VI1PR04MB6941.eurprd04.prod.outlook.com
+ ([fe80::289c:fdf8:faf0:3200]) by VI1PR04MB6941.eurprd04.prod.outlook.com
+ ([fe80::289c:fdf8:faf0:3200%2]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 19:54:29 +0000
+From:   Leonard Crestez <leonard.crestez@nxp.com>
+To:     Peng Fan <peng.fan@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>
+CC:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
+Thread-Topic: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
+Thread-Index: AQHWEmDd5kEp+mUChUCEq05fLBSjFw==
+Date:   Tue, 14 Apr 2020 19:54:29 +0000
+Message-ID: <VI1PR04MB69417717438360A9858DD0D6EEDA0@VI1PR04MB6941.eurprd04.prod.outlook.com>
+References: <1586870475-32532-1-git-send-email-peng.fan@nxp.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=leonard.crestez@nxp.com; 
+x-originating-ip: [95.76.3.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: d1d2ecd9-3fd5-46a5-8aeb-08d7e0ada4e0
+x-ms-traffictypediagnostic: VI1PR04MB4573:|VI1PR04MB4573:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB45730CF46F0347609CA553DAEEDA0@VI1PR04MB4573.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1247;
+x-forefront-prvs: 0373D94D15
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB6941.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(9686003)(316002)(6506007)(110136005)(54906003)(5660300002)(7696005)(53546011)(52536014)(558084003)(71200400001)(55016002)(33656002)(66556008)(8676002)(91956017)(4326008)(26005)(66476007)(76116006)(44832011)(8936002)(2906002)(186003)(64756008)(478600001)(66446008)(66946007)(81156014)(86362001)(15650500001);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: a1AhqmjX3lbRSqlbWv3YRxRV/UdZK+SIS2iKRNQUGlPtYILaeFvF4eQ9puGLEnhflt2bLTrSDZECLcCHS51ANc0ITevqXfF6yFFqtDHzR8/QTXFDdPASfkmkx5LnT1rkjeyBcIKBh/WKEAEbtJyUxy7s+Tmz3dSwqsCCpgnPi/Bbv/eh7nlSjP813AR6RB3Rjy390s95xYigjATZtJPf0dl33jSHX2h3eyQljSzmirUuKNW/dL/UKYgwpa6Hn9+yefJAyIkwMwPKEKs1RZ4wFfCA7Xz0Cp+Qa6GGdzwOLXLDlUTUk2wjqERuhz7Ff6cPNuY7ejyqzybKYELWfXoPKO94nb4uhWbLiklPRyaKkjfAg8Mbm0O1XuUMBiZecES/rOYAS7q+QyInJq3wilA97SUWArYgoqP5puJV/zxp2PHj4Bw/itL2xc0FLgRr03sZ
+x-ms-exchange-antispam-messagedata: JKP8+Y+26ZNQZnpHKZQZ4/huXFB+BM+XXOOZb1qc1+t38a5ZcgnjtCwlWaHHnMtTem/NulMTkgMkuwkKOTJqtBHp7nYlRAsy1Q1Emkc//Z2GOUdl59YNrctcXXtzw0kSGB1mY42WzhENdi2SWAtw7A==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1d2ecd9-3fd5-46a5-8aeb-08d7e0ada4e0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 19:54:29.4684
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8kWnKJANn7VXq5W/KhF0gyXWaPLpBumki6omih3Dwj9c9cmcD9Vkx9mcEG1eq+1HxJQYeLdRodV7LOzBSTWkOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4573
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-14 18:20, Lu, Brent wrote:
->>
->> I have mixed feelings about this.
->>
->> One one hand, this looks simple enough.
->>
->> But on the other hand we have other users of memcpy_fromio(), including
->> SOF drivers, so what are the odds we have the same problems in other
->> places? Wouldn't it be safer to either change this function so that it's
->> behavior is not ambiguous or compiler-dependent, or fix the compiler?
->>
-> 
-> Hi Pierre and Amadeusz,
-> 
-> I have to admit that I didn't dig into clang's __builtin_memcpy to see what's
-> happening inside so I don't have direct evidence to say it's clang's problem.
-> What I know is kernel built by clang10 works fine but have this issue once
-> changed to clang11. At first I also suspect that it's a timing issue so I checked
-> the command transaction. The transaction is simple, host writes command
-> in SST_IPCX register, the DSP then writes reply in SST_IPCD register and
-> trigger an interrupt. Finally the irq thread sst_byt_irq_thread() reads the
-> SST_IPCD register to complete the transaction. I added some debug messages
-> to see if there is something wrong in the transaction but it all looks good.
-> 
-> I am also confused that why this only happens to BYT but not BDW since they
-> share the same register accessing code in sst-dsp.c. I checked the code and
-> realized that in BDW, the irq thread (hsw_irq_thread) performs 32-bit register
-> read instead of 64-bit in BYT platform. Therefore I change the code in BYT to
-> use two readl() calls and found the problem is gone. My best guess is it's
-> related to the implementation of __builtin_memcpy() but not sure it's the
-> timing or implementing cause this problem.
-> 
-> 
-> Regards,
-> Brent
-> 
-
-Regs width difference between BDW and BYT comes from specification. BDW 
-has IPC registers which are 32 wide. This fact ain't exactly the reason 
-to modify sst_shim32_read64.
-
-I'm sharing Amadeo's point of view. Your change should slow down 
-execution a bit - but that might be just what handlers needed to make 
-everything work again. Debug prints also slow down the execution what 
-could have prevented you from spotting the real problem.
-Let's ignore the memcpy stuff for a moment - could you focus on 
-elaborating the scenario where such issue occurs? Your initial commit 
-message also skips important bits such as platform used when reproducing 
-and so on, please add them.
-
-Thanks,
-Czarek
+On 2020-04-14 4:30 PM, Peng Fan wrote:=0A=
+> From: Peng Fan <peng.fan@nxp.com>=0A=
+> =0A=
+> The i.MX8 SCU message header size is the number of "u32" elements,=0A=
+> not "u8", so fix the check.=0A=
+> =0A=
+> Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>=0A=
+> Addresses-Coverity-ID: 1461658 ("Memory - corruptions")=0A=
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>=0A=
+=0A=
+Reviewed-by: Leonard Crestez <leonard.crestez@nxp.com>=0A=
