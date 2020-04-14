@@ -2,104 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD62B1A7AD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDFE1A7AE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501986AbgDNMbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730303AbgDNMbk (ORCPT
+        id S2502046AbgDNMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:35:58 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60226 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502029AbgDNMfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:31:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9ECC061A0C;
-        Tue, 14 Apr 2020 05:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=uizMBC4KFq8zXurx9Zz5OqewqR6VP2ZPVfe8F/b2Zxk=; b=V4TpNo1W8TtjYsqTrxUeWFJD/D
-        uK3XEeFjEbrTYZqyO+CHQnAKGkuQ34/piSsPTufYLjMXJM4kx6mxvYrrjqEGHTr/nvCiJed3mykTA
-        xFRpkzzG/drNZzxjCHAYjo+8PEFoSqvOy0eD/O+XlfnL6WeVPgfcdfZFAZpSBsKJTf1y9zWrNTPI4
-        CARgrjUR56ebslQak6Qi/2e8fNzUajAuu2hDwsk4P5BnO8rxvMpFJus8twKL2IPZeNmUwcsf6IbbN
-        VHtHJ9zu8rJL0qn7GNH34HyaGR9VxoWTrfDajHLihlNX6qzFsuhp8A37DMMjTrwwTPYbx8LTIT4my
-        Ulfueqng==;
-Received: from [2001:4bb8:180:384b:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOKj4-0000j4-8Y; Tue, 14 Apr 2020 12:31:38 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        p.zabel@pengutronix.de
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: qcom_scm: fix bogous abuse of dma-direct internals
-Date:   Tue, 14 Apr 2020 14:31:36 +0200
-Message-Id: <20200414123136.441454-1-hch@lst.de>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Apr 2020 08:35:47 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03ECI54q101846;
+        Tue, 14 Apr 2020 12:35:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=y60fSCG2nXRrowJmU8VdzYgVbRBn5fWc0JMdkv+EuI8=;
+ b=Dxy2k4OH6mHEFSQyrfvHAoREOtd2VgID+YF/O9/WcuKsGrDCDD+OyMHviTlzFbdZSWyL
+ +eC5JXZL+R2akjNx7bJ73f4wWH3vqUueLewZdsf6DKh2ZRmi/5ki45AjvYVnPPdcfH4K
+ 45aJcolFwvCupJX/QPnYtf8fiyr5J/QCg+tfy/8kCGCSzlLbskY4eFK6pqng4y2J3Vj0
+ ECfFgNN87QUlB6Cvq+RHMJO8eJqC6jJO44piUF8ibLNlF1tc2J6cCOCZ8w2Go7on7YJv
+ /wdKmbY2lVSJ1q1FOkXtBfZP1KkHw36DB97+EumOCMI7iDeunTdaSKFoIeVlSjPr0oqB kA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30b5um4ars-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 12:35:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03ECHj6A180506;
+        Tue, 14 Apr 2020 12:33:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 30bqchhs56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 12:33:37 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03ECXZUY019294;
+        Tue, 14 Apr 2020 12:33:35 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 05:33:34 -0700
+Date:   Tue, 14 Apr 2020 15:33:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Camylla Goncalves Cantanheide <c.cantanheide@gmail.com>
+Cc:     gregkh@linuxfoundation.org, navid.emamdoost@gmail.com,
+        sylphrenadin@gmail.com, nishkadg.linux@gmail.com,
+        stephen@brennan.io, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org
+Subject: Re: [PATCH 1/2] staging: rtl8192u: Refactoring setKey function
+Message-ID: <20200414123326.GG1163@kadam>
+References: <20200413030129.861-1-c.cantanheide@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413030129.861-1-c.cantanheide@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 bulkscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004140103
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As far as the device is concerned the dma address is the physical
-address.  There is no need to convert it to a physical address,
-especially not using dma-direct internals that are not available
-to drivers and which will interact badly with IOMMUs.  Last but not
-least the commit introducing it claimed to just fix a type issue,
-but actually changed behavior.
+On Mon, Apr 13, 2020 at 03:01:28AM +0000, Camylla Goncalves Cantanheide wrote:
+> Changes of the local variable value and
+> modification in the seletive repetition structure.
+> 
 
-Fixes: 6e37ccf78a532 ("firmware: qcom_scm: Use proper types for dma mappings")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/firmware/qcom_scm.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+This changelog isn't totally clear why you're doing this.  Just say:
+"I am refactorying setKey() to make it more clear.  I have unrolled the
+first two iterations through the loop.  This patch will not change
+runtime."
 
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 059bb0fbae9e..4701487573f7 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -6,7 +6,6 @@
- #include <linux/init.h>
- #include <linux/cpumask.h>
- #include <linux/export.h>
--#include <linux/dma-direct.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
- #include <linux/types.h>
-@@ -806,8 +805,7 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	struct qcom_scm_mem_map_info *mem_to_map;
- 	phys_addr_t mem_to_map_phys;
- 	phys_addr_t dest_phys;
--	phys_addr_t ptr_phys;
--	dma_addr_t ptr_dma;
-+	dma_addr_t ptr_phys;
- 	size_t mem_to_map_sz;
- 	size_t dest_sz;
- 	size_t src_sz;
-@@ -824,10 +822,9 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
- 			ALIGN(dest_sz, SZ_64);
- 
--	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_dma, GFP_KERNEL);
-+	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
- 	if (!ptr)
- 		return -ENOMEM;
--	ptr_phys = dma_to_phys(__scm->dev, ptr_dma);
- 
- 	/* Fill source vmid detail */
- 	src = ptr;
-@@ -855,7 +852,7 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 
- 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
- 				    ptr_phys, src_sz, dest_phys, dest_sz);
--	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_dma);
-+	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
- 	if (ret) {
- 		dev_err(__scm->dev,
- 			"Assign memory protection call failed %d\n", ret);
--- 
-2.25.1
+So long as it's clear what you're trying to do and why, that's the
+important thing with a commit message.
+
+> Signed-off-by: Camylla Goncalves Cantanheide <c.cantanheide@gmail.com>
+> ---
+>  drivers/staging/rtl8192u/r8192U_core.c | 52 ++++++++++++--------------
+>  1 file changed, 24 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+> index 9b8d85a4855d..87c02aee3854 100644
+> --- a/drivers/staging/rtl8192u/r8192U_core.c
+> +++ b/drivers/staging/rtl8192u/r8192U_core.c
+> @@ -4880,7 +4880,7 @@ void EnableHWSecurityConfig8192(struct net_device *dev)
+>  void setKey(struct net_device *dev, u8 entryno, u8 keyindex, u16 keytype,
+>  	    u8 *macaddr, u8 defaultkey, u32 *keycontent)
+>  {
+> -	u32 target_command = 0;
+> +	u32 target_command = CAM_CONTENT_COUNT * entryno |  BIT(31) | BIT(16);
+>  	u32 target_content = 0;
+>  	u16 us_config = 0;
+>  	u8 i;
+> @@ -4890,39 +4890,35 @@ void setKey(struct net_device *dev, u8 entryno, u8 keyindex, u16 keytype,
+>  
+>  	RT_TRACE(COMP_SEC,
+>  		 "====>to %s, dev:%p, EntryNo:%d, KeyIndex:%d, KeyType:%d, MacAddr%pM\n",
+> -        	 __func__, dev, entryno, keyindex, keytype, macaddr);
+> +		 __func__, dev, entryno, keyindex, keytype, macaddr);
+
+Do this white space change in a separate patch.
+
+>  
+>  	if (defaultkey)
+>  		us_config |= BIT(15) | (keytype << 2);
+>  	else
+>  		us_config |= BIT(15) | (keytype << 2) | keyindex;
+>  
+> -	for (i = 0; i < CAM_CONTENT_COUNT; i++) {
+> -		target_command  = i + CAM_CONTENT_COUNT * entryno;
+> -		target_command |= BIT(31) | BIT(16);
+> -
+> -		if (i == 0) { /* MAC|Config */
+> -			target_content = (u32)(*(macaddr + 0)) << 16 |
+> -					(u32)(*(macaddr + 1)) << 24 |
+> -					(u32)us_config;
+> -
+> -			write_nic_dword(dev, WCAMI, target_content);
+> -			write_nic_dword(dev, RWCAM, target_command);
+> -		} else if (i == 1) { /* MAC */
+> -			target_content = (u32)(*(macaddr + 2))	 |
+> -					(u32)(*(macaddr + 3)) <<  8 |
+> -					(u32)(*(macaddr + 4)) << 16 |
+> -					(u32)(*(macaddr + 5)) << 24;
+> -			write_nic_dword(dev, WCAMI, target_content);
+> -			write_nic_dword(dev, RWCAM, target_command);
+> -		} else {
+> -			/* Key Material */
+> -			if (keycontent) {
+> -				write_nic_dword(dev, WCAMI,
+> -						*(keycontent + i - 2));
+> -				write_nic_dword(dev, RWCAM, target_command);
+> -                	}
+> -		}
+> +	target_content = macaddr[0] << 16 |
+> +			 macaddr[0] << 24 |
+> +			(u32)us_config;
+> +
+> +	write_nic_dword(dev, WCAMI, target_content);
+> +	write_nic_dword(dev, RWCAM, target_command++);
+> +
+> +	/* MAC */
+> +	target_content = macaddr[2]	  |
+> +			 macaddr[3] <<  8 |
+> +			 macaddr[4] << 16 |
+> +			 macaddr[5] << 24;
+> +	write_nic_dword(dev, WCAMI, target_content);
+> +	write_nic_dword(dev, RWCAM, target_command++);
+> +
+> +	/* Key Material */
+> +	if (!keycontent)
+> +		return;
+> +
+> +	for (i = 2; i < CAM_CONTENT_COUNT; i++) {
+> +		write_nic_dword(dev, WCAMI, *keycontent++);
+
+This code was wrong in the original as well, but now that I see the bug
+let's fix it.  CAM_CONTENT_COUNT is 8.  8 - 2 = 6.  We are writing 6
+u32 variables to write_nic_dword().  But the *keycontent buffer only has
+4 u32 variables so it is a buffer overflow.
+
+> +		write_nic_dword(dev, RWCAM, target_command++);
+>  	}
+>  }
+
+regards,
+dan carpenter
+
 
