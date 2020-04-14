@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE48A1A8C6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5181A8C75
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633072AbgDNUYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:24:20 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33793 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633040AbgDNUYQ (ORCPT
+        id S2633120AbgDNU2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:28:51 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30544 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633117AbgDNU2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:24:16 -0400
-Received: by mail-wm1-f65.google.com with SMTP id c195so13324050wme.1;
-        Tue, 14 Apr 2020 13:24:15 -0700 (PDT)
+        Tue, 14 Apr 2020 16:28:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586896081;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=gFhKg1i0fnRjhPnvNhhvH31RVPmlylOwcXirBGzACwY=;
+        b=QX3DN5JYUf9GWzqn0d31av65ZTIqf/RONt2+tehFWyY3RVdbM/DHEw35DgP+pxvtExhKVc
+        tmbr657l6HSEgZwA8z239lg4EsXAl/aEzMItZflZghjJ2honDtyIh1coOkV3ATduEO1mbn
+        KAsQI0nHGopGsVE68Gv+r8PZgtq0m3A=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-xHizUbkgN0Onx25ibWtCJQ-1; Tue, 14 Apr 2020 16:26:18 -0400
+X-MC-Unique: xHizUbkgN0Onx25ibWtCJQ-1
+Received: by mail-qv1-f72.google.com with SMTP id z16so974157qvo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:26:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8foj8DrysV33p4mme5GdEjxA5CWGWkeyAu6FZ3U4eS0=;
-        b=IF1f8RElmawcrPYoRSgrPir9kIXdHCdU6Meve1ekN4grhbEqXhRTNo9tpVhJQ5yueb
-         XABFBIRRjKMeqMinSFW5YIoDhFnVcCIir7KJIEzCC8mNOh+wIBA4WL+Kac6cJbaNRgiI
-         FPGosUoC2s90URZAgopAYV9/HTqoabvN9ioQEQKnwwf28LesrX8r21wc0l0Xi7Ma3itJ
-         SCoMUeO8Nu4SLgV/jAPwhDuoYyT7BFDnPoEj5FmbB4AyCzqT2bJb96tJcOUR3zx1Br1A
-         BVOrT7y7aF++KRbbTL1rihlwVkU850LUmc2mw3jfpKdBT5k8C3yFfmlvB7qsUWixzIjK
-         DofA==
-X-Gm-Message-State: AGi0PuZ0Ti9rD5vuV0jnGwlxVEsnYbjzKAkLIaEWss+4etQ00ZGTB+L2
-        Ox5Nhak3IzhraM+k0Qb5ErA=
-X-Google-Smtp-Source: APiQypKNDiBsb0VoeE7xhlyPlc3j5YSKwr2IMwWp7yUDNrjRzO29ekzSD3mV+sqz2oB1ca/p8BMjlA==
-X-Received: by 2002:a1c:9891:: with SMTP id a139mr1688487wme.129.1586895854749;
-        Tue, 14 Apr 2020 13:24:14 -0700 (PDT)
-Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
-        by smtp.gmail.com with ESMTPSA id y5sm21213391wru.15.2020.04.14.13.24.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=gFhKg1i0fnRjhPnvNhhvH31RVPmlylOwcXirBGzACwY=;
+        b=X60Fwmft6oDkwW7VTRSdupWN7g4Qsuuf3W3epfUxbgNMQDqlkgZE1epPr3y/XQwbcX
+         smEysJfsYgCm++nHP6ljJwLcXvS0kGTmsvi4G9FGQ5UHu+fK2DLLhPCy90sXV2FgEgTc
+         76rVxWfAYa0J0WyUkD/vbHQD/NE//MSCII+pLH9F/Iu4eeZcWHLRrw90i+z4FTKDIK/P
+         4kO/czj9yGznY6DjqNGL7e4l4lubN4t0ggfwc5olmwtLYRCoIRNzlNwY1OmCbOSGlYip
+         0QCjE6V6w7OTZdKysjTgZbua214q/b8DmzZFUAmzJP5w9P6hiysUT55hV+ZYGuTpJ65A
+         OA+A==
+X-Gm-Message-State: AGi0Puap7fATEhzWWijPW2rknHIHwYipgKEzY80LjIlJc1ZXw+MM/j+7
+        NtWYD5Bye9pE0DNMK5Iznbwb/8ZN42lG/5QDHYv6HUOlacWJGyS/iMmErrnZt1pWnk5O3yBS/cb
+        1I1n0vKcsP81CAhizCzEybmn4
+X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr1771408qvb.192.1586895977467;
+        Tue, 14 Apr 2020 13:26:17 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLL/739Bunp9PWRhInCCopdTucT0TPb7bitw7FUwX4bvc+D2WRR+F0MR9Hi3wsAxrEA6InUdg==
+X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr1771387qvb.192.1586895977300;
+        Tue, 14 Apr 2020 13:26:17 -0700 (PDT)
+Received: from localhost (ip70-163-223-149.ph.ph.cox.net. [70.163.223.149])
+        by smtp.gmail.com with ESMTPSA id g187sm10909209qkf.115.2020.04.14.13.26.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 13:24:14 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 21:24:12 +0100
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] drivers: hv: remove redundant assignment to
- pointer primary_channel
-Message-ID: <20200414202412.op5kxcqc7k4bce6z@debian>
-References: <20200414152343.243166-1-colin.king@canonical.com>
+        Tue, 14 Apr 2020 13:26:16 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 13:26:15 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "zhang.jia@linux.alibaba.com" <zhang.jia@linux.alibaba.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: Re: [PATCH] tpm: fix wrong return value in tpm_pcr_extend
+Message-ID: <20200414202615.stnurisucqxblenj@cantor>
+Reply-To: Jerry Snitselaar <jsnitsel@redhat.com>
+Mail-Followup-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "zhang.jia@linux.alibaba.com" <zhang.jia@linux.alibaba.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+References: <20200414114226.96691-1-tianjia.zhang@linux.alibaba.com>
+ <76d46ffbad294a6385779c29c4e5cafd@huawei.com>
+ <20200414193542.GB13000@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200414152343.243166-1-colin.king@canonical.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200414193542.GB13000@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 04:23:43PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The pointer primary_channel is being assigned with a value that is never,
-> The assignment is redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Tue Apr 14 20, Jarkko Sakkinen wrote:
+>On Tue, Apr 14, 2020 at 11:55:43AM +0000, Roberto Sassu wrote:
+>> > -----Original Message-----
+>> > From: linux-integrity-owner@vger.kernel.org [mailto:linux-integrity-
+>> > owner@vger.kernel.org] On Behalf Of Tianjia Zhang
+>> > Sent: Tuesday, April 14, 2020 1:42 PM
+>> > To: peterhuewe@gmx.de; jarkko.sakkinen@linux.intel.com; jgg@ziepe.ca;
+>> > arnd@arndb.de; gregkh@linuxfoundation.org; zhang.jia@linux.alibaba.com
+>> > Cc: linux-integrity@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> > tianjia.zhang@linux.alibaba.com
+>> > Subject: [PATCH] tpm: fix wrong return value in tpm_pcr_extend
+>> >
+>> > For the algorithm that does not match the bank, a positive
+>> > value EINVAL is returned here. I think this is a typo error.
+>> > It is necessary to return an error value.
+>>
+>> Yes, thanks.
+>>
+>> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+>
+>Happen to have the commit ID at hand for fixes?
+>
+>Thanks.
+>
+>/Jarkko
+>
 
-Thanks.
+9f75c8224631 ("KEYS: trusted: correctly initialize digests and fix locking issue")
 
-Now that the only user of primary_channel is within the else branch, we
-can go one step further to move the definition of primary_channel there.
-
-I can make the adjustment while committing this patch, as well as
-updating the commit message.
-
-Wei.
-
-> ---
->  drivers/hv/channel_mgmt.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-> index ffd7fffa5f83..f7bbb8dc4b0f 100644
-> --- a/drivers/hv/channel_mgmt.c
-> +++ b/drivers/hv/channel_mgmt.c
-> @@ -425,8 +425,6 @@ void hv_process_channel_removal(struct vmbus_channel *channel)
->  
->  	if (channel->primary_channel == NULL) {
->  		list_del(&channel->listentry);
-> -
-> -		primary_channel = channel;
->  	} else {
->  		primary_channel = channel->primary_channel;
->  		spin_lock_irqsave(&primary_channel->lock, flags);
-> -- 
-> 2.25.1
-> 
