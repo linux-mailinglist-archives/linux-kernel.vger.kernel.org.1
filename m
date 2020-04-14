@@ -2,120 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1321A7EFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E331AABE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388525AbgDNN5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:57:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
+        id S1414705AbgDOP0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:26:46 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:36328 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388513AbgDNN5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:57:16 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF22620656;
-        Tue, 14 Apr 2020 13:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586872636;
-        bh=n9zV/CUm5fQ6kJG9xx9uBNkS1o6bnb2V/CMUwlWKrf0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b/kuN0mMrGpZr4ilxxpfussBIw4+VR3Qlk9Sl3WR2i289CFIIqOtaL7p7RASlKDZ9
-         vfPpAOPXooK8inL7i2YwIB/rSjj0cncaL/gt2OX7jThO1ap0y36WURbAwnGgHOf4ut
-         fLSxAyZq70gzsRO490XT4UfNLbRwPP3L1RQSmHh0=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jOM3u-003AqO-B3; Tue, 14 Apr 2020 14:57:14 +0100
-Date:   Tue, 14 Apr 2020 14:57:12 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Fangrui Song <maskray@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] arm64: kvm: Delete duplicated label: in invalid_vector
-Message-ID: <20200414145712.603e37d5@why>
-In-Reply-To: <CAKwvOdn35v5LkvhWugfLmK_FjVsd0RdPtBCRSqVaM9EP_1KU7w@mail.gmail.com>
-References: <20200413231016.250737-1-maskray@google.com>
-        <CAKwvOdn35v5LkvhWugfLmK_FjVsd0RdPtBCRSqVaM9EP_1KU7w@mail.gmail.com>
-Organization: Approximate
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1414683AbgDOP0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 11:26:15 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jOjuy-0006EH-RF; Thu, 16 Apr 2020 01:25:37 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 01:25:36 +1000
+Date:   Tue, 14 Apr 2020 23:57:31 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH] lib/mpi: Fix building for powerpc with clang
+Message-ID: <20200414135731.GA8766@gondor.apana.org.au>
+References: <20200413195041.24064-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: ndesaulniers@google.com, maskray@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, clang-built-linux@googlegroups.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413195041.24064-1-natechancellor@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
-
-On Mon, 13 Apr 2020 16:37:10 -0700
-Nick Desaulniers <ndesaulniers@google.com> wrote:
-
-> On Mon, Apr 13, 2020 at 4:10 PM Fangrui Song <maskray@google.com> wrote:
-> >
-> > SYM_CODE_START defines \label , so it is redundant to define \label again.
-> > A redefinition at the same place is accepted by GNU as
-> > (https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=159fbb6088f17a341bcaaac960623cab881b4981)
-> > but rejected by the clang integrated assembler.
-> >
-> > Fixes: 617a2f392c92 ("arm64: kvm: Annotate assembly using modern annoations")  
+On Mon, Apr 13, 2020 at 12:50:42PM -0700, Nathan Chancellor wrote:
+> 0day reports over and over on an powerpc randconfig with clang:
 > 
-> Thanks for the patch!  I think a more accurate Fixes tag would be:
-> Fixes: 2b28162cf65a ("arm64: KVM: HYP mode entry points")
-
-I'm not sure this commit is accurate. At that time, there was no other
-declaration for \label and dropping it would simply break compilation.
-I believe that Fangrui is correct in his analysis that 617a2f392c92 is
-the first broken commit.
-
-> With this patch applied, and your other arm64 integrated assembler
-> patch (https://lore.kernel.org/linux-arm-kernel/20200413033811.75074-1-maskray@google.com/T/#u),
-> I can now assemble arch/arm64/kvm/.
-
-Progress! ;-)
-
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
+> inline asm context requiring an l-value: remove the cast or build with
+> -fheinous-gnu-extensions
 > 
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/988
-> > Signed-off-by: Fangrui Song <maskray@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/hyp-entry.S | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/kvm/hyp/hyp-entry.S b/arch/arm64/kvm/hyp/hyp-entry.S
-> > index c2a13ab3c471..9c5cfb04170e 100644
-> > --- a/arch/arm64/kvm/hyp/hyp-entry.S
-> > +++ b/arch/arm64/kvm/hyp/hyp-entry.S
-> > @@ -198,7 +198,6 @@ SYM_CODE_END(__hyp_panic)
-> >  .macro invalid_vector  label, target = __hyp_panic
-> >         .align  2
-> >  SYM_CODE_START(\label)
-> > -\label:
-> >         b \target
-> >  SYM_CODE_END(\label)
-> >  .endm
-> > --
-> > 2.26.0.110.g2183baf09c-goog
-> >  
+> Remove the superfluous casts, which have been done previously for x86
+> and arm32 in commit dea632cadd12 ("lib/mpi: fix build with clang") and
+> commit 7b7c1df2883d ("lib/mpi/longlong.h: fix building with 32-bit
+> x86").
 > 
-> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/991
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-I'll pick this up as soon as we've sorted the queue with the rest of
-the fixes.
-
-Thanks,
-
-	M.
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 -- 
-Jazz is not dead. It just smells funny...
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
