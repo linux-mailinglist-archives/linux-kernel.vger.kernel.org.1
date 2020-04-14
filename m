@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618D01A7893
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079391A78BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438462AbgDNKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:40:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40234 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438374AbgDNKcj (ORCPT
+        id S2438499AbgDNKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:48:15 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7542 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438573AbgDNKo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:32:39 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EATjUu099291;
-        Tue, 14 Apr 2020 10:32:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=gSGUwtyvCAjodF6yycFW4jVDd4XOe3sAR+7aKXD38Yw=;
- b=nMxmkxUTa7mPVml7GAXJR3UUmDvJXah8Ah7T+zNu54SWerisBUWzklwFg7vol111ogrJ
- M6Gbyvo2nzBRcfUKrJXZ2hdD3+Kj86s8zswS8+Doc/t/Y0l7OmrX2nXU5Wf0uxthzdI9
- GSeToA8E2k7omU7Vy89XIpKXhprGg1Ea4jDGFIPYb2VBY+7+vCJ2/0FxPkH0CUyIGJdr
- dN2rYNVkc55LfDZrbtsonUdLs03wYB2NpBESeb7EQETaFQRSsr6OT2mbdH2KhgTtkobp
- ySlaMkR3IPX5pJPvbWPkfkiE5KpckSnCH4XJfk2Tih50+Uu84IMPUNWjsSxrE38cGXYl kA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30b6hpkmf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:32:07 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAR66d034899;
-        Tue, 14 Apr 2020 10:32:06 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30cta9ty06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:32:06 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EAW6nf010236;
-        Tue, 14 Apr 2020 10:32:06 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 03:32:05 -0700
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
-        alexandre.chartre@oracle.com
-Subject: [PATCH V3 9/9] x86/speculation: Annotate intra-function calls
-Date:   Tue, 14 Apr 2020 12:36:18 +0200
-Message-Id: <20200414103618.12657-10-alexandre.chartre@oracle.com>
-X-Mailer: git-send-email 2.18.2
-In-Reply-To: <20200414103618.12657-1-alexandre.chartre@oracle.com>
-References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=13
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140086
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 phishscore=0 suspectscore=13
- lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140086
+        Tue, 14 Apr 2020 06:44:29 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9591c00000>; Tue, 14 Apr 2020 03:34:40 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 14 Apr 2020 03:36:29 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 14 Apr 2020 03:36:29 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
+ 2020 10:36:28 +0000
+Received: from [10.26.73.15] (172.20.13.39) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
+ 2020 10:36:25 +0000
+Subject: Re: [PATCH 5.4 00/41] 5.4.32-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200411115504.124035693@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <134b42a3-4416-a1b7-17e6-30d12bd86a19@nvidia.com>
+Date:   Tue, 14 Apr 2020 11:36:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586860480; bh=QG2rljcM2sLsL8F9VXTqWo3wamoyesxEgxS6zC4YM08=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=CCAcLSqiOvjh+VYjekOWY+B6Regjp5YipholP/jKFXIRx751OaS/AzrbJlcS19wQL
+         oa+N93Zgmd7L4hOuq0UFDPHSJFTcV6GWKKBB8/GYuxQ/ptvkHPKHV9CFv53fe2UUYk
+         iH1aGh0RfgxNuVjq45o3AzoNWskx5lMWSjxEzA4GpL0FCMslD89wilj+QDTdpeuVc0
+         tvuet5L4zqnU2VZZAv1llcla88ynVx82USqmu1gg1mkIq5euES17fGbM9WJLw4VjdZ
+         8+DEVhBrC6OsVPmC0E4MSg+jdzwdKVw7VgMe0vIB3ct0t6Jl6ZrV0qbbJeSZ7Q8jxh
+         7IQMjBT1z8cuA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some speculative execution mitigations (like retpoline) use intra-
-function calls. Provide a macro to annotate such intra-function calls
-so they can be properly handled by objtool, and use this macro to
-annotate intra-function calls.
 
-Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
----
- arch/x86/include/asm/nospec-branch.h | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+On 11/04/2020 13:09, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.32 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.32-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 20594ea99c21..89ae2f9cc873 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -3,6 +3,7 @@
- #ifndef _ASM_X86_NOSPEC_BRANCH_H_
- #define _ASM_X86_NOSPEC_BRANCH_H_
- 
-+#include <linux/frame.h>
- #include <linux/static_key.h>
- 
- #include <asm/alternative.h>
-@@ -20,6 +21,15 @@
- #define ANNOTATE_NOSPEC_ALTERNATIVE \
- 	ANNOTATE_IGNORE_ALTERNATIVE
- 
-+/*
-+ * Intra-function call instruction. This should be used as a substitute
-+ * for the call instruction when doing an intra-function call. It is
-+ * similar to the call instruction but it tells objtool that this is
-+ * an intra-function call.
-+ */
-+#define INTRA_FUNCTION_CALL \
-+	ANNOTATE_INTRA_FUNCTION_CALL call
-+
- /*
-  * Fill the CPU return stack buffer.
-  *
-@@ -47,13 +57,13 @@
- #define __FILL_RETURN_BUFFER_BEGIN(reg, nr, sp)	\
- 	mov	$(nr/2), reg;			\
- 771:						\
--	call	772f;				\
-+	INTRA_FUNCTION_CALL 772f;		\
- 773:	/* speculation trap */			\
- 	pause;					\
- 	lfence;					\
- 	jmp	773b;				\
- 772:						\
--	call	774f;				\
-+	INTRA_FUNCTION_CALL 774f;		\
- 775:	/* speculation trap */			\
- 	pause;					\
- 	lfence;					\
-@@ -90,7 +100,7 @@
-  * invocation below less ugly.
-  */
- .macro RETPOLINE_JMP reg:req
--	call	.Ldo_rop_\@
-+	INTRA_FUNCTION_CALL .Ldo_rop_\@
- .Lspec_trap_\@:
- 	pause
- 	lfence
-@@ -110,7 +120,7 @@
- .Ldo_retpoline_jmp_\@:
- 	RETPOLINE_JMP \reg
- .Ldo_call_\@:
--	call	.Ldo_retpoline_jmp_\@
-+	INTRA_FUNCTION_CALL .Ldo_retpoline_jmp_\@
- .endm
- 
- /*
+All tests are passing for Tegra ...
+
+Test results for stable-v5.4:
+    13 builds:	13 pass, 0 fail
+    24 boots:	24 pass, 0 fail
+    40 tests:	40 pass, 0 fail
+
+Linux version:	5.4.32-rc1-gf163418797b9
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra210-p3450-0000,
+                tegra30-cardhu-a04
+
+Cheers
+Jon
+
 -- 
-2.18.2
-
+nvpublic
