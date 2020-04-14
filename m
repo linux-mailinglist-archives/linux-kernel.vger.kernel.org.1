@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DDB1A828E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A8B1A8295
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439316AbgDNPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:22:43 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:37691 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438826AbgDNPWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:22:31 -0400
-Received: by mail-ot1-f65.google.com with SMTP id z17so5616910oto.4;
-        Tue, 14 Apr 2020 08:22:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AnHn2Q/nKp8vHi8xRLPGA04W9zPV6QThgvNNDvW6Lz4=;
-        b=oYeCqf78I8FW6TzZbU5/EHAung+vdubjK44BPSrBmo2lzpN/8YI7S5ZBygDDDUu0Hi
-         dv8Ji9bMj92KjHFFTuBw5maxg/CXgl/AnbAX97ExjD5RnnjxaU44yyFAED09CRZOgbuq
-         s9tXq80KvOtLX/5NiETKUlEavcRYU8VMOBg/Bh4lPdQJ5FmhHggtwKIJYcWJ6B6wwuMe
-         tszTzmKvR/gP0+gJwOCK8sgdYiSudAAdFPfXWXTsNe49vSyxewdsRi+pooy7ufxPdE0T
-         tpjYxLveLyN2AFhYqKua2z48YnBPAzb0pjam8mnN41fLWe5SgHFJpP1sFdNGKvqkJCyo
-         YF+Q==
-X-Gm-Message-State: AGi0PubWoS37eAqQDbiKgCWvAgA9JslnaiJ2NxiI9XS9aACTwAobFqxp
-        0A7Wv2ImeGYdJTPdvWMHeg==
-X-Google-Smtp-Source: APiQypJR5WeRaPhYCrALFhL48Dtxyk9ODcHd1LOjeRCjBr6tTDoukXibtiqbCGRPmuc2x2B7Gx5QGA==
-X-Received: by 2002:a9d:6354:: with SMTP id y20mr9159168otk.171.1586877750682;
-        Tue, 14 Apr 2020 08:22:30 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q18sm5508097otl.65.2020.04.14.08.22.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 08:22:29 -0700 (PDT)
-Received: (nullmailer pid 27980 invoked by uid 1000);
-        Tue, 14 Apr 2020 15:22:28 -0000
-Date:   Tue, 14 Apr 2020 10:22:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: Re: [PATCH v7 1/4] dt-bindings: usb: qcom,dwc3: Introduce
- interconnect properties for Qualcomm DWC3 driver
-Message-ID: <20200414152228.GA27923@bogus>
-References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
- <1585718145-29537-2-git-send-email-sanm@codeaurora.org>
+        id S2439447AbgDNPXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:23:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49086 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390831AbgDNPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:23:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 4D89AAC26;
+        Tue, 14 Apr 2020 15:23:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A41C0DA823; Tue, 14 Apr 2020 17:22:33 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 17:22:33 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Tang Bin <tangbin@cmss.chinamobile.com>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] btrfs: Fix backref.c selftest compilation warning
+Message-ID: <20200414152233.GV5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Tang Bin <tangbin@cmss.chinamobile.com>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+References: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
+ <20200414151931.GU5920@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1585718145-29537-2-git-send-email-sanm@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200414151931.GU5920@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  1 Apr 2020 10:45:42 +0530, Sandeep Maheswaram wrote:
-> Add documentation for the interconnects and interconnect-names
-> properties for USB.
+On Tue, Apr 14, 2020 at 05:19:31PM +0200, David Sterba wrote:
+> On Sat, Apr 11, 2020 at 11:49:15PM +0800, Tang Bin wrote:
+> > Fix missing braces compilation warning in the ARM
+> > compiler environment:
+> >     fs/btrfs/backref.c: In function ‘is_shared_data_backref’:
+> >     fs/btrfs/backref.c:394:9: warning: missing braces around initializer [-Wmissing-braces]
+> >       struct prelim_ref target = {0};
+> >     fs/btrfs/backref.c:394:9: warning: (near initialization for ‘target.rbnode’) [-Wmissing-braces]
+> > 
+> > Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> > Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+> > ---
+> >  fs/btrfs/backref.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> > index 9c380e7..0cc0257 100644
+> > --- a/fs/btrfs/backref.c
+> > +++ b/fs/btrfs/backref.c
+> > @@ -391,7 +391,7 @@ static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
+> >  	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
+> >  	struct rb_node *parent = NULL;
+> >  	struct prelim_ref *ref = NULL;
+> > -	struct prelim_ref target = {0};
+> > +	struct prelim_ref target = {};
 > 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> I wonder why this initialization is a problem while there are about 20
+> other uses of "{0}". The warning is about the embedded rbnode, but why
+> does a more recent compiler not warn about that? Is this a missing fix
+> from the one you use?
 > 
+> I don't mind fixing compiler warnings as long as it bothers enough
+> people, eg. we have fixes reported by gcc 7 but I'm hesitant to fix
+> anything older without a good reason.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This seems to be the bug report
+
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
+"Bug 53119 - -Wmissing-braces wrongly warns about universal zero
+initializer {0} "
