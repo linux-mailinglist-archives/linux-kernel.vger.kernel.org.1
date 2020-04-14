@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490B21A8D8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEEA1A8D91
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633764AbgDNVSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:18:50 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:39766 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633733AbgDNVSr (ORCPT
+        id S2633786AbgDNVVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2633777AbgDNVVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:18:47 -0400
-Received: from [10.137.106.115] (unknown [131.107.174.243])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3E91D20B4737;
-        Tue, 14 Apr 2020 14:18:46 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3E91D20B4737
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1586899126;
-        bh=8vd2NllO885QphfJq499exMBBONhyoMLoUuWkoB9kMM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GwNkoQjLBGfCuuREHe/03lAwC66jZGflscriy+ucC2VLYeU1H2gwGfnbtARtIw/Bv
-         4DplFt0PBFLVA7BsFj6OcZIZHvCpm7RJoNrRJgrPikIOOWGzRv+KAeHNeUITy1lxxp
-         3F7GXI1j8U26y2fFZxmIuTVq/Npy+xZPthhmAfPo=
-Subject: Re: [RFC PATCH v2 11/12] documentation: Add IPE Documentation
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     agk@redhat.com, axboe@kernel.dk, snitzer@redhat.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, tyhicks@linux.microsoft.com,
-        pasha.tatashin@soleen.com, sashal@kernel.org,
-        jaskarankhurana@linux.microsoft.com, nramas@linux.microsoft.com,
-        mdsakib@linux.microsoft.com, linux-kernel@vger.kernel.org
-References: <20200406221439.1469862-1-deven.desai@linux.microsoft.com>
- <20200406221439.1469862-12-deven.desai@linux.microsoft.com>
- <20200414093809.2c6ef93b@lwn.net>
-From:   Deven Bowers <deven.desai@linux.microsoft.com>
-Message-ID: <9c55bbe9-2c6e-7a0d-cf90-5b2aee724f19@linux.microsoft.com>
-Date:   Tue, 14 Apr 2020 14:18:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Apr 2020 17:21:20 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BDDC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:21:20 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w65so525140pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=qYUxUinpAV+jTdIPlQ2ftanC+VH4TYtMDBpvx6CaE/M=;
+        b=e6D9UKxRfuRB6Vg27Qve4+YFdRAD4xfEU/6fiSyFULykIaaqQmkoKD2e9ao9hIBax8
+         BIg3X9WuPUCvye8P3WyERQJJmZ4no8QQNxBFjt8wy/gPFWEL+qcpQOi0WWSA3MVnH1gN
+         nxjTcN0XIJfb9nPMSkfPXl4vSaCFCt8Z1f8so=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=qYUxUinpAV+jTdIPlQ2ftanC+VH4TYtMDBpvx6CaE/M=;
+        b=hIx9iDnP7JQREASSblvDsE0jLNzm144NAfX38tGHUzt9O5BxZ39zxq3CHYweJoQQrq
+         QLuxQRyoNjh/vEbXol4e2KGtxUGkyEf3bBtq9b9sGgcK4+aVE2dJzOJehv7XZGmnR+2n
+         fUDlBn33FXxrpCGeGTt5Bl6A0Y28wSlz/6zuXPuDVhnol0bWedy5l0F9zDPywm4OjegT
+         kaV7s/Da0x5DdHPoAECmq9qqbQwcynNTz6ZJSHfpDWfeovAWPQT3vKXWPnIuTmU0KfJ0
+         bLP4EIjtEQQJP23pRrRgY5o3aeL6pfKMHNE3q3asByMA9dqz5xAaB9G2UHQr0R6OP7j1
+         vTTg==
+X-Gm-Message-State: AGi0PuY1AWIJGRaK/AphjmCRaodELUiBYe0N3gby1W04GoWivjbfr5CB
+        /QLvM5Ywa1ZOgBWdjya/s0NXRA==
+X-Google-Smtp-Source: APiQypJvfbBsusLiO4aMQUZyDZaiL2beLstkyOYsDAsnSSXRrCDtVIAiTW4XcNJVdxbo/iotiywFWQ==
+X-Received: by 2002:a63:c101:: with SMTP id w1mr10203522pgf.126.1586899279542;
+        Tue, 14 Apr 2020 14:21:19 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id i13sm11701085pfa.113.2020.04.14.14.21.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 14:21:18 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20200414093809.2c6ef93b@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1585809534-11244-2-git-send-email-sanm@codeaurora.org>
+References: <1585809534-11244-1-git-send-email-sanm@codeaurora.org> <1585809534-11244-2-git-send-email-sanm@codeaurora.org>
+Subject: Re: [PATCH v5 1/3] dt-bindings: phy: qcom,qmp: Convert QMP PHY bindings to yaml
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>, robdclark@gmail.com,
+        abhinavk@codeaurora.org, nganji@codeaurora.org,
+        jsanka@codeaurora.org, aravindh@codeaurora.org,
+        hoegsberg@google.com, dri-devel@lists.freedesktop.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Date:   Tue, 14 Apr 2020 14:21:17 -0700
+Message-ID: <158689927748.105027.5367465616284167712@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Sandeep Maheswaram (2020-04-01 23:38:52)
+> Convert QMP PHY bindings to DT schema format using json-schema.
+>=20
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  .../devicetree/bindings/phy/qcom,qmp-phy.yaml      | 332 +++++++++++++++=
+++++++
+>  .../devicetree/bindings/phy/qcom-qmp-phy.txt       | 242 ---------------
+>  2 files changed, 332 insertions(+), 242 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/qcom,qmp-phy.ya=
+ml
+>  delete mode 100644 Documentation/devicetree/bindings/phy/qcom-qmp-phy.txt
+>=20
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Do=
+cumentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> new file mode 100644
+> index 0000000..18a8985
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> @@ -0,0 +1,332 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/phy/qcom,qmp-phy.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm QMP PHY controller
+> +
+> +maintainers:
+> +  - Manu Gautam <mgautam@codeaurora.org>
+> +
+> +description:
+> +  QMP phy controller supports physical layer functionality for a number =
+of
+> +  controllers on Qualcomm chipsets, such as, PCIe, UFS, and USB.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,ipq8074-qmp-pcie-phy
+> +      - qcom,msm8996-qmp-pcie-phy
+> +      - qcom,msm8996-qmp-ufs-phy
+> +      - qcom,msm8996-qmp-usb3-phy
+> +      - qcom,msm8998-qmp-pcie-phy
+> +      - qcom,msm8998-qmp-ufs-phy
+> +      - qcom,msm8998-qmp-usb3-phy
+> +      - qcom,sdm845-qhp-pcie-phy
+> +      - qcom,sdm845-qmp-pcie-phy
+> +      - qcom,sdm845-qmp-ufs-phy
+> +      - qcom,sdm845-qmp-usb3-phy
+> +      - qcom,sdm845-qmp-usb3-uni-phy
+> +      - qcom,sm8150-qmp-ufs-phy
+> +
+> +  reg:
+> +    minItems: 1
+> +    items:
+> +      - description: Address and length of PHY's common serdes block.
+> +      - description: Address and length of the DP_COM control block.
 
-On 4/14/2020 8:38 AM, Jonathan Corbet wrote:
-> On Mon,  6 Apr 2020 15:14:38 -0700
-> deven.desai@linux.microsoft.com wrote:
->
->> From: Deven Bowers <deven.desai@linux.microsoft.com>
->>
->> Add IPE's documentation to the kernel tree.
->>
->> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Thanks for including this nice documentation from the outset!  I have a
-> couple of tiny nits to pick, but nothing really substantive to complain
-> about, so:
->
->    Acked-by: Jonathan Corbet <corbet@lwn.net>
+This DP_COM block is only for one compatible. Is it possible to split
+that compatible out of this binding so we can enforce the reg property
+being either one or two items?
 
-Thanks!
+In addition, I don't quite understand how this binding is supposed to
+work with the DP phy that sits inside qcom,sdm845-qmp-usb3-phy and then
+gets muxed out on the USB pins on sdm845 and sc7180 SoCs. Can you fill
+me in on how we plan to share the pins between the two phys so that all
+the combinations of DP and USB over the type-c pins will work here? My
+understanding is that the pins that are controlled by this hardware
+block are basically a full USB type-c connector pinout[1] (except that
+D+/D- isn't there and the VBUS and CC lines go to the PMIC). Either way,
+we get the TX1/2 and RX1/2 pins to use, so we can do 4x lanes of DP or
+2x lanes DP and 2x lanes of USB. There's also a type-c orientation
+flipper bit that can flip the DP and USB phy lanes to the correct TX/RX
+pins on the SoC. And then the DP phy has a lane remapper to change the
+logical DP lane to the physical DP lane. It's a complex piece of
+hardware that isn't fully represented by this binding.
 
-> [...]
->
->> +IPE is a Linux Security Module, which allows for a configurable policy
-> I'd drop the comma (I told you these were nits!)
-
-Got it, thanks!
-
->
-> [...]
->
->> +IPE Policy
->> +~~~~~~~~~~
->> +
->> +IPE policy is designed to be both forward compatible and backwards
->> +compatible. There is one required line, at the top of the policy,
->> +indicating the policy name, and the policy version, for instance:
->> +
->> +::
->> +
->> +   policy_name="Ex Policy" policy_version=0.0.0
-> This pattern can be compressed a bit by just putting the "::" at the end of
-> the last line of text:
->
-> 	indicating the policy name, and the policy version, for instance::
->
-> 	   policy_name="Ex Policy" policy_version=0.0.0
->
-> The result is a bit more readable in the plain-text format, IMO, and
-> renders exactly the same in Sphinx.
-
-Awesome. I'll address this feedback in v3.
+[1] https://en.wikipedia.org/wiki/USB-C#/media/File:USB_Type-C_Receptacle_P=
+inout.svg
