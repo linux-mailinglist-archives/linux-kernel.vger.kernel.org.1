@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BF91A81D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F2F1A820F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437973AbgDNPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:15:19 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36710 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437266AbgDNPPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:15:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Wb8f39hCjGcYV8+AHNSAescCyaLfOVyVKTEaqlWfHFA=; b=rXukUfJulQmi7iSIMYWiAq9QR6
-        JXRXBujHbPtK1TQRqgGBlXbmwkIa5/8xprYf1whWGTnGar8OAbVX+Qel6l8H0iYPf4kpQGsFnCxYo
-        F0NYB3fyVHQtiPMsP1pPBLoC+PP88zvzGx82OwcsQEXCaZWQT+LEw/Tpz5fT9Fv2a7ho=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jONH8-002fp9-VA; Tue, 14 Apr 2020 17:14:58 +0200
-Date:   Tue, 14 Apr 2020 17:14:58 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christophe ROULLIER <christophe.roullier@st.com>
-Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "joabreu@synopsys.com" <joabreu@synopsys.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        Peppe CAVALLARO <peppe.cavallaro@st.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCHv2 1/1] net: ethernet: stmmac: simplify phy modes
- management for stm32
-Message-ID: <20200414151458.GA637127@lunn.ch>
-References: <20200316090907.18488-1-christophe.roullier@st.com>
- <cb0a5dd3-02da-7d60-7069-a8ee080ad239@st.com>
- <ecbfd26c-8dcb-3763-c1aa-ccc4c110aefa@st.com>
+        id S2407327AbgDNPRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:17:34 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:53402 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405617AbgDNPRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:17:16 -0400
+Received: from [192.168.0.109] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 350C720B4737;
+        Tue, 14 Apr 2020 08:17:15 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 350C720B4737
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1586877435;
+        bh=4Tq3FB+xGJtxT6ZUJb0cf3A21zkjTaUDbsRjLeb16W4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rONCojIm0QhclazO1zFbIqpb0Fg7wgDbsdQRc+yc8GRjqaScZWdOx870Nq7D+agOO
+         rsG2DlIToXNm6Yvf6yRt46/RvdMZKpDB29hFSxGQiL2i9OJAADLibOXrKhXrehXpkM
+         iG1yYDoJpXtG22gfeY00WDEciLw4dvRHjFdQQEu4=
+Subject: Re: [PATCH 1/2] ima: simplify function ima_store_template
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, zhangliguang@linux.alibaba.com,
+        zhang.jia@linux.alibaba.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200414114850.98622-1-tianjia.zhang@linux.alibaba.com>
+ <20200414114850.98622-2-tianjia.zhang@linux.alibaba.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <36c7b81e-ac42-b34a-808b-92107ff85805@linux.microsoft.com>
+Date:   Tue, 14 Apr 2020 08:17:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ecbfd26c-8dcb-3763-c1aa-ccc4c110aefa@st.com>
+In-Reply-To: <20200414114850.98622-2-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 03:10:26PM +0000, Christophe ROULLIER wrote:
-> Hi,
+On 4/14/20 4:48 AM, Tianjia Zhang wrote:
+
+> The 'result' here is not necessary, remove redundant code,
+> the code is more concise.
 > 
-> Gentle reminder
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>   security/integrity/ima/ima_api.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+> index f6bc00914aa5..9121257c9dc6 100644
+> --- a/security/integrity/ima/ima_api.c
+> +++ b/security/integrity/ima/ima_api.c
+> @@ -118,8 +118,7 @@ int ima_store_template(struct ima_template_entry *entry,
+>   		memcpy(entry->digest, hash.hdr.digest, hash.hdr.length);
+>   	}
+>   	entry->pcr = pcr;
+> -	result = ima_add_template_entry(entry, violation, op, inode, filename);
+> -	return result;
+> +	return ima_add_template_entry(entry, violation, op, inode, filename);
+>   }
+>   
+>   /*
+> 
 
-Hi Christophe
 
-You are more likely to have success if you repost.
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-    Andrew
