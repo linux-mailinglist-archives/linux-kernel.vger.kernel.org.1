@@ -2,59 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680E61A78E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618D01A7893
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438706AbgDNKzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:55:48 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41868 "EHLO
+        id S2438462AbgDNKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:40:59 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40234 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438408AbgDNKeS (ORCPT
+        with ESMTP id S2438374AbgDNKcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:34:18 -0400
+        Tue, 14 Apr 2020 06:32:39 -0400
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAXtBL102744;
-        Tue, 14 Apr 2020 10:34:05 GMT
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EATjUu099291;
+        Tue, 14 Apr 2020 10:32:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=518JlHYtpnf7S9MSsRcoVNMQyEWg6HGX317JxfiansM=;
- b=BuuY1/1hidRwgD7IWfLiWLBnkwfV71zFECMa2Vutcp9FNOB+1AEn4HeH+uxATSwIfcgO
- 68iLRIeGjm+K6Nbcw6XPe9st+/jDbPkCgf3AAhG6MzRV98lKvrqg3v3JbFR4Y7ZA0JsV
- AxCnYYY2Y8yZHrK2C9kudx30oia74p5FcredKujmqw/wMH6wUay8o4c5Npd2SwA+NR5u
- cnO9tjXKM1fON/NiM93xzhvY70W2Tyju/NPru+DzWNjTZVhg6C9D9ydCtDKoVQgU9wcK
- SSZnsIGBglu9DrWMpYkrdvbqktcHvVVxG/7isOD1bTOWFUE+1EgRnoC/vEaQ+6prF5Xd mg== 
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=gSGUwtyvCAjodF6yycFW4jVDd4XOe3sAR+7aKXD38Yw=;
+ b=nMxmkxUTa7mPVml7GAXJR3UUmDvJXah8Ah7T+zNu54SWerisBUWzklwFg7vol111ogrJ
+ M6Gbyvo2nzBRcfUKrJXZ2hdD3+Kj86s8zswS8+Doc/t/Y0l7OmrX2nXU5Wf0uxthzdI9
+ GSeToA8E2k7omU7Vy89XIpKXhprGg1Ea4jDGFIPYb2VBY+7+vCJ2/0FxPkH0CUyIGJdr
+ dN2rYNVkc55LfDZrbtsonUdLs03wYB2NpBESeb7EQETaFQRSsr6OT2mbdH2KhgTtkobp
+ ySlaMkR3IPX5pJPvbWPkfkiE5KpckSnCH4XJfk2Tih50+Uu84IMPUNWjsSxrE38cGXYl kA== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30b6hpkmsk-1
+        by userp2120.oracle.com with ESMTP id 30b6hpkmf9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:34:05 +0000
+        Tue, 14 Apr 2020 10:32:07 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAR7R6034974;
-        Tue, 14 Apr 2020 10:32:05 GMT
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAR66d034899;
+        Tue, 14 Apr 2020 10:32:06 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30cta9txxp-1
+        by aserp3030.oracle.com with ESMTP id 30cta9ty06-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:32:04 +0000
+        Tue, 14 Apr 2020 10:32:06 +0000
 Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EAW4Gw010222;
-        Tue, 14 Apr 2020 10:32:04 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EAW6nf010236;
+        Tue, 14 Apr 2020 10:32:06 GMT
 Received: from linux-1.home (/92.157.90.160)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 03:32:04 -0700
+        with ESMTP ; Tue, 14 Apr 2020 03:32:05 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
         alexandre.chartre@oracle.com
-Subject: [PATCH V3 8/9] x86/speculation: Add return address unwind hints to retpoline and RSB stuffing
-Date:   Tue, 14 Apr 2020 12:36:17 +0200
-Message-Id: <20200414103618.12657-9-alexandre.chartre@oracle.com>
+Subject: [PATCH V3 9/9] x86/speculation: Annotate intra-function calls
+Date:   Tue, 14 Apr 2020 12:36:18 +0200
+Message-Id: <20200414103618.12657-10-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200414103618.12657-1-alexandre.chartre@oracle.com>
 References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=13
  spamscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
@@ -65,94 +61,84 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adult
  mlxlogscore=999 clxscore=1015 mlxscore=0 phishscore=0 suspectscore=13
  lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140087
+ engine=8.12.0-2003020000 definitions=main-2004140086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The retpoline and RSB stuffing code modify the stack to change return
-addresses of intra-function calls. Add return address unwind hints so
-that objtool can be aware of these tweaks. This requires a little
-refactoring of the __FILL_RETURN_BUFFER macro for adding hints to
-assembly and C code.
+Some speculative execution mitigations (like retpoline) use intra-
+function calls. Provide a macro to annotate such intra-function calls
+so they can be properly handled by objtool, and use this macro to
+annotate intra-function calls.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/include/asm/nospec-branch.h | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index b0db793fd083..20594ea99c21 100644
+index 20594ea99c21..89ae2f9cc873 100644
 --- a/arch/x86/include/asm/nospec-branch.h
 +++ b/arch/x86/include/asm/nospec-branch.h
-@@ -9,6 +9,7 @@
- #include <asm/alternative-asm.h>
- #include <asm/cpufeatures.h>
- #include <asm/msr-index.h>
-+#include <asm/unwind_hints.h>
+@@ -3,6 +3,7 @@
+ #ifndef _ASM_X86_NOSPEC_BRANCH_H_
+ #define _ASM_X86_NOSPEC_BRANCH_H_
  
++#include <linux/frame.h>
+ #include <linux/static_key.h>
+ 
+ #include <asm/alternative.h>
+@@ -20,6 +21,15 @@
+ #define ANNOTATE_NOSPEC_ALTERNATIVE \
+ 	ANNOTATE_IGNORE_ALTERNATIVE
+ 
++/*
++ * Intra-function call instruction. This should be used as a substitute
++ * for the call instruction when doing an intra-function call. It is
++ * similar to the call instruction but it tells objtool that this is
++ * an intra-function call.
++ */
++#define INTRA_FUNCTION_CALL \
++	ANNOTATE_INTRA_FUNCTION_CALL call
++
  /*
-  * This should be used immediately before a retpoline alternative. It tells
-@@ -43,7 +44,7 @@
-  * the optimal version — two calls, each with their own speculation
-  * trap should their return address end up getting used, in a loop.
-  */
--#define __FILL_RETURN_BUFFER(reg, nr, sp)	\
-+#define __FILL_RETURN_BUFFER_BEGIN(reg, nr, sp)	\
+  * Fill the CPU return stack buffer.
+  *
+@@ -47,13 +57,13 @@
+ #define __FILL_RETURN_BUFFER_BEGIN(reg, nr, sp)	\
  	mov	$(nr/2), reg;			\
  771:						\
- 	call	772f;				\
-@@ -58,12 +59,19 @@
+-	call	772f;				\
++	INTRA_FUNCTION_CALL 772f;		\
+ 773:	/* speculation trap */			\
+ 	pause;					\
  	lfence;					\
- 	jmp	775b;				\
- 774:						\
--	dec	reg;				\
-+	dec	reg;
-+
-+#define __FILL_RETURN_BUFFER_END(sp)		\
- 	add	$(BITS_PER_LONG/8) * 2, sp;	\
- 	jnz	771b;
- 
- #ifdef __ASSEMBLY__
- 
-+#define __FILL_RETURN_BUFFER(reg, nr, sp)	\
-+	__FILL_RETURN_BUFFER_BEGIN(reg, nr, sp)	\
-+	UNWIND_HINT_RADDR_DELETE 2;		\
-+	__FILL_RETURN_BUFFER_END(sp)
-+
- /*
-  * This should be used immediately before an indirect jump/call. It tells
-  * objtool the subsequent indirect jump/call is vouched safe for retpoline
-@@ -88,6 +96,7 @@
+ 	jmp	773b;				\
+ 772:						\
+-	call	774f;				\
++	INTRA_FUNCTION_CALL 774f;		\
+ 775:	/* speculation trap */			\
+ 	pause;					\
+ 	lfence;					\
+@@ -90,7 +100,7 @@
+  * invocation below less ugly.
+  */
+ .macro RETPOLINE_JMP reg:req
+-	call	.Ldo_rop_\@
++	INTRA_FUNCTION_CALL .Ldo_rop_\@
+ .Lspec_trap_\@:
+ 	pause
  	lfence
- 	jmp	.Lspec_trap_\@
- .Ldo_rop_\@:
-+	UNWIND_HINT_RADDR_ALTER
- 	mov	\reg, (%_ASM_SP)
- 	ret
+@@ -110,7 +120,7 @@
+ .Ldo_retpoline_jmp_\@:
+ 	RETPOLINE_JMP \reg
+ .Ldo_call_\@:
+-	call	.Ldo_retpoline_jmp_\@
++	INTRA_FUNCTION_CALL .Ldo_retpoline_jmp_\@
  .endm
-@@ -237,6 +246,11 @@ enum ssb_mitigation {
- extern char __indirect_thunk_start[];
- extern char __indirect_thunk_end[];
  
-+#define __FILL_RETURN_BUFFER(reg, nr, sp)			\
-+	__stringify(__FILL_RETURN_BUFFER_BEGIN(reg, nr, sp))	\
-+	UNWIND_HINT_RADDR_DELETE(2)				\
-+	__stringify(__FILL_RETURN_BUFFER_END(sp))
-+
  /*
-  * On VMEXIT we must ensure that no RSB predictions learned in the guest
-  * can be followed in the host, by overwriting the RSB completely. Both
-@@ -250,7 +264,7 @@ static inline void vmexit_fill_RSB(void)
- 
- 	asm volatile (ANNOTATE_NOSPEC_ALTERNATIVE
- 		      ALTERNATIVE("jmp 910f",
--				  __stringify(__FILL_RETURN_BUFFER(%0, RSB_CLEAR_LOOPS, %1)),
-+				  __FILL_RETURN_BUFFER(%0, RSB_CLEAR_LOOPS, %1),
- 				  X86_FEATURE_RETPOLINE)
- 		      "910:"
- 		      : "=r" (loops), ASM_CALL_CONSTRAINT
 -- 
 2.18.2
 
