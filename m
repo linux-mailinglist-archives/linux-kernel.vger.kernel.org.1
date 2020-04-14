@@ -2,135 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA141A7A46
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F061A7A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439817AbgDNMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:04:17 -0400
-Received: from mga05.intel.com ([192.55.52.43]:42675 "EHLO mga05.intel.com"
+        id S2439835AbgDNMEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439796AbgDNMEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:04:11 -0400
-IronPort-SDR: RNOdD/naQ0iNkiVc6nioCPwhSqlgUSEVPp4e3cB7gVje873pR6J+C6lxsw6dHduJI+JP57xgp8
- 39rT/Jc6lwIA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 05:04:10 -0700
-IronPort-SDR: oRMDJOms2rSS5xzB+UCZuIQpCbcLy78EEdThCfOkqiNyBSJYsitY/zsuKdb3C1McBCmkd2YKka
- erVTBiEPhOCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
-   d="scan'208";a="363356670"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2020 05:04:08 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 14 Apr 2020 15:04:07 +0300
-Date:   Tue, 14 Apr 2020 15:04:07 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: Ignore CC and vbus changes in
- PORT_RESET change
-Message-ID: <20200414120407.GE2828150@kuha.fi.intel.com>
-References: <20200402215947.176577-1-badhri@google.com>
+        id S2439801AbgDNMEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:04:14 -0400
+Received: from tleilax.com (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B73A220768;
+        Tue, 14 Apr 2020 12:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586865852;
+        bh=Nj1AKmEuv9crYqOH2ubD++s+jjX3+SJYLxgthYr+hOI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=j+rfNorWe2ldpqaBRZcmRO+dDDClmWVy9Zf5brtmsh1eGs7NK391miS0WDYAarCz5
+         TLkwmSnYO6m6vQNmGAgrJhoXHp680dt95NZtnkSlQ3VDFtKkLrfCBVow41jo5SRVvr
+         G/O7l+QyVNgDUikhJNF12XXJm528c9L5N4F1hn38=
+From:   Jeff Layton <jlayton@kernel.org>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, andres@anarazel.de, willy@infradead.org,
+        dhowells@redhat.com, hch@infradead.org, jack@suse.cz,
+        akpm@linux-foundation.org, david@fromorbit.com
+Subject: [PATCH v4 RESEND 1/2] vfs: track per-sb writeback errors and report them to syncfs
+Date:   Tue, 14 Apr 2020 08:04:08 -0400
+Message-Id: <20200414120409.293749-2-jlayton@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <20200414120409.293749-1-jlayton@kernel.org>
+References: <20200414120409.293749-1-jlayton@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402215947.176577-1-badhri@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 02:59:47PM -0700, Badhri Jagan Sridharan wrote:
-> After PORT_RESET, the port is set to the appropriate
-> default_state. Ignore processing CC changes here as this
-> could cause the port to be switched into sink states
-> by default.
-> 
-> echo source > /sys/class/typec/port0/port_type
-> 
-> Before:
-> [  154.528547] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms
-> [  154.528560] CC1: 0 -> 0, CC2: 3 -> 0 [state PORT_RESET, polarity 0, disconnected]
-> [  154.528564] state change PORT_RESET -> SNK_UNATTACHED
-> 
-> After:
-> [  151.068814] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev3 NONE_AMS]
-> [  151.072440] CC1: 3 -> 0, CC2: 0 -> 0 [state PORT_RESET, polarity 0, disconnected]
-> [  151.172117] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
-> [  151.172136] pending state change PORT_RESET_WAIT_OFF -> SRC_UNATTACHED @ 870 ms [rev3 NONE_AMS]
-> [  152.060106] state change PORT_RESET_WAIT_OFF -> SRC_UNATTACHED [delayed 870 ms]
-> [  152.060118] Start toggling
+From: Jeff Layton <jlayton@redhat.com>
 
-Guenter, can you take a look at this?
+Usually we suggest that applications call fsync when they want to
+ensure that all data written to the file has made it to the backing
+store, but that can be inefficient when there are a lot of open
+files.
 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index de3576e6530ab2..82b19ebd7838e0 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -3794,6 +3794,14 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
->  		 */
->  		break;
->  
-> +	case PORT_RESET:
-> +	case PORT_RESET_WAIT_OFF:
-> +		/*
-> +		 * State set back to default mode once the timer completes.
-> +		 * Ignore CC changes here.
-> +		 */
-> +		break;
-> +
->  	default:
->  		if (tcpm_port_is_disconnected(port))
->  			tcpm_set_state(port, unattached_state(port), 0);
-> @@ -3855,6 +3863,15 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
->  	case SRC_TRY_DEBOUNCE:
->  		/* Do nothing, waiting for sink detection */
->  		break;
-> +
-> +	case PORT_RESET:
-> +	case PORT_RESET_WAIT_OFF:
-> +		/*
-> +		 * State set back to default mode once the timer completes.
-> +		 * Ignore vbus changes here.
-> +		 */
-> +		break;
-> +
->  	default:
->  		break;
->  	}
-> @@ -3908,10 +3925,19 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
->  	case PORT_RESET_WAIT_OFF:
->  		tcpm_set_state(port, tcpm_default_state(port), 0);
->  		break;
-> +
->  	case SRC_TRY_WAIT:
->  	case SRC_TRY_DEBOUNCE:
->  		/* Do nothing, waiting for sink detection */
->  		break;
-> +
-> +	case PORT_RESET:
-> +		/*
-> +		 * State set back to default mode once the timer completes.
-> +		 * Ignore vbus changes here.
-> +		 */
-> +		break;
-> +
->  	default:
->  		if (port->pwr_role == TYPEC_SINK &&
->  		    port->attached)
-> -- 
-> 2.26.0.292.g33ef6b2f38-goog
+Calling syncfs on the filesystem can be more efficient in some
+situations, but the error reporting doesn't currently work the way most
+people expect. If a single inode on a filesystem reports a writeback
+error, syncfs won't necessarily return an error. syncfs only returns an
+error if __sync_blockdev fails, and on some filesystems that's a no-op.
 
-thanks,
+It would be better if syncfs reported an error if there were any writeback
+failures. Then applications could call syncfs to see if there are any
+errors on any open files, and could then call fsync on all of the other
+descriptors to figure out which one failed.
 
+This patch adds a new errseq_t to struct super_block, and has
+mapping_set_error also record writeback errors there.
+
+To report those errors, we also need to keep an errseq_t in struct
+file to act as a cursor. This patch adds a dedicated field for that
+purpose, which slots nicely into 4 bytes of padding at the end of
+struct file on x86_64.
+
+An earlier version of this patch used an O_PATH file descriptor to cue
+the kernel that the open file should track the superblock error and not
+the inode's writeback error.
+
+I think that API is just too weird though. This is simpler and should
+make syncfs error reporting "just work" even if someone is multiplexing
+fsync and syncfs on the same fds.
+
+Cc: Andres Freund <andres@anarazel.de>
+Cc: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ drivers/dax/device.c    |  1 +
+ fs/file_table.c         |  1 +
+ fs/open.c               |  3 +--
+ fs/sync.c               |  6 ++++--
+ include/linux/fs.h      | 16 ++++++++++++++++
+ include/linux/pagemap.h |  5 ++++-
+ 6 files changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+index 1af823b2fe6b..4c0af2eb7e19 100644
+--- a/drivers/dax/device.c
++++ b/drivers/dax/device.c
+@@ -377,6 +377,7 @@ static int dax_open(struct inode *inode, struct file *filp)
+ 	inode->i_mapping->a_ops = &dev_dax_aops;
+ 	filp->f_mapping = inode->i_mapping;
+ 	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
++	filp->f_sb_err = file_sample_sb_err(filp);
+ 	filp->private_data = dev_dax;
+ 	inode->i_flags = S_DAX;
+ 
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 30d55c9a1744..676e620948d2 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -198,6 +198,7 @@ static struct file *alloc_file(const struct path *path, int flags,
+ 	file->f_inode = path->dentry->d_inode;
+ 	file->f_mapping = path->dentry->d_inode->i_mapping;
+ 	file->f_wb_err = filemap_sample_wb_err(file->f_mapping);
++	file->f_sb_err = file_sample_sb_err(file);
+ 	if ((file->f_mode & FMODE_READ) &&
+ 	     likely(fop->read || fop->read_iter))
+ 		file->f_mode |= FMODE_CAN_READ;
+diff --git a/fs/open.c b/fs/open.c
+index 719b320ede52..d9467a8a7f6a 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -743,9 +743,8 @@ static int do_dentry_open(struct file *f,
+ 	path_get(&f->f_path);
+ 	f->f_inode = inode;
+ 	f->f_mapping = inode->i_mapping;
+-
+-	/* Ensure that we skip any errors that predate opening of the file */
+ 	f->f_wb_err = filemap_sample_wb_err(f->f_mapping);
++	f->f_sb_err = file_sample_sb_err(f);
+ 
+ 	if (unlikely(f->f_flags & O_PATH)) {
+ 		f->f_mode = FMODE_PATH | FMODE_OPENED;
+diff --git a/fs/sync.c b/fs/sync.c
+index 4d1ff010bc5a..c6f6f5be5682 100644
+--- a/fs/sync.c
++++ b/fs/sync.c
+@@ -161,7 +161,7 @@ SYSCALL_DEFINE1(syncfs, int, fd)
+ {
+ 	struct fd f = fdget(fd);
+ 	struct super_block *sb;
+-	int ret;
++	int ret, ret2;
+ 
+ 	if (!f.file)
+ 		return -EBADF;
+@@ -171,8 +171,10 @@ SYSCALL_DEFINE1(syncfs, int, fd)
+ 	ret = sync_filesystem(sb);
+ 	up_read(&sb->s_umount);
+ 
++	ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
++
+ 	fdput(f);
+-	return ret;
++	return ret ? ret : ret2;
+ }
+ 
+ /**
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4f6f59b4f22a..5ad13cd6441c 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -976,6 +976,7 @@ struct file {
+ #endif /* #ifdef CONFIG_EPOLL */
+ 	struct address_space	*f_mapping;
+ 	errseq_t		f_wb_err;
++	errseq_t		f_sb_err; /* for syncfs */
+ } __randomize_layout
+   __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
+ 
+@@ -1520,6 +1521,9 @@ struct super_block {
+ 	/* Being remounted read-only */
+ 	int s_readonly_remount;
+ 
++	/* per-sb errseq_t for reporting writeback errors via syncfs */
++	errseq_t s_wb_err;
++
+ 	/* AIO completions deferred from interrupt context */
+ 	struct workqueue_struct *s_dio_done_wq;
+ 	struct hlist_head s_pins;
+@@ -2827,6 +2831,18 @@ static inline errseq_t filemap_sample_wb_err(struct address_space *mapping)
+ 	return errseq_sample(&mapping->wb_err);
+ }
+ 
++/**
++ * file_sample_sb_err - sample the current errseq_t to test for later errors
++ * @mapping: mapping to be sampled
++ *
++ * Grab the most current superblock-level errseq_t value for the given
++ * struct file.
++ */
++static inline errseq_t file_sample_sb_err(struct file *file)
++{
++	return errseq_sample(&file->f_path.dentry->d_sb->s_wb_err);
++}
++
+ static inline int filemap_nr_thps(struct address_space *mapping)
+ {
+ #ifdef CONFIG_READ_ONLY_THP_FOR_FS
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index a8f7bd8ea1c6..d4409b13747e 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -51,7 +51,10 @@ static inline void mapping_set_error(struct address_space *mapping, int error)
+ 		return;
+ 
+ 	/* Record in wb_err for checkers using errseq_t based tracking */
+-	filemap_set_wb_err(mapping, error);
++	__filemap_set_wb_err(mapping, error);
++
++	/* Record it in superblock */
++	errseq_set(&mapping->host->i_sb->s_wb_err, error);
+ 
+ 	/* Record it in flags for now, for legacy callers */
+ 	if (error == -ENOSPC)
 -- 
-heikki
+2.25.2
+
