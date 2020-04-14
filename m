@@ -2,101 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D2B1A7A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559981A7A91
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440007AbgDNMS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:18:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62618 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2439999AbgDNMSj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:18:39 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EC5bjv014829
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:18:38 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30b9hvasb7-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:18:38 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <psampat@linux.ibm.com>;
-        Tue, 14 Apr 2020 13:18:09 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 14 Apr 2020 13:18:08 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03ECIXAc53477610
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 12:18:33 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B560AE04D;
-        Tue, 14 Apr 2020 12:18:33 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 08813AE053;
-        Tue, 14 Apr 2020 12:18:32 +0000 (GMT)
-Received: from [9.199.55.119] (unknown [9.199.55.119])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Apr 2020 12:18:31 +0000 (GMT)
-Subject: Re: [PATCH v6 2/3] powerpc/powernv: Introduce support and parsing for
- self-save API
-To:     ego@linux.vnet.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-        mpe@ellerman.id.au, skiboot@lists.ozlabs.org, oohall@gmail.com,
-        linuxram@us.ibm.com, pratik.r.sampat@gmail.com
-References: <20200326071034.12838-1-psampat@linux.ibm.com>
- <20200326071034.12838-3-psampat@linux.ibm.com>
- <20200414074702.GF24277@in.ibm.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Date:   Tue, 14 Apr 2020 17:48:31 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S2440026AbgDNMUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:20:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2371 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2440014AbgDNMT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:19:56 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 593FA43AC802EDBA096C;
+        Tue, 14 Apr 2020 20:19:49 +0800 (CST)
+Received: from [127.0.0.1] (10.173.221.49) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Apr 2020
+ 20:19:42 +0800
+Subject: Re: [PATCH] arm64: panic on synchronous external abort in kernel
+ context
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>, <tglx@linutronix.de>,
+        <james.morse@arm.com>, <tanxiaofei@huawei.com>,
+        <wangxiongfeng2@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200410015245.23230-1-xiexiuqi@huawei.com>
+ <20200414105923.GA2486@C02TD0UTHF1T.local>
+From:   Xie XiuQi <xiexiuqi@huawei.com>
+Message-ID: <9982d344-328e-320d-020f-218ab74ae2b1@huawei.com>
+Date:   Tue, 14 Apr 2020 20:19:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200414074702.GF24277@in.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200414105923.GA2486@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-x-cbid: 20041412-0008-0000-0000-000003708189
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041412-0009-0000-0000-00004A923005
-Message-Id: <cd07bd96-31af-1908-0584-5f4a0cead5f1@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_05:2020-04-14,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 clxscore=1015 phishscore=0 spamscore=0
- adultscore=0 impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140097
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.221.49]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Gautham,
+Hi Mark,
 
-[..snip..]
-
+On 2020/4/14 18:59, Mark Rutland wrote:
+> On Fri, Apr 10, 2020 at 09:52:45AM +0800, Xie XiuQi wrote:
+>> We should panic even panic_on_oops is not set, when we can't recover
+>> from synchronous external abort in kernel context.
+>>
+>> Othervise, there are two issues:
+>> 1) fallback to do_exit() in exception context, cause this core hung up.
+>>    do_sea()
+>>    -> arm64_notify_die
+>>       -> die
+>>          -> do_exit
+>> 2) errors may propagated.
+>>
+>> Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
+>> Cc: Xiaofei Tan <tanxiaofei@huawei.com>
+>> ---
+>>  arch/arm64/include/asm/esr.h | 12 ++++++++++++
+>>  arch/arm64/kernel/traps.c    |  2 ++
+>>  2 files changed, 14 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+>> index cb29253ae86b..acfc71c6d148 100644
+>> --- a/arch/arm64/include/asm/esr.h
+>> +++ b/arch/arm64/include/asm/esr.h
+>> @@ -326,6 +326,18 @@ static inline bool esr_is_data_abort(u32 esr)
+>>  	return ec == ESR_ELx_EC_DABT_LOW || ec == ESR_ELx_EC_DABT_CUR;
+>>  }
+>>  
+>> +static inline bool esr_is_inst_abort(u32 esr)
+>> +{
+>> +	const u32 ec = ESR_ELx_EC(esr);
 >> +
->> +			if (curr_spr.supported_mode & FIRMWARE_SELF_SAVE) {
->> +				rc = opal_slw_self_save_reg(pir,
->> +							curr_spr.spr);
->> +				if (rc != 0)
->> +					return rc;
->> +				switch (curr_spr.spr) {
->> +				case SPRN_LPCR:
->> +					is_lpcr_self_save = true;
-> Could you consider converting is_lpcr_self_save and is_ptcr_self_save
-> into static_keys ? For reference see commit
-> 14c73bd344da("powerpc/vcpu: Assume dedicated processors as
-> non-preempt")
->
-Sure, using static keys is cleaner.
+>> +	return ec == ESR_ELx_EC_IABT_LOW || ec == ESR_ELx_EC_IABT_CUR;
+>> +}
+>> +
+>> +static inline bool esr_is_ext_abort(u32 esr)
+>> +{
+>> +	return esr_is_data_abort(esr) || esr_is_inst_abort(esr);
+>> +}
+> 
+> A data abort or an intstruction abort are not necessarily synchronus
+> external aborts, so this isn't right.
+> 
+> What exactly are you trying to catch here? If you are seeing a problem
+> in practice, can you please share your log from a crash?
 
-I'll also address the other nits mentioned in the e-mail earlier.
+Yes, I meet a problem in practice.
 
-Thanks for the review.
-Pratik
+Tan Xiaofei report this issue when doing ras error inject testing:
+1) panic_on_oops is not set;
+2) trigger a sea by inject a ECC error;
+3) a cpu core receive a sea in kernel context:
+   do_mem_abort
+     -> arm64_notify_die
+        -> die                    # kernel context, call die() directly;
+           -> do_exit             # kernel process context, call do_exit(SIGSEGV);
+              -> do_task_dead()   # call do_task_dead(), and hung up this core;
+
+Actually, we should not call do_exit() for kernel task, or before return from
+external abort.
+
+So, I send this patch intend to panic directly when receive a sea in kernel context.
+
+crash log:
+
+NOTICE:  [TotemRasIntCpuNodeEri]:[1879L]
+NOTICE:  [RasEriInterrupt]:[173L]NodeTYP2Status = 0x0
+[  387.740609] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 9
+[  387.748837] {1}[Hardware Error]: event severity: recoverable
+[  387.754470] {1}[Hardware Error]:  Error 0, type: recoverable
+[  387.760103] {1}[Hardware Error]:   section_type: ARM processor error
+[  387.766425] {1}[Hardware Error]:   MIDR: 0x00000000481fd010
+[  387.771972] {1}[Hardware Error]:   Multiprocessor Affinity Register (MPIDR): 0x0000000081080000
+[  387.780628] {1}[Hardware Error]:   error affinity level: 0
+[  387.786088] {1}[Hardware Error]:   running state: 0x1
+[  387.791115] {1}[Hardware Error]:   Power State Coordination Interface state: 0
+[  387.798301] {1}[Hardware Error]:   Error info structure 0:
+[  387.803761] {1}[Hardware Error]:   num errors: 1
+[  387.808356] {1}[Hardware Error]:    error_type: 0, cache error
+[  387.814160] {1}[Hardware Error]:    error_info: 0x0000000024400017
+[  387.820311] {1}[Hardware Error]:     transaction type: Instruction
+[  387.826461] {1}[Hardware Error]:     operation type: Generic error (type cannot be determined)
+[  387.835031] {1}[Hardware Error]:     cache level: 1
+[  387.839878] {1}[Hardware Error]:     the error has been corrected
+[  387.845942] {1}[Hardware Error]:    physical fault address: 0x00000027caf50770
+[  387.853162] Internal error: synchronous external abort: 96000610 [#1] PREEMPT SMP
+[  387.860611] Modules linked in: l1l2_inject(O) vfio_iommu_type1 vfio_pci vfio_virqfd vfio ib_ipoib ib_umad rpcrdma ib_iser libiscsi scsi_transport_iscsi hns_roce_hw_v2 crct10dif_ce ses hns3 hclge hnae3 hisi_trng_v2 rng_core hisi_zip hisi_sec2 hisi_hpre hisi_qm uacce hisi_sas_v3_hw hisi_sas_main libsas scsi_transport_sas
+[  387.888725] CPU: 0 PID: 940 Comm: kworker/0:3 Kdump: loaded Tainted: G           O      5.5.0-rc4-g5993cbe #1
+[  387.898592] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS V3.B210.01 03/12/2020
+[
+ Message from  387.907429] Workqueue: events error_inject [l1l2_inject]
+[  387.914098] pstate: 80c00009 (Nzcv daif +PAN +UAO)
+ s[yslogd@localho  387.918867] pc : lsu_inj_ue+0x58/0x70 [l1l2_inject]
+[  387.925103] lr : error_inject+0x64/0xb0 [l1l2_inject]
+[  387.930132] sp : ffff800020af3d90
+[  387.933435] x29: ffff800020af3d90 x28: 0000000000000000
+st[ at Mar 30 11:  387.938723] x27: ffff0027dae6e838 x26: ffff80001178bcc8
+[  387.945391] x25: 0000000000000000 x24: ffffa2c77162e090
+[  387.950680] x23: 0000000000000000 x22: ffff2027d7c33d40
+33[:55 ...
+ ker  387.955968] x21: ffff2027d7c37a00 x20: ffff0027d679c000
+[  387.962636] x19: ffffa2c77162e088 x18: 0000000020cbf59a
+ne[l:Internal err  387.967924] x17: 000000000000000e x16: ffffa2c7b812bc98
+[  387.974592] x15: 0000000000000001 x14: 0000000000000000
+[  387.979880] x13: ffff2027cf75a780 x12: ffffa2c7b8299c18
+or[: synchronous   387.985168] x11: 0000000000000000 x10: 00000000000009f0
+[  387.991836] x9 : ffff800020af3d50 x8 : fefefefefefefeff
+ex[ternal abort:   387.997124] x7 : 0000000000000000 x6 : 001d4ed88e000000
+[  388.003792] x5 : 000073746e657665 x4 : 0000080110f81381
+[  388.009080] x3 : 000000000000002f x2 : 807fffffffffffff
+96[000610 [#1] PR  388.014369] x1 : ffffa2c77162c518 x0 : 0000000000000081
+[  388.021037] Call trace:
+EEMPT SMP
+[  388.023475]  lsu_inj_ue+0x58/0x70 [l1l2_inject]
+[  388.029019]  error_inject+0x64/0xb0 [l1l2_inject]
+[  388.033707]  process_one_work+0x158/0x4b8
+[  388.037699]  worker_thread+0x50/0x498
+[  388.041348]  kthread+0xfc/0x128
+[  388.044480]  ret_from_fork+0x10/0x1c
+[  388.048042] Code: b2790000 d519f780 f9800020 d5033f9f (58001001)
+[  388.054109] ---[ end trace 39d51c21b0e42ba6 ]---
+
+core 0 hung up at here.
+
+
+> 
+> Thanks,
+> Mark.
+> 
+>> +
+>>  const char *esr_get_class_string(u32 esr);
+>>  #endif /* __ASSEMBLY */
+>>  
+>> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+>> index cf402be5c573..08f7f7688d5b 100644
+>> --- a/arch/arm64/kernel/traps.c
+>> +++ b/arch/arm64/kernel/traps.c
+>> @@ -202,6 +202,8 @@ void die(const char *str, struct pt_regs *regs, int err)
+>>  		panic("Fatal exception in interrupt");
+>>  	if (panic_on_oops)
+>>  		panic("Fatal exception");
+>> +	if (esr_is_ext_abort(err))
+>> +		panic("Synchronous external abort in kernel context");
+>>  
+>>  	raw_spin_unlock_irqrestore(&die_lock, flags);
+>>  
+>> -- 
+>> 2.20.1
+>>
+> .
+> 
 
