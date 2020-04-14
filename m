@@ -2,173 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7781A793E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BCE1A7949
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438979AbgDNLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:16:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390864AbgDNLQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:16:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6853620732;
-        Tue, 14 Apr 2020 11:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586863009;
-        bh=pdiAfPJFb7n9nJZw2BCIedfddr3UhffyVNfvLYt2UO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wPUVkMFAz81FIftM+Vmg+bvhCKgrsM8OhIbsvcyWG6CKF4kAdUO+zV5x52fKy9n/n
-         swFdI6d/PMyr/R3DdXPlvGx/9NAlFV1nMWR8ECFSnh5m7fOy97mAMg52FQzGL/TxVs
-         AhgBPI/diFy5pJcD6+OMtqQrEx9Kb1q5KVmAKWVg=
-Date:   Tue, 14 Apr 2020 12:16:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sanjay R Mehta <sanju.mehta@amd.com>
-Cc:     Nehal-bakulchandra.Shah@amd.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-amd: Add AMD SPI controller driver support
-Message-ID: <20200414111646.GC5412@sirena.org.uk>
-References: <1586719711-46010-1-git-send-email-sanju.mehta@amd.com>
+        id S2439004AbgDNLS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 07:18:26 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2370 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2438988AbgDNLSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 07:18:03 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1D8E5BC680AC97D09CAD;
+        Tue, 14 Apr 2020 19:17:58 +0800 (CST)
+Received: from [127.0.0.1] (10.173.222.27) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Apr 2020
+ 19:17:50 +0800
+Subject: Re: [PATCH 1/2] KVM: arm64: vgic-v3: Retire all pending LPIs on vcpu
+ destroy
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <kvmarm@lists.cs.columbia.edu>, <james.morse@arm.com>,
+        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200414030349.625-1-yuzenghui@huawei.com>
+ <20200414030349.625-2-yuzenghui@huawei.com> <20200414115417.451f8b66@why>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <a1c67c96-56f0-2976-ba1b-0991972254b3@huawei.com>
+Date:   Tue, 14 Apr 2020 19:17:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="S1BNGpv0yoYahz37"
-Content-Disposition: inline
-In-Reply-To: <1586719711-46010-1-git-send-email-sanju.mehta@amd.com>
-X-Cookie: I've only got 12 cards.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200414115417.451f8b66@why>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.222.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
---S1BNGpv0yoYahz37
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 2020/4/14 18:54, Marc Zyngier wrote:
+> On Tue, 14 Apr 2020 11:03:47 +0800
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+> 
+> Hi Zenghui,
+> 
+>> It's likely that the vcpu fails to handle all virtual interrupts if
+>> userspace decides to destroy it, leaving the pending ones stay in the
+>> ap_list. If the un-handled one is a LPI, its vgic_irq structure will
+>> be eventually leaked because of an extra refcount increment in
+>> vgic_queue_irq_unlock().
+>>
+>> This was detected by kmemleak on almost every guest destroy, the
+>> backtrace is as follows:
+>>
+>> unreferenced object 0xffff80725aed5500 (size 128):
+>> comm "CPU 5/KVM", pid 40711, jiffies 4298024754 (age 166366.512s)
+>> hex dump (first 32 bytes):
+>> 00 00 00 00 00 00 00 00 08 01 a9 73 6d 80 ff ff ...........sm...
+>> c8 61 ee a9 00 20 ff ff 28 1e 55 81 6c 80 ff ff .a... ..(.U.l...
+>> backtrace:
+>> [<000000004bcaa122>] kmem_cache_alloc_trace+0x2dc/0x418
+>> [<0000000069c7dabb>] vgic_add_lpi+0x88/0x418
+>> [<00000000bfefd5c5>] vgic_its_cmd_handle_mapi+0x4dc/0x588
+>> [<00000000cf993975>] vgic_its_process_commands.part.5+0x484/0x1198
+>> [<000000004bd3f8e3>] vgic_its_process_commands+0x50/0x80
+>> [<00000000b9a65b2b>] vgic_mmio_write_its_cwriter+0xac/0x108
+>> [<0000000009641ebb>] dispatch_mmio_write+0xd0/0x188
+>> [<000000008f79d288>] __kvm_io_bus_write+0x134/0x240
+>> [<00000000882f39ac>] kvm_io_bus_write+0xe0/0x150
+>> [<0000000078197602>] io_mem_abort+0x484/0x7b8
+>> [<0000000060954e3c>] kvm_handle_guest_abort+0x4cc/0xa58
+>> [<00000000e0d0cd65>] handle_exit+0x24c/0x770
+>> [<00000000b44a7fad>] kvm_arch_vcpu_ioctl_run+0x460/0x1988
+>> [<0000000025fb897c>] kvm_vcpu_ioctl+0x4f8/0xee0
+>> [<000000003271e317>] do_vfs_ioctl+0x160/0xcd8
+>> [<00000000e7f39607>] ksys_ioctl+0x98/0xd8
+>>
+>> Fix it by retiring all pending LPIs in the ap_list on the destroy path.
+>>
+>> p.s. I can also reproduce it on a normal guest shutdown. It is because
+>> userspace still send LPIs to vcpu (through KVM_SIGNAL_MSI ioctl) while
+>> the guest is being shutdown and unable to handle it. A little strange
+>> though and haven't dig further...
+> 
+> What userspace are you using? You'd hope that the VMM would stop
+> processing I/Os when destroying the guest. But we still need to handle
+> it anyway, and I thing this fix makes sense.
 
-On Sun, Apr 12, 2020 at 02:28:31PM -0500, Sanjay R Mehta wrote:
+I'm using Qemu (master) for debugging. Looks like an interrupt
+corresponding to a virtio device configuration change, triggered after
+all other devices had freed their irqs. Not sure if it's expected.
 
-> +++ b/drivers/spi/spi-amd.c
-> @@ -0,0 +1,341 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +/*
-> + * AMD SPI controller driver
-> + *
+>>
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> ---
+>>   virt/kvm/arm/vgic/vgic-init.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/virt/kvm/arm/vgic/vgic-init.c b/virt/kvm/arm/vgic/vgic-init.c
+>> index a963b9d766b7..53ec9b9d9bc4 100644
+>> --- a/virt/kvm/arm/vgic/vgic-init.c
+>> +++ b/virt/kvm/arm/vgic/vgic-init.c
+>> @@ -348,6 +348,12 @@ void kvm_vgic_vcpu_destroy(struct kvm_vcpu *vcpu)
+>>   {
+>>   	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+>>   
+>> +	/*
+>> +	 * Retire all pending LPIs on this vcpu anyway as we're
+>> +	 * going to destroy it.
+>> +	 */
+>> +	vgic_flush_pending_lpis(vcpu);
+>> +
+>>   	INIT_LIST_HEAD(&vgic_cpu->ap_list_head);
+>>   }
+>>   
+> 
+> I guess that at this stage, the INIT_LIST_HEAD() is superfluous, right?
 
-Please make the entire comment a C++ one so things look more
-intentional.
+I was just thinking that the ap_list_head may not be empty (besides LPI,
+with other active or pending interrupts), so leave it unchanged.
 
-> +#define DRIVER_NAME		"amd_spi"
+> Otherwise, looks good. If you agree with the above, I can fix that
+> locally, no need to resend this patch.
 
-This is unused.
+Thanks,
+Zenghui
 
-> +/* M_CMD OP codes for SPI */
-> +#define SPI_XFER_TX		1
-> +#define SPI_XFER_RX		2
-
-These constants should be namespaced, they're likely to collide with
-generic additions.
-
-> +static void amd_spi_execute_opcode(struct spi_master *master)
-> +{
-> +	struct amd_spi *amd_spi = spi_master_get_devdata(master);
-> +	bool spi_busy;
-> +
-> +	/* Set ExecuteOpCode bit in the CTRL0 register */
-> +	amd_spi_setclear_reg32(master, AMD_SPI_CTRL0_REG, AMD_SPI_EXEC_CMD,
-> +			       AMD_SPI_EXEC_CMD);
-> +
-> +	/* poll for SPI bus to become idle */
-> +	spi_busy = (ioread32((u8 __iomem *)amd_spi->io_remap_addr +
-> +		    AMD_SPI_CTRL0_REG) & AMD_SPI_BUSY) == AMD_SPI_BUSY;
-> +	while (spi_busy) {
-> +		set_current_state(TASK_INTERRUPTIBLE);
-> +		schedule();
-> +		set_current_state(TASK_RUNNING);
-> +		spi_busy = (ioread32((u8 __iomem *)amd_spi->io_remap_addr +
-> +			    AMD_SPI_CTRL0_REG) & AMD_SPI_BUSY) == AMD_SPI_BUSY;
-> +	}
-
-This is a weird way to busy wait - usually you'd use a cpu_relax()
-rather than a schedule().  There's also no timeout here so we could busy
-wait for ever if something goes wrong.
-
-> +static int amd_spi_master_setup(struct spi_device *spi)
-> +{
-> +	struct spi_master *master = spi->master;
-> +	struct amd_spi *amd_spi = spi_master_get_devdata(master);
-> +
-> +	amd_spi->chip_select = spi->chip_select;
-> +	amd_spi_select_chip(master);
-
-This looks like it will potentially affect devices other than the
-current one.  setup() may be called while other devices are active it
-shouldn't do that.
-
-> +		} else if (m_cmd & SPI_XFER_RX) {
-> +			/* Store no. of bytes to be received from
-> +			 * FIFO
-> +			 */
-> +			rx_len = xfer->len;
-> +			buffer = (u8 *)xfer->rx_buf;
-
-> +		/* Read data from FIFO to receive buffer  */
-> +		for (i = 0; i < rx_len; i++)
-> +			buffer[i] = ioread8((u8 __iomem *)amd_spi->io_remap_addr
-> +					    + AMD_SPI_FIFO_BASE
-> +					    + tx_len + i);
-
-This will only work for messages with a single receive transfer, if
-there are multiple transfers then you'll need to store multiple buffers
-and their lengths.
-
-> +static int amd_spi_master_transfer(struct spi_master *master,
-> +				   struct spi_message *msg)
-> +{
-> +	struct amd_spi *amd_spi = spi_master_get_devdata(master);
-> +
-> +	/*
-> +	 * Extract spi_transfers from the spi message and
-> +	 * program the controller.
-> +	 */
-> +	amd_spi_fifo_xfer(amd_spi, msg);
-> +
-> +	return 0;
-> +}
-
-This function is completely redundant, just inline amd_spi_fifo_xfer().
-It also ignores all errors which isn't great.
-
-> +	/* Initialize the spi_master fields */
-> +	master->bus_num = 0;
-> +	master->num_chipselect = 4;
-> +	master->mode_bits = 0;
-> +	master->flags = 0;
-
-This device is single duplex so should flag that.
-
-> +	err = spi_register_master(master);
-> +	if (err) {
-> +		dev_err(dev, "error registering SPI controller\n");
-> +		goto err_iounmap;
-
-It's best to print the error code to help people debug things.
-
---S1BNGpv0yoYahz37
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6Vm50ACgkQJNaLcl1U
-h9DTLgf/a2X2W0MkhtYzKVnCDzBWqLhL2bdhBrNhEv9f6ypQVOKElUqCEOaz1Kij
-tyynR5W+cil5lFwn5nem0JUJspA9NUTXKcVHr+mNtXOrhsnIRs4ivn4Cb3ONGYOo
-sXOg58hjkdtY6hBu67aJZWc14GeA6ude9mIiSUqSeKg9BGtlT3NTKDJOegaRYwWB
-KA2hjah9K1gHSiJz52UHi+zMetu/U+ZZ/dMTwnCcgRjSnRDrSJ2ymKvc7QfxXNTa
-icA53PPUXqP0DpEB6koGdvG+1e3h84M9TUC6MlWXvT71HFZwric6twH/neCATnpL
-sMIdkpafh0yVPgd/YxbklAJtdB/E9w==
-=0Rfk
------END PGP SIGNATURE-----
-
---S1BNGpv0yoYahz37--
