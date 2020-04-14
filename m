@@ -2,62 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4821F1A734B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 08:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5326F1A71AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405758AbgDNGHE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Apr 2020 02:07:04 -0400
-Received: from mail.lintas.net.id ([103.242.106.93]:34612 "EHLO
-        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405711AbgDNGHB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 02:07:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.lintas.net.id (Postfix) with ESMTP id C2B7532BFC4EE;
-        Tue, 14 Apr 2020 10:05:32 +0700 (WIB)
-Received: from mail.lintas.net.id ([127.0.0.1])
-        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TTYr8DR-nom2; Tue, 14 Apr 2020 10:05:32 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.lintas.net.id (Postfix) with ESMTP id 1A2F732C0BF58;
-        Tue, 14 Apr 2020 10:05:32 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at lintas.net.id
-Received: from mail.lintas.net.id ([127.0.0.1])
-        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id grOd6r-fIloB; Tue, 14 Apr 2020 10:05:31 +0700 (WIB)
-Received: from [100.65.33.38] (unknown [106.210.42.109])
-        by mail.lintas.net.id (Postfix) with ESMTPSA id EF8B732BFD253;
-        Tue, 14 Apr 2020 10:05:21 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S2404581AbgDNDSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:18:47 -0400
+Received: from mga03.intel.com ([134.134.136.65]:45507 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404552AbgDNDSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 23:18:30 -0400
+IronPort-SDR: +NMZCy1JVAWaNUivVeURdiFWk6qA5gEF5LQ2edM7FSP3bOsxYl5B+CKx4T3WsT1sz6Fe6Xn+ZP
+ re7ucNw1RIKQ==
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 20:18:29 -0700
+IronPort-SDR: A6dvFsKAF+nMYpB5Nxql8OZD8ESyhZEcZnZf1S7cpOWdTRI4yLKnP5sujEava2jQgnZvzsGGKH
+ 8bIyy78zkIAQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,381,1580803200"; 
+   d="asc'?scan'208";a="256373748"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2020 20:18:25 -0700
+Date:   Tue, 14 Apr 2020 11:04:44 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
+        amd-gfx@lists.freedesktop.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-usb@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        intel-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Jason Wang <jasowang@redhat.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Subject: Re: [PATCH 3/6] i915/gvt: remove unused xen bits
+Message-ID: <20200414030444.GO11247@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20200404094101.672954-1-hch@lst.de>
+ <20200404094101.672954-4-hch@lst.de>
+ <20200408014437.GF11247@zhen-hp.sh.intel.com>
+ <20200413130806.GA14455@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?b?QVRFTsOHw4NPICAg?=
-To:     Recipients <bengkulu@lintas.net.id>
-From:   Administrador de Sistemass <bengkulu@lintas.net.id>
-Date:   Tue, 14 Apr 2020 08:34:19 +0530
-Reply-To: mailsss@mail2world.com'
-Message-Id: <20200414030521.EF8B732BFD253@mail.lintas.net.id>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3eH4Qcq5fItR5cpy"
+Content-Disposition: inline
+In-Reply-To: <20200413130806.GA14455@lst.de>
+User-Agent: Mutt/1.10.0 (2018-05-17)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATENÇÃO;
 
-Sua caixa de correio excedeu o limite de armazenamento, que é de 5 GB como definido pelo administrador, que está atualmente em execução no 10.9GB, você pode não ser capaz de enviar ou receber novas mensagens até que você re-validar a sua caixa de correio. Para revalidar sua caixa de correio, envie os seguintes dados abaixo:
+--3eH4Qcq5fItR5cpy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-nome:
-Nome de usuário:
-senha:
-Confirme a Senha :
-Endereço de e-mail:
-Telefone:
+On 2020.04.13 15:08:06 +0200, Christoph Hellwig wrote:
+> On Wed, Apr 08, 2020 at 09:44:37AM +0800, Zhenyu Wang wrote:
+> > On 2020.04.04 11:40:58 +0200, Christoph Hellwig wrote:
+> > > No Xen support anywhere here.  Remove a dead declaration and an unused
+> > > include.
+> > >=20
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > ---
+> >=20
+> > We'll keep that off-tree.
+> >=20
+> > Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+>=20
+> Can you pick this up through the i915 tree?
 
-Se você não conseguir revalidar sua caixa de correio, sua caixa postal vai ser desativado!
+Yes, I'll pick this.
 
-Lamentamos o inconveniente.
-Código de verificação: pt:p9uyba98139>2020 Correio Técnico Suporte ©2020
+Thanks
 
-obrigado
-Administrador de Sistemas
+--=20
+Open Source Technology Center, Intel ltd.
+
+$gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
+
+--3eH4Qcq5fItR5cpy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCXpUoTAAKCRCxBBozTXgY
+JygxAJ9JZICeCzXSNp8YPszWNoMERUV94ACeJJLziuDjCDenyBchPPCAYkP+EtI=
+=56PP
+-----END PGP SIGNATURE-----
+
+--3eH4Qcq5fItR5cpy--
