@@ -2,138 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA411A7EC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1A51A7ECD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732874AbgDNNtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:49:51 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:32020 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732845AbgDNNtO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:49:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586872151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kHDd15U+utIVIYTBnW0m937vVJqUYSl9E32F9MiM/Ow=;
-        b=Xo16gqyNi1Xgmp2JnAkREmThiJLHqZT6E0HWAaqpxNxnI5nmV9n07bEM2wCwWO74f7xFVk
-        MIP5cmvPlCrsTMMdXB/1J1wMab9Tf4k4choaJujvY9Bvmg9tOZxCwkzcIuahrjvLDvw/uF
-        5167Uwvy/X+IvuqLpoOhGi2OBBek2iA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-EcfC1Hj9NgqdJcb85Fgj8w-1; Tue, 14 Apr 2020 09:49:10 -0400
-X-MC-Unique: EcfC1Hj9NgqdJcb85Fgj8w-1
-Received: by mail-qk1-f197.google.com with SMTP id g63so4110517qkd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:49:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kHDd15U+utIVIYTBnW0m937vVJqUYSl9E32F9MiM/Ow=;
-        b=pxnEVbCiHsEnH5H4TNu7v/Z24Bde+2hPNj5oDet+JgKS0QywdWPbEaINA9tQ4TmZey
-         ylBMbn2CbGgOYYOCXfnYAP0wvpGmI8ullGV5Jg0K00c1H37QW+N0orhtayCnehMd0vQ+
-         uH+SzrE52SecoxpPfOlSDyG3zzEYPrRD/oS+fYwaq9ZT7/2Z5jyJN8UtA426EzV9aD7W
-         zvqoNumlHIMMf1SjZVtf0uyBi938QGbfWaBVXiYEjGXQXF96pgtZIVAsDSIJFty9if90
-         isj8JcTwx1P+boOFU66hayDGvpUB8pw9N4uyFXaG0rU1LWlO6rePARERutCt6XReU9b3
-         OhWQ==
-X-Gm-Message-State: AGi0PubyDbB2Lcvb6TAMxaMf3xUQT0tTwBQpSkChPwyH/SCYRQLGMdmC
-        jPk5ZTokut8tvYzTrOCu3iW6X2kJVRsJbL+0Xh+yR80cmSOkRQiHn93vCmD8QwSgIZnqHR4klHP
-        ZTG60xUeuUyFcKoOCqfwlGHZy
-X-Received: by 2002:ac8:23ed:: with SMTP id r42mr16349883qtr.372.1586872149304;
-        Tue, 14 Apr 2020 06:49:09 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKk1CxvePF721u7zCAPiQ9xQbBy20rE/GYRkwegXAxvCmLozUAOeoCxNg/oiUCi+k1GjuUhog==
-X-Received: by 2002:ac8:23ed:: with SMTP id r42mr16349845qtr.372.1586872148758;
-        Tue, 14 Apr 2020 06:49:08 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id c41sm7218899qta.96.2020.04.14.06.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 06:49:07 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 09:49:06 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
- signal
-Message-ID: <20200414134906.GF38470@xz-x1>
-References: <20200408014010.80428-1-peterx@redhat.com>
- <20200408014010.80428-2-peterx@redhat.com>
- <20200409070253.GB18386@dhcp22.suse.cz>
- <CAHk-=whwRqkwdaJQf4g0-Evd6RmXR3dkkKyfnPjbnkeia=b1ug@mail.gmail.com>
- <20200414110429.GF4629@dhcp22.suse.cz>
+        id S1732929AbgDNNul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:50:41 -0400
+Received: from mga11.intel.com ([192.55.52.93]:16095 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732845AbgDNNuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:50:10 -0400
+IronPort-SDR: eQ73OGoO2B7Ol5lnEg2ELVqO+oqWRS66a+iFpY792SA6DIwHHpYqAfo3spm48Z1G2Y0Rr7MXf6
+ zU3G3ZdyusYg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 06:50:08 -0700
+IronPort-SDR: DzU44UtbBXnlgcTVLfD4U2AwqPWdn9MqtzL9D4GQjno3lz/kgO0DNfIu/vm7nZg3NR83qNM/k9
+ UbLqMGnUvKdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
+   d="scan'208";a="243817701"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by fmsmga007.fm.intel.com with ESMTP; 14 Apr 2020 06:50:06 -0700
+Subject: Re: [PATCH v5 3/3] mmc: host: sdhci-sprd: Implement the
+ request_atomic() API
+To:     Baolin Wang <baolin.wang7@gmail.com>, ulf.hansson@linaro.org
+Cc:     arnd@arndb.de, orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1586744073.git.baolin.wang7@gmail.com>
+ <60142fe6c6c1dbba2696e775564ae2166786f0bc.1586744073.git.baolin.wang7@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <dbf41269-0d0c-084c-e090-b040f92fee3e@intel.com>
+Date:   Tue, 14 Apr 2020 16:49:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <60142fe6c6c1dbba2696e775564ae2166786f0bc.1586744073.git.baolin.wang7@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200414110429.GF4629@dhcp22.suse.cz>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:04:29PM +0200, Michal Hocko wrote:
+On 13/04/20 5:46 am, Baolin Wang wrote:
+> Implement the request_atomic() API for nonremovable cards, that means
+> we can submit next request in the irq hard handler context to reduce
+> latency.
+> 
+> Moreover factor out the AUTO CMD23 checking into a separate function
+> to reduce duplicate code.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 
-[...]
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> @@ -1247,6 +1248,10 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
+> ---
+>  drivers/mmc/host/sdhci-sprd.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> index 2ab42c59e4f8..bc7a8cb84862 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -406,7 +406,8 @@ static struct sdhci_ops sdhci_sprd_ops = {
+>  	.request_done = sdhci_sprd_request_done,
+>  };
+>  
+> -static void sdhci_sprd_request(struct mmc_host *mmc, struct mmc_request *mrq)
+> +static void sdhci_sprd_check_auto_cmd23(struct mmc_host *mmc,
+> +					struct mmc_request *mrq)
+>  {
+>  	struct sdhci_host *host = mmc_priv(mmc);
+>  	struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
+> @@ -422,10 +423,23 @@ static void sdhci_sprd_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>  	    mrq->sbc && (mrq->sbc->arg & SDHCI_SPRD_ARG2_STUFF) &&
+>  	    (host->flags & SDHCI_AUTO_CMD23))
+>  		host->flags &= ~SDHCI_AUTO_CMD23;
+> +}
+> +
+> +static void sdhci_sprd_request(struct mmc_host *mmc, struct mmc_request *mrq)
+> +{
+> +	sdhci_sprd_check_auto_cmd23(mmc, mrq);
+>  
+>  	sdhci_request(mmc, mrq);
 >  }
->  EXPORT_SYMBOL_GPL(fixup_user_fault);
 >  
-> +/*
-> + * Please note that this function, unlike __get_user_pages will not
-> + * return 0 for nr_pages > 0 without FOLL_NOWAIT
-> + */
->  static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
->  						struct mm_struct *mm,
->  						unsigned long start,
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 48ba9729062e..1965e2681877 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -927,10 +927,7 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
+> +static int sdhci_sprd_request_atomic(struct mmc_host *mmc,
+> +				      struct mmc_request *mrq)
+> +{
+> +	sdhci_sprd_check_auto_cmd23(mmc, mrq);
+> +
+> +	return sdhci_request_atomic(mmc, mrq);
+> +}
+> +
+>  static int sdhci_sprd_voltage_switch(struct mmc_host *mmc, struct mmc_ios *ios)
+>  {
+>  	struct sdhci_host *host = mmc_priv(mmc);
+> @@ -561,6 +575,11 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto pltfm_free;
 >  
->  	int locked = 1;
->  	err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
-> -	if (err == 0) {
-> -		/* E.g. GUP interrupted by fatal signal */
-> -		err = -EFAULT;
-> -	} else if (err > 0) {
-> +	if (err > 0) {
->  		err = page_to_nid(p);
->  		put_page(p);
->  	}
-
-Hi, Michal,
-
-IIUC this is not the only place that we check against ret==0 for gup.
-For example, the other direct caller of the same function,
-get_vaddr_frames(), which will set -EFAULT too if ret==0.  So do we
-want to change all the places and don't check against zero explicitly?
-
-I'm now thinking whether this would be good even if we refactored gup
-and only allow it to return either >0 as number of page pinned, or <0
-for all the rest.  I'm not sure how others will see this, but the
-answer is probably the same at least to me as before for this issue.
-
-As a caller, I'll see gup as a black box.  Even if the gup function
-guarantees that the retcode won't be zero and documented it, I (as a
-caller) will be using that to index page array so I'd still better to
-check that value before I do anything (because it's meaningless to
-index an array with zero size), and a convertion of "ret==0" -->
-"-EFAULT" (or some other failures) in this case still makes sense.
-While removing that doesn't help a lot, imho, but instead make it
-slightly unsafer.
-
-Maybe that's also why ret==0 hasn't been reworked for years?  Maybe
-there is just never a reason strong enough to do that explicitly,
-because it's still good to check against ret==0 after all...
-
-Thanks,
-
--- 
-Peter Xu
+> +	if (!mmc_card_is_removable(host->mmc))
+> +		host->mmc_host_ops.request_atomic = sdhci_sprd_request_atomic;
+> +	else
+> +		host->always_defer_done = true;
+> +
+>  	sprd_host = TO_SPRD_HOST(host);
+>  	sdhci_sprd_phy_param_parse(sprd_host, pdev->dev.of_node);
+>  
+> @@ -654,8 +673,6 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_cleanup_host;
+>  
+> -	host->always_defer_done = true;
+> -
+>  	ret = __sdhci_add_host(host);
+>  	if (ret)
+>  		goto err_cleanup_host;
+> 
 
