@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686671A73A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 08:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2892A1A73AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 08:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406006AbgDNG13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 02:27:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:37638 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405926AbgDNG1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 02:27:25 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 23D05227A81; Tue, 14 Apr 2020 08:27:19 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 08:27:18 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V7 5/9] fs/xfs: Create function xfs_inode_enable_dax()
-Message-ID: <20200414062718.GE23154@lst.de>
-References: <20200413054046.1560106-1-ira.weiny@intel.com> <20200413054046.1560106-6-ira.weiny@intel.com>
+        id S2406025AbgDNG1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 02:27:46 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:34246 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S2405991AbgDNG1m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 02:27:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 86D2C200D9F0;
+        Tue, 14 Apr 2020 14:27:37 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mexkF8vGfUOA; Tue, 14 Apr 2020 14:27:37 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 6C3D1200D9EE;
+        Tue, 14 Apr 2020 14:27:37 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id 6754CC01A1D;
+        Tue, 14 Apr 2020 14:27:37 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id 61B43201602; Tue, 14 Apr 2020 14:27:37 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     chris.ruehl@gtsys.com.hk
+Cc:     linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] dt-bindings: iio/dac: convert ltc2632.txt to lltc,ltc2632.yaml
+Date:   Tue, 14 Apr 2020 14:27:21 +0800
+Message-Id: <20200414062735.19182-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413054046.1560106-6-ira.weiny@intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 10:40:42PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> xfs_inode_supports_dax() should reflect if the inode can support DAX not
-> that it is enabled for DAX.
-> 
-> Change the use of xfs_inode_supports_dax() to reflect only if the inode
-> and underlying storage support dax.
-> 
-> Add a new function xfs_inode_enable_dax() which reflects if the inode
-> should be enabled for DAX.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from v6:
-> 	Change enable checks to be sequential logic.
-> 	Update for 2 bit tri-state option.
-> 	Make 'static' consistent.
-> 	Don't set S_DAX if !CONFIG_FS_DAX
-> 
-> Changes from v5:
-> 	Update to reflect the new tri-state mount option
-> 
-> Changes from v3:
-> 	Update functions and names to be more clear
-> 	Update commit message
-> 	Merge with
-> 		'fs/xfs: Clean up DAX support check'
-> 		don't allow IS_DAX() on a directory
-> 		use STATIC macro for static
-> 		make xfs_inode_supports_dax() static
-> ---
->  fs/xfs/xfs_iops.c | 34 +++++++++++++++++++++++++++++-----
->  1 file changed, 29 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 81f2f93caec0..37bd15b55878 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -1244,12 +1244,11 @@ xfs_inode_supports_dax(
->  	struct xfs_mount	*mp = ip->i_mount;
->  
->  	/* Only supported on non-reflinked files. */
-> -	if (!S_ISREG(VFS_I(ip)->i_mode) || xfs_is_reflink_inode(ip))
-> +	if (xfs_is_reflink_inode(ip))
->  		return false;
->  
-> -	/* DAX mount option or DAX iflag must be set. */
-> -	if (!(mp->m_flags & XFS_MOUNT_DAX) &&
-> -	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
-> +	/* Only supported on regular files. */
-> +	if (!S_ISREG(VFS_I(ip)->i_mode))
->  		return false;
+Conversion of the ltc2632 to yaml format and name the file 'lltc,ltc2632.yaml'.
 
-To me it would make sense to check S_ISREG before reflink, as it seems
-more logical.
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+---
+ .../bindings/iio/dac/lltc,ltc2632.yaml        | 78 +++++++++++++++++++
+ .../devicetree/bindings/iio/dac/ltc2632.txt   | 49 ------------
+ 2 files changed, 78 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/lltc,ltc2632.yaml
+ delete mode 100644 Documentation/devicetree/bindings/iio/dac/ltc2632.txt
 
-> +#ifdef CONFIG_FS_DAX
-> +static bool
-> +xfs_inode_enable_dax(
-> +	struct xfs_inode *ip)
-> +{
-> +	if (ip->i_mount->m_flags & XFS_MOUNT_NODAX)
-> +		return false;
-> +	if (!xfs_inode_supports_dax(ip))
-> +		return false;
-> +	if (ip->i_mount->m_flags & XFS_MOUNT_DAX)
-> +		return true;
-> +	if (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)
-> +		return true;
-> +	return false;
-> +}
-> +#else /* !CONFIG_FS_DAX */
-> +static bool
-> +xfs_inode_enable_dax(
-> +	struct xfs_inode *ip)
-> +{
-> +	return false;
-> +}
-> +#endif /* CONFIG_FS_DAX */
+diff --git a/Documentation/devicetree/bindings/iio/dac/lltc,ltc2632.yaml b/Documentation/devicetree/bindings/iio/dac/lltc,ltc2632.yaml
+new file mode 100644
+index 000000000000..af94481748b6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/dac/lltc,ltc2632.yaml
+@@ -0,0 +1,78 @@
++# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++# Copyright 2020 Christopher Ruehl <chris.ruehl@gtsys.com.hk>
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/iio/dac/lltc,ltc2632.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Linear Technology LTC263x 12-/10-/8-Bit Rail-to-Rail DAC
++
++maintainers:
++  - Jonathan Cameron <jic23@kernel.org>
++
++description: |
++  Bindings for the Linear Technology LTC2632/2634/2636 DAC
++  Datasheet can be found here: https://www.analog.com/media/en/technical-documentation/data-sheets/LTC263[246].pdf
++
++properties:
++  compatible:
++    enum:
++      - lltc,ltc2632-l12
++      - lltc,ltc2632-l10
++      - lltc,ltc2632-l8
++      - lltc,ltc2632-h12
++      - lltc,ltc2632-h10
++      - lltc,ltc2632-h8
++      - lltc,ltc2634-l12
++      - lltc,ltc2634-l10
++      - lltc,ltc2634-l8
++      - lltc,ltc2634-h12
++      - lltc,ltc2634-h10
++      - lltc,ltc2634-h8
++      - lltc,ltc2636-l12
++      - lltc,ltc2636-l10
++      - lltc,ltc2636-l8
++      - lltc,ltc2636-h12
++      - lltc,ltc2636-h10
++      - lltc,ltc2636-h8
++
++  reg:
++    maxItems: 1
++
++  spi-max-frequency:
++    maximum: 2000000
++
++  vref-supply:
++    description:
++	  Phandle to the external reference voltage supply. This should
++      only be set if there is an external reference voltage connected to the VREF
++      pin. If the property is not set the internal reference is used.
++
++required:
++  - compatible
++  - reg
++  - vref-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    vref: regulator-vref {
++        compatible = "regulator-fixed";
++        regulator-name = "vref-ltc2632";
++        regulator-min-microvolt = <1250000>;
++        regulator-max-microvolt = <1250000>;
++        regulator-always-on;
++    };
++
++    spi_master {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      dac: ltc2632@0 {
++        compatible = "lltc,ltc2632";
++        reg = <0>;    /* CS0 */
++        spi-max-frequency = <1000000>;
++        vref-supply = <&vref>;
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/iio/dac/ltc2632.txt b/Documentation/devicetree/bindings/iio/dac/ltc2632.txt
+deleted file mode 100644
+index 1ab9570cf219..000000000000
+--- a/Documentation/devicetree/bindings/iio/dac/ltc2632.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-Linear Technology LTC2632/2634/2636 DAC
+-
+-Required properties:
+- - compatible: Has to contain one of the following:
+-	lltc,ltc2632-l12
+-	lltc,ltc2632-l10
+-	lltc,ltc2632-l8
+-	lltc,ltc2632-h12
+-	lltc,ltc2632-h10
+-	lltc,ltc2632-h8
+-	lltc,ltc2634-l12
+-	lltc,ltc2634-l10
+-	lltc,ltc2634-l8
+-	lltc,ltc2634-h12
+-	lltc,ltc2634-h10
+-	lltc,ltc2634-h8
+-	lltc,ltc2636-l12
+-	lltc,ltc2636-l10
+-	lltc,ltc2636-l8
+-	lltc,ltc2636-h12
+-	lltc,ltc2636-h10
+-	lltc,ltc2636-h8
+-
+-Property rules described in Documentation/devicetree/bindings/spi/spi-bus.txt
+-apply. In particular, "reg" and "spi-max-frequency" properties must be given.
+-
+-Optional properties:
+-	- vref-supply: Phandle to the external reference voltage supply. This should
+-	  only be set if there is an external reference voltage connected to the VREF
+-	  pin. If the property is not set the internal reference is used.
+-
+-Example:
+-
+-	vref: regulator-vref {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vref-ltc2632";
+-		regulator-min-microvolt = <1250000>;
+-		regulator-max-microvolt = <1250000>;
+-		regulator-always-on;
+-	};
+-
+-	spi_master {
+-		dac: ltc2632@0 {
+-			compatible = "lltc,ltc2632-l12";
+-			reg = <0>; /* CS0 */
+-			spi-max-frequency = <1000000>;
+-			vref-supply = <&vref>; /* optional */
+-		};
+-	};
+-- 
+2.20.1
 
-Just throw in a
-
-	if (!IS_ENABLED(CONFIG_FS_DAX))
-		return false;
-
-as the first statement of the full version and avoid the stub entirely?
