@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DCD1A83F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973AF1A83F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391168AbgDNP6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57054 "EHLO mail.kernel.org"
+        id S2391184AbgDNP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:58:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391153AbgDNP57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:57:59 -0400
+        id S2391161AbgDNP6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:58:04 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBDE220732;
-        Tue, 14 Apr 2020 15:57:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70237206D5;
+        Tue, 14 Apr 2020 15:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586879878;
-        bh=Dmt9XIqHXIwK7FCqnKWFuDVuSaHFjjNXu0NxDDDyjl4=;
+        s=default; t=1586879884;
+        bh=G6+vfMZ2pNDwT8SirtAs1S39KUkflhMBZFg2z9xV554=;
         h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=vap1OGZI5eeW4rnAhQtfXX5BGbgz10G+Q8vt91Sk7QgEY0j9I8RK5CKR+yqJG08WD
-         Dr5AOVEMNRFJj/HP55Gg4ngvKJR/eAh0pQ4TI6bioLYcl0ZIN8ojP6F7Gs21nvb7yK
-         ECV3+6ht6qAfDnalMgELy7Ivp8Iy0zmHh3KyPgH0=
-Date:   Tue, 14 Apr 2020 16:57:55 +0100
+        b=wuyTE/t9Y2YelbZszgUj2827prl4MB8WgvnX0fA8PFgwJ8cOakeRaXyTw3Qibde00
+         QodsD14rA5vp459G/4mkLIL9W8Va9zSde/PKYuDgl8JivQtQZPysppzT4/G7to4W31
+         UHj2uD/rpKVBL2MXfKIHbp7+n0HC3SEe/eLd4rFg=
+Date:   Tue, 14 Apr 2020 16:58:01 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     kernel-janitors@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Applied "regulator: tps80031: remove redundant assignment to variables ret and val" to the regulator tree
-In-Reply-To:  <20200410133406.24458-1-colin.king@canonical.com>
-Message-Id:  <applied-20200410133406.24458-1-colin.king@canonical.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     broonie@kernel.org, Hulk Robot <hulkci@huawei.com>,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Applied "regulator: ab8500: remove some defined but not used variables" to the regulator tree
+In-Reply-To:  <20200410073343.39031-1-yanaijie@huawei.com>
+Message-Id:  <applied-20200410073343.39031-1-yanaijie@huawei.com>
 X-Patchwork-Hint: ignore
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -40,7 +40,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The patch
 
-   regulator: tps80031: remove redundant assignment to variables ret and val
+   regulator: ab8500: remove some defined but not used variables
 
 has been applied to the regulator tree at
 
@@ -65,56 +65,84 @@ to this mail.
 Thanks,
 Mark
 
-From 2ea8db7200d40f89ebfb97fc512ced5f792e0e1c Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 10 Apr 2020 14:34:06 +0100
-Subject: [PATCH] regulator: tps80031: remove redundant assignment to variables
- ret and val
+From 29ebe87cdd57accdbe94e44a01685cb3227ad223 Mon Sep 17 00:00:00 2001
+From: Jason Yan <yanaijie@huawei.com>
+Date: Fri, 10 Apr 2020 15:33:43 +0800
+Subject: [PATCH] regulator: ab8500: remove some defined but not used variables
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The variables ret and val are being initialized with values that are
-never read and are being updated later with a new value.  The
-initializations are redundant and can be removed.
+Fix the following gcc warning:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Unused value")
-Link: https://lore.kernel.org/r/20200410133406.24458-1-colin.king@canonical.com
+drivers/regulator/ab8500.c:195:27: warning: ‘ldo_vdmic_voltages’ defined
+but not used [-Wunused-const-variable=]
+ static const unsigned int ldo_vdmic_voltages[] = {
+                           ^~~~~~~~~~~~~~~~~~
+drivers/regulator/ab8500.c:169:27: warning: ‘fixed_3300000_voltage’
+defined but not used [-Wunused-const-variable=]
+ static const unsigned int fixed_3300000_voltage[] = {
+                           ^~~~~~~~~~~~~~~~~~~~~
+drivers/regulator/ab8500.c:142:27: warning: ‘ldo_sdio_voltages’ defined
+but not used [-Wunused-const-variable=]
+ static const unsigned int ldo_sdio_voltages[] = {
+                           ^~~~~~~~~~~~~~~~~
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Link: https://lore.kernel.org/r/20200410073343.39031-1-yanaijie@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/regulator/tps80031-regulator.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/regulator/ab8500.c | 22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/drivers/regulator/tps80031-regulator.c b/drivers/regulator/tps80031-regulator.c
-index 85a6a8ca8c1b..a29e65230132 100644
---- a/drivers/regulator/tps80031-regulator.c
-+++ b/drivers/regulator/tps80031-regulator.c
-@@ -271,7 +271,7 @@ static int tps80031_vbus_is_enabled(struct regulator_dev *rdev)
- {
- 	struct tps80031_regulator *ri = rdev_get_drvdata(rdev);
- 	struct device *parent = to_tps80031_dev(rdev);
--	int ret = -EIO;
-+	int ret;
- 	uint8_t ctrl1 = 0;
- 	uint8_t ctrl3 = 0;
+diff --git a/drivers/regulator/ab8500.c b/drivers/regulator/ab8500.c
+index f60e1b26c2d2..716ca5bb178e 100644
+--- a/drivers/regulator/ab8500.c
++++ b/drivers/regulator/ab8500.c
+@@ -139,17 +139,6 @@ static const unsigned int ldo_vintcore_voltages[] = {
+ 	1350000,
+ };
  
-@@ -322,7 +322,7 @@ static int tps80031_vbus_disable(struct regulator_dev *rdev)
- {
- 	struct tps80031_regulator *ri = rdev_get_drvdata(rdev);
- 	struct device *parent = to_tps80031_dev(rdev);
--	int ret = 0;
-+	int ret;
+-static const unsigned int ldo_sdio_voltages[] = {
+-	1160000,
+-	1050000,
+-	1100000,
+-	1500000,
+-	1800000,
+-	2200000,
+-	2910000,
+-	3050000,
+-};
+-
+ static const unsigned int fixed_1200000_voltage[] = {
+ 	1200000,
+ };
+@@ -166,10 +155,6 @@ static const unsigned int fixed_2050000_voltage[] = {
+ 	2050000,
+ };
  
- 	if (ri->config_flags & TPS80031_VBUS_DISCHRG_EN_PDN) {
- 		ret = tps80031_write(parent, TPS80031_SLAVE_ID2,
-@@ -530,7 +530,8 @@ static int tps80031_regulator_config(struct device *parent,
- 	case TPS80031_REGULATOR_LDOUSB:
- 		if (ri->config_flags & (TPS80031_USBLDO_INPUT_VSYS |
- 			TPS80031_USBLDO_INPUT_PMID)) {
--			unsigned val = 0;
-+			unsigned val;
-+
- 			if (ri->config_flags & TPS80031_USBLDO_INPUT_VSYS)
- 				val = MISC2_LDOUSB_IN_VSYS;
- 			else
+-static const unsigned int fixed_3300000_voltage[] = {
+-	3300000,
+-};
+-
+ static const unsigned int ldo_vana_voltages[] = {
+ 	1050000,
+ 	1075000,
+@@ -192,13 +177,6 @@ static const unsigned int ldo_vaudio_voltages[] = {
+ 	2600000,	/* Duplicated in Vaudio and IsoUicc Control register. */
+ };
+ 
+-static const unsigned int ldo_vdmic_voltages[] = {
+-	1800000,
+-	1900000,
+-	2000000,
+-	2850000,
+-};
+-
+ static DEFINE_MUTEX(shared_mode_mutex);
+ static struct ab8500_shared_mode ldo_anamic1_shared;
+ static struct ab8500_shared_mode ldo_anamic2_shared;
 -- 
 2.20.1
 
