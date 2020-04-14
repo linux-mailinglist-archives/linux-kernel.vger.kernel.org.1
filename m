@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD511A8BD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C7B1A8BC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505415AbgDNUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505369AbgDNUAa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:00:30 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0718C03C1A6;
-        Tue, 14 Apr 2020 13:00:29 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a81so15693596wmf.5;
-        Tue, 14 Apr 2020 13:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Da7NFvYzDzumUirR7CSYfPXMxNhJVSYGrnWvejA0pP0=;
-        b=YG+qtu4xnl/AbsvRm0ohemLRp2AW4jp55XsMOYdlmAQTLLOiq2okcy32Ix2mbUmI4V
-         Cd2noAAYfWLR8jmkMjdkFCw/Ptc/ZDpNClLlPcnsMi4d2WbSZ9NMqEMx4/UZSW+zaE4A
-         95uZEKSe3OTZwbZ7vCYAU+R5XWzm5RBsvk9nCEya16U7xLG16bYaX9usX6HH6mFFe9Ur
-         vI6m+KSM9xq48zWa+mY1Rv52CgDdzLW/g67FnfPcxui8wdMDGMZosXpDqoQIEkZFrg8u
-         T6dcfpoeXlCFrY6BCSvBY23UoVWRKVUR5pEe9k9QSvv4p7dfDFDm61nqmxjXe3jgGCLU
-         cpmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Da7NFvYzDzumUirR7CSYfPXMxNhJVSYGrnWvejA0pP0=;
-        b=VXs5jiLOHc5QyivPHfaN0Huk9R3Ppns+OMFgKykdHgOsCo+5CvGaDW66iamObCMC8e
-         k6DMn/OptDTUUQLX3o1L5Br9hIZtLWsMkxyzDAJzGcvvbYh+LFkckZMoXBBjP0DkfFYw
-         7nQqyQIGHgIppl4gAlaBRGLYgw5KcAKrun58YyE/6T0Y2CqrKocMEgywcB77Vk1u53h+
-         H9JOW4ki+9xHUlLZWRR98S7Gc0ZcRt+A81U9tS2Ce2wJ6Ls6GZV0WAIYctg0fttaPCX8
-         BuOk/sevOOjGPsDK8PBErCUVLReEPT8FPNEi1kJ0lsj6ucKsH82rwwzA1c37nk0pA7Jg
-         4+eg==
-X-Gm-Message-State: AGi0PuYhsnN4v44AMe+6qwmYvorBsGNidDB/4WeRP1TLILaUL9T3UoN7
-        eX0FvqQwQT9xPbp8Urdvn8M=
-X-Google-Smtp-Source: APiQypJBZbyV5J+rMhvq+Cc2aow4TKafhtniLnwvhkFqYb8Fbg15FSgd1n+x2Q4VYMNJYzOzhmEf5Q==
-X-Received: by 2002:a1c:f205:: with SMTP id s5mr1446383wmc.101.1586894428240;
-        Tue, 14 Apr 2020 13:00:28 -0700 (PDT)
-Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id b4sm15540253wrv.42.2020.04.14.13.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 13:00:27 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org
-Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 1/4] clk: meson: meson8b: Fix the first parent of vid_pll_in_sel
-Date:   Tue, 14 Apr 2020 22:00:14 +0200
-Message-Id: <20200414200017.226136-2-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200414200017.226136-1-martin.blumenstingl@googlemail.com>
-References: <20200414200017.226136-1-martin.blumenstingl@googlemail.com>
+        id S2505380AbgDNUAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:00:45 -0400
+Received: from mga14.intel.com ([192.55.52.115]:10312 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505359AbgDNUAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:00:21 -0400
+IronPort-SDR: Adh2bSGjpAj5C5lb+kuGh7dFOpnidmodv17mXdXnZ8tvgWLcRe0IoTJPbR3XdIFvKyY4MNgZz4
+ 7ZwPp4l1EWpg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 13:00:17 -0700
+IronPort-SDR: lhbGUOmvotbhMVvY0OCmgMZTQi0sG5VUHFqwvb87jAD3F8K/dEr9Zz6Qqi7g2um/4m6S5r9ckW
+ Ni0dXCw+E5ew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
+   d="scan'208";a="242092945"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga007.jf.intel.com with ESMTP; 14 Apr 2020 13:00:15 -0700
+Date:   Tue, 14 Apr 2020 13:00:15 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
+Message-ID: <20200414200015.GF1853609@iweiny-DESK2.sc.intel.com>
+References: <20200413054046.1560106-1-ira.weiny@intel.com>
+ <20200413054046.1560106-10-ira.weiny@intel.com>
+ <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com>
+ <20200414161509.GF6742@magnolia>
+ <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
+ <20200414195754.GH6742@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414195754.GH6742@magnolia>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use hdmi_pll_lvds_out as parent of the vid_pll_in_sel clock. It's not
-easy to see that the vendor kernel does the same, but it actually does.
-meson_clk_pll_ops in mainline still cannot fully recalculate all rates
-from the HDMI PLL registers because some register bits (at the time of
-writing it's unknown which bits are used for this) double the HDMI PLL
-output rate (compared to simply considering M, N and FRAC).
+On Tue, Apr 14, 2020 at 12:57:54PM -0700, Darrick J. Wong wrote:
+> On Tue, Apr 14, 2020 at 12:04:57PM -0700, Dan Williams wrote:
+> > On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
 
-Update the vid_pll_in_sel parent so our clock calculation works for
-simple clock settings like the CVBS output (where no rate doubling is
-going on). The PLL ops need to be fixed later on for more complex clock
-settings (all HDMI rates).
+[snip]
 
-Fixes: 6cb57c678bb70 ("clk: meson: meson8b: add the read-only video clock trees")
-Suggested-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/meson/meson8b.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > +
+> > > > > +Enabling DAX on xfs
+> > > > > +-------------------
+> > > > > +
+> > > > > +Summary
+> > > > > +-------
+> > > > > +
+> > > > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
+> > > > > +    file accesses go directly to persistent memory, bypassing the page
+> > > > > +    cache.
+> > > >
+> > > > I had reserved some quibbling with this wording, but now that this is
+> > > > being proposed as documentation I'll let my quibbling fly. "dax" may
+> > > > imply, but does not require persistent memory nor does it necessarily
+> > > > "bypass page cache". For example on configurations that support dax,
+> > > > but turn off MAP_SYNC (like virtio-pmem), a software flush is
+> > > > required. Instead, if we're going to define "dax" here I'd prefer it
+> > > > be a #include of the man page definition that is careful (IIRC) to
+> > > > only talk about semantics and not backend implementation details. In
+> > > > other words, dax is to page-cache as direct-io is to page cache,
+> > > > effectively not there, but dig a bit deeper and you may find it.
+> > >
+> > > Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
+> > 
+> > No, I was referring to the proposed wording for STATX_ATTR_DAX.
+> > There's no reason for this description to say anything divergent from
+> > that description.
+> 
+> Ahh, ok.  Something like this, then:
+> 
+>  1. There exists an in-kernel access mode flag S_DAX.  When set, the
+>     file is in the DAX (cpu direct access) state.  DAX state attempts to
+>     minimize software cache effects for both I/O and memory mappings of
+>     this file.  The S_DAX state is exposed to userspace via the
+>     STATX_ATTR_DAX statx flag.
+> 
+>     See the STATX_ATTR_DAX in the statx(2) manpage for more information.
 
-diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index 7c55c695cbae..90d284ffc780 100644
---- a/drivers/clk/meson/meson8b.c
-+++ b/drivers/clk/meson/meson8b.c
-@@ -1077,7 +1077,7 @@ static struct clk_regmap meson8b_vid_pll_in_sel = {
- 		 * Meson8m2: vid2_pll
- 		 */
- 		.parent_hws = (const struct clk_hw *[]) {
--			&meson8b_hdmi_pll_dco.hw
-+			&meson8b_hdmi_pll_lvds_out.hw
- 		},
- 		.num_parents = 1,
- 		.flags = CLK_SET_RATE_PARENT,
--- 
-2.26.0
+We crossed in the ether!!!  I propose even less details here...  Leave all the
+details to the man page.
+
+<quote>
+1. There exists an in-kernel access mode flag S_DAX that is set when file
+    accesses is enabled for 'DAX'.  Applications must call statx to discover
+    the current S_DAX state (STATX_ATTR_DAX).  See the man page for statx for
+    more details.
+</quote>
+
+Ira
 
