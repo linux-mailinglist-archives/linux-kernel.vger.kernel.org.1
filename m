@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881BE1A862E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851161A85E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391888AbgDNQzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:55:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55216 "EHLO mail.kernel.org"
+        id S2502169AbgDNQu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440310AbgDNQtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:14 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        id S2440428AbgDNQt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:26 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B32821D7D;
-        Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77F43208FE;
+        Tue, 14 Apr 2020 16:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882943;
-        bh=KYgrRzJZ+v2MtmRgRhrMiVbwLP4xnRRe17npBnjIDz0=;
+        s=default; t=1586882966;
+        bh=e8sa2L9jrsFs8MZxmSzZtk35TsqpIfaY4VUQqf3DBa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wrw1GkKImF+CJjoYQO64+lyjCRGbzBnAJdiZJnXz3MLlaIEai9d5D+x61La8eui84
-         Mn7afwUKcHvDhCveuOuX9GUTSPDb8de72sPmYQ48eWNMaCANeMG/8Bb9VC1LOFsTUy
-         znXe0jBKMpDaxLZQt91H0eLYd9XsbHFnJGRqMxMs=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jOOk9-0068ma-84; Tue, 14 Apr 2020 18:49:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2 21/33] docs: mm: userfaultfd.rst: use a cross-reference for a section
-Date:   Tue, 14 Apr 2020 18:48:47 +0200
-Message-Id: <f46b45f1aaec233217f2e0b0438bbd8cc16fe17b.1586881715.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
-References: <cover.1586881715.git.mchehab+huawei@kernel.org>
+        b=W5n+Ul2F1XVNQ1AQAU6F1NPlDnGVsDUbcb1/j+DXUSV9YceAsnW+CCddjBCLLv89i
+         1UJSuvzjDufw+nhr94MMOtMFIJXGAyNw7hTR98uNmjss1PqCcjLE5vnumkGR75j+bq
+         eTIndeL3qtd/C9LsTxs/gCwLcuqGfBnMplg+OieU=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Tiwei Bie <tiwei.bie@intel.com>
+Subject: [PATCH 08/15] tools include UAPI: Sync linux/vhost.h with the kernel sources
+Date:   Tue, 14 Apr 2020 13:48:47 -0300
+Message-Id: <20200414164854.26026-9-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
+References: <20200414164854.26026-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -43,28 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of using "foo", let's use `foo`_, with is a ReST way of
-saying that foo is a section of the document. With that, after
-building the docs, an hyperlink is generated.
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To get the changes in:
+
+  4c8cf31885f6 ("vhost: introduce vDPA-based backend")
+
+Silencing this perf build warning:
+
+  Warning: Kernel ABI header at 'tools/include/uapi/linux/vhost.h' differs from latest version at 'include/uapi/linux/vhost.h'
+  diff -u tools/include/uapi/linux/vhost.h include/uapi/linux/vhost.h
+
+This automatically picks these new ioctls, making tools such as 'perf
+trace' aware of them and possibly allowing to use the strings in
+filters, etc:
+
+  $ tools/perf/trace/beauty/vhost_virtio_ioctl.sh > before
+  $ cp include/uapi/linux/vhost.h tools/include/uapi/linux/vhost.h
+  $ tools/perf/trace/beauty/vhost_virtio_ioctl.sh > after
+  $ diff -u before after
+  --- before	2020-04-14 09:12:28.559748968 -0300
+  +++ after	2020-04-14 09:12:38.781696242 -0300
+  @@ -24,9 +24,16 @@
+   	[0x44] = "SCSI_GET_EVENTS_MISSED",
+   	[0x60] = "VSOCK_SET_GUEST_CID",
+   	[0x61] = "VSOCK_SET_RUNNING",
+  +	[0x72] = "VDPA_SET_STATUS",
+  +	[0x74] = "VDPA_SET_CONFIG",
+  +	[0x75] = "VDPA_SET_VRING_ENABLE",
+   };
+   static const char *vhost_virtio_ioctl_read_cmds[] = {
+   	[0x00] = "GET_FEATURES",
+   	[0x12] = "GET_VRING_BASE",
+   	[0x26] = "GET_BACKEND_FEATURES",
+  +	[0x70] = "VDPA_GET_DEVICE_ID",
+  +	[0x71] = "VDPA_GET_STATUS",
+  +	[0x73] = "VDPA_GET_CONFIG",
+  +	[0x76] = "VDPA_GET_VRING_NUM",
+   };
+  $
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Tiwei Bie <tiwei.bie@intel.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- Documentation/admin-guide/mm/userfaultfd.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/include/uapi/linux/vhost.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/userfaultfd.rst b/Documentation/admin-guide/mm/userfaultfd.rst
-index 740d111faf1c..0bf49d7313ad 100644
---- a/Documentation/admin-guide/mm/userfaultfd.rst
-+++ b/Documentation/admin-guide/mm/userfaultfd.rst
-@@ -79,7 +79,7 @@ or shared memory need to set the corresponding flag in
- If the userland desires to receive notifications for events other than
- page faults, it has to verify that ``uffdio_api.features`` has appropriate
- ``UFFD_FEATURE_EVENT_*`` bits set. These events are described in more
--detail below in "Non-cooperative userfaultfd" section.
-+detail below in `Non-cooperative userfaultfd`_ section.
+diff --git a/tools/include/uapi/linux/vhost.h b/tools/include/uapi/linux/vhost.h
+index 40d028eed645..9fe72e4b1373 100644
+--- a/tools/include/uapi/linux/vhost.h
++++ b/tools/include/uapi/linux/vhost.h
+@@ -116,4 +116,28 @@
+ #define VHOST_VSOCK_SET_GUEST_CID	_IOW(VHOST_VIRTIO, 0x60, __u64)
+ #define VHOST_VSOCK_SET_RUNNING		_IOW(VHOST_VIRTIO, 0x61, int)
  
- Once the ``userfaultfd`` has been enabled the ``UFFDIO_REGISTER`` ioctl should
- be invoked (if present in the returned ``uffdio_api.ioctls`` bitmask) to
++/* VHOST_VDPA specific defines */
++
++/* Get the device id. The device ids follow the same definition of
++ * the device id defined in virtio-spec.
++ */
++#define VHOST_VDPA_GET_DEVICE_ID	_IOR(VHOST_VIRTIO, 0x70, __u32)
++/* Get and set the status. The status bits follow the same definition
++ * of the device status defined in virtio-spec.
++ */
++#define VHOST_VDPA_GET_STATUS		_IOR(VHOST_VIRTIO, 0x71, __u8)
++#define VHOST_VDPA_SET_STATUS		_IOW(VHOST_VIRTIO, 0x72, __u8)
++/* Get and set the device config. The device config follows the same
++ * definition of the device config defined in virtio-spec.
++ */
++#define VHOST_VDPA_GET_CONFIG		_IOR(VHOST_VIRTIO, 0x73, \
++					     struct vhost_vdpa_config)
++#define VHOST_VDPA_SET_CONFIG		_IOW(VHOST_VIRTIO, 0x74, \
++					     struct vhost_vdpa_config)
++/* Enable/disable the ring. */
++#define VHOST_VDPA_SET_VRING_ENABLE	_IOW(VHOST_VIRTIO, 0x75, \
++					     struct vhost_vring_state)
++/* Get the max ring size. */
++#define VHOST_VDPA_GET_VRING_NUM	_IOR(VHOST_VIRTIO, 0x76, __u16)
++
+ #endif
 -- 
-2.25.2
+2.21.1
 
