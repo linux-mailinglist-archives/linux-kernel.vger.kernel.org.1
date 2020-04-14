@@ -2,199 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DE41A71AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5B01A71B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404561AbgDNDSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404542AbgDNDST (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:18:19 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9769FC0A3BDC;
-        Mon, 13 Apr 2020 20:18:19 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id u13so12118814wrp.3;
-        Mon, 13 Apr 2020 20:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=giWSpSfOhp4srs/f1cIhyKITUR4isg3xeqTrICKONHY=;
-        b=nBUMFK3fkZdy9DM1eKQcciB//NLauuaDyrFsHqf48+lN0sDj0eUPj89yOCX5iBSA9X
-         mGOWGgGpgQraxPcw/xk/+Kwe7fLrBY31RI2zRDPGKp0zU22qbwSRpW6NpGX64C/Ja4yD
-         USwz4F71Wfti6WjtpRt/ibRXx28nL7iFHprKDH2LeUmPnMdIZVr8CWflWrDol3dELEHL
-         Mu+1L59w3YcSy1788twvWjjyQ4Nny8KwTupUrwDmkW6qf1QWo4J/0/0T8lTl7UCJ5BwD
-         Ba6jSjgW+g7t5B9hg5HeuGONWpHLrCR203SxC9YyPyWyWsHr3Z872HULVu/iZyOZqEjS
-         2IZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=giWSpSfOhp4srs/f1cIhyKITUR4isg3xeqTrICKONHY=;
-        b=QxiSyjqSsprqxqF1WbMuU3zu+f+8JH1berN+/slb3TuoUvYsc48BNqe35OJFmxjnNq
-         WchutkyU6F9Clb/otKQsjLeaRQTHEyWavw+xVaGvOXTo2hf8KlzfDiqhynL2h6XAPnVh
-         l80uS1YAdLkvn9gpjg/MQtSPmzoiqYLLOVA3VnScjzNciy1qTEbAmSU9c8/vDh2atGlE
-         iT0XukWoUW8sCC+13vNhw/hTMso/3H9NPIbAKvxFgsrgK+XIbd9fClXMoat80EILIcrO
-         oN1JaTdTTeQ+6I8wZHcsuidN1Dad7awqfKvLQQ9x6P4D3cxepvXREnTcgi14SWWc6CD/
-         TMrA==
-X-Gm-Message-State: AGi0Pub4qM7C+5bPfyis7TKHM0/VkwgH5HuRGaaxmAr3v5wOUs98TqkR
-        I9m0wY4jw1nU7a74UOscs7xwaqyNf66/Xt3JsXI=
-X-Google-Smtp-Source: APiQypKMMDhD7xwuCEgfGLdUIfq0mNFjTiqY3bXUa+ho6L8vYto4kPMfkQjPu4KKTYj1zIIxbyg7zpZFZeAyD1/vGzA=
-X-Received: by 2002:a5d:48cc:: with SMTP id p12mr22788314wrs.170.1586834298330;
- Mon, 13 Apr 2020 20:18:18 -0700 (PDT)
+        id S2404628AbgDNDUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:20:14 -0400
+Received: from mga18.intel.com ([134.134.136.126]:59129 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404573AbgDNDUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 23:20:13 -0400
+IronPort-SDR: BcYFW3kiW4MvyYThOXamxTT1yBmPcpUV9IJwXBvRVCqN3PQ2nrUllMSghtoKnASsd1iGT0Lifh
+ z+ONkwhCrdRw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 20:20:12 -0700
+IronPort-SDR: fmJBGYP5nFgZE0zLQisEHNdMws0RK21VQDcq5j06o1LekTyDfUix97xcWF6JOIa0HHKTdB0/58
+ pX3iqfT+Ykqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,381,1580803200"; 
+   d="scan'208";a="253069800"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga003.jf.intel.com with ESMTP; 13 Apr 2020 20:20:12 -0700
+Date:   Mon, 13 Apr 2020 20:20:12 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     syzbot <syzbot+2e0179e5185bcd5b9440@syzkaller.appspotmail.com>
+Cc:     christoffer.dall@arm.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org, pbonzini@redhat.com,
+        peterx@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: slab-out-of-bounds Read in gfn_to_memslot
+Message-ID: <20200414032011.GQ21204@linux.intel.com>
+References: <0000000000003311fd05a327a060@google.com>
+ <000000000000f6ae4905a32a0633@google.com>
 MIME-Version: 1.0
-References: <20190906023601.4378-1-andrew.smirnov@gmail.com>
-In-Reply-To: <20190906023601.4378-1-andrew.smirnov@gmail.com>
-From:   Andrey Smirnov <andrew.smirnov@gmail.com>
-Date:   Mon, 13 Apr 2020 20:18:07 -0700
-Message-ID: <CAHQ1cqEqM5=Gm1jxEX=h02KW_-OLUn0W3R7T6o5bFW9+6ZPiOQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] Bluetooth: Retry configure request if result is L2CAP_CONF_UNKNOWN
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org
-Cc:     "Pierre-Loup A . Griffais" <pgriffais@valvesoftware.com>,
-        Florian Dollinger <dollinger.florian@gmx.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000f6ae4905a32a0633@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 5, 2019 at 7:36 PM Andrey Smirnov <andrew.smirnov@gmail.com> wrote:
->
-> Due to:
->
->  * Current implementation of l2cap_config_rsp() dropping BT
->    connection if sender of configuration response replied with unknown
->    option failure (Result=0x0003/L2CAP_CONF_UNKNOWN)
->
->  * Current implementation of l2cap_build_conf_req() adding
->    L2CAP_CONF_RFC(0x04) option to initial configure request sent by
->    the Linux host.
->
-> devices that do no recongninze L2CAP_CONF_RFC, such as Xbox One S
-> controllers, will get stuck in endless connect -> configure ->
-> disconnect loop, never connect and be generaly unusable.
->
-> To avoid this problem add code to do the following:
->
->  1. Parse the body of response L2CAP_CONF_UNKNOWN and, in case of
->     unsupported option being RFC, clear L2CAP_FEAT_ERTM and
->     L2CAP_FEAT_STREAMING from connection's feature mask (in order to
->     prevent RFC option from being added going forward)
->
->  2. Retry configuration step the same way it's done for
->     L2CAP_CONF_UNACCEPT
->
-> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-> Cc: Pierre-Loup A. Griffais <pgriffais@valvesoftware.com>
-> Cc: Florian Dollinger <dollinger.florian@gmx.de>
-> Cc: Marcel Holtmann <marcel@holtmann.org>
-> Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> Cc: linux-bluetooth@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->
-> Changes since [v1]:
->
->    - Patch simplified to simply clear L2CAP_FEAT_ERTM |
->      L2CAP_FEAT_STREAMING from feat_mask when device flags RFC options
->      as unknown
->
-> [v1] lore.kernel.org/r/20190208025828.30901-1-andrew.smirnov@gmail.com
->
+On Mon, Apr 13, 2020 at 04:03:04AM -0700, syzbot wrote:
+> syzbot has bisected this bug to:
+> 
+> commit 36947254e5f981aeeedab1c7dfa35fc34d330e80
+> Author: Sean Christopherson <sean.j.christopherson@intel.com>
+> Date:   Tue Feb 18 21:07:32 2020 +0000
+> 
+>     KVM: Dynamically size memslot array based on number of used slots
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1099775de00000
+> start commit:   4f8a3cc1 Merge tag 'x86-urgent-2020-04-12' of git://git.ke..
+> git tree:       upstream
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=1299775de00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1499775de00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3bfbde87e8e65624
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2e0179e5185bcd5b9440
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e78c7de00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14cf613fe00000
+> 
+> Reported-by: syzbot+2e0179e5185bcd5b9440@syzkaller.appspotmail.com
+> Fixes: 36947254e5f9 ("KVM: Dynamically size memslot array based on number of used slots")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Marcel, Johan, can either of you please comment on this patch? I've
-sent a number of patches to linux-bluetooth in past 6 month all of
-which were met with radio silence, so I am a bit worried that my
-messages are being filtered out or dropped.
-
-Thanks,
-Andrey Smirnov
-
-
->  net/bluetooth/l2cap_core.c | 58 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
->
-> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-> index dfc1edb168b7..77b65870b064 100644
-> --- a/net/bluetooth/l2cap_core.c
-> +++ b/net/bluetooth/l2cap_core.c
-> @@ -4216,6 +4216,49 @@ static inline int l2cap_config_req(struct l2cap_conn *conn,
->         return err;
->  }
->
-> +static inline int l2cap_config_rsp_unknown(struct l2cap_conn *conn,
-> +                                          struct l2cap_chan *chan,
-> +                                          const u8 *data,
-> +                                          int len)
-> +{
-> +       char req[64];
-> +
-> +       if (!len || len > sizeof(req) -  sizeof(struct l2cap_conf_req))
-> +               return -ECONNRESET;
-> +
-> +       while (len--) {
-> +               const u8 option_type = *data++;
-> +
-> +               BT_DBG("chan %p, unknown option type: %u", chan,  option_type);
-> +
-> +               /* "...Hints shall not be included in the Response and
-> +                * shall not be the sole cause for rejecting the
-> +                * Request.."
-> +                */
-> +               if (option_type & L2CAP_CONF_HINT)
-> +                       return -ECONNRESET;
-> +
-> +               switch (option_type) {
-> +               case L2CAP_CONF_RFC:
-> +                       /* Clearing the following feature should
-> +                        * prevent RFC option from being added next
-> +                        * connection attempt
-> +                        */
-> +                       conn->feat_mask &= ~(L2CAP_FEAT_ERTM |
-> +                                            L2CAP_FEAT_STREAMING);
-> +                       break;
-> +               default:
-> +                       return -ECONNRESET;
-> +               }
-> +       }
-> +
-> +       len = l2cap_build_conf_req(chan, req, sizeof(req));
-> +       l2cap_send_cmd(conn, l2cap_get_ident(conn), L2CAP_CONF_REQ, len, req);
-> +       chan->num_conf_req++;
-> +
-> +       return 0;
-> +}
-> +
->  static inline int l2cap_config_rsp(struct l2cap_conn *conn,
->                                    struct l2cap_cmd_hdr *cmd, u16 cmd_len,
->                                    u8 *data)
-> @@ -4271,6 +4314,21 @@ static inline int l2cap_config_rsp(struct l2cap_conn *conn,
->                 }
->                 goto done;
->
-> +       case L2CAP_CONF_UNKNOWN:
-> +               if (chan->num_conf_rsp <= L2CAP_CONF_MAX_CONF_RSP) {
-> +                       if (l2cap_config_rsp_unknown(conn, chan, rsp->data,
-> +                                                    len) < 0) {
-> +                               l2cap_send_disconn_req(chan, ECONNRESET);
-> +                               goto done;
-> +                       }
-> +                       break;
-> +               }
-> +               /* Once, chan->num_conf_rsp goes above
-> +                * L2CAP_CONF_MAX_CONF_RSP we want to go down all the
-> +                * way to default label (just like L2CAP_CONF_UNACCEPT
-> +                * below)
-> +                */
-> +               /* fall through */
->         case L2CAP_CONF_UNACCEPT:
->                 if (chan->num_conf_rsp <= L2CAP_CONF_MAX_CONF_RSP) {
->                         char req[64];
-> --
-> 2.21.0
->
+#syz dup: KASAN: slab-out-of-bounds Read in __kvm_gfn_to_hva_cache_init
