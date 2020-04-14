@@ -2,133 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9901A7F75
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952EF1A7F6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389680AbgDNOT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:19:26 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:41180 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389553AbgDNOTF (ORCPT
+        id S2389462AbgDNOSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:18:39 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:3498 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389443AbgDNOSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:19:05 -0400
-Received: by mail-wr1-f66.google.com with SMTP id h9so14519947wrc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 07:19:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z5WfYF9qaISCkQkLdw8YD4qrqM7NyTjsNf6l5QbjJTo=;
-        b=JHBW9mz6aeY+lffMWQ2zaWgl2BJsVb0Oyt5abQVDCM0QtA8aU1Nmw8b/7NP9bVkn6z
-         5VnAzQ5g/12Gfh4Iv2iyrUPQR3XP7mOkfQ+Wg5oE09xruAMyL9BbmVx1lFficeoNieOS
-         KChZucfxqCGhFWk7C6dy0km4HwCZ7nBFkL6JL/s8sSYq/x1ObjKjw3Rydh7dkyeSL7k7
-         l3YOpsGKZYnXyQOH1NgSOVDRSL/PtuwmaHcPOcGC+KvM64Y3N8fOj0rVTDhv8syorT1V
-         v25wq2q0w56YhSTU+FCZo0jRsNTRSKbbfpv5ax+y26/K2uaUUhbYIvAkOAXRHTXLM6rA
-         f1fg==
-X-Gm-Message-State: AGi0Pubcuj33afOEGbA98IM6E3mudwsdlbH8Fkn1y2mMvSUEridvM8f9
-        cmXET4fnfoiR1QgCMAh0Qvc=
-X-Google-Smtp-Source: APiQypK6NuQVH3WM+olPPFxSgaP3SCd9gU4Iqdtq/fG4GGGHxVcSyqB43KmhAKxVv7wBOx/6NIt5Ew==
-X-Received: by 2002:adf:f812:: with SMTP id s18mr26513530wrp.347.1586873941783;
-        Tue, 14 Apr 2020 07:19:01 -0700 (PDT)
-Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
-        by smtp.gmail.com with ESMTPSA id b11sm19320446wrq.26.2020.04.14.07.19.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 07:19:00 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 16:18:59 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
- signal
-Message-ID: <20200414141859.GM4629@dhcp22.suse.cz>
-References: <20200408014010.80428-1-peterx@redhat.com>
- <20200408014010.80428-2-peterx@redhat.com>
- <20200409070253.GB18386@dhcp22.suse.cz>
- <CAHk-=whwRqkwdaJQf4g0-Evd6RmXR3dkkKyfnPjbnkeia=b1ug@mail.gmail.com>
- <20200414110429.GF4629@dhcp22.suse.cz>
- <20200414134906.GF38470@xz-x1>
+        Tue, 14 Apr 2020 10:18:32 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15e95c61edff-54dfc; Tue, 14 Apr 2020 22:18:09 +0800 (CST)
+X-RM-TRANSID: 2ee15e95c61edff-54dfc
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.3.208.246])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65e95c61f0fb-943a7;
+        Tue, 14 Apr 2020 22:18:09 +0800 (CST)
+X-RM-TRANSID: 2ee65e95c61f0fb-943a7
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     minyard@acm.org, arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] ipmi:bt-bmc: Delete superfluous dev_warm() in bt_bmc_config_irq()
+Date:   Tue, 14 Apr 2020 22:19:51 +0800
+Message-Id: <20200414141951.19120-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414134906.GF38470@xz-x1>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-04-20 09:49:06, Peter Xu wrote:
-> On Tue, Apr 14, 2020 at 01:04:29PM +0200, Michal Hocko wrote:
-> 
-> [...]
-> 
-> > @@ -1247,6 +1248,10 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
-> >  }
-> >  EXPORT_SYMBOL_GPL(fixup_user_fault);
-> >  
-> > +/*
-> > + * Please note that this function, unlike __get_user_pages will not
-> > + * return 0 for nr_pages > 0 without FOLL_NOWAIT
-> > + */
-> >  static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
-> >  						struct mm_struct *mm,
-> >  						unsigned long start,
-> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > index 48ba9729062e..1965e2681877 100644
-> > --- a/mm/mempolicy.c
-> > +++ b/mm/mempolicy.c
-> > @@ -927,10 +927,7 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
-> >  
-> >  	int locked = 1;
-> >  	err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
-> > -	if (err == 0) {
-> > -		/* E.g. GUP interrupted by fatal signal */
-> > -		err = -EFAULT;
-> > -	} else if (err > 0) {
-> > +	if (err > 0) {
-> >  		err = page_to_nid(p);
-> >  		put_page(p);
-> >  	}
-> 
-> Hi, Michal,
-> 
-> IIUC this is not the only place that we check against ret==0 for gup.
-> For example, the other direct caller of the same function,
-> get_vaddr_frames(), which will set -EFAULT too if ret==0.  So do we
-> want to change all the places and don't check against zero explicitly?
+The priority of dev_warm() is higher than dev_info(),so if the
+function bt_bmc_probe() uses dev_info() to print error message,
+the dev_warm() is redundant.Thus should be removed.
 
-This would require to analyze each such a call. For example
-get_vaddr_frames has to handle get_user_pages_locked returning 0 because
-it allows callers to specify FOLL_NOWAIT. Whether EFAULT is a proper
-return value for that case is a question I didn't really get to analyze.
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+---
+ drivers/char/ipmi/bt-bmc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> I'm now thinking whether this would be good even if we refactored gup
-> and only allow it to return either >0 as number of page pinned, or <0
-> for all the rest.  I'm not sure how others will see this, but the
-> answer is probably the same at least to me as before for this issue.
-
-I would consider a semantic without that special case for FOLL_NOWAIT
-much more clear but I do not really understand the historical background
-for it TBH so I do not dare to touch that.
-
-> As a caller, I'll see gup as a black box.  Even if the gup function
-> guarantees that the retcode won't be zero and documented it, I (as a
-> caller) will be using that to index page array so I'd still better to
-> check that value before I do anything (because it's meaningless to
-> index an array with zero size), and a convertion of "ret==0" -->
-> "-EFAULT" (or some other failures) in this case still makes sense.
-> While removing that doesn't help a lot, imho, but instead make it
-> slightly unsafer.
-
-Well, my experience tells me that people really love to copy&paste code
-and error handling and if the error handling is bogus it just spreads
-all over the place until it really defines a new standard which is close
-to impossible to get rid of. So if the error handling can be done
-properly then I would really prefer it. In the above case it is clearly
-misleading, because fatal signal should be never reflected by err==0.
+diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
+index cd0349bff..1d4bf5c65 100644
+--- a/drivers/char/ipmi/bt-bmc.c
++++ b/drivers/char/ipmi/bt-bmc.c
+@@ -406,7 +406,6 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
+ 	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
+ 			      DEVICE_NAME, bt_bmc);
+ 	if (rc < 0) {
+-		dev_warn(dev, "Unable to request IRQ %d\n", bt_bmc->irq);
+ 		bt_bmc->irq = 0;
+ 		return rc;
+ 	}
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1.windows.1
+
+
+
