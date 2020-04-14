@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB5C1A7A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C126B1A7A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729894AbgDNMK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:10:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
+        id S2439927AbgDNMKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:10:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:35090 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729798AbgDNMKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:10:22 -0400
-Received: from Mani-XPS-13-9360 (unknown [157.46.102.247])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09300206A2;
-        Tue, 14 Apr 2020 12:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586866221;
-        bh=9nLijrfFYT0Yv0LLGW5g9Cnrm+SAsUFzF6rXqjQvE9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TfD6ULUK00pKiRiq73UbKHBodLii08HNnSGkJDWXcXFt630iGbxxo8Hyzf6qqoj+G
-         FUwHuWtVAqgHGoqKHTOXzWfruB6qPXAdYB14cwMu28ceC/p3FX8PXPqbmSUMXwk5UR
-         XSiXFSry0KNmgxv7CkqzOYhS09dMwT60kU0Sp2Hk=
-Date:   Tue, 14 Apr 2020 17:40:09 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     robh+dt@kernel.org, narcisaanamaria12@gmail.com, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: iio: chemical: Add binding for CCS811
- VOC sensor
-Message-ID: <20200414121009.GA28866@Mani-XPS-13-9360>
-References: <20200412183658.6755-1-mani@kernel.org>
- <20200412183658.6755-2-mani@kernel.org>
- <20200413175323.7f41b766@archlinux>
+        id S2439918AbgDNMKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:10:36 -0400
+IronPort-SDR: Sbx7w2g+6r5SrxGvSFT0CSH7Bbd3kQwGbl7stQdqu0N9ssERqgPpYrVzwrmXTeTMo3ic2ZBpQr
+ uhKhOL/w4nPQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 05:10:35 -0700
+IronPort-SDR: JJ/iZDxaMqli2ikt1LKxWGxUP+IQEI+H/Zac7XRD1mQWs2IOxHrhfegmPgoCZG/yRnXx8S4iEy
+ giePscINfvkg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
+   d="scan'208";a="363358155"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2020 05:10:33 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 14 Apr 2020 15:10:32 +0300
+Date:   Tue, 14 Apr 2020 15:10:32 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: remove tcpm_altmode_ops and
+ associations
+Message-ID: <20200414121032.GF2828150@kuha.fi.intel.com>
+References: <20200409085117.45819-1-yanaijie@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200413175323.7f41b766@archlinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200409085117.45819-1-yanaijie@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 05:53:23PM +0100, Jonathan Cameron wrote:
-> On Mon, 13 Apr 2020 00:06:56 +0530
-> mani@kernel.org wrote:
-> 
-> > From: Manivannan Sadhasivam <mani@kernel.org>
-> > 
-> > This commit adds devicetree binding for AMS CCS811 VOC sensor.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
-> Great to see this driver getting some more attention.
-> 
-> A few things inline
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  .../bindings/iio/chemical/ams,ccs811.yaml     | 50 +++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
-> > new file mode 100644
-> > index 000000000000..564208af7b2b
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
-> > @@ -0,0 +1,50 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> 
-> Preferred that all new binding docs are dual licensed with BSD as well
-> to allow there use by things other than the kernel.
-> 
+Hi,
 
-Okay will do.
-
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/chemical/ams,ccs811.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: AMS CCS811 VOC Sensor
-> > +
-> > +maintainers:
-> > +  - Narcisa Vasile <narcisaanamaria12@gmail.com>
-> > +
-> > +description: |
-> > +  Ultra-Low Power Digital Gas Sensor for Monitoring Indoor Air Quality.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - ams,ccs811
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  reset-gpios:
-> > +    description: GPIO connected to the nRESET line. This is an active low
-> > +                 input to CCS811.
-> > +    maxItems: 1
-> > +
-> > +  wakeup-gpios:
-> > +    description: GPIO connected to the nWAKE line. This is an active low
-> > +                 input to CCS811.
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +
-> > +      ccs811@5b {
-> Hmm. Not sure we have a generic name in the dt spec for voc sensor.
-> Even so we should try for something appropriate.
+On Thu, Apr 09, 2020 at 04:51:17PM +0800, Jason Yan wrote:
+> Fix the following gcc warning:
 > 
-> Could go with voc@5b?
+> drivers/usb/typec/tcpm/tcpm.c:1551:39: warning: ‘tcpm_altmode_ops’
+> defined but not used [-Wunused-const-variable=]
+>  static const struct typec_altmode_ops tcpm_altmode_ops = {
+>                                        ^~~~~~~~~~~~~~~~
 > 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-Sounds good to me.
+This is a fix, so can you resend this with the following tag:
 
-Thanks,
-Mani
+Fixes: a079973f462a ("usb: typec: tcpm: Remove tcpc_config configuration mechanism").
 
-> > +        compatible = "ams,ccs811";
-> > +        reg = <0x5b>;
-> > +        reset-gpios = <&gpioa 11 GPIO_ACTIVE_LOW>;
-> > +        wakeup-gpios = <&gpioa 12 GPIO_ACTIVE_LOW>;
-> > +      };
-> > +    };
-> > +
-> > +...
+Don't forget the CC stable tag as well.
+
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 51 -----------------------------------
+>  1 file changed, 51 deletions(-)
 > 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index de3576e6530a..0fcb1023bdbe 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1503,57 +1503,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
+>  	return 0;
+>  }
+>  
+> -static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+> -{
+> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> -	u32 header;
+> -
+> -	mutex_lock(&port->lock);
+> -	header = VDO(altmode->svid, vdo ? 2 : 1, CMD_ENTER_MODE);
+> -	header |= VDO_OPOS(altmode->mode);
+> -
+> -	tcpm_queue_vdm(port, header, vdo, vdo ? 1 : 0);
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> -	mutex_unlock(&port->lock);
+> -
+> -	return 0;
+> -}
+> -
+> -static int tcpm_altmode_exit(struct typec_altmode *altmode)
+> -{
+> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> -	u32 header;
+> -
+> -	mutex_lock(&port->lock);
+> -	header = VDO(altmode->svid, 1, CMD_EXIT_MODE);
+> -	header |= VDO_OPOS(altmode->mode);
+> -
+> -	tcpm_queue_vdm(port, header, NULL, 0);
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> -	mutex_unlock(&port->lock);
+> -
+> -	return 0;
+> -}
+> -
+> -static int tcpm_altmode_vdm(struct typec_altmode *altmode,
+> -			    u32 header, const u32 *data, int count)
+> -{
+> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> -
+> -	mutex_lock(&port->lock);
+> -	tcpm_queue_vdm(port, header, data, count - 1);
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> -	mutex_unlock(&port->lock);
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct typec_altmode_ops tcpm_altmode_ops = {
+> -	.enter = tcpm_altmode_enter,
+> -	.exit = tcpm_altmode_exit,
+> -	.vdm = tcpm_altmode_vdm,
+> -};
+> -
+>  /*
+>   * PD (data, control) command handling functions
+>   */
+> -- 
+> 2.17.2
+
+thanks,
+
+-- 
+heikki
