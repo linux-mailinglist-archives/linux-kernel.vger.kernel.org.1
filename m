@@ -2,245 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBA11A796B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4D91A7999
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729114AbgDNL27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:28:59 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:39025 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439072AbgDNL1m (ORCPT
+        id S2439310AbgDNLdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 07:33:24 -0400
+Received: from dd10228.kasserver.com ([85.13.133.23]:48786 "EHLO
+        dd10228.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439263AbgDNLdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:27:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1586863661; x=1618399661;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=AAktRsGo1nOyB9XwgW0b2ZZuoEurSDp9VgnnFBebWBg=;
-  b=YXVQIEeN2NdSqtID5m5YqfXYvzrRMniXmfYkgcpvu6HIuiaQnpFJFkAm
-   zhNnwBktN5T1hKBptFH0v8fquA/MkoBIEf9LGmnmzrZKMOCq18nit2iwp
-   M3p3P77kCOMic1NqPe+MRlXkqQT+miYZdzGztJe1sXFUZn7f0e5QGvapp
-   fnZHUUFkY6z8nIBTi6mCAb/rUZsvezBJrM2weH+g9tSAofj+fgM9UfG4r
-   qnD9wzFbkkQr2EFtT5YeISR8BSg7BUaLjiaPsr3P/FAOW3plw6P7N8Wf6
-   NUx/aqQglcU8/ONsjLTpUSpn0R7sYG8MQlHJkci1AnxszL70dEQ/cuXf0
-   A==;
-IronPort-SDR: 4ZjutON7erWUO1fBoDa8Dw4AA+M7jD3fRYVVhUn1HFlhZ6PdqcWiTrgkJspnN7EGOAmjADoP/r
- KyIhTqWK81jH36LJoWh68rl98fHOfykMbScijLYIRGm+K0s7u2K7uJ2qKSLjptj16ZTxcF6RIp
- sweq2LurWviTiQG6cTA40psnLYXXQmTBjby8BD3qkuVke1zBIJVJ+IqP6qUMuw0xounYGljrRZ
- LIjgRbjVbFr2yl5bVdj5F5YEL11OU1+gr+EbrV43L7azSyBOTZBvzzh/puKCCXqNJUdTjTjjSx
- xjU=
-X-IronPort-AV: E=Sophos;i="5.72,382,1580799600"; 
-   d="scan'208";a="73265533"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Apr 2020 04:27:37 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 14 Apr 2020 04:27:37 -0700
-Received: from soft-dev3.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Tue, 14 Apr 2020 04:27:34 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <davem@davemloft.net>,
-        <jiri@resnulli.us>, <ivecera@redhat.com>, <kuba@kernel.org>,
-        <roopa@cumulusnetworks.com>, <olteanv@gmail.com>, <andrew@lunn.ch>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <UNGLinuxDriver@microchip.com>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [RFC net-next v5 9/9] bridge: mrp: Integrate MRP into the bridge
-Date:   Tue, 14 Apr 2020 13:26:18 +0200
-Message-ID: <20200414112618.3644-10-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414112618.3644-1-horatiu.vultur@microchip.com>
-References: <20200414112618.3644-1-horatiu.vultur@microchip.com>
+        Tue, 14 Apr 2020 07:33:17 -0400
+X-Greylist: delayed 312 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Apr 2020 07:33:17 EDT
+Received: from devpool17.fritz.box (ip1f107c11.dynamic.kabel-deutschland.de [31.16.124.17])
+        by dd10228.kasserver.com (Postfix) with ESMTPSA id 47E406CC0254;
+        Tue, 14 Apr 2020 13:27:56 +0200 (CEST)
+From:   Philipp Puschmann <p.puschmann@pironex.de>
+To:     cernekee@chromium.org, lgirdwood@gmail.com, broonie@kernel.org,
+        tglx@linutronix.de, nhuck@google.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Philipp Puschmann <p.puschmann@pironex.de>
+Subject: [PATCH] ASoC: tas571x: disable regulators on failed probe
+Date:   Tue, 14 Apr 2020 13:27:54 +0200
+Message-Id: <20200414112754.3365406-1-p.puschmann@pironex.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To integrate MRP into the bridge, the bridge needs to do the following:
-- add new flag(BR_MPP_AWARE) to the net bridge ports, this bit will be set when
-  the port is added to an MRP instance. In this way it knows if the frame was
-  received on MRP ring port
-- detect if the MRP frame was received on MRP ring port in that case it would be
-  processed otherwise just forward it as usual.
-- enable parsing of MRP
-- before whenever the bridge was set up, it would set all the ports in
-  forwarding state. Add an extra check to not set ports in forwarding state if
-  the port is an MRP ring port. The reason of this change is that if the MRP
-  instance initially sets the port in blocked state by setting the bridge up it
-  would overwrite this setting.
+If probe fails after enabling the regulators regulator_put is called for
+each supply without having them disabled before. This produces some
+warnings like
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
+[<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
+[<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
+[<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
+[<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
+[<c04c4064>] (_regulator_put.part.0) from [<c04c4094>] (regulator_put+0x28/0x38)
+[<c04c4094>] (regulator_put) from [<c04c40cc>] (regulator_bulk_free+0x28/0x38)
+[<c04c40cc>] (regulator_bulk_free) from [<c0579b2c>] (release_nodes+0x1d0/0x22c)
+[<c0579b2c>] (release_nodes) from [<c05756dc>] (really_probe+0x108/0x34c)
+[<c05756dc>] (really_probe) from [<c0575aec>] (driver_probe_device+0xb8/0x16c)
+[<c0575aec>] (driver_probe_device) from [<c0575d40>] (device_driver_attach+0x58/0x60)
+[<c0575d40>] (device_driver_attach) from [<c0575da0>] (__driver_attach+0x58/0xcc)
+[<c0575da0>] (__driver_attach) from [<c0573978>] (bus_for_each_dev+0x78/0xc0)
+[<c0573978>] (bus_for_each_dev) from [<c0574b5c>] (bus_add_driver+0x188/0x1e0)
+[<c0574b5c>] (bus_add_driver) from [<c05768b0>] (driver_register+0x74/0x108)
+[<c05768b0>] (driver_register) from [<c061ab7c>] (i2c_register_driver+0x3c/0x88)
+[<c061ab7c>] (i2c_register_driver) from [<c0102df8>] (do_one_initcall+0x58/0x250)
+[<c0102df8>] (do_one_initcall) from [<c01a91bc>] (do_init_module+0x60/0x244)
+[<c01a91bc>] (do_init_module) from [<c01ab5a4>] (load_module+0x2180/0x2540)
+[<c01ab5a4>] (load_module) from [<c01abbd4>] (sys_finit_module+0xd0/0xe8)
+[<c01abbd4>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+
+Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
+Signed-off-by: Philipp Puschmann <p.puschmann@pironex.de>
 ---
- include/linux/if_bridge.h |  1 +
- net/bridge/br_device.c    |  3 +++
- net/bridge/br_if.c        |  2 ++
- net/bridge/br_input.c     |  3 +++
- net/bridge/br_netlink.c   |  5 +++++
- net/bridge/br_private.h   | 35 +++++++++++++++++++++++++++++++++++
- net/bridge/br_stp.c       |  6 ++++++
- net/bridge/br_stp_if.c    |  5 +++++
- 8 files changed, 60 insertions(+)
+ sound/soc/codecs/tas571x.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
-index 9e57c4411734..10baa9efdae8 100644
---- a/include/linux/if_bridge.h
-+++ b/include/linux/if_bridge.h
-@@ -47,6 +47,7 @@ struct br_ip_list {
- #define BR_BCAST_FLOOD		BIT(14)
- #define BR_NEIGH_SUPPRESS	BIT(15)
- #define BR_ISOLATED		BIT(16)
-+#define BR_MRP_AWARE		BIT(17)
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index 1554631cb397..5b7f9fcf6cbf 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -820,8 +820,10 @@ static int tas571x_i2c_probe(struct i2c_client *client,
  
- #define BR_DEFAULT_AGEING_TIME	(300 * HZ)
- 
-diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
-index 0e3dbc5f3c34..8ec1362588af 100644
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -463,6 +463,9 @@ void br_dev_setup(struct net_device *dev)
- 	spin_lock_init(&br->lock);
- 	INIT_LIST_HEAD(&br->port_list);
- 	INIT_HLIST_HEAD(&br->fdb_list);
-+#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-+	INIT_LIST_HEAD(&br->mrp_list);
-+#endif
- 	spin_lock_init(&br->hash_lock);
- 
- 	br->bridge_id.prio[0] = 0x80;
-diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
-index 4fe30b182ee7..ca685c0cdf95 100644
---- a/net/bridge/br_if.c
-+++ b/net/bridge/br_if.c
-@@ -333,6 +333,8 @@ static void del_nbp(struct net_bridge_port *p)
- 	br_stp_disable_port(p);
- 	spin_unlock_bh(&br->lock);
- 
-+	br_mrp_port_del(br, p);
-+
- 	br_ifinfo_notify(RTM_DELLINK, NULL, p);
- 
- 	list_del_rcu(&p->list);
-diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
-index fcc260840028..d5c34f36f0f4 100644
---- a/net/bridge/br_input.c
-+++ b/net/bridge/br_input.c
-@@ -342,6 +342,9 @@ rx_handler_result_t br_handle_frame(struct sk_buff **pskb)
- 		}
- 	}
- 
-+	if (unlikely(br_mrp_process(p, skb)))
-+		return RX_HANDLER_PASS;
-+
- forward:
- 	switch (p->state) {
- 	case BR_STATE_FORWARDING:
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 43dab4066f91..8826fcd1eb76 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -669,6 +669,11 @@ static int br_afspec(struct net_bridge *br,
- 			if (err)
- 				return err;
- 			break;
-+		case IFLA_BRIDGE_MRP:
-+			err = br_mrp_parse(br, p, attr, cmd, extack);
-+			if (err)
-+				return err;
-+			break;
- 		}
- 	}
- 
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 1f97703a52ff..5835828320b6 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -428,6 +428,10 @@ struct net_bridge {
- 	int offload_fwd_mark;
- #endif
- 	struct hlist_head		fdb_list;
-+
-+#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-+	struct list_head		__rcu mrp_list;
-+#endif
- };
- 
- struct br_input_skb_cb {
-@@ -1304,6 +1308,37 @@ unsigned long br_timer_value(const struct timer_list *timer);
- extern int (*br_fdb_test_addr_hook)(struct net_device *dev, unsigned char *addr);
- #endif
- 
-+/* br_mrp.c */
-+#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-+int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
-+		 struct nlattr *attr, int cmd, struct netlink_ext_ack *extack);
-+int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb);
-+bool br_mrp_enabled(struct net_bridge *br);
-+void br_mrp_port_del(struct net_bridge *br, struct net_bridge_port *p);
-+#else
-+static inline int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
-+			       struct nlattr *attr, int cmd,
-+			       struct netlink_ext_ack *extack)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb)
-+{
-+	return 0;
-+}
-+
-+static inline bool br_mrp_enabled(struct net_bridge *br)
-+{
-+	return 0;
-+}
-+
-+static inline void br_mrp_port_del(struct net_bridge *br,
-+				   struct net_bridge_port *p)
-+{
-+}
-+#endif
-+
- /* br_netlink.c */
- extern struct rtnl_link_ops br_link_ops;
- int br_netlink_init(void);
-diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
-index 1f14b8455345..3e88be7aa269 100644
---- a/net/bridge/br_stp.c
-+++ b/net/bridge/br_stp.c
-@@ -36,6 +36,12 @@ void br_set_state(struct net_bridge_port *p, unsigned int state)
- 	};
- 	int err;
- 
-+	/* Don't change the state of the ports if they are driven by a different
-+	 * protocol.
-+	 */
-+	if (p->flags & BR_MRP_AWARE)
-+		return;
-+
- 	p->state = state;
- 	err = switchdev_port_attr_set(p->dev, &attr);
- 	if (err && err != -EOPNOTSUPP)
-diff --git a/net/bridge/br_stp_if.c b/net/bridge/br_stp_if.c
-index d174d3a566aa..542b212d5033 100644
---- a/net/bridge/br_stp_if.c
-+++ b/net/bridge/br_stp_if.c
-@@ -200,6 +200,11 @@ void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
- {
- 	ASSERT_RTNL();
- 
-+	if (br_mrp_enabled(br)) {
-+		br_warn(br, "STP can't be enabled if MRP is already enabled\n");
-+		return;
+ 	priv->regmap = devm_regmap_init(dev, NULL, client,
+ 					priv->chip->regmap_config);
+-	if (IS_ERR(priv->regmap))
+-		return PTR_ERR(priv->regmap);
++	if (IS_ERR(priv->regmap)) {
++		ret = PTR_ERR(priv->regmap);
++		goto disable_regs;
 +	}
+ 
+ 	priv->pdn_gpio = devm_gpiod_get_optional(dev, "pdn", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->pdn_gpio)) {
+@@ -845,7 +847,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 
+ 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
+ 	if (ret)
+-		return ret;
++		goto disable_regs;
+ 
+ 	usleep_range(50000, 60000);
+ 
+@@ -861,12 +863,20 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 		 */
+ 		ret = regmap_update_bits(priv->regmap, TAS571X_MVOL_REG, 1, 0);
+ 		if (ret)
+-			return ret;
++			goto disable_regs;
+ 	}
+ 
+-	return devm_snd_soc_register_component(&client->dev,
++	ret = devm_snd_soc_register_component(&client->dev,
+ 				      &priv->component_driver,
+ 				      &tas571x_dai, 1);
++	if (ret)
++		goto disable_regs;
 +
- 	if (val) {
- 		if (br->stp_enabled == BR_NO_STP)
- 			br_stp_start(br);
++	return ret;
++
++disable_regs:
++	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
++	return ret;
+ }
+ 
+ static int tas571x_i2c_remove(struct i2c_client *client)
 -- 
-2.17.1
+2.26.0
 
