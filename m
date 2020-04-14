@@ -2,105 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A3F1A7EC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA411A7EC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgDNNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:49:09 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8472 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388027AbgDNNsm (ORCPT
+        id S1732874AbgDNNtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:49:51 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:32020 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732845AbgDNNtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:48:42 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EDYdWZ100004
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:48:41 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30cvqfd99j-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:48:41 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <zohar@linux.ibm.com>;
-        Tue, 14 Apr 2020 14:48:00 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 14 Apr 2020 14:47:55 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EDmY7P37028098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 13:48:34 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A1BCAE051;
-        Tue, 14 Apr 2020 13:48:34 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67B60AE04D;
-        Tue, 14 Apr 2020 13:48:33 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.80.236.92])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Apr 2020 13:48:33 +0000 (GMT)
-Subject: Re: [PATCH] evm: Fix possible memory leak in evm_calc_hmac_or_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
-        stable@vger.kernel.org
-Date:   Tue, 14 Apr 2020 09:48:32 -0400
-In-Reply-To: <20200414080131.29411-1-roberto.sassu@huawei.com>
-References: <20200414080131.29411-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041413-0020-0000-0000-000003C7B0C1
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041413-0021-0000-0000-000022208C90
-Message-Id: <1586872112.7311.194.camel@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_05:2020-04-14,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- impostorscore=0 adultscore=0 spamscore=0 phishscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140108
+        Tue, 14 Apr 2020 09:49:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586872151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kHDd15U+utIVIYTBnW0m937vVJqUYSl9E32F9MiM/Ow=;
+        b=Xo16gqyNi1Xgmp2JnAkREmThiJLHqZT6E0HWAaqpxNxnI5nmV9n07bEM2wCwWO74f7xFVk
+        MIP5cmvPlCrsTMMdXB/1J1wMab9Tf4k4choaJujvY9Bvmg9tOZxCwkzcIuahrjvLDvw/uF
+        5167Uwvy/X+IvuqLpoOhGi2OBBek2iA=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-EcfC1Hj9NgqdJcb85Fgj8w-1; Tue, 14 Apr 2020 09:49:10 -0400
+X-MC-Unique: EcfC1Hj9NgqdJcb85Fgj8w-1
+Received: by mail-qk1-f197.google.com with SMTP id g63so4110517qkd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:49:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kHDd15U+utIVIYTBnW0m937vVJqUYSl9E32F9MiM/Ow=;
+        b=pxnEVbCiHsEnH5H4TNu7v/Z24Bde+2hPNj5oDet+JgKS0QywdWPbEaINA9tQ4TmZey
+         ylBMbn2CbGgOYYOCXfnYAP0wvpGmI8ullGV5Jg0K00c1H37QW+N0orhtayCnehMd0vQ+
+         uH+SzrE52SecoxpPfOlSDyG3zzEYPrRD/oS+fYwaq9ZT7/2Z5jyJN8UtA426EzV9aD7W
+         zvqoNumlHIMMf1SjZVtf0uyBi938QGbfWaBVXiYEjGXQXF96pgtZIVAsDSIJFty9if90
+         isj8JcTwx1P+boOFU66hayDGvpUB8pw9N4uyFXaG0rU1LWlO6rePARERutCt6XReU9b3
+         OhWQ==
+X-Gm-Message-State: AGi0PubyDbB2Lcvb6TAMxaMf3xUQT0tTwBQpSkChPwyH/SCYRQLGMdmC
+        jPk5ZTokut8tvYzTrOCu3iW6X2kJVRsJbL+0Xh+yR80cmSOkRQiHn93vCmD8QwSgIZnqHR4klHP
+        ZTG60xUeuUyFcKoOCqfwlGHZy
+X-Received: by 2002:ac8:23ed:: with SMTP id r42mr16349883qtr.372.1586872149304;
+        Tue, 14 Apr 2020 06:49:09 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKk1CxvePF721u7zCAPiQ9xQbBy20rE/GYRkwegXAxvCmLozUAOeoCxNg/oiUCi+k1GjuUhog==
+X-Received: by 2002:ac8:23ed:: with SMTP id r42mr16349845qtr.372.1586872148758;
+        Tue, 14 Apr 2020 06:49:08 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id c41sm7218899qta.96.2020.04.14.06.49.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 06:49:07 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 09:49:06 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
+ signal
+Message-ID: <20200414134906.GF38470@xz-x1>
+References: <20200408014010.80428-1-peterx@redhat.com>
+ <20200408014010.80428-2-peterx@redhat.com>
+ <20200409070253.GB18386@dhcp22.suse.cz>
+ <CAHk-=whwRqkwdaJQf4g0-Evd6RmXR3dkkKyfnPjbnkeia=b1ug@mail.gmail.com>
+ <20200414110429.GF4629@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200414110429.GF4629@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, Roberto.
+On Tue, Apr 14, 2020 at 01:04:29PM +0200, Michal Hocko wrote:
 
-Sorry for the delays in reviewing the miscellaneous set of IMA patches
-you previously posted.  They're next on my "todo" list.
+[...]
 
-Mimi
-
-On Tue, 2020-04-14 at 10:01 +0200, Roberto Sassu wrote:
-> Don't immediately return if the signature is portable and security.ima is
-> not present. Just set error so that memory allocated is freed before
-> returning from evm_calc_hmac_or_hash().
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 50b977481fce9 ("EVM: Add support for portable signature format")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/integrity/evm/evm_crypto.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-> index 35682852ddea..499ea01b2edc 100644
-> --- a/security/integrity/evm/evm_crypto.c
-> +++ b/security/integrity/evm/evm_crypto.c
-> @@ -241,7 +241,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
+> @@ -1247,6 +1248,10 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
+>  }
+>  EXPORT_SYMBOL_GPL(fixup_user_fault);
 >  
->  	/* Portable EVM signatures must include an IMA hash */
->  	if (type == EVM_XATTR_PORTABLE_DIGSIG && !ima_present)
-> -		return -EPERM;
-> +		error = -EPERM;
->  out:
->  	kfree(xattr_value);
->  	kfree(desc);
+> +/*
+> + * Please note that this function, unlike __get_user_pages will not
+> + * return 0 for nr_pages > 0 without FOLL_NOWAIT
+> + */
+>  static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
+>  						struct mm_struct *mm,
+>  						unsigned long start,
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 48ba9729062e..1965e2681877 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -927,10 +927,7 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
+>  
+>  	int locked = 1;
+>  	err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
+> -	if (err == 0) {
+> -		/* E.g. GUP interrupted by fatal signal */
+> -		err = -EFAULT;
+> -	} else if (err > 0) {
+> +	if (err > 0) {
+>  		err = page_to_nid(p);
+>  		put_page(p);
+>  	}
+
+Hi, Michal,
+
+IIUC this is not the only place that we check against ret==0 for gup.
+For example, the other direct caller of the same function,
+get_vaddr_frames(), which will set -EFAULT too if ret==0.  So do we
+want to change all the places and don't check against zero explicitly?
+
+I'm now thinking whether this would be good even if we refactored gup
+and only allow it to return either >0 as number of page pinned, or <0
+for all the rest.  I'm not sure how others will see this, but the
+answer is probably the same at least to me as before for this issue.
+
+As a caller, I'll see gup as a black box.  Even if the gup function
+guarantees that the retcode won't be zero and documented it, I (as a
+caller) will be using that to index page array so I'd still better to
+check that value before I do anything (because it's meaningless to
+index an array with zero size), and a convertion of "ret==0" -->
+"-EFAULT" (or some other failures) in this case still makes sense.
+While removing that doesn't help a lot, imho, but instead make it
+slightly unsafer.
+
+Maybe that's also why ret==0 hasn't been reworked for years?  Maybe
+there is just never a reason strong enough to do that explicitly,
+because it's still good to check against ret==0 after all...
+
+Thanks,
+
+-- 
+Peter Xu
 
