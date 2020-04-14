@@ -2,1564 +2,510 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD571A7343
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 08:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877D01A7312
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 07:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405740AbgDNGBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 02:01:42 -0400
-Received: from mail-eopbgr60065.outbound.protection.outlook.com ([40.107.6.65]:46959
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405711AbgDNGB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 02:01:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BjvhiyLkBo0xzDxxbGkYQ4aenXJZGUEK1mbOznZAq2+aAvHZexsA4MEUqKcF1KK7qBfjFy/NnG47NxPH83CAP5kIelgXvebuQMOY0fVP7gbVWygmG0PuQCGgD9X3h5Db+GXb3BHMiInUOOL3whr4Vbqu0RLTMa+j+L40OMbLyz8pQkXu+fe1crAq7mfRaCUkfrKJYpIiLIeuXTq+sPtBUZ2p2TIYWQiZXGDAkFpCRnE6FEFsg708NiyUD0RQcZZ0AbTfdFeR9JixOaupR+3KEWL/XmLDOLEPOxMHsHzDNDwjYEg5Izn/QOsbBsBzStxssOXnfMzY6pHBgU5QAHlIJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AP0Xwgxvetbqv67Qoq+/s3XstpcCOil0aDF9kzMk4FQ=;
- b=gZz+BIVXUgsrshzHX6kjTNcF00XYNXhamK+Uk9PKHnp0rIvS8k8/mfgb2gIeeIk+uwnsSatHgvL3+xkp98ENO4FSXiQUhORQvdvAqodzja1ykyGOYZrM/viXcPs/q+iC0FPfBe22bqltSRYldQIf2yzzItxgW6STdiqSjLW2uNZHMB6VE+C3RhG71sqO3QcH4v7NFUZht2Up0fFCR88r7QZhb2flLoXdecfZ9LfNXYG2GnOZJ1v20SwOf9f3oC6CkgT/l7yIHIGIJoXHK6/Njssl1znw6z+tNtLo7BCEPZ/nwMBIh61savtSbTfoGTcHmaRbgUlYDzO49vxdNpVa6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AP0Xwgxvetbqv67Qoq+/s3XstpcCOil0aDF9kzMk4FQ=;
- b=Eyc0e3/UJ2izy+EcyHuR3Y8vBBPgExWFdnMSdURqps3lrpliR0g/96+GP3iN1fH4EDBxmmXyBlg19UFzYorWiYnDM9EX+JLQ4JJA+39ycGJmxnYysxmM76iu43WXeIwecP2tkAmaY2cdk55qMCeQZTTJEpqrC4RthhT2leLuiT4=
-Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=po.liu@nxp.com; 
-Received: from VE1PR04MB6496.eurprd04.prod.outlook.com (2603:10a6:803:11c::29)
- by VE1PR04MB6749.eurprd04.prod.outlook.com (2603:10a6:803:129::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Tue, 14 Apr
- 2020 06:01:18 +0000
-Received: from VE1PR04MB6496.eurprd04.prod.outlook.com
- ([fe80::1479:38ea:d4f7:a173]) by VE1PR04MB6496.eurprd04.prod.outlook.com
- ([fe80::1479:38ea:d4f7:a173%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
- 06:01:18 +0000
-From:   Po Liu <Po.Liu@nxp.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     vinicius.gomes@intel.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        vladimir.oltean@nxp.com, alexandru.marginean@nxp.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        leon@kernel.org, jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        kuba@kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
-        simon.horman@netronome.com, pablo@netfilter.org,
-        moshe@mellanox.com, m-karicheri2@ti.com,
-        andre.guedes@linux.intel.com, stephen@networkplumber.org,
-        Po Liu <Po.Liu@nxp.com>
-Subject: [ v2,net-next  4/4] net: enetc: add tc flower psfp offload driver
-Date:   Tue, 14 Apr 2020 13:40:27 +0800
-Message-Id: <20200414054027.4280-5-Po.Liu@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414054027.4280-1-Po.Liu@nxp.com>
-References: <20200324034745.30979-8-Po.Liu@nxp.com>
- <20200414054027.4280-1-Po.Liu@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR06CA0173.apcprd06.prod.outlook.com
- (2603:1096:1:1e::27) To VE1PR04MB6496.eurprd04.prod.outlook.com
- (2603:10a6:803:11c::29)
+        id S2405556AbgDNFnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 01:43:16 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:58591 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729064AbgDNFnP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 01:43:15 -0400
+Received: from [192.168.1.11] (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id A922E200004;
+        Tue, 14 Apr 2020 05:43:10 +0000 (UTC)
+Subject: Re: [PATCH RFC 4/8] riscv/kaslr: randomize the kernel image offset
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <cover.1584352425.git.zong.li@sifive.com>
+ <16924c3f07b142688a3c0562d229cd67dc7bf8e6.1584352425.git.zong.li@sifive.com>
+ <71cc2070-e867-17e1-cc64-66b634e3f48e@ghiti.fr>
+ <CANXhq0rQ_YqmBBDEgOCcu8vr+5NWqNdnfZ+EX8ofaaD6PuBAFQ@mail.gmail.com>
+ <69a9ecc5-550e-24a0-6f91-d65af3e00f18@ghiti.fr>
+ <CANXhq0q62t3nZgqbYJzW9p1ntaNAFFX5LQFB65fkO5KCCv-RHA@mail.gmail.com>
+ <c68dacf1-eca1-9d28-3c04-dd6793fe3274@ghiti.fr>
+ <CANXhq0q6xNLzUAetQ6hHR5y_h5iZarcxyvSo3YAbprO=5LZomA@mail.gmail.com>
+ <6dd04bc5-b0e8-6dbc-d4c5-9d19db5081dd@ghiti.fr>
+ <CANXhq0pcmUigMEFXpEBv_NanLJ-0+tOL9QM-p7LB+mBAFLvKDA@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <eaac42fa-aebf-f59b-f929-54f07bfba544@ghiti.fr>
+Date:   Tue, 14 Apr 2020 01:43:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.73) by SG2PR06CA0173.apcprd06.prod.outlook.com (2603:1096:1:1e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend Transport; Tue, 14 Apr 2020 06:01:10 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.73]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5a95175d-7981-4da4-50b3-08d7e0393f54
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6749:|VE1PR04MB6749:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB6749F1E5420ACC574071AF7B92DA0@VE1PR04MB6749.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-Forefront-PRVS: 0373D94D15
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6496.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(366004)(52116002)(2906002)(6506007)(956004)(81156014)(498600001)(6512007)(2616005)(6666004)(5660300002)(8676002)(8936002)(186003)(30864003)(6486002)(36756003)(66476007)(16526019)(66946007)(7416002)(1076003)(26005)(66556008)(86362001)(4326008)(579004);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1gcD+NNWp4yiNpjlPn9Fi5QbeQZl96+naCx56oqkpMwSF4lGFIqSzYVmx/sNlJlcOBtB3F6dqR91aViBdcH6qJE/HwI22/2ZoxibwmAVWtS3WHs6DDvwr8+Ryzl2ALcAprB6HVsrsYfB+b+1zfKFjs6CZchBUaC+Kcst2dYVArUKT2wtq50OtniEvd5D9jukLkbdzO2ykFQ1Jr4EbWWrPgcBLnQXKhayUJpRwdur5YoHBqq3fJhBaV37KB/PVA7HolWtqkOKrXv9mzXqA0gxniQ4T5x9GQM2rIdW4WYu35Eweuu+ZN2uMNemW17tpnHMSraMlW5kJ56Ix2zLZr8UHL7gH2QyWkupjWQLjoBHfP/10g6YTr+soxsy9GKCBJljVsuGCZ3ovd9MaIIRtyXflRntQ3dcnFNmo+d/lODI9mq6/xQfU3An4MBKURhRVnzh
-X-MS-Exchange-AntiSpam-MessageData: F8ZdamKC6hoFDRdIdC87czsEWhnsndVmuvc2TOsh0HpF0NMtSENziLBK+RERVAgRuVb9UTAMBanRfwoLQ1qExjOeZQd7GUb8sFkrXN9GaSdGam7bKil989sqCQRv57yIdYEFSdsqJgl9PI/tisvuEg==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a95175d-7981-4da4-50b3-08d7e0393f54
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2020 06:01:18.2379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T1lideWqFh6jTd595h+VPdzIF+46I+lTX5Dl4tpyZUeJhtASRyOvAkzQhva6d0xb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6749
+In-Reply-To: <CANXhq0pcmUigMEFXpEBv_NanLJ-0+tOL9QM-p7LB+mBAFLvKDA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to add tc flower offload for the enetc IEEE 802.1Qci(PSFP)
-function. There are four main feature parts to implement the flow
-policing and filtering for ingress flow with IEEE 802.1Qci features.
-They are stream identify(this is defined in the P802.1cb exactly but
-needed for 802.1Qci), stream filtering, stream gate and flow metering.
-Each function block includes many entries by index to assign parameters.
-So for one frame would be filtered by stream identify first, then
-flow into stream filter block by the same handle between stream identify
-and stream filtering. Then flow into stream gate control which assigned
-by the stream filtering entry. And then policing by the gate and limited
-by the max sdu in the filter block(optional). At last, policing by the
-flow metering block, index choosing at the fitering block.
-So you can see that each entry of block may link to many upper entries
-since they can be assigned same index means more streams want to share
-the same feature in the stream filtering or stream gate or flow
-metering.
-To implement such features, each stream filtered by source/destination
-mac address, some stream maybe also plus the vlan id value would be
-treated as one flow chain. This would be identified by the chain_index
-which already in the tc filter concept. Driver would maintain this chain
-and also with gate modules. The stream filter entry create by the gate
-index and flow meter(optional) entry id and also one priority value.
-Offloading only transfer the gate action and flow filtering parameters.
-Driver would create (or search same gate id and flow meter id and
- priority) one stream filter entry to set to the hardware. So stream
-filtering do not need transfer by the action offloading.
-This architecture is same with tc filter and actions relationship. tc
-filter maintain the list for each flow feature by keys. And actions
-maintain by the action list.
 
-Below showing a example commands by tc:
-> tc qdisc add dev eth0 ingress
-> ip link set eth0 address 10:00:80:00:00:00
-> tc filter add dev eth0 parent ffff: protocol ip chain 11 \
-	flower skip_sw dst_mac 10:00:80:00:00:00 \
-	action gate index 10 \
-	sched-entry OPEN 200000000 1 8000000 \
-	sched-entry CLOSE 100000000 -1 -1
 
-Command means to set the dst_mac 10:00:80:00:00:00 to index 11 of stream
-identify module. And the set the gate index 10 of stream gate module.
-The gate list is keeping OPEN state 200ms, and through the frames to the
-ingress queue 1, and max octets are the 8Mbytes.
+On 4/13/20 10:46 PM, Zong Li wrote:
+> On Sun, Apr 12, 2020 at 2:53 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>>
+>>
+>> On 4/11/20 4:20 AM, Zong Li wrote:
+>>> On Fri, Apr 10, 2020 at 11:58 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>>
+>>>> Hi Zong,
+>>>>
+>>>> On 4/9/20 6:31 AM, Zong Li wrote:
+>>>>> On Thu, Apr 9, 2020 at 1:51 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 4/7/20 6:53 AM, Zong Li wrote:
+>>>>>>> On Tue, Apr 7, 2020 at 1:11 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 3/24/20 3:30 AM, Zong Li wrote:
+>>>>>>>>> Entropy is derived from the banner and timer, it is better than nothing
+>>>>>>>>> but not enough secure, so previous stage may pass entropy via the device
+>>>>>>>>> tree /chosen/kaslr-seed node.
+>>>>>>>>>
+>>>>>>>>> We limit randomization range within 1GB, so we can exploit early page
+>>>>>>>>> table to map new destination of kernel image. Additionally, the kernel
+>>>>>>>>> offset need 2M alignment to ensure it's good in PMD page table.
+>>>>>>>>>
+>>>>>>>>> We also checks the kernel offset whether it's safe by avoiding to
+>>>>>>>>> overlaps with dtb, initrd and reserved memory regions.
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> That maybe changes the way my sv48 patchset will be implemented: I can't
+>>>>>>>> get user preference (3-level or 4-level) by any means, device-tree or
+>>>>>>>> kernel parameter.
+>>>>>>>>
+>>>>>>>> But I don't see how you could get a random offset without info from the
+>>>>>>>> device tree anyway (reserved memory regions especially), so maybe I
+>>>>>>>> could parse dtb for allowing the user to choose. I'll move this
+>>>>>>>> discussion to the sv48 introduction.
+>>>>>>>
+>>>>>>> Maybe I'm a little bit misunderstanding here, but I think I got the
+>>>>>>> random offset through some information by parsing dtb.
+>>>>>>>
+>>>>>>
+>>>>>> I was just saying that I may use the dtb too in sv48 patchset to make it
+>>>>>> possible for users to choose sv39 even if sv48 is supported by hardware
+>>>>>> (which is not the case in my current patchset).
+>>>>>>
+>>>>>>>>
+>>>>>>>>> Signed-off-by: Zong Li <zong.li@sifive.com>
+>>>>>>>>> ---
+>>>>>>>>>       arch/riscv/kernel/kaslr.c | 274 +++++++++++++++++++++++++++++++++++++-
+>>>>>>>>>       arch/riscv/mm/init.c      |   2 +-
+>>>>>>>>>       2 files changed, 273 insertions(+), 3 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/arch/riscv/kernel/kaslr.c b/arch/riscv/kernel/kaslr.c
+>>>>>>>>> index 281b5fcca5c8..9ec2b608eb7f 100644
+>>>>>>>>> --- a/arch/riscv/kernel/kaslr.c
+>>>>>>>>> +++ b/arch/riscv/kernel/kaslr.c
+>>>>>>>>> @@ -11,23 +11,293 @@
+>>>>>>>>>       #include <asm/cacheflush.h>
+>>>>>>>>>
+>>>>>>>>>       extern char _start[], _end[];
+>>>>>>>>> +extern void *dtb_early_va;
+>>>>>>>>> +extern phys_addr_t dtb_early_pa;
+>>>>>>>>>       extern void secondary_random_target(void);
+>>>>>>>>>       extern void kaslr_create_page_table(uintptr_t start, uintptr_t end);
+>>>>>>>>>
+>>>>>>>>>       uintptr_t secondary_next_target __initdata;
+>>>>>>>>>       static uintptr_t kaslr_offset __initdata;
+>>>>>>>>>
+>>>>>>>>> +static const __init u32 *get_reg_address(int root_cells,
+>>>>>>>>> +                                      const u32 *value, u64 *result)
+>>>>>>>>> +{
+>>>>>>>>> +     int cell;
+>>>>>>>>> +     *result = 0;
+>>>>>>>>> +
+>>>>>>>>> +     for (cell = root_cells; cell > 0; --cell)
+>>>>>>>>> +             *result = (*result << 32) + fdt32_to_cpu(*value++);
+>>>>>>>>> +
+>>>>>>>>> +     return value;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static __init int get_node_addr_size_cells(const char *path, int *addr_cell,
+>>>>>>>>> +                                        int *size_cell)
+>>>>>>>>> +{
+>>>>>>>>> +     int node = fdt_path_offset(dtb_early_va, path);
+>>>>>>>>> +     fdt64_t *prop;
+>>>>>>>>> +
+>>>>>>>>> +     if (node < 0)
+>>>>>>>>> +             return -EINVAL;
+>>>>>>>>> +
+>>>>>>>>> +     prop = fdt_getprop_w(dtb_early_va, node, "#address-cells", NULL);
+>>>>>>>>> +     if (!prop)
+>>>>>>>>> +             return -EINVAL;
+>>>>>>>>> +     *addr_cell = fdt32_to_cpu(*prop);
+>>>>>>>>> +
+>>>>>>>>> +     prop = fdt_getprop_w(dtb_early_va, node, "#size-cells", NULL);
+>>>>>>>>> +     if (!prop)
+>>>>>>>>> +             return -EINVAL;
+>>>>>>>>> +     *size_cell = fdt32_to_cpu(*prop);
+>>>>>>>>> +
+>>>>>>>>> +     return node;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static __init void kaslr_get_mem_info(uintptr_t *mem_start,
+>>>>>>>>> +                                   uintptr_t *mem_size)
+>>>>>>>>> +{
+>>>>>>>>> +     int node, root, addr_cells, size_cells;
+>>>>>>>>> +     u64 base, size;
+>>>>>>>>> +
+>>>>>>>>> +     /* Get root node's address cells and size cells. */
+>>>>>>>>> +     root = get_node_addr_size_cells("/", &addr_cells, &size_cells);
+>>>>>>>>> +     if (root < 0)
+>>>>>>>>> +             return;
+>>>>>>>>> +
+>>>>>>>>> +     /* Get memory base address and size. */
+>>>>>>>>> +     fdt_for_each_subnode(node, dtb_early_va, root) {
+>>>>>>>>> +             const char *dev_type;
+>>>>>>>>> +             const u32 *reg;
+>>>>>>>>> +
+>>>>>>>>> +             dev_type = fdt_getprop(dtb_early_va, node, "device_type", NULL);
+>>>>>>>>> +             if (!dev_type)
+>>>>>>>>> +                     continue;
+>>>>>>>>> +
+>>>>>>>>> +             if (!strcmp(dev_type, "memory")) {
+>>>>>>>>> +                     reg = fdt_getprop(dtb_early_va, node, "reg", NULL);
+>>>>>>>>> +                     if (!reg)
+>>>>>>>>> +                             return;
+>>>>>>>>> +
+>>>>>>>>> +                     reg = get_reg_address(addr_cells, reg, &base);
+>>>>>>>>> +                     reg = get_reg_address(size_cells, reg, &size);
+>>>>>>>>> +
+>>>>>>>>> +                     *mem_start = base;
+>>>>>>>>> +                     *mem_size = size;
+>>>>>>>>> +
+>>>>>>>>> +                     break;
+>>>>>>>>> +             }
+>>>>>>>>> +     }
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +/* Return a default seed if there is no HW generator. */
+>>>>>>>>> +static u64 kaslr_default_seed = ULL(-1);
+>>>>>>>>> +static __init u64 kaslr_get_seed(void)
+>>>>>>>>> +{
+>>>>>>>>> +     int node, len;
+>>>>>>>>> +     fdt64_t *prop;
+>>>>>>>>> +     u64 ret;
+>>>>>>>>> +
+>>>>>>>>> +     node = fdt_path_offset(dtb_early_va, "/chosen");
+>>>>>>>>> +     if (node < 0)
+>>>>>>>>> +             return kaslr_default_seed++;
+>>>>>>>>> +
+>>>>>>>>> +     prop = fdt_getprop_w(dtb_early_va, node, "kaslr-seed", &len);
+>>>>>>>>> +     if (!prop || len != sizeof(u64))
+>>>>>>>>> +             return kaslr_default_seed++;
+>>>>>>>>> +
+>>>>>>>>> +     ret = fdt64_to_cpu(*prop);
+>>>>>>>>> +
+>>>>>>>>> +     /* Re-write to zero for checking whether get seed at second time */
+>>>>>>>>> +     *prop = 0;
+>>>>>>>>> +
+>>>>>>>>> +     return ret;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static __init bool is_overlap(uintptr_t s1, uintptr_t e1, uintptr_t s2,
+>>>>>>>>> +                           uintptr_t e2)
+>>>>>>>>> +{
+>>>>>>>>> +     return e1 >= s2 && e2 >= s1;
+>>>>>>>>> +}
+>>>>>>>>
+>>>>>>>> Inline this function or use a macro maybe.
+>>>>>>>
+>>>>>>> Yes, sure. Thanks.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>> +
+>>>>>>>>> +static __init bool is_overlap_reserved_mem(uintptr_t start_addr,
+>>>>>>>>> +                                        uintptr_t end_addr)
+>>>>>>>>> +{
+>>>>>>>>> +     int node, rsv_mem, addr_cells, size_cells;
+>>>>>>>>> +
+>>>>>>>>> +     /* Get the reserved-memory node. */
+>>>>>>>>> +     rsv_mem = get_node_addr_size_cells("/reserved-memory",
+>>>>>>>>> +                                        &addr_cells,
+>>>>>>>>> +                                        &size_cells);
+>>>>>>>>> +     if (rsv_mem < 0)
+>>>>>>>>> +             return false;
+>>>>>>>>> +
+>>>>>>>>> +     /* Get memory base address and size. */
+>>>>>>>>> +     fdt_for_each_subnode(node, dtb_early_va, rsv_mem) {
+>>>>>>>>> +             uint64_t base, size;
+>>>>>>>>> +             const uint32_t *reg;
+>>>>>>>>> +
+>>>>>>>>> +             reg = fdt_getprop(dtb_early_va, node, "reg", NULL);
+>>>>>>>>> +             if (!reg)
+>>>>>>>>> +                     return 0;
+>>>>>>>>> +
+>>>>>>>>> +             reg = get_reg_address(addr_cells, reg, &base);
+>>>>>>>>> +             reg = get_reg_address(size_cells, reg, &size);
+>>>>>>>>> +
+>>>>>>>>> +             if (is_overlap(start_addr, end_addr, base, base + size))
+>>>>>>>>> +                     return true;
+>>>>>>>>> +     }
+>>>>>>>>> +
+>>>>>>>>> +     return false;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static __init bool is_overlap_initrd(uintptr_t start_addr, uintptr_t end_addr)
+>>>>>>>>> +{
+>>>>>>>>> +     int node;
+>>>>>>>>> +     uintptr_t initrd_start, initrd_end;
+>>>>>>>>> +     fdt64_t *prop;
+>>>>>>>>> +
+>>>>>>>>> +     node = fdt_path_offset(dtb_early_va, "/chosen");
+>>>>>>>>> +     if (node < 0)
+>>>>>>>>> +             return false;
+>>>>>>>>> +
+>>>>>>>>> +     prop = fdt_getprop_w(dtb_early_va, node, "linux,initrd-start", NULL);
+>>>>>>>>> +     if (!prop)
+>>>>>>>>> +             return false;
+>>>>>>>>> +
+>>>>>>>>> +     initrd_start = fdt64_to_cpu(*prop);
+>>>>>>>>> +
+>>>>>>>>> +     prop = fdt_getprop_w(dtb_early_va, node, "linux,initrd-end", NULL);
+>>>>>>>>> +     if (!prop)
+>>>>>>>>> +             return false;
+>>>>>>>>> +
+>>>>>>>>> +     initrd_end = fdt64_to_cpu(*prop);
+>>>>>>>>> +
+>>>>>>>>> +     return is_overlap(start_addr, end_addr, initrd_start, initrd_end);
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static __init bool is_overlap_dtb(uintptr_t start_addr, uintptr_t end_addr)
+>>>>>>>>> +{
+>>>>>>>>> +     uintptr_t dtb_start = dtb_early_pa;
+>>>>>>>>> +     uintptr_t dtb_end = dtb_start + fdt_totalsize(dtb_early_va);
+>>>>>>>>> +
+>>>>>>>>> +     return is_overlap(start_addr, end_addr, dtb_start, dtb_end);
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static __init bool has_regions_overlapping(uintptr_t start_addr,
+>>>>>>>>> +                                        uintptr_t end_addr)
+>>>>>>>>> +{
+>>>>>>>>> +     if (is_overlap_dtb(start_addr, end_addr))
+>>>>>>>>> +             return true;
+>>>>>>>>> +
+>>>>>>>>> +     if (is_overlap_initrd(start_addr, end_addr))
+>>>>>>>>> +             return true;
+>>>>>>>>> +
+>>>>>>>>> +     if (is_overlap_reserved_mem(start_addr, end_addr))
+>>>>>>>>> +             return true;
+>>>>>>>>> +
+>>>>>>>>> +     return false;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static inline __init unsigned long get_legal_offset(int random_index,
+>>>>>>>>> +                                                 int max_index,
+>>>>>>>>> +                                                 uintptr_t mem_start,
+>>>>>>>>> +                                                 uintptr_t kernel_size)
+>>>>>>>>> +{
+>>>>>>>>> +     uintptr_t start_addr, end_addr;
+>>>>>>>>> +     int idx, stop_idx;
+>>>>>>>>> +
+>>>>>>>>> +     idx = stop_idx = random_index;
+>>>>>>>>> +
+>>>>>>>>> +     do {
+>>>>>>>>> +             start_addr = mem_start + idx * SZ_2M + kernel_size;
+>>>>>>>>> +             end_addr = start_addr + kernel_size;
+>>>>>>>>> +
+>>>>>>>>> +             /* Check overlap to other regions. */
+>>>>>>>>> +             if (!has_regions_overlapping(start_addr, end_addr))
+>>>>>>>>> +                     return idx * SZ_2M + kernel_size;
+>>>>>>>>> +
+>>>>>>>>> +             if (idx-- < 0)
+>>>>>>>>> +                     idx = max_index;
+>>>>>>>>
+>>>>>>>> Isn't the fallback to max_index a security breach ? Because at some
+>>>>>>>> point, the kernel will be loaded at this specific address.
+>>>>>>>
+>>>>>>> The max_index is the maximum safe index for destination of new kernel
+>>>>>>> image. Could you give more explain here?
+>>>>>>>
+>>>>>>
+>>>>>> But max_index is not random at all. I really don't know if that's a
+>>>>>> problem, I just found intriguing the fact the kernel could be loaded at
+>>>>>> some specific location. Would it be more secure, instead of picking
+>>>>>> max_index as fallback when reaching 0, to pick another random number
+>>>>>> between random_index and max_index ?
+>>>>>
+>>>>> ok, I can get your point. The original idea here is that we get a
+>>>>> random index first, then we decrease the index to retry to find a good
+>>>>> place if there are overlapping with other regions. A bit like the ring
+>>>>> buffer, the end of index traversing is not zero, but the random_index
+>>>>> - 1, we might consider it as continuity, so we don't know where is the
+>>>>> end point because the start point is random, whether we stop at zero
+>>>>> or random_index - 1.
+>>>>>
+>>>>> Pick another random number is more secure when occurring overlapping,
+>>>>> but I a little bit worry that it would take very long time to retry
+>>>>> many times in the worst case. for example, there is just only one
+>>>>> index could fit kernel image in (except for original location). In the
+>>>>> meantime, we don't need to wait the index being decreased to zero,
+>>>>> because it seems to me that they are the same to stop at zero or
+>>>>> random_index - 1, so if we decide to re-calculate a new random number,
+>>>>> maybe we could remove the index decreasing here.
+>>>>
+>>>> But you're right that it could take some time before converging to a
+>>>> "good" index. Maybe we could restrict the index range to indexes that we
+>>>> know for sure will be good ?
+>>>>
+>>>
+>>> Yes, it would be good for ensuring that we only need to get the random
+>>> number just once, but there are some points need to be discussed. The
+>>> first one is that we couldn't dynamically allocate a memory space at
+>>> that moment, because the memblock is not ready, so we might need to
+>>> declare a enough big array at static time to collect all good indexes.
+>>> Maybe CONFIG_MAXPHYSMEM_2GB and CONFIG_MAXPHYSMEM_128GB could be used
+>>> to decide the number of elements of this array. The second one is that
+>>> we always need to take the time to traverse the whole memory and check
+>>> the overlapping for all indexes no matter what the cases are. I'm not
+>>> sure whether it is good because this way increases the time and space
+>>> cost, but it would be more secure. Do you have any idea?
+>>>
+>>
+>> What about simply finding the biggest range of contiguous non-reserved
+>> memory and getting an index from there ?
+> 
+> This needs something like mentioned above, we need a big enough array
+> to collect these index of the biggest range, and check all indexes > whether they are safe, and it would limit and reduce the random range
+> of we could use.
 
-Signed-off-by: Po Liu <Po.Liu@nxp.com>
----
- drivers/net/ethernet/freescale/enetc/enetc.c  |   25 +-
- drivers/net/ethernet/freescale/enetc/enetc.h  |   46 +-
- .../net/ethernet/freescale/enetc/enetc_hw.h   |  142 +++
- .../net/ethernet/freescale/enetc/enetc_pf.c   |    4 +-
- .../net/ethernet/freescale/enetc/enetc_qos.c  | 1070 +++++++++++++++++
- 5 files changed, 1272 insertions(+), 15 deletions(-)
+You just have to get the min and max indexes of the biggest range, no 
+need to store all indexes. And the vast majority of the usable memory 
+will be in this biggest range, so it won't reduce the random range.
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index 04aac7cbb506..298c55786fd9 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1521,6 +1521,8 @@ int enetc_setup_tc(struct net_device *ndev, enum tc_setup_type type,
- 		return enetc_setup_tc_cbs(ndev, type_data);
- 	case TC_SETUP_QDISC_ETF:
- 		return enetc_setup_tc_txtime(ndev, type_data);
-+	case TC_SETUP_BLOCK:
-+		return enetc_setup_tc_psfp(ndev, type_data);
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-@@ -1573,17 +1575,23 @@ static int enetc_set_rss(struct net_device *ndev, int en)
- static int enetc_set_psfp(struct net_device *ndev, int en)
- {
- 	struct enetc_ndev_priv *priv = netdev_priv(ndev);
-+	int err;
- 
- 	if (en) {
-+		err = enetc_psfp_enable(priv);
-+		if (err)
-+			return err;
-+
- 		priv->active_offloads |= ENETC_F_QCI;
--		enetc_get_max_cap(priv);
--		enetc_psfp_enable(&priv->si->hw);
--	} else {
--		priv->active_offloads &= ~ENETC_F_QCI;
--		memset(&priv->psfp_cap, 0, sizeof(struct psfp_cap));
--		enetc_psfp_disable(&priv->si->hw);
-+		return 0;
- 	}
- 
-+	err = enetc_psfp_disable(priv);
-+	if (err)
-+		return err;
-+
-+	priv->active_offloads &= ~ENETC_F_QCI;
-+
- 	return 0;
- }
- 
-@@ -1591,14 +1599,15 @@ int enetc_set_features(struct net_device *ndev,
- 		       netdev_features_t features)
- {
- 	netdev_features_t changed = ndev->features ^ features;
-+	int err = 0;
- 
- 	if (changed & NETIF_F_RXHASH)
- 		enetc_set_rss(ndev, !!(features & NETIF_F_RXHASH));
- 
- 	if (changed & NETIF_F_HW_TC)
--		enetc_set_psfp(ndev, !!(features & NETIF_F_HW_TC));
-+		err = enetc_set_psfp(ndev, !!(features & NETIF_F_HW_TC));
- 
--	return 0;
-+	return err;
- }
- 
- #ifdef CONFIG_FSL_ENETC_PTP_CLOCK
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.h b/drivers/net/ethernet/freescale/enetc/enetc.h
-index 2cfe877c3778..b705464f6882 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.h
-@@ -300,6 +300,11 @@ int enetc_setup_tc_taprio(struct net_device *ndev, void *type_data);
- void enetc_sched_speed_set(struct net_device *ndev);
- int enetc_setup_tc_cbs(struct net_device *ndev, void *type_data);
- int enetc_setup_tc_txtime(struct net_device *ndev, void *type_data);
-+int enetc_setup_tc_block_cb(enum tc_setup_type type, void *type_data,
-+			    void *cb_priv);
-+int enetc_setup_tc_psfp(struct net_device *ndev, void *type_data);
-+int enetc_psfp_init(struct enetc_ndev_priv *priv);
-+int enetc_psfp_clean(struct enetc_ndev_priv *priv);
- 
- static inline void enetc_get_max_cap(struct enetc_ndev_priv *priv)
- {
-@@ -319,27 +324,60 @@ static inline void enetc_get_max_cap(struct enetc_ndev_priv *priv)
- 	priv->psfp_cap.max_psfp_meter = reg & ENETC_PFMCAPR_MSK;
- }
- 
--static inline void enetc_psfp_enable(struct enetc_hw *hw)
-+static inline int enetc_psfp_enable(struct enetc_ndev_priv *priv)
- {
-+	struct enetc_hw *hw = &priv->si->hw;
-+	int err;
-+
-+	enetc_get_max_cap(priv);
-+
-+	err = enetc_psfp_init(priv);
-+	if (err)
-+		return err;
-+
- 	enetc_wr(hw, ENETC_PPSFPMR, enetc_rd(hw, ENETC_PPSFPMR) |
- 		 ENETC_PPSFPMR_PSFPEN | ENETC_PPSFPMR_VS |
- 		 ENETC_PPSFPMR_PVC | ENETC_PPSFPMR_PVZC);
-+
-+	return 0;
- }
- 
--static inline void enetc_psfp_disable(struct enetc_hw *hw)
-+static inline int enetc_psfp_disable(struct enetc_ndev_priv *priv)
- {
-+	struct enetc_hw *hw = &priv->si->hw;
-+	int err;
-+
-+	err = enetc_psfp_clean(priv);
-+	if (err)
-+		return err;
-+
- 	enetc_wr(hw, ENETC_PPSFPMR, enetc_rd(hw, ENETC_PPSFPMR) &
- 		 ~ENETC_PPSFPMR_PSFPEN & ~ENETC_PPSFPMR_VS &
- 		 ~ENETC_PPSFPMR_PVC & ~ENETC_PPSFPMR_PVZC);
-+
-+	memset(&priv->psfp_cap, 0, sizeof(struct psfp_cap));
-+
-+	return 0;
- }
-+
- #else
- #define enetc_setup_tc_taprio(ndev, type_data) -EOPNOTSUPP
- #define enetc_sched_speed_set(ndev) (void)0
- #define enetc_setup_tc_cbs(ndev, type_data) -EOPNOTSUPP
- #define enetc_setup_tc_txtime(ndev, type_data) -EOPNOTSUPP
-+#define enetc_setup_tc_psfp(ndev, type_data) -EOPNOTSUPP
-+#define enetc_setup_tc_block_cb NULL
-+
- #define enetc_get_max_cap(p)		\
- 	memset(&((p)->psfp_cap), 0, sizeof(struct psfp_cap))
- 
--#define enetc_psfp_enable(hw) (void)0
--#define enetc_psfp_disable(hw) (void)0
-+static inline int enetc_psfp_enable(struct enetc_ndev_priv *priv)
-+{
-+	return 0;
-+}
-+
-+static inline int enetc_psfp_disable(struct enetc_ndev_priv *priv)
-+{
-+	return 0;
-+}
- #endif
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-index 587974862f48..6314051bc6c1 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-@@ -567,6 +567,9 @@ enum bdcr_cmd_class {
- 	BDCR_CMD_RFS,
- 	BDCR_CMD_PORT_GCL,
- 	BDCR_CMD_RECV_CLASSIFIER,
-+	BDCR_CMD_STREAM_IDENTIFY,
-+	BDCR_CMD_STREAM_FILTER,
-+	BDCR_CMD_STREAM_GCL,
- 	__BDCR_CMD_MAX_LEN,
- 	BDCR_CMD_MAX_LEN = __BDCR_CMD_MAX_LEN - 1,
- };
-@@ -598,13 +601,152 @@ struct tgs_gcl_data {
- 	struct gce	entry[];
- };
- 
-+/* class 7, command 0, Stream Identity Entry Configuration */
-+struct streamid_conf {
-+	__le32	stream_handle;	/* init gate value */
-+	__le32	iports;
-+		u8	id_type;
-+		u8	oui[3];
-+		u8	res[3];
-+		u8	en;
-+};
-+
-+#define ENETC_CBDR_SID_VID_MASK 0xfff
-+#define ENETC_CBDR_SID_VIDM BIT(12)
-+#define ENETC_CBDR_SID_TG_MASK 0xc000
-+/* streamid_conf address point to this data space */
-+struct streamid_data {
-+	union {
-+		u8 dmac[6];
-+		u8 smac[6];
-+	};
-+	u16     vid_vidm_tg;
-+};
-+
-+#define ENETC_CBDR_SFI_PRI_MASK 0x7
-+#define ENETC_CBDR_SFI_PRIM		BIT(3)
-+#define ENETC_CBDR_SFI_BLOV		BIT(4)
-+#define ENETC_CBDR_SFI_BLEN		BIT(5)
-+#define ENETC_CBDR_SFI_MSDUEN	BIT(6)
-+#define ENETC_CBDR_SFI_FMITEN	BIT(7)
-+#define ENETC_CBDR_SFI_ENABLE	BIT(7)
-+/* class 8, command 0, Stream Filter Instance, Short Format */
-+struct sfi_conf {
-+	__le32	stream_handle;
-+		u8	multi;
-+		u8	res[2];
-+		u8	sthm;
-+	/* Max Service Data Unit or Flow Meter Instance Table index.
-+	 * Depending on the value of FLT this represents either Max
-+	 * Service Data Unit (max frame size) allowed by the filter
-+	 * entry or is an index into the Flow Meter Instance table
-+	 * index identifying the policer which will be used to police
-+	 * it.
-+	 */
-+	__le16	fm_inst_table_index;
-+	__le16	msdu;
-+	__le16	sg_inst_table_index;
-+		u8	res1[2];
-+	__le32	input_ports;
-+		u8	res2[3];
-+		u8	en;
-+};
-+
-+/* class 8, command 2 stream Filter Instance status query short format
-+ * command no need structure define
-+ * Stream Filter Instance Query Statistics Response data
-+ */
-+struct sfi_counter_data {
-+	u32 matchl;
-+	u32 matchh;
-+	u32 msdu_dropl;
-+	u32 msdu_droph;
-+	u32 stream_gate_dropl;
-+	u32 stream_gate_droph;
-+	u32 flow_meter_dropl;
-+	u32 flow_meter_droph;
-+};
-+
-+#define ENETC_CBDR_SGI_OIPV_MASK 0x7
-+#define ENETC_CBDR_SGI_OIPV_EN	BIT(3)
-+#define ENETC_CBDR_SGI_CGTST	BIT(6)
-+#define ENETC_CBDR_SGI_OGTST	BIT(7)
-+#define ENETC_CBDR_SGI_CFG_CHG  BIT(1)
-+#define ENETC_CBDR_SGI_CFG_PND  BIT(2)
-+#define ENETC_CBDR_SGI_OEX		BIT(4)
-+#define ENETC_CBDR_SGI_OEXEN	BIT(5)
-+#define ENETC_CBDR_SGI_IRX		BIT(6)
-+#define ENETC_CBDR_SGI_IRXEN	BIT(7)
-+#define ENETC_CBDR_SGI_ACLLEN_MASK 0x3
-+#define ENETC_CBDR_SGI_OCLLEN_MASK 0xc
-+#define	ENETC_CBDR_SGI_EN		BIT(7)
-+/* class 9, command 0, Stream Gate Instance Table, Short Format
-+ * class 9, command 2, Stream Gate Instance Table entry query write back
-+ * Short Format
-+ */
-+struct sgi_table {
-+	u8	res[8];
-+	u8	oipv;
-+	u8	res0[2];
-+	u8	ocgtst;
-+	u8	res1[7];
-+	u8	gset;
-+	u8	oacl_len;
-+	u8	res2[2];
-+	u8	en;
-+};
-+
-+#define ENETC_CBDR_SGI_AIPV_MASK 0x7
-+#define ENETC_CBDR_SGI_AIPV_EN	BIT(3)
-+#define ENETC_CBDR_SGI_AGTST	BIT(7)
-+
-+/* class 9, command 1, Stream Gate Control List, Long Format */
-+struct sgcl_conf {
-+	u8	aipv;
-+	u8	res[2];
-+	u8	agtst;
-+	u8	res1[4];
-+	union {
-+		struct {
-+			u8 res2[4];
-+			u8 acl_len;
-+			u8 res3[3];
-+		};
-+		u8 cct[8]; /* Config change time */
-+	};
-+};
-+
-+#define ENETC_CBDR_SGL_IOMEN	BIT(0)
-+#define ENETC_CBDR_SGL_IPVEN	BIT(3)
-+#define ENETC_CBDR_SGL_GTST		BIT(4)
-+#define ENETC_CBDR_SGL_IPV_MASK 0xe
-+/* Stream Gate Control List Entry */
-+struct sgce {
-+	u32	interval;
-+	u8	msdu[3];
-+	u8	multi;
-+};
-+
-+/* stream control list class 9 , cmd 1 data buffer */
-+struct sgcl_data {
-+	u32		btl;
-+	u32		bth;
-+	u32		ct;
-+	u32		cte;
-+	struct sgce	sgcl[0];
-+};
-+
- struct enetc_cbd {
- 	union{
-+		struct sfi_conf sfi_conf;
-+		struct sgi_table sgi_table;
- 		struct {
- 			__le32	addr[2];
- 			union {
- 				__le32	opt[4];
- 				struct tgs_gcl_conf	gcl_conf;
-+				struct streamid_conf	sid_set;
-+				struct sgcl_conf	sgcl_conf;
- 			};
- 		};	/* Long format */
- 		__le32 data[6];
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index eacd597b55f2..d06fce0dcd8a 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -739,12 +739,10 @@ static void enetc_pf_netdev_setup(struct enetc_si *si, struct net_device *ndev,
- 	if (si->hw_features & ENETC_SI_F_QBV)
- 		priv->active_offloads |= ENETC_F_QBV;
- 
--	if (si->hw_features & ENETC_SI_F_PSFP) {
-+	if (si->hw_features & ENETC_SI_F_PSFP && !enetc_psfp_enable(priv)) {
- 		priv->active_offloads |= ENETC_F_QCI;
- 		ndev->features |= NETIF_F_HW_TC;
- 		ndev->hw_features |= NETIF_F_HW_TC;
--		enetc_get_max_cap(priv);
--		enetc_psfp_enable(&si->hw);
- 	}
- 
- 	/* pick up primary MAC address from SI */
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_qos.c b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-index 0c6bf3a55a9a..7944c243903c 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-@@ -5,6 +5,9 @@
- 
- #include <net/pkt_sched.h>
- #include <linux/math64.h>
-+#include <linux/refcount.h>
-+#include <net/pkt_cls.h>
-+#include <net/tc_act/tc_gate.h>
- 
- static u16 enetc_get_max_gcl_len(struct enetc_hw *hw)
- {
-@@ -331,3 +334,1070 @@ int enetc_setup_tc_txtime(struct net_device *ndev, void *type_data)
- 
- 	return 0;
- }
-+
-+enum streamid_type {
-+	STREAMID_TYPE_RESERVED = 0,
-+	STREAMID_TYPE_NULL,
-+	STREAMID_TYPE_SMAC,
-+};
-+
-+enum streamid_vlan_tagged {
-+	STREAMID_VLAN_RESERVED = 0,
-+	STREAMID_VLAN_TAGGED,
-+	STREAMID_VLAN_UNTAGGED,
-+	STREAMID_VLAN_ALL,
-+};
-+
-+#define ENETC_PSFP_WILDCARD -1
-+#define HANDLE_OFFSET 100
-+
-+enum forward_type {
-+	FILTER_ACTION_TYPE_PSFP = BIT(0),
-+	FILTER_ACTION_TYPE_ACL = BIT(1),
-+	FILTER_ACTION_TYPE_BOTH = GENMASK(1, 0),
-+};
-+
-+/* This is for limit output type for input actions */
-+struct actions_fwd {
-+	u64 actions;
-+	u64 keys;	/* include the must needed keys */
-+	enum forward_type output;
-+};
-+
-+struct psfp_streamfilter_counters {
-+	u64 matching_frames_count;
-+	u64 passing_frames_count;
-+	u64 not_passing_frames_count;
-+	u64 passing_sdu_count;
-+	u64 not_passing_sdu_count;
-+	u64 red_frames_count;
-+};
-+
-+struct enetc_streamid {
-+	u32 index;
-+	union {
-+		u8 src_mac[6];
-+		u8 dst_mac[6];
-+	};
-+	u8 filtertype;
-+	u16 vid;
-+	u8 tagged;
-+	s32 handle;
-+};
-+
-+struct enetc_psfp_filter {
-+	u32 index;
-+	s32 handle;
-+	s8 prio;
-+	u32 gate_id;
-+	s32 meter_id;
-+	refcount_t refcount;
-+	struct hlist_node node;
-+};
-+
-+struct enetc_psfp_gate {
-+	u32 index;
-+	s8 init_ipv;
-+	u64 basetime;
-+	u64 cycletime;
-+	u64 cycletimext;
-+	u32 num_entries;
-+	refcount_t refcount;
-+	struct hlist_node node;
-+	struct action_gate_entry entries[0];
-+};
-+
-+struct enetc_stream_filter {
-+	struct enetc_streamid sid;
-+	u32 sfi_index;
-+	u32 sgi_index;
-+	struct flow_stats stats;
-+	struct hlist_node node;
-+};
-+
-+struct enetc_psfp {
-+	unsigned long dev_bitmap;
-+	unsigned long *psfp_sfi_bitmap;
-+	struct hlist_head stream_list;
-+	struct hlist_head psfp_filter_list;
-+	struct hlist_head psfp_gate_list;
-+	spinlock_t psfp_lock; /* spinlock for the struct enetc_psfp r/w */
-+};
-+
-+struct actions_fwd enetc_act_fwd[] = {
-+	{
-+		BIT(FLOW_ACTION_GATE),
-+		BIT(FLOW_DISSECTOR_KEY_ETH_ADDRS),
-+		FILTER_ACTION_TYPE_PSFP
-+	},
-+	/* example for ACL actions */
-+	{
-+		BIT(FLOW_ACTION_DROP),
-+		0,
-+		FILTER_ACTION_TYPE_ACL
-+	}
-+};
-+
-+static struct enetc_psfp epsfp = {
-+	.psfp_sfi_bitmap = NULL,
-+};
-+
-+static LIST_HEAD(enetc_block_cb_list);
-+
-+static inline int enetc_get_port(struct enetc_ndev_priv *priv)
-+{
-+	return priv->si->pdev->devfn & 0x7;
-+}
-+
-+/* Stream Identity Entry Set Descriptor */
-+static int enetc_streamid_hw_set(struct enetc_ndev_priv *priv,
-+				 struct enetc_streamid *sid,
-+				 u8 enable)
-+{
-+	struct enetc_cbd cbd = {.cmd = 0};
-+	struct streamid_data *si_data;
-+	struct streamid_conf *si_conf;
-+	u16 data_size;
-+	dma_addr_t dma;
-+	int err;
-+
-+	if (sid->index >= priv->psfp_cap.max_streamid)
-+		return -EINVAL;
-+
-+	if (sid->filtertype != STREAMID_TYPE_NULL &&
-+	    sid->filtertype != STREAMID_TYPE_SMAC)
-+		return -EOPNOTSUPP;
-+
-+	/* Disable operation before enable */
-+	cbd.index = cpu_to_le16((u16)sid->index);
-+	cbd.cls = BDCR_CMD_STREAM_IDENTIFY;
-+	cbd.status_flags = 0;
-+
-+	data_size = sizeof(struct streamid_data);
-+	si_data = kzalloc(data_size, __GFP_DMA | GFP_KERNEL);
-+	cbd.length = cpu_to_le16(data_size);
-+
-+	dma = dma_map_single(&priv->si->pdev->dev, si_data,
-+			     data_size, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&priv->si->pdev->dev, dma)) {
-+		netdev_err(priv->si->ndev, "DMA mapping failed!\n");
-+		kfree(si_data);
-+		return -ENOMEM;
-+	}
-+
-+	cbd.addr[0] = lower_32_bits(dma);
-+	cbd.addr[1] = upper_32_bits(dma);
-+	memset(si_data->dmac, 0xff, ETH_ALEN);
-+	si_data->vid_vidm_tg =
-+		cpu_to_le16(ENETC_CBDR_SID_VID_MASK
-+			    + ((0x3 << 14) | ENETC_CBDR_SID_VIDM));
-+
-+	si_conf = &cbd.sid_set;
-+	/* Only one port supported for one entry, set itself */
-+	si_conf->iports = 1 << enetc_get_port(priv);
-+	si_conf->id_type = 1;
-+	si_conf->oui[2] = 0x0;
-+	si_conf->oui[1] = 0x80;
-+	si_conf->oui[0] = 0xC2;
-+
-+	err = enetc_send_cmd(priv->si, &cbd);
-+	if (err)
-+		return -EINVAL;
-+
-+	if (!enable) {
-+		kfree(si_data);
-+		return 0;
-+	}
-+
-+	/* Enable the entry overwrite again incase space flushed by hardware */
-+	memset(&cbd, 0, sizeof(cbd));
-+
-+	cbd.index = cpu_to_le16((u16)sid->index);
-+	cbd.cmd = 0;
-+	cbd.cls = BDCR_CMD_STREAM_IDENTIFY;
-+	cbd.status_flags = 0;
-+
-+	si_conf->en = 0x80;
-+	si_conf->stream_handle = cpu_to_le32(sid->handle);
-+	si_conf->iports = 1 << enetc_get_port(priv);
-+	si_conf->id_type = sid->filtertype;
-+	si_conf->oui[2] = 0x0;
-+	si_conf->oui[1] = 0x80;
-+	si_conf->oui[0] = 0xC2;
-+
-+	memset(si_data, 0, data_size);
-+
-+	cbd.length = cpu_to_le16(data_size);
-+
-+	cbd.addr[0] = lower_32_bits(dma);
-+	cbd.addr[1] = upper_32_bits(dma);
-+
-+	/* VIDM default to be 1.
-+	 * VID Match. If set (b1) then the VID must match, otherwise
-+	 * any VID is considered a match. VIDM setting is only used
-+	 * when TG is set to b01.
-+	 */
-+	if (si_conf->id_type == STREAMID_TYPE_NULL) {
-+		ether_addr_copy(si_data->dmac, sid->dst_mac);
-+		si_data->vid_vidm_tg =
-+		cpu_to_le16((sid->vid & ENETC_CBDR_SID_VID_MASK) +
-+			    ((((u16)(sid->tagged) & 0x3) << 14)
-+			     | ENETC_CBDR_SID_VIDM));
-+	} else if (si_conf->id_type == STREAMID_TYPE_SMAC) {
-+		ether_addr_copy(si_data->smac, sid->src_mac);
-+		si_data->vid_vidm_tg =
-+		cpu_to_le16((sid->vid & ENETC_CBDR_SID_VID_MASK) +
-+			    ((((u16)(sid->tagged) & 0x3) << 14)
-+			     | ENETC_CBDR_SID_VIDM));
-+	}
-+
-+	err = enetc_send_cmd(priv->si, &cbd);
-+	kfree(si_data);
-+
-+	return err;
-+}
-+
-+/* Stream Filter Instance Set Descriptor */
-+static int enetc_streamfilter_hw_set(struct enetc_ndev_priv *priv,
-+				     struct enetc_psfp_filter *sfi,
-+				     u8 enable)
-+{
-+	struct enetc_cbd cbd = {.cmd = 0};
-+	struct sfi_conf *sfi_config;
-+
-+	cbd.index = cpu_to_le16(sfi->index);
-+	cbd.cls = BDCR_CMD_STREAM_FILTER;
-+	cbd.status_flags = 0x80;
-+	cbd.length = cpu_to_le16(1);
-+
-+	sfi_config = &cbd.sfi_conf;
-+	if (!enable)
-+		goto exit;
-+
-+	sfi_config->en = 0x80;
-+
-+	if (sfi->handle >= 0) {
-+		sfi_config->stream_handle =
-+			cpu_to_le32(sfi->handle);
-+		sfi_config->sthm |= 0x80;
-+	}
-+
-+	sfi_config->sg_inst_table_index = cpu_to_le16(sfi->gate_id);
-+	sfi_config->input_ports = 1 << enetc_get_port(priv);
-+
-+	/* The priority value which may be matched against the
-+	 * frame’s priority value to determine a match for this entry.
-+	 */
-+	if (sfi->prio >= 0)
-+		sfi_config->multi |= (sfi->prio & 0x7) | 0x8;
-+
-+	/* Filter Type. Identifies the contents of the MSDU/FM_INST_INDEX
-+	 * field as being either an MSDU value or an index into the Flow
-+	 * Meter Instance table.
-+	 * TODO: no limit max sdu
-+	 */
-+
-+	if (sfi->meter_id >= 0) {
-+		sfi_config->fm_inst_table_index = cpu_to_le16(sfi->meter_id);
-+		sfi_config->multi |= 0x80;
-+	}
-+
-+exit:
-+	return enetc_send_cmd(priv->si, &cbd);
-+}
-+
-+static int enetc_streamcounter_hw_get(struct enetc_ndev_priv *priv,
-+				      u32 index,
-+				      struct psfp_streamfilter_counters *cnt)
-+{
-+	struct enetc_cbd cbd = { .cmd = 2 };
-+	struct sfi_counter_data *data_buf;
-+	dma_addr_t dma;
-+	u16 data_size;
-+	int err;
-+
-+	cbd.index = cpu_to_le16((u16)index);
-+	cbd.cmd = 2;
-+	cbd.cls = BDCR_CMD_STREAM_FILTER;
-+	cbd.status_flags = 0;
-+
-+	data_size = sizeof(struct sfi_counter_data);
-+	data_buf = kzalloc(data_size, __GFP_DMA | GFP_KERNEL);
-+	if (!data_buf)
-+		return -ENOMEM;
-+
-+	dma = dma_map_single(&priv->si->pdev->dev, data_buf,
-+			     data_size, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&priv->si->pdev->dev, dma)) {
-+		netdev_err(priv->si->ndev, "DMA mapping failed!\n");
-+		err = -ENOMEM;
-+		goto exit;
-+	}
-+	cbd.addr[0] = lower_32_bits(dma);
-+	cbd.addr[1] = upper_32_bits(dma);
-+
-+	cbd.length = cpu_to_le16(data_size);
-+
-+	err = enetc_send_cmd(priv->si, &cbd);
-+	if (err)
-+		goto exit;
-+
-+	cnt->matching_frames_count =
-+			((u64)le32_to_cpu(data_buf->matchh) << 32)
-+			+ data_buf->matchl;
-+
-+	cnt->not_passing_sdu_count =
-+			((u64)le32_to_cpu(data_buf->msdu_droph) << 32)
-+			+ data_buf->msdu_dropl;
-+
-+	cnt->passing_sdu_count = cnt->matching_frames_count
-+				- cnt->not_passing_sdu_count;
-+
-+	cnt->not_passing_frames_count =
-+		((u64)le32_to_cpu(data_buf->stream_gate_droph) << 32)
-+		+ le32_to_cpu(data_buf->stream_gate_dropl);
-+
-+	cnt->passing_frames_count = cnt->matching_frames_count
-+				- cnt->not_passing_sdu_count
-+				- cnt->not_passing_frames_count;
-+
-+	cnt->red_frames_count =
-+		((u64)le32_to_cpu(data_buf->flow_meter_droph) << 32)
-+		+ le32_to_cpu(data_buf->flow_meter_dropl);
-+
-+exit:
-+	kfree(data_buf);
-+	return err;
-+}
-+
-+static int get_start_ns(struct enetc_ndev_priv *priv, u64 cycle, u64 *start)
-+{
-+	u64 now_lo, now_hi, now, n;
-+
-+	now_lo = enetc_rd(&priv->si->hw, ENETC_SICTR0);
-+	now_hi = enetc_rd(&priv->si->hw, ENETC_SICTR1);
-+	now = now_lo | now_hi << 32;
-+
-+	if (WARN_ON(!cycle))
-+		return -EFAULT;
-+
-+	n = div64_u64(now, cycle);
-+
-+	*start = (n + 1) * cycle;
-+
-+	return 0;
-+}
-+
-+/* Stream Gate Instance Set Descriptor */
-+static int enetc_streamgate_hw_set(struct enetc_ndev_priv *priv,
-+				   struct enetc_psfp_gate *sgi,
-+				   u8 enable)
-+{
-+	struct enetc_cbd cbd = { .cmd = 0 };
-+	struct sgi_table *sgi_config;
-+	struct sgcl_conf *sgcl_config;
-+	struct sgcl_data *sgcl_data;
-+	struct sgce *sgce;
-+	dma_addr_t dma;
-+	u16 data_size;
-+	int err, i;
-+
-+	cbd.index = cpu_to_le16(sgi->index);
-+	cbd.cmd = 0;
-+	cbd.cls = BDCR_CMD_STREAM_GCL;
-+	cbd.status_flags = 0x80;
-+
-+	/* disable */
-+	if (!enable)
-+		return enetc_send_cmd(priv->si, &cbd);
-+
-+	if (!sgi->num_entries)
-+		return 0;
-+
-+	if (sgi->num_entries > priv->psfp_cap.max_psfp_gatelist ||
-+	    !sgi->cycletime)
-+		return -EINVAL;
-+
-+	/* enable */
-+	sgi_config = &cbd.sgi_table;
-+
-+	/* Keep open before gate list start */
-+	sgi_config->ocgtst = 0x80;
-+
-+	sgi_config->oipv = (sgi->init_ipv < 0) ?
-+				0x0 : ((sgi->init_ipv & 0x7) | 0x8);
-+
-+	sgi_config->en = 0x80;
-+
-+	/* Basic config */
-+	err = enetc_send_cmd(priv->si, &cbd);
-+	if (err)
-+		return -EINVAL;
-+
-+	memset(&cbd, 0, sizeof(cbd));
-+
-+	cbd.index = cpu_to_le16(sgi->index);
-+	cbd.cmd = 1;
-+	cbd.cls = BDCR_CMD_STREAM_GCL;
-+	cbd.status_flags = 0;
-+
-+	sgcl_config = &cbd.sgcl_conf;
-+
-+	sgcl_config->acl_len = (sgi->num_entries - 1) & 0x3;
-+
-+	data_size = struct_size(sgcl_data, sgcl, sgi->num_entries);
-+
-+	sgcl_data = kzalloc(data_size, __GFP_DMA | GFP_KERNEL);
-+	if (!sgcl_data)
-+		return -ENOMEM;
-+
-+	cbd.length = cpu_to_le16(data_size);
-+
-+	dma = dma_map_single(&priv->si->pdev->dev,
-+			     sgcl_data, data_size,
-+			     DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&priv->si->pdev->dev, dma)) {
-+		netdev_err(priv->si->ndev, "DMA mapping failed!\n");
-+		kfree(sgcl_data);
-+		return -ENOMEM;
-+	}
-+
-+	cbd.addr[0] = lower_32_bits(dma);
-+	cbd.addr[1] = upper_32_bits(dma);
-+
-+	sgce = &sgcl_data->sgcl[0];
-+
-+	sgcl_config->agtst = 0x80;
-+
-+	sgcl_data->ct = cpu_to_le32(sgi->cycletime);
-+	sgcl_data->cte = cpu_to_le32(sgi->cycletimext);
-+
-+	if (sgi->init_ipv >= 0)
-+		sgcl_config->aipv = (sgi->init_ipv & 0x7) | 0x8;
-+
-+	for (i = 0; i < sgi->num_entries; i++) {
-+		struct action_gate_entry *from = &sgi->entries[i];
-+		struct sgce *to = &sgce[i];
-+
-+		if (from->gate_state)
-+			to->multi |= 0x10;
-+
-+		if (from->ipv >= 0)
-+			to->multi |= ((from->ipv & 0x7) << 5) | 0x08;
-+
-+		if (from->maxoctets)
-+			to->multi |= 0x01;
-+
-+		to->interval = cpu_to_le32(from->interval);
-+		to->msdu[0] = from->maxoctets & 0xFF;
-+		to->msdu[1] = (from->maxoctets >> 8) & 0xFF;
-+		to->msdu[2] = (from->maxoctets >> 16) & 0xFF;
-+	}
-+
-+	/* If basetime is 0, calculate start time */
-+	if (!sgi->basetime) {
-+		u64 start;
-+
-+		err = get_start_ns(priv, sgi->cycletime, &start);
-+		if (err)
-+			goto exit;
-+		sgcl_data->btl = cpu_to_le32(lower_32_bits(start));
-+		sgcl_data->bth = cpu_to_le32(upper_32_bits(start));
-+	} else {
-+		u32 hi, lo;
-+
-+		hi = upper_32_bits(sgi->basetime);
-+		lo = lower_32_bits(sgi->basetime);
-+		sgcl_data->bth = cpu_to_le32(hi);
-+		sgcl_data->btl = cpu_to_le32(lo);
-+	}
-+
-+	err = enetc_send_cmd(priv->si, &cbd);
-+
-+exit:
-+	kfree(sgcl_data);
-+
-+	return err;
-+}
-+
-+static struct enetc_stream_filter *enetc_get_stream_by_index(u32 index)
-+{
-+	struct enetc_stream_filter *f;
-+
-+	hlist_for_each_entry(f, &epsfp.stream_list, node)
-+		if (f->sid.index == index)
-+			return f;
-+
-+	return NULL;
-+}
-+
-+static struct enetc_psfp_gate *enetc_get_gate_by_index(u32 index)
-+{
-+	struct enetc_psfp_gate *g;
-+
-+	hlist_for_each_entry(g, &epsfp.psfp_gate_list, node)
-+		if (g->index == index)
-+			return g;
-+
-+	return NULL;
-+}
-+
-+static struct enetc_psfp_filter *enetc_get_filter_by_index(u32 index)
-+{
-+	struct enetc_psfp_filter *s;
-+
-+	hlist_for_each_entry(s, &epsfp.psfp_filter_list, node)
-+		if (s->index == index)
-+			return s;
-+
-+	return NULL;
-+}
-+
-+static struct enetc_psfp_filter
-+	*enetc_psfp_check_sfi(struct enetc_psfp_filter *sfi)
-+{
-+	struct enetc_psfp_filter *s;
-+
-+	hlist_for_each_entry(s, &epsfp.psfp_filter_list, node)
-+		if (s->gate_id == sfi->gate_id &&
-+		    s->prio == sfi->prio &&
-+		    s->meter_id == sfi->meter_id)
-+			return s;
-+
-+	return NULL;
-+}
-+
-+static int enetc_get_free_index(struct enetc_ndev_priv *priv)
-+{
-+	u32 max_size = priv->psfp_cap.max_psfp_filter;
-+	unsigned long index;
-+
-+	index = find_first_zero_bit(epsfp.psfp_sfi_bitmap, max_size);
-+	if (index == max_size)
-+		return -1;
-+
-+	return index;
-+}
-+
-+static void stream_filter_unref(struct enetc_ndev_priv *priv, u32 index)
-+{
-+	struct enetc_psfp_filter *sfi;
-+	u8 z;
-+
-+	sfi = enetc_get_filter_by_index(index);
-+	WARN_ON(!sfi);
-+	z = refcount_dec_and_test(&sfi->refcount);
-+
-+	if (z) {
-+		enetc_streamfilter_hw_set(priv, sfi, false);
-+		hlist_del(&sfi->node);
-+		kfree(sfi);
-+		clear_bit(sfi->index, epsfp.psfp_sfi_bitmap);
-+	}
-+}
-+
-+static void stream_gate_unref(struct enetc_ndev_priv *priv, u32 index)
-+{
-+	struct enetc_psfp_gate *sgi;
-+	u8 z;
-+
-+	sgi = enetc_get_gate_by_index(index);
-+	WARN_ON(!sgi);
-+	z = refcount_dec_and_test(&sgi->refcount);
-+	if (z) {
-+		enetc_streamgate_hw_set(priv, sgi, false);
-+		hlist_del(&sgi->node);
-+		kfree(sgi);
-+	}
-+}
-+
-+static void remove_one_chain(struct enetc_ndev_priv *priv,
-+			     struct enetc_stream_filter *filter)
-+{
-+	stream_gate_unref(priv, filter->sgi_index);
-+	stream_filter_unref(priv, filter->sfi_index);
-+
-+	hlist_del(&filter->node);
-+	kfree(filter);
-+}
-+
-+static int enetc_psfp_hw_set(struct enetc_ndev_priv *priv,
-+			     struct enetc_streamid *sid,
-+			     struct enetc_psfp_filter *sfi,
-+			     struct enetc_psfp_gate *sgi)
-+{
-+	int err;
-+
-+	err = enetc_streamid_hw_set(priv, sid, true);
-+	if (err)
-+		return err;
-+
-+	if (sfi) {
-+		err = enetc_streamfilter_hw_set(priv, sfi, true);
-+		if (err)
-+			goto revert_sid;
-+	}
-+
-+	err = enetc_streamgate_hw_set(priv, sgi, true);
-+	if (err)
-+		goto revert_sfi;
-+
-+	return 0;
-+
-+revert_sfi:
-+	if (sfi)
-+		enetc_streamfilter_hw_set(priv, sfi, false);
-+revert_sid:
-+	enetc_streamid_hw_set(priv, sid, false);
-+	return err;
-+}
-+
-+struct actions_fwd *enetc_check_flow_actions(u64 acts, unsigned int inputkeys)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(enetc_act_fwd); i++)
-+		if (acts == enetc_act_fwd[i].actions &&
-+		    inputkeys & enetc_act_fwd[i].keys)
-+			return &enetc_act_fwd[i];
-+
-+	return NULL;
-+}
-+
-+static int enetc_psfp_parse_clsflower(struct enetc_ndev_priv *priv,
-+				      struct flow_cls_offload *f)
-+{
-+	struct flow_rule *rule = flow_cls_offload_flow_rule(f);
-+	struct netlink_ext_ack *extack = f->common.extack;
-+	struct enetc_stream_filter *filter, *old_filter;
-+	struct enetc_psfp_filter *sfi, *old_sfi;
-+	struct enetc_psfp_gate *sgi, *old_sgi;
-+	struct flow_action_entry *entry;
-+	struct action_gate_entry *e;
-+	u8 sfi_overwrite = 0;
-+	int entries_size;
-+	int i, err;
-+
-+	if (f->common.chain_index >= priv->psfp_cap.max_streamid) {
-+		NL_SET_ERR_MSG_MOD(extack, "No Stream identify resource!");
-+		return -ENOSPC;
-+	}
-+
-+	flow_action_for_each(i, entry, &rule->action)
-+		if (entry->id == FLOW_ACTION_GATE)
-+			break;
-+
-+	if (entry->id != FLOW_ACTION_GATE)
-+		return -EINVAL;
-+
-+	filter = kzalloc(sizeof(*filter), GFP_KERNEL);
-+	if (!filter)
-+		return -ENOMEM;
-+
-+	filter->sid.index = f->common.chain_index;
-+
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
-+		struct flow_match_eth_addrs match;
-+
-+		flow_rule_match_eth_addrs(rule, &match);
-+
-+		if (!is_zero_ether_addr(match.mask->dst)) {
-+			ether_addr_copy(filter->sid.dst_mac, match.key->dst);
-+			filter->sid.filtertype = STREAMID_TYPE_NULL;
-+		}
-+
-+		if (!is_zero_ether_addr(match.mask->src)) {
-+			ether_addr_copy(filter->sid.src_mac, match.key->src);
-+			filter->sid.filtertype = STREAMID_TYPE_SMAC;
-+		}
-+	} else {
-+		NL_SET_ERR_MSG_MOD(extack, "Unsupported, must ETH_ADDRS");
-+		return -EINVAL;
-+	}
-+
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_VLAN)) {
-+		struct flow_match_vlan match;
-+
-+		flow_rule_match_vlan(rule, &match);
-+		if (match.mask->vlan_priority) {
-+			if (match.mask->vlan_priority !=
-+			    (VLAN_PRIO_MASK >> VLAN_PRIO_SHIFT)) {
-+				NL_SET_ERR_MSG_MOD(extack, "Only full mask is supported for VLAN priority");
-+				err = -EINVAL;
-+				goto free_filter;
-+			}
-+		}
-+
-+		if (match.mask->vlan_tpid) {
-+			if (match.mask->vlan_tpid != VLAN_VID_MASK) {
-+				NL_SET_ERR_MSG_MOD(extack, "Only full mask is supported for VLAN id");
-+				err = -EINVAL;
-+				goto free_filter;
-+			}
-+
-+			filter->sid.vid = match.key->vlan_tpid;
-+			if (!filter->sid.vid)
-+				filter->sid.tagged = STREAMID_VLAN_UNTAGGED;
-+			else
-+				filter->sid.tagged = STREAMID_VLAN_TAGGED;
-+		}
-+	} else {
-+		filter->sid.tagged = STREAMID_VLAN_ALL;
-+	}
-+
-+	/* parsing gate action */
-+	if (entry->gate.index >= priv->psfp_cap.max_psfp_gate) {
-+		NL_SET_ERR_MSG_MOD(extack, "No Stream Gate resource!");
-+		err = -ENOSPC;
-+		goto free_filter;
-+	}
-+
-+	if (entry->gate.num_entries >= priv->psfp_cap.max_psfp_gatelist) {
-+		NL_SET_ERR_MSG_MOD(extack, "No Stream Gate resource!");
-+		err = -ENOSPC;
-+		goto free_filter;
-+	}
-+
-+	entries_size = struct_size(sgi, entries, entry->gate.num_entries);
-+	sgi = kzalloc(entries_size, GFP_KERNEL);
-+	if (!sgi) {
-+		err = -ENOMEM;
-+		goto free_filter;
-+	}
-+
-+	refcount_set(&sgi->refcount, 1);
-+	sgi->index = entry->gate.index;
-+	sgi->init_ipv = entry->gate.prio;
-+	sgi->basetime = entry->gate.basetime;
-+	sgi->cycletime = entry->gate.cycletime;
-+	sgi->num_entries = entry->gate.num_entries;
-+
-+	e = sgi->entries;
-+	for (i = 0; i < entry->gate.num_entries; i++) {
-+		e[i].gate_state = entry->gate.entries[i].gate_state;
-+		e[i].interval = entry->gate.entries[i].interval;
-+		e[i].ipv = entry->gate.entries[i].ipv;
-+		e[i].maxoctets = entry->gate.entries[i].maxoctets;
-+	}
-+
-+	filter->sgi_index = sgi->index;
-+
-+	sfi = kzalloc(sizeof(*sfi), GFP_KERNEL);
-+	if (!sfi) {
-+		err = -ENOMEM;
-+		goto free_gate;
-+	}
-+
-+	refcount_set(&sfi->refcount, 1);
-+	sfi->gate_id = sgi->index;
-+
-+	/* flow meter not support yet */
-+	sfi->meter_id = ENETC_PSFP_WILDCARD;
-+
-+	/* prio ref the filter prio */
-+	if (f->common.prio && f->common.prio <= BIT(3))
-+		sfi->prio = f->common.prio - 1;
-+	else
-+		sfi->prio = ENETC_PSFP_WILDCARD;
-+
-+	old_sfi = enetc_psfp_check_sfi(sfi);
-+	if (!old_sfi) {
-+		int index;
-+
-+		index = enetc_get_free_index(priv);
-+		if (sfi->handle < 0) {
-+			NL_SET_ERR_MSG_MOD(extack, "No Stream Filter resource!");
-+			err = -ENOSPC;
-+			goto free_sfi;
-+		}
-+
-+		sfi->index = index;
-+		sfi->handle = index + HANDLE_OFFSET;
-+		/* Update the stream filter handle also */
-+		filter->sid.handle = sfi->handle;
-+		filter->sfi_index = sfi->index;
-+		sfi_overwrite = 0;
-+	} else {
-+		filter->sfi_index = old_sfi->index;
-+		filter->sid.handle = old_sfi->handle;
-+		sfi_overwrite = 1;
-+	}
-+
-+	err = enetc_psfp_hw_set(priv, &filter->sid,
-+				sfi_overwrite ? NULL : sfi, sgi);
-+	if (err)
-+		goto free_sfi;
-+
-+	spin_lock(&epsfp.psfp_lock);
-+	/* Remove the old node if exist and update with a new node */
-+	old_sgi = enetc_get_gate_by_index(filter->sgi_index);
-+	if (old_sgi) {
-+		refcount_set(&sgi->refcount,
-+			     refcount_read(&old_sgi->refcount) + 1);
-+		hlist_del(&old_sgi->node);
-+		kfree(old_sgi);
-+	}
-+
-+	hlist_add_head(&sgi->node, &epsfp.psfp_gate_list);
-+
-+	if (!old_sfi) {
-+		hlist_add_head(&sfi->node, &epsfp.psfp_filter_list);
-+		set_bit(sfi->index, epsfp.psfp_sfi_bitmap);
-+	} else {
-+		kfree(sfi);
-+		refcount_inc(&old_sfi->refcount);
-+	}
-+
-+	old_filter = enetc_get_stream_by_index(filter->sid.index);
-+	if (old_filter)
-+		remove_one_chain(priv, old_filter);
-+
-+	filter->stats.lastused = jiffies;
-+	hlist_add_head(&filter->node, &epsfp.stream_list);
-+
-+	spin_unlock(&epsfp.psfp_lock);
-+
-+	return 0;
-+
-+free_sfi:
-+	kfree(sfi);
-+free_gate:
-+	kfree(sgi);
-+free_filter:
-+	kfree(filter);
-+
-+	return err;
-+}
-+
-+static int enetc_config_clsflower(struct enetc_ndev_priv *priv,
-+				  struct flow_cls_offload *cls_flower)
-+{
-+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls_flower);
-+	struct netlink_ext_ack *extack = cls_flower->common.extack;
-+	struct flow_dissector *dissector = rule->match.dissector;
-+	struct flow_action *action = &rule->action;
-+	struct flow_action_entry *entry;
-+	struct actions_fwd *fwd;
-+	u64 actions = 0;
-+	int i, err;
-+
-+	if (!flow_action_has_entries(action)) {
-+		NL_SET_ERR_MSG_MOD(extack, "At least one action is needed");
-+		return -EINVAL;
-+	}
-+
-+	flow_action_for_each(i, entry, action)
-+		actions |= BIT(entry->id);
-+
-+	fwd = enetc_check_flow_actions(actions, dissector->used_keys);
-+	if (!fwd) {
-+		NL_SET_ERR_MSG_MOD(extack, "Unsupported filter type!");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (fwd->output & FILTER_ACTION_TYPE_PSFP) {
-+		err = enetc_psfp_parse_clsflower(priv, cls_flower);
-+		if (err) {
-+			NL_SET_ERR_MSG_MOD(extack, "Invalid PSFP inputs");
-+			return err;
-+		}
-+	} else {
-+		NL_SET_ERR_MSG_MOD(extack, "Unsupported actions");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int enetc_psfp_destroy_clsflower(struct enetc_ndev_priv *priv,
-+					struct flow_cls_offload *f)
-+{
-+	struct enetc_stream_filter *filter;
-+	struct netlink_ext_ack *extack = f->common.extack;
-+	int err;
-+
-+	if (f->common.chain_index >= priv->psfp_cap.max_streamid) {
-+		NL_SET_ERR_MSG_MOD(extack, "No Stream identify resource!");
-+		return -ENOSPC;
-+	}
-+
-+	filter = enetc_get_stream_by_index(f->common.chain_index);
-+	if (!filter)
-+		return -EINVAL;
-+
-+	err = enetc_streamid_hw_set(priv, &filter->sid, false);
-+	if (err)
-+		return err;
-+
-+	remove_one_chain(priv, filter);
-+
-+	return 0;
-+}
-+
-+static int enetc_destroy_clsflower(struct enetc_ndev_priv *priv,
-+				   struct flow_cls_offload *f)
-+{
-+	return enetc_psfp_destroy_clsflower(priv, f);
-+}
-+
-+static int enetc_psfp_get_stats(struct enetc_ndev_priv *priv,
-+				struct flow_cls_offload *f)
-+{
-+	struct psfp_streamfilter_counters counters = {};
-+	struct enetc_stream_filter *filter;
-+	struct flow_stats stats = {};
-+	int err;
-+
-+	filter = enetc_get_stream_by_index(f->common.chain_index);
-+	if (!filter)
-+		return -EINVAL;
-+
-+	err = enetc_streamcounter_hw_get(priv, filter->sfi_index, &counters);
-+	if (err)
-+		return -EINVAL;
-+
-+	spin_lock(&epsfp.psfp_lock);
-+	stats.pkts = counters.matching_frames_count - filter->stats.pkts;
-+	stats.lastused = filter->stats.lastused;
-+	filter->stats.pkts += stats.pkts;
-+	spin_unlock(&epsfp.psfp_lock);
-+
-+	flow_stats_update(&f->stats, 0x0, stats.pkts, stats.lastused,
-+			  FLOW_ACTION_HW_STATS_DELAYED);
-+
-+	return 0;
-+}
-+
-+static int enetc_setup_tc_cls_flower(struct enetc_ndev_priv *priv,
-+				     struct flow_cls_offload *cls_flower)
-+{
-+	switch (cls_flower->command) {
-+	case FLOW_CLS_REPLACE:
-+		return enetc_config_clsflower(priv, cls_flower);
-+	case FLOW_CLS_DESTROY:
-+		return enetc_destroy_clsflower(priv, cls_flower);
-+	case FLOW_CLS_STATS:
-+		return enetc_psfp_get_stats(priv, cls_flower);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static inline void clean_psfp_sfi_bitmap(void)
-+{
-+	bitmap_free(epsfp.psfp_sfi_bitmap);
-+	epsfp.psfp_sfi_bitmap = NULL;
-+}
-+
-+static void clean_stream_list(void)
-+{
-+	struct enetc_stream_filter *s;
-+	struct hlist_node *tmp;
-+
-+	hlist_for_each_entry_safe(s, tmp, &epsfp.stream_list, node) {
-+		hlist_del(&s->node);
-+		kfree(s);
-+	}
-+}
-+
-+static void clean_sfi_list(void)
-+{
-+	struct enetc_psfp_filter *sfi;
-+	struct hlist_node *tmp;
-+
-+	hlist_for_each_entry_safe(sfi, tmp, &epsfp.psfp_filter_list, node) {
-+		hlist_del(&sfi->node);
-+		kfree(sfi);
-+	}
-+}
-+
-+static void clean_sgi_list(void)
-+{
-+	struct enetc_psfp_gate *sgi;
-+	struct hlist_node *tmp;
-+
-+	hlist_for_each_entry_safe(sgi, tmp, &epsfp.psfp_gate_list, node) {
-+		hlist_del(&sgi->node);
-+		kfree(sgi);
-+	}
-+}
-+
-+static void clean_psfp_all(void)
-+{
-+	/* Disable all list nodes and free all memory */
-+	clean_sfi_list();
-+	clean_sgi_list();
-+	clean_stream_list();
-+	epsfp.dev_bitmap = 0;
-+	clean_psfp_sfi_bitmap();
-+}
-+
-+int enetc_setup_tc_block_cb(enum tc_setup_type type, void *type_data,
-+			    void *cb_priv)
-+{
-+	struct net_device *ndev = cb_priv;
-+
-+	if (!tc_can_offload(ndev))
-+		return -EOPNOTSUPP;
-+
-+	switch (type) {
-+	case TC_SETUP_CLSFLOWER:
-+		return enetc_setup_tc_cls_flower(netdev_priv(ndev), type_data);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+int enetc_psfp_init(struct enetc_ndev_priv *priv)
-+{
-+	if (epsfp.psfp_sfi_bitmap)
-+		return 0;
-+
-+	epsfp.psfp_sfi_bitmap = bitmap_zalloc(priv->psfp_cap.max_psfp_filter,
-+					      GFP_KERNEL);
-+	if (!epsfp.psfp_sfi_bitmap)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&epsfp.psfp_lock);
-+
-+	if (list_empty(&enetc_block_cb_list))
-+		epsfp.dev_bitmap = 0;
-+
-+	return 0;
-+}
-+
-+int enetc_psfp_clean(struct enetc_ndev_priv *priv)
-+{
-+	if (!list_empty(&enetc_block_cb_list))
-+		return -EBUSY;
-+
-+	clean_psfp_all();
-+
-+	return 0;
-+}
-+
-+int enetc_setup_tc_psfp(struct net_device *ndev, void *type_data)
-+{
-+	struct enetc_ndev_priv *priv = netdev_priv(ndev);
-+	struct flow_block_offload *f = type_data;
-+	int err;
-+
-+	err = flow_block_cb_setup_simple(f, &enetc_block_cb_list,
-+					 enetc_setup_tc_block_cb,
-+					 ndev, ndev, true);
-+	if (err)
-+		return err;
-+
-+	switch (f->command) {
-+	case FLOW_BLOCK_BIND:
-+		set_bit(enetc_get_port(priv), &epsfp.dev_bitmap);
-+		break;
-+	case FLOW_BLOCK_UNBIND:
-+		clear_bit(enetc_get_port(priv), &epsfp.dev_bitmap);
-+		if (!epsfp.dev_bitmap)
-+			clean_psfp_all();
-+		break;
-+	}
-+
-+	return 0;
-+}
--- 
-2.17.1
-
+> On original way, the value of max_index won't be the
+> end of traversing index, it would continue to decrease the index to
+> find a good place until the index becoming random_offset again, so
+> kernel doesn't be loaded to the specific location which max_index
+> specify to, it seems to me that there isn't the worry of you
+> mentioned >
+>>
+>>>
+>>>> Alex
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Alex
+>>>>>>
+>>>>>>>>
+>>>>>>>>> +
+>>>>>>>>> +     } while (idx != stop_idx);
+>>>>>>>>> +
+>>>>>>>>> +     return 0;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static inline __init u64 rotate_xor(u64 hash, const void *area, size_t size)
+>>>>>>>>> +{
+>>>>>>>>> +     size_t i;
+>>>>>>>>> +     uintptr_t *ptr = (uintptr_t *) area;
+>>>>>>>>> +
+>>>>>>>>> +     for (i = 0; i < size / sizeof(hash); i++) {
+>>>>>>>>> +             /* Rotate by odd number of bits and XOR. */
+>>>>>>>>> +             hash = (hash << ((sizeof(hash) * 8) - 7)) | (hash >> 7);
+>>>>>>>>> +             hash ^= ptr[i];
+>>>>>>>>> +     }
+>>>>>>>>> +
+>>>>>>>>> +     return hash;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +#define MEM_RESERVE_START    __pa(PAGE_OFFSET)
+>>>>>>>>> +static __init uintptr_t get_random_offset(u64 seed, uintptr_t kernel_size)
+>>>>>>>>> +{
+>>>>>>>>> +     uintptr_t mem_start = 0, mem_size= 0, random_size;
+>>>>>>>>> +     uintptr_t kernel_size_align = round_up(kernel_size, SZ_2M);
+>>>>>>>>> +     int index;
+>>>>>>>>> +     u64 random = 0;
+>>>>>>>>> +     cycles_t time_base;
+>>>>>>>>> +
+>>>>>>>>> +     /* Attempt to create a simple but unpredictable starting entropy */
+>>>>>>>>> +     random = rotate_xor(random, linux_banner, strlen(linux_banner));
+>>>>>>>>> +
+>>>>>>>>> +     /*
+>>>>>>>>> +      * If there is no HW random number generator, use timer to get a random
+>>>>>>>>> +      * number. This is better than nothing but not enough secure.
+>>>>>>>>> +      */
+>>>>>>>>> +     time_base = get_cycles() << 32;
+>>>>>>>>> +     time_base ^= get_cycles();
+>>>>>>>>> +     random = rotate_xor(random, &time_base, sizeof(time_base));
+>>>>>>>>> +
+>>>>>>>>> +     if (seed)
+>>>>>>>>> +             random = rotate_xor(random, &seed, sizeof(seed));
+>>>>>>>>> +
+>>>>>>>>> +     kaslr_get_mem_info(&mem_start, &mem_size);
+>>>>>>>>> +     if (!mem_size)
+>>>>>>>>> +             return 0;
+>>>>>>>>> +
+>>>>>>>>> +     if (mem_start < MEM_RESERVE_START) {
+>>>>>>>>> +             mem_size -= MEM_RESERVE_START - mem_start;
+>>>>>>>>> +             mem_start = MEM_RESERVE_START;
+>>>>>>>>> +     }
+>>>>>>>>> +
+>>>>>>>>> +     /*
+>>>>>>>>> +      * Limit randomization range within 1G, so we can exploit
+>>>>>>>>> +      * early_pmd/early_pte during early page table phase.
+>>>>>>>>> +      */
+>>>>>>>>> +     random_size = min_t(u64,
+>>>>>>>>> +                         mem_size - (kernel_size_align * 2),
+>>>>>>>>> +                         SZ_1G - (kernel_size_align * 2));
+>>>>>>>>
+>>>>>>>> pgdir size is 30 bits in sv39, but it's 39 bits in sv48, you should use
+>>>>>>>> PGDIR_SIZE macro here.
+>>>>>>>
+>>>>>>> OK, change it in the next version. Thanks.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>> +
+>>>>>>>>> +     /* The index of 2M block in whole avaliable region */
+>>>>>>>>> +     index = random % (random_size / SZ_2M);
+>>>>>>>>> +
+>>>>>>>>> +     return get_legal_offset(index, random_size / SZ_2M,
+>>>>>>>>> +                             mem_start, kernel_size_align);
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>>       uintptr_t __init kaslr_early_init(void)
+>>>>>>>>>       {
+>>>>>>>>> +     u64 seed;
+>>>>>>>>>           uintptr_t dest_start, dest_end;
+>>>>>>>>>           uintptr_t kernel_size = (uintptr_t) _end - (uintptr_t) _start;
+>>>>>>>>>
+>>>>>>>>>           /* Get zero value at second time to avoid doing randomization again. */
+>>>>>>>>> -     if (kaslr_offset)
+>>>>>>>>> +     seed = kaslr_get_seed();
+>>>>>>>>> +     if (!seed)
+>>>>>>>>>                   return 0;
+>>>>>>>>>
+>>>>>>>>>           /* Get the random number for kaslr offset. */
+>>>>>>>>> -     kaslr_offset = 0x10000000;
+>>>>>>>>> +     kaslr_offset = get_random_offset(seed, kernel_size);
+>>>>>>>>>
+>>>>>>>>>           /* Update kernel_virt_addr for get_kaslr_offset. */
+>>>>>>>>>           kernel_virt_addr += kaslr_offset;
+>>>>>>>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>>>>>>>> index 2f5b25f02b6c..34c6ecf2c599 100644
+>>>>>>>>> --- a/arch/riscv/mm/init.c
+>>>>>>>>> +++ b/arch/riscv/mm/init.c
+>>>>>>>>> @@ -125,7 +125,7 @@ static void __init setup_initrd(void)
+>>>>>>>>>       }
+>>>>>>>>>       #endif /* CONFIG_BLK_DEV_INITRD */
+>>>>>>>>>
+>>>>>>>>> -static phys_addr_t dtb_early_pa __initdata;
+>>>>>>>>> +phys_addr_t dtb_early_pa __initdata;
+>>>>>>>>>
+>>>>>>>>>       void __init setup_bootmem(void)
+>>>>>>>>>       {
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> Alex
