@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ECF1A6FF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 02:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E1E1A6FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 02:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390391AbgDNAN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 20:13:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:64690 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390372AbgDNANx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 20:13:53 -0400
-IronPort-SDR: Tcx1HYoDFFG/1ecGXpMr1zxOB2GVLzRwBS/5G4vwoQVPIV4Z2qNJ9d4jejWxd2UPkM0dMhnXlI
- 6Q6Hejcy44YQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 17:13:53 -0700
-IronPort-SDR: WwSP/bjwzVqCvzpfDJVQx7mHVD9DqAVfA90u9u6YJ0BE3eg8B7Aus6XqC75wdrzGtPX0vlI9oI
- I6IjfgU71shQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,380,1580803200"; 
-   d="scan'208";a="277078198"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Apr 2020 17:13:48 -0700
-Date:   Mon, 13 Apr 2020 20:04:10 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, io-uring@vger.kernel.org,
-        linux-mm@kvack.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        virtualization@lists.linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 2/6] i915/gvt/kvm: a NULL ->mm does not mean a thread is
- a kthread
-Message-ID: <20200414000410.GE10586@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200404094101.672954-1-hch@lst.de>
- <20200404094101.672954-3-hch@lst.de>
- <20200407030845.GA10586@joy-OptiPlex-7040>
- <20200413132730.GB14455@lst.de>
+        id S2390356AbgDNAEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 20:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390344AbgDNAEo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 20:04:44 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA196C0A3BDC;
+        Mon, 13 Apr 2020 17:04:43 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id b13so6793971oti.3;
+        Mon, 13 Apr 2020 17:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+4+rycwR8GzUJQp1X1LzbsFhbfXsBfzL6VtDkjicxak=;
+        b=PDduSssba/36SmLLxi8QB4NoMeRn5QRTXCf7mFJTyZDC/QGOR2/p1vPbQJWIVJ5ajy
+         TagJCMUelxZ/hb1TdPFZ4LA9nI7oQrCO/SfIWd+Q0zkMlIMwkSLAAAQV34HyP8PhS4O0
+         8kyrOjNXnOppSzBk+bHH9mFW0T36xe1YntXMDsvyBPVzh+ay3pSWnLfgOHNDxRkfpgGk
+         XqkrdQQNSDksd3/tY3TptpQi60Cx+mDkJZvYHTByIF9u1jPnFoid6BEVJW5phS+vPHVG
+         5hKWg8Sw8BZZbyMAccx52BVyk7a0GxDq5cNNlGLE/Svjzail9yaJA1mdKPoR4EKK5PnK
+         +Wow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+4+rycwR8GzUJQp1X1LzbsFhbfXsBfzL6VtDkjicxak=;
+        b=Vg1z5V5W5OSFlX4OELtHwiB6GkNS6VWtTgwZXx3/rOPZbJ2QkzxqeJaciwLT+3IPQr
+         TCiogghqUhySDGk9T7zqh9XcIqQBzF/VoO7gG2N1UjVcbE4M7U5yGOC+GWNO/oh4xKYU
+         Spv0CHDh3VSgWT55uO0U/mD7lFukM6vSbFhoMkGh/hpMSatFAXJpTdfhy0sbwjta0RkS
+         2b9yXGJFRwgjCEn8qR0dFMCAJvp5rMlCyTwclB3/ragJUBK28aFXbf0lHbSJlxMOTyGR
+         xaaBiSD/njUuNY+Psb+4tMDSqwR866+LKvAqaXKxoXGNKs1d1+ZEu4yH8kuKLdW3vqLO
+         6hLA==
+X-Gm-Message-State: AGi0PuZhBQJpXwvmrQclcJe0VXg9BeFYSvp1Tstd/CE8wGttVYto+YbL
+        THwsuX7q8K9ErpvbYtqnV/uNFIMiwKu7yEDHzqo=
+X-Google-Smtp-Source: APiQypJOphKMyEudYUDpPvY1hqUNXvYfKKSoRuzdgrn3EUWtoedSaoR6KC92ECz98KoDyWIKX23lAv6/C6kKBSI7Gh0=
+X-Received: by 2002:a9d:629a:: with SMTP id x26mr15111457otk.201.1586822682835;
+ Mon, 13 Apr 2020 17:04:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413132730.GB14455@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <96bedbaf-49ea-f24b-b7b1-fb9a57fb6c7d@gmail.com>
+ <20200411154031.642557-1-avagin@gmail.com> <CAKgNAki6uBHVTBdJvj7hzbho9Z94MWRV7ab8npduogQohRndBQ@mail.gmail.com>
+ <20200413154746.39275d0981f69e57a7ecab3e@linux-foundation.org>
+In-Reply-To: <20200413154746.39275d0981f69e57a7ecab3e@linux-foundation.org>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Mon, 13 Apr 2020 17:04:31 -0700
+Message-ID: <CANaxB-xu0qcANMYMpkcfM23rdUgQxFn7v1fsa_XnzVqNF5+TpQ@mail.gmail.com>
+Subject: Re: [PATCH v2] timens: show clock symbolic names in /proc/pid/timens_offsets
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 03:27:30PM +0200, Christoph Hellwig wrote:
-> On Mon, Apr 06, 2020 at 11:08:46PM -0400, Yan Zhao wrote:
-> > hi
-> > we were removing this code. see
-> > https://lore.kernel.org/kvm/20200313031109.7989-1-yan.y.zhao@intel.com/
-> 
-> This didn't make 5.7-rc1.
-> 
-> > The implementation of vfio_dma_rw() has been in vfio next tree.
-> > https://github.com/awilliam/linux-vfio/commit/8d46c0cca5f4dc0538173d62cd36b1119b5105bc
-> 
-> 
-> This made 5.7-rc1, so I'll update the series to take it into account.
-> 
-> T
-> > in vfio_dma_rw(),  we still use
-> > bool kthread = current->mm == NULL.
-> > because if current->mm != NULL and current->flags & PF_KTHREAD, instead
-> > of calling use_mm(), we first check if (current->mm == mm) and allow copy_to_user() if it's true.
-> > 
-> > Do you think it's all right?
-> 
-> I can't think of another way for a kernel thread to have a mm indeed.
-for example, before calling to vfio_dma_rw(), a kernel thread has already
-called use_mm(), then its current->mm is not null, and it has flag
-PF_KTHREAD.
-in this case, we just want to allow the copy_to_user() directly if
-current->mm == mm, rather than call another use_mm() again.
+On Mon, Apr 13, 2020 at 3:47 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Sun, 12 Apr 2020 07:51:47 +0200 "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com> wrote:
+>
+> > Hi Andrei,
+> >
+> > On Sat, 11 Apr 2020 at 17:40, Andrei Vagin <avagin@gmail.com> wrote:
+> > >
+> > > Michael Kerrisk suggested to replace numeric clock IDs on symbolic
+> > > names.
+> > >
+> > > Now the content of these files looks like this:
+> > > $ cat /proc/774/timens_offsets
+> > > monotonic      864000         0
+> > > boottime      1728000         0
+> >
+> > Thanks.
+> >
+> > Assuming no-one has objections to the patch, please do mark for stable@.
+> >
+>
+> `grep -r timens_offsets Documentation' comes up blank.  Is
+> /proc/pid/timens_offsets documented anywhere?  If not, it should be!
+> And this patch should update that documentation.
+>
+> I assume the time namespace feature itself is documented under clone(2)?
 
-do you think it makes sense?
+Thanks to Michael, we have the man page for time namespaces:
+https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man7/time_namespaces.7
 
-Thanks
-Yan
+And it will be updated according with this change.
 
-> _______________________________________________
-> intel-gvt-dev mailing list
-> intel-gvt-dev@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
+Thanks,
+Andrei
