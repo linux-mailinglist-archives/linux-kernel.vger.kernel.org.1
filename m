@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A211A862D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB8C1A85EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732357AbgDNQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:55:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55192 "EHLO mail.kernel.org"
+        id S2502272AbgDNQvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407505AbgDNQtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:14 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        id S2440401AbgDNQtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:20 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBD90217BA;
-        Tue, 14 Apr 2020 16:49:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCFC32074D;
+        Tue, 14 Apr 2020 16:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882943;
-        bh=qbLirr5OJzkGy9BaDKpusPauYxAyPeK4aOYcI5WQ1pU=;
+        s=default; t=1586882953;
+        bh=vTilJT7sSfr6FjNGlvX9bZpL9rzwrQ7T9O6h9ya2LFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RML0oIb+532FiifWanRBbBBqIv+j5i6BLN6eFCYjNBQLfUhmR8G9N7lGqbtDNs9MC
-         NTLde4a5YJXqn4dJfQiXPzmk0paODmzEs/QGA0mDvstdgQ1WkcfK8DUoVgFADduwx6
-         BjhcIf3EhIqu6xHFgCEY/QUoiCh7IEb2An0Dn8lk=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jOOk9-0068m8-20; Tue, 14 Apr 2020 18:49:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rrichter@marvell.com>,
-        linux-edac@vger.kernel.org
-Subject: [PATCH v2 16/33] docs: ras: don't need to repeat twice the same thing
-Date:   Tue, 14 Apr 2020 18:48:42 +0200
-Message-Id: <f76dcae96de8b1bb8ee37a79781c111c825e26d6.1586881715.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
-References: <cover.1586881715.git.mchehab+huawei@kernel.org>
+        b=QOB4089nemdYQa+eI5eY+Gj9BAbGvG+2oRZ1BiaXCTV35XyLpONezX9iHMA/hlIel
+         j/ycYpyWhz5kP3nOgCcFNJjA/OIQpmfByu7RkUk+iccPN+z270B7rGrxbmllre/O6g
+         AEKVtdEesEujEAGzR++sGymBhBvBPZ8tnaQcWjJQ=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: [PATCH 04/15] tools headers: Update linux/vdso.h and grab a copy of vdso/const.h
+Date:   Tue, 14 Apr 2020 13:48:43 -0300
+Message-Id: <20200414164854.26026-5-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
+References: <20200414164854.26026-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,27 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need to say twice "for the first time" at the same
-paragraph.
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To get in line with:
+
+  8165b57bca21 ("linux/const.h: Extract common header for vDSO")
+
+And silence this tools/perf/ build warning:
+
+  Warning: Kernel ABI header at 'tools/include/linux/const.h' differs from latest version at 'include/linux/const.h'
+  diff -u tools/include/linux/const.h include/linux/const.h
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- Documentation/admin-guide/ras.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/include/linux/const.h |  5 +----
+ tools/include/vdso/const.h  | 10 ++++++++++
+ tools/perf/check-headers.sh |  1 +
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+ create mode 100644 tools/include/vdso/const.h
 
-diff --git a/Documentation/admin-guide/ras.rst b/Documentation/admin-guide/ras.rst
-index 22b31bc7e129..6cbaab975ee5 100644
---- a/Documentation/admin-guide/ras.rst
-+++ b/Documentation/admin-guide/ras.rst
-@@ -212,7 +212,7 @@ EDAC - Error Detection And Correction
-    purposes.
+diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+index 7b55a55f5911..81b8aae5a855 100644
+--- a/tools/include/linux/const.h
++++ b/tools/include/linux/const.h
+@@ -1,9 +1,6 @@
+ #ifndef _LINUX_CONST_H
+ #define _LINUX_CONST_H
  
-    When the subsystem was pushed upstream for the first time, on
--   Kernel 2.6.16, for the first time, it was renamed to ``EDAC``.
-+   Kernel 2.6.16, it was renamed to ``EDAC``.
+-#include <uapi/linux/const.h>
+-
+-#define UL(x)		(_UL(x))
+-#define ULL(x)		(_ULL(x))
++#include <vdso/const.h>
  
- Purpose
- -------
+ #endif /* _LINUX_CONST_H */
+diff --git a/tools/include/vdso/const.h b/tools/include/vdso/const.h
+new file mode 100644
+index 000000000000..94b385ad438d
+--- /dev/null
++++ b/tools/include/vdso/const.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __VDSO_CONST_H
++#define __VDSO_CONST_H
++
++#include <uapi/linux/const.h>
++
++#define UL(x)		(_UL(x))
++#define ULL(x)		(_ULL(x))
++
++#endif /* __VDSO_CONST_H */
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index bfb21d049e6c..c905c683606a 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -23,6 +23,7 @@ include/uapi/linux/vhost.h
+ include/uapi/sound/asound.h
+ include/linux/bits.h
+ include/linux/const.h
++include/vdso/const.h
+ include/linux/hash.h
+ include/uapi/linux/hw_breakpoint.h
+ arch/x86/include/asm/disabled-features.h
 -- 
-2.25.2
+2.21.1
 
