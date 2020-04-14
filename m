@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150081A84FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6311A850A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391701AbgDNQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
+        id S2391738AbgDNQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391697AbgDNQb0 (ORCPT
+        by vger.kernel.org with ESMTP id S2391725AbgDNQcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:31:26 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F65C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:31:18 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id j4so13859344qkc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:31:18 -0700 (PDT)
+        Tue, 14 Apr 2020 12:32:20 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CBEC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:32:20 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id s30so10685047qth.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VLlqU4q1Tg1FlNFBFuJbOrDiNdW49LDEweZ01PUJ+98=;
-        b=KqIgm1YWeupPQ5AKLZtSk0DWobRLAyx4G0DicpwgPEuui+DlaMsDiKTWKhHut76tPe
-         cYkvg60mA+l32MQOTN2Yo9cr2x9SfF7mZFyW2bPkKGoWpB9W4i9Fg/XLdxsyHIRG6xIv
-         Vdu9Te/V8atdgTrrO4LzPtLZ5EpU2OptdF7l28ADsB3fiAaEBk922FWRSmKrVCt6HG0T
-         xX+N2nBIgTpHnzmZk3oEfPv09qpNqpyFn1/hmFKdTUV/HIjx0pv9hZkhSNQb2tcIGmmd
-         fw0D7qs3MC9hPJXIiHPKn2r0dwccVBsgYR0SfZ5+96775nW8w/RprUF1bKur1zG/sKiy
-         6YYg==
+         :content-disposition:in-reply-to;
+        bh=SqpT1X280p+vEPTDIK1Gx8cxwNT9Kl8YEWiyZ9LyzJI=;
+        b=OS7NWpAvehP7dmjbbLsxc4PcWImRNci6e5Mrxl8qYLhe6GYrpERBZdO0QOGfdWP3hV
+         p33q6aQKGWSU5faiBV1L67Oo6vcsmFK4+GGqYgutIfp49b6hxY8XQIqZip8XY04g0FaP
+         z8sLy8D2dcy4jI0eqqUs+O6Ygmv/qKH1Gr9NQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VLlqU4q1Tg1FlNFBFuJbOrDiNdW49LDEweZ01PUJ+98=;
-        b=kgU/Kd38GKa87JAhIfkBqJtw/t2bTJO0V4aeqUjmky83QQ+9p7HYX4HenKRpPxA0RL
-         J9Zp/+GJafIZwtDgl6A6hUglFS3N8SyZj0KR8p+b9ehZBU71DVi9uXhJ2ELNm4YMiplX
-         pNZoUIz7en6gqdFRFZQ8i+C8hVcT+NWeAAxB6z45c2UyCz2r1mg3GIoAQfFvBErkM/eP
-         RMSC8YBBFK4FEJhZNYYcnjev9er+tIyxe5xczXZlsLUTWMTNNcXVIri9y0LNPflGEqqY
-         WDgVEecrxXXeo9Bto0c3h8Objv2Sj1h9ZbaO7vJyKmnmdVza6HrVvb/Bb7V8bfvlm0hR
-         KYuA==
-X-Gm-Message-State: AGi0PuaBVEWAV6gVip0bPClaMLWkQrN/Tl3zlhrAiWLbrus3wHTOXUGA
-        048ULx2unOi/fjqOVD54KYXf8w==
-X-Google-Smtp-Source: APiQypJC4xDXZh2RTbpe7APa2bCoLe+wBervVwS7oEjfiQ4YylFde7I8dO9567LUfW0QyczZeiX5wQ==
-X-Received: by 2002:a37:4a85:: with SMTP id x127mr22454961qka.152.1586881876177;
-        Tue, 14 Apr 2020 09:31:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::e623])
-        by smtp.gmail.com with ESMTPSA id s14sm8027858qts.70.2020.04.14.09.31.15
+         :mime-version:content-disposition:in-reply-to;
+        bh=SqpT1X280p+vEPTDIK1Gx8cxwNT9Kl8YEWiyZ9LyzJI=;
+        b=LwtjPoQxt8zZSK8vlU6pLFvatP2FpuzB7QOgaKbWnI2Zqfjp0DsKumTzuzUYXkQFOg
+         oVCrXzAJLXmpLsR5AeO2pCBuJUMNYSQcQxgFyoV2xl27jF36TTeXmwoorK/S+bx60nb1
+         jvw4eSQIiS1Ncfw/K3PhNjwrumiN5oBorrzog/kyVSehHRY/IvXdqIjRBOPi4Pf4Uhub
+         y87jQ7M8npZ7KOGStzWcK64u3GulGoqA24FjYOpzC5z16Kequi9huC27NuMt3jYk1Q/A
+         wK3j5LePPQSEUBGbQNxIzRqHgvwylgD8d3nPjjZZTZEocJAVNe5OLUazA6OMecEk2tFf
+         UnSQ==
+X-Gm-Message-State: AGi0PuaV1tR8IAGqfUbtbQD37cTNnTpZxmgH/mwmG00EzLUqRj/kBBsB
+        pMPFPcIpHKi0yeqcea8myAyNxw==
+X-Google-Smtp-Source: APiQypLLJHgEiHO8u72vxT6aP2yq3+L8ePGHN3hnF8/VapHORS7x+wE/Tf0PC55fPITD2G0BGbKRoA==
+X-Received: by 2002:ac8:5048:: with SMTP id h8mr17167818qtm.189.1586881939416;
+        Tue, 14 Apr 2020 09:32:19 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id 190sm2787713qkj.87.2020.04.14.09.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 09:31:15 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 12:31:14 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20200414163114.GA136578@cmpxchg.org>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
- <20200116215222.GA64230@cmpxchg.org>
- <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
- <20200413180725.GA99267@cmpxchg.org>
- <8e7bf170-2bb5-f862-c12b-809f7f7d96cb@linux.alibaba.com>
+        Tue, 14 Apr 2020 09:32:18 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 12:32:18 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        ctheegal@codeaurora.org, dianders@chromium.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com,
+        qais.yousef@arm.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH] sched/core: Fix reset-on-fork from RT with uclamp
+Message-ID: <20200414163218.GA77963@google.com>
+References: <20200414161320.251897-1-qperret@google.com>
+ <20200414162128.GA66453@google.com>
+ <20200414162713.GA256619@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e7bf170-2bb5-f862-c12b-809f7f7d96cb@linux.alibaba.com>
+In-Reply-To: <20200414162713.GA256619@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 12:52:30PM +0800, Alex Shi wrote:
-> 在 2020/4/14 上午2:07, Johannes Weiner 写道:
-> > Plus, the overhead of tracking is tiny - 512k per G of swap (0.04%).
-> > 
-> > Maybe we should just delete MEMCG_SWAP and unconditionally track swap
-> > entry ownership when the memory controller is enabled. I don't see a
-> > good reason not to, and it would simplify the entire swapin path, the
-> > LRU locking, and the page->mem_cgroup stabilization rules.
-> > 
+On Tue, Apr 14, 2020 at 05:27:13PM +0100, Quentin Perret wrote:
+> On Tuesday 14 Apr 2020 at 12:21:28 (-0400), Joel Fernandes wrote:
+> > Shouldn't this be conditional on p->sched_reset_on_fork instead of deleting
+> > the code?
 > 
-> Sorry for not follow you up, did you mean just remove the MEMCG_SWAP configuration
-> and keep the feature in default memcg? 
+> Right, it's not obvious from the diff, but this code _is_ conditional on
+> p->sched_reset_on_fork already. This is what the whole function looks
+> like with my patch applied:
+> 
+> ---8<---
+> static void uclamp_fork(struct task_struct *p)
+> {
+>         enum uclamp_id clamp_id;
+> 
+>         for_each_clamp_id(clamp_id)
+>                 p->uclamp[clamp_id].active = false;
+> 
+>         if (likely(!p->sched_reset_on_fork))
+>                 return;
+> 
+>         for_each_clamp_id(clamp_id) {
+>                 unsigned int clamp_value = uclamp_none(clamp_id);
+> 
+>                 uclamp_se_set(&p->uclamp_req[clamp_id], clamp_value, false);
+>         }
 
-Yes.
+Oh ok, thanks for clarification.
 
-> That does can remove lrucare, but PageLRU lock scheme still fails since
-> we can not isolate the page during commit_charge, is that right?
+ - Joel
 
-No, without lrucare the scheme works. Charges usually do:
 
-page->mem_cgroup = new;
-SetPageLRU(page);
-
-And so if you can TestClearPageLRU(), page->mem_cgroup is stable.
-
-lrucare charging is the exception: it changes page->mem_cgroup AFTER
-PageLRU has already been set, and even when it CANNOT acquire the
-PageLRU lock itself. It violates the rules.
-
-If we make MEMCG_SWAP mandatory, we always have cgroup records for
-swapped out pages. That means we can charge all swapin pages
-(incl. readahead pages) directly in __read_swap_cache_async(), before
-setting PageLRU on the new pages.
-
-Then we can delete lrucare.
-
-And then TestClearPageLRU() guarantees page->mem_cgroup is stable.
+> }
+> --->8---
+> 
+> Thanks,
+> Quentin
