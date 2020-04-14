@@ -2,101 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D9C1A76C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999861A76BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437292AbgDNI77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:59:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:44130 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437267AbgDNI7s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:59:48 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03E8xSgo128474;
-        Tue, 14 Apr 2020 08:59:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=EAe3usIbEQ4RwyhgiOl8ipkDOmr+UhDbllqJssxsJA4=;
- b=BIPGHUNsuFgB3JQzsbTIgWJmpoo6l+Ti18XZzCJK2OwznVScJXmo8t5IrEjN4R4mIZs5
- RsPDUi7RnbAsdwhMc3RAHJ0CCT/RxbVRYU7zzR9NlnrL1GN9MPuWRSljNI5hAJQr5w9a
- BxQYVplIcC2pAR1lJbHYlK9ZG5UNbhrsZdunZSjyOF2Es1vzUcYqCBoaZapcD7XE0pFt
- JsWX8rkaeYhwtbSwTSMqUgS160A/HnX9CfR2rNqLTpaQckaxsGGG7VhTRHadcvkucgH/
- LXtmABBJXq/1txgpEYNyvyFhmdSjsf8euZeDaDoyrBdnHoCU9gkYakEJqi4CPrlt36/e 2w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30b6hpk69e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 08:59:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03E8v50K164561;
-        Tue, 14 Apr 2020 08:59:42 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30cta9mtp4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 08:59:42 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03E8xeg2025462;
-        Tue, 14 Apr 2020 08:59:40 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 01:59:39 -0700
-Date:   Tue, 14 Apr 2020 11:59:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Colin King <colin.king@canonical.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: mantis: remove redundant assignment to variable
- err
-Message-ID: <20200414085922.GA1163@kadam>
-References: <20200410113913.14430-1-colin.king@canonical.com>
- <CAAEAJfCQaCCoShLPTA+EWUhMXdF6bKAxcOCj2SR5nPXMmk7LQg@mail.gmail.com>
+        id S2437278AbgDNI7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:59:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437267AbgDNI7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:59:38 -0400
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4068E214AF
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586854777;
+        bh=SqkasMSzNH62OqOi5+wpyiV3vZk0yvRWEpx9HrxfKzM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ovUwlBW+O+NhyFJ9o7obZ1Gx/UuAL3fQjXC+QsgmnIOI5/nSwH8R3LXIrY8heOaly
+         8aCuqHOHFJ041BtkaG0PWIn9IBARrus/7Qps6W+kdwQXI2C9sOdQ8/qlZSHtNmgXke
+         tONkCm0SWRF7Ym46m6BfNvdKyXPz9oEmdQFICi9I=
+Received: by mail-il1-f177.google.com with SMTP id i2so10390193ils.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:59:37 -0700 (PDT)
+X-Gm-Message-State: AGi0PuY4/Ys/z2MO/JJv+UcgjEXJ2RfDzleegQRhX2mlzrkCErqw1TcI
+        YdKMTPQ44a6T02Tdvpov6vQpCPNhzC3MCdYBkXY=
+X-Google-Smtp-Source: APiQypIRfriof1Jj1dud2z9ouiN7Oe/s/OcZJNzuZQyx3tYkn3qcDtrnmTeyCNGY5oEhnGqjWgYNdhUKLxylRpjvLFs=
+X-Received: by 2002:a92:443:: with SMTP id 64mr16054243ile.258.1586854776281;
+ Tue, 14 Apr 2020 01:59:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAEAJfCQaCCoShLPTA+EWUhMXdF6bKAxcOCj2SR5nPXMmk7LQg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- mlxlogscore=999 clxscore=1011 mlxscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140075
+References: <20200409232728.231527-1-caij2003@gmail.com> <CAK8P3a3uj7AHbAo4sNzr6KQx5Fk6v99k4ZixCgKo1tUuGoat9Q@mail.gmail.com>
+ <CAMj1kXGXNxXGiC4dmNXHkZ6n=J0Fhim3oSwNx4Bz5m9fEphJvQ@mail.gmail.com>
+ <20200410123301.GX25745@shell.armlinux.org.uk> <CAMj1kXFpknCfwb6JMdk_SHopnGqMswgSqaQUeAUEh5yaV10vJg@mail.gmail.com>
+ <CAKwvOdk-xwuppJzxd1+5sfsC8jYiP3t8D=aTNaYxnFCRDiEUmQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdk-xwuppJzxd1+5sfsC8jYiP3t8D=aTNaYxnFCRDiEUmQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 14 Apr 2020 10:59:24 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFHb8th0rv1yjrsr=c1o-g9_ERPUy4itnrVN13fcQcXag@mail.gmail.com>
+Message-ID: <CAMj1kXFHb8th0rv1yjrsr=c1o-g9_ERPUy4itnrVN13fcQcXag@mail.gmail.com>
+Subject: Re: [PATCH] ARM: do not assemble iwmmxt.S with LLVM toolchain
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kristof Beyls <Kristof.Beyls@arm.com>,
+        Stephen Hines <srhines@google.com>,
+        Luis Lozano <llozano@google.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Jian Cai <caij2003@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Peter Smith <Peter.Smith@arm.com>,
+        Stefan Agner <stefan@agner.ch>,
+        David Howells <dhowells@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Manoj Gupta <manojgupta@google.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Jian Cai <jiancai@google.com>,
+        Doug Anderson <armlinux@m.disordat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 07:53:51PM -0300, Ezequiel Garcia wrote:
-> There's a redundant err assignment right below here,
-> which you can also get rid of:
-> 
-> -       err = mantis_frontend_power(mantis, POWER_ON);
-> +       mantis_frontend_power(mantis, POWER_ON);
-> 
-> I can't test this, but calling mantis_frontend_power twice
-> is possibly redundant.
+On Mon, 13 Apr 2020 at 22:45, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Fri, Apr 10, 2020 at 6:09 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Fri, 10 Apr 2020 at 14:33, Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+...
+> > > If your compiler/assembler only implements what is in the latest ARM
+> > > ARM, then it is not going to be suitable for these older CPUs and
+> > > alternate vendor "ARM compatible" CPUs.
+> > >
+> >
+> > Indeed, and I'm a bit disappointed at the willingness to leave stuff
+> > by the wayside, especially since Clang's integrated assembler has no
+> > other benefit to it than being built into the compiler.
+>
+> I don't disagree.  I also wish LLVM had a backend for every
+> architecture that GCC does.  But resources are finite and there are
+> more fires than firemen.  It gets really hard to justify a high
+> priority for certain things over others.  Doubly-so for hardware no
+> longer in production.  Triply-so when the ISA vendor doesn't provide
+> information in available reference manuals.  I'm happy to push for
+> more investment in LLVM to support the Linux kernel from Google
+> internally; maybe you can help do so from ARM?  That was my appeal to
+> ARM back in February; support for newest ISA extensions is great,
+> support for existing instructions is great, too.  (And not having to
+> choose between one or the other is preferrable, given the amount of
+> resources available).
+>
 
-To me that code really looks like a hack-around for flakey hardware and
-I would be afraid to delete it.  But the "err =" could be removed.
+Sure. But my point was really that disabling stuff left and right just
+so we can get to the finish line is fine for internal kernel-on-clang
+development, but I'd expect the contributions upstream to be a bit
+more considerate of other concerns, such as not regressing in terms of
+functionality.
 
-> 
-> Also, what's the gain from this cleanup? The driver is super
-> old, and it seems any modern compiler would be oblivious
-> of the redundant assignment.
+> My thoughts on the benefits of this approach to using Clang's
+> integrated assembler:
+> 1. continuous integration and randconfigs.  We need CI to help us spot
+> where things are still broken, and help us from regressing the ground
+> we've fought for.  We can't expect kernel developers to test with
+> LLVM.  Currently, we have LLVM builds in numerous kernel continuous
+> integration services (KernelCI, Kbuild test robot "0day bot", Linaro's
+> TCWG, Syzcaller, and our own CI).  For services that are bisecting and
+> notifying authors, they are currently harassing authors for
+> pre-existing conditions that the service uncovered via randconfig.
+> This is very very dangerous territory to be in.  If authors start
+> ignoring build reports due to false positives or false negatives, it
+> becomes a weak signal that tends to be ignored.  Then when real bugs
+> are uncovered, the actual bugs get ignored.  We don't want that.  If a
+> canary dies in a coal mine, but no one notices, was it for naught?
+>
 
-Eventually we would like to enable that warning by default but there are
-still thousands of pointless assignments so it will take years of
-small fixes like this.  Generally cleaning up warnings is good.
+OK, so you are saying you need the Clang *assembler* to perform CI on
+C pieces that we can now build with the Clang compiler, and we don't
+want to regress on that? Is this because the cross-assemblers are
+missing from the CI build hosts?
 
-regards,
-dan carpenter
+> 2. It helps us quantify how broken we are, via `grep` and `wc`.  LLVM
+> is in no way a perfect substitute for GNU utilities, but it's not too
+> far off either.  As an imperfect substitute, there's a lot of work
+> both on the toolchain side and sources of various codebases in terms
+> of toolchain portability.  Being able to quantify what doesn't work
+> let's us be clear in which ways LLVM is not a perfect substitute, but
+> also where and how much resources we need to get closer.  That helps
+> then with planning and prioritization.  The proper thing to do is to
+> bury the dead but at this point we only have resources to collect dog
+> tags and keep moving.  That doesn't rule out revisiting implementing
+> iWMMXT in the future.
+>
 
+To be honest with you, I don't actually think iwmmxt is that
+important. But I have already demonstrated how we can use a couple of
+macros to emit the same instructions without resorting to bare
+opcodes, so there is really no need to disable pieces left and right
+because the Clang assembler does not support them outright - it just
+needs someone to care enough about this, rather than rush through the
+list with a tick the box attitude, and rip out the pieces that look a
+bit too complicated.
+
+> 3. Testing Clang's assembler allows for us to do kernel builds without
+> binutils.  This work is helping uncover places within the kernel where
+> the build is not hermetic.  We're still a long ways away from hermetic
+> reproducible kernel builds I suspect, but my main worry is when people
+> have multiple versions of a toolchain in their path, that only one is
+> used.  Otherwise, it leads to spooky hard to reproduce bug reports.  I
+> don't think I need to argue about build hermiticity, but it's
+> important for user trust and verification.
+>
+
+So we need the Clang assembler for reproducible builds?
+
+> 4. Improving toolchain portability of assembler in LLVM itself.
+> There's plenty of subtle differences, but missing full on instructions
+> (or are they psuedo's?) is pretty bad.
+>
+
+I don't think this point belongs in the 'why should we care about the
+Clang assembler' list :-)
+
+> I value the feedback from you, Russell, and Arnd even when I disagree.
+> These are just my thoughts on *why* things are the way they are, FWIW.
+> If there's thoughts on how we might better prioritize one thing over
+> another, I would appreciate it.
+
+I think the 'all legacy needs to die' attitude is not particularly
+helpful here. In the 32-bit Linux/ARM community, there are many people
+who care about older systems, and spend a lot of time on keeping
+things in a working order on platforms that Google or ARM have stopped
+caring about long ago.
