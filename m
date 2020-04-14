@@ -2,118 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BDD1A76ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1411E1A76FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437370AbgDNJF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
+        id S2437392AbgDNJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437356AbgDNJFW (ORCPT
+        with ESMTP id S2437383AbgDNJHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:05:22 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7049CC0A3BD0;
-        Tue, 14 Apr 2020 02:05:22 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id np9so5006901pjb.4;
-        Tue, 14 Apr 2020 02:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F107NiRVAgQ23qg6alA+b2hmVPaDBWwXKGbC/6Kd1Ds=;
-        b=iPkJTp44SIdd8vyikAwhCDs+sHWOHLZ78+E8SBIxuZq285eqxNF9d2SS2o8+mIJG9+
-         bj+Ono74KZ67j91z2wgqvEPw6rRN8yvfKpvOHFvP1j1Fa4X93fCqFI+4g8q5k3BUnr76
-         Xh2PlVy406/b6FfP+bM49JHBBUPVp+sSQ4AGj25e2KaTwAjbrYWigzPSCYuN904rzINZ
-         b5ON0ysRUVmysJ5LoohGlP/9/kOs7Pjep80Uqc0M1wHHLZFIAXl7ZgTTFYDcQGs0gRhk
-         +oncynKLpp+dW+7w349p+icF5PZGiOOc2ZSEOzhES4+/RifvTaFOFW9nehAiNcgLNLIq
-         yMQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F107NiRVAgQ23qg6alA+b2hmVPaDBWwXKGbC/6Kd1Ds=;
-        b=mGpSDd/8n3MHJh596hxfgIXMSb8xEwoKYGIU5/j0l3bHqmSQD+ykxbQR2PfJVUzRqL
-         4XrqLpg3Nrokacp9ngGw6JXuXtHvZHZB1HWPeBR+DzloFLXGm2b3zERSMRP05aM5FSf9
-         Bj8fgZzbMNtO1Zk2UzqpzMH7RykD4Mv/wfIEjf90WqXGa241BqxvxsuY7iTkhUBD9FlL
-         Hl2FBmEbp2Z1ySdf2+PT0QDSijoYZ3f34zBsov7XZZTUKjtlsoZbW5YhukGXbrvz2O/6
-         lM4oRfIUCjHMJyaoOtqnCljvPaF2LTLNqHBxa8hxYgtc0JeOCQ1UtVzEq5LBVdZpyp97
-         x55w==
-X-Gm-Message-State: AGi0PubwUnWVtyHt+bS/fCk7kZypufxhAD+TYzpem6vKAnszQD0U1eIm
-        m0gY+5q3Kg9n++6cOhicspBsBlNk7vcaQBB0miI=
-X-Google-Smtp-Source: APiQypItJnd7xLSTDEuRf+mho4kdhPUComrhtelzkg62uCTrDAdfkoWo8cE1BKvSyx/C/m0v8G/RQo6NBn3pXMMcGmc=
-X-Received: by 2002:a17:902:aa09:: with SMTP id be9mr14890031plb.18.1586855121908;
- Tue, 14 Apr 2020 02:05:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200413173656.28522-1-sravanhome@gmail.com> <20200413173656.28522-5-sravanhome@gmail.com>
- <CAHp75VeYFY1CW4AH+D4HAgzppMZ5J8dL8kKPYmcwsXNVGNSYjQ@mail.gmail.com>
- <6cfab0a6-c3eb-bd9b-6572-b49e3205524f@gmail.com> <20200413204847.ni7dsrn5tslrorqn@earth.universe>
-In-Reply-To: <20200413204847.ni7dsrn5tslrorqn@earth.universe>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Apr 2020 12:05:15 +0300
-Message-ID: <CAHp75VdRXWVtveRnvR-k8wqH5R_P7owfQvFf7YT3qM_oVEY3vg@mail.gmail.com>
-Subject: Re: [PATCH v8 4/6] power: supply: Add support for mps mp2629 battery charger
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     saravanan sekar <sravanhome@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        devicetree <devicetree@vger.kernel.org>,
+        Tue, 14 Apr 2020 05:07:44 -0400
+X-Greylist: delayed 1495 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Apr 2020 02:07:44 PDT
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25118C0A3BD0;
+        Tue, 14 Apr 2020 02:07:44 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jOHXP-00079g-G2; Tue, 14 Apr 2020 11:07:23 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id D11CB100D14; Tue, 14 Apr 2020 11:07:22 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: ARM: futex: Address build warning
+In-Reply-To: <20200413100112.2e114e24@canb.auug.org.au>
+References: <20200330134746.627dcd93@canb.auug.org.au> <20200401085753.617c1636@canb.auug.org.au> <877dyzv6y2.fsf@nanos.tec.linutronix.de> <20200402090051.741905cd@canb.auug.org.au> <874ku2q18k.fsf@nanos.tec.linutronix.de> <20200413100112.2e114e24@canb.auug.org.au>
+Date:   Tue, 14 Apr 2020 11:07:22 +0200
+Message-ID: <87pncao2ph.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 11:48 PM Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
-> On Mon, Apr 13, 2020 at 10:28:19PM +0200, saravanan sekar wrote:
-> > On 13/04/20 10:10 pm, Andy Shevchenko wrote:
-> > > On Mon, Apr 13, 2020 at 8:37 PM Saravanan Sekar <sravanhome@gmail.com> wrote:
+Stephen reported the following build warning on a ARM multi_v7_defconfig
+build with GCC 9.2.1:
 
-...
+kernel/futex.c: In function 'do_futex':
+kernel/futex.c:1676:17: warning: 'oldval' may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 1676 |   return oldval == cmparg;
+      |          ~~~~~~~^~~~~~~~~
+kernel/futex.c:1652:6: note: 'oldval' was declared here
+ 1652 |  int oldval, ret;
+      |      ^~~~~~
 
-> > > > +       irq = platform_get_irq(to_platform_device(pdev->dev.parent), 0);
-> > > Why not to use temporary variable dev?
-> > >
-> > > This should be platform_get_irq_optional().
-> >
-> > Platform_get_irq in turn calls platform_get_irq_optional. It was suggested
-> > by Lee and is it mandatory to change it?
->
-> platform_get_irq is fine.
+introduced by commit a08971e9488d ("futex: arch_futex_atomic_op_inuser()
+calling conventions change").
 
-I don't think so. It will spill an error in case there is no IRQ or
-error happened.
+While that change should not make any difference it confuses GCC which
+fails to work out that oldval is not referenced when the return value is
+not zero.
 
-So, either is should be _optional, or below conditional simply wrong, should be
-  if (irq < 0)
-    return irq;
+GCC fails to properly analyze arch_futex_atomic_op_inuser(). It's not the
+early return, the issue is with the assembly macros. GCC fails to detect
+that those either set 'ret' to 0 and set oldval or set 'ret' to -EFAULT
+which makes oldval uninteresting. The store to the callsite supplied oldval
+pointer is conditional on ret == 0.
 
-> > > > +       if (irq) {
->
-> But this must be
->
-> if (irq > 0)
->
-> or you will also try to continue with error codes.
->
-> > > > +               ret = devm_request_irq(dev, irq, mp2629_irq_handler,
-> > > > +                                IRQF_TRIGGER_RISING, "mp2629-charger",
-> > > > +                                charger);
-> > > > +               if (ret) {
-> > > > +                       dev_err(dev, "failed to request gpio IRQ\n");
-> > > > +                       goto iio_fail;
-> > > > +               }
-> > > > +       }
-> > > > +}
+The straight forward way to solve this is to make the store unconditional.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Aside of addressing the build warning this makes sense anyway because it
+removes the conditional from the fastpath. In the error case the stored
+value is uninteresting and the extra store does not matter at all.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/874ku2q18k.fsf@nanos.tec.linutronix.de
+---
+ arch/arm/include/asm/futex.h |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+--- a/arch/arm/include/asm/futex.h
++++ b/arch/arm/include/asm/futex.h
+@@ -165,8 +165,13 @@ arch_futex_atomic_op_inuser(int op, int
+ 	preempt_enable();
+ #endif
+ 
+-	if (!ret)
+-		*oval = oldval;
++	/*
++	 * Store unconditionally. If ret != 0 the extra store is the least
++	 * of the worries but GCC cannot figure out that __futex_atomic_op()
++	 * is either setting ret to -EFAULT or storing the old value in
++	 * oldval which results in a uninitialized warning at the call site.
++	 */
++	*oval = oldval;
+ 
+ 	return ret;
+ }
