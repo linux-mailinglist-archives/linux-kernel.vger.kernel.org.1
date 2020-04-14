@@ -2,134 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EB71A8201
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E861A813B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438005AbgDNPQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:16:28 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:20387 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407252AbgDNPF4 (ORCPT
+        id S2407276AbgDNPGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407186AbgDNPFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:05:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586876755; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=2sHXwJ8AdtS+pVXjlc3JcGuGpLLjSecwst28kNFXaDE=; b=rUyVQqrgk8Ms5DInHRGa59N4XnzEwiTKkrsU+zwJN6aRTddQWF71Ndfh3gLXB5oFMv7dH6X7
- FgK78pwxODIrEo7cDHCzvhGpihUrjOWKRdJwlKA3fbebnfYDxLmGB44YRVrPVrrNh0Yg/6tx
- zKWHwTP5WHwGkuqzNP14NuXGP3Q=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e95d13b.7fadc8ad0810-smtp-out-n05;
- Tue, 14 Apr 2020 15:05:31 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6422BC44788; Tue, 14 Apr 2020 15:05:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from [10.111.193.245] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EC3EAC494AA;
-        Tue, 14 Apr 2020 15:05:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EC3EAC494AA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [RFC] opp: Fixup release of clock when using set/put clkname
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1586848508-1320-1-git-send-email-rnayak@codeaurora.org>
- <20200414071823.jdhkprtkizyeua23@vireshk-i7>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <83c523d0-e18e-0401-5456-2dbba524ee98@codeaurora.org>
-Date:   Tue, 14 Apr 2020 20:35:26 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 14 Apr 2020 11:05:55 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1193C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:05:54 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x25so13345545wmc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YCu8SmZlQQrvTwGnZEBEHTSKRA9LI4WZwU6LxVhIW2I=;
+        b=hX+v2xexC+JxczsTf+vhb6u9QmWqqrDpHDHNVBzS6+xYJkukYlaXeHNMAIkS2Lk8/r
+         sV23hdRSmBOCGVk4yRYPpVppXxgzy6FpFSZJyPfK+b35VJBPGr3zRCv4WDvhkLpbNy6N
+         dbh8c6IsKzWMnkFeQd+BGgH/0RGhVr1spwyb2hvTSdBf66pfHJEHOhXRbQtqdLuPcC3i
+         4ijIrOYZFMURcp85P1uMKJHCbW9BXJeiT8LhFf8IqSUDSBiEjcETq5nmHQUR0t016qRc
+         4pHJIG1yn+pxEvPL0UuCPpSYVvvOuTK6f2xl0ImHvrS7viyq0ud4jCOPbMZTm91BJXnI
+         UXeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YCu8SmZlQQrvTwGnZEBEHTSKRA9LI4WZwU6LxVhIW2I=;
+        b=Dy+QoQ99jwE0UHs2OgL3t8nf0GcVBVx/WkTyhepSrynSaS3IlS3He8ano4X4opK535
+         jGmAdfzMj8kCL+jvNqbxZPe881922/WPQrmU0sXHqrFKe4UFQcaYKFWEjj4V+3nEaaxx
+         saj7FPY0MGtT4vaxx5eHx49K8iM2XXWlMLh3rj5Md1IQZ66FnDeL3YBPq8i6IqEuIYZG
+         3MsKWDkPK73eTOW1ML42CG59faF4Bv+o0+RHkrI+YNdT7EfZmwfeW9kEYM89VPJSRAqJ
+         ftwc7uaxzBjChSbIRj1sH0+PKlN/89Rfg9THlmSnheKvSG6ndNVvzTHIdZO+Q/WZaUJs
+         C9KQ==
+X-Gm-Message-State: AGi0Pubst79lL9zLOC4rTYxdRnO1eNgWMe9mNTXUBwK0TgTzC+Z6Qe0U
+        Jlqhzp3cT8+dYKkAdpZxqf8=
+X-Google-Smtp-Source: APiQypJRDt+Uphs6DsJZlszr7x/jEoWuuTZWuj59pXPpC09iwHl/oRYuWEyFAltRc+tGFfgDiyYUGA==
+X-Received: by 2002:a1c:e203:: with SMTP id z3mr307985wmg.71.1586876753226;
+        Tue, 14 Apr 2020 08:05:53 -0700 (PDT)
+Received: from luca020400-arch.lan ([2001:b07:5d33:19f:e2b6:8927:31e7:d93f])
+        by smtp.googlemail.com with ESMTPSA id q143sm20078133wme.31.2020.04.14.08.05.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 08:05:52 -0700 (PDT)
+From:   Luca Stefani <luca.stefani.ge1@gmail.com>
+Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
+        freak07 <michalechner92@googlemail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ntfs: Fix ntfs_test_inode and ntfs_init_locked_inode function type
+Date:   Tue, 14 Apr 2020 17:05:51 +0200
+Message-Id: <20200414150551.625799-1-luca.stefani.ge1@gmail.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200414145903.GA11720@infradead.org>
+References: <20200414145903.GA11720@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200414071823.jdhkprtkizyeua23@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If the kernel is built with CFI we hit a __cfi_check_fail
+while mounting a partition
 
-On 4/14/2020 12:48 PM, Viresh Kumar wrote:
-> On 14-04-20, 12:45, Rajendra Nayak wrote:
->> Fixup dev_pm_opp_put_clkname() to check for a valid clock pointer
->> before it does a clk_put, since its likely that
->> _opp_table_kref_release() has already done a clk_put. Also fixup
-> 
-> kref release is the last thing that happens on the table, it can't get
-> called after dev_pm_opp_put_clkname().
+Call trace:
+__cfi_check_fail+0x1c/0x24
+name_to_dev_t+0x0/0x404
+iget5_locked+0x594/0x5e8
+ntfs_fill_super+0xbfc/0x43ec
+mount_bdev+0x30c/0x3cc
+ntfs_mount+0x18/0x24
+mount_fs+0x1b0/0x380
+vfs_kern_mount+0x90/0x398
+do_mount+0x5d8/0x1a10
+SyS_mount+0x108/0x144
+el0_svc_naked+0x34/0x38
 
-so in cases where I do have an OPP table for a device in DT and I do
-dev_pm_opp_set_clkname()
-dev_pm_opp_of_add_table()
+Fixing iget5_locked and ilookup5 callers seems enough
 
-and clean it up with a
-dev_pm_opp_of_remove_table()
-dev_pm_opp_put_clkname()
+Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
+Tested-by: freak07 <michalechner92@googlemail.com>
 
-things seem to work fine as expected.
+---
+Changes in v2:
+* Addressed comments
 
-However, given I call these unconditionally in common drivers and on
-some (old) platforms we really don't have an OPP table (only scale clocks)
-things get a little tricky. So looks like the ref counting in such cases
-gets messed up, and we end up with dev_pm_opp_of_remove_table() calling
-_opp_table_kref_release() and releasing the clock, and then the subsequent
-call to dev_pm_opp_put_clkname() crashes.
+---
+ fs/ntfs/dir.c   |  2 +-
+ fs/ntfs/inode.c | 23 ++++++++++++-----------
+ fs/ntfs/inode.h |  4 +---
+ fs/ntfs/mft.c   |  4 ++--
+ 4 files changed, 16 insertions(+), 17 deletions(-)
 
->> _opp_table_kref_release() to set the clock pointer to ERR_PTR(-EINVAL)
->> after its done doing a clk_put so dev_pm_opp_put_clkname() can then
->> catch it.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   drivers/opp/core.c | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->> index e4f01e7..6d064a8 100644
->> --- a/drivers/opp/core.c
->> +++ b/drivers/opp/core.c
->> @@ -1061,8 +1061,10 @@ static void _opp_table_kref_release(struct kref *kref)
->>   	_of_clear_opp_table(opp_table);
->>   
->>   	/* Release clk */
->> -	if (!IS_ERR(opp_table->clk))
->> +	if (!IS_ERR(opp_table->clk)) {
->>   		clk_put(opp_table->clk);
->> +		opp_table->clk = ERR_PTR(-EINVAL);
->> +	}
->>   
->>   	WARN_ON(!list_empty(&opp_table->opp_list));
->>   
->> @@ -1744,8 +1746,10 @@ void dev_pm_opp_put_clkname(struct opp_table *opp_table)
->>   	/* Make sure there are no concurrent readers while updating opp_table */
->>   	WARN_ON(!list_empty(&opp_table->opp_list));
->>   
->> -	clk_put(opp_table->clk);
->> -	opp_table->clk = ERR_PTR(-EINVAL);
->> +	if (!IS_ERR(opp_table->clk)) {
->> +		clk_put(opp_table->clk);
->> +		opp_table->clk = ERR_PTR(-EINVAL);
->> +	}
->>   
->>   	dev_pm_opp_put_opp_table(opp_table);
->>   }
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
-> 
-
+diff --git a/fs/ntfs/dir.c b/fs/ntfs/dir.c
+index 3c4811469ae8..e278bfc5ee7f 100644
+--- a/fs/ntfs/dir.c
++++ b/fs/ntfs/dir.c
+@@ -1503,7 +1503,7 @@ static int ntfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
+ 	na.type = AT_BITMAP;
+ 	na.name = I30;
+ 	na.name_len = 4;
+-	bmp_vi = ilookup5(vi->i_sb, vi->i_ino, (test_t)ntfs_test_inode, &na);
++	bmp_vi = ilookup5(vi->i_sb, vi->i_ino, ntfs_test_inode, &na);
+ 	if (bmp_vi) {
+  		write_inode_now(bmp_vi, !datasync);
+ 		iput(bmp_vi);
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index d4359a1df3d5..a5d3bebe7a85 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -30,7 +30,7 @@
+ /**
+  * ntfs_test_inode - compare two (possibly fake) inodes for equality
+  * @vi:		vfs inode which to test
+- * @na:		ntfs attribute which is being tested with
++ * @data:		data which is being tested with
+  *
+  * Compare the ntfs attribute embedded in the ntfs specific part of the vfs
+  * inode @vi for equality with the ntfs attribute @na.
+@@ -43,8 +43,9 @@
+  * NOTE: This function runs with the inode_hash_lock spin lock held so it is not
+  * allowed to sleep.
+  */
+-int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
++int ntfs_test_inode(struct inode *vi, void *data)
+ {
++	ntfs_attr *na = (ntfs_attr *)data;
+ 	ntfs_inode *ni;
+ 
+ 	if (vi->i_ino != na->mft_no)
+@@ -72,7 +73,7 @@ int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
+ /**
+  * ntfs_init_locked_inode - initialize an inode
+  * @vi:		vfs inode to initialize
+- * @na:		ntfs attribute which to initialize @vi to
++ * @data:		data which to initialize @vi to
+  *
+  * Initialize the vfs inode @vi with the values from the ntfs attribute @na in
+  * order to enable ntfs_test_inode() to do its work.
+@@ -87,8 +88,9 @@ int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
+  * NOTE: This function runs with the inode->i_lock spin lock held so it is not
+  * allowed to sleep. (Hence the GFP_ATOMIC allocation.)
+  */
+-static int ntfs_init_locked_inode(struct inode *vi, ntfs_attr *na)
++static int ntfs_init_locked_inode(struct inode *vi, void *data)
+ {
++	ntfs_attr *na = (ntfs_attr *)data;
+ 	ntfs_inode *ni = NTFS_I(vi);
+ 
+ 	vi->i_ino = na->mft_no;
+@@ -131,7 +133,6 @@ static int ntfs_init_locked_inode(struct inode *vi, ntfs_attr *na)
+ 	return 0;
+ }
+ 
+-typedef int (*set_t)(struct inode *, void *);
+ static int ntfs_read_locked_inode(struct inode *vi);
+ static int ntfs_read_locked_attr_inode(struct inode *base_vi, struct inode *vi);
+ static int ntfs_read_locked_index_inode(struct inode *base_vi,
+@@ -164,8 +165,8 @@ struct inode *ntfs_iget(struct super_block *sb, unsigned long mft_no)
+ 	na.name = NULL;
+ 	na.name_len = 0;
+ 
+-	vi = iget5_locked(sb, mft_no, (test_t)ntfs_test_inode,
+-			(set_t)ntfs_init_locked_inode, &na);
++	vi = iget5_locked(sb, mft_no, ntfs_test_inode,
++			ntfs_init_locked_inode, &na);
+ 	if (unlikely(!vi))
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -225,8 +226,8 @@ struct inode *ntfs_attr_iget(struct inode *base_vi, ATTR_TYPE type,
+ 	na.name = name;
+ 	na.name_len = name_len;
+ 
+-	vi = iget5_locked(base_vi->i_sb, na.mft_no, (test_t)ntfs_test_inode,
+-			(set_t)ntfs_init_locked_inode, &na);
++	vi = iget5_locked(base_vi->i_sb, na.mft_no, ntfs_test_inode,
++			ntfs_init_locked_inode, &na);
+ 	if (unlikely(!vi))
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -280,8 +281,8 @@ struct inode *ntfs_index_iget(struct inode *base_vi, ntfschar *name,
+ 	na.name = name;
+ 	na.name_len = name_len;
+ 
+-	vi = iget5_locked(base_vi->i_sb, na.mft_no, (test_t)ntfs_test_inode,
+-			(set_t)ntfs_init_locked_inode, &na);
++	vi = iget5_locked(base_vi->i_sb, na.mft_no, ntfs_test_inode,
++			ntfs_init_locked_inode, &na);
+ 	if (unlikely(!vi))
+ 		return ERR_PTR(-ENOMEM);
+ 
+diff --git a/fs/ntfs/inode.h b/fs/ntfs/inode.h
+index 98e670fbdd31..363e4e820673 100644
+--- a/fs/ntfs/inode.h
++++ b/fs/ntfs/inode.h
+@@ -253,9 +253,7 @@ typedef struct {
+ 	ATTR_TYPE type;
+ } ntfs_attr;
+ 
+-typedef int (*test_t)(struct inode *, void *);
+-
+-extern int ntfs_test_inode(struct inode *vi, ntfs_attr *na);
++extern int ntfs_test_inode(struct inode *vi, void *data);
+ 
+ extern struct inode *ntfs_iget(struct super_block *sb, unsigned long mft_no);
+ extern struct inode *ntfs_attr_iget(struct inode *base_vi, ATTR_TYPE type,
+diff --git a/fs/ntfs/mft.c b/fs/ntfs/mft.c
+index 3aac5c917afe..58234b42d68f 100644
+--- a/fs/ntfs/mft.c
++++ b/fs/ntfs/mft.c
+@@ -958,7 +958,7 @@ bool ntfs_may_write_mft_record(ntfs_volume *vol, const unsigned long mft_no,
+ 		 * dirty code path of the inode dirty code path when writing
+ 		 * $MFT occurs.
+ 		 */
+-		vi = ilookup5_nowait(sb, mft_no, (test_t)ntfs_test_inode, &na);
++		vi = ilookup5_nowait(sb, mft_no, ntfs_test_inode, &na);
+ 	}
+ 	if (vi) {
+ 		ntfs_debug("Base inode 0x%lx is in icache.", mft_no);
+@@ -1019,7 +1019,7 @@ bool ntfs_may_write_mft_record(ntfs_volume *vol, const unsigned long mft_no,
+ 		vi = igrab(mft_vi);
+ 		BUG_ON(vi != mft_vi);
+ 	} else
+-		vi = ilookup5_nowait(sb, na.mft_no, (test_t)ntfs_test_inode,
++		vi = ilookup5_nowait(sb, na.mft_no, ntfs_test_inode,
+ 				&na);
+ 	if (!vi) {
+ 		/*
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.26.0
+
