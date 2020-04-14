@@ -2,193 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475DC1A730D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 07:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0586E1A733A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 08:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405544AbgDNFeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 01:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405521AbgDNFeB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 01:34:01 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A64C0A3BE2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 22:33:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id c5so5518716pgi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 22:33:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9aD5U+mD+PXEL20o7thcc3jEGnfFkwTVA8o04+l79Sc=;
-        b=xGvR3ngqE8+uxW9/nrvVLEYOZ9BHXLN80IKtoKsIFv7UJlxg5y603Lt+HuChSe8Lfx
-         p4BJ+621FR5CaGILNSpX5ijx0B96o9Uvy3Lo/w6dTRJrl3SjF617WgNmHqM4EcWD5kpw
-         vC8ebbT500kTR64xYf+jMdV83jdT+E0CVenHaxaieCKjqTMJrGsGuZcS3sYKt+P+Y9EI
-         EI4iyuQAzxapl5qmeUCkTaDxA9nGVpyLsslNmyFYdYJ4Xe2aMIQVFqoiYBOCDPzj+fH0
-         NWDjVXrkFhUHd3HJU1i/BLvwJYWjuvxB4PVJvoD0ZgYA11iE0MUBHiez528t4Qlnd7n5
-         FfRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9aD5U+mD+PXEL20o7thcc3jEGnfFkwTVA8o04+l79Sc=;
-        b=nTeFxG/B/ISLzsPcWGgM27/toepPaaCxxCXULyYM6aJmkAgygFrssVXJh9VLMNKIqc
-         zTLf0YFIyXJTlzjCSvX4r0UzxrLSZxwvp1FoaESrmAMCOi00cfeaIVYNTjRhHL6kM/58
-         R2cyTDIfMUDQGHcP+8Q037uUzua5Ryxc+8Jm4iKzhWhKG61o/kMxgXj/DPLOMDeTyRxw
-         5GJINHpkVWlt3q1RSj8U/lV/Rbq1SfCOoH5Hl8Mn5HEDdYG9dfzQvMmfF6OTgNdex0RC
-         z0PRhVf0SDqzOs76V4M9wlxW19UUgGBTM2GQsqgltBVqgWqZ4uRawWg/KSmLDvy7SnXy
-         azMA==
-X-Gm-Message-State: AGi0PubWyUQJnIrHwy8EEXsazrA232Lbg0aE/aMm1J3ENA2VOshExYhh
-        s1PgLs47QNfc05v8iNVHJAlfsQ==
-X-Google-Smtp-Source: APiQypKb5R46MCzek7ogTlEz5ouKBv6mQh1MAS3nQ3zcBA7C2POtzZh/pQS5Ez804Yi3+dcG9OyzRQ==
-X-Received: by 2002:a63:4b65:: with SMTP id k37mr3872809pgl.118.1586842438646;
-        Mon, 13 Apr 2020 22:33:58 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id l123sm9260194pgl.13.2020.04.13.22.33.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 22:33:58 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 22:34:12 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, evgreen@chromium.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org
-Subject: Re: [PATCH v17 0/6] Invoke rpmh_flush for non OSI targets
-Message-ID: <20200414053412.GJ20625@builder.lan>
-References: <1586703004-13674-1-git-send-email-mkshah@codeaurora.org>
+        id S2405685AbgDNGAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 02:00:51 -0400
+Received: from mail-eopbgr60056.outbound.protection.outlook.com ([40.107.6.56]:43842
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729075AbgDNGAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 02:00:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hgt25y4txcJT1I1wmFFO3q2IzWRrbkXmlwXMU3AXX/R3rBLeD+lUH4oJIdD6ZAMgiXWwxzdJNk1kajGrBZi9MsDPA8vXan5zhNP3+xbysHtWJwViLHp64RVRYzI8aZVV5Nm7i+MQDUAVYTjF6LxBAqC3Z9zjbC0sxYH1EBfYuqtJsEx2P4GQlAxytfrNv2qqK1RKke50gxklfz9eHcnQhGJpiPbP30qfYI9Q6rpbEK8Pd7W1XJVlFeKm/jxX4vVfJRcuiazzYephBM+K8rZb7M3mER1z188Mc/aT0NBK2SwNgYYBFUwlpzcigsR/+Mvkooz9QpAJnj1CDuryY39NcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z3Rhxgc0BxLZC52gzZI2TMDf2pWwDEOx0U/EoHQx5HI=;
+ b=HxscVAUl77a8yuISuiZf0e9Y6Rnkr0Xr9MymcaTq8M/cnu8ZBwjcaqEhKitmxMJNTQHz1q46m6+7xpOJ7os45A8bw+2YXMfZd48pdRq4xASTFRzA3dZ3pP30XpzfdpUIOeraVmOQeDf+PAKBr3+c2hG8aBtvDfr63ANL/isW1CfwxPnH14iJ4zU9AgwyPfVLVI9tsYxFDZl7Nvu+wYwIVaDJYxP7a5iWwtnXn7v4H9e7jyNZr+3zL2Ii8ZLRrMOcziqqeOAgzWe71zRIYUMpztKFiByK4yPOtHDBe/YnzIxT5pbYYnYL6xQ49hGPQLUT8+PJWNOJ6q/N1RCD0c1f3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z3Rhxgc0BxLZC52gzZI2TMDf2pWwDEOx0U/EoHQx5HI=;
+ b=iQdFUpNp+JeGDe8nI3UzV7q1FN6KgBqSumijlRGB0imL8lYA3kSqWBiizY4SV0rU7O6TesQlB9WEurUDlZkDl4ScrES0JKlFXUdNHTCgXoBP4C6MWockCA1jEtKRWqF96ZZM2YW8wN81fVhLCGFlhytyVM9hciE3MTDopyD6HJg=
+Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=po.liu@nxp.com; 
+Received: from VE1PR04MB6496.eurprd04.prod.outlook.com (2603:10a6:803:11c::29)
+ by VE1PR04MB6749.eurprd04.prod.outlook.com (2603:10a6:803:129::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Tue, 14 Apr
+ 2020 06:00:45 +0000
+Received: from VE1PR04MB6496.eurprd04.prod.outlook.com
+ ([fe80::1479:38ea:d4f7:a173]) by VE1PR04MB6496.eurprd04.prod.outlook.com
+ ([fe80::1479:38ea:d4f7:a173%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 06:00:45 +0000
+From:   Po Liu <Po.Liu@nxp.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     vinicius.gomes@intel.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
+        vladimir.oltean@nxp.com, alexandru.marginean@nxp.com,
+        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
+        leon@kernel.org, jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        kuba@kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        simon.horman@netronome.com, pablo@netfilter.org,
+        moshe@mellanox.com, m-karicheri2@ti.com,
+        andre.guedes@linux.intel.com, stephen@networkplumber.org,
+        Po Liu <Po.Liu@nxp.com>
+Subject: [v2,net-next  0/4] Introduce a flow gate control action and apply IEEE
+Date:   Tue, 14 Apr 2020 13:40:23 +0800
+Message-Id: <20200414054027.4280-1-Po.Liu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200324034745.30979-8-Po.Liu@nxp.com>
+References: <20200324034745.30979-8-Po.Liu@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0173.apcprd06.prod.outlook.com
+ (2603:1096:1:1e::27) To VE1PR04MB6496.eurprd04.prod.outlook.com
+ (2603:10a6:803:11c::29)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586703004-13674-1-git-send-email-mkshah@codeaurora.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.73) by SG2PR06CA0173.apcprd06.prod.outlook.com (2603:1096:1:1e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend Transport; Tue, 14 Apr 2020 06:00:37 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.73]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d6ea9008-cd69-4c46-f50c-08d7e0392bf1
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6749:|VE1PR04MB6749:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6749287EAB54C1888D26097B92DA0@VE1PR04MB6749.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0373D94D15
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6496.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(366004)(52116002)(2906002)(6506007)(956004)(81156014)(498600001)(69590400007)(6512007)(2616005)(6666004)(5660300002)(8676002)(8936002)(186003)(6486002)(36756003)(66476007)(16526019)(66946007)(7416002)(1076003)(26005)(66556008)(86362001)(4326008);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7+P1ebgGi3I4Q1Yby1dIhOKzaIyGoBeYssK3ON/o9EqiDZyDwEGWqk2cQ0MUT9cmZF/NneqiC24wYsZY1GHemXtMc+yf3vhaMeui9H4ENp2tZF1lcIvaYuLJpLDy8WNIB9s5ruAp/UedFI6uIW3UgfQ1KXO2ktzDJ9iIeg1FT3y4LF1WmSDocYizDgKp/dhiGlniufF4GHWdmP9IIKbT+QvyamX8WuhDfzbdnK56qYcJqn6xu9jOWK8T6nTD1WSQ2heFLSYwimmPqRGxATBYT+dGZIPFAJr1k0DyH7k7EjTFQf3TD1xhvyV9FEzmJiawuXH1w2wMBfEY8Uv06ncXmyAqHjBRWPqYLdH8ot/9XX8QL5I+AyaV5+sfdOUlSPU4Us3Pi0tGWBW7q4pd46KtymO4DSGC/U7MOxnLxKwngeey89Mzc9hY6xaMn+uneNf4PuX2p2910UkjrCT1xJxqZdjmJo5+E9D3jtUH1e2aM1MJ1ppoEXL2xeASZYDkZE2U
+X-MS-Exchange-AntiSpam-MessageData: HF20Hl6hGdWBCu9l3dkCVOycni5PTuGEE4y1+r21UkALtD2iPetN7UAWOgl/FXxxphn5Wq78d4CT7DH8JTNyfadxr3ndm5H8b1i9//aK1ha88qQ4cG+FnfZ+6dH6mIRsjmMez6LKHgdTIMiAvs2WHg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6ea9008-cd69-4c46-f50c-08d7e0392bf1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2020 06:00:45.5307
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NRcjoS/aN422e05+Zu+9/E1sy77e1+wYkDbUx3gsqw5BPB6gMWVVFSYzgQn2ReJW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6749
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 12 Apr 07:49 PDT 2020, Maulik Shah wrote:
+Changes from V1:
+0000: Update description make it more clear
+0001: Removed 'add update dropped stats' patch, will provide pull
+request as standalone patches.
+0001: Update commit description make it more clear ack by Jiri Pirko.
+0001: No changes
+0003: Fix some code style ack by Jiri Pirko.
+0004: Fix enetc_psfp_enable/disable parameter type ack by test robot
 
-I sorted them includes and applied the series.
+iprout2 command patches:
+  Not attach with these serial patches, will provide separate pull
+request after kernel accept these patches.
 
-Thanks,
-Bjorn
+Changes from RFC:
+0000: Reduce to 5 patches and remove the 4 max frame size offload and
+flow metering in the policing offload action, Only keep gate action
+offloading implementation.
+0001: No changes.
+0002: 
+ - fix kfree lead ack by Jakub Kicinski and Cong Wang
+ - License fix from Jakub Kicinski and Stephen Hemminger
+ - Update example in commit acked by Vinicius Costa Gomes
+ - Fix the rcu protect in tcf_gate_act() acked by Vinicius
 
-> Changes in v17:
-> - Address Stephen's comments on change 3 and change 4.
-> - Add Stephen's Reviewed-by on change 5.
-> 
-> Changes in v16:
-> - Use base address in probe only, drop change to save it in drv->base
-> - Address Doug's comments on change 5,6 and 7.
-> - Add Doug's Reviewed-by.
-> 
-> Changes in v15:
-> - Address Doug's comments on change 3 of v14 and add Reviewed-by
-> - Split change 4 of v14 to save drv->base in a new change
-> - Address Doug's comments on change 4, 5, 6 of v14
-> - Add missing NOTIFY_OK for rpmh_flush() success case
-> - First 5 changes in this series can be merged without change 6 and 7
-> 
-> Changes in v14:
-> - Address Doug's comments on change 3 from v13
-> - Drop new APIs for start and end transaction from change 4 in v13
-> - Update change 4 to use cpu pm notifications instead
-> - Add [5] as change 5 to enable use of WAKE TCS when ACTIVE TCS count is 0
-> - Add change 6 to Allow multiple WAKE TCS to be used as ACTIVE TCSes
-> - First 4 changes can be merged even without change 5 and 6.
-> 
-> Changes in v13:
-> - Address Stephen's comment to maintain COMPILE_TEST
-> - Address Doug's comments and add new APIs for start and end transaction
-> 
-> Changes in v12:
-> - Kconfig change to remove COMPILE_TEST was dropped in v11, reinclude it.
-> 
-> Changes in v11:
-> - Address Doug's comments on change 2 and 3
-> - Include change to invalidate TCSes before flush from [4]
-> 
-> Changes in v10:
-> - Address Evan's comments to update commit message on change 2
-> - Add Evan's Reviewed by on change 2
-> - Remove comment from rpmh_flush() related to last CPU invoking it
-> - Rebase all changes on top of next-20200302
-> 
-> Changes in v9:
-> - Keep rpmh_flush() to invoke from within cache_lock
-> - Remove comments related to only last cpu invoking rpmh_flush()
-> 
-> Changes in v8:
-> - Address Stephen's comments on changes 2 and 3
-> - Add Reviewed by from Stephen on change 1
-> 
-> Changes in v7:
-> - Address Srinivas's comments to update commit text
-> - Add Reviewed by from Srinivas
-> 
-> Changes in v6:
-> - Drop 1 & 2 changes from v5 as they already landed in maintainer tree
-> - Drop 3 & 4 changes from v5 as no user at present for power domain in rsc
-> - Rename subject to appropriate since power domain changes are dropped
-> - Rebase other changes on top of next-20200221
-> 
-> Changes in v5:
-> - Add Rob's Acked by on dt-bindings change
-> - Drop firmware psci change
-> - Update cpuidle stats in dtsi to follow PC mode
-> - Include change to update dirty flag when data is updated from [4]
-> - Add change to invoke rpmh_flush when caches are dirty
-> 
-> Changes in v4:
-> - Add change to allow hierarchical topology in PC mode
-> - Drop hierarchical domain idle states converter from v3
-> - Address Merge sc7180 dtsi change to add low power modes
-> 
-> Changes in v3:
-> - Address Rob's comment on dt property value
-> - Address Stephen's comments on rpmh-rsc driver change
-> - Include sc7180 cpuidle low power mode changes from [1]
-> - Include hierarchical domain idle states converter change from [2]
-> 
-> Changes in v2:
-> - Add Stephen's Reviewed-By to the first three patches
-> - Addressed Stephen's comments on fourth patch
-> - Include changes to connect rpmh domain to cpuidle and genpds
-> 
-> Resource State Coordinator (RSC) is responsible for powering off/lowering
-> the requirements from CPU subsystem for the associated hardware like buses,
-> clocks, and regulators when all CPUs and cluster is powered down.
-> 
-> RSC power domain uses last-man activities provided by genpd framework based
-> on Ulf Hansoon's patch series[3], when the cluster of CPUs enter deepest
-> idle states. As a part of domain poweroff, RSC can lower resource state
-> requirements by flushing the cached sleep and wake state votes for various
-> resources.
-> 
-> [1] https://patchwork.kernel.org/patch/11218965
-> [2] https://patchwork.kernel.org/patch/10941671
-> [3] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=222355
-> [4] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=236503
-> [5] https://patchwork.kernel.org/patch/10818129
-> 
-> Maulik Shah (5):
->   arm64: dts: qcom: sc7180: Add cpuidle low power states
->   soc: qcom: rpmh: Update dirty flag only when data changes
->   soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new
->     data
->   soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches
->   soc: qcom: rpmh-rsc: Allow using free WAKE TCS for active request
-> 
-> Raju P.L.S.S.S.N (1):
->   soc: qcom: rpmh-rsc: Clear active mode configuration for wake TCS
-> 
->  arch/arm64/boot/dts/qcom/sc7180.dtsi |  78 +++++++++++++
->  drivers/soc/qcom/rpmh-internal.h     |  25 ++--
->  drivers/soc/qcom/rpmh-rsc.c          | 220 +++++++++++++++++++++++++++--------
->  drivers/soc/qcom/rpmh.c              |  79 ++++++-------
->  4 files changed, 305 insertions(+), 97 deletions(-)
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+0003: No changes
+0004: No changes
+0005:
+ Acked by Vinicius Costa Gomes
+ - Use refcount kernel lib
+ - Update stream gate check code position
+ - Update reduce ref names more clear
+
+iprout2 command patches:
+0000: Update license expression and add gate id
+0001: Add tc action gate man page
+
+--------------------------------------------------------------------
+These patches add stream gate action policing in IEEE802.1Qci (Per-Stream
+Filtering and Policing) software support and hardware offload support in
+tc flower, and implement the stream identify, stream filtering and
+stream gate filtering action in the NXP ENETC ethernet driver.
+Per-Stream Filtering and Policing (PSFP) specifies flow policing and
+filtering for ingress flows, and has three main parts:
+ 1. The stream filter instance table consists of an ordered list of
+stream filters that determine the filtering and policing actions that
+are to be applied to frames received on a specific stream. The main
+elements are stream gate id, flow metering id and maximum SDU size.
+ 2. The stream gate function setup a gate list to control ingress traffic
+class open/close state. When the gate is running at open state, the flow
+could pass but dropped when gate state is running to close. User setup a
+bastime to tell gate when start running the entry list, then the hardware
+would periodiclly. There is no compare qdisc action support.
+ 3. Flow metering is two rates two buckets and three-color marker to
+policing the frames. Flow metering instance are as specified in the
+algorithm in MEF10.3. The most likely qdisc action is policing action.
+
+The first patch introduces an ingress frame flow control gate action,
+for the point 2. The tc gate action maintains the open/close state gate
+list, allowing flows to pass when the gate is open. Each gate action
+may policing one or more qdisc filters. When the start time arrived, The
+driver would repeat the gate list periodiclly. User can assign a passed
+time, the driver would calculate a new future time by the cycletime of
+the gate list.
+
+The 0002 patch introduces the gate flow hardware offloading.
+
+The 0003 patch adds support control the on/off for the tc flower
+offloading by ethtool.
+
+The 0004 patch implement the stream identify and stream filtering and
+stream gate filtering action in the NXP ENETC ethernet driver. Tc filter
+command provide filtering keys with MAC address and VLAN id. These keys
+would be set to stream identify instance entry. Stream gate instance
+entry would refer the gate action parameters. Stream filter instance
+entry would refer the stream gate index and assign a stream handle value
+matches to the stream identify instance.
+
+Po Liu (4):
+  net: qos: introduce a gate control flow action
+  net: schedule: add action gate offloading
+  net: enetc: add hw tc hw offload features for PSPF capability
+  net: enetc: add tc flower psfp offload driver
+
+ drivers/net/ethernet/freescale/enetc/enetc.c  |   34 +-
+ drivers/net/ethernet/freescale/enetc/enetc.h  |   86 ++
+ .../net/ethernet/freescale/enetc/enetc_hw.h   |  159 +++
+ .../net/ethernet/freescale/enetc/enetc_pf.c   |    6 +
+ .../net/ethernet/freescale/enetc/enetc_qos.c  | 1070 +++++++++++++++++
+ include/net/flow_offload.h                    |   10 +
+ include/net/tc_act/tc_gate.h                  |  169 +++
+ include/uapi/linux/pkt_cls.h                  |    1 +
+ include/uapi/linux/tc_act/tc_gate.h           |   47 +
+ net/sched/Kconfig                             |   13 +
+ net/sched/Makefile                            |    1 +
+ net/sched/act_gate.c                          |  647 ++++++++++
+ net/sched/cls_api.c                           |   33 +
+ 13 files changed, 2275 insertions(+), 1 deletion(-)
+ create mode 100644 include/net/tc_act/tc_gate.h
+ create mode 100644 include/uapi/linux/tc_act/tc_gate.h
+ create mode 100644 net/sched/act_gate.c
+
+-- 
+2.17.1
+
