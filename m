@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5181A8C75
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1291A8C6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633120AbgDNU2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:28:51 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30544 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633117AbgDNU2D (ORCPT
+        id S2633095AbgDNU1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:27:40 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:28438 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2633075AbgDNU0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:28:03 -0400
+        Tue, 14 Apr 2020 16:26:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586896081;
+        s=mimecast20190719; t=1586896003;
         h=from:from:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:in-reply-to:in-reply-to:  references:references;
-        bh=gFhKg1i0fnRjhPnvNhhvH31RVPmlylOwcXirBGzACwY=;
-        b=QX3DN5JYUf9GWzqn0d31av65ZTIqf/RONt2+tehFWyY3RVdbM/DHEw35DgP+pxvtExhKVc
-        tmbr657l6HSEgZwA8z239lg4EsXAl/aEzMItZflZghjJ2honDtyIh1coOkV3ATduEO1mbn
-        KAsQI0nHGopGsVE68Gv+r8PZgtq0m3A=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-xHizUbkgN0Onx25ibWtCJQ-1; Tue, 14 Apr 2020 16:26:18 -0400
-X-MC-Unique: xHizUbkgN0Onx25ibWtCJQ-1
-Received: by mail-qv1-f72.google.com with SMTP id z16so974157qvo.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:26:18 -0700 (PDT)
+        bh=p9TpLNBdviwoTPvCd6HwdAiAsgTDf+tnQwjKV/KP1bE=;
+        b=DkKVdMsdxiAQ9C/c2MnruuaA+2uTlks+gNzgTnKKCExRCzoVghSvRS07V9NUXh8KrSO2ci
+        ++ySoAi2XjJH3jxtWwxFMqNBKUn2va0Fo5+M0UhkXFSeH30eVDTp/PutGmgZKPLfYp6+ZM
+        bLlWj1M0MS1m5D4MUFb91iAeu26HFQQ=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-o4V66PmxPbGdz1vFjuCGtg-1; Tue, 14 Apr 2020 16:26:40 -0400
+X-MC-Unique: o4V66PmxPbGdz1vFjuCGtg-1
+Received: by mail-qt1-f198.google.com with SMTP id n89so13575443qte.15
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:26:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=gFhKg1i0fnRjhPnvNhhvH31RVPmlylOwcXirBGzACwY=;
-        b=X60Fwmft6oDkwW7VTRSdupWN7g4Qsuuf3W3epfUxbgNMQDqlkgZE1epPr3y/XQwbcX
-         smEysJfsYgCm++nHP6ljJwLcXvS0kGTmsvi4G9FGQ5UHu+fK2DLLhPCy90sXV2FgEgTc
-         76rVxWfAYa0J0WyUkD/vbHQD/NE//MSCII+pLH9F/Iu4eeZcWHLRrw90i+z4FTKDIK/P
-         4kO/czj9yGznY6DjqNGL7e4l4lubN4t0ggfwc5olmwtLYRCoIRNzlNwY1OmCbOSGlYip
-         0QCjE6V6w7OTZdKysjTgZbua214q/b8DmzZFUAmzJP5w9P6hiysUT55hV+ZYGuTpJ65A
-         OA+A==
-X-Gm-Message-State: AGi0Puap7fATEhzWWijPW2rknHIHwYipgKEzY80LjIlJc1ZXw+MM/j+7
-        NtWYD5Bye9pE0DNMK5Iznbwb/8ZN42lG/5QDHYv6HUOlacWJGyS/iMmErrnZt1pWnk5O3yBS/cb
-        1I1n0vKcsP81CAhizCzEybmn4
-X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr1771408qvb.192.1586895977467;
-        Tue, 14 Apr 2020 13:26:17 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLL/739Bunp9PWRhInCCopdTucT0TPb7bitw7FUwX4bvc+D2WRR+F0MR9Hi3wsAxrEA6InUdg==
-X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr1771387qvb.192.1586895977300;
-        Tue, 14 Apr 2020 13:26:17 -0700 (PDT)
+        bh=p9TpLNBdviwoTPvCd6HwdAiAsgTDf+tnQwjKV/KP1bE=;
+        b=uG1wY1md0LLxecFo55eGWjMpD/FS1xd2ruQ2YnMUdAZepdV0CeXZ69e8Vycm/OSPOQ
+         MZ/UPbLXlH1UyDQQoqFRoD33ccFzWqNJpeSTFhW80/3PJ4rp30/0fNChKRn8Xvdb3JeE
+         bY7pnCKTFUfd+V2ELFgNq01VzrRVOm2GK8V/T7hYTnDPPPdy5JIiFBTuQNIcb2JtHoiv
+         ZmkkJXAJkDFDWd2d1aQOPpyAVDCUVZBPQfpixFGI9Oe3dHrcD8qxwknh+uUTUe8Rky3s
+         CnWDOhXOT3WXRvQ2sZIfPWJFveW8RGc9d7Tnbhrp/PyGpK2kCLEMNeoPNqNq1OEnNtRl
+         j8Nw==
+X-Gm-Message-State: AGi0PubGsiFg21Gjk2vbHMI0S+UGpAyDasYo5y2ucQZEi+a6J+VM8ANb
+        SHjs9e2Zm/NHeh7xjkEzVh1cPIrorpLjS8yrRW//+6LR4xfqP5S92kuQT9Tdw/q5UJ8znLvMz0q
+        eFo6HaqDscNdjnAofury3CufG
+X-Received: by 2002:a37:4d43:: with SMTP id a64mr21132512qkb.55.1586896000163;
+        Tue, 14 Apr 2020 13:26:40 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIdpcrABXmZxnkowDDGciffEPiMY56MFLXYSgsbGyO9CrWBD6FPOgLLxiNf1ltOhPEA3yvigQ==
+X-Received: by 2002:a37:4d43:: with SMTP id a64mr21132489qkb.55.1586895999934;
+        Tue, 14 Apr 2020 13:26:39 -0700 (PDT)
 Received: from localhost (ip70-163-223-149.ph.ph.cox.net. [70.163.223.149])
-        by smtp.gmail.com with ESMTPSA id g187sm10909209qkf.115.2020.04.14.13.26.16
+        by smtp.gmail.com with ESMTPSA id p22sm1630458qte.2.2020.04.14.13.26.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 13:26:16 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 13:26:15 -0700
+        Tue, 14 Apr 2020 13:26:39 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 13:26:37 -0700
 From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "zhang.jia@linux.alibaba.com" <zhang.jia@linux.alibaba.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        zhang.jia@linux.alibaba.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] tpm: fix wrong return value in tpm_pcr_extend
-Message-ID: <20200414202615.stnurisucqxblenj@cantor>
+Message-ID: <20200414202637.bsr3yccjq6mpflmp@cantor>
 Reply-To: Jerry Snitselaar <jsnitsel@redhat.com>
-Mail-Followup-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "zhang.jia@linux.alibaba.com" <zhang.jia@linux.alibaba.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Mail-Followup-To: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        zhang.jia@linux.alibaba.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 References: <20200414114226.96691-1-tianjia.zhang@linux.alibaba.com>
- <76d46ffbad294a6385779c29c4e5cafd@huawei.com>
- <20200414193542.GB13000@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200414193542.GB13000@linux.intel.com>
+In-Reply-To: <20200414114226.96691-1-tianjia.zhang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Apr 14 20, Jarkko Sakkinen wrote:
->On Tue, Apr 14, 2020 at 11:55:43AM +0000, Roberto Sassu wrote:
->> > -----Original Message-----
->> > From: linux-integrity-owner@vger.kernel.org [mailto:linux-integrity-
->> > owner@vger.kernel.org] On Behalf Of Tianjia Zhang
->> > Sent: Tuesday, April 14, 2020 1:42 PM
->> > To: peterhuewe@gmx.de; jarkko.sakkinen@linux.intel.com; jgg@ziepe.ca;
->> > arnd@arndb.de; gregkh@linuxfoundation.org; zhang.jia@linux.alibaba.com
->> > Cc: linux-integrity@vger.kernel.org; linux-kernel@vger.kernel.org;
->> > tianjia.zhang@linux.alibaba.com
->> > Subject: [PATCH] tpm: fix wrong return value in tpm_pcr_extend
->> >
->> > For the algorithm that does not match the bank, a positive
->> > value EINVAL is returned here. I think this is a typo error.
->> > It is necessary to return an error value.
->>
->> Yes, thanks.
->>
->> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue Apr 14 20, Tianjia Zhang wrote:
+>For the algorithm that does not match the bank, a positive
+>value EINVAL is returned here. I think this is a typo error.
+>It is necessary to return an error value.
 >
->Happen to have the commit ID at hand for fixes?
->
->Thanks.
->
->/Jarkko
->
+>Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-9f75c8224631 ("KEYS: trusted: correctly initialize digests and fix locking issue")
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+
+>---
+> drivers/char/tpm/tpm-interface.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
+>index a438b1206fcb..1621ce818705 100644
+>--- a/drivers/char/tpm/tpm-interface.c
+>+++ b/drivers/char/tpm/tpm-interface.c
+>@@ -323,7 +323,7 @@ int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
+>
+> 	for (i = 0; i < chip->nr_allocated_banks; i++) {
+> 		if (digests[i].alg_id != chip->allocated_banks[i].alg_id) {
+>-			rc = EINVAL;
+>+			rc = -EINVAL;
+> 			goto out;
+> 		}
+> 	}
+>-- 
+>2.17.1
+>
 
