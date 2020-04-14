@@ -2,130 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065391A75B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBB41A759B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436491AbgDNIUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:20:13 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:26205 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407073AbgDNITc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:19:32 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 491dgj2vRdz9tydc;
-        Tue, 14 Apr 2020 10:19:29 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=jZxn3ODM; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id K1nEimlO-mtz; Tue, 14 Apr 2020 10:19:29 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 491dgj1vNGz9tydZ;
-        Tue, 14 Apr 2020 10:19:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1586852369; bh=RsyxMy7Y5Bx9LrA8rcOoGxnVO3hSnKKPR8y4ZmX75Pg=;
-        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=jZxn3ODMiqKMwokxZePb8whd4KMBgWkMXyPD466oQkWR634Y2xIL8wuE22W4AnZ6m
-         a09qAvAOhIs+HNIQj3+Pz5wbT6VgJg29uW7EBS3DldAp0OwGtv7aDO1OLfWwd/lJbE
-         aD71oy61jJmKtVJX2wcP8UjBxPfuWhMXI8no7LGg=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 53FF78B797;
-        Tue, 14 Apr 2020 10:19:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 4G1S6cfpD57T; Tue, 14 Apr 2020 10:19:30 +0200 (CEST)
-Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 18D5B8B796;
-        Tue, 14 Apr 2020 10:19:30 +0200 (CEST)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id E0D6F6578A; Tue, 14 Apr 2020 08:19:29 +0000 (UTC)
-Message-Id: <b6b9b7f710a21d9dc0ab60825ad10bb568835726.1586852082.git.christophe.leroy@c-s.fr>
-In-Reply-To: <cover.1586852082.git.christophe.leroy@c-s.fr>
-References: <cover.1586852082.git.christophe.leroy@c-s.fr>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH v3 13/13] powerpc/40x: Don't save CR in SPRN_SPRG_SCRATCH6
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, michal.simek@xilinx.com,
-        arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 14 Apr 2020 08:19:29 +0000 (UTC)
+        id S2407071AbgDNINq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:13:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2369 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2407062AbgDNINd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:13:33 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 28AE9C18D5CA8D2CD2A6;
+        Tue, 14 Apr 2020 16:13:31 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 14 Apr 2020 16:13:24 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <takedakn@nttdata.co.jp>, <penguin-kernel@I-love.SAKURA.ne.jp>,
+        <jmorris@namei.org>, <serge@hallyn.com>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] tomoyo: use true for bool variable
+Date:   Tue, 14 Apr 2020 16:19:48 +0800
+Message-ID: <1586852388-68249-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have r12 available, use it to keep CR around and don't
-save it in SPRN_SPRG_SCRATCH6.
+Fixes coccicheck warning:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+security/tomoyo/common.c:1028:2-13: WARNING: Assignment of 0/1 to bool variable
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- arch/powerpc/kernel/head_40x.S | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ security/tomoyo/common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
-index 804cbd0899ac..f9b880235aee 100644
---- a/arch/powerpc/kernel/head_40x.S
-+++ b/arch/powerpc/kernel/head_40x.S
-@@ -253,9 +253,8 @@ _ENTRY(saved_ksp_limit)
- 	mtspr	SPRN_SPRG_SCRATCH1, r11
- 	mtspr	SPRN_SPRG_SCRATCH3, r12
- 	mtspr	SPRN_SPRG_SCRATCH4, r9
--	mfcr	r11
-+	mfcr	r12
- 	mfspr	r9, SPRN_PID
--	mtspr	SPRN_SPRG_SCRATCH6, r11
- 	mtspr	SPRN_SPRG_SCRATCH5, r9
- 	mfspr	r10, SPRN_DEAR		/* Get faulting address */
- 
-@@ -322,9 +321,8 @@ _ENTRY(saved_ksp_limit)
- 	 * and call the heavyweights to help us out.
- 	 */
- 	mfspr	r9, SPRN_SPRG_SCRATCH5
--	mfspr	r11, SPRN_SPRG_SCRATCH6
- 	mtspr	SPRN_PID, r9
--	mtcr	r11
-+	mtcr	r12
- 	mfspr	r9, SPRN_SPRG_SCRATCH4
- 	mfspr	r12, SPRN_SPRG_SCRATCH3
- 	mfspr	r11, SPRN_SPRG_SCRATCH1
-@@ -340,9 +338,8 @@ _ENTRY(saved_ksp_limit)
- 	mtspr	SPRN_SPRG_SCRATCH1, r11
- 	mtspr	SPRN_SPRG_SCRATCH3, r12
- 	mtspr	SPRN_SPRG_SCRATCH4, r9
--	mfcr	r11
-+	mfcr	r12
- 	mfspr	r9, SPRN_PID
--	mtspr	SPRN_SPRG_SCRATCH6, r11
- 	mtspr	SPRN_SPRG_SCRATCH5, r9
- 	mfspr	r10, SPRN_SRR0		/* Get faulting address */
- 
-@@ -409,9 +406,8 @@ _ENTRY(saved_ksp_limit)
- 	 * and call the heavyweights to help us out.
- 	 */
- 	mfspr	r9, SPRN_SPRG_SCRATCH5
--	mfspr	r11, SPRN_SPRG_SCRATCH6
- 	mtspr	SPRN_PID, r9
--	mtcr	r11
-+	mtcr	r12
- 	mfspr	r9, SPRN_SPRG_SCRATCH4
- 	mfspr	r12, SPRN_SPRG_SCRATCH3
- 	mfspr	r11, SPRN_SPRG_SCRATCH1
-@@ -555,9 +551,8 @@ finish_tlb_load:
- 	/* Done...restore registers and get out of here.
- 	*/
- 	mfspr	r9, SPRN_SPRG_SCRATCH5
--	mfspr	r11, SPRN_SPRG_SCRATCH6
- 	mtspr	SPRN_PID, r9
--	mtcr	r11
-+	mtcr	r12
- 	mfspr	r9, SPRN_SPRG_SCRATCH4
- 	mfspr	r12, SPRN_SPRG_SCRATCH3
- 	mfspr	r11, SPRN_SPRG_SCRATCH1
+diff --git a/security/tomoyo/common.c b/security/tomoyo/common.c
+index 1b46738..c577525 100644
+--- a/security/tomoyo/common.c
++++ b/security/tomoyo/common.c
+@@ -1025,7 +1025,7 @@ static bool tomoyo_select_domain(struct tomoyo_io_buffer *head,
+ 	if (domain)
+ 		head->r.domain = &domain->list;
+ 	else
+-		head->r.eof = 1;
++		head->r.eof = true;
+ 	tomoyo_io_printf(head, "# select %s\n", data);
+ 	if (domain && domain->is_deleted)
+ 		tomoyo_io_printf(head, "# This is a deleted domain.\n");
 -- 
-2.25.0
+2.6.2
 
