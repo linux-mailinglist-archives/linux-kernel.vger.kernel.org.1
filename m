@@ -2,252 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFDC1A8B59
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961891A8BA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505167AbgDNTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505157AbgDNTos (ORCPT
+        id S2505302AbgDNT5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:57:19 -0400
+Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:34122 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2505250AbgDNTz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:44:48 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A258C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:44:44 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id z9so5651052pjd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Y8n+fCXbMWC1iI3wANy/sDKv9uXTY3yXiMXRA/S7MQo=;
-        b=olJdbZJQB+gw4nBNzS0uf5tHqL6Rp1Vmc82avBY4KcDI+pB6WRolI9q33KwGrjkBhc
-         d+4tXdgzDt3QLaFZEoYdncx8iH8pCiE8txFdp751P59XTi0j+2k8e5LDpCK0fTyCEjxK
-         VVJnXXeeY2tHvYPdWeaiggBzIRv71hR4nYaqdGNi9vrmYBNZuTLY47Skgj0leooZLBli
-         ZBUbmjvSMTg8UyGwY7iB/te7DsjdSv3gaHsoadexI7yXoAhhrf+QEZoBAhMqAswUWurZ
-         08wavDsYCdHA6/MwRmPwjEHx15x2earJUCIhCWQVh9G5U+effwNtOjRJqoM1mCRrMD1s
-         HXDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Y8n+fCXbMWC1iI3wANy/sDKv9uXTY3yXiMXRA/S7MQo=;
-        b=hi7tseVj1SwsPb4o1GDGs4JTdEt/COjrMKWDwSh+MvprKxZc7kt0Ib86BsD5mrPgKf
-         J5gNLzPDjQd0wGRxEv/9duiQ0Pdf6y16bUz+cIWNbT6Q0ODmwh04Y2r2k7qtdhCeKWoO
-         pJ7vJgRf/Ew+Vb5GfsigFrlkqyitUD0XvCoOX8tJZPTNHSObouZKb3JBgqcOnnTORphU
-         saGhJMGCJveVQmbbWQs1bWMnKbqAbCElkUdgdsk6OAU7nEw8TcYT14/PehG7c1OT8CTP
-         MNVeSnER8BCtR1ITatYRAlibjJQx9GdP3DKqhKmg9mSTpXdizP5Y+HgpzC2pgZPaCnWC
-         /kpw==
-X-Gm-Message-State: AGi0Publx6sLTMKhkxXux/tiONM7TaA+iOihZP6Z05C65M0jfwixNHvb
-        LGyXlFNa15LKb3Px6l13/hfyqA==
-X-Google-Smtp-Source: APiQypKwVO3YYKnkeKBmDcieDhffhfreynXiumXxdiwadgN/nIlVyTtU0cUoHi5CZGca7Q5NeKJ0hA==
-X-Received: by 2002:a17:902:7897:: with SMTP id q23mr1482603pll.312.1586893483817;
-        Tue, 14 Apr 2020 12:44:43 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id 198sm12041371pfa.87.2020.04.14.12.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:44:43 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 13:44:41 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Alex Elder <elder@linaro.org>, ohad@wizery.com, s-anna@ti.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] remoteproc: Split firmware name allocation from
- rproc_alloc()
-Message-ID: <20200414194441.GA25931@xps15>
-References: <20200413193401.27234-1-mathieu.poirier@linaro.org>
- <20200413193401.27234-3-mathieu.poirier@linaro.org>
- <bd8cc8d5-94c1-5767-d089-535731fc1055@linaro.org>
- <20200414005506.GG20625@builder.lan>
+        Tue, 14 Apr 2020 15:55:57 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id D5D591802CCB4;
+        Tue, 14 Apr 2020 19:47:05 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9E3611802B57F;
+        Tue, 14 Apr 2020 19:47:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3872:3874:4321:4385:5007:6742:6743:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30045:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: coal59_5a1e7cc02a463
+X-Filterd-Recvd-Size: 2796
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 14 Apr 2020 19:46:59 +0000 (UTC)
+Message-ID: <2a58f592879cf67b4c6b8e859ce87e1f9652902a.camel@perches.com>
+Subject: Re: [PATCH v2 2/2] crypto: Remove unnecessary memzero_explicit()
+From:   Joe Perches <joe@perches.com>
+To:     Waiman Long <longman@redhat.com>,
+        Michal =?ISO-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-crypto@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
+        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Date:   Tue, 14 Apr 2020 12:44:49 -0700
+In-Reply-To: <578fe9b6-1ccd-2698-60aa-96c3f2dd2c31@redhat.com>
+References: <20200413211550.8307-1-longman@redhat.com>
+         <20200413222846.24240-1-longman@redhat.com>
+         <eca85e0b-0af3-c43a-31e4-bd5c3f519798@c-s.fr>
+         <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
+         <20200414191601.GZ25468@kitsune.suse.cz>
+         <578fe9b6-1ccd-2698-60aa-96c3f2dd2c31@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414005506.GG20625@builder.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Bjorn,
+On Tue, 2020-04-14 at 15:37 -0400, Waiman Long wrote:
+> OK, I can change it to clear the key length when the allocation failed
+> which isn't likely.
 
-On Mon, Apr 13, 2020 at 05:55:06PM -0700, Bjorn Andersson wrote:
-> On Mon 13 Apr 13:56 PDT 2020, Alex Elder wrote:
-> 
-> > On 4/13/20 2:33 PM, Mathieu Poirier wrote:
-> > > Make the firmware name allocation a function on its own in order to
-> > > introduce more flexibility to function rproc_alloc().
-> > > 
-> > > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > 
-> > I didn't look at the larger context (MCU series); I'm only looking
-> > at this (and the others in this series) in isolation.  I like
-> > that you're encapsulating this stuff into functions but doing so
-> > doesn't really add any flexibility.
-> > 
-> > Two small suggestions for you to consider but they're truly
-> > more about style so it's entirely up to you.  Outside of that
-> > this looks straightforward to me, and the result of the series
-> > is an improvement.
-> > 
-> > I'll let you comment on my suggestions before offering my
-> > "reviewed-by" indication.
-> > 
-> > 					-Alex
-> > 
-> > > ---
-> > >  drivers/remoteproc/remoteproc_core.c | 66 ++++++++++++++++------------
-> > >  1 file changed, 39 insertions(+), 27 deletions(-)
-> > > 
-> > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > > index 80056513ae71..4dee63f319ba 100644
-> > > --- a/drivers/remoteproc/remoteproc_core.c
-> > > +++ b/drivers/remoteproc/remoteproc_core.c
-> > > @@ -1979,6 +1979,33 @@ static const struct device_type rproc_type = {
-> > >  	.release	= rproc_type_release,
-> > >  };
-> > >  
-> > > +static int rproc_alloc_firmware(struct rproc *rproc,
-> > > +				const char *name, const char *firmware)
-> > > +{
-> > > +	char *p, *template = "rproc-%s-fw";
-> > > +	int name_len;
-> > 
-> > Not a big deal (and maybe it's not consistent with other nearby
-> > style) but template and name_len could be defined inside the
-> > "if (!firmware)" block.
-> > 
-> 
-> I prefer variables declared in the beginning of the function, so I'm
-> happy with this.
-> 
-> > > +	if (!firmware) {
-> > > +		/*
-> > > +		 * If the caller didn't pass in a firmware name then
-> > > +		 * construct a default name.
-> > > +		 */
-> > > +		name_len = strlen(name) + strlen(template) - 2 + 1;
-> > > +		p = kmalloc(name_len, GFP_KERNEL);
-> > 
-> > 
-> > I don't know if it would be an improvement, but you could
-> > check for a null p value below for both cases.  I.e.:
-> > 
-> > 		if (p)
-> > 			snprintf(p, ...);
-> > 
-> 
-> Moving the common NULL check and return out seems nice, but given that
-> we then have to have this positive conditional I think the end result is
-> more complex.
-> 
-> That said, if we're not just doing a verbatim copy from rproc_alloc() I
-> think we should make this function:
-> 
-> 	if (!firmware)
-> 		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
-> 	else
-> 		p = kstrdup_const(firmware, GFP_KERNEL);
 
-If you really want to use kstrdup_const() the return value has to be casted to a
-"char *".  Variable 'p' can't be declared const "char *" because rproc->firmware is not
-a "const".  Simply put somewhere the "const" will need to be dropped or casted out.
+Perhaps:
 
-Mathieu
+	kfree_sensitive(op->key);
+	op->key = NULL;
+	op->keylen = 0;
 
-> 
-> 	rproc->firmware = p;
-> 
-> 	return p ? 0 : -ENOMEM;
-> 
-> Regards,
-> Bjorn
-> 
-> > (more below)
-> > 
-> > > +		if (!p)
-> > > +			return -ENOMEM;
-> > > +		snprintf(p, name_len, template, name);
-> > > +	} else {
-> > > +		p = kstrdup(firmware, GFP_KERNEL);
-> > > +		if (!p)
-> > > +			return -ENOMEM;
-> > > +	}
-> > > +
-> > 
-> > 	if (!p)
-> > 		return -ENOMEM;
-> > 	
-> > > +	rproc->firmware = p;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >  /**
-> > >   * rproc_alloc() - allocate a remote processor handle
-> > >   * @dev: the underlying device
-> > > @@ -2007,42 +2034,21 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
-> > >  			  const char *firmware, int len)
-> > >  {
-> > >  	struct rproc *rproc;
-> > > -	char *p, *template = "rproc-%s-fw";
-> > > -	int name_len;
-> > >  
-> > >  	if (!dev || !name || !ops)
-> > >  		return NULL;
-> > >  
-> > > -	if (!firmware) {
-> > > -		/*
-> > > -		 * If the caller didn't pass in a firmware name then
-> > > -		 * construct a default name.
-> > > -		 */
-> > > -		name_len = strlen(name) + strlen(template) - 2 + 1;
-> > > -		p = kmalloc(name_len, GFP_KERNEL);
-> > > -		if (!p)
-> > > -			return NULL;
-> > > -		snprintf(p, name_len, template, name);
-> > > -	} else {
-> > > -		p = kstrdup(firmware, GFP_KERNEL);
-> > > -		if (!p)
-> > > -			return NULL;
-> > > -	}
-> > > -
-> > >  	rproc = kzalloc(sizeof(struct rproc) + len, GFP_KERNEL);
-> > > -	if (!rproc) {
-> > > -		kfree(p);
-> > > +	if (!rproc)
-> > >  		return NULL;
-> > > -	}
-> > > +
-> > > +	if (rproc_alloc_firmware(rproc, name, firmware))
-> > > +		goto free_rproc;
-> > >  
-> > >  	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
-> > > -	if (!rproc->ops) {
-> > > -		kfree(p);
-> > > -		kfree(rproc);
-> > > -		return NULL;
-> > > -	}
-> > > +	if (!rproc->ops)
-> > > +		goto free_firmware;
-> > >  
-> > > -	rproc->firmware = p;
-> > >  	rproc->name = name;
-> > >  	rproc->priv = &rproc[1];
-> > >  	rproc->auto_boot = true;
-> > > @@ -2091,6 +2097,12 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
-> > >  	rproc->state = RPROC_OFFLINE;
-> > >  
-> > >  	return rproc;
-> > > +
-> > > +free_firmware:
-> > > +	kfree(rproc->firmware);
-> > > +free_rproc:
-> > > +	kfree(rproc);
-> > > +	return NULL;
-> > >  }
-> > >  EXPORT_SYMBOL(rproc_alloc);
-> > >  
-> > > 
-> > 
+but I don't know that it impacts any possible state.
+
+
