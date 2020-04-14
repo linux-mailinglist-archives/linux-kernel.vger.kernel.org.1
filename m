@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3988E1A79AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2771A7A4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439375AbgDNLgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:36:46 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52800 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2439325AbgDNLgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:36:36 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D8BDFF2A221BDC373A7D;
-        Tue, 14 Apr 2020 19:36:30 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Apr 2020
- 19:36:24 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <stas.yakovlev@gmail.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] ipw2x00: make ipw_setup_deferred_work() void
-Date:   Tue, 14 Apr 2020 20:02:51 +0800
-Message-ID: <20200414120251.35869-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S2439827AbgDNME1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:04:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439798AbgDNMEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:04:11 -0400
+Received: from tleilax.com (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 850382075E;
+        Tue, 14 Apr 2020 12:04:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586865851;
+        bh=qk8/5tffuCZyikBXS0nEYbIy3MZRyj3WjOSOuxvOA0g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i+4LFEdVjPzr/lqUfVKMLBInvN4r/7vjZzXuLk037ViyzTzrDL9UoYmDCmUGGMIAj
+         lKbQ6aFmNjP572bSccdFugLcbjPzzYAW5zTifExQoKXo6jtgZxRHYVieeb3J2HY0rP
+         geWt4N9CES7fcOAVpz9jRJqHykvlt24TTqYbzSY0=
+From:   Jeff Layton <jlayton@kernel.org>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, andres@anarazel.de, willy@infradead.org,
+        dhowells@redhat.com, hch@infradead.org, jack@suse.cz,
+        akpm@linux-foundation.org, david@fromorbit.com
+Subject: [PATCH v4 RESEND 0/2] vfs: have syncfs() return error when there are writeback errors
+Date:   Tue, 14 Apr 2020 08:04:07 -0400
+Message-Id: <20200414120409.293749-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function actually needs no return value. So remove the unneeded
-variable 'ret' and make it void.
+I sent the original v4 set on February 13th. There have been no changes
+since then (other than a clean rebase onto master). I'd like to see this
+go into v5.8 if this looks reasonable. Original v4 cover letter follows:
 
-This also fixes the following coccicheck warning:
+-----------------8<---------------
 
-drivers/net/wireless/intel/ipw2x00/ipw2200.c:10648:5-8: Unneeded
-variable: "ret". Return "0" on line 10684
+v4:
+- switch to dedicated errseq_t cursor in struct file for syncfs
+- drop ioctl for fetching the errseq_t without syncing
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/wireless/intel/ipw2x00/ipw2200.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+This is the fourth posting of this patchset. After thinking about it
+more, I think multiplexing file->f_wb_err based on O_PATH open is just
+too weird. I think it'd be better if syncfs() "just worked" as expected
+no matter what sort of fd you use, or how you multiplex it with fsync.
 
-diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
-index 201a1eb0e2f6..923be3781c92 100644
---- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
-+++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
-@@ -10640,10 +10640,8 @@ static void ipw_bg_link_down(struct work_struct *work)
- 	mutex_unlock(&priv->mutex);
- }
- 
--static int ipw_setup_deferred_work(struct ipw_priv *priv)
-+static void ipw_setup_deferred_work(struct ipw_priv *priv)
- {
--	int ret = 0;
--
- 	init_waitqueue_head(&priv->wait_command_queue);
- 	init_waitqueue_head(&priv->wait_state);
- 
-@@ -10677,8 +10675,6 @@ static int ipw_setup_deferred_work(struct ipw_priv *priv)
- 
- 	tasklet_init(&priv->irq_tasklet,
- 		     ipw_irq_tasklet, (unsigned long)priv);
--
--	return ret;
- }
- 
- static void shim__set_security(struct net_device *dev,
-@@ -11659,11 +11655,7 @@ static int ipw_pci_probe(struct pci_dev *pdev,
- 	IPW_DEBUG_INFO("pci_resource_len = 0x%08x\n", length);
- 	IPW_DEBUG_INFO("pci_resource_base = %p\n", base);
- 
--	err = ipw_setup_deferred_work(priv);
--	if (err) {
--		IPW_ERROR("Unable to setup deferred work\n");
--		goto out_iounmap;
--	}
-+	ipw_setup_deferred_work(priv);
- 
- 	ipw_sw_reset(priv, 1);
- 
+Also (at least on x86_64) there is currently a 4 byte pad at the end of
+the struct so this doesn't end up growing the memory utilization anyway.
+Does anyone object to doing this?
+
+I've also dropped the ioctl patch. I have a draft patch to expose that
+via fsinfo, but that functionality is really separate from returning an
+error to syncfs. We can look at that after the syncfs piece is settled.
+
+Jeff Layton (2):
+  vfs: track per-sb writeback errors and report them to syncfs
+  buffer: record blockdev write errors in super_block that it backs
+
+ drivers/dax/device.c    |  1 +
+ fs/buffer.c             |  2 ++
+ fs/file_table.c         |  1 +
+ fs/open.c               |  3 +--
+ fs/sync.c               |  6 ++++--
+ include/linux/fs.h      | 16 ++++++++++++++++
+ include/linux/pagemap.h |  5 ++++-
+ 7 files changed, 29 insertions(+), 5 deletions(-)
+
 -- 
-2.21.1
+2.25.2
 
