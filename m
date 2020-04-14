@@ -2,116 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058E91A715E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24641A7175
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404346AbgDNDAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404224AbgDNDAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:00:11 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CD7C0A3BDC;
-        Mon, 13 Apr 2020 20:00:10 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id e16so4393534pjp.1;
-        Mon, 13 Apr 2020 20:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bmrBJGYvPULTYsXID1n2ssFRwyCJcPGlCp+ffDZ2ue8=;
-        b=l1z2pTrKK/Z24bQCWju9hYO5K6LvWpD5DCoSXiSBLwZQZhhqLNJWoTKQgkoRKDgqvS
-         fGfrn44Syk3yqgAQT+0OHNxD38qhIvqRmOcHX2AIf/pJBV9I4jsBWyuIigF4kB57t1F5
-         kkNWOJUdpFxyY8Z8j1+sJh7FDdYpGVtUV1tG0X0B1BFMhGwROxgCbFiuwXhyYrcC6NU+
-         bquTjcpxjVMjaVjEnodWHqImGRm0YaH9oPuWfSFC4fMFcoSTo3Qd3dATP64+4irVrKYk
-         Qr6a18t9b/XMXEruEs0P1w1FaiNO+ZI9ha7UQIbZWSfK0rRfKPOVy3b15IvbvjWy0LOA
-         96ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bmrBJGYvPULTYsXID1n2ssFRwyCJcPGlCp+ffDZ2ue8=;
-        b=aiRFvPCP3sJPbv5a/4z7cKwJxGq8TCHRgqjkZ6lp/LzPIAxWY+gD1wNxYkkWrPV/n4
-         sPqe/5q/lW4ivB4Tuo6yxkJvznvs/3FcxGQ8OO0sA2FFx9CtL+fhdrf3ncozryFt7joY
-         NCRmcRGD3Xeno/wmNgEM4zSuxYd+pTaD8dJMfAp75oGn2CX8FuA2hFQxvlxKWXWUUsRq
-         mts7xlAMzxCsHABFtfRwcUXsJTqurMScZr+1ynGV5VchRXIy2fF4olDZeUb+XlSTHKnY
-         lTGJ639CGh0rGY24XpVvz6nmM6VKnD/yJT0vbHOAyJMEARI58aJurRrrtx212WascgrD
-         8IIg==
-X-Gm-Message-State: AGi0PubWfzxle1PK5kAGMFyl84nuJZth1XR7c4uYB54SLEOBMSaI8mQo
-        mTF9kM/O1OBSWXNiJK0a0cY=
-X-Google-Smtp-Source: APiQypKXuSLr1DLchZKjuBPOYZJBPpmlryaYyd6OhlIzheb4f5k8FxOq0gGgnslC+hA8mdo0s8KKyw==
-X-Received: by 2002:a17:90a:6043:: with SMTP id h3mr6406198pjm.69.1586833209564;
-        Mon, 13 Apr 2020 20:00:09 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id c84sm1464971pfb.153.2020.04.13.20.00.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 Apr 2020 20:00:09 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 20:00:17 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 5/7] ASoC: fsl_asrc: Move common definition to
- fsl_asrc_common
-Message-ID: <20200414030017.GA10719@Asurada-Nvidia.nvidia.com>
-References: <cover.1586747728.git.shengjiu.wang@nxp.com>
- <6d2bed91bcdbc3f75a9d12ac4ebf6c34c9bb9c3f.1586747728.git.shengjiu.wang@nxp.com>
- <20200414020748.GB10195@Asurada-Nvidia.nvidia.com>
- <CAA+D8AN8OUtTftc_So-Z0_sjWt4RXq6fr4GpSy3Xh+YbkryfpQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AN8OUtTftc_So-Z0_sjWt4RXq6fr4GpSy3Xh+YbkryfpQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S2404409AbgDNDFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:05:33 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48438 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404399AbgDNDF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 23:05:29 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B6C12200277;
+        Tue, 14 Apr 2020 05:05:27 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AEE94200275;
+        Tue, 14 Apr 2020 05:05:25 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C5F13402D8;
+        Tue, 14 Apr 2020 11:05:22 +0800 (SGT)
+From:   Qiang Zhao <qiang.zhao@nxp.com>
+To:     obh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhao Qiang <qiang.zhao@nxp.com>
+Subject: [PATCH 1/2] ls1043ardb: add qe node to ls1043ardb
+Date:   Tue, 14 Apr 2020 11:01:23 +0800
+Message-Id: <20200414030124.37673-1-qiang.zhao@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:21:29AM +0800, Shengjiu Wang wrote:
-> On Tue, Apr 14, 2020 at 10:09 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> >
-> > On Tue, Apr 14, 2020 at 08:43:07AM +0800, Shengjiu Wang wrote:
-> > > There is a new ASRC included in i.MX serial platform, there
-> > > are some common definition can be shared with each other.
-> > > So move the common definition to a separate header file.
-> > >
-> > > And add fsl_asrc_pair_priv and fsl_asrc_priv for
-> > > the variable specific for the module, which can be used
-> > > internally.
-> > >
-> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> >
-> > > diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-> > > +static size_t fsl_asrc_get_pair_priv_size(void)
-> > > +{
-> > > +     return sizeof(struct fsl_asrc_pair_priv);
-> > > +}
-> >
-> > Perhaps we haven't understood completely each other's point.
-> >
-> > Yet, would the following change work?
-> 
-> Should work, almost same
+From: Zhao Qiang <qiang.zhao@nxp.com>
 
-Function call involving branch instruction may fail CPU's branch
-prediction and hurt performance, depending on the CPU arch. If a
-variable simply does the job, we should avoid doing that.
+Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts | 16 ++++++
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi    | 66 +++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
 
-> or do you want me to use variable to replace function pointer?
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
+index 4223a23..96e87ba 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
+@@ -96,6 +96,22 @@
+ 	};
+ };
+ 
++&uqe {
++	ucc_hdlc: ucc@2000 {
++		compatible = "fsl,ucc-hdlc";
++		rx-clock-name = "clk8";
++		tx-clock-name = "clk9";
++		fsl,rx-sync-clock = "rsync_pin";
++		fsl,tx-sync-clock = "tsync_pin";
++		fsl,tx-timeslot-mask = <0xfffffffe>;
++		fsl,rx-timeslot-mask = <0xfffffffe>;
++		fsl,tdm-framer-type = "e1";
++		fsl,tdm-id = <0>;
++		fsl,siram-entry-id = <0>;
++		fsl,tdm-interface;
++	};
++};
++
+ &duart0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+index c084c7a4..a6f2b15 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+@@ -525,6 +525,72 @@
+ 			#interrupt-cells = <2>;
+ 		};
+ 
++		uqe: uqe@2400000 {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			device_type = "qe";
++			compatible = "fsl,qe", "simple-bus";
++			ranges = <0x0 0x0 0x2400000 0x40000>;
++			reg = <0x0 0x2400000 0x0 0x480>;
++			brg-frequency = <100000000>;
++			bus-frequency = <200000000>;
++
++			fsl,qe-num-riscs = <1>;
++			fsl,qe-num-snums = <28>;
++
++			qeic: qeic@80 {
++				compatible = "fsl,qe-ic";
++				reg = <0x80 0x80>;
++				#address-cells = <0>;
++				interrupt-controller;
++				#interrupt-cells = <1>;
++				interrupts = <0 77 0x04 0 77 0x04>;
++			};
++
++			si1: si@700 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "fsl,ls1043-qe-si",
++						"fsl,t1040-qe-si";
++				reg = <0x700 0x80>;
++			};
++
++			siram1: siram@1000 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++				compatible = "fsl,ls1043-qe-siram",
++						"fsl,t1040-qe-siram";
++				reg = <0x1000 0x800>;
++			};
++
++			ucc@2000 {
++				cell-index = <1>;
++				reg = <0x2000 0x200>;
++				interrupts = <32>;
++				interrupt-parent = <&qeic>;
++			};
++
++			ucc@2200 {
++				cell-index = <3>;
++				reg = <0x2200 0x200>;
++				interrupts = <34>;
++				interrupt-parent = <&qeic>;
++			};
++
++			muram@10000 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++				compatible = "fsl,qe-muram", "fsl,cpm-muram";
++				ranges = <0x0 0x10000 0x6000>;
++
++				data-only@0 {
++					compatible = "fsl,qe-muram-data",
++					"fsl,cpm-muram-data";
++					reg = <0x0 0x6000>;
++				};
++			};
++		};
++
+ 		lpuart0: serial@2950000 {
+ 			compatible = "fsl,ls1021a-lpuart";
+ 			reg = <0x0 0x2950000 0x0 0x1000>;
+-- 
+2.9.5
 
-Yes. And please add my ack once you change it as the reset LGTM:
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
