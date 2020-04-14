@@ -2,87 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0401A774A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31121A7752
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437629AbgDNJYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437562AbgDNJYm (ORCPT
+        id S2437650AbgDNJ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:27:00 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:44608 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437618AbgDNJ05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:24:42 -0400
-X-Greylist: delayed 3485 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Apr 2020 02:24:42 PDT
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADA3C0A3BD0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 02:24:42 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jOHni-0006IQ-5p; Tue, 14 Apr 2020 11:24:14 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jOHng-00052J-E5; Tue, 14 Apr 2020 11:24:12 +0200
-Date:   Tue, 14 Apr 2020 11:24:12 +0200
-From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-pwm@vger.kernel.org, od@zcrc.me,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Mathieu Malaterre <malat@debian.org>,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        kernel@pengutronix.de, linux-clk@vger.kernel.org
-Subject: Re: About rounding in the clk framework [Was: Re: [PATCH 4/7] pwm:
- jz4740: Improve algorithm of clock calculation]
-Message-ID: <20200414092412.scsl6sekikc2tsv5@pengutronix.de>
-References: <1565648183.2007.3@crapouillou.net>
- <20190813052726.g37upws5rlvrszc4@pengutronix.de>
- <1565694066.1856.1@crapouillou.net>
- <20190813123331.m4ttfhcgt6wyrcfi@pengutronix.de>
- <1565700448.1856.2@crapouillou.net>
- <20190813140903.rdwy7p3mhwetmlnt@pengutronix.de>
- <1565799035.1984.0@crapouillou.net>
- <20190814173218.zhg4se3pppano5m3@pengutronix.de>
- <1571662077.3.1@crapouillou.net>
- <20200212072911.nstwj7dgpvceebpy@pengutronix.de>
+        Tue, 14 Apr 2020 05:26:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cr9JOOUBDCjRlCArHvWzModBxnVzGdWn5ItJ1H7y5Hg=; b=LLbhPh4Zz3ZlfXRKe9rPBB1g5k
+        xP2wtD/XZU2zsOZuSQa23C+iga645aODC/uYQIxW1vegtzTb4Zqk7HdkLd8onrrrgx8d8Xcax2Vcn
+        iP6URjpmqxkiNkBIbMwrhiLnuqWMSCpuaQO4+5pSRJxNjuJci9aDBob63ubh3aUgF0jQ+IyJQHPtL
+        b2AJa+BNauYOaVw3dgRuTrEp8o/5pDctAzhRwwBVrcA8MyNlCr3tR1xVOHRJk2F8NzFJ8H2MykBoN
+        XUD/YubbadAGOk/hj5HMVDEMKucah54HR/uchJCXPep+MOuI6RLxaBo5QoYHpDOZe9WtMFr+xetN3
+        YAQNXqVA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOHps-0003rY-V5; Tue, 14 Apr 2020 09:26:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE805300483;
+        Tue, 14 Apr 2020 11:26:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C4A3F2BA1C56F; Tue, 14 Apr 2020 11:26:25 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 11:26:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH-next] sched/topology: use true, false for bool variable
+Message-ID: <20200414092625.GI20713@hirez.programming.kicks-ass.net>
+References: <1586779281-103078-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200212072911.nstwj7dgpvceebpy@pengutronix.de>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1586779281-103078-1-git-send-email-zou_wei@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stephen, hello Michael,
+On Mon, Apr 13, 2020 at 08:01:21PM +0800, Zou Wei wrote:
+> Fixes coccicheck warning:
+> 
+> kernel/sched/topology.c:224:3-22: WARNING: Assignment of 0/1 to bool variable
+> kernel/sched/topology.c:226:3-22: WARNING: Assignment of 0/1 to bool variable
 
-On Wed, Feb 12, 2020 at 08:29:11AM +0100, Uwe Kleine-König wrote:
-> Can you please explain what is the reason why clk_round_rate_up/down()
-> is a bad idea? Would it help to create a patch that introduces these
-> functions to get the discussion going?
-
-I didn't get any feedback on my mail. Are you to busy working on more
-important stuff? Is the answer so obvious that you don't consider it
-worth your time to answer?
-
-Looking a bit through the code I see there are two callbacks hwclks can
-provide to implement rounding (determine_rate and round_rate). The docs
-for both use the term "return the closes rate actually supported". Does
-that mean "round-closest" is already the official policy and other
-strategies in lowlevel drivers are a bug?
-
-Best regards
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Please shoot that script, it's broken crap.
