@@ -2,130 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354811A8E0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086D91A8E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440978AbgDNVvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:51:35 -0400
-Received: from mga06.intel.com ([134.134.136.31]:57796 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440819AbgDNVv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:51:26 -0400
-IronPort-SDR: vZU0oqJXCsEvUa/EtJCIfj1Vo16Ek2XpihzCVrTLA5s+3D5jzjjEnwZEWC0X1sxp8F9MnKNLzI
- hFXw4GXDwwjQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 14:51:24 -0700
-IronPort-SDR: ij8iqHgZZGRON/acdZ34Z8oe1de2h0YuaZUoV5nkBqf5XAAASINM7Rc6Fba1Xl8axQDbfmFBtB
- EdajjSl5EfwQ==
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="271529999"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.134.69.31])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 14:51:23 -0700
-Message-ID: <b64aa350ba40c53e799690141006e0f1885d28a2.camel@linux.intel.com>
-Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
- vector altogether
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Borislav Petkov <bp@suse.de>, LKML <linux-kernel@vger.kernel.org>,
-        linux-edac@vger.kernel.org, X86 ML <x86@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, bberg@redhat.com,
-        Tony Luck <tony.luck@intel.com>
-Date:   Tue, 14 Apr 2020 14:51:22 -0700
-In-Reply-To: <CAHmME9rx6w=p6+AFP=0Y5tPEq1CxUTGe4h8SXz-qRNuCvU0hyw@mail.gmail.com>
-References: <20200407063345.4484-1-Jason@zx2c4.com>
-         <20200407063345.4484-3-Jason@zx2c4.com>
-         <0e189a4fe1e69b08afc859ce83623a0e5ea0c08b.camel@linux.intel.com>
-         <CAHmME9pigvAgK3Bje6DkFEcdyWwi7-C7D6QEo4YiH_cbJvxqhQ@mail.gmail.com>
-         <4b75ec34ccff5abdc0b1c04a5ac39455ddd4f49b.camel@linux.intel.com>
-         <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com>
-         <20200414202328.GK31763@zn.tnic>
-         <81359df9983fb70bd40ddb3be9090e5521294529.camel@linux.intel.com>
-         <CAHmME9rx6w=p6+AFP=0Y5tPEq1CxUTGe4h8SXz-qRNuCvU0hyw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
+        id S2407784AbgDNV5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:57:24 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:25831 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729713AbgDNV5W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 17:57:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586901440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/DvGxiWkeKdHX0wP+6BrRMFvoI6T/wBJtjpbt2ET1G0=;
+        b=PMC8lAMcAlXG+vlKSQJETBUtVFHDB1V/+WH3IAt5NaSfu9nVPFFH6hJxKa8FfiTg0EG65u
+        X2hgJ4hjLMJ9uIuXz3PHvlj0yb19X/jod6xjIqy7AEmpAbcJkoCkDumgwhU8Nlk6Hhb9Gl
+        iEB6GJ5zV4eUA2IDTm3YLkI8lf445DU=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-5TG96tHLOXGu-YHrP5UrxA-1; Tue, 14 Apr 2020 17:57:18 -0400
+X-MC-Unique: 5TG96tHLOXGu-YHrP5UrxA-1
+Received: by mail-qv1-f70.google.com with SMTP id dc4so1195063qvb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:57:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/DvGxiWkeKdHX0wP+6BrRMFvoI6T/wBJtjpbt2ET1G0=;
+        b=jRklVVjTrmblqU28wa77DcxTMJfWgITr5RVCEqrJLDjMKC2MXLShynwUUvo7+6g7oe
+         YBFIQQ5tqzss3GilG+X5bhtB1Vao8WqZC9+IbMqbdgzaXCqOoiMqHpDNi6mY0fEohnAA
+         hqV3DTJgD3nHxul+ITCyWxirU15Dz1+V1rIB9OS7ZXarJSZAWU6kUEuPU15MnJtShz6R
+         PysWaQwDhz6xDfBprZTzNjpdax+84X1LRhH/d+n8yu50JCNRAqh9Rgxxnj/IQJLht7sc
+         LPGWPRQzXeCf/rdkTScs2kJTOva42aL5N2AvTEaNEKw2CkfUrxo35Jowg8Xl/lvDg9ZR
+         hQFg==
+X-Gm-Message-State: AGi0PubjfiKeSNdXReWgjEGpMhPUSqJX9R2E664B6qCW9crqC70lJyQ5
+        32gnLInPqcy50IjJNqPl4UFL5j+HJj6phea/SpcDSQxhrnwJ2D8AD9Pu6he/DXQawF7gt2Ex8v4
+        RI9B5bZXX7y3AYBWqsGmPuzBv
+X-Received: by 2002:ac8:d0b:: with SMTP id q11mr17303049qti.83.1586901437855;
+        Tue, 14 Apr 2020 14:57:17 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKAq8/oVtuN82Lj+g/soNr3duU7rQj5JUtrZrCf8s8azs+/QVan20H2uRELqfB65dBG+56qbQ==
+X-Received: by 2002:ac8:d0b:: with SMTP id q11mr17303031qti.83.1586901437603;
+        Tue, 14 Apr 2020 14:57:17 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id w30sm12139130qtw.21.2020.04.14.14.57.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 14:57:16 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 17:57:15 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ming Lei <ming.lei@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3] sched/isolation: Allow "isolcpus=" to skip unknown
+ sub-parameters
+Message-ID: <20200414215715.GB182757@xz-x1>
+References: <20200403223517.406353-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200403223517.406353-1-peterx@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-14 at 15:07 -0600, Jason A. Donenfeld wrote:
-> On Tue, Apr 14, 2020 at 2:49 PM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> > On Tue, 2020-04-14 at 22:23 +0200, Borislav Petkov wrote:
-> > > + Tony.
-> > > 
-> > > On Tue, Apr 14, 2020 at 01:41:08PM -0600, Jason A. Donenfeld
-> > > wrote:
-> > > > Generally it is desirable, and extremely common too. This
-> > > > thermal
-> > > > code
-> > > > -- which mostly functions to print some messages into kmsg --
-> > > > is
-> > > > very
-> > > > verbose. This is not something I want to compile into smaller
-> > > > systems.
-> > > > This is the reason why kconfig has options in the first place.
-> > > > I'm
-> > > > not
-> > > > sure yet-another boottime flag makes sense for this.
-> > > 
-> > > I don't mind making the already existing option selectable and
-> > > leaving
-> > > it default y, i.e., keeping the current situation by default. And
-> > > people
-> > > who want to disable it, can then do so.
-> > > 
-> > > I do mind to having yet another config option though. No thanks -
-> > > they're already too many.
-> > > 
-> > > So it should be an all or nothing thing.
-> > > 
-> > > Poking quickly at that and
-> > > drivers/thermal/intel/x86_pkg_temp_thermal.c,
-> > > all those things do is report trip points. therm_throt reports
-> > > how
-> > > long
-> > > the hw throttled due to hitting a trip point, etc.
-> > > 
-> > > IINM, of course so please correct me if I'm missing anything.
-> > > 
-> > > But if not and this all is only for reporting and doesn't have
-> > > any
-> > > detrimental effects on the hardware when missing from the system,
-> > > then I
-> > > guess we could make CONFIG_X86_THERMAL_VECTOR user-selectable.
-> > 
-> > We can make user selectable
-> > 
-> > These drivers are used for reporting only.
-> > User space can select a trip temperature via x86_pkg_temp and get
-> > notification via uevent to start additional cooling system
-> > (additional
-> 
-> I didn't see any uevent stuff. Is this part of out-of-tree modules or
-> proprietary code that's hooking into those EXPORT_SYMBOL (non-GPL)
-> exports?
-This is not out of tree. This is x86_pkg_temp driver as part of thermal
-subsystem, and thermal_zone_device_update()  user space governor issues uevent. But those are different modifiable thresholds not the high/low temperature thresholds.
+Ping - Thomas, do you think this version is ok to you?
 
+This has missed 5.7 already, am I right?
 
+Thanks,
+
+On Fri, Apr 03, 2020 at 06:35:17PM -0400, Peter Xu wrote:
+> The "isolcpus=" parameter allows sub-parameters to exist before the
+> cpulist is specified, and if it sees unknown sub-parameters the whole
+> parameter will be ignored.  This design is incompatible with itself
+> when we add more sub-parameters to "isolcpus=", because the old
+> kernels will not recognize the new "isolcpus=" sub-parameters, then it
+> will invalidate the whole parameter so the CPU isolation will not
+> really take effect if we start to use the new sub-parameters while
+> later we reboot into an old kernel. Instead we will see this when
+> booting the old kernel:
 > 
-> > fans, liquid coooling etc), so that processor don't have to go self
-> > throttling mode. Self throttling depending on processor series and
-> > firmware can be very aggressive.
-> > In client systems thermald will set a temperature and starts power
-> > control once it reaches passive temperature limit. But it can
-> > function
-> > without x86_pkg_temp also, so even if user disables thermal
-> > reporting
-> > it can still function.
+>     isolcpus: Error, unknown flag
 > 
-> The 2/3 patch may be interesting as well to you. This removes the
-> expensive work queue management stuff if the option is deselected,
-> since all those workqueues do is print messages to kmsg, while
-> retaining the rest of the infra.
+> The better and compatible way is to allow "isolcpus=" to skip unknown
+> sub-parameters, so that even if we add new sub-parameters to it the
+> old kernel will still be able to behave as usual even if with the new
+> sub-parameter is specified.
+> 
+> Ideally this patch should be there when we introduce the first
+> sub-parameter for "isolcpus=", so it's already a bit late.  However
+> late is better than nothing.
+> 
+> CC: Ming Lei <ming.lei@redhat.com>
+> CC: Ingo Molnar <mingo@redhat.com>
+> CC: Peter Zijlstra <peterz@infradead.org>
+> CC: Juri Lelli <juri.lelli@redhat.com>
+> CC: Luiz Capitulino <lcapitulino@redhat.com>
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+> v3:
+> - add brackets for for loop
+> - move "illegal" a bit higher, which may look tiny bit nicer
+> - also allow '_'
+> v2:
+> - only allow isalpha() for sub-parameters [tglx]
+> ---
+>  kernel/sched/isolation.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 008d6ac2342b..808244f3ddd9 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -149,6 +149,9 @@ __setup("nohz_full=", housekeeping_nohz_full_setup);
+>  static int __init housekeeping_isolcpus_setup(char *str)
+>  {
+>  	unsigned int flags = 0;
+> +	bool illegal = false;
+> +	char *par;
+> +	int len;
+>  
+>  	while (isalpha(*str)) {
+>  		if (!strncmp(str, "nohz,", 5)) {
+> @@ -169,8 +172,22 @@ static int __init housekeeping_isolcpus_setup(char *str)
+>  			continue;
+>  		}
+>  
+> -		pr_warn("isolcpus: Error, unknown flag\n");
+> -		return 0;
+> +		/*
+> +		 * Skip unknown sub-parameter and validate that it is not
+> +		 * containing an invalid character.
+> +		 */
+> +		for (par = str, len = 0; *str && *str != ','; str++, len++) {
+> +			if (!isalpha(*str) && *str != '_')
+> +				illegal = true;
+> +		}
+> +
+> +		if (illegal) {
+> +			pr_warn("isolcpus: Invalid flag %.*s\n", len, par);
+> +			return 0;
+> +		}
+> +
+> +		pr_info("isolcpus: Skipped unknown flag %.*s\n", len, par);
+> +		str++;
+>  	}
+>  
+>  	/* Default behaviour for isolcpus without flags */
+> -- 
+> 2.24.1
+> 
+
+-- 
+Peter Xu
 
