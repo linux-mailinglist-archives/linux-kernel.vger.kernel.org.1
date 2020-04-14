@@ -2,27 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F791A8C0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8721A8C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632829AbgDNUOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:14:54 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47824 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2632776AbgDNUNW (ORCPT
+        id S2632888AbgDNUPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2632871AbgDNUP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:13:22 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id B4F342A1B70
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, groeck@chromium.org,
-        bleung@chromium.org, dtor@chromium.org, gwendal@chromium.org
-Subject: [PATCH] platform/chrome: cros_ec_i2c: Appease the kernel-doc deity
-Date:   Tue, 14 Apr 2020 22:13:13 +0200
-Message-Id: <20200414201313.1507146-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Apr 2020 16:15:29 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF376C061A10;
+        Tue, 14 Apr 2020 13:15:28 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x25so14557018wmc.0;
+        Tue, 14 Apr 2020 13:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/nMN3gP9x2ARfODCEnbyaFnmiKSgzhDo+Aw3jjcLnlo=;
+        b=mEbJKx7U88hspWaZQv2wZirmksuZrorf1nF8yEpwzZjYupFgLEII0wWhYQBph6N1GQ
+         TQZDp9FTxyLAVl+eof0qZzzAhwqgnfNRHjj0CAVmvrM34KAuoYv4J/u1tB17P8D9Vn9f
+         /fdr/NS/i5wKBsfX3TGXfy1L52YyO9FKGVb+onQTJ9LpQL0d3/fbOGucdabipdTpSaSs
+         h9BZxhPcFRZaEihwL5XJ7Pjok1f6IMu5cQSyqEKXHFRjyDTQTZAD1KlUF+mi2NbUl8b6
+         D9p7Ch03BlS7tu4NoPWtlNF/lAfwQN7SYdDRSe2pEyI3N34zkhd4ioKbPAuMXPdHuon8
+         HWfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/nMN3gP9x2ARfODCEnbyaFnmiKSgzhDo+Aw3jjcLnlo=;
+        b=V9m4IyohS8DZuSd4fXry7GpAyrGoaNfM6YPlzLgGxloWQZ4XiEi4uOBdtadHNOJwPG
+         n7dw7v8s60NSNanqQEji/8V5wCYwRYJhd3oiqYhvRRcFFiGGcq0gn0Idx0HN69C1t7g5
+         WmxyMPzDAhRpC0x+yhIi2vXV7LhyafO1vdqh6QG1RMTWSWsX0tiSBN34Vn9snNKMvCNV
+         SamQF9nBvbAKs3bnfdKv8CJeI+Rh9Ia6EwvFlnfa8GZRu5uzww7BP2P3O5zi2qoQ5N7J
+         jt0AX9VqsMEgK43YV0bcBUnfzgyemNgm1H6N4oRnjJl+f1GdYyMz3DJQT+KCA/H5qOF7
+         Rl0A==
+X-Gm-Message-State: AGi0PuaxOFCWoFvt3UglhfIdVmD8DP++WQbjzLDXvH8dgtwbsYBluUJi
+        kRx9s9UkLIMFGZSIJz9B9Xk=
+X-Google-Smtp-Source: APiQypKh2JU4ueEU0WUjbHYK8S4/0j/0MkKPw8LrYTuKKOm8lG5Osf/3Xu2oOVPnjrrPih3R/LI0Ng==
+X-Received: by 2002:a05:600c:4102:: with SMTP id j2mr1610523wmi.159.1586895327469;
+        Tue, 14 Apr 2020 13:15:27 -0700 (PDT)
+Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id u17sm22537467wra.63.2020.04.14.13.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 13:15:26 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     robh+dt@kernel.org, khilman@baylibre.com, narmstrong@baylibre.com,
+        linux-amlogic@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH RFC v1 0/4] meson-ee-pwrc: support for Meson8/8b/8m2 and GX
+Date:   Tue, 14 Apr 2020 22:14:53 +0200
+Message-Id: <20200414201457.229131-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -30,28 +65,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comment starting with /** by simply /* to avoid having
-it interpreted as a kernel-doc comment.
+This series adds support for all "older" SoCs to the meson-ee-pwrc 
+driver. I wanted to compare as much as I could between my Meson8b EC-100
+(Endless Mini) and the Le Potato board so I added support for GXBB, GXL
+and GXM as well as for the SoCs that I'm actually working on. I will
+send the ARM64 dts patches once all of this is reviewed and merged.
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+@Neil: I would like you to review especially the GX dt-binding patch.
+The old GX driver seems to include the same reset lines as G12A *plus*
+"dvin". You probably know best whether that's needed or not - for now
+I decided to keep it (as this is what "works" with the old pwrc driver).
+Also I decided to use your copyright in meson-gxbb-power.h since it's
+a shameless copy of meson-g12a-power.h with s/G12A/GXBB/g
 
- drivers/platform/chrome/cros_ec_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I successfully tested the Meson8b part on EC-100 where u-boot does not
+initialize the VPU controller. So this the board where I have been
+struggling most.
 
-diff --git a/drivers/platform/chrome/cros_ec_i2c.c b/drivers/platform/chrome/cros_ec_i2c.c
-index 6119eccd8a18..30c8938c27d5 100644
---- a/drivers/platform/chrome/cros_ec_i2c.c
-+++ b/drivers/platform/chrome/cros_ec_i2c.c
-@@ -16,7 +16,7 @@
- 
- #include "cros_ec.h"
- 
--/**
-+/*
-  * Request format for protocol v3
-  * byte 0	0xda (EC_COMMAND_PROTOCOL_3)
-  * byte 1-8	struct ec_host_request
+
+Martin Blumenstingl (4):
+  dt-bindings: power: meson-ee-pwrc: add support for Meson8/8b/8m2
+  dt-bindings: power: meson-ee-pwrc: add support for the Meson GX SoCs
+  soc: amlogic: meson-ee-pwrc: add support for Meson8/Meson8b/Meson8m2
+  soc: amlogic: meson-ee-pwrc: add support for the Meson GX SoCs
+
+ .../bindings/power/amlogic,meson-ee-pwrc.yaml | 102 +++++++++++++++---
+ drivers/soc/amlogic/meson-ee-pwrc.c           |  98 ++++++++++++++++-
+ include/dt-bindings/power/meson-gxbb-power.h  |  13 +++
+ include/dt-bindings/power/meson8-power.h      |  13 +++
+ 4 files changed, 204 insertions(+), 22 deletions(-)
+ create mode 100644 include/dt-bindings/power/meson-gxbb-power.h
+ create mode 100644 include/dt-bindings/power/meson8-power.h
+
 -- 
-2.25.1
+2.26.0
 
