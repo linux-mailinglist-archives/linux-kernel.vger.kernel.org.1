@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5326F1A71AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB711A7181
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404581AbgDNDSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:18:47 -0400
-Received: from mga03.intel.com ([134.134.136.65]:45507 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404552AbgDNDSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:18:30 -0400
-IronPort-SDR: +NMZCy1JVAWaNUivVeURdiFWk6qA5gEF5LQ2edM7FSP3bOsxYl5B+CKx4T3WsT1sz6Fe6Xn+ZP
- re7ucNw1RIKQ==
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 20:18:29 -0700
-IronPort-SDR: A6dvFsKAF+nMYpB5Nxql8OZD8ESyhZEcZnZf1S7cpOWdTRI4yLKnP5sujEava2jQgnZvzsGGKH
- 8bIyy78zkIAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,381,1580803200"; 
-   d="asc'?scan'208";a="256373748"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2020 20:18:25 -0700
-Date:   Tue, 14 Apr 2020 11:04:44 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-usb@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        intel-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Jason Wang <jasowang@redhat.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Subject: Re: [PATCH 3/6] i915/gvt: remove unused xen bits
-Message-ID: <20200414030444.GO11247@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20200404094101.672954-1-hch@lst.de>
- <20200404094101.672954-4-hch@lst.de>
- <20200408014437.GF11247@zhen-hp.sh.intel.com>
- <20200413130806.GA14455@lst.de>
+        id S2404438AbgDNDI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404429AbgDNDIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 23:08:24 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1004C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:08:22 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k15so5453447pfh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:08:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sK5J9WWtksNX77+NYMwDl6iDZ21wbSLhPOx9BD2BM8M=;
+        b=LSXUefafyRPCK1BKfVXiyl8L6XfmghKkzW97uJsOEM4gDKMgCfDopHvzMyxX9Myj88
+         Gl5rTEhzpS1OYgiBDgymvERjRoXimxL5xwpDoZPX/ySaHiEso7gshkntX1zU3eV/rMje
+         P7odV0SrY0XzqZfAZFoea4TeBlA+Wp45m+108=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sK5J9WWtksNX77+NYMwDl6iDZ21wbSLhPOx9BD2BM8M=;
+        b=U32s088L1AGX75BVNINzmb502jHfbpWUfEXWZ2vL8tyzYLCq3kFyHsYgPfMWBeDPW2
+         PiY0Zs3KMsoRvI3hS3zAbZDhZ0779UaQnPKoEz9ADh0OV8ASCVfkfV0T4lXFFLGat54C
+         goqJwHJP2U6XBS9BaCCv9T3xtJE0wn/Q5118WZpM7lzahMgrYA8NtCcYPjwCOqpTzXUj
+         SHOoGr75UviLovt4NiG/SP0xyc68nT3PduUmFNIZxSWzaqbOmrWfDuSw75lqmiuJ7o8C
+         6ppN5I3fMJN3H115Thss23chM4RnDZVghFrySwqYVjPbG7r0iutYMVVu6boObRDv3yfX
+         4CLQ==
+X-Gm-Message-State: AGi0Puam2b13ItCtx9yumPftmVHNXAAxNwXByq7tDrS863WsjiK06da3
+        RBe9nCP21me8iitDsqCPlFC9oA==
+X-Google-Smtp-Source: APiQypJQpaS0PH8YnPtS/hZHhI9tNItaYB2TAmhKVyqtt1h2PIezqUr6JFZ0U4VOiU7IsrqBf+3Iqg==
+X-Received: by 2002:a63:6287:: with SMTP id w129mr10337254pgb.410.1586833702123;
+        Mon, 13 Apr 2020 20:08:22 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:b852:bd51:9305:4261])
+        by smtp.gmail.com with ESMTPSA id z23sm3610897pfr.136.2020.04.13.20.08.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 20:08:21 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: mt8173: fix mdp aliases property name
+Date:   Tue, 14 Apr 2020 11:08:14 +0800
+Message-Id: <20200414030815.192104-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="3eH4Qcq5fItR5cpy"
-Content-Disposition: inline
-In-Reply-To: <20200413130806.GA14455@lst.de>
-User-Agent: Mutt/1.10.0 (2018-05-17)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix warning:
+Warning (alias_paths): /aliases: aliases property name must include only lowercase and '-'
 
---3eH4Qcq5fItR5cpy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-On 2020.04.13 15:08:06 +0200, Christoph Hellwig wrote:
-> On Wed, Apr 08, 2020 at 09:44:37AM +0800, Zhenyu Wang wrote:
-> > On 2020.04.04 11:40:58 +0200, Christoph Hellwig wrote:
-> > > No Xen support anywhere here.  Remove a dead declaration and an unused
-> > > include.
-> > >=20
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> >=20
-> > We'll keep that off-tree.
-> >=20
-> > Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
->=20
-> Can you pick this up through the i915 tree?
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index a212bf124e81..d1e9c41004b4 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -42,14 +42,14 @@ aliases {
+ 		dpi0 = &dpi0;
+ 		dsi0 = &dsi0;
+ 		dsi1 = &dsi1;
+-		mdp_rdma0 = &mdp_rdma0;
+-		mdp_rdma1 = &mdp_rdma1;
+-		mdp_rsz0 = &mdp_rsz0;
+-		mdp_rsz1 = &mdp_rsz1;
+-		mdp_rsz2 = &mdp_rsz2;
+-		mdp_wdma0 = &mdp_wdma0;
+-		mdp_wrot0 = &mdp_wrot0;
+-		mdp_wrot1 = &mdp_wrot1;
++		mdp-rdma0 = &mdp_rdma0;
++		mdp-rdma1 = &mdp_rdma1;
++		mdp-rsz0 = &mdp_rsz0;
++		mdp-rsz1 = &mdp_rsz1;
++		mdp-rsz2 = &mdp_rsz2;
++		mdp-wdma0 = &mdp_wdma0;
++		mdp-wrot0 = &mdp_wrot0;
++		mdp-wrot1 = &mdp_wrot1;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
+-- 
+2.26.0.110.g2183baf09c-goog
 
-Yes, I'll pick this.
-
-Thanks
-
---=20
-Open Source Technology Center, Intel ltd.
-
-$gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
-
---3eH4Qcq5fItR5cpy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCXpUoTAAKCRCxBBozTXgY
-JygxAJ9JZICeCzXSNp8YPszWNoMERUV94ACeJJLziuDjCDenyBchPPCAYkP+EtI=
-=56PP
------END PGP SIGNATURE-----
-
---3eH4Qcq5fItR5cpy--
