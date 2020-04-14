@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6311A850A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C37B1A850F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391738AbgDNQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        id S2391759AbgDNQdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391725AbgDNQcU (ORCPT
+        by vger.kernel.org with ESMTP id S2391745AbgDNQcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:32:20 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CBEC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:32:20 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id s30so10685047qth.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:32:20 -0700 (PDT)
+        Tue, 14 Apr 2020 12:32:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A92FC061A0C;
+        Tue, 14 Apr 2020 09:32:44 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y4so451721ljn.7;
+        Tue, 14 Apr 2020 09:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SqpT1X280p+vEPTDIK1Gx8cxwNT9Kl8YEWiyZ9LyzJI=;
-        b=OS7NWpAvehP7dmjbbLsxc4PcWImRNci6e5Mrxl8qYLhe6GYrpERBZdO0QOGfdWP3hV
-         p33q6aQKGWSU5faiBV1L67Oo6vcsmFK4+GGqYgutIfp49b6hxY8XQIqZip8XY04g0FaP
-         z8sLy8D2dcy4jI0eqqUs+O6Ygmv/qKH1Gr9NQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UIF3BoyuEURXStfcfS+K3X+B8H9N0p09Wke+0dl3XYI=;
+        b=TPH+wfkPooywpXdD9Cf7DoG2SqrrH+5LpkpkmZTl2bh9FId8Wj45SwrTvanUR+//y4
+         1gyvpoEbxgDB6f6yK/MJENkQqPxMTz5nTI3FzoffpEyVA17tiyTDji/CIDQhBod3hB0t
+         gv65qG85q4UmhmbqFsxqMtyltgGFNkSTKJxcG/BivRtkIXzTdW1pPGXkjePT2Y2Ya4gb
+         mDnqUTHkMGID7WFd2qOqiHKII7nPj4rrp650VIA1YKaaX3WTwLdojM4zxt0/Fbu1VF/h
+         myLEbsGAEwjtSKTBFBFo39mWBo5ExLUaB+Dc6Zs3wyZn0yUbf9c2mVU5Y7SXZ+x98az/
+         9Fxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SqpT1X280p+vEPTDIK1Gx8cxwNT9Kl8YEWiyZ9LyzJI=;
-        b=LwtjPoQxt8zZSK8vlU6pLFvatP2FpuzB7QOgaKbWnI2Zqfjp0DsKumTzuzUYXkQFOg
-         oVCrXzAJLXmpLsR5AeO2pCBuJUMNYSQcQxgFyoV2xl27jF36TTeXmwoorK/S+bx60nb1
-         jvw4eSQIiS1Ncfw/K3PhNjwrumiN5oBorrzog/kyVSehHRY/IvXdqIjRBOPi4Pf4Uhub
-         y87jQ7M8npZ7KOGStzWcK64u3GulGoqA24FjYOpzC5z16Kequi9huC27NuMt3jYk1Q/A
-         wK3j5LePPQSEUBGbQNxIzRqHgvwylgD8d3nPjjZZTZEocJAVNe5OLUazA6OMecEk2tFf
-         UnSQ==
-X-Gm-Message-State: AGi0PuaV1tR8IAGqfUbtbQD37cTNnTpZxmgH/mwmG00EzLUqRj/kBBsB
-        pMPFPcIpHKi0yeqcea8myAyNxw==
-X-Google-Smtp-Source: APiQypLLJHgEiHO8u72vxT6aP2yq3+L8ePGHN3hnF8/VapHORS7x+wE/Tf0PC55fPITD2G0BGbKRoA==
-X-Received: by 2002:ac8:5048:: with SMTP id h8mr17167818qtm.189.1586881939416;
-        Tue, 14 Apr 2020 09:32:19 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 190sm2787713qkj.87.2020.04.14.09.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 09:32:18 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 12:32:18 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        ctheegal@codeaurora.org, dianders@chromium.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com,
-        qais.yousef@arm.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] sched/core: Fix reset-on-fork from RT with uclamp
-Message-ID: <20200414163218.GA77963@google.com>
-References: <20200414161320.251897-1-qperret@google.com>
- <20200414162128.GA66453@google.com>
- <20200414162713.GA256619@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UIF3BoyuEURXStfcfS+K3X+B8H9N0p09Wke+0dl3XYI=;
+        b=uBUpXBDrZWBeUlxR68PndaAkWqVwkCZ+2USAAmwMKOcwoJd0/v6koU9rcnoGI+F5Ju
+         Ul/I5dSVphTjXOyMAYR5BkrNbQk2eVWe0zMSVJW4fIC65/ylDdWA7ihEikucZQl76JKL
+         sZB4cD1v09XAmKdSeCiVTJwrJaqeG6iLW5vpzIO108CXP0yDa9f2yJ6rISmlES88W+Vg
+         L29HjciRLDlVbxzAQWTOPCqtLqGPMF3XVjRe+E7J0F7YCGnNZlIXp7WXvniQVN4y76hb
+         su036Jm9PEnTzn/OYTukhxHRfW3NAwqeCgURSx/CwNupTqsbiHublCzpunIsJNc0Xpv4
+         XLDw==
+X-Gm-Message-State: AGi0PuaQu2c0489JGCKUp0G5AFfARMUouG5GJKd7mIJ67HbTZabNGD3q
+        d9mbZ0vjugqyygKTmKwhWDGNNy6OyIc6wdv0iEGd
+X-Google-Smtp-Source: APiQypKnvMdqW175yj1MgsnJQRnNqTHf4wkmjSzS+0xThgvpXsnNBDZYsd9iTF/sm8QIq/tkcEC8WgbmdDmZUCqtAAI=
+X-Received: by 2002:a2e:2a42:: with SMTP id q63mr563631ljq.81.1586881963108;
+ Tue, 14 Apr 2020 09:32:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414162713.GA256619@google.com>
+References: <CADDKRnBdM_T1W=iECrt89hmAmbRRyskGhS4d3ozTz1nWj_i_qQ@mail.gmail.com>
+ <CAMj1kXGuMjHi=E6cVGGpwrKF_-KXcj0VRcvAdFS_vmwV7PudCQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXGuMjHi=E6cVGGpwrKF_-KXcj0VRcvAdFS_vmwV7PudCQ@mail.gmail.com>
+From:   =?UTF-8?Q?J=C3=B6rg_Otte?= <jrg.otte@gmail.com>
+Date:   Tue, 14 Apr 2020 18:32:32 +0200
+Message-ID: <CADDKRnAvC7U6kWdiqmib40cJ7r41COyic4LTdO9utsp4GOJnvA@mail.gmail.com>
+Subject: Re: Kernel V5.7-rc1 doesn't boot (EFI?)
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 05:27:13PM +0100, Quentin Perret wrote:
-> On Tuesday 14 Apr 2020 at 12:21:28 (-0400), Joel Fernandes wrote:
-> > Shouldn't this be conditional on p->sched_reset_on_fork instead of deleting
-> > the code?
-> 
-> Right, it's not obvious from the diff, but this code _is_ conditional on
-> p->sched_reset_on_fork already. This is what the whole function looks
-> like with my patch applied:
-> 
-> ---8<---
-> static void uclamp_fork(struct task_struct *p)
-> {
->         enum uclamp_id clamp_id;
-> 
->         for_each_clamp_id(clamp_id)
->                 p->uclamp[clamp_id].active = false;
-> 
->         if (likely(!p->sched_reset_on_fork))
->                 return;
-> 
->         for_each_clamp_id(clamp_id) {
->                 unsigned int clamp_value = uclamp_none(clamp_id);
-> 
->                 uclamp_se_set(&p->uclamp_req[clamp_id], clamp_value, false);
->         }
+Am Di., 14. Apr. 2020 um 12:50 Uhr schrieb Ard Biesheuvel <ardb@kernel.org>=
+:
+>
+> On Tue, 14 Apr 2020 at 12:40, J=C3=B6rg Otte <jrg.otte@gmail.com> wrote:
+> >
+> > Booting my notebook with kernel V57-rc1 I get following
+> > display:
+> >
+> > exit_boot() failed!
+> > efi_main() failed!
+> > StartImage failed: Buffer Too Small
+> >
+> > Booting Kernel V5.6 works well.
+> >
+> > From dmesg (kernel V5.6):
+> > efi: EFI v2.31 by Phoenix Technologies Ltd.
+> > efi:  ACPI=3D0xdcffe000  ACPI 2.0=3D0xdcffe014  SMBIOS=3D0xdce80000  RN=
+G=3D0xdc3cd198
+> > efi: seeding entropy pool
+> > efi: [Firmware Bug]: Invalid EFI memory map entries:
+> > efi: mem47: [Reserved           |   |  |  |  |  |  |  |  |   |  |  |
+> > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
+> > efi: mem48: [Reserved           |   |  |  |  |  |  |  |  |   |  |  |
+> > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
+> > efi: mem49: [Reserved           |   |  |  |  |  |  |  |  |   |  |  |
+> > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
+> > efi: mem50: [Reserved           |   |  |  |  |  |  |  |  |   |  |  |
+> > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
+> > efi: mem51: [Reserved           |   |  |  |  |  |  |  |  |   |  |  |
+> > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
+> > efi: Removing 5 invalid memory map entries.
+> >
+>
+> Thanks for the report.
+>
+> Can you try booting with efi=3Dno_disable_early_pci_dma passed via the
+> kernel command line? [*]
+>
+Yes, that works!
 
-Oh ok, thanks for clarification.
+> If that does not help, can you try to reproduce with this branch?
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=3Defi/=
+urgent
 
- - Joel
+Should I give that branch a try anyway?
 
-
-> }
-> --->8---
-> 
-> Thanks,
-> Quentin
+Thanks, J=C3=B6rg
