@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0841E1A70CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 04:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312CA1A70AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 03:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403939AbgDNCFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 22:05:08 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:19136 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727867AbgDNCFH (ORCPT
+        id S2403872AbgDNBwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 21:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728247AbgDNBwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 22:05:07 -0400
-X-IronPort-AV: E=Sophos;i="5.72,381,1580745600"; 
-   d="scan'208";a="88985143"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 14 Apr 2020 10:05:04 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 2451B50A997D;
-        Tue, 14 Apr 2020 09:54:35 +0800 (CST)
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.83) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 14 Apr 2020 10:05:02 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.31) by
- G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.89) with Microsoft SMTP Server
- id 14.3.439.0; Tue, 14 Apr 2020 10:05:12 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-To:     <rostedt@goodmis.org>
-CC:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        <linux-trace-devel@vger.kernel.org>, <ice_yangxiao@163.com>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>
-Subject: [PATCH v2] tracing: Fix the race between registering 'snapshot' event trigger and triggering 'snapshot' operation
-Date:   Tue, 14 Apr 2020 09:51:45 +0800
-Message-ID: <20200414015145.66236-1-yangx.jy@cn.fujitsu.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 13 Apr 2020 21:52:30 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B651C0A3BDC;
+        Mon, 13 Apr 2020 18:52:30 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w3so4091563plz.5;
+        Mon, 13 Apr 2020 18:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ueS8P+6v2FrlXivoVjNe19uVCUfAZxgQePy2A4X+RsE=;
+        b=OCvhU4O/qcMY2FRjZ40rJkFvcFiCnnlXdwpTxot5wBOLYRNgpnFCHbxz852a6MeIj4
+         NPa5mtPY5kIIvICQIRdv37OLe4jCCFm8PShYINo9ATeH1KlDDfWsZ63+QG4jZNNEo+JT
+         ZyYXrSwFwjTBYt3Q7xqkXtfvZ6bICTCH9ANVE52aI2sjgtoMB7gTeo1rGz6wLMQK2Pi3
+         HPAAtEEsaclya5CZ9i66SK7RRcTQNe54wG7Z76wzS/QaxaFwFWDD4Am8L5ZsOUjDswix
+         rdZ6h8419sEHgMfFI4g0w+/ucUvgIoU75+jPx9MwFrekVFL1Z78EFnshuf0yOivCZApK
+         7YSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ueS8P+6v2FrlXivoVjNe19uVCUfAZxgQePy2A4X+RsE=;
+        b=oYJ9/86/cGpKHRd5PMcypSYg3JiPZT3h5vaJnJp0SKcMS/lshHPUDzF7GCvftWNY2x
+         on5F6x0lPNkN5qT9GvilnbrdPoLiSXTv74cmzq7a61kYiImqo9b+W7J6xAq0Fze9GLYO
+         S03i5LmbrAfR5QKc9crAnyOuBCjpron99HW0GQrhUBDGMfF5kZzOMV8IF7X3IoytTFRW
+         kNtvdFPVqlHsGpu4cJ3QVrHIDctqzX83FwgmrWJ/DTVnrmI2JF5cn7VH8ZLr6HVlrmX8
+         blSC0Mil2T4U8yDN3znlU6D0LBEUYu5klHZN96iU8zTlmPyLfwt9XQEGM0ZvIfyys/ui
+         S9Jg==
+X-Gm-Message-State: AGi0PuaRre0n+vUXz+DN4f2B8AQYa96q1mRNTRjwXJzLB/YOJuWeyhzJ
+        nnztbYi/GALtzPVAvCHW/N3qa4uCZRw=
+X-Google-Smtp-Source: APiQypLV5A3zPqygKILoFJrzU50eijbeEVBpOWKiwDq2bSqyS0pUFarFX0qGCERIK8ocAccEOj2a5A==
+X-Received: by 2002:a17:90a:252f:: with SMTP id j44mr16076039pje.9.1586829149030;
+        Mon, 13 Apr 2020 18:52:29 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id x12sm2242431pfq.209.2020.04.13.18.52.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 13 Apr 2020 18:52:28 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 18:52:37 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 4/7] ASoC: fsl_asrc: Support new property
+ fsl,asrc-format
+Message-ID: <20200414015235.GA10195@Asurada-Nvidia.nvidia.com>
+References: <cover.1586747728.git.shengjiu.wang@nxp.com>
+ <d10df72d2e9985fede7969b5da1f579627f5e821.1586747728.git.shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 2451B50A997D.A8BB1
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d10df72d2e9985fede7969b5da1f579627f5e821.1586747728.git.shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
-or snapshot_count_trigger()) when register_snapshot_trigger() has completed
-registration but doesn't allocate buffer for 'snapshot' event trigger.  In
-the rare case, 'snapshot' operation always detects the lack of allocated
-buffer so make register_snapshot_trigger() allocate buffer first.
+On Tue, Apr 14, 2020 at 08:43:06AM +0800, Shengjiu Wang wrote:
+> In order to align with new ESARC, we add new property fsl,asrc-format.
+> The fsl,asrc-format can replace the fsl,asrc-width, driver
+> can accept format from devicetree, don't need to convert it to
+> format through width.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
------------------------------------------------------------
-cat trace
-...
-ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
-     <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
-     <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
------------------------------------------------------------
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- kernel/trace/trace_events_trigger.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index dd34a1b46a86..3a74736da363 100644
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -1088,14 +1088,10 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
- 			  struct event_trigger_data *data,
- 			  struct trace_event_file *file)
- {
--	int ret = register_trigger(glob, ops, data, file);
--
--	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
--		unregister_trigger(glob, ops, data, file);
--		ret = 0;
--	}
-+	if (tracing_alloc_snapshot_instance(file->tr) != 0)
-+		return 0;
- 
--	return ret;
-+	return register_trigger(glob, ops, data, file);
- }
- 
- static int
--- 
-2.25.1
-
-
-
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
