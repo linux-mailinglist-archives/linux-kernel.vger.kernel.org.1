@@ -2,161 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DD11A7B00
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5EF1A7B15
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440147AbgDNMln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
+        id S2502240AbgDNMpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730818AbgDNMlh (ORCPT
+        by vger.kernel.org with ESMTP id S2502239AbgDNMpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:41:37 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C34C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:41:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id u13so13661463wrp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:41:36 -0700 (PDT)
+        Tue, 14 Apr 2020 08:45:09 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04DDC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:45:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k11so13536157wrp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:45:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EOTA3Bl8xK7jbI/7Nx56mhbuxCAqHFdnbLl81CCUHsQ=;
-        b=SAi6aRueQ5Zyf7tLT2VCOAgQfNIxII4FkFQe+ghkqK3mPNmGOXJYz88+RE3XsXdRi6
-         pI0oSaGVyF7xDMAM9kwkKlt7DjRomsEap9SMshCDqJXjPRJo2hwkBrrB0P9+mCDiBJ3x
-         kRKLEK5KpPf4yrnR71LhJXZxP/UV/q63+DjlY=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uTBz1rbbgL6zk5oCQB/8KyAsL8UQNJVuo57K9Wkbz4A=;
+        b=LzQG83K8MK4ps2g8QyylKFIm0zrpVxZ0gGgLuWPGJNzanHJLR6yhAvZ3af7IPdx3iU
+         Ist9HfBU/+k/yAfW72b4eSM5iw04G5QVw6ajNtZGE/m4JmTfSMEdGRLwlmyej9M+k/o+
+         kZQQJU8o1ugvCOocCHNWa+s73R667pZPNhWF3RNvkGe18BQLsCVDWey9wiMoNoU/bnpG
+         kBiPnLJYOcrp2uHgXa0Fauxa7pJXA+afj8739cXgkktdzL2k41uOyE6lv85B4t/MsMrv
+         0q7XdUwn9y+pRc+Htso4Ob43Mfs0jbpg0fLZZL5xjYZ8kUiqz8U6RpXAa1wJwb4wAUkA
+         pHmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=EOTA3Bl8xK7jbI/7Nx56mhbuxCAqHFdnbLl81CCUHsQ=;
-        b=iQhN46iAk1jlQ50ZUsGKWIKxmNjEIe7o8/ppYAC42c9y0KAFpVAhR66fqqkhOOGzyS
-         CFm9whs0kGv1JSdqEO/0cyK0sZXmopJ7R3/H+JN89Rg51xNcRNCb+IPz1lX5Kq7fl2/K
-         ol0srAxrIASlT7aT4EyrMGTzyYm7rbox6EzMMKaocdiS10swnyKio60yVOjPlu9gbbY2
-         dBwUHpzECkmnnqJUCb9N30ITGeAqH2wgPP1qZprzYZIBwOYz9cxcy1xUCp+OiU0q+eWN
-         gJ7VX5/6D9s+CcV4tmxrtxPTnY9+AqLsymPnts7GNVow0eVnddOX0FH2/X/K+YL00Y6c
-         szpA==
-X-Gm-Message-State: AGi0PubaPtbEyNq8wVOI2xJWoKUKzzn5MfYPJxmojiXF5zSY2j4pbpR4
-        fM607R7YCFLX1TW4LmFVj6GNiA==
-X-Google-Smtp-Source: APiQypLKGFmCSvctczx8VqjOVo8EhZPFdvd9ehQw9JMKKTphUeYZwccZm2MYcJ+RgiNCMDJUQcRwEQ==
-X-Received: by 2002:adf:cc8c:: with SMTP id p12mr23416418wrj.165.1586868095238;
-        Tue, 14 Apr 2020 05:41:35 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v21sm18064169wmj.8.2020.04.14.05.41.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uTBz1rbbgL6zk5oCQB/8KyAsL8UQNJVuo57K9Wkbz4A=;
+        b=i7/Jl4WpIZt3EcukHhdxlHbgubgub0++iFGRiewHQzQzG+xABsdcLONRAiGjqASCrL
+         x+BfB2TIBhG7b5r0/O8wM2icQ97DnQwnWqmTXMk0vL5GTFDqDysXbRzdxWKEeCqoxZpO
+         Hj7OdOnqA8iWLr9575fs9CE5uHnHz4AmhDRG4CjKeMn96C6wzeLZ0VFVRv3G5uwteYua
+         l490zuqO8tUNIUy1abZiXoTG+J+snRLCf+qzFT+NYeZh0gurM8ad/23kaF16s14RwFQ8
+         uvOHvZurZc65NSeFX0+luU9VJq2NtgCXSIHkfAxAqt4N344VhmUgNfdNFA4wbPFP14lY
+         U31Q==
+X-Gm-Message-State: AGi0PubqmYEbEsl3qRAASDkpqoqJvKtMAFbw3FAHDg8/VNR7HgVpFTB0
+        8r3l3AQSOd5/7VcbkxXE7bGb/w==
+X-Google-Smtp-Source: APiQypKRb+CFYDfsTFYIe7zfSiE/zNZrGOikaKbMQD6kDitZTlDMmkPQlX5DYuFnR8Zd2CVNocUpww==
+X-Received: by 2002:a5d:4843:: with SMTP id n3mr23406079wrs.7.1586868307403;
+        Tue, 14 Apr 2020 05:45:07 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id o9sm18957634wru.29.2020.04.14.05.45.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 05:41:34 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 14:41:32 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Yussuf Khalil <dev@pp3345.net>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] drm/modes: Indicate CEA-861 CE modes to user-space
-Message-ID: <20200414124132.GV3456981@phenom.ffwll.local>
-Mail-Followup-To: Yussuf Khalil <dev@pp3345.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20200413214024.46500-1-dev@pp3345.net>
- <20200413214024.46500-2-dev@pp3345.net>
+        Tue, 14 Apr 2020 05:45:06 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 13:45:03 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Wei Wang <wvw@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] sched/topology: Store root domain CPU capacity sum
+Message-ID: <20200414124503.GA236568@google.com>
+References: <20200408095012.3819-1-dietmar.eggemann@arm.com>
+ <20200408095012.3819-2-dietmar.eggemann@arm.com>
+ <CAKfTPtC4_+dTddLdoFMdzUvsXwWyi3bUOXcg9kstC8RzZS_a+A@mail.gmail.com>
+ <42cc3878-4c57-96ba-3ebd-1b4d4ef87fae@arm.com>
+ <CAKfTPtDS_qwPH+TwoFWPz6QRzG1N=t46ZvGN=w6zbOtnGAdOeQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413214024.46500-2-dev@pp3345.net>
-X-Operating-System: Linux phenom 5.3.0-3-amd64 
+In-Reply-To: <CAKfTPtDS_qwPH+TwoFWPz6QRzG1N=t46ZvGN=w6zbOtnGAdOeQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 11:40:22PM +0200, Yussuf Khalil wrote:
-> Add a new flag to mark modes that are considered a CE mode according to the
-> CEA-861 specification. Modes without this flag are implicitly considered to
-> be IT modes.
+On Wednesday 08 Apr 2020 at 19:03:57 (+0200), Vincent Guittot wrote:
+> Or we can do the opposite and only use capacity_orig_of()/rq->cpu_capacity_orig.
 > 
-> User-space applications may use this flag to determine possible
-> implications of using a CE mode (e.g., limited RGB range).
-> 
-> There is no use for this flag inside the kernel, so we set it only when
-> communicating a mode to user-space.
-> 
-> Signed-off-by: Yussuf Khalil <dev@pp3345.net>
+> Is there a case where the max cpu capacity changes over time ? So I
+> would prefer to use cpu_capacity_orig which is a field of scheduler
+> instead of always calling an external arch specific function
 
-Do we have userspace for this?
+Note however that using arch_scale_cpu_capacity() would be more
+efficient, especially on non-arm/arm64 systems where it is a
+compile-time constant.
 
-If we go with the existing quant range property you don't need new
-userspace for the property itself. But this flag here is new uapi, so
-needs userspace per
+It's probably a matter of personal taste, but I find rq->cpu_capacity_orig
+superfluous. It wastes space without actually giving you anything no?
+Anybody remembers why it was introduced in the first place?
 
-https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#open-source-userspace-requirements
-
-Also since this standardizes kms uapi, we need testcases per
-
-https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-requirements-for-userspace-api
-
-Cheers, Daniel
-
-> ---
->  drivers/gpu/drm/drm_modes.c | 14 ++++++++++++++
->  include/uapi/drm/drm_mode.h |  2 ++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-> index d4d64518e11b..0d8a032f437d 100644
-> --- a/drivers/gpu/drm/drm_modes.c
-> +++ b/drivers/gpu/drm/drm_modes.c
-> @@ -1973,6 +1973,14 @@ void drm_mode_convert_to_umode(struct drm_mode_modeinfo *out,
->  		break;
->  	}
->  
-> +	if (drm_match_cea_mode(in) > 1) {
-> +		/*
-> +		 * All modes in CTA-861-G Table 1 are CE modes, except 640x480p
-> +		 * (VIC 1).
-> +		 */
-> +		out->flags |= DRM_MODE_FLAG_CEA_861_CE_MODE;
-> +	}
-> +
->  	strncpy(out->name, in->name, DRM_DISPLAY_MODE_LEN);
->  	out->name[DRM_DISPLAY_MODE_LEN-1] = 0;
->  }
-> @@ -2045,6 +2053,12 @@ int drm_mode_convert_umode(struct drm_device *dev,
->  		return -EINVAL;
->  	}
->  
-> +	/*
-> +	 * The CEA-861 CE mode flag is purely informational and intended for
-> +	 * userspace only.
-> +	 */
-> +	out->flags &= ~DRM_MODE_FLAG_CEA_861_CE_MODE;
-> +
->  	out->status = drm_mode_validate_driver(dev, out);
->  	if (out->status != MODE_OK)
->  		return -EINVAL;
-> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
-> index 735c8cfdaaa1..5e78b350b2e2 100644
-> --- a/include/uapi/drm/drm_mode.h
-> +++ b/include/uapi/drm/drm_mode.h
-> @@ -124,6 +124,8 @@ extern "C" {
->  #define  DRM_MODE_FLAG_PIC_AR_256_135 \
->  			(DRM_MODE_PICTURE_ASPECT_256_135<<19)
->  
-> +#define DRM_MODE_FLAG_CEA_861_CE_MODE (1<<23)
-> +
->  #define  DRM_MODE_FLAG_ALL	(DRM_MODE_FLAG_PHSYNC |		\
->  				 DRM_MODE_FLAG_NHSYNC |		\
->  				 DRM_MODE_FLAG_PVSYNC |		\
-> -- 
-> 2.26.0
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+Quentin
