@@ -2,82 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0D31A746A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E261A742D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406449AbgDNHN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 03:13:29 -0400
-Received: from mga03.intel.com ([134.134.136.65]:60361 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728832AbgDNHN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:13:28 -0400
-IronPort-SDR: Bmi7r8AIOfEmVbCDegF0//TBTZ2W5wFR8I/kst/X8cYiCc4vCg/nCKmFwfbxylI0YhpRuTdTBt
- MXvcce6zRXIQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 00:13:27 -0700
-IronPort-SDR: 3mzTZiupNXsl0k5QcLc9AHNCJBc5G9UIIEYO8qCIUclLUzsoEbBJJHUqxdgJkxiNvCr7gq5Idq
- YjsPeTwaKt8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,381,1580803200"; 
-   d="scan'208";a="426968243"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by orsmga005.jf.intel.com with ESMTP; 14 Apr 2020 00:13:22 -0700
-Date:   Tue, 14 Apr 2020 03:03:44 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, io-uring@vger.kernel.org,
-        linux-mm@kvack.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        virtualization@lists.linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 2/6] i915/gvt/kvm: a NULL ->mm does not mean a thread is
- a kthread
-Message-ID: <20200414070344.GF10586@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200404094101.672954-1-hch@lst.de>
- <20200404094101.672954-3-hch@lst.de>
- <20200407030845.GA10586@joy-OptiPlex-7040>
- <20200413132730.GB14455@lst.de>
- <20200414000410.GE10586@joy-OptiPlex-7040>
- <20200414070013.GA23680@lst.de>
+        id S2406398AbgDNHFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:05:13 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38646 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406330AbgDNHFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 03:05:08 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0AA5D2A1469;
+        Tue, 14 Apr 2020 08:05:02 +0100 (BST)
+Date:   Tue, 14 Apr 2020 09:04:59 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        anders.roxell@linaro.org, masonccyang@mxic.com.tw,
+        piotrs@cadence.com, robh+dt@kernel.org,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com
+Subject: Re: [PATCH v1 1/2] dt-bindings: mtd: Add YAML for Nand Flash
+ Controller support
+Message-ID: <20200414090459.3c37c961@collabora.com>
+In-Reply-To: <20200414022433.36622-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200414022433.36622-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200414022433.36622-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414070013.GA23680@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 09:00:13AM +0200, Christoph Hellwig wrote:
-> On Mon, Apr 13, 2020 at 08:04:10PM -0400, Yan Zhao wrote:
-> > > I can't think of another way for a kernel thread to have a mm indeed.
-> > for example, before calling to vfio_dma_rw(), a kernel thread has already
-> > called use_mm(), then its current->mm is not null, and it has flag
-> > PF_KTHREAD.
-> > in this case, we just want to allow the copy_to_user() directly if
-> > current->mm == mm, rather than call another use_mm() again.
-> > 
-> > do you think it makes sense?
+On Tue, 14 Apr 2020 10:24:32 +0800
+"Ramuthevar,Vadivel MuruganX"
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> I mean no other way than using use_mm.  That being said nesting
-> potentional use_mm callers sounds like a rather bad idea, and we
-> should avoid that.
-yes, agree.
-I was explaining why we just use "current->mm == NULL"
-(not "current->flag & PF_KTHREAD") as a criteria to call use_mm()
-in vfio_dma_rw(), which you might ask us when you take that part into your
-series. :)
+> Add YAML file for dt-bindings to support NAND Flash Controller
+> on Intel's Lightning Mountain SoC.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 61 ++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> new file mode 100644
+> index 000000000000..361e5051c602
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Intel LGM SoC NAND Controller Device Tree Bindings
+> +
+> +allOf:
+> +  - $ref: "nand-controller.yaml"
+> +
+> +maintainers:
+> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: intel,lgm-nand
+
+intel,lgm-nand-controller
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 2
+> +
+> +  dma-names:
+> +    enum:
+> +      - rx
+> +      - tx
+> +
+> +  pinctrl-names: true
+> +
+> +patternProperties:
+> +  "^pinctrl-[0-9]+$": true
+> +
+> +  "^nand@[a-f0-9]+$":
+> +    type: object
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 7
+> +
+> +      nand-ecc-mode: true
+> +
+> +      nand-ecc-algo:
+> +        const: hw
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +
+> +additionalProperties: false
+> +
+> +...
+
