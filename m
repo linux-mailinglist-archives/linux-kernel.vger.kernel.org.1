@@ -2,204 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19871A7AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354241A7AE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502112AbgDNMhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:37:10 -0400
-Received: from m17617.mail.qiye.163.com ([59.111.176.17]:14029 "EHLO
-        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502096AbgDNMhB (ORCPT
+        id S2502076AbgDNMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2502064AbgDNMgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:37:01 -0400
-Received: from wangqing-virtual-machine.localdomain (unknown [157.0.31.122])
-        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id 572BB261975;
-        Tue, 14 Apr 2020 20:36:51 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        jinho lim <jordan.lim@samsung.com>,
-        Wang Qing <wangqing@vivo.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [V3 3/3] sched:rename task_running() and to task_running_on_rq
-Date:   Tue, 14 Apr 2020 20:36:32 +0800
-Message-Id: <1586867796-5768-4-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586867796-5768-1-git-send-email-wangqing@vivo.com>
-References: <1586867796-5768-1-git-send-email-wangqing@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVKTExLS0tLT05MTE1ITFlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pz46Kjo6DDgxAgpMHRkRMC9L
-        FQMaFD1VSlVKTkNNQ01MQ0pKQ0tJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZSk5M
-        VUtVSEpVSklJWVdZCAFZQUxCSEM3Bg++
-X-HM-Tid: 0a7178b135589375kuws572bb261975
+        Tue, 14 Apr 2020 08:36:40 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A2FC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:36:40 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id y17so12967522iow.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:36:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=93PxLx/bBhSXZHPMANtDysGYDalKpS3C/enNpIgyfaA=;
+        b=oDhVu2wG3zhmPrmqPL0/4JjUoRVazgmBRZk4h1cE9oPa3GmmtDVTpeZGk19tYNQmwQ
+         lh+ajsWoGSL9FcZmIQKLE1LWXy6QcKZ6kddBJVw57rQtc5Bl89X72wPKbRQJuUpUrJdB
+         wRXOK4w8Nm5oT+D8fY9nFK4zscL2/OrKKm79fgyl0MoTymdV8KfbL7LStioAl+hg3yEA
+         PHSt5bq9omK9Ul9wZ6aDHoBm/K9TH/fAiH7Rr7ghh/hTCEH5ETC5K6zuABHAzzixS0ul
+         b8aocmIq9tM17Kxal9BPhFXJ9K1EI2LkLPzxT13IPcJrfYFLfxB2rC5hdE/+pkb680wN
+         Zgdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=93PxLx/bBhSXZHPMANtDysGYDalKpS3C/enNpIgyfaA=;
+        b=H/qw6bkIpweiBEPMkNSuAOBEceCGIPXqGrKhzpXJLoA1bb6912brjBfqYU16yGBAlp
+         RdyNYpcaiRf6Mjv9kc3IdFz9LDVTFu1JaqN+yxdZqvZjydOvbVfSca4Nmc1eJq/FoLSe
+         XYDVj3xZE36bEKzcdwNyw3S1FpjV6QMy8hG6heD9B2EJwbFcaAW5VDM61rM2Sh9XILK6
+         dT9V4LzRi7zJdJnqbhuBo/M/bdbZFD32HkQ4KDzlLfRVXfJUWfOVoEWJ7CntXAAv/WNM
+         aHlH+oo/aTJWwyEIGrlsjhCId9IRrxIlnIxz+S8P0Fsa/Y4mA46AVDGHC2FOd/aAzzwk
+         MBSA==
+X-Gm-Message-State: AGi0PubsTrc3BZUoVSUlSdcXalztwNbcTsMRv/MDmsQ9ce2R9Q/Ozj6b
+        atVq+gsnqCQg6deoCCH8P6cGctW1gaaxzA==
+X-Google-Smtp-Source: APiQypIHLgsSAAgr45LYobbDafEn2cSAk7E4X70gOIxDTh0w02hjQaH2p409t+miWUGfGpliZ4WtGw==
+X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr4751189jaq.44.1586867799011;
+        Tue, 14 Apr 2020 05:36:39 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id j20sm4442418iok.54.2020.04.14.05.36.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Apr 2020 05:36:38 -0700 (PDT)
+Subject: Re: [PATCH 2/4] remoteproc: Split firmware name allocation from
+ rproc_alloc()
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>, ohad@wizery.com,
+        s-anna@ti.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200413193401.27234-1-mathieu.poirier@linaro.org>
+ <20200413193401.27234-3-mathieu.poirier@linaro.org>
+ <bd8cc8d5-94c1-5767-d089-535731fc1055@linaro.org>
+ <20200414005506.GG20625@builder.lan>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <73c2c86d-cc4a-9706-458b-02a522528eaf@linaro.org>
+Date:   Tue, 14 Apr 2020 07:36:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200414005506.GG20625@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The task_running() should be renamed to task_running_on_rq()
-like the naming of task_running_on_cpu(), this is what it
-originally mean.
+On 4/13/20 7:55 PM, Bjorn Andersson wrote:
+> On Mon 13 Apr 13:56 PDT 2020, Alex Elder wrote:
+> 
+>> On 4/13/20 2:33 PM, Mathieu Poirier wrote:
+>>> Make the firmware name allocation a function on its own in order to
+>>> introduce more flexibility to function rproc_alloc().
+>>>
+>>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-This solves the confusing naming problem.
+. . .
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/sched/core.c     | 14 +++++++-------
- kernel/sched/deadline.c |  6 +++---
- kernel/sched/fair.c     |  2 +-
- kernel/sched/rt.c       |  6 +++---
- kernel/sched/sched.h    |  2 +-
- 5 files changed, 15 insertions(+), 15 deletions(-)
+>>> ---
+>>>  drivers/remoteproc/remoteproc_core.c | 66 ++++++++++++++++------------
+>>>  1 file changed, 39 insertions(+), 27 deletions(-)
+>>>
+>>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+>>> index 80056513ae71..4dee63f319ba 100644
+>>> --- a/drivers/remoteproc/remoteproc_core.c
+>>> +++ b/drivers/remoteproc/remoteproc_core.c
+>>> @@ -1979,6 +1979,33 @@ static const struct device_type rproc_type = {
+>>>  	.release	= rproc_type_release,
+>>>  };
+>>>  
+>>> +static int rproc_alloc_firmware(struct rproc *rproc,
+>>> +				const char *name, const char *firmware)
+>>> +{
+>>> +	char *p, *template = "rproc-%s-fw";
+>>> +	int name_len;
+>>
+>> Not a big deal (and maybe it's not consistent with other nearby
+>> style) but template and name_len could be defined inside the
+>> "if (!firmware)" block.
+>>
+> 
+> I prefer variables declared in the beginning of the function, so I'm
+> happy with this.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a2694ba..7ba1840 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1672,7 +1672,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 	if (cpumask_test_cpu(task_cpu(p), new_mask))
- 		goto out;
- 
--	if (task_running(rq, p) || p->state == TASK_WAKING) {
-+	if (task_running_on_rq(rq, p) || p->state == TASK_WAKING) {
- 		struct migration_arg arg = { p, dest_cpu };
- 		/* Need help from migration thread: drop lock and wait. */
- 		task_rq_unlock(rq, p, &rf);
-@@ -1905,11 +1905,11 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
- 		 *
- 		 * NOTE! Since we don't hold any locks, it's not
- 		 * even sure that "rq" stays as the right runqueue!
--		 * But we don't care, since "task_running()" will
--		 * return false if the runqueue has changed and p
--		 * is actually now running somewhere else!
-+		 * But we don't care, since "task_running_on_rq()"
-+		 * will return false if the runqueue has changed
-+		 * and p is actually now running somewhere else!
- 		 */
--		while (task_running(rq, p)) {
-+		while (task_running_on_rq(rq, p)) {
- 			if (match_state && unlikely(p->state != match_state))
- 				return 0;
- 			cpu_relax();
-@@ -1922,7 +1922,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
- 		 */
- 		rq = task_rq_lock(p, &rf);
- 		trace_sched_wait_task(p);
--		running = task_running(rq, p);
-+		running = task_running_on_rq(rq, p);
- 		queued = task_on_rq_queued(p);
- 		ncsw = 0;
- 		if (!match_state || p->state == match_state)
-@@ -5745,7 +5745,7 @@ int __sched yield_to(struct task_struct *p, bool preempt)
- 	if (curr->sched_class != p->sched_class)
- 		goto out_unlock;
- 
--	if (task_running(p_rq, p) || p->state)
-+	if (task_running_on_rq(p_rq, p) || p->state)
- 		goto out_unlock;
- 
- 	yielded = curr->sched_class->yield_to_task(rq, p, preempt);
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 504d2f5..c04cecd 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1838,7 +1838,7 @@ static void task_fork_dl(struct task_struct *p)
- 
- static int pick_dl_task(struct rq *rq, struct task_struct *p, int cpu)
- {
--	if (!task_running(rq, p) &&
-+	if (!task_running_on_rq(rq, p) &&
- 	    cpumask_test_cpu(cpu, p->cpus_ptr))
- 		return 1;
- 	return 0;
-@@ -1990,7 +1990,7 @@ static struct rq *find_lock_later_rq(struct task_struct *task, struct rq *rq)
- 		if (double_lock_balance(rq, later_rq)) {
- 			if (unlikely(task_rq(task) != rq ||
- 				     !cpumask_test_cpu(later_rq->cpu, task->cpus_ptr) ||
--				     task_running(rq, task) ||
-+				     task_running_on_rq(rq, task) ||
- 				     !dl_task(task) ||
- 				     !task_on_rq_queued(task))) {
- 				double_unlock_balance(rq, later_rq);
-@@ -2217,7 +2217,7 @@ static void pull_dl_task(struct rq *this_rq)
-  */
- static void task_woken_dl(struct rq *rq, struct task_struct *p)
- {
--	if (!task_running(rq, p) &&
-+	if (!task_running_on_rq(rq, p) &&
- 	    !test_tsk_need_resched(rq->curr) &&
- 	    p->nr_cpus_allowed > 1 &&
- 	    dl_task(rq->curr) &&
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1ea3ddd..6cc0b5b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7503,7 +7503,7 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 	/* Record that we found atleast one task that could run on dst_cpu */
- 	env->flags &= ~LBF_ALL_PINNED;
- 
--	if (task_running(env->src_rq, p)) {
-+	if (task_running_on_rq(env->src_rq, p)) {
- 		schedstat_inc(p->se.statistics.nr_failed_migrations_running);
- 		return 0;
- 	}
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index df11d88..ea647d9 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1655,7 +1655,7 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
- 
- static int pick_rt_task(struct rq *rq, struct task_struct *p, int cpu)
- {
--	if (!task_running(rq, p) &&
-+	if (!task_running_on_rq(rq, p) &&
- 	    cpumask_test_cpu(cpu, p->cpus_ptr))
- 		return 1;
- 
-@@ -1810,7 +1810,7 @@ static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
- 			 */
- 			if (unlikely(task_rq(task) != rq ||
- 				     !cpumask_test_cpu(lowest_rq->cpu, task->cpus_ptr) ||
--				     task_running(rq, task) ||
-+				     task_running_on_rq(rq, task) ||
- 				     !rt_task(task) ||
- 				     !task_on_rq_queued(task))) {
- 
-@@ -2218,7 +2218,7 @@ static void pull_rt_task(struct rq *this_rq)
-  */
- static void task_woken_rt(struct rq *rq, struct task_struct *p)
- {
--	bool need_to_push = !task_running(rq, p) &&
-+	bool need_to_push = !task_running_on_rq(rq, p) &&
- 			    !test_tsk_need_resched(rq->curr) &&
- 			    p->nr_cpus_allowed > 1 &&
- 			    (dl_task(rq->curr) || rt_task(rq->curr)) &&
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0f616bf..e5b6538 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1659,7 +1659,7 @@ static inline int task_current(struct rq *rq, struct task_struct *p)
- 	return rq->curr == p;
- }
- 
--static inline int task_running(struct rq *rq, struct task_struct *p)
-+static inline int task_running_on_rq(struct rq *rq, struct task_struct *p)
- {
- #ifdef CONFIG_SMP
- 	return p->on_cpu;
--- 
-2.7.4
+It should be obvious that this is fine with me.
+
+>>> +	if (!firmware) {
+>>> +		/*
+>>> +		 * If the caller didn't pass in a firmware name then
+>>> +		 * construct a default name.
+>>> +		 */
+>>> +		name_len = strlen(name) + strlen(template) - 2 + 1;
+>>> +		p = kmalloc(name_len, GFP_KERNEL);
+>>
+>>
+>> I don't know if it would be an improvement, but you could
+>> check for a null p value below for both cases.  I.e.:
+>>
+>> 		if (p)
+>> 			snprintf(p, ...);
+>>
+> 
+> Moving the common NULL check and return out seems nice, but given that
+> we then have to have this positive conditional I think the end result is
+> more complex.
+> 
+> That said, if we're not just doing a verbatim copy from rproc_alloc() I
+> think we should make this function:
+> 
+> 	if (!firmware)
+> 		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
+> 	else
+> 		p = kstrdup_const(firmware, GFP_KERNEL);
+
+You know, I wanted to suggest this but I didn't know the
+name of the function (kasprintf()) and didn't take the time
+to find it.  I wholly agree with your suggestion.
+
+The only additional minor tweak I'd add is that I prefer
+using a non-negated condition where possible, though it
+doesn't always "look right."  So:
+
+	if (firmware)
+		rproc->firmware = kstrdup_const(firmware, GFP_KERNEL);
+	else
+		rproc->firmware = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
+
+					-Alex
+
+> 	rproc->firmware = p;
+> 
+> 	return p ? 0 : -ENOMEM;
+> 
+> Regards,
+> Bjorn
+> 
+>> (more below)
+>>
+>>> +		if (!p)
+>>> +			return -ENOMEM;
+>>> +		snprintf(p, name_len, template, name);
+>>> +	} else {
+>>> +		p = kstrdup(firmware, GFP_KERNEL);
+>>> +		if (!p)
+>>> +			return -ENOMEM;
+>>> +	}
+>>> +
+>>
+>> 	if (!p)
+>> 		return -ENOMEM;
+>> 	
+>>> +	rproc->firmware = p;
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>>  /**
+>>>   * rproc_alloc() - allocate a remote processor handle
+>>>   * @dev: the underlying device
+>>> @@ -2007,42 +2034,21 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+>>>  			  const char *firmware, int len)
+>>>  {
+>>>  	struct rproc *rproc;
+>>> -	char *p, *template = "rproc-%s-fw";
+>>> -	int name_len;
+>>>  
+>>>  	if (!dev || !name || !ops)
+>>>  		return NULL;
+>>>  
+>>> -	if (!firmware) {
+>>> -		/*
+>>> -		 * If the caller didn't pass in a firmware name then
+>>> -		 * construct a default name.
+>>> -		 */
+>>> -		name_len = strlen(name) + strlen(template) - 2 + 1;
+>>> -		p = kmalloc(name_len, GFP_KERNEL);
+>>> -		if (!p)
+>>> -			return NULL;
+>>> -		snprintf(p, name_len, template, name);
+>>> -	} else {
+>>> -		p = kstrdup(firmware, GFP_KERNEL);
+>>> -		if (!p)
+>>> -			return NULL;
+>>> -	}
+>>> -
+>>>  	rproc = kzalloc(sizeof(struct rproc) + len, GFP_KERNEL);
+>>> -	if (!rproc) {
+>>> -		kfree(p);
+>>> +	if (!rproc)
+>>>  		return NULL;
+>>> -	}
+>>> +
+>>> +	if (rproc_alloc_firmware(rproc, name, firmware))
+>>> +		goto free_rproc;
+>>>  
+>>>  	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+>>> -	if (!rproc->ops) {
+>>> -		kfree(p);
+>>> -		kfree(rproc);
+>>> -		return NULL;
+>>> -	}
+>>> +	if (!rproc->ops)
+>>> +		goto free_firmware;
+>>>  
+>>> -	rproc->firmware = p;
+>>>  	rproc->name = name;
+>>>  	rproc->priv = &rproc[1];
+>>>  	rproc->auto_boot = true;
+>>> @@ -2091,6 +2097,12 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+>>>  	rproc->state = RPROC_OFFLINE;
+>>>  
+>>>  	return rproc;
+>>> +
+>>> +free_firmware:
+>>> +	kfree(rproc->firmware);
+>>> +free_rproc:
+>>> +	kfree(rproc);
+>>> +	return NULL;
+>>>  }
+>>>  EXPORT_SYMBOL(rproc_alloc);
+>>>  
+>>>
+>>
 
