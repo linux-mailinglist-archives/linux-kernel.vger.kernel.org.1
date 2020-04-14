@@ -2,108 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41B81A8525
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6961A8548
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391819AbgDNQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:36:09 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46846 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391804AbgDNQgA (ORCPT
+        id S2405157AbgDNQka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:40:30 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:47044 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404764AbgDNQkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:36:00 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EGN4uj068794;
-        Tue, 14 Apr 2020 16:35:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+yPSkB6MIowJQszHtIzPH9Ov/fiqm3RcXe6FOdMkD8Q=;
- b=odqJ3CG+AUp9pXI/W0yO++ae/10q/N6Z7mt6A75QMaW+bskDJpSC8wZl9FWJV1sjbOUD
- 7pUd7PzzqK48OYdpH/7hC21QxgaC5sgUDkynNzZwNBSOz+Ni2NY03pCooKiFdbhnzBhU
- PeLp2iGy1FFfZE7gA3IPGaTt0/3ruOJxAPAqWOybdwJfKs/jJSAr3l8JWgqm4e+qGOcl
- /eJBuW0FXnr40BS53DxDxBIEknOxP7E6k6/EAqDNFxupPdHa0vbGfE6Hyd88e/zjkP0g
- +rUCoO85e3Nv4aOevHYOUDJ4HwV3BsexiP1kml7W3z5vzMnsjv27NmINNNqky9maINPn Sg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 30b5ar5wjv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 16:35:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EGR8Ru161303;
-        Tue, 14 Apr 2020 16:35:45 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 30ctaamadh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 16:35:45 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EGZiZu031320;
-        Tue, 14 Apr 2020 16:35:44 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 09:35:44 -0700
-Subject: Re: [PATCH V3 5/9] objtool: Add return address unwind hints
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
- <20200414103618.12657-6-alexandre.chartre@oracle.com>
- <20200414161636.GP20713@hirez.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <546b2d81-39ca-00e1-4df2-d4eaa18496a4@oracle.com>
-Date:   Tue, 14 Apr 2020 18:40:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 14 Apr 2020 12:40:25 -0400
+Received: by mail-oi1-f194.google.com with SMTP id q204so10933092oia.13;
+        Tue, 14 Apr 2020 09:40:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3x35azgG+lJCU/gZaEiAMxuZVIwGctATbm5bUTVlau4=;
+        b=OsoCS8X9Ja254Fhj8jS1lfjNg4PT06oqYuVRREpEUC1LfE6/i746w75DA03/PnvA0J
+         TayTwRO6w8B+I4j95/ZLD6iVKJEGQnmBmxjMguCRzC0XZ4W8gMGgFP5Z28KTytyw3gh1
+         Xs07Tbtxyt6JqDPxW8ebqLzrVU/+AEkYvGdkNlmc/5bzKrbV3S0Bid+3SK7tQ/YnQz2A
+         wl1dabe+Auk6jG8KvuawUrkiME9xZ8LlOSReh7HZhHn4vlHoqPEU4GWcShLZ5HvCO1wv
+         txlWHMvAr5Fu0fI2b/0MzlInUoAplJR3uw5yufp05s6zajfvwn7AtgeTCIcIfdCU55+r
+         pBLA==
+X-Gm-Message-State: AGi0PubTZ9CMvcRl/1c2EUEWvLlKuMvFMUSTjwseo1JyuuUfQjuiBCqr
+        lI12pDsj7Ba+7+hz/HDkwQ==
+X-Google-Smtp-Source: APiQypL0oSub6bEtdmYrLp1hotMjYYelqHyjSliWQQvH3rQAEdz2dRbHzqQ3NfLOhbbfyOvDATjPug==
+X-Received: by 2002:aca:fdd5:: with SMTP id b204mr8487693oii.167.1586882424671;
+        Tue, 14 Apr 2020 09:40:24 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f26sm4225778otp.28.2020.04.14.09.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 09:40:24 -0700 (PDT)
+Received: (nullmailer pid 6287 invoked by uid 1000);
+        Tue, 14 Apr 2020 16:40:23 -0000
+Date:   Tue, 14 Apr 2020 11:40:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     devicetree@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Subject: Re: [PATCH] dt-bindings: timer: cadence_ttc: Migrate
+ timer-cadence-ttc documentation to YAML
+Message-ID: <20200414164023.GA6221@bogus>
+References: <20200401141449.66905-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
-In-Reply-To: <20200414161636.GP20713@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140128
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401141449.66905-1-iwamatsu@nigauri.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/14/20 6:16 PM, Peter Zijlstra wrote:
-> On Tue, Apr 14, 2020 at 12:36:14PM +0200, Alexandre Chartre wrote:
->> Add the UNWIND_HINT_RADDR_DELETE and UNWIND_HINT_RADDR_ALTER unwind
->> hint macros to flag instructions which remove or modify return
->> addresses.
+On Wed,  1 Apr 2020 23:14:49 +0900, Nobuhiro Iwamatsu wrote:
+> The document was migrated to YAML format and renamed cdns,ttc.yaml.
+> And updated the example to the latest format.
 > 
-> I'm confused by this thing; why? AFAICT the rest of the patches are
-> actually simpler without this one.
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> ---
+>  .../bindings/timer/cadence,ttc-timer.txt      | 21 --------
+>  .../devicetree/bindings/timer/cdns,ttc.yaml   | 48 +++++++++++++++++++
+>  2 files changed, 48 insertions(+), 21 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/timer/cadence,ttc-timer.txt
+>  create mode 100644 Documentation/devicetree/bindings/timer/cdns,ttc.yaml
 > 
 
-This is required to indicate to objtool that assembly instructions are
-changing return addresses. For example, in patch 8:
+Applied, thanks.
 
-For retpoline:
-
-@@ -88,6 +96,7 @@
-  	lfence
-  	jmp	.Lspec_trap_\@
-  .Ldo_rop_\@:
-+	UNWIND_HINT_RADDR_ALTER
-  	mov	\reg, (%_ASM_SP)
-  	ret
-  .endm
-
-The unwind hint indicates that the return address has been altered, so the
-code won't return to the return address which was on the stack.
-
-Also for RSB stuffing, this is used to indicated that the stack adjustment
-instruction (add $(BITS_PER_LONG/8) * 2, sp) is actually removing the last
-two return addresses.
-
-alex.
+Rob
