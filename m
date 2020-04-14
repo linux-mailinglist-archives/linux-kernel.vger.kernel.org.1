@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6210B1A827C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB9B1A8237
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407432AbgDNPUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:20:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46424 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438742AbgDNPUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:20:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 73C92AC26;
-        Tue, 14 Apr 2020 15:20:10 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 83F15DA823; Tue, 14 Apr 2020 17:19:31 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 17:19:31 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] btrfs: Fix backref.c selftest compilation warning
-Message-ID: <20200414151931.GU5920@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Tang Bin <tangbin@cmss.chinamobile.com>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-References: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
+        id S2438674AbgDNPUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407367AbgDNPSw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:18:52 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CFCC061A0C;
+        Tue, 14 Apr 2020 08:18:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 6FFF72A16F6
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-imx@nxp.com,
+        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v6 0/8] Genericize DW MIPI DSI bridge and add i.MX 6 driver
+Date:   Tue, 14 Apr 2020 18:19:47 +0300
+Message-Id: <20200414151955.311949-1-adrian.ratiu@collabora.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 11:49:15PM +0800, Tang Bin wrote:
-> Fix missing braces compilation warning in the ARM
-> compiler environment:
->     fs/btrfs/backref.c: In function ‘is_shared_data_backref’:
->     fs/btrfs/backref.c:394:9: warning: missing braces around initializer [-Wmissing-braces]
->       struct prelim_ref target = {0};
->     fs/btrfs/backref.c:394:9: warning: (near initialization for ‘target.rbnode’) [-Wmissing-braces]
-> 
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-> ---
->  fs/btrfs/backref.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 9c380e7..0cc0257 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -391,7 +391,7 @@ static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
->  	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
->  	struct rb_node *parent = NULL;
->  	struct prelim_ref *ref = NULL;
-> -	struct prelim_ref target = {0};
-> +	struct prelim_ref target = {};
+Hello everyone,
 
-I wonder why this initialization is a problem while there are about 20
-other uses of "{0}". The warning is about the embedded rbnode, but why
-does a more recent compiler not warn about that? Is this a missing fix
-from the one you use?
+Many thanks to all who have contributed to this new iteration,
+especially to Arnaud Ferraris for his stm32mp1 testing and to
+Adrian Pop for his stm32f7 testing & debugging help.
 
-I don't mind fixing compiler warnings as long as it bothers enough
-people, eg. we have fixes reported by gcc 7 but I'm hesitant to fix
-anything older without a good reason.
+Further testing, especially on Rockchip devices, is very much
+appreciated.
+
+All reported issues have been addressed and this series should
+apply cleanly on latest next-20200414 tree.
+
+Tested on imx6dl, stm32mp1 and stm32f7.
+
+Best wishes,
+Adrian
+
+Adrian Ratiu (8):
+  drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
+  drm: bridge: dw_mipi_dsi: abstract register access using reg_fields
+  drm: bridge: synopsis: add dsi v1.01 support
+  drm: imx: Add i.MX 6 MIPI DSI host platform driver
+  dt-bindings: display: add i.MX6 MIPI DSI host controller doc
+  drm: stm: dw-mipi-dsi: let the bridge handle the HW version check
+  drm: bridge: dw-mipi-dsi: split low power cfg register into fields
+  drm: bridge: dw-mipi-dsi: fix bad register field offsets
+
+ .../display/imx/fsl,mipi-dsi-imx6.yaml        | 139 ++++
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 691 +++++++++++++-----
+ drivers/gpu/drm/imx/Kconfig                   |   7 +
+ drivers/gpu/drm/imx/Makefile                  |   1 +
+ drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c        | 409 +++++++++++
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c         |  12 +-
+ 6 files changed, 1050 insertions(+), 209 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml
+ create mode 100644 drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c
+
+-- 
+2.26.0
+
