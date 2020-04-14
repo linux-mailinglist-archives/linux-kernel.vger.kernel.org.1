@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359231A7A37
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768E71A7A3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439752AbgDNMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        id S2439772AbgDNMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729744AbgDNMAr (ORCPT
+        by vger.kernel.org with ESMTP id S1729785AbgDNMBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:00:47 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74880C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:00:47 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id m19so9107414lfq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:00:47 -0700 (PDT)
+        Tue, 14 Apr 2020 08:01:43 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A96C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:01:42 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t11so11720883ils.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZmGIxHI3FXPe1uOVzwYGqaafdS9fb+JmB1L9gJHvcAs=;
-        b=FX4wKUFve8tVnmcr9Y6h6962FnDHlik5I6kmSv+tR5M9DDFWZX5MWhqyDwdJwYG3lR
-         S9jDfg40ahIO27guu3KXfySFq9RhrDm0so6i3EIWIzf8p4t7dFt0JfuaNjzukaBhBdku
-         JrVYuvqS3CF15DfJQ8HnMAOolChFLEjXTNGqjI3cycH3+lS8+4+6U1UeW2ow22Ey20P5
-         MI/DdnK98eeGdxUW6ii3KgM0em5gAQ/4ly0qr7z7aH2kAOHZqGT5bsWj3f85u/Lr6lfX
-         WAdTpgmv1b/jBU9dGuGa1SzX5JQSxrtiMplMnzGF0oGqsQMeLz2LHGBg7TlIqvmLUrUS
-         HDRg==
+        bh=rgFALEK+Ue6q7eNefcrOKCeZUeArF3mPFTmn/SYD2MQ=;
+        b=rT1QSSFF4/o6/05hBpjbYf8t/fmGlQnkrKJwVsbXCYJ2vr+TyjgN3DH5ca2n2ylNRh
+         8uB5qEZw8bYMJzIL4bgQI2s7kAZPC9u2Spi5d35Fy73Jzrc6jyj184vvFWsgv24kCnZH
+         nKkbVSe3XzwCS7thKFf7xote64gCzvaMX0Qzn1sj4N6bBj4QCua7DN3AdOaVLG3hDGsl
+         kV8AnZ8LTby30BWPF7V+OzBvCA21i5rXKv6a3K3htYQiMQP22yJLbF/VrS84Mfb5h4r0
+         kUOI0l0F8XngwLvU8BzjgnWeA6QPYKkgkXqG/9Fp6kPEAYdeUOComlqQRYXtgD1qzY3G
+         XSGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZmGIxHI3FXPe1uOVzwYGqaafdS9fb+JmB1L9gJHvcAs=;
-        b=s0UUKlDeCefuivPfVH1StpsSRnUxo+xgDIixaj9awGbcVvpTEOUAhhKGxdnrpsB0Yh
-         q7zWXfOVC3uIMfi1unN8Lb6suXb3bAJmUUvM9y68iECaE8Bgj08w+E5fWWUbjLa9zBJ9
-         tzwK6FHVEGHCMeqWwBcu0WXlg+zbjxLKtLEf6oGskGAiB+jgzyXkifSRS51lN5jzGZa7
-         E8m/jMecCn8WLgph9yIfUKi1fUyvL9ALAR0+lktximETndLmAKvoyb0DERbstUwJ6V0q
-         86I9G/6dcOsMhknvEuDrjYVK0Hw0Kbo7e1xJ9yTI4kcmOCPDMqfo1udGHyoqOOrXHPvW
-         3OfA==
-X-Gm-Message-State: AGi0PuYsJx4qKJtIK21pu8UOZclknbuBYZCkIJCGQgekELzwckbGwss/
-        zYBV1IhZufJORaBwZQJA9hh2g4zcW/i+zD0JvxsklQ==
-X-Google-Smtp-Source: APiQypJ6lIUsCPoi62ew7+9IHVqVz4vNLnSVLqPKzjfKAcFWzWH71rwT9E290Bpz2eKy0PdSRxQUc6h2H/itDa14g8Y=
-X-Received: by 2002:a05:6512:52c:: with SMTP id o12mr13105282lfc.217.1586865645738;
- Tue, 14 Apr 2020 05:00:45 -0700 (PDT)
+        bh=rgFALEK+Ue6q7eNefcrOKCeZUeArF3mPFTmn/SYD2MQ=;
+        b=gfahcXo7RbzKHN2pyiVGiCrAnwDISS/qQrI2XQlvmHE6D0Ckem80qmE7mRXJKnKgId
+         vGUteNQeJjm/Do4Yy2HhG5nLikSOXmnGG51/elL3vrRQluLDGkBbnzF6kT5XnDvlmA60
+         fJXrYzWg0zZ3RVNIdn3Pk46Qy5x0mcvaiyGhlo2Ai0sdFLjyiQ4fLyzz7X98RMOBo+Gp
+         xJKgyrSqABo5YH0prAD11rSYB93RxMV6HRpFfBiqNMQbG6pndl15dU/NAKDSIaHH0bCI
+         fmiaQp3DxhoutCzy+hq5EpRp5RKMsNyCP3Iu4xLaQc3E13J7i78DyF6kmahmKuL24sHc
+         W6LA==
+X-Gm-Message-State: AGi0PuaJy7dvA/Gs3Z74UBa2W1YmcfzwelJgSaH1GQ8iAtTqWQM2MLrL
+        MCn0mEc0r7o0sEIN2QwRHw+Ez4b3DlGdq041RsEsZGgApCDSWw==
+X-Google-Smtp-Source: APiQypK2TpaffPbfIo0KZSNkmmRQZdiIT+UKHMtNHLh72rxcffXBm2gWGTylyjcxnU7IY9J/IknxxzVR5uB6GKvtFDs=
+X-Received: by 2002:a92:c081:: with SMTP id h1mr5207290ile.163.1586865702036;
+ Tue, 14 Apr 2020 05:01:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200320093125.23092-1-brgl@bgdev.pl>
-In-Reply-To: <20200320093125.23092-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 14 Apr 2020 14:00:34 +0200
-Message-ID: <CACRpkdZgWUwmmuXn12DS3TsQS0yQxcweqK6HGxBm=V_2LBLBMw@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: don't call sleeping functions with a spinlock taken
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20200409134558.90863-1-songmuchun@bytedance.com>
+ <20200410115658.GB24814@willie-the-truck> <20200414110516.GO20713@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200414110516.GO20713@hirez.programming.kicks-ass.net>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 14 Apr 2020 20:01:06 +0800
+Message-ID: <CAMZfGtWk+gG7Z2bOy_bq=XnuuSJzic16zpeajhJiiekpJEFrFg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] seqlock: Use while instead of if+goto in __read_seqcount_begin
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, mingo@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 10:31 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Tue, Apr 14, 2020 at 7:05 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> We must not call pinctrl_gpio_can_use_line() with the gpio_lock taken
-> as it takes a mutex internally. Let's move the call before taking the
-> spinlock and store the return value.
+> On Fri, Apr 10, 2020 at 12:56:58PM +0100, Will Deacon wrote:
+> > On Thu, Apr 09, 2020 at 09:45:58PM +0800, Muchun Song wrote:
+> > > The creators of the C language gave us the while keyword. Let's use
+> > > that instead of synthesizing it from if+goto.
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> > >  include/linux/seqlock.h | 6 +-----
+> > >  1 file changed, 1 insertion(+), 5 deletions(-)
+> > >
+> > > diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> > > index 8b97204f35a77..7bdea019814ce 100644
+> > > --- a/include/linux/seqlock.h
+> > > +++ b/include/linux/seqlock.h
+> > > @@ -125,12 +125,8 @@ static inline unsigned __read_seqcount_begin(const seqcount_t *s)
+> > >  {
+> > >     unsigned ret;
+> > >
+> > > -repeat:
+> > > -   ret = READ_ONCE(s->sequence);
+> > > -   if (unlikely(ret & 1)) {
+> > > +   while (unlikely((ret = READ_ONCE(s->sequence)) & 1))
+> > >             cpu_relax();
+> > > -           goto repeat;
+> > > -   }
+> > >     kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
+> > >     return ret;
+> >
+> > Patch looks fine to me, but I'll leave it to Peter as I don't have a
+> > preference either way.
 >
-> This isn't perfect - there's a moment between calling
-> pinctrl_gpio_can_use_line() and taking the spinlock where the situation
-> can change but it isn't a regression either: previously this part wasn't
-> protected at all and it only affects the information user-space is
-> seeing.
->
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Fixes: d2ac25798208 ("gpiolib: provide a dedicated function for setting lineinfo")
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Linus sometimes prefers the goto variant as that better expresses the
+> exception model. But like Will, I don't particularly care. That said,
+> Will, would it make sense to use smp_cond_load_relaxed() here ?
 
-I'm sorry that I lost track of this patch :(
+I have a similar idea. Would it make sense to use smp_cond_load_acquire()
+in raw_read_seqcount_begin()?
 
-Do we still need something like this or has it been fixed
-by some other patches?
-
+-- 
 Yours,
-Linus Walleij
+Muchun
