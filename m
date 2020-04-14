@@ -2,47 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0EE1A75AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E731D1A7591
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407108AbgDNIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:16:57 -0400
-Received: from verein.lst.de ([213.95.11.211]:38066 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407099AbgDNIQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:16:49 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1527168BEB; Tue, 14 Apr 2020 10:16:47 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 10:16:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Martijn Coenen <maco@android.com>
-Cc:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com,
-        bvanassche@acm.org, Chaitanya.Kulkarni@wdc.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] loop: Call loop_config_discard() only after new config
- is applied.
-Message-ID: <20200414081646.GA26486@lst.de>
-References: <20200331114116.21642-1-maco@android.com>
+        id S1729426AbgDNIMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:12:01 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35926 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2407026AbgDNIL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:11:56 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D2AD1250E5F5107F30E6;
+        Tue, 14 Apr 2020 16:11:52 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 14 Apr 2020 16:11:45 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <paul@paul-moore.com>, <stephen.smalley.work@gmail.com>,
+        <eparis@parisplace.org>, <selinux@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] selinux: fix warning Comparison to bool
+Date:   Tue, 14 Apr 2020 16:18:07 +0800
+Message-ID: <1586852287-67588-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200331114116.21642-1-maco@android.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 01:41:16PM +0200, Martijn Coenen wrote:
-> loop_set_status() calls loop_config_discard() to configure discard for
-> the loop device; however, the discard configuration depends on whether
-> the loop device uses encryption, and when we call it the encryption
-> configuration has not been updated yet. Move the call down so we apply
-> the correct discard configuration based on the new configuration.
-> 
-> Signed-off-by: Martijn Coenen <maco@android.com>
+fix below warnings reported by coccicheck
 
-Looks good,
+security/selinux/ss/mls.c:539:39-43: WARNING: Comparison to bool
+security/selinux/ss/services.c:1815:46-50: WARNING: Comparison to bool
+security/selinux/ss/services.c:1827:46-50: WARNING: Comparison to bool
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ security/selinux/ss/mls.c      | 2 +-
+ security/selinux/ss/services.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/security/selinux/ss/mls.c b/security/selinux/ss/mls.c
+index ec5e3d1..6a5d7d0 100644
+--- a/security/selinux/ss/mls.c
++++ b/security/selinux/ss/mls.c
+@@ -536,7 +536,7 @@ int mls_compute_sid(struct policydb *p,
+ 
+ 		/* Fallthrough */
+ 	case AVTAB_CHANGE:
+-		if ((tclass == p->process_class) || (sock == true))
++		if ((tclass == p->process_class) || sock)
+ 			/* Use the process MLS attributes. */
+ 			return mls_context_cpy(newcontext, scontext);
+ 		else
+diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+index 8ad34fd..3b592d1 100644
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -1812,7 +1812,7 @@ static int security_compute_sid(struct selinux_state *state,
+ 	} else if (cladatum && cladatum->default_role == DEFAULT_TARGET) {
+ 		newcontext.role = tcontext->role;
+ 	} else {
+-		if ((tclass == policydb->process_class) || (sock == true))
++		if ((tclass == policydb->process_class) || sock)
+ 			newcontext.role = scontext->role;
+ 		else
+ 			newcontext.role = OBJECT_R_VAL;
+@@ -1824,7 +1824,7 @@ static int security_compute_sid(struct selinux_state *state,
+ 	} else if (cladatum && cladatum->default_type == DEFAULT_TARGET) {
+ 		newcontext.type = tcontext->type;
+ 	} else {
+-		if ((tclass == policydb->process_class) || (sock == true)) {
++		if ((tclass == policydb->process_class) || sock) {
+ 			/* Use the type of process. */
+ 			newcontext.type = scontext->type;
+ 		} else {
+-- 
+2.6.2
+
