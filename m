@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250171A799B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823C31A7994
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439321AbgDNLdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2439311AbgDNLdZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:33:25 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02159C061A0C;
-        Tue, 14 Apr 2020 04:33:25 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id w3so4552124plz.5;
-        Tue, 14 Apr 2020 04:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=KZ+sHNUWTGOOngDZlWZuibRHv6pBV5xa/Uz2LHhglIw=;
-        b=VRrPqiVD/QCxdjEBbskkY+yCiShEK6wsEIXtHjLXfpvij1ltRLBYW8NzIJJmPGw7Jl
-         7O9rXprSSg2KypN2/n22gPbfrV2ko9yTd5ZQA5X2LQDSyGFUWQu8QBnphH70gUe+/FRK
-         5/ysYWz68GwkQi8JYoDLAb1lhU/6pBp5yLlGMV7SiRr2jMJHGt/nW+uAjgiUYV7ycto8
-         eFxubCIicj7SXfgr/8LiQbyXdkpfNE6H1TDEa73cP7OLaDzRMX9MMI1VYP3Q3GlNdo69
-         gNWUpXzn33RucYnWizv9TVCwAa7EJYfdk5B6bGls6Fic9fwDW2teTKTU4yxceD2TRnfL
-         dySQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=KZ+sHNUWTGOOngDZlWZuibRHv6pBV5xa/Uz2LHhglIw=;
-        b=mBiy8/wAdI2M2+XXMh32TZwhValrMfgMkLY5eQO84F0evBf5al3lHT2GS8Uf/8vKwA
-         n3PlW98oUq+nxWucjwGCXe32Ob6skYRKcVYjsO7/e1OjwV9TYNqNTtKXdLG47+iL2ZFs
-         Szaiirlo0q/SckrgEPPqqZv2cbnoXUo+VG1v62pVMq3TIdNuNObUZ/4emEY0+ciSPg/5
-         Dlq1OKQXUygyk3TsOq5pa+633SNNouKm9wqrohrMTfYX3o6v7KbovmE/rt8IKPAgxUv6
-         2EeUaC+qMWlBF7bDVHP4055kSUoymYfBbVtxdeRRhgWurq6N1j5K7mE/iTS7aScX00wC
-         wWGQ==
-X-Gm-Message-State: AGi0PuZecI8EpWeyRxPbpSw70KbTGhIkt8qMIdmH+59r8mfm27iwJww5
-        ySvAO9mJIEfEPYh0JBy1MSc=
-X-Google-Smtp-Source: APiQypIcyr6/I0Kkbv3wlFcU4/Xr/0wS9p1hSr/PXKwlPWpCeFL0ysIODdUC3n5T/abK9CdK/6LdFA==
-X-Received: by 2002:a17:902:6a88:: with SMTP id n8mr21744267plk.292.1586864004572;
-        Tue, 14 Apr 2020 04:33:24 -0700 (PDT)
-Received: from localhost ([203.18.28.220])
-        by smtp.gmail.com with ESMTPSA id w2sm11023334pff.195.2020.04.14.04.33.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 04:33:23 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 21:31:49 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 1/4] mm/vmalloc: fix vmalloc_to_page for huge vmap
- mappings
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        Ingo Molnar <mingo@redhat.com>,
+        id S2439276AbgDNLcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 07:32:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46546 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438988AbgDNLca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 07:32:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0FBFBADB5;
+        Tue, 14 Apr 2020 11:32:27 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20200413125303.423864-1-npiggin@gmail.com>
-        <20200413125303.423864-2-npiggin@gmail.com>
-        <20200413133444.GM21484@bombadil.infradead.org>
-In-Reply-To: <20200413133444.GM21484@bombadil.infradead.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v2 0/3] support setting sysctl parameters from kernel command line
+Date:   Tue, 14 Apr 2020 13:32:19 +0200
+Message-Id: <20200414113222.16959-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Message-Id: <1586863573.ufpx8o7f0i.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Matthew Wilcox's message of April 13, 2020 11:34 pm:
-> On Mon, Apr 13, 2020 at 10:53:00PM +1000, Nicholas Piggin wrote:
->> vmalloc_to_page returns NULL for addresses mapped by larger pages[*].
->> Whether or not a vmap is huge depends on the architecture details,
->> alignments, boot options, etc., which the caller can not be expected
->> to know. Therefore HUGE_VMAP is a regression for vmalloc_to_page.
->>=20
->> This change teaches vmalloc_to_page about larger pages, and returns
->> the struct page that corresponds to the offset within the large page.
->> This makes the API agnostic to mapping implementation details.
->=20
-> I'm trying to get us away from returning tail pages from various
-> functions.  How much of a pain would it be to return the head page
-> instead of the tail page?
+This series adds support for something that seems like many people always
+wanted but nobody added it yet, so here's the ability to set sysctl parameters
+via kernel command line options in the form of sysctl.vm.something=1
 
-Well, this is a fix for the interface for HUGE_VMAP stuff so it
-doesn't really make sense to change the implementation here. If you
-want to change or make a different API that would be a later patch, no?
+The important part is Patch 1. The second, not so important part is an attempt
+to clean up legacy one-off parameters that do the same thing as a sysctl.
+I don't want to remove them completely for compatibility reasons, but with
+generic sysctl support the idea is to remove the one-off param handlers and
+treat the parameters as aliases for the sysctl variants.
 
-> Obviously the implementation gets simpler,
-> but can the callers cope?  I've been focusing on the page cache, so I
-> haven't been looking at the vmalloc side of things at all.
+I have identified several parameters that mention sysctl counterparts in
+Documentation/admin-guide/kernel-parameters.txt but there might be more. The
+conversion also has varying level of success:
 
-Well callers that operate on ioremap today (and vmalloc tomorrow) won't
-cope, because they're expecting a base page. If you wanted to change it
-I suspect the way to go would be introduce a new function and move
-everyone over individually.
+- numa_zonelist_order is converted in Patch 2 together with adding the
+  necessary infrastructure. It's easy as it doesn't really do anything but warn
+  on deprecated value these days.
+- hung_task_panic is converted in Patch 3, but there's a downside that now it
+  only accepts 0 and 1, while previously it was any integer value
+- nmi_watchdog maps to two sysctls nmi_watchdog and hardlockup_panic, so
+  there's no straighforward conversion possible
+- traceoff_on_warning is a flag without value and it would be required to
+  handle that somehow in the conversion infractructure, which seems pointless
+  for a single flag
 
-Thanks,
-Nick
+Vlastimil Babka (3):
+  kernel/sysctl: support setting sysctl parameters from kernel command
+    line
+  kernel/sysctl: support handling command line aliases
+  kernel/hung_task convert hung_task_panic boot parameter to sysctl
+
+Changes since v1:
+- add missing newlines on printk's
+- more adjustments to proc mount param passing (Kees)
+- rebase to 5.7-rc1
+- add acks/reviews
+- test driver (how to pass a testing boot parameter without bootloader specific
+  steps) still under discussion - new Kconfig? bootconfig?
+
+ .../admin-guide/kernel-parameters.txt         |  11 +-
+ fs/proc/proc_sysctl.c                         | 142 ++++++++++++++++++
+ include/linux/sysctl.h                        |   4 +
+ init/main.c                                   |   2 +
+ kernel/hung_task.c                            |  10 --
+ mm/page_alloc.c                               |   9 --
+ 6 files changed, 158 insertions(+), 20 deletions(-)
+
+-- 
+2.26.0
+
