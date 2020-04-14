@@ -2,115 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614631A8B86
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20AC1A8B8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388766AbgDNTun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:50:43 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47138 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505188AbgDNTst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:48:49 -0400
-IronPort-SDR: Fzz8nA7FwzUXByu/1QJRb0mCQ7Hpm6ynkr/+OcfzwI3BgArq4mu9PG1tom98rkcvlb7l30Nujh
- EOrsKGlgQEVg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:48:48 -0700
-IronPort-SDR: /9PXD6UyYfnTEnbuhi6ZiIjqDVppnyJ2nPEU9AuDspmduyNhwdFw8pICveKs/c+tIj7vTxfy4A
- HF7rEguRJHCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="245504497"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Apr 2020 12:48:48 -0700
-Date:   Tue, 14 Apr 2020 12:48:48 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
-Message-ID: <20200414194848.GD1853609@iweiny-DESK2.sc.intel.com>
-References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-10-ira.weiny@intel.com>
- <20200413161912.GZ6742@magnolia>
- <20200414043821.GG1649878@iweiny-DESK2.sc.intel.com>
- <CAPcyv4hfCnFTRsDv8Kviux7=2teu9Tdyc3HDjNJQpagG-JaM+Q@mail.gmail.com>
+        id S2505246AbgDNTw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731039AbgDNTvS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:51:18 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4431FC061A10;
+        Tue, 14 Apr 2020 12:51:18 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id d17so9030616wrg.11;
+        Tue, 14 Apr 2020 12:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+N+iwx+s3b4ecaxzWwdiHxbedClo3dqSdoWLFQ6f1/U=;
+        b=UUxL1PnKnUg8fIrCWtbyWVCvceOj6quFpI5/ZqIp5wWjHBQs2jj8vpenLiBMybtZMj
+         eF9kGXUZn/M7fd8ZNyCtIQtIT5Z8fvBajTocjbk05VdH74TNqOKTbyek5eEC2qZK22yA
+         EoXNTrjsZ/EeuJXkudxFEESAUBypRQ8CElySNf3Xu1ZtCao72FHYzsnewRgzCoolv7nd
+         00a8xhEPPbDi3S0Pt3uyfHyxBizGsvzq1qJZteRoq9XQvErvnO+07byxwp65xHfuX4vK
+         JuZYlUV/tubF5tUBLkSaUnWkCNht9HzMU0ycgoE1FPS9jPYFJUoGAT2bidaF+IJH/bdZ
+         aGAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+N+iwx+s3b4ecaxzWwdiHxbedClo3dqSdoWLFQ6f1/U=;
+        b=r43UINVKh0KmxA2yktoL/Ebmkg1pvUNP2BjNgqgFs3I3SSnmKzSgjbEC1fNcb7BVmn
+         0Vn5dW//8GQcrbZa+HWuvJzsuiU9/AJEoozWStb32lSeVqvScwLGT04wIue35FeOroJ1
+         HXsIo5GcAaSY4dGfiSlm5u1IsbWDMC1RM2PzPaen8rIK8MjanqJ7keaC1a8Ny7hui25b
+         nR71DO2YQXeyh9KFj0EOZ0QgvoBqGF6kiJ2AV/ZJ3vsLsciM1qDwNSNLgoteHIIbDCY0
+         wU+kRu3NH28e90C2HGR1x56MKbnjcNs3E/TbifqnM7Ic6gpC4bx0ZSJnjHpWH1KG6vLr
+         /SpQ==
+X-Gm-Message-State: AGi0PuY3F5nSl3XA2JhgxNauwqLkPKr9qv/0IhWIEV0PZPI4nm01ddDb
+        TwN8tuAjFRdCS66060Z54X0=
+X-Google-Smtp-Source: APiQypJYWEsJw+LuFClfHTnB3e9fwDUHMevyZXeHtabNPFK+dyJsx6HpmKnwmmfYDvv65aGRQFpHbg==
+X-Received: by 2002:a05:6000:8b:: with SMTP id m11mr11200017wrx.168.1586893876770;
+        Tue, 14 Apr 2020 12:51:16 -0700 (PDT)
+Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id s14sm20886844wme.33.2020.04.14.12.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 12:51:16 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org
+Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 0/2] clk: meson: prepare GX and G12 for GPU DVFS
+Date:   Tue, 14 Apr 2020 21:50:29 +0200
+Message-Id: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4hfCnFTRsDv8Kviux7=2teu9Tdyc3HDjNJQpagG-JaM+Q@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 10:12:22PM -0700, Dan Williams wrote:
-> On Mon, Apr 13, 2020 at 9:38 PM Ira Weiny <ira.weiny@intel.com> wrote:
-> >
-> > On Mon, Apr 13, 2020 at 09:19:12AM -0700, Darrick J. Wong wrote:
-> > > On Sun, Apr 12, 2020 at 10:40:46PM -0700, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > >
-> > > > Update the Usage section to reflect the new individual dax selection
-> > > > functionality.
-> > >
-> > > Yum. :)
-> > >
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > >
-> > > > ---
-> > > > Changes from V6:
-> > > >     Update to allow setting FS_XFLAG_DAX any time.
-> > > >     Update with list of behaviors from Darrick
-> > > >     https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
-> > > >
-> > > > Changes from V5:
-> > > >     Update to reflect the agreed upon semantics
-> > > >     https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> > > > ---
-> > > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
-> > > >  1 file changed, 163 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-> > > > index 679729442fd2..af14c1b330a9 100644
-> > > > --- a/Documentation/filesystems/dax.txt
-> > > > +++ b/Documentation/filesystems/dax.txt
-> > > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
-> > > >  Usage
-> > > >  -----
-> > > >
-> > > > -If you have a block device which supports DAX, you can make a filesystem
-> > > > +If you have a block device which supports DAX, you can make a file system
-> > > >  on it as usual.  The DAX code currently only supports files with a block
-> > > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
-> > > > -size when creating the filesystem.  When mounting it, use the "-o dax"
-> > > > -option on the command line or add 'dax' to the options in /etc/fstab.
-> > > > +size when creating the file system.
-> > > > +
-> > > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
-> > > > +different at this time.
-> > >
-> > > I thought ext2 supports DAX?
-> >
-> > Not that I know of?  Does it?
-> 
-> Yes. Seemed like a good idea at the time, but in retrospect...
+This contains only the clock driver updates from my other series titled
+"GPU DVFS for Meson GXBB/GXL/GXM/G12A/G12B/SM1" from [0]
 
-Ah ok...   Is there an objection to leaving ext2 as a global mount option?
-Updating the doc is easy enough.
 
-Ira
+Changes since v1 at [0]:
+- update the patch descriptions to indicate that we explicitly don't
+  want CLK_SET_RATE_PARENT on the muxes
+- split into clock driver (this series) and .dts changes (future
+  series, waiting for testing feedback on v1 from [0])
 
-> 
-> In fairness I believe this was also an olive branch to XIP users that
-> were transitioned to DAX, so they did not also need to transition
-> filesystems.
+
+[0] https://patchwork.kernel.org/cover/11466399/
+
+
+Martin Blumenstingl (2):
+  clk: meson: gxbb: Prepare the GPU clock tree to change at runtime
+  clk: meson: g12a: Prepare the GPU clock tree to change at runtime
+
+ drivers/clk/meson/g12a.c | 30 ++++++++++++++++++++++--------
+ drivers/clk/meson/gxbb.c | 40 ++++++++++++++++++++++------------------
+ 2 files changed, 44 insertions(+), 26 deletions(-)
+
+-- 
+2.26.0
+
