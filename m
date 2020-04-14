@@ -2,550 +2,662 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FB41A8C81
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97611A8CD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633171AbgDNUbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:31:53 -0400
-Received: from mga05.intel.com ([192.55.52.43]:19888 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2633150AbgDNUbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:31:39 -0400
-IronPort-SDR: x9wk5kibf+rxCBgmSYN2sAyjuZ2DxbMfL8epj1oDgOHZ9xQdJSGie0A3g2lxYXPjHituaX+52f
- 7arqsiCxcxSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 13:31:33 -0700
-IronPort-SDR: MkDZ3HUrb6/hfeWapd59uKBbE783OC47SR9KgRIXY85HTTrZ6YyqbtSzEEWF3UjDJDcfNFc+co
- 7I2Sa7xNaIGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="453669038"
-Received: from marshy.an.intel.com ([10.122.105.159])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Apr 2020 13:31:32 -0700
-From:   richard.gong@linux.intel.com
-To:     mdf@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, dinguyen@kernel.org,
-        richard.gong@linux.intel.com, Richard Gong <richard.gong@intel.com>
-Subject: [RESEND PATCHv1 1/1] firmware: fpga: replace the error codes with the standard ones
-Date:   Tue, 14 Apr 2020 15:47:54 -0500
-Message-Id: <1586897274-307-2-git-send-email-richard.gong@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586897274-307-1-git-send-email-richard.gong@linux.intel.com>
-References: <1586897274-307-1-git-send-email-richard.gong@linux.intel.com>
+        id S2633380AbgDNUsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729251AbgDNUsT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:48:19 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB4BC061A0C;
+        Tue, 14 Apr 2020 13:48:19 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id f13so11377191qti.5;
+        Tue, 14 Apr 2020 13:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BxjyGP367A1mWJT2MsjczSKf/D/JRPjVTEQaV25WuXM=;
+        b=RODNPDjIuNDr7EyVn14vikNVU/i0d25FyviUox8bm4CGvl4fhMqdiOQpQ4goLIxy8Q
+         TnwkuG6IwzbqX+yxMU6+BBPnJ0uDcoHPpwiEJ7YcUrcmu75L30UChoN1ojlIGmhRE7W8
+         YLx4d3WdVnnSr/2fxvvkMo5eq7BqX2uS+Ax88DrawqLRjxH9VOekOLnPpiVMhxLd2fsN
+         CPa+0yXpRv1N/ZouH9WK7PFJH4Uvg0SWhXm9kU/p87RJw7Y7L3b6p0p+VenQ5bDr0rb+
+         OkFyG0roHroYdbg4k1LfvvIEbWp4Z8nIFcQwG+QQBhJU5sE0qLJu+0vU5Gk/5Ao8KMcr
+         11IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BxjyGP367A1mWJT2MsjczSKf/D/JRPjVTEQaV25WuXM=;
+        b=SF4qMPV5jKq+/i9BVvhFRYqnRHuoxFe33G63dp2UqvLWv1Zw5uWkQwyjK1uTiPPeId
+         kV6n5ZAcYP35/lnrcNQ+jnymbelgPTvHWBDKqgdfCjlslXOO7OruqMWzpNSzvYks690U
+         gIHMw3bKMR8EwThUc5U4h4Lyyn4FVpj5RXIeCzJEB3bE2Wmn9jx0dUDxWsK6kU7VryH5
+         xK7B01uNGtvPqsqt9tTuNNs5CKmZOEIwk6RUDgI1q0pDwV1J+vsLsocRcpWFMQdnHJQO
+         W9bwRG8fz/+as3vVJIOiLkAd4vHwC7tQWinOM1UKejQ81RwpOnADKT9UlH/csskiZGmq
+         laFw==
+X-Gm-Message-State: AGi0Pubj1tdy8DMR3ewExiSQ+kckkBb/Z+WSFEI4ZT5GIPExX9rQplfw
+        Y51i5obvotxwtb0qxDs0jzd/rn5cKi4=
+X-Google-Smtp-Source: APiQypIB7lr/sxnbtIv9ZMvYlOFz/us9gaqJrot7NpVXoii976myucprPy+c8oXpes//up3icaz4yQ==
+X-Received: by 2002:ac8:7286:: with SMTP id v6mr18165876qto.299.1586897298298;
+        Tue, 14 Apr 2020 13:48:18 -0700 (PDT)
+Received: from icarus (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id s14sm8525963qts.70.2020.04.14.13.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 13:48:16 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 16:48:14 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Gwendal Grignou <gwendal@chromium.org>
+Cc:     enric.balletbo@collabora.com, jic23@kernel.org,
+        bleung@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v2] drivers: counter: Add Cros EC Sync counter
+Message-ID: <20200414204814.GH7347@icarus>
+References: <20200413195514.192868-1-gwendal@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dMyqICaxQaaUjrCL"
+Content-Disposition: inline
+In-Reply-To: <20200413195514.192868-1-gwendal@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
 
-The Intel service layer driver has defined error codes for the
-specific services, which started from FPGA configuration then RSU
-(Remote Status Update).
+--dMyqICaxQaaUjrCL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Intel service layer driver should define the standard error codes
-rather than keep adding more error codes for the new services.
+On Mon, Apr 13, 2020 at 12:55:14PM -0700, Gwendal Grignou wrote:
+> When the camera vsync pin is connected to the embedded controller (EC) of
+> a chromebook, the EC reports a sensor with a counter that increases
+> at each GPIO rising edge.
+>=20
+> The sensor is presented using the counter subsystem.
+> In addition, it is also presented via the IIO subsystem with a timestamp,
+> allowing synchronisation with sensors connected to the same EC, for
+> image stabilisation or augmented reality applications.
 
-The standard error codes will be used by all the clients of Intel service
-layer driver.
+Hi Gwendal,
 
-Replace FPGA and RSU specific error codes with Intel service layer’s
-Common error codes.
+Sorry for the delay. I have some changes requested below.
 
-Signed-off-by: Richard Gong <richard.gong@intel.com>
----
- drivers/firmware/stratix10-rsu.c                   | 10 +--
- drivers/firmware/stratix10-svc.c                   | 62 ++++++-------------
- drivers/fpga/stratix10-soc.c                       | 25 +++-----
- include/linux/firmware/intel/stratix10-smc.h       | 49 +++++++--------
- .../linux/firmware/intel/stratix10-svc-client.h    | 71 +++++++++-------------
- 5 files changed, 84 insertions(+), 133 deletions(-)
+> To enable the counter:
+> via counter ABI:
+> echo "rising edge" > counterX/count0/signal_action
+> via iio ABI
+> echo 1 > iio:deviceY/en
+>=20
+> To disable the counter:
+> via counter ABI:
+> echo "none" > counterX/count0/signal_action
+> via iio ABI
+> echo 0 > iio:deviceY/en
 
-diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
-index f853333..4379475 100644
---- a/drivers/firmware/stratix10-rsu.c
-+++ b/drivers/firmware/stratix10-rsu.c
-@@ -72,7 +72,7 @@ static void rsu_status_callback(struct stratix10_svc_client *client,
- 	struct stratix10_rsu_priv *priv = client->priv;
- 	struct arm_smccc_res *res = (struct arm_smccc_res *)data->kaddr1;
- 
--	if (data->status == BIT(SVC_STATUS_RSU_OK)) {
-+	if (data->status == BIT(SVC_STATUS_OK)) {
- 		priv->status.version = FIELD_GET(RSU_VERSION_MASK,
- 						 res->a2);
- 		priv->status.state = FIELD_GET(RSU_STATE_MASK, res->a2);
-@@ -108,9 +108,9 @@ static void rsu_command_callback(struct stratix10_svc_client *client,
- {
- 	struct stratix10_rsu_priv *priv = client->priv;
- 
--	if (data->status == BIT(SVC_STATUS_RSU_NO_SUPPORT))
-+	if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
- 		dev_warn(client->dev, "Secure FW doesn't support notify\n");
--	else if (data->status == BIT(SVC_STATUS_RSU_ERROR))
-+	else if (data->status == BIT(SVC_STATUS_ERROR))
- 		dev_err(client->dev, "Failure, returned status is %lu\n",
- 			BIT(data->status));
- 
-@@ -133,9 +133,9 @@ static void rsu_retry_callback(struct stratix10_svc_client *client,
- 	struct stratix10_rsu_priv *priv = client->priv;
- 	unsigned int *counter = (unsigned int *)data->kaddr1;
- 
--	if (data->status == BIT(SVC_STATUS_RSU_OK))
-+	if (data->status == BIT(SVC_STATUS_OK))
- 		priv->retry_counter = *counter;
--	else if (data->status == BIT(SVC_STATUS_RSU_NO_SUPPORT))
-+	else if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
- 		dev_warn(client->dev, "Secure FW doesn't support retry\n");
- 	else
- 		dev_err(client->dev, "Failed to get retry counter %lu\n",
-diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-index d5f0769..e0db8db 100644
---- a/drivers/firmware/stratix10-svc.c
-+++ b/drivers/firmware/stratix10-svc.c
-@@ -214,7 +214,7 @@ static void svc_thread_cmd_data_claim(struct stratix10_svc_controller *ctrl,
- 				complete(&ctrl->complete_status);
- 				break;
- 			}
--			cb_data->status = BIT(SVC_STATUS_RECONFIG_BUFFER_DONE);
-+			cb_data->status = BIT(SVC_STATUS_BUFFER_DONE);
- 			cb_data->kaddr1 = svc_pa_to_va(res.a1);
- 			cb_data->kaddr2 = (res.a2) ?
- 					  svc_pa_to_va(res.a2) : NULL;
-@@ -227,7 +227,7 @@ static void svc_thread_cmd_data_claim(struct stratix10_svc_controller *ctrl,
- 				 __func__);
- 		}
- 	} while (res.a0 == INTEL_SIP_SMC_STATUS_OK ||
--		 res.a0 == INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY ||
-+		 res.a0 == INTEL_SIP_SMC_STATUS_BUSY ||
- 		 wait_for_completion_timeout(&ctrl->complete_status, timeout));
- }
- 
-@@ -250,7 +250,7 @@ static void svc_thread_cmd_config_status(struct stratix10_svc_controller *ctrl,
- 	cb_data->kaddr1 = NULL;
- 	cb_data->kaddr2 = NULL;
- 	cb_data->kaddr3 = NULL;
--	cb_data->status = BIT(SVC_STATUS_RECONFIG_ERROR);
-+	cb_data->status = BIT(SVC_STATUS_ERROR);
- 
- 	pr_debug("%s: polling config status\n", __func__);
- 
-@@ -259,7 +259,7 @@ static void svc_thread_cmd_config_status(struct stratix10_svc_controller *ctrl,
- 		ctrl->invoke_fn(INTEL_SIP_SMC_FPGA_CONFIG_ISDONE,
- 				0, 0, 0, 0, 0, 0, 0, &res);
- 		if ((res.a0 == INTEL_SIP_SMC_STATUS_OK) ||
--		    (res.a0 == INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR))
-+		    (res.a0 == INTEL_SIP_SMC_STATUS_ERROR))
- 			break;
- 
- 		/*
-@@ -271,7 +271,7 @@ static void svc_thread_cmd_config_status(struct stratix10_svc_controller *ctrl,
- 	}
- 
- 	if (res.a0 == INTEL_SIP_SMC_STATUS_OK && count_in_sec)
--		cb_data->status = BIT(SVC_STATUS_RECONFIG_COMPLETED);
-+		cb_data->status = BIT(SVC_STATUS_COMPLETED);
- 
- 	p_data->chan->scl->receive_cb(p_data->chan->scl, cb_data);
- }
-@@ -294,24 +294,18 @@ static void svc_thread_recv_status_ok(struct stratix10_svc_data *p_data,
- 
- 	switch (p_data->command) {
- 	case COMMAND_RECONFIG:
--		cb_data->status = BIT(SVC_STATUS_RECONFIG_REQUEST_OK);
-+	case COMMAND_RSU_UPDATE:
-+	case COMMAND_RSU_NOTIFY:
-+		cb_data->status = BIT(SVC_STATUS_OK);
- 		break;
- 	case COMMAND_RECONFIG_DATA_SUBMIT:
--		cb_data->status = BIT(SVC_STATUS_RECONFIG_BUFFER_SUBMITTED);
--		break;
--	case COMMAND_NOOP:
--		cb_data->status = BIT(SVC_STATUS_RECONFIG_BUFFER_SUBMITTED);
--		cb_data->kaddr1 = svc_pa_to_va(res.a1);
-+		cb_data->status = BIT(SVC_STATUS_BUFFER_SUBMITTED);
- 		break;
- 	case COMMAND_RECONFIG_STATUS:
--		cb_data->status = BIT(SVC_STATUS_RECONFIG_COMPLETED);
--		break;
--	case COMMAND_RSU_UPDATE:
--	case COMMAND_RSU_NOTIFY:
--		cb_data->status = BIT(SVC_STATUS_RSU_OK);
-+		cb_data->status = BIT(SVC_STATUS_COMPLETED);
- 		break;
- 	case COMMAND_RSU_RETRY:
--		cb_data->status = BIT(SVC_STATUS_RSU_OK);
-+		cb_data->status = BIT(SVC_STATUS_OK);
- 		cb_data->kaddr1 = &res.a1;
- 		break;
- 	default:
-@@ -430,9 +424,9 @@ static int svc_normal_to_secure_thread(void *data)
- 
- 		if (pdata->command == COMMAND_RSU_STATUS) {
- 			if (res.a0 == INTEL_SIP_SMC_RSU_ERROR)
--				cbdata->status = BIT(SVC_STATUS_RSU_ERROR);
-+				cbdata->status = BIT(SVC_STATUS_ERROR);
- 			else
--				cbdata->status = BIT(SVC_STATUS_RSU_OK);
-+				cbdata->status = BIT(SVC_STATUS_OK);
- 
- 			cbdata->kaddr1 = &res;
- 			cbdata->kaddr2 = NULL;
-@@ -445,7 +439,7 @@ static int svc_normal_to_secure_thread(void *data)
- 		case INTEL_SIP_SMC_STATUS_OK:
- 			svc_thread_recv_status_ok(pdata, cbdata, res);
- 			break;
--		case INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY:
-+		case INTEL_SIP_SMC_STATUS_BUSY:
- 			switch (pdata->command) {
- 			case COMMAND_RECONFIG_DATA_SUBMIT:
- 				svc_thread_cmd_data_claim(ctrl,
-@@ -460,33 +454,13 @@ static int svc_normal_to_secure_thread(void *data)
- 				break;
- 			}
- 			break;
--		case INTEL_SIP_SMC_FPGA_CONFIG_STATUS_REJECTED:
-+		case INTEL_SIP_SMC_STATUS_REJECTED:
- 			pr_debug("%s: STATUS_REJECTED\n", __func__);
- 			break;
--		case INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR:
-+		case INTEL_SIP_SMC_STATUS_ERROR:
- 		case INTEL_SIP_SMC_RSU_ERROR:
- 			pr_err("%s: STATUS_ERROR\n", __func__);
--			switch (pdata->command) {
--			/* for FPGA mgr */
--			case COMMAND_RECONFIG_DATA_CLAIM:
--			case COMMAND_RECONFIG:
--			case COMMAND_RECONFIG_DATA_SUBMIT:
--			case COMMAND_RECONFIG_STATUS:
--				cbdata->status =
--					BIT(SVC_STATUS_RECONFIG_ERROR);
--				break;
--
--			/* for RSU */
--			case COMMAND_RSU_STATUS:
--			case COMMAND_RSU_UPDATE:
--			case COMMAND_RSU_NOTIFY:
--			case COMMAND_RSU_RETRY:
--				cbdata->status =
--					BIT(SVC_STATUS_RSU_ERROR);
--				break;
--			}
--
--			cbdata->status = BIT(SVC_STATUS_RECONFIG_ERROR);
-+			cbdata->status = BIT(SVC_STATUS_ERROR);
- 			cbdata->kaddr1 = NULL;
- 			cbdata->kaddr2 = NULL;
- 			cbdata->kaddr3 = NULL;
-@@ -502,7 +476,7 @@ static int svc_normal_to_secure_thread(void *data)
- 			if ((pdata->command == COMMAND_RSU_RETRY) ||
- 				(pdata->command == COMMAND_RSU_NOTIFY)) {
- 				cbdata->status =
--					BIT(SVC_STATUS_RSU_NO_SUPPORT);
-+					BIT(SVC_STATUS_NO_SUPPORT);
- 				cbdata->kaddr1 = NULL;
- 				cbdata->kaddr2 = NULL;
- 				cbdata->kaddr3 = NULL;
-diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-index 215d337..bae98c8 100644
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -154,11 +154,11 @@ static void s10_receive_callback(struct stratix10_svc_client *client,
- 	 * Here we set status bits as we receive them.  Elsewhere, we always use
- 	 * test_and_clear_bit() to check status in priv->status
- 	 */
--	for (i = 0; i <= SVC_STATUS_RECONFIG_ERROR; i++)
-+	for (i = 0; i <= SVC_STATUS_ERROR; i++)
- 		if (status & (1 << i))
- 			set_bit(i, &priv->status);
- 
--	if (status & BIT(SVC_STATUS_RECONFIG_BUFFER_DONE)) {
-+	if (status & BIT(SVC_STATUS_BUFFER_DONE)) {
- 		s10_unlock_bufs(priv, data->kaddr1);
- 		s10_unlock_bufs(priv, data->kaddr2);
- 		s10_unlock_bufs(priv, data->kaddr3);
-@@ -209,8 +209,7 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
- 	}
- 
- 	ret = 0;
--	if (!test_and_clear_bit(SVC_STATUS_RECONFIG_REQUEST_OK,
--				&priv->status)) {
-+	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
- 		ret = -ETIMEDOUT;
- 		goto init_done;
- 	}
-@@ -323,17 +322,15 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
- 				&priv->status_return_completion,
- 				S10_BUFFER_TIMEOUT);
- 
--		if (test_and_clear_bit(SVC_STATUS_RECONFIG_BUFFER_DONE,
--				       &priv->status) ||
--		    test_and_clear_bit(SVC_STATUS_RECONFIG_BUFFER_SUBMITTED,
-+		if (test_and_clear_bit(SVC_STATUS_BUFFER_DONE, &priv->status) ||
-+		    test_and_clear_bit(SVC_STATUS_BUFFER_SUBMITTED,
- 				       &priv->status)) {
- 			ret = 0;
- 			continue;
- 		}
- 
--		if (test_and_clear_bit(SVC_STATUS_RECONFIG_ERROR,
--				       &priv->status)) {
--			dev_err(dev, "ERROR - giving up - SVC_STATUS_RECONFIG_ERROR\n");
-+		if (test_and_clear_bit(SVC_STATUS_ERROR, &priv->status)) {
-+			dev_err(dev, "ERROR - giving up - SVC_STATUS_ERROR\n");
- 			ret = -EFAULT;
- 			break;
- 		}
-@@ -393,13 +390,11 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
- 		timeout = ret;
- 		ret = 0;
- 
--		if (test_and_clear_bit(SVC_STATUS_RECONFIG_COMPLETED,
--				       &priv->status))
-+		if (test_and_clear_bit(SVC_STATUS_COMPLETED, &priv->status))
- 			break;
- 
--		if (test_and_clear_bit(SVC_STATUS_RECONFIG_ERROR,
--				       &priv->status)) {
--			dev_err(dev, "ERROR - giving up - SVC_STATUS_RECONFIG_ERROR\n");
-+		if (test_and_clear_bit(SVC_STATUS_ERROR, &priv->status)) {
-+			dev_err(dev, "ERROR - giving up - SVC_STATUS_ERROR\n");
- 			ret = -EFAULT;
- 			break;
- 		}
-diff --git a/include/linux/firmware/intel/stratix10-smc.h b/include/linux/firmware/intel/stratix10-smc.h
-index 013ae48..682dbf6 100644
---- a/include/linux/firmware/intel/stratix10-smc.h
-+++ b/include/linux/firmware/intel/stratix10-smc.h
-@@ -54,32 +54,25 @@
-  * Secure monitor software doesn't recognize the request.
-  *
-  * INTEL_SIP_SMC_STATUS_OK:
-- * FPGA configuration completed successfully,
-- * In case of FPGA configuration write operation, it means secure monitor
-- * software can accept the next chunk of FPGA configuration data.
-+ * Secure monitor software accepts the service client's request.
-  *
-- * INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY:
-- * In case of FPGA configuration write operation, it means secure monitor
-- * software is still processing previous data & can't accept the next chunk
-- * of data. Service driver needs to issue
-- * INTEL_SIP_SMC_FPGA_CONFIG_COMPLETED_WRITE call to query the
-- * completed block(s).
-+ * INTEL_SIP_SMC_STATUS_BUSY:
-+ * Secure monitor software is still processing service client's request.
-  *
-- * INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR:
-- * There is error during the FPGA configuration process.
-+ * INTEL_SIP_SMC_STATUS_REJECTED:
-+ * Secure monitor software reject the service client's request.
-  *
-- * INTEL_SIP_SMC_REG_ERROR:
-- * There is error during a read or write operation of the protected registers.
-+ * INTEL_SIP_SMC_STATUS_ERROR:
-+ * There is error during the process of service request.
-  *
-  * INTEL_SIP_SMC_RSU_ERROR:
-- * There is error during a remote status update.
-+ * There is error during the process of remote status update request.
-  */
- #define INTEL_SIP_SMC_RETURN_UNKNOWN_FUNCTION		0xFFFFFFFF
- #define INTEL_SIP_SMC_STATUS_OK				0x0
--#define INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY		0x1
--#define INTEL_SIP_SMC_FPGA_CONFIG_STATUS_REJECTED       0x2
--#define INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR		0x4
--#define INTEL_SIP_SMC_REG_ERROR				0x5
-+#define INTEL_SIP_SMC_STATUS_BUSY			0x1
-+#define INTEL_SIP_SMC_STATUS_REJECTED			0x2
-+#define INTEL_SIP_SMC_STATUS_ERROR			0x4
- #define INTEL_SIP_SMC_RSU_ERROR				0x7
- 
- /**
-@@ -95,7 +88,7 @@
-  * a2-7: not used.
-  *
-  * Return status:
-- * a0: INTEL_SIP_SMC_STATUS_OK, or INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR.
-+ * a0: INTEL_SIP_SMC_STATUS_OK, or INTEL_SIP_SMC_STATUS_ERROR.
-  * a1-3: not used.
-  */
- #define INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_START 1
-@@ -115,8 +108,8 @@
-  * a3-7: not used.
-  *
-  * Return status:
-- * a0: INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY or
-- * INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR.
-+ * a0: INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_STATUS_BUSY or
-+ * INTEL_SIP_SMC_STATUS_ERROR.
-  * a1: 64bit physical address of 1st completed memory block if any completed
-  * block, otherwise zero value.
-  * a2: 64bit physical address of 2nd completed memory block if any completed
-@@ -133,15 +126,15 @@
-  *
-  * Sync call used by service driver at EL1 to track the completed write
-  * transactions. This request is called after INTEL_SIP_SMC_FPGA_CONFIG_WRITE
-- * call returns INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY.
-+ * call returns INTEL_SIP_SMC_STATUS_BUSY.
-  *
-  * Call register usage:
-  * a0: INTEL_SIP_SMC_FPGA_CONFIG_COMPLETED_WRITE.
-  * a1-7: not used.
-  *
-  * Return status:
-- * a0: INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY or
-- * INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR.
-+ * a0: INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_FPGA_BUSY or
-+ * INTEL_SIP_SMC_STATUS_ERROR.
-  * a1: 64bit physical address of 1st completed memory block.
-  * a2: 64bit physical address of 2nd completed memory block if
-  * any completed block, otherwise zero value.
-@@ -164,8 +157,8 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
-  * a1-7: not used.
-  *
-  * Return status:
-- * a0: INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_FPGA_CONFIG_STATUS_BUSY or
-- * INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR.
-+ * a0: INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_STATUS_BUSY or
-+ * INTEL_SIP_SMC_STATUS_ERROR.
-  * a1-3: not used.
-  */
- #define INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_ISDONE 4
-@@ -183,7 +176,7 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
-  * a1-7: not used.
-  *
-  * Return status:
-- * a0: INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR.
-+ * a0: INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_STATUS_ERROR.
-  * a1: start of physical address of reserved memory block.
-  * a2: size of reserved memory block.
-  * a3: not used.
-@@ -203,7 +196,7 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
-  * a1-7: not used.
-  *
-  * Return status:
-- * a0: INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR.
-+ * a0: INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_STATUS_ERROR.
-  * a1-3: not used.
-  */
- #define INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_LOOPBACK 6
-diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-index 59bc6e2..64213c3 100644
---- a/include/linux/firmware/intel/stratix10-svc-client.h
-+++ b/include/linux/firmware/intel/stratix10-svc-client.h
-@@ -18,45 +18,37 @@
- /**
-  * Status of the sent command, in bit number
-  *
-- * SVC_COMMAND_STATUS_RECONFIG_REQUEST_OK:
-- * Secure firmware accepts the request of FPGA reconfiguration.
-+ * SVC_STATUS_OK:
-+ * Secure firmware accepts the request issued by one of service clients.
-  *
-- * SVC_STATUS_RECONFIG_BUFFER_SUBMITTED:
-- * Service client successfully submits FPGA configuration
-- * data buffer to secure firmware.
-+ * SVC_STATUS_BUFFER_SUBMITTED:
-+ * Service client successfully submits data buffer to secure firmware.
-  *
-- * SVC_COMMAND_STATUS_RECONFIG_BUFFER_DONE:
-+ * SVC_STATUS_BUFFER_DONE:
-  * Secure firmware completes data process, ready to accept the
-  * next WRITE transaction.
-  *
-- * SVC_COMMAND_STATUS_RECONFIG_COMPLETED:
-- * Secure firmware completes FPGA configuration successfully, FPGA should
-- * be in user mode.
-+ * SVC_STATUS_COMPLETED:
-+ * Secure firmware completes service request successfully. In case of
-+ * FPGA configuration, FPGA should be in user mode.
-  *
-- * SVC_COMMAND_STATUS_RECONFIG_BUSY:
-- * FPGA configuration is still in process.
-+ * SVC_COMMAND_STATUS_BUSY:
-+ * Service request is still in process.
-  *
-- * SVC_COMMAND_STATUS_RECONFIG_ERROR:
-- * Error encountered during FPGA configuration.
-+ * SVC_COMMAND_STATUS_ERROR:
-+ * Error encountered during the process of the service request.
-  *
-- * SVC_STATUS_RSU_OK:
-- * Secure firmware accepts the request of remote status update (RSU).
-- *
-- * SVC_STATUS_RSU_ERROR:
-- * Error encountered during remote system update.
-- *
-- * SVC_STATUS_RSU_NO_SUPPORT:
-- * Secure firmware doesn't support RSU retry or notify feature.
-+ * SVC_STATUS_NO_SUPPORT:
-+ * Secure firmware doesn't support requested features such as RSU retry
-+ * or RSU notify.
-  */
--#define SVC_STATUS_RECONFIG_REQUEST_OK		0
--#define SVC_STATUS_RECONFIG_BUFFER_SUBMITTED	1
--#define SVC_STATUS_RECONFIG_BUFFER_DONE		2
--#define SVC_STATUS_RECONFIG_COMPLETED		3
--#define SVC_STATUS_RECONFIG_BUSY		4
--#define SVC_STATUS_RECONFIG_ERROR		5
--#define SVC_STATUS_RSU_OK			6
--#define SVC_STATUS_RSU_ERROR			7
--#define SVC_STATUS_RSU_NO_SUPPORT		8
-+#define SVC_STATUS_OK			0
-+#define SVC_STATUS_BUFFER_SUBMITTED	1
-+#define SVC_STATUS_BUFFER_DONE		2
-+#define SVC_STATUS_COMPLETED		3
-+#define SVC_STATUS_BUSY			4
-+#define SVC_STATUS_ERROR		5
-+#define SVC_STATUS_NO_SUPPORT		6
- 
- /**
-  * Flag bit for COMMAND_RECONFIG
-@@ -84,32 +76,29 @@ struct stratix10_svc_chan;
-  * @COMMAND_NOOP: do 'dummy' request for integration/debug/trouble-shooting
-  *
-  * @COMMAND_RECONFIG: ask for FPGA configuration preparation, return status
-- * is SVC_STATUS_RECONFIG_REQUEST_OK
-+ * is SVC_STATUS_OK
-  *
-  * @COMMAND_RECONFIG_DATA_SUBMIT: submit buffer(s) of bit-stream data for the
-- * FPGA configuration, return status is SVC_STATUS_RECONFIG_BUFFER_SUBMITTED,
-- * or SVC_STATUS_RECONFIG_ERROR
-+ * FPGA configuration, return status is SVC_STATUS_SUBMITTED or SVC_STATUS_ERROR
-  *
-  * @COMMAND_RECONFIG_DATA_CLAIM: check the status of the configuration, return
-- * status is SVC_STATUS_RECONFIG_COMPLETED, or SVC_STATUS_RECONFIG_BUSY, or
-- * SVC_STATUS_RECONFIG_ERROR
-+ * status is SVC_STATUS_COMPLETED, or SVC_STATUS_BUSY, or SVC_STATUS_ERROR
-  *
-  * @COMMAND_RECONFIG_STATUS: check the status of the configuration, return
-- * status is SVC_STATUS_RECONFIG_COMPLETED, or  SVC_STATUS_RECONFIG_BUSY, or
-- * SVC_STATUS_RECONFIG_ERROR
-+ * status is SVC_STATUS_COMPLETED, or SVC_STATUS_BUSY, or SVC_STATUS_ERROR
-  *
-  * @COMMAND_RSU_STATUS: request remote system update boot log, return status
-  * is log data or SVC_STATUS_RSU_ERROR
-  *
-  * @COMMAND_RSU_UPDATE: set the offset of the bitstream to boot after reboot,
-- * return status is SVC_STATUS_RSU_OK or SVC_STATUS_RSU_ERROR
-+ * return status is SVC_STATUS_OK or SVC_STATUS_ERROR
-  *
-  * @COMMAND_RSU_NOTIFY: report the status of hard processor system
-- * software to firmware, return status is SVC_STATUS_RSU_OK or
-- * SVC_STATUS_RSU_ERROR
-+ * software to firmware, return status is SVC_STATUS_OK or
-+ * SVC_STATUS_ERROR
-  *
-  * @COMMAND_RSU_RETRY: query firmware for the current image's retry counter,
-- * return status is SVC_STATUS_RSU_OK or SVC_STATUS_RSU_ERROR
-+ * return status is SVC_STATUS_OK or SVC_STATUS_ERROR
-  */
- enum stratix10_svc_command_code {
- 	COMMAND_NOOP = 0,
--- 
-2.7.4
+Although in theory a user could manually disable the actions for a
+Signal, this is a very roundabout way of actually disabling the Count.
+It's better to expose an "enable" attribute to allow the users to
+perform this functionality; for example:
 
+echo 0 > counterX/count0/enable
+echo 1 > counterX/count0/enable
+
+>=20
+> To read the current counter value:
+> via counter ABI:
+> cat counterX/count0/count
+> via iio ABI
+> cat iio:deviceY/in_count_raw
+
+I know we discussed this in the last review but it's still the same as
+before: IIO_COUNT interface is deprecated so new drivers won't be
+allowed to use it. You'll have to remove the IIO_COUNT code in this
+driver and replace it with Counter subsystem equivalents.
+
+> We can also read the value through the IIO buffer:
+> echo 1 > iio:deviceY/scan_elements/in_timestamp_en
+> echo 1 > iio:deviceY/scan_elements/in_count_en
+> echo 1 > iio:deviceY/buffer/enable
+>=20
+> and each time to counter increase, the following binary blob
+> will be appended to dev/iio:deviceY:
+> 000f 0000 0000 0000 dc66 816c 0071 0000
+>  \   <-- padding -> <-- timestamp ---->
+>   count
+>=20
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> ---
+> Changes in v2:
+> - fix license.
+> - remove extra unlock.
+>=20
+>  drivers/counter/Kconfig                       |  11 +
+>  drivers/counter/Makefile                      |   1 +
+>  drivers/counter/cros_ec_sync.c                | 332 ++++++++++++++++++
+>  .../cros_ec_sensors/cros_ec_sensors_core.c    |  15 +
+>  drivers/platform/chrome/cros_ec_sensorhub.c   |   3 +
+>  .../linux/iio/common/cros_ec_sensors_core.h   |   4 +-
+>  6 files changed, 365 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/counter/cros_ec_sync.c
+>=20
+> diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
+> index c80fa76bb5311..18fde918ff40b 100644
+> --- a/drivers/counter/Kconfig
+> +++ b/drivers/counter/Kconfig
+> @@ -29,6 +29,17 @@ config 104_QUAD_8
+>  	  The base port addresses for the devices may be configured via the base
+>  	  array module parameter.
+> =20
+> +config CROS_EC_SYNC
+> +	tristate "ChromeOS EC Counter driver"
+> +	depends on IIO_CROS_EC_SENSORS_CORE
+> +	help
+> +	  Module to handle synchronisation sensor presented by the ChromeOS EC
+> +	  Sensor hub.
+> +	  Synchronisation sensor sends event to the host when the camera
+> +	  take a picture. It allows synchronisation with other MEMS sensor,
+> +	  like gyroscope for image statbilization or augmented reality
+> +	  application (AR).
+> +
+>  config STM32_TIMER_CNT
+>  	tristate "STM32 Timer encoder counter driver"
+>  	depends on MFD_STM32_TIMERS || COMPILE_TEST
+> diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
+> index 55142d1f4c436..98378fca50ad6 100644
+> --- a/drivers/counter/Makefile
+> +++ b/drivers/counter/Makefile
+> @@ -6,6 +6,7 @@
+>  obj-$(CONFIG_COUNTER) +=3D counter.o
+> =20
+>  obj-$(CONFIG_104_QUAD_8)	+=3D 104-quad-8.o
+> +obj-$(CONFIG_CROS_EC_SYNC)	+=3D cros_ec_sync.o
+>  obj-$(CONFIG_STM32_TIMER_CNT)	+=3D stm32-timer-cnt.o
+>  obj-$(CONFIG_STM32_LPTIMER_CNT)	+=3D stm32-lptimer-cnt.o
+>  obj-$(CONFIG_TI_EQEP)		+=3D ti-eqep.o
+> diff --git a/drivers/counter/cros_ec_sync.c b/drivers/counter/cros_ec_syn=
+c.c
+> new file mode 100644
+> index 0000000000000..4e644d651fde6
+> --- /dev/null
+> +++ b/drivers/counter/cros_ec_sync.c
+> @@ -0,0 +1,332 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for synchronisation sensor behind CrOS EC.
+> + *
+> + * Copyright 2020 Google LLC.
+> + *
+> + * This driver uses the cros-ec interface to communicate with the Chrome=
+ OS
+> + * EC about counter sensors. Counters are presented through
+> + * iio sysfs.
+> + */
+> +
+> +#include <linux/counter.h>
+> +#include <linux/device.h>
+> +#include <linux/iio/buffer.h>
+> +#include <linux/iio/common/cros_ec_sensors_core.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_data/cros_ec_commands.h>
+> +#include <linux/platform_data/cros_ec_proto.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +/*
+> + * One channel for counter, the other for timestamp.
+> + */
+> +#define MAX_CHANNELS (1 + 1)
+> +
+> +/**
+> + * struct cros_ec_sync_state - device structure
+> + *
+> + * @core: common structure for all cros_ec sensor.
+> + *        Must be at the beggining.
+> + * @channels: presented iio channels(2).
+> + * @counter: counter data structure.
+> + */
+> +struct cros_ec_sync_state {
+> +	struct cros_ec_sensors_core_state core;
+> +	struct iio_chan_spec channels[MAX_CHANNELS];
+> +	struct counter_device counter;
+> +};
+> +
+> +/**
+> + * cros_ec_sync_get_enable() - Check if the counter is enabled.
+> + *
+> + * @st:     core cros_ec sensor
+> + * @val:    status: 0: disabled, 1 enabled.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +static int cros_ec_sync_get_enable(struct cros_ec_sensors_core_state *st,
+> +				   int *val)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&st->cmd_lock);
+> +	st->param.cmd =3D MOTIONSENSE_CMD_SENSOR_ODR;
+> +	st->param.sensor_odr.data =3D EC_MOTION_SENSE_NO_VALUE;
+> +
+> +	ret =3D cros_ec_motion_send_host_cmd(st, 0);
+> +	mutex_unlock(&st->cmd_lock);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*val =3D !!st->resp->sensor_odr.ret;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cros_ec_sync_set_enable() - Allow the counter to count.
+> + *
+> + * When enable, the counter will increase for each VSYNC rising edge
+> + * and will produce an event in the iio buffer, if enabled.
+> + *
+> + * @st:     core cros_ec sensor
+> + * @val:    0: disable, 1 enable.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +static int cros_ec_sync_set_enable(struct cros_ec_sensors_core_state *st,
+> +				   int val)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&st->cmd_lock);
+> +	st->param.cmd =3D MOTIONSENSE_CMD_SENSOR_ODR;
+> +	st->param.sensor_odr.data =3D val;
+> +	st->param.sensor_odr.roundup =3D 1;
+> +
+> +	ret =3D cros_ec_motion_send_host_cmd(st, 0);
+> +	mutex_unlock(&st->cmd_lock);
+> +	return ret;
+> +}
+> +
+> +static int cros_ec_sync_iio_read(struct iio_dev *indio_dev,
+> +				 struct iio_chan_spec const *chan,
+> +				 int *val, int *val2, long mask)
+> +{
+> +	struct cros_ec_sensors_core_state *st =3D iio_priv(indio_dev);
+> +	u16 data;
+> +	int ret;
+> +	int idx =3D chan->scan_index;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		mutex_lock(&st->cmd_lock);
+> +		ret =3D cros_ec_sensors_read_cmd(indio_dev, 1 << idx, &data);
+> +		mutex_unlock(&st->cmd_lock);
+> +		if (ret < 0)
+> +			break;
+> +		ret =3D IIO_VAL_INT;
+> +		*val =3D data;
+> +		break;
+> +	case IIO_CHAN_INFO_ENABLE:
+> +		ret =3D cros_ec_sync_get_enable(st, val);
+> +		if (ret < 0)
+> +			break;
+> +		ret =3D IIO_VAL_INT;
+> +		break;
+> +	default:
+> +		ret =3D -EINVAL;
+> +		break;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int cros_ec_sync_iio_write(struct iio_dev *indio_dev,
+> +				  struct iio_chan_spec const *chan,
+> +				  int val, int val2, long mask)
+> +{
+> +	struct cros_ec_sensors_core_state *st =3D iio_priv(indio_dev);
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_ENABLE:
+> +		if (val < 0 || val > 1)
+> +			return -EINVAL;
+> +
+> +		return cros_ec_sync_set_enable(st, val);
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct iio_info cros_ec_sync_info =3D {
+> +	.read_raw =3D &cros_ec_sync_iio_read,
+> +	.write_raw =3D &cros_ec_sync_iio_write,
+> +};
+> +
+> +/* The counter can only increase, so only one function present. */
+> +static enum counter_count_function cros_ec_sync_functions[] =3D {
+> +	COUNTER_COUNT_FUNCTION_INCREASE,
+> +};
+> +
+> +/* 2 synapse actions allowed: count for each rising edge, or not. */
+> +static enum counter_synapse_action cros_ec_sync_synapse_actions[] =3D {
+> +	COUNTER_SYNAPSE_ACTION_NONE,
+> +	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
+> +};
+> +
+> +static int cros_ec_sync_read_count(struct counter_device *counter,
+> +				   struct counter_count *count,
+> +				   unsigned long *val)
+> +{
+> +	struct cros_ec_sensors_core_state *st =3D counter->priv;
+> +	u16 raw;
+> +	int ret;
+> +
+> +	mutex_lock(&st->cmd_lock);
+> +	ret =3D cros_ec_sensors_read_cmd(iio_priv_to_dev(st), 1, &raw);
+> +	mutex_unlock(&st->cmd_lock);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*val =3D raw;
+> +	return 0;
+> +}
+> +
+> +static int cros_ec_sync_function_get(struct counter_device *counter,
+> +				     struct counter_count *count,
+> +				     size_t *function)
+> +{
+> +	*function =3D 0;
+
+It's somewhat unclear at first glance which function correlates to index
+position 0 here. Create an enum structure and use the enum constants to
+set the index of the functions in cros_ec_sync_functions. Then you can
+set *function to the corresponding enum constant here -- that should
+make it clear which function is returned.
+
+Take a look at the drivers/counter/ftm-quaddec.c file for a good example
+of how it handles the function_get callback.
+
+> +	return 0;
+> +}
+> +
+> +static int cros_ec_sync_action_get(struct counter_device *counter,
+> +				   struct counter_count *count,
+> +				   struct counter_synapse *synapse,
+> +				   size_t *action)
+> +{
+> +	struct cros_ec_sensors_core_state *st =3D counter->priv;
+> +	int ret;
+> +	int raw;
+> +
+> +	ret =3D cros_ec_sync_get_enable(st, &raw);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*action =3D !!raw;
+
+For the same reason as the function_get callback above, I'd like for
+*action to be explicitly set to a respective named constant.
+
+> +	return 0;
+> +}
+> +
+> +static int cros_ec_sync_action_set(struct counter_device *counter,
+> +				   struct counter_count *count,
+> +				   struct counter_synapse *synapse,
+> +				   size_t action)
+> +{
+> +	struct cros_ec_sensors_core_state *st =3D counter->priv;
+> +
+> +	return cros_ec_sync_set_enable(st, action);
+> +}
+> +
+> +static const struct counter_ops cros_ec_sync_ops =3D {
+> +	.count_read =3D cros_ec_sync_read_count,
+> +	.function_get =3D cros_ec_sync_function_get,
+> +	.action_get =3D cros_ec_sync_action_get,
+> +	.action_set =3D cros_ec_sync_action_set,
+
+It doesn't look like setting the action is actually a feature of this
+device. I'd recommend just dropping the action_set callback all together
+and instead implementing an "enable" attribute for your Count to handle
+that functionality.
+
+> +};
+> +
+> +static struct counter_signal cros_ec_sync_signals[] =3D {
+> +	{
+> +		.id =3D 0,
+> +		.name =3D "vsync"
+> +	}
+> +};
+> +
+> +static struct counter_synapse cros_ec_sync_synapses[] =3D {
+> +	{
+> +		.actions_list =3D cros_ec_sync_synapse_actions,
+> +		.num_actions =3D ARRAY_SIZE(cros_ec_sync_synapse_actions),
+> +		.signal =3D cros_ec_sync_signals
+> +	}
+> +};
+> +
+> +static struct counter_count cros_ec_sync_counts[] =3D {
+> +	{
+> +		.id =3D 0,
+> +		.name =3D "vsync",
+> +		.functions_list =3D cros_ec_sync_functions,
+> +		.num_functions =3D ARRAY_SIZE(cros_ec_sync_functions),
+> +		.synapses =3D cros_ec_sync_synapses,
+> +		.num_synapses =3D ARRAY_SIZE(cros_ec_sync_synapses),
+> +	}
+> +};
+> +
+> +static int cros_ec_sync_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev =3D &pdev->dev;
+> +	struct iio_dev *indio_dev;
+> +	struct cros_ec_sync_state *state;
+> +	struct iio_chan_spec *channel;
+> +	int ret;
+> +
+> +	indio_dev =3D devm_iio_device_alloc(dev, sizeof(*state));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	ret =3D cros_ec_sensors_core_init(pdev, indio_dev, true,
+> +					cros_ec_sensors_capture,
+> +					cros_ec_sensors_push_data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	indio_dev->info =3D &cros_ec_sync_info;
+> +	state =3D iio_priv(indio_dev);
+> +
+> +	/* Initialize IIO device */
+> +	channel =3D state->channels;
+> +
+> +	/* Counter channel */
+> +	channel->type =3D IIO_COUNT;
+> +	channel->info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW);
+> +	channel->info_mask_shared_by_all =3D BIT(IIO_CHAN_INFO_ENABLE);
+> +	channel->scan_type.realbits =3D CROS_EC_SENSOR_BITS;
+> +	channel->scan_type.storagebits =3D CROS_EC_SENSOR_BITS;
+> +	channel->scan_type.shift =3D 0;
+> +	channel->scan_index =3D 0;
+> +	channel->ext_info =3D cros_ec_sensors_limited_info;
+> +	channel->scan_type.sign =3D 'u';
+
+As I mentioned earlier, this counter channel should be completely
+removed. You'll need to reimplement the cros_ec_sensors_limited_info
+attributes using the Counter subsystem. I'll explain this more below.
+
+> +
+> +	/* Timestamp channel */
+> +	channel++;
+> +	channel->type =3D IIO_TIMESTAMP;
+> +	channel->channel =3D -1;
+> +	channel->scan_index =3D 1;
+> +	channel->scan_type.sign =3D 's';
+> +	channel->scan_type.realbits =3D 64;
+> +	channel->scan_type.storagebits =3D 64;
+> +
+> +	indio_dev->channels =3D state->channels;
+> +	indio_dev->num_channels =3D MAX_CHANNELS;
+> +
+> +	state->core.read_ec_sensors_data =3D cros_ec_sensors_read_cmd;
+> +
+> +	/* Initialize Counter device */
+> +	state->counter.name =3D dev_name(&pdev->dev);
+> +	state->counter.parent =3D &pdev->dev;
+> +	state->counter.ops =3D &cros_ec_sync_ops;
+> +	state->counter.counts =3D cros_ec_sync_counts;
+> +	state->counter.num_counts =3D ARRAY_SIZE(cros_ec_sync_counts);
+> +	state->counter.signals =3D cros_ec_sync_signals;
+> +	state->counter.num_signals =3D ARRAY_SIZE(cros_ec_sync_signals);
+> +	state->counter.priv =3D state;
+> +
+> +	ret =3D devm_iio_device_register(dev, indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_counter_register(dev, &state->counter);
+> +}
+> +
+> +static const struct platform_device_id cros_ec_sync_ids[] =3D {
+> +	{
+> +		.name =3D "cros-ec-sync",
+> +	},
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(platform, cros_ec_sync_ids);
+> +
+> +static struct platform_driver cros_ec_sync_platform_driver =3D {
+> +	.driver =3D {
+> +		.name	=3D "cros-ec-sync",
+> +	},
+> +	.probe		=3D cros_ec_sync_probe,
+> +	.id_table	=3D cros_ec_sync_ids,
+> +};
+> +module_platform_driver(cros_ec_sync_platform_driver);
+> +
+> +MODULE_AUTHOR("Gwendal Grignou <gwendal@chromium.org>");
+> +MODULE_DESCRIPTION("ChromeOS EC synchronisation sensor driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/=
+drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> index c831915ca7e56..3a15094616710 100644
+> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> @@ -31,6 +31,7 @@
+>  static char *cros_ec_loc[] =3D {
+>  	[MOTIONSENSE_LOC_BASE] =3D "base",
+>  	[MOTIONSENSE_LOC_LID] =3D "lid",
+> +	[MOTIONSENSE_LOC_CAMERA] =3D "camera",
+>  	[MOTIONSENSE_LOC_MAX] =3D "unknown",
+>  };
+> =20
+> @@ -467,6 +468,20 @@ const struct iio_chan_spec_ext_info cros_ec_sensors_=
+ext_info[] =3D {
+>  };
+>  EXPORT_SYMBOL_GPL(cros_ec_sensors_ext_info);
+> =20
+> +const struct iio_chan_spec_ext_info cros_ec_sensors_limited_info[] =3D {
+> +	{
+> +		.name =3D "id",
+> +		.shared =3D IIO_SHARED_BY_ALL,
+> +		.read =3D cros_ec_sensors_id
+> +	},
+> +	{
+> +		.name =3D "location",
+> +		.shared =3D IIO_SHARED_BY_ALL,
+> +		.read =3D cros_ec_sensors_loc
+> +	},
+> +	{ },
+> +};
+
+Instead of an iio_chan_spec_ext_info structure, you can reimplement this
+as a counter_count_ext structure. It'll look something like this:
+
+const struct counter_count_ext cros_ec_sensors_limited_info[] =3D {
+	{
+		.name =3D "id",
+		.read =3D cros_ec_sensors_id
+	},
+	{
+		.name =3D "location",
+		.read =3D cros_ec_sensors_loc
+	},
+};
+
+Note however that cros_ec_sensors_id and cros_ec_sensors_loc will need
+to match expected function format for counter_count_ext read callbacks;
+that means you'll need to implement proper versions of these two
+functions.
+
+William Breathitt Gray
+
+> +EXPORT_SYMBOL_GPL(cros_ec_sensors_limited_info);
+>  /**
+>   * cros_ec_sensors_idx_to_reg - convert index into offset in shared memo=
+ry
+>   * @st:		pointer to state information for device
+> diff --git a/drivers/platform/chrome/cros_ec_sensorhub.c b/drivers/platfo=
+rm/chrome/cros_ec_sensorhub.c
+> index b7f2c00db5e1e..e4ae0868d1e06 100644
+> --- a/drivers/platform/chrome/cros_ec_sensorhub.c
+> +++ b/drivers/platform/chrome/cros_ec_sensorhub.c
+> @@ -106,6 +106,9 @@ static int cros_ec_sensorhub_register(struct device *=
+dev,
+>  		case MOTIONSENSE_TYPE_ACTIVITY:
+>  			name =3D "cros-ec-activity";
+>  			break;
+> +		case MOTIONSENSE_TYPE_SYNC:
+> +			name =3D "cros-ec-sync";
+> +			break;
+>  		default:
+>  			dev_warn(dev, "unknown type %d\n",
+>  				 sensorhub->resp->info.type);
+> diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/li=
+nux/iio/common/cros_ec_sensors_core.h
+> index 7bc961defa87e..e416b28cf24c7 100644
+> --- a/include/linux/iio/common/cros_ec_sensors_core.h
+> +++ b/include/linux/iio/common/cros_ec_sensors_core.h
+> @@ -114,7 +114,9 @@ int cros_ec_sensors_core_write(struct cros_ec_sensors=
+_core_state *st,
+>  			       struct iio_chan_spec const *chan,
+>  			       int val, int val2, long mask);
+> =20
+> -/* List of extended channel specification for all sensors */
+> +/* List of extended channel specification for all sensors. */
+> +extern const struct iio_chan_spec_ext_info cros_ec_sensors_limited_info[=
+];
+> +/* Add calibration to set above. */
+>  extern const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[];
+>  extern const struct attribute *cros_ec_sensor_fifo_attributes[];
+> =20
+> --=20
+> 2.26.0.110.g2183baf09c-goog
+>=20
+
+--dMyqICaxQaaUjrCL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl6WIYIACgkQhvpINdm7
+VJL9Qg/9G+KIucbQTGWk80QRFdH7meHjYRiIu5dfPE7MkYH0gwrxhv5uqrolXDdr
+x1hD6iiyvOBETZULiFPgolEuWna8GhV0ADpD64N+tl1A9aggG0+mgZG1c6WUpFkv
+ktt/iY+EpevKULmeHzPlfoZzwKTzyx+IHr8yuu0jaVe4/3MHISFkJcmLqLhOOfRV
+3nsB7Sfh05xvThA0ZoF6XPDX0o9yj+bN1z00ffuA4+vcnNcfEUZLOA4lMMekLfaC
+FZynWPdC4tY+o0YqSnMJQblMC7U3aRLfdwpT2JuUZJ+BfqBb+BzYhjJnafc1gmpS
+QyBLz+DrI+gj0chdYban7UG0dvTgYeNlxbfrisfTl38x3zR8zVXBm/qaSeFQTdha
+lP7BZElHdV1aeRU0tf0ZSLSWZLCVw6ACdOm92krU+gSyGDfFmh+y2HXkj90OL02H
+/ChHqpWCdeQZF76R2VBTBndUA2bdOuD24KSyC58mdK6DUbADIurV3KFGKJ98B8UG
+j9mJcpYX9FaC5zSpxrVPEUsy8mWZxh4J8XHDicfNMZhwytB8A00CoFThEdiIxEpc
+YN6ymVOAeJMoQURPMuI6Ag2CCU0S4jY2d6nymrBnFIbeb927igFfQ95i6MHbkwDO
+Z1rmPSpz2txE74MUrawfqkC25yuF451liYfU/ubXrRAVqhkxOZE=
+=BOu6
+-----END PGP SIGNATURE-----
+
+--dMyqICaxQaaUjrCL--
