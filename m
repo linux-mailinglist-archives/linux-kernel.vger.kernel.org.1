@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FCF1A7B50
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9405C1A7B5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502274AbgDNMwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730138AbgDNMv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:51:58 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E707BC061A0C;
-        Tue, 14 Apr 2020 05:51:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a25so14205889wrd.0;
-        Tue, 14 Apr 2020 05:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=INaiMxSFr4KNjl3DpxnWtwrHIDn60Dm1USBtEnWrWrc=;
-        b=PDJLx9zi1OI+5VbYzQkd02uKzO1waQSh/zV5F3EvUj4R0lf428LvqkmNSdRd79LqxN
-         yh0X6/0sK/jTdSuQbifotYjj3rhQz2aq1vtnVuNxbaP2fDl+wljpd1k8kfAXvU7ERGJf
-         eMSnKtacrGcdgQJGOgFdKNPHZJlFU2gPZl9tcACIWKiMEhmBR66bSDNNeFXm+22SYGuo
-         lfUmhXZ1J1d9b1G3YyWws1cHO5kNdsjF2swkcOotXYdE4xJtx2vRJxWdnK0yyKplYpSZ
-         rt5eDjHEGFa+OX6BnSQ4Oo6BYIR2W/WrYq8wVh1dPt5OvweJz78ZBjx6r6xAJJKS8pw9
-         +xbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=INaiMxSFr4KNjl3DpxnWtwrHIDn60Dm1USBtEnWrWrc=;
-        b=JgCIC4SH1yPLo8Kr4d9mA4L8/dYxrRta1YvyAZdqxJ1NHCqZstRYdZrcQ8v5pL1i20
-         Qt/L09bOqfOL7GR1OXB2QIwEVbrVWBbV7b5MxZIMwm+ohCzLFBr1c3RVBle0OVScoIRu
-         2FQOGQG8K2xVaEwnaFo14+g2yXV49AvLj46p/2Dr+qcDOLU9AeRYvlOcy1ZIlITrVOWh
-         zqUmtlgH8c/w3RWP2p5BMyeUZ1NyMmdGZ1bJKzztR11d2Eow3/piMJcUcwJbJ9VZ4/EZ
-         TvlEHirREcEkNvWEXWhVfg3qdmpjcgR8ItQRj6ebNpprm6/9OL4B0yxm4/YOtBFN/Nui
-         XQNw==
-X-Gm-Message-State: AGi0Pubsg6D/2l386UQwilhO6PB4/qdFUezd84tUdKm5ywzvr5NAayje
-        ewJdXIjyZKGhA+BPkgdtsng=
-X-Google-Smtp-Source: APiQypLreekvmOTIyJjoRiEofhwIQiv4aipsIMKjDOyMD8hF5sTi0Hn3DIqB4xhgEstTN6UiwtD3pQ==
-X-Received: by 2002:adf:e90e:: with SMTP id f14mr24068876wrm.106.1586868716187;
-        Tue, 14 Apr 2020 05:51:56 -0700 (PDT)
-Received: from AnsuelXPS (host93-255-dynamic.47-79-r.retail.telecomitalia.it. [79.47.255.93])
-        by smtp.gmail.com with ESMTPSA id p10sm18476895wrm.6.2020.04.14.05.51.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Apr 2020 05:51:55 -0700 (PDT)
-From:   <ansuelsmth@gmail.com>
-To:     "'Florian Fainelli'" <f.fainelli@gmail.com>,
-        <devicetree@vger.kernel.org>
-Cc:     "'Mark Rutland'" <mark.rutland@arm.com>,
-        "'Lorenzo Pieralisi'" <lorenzo.pieralisi@arm.com>,
-        "'Richard Zhu'" <hongxing.zhu@nxp.com>,
-        "'Fabio Estevam'" <festevam@gmail.com>,
-        "'Sascha Hauer'" <s.hauer@pengutronix.de>,
-        <linux-kernel@vger.kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'NXP Linux Team'" <linux-imx@nxp.com>,
-        "'Pengutronix Kernel Team'" <kernel@pengutronix.de>,
-        <linux-pci@vger.kernel.org>,
-        "'Bjorn Helgaas'" <bhelgaas@google.com>,
-        "'Andrew Murray'" <amurray@thegoodpenguin.co.uk>,
-        "'Shawn Guo'" <shawnguo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "'Lucas Stach'" <l.stach@pengutronix.de>
-References: <20200410004738.19668-1-ansuelsmth@gmail.com> <20200410004738.19668-2-ansuelsmth@gmail.com> <26080c25-cda5-cd3f-a906-a09a79cb1922@gmail.com>
-In-Reply-To: <26080c25-cda5-cd3f-a906-a09a79cb1922@gmail.com>
-Subject: R: [PATCH 1/4] devicetree: bindings: pci: document tx-deempth tx swing and rx-eq property
-Date:   Tue, 14 Apr 2020 14:51:51 +0200
-Message-ID: <01ea01d6125b$79590790$6c0b16b0$@gmail.com>
+        id S2502294AbgDNMxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:53:39 -0400
+Received: from mail.manjaro.org ([176.9.38.148]:51574 "EHLO mail.manjaro.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502282AbgDNMxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:53:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.manjaro.org (Postfix) with ESMTP id 04B9D374279E;
+        Tue, 14 Apr 2020 14:53:26 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at manjaro.org
+Received: from mail.manjaro.org ([127.0.0.1])
+        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id VQmChaPkhC0C; Tue, 14 Apr 2020 14:53:21 +0200 (CEST)
+From:   Tobias Schramm <t.schramm@manjaro.org>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tobias Schramm <t.schramm@manjaro.org>
+Subject: [RESEND v6 0/3] Add support for CellWise cw2015 fuel gauge
+Date:   Tue, 14 Apr 2020 14:52:05 +0200
+Message-Id: <20200414125208.1091989-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: it
-Thread-Index: AQJxOzeYiZkD8UITQ1/aTwnouqE5vALuml4iApJiW/inFjd00A==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 4/9/2020 5:47 PM, Ansuel Smith wrote:
-> > Document tx-deempth, tx swing and rx-eq property property used on
-> some
-> > device (qcom ipq806x or imx6q) to tune and fix init error of the pci
-> > bridge.
-> 
-> Those properties are not specific to the host bridge per-se, but to the
-> PCIe PHY, therefore, one would expect to find those properties within
-> the PCIe PHY node if it exists. Given you want this binding to be
-> generic, this is an important thing to correct here.
-> --
-> Florian
+This patchset adds support for the CellWise cw2015 fuel gauge.
 
-So where should I put these? If I understand this properly I should move 
-this to the PHY directory but no PCIe PHY node exist for both imx6q 
-and ipq806x. How I should proceed? 
-It would be better to just drop this and add qcom specific binding to the
-driver? 
+The CellWise cw2015 fuel gauge is a shuntless, single-cell Li-Ion fuel
+gauge. It is used in the pine64 Pinebook Pro laptop.
+
+This is just a resend of v6 to the linux-pm maintainers for merging.
+
+I've kept the cellwise,battery-profile property in the device tree. Its
+content describes characteristics of the battery built into a device. The
+exact format is unknown and not publicly documented. It is likely
+comprised of some key parameters of the battery (chemistry, voltages,
+design capacity) and parameters for tuning the internal state of charge
+approximation function.
+Since v2 CellWise has confirmed to me that the only way to obtain the
+profile blob is to mail them batteries for testing. Thus we will need to
+keep that property.
+
+In general I'm not 100 % sure about my json-schema binding for the gauge.
+It is my first time ever writing a json-schema binding and I'm not sure
+whether properties like power-supplies or monitored-battery need to be
+added to a separate, common schema for power supplies or not.
+
+Best Regards,
+
+Tobias Schramm
+
+Changelog:
+ v2:
+  * Change subject to "Add support for CellWise cw2015 fuel gauge"
+  * Rewrite bindings as json-schema
+  * Use default power-supplies handling
+  * Use regmap for register access
+  * Use standard simple-battery node
+  * Replace printk/pr_* by dev_{dbg,info,warn,err}
+  * Use cancel_delayed_work_sync in remove
+  * General code cleanup
+ v3:
+  * Incorporate review by Andy
+  * Add cellwise vendor prefix
+  * Rename cellwise,bat-config-info property to cellwise,battery-profile
+  * Remove most state of charge post-processing
+  * Use fwnode interface
+  * General code cleanup
+  * Lots of code style fixes
+ v4:
+  * Implement additional changes requested by Andy
+  * Use fwnode inline wrappers
+  * Clean up waiting for gauge
+  * Minor code style fixes
+ v5:
+  * Clean up includes
+  * Handle errors during device property parsing
+  * Refactor device property parsing
+  * Replace i2c->probe by i2c->probe_new 
+  * More code style fixes
+ v6:
+  * Fix bindings according to review by Rob
+
+Tobias Schramm (3):
+  dt-bindings: Document cellwise vendor-prefix
+  dt-bindings: power: supply: add cw2015_battery bindings
+  power: supply: add CellWise cw2015 fuel gauge driver
+
+ .../bindings/power/supply/cw2015_battery.yaml |  82 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   6 +
+ drivers/power/supply/Kconfig                  |  11 +
+ drivers/power/supply/Makefile                 |   1 +
+ drivers/power/supply/cw2015_battery.c         | 749 ++++++++++++++++++
+ 6 files changed, 851 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/cw2015_battery.yaml
+ create mode 100644 drivers/power/supply/cw2015_battery.c
+
+-- 
+2.26.0
 
