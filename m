@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347921A757A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8FC1A7589
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406981AbgDNIIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2406964AbgDNIIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:08:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57351C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:08:07 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k11so12590292wrp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Of87X/gGHd7WK7J8InDBiy0jDOtLSnaghXrcb3fjgfk=;
-        b=Qi+aAYqVu1eN15qmGiNzA8fNa4lIaXjb7w8Ocp8Gc0hvk+JIaKlkVXzyxUG8n0kj+r
-         UO5wQRuYWMusYRen73PY8mnpxj7c2gEagVixnKH7uYpOo25BzIAhsiy4AwByxwVKgDTX
-         3usXFCaxp+gOky+4ixr3sYj7SJeR2HTcyBG8WdE5NSYpwB+WADiE6Jvju2AScK2TrryU
-         m0Nbcv9ajXflZubAOOw8jM1w57tWTxiDu8rNj7uzuriDtcDYZAa3eT9hU0TcjfE4Hm8v
-         K5mfMgvUSBew+h/w06khwgn9kCDZAA34fzfhg7vHcnzLGX4BOXe2yx/so+jE4QPF1o8e
-         YT5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Of87X/gGHd7WK7J8InDBiy0jDOtLSnaghXrcb3fjgfk=;
-        b=pLbUjqbUO8k/GbdbwSwHx02GVxit1hdc0i8RWmpRrx/wIxNqzcML/+Hvgu2fDhxIdn
-         J0Zz02yAtSa4qXr2xvOk203WK/HvLv/nSEUKhH1lczfCtCw7bbpxgFDVU/Q44bYcVIKC
-         8cmrr5d8uuAK9no8MssAkA77tR+9vu1Ij8VPuKXjKLXv4llzkTaXe8agIc3OE2NpmMyG
-         N7IZy4paHyu/bfZgDDEU7vuhDaxbc0FWwMQ2hepYf4BtBEi53rJ0pRQlcF0D5ThYF83T
-         KPpmXeZRTAOrd6Q/P6qsfPKkMA7w2zO9+5bFmDWHU8THH4uCGiyVtsGlHmttdk7/XEfu
-         Emkw==
-X-Gm-Message-State: AGi0PuZ26fggaeWh5rCpaqRrowjMFIx0NKlz1ARJiKU+qAoegoHtvAQf
-        lqKI9h57Xqx3GuHBTZ1PtRmC5A==
-X-Google-Smtp-Source: APiQypLIN3SbXV7PM0uFFyvMDh857863ygqy9yht/XtufvHAtOL8FPNIeAgdp7UPDBUQOVQgcQy0GQ==
-X-Received: by 2002:a5d:4286:: with SMTP id k6mr10371255wrq.222.1586851685895;
-        Tue, 14 Apr 2020 01:08:05 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id f63sm17383374wma.47.2020.04.14.01.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 01:08:05 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 09:09:05 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Linux HWMON List <linux-hwmon@vger.kernel.org>,
-        Robert Jones <rjones@gateworks.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v8 2/3] mfd: add Gateworks System Controller core driver
-Message-ID: <20200414080905.GC2167633@dell>
-References: <1585341214-25285-1-git-send-email-tharvey@gateworks.com>
- <1585341214-25285-3-git-send-email-tharvey@gateworks.com>
- <CAJ+vNU1GWFKv8f-ihhoVTWgD8G5UyupOek1fmBPaU0QXKC1qHw@mail.gmail.com>
+        id S2407027AbgDNIKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:10:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2368 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2406964AbgDNIJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:09:50 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 0FED587026F4E7C56769;
+        Tue, 14 Apr 2020 16:09:43 +0800 (CST)
+Received: from [127.0.0.1] (10.173.222.27) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Apr 2020
+ 16:09:37 +0800
+Subject: Re: [PATCH] irqchip/gic-v4.1: Disallow setting affinity for virtual
+ SGIs
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
+        <jason@lakedaemon.net>, <wanghaibin.wang@huawei.com>,
+        Nianyao Tang <tangnianyao@huawei.com>
+References: <20200411091032.661-1-yuzenghui@huawei.com>
+ <86pnces6kn.wl-maz@kernel.org>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <e0c86d66-e8d4-99ba-917f-c6ba75181e03@huawei.com>
+Date:   Tue, 14 Apr 2020 16:09:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+vNU1GWFKv8f-ihhoVTWgD8G5UyupOek1fmBPaU0QXKC1qHw@mail.gmail.com>
+In-Reply-To: <86pnces6kn.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.222.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Apr 2020, Tim Harvey wrote:
+Hi Marc,
 
-> On Fri, Mar 27, 2020 at 1:33 PM Tim Harvey <tharvey@gateworks.com> wrote:
-> >
-> > The Gateworks System Controller (GSC) is an I2C slave controller
-> > implemented with an MSP430 micro-controller whose firmware embeds the
-> > following features:
-> >  - I/O expander (16 GPIO's) using PCA955x protocol
-> >  - Real Time Clock using DS1672 protocol
-> >  - User EEPROM using AT24 protocol
-> >  - HWMON using custom protocol
-> >  - Interrupt controller with tamper detect, user pushbotton
-> >  - Watchdog controller capable of full board power-cycle
-> >  - Power Control capable of full board power-cycle
-> >
-> > see http://trac.gateworks.com/wiki/gsc for more details
-> >
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> > ---
-> >  MAINTAINERS                 |   8 ++
-> >  drivers/mfd/Kconfig         |  10 ++
-> >  drivers/mfd/Makefile        |   1 +
-> >  drivers/mfd/gateworks-gsc.c | 288 ++++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mfd/gsc.h     |  73 +++++++++++
-> >  5 files changed, 380 insertions(+)
-> >  create mode 100644 drivers/mfd/gateworks-gsc.c
-> >  create mode 100644 include/linux/mfd/gsc.h
-
-[...]
-
-Please clip your responses.
-
-> Lee,
+On 2020/4/11 17:41, Marc Zyngier wrote:
+> Hi Zenghui,
 > 
-> Do you have time to look at this? Rob has reviewed the dt-bindings and
-> Guenter has reviewed the hwmon driver so this is the only patch
-> remaining in the series that needs review/sign-off.
+> On Sat, 11 Apr 2020 10:10:32 +0100,
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+>>
+>> Running a guest on the GICv4.1-implemented board, we will get the
+>> following warning:
+>>
+>> [   59.062120] genirq: irq_chip GICv4.1-sgi did not update eff. affinity mask of irq 46
+>>
+>> It may be caused by irqbalance (or other userspace tools) which tries to
+>> change the affinity of virtual SGIs on the host. One way to "fix" it is
+>> to update the effective_affinity value in irq_set_affinity callback. But
+>> as the comment above says, "There is no notion of affinity for virtual
+>> SGIs, at least not on the host", doing so only makes things confusing.
+>>
+>> Given the vSGIs are private to the specified vPE, changing the affinity
+>> on host is actually meaningless and achieves nothing. Let's just forbid
+>> it.
+>>
+>> Reported-by: Nianyao Tang <tangnianyao@huawei.com>
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> ---
+>>
+>> Hi Marc,
+>>
+>> This just restores the behavior of your v5 [*]. I wonder that what's the
+>> reason to change it to 'return IRQ_SET_MASK_OK' in v6? What I've missed
+>> here?
+>>
+>> [*] https://lore.kernel.org/kvm/20200304203330.4967-9-maz@kernel.org/
+> 
+> Not allowing the affinity move results in the kernel screaming when
+> playing with CPU hotplug (it really wants to move the interrupt
+> around). Which is why I dropped the -EINVAL, therefore introducing
+> another bug. I fixed it with this patch[1], which I was planning to
+> post after -rc1.
 
-It's on the list.
+I didn't realize the CPU hotplug case. Please take your approach to
+fix it. (As mentioned, this was also one way I planned to fix it.)
 
-Please bear in mind that the merge-window has been open for the past 2
-weeks.  Usually reviewing cadence slows down during this period.  It
-should be ramping up again this week.
+> 
+> Let me know what you think
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+TBH, I'm not very familiar with the IRQ core behavior on CPU hotplug.
+I will read further and comment on your formal patch (please cc me),
+but now spinning on some other things...
+
+
+Thanks,
+Zenghui
+
