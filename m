@@ -2,141 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9474A1A7D6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3A11A7D7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731475AbgDNNWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:22:50 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:40230 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731108AbgDNNUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:20:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586870403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3HuLilv69rC7THF45aYrV+6luk1YKd/SKbIHAdtaS/I=;
-        b=TbdltNJ8jZQXuJwsQZdr6sZi8I/S+6zwcgoPxr6JDDhUIb2uNfSjSVzudXMbYwWmv9/7tB
-        iKol0fvSq0C6MYSILN7S/LY5sJMw06DmtRpoAUVLXCt4oN4UY1tgErNKfhce9sPD1aDlJQ
-        SNZzhEgdUhaMXaG8nhmYuIxwjmDM7/g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-s7QuTE3nMBK2FMGTYY2epg-1; Tue, 14 Apr 2020 09:19:58 -0400
-X-MC-Unique: s7QuTE3nMBK2FMGTYY2epg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731618AbgDNNXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:23:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731123AbgDNNUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:20:24 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E38B51B2C98A;
-        Tue, 14 Apr 2020 13:19:56 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-114-21.ams2.redhat.com [10.36.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4DA489F9A4;
-        Tue, 14 Apr 2020 13:19:55 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Mikityanskiy <maxtram95@gmail.com>,
-        "5 . 3+" <stable@vger.kernel.org>
-Subject: [PATCH v2] platform/x86: intel_int0002_vgpio: Only bind to the INT0002 dev when using s2idle
-Date:   Tue, 14 Apr 2020 15:19:53 +0200
-Message-Id: <20200414131953.131533-1-hdegoede@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AB282075E;
+        Tue, 14 Apr 2020 13:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586870421;
+        bh=UpxxYfMQiPsStRBk2vSRrNmutVvInJSvPdMUZH13yMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LLnblHt6MLccFn5zAeLwboh9LyZ5CVGfTwofL8QWEMrv0rCDOpvm0ymMexeZYvaWx
+         COY3VPn+iOPcTK7ulvc5KT9nmMikRIpnp9hXgHQm03ggEcRW7XRf40C5P4D04Fkf96
+         uI+uNGJHcAMB78gOwhRnxStZyeTvZWHQtBYxrrWs=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jOLUB-003A4M-GJ; Tue, 14 Apr 2020 14:20:19 +0100
+Date:   Tue, 14 Apr 2020 14:20:18 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH] irqchip/meson-gpio: Fix HARDIRQ-safe -> HARDIRQ-unsafe
+ lock order
+Message-ID: <20200414142018.6e7e5ec3@why>
+In-Reply-To: <20200407144658.829246-1-maz@kernel.org>
+References: <20200407144658.829246-1-maz@kernel.org>
+Organization: Approximate
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, khilman@baylibre.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement
-irq_set_wake on Bay Trail") stopped passing irq_set_wake requests on to
-the parents IRQ because this was breaking suspend (causing immediate
-wakeups) on an Asus E202SA.
+On Tue,  7 Apr 2020 15:46:58 +0100
+Marc Zyngier <maz@kernel.org> wrote:
 
-This workaround for this issue is mostly fine, on most Cherry Trail
-devices where we need the INT0002 device for wakeups by e.g. USB kbds,
-the parent IRQ is shared with the ACPI SCI and that is marked as wakeup
-anyways.
++Jerome, Martin,
 
-But not on all devices, specifically on a Medion Akoya E1239T there is
-no SCI at all, and because the irq_set_wake request is not passed on to
-the parent IRQ, wake up by the builtin USB kbd does not work here.
+> Running a lockedp-enabled kernel on a vim3l board (Amlogic SM1)
+> leads to the following splat:
+> 
+> [   13.557138] WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+> [   13.587485] ip/456 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+> [   13.625922] ffff000059908cf0 (&irq_desc_lock_class){-.-.}-{2:2}, at: __setup_irq+0xf8/0x8d8
+> [   13.632273] which would create a new lock dependency:
+> [   13.637272]  (&irq_desc_lock_class){-.-.}-{2:2} -> (&ctl->lock){+.+.}-{2:2}
+> [   13.644209]
+> [   13.644209] but this new dependency connects a HARDIRQ-irq-safe lock:
+> [   13.654122]  (&irq_desc_lock_class){-.-.}-{2:2}
+> [   13.654125]
+> [   13.654125] ... which became HARDIRQ-irq-safe at:
+> [   13.664759]   lock_acquire+0xec/0x368
+> [   13.666926]   _raw_spin_lock+0x60/0x88
+> [   13.669979]   handle_fasteoi_irq+0x30/0x178
+> [   13.674082]   generic_handle_irq+0x38/0x50
+> [   13.678098]   __handle_domain_irq+0x6c/0xc8
+> [   13.682209]   gic_handle_irq+0x5c/0xb0
+> [   13.685872]   el1_irq+0xd0/0x180
+> [   13.689010]   arch_cpu_idle+0x40/0x220
+> [   13.692732]   default_idle_call+0x54/0x60
+> [   13.696677]   do_idle+0x23c/0x2e8
+> [   13.699903]   cpu_startup_entry+0x30/0x50
+> [   13.703852]   rest_init+0x1e0/0x2b4
+> [   13.707301]   arch_call_rest_init+0x18/0x24
+> [   13.711449]   start_kernel+0x4ec/0x51c
+> [   13.715167]
+> [   13.715167] to a HARDIRQ-irq-unsafe lock:
+> [   13.722426]  (&ctl->lock){+.+.}-{2:2}
+> [   13.722430]
+> [   13.722430] ... which became HARDIRQ-irq-unsafe at:
+> [   13.732319] ...
+> [   13.732324]   lock_acquire+0xec/0x368
+> [   13.735985]   _raw_spin_lock+0x60/0x88
+> [   13.739452]   meson_gpio_irq_domain_alloc+0xcc/0x290
+> [   13.744392]   irq_domain_alloc_irqs_hierarchy+0x24/0x60
+> [   13.749586]   __irq_domain_alloc_irqs+0x160/0x2f0
+> [   13.754254]   irq_create_fwspec_mapping+0x118/0x320
+> [   13.759073]   irq_create_of_mapping+0x78/0xa0
+> [   13.763360]   of_irq_get+0x6c/0x80
+> [   13.766701]   of_mdiobus_register_phy+0x10c/0x238 [of_mdio]
+> [   13.772227]   of_mdiobus_register+0x158/0x380 [of_mdio]
+> [   13.777388]   mdio_mux_init+0x180/0x2e8 [mdio_mux]
+> [   13.782128]   g12a_mdio_mux_probe+0x290/0x398 [mdio_mux_meson_g12a]
+> [   13.788349]   platform_drv_probe+0x5c/0xb0
+> [   13.792379]   really_probe+0xe4/0x448
+> [   13.795979]   driver_probe_device+0xe8/0x140
+> [   13.800189]   __device_attach_driver+0x94/0x120
+> [   13.804639]   bus_for_each_drv+0x84/0xd8
+> [   13.808474]   __device_attach+0xe4/0x168
+> [   13.812361]   device_initial_probe+0x1c/0x28
+> [   13.816592]   bus_probe_device+0xa4/0xb0
+> [   13.820430]   deferred_probe_work_func+0xa8/0x100
+> [   13.825064]   process_one_work+0x264/0x688
+> [   13.829088]   worker_thread+0x4c/0x458
+> [   13.832768]   kthread+0x154/0x158
+> [   13.836018]   ret_from_fork+0x10/0x18
+> [   13.839612]
+> [   13.839612] other info that might help us debug this:
+> [   13.839612]
+> [   13.850354]  Possible interrupt unsafe locking scenario:
+> [   13.850354]
+> [   13.855720]        CPU0                    CPU1
+> [   13.858774]        ----                    ----
+> [   13.863242]   lock(&ctl->lock);
+> [   13.866330]                                local_irq_disable();
+> [   13.872233]                                lock(&irq_desc_lock_class);
+> [   13.878705]                                lock(&ctl->lock);
+> [   13.884297]   <Interrupt>
+> [   13.886857]     lock(&irq_desc_lock_class);
+> [   13.891014]
+> [   13.891014]  *** DEADLOCK ***
+> 
+> The issue can occur when CPU1 is doing something like irq_set_type()
+> and CPU0 performing an interrupt allocation, for example. Taking
+> an interrupt (like the one being reconfigured) would lead to a deadlock.
+> 
+> A solution to this is:
+> 
+> - Reorder the locking so that meson_gpio_irq_update_bits takes the lock
+>   itself at all times, instead of relying on the caller to lock or not,
+>   hence making the RMW sequence atomic,
+> 
+> - Rework the critical section in meson_gpio_irq_request_channel to only
+>   cover the allocation itself, and let the gpio_irq_sel_pin callback
+>   deal with its own locking if required,
+> 
+> - Take the private spin-lock with interrupts disabled at all times
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/irqchip/irq-meson-gpio.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-meson-gpio.c b/drivers/irqchip/irq-meson-gpio.c
+> index ccc7f823911b..bc7aebcc96e9 100644
+> --- a/drivers/irqchip/irq-meson-gpio.c
+> +++ b/drivers/irqchip/irq-meson-gpio.c
+> @@ -144,12 +144,17 @@ struct meson_gpio_irq_controller {
+>  static void meson_gpio_irq_update_bits(struct meson_gpio_irq_controller *ctl,
+>  				       unsigned int reg, u32 mask, u32 val)
+>  {
+> +	unsigned long flags;
+>  	u32 tmp;
+>  
+> +	spin_lock_irqsave(&ctl->lock, flags);
+> +
+>  	tmp = readl_relaxed(ctl->base + reg);
+>  	tmp &= ~mask;
+>  	tmp |= val;
+>  	writel_relaxed(tmp, ctl->base + reg);
+> +
+> +	spin_unlock_irqrestore(&ctl->lock, flags);
+>  }
+>  
+>  static void meson_gpio_irq_init_dummy(struct meson_gpio_irq_controller *ctl)
+> @@ -196,14 +201,15 @@ meson_gpio_irq_request_channel(struct meson_gpio_irq_controller *ctl,
+>  			       unsigned long  hwirq,
+>  			       u32 **channel_hwirq)
+>  {
+> +	unsigned long flags;
+>  	unsigned int idx;
+>  
+> -	spin_lock(&ctl->lock);
+> +	spin_lock_irqsave(&ctl->lock, flags);
+>  
+>  	/* Find a free channel */
+>  	idx = find_first_zero_bit(ctl->channel_map, NUM_CHANNEL);
+>  	if (idx >= NUM_CHANNEL) {
+> -		spin_unlock(&ctl->lock);
+> +		spin_unlock_irqrestore(&ctl->lock, flags);
+>  		pr_err("No channel available\n");
+>  		return -ENOSPC;
+>  	}
+> @@ -211,6 +217,8 @@ meson_gpio_irq_request_channel(struct meson_gpio_irq_controller *ctl,
+>  	/* Mark the channel as used */
+>  	set_bit(idx, ctl->channel_map);
+>  
+> +	spin_unlock_irqrestore(&ctl->lock, flags);
+> +
+>  	/*
+>  	 * Setup the mux of the channel to route the signal of the pad
+>  	 * to the appropriate input of the GIC
+> @@ -225,8 +233,6 @@ meson_gpio_irq_request_channel(struct meson_gpio_irq_controller *ctl,
+>  	 */
+>  	*channel_hwirq = &(ctl->channel_irqs[idx]);
+>  
+> -	spin_unlock(&ctl->lock);
+> -
+>  	pr_debug("hwirq %lu assigned to channel %d - irq %u\n",
+>  		 hwirq, idx, **channel_hwirq);
+>  
+> @@ -287,13 +293,9 @@ static int meson_gpio_irq_type_setup(struct meson_gpio_irq_controller *ctl,
+>  			val |= REG_EDGE_POL_LOW(params, idx);
+>  	}
+>  
+> -	spin_lock(&ctl->lock);
+> -
+>  	meson_gpio_irq_update_bits(ctl, REG_EDGE_POL,
+>  				   REG_EDGE_POL_MASK(params, idx), val);
+>  
+> -	spin_unlock(&ctl->lock);
+> -
+>  	return 0;
+>  }
+>  
 
-So the workaround for the Asus E202SA immediate wake problem is causing
-problems elsewhere; and in hindsight it is not the correct fix,
-the Asus E202SA uses Airmont CPU cores, but this does not mean it is a
-Cherry Trail based device, Brasswell uses Airmont CPU cores too and this
-actually is a Braswell device.
 
-Most (all?) Braswell devices use classic S3 mode suspend rather then
-s2idle suspend and in this case directly dealing with PME events as
-the INT0002 driver does likely is not the best idea, so that this is
-causing issues is not surprising.
 
-Replace the workaround of not passing irq_set_wake requests on to the
-parents IRQ, by not binding to the INT0002 device when s2idle is not used=
-.
-This fixes USB kbd wakeups not working on some Cherry Trail devices,
-while still avoiding mucking with the wakeup flags on the Asus E202SA
-(and other Brasswell devices).
-
-Cc: Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc: 5.3+ <stable@vger.kernel.org> # 5.3+
-Fixes: 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement i=
-rq_set_wake on Bay Trail")
-Tested-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v2:
-- Rebase on top of 5.7-rc1
----
- drivers/platform/x86/intel_int0002_vgpio.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platfor=
-m/x86/intel_int0002_vgpio.c
-index 289c6655d425..30806046b664 100644
---- a/drivers/platform/x86/intel_int0002_vgpio.c
-+++ b/drivers/platform/x86/intel_int0002_vgpio.c
-@@ -143,21 +143,9 @@ static struct irq_chip int0002_byt_irqchip =3D {
- 	.irq_set_wake		=3D int0002_irq_set_wake,
- };
-=20
--static struct irq_chip int0002_cht_irqchip =3D {
--	.name			=3D DRV_NAME,
--	.irq_ack		=3D int0002_irq_ack,
--	.irq_mask		=3D int0002_irq_mask,
--	.irq_unmask		=3D int0002_irq_unmask,
--	/*
--	 * No set_wake, on CHT the IRQ is typically shared with the ACPI SCI
--	 * and we don't want to mess with the ACPI SCI irq settings.
--	 */
--	.flags			=3D IRQCHIP_SKIP_SET_WAKE,
--};
--
- static const struct x86_cpu_id int0002_cpu_ids[] =3D {
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,	&int0002_byt_irqchip),
--	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	&int0002_cht_irqchip),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	&int0002_byt_irqchip),
- 	{}
- };
-=20
-@@ -181,6 +169,10 @@ static int int0002_probe(struct platform_device *pde=
-v)
- 	if (!cpu_id)
- 		return -ENODEV;
-=20
-+	/* We only need to directly deal with PMEs when using s2idle */
-+	if (!pm_suspend_default_s2idle())
-+		return -ENODEV;
-+
- 	irq =3D platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
---=20
-2.26.0
-
+-- 
+Jazz is not dead. It just smells funny...
