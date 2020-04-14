@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BFD1A815D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236A01A8160
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436502AbgDNPG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:06:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:57634 "EHLO foss.arm.com"
+        id S2436640AbgDNPHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:07:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:57662 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407289AbgDNPGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:06:43 -0400
+        id S1729370AbgDNPGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:06:46 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F17031B;
-        Tue, 14 Apr 2020 08:06:42 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB45DC14;
+        Tue, 14 Apr 2020 08:06:45 -0700 (PDT)
 Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66F823F73D;
-        Tue, 14 Apr 2020 08:06:40 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B026F3F73D;
+        Tue, 14 Apr 2020 08:06:43 -0700 (PDT)
 From:   Qais Yousef <qais.yousef@arm.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>
@@ -34,9 +34,9 @@ Cc:     Qais Yousef <qais.yousef@arm.com>,
         Josh Don <joshdon@google.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] cpumask: Rename cpumask_any_and_distribute
-Date:   Tue, 14 Apr 2020 16:05:53 +0100
-Message-Id: <20200414150556.10920-2-qais.yousef@arm.com>
+Subject: [PATCH 2/4] cpumask: Make cpumask_any() truly random
+Date:   Tue, 14 Apr 2020 16:05:54 +0100
+Message-Id: <20200414150556.10920-3-qais.yousef@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200414150556.10920-1-qais.yousef@arm.com>
 References: <20200414150556.10920-1-qais.yousef@arm.com>
@@ -45,11 +45,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is actually an alias of cpumask_any_and(), except that the
-new function does the randomization and the old implementation didn't.
+Commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+added a new cpumask_any_and_distribute() which truly returns a random
+cpu within the mask.
 
-Rename the new function to cpumask_any_and() so that old users can take
-advantage of its 'enhanced' randomness.
+Previous patch renamed the function to cpumask_any_and(), so that old
+users can take advantage of the new randomness behavior.
+
+Build up on that, and let cpumask_any() truly random too by re-using the
+logic from cpumask_any_and().
 
 Signed-off-by: Qais Yousef <qais.yousef@arm.com>
 CC: Juri Lelli <juri.lelli@redhat.com>
@@ -67,97 +71,81 @@ CC: Josh Don <joshdon@google.com>
 CC: Pavan Kondeti <pkondeti@codeaurora.org>
 CC: linux-kernel@vger.kernel.org
 ---
- include/linux/cpumask.h | 17 ++++-------------
- kernel/sched/core.c     |  2 +-
- lib/cpumask.c           | 14 ++++++--------
- 3 files changed, 11 insertions(+), 22 deletions(-)
+ include/linux/cpumask.h | 14 ++++++--------
+ lib/cpumask.c           | 24 ++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index f0d895d6ac39..e4d6d140a67c 100644
+index e4d6d140a67c..7fb25d256043 100644
 --- a/include/linux/cpumask.h
 +++ b/include/linux/cpumask.h
-@@ -194,8 +194,9 @@ static inline unsigned int cpumask_local_spread(unsigned int i, int node)
+@@ -194,6 +194,11 @@ static inline unsigned int cpumask_local_spread(unsigned int i, int node)
  	return 0;
  }
  
--static inline int cpumask_any_and_distribute(const struct cpumask *src1p,
--					     const struct cpumask *src2p) {
-+static inline int cpumask_any_and(const struct cpumask *src1p,
-+				  const struct cpumask *src2p)
++static inline int cpumask_any(const struct cpumask *src1p)
 +{
- 	return cpumask_next_and(-1, src1p, src2p);
- }
- 
-@@ -250,8 +251,7 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
++	return 0;
++}
++
+ static inline int cpumask_any_and(const struct cpumask *src1p,
+ 				  const struct cpumask *src2p)
+ {
+@@ -251,6 +256,7 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
  int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
  int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
  unsigned int cpumask_local_spread(unsigned int i, int node);
--int cpumask_any_and_distribute(const struct cpumask *src1p,
--			       const struct cpumask *src2p);
-+int cpumask_any_and(const struct cpumask *src1p, const struct cpumask *src2p);
++int cpumask_any(const struct cpumask *srcp);
+ int cpumask_any_and(const struct cpumask *src1p, const struct cpumask *src2p);
  
  /**
-  * for_each_cpu - iterate over every cpu in a mask
-@@ -617,15 +617,6 @@ static inline void cpumask_copy(struct cpumask *dstp,
-  */
- #define cpumask_first_and(src1p, src2p) cpumask_next_and(-1, (src1p), (src2p))
+@@ -600,14 +606,6 @@ static inline void cpumask_copy(struct cpumask *dstp,
+ 	bitmap_copy(cpumask_bits(dstp), cpumask_bits(srcp), nr_cpumask_bits);
+ }
  
 -/**
-- * cpumask_any_and - pick a "random" cpu from *mask1 & *mask2
-- * @mask1: the first input cpumask
-- * @mask2: the second input cpumask
+- * cpumask_any - pick a "random" cpu from *srcp
+- * @srcp: the input cpumask
 - *
 - * Returns >= nr_cpu_ids if no cpus set.
 - */
--#define cpumask_any_and(mask1, mask2) cpumask_first_and((mask1), (mask2))
+-#define cpumask_any(srcp) cpumask_first(srcp)
 -
  /**
-  * cpumask_of - the cpumask containing just a given cpu
-  * @cpu: the cpu (<= nr_cpu_ids)
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c1f923d647ee..7942ebc83e6e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1655,7 +1655,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 	 * for groups of tasks (ie. cpuset), so that load balancing is not
- 	 * immediately required to distribute the tasks within their new mask.
- 	 */
--	dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, new_mask);
-+	dest_cpu = cpumask_any_and(cpu_valid_mask, new_mask);
- 	if (dest_cpu >= nr_cpu_ids) {
- 		ret = -EINVAL;
- 		goto out;
+  * cpumask_first_and - return the first cpu from *srcp1 & *srcp2
+  * @src1p: the first input
 diff --git a/lib/cpumask.c b/lib/cpumask.c
-index fb22fb266f93..b527a153b023 100644
+index b527a153b023..bcac63e45374 100644
 --- a/lib/cpumask.c
 +++ b/lib/cpumask.c
-@@ -236,15 +236,13 @@ EXPORT_SYMBOL(cpumask_local_spread);
- static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
- 
- /**
-- * Returns an arbitrary cpu within srcp1 & srcp2.
-+ * cpumask_any_and - pick a "random" cpu from *mask1 & *mask2
-+ * @mask1: the first input cpumask
-+ * @mask2: the second input cpumask
-  *
-- * Iterated calls using the same srcp1 and srcp2 will be distributed within
-- * their intersection.
-- *
-- * Returns >= nr_cpu_ids if the intersection is empty.
-+ * Returns >= nr_cpu_ids if no cpus set.
-  */
--int cpumask_any_and_distribute(const struct cpumask *src1p,
--			       const struct cpumask *src2p)
-+int cpumask_any_and(const struct cpumask *src1p, const struct cpumask *src2p)
- {
- 	int next, prev;
- 
-@@ -260,4 +258,4 @@ int cpumask_any_and_distribute(const struct cpumask *src1p,
- 
+@@ -259,3 +259,27 @@ int cpumask_any_and(const struct cpumask *src1p, const struct cpumask *src2p)
  	return next;
  }
--EXPORT_SYMBOL(cpumask_any_and_distribute);
-+EXPORT_SYMBOL(cpumask_any_and);
+ EXPORT_SYMBOL(cpumask_any_and);
++
++/**
++ * cpumask_any - pick a "random" cpu from *srcp
++ * @srcp: the input cpumask
++ *
++ * Returns >= nr_cpu_ids if no cpus set.
++ */
++int cpumask_any(const struct cpumask *srcp)
++{
++	int next, prev;
++
++	/* NOTE: our first selection will skip 0. */
++	prev = __this_cpu_read(distribute_cpu_mask_prev);
++
++	next = cpumask_next(prev, srcp);
++	if (next >= nr_cpu_ids)
++		next = cpumask_first(srcp);
++
++	if (next < nr_cpu_ids)
++		__this_cpu_write(distribute_cpu_mask_prev, next);
++
++	return next;
++}
++EXPORT_SYMBOL(cpumask_any);
 -- 
 2.17.1
 
