@@ -2,110 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DF21A8CD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E29B1A8CE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbgDNUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:49:35 -0400
-Received: from mga05.intel.com ([192.55.52.43]:21026 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729251AbgDNUtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:49:24 -0400
-IronPort-SDR: Pkf0MVaWl4FGcR/JSWZkC5PkHCiINzQ1/5+27WulJnkLMJ0LQyyiXEgQngnT7uxUFV6hTTlI9U
- 6VEUkwrukOjw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 13:49:23 -0700
-IronPort-SDR: z09oPnrrskOdKVIxrcy/Slo2HLk4de2A8to5xuDqqtfJZXnIOJSvU+cBOE8i2EWeMm4PVIqFQ7
- 07MK1U32Hfxw==
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="298809985"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.134.69.31])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 13:49:22 -0700
-Message-ID: <81359df9983fb70bd40ddb3be9090e5521294529.camel@linux.intel.com>
-Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
- vector altogether
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Borislav Petkov <bp@suse.de>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
-        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        bberg@redhat.com, Tony Luck <tony.luck@intel.com>
-Date:   Tue, 14 Apr 2020 13:49:21 -0700
-In-Reply-To: <20200414202328.GK31763@zn.tnic>
-References: <20200407063345.4484-1-Jason@zx2c4.com>
-         <20200407063345.4484-3-Jason@zx2c4.com>
-         <0e189a4fe1e69b08afc859ce83623a0e5ea0c08b.camel@linux.intel.com>
-         <CAHmME9pigvAgK3Bje6DkFEcdyWwi7-C7D6QEo4YiH_cbJvxqhQ@mail.gmail.com>
-         <4b75ec34ccff5abdc0b1c04a5ac39455ddd4f49b.camel@linux.intel.com>
-         <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com>
-         <20200414202328.GK31763@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
+        id S2633420AbgDNUw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:52:28 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:34170 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729251AbgDNUwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:52:13 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 64594521;
+        Tue, 14 Apr 2020 22:52:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1586897530;
+        bh=yu8wglok8OGTOl53X/EXGSF59yx8BKjlyryBpwdu+g0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eX7dtv0TNakDsdzDQ3BH/Un2lTDwlo7BU+ATugilaXE2BvVbaPEOuDTYiH1LzmDIm
+         zrk2T1Qy/+CGgzRhsuhVjKF08IvLfYSkNdohXM/gitM7lOB1zw2S3nfDH7IHxsEmek
+         VZYsFivVYMWhwIzYLp8N1QYZhkjRQi5t7LPo1xVk=
+Date:   Tue, 14 Apr 2020 23:51:58 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
+Message-ID: <20200414205158.GM19819@pendragon.ideasonboard.com>
+References: <20200408202711.1198966-1-arnd@arndb.de>
+ <20200408202711.1198966-6-arnd@arndb.de>
+ <20200414201739.GJ19819@pendragon.ideasonboard.com>
+ <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-14 at 22:23 +0200, Borislav Petkov wrote:
-> + Tony.
-> 
-> On Tue, Apr 14, 2020 at 01:41:08PM -0600, Jason A. Donenfeld wrote:
-> > Generally it is desirable, and extremely common too. This thermal
-> > code
-> > -- which mostly functions to print some messages into kmsg -- is
-> > very
-> > verbose. This is not something I want to compile into smaller
-> > systems.
-> > This is the reason why kconfig has options in the first place. I'm
-> > not
-> > sure yet-another boottime flag makes sense for this.
-> 
-> I don't mind making the already existing option selectable and
-> leaving
-> it default y, i.e., keeping the current situation by default. And
-> people
-> who want to disable it, can then do so.
-> 
-> I do mind to having yet another config option though. No thanks -
-> they're already too many.
-> 
-> So it should be an all or nothing thing.
-> 
-> Poking quickly at that and
-> drivers/thermal/intel/x86_pkg_temp_thermal.c,
-> all those things do is report trip points. therm_throt reports how
-> long
-> the hw throttled due to hitting a trip point, etc.
-> 
-> IINM, of course so please correct me if I'm missing anything.
-> 
-> But if not and this all is only for reporting and doesn't have any
-> detrimental effects on the hardware when missing from the system,
-> then I
-> guess we could make CONFIG_X86_THERMAL_VECTOR user-selectable.
+Hi Arnd,
 
-We can make user selectable
-
-These drivers are used for reporting only.
-User space can select a trip temperature via x86_pkg_temp and get
-notification via uevent to start additional cooling system (additional
-fans, liquid coooling etc), so that processor don't have to go self
-throttling mode. Self throttling depending on processor series and
-firmware can be very aggressive.
-In client systems thermald will set a temperature and starts power
-control once it reaches passive temperature limit. But it can function
-without x86_pkg_temp also, so even if user disables thermal reporting
-it can still function.
- 
-Thanks,
-Srinivas
-
-
+On Tue, Apr 14, 2020 at 10:38:27PM +0200, Arnd Bergmann wrote:
+> On Tue, Apr 14, 2020 at 10:17 PM Laurent Pinchart wrote:
+> > On Wed, Apr 08, 2020 at 10:27:10PM +0200, Arnd Bergmann wrote:
+> > > The 'imply' statement does not seem to have an effect, as it's
+> > > still possible to turn the CMM code into a loadable module
+> > > in a randconfig build, leading to a link error:
+> > >
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_enable':
+> > > rcar_du_crtc.c:(.text+0xad4): undefined reference to `rcar_lvds_clk_enable'
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_disable':
+> > > rcar_du_crtc.c:(.text+0xd7c): undefined reference to `rcar_lvds_clk_disable'
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_drv.o: in function `rcar_du_init':
+> > > rcar_du_drv.c:(.init.text+0x4): undefined reference to `rcar_du_of_init'
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_encoder.o: in function `rcar_du_encoder_init':
+> > >
+> > > Remove the 'imply', and instead use a silent symbol that defaults
+> > > to the correct setting.
+> >
+> > This will result in the CMM always being selected when DU is, increasing
+> > the kernel size even for devices that don't need it. I believe we need a
+> > better construct in Kconfig to fix this.
 > 
-> Thx.
+> I had expected this to have the same meaning that we had before the
+> Kconfig change: whenever the dependencies are available, turn it on,
+> otherwise leave it disabled.
 > 
+> Can you describe what behavior you actually want instead?
 
+Doesn't "imply" mean it gets selected by default but can be manually
+disabled ?
+
+> > > --- a/drivers/gpu/drm/rcar-du/Kconfig
+> > > +++ b/drivers/gpu/drm/rcar-du/Kconfig
+> > > @@ -4,7 +4,6 @@ config DRM_RCAR_DU
+> > >       depends on DRM && OF
+> > >       depends on ARM || ARM64
+> > >       depends on ARCH_RENESAS || COMPILE_TEST
+> > > -     imply DRM_RCAR_CMM
+> > >       imply DRM_RCAR_LVDS
+> > >       select DRM_KMS_HELPER
+> > >       select DRM_KMS_CMA_HELPER
+> > > @@ -15,9 +14,8 @@ config DRM_RCAR_DU
+> > >         If M is selected the module will be called rcar-du-drm.
+> > >
+> > >  config DRM_RCAR_CMM
+> > > -     tristate "R-Car DU Color Management Module (CMM) Support"
+> > > +     def_tristate DRM_RCAR_DU
+> > >       depends on DRM && OF
+> > > -     depends on DRM_RCAR_DU
+> > >       help
+> 
+> It would be easy enough to make this a visible 'bool' symbol and
+> build it into the rcu-du-drm.ko module itself. Would that help you?
+
+That could indeed simplify a few things. I wonder if it could introduce
+a few small issues though (but likely nothing we can't fix). The two
+that come to mind are the fact that the module would have two
+MODULE_DESCRIPTION and MODULE_LICENSE entries (I have no idea if that
+could cause breakages), and that it could make module unloading more
+difficult as the CMM being used by the DU would increase the refcount on
+the module. I think the latter could be worked around by manually
+unbinding the DU device through sysfs before unloading the module (and I
+can't say for sure that unloading the DU module is not broken today
+*innocent and naive look* :-)).
+
+-- 
+Regards,
+
+Laurent Pinchart
