@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988271A8C12
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAEC1A8BD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632841AbgDNUO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
+        id S2505423AbgDNUBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2632825AbgDNUOq (ORCPT
+        by vger.kernel.org with ESMTP id S2505367AbgDNUA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:14:46 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA1C061BD3;
-        Tue, 14 Apr 2020 12:58:45 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id e17so7893681ybq.0;
-        Tue, 14 Apr 2020 12:58:45 -0700 (PDT)
+        Tue, 14 Apr 2020 16:00:29 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5271C061A10;
+        Tue, 14 Apr 2020 13:00:28 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d77so14474921wmd.3;
+        Tue, 14 Apr 2020 13:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GNxgPPM4n2ujMawZGS0HyHorgM1gpVp/anc4VzVl3U8=;
-        b=mUXhWcLskvqOcwmIDaztUH/RxMxbg4sS/9GYSD08uGIEVyl0iz5WH10Ounm4jH3bP6
-         Bc+znuOupuZWbV2UIvNrxIE69HdFLORK6/IbFspNMefhoC2TrA/gpeaAkIVydH+WCACW
-         oAjJLeKQqhAxADjapWPVoHTp6dmMIZpYPHA4C012WPe/YHLabmYx9OHJHydOfJmoF1BG
-         RUglQAsacRDOUfVOmrH11aj/m0+0ozDIsEqa2ZK8l5T3Tdi34fw9mAS6JZ8RkB/i8cV0
-         uCmcemCp8Ri92TqFucj4fEHTZAAd3abOlg53bHe8Ge8qhRNjdwRMR6FK/GvwsnXbh8bd
-         nDTw==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MbzRA+liOSzspvRs73OjMhTVcZqxUfZ8JGqRb1at2eo=;
+        b=usV8Cm+MW1Z553yH7mGfuCKt4JU0Fhq3xzICPmxArO3E+urQeBT1EyrZWPC5ZBDm/g
+         R/MvcnhU5fUc6mVz4zsAjdiEWv8wCeJnrOeThXvKyO2jYb9TC0ropp/VHimX8zhadP5N
+         fHaHB/Q4ksh0GbpSQdY3kmeMGWzzifgG2v3V+5G89DAmT2jFRvEXNEBMq6ulr9H/SIwX
+         FC7WLLlB/BmPFrTtCUtpzWSguI3s4UclTDRm2RwvYVjrxPGrr5Q1h/9pW66K6Cxz0KLC
+         uW5Lw1+SIUHqcYEaf0pDNdVoVO4+jeqIz5K5tYn9K0jjO2HEywhQi7JwLag6Bu0m9hCw
+         KAUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GNxgPPM4n2ujMawZGS0HyHorgM1gpVp/anc4VzVl3U8=;
-        b=e2Ry80shEjg9wmZvIV/hv8WlmwOyzprO/x88pBHQs1dR96oIJMFJdFA3WGNcRmFNe5
-         fvQ3+89jFEKZZpAVfAvJX3qIayhc74WzjBRTPmM5ZeIwLJldZ2GL4bEI7YBwb+AIntEe
-         Hr6JEL+1huX1WS/YRGb+MXabWpuCGwKErKNr6EZdvCsj6XF+iMZI8Wqjw2x4jlDB+Co3
-         WqeVy9QEiyRW/PLtB4NtQ8TZkCbrYTKGCr+XkRnjpQe4/tL3nJeBSJlloQH/6XzPTCvm
-         HGrqE2PxMN6VhKB1zAXgfkvDlfrxkcIde4PjUAZR4TkzfxGd71yCW5YQFRDSF8Ij12kq
-         K4nA==
-X-Gm-Message-State: AGi0PuYUKBTMYrr61TupUWxYqzdmeieGYFlGOWuWJ/TeK5M2Og+AdyB5
-        E5gmggNFQgYf9+YgZDGo3NAl6wM59Jh0TVX4BuQ=
-X-Google-Smtp-Source: APiQypJN5cWKfU4KSqHxDKZJHAGcb3fPrJTJAFfYVdg0wvrOrwPXCVsAsVoQ1s1vQir2tqnSureNzNJq3rjM6EsKb4Q=
-X-Received: by 2002:a25:b78b:: with SMTP id n11mr3040477ybh.376.1586894324869;
- Tue, 14 Apr 2020 12:58:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MbzRA+liOSzspvRs73OjMhTVcZqxUfZ8JGqRb1at2eo=;
+        b=C78XCC79Y1K5fr65XipGQf8jR8wbm6xXq/S3KyeoTQkghnm7RCNtJLm3KtC1rUKPOF
+         5zK+w4maCDt8hCIgElnPmyCwSk1tFbDsKGlJJubViuvNr32z+jrCnDdaCw+JiqnIc21p
+         zClEmvm7DL5llaiId2X0SDl98UteVXWu45gt2f3Rc2PjcjOtclI0hWqnwnjHttz8usIi
+         g78eOoTx6QisKBSUtE6Zsih+JdSB3iyTMcNRrTgBSUoHPteum1XTcITuKGW4okdeeZoO
+         M9jxcVxAHzq4hplvh7K9FLYgpEvSPFs8G1h9N8/JxgLahaF90HSbvANfCy/bZwDP9i9u
+         i85g==
+X-Gm-Message-State: AGi0PuY1HjtQdbW3rOQafGkisxHiuWCbFDKMXYVjWoacC5EYLYpVBfl+
+        Wn9Gw2G2XoCmtAU3BnC9ShUf8HcB/Zg=
+X-Google-Smtp-Source: APiQypJeEMY/H6VtUp7hGwSmUSJjjoRxaD3Z9HIbNZuaQuy98pOr+YMQ2RGA7ApjNpibPM4CdxN5QQ==
+X-Received: by 2002:a1c:dc0a:: with SMTP id t10mr1400936wmg.113.1586894427232;
+        Tue, 14 Apr 2020 13:00:27 -0700 (PDT)
+Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id b4sm15540253wrv.42.2020.04.14.13.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 13:00:26 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org
+Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 0/4] clk: meson8b: updates for video clocks / resets
+Date:   Tue, 14 Apr 2020 22:00:13 +0200
+Message-Id: <20200414200017.226136-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <CAEUGjKiLPQP9wp0AgLUvHgKBOe9We2a-RQaZ7cd7CvhnarwWiw@mail.gmail.com>
- <CAKywueT0Q9WkANNsg8cEDwGZSMaaE5c4LHuEeMhVDzJAzycroQ@mail.gmail.com> <CAEUGjKhSBNQboKOMFMgos9OQfxcLQZsXp8aBrUSFcaSe1saH2Q@mail.gmail.com>
-In-Reply-To: <CAEUGjKhSBNQboKOMFMgos9OQfxcLQZsXp8aBrUSFcaSe1saH2Q@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 14 Apr 2020 14:58:33 -0500
-Message-ID: <CAH2r5mt1k5t8rSH1KizeSrcLaN1Fn3GWeMvDPwT2Kfq43UAWaQ@mail.gmail.com>
-Subject: Re: [PATCH] cifs: improve read performance for page size 64KB &
- cache=strict & vers=2.1+
-To:     Jones Syue <jonessyue@qnap.com>
-Cc:     Pavel Shilovsky <piastryyy@gmail.com>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Samba Technical <samba-technical@lists.samba.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Did you also test (at least briefly) with vers=3D1.0 since some of your
-code affects that code path too?
+This is the first batch of fixes and updates for the Meson8/8b/8m2
+clock controller driver.
 
-And if anyone figures out how to configure an x86_64 Linux to use
-PAGE_SIZE of 64K or larger let me know...
+The first patch fixes the video clock hierarchy. Special thanks to
+Neil for providing a lot of details about the video clock tree!
 
-On Sun, Apr 12, 2020 at 9:24 PM Jones Syue via samba-technical
-<samba-technical@lists.samba.org> wrote:
->
-> Hello Pavel
->
-> Thanks for kindly reviewing!
-> Please find the attached v2.patch.
->
-> --
-> Regards,
-> Jones Syue | =E8=96=9B=E6=87=B7=E5=AE=97
-> QNAP Systems, Inc.
->
->
-> On Sat, Apr 11, 2020 at 2:25 AM Pavel Shilovsky <piastryyy@gmail.com> wro=
-te:
-> >
-> > Hi Jones,
-> >
-> > Thanks for the patch!
-> >
-> > It will work although it is probably a little bit cleaner to
-> > initialize server->max_read to server->maxBuf for SMB1 and use the
-> > server->max_read in the readpages condition check instead.
-> >
-> > @Others, thoughts?
-> >
-> > --
-> > Best regards,
-> > Pavel Shilovsky
+The second and third came up while testing video output on my EC-100
+(Endless Mini). This board is special because u-boot does not enable
+the video outputs like most other u-boot versions do. However, this
+is very useful for development because it shows (the hard way ;))
+where the existing code is buggy.
+
+The last patch is a small improvement for the VPU clock so we
+utilize the glitch-free mux (on SoCs which support it) and avoid
+problems by changing the "live" clock tree at runtime (with the mali
+clock this resulted in system hangs/freezes).
+
+In my opinion all of these patches - including the fixes - can go to
+"next" because the relevant clock trees are still read-only.
 
 
+Martin Blumenstingl (4):
+  clk: meson: meson8b: Fix the first parent of vid_pll_in_sel
+  clk: meson: meson8b: Fix the polarity of the RESET_N lines
+  clk: meson: meson8b: Fix the vclk_div{1,2,4,6,12}_en gate bits
+  clk: meson: meson8b: Make the CCF use the glitch-free VPU mux
 
---=20
-Thanks,
+ drivers/clk/meson/meson8b.c | 107 +++++++++++++++++++++++++-----------
+ 1 file changed, 75 insertions(+), 32 deletions(-)
 
-Steve
+-- 
+2.26.0
+
