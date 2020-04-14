@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62441A862A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A381A85E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391161AbgDNQyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:54:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55298 "EHLO mail.kernel.org"
+        id S2502190AbgDNQvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:51:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407506AbgDNQtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:14 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        id S2440406AbgDNQtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:21 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC83F217D8;
-        Tue, 14 Apr 2020 16:49:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEC8420656;
+        Tue, 14 Apr 2020 16:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882943;
-        bh=dzEvyUMT+6iAL0bVATxxLcY08y7xtxW1DkpC2XHSTsk=;
+        s=default; t=1586882956;
+        bh=/mHARHeWczRi1L5tDKAwMG7VRaHqjAqAAZDBdAFAoJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M6f+qO1F7fd78vZlsjVqrEwdHtkET9vk6DZSuQ/0NJCSFiLvrmjaNVwbaQQgj7sWi
-         sgU/AxxQ//yfbKVcK7exxwnvYRn3Ej43oj2VFmeUwSOpgKxbjrmqUfNMsdmExzc/MV
-         4KErJoL22upSdAJzffOcy7jHkTfMgxrrJUD7qwJY=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jOOk9-0068mE-33; Tue, 14 Apr 2020 18:49:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH v2 17/33] docs: infiniband: verbs.c: fix some documentation warnings
-Date:   Tue, 14 Apr 2020 18:48:43 +0200
-Message-Id: <4c5466d0f450c5a9952138150c3485740b37f9c5.1586881715.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
-References: <cover.1586881715.git.mchehab+huawei@kernel.org>
+        b=0hDy+lq50lzxBnb1keJMR5ZhFNyRO3L5S+NZ2mJbZ9CvgWUzIy8B54nSUvEB+alk0
+         Re541EWfc0j6Tb16rBoCNcTAebnm8RfcqirAPj0KXXFfTjMp18BAokdGxigUE8Fe0P
+         laYaWpwb1nCHHo8BEQoRQoRLm76mv1dm0gLvdB8k=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH 05/15] tools headers UAPI: Sync sched.h with the kernel
+Date:   Tue, 14 Apr 2020 13:48:44 -0300
+Message-Id: <20200414164854.26026-6-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
+References: <20200414164854.26026-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,50 +46,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parsing this file with kernel-doc produce some warnings:
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
-	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
-	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
-	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
-	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
-	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
+To get the changes in:
 
-Address them by adding an extra blank line and converting the
-parameters on one of the arguments to a table.
+  ef2c41cf38a7 ("clone3: allow spawning processes into cgroups")
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Add that to 'perf trace's clone 'flags' decoder.
+
+This silences this perf build warning:
+
+  Warning: Kernel ABI header at 'tools/include/uapi/linux/sched.h' differs from latest version at 'include/uapi/linux/sched.h'
+  diff -u tools/include/uapi/linux/sched.h include/uapi/linux/sched.h
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- drivers/infiniband/core/verbs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ tools/include/uapi/linux/sched.h | 5 +++++
+ tools/perf/trace/beauty/clone.c  | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 56a71337112c..3bfadd8effcc 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2574,6 +2574,7 @@ EXPORT_SYMBOL(ib_map_mr_sg_pi);
-  * @page_size:     page vector desired page size
+diff --git a/tools/include/uapi/linux/sched.h b/tools/include/uapi/linux/sched.h
+index 2e3bc22c6f20..3bac0a8ceab2 100644
+--- a/tools/include/uapi/linux/sched.h
++++ b/tools/include/uapi/linux/sched.h
+@@ -35,6 +35,7 @@
+ 
+ /* Flags for the clone3() syscall. */
+ #define CLONE_CLEAR_SIGHAND 0x100000000ULL /* Clear any signal handler and reset to SIG_DFL. */
++#define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
+ 
+ /*
+  * cloning flags intersect with CSIGNAL so can be used with unshare and clone3
+@@ -81,6 +82,8 @@
+  * @set_tid_size: This defines the size of the array referenced
+  *                in @set_tid. This cannot be larger than the
+  *                kernel's limit of nested PID namespaces.
++ * @cgroup:       If CLONE_INTO_CGROUP is specified set this to
++ *                a file descriptor for the cgroup.
   *
-  * Constraints:
-+ *
-  * - The first sg element is allowed to have an offset.
-  * - Each sg element must either be aligned to page_size or virtually
-  *   contiguous to the previous element. In case an sg element has a
-@@ -2607,10 +2608,12 @@ EXPORT_SYMBOL(ib_map_mr_sg);
-  * @mr:            memory region
-  * @sgl:           dma mapped scatterlist
-  * @sg_nents:      number of entries in sg
-- * @sg_offset_p:   IN:  start offset in bytes into sg
-- *                 OUT: offset in bytes for element n of the sg of the first
-+ * @sg_offset_p:   ==== =======================================================
-+ *                 IN   start offset in bytes into sg
-+ *                 OUT  offset in bytes for element n of the sg of the first
-  *                      byte that has not been processed where n is the return
-  *                      value of this function.
-+ *                 ==== =======================================================
-  * @set_page:      driver page assignment function pointer
-  *
-  * Core service helper for drivers to convert the largest
+  * The structure is versioned by size and thus extensible.
+  * New struct members must go at the end of the struct and
+@@ -97,11 +100,13 @@ struct clone_args {
+ 	__aligned_u64 tls;
+ 	__aligned_u64 set_tid;
+ 	__aligned_u64 set_tid_size;
++	__aligned_u64 cgroup;
+ };
+ #endif
+ 
+ #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
+ #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
++#define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
+ 
+ /*
+  * Scheduling policies
+diff --git a/tools/perf/trace/beauty/clone.c b/tools/perf/trace/beauty/clone.c
+index 062ca849c8fd..f4db894e0af6 100644
+--- a/tools/perf/trace/beauty/clone.c
++++ b/tools/perf/trace/beauty/clone.c
+@@ -46,6 +46,7 @@ static size_t clone__scnprintf_flags(unsigned long flags, char *bf, size_t size,
+ 	P_FLAG(NEWNET);
+ 	P_FLAG(IO);
+ 	P_FLAG(CLEAR_SIGHAND);
++	P_FLAG(INTO_CGROUP);
+ #undef P_FLAG
+ 
+ 	if (flags)
 -- 
-2.25.2
+2.21.1
 
