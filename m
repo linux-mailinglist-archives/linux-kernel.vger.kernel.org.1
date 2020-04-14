@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AC01A71E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0B91A7208
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404872AbgDNDjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:39:23 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2314 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404832AbgDNDjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:39:20 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 96C7A3D5AC211402FCB5;
-        Tue, 14 Apr 2020 11:39:15 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 14 Apr 2020 11:39:06 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <akpm@linux-foundation.org>, <sjenning@redhat.com>,
-        <ddstreet@ieee.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] mm: use false for bool variable
-Date:   Tue, 14 Apr 2020 11:45:30 +0800
-Message-ID: <1586835930-47076-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S2404946AbgDNDyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728841AbgDNDyJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 23:54:09 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDE0C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:54:09 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id o127so11850104iof.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ou7sPaeQnH1fiZWbpYfpKPp578BHz2/53EHQUMJ28qw=;
+        b=KsKjd1kTdDBUsdPUOvD/rQMazJ1aa9sm/3VPhy41JsP7jr4phl7U8diMsIpuxvKSWw
+         hDKba+88qk5QhDJZI31GQLXWdxqJZRupnfu0lqHG56BJw/yO1TVhH+5cm2wrpZkTtGEM
+         z9A5K4QjZQgXRB+KYpeUGWY/jo8O8WB4qFteBg4KVwQRxwGSO+tgStl0dbNyFUfug23E
+         4E5wQ1zHBVswp5e75X5nHNiL/ZBBGaioZQ2ZpF6SUp0Qm6CY/Dj9dVZm+oxCX11zvJWb
+         XePiePnl9ObDZQWOdiImoudrxgfPR1ZmEG2jED2u+UTuTkC15vd80pKDXk6wMC5CDwL7
+         op5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ou7sPaeQnH1fiZWbpYfpKPp578BHz2/53EHQUMJ28qw=;
+        b=mdZEzt9tIYYqKbd2xaZbKo4SIKCxtmIFpFrP7uo5/yId9RBTgIYXVBzyjpBnK4XZkN
+         AbAzhiTeO9TA8K5kfLpBtf3vbWNp313fnWa+l2qQCkugPjmNifXSwFFSyXP1bqV+NqPw
+         0PfT5JsMV3uEpYbyOGUIWtKu3Xry9PSLt7gTfi1Aw4kFPZ4X/Mhq+QbWHwVJ3w4MnAso
+         lSJhLwpyYqJtFIktF5MBdvfnMQENf/hz1jmr4UruvmHRMT3O3lMERWM0IzUjiAvfXO74
+         ZqVTfWhaFEuVOt5xIEpakGUEtS6ctc29W4zzd882ckTFCHquqE0vuUK9moeyHYsRHXcX
+         3qrw==
+X-Gm-Message-State: AGi0PuZDJyeLyoHp0LB/XGa3ysv8YPgAserMk9Tv9btfvfHeugRTViRZ
+        JluVnTfdYBiTr3CFbM/topunJ8ISfpGrzY6b8pP4Qw==
+X-Google-Smtp-Source: APiQypKX9CgulmoRJFUZ483VPGpN9M7xFoE7JTd5SdG1HdHttjAuBjbYEUa5jMgYJ976q1s87Ck1J4jTe2q2KMKMTu0=
+X-Received: by 2002:a6b:3989:: with SMTP id g131mr19440338ioa.202.1586836448578;
+ Mon, 13 Apr 2020 20:54:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+References: <20200414020953.255364-1-matthewgarrett@google.com> <1ba40c555115e5a2770e95b974096016fbfc3606.camel@intel.com>
+In-Reply-To: <1ba40c555115e5a2770e95b974096016fbfc3606.camel@intel.com>
+From:   Matthew Garrett <mjg59@google.com>
+Date:   Mon, 13 Apr 2020 20:53:57 -0700
+Message-ID: <CACdnJut0MkQerQbMeaqDz81iaeQRvdgqw2MpTvNOi_1ch06qGw@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] thermal/int340x_thermal: Export GDDV
+To:     "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "Aram, Nisha" <nisha.aram@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
+On Mon, Apr 13, 2020 at 8:33 PM Pandruvada, Srinivas
+<srinivas.pandruvada@intel.com> wrote:
+> Anything changed in v2 series?
 
-mm/zbud.c:246:1-20: WARNING: Assignment of 0/1 to bool variable
-mm/mremap.c:777:2-8: WARNING: Assignment of 0/1 to bool variable
-mm/huge_memory.c:525:9-10: WARNING: return of 0/1 in function
-'is_transparent_hugepage' with return type bool
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- mm/huge_memory.c | 2 +-
- mm/mremap.c      | 2 +-
- mm/zbud.c        | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 6ecd104..5f42805 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -522,7 +522,7 @@ void prep_transhuge_page(struct page *page)
- bool is_transparent_hugepage(struct page *page)
- {
- 	if (!PageCompound(page))
--		return 0;
-+		return false;
- 
- 	page = compound_head(page);
- 	return is_huge_zero_page(page) ||
-diff --git a/mm/mremap.c b/mm/mremap.c
-index a7e282e..3ac7ced 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -774,7 +774,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
- out:
- 	if (offset_in_page(ret)) {
- 		vm_unacct_memory(charged);
--		locked = 0;
-+		locked = false;
- 	}
- 	if (downgraded)
- 		up_read(&current->mm->mmap_sem);
-diff --git a/mm/zbud.c b/mm/zbud.c
-index de5dd4d..bc93aa4 100644
---- a/mm/zbud.c
-+++ b/mm/zbud.c
-@@ -243,7 +243,7 @@ static struct zbud_header *init_zbud_page(struct page *page)
- 	zhdr->last_chunks = 0;
- 	INIT_LIST_HEAD(&zhdr->buddy);
- 	INIT_LIST_HEAD(&zhdr->lru);
--	zhdr->under_reclaim = 0;
-+	zhdr->under_reclaim = false;
- 	return zhdr;
- }
- 
--- 
-2.6.2
-
+Sorry, forgot to explain the diffs. Patch 2 in V2 was passing the
+wrong value to sysfs_attr_init(), but I didn't notice during testing
+because that's a macro that does nothing unless a specific debug flag
+is set. The kernel build bot noticed. Only difference is passing the
+correct argument there.
