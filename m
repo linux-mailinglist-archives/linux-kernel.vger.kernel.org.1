@@ -2,82 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184CE1A8E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276B61A8E36
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407839AbgDNWFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 18:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730942AbgDNWFc (ORCPT
+        id S2632766AbgDNWHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 18:07:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48614 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729934AbgDNWGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 18:05:32 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D42C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:05:31 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id p6so1724681edu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2B6KSb9ULHZwvw0POXN8kn/+hN+oqa+Ekk3IkISWyS0=;
-        b=1hFd2wnBwOrjzXMUj3Rksg6DM69zi2fiU1AERhoYGg01pDzQXamgVmvH1bL8qGlXWc
-         uugggFPpVGiQuTgy3rkRpiO6GR7g22s51OY4fhkTXd/ote2eovm7pxmYrgroyXJIcVx0
-         oSn5N5oKKcjbPYpwPPugf7hIv2QRuA0BKu9k2CTedMdh0tW3kgx8Ko+yyV8iW/VgexLu
-         sflZns3Xp0yZGXxbmy7CUZRNdyn1rJSfDQgH8RbH8QqGdHKQdGblA/vq/iqFxydGaZBx
-         GQ60zpSyCeCIeSW1DTSh8Sk+UhCU4c3kByJ9YBFy30TfHDnTiZx0/9Mk3WLLuA00Ul4u
-         7MTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2B6KSb9ULHZwvw0POXN8kn/+hN+oqa+Ekk3IkISWyS0=;
-        b=nl7+B16RHDVPCGpGdeVCOsPBNaMVQ594/sE+zFi/blEHX6tfSsxihykORjj4vcCqvW
-         pQ1fGJYpYXvUhPy9D2mdkBnqmais8kOkUJMBrJAxD27Qp+QVh2rSROkohc6qQfUL+jl4
-         z+yDsjxE3LUiFX/D+qB0Kw3Txb9Gosdn4c14L4k8pQYaujoR6meJETsmF4evdjazerEf
-         oDZcig9a9dS35Bsjuoy9LK9EkrbCFmIYaNVKQbWEsDHT/5y75NXRbOeZ7VCVFGAVMpOB
-         3e3JhLO3dX7ve2bFqnM1rtfQ3RbLgFQiVFQBH2Mh4XSIcAsKEGONhnnJ2uIxmQ4MoMNo
-         AUfQ==
-X-Gm-Message-State: AGi0PuabWlQN3RNwvyEPPn8rjJu5FYwZ3gVsz5GdgSb5ohJPTVnEgCFw
-        mz178XK2mrA4StJqcowHTP2tPr1VV3kzfBnyPjFu
-X-Google-Smtp-Source: APiQypKLPdYWr30yfCiz990g2qhlCMkQB6hqTbWzjWYagCL5E7mjFGXo+kO5LVY8KajgI1UXBpILPIXNSdQnDReWM5g=
-X-Received: by 2002:a17:906:f106:: with SMTP id gv6mr2254080ejb.271.1586901929541;
- Tue, 14 Apr 2020 15:05:29 -0700 (PDT)
+        Tue, 14 Apr 2020 18:06:50 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 59D0D2A02F8
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH] media: Kconfig: Don't expose the Request API option
+Date:   Tue, 14 Apr 2020 19:06:24 -0300
+Message-Id: <20200414220624.5396-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200414130210.18970-1-ezequiel@collabora.com>
+References: <20200414130210.18970-1-ezequiel@collabora.com>
 MIME-Version: 1.0
-References: <1586852287-67588-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1586852287-67588-1-git-send-email-zou_wei@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 14 Apr 2020 18:05:18 -0400
-Message-ID: <CAHC9VhS2Nk+XLd9RnWxCkB0-81VF-fWyRYVET0VU3pcrhnxwCg@mail.gmail.com>
-Subject: Re: [PATCH -next] selinux: fix warning Comparison to bool
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 4:12 AM Zou Wei <zou_wei@huawei.com> wrote:
->
-> fix below warnings reported by coccicheck
->
-> security/selinux/ss/mls.c:539:39-43: WARNING: Comparison to bool
-> security/selinux/ss/services.c:1815:46-50: WARNING: Comparison to bool
-> security/selinux/ss/services.c:1827:46-50: WARNING: Comparison to bool
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  security/selinux/ss/mls.c      | 2 +-
->  security/selinux/ss/services.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+The Request API isn't meant to be chosen by users,
+but instead should be selected by drivers that want
+to support it.
 
-Merged into selinux/next, thanks.
+Hantro and Cedrus are already selecting the right options,
+so only the test drivers need to be fixed.
 
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
+ drivers/media/mc/Kconfig                   | 6 ++++--
+ drivers/media/test_drivers/Kconfig         | 2 ++
+ drivers/media/test_drivers/vicodec/Kconfig | 2 ++
+ drivers/media/test_drivers/vivid/Kconfig   | 2 ++
+ 4 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/mc/Kconfig b/drivers/media/mc/Kconfig
+index 002a918c4c75..7c9628f37196 100644
+--- a/drivers/media/mc/Kconfig
++++ b/drivers/media/mc/Kconfig
+@@ -2,7 +2,6 @@
+ 
+ #
+ # Media controller
+-#	Selectable only for webcam/grabbers, as other drivers don't use it
+ #
+ 
+ config MEDIA_CONTROLLER_DVB
+@@ -14,7 +13,7 @@ config MEDIA_CONTROLLER_DVB
+ 	  This is currently experimental.
+ 
+ config MEDIA_CONTROLLER_REQUEST_API
+-	bool "Enable Media controller Request API (EXPERIMENTAL)"
++	bool
+ 	depends on MEDIA_CONTROLLER && STAGING_MEDIA
+ 	help
+ 	  DO NOT ENABLE THIS OPTION UNLESS YOU KNOW WHAT YOU'RE DOING.
+@@ -24,3 +23,6 @@ config MEDIA_CONTROLLER_REQUEST_API
+ 
+ 	  There is currently no intention to provide API or ABI stability for
+ 	  this new API as of yet.
++
++comment "Please notice that the enabled Media controller Request API is EXPERIMENTAL"
++	depends on MEDIA_CONTROLLER_REQUEST_API
+diff --git a/drivers/media/test_drivers/Kconfig b/drivers/media/test_drivers/Kconfig
+index 9f4a9cfbacc9..d62d974138e4 100644
+--- a/drivers/media/test_drivers/Kconfig
++++ b/drivers/media/test_drivers/Kconfig
+@@ -17,6 +17,8 @@ config VIDEO_VIM2M
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	select VIDEOBUF2_VMALLOC
+ 	select V4L2_MEM2MEM_DEV
++	select MEDIA_CONTROLLER
++	select MEDIA_CONTROLLER_REQUEST_API
+ 	help
+ 	  This is a virtual test device for the memory-to-memory driver
+ 	  framework.
+diff --git a/drivers/media/test_drivers/vicodec/Kconfig b/drivers/media/test_drivers/vicodec/Kconfig
+index 89456665cb16..d77c67810c73 100644
+--- a/drivers/media/test_drivers/vicodec/Kconfig
++++ b/drivers/media/test_drivers/vicodec/Kconfig
+@@ -4,6 +4,8 @@ config VIDEO_VICODEC
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	select VIDEOBUF2_VMALLOC
+ 	select V4L2_MEM2MEM_DEV
++	select MEDIA_CONTROLLER
++	select MEDIA_CONTROLLER_REQUEST_API
+ 	help
+ 	  Driver for a Virtual Codec
+ 
+diff --git a/drivers/media/test_drivers/vivid/Kconfig b/drivers/media/test_drivers/vivid/Kconfig
+index e2ff06edfa93..c3abde2986b2 100644
+--- a/drivers/media/test_drivers/vivid/Kconfig
++++ b/drivers/media/test_drivers/vivid/Kconfig
+@@ -11,6 +11,8 @@ config VIDEO_VIVID
+ 	select VIDEOBUF2_VMALLOC
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select VIDEO_V4L2_TPG
++	select MEDIA_CONTROLLER
++	select MEDIA_CONTROLLER_REQUEST_API
+ 	help
+ 	  Enables a virtual video driver. This driver emulates a webcam,
+ 	  TV, S-Video and HDMI capture hardware, including VBI support for
 -- 
-paul moore
-www.paul-moore.com
+2.26.0.rc2
+
