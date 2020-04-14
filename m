@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62F11A78E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349581A788B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438714AbgDNKz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:55:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41812 "EHLO
+        id S2438450AbgDNKff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:35:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40214 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438406AbgDNKeP (ORCPT
+        with ESMTP id S2438373AbgDNKci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:34:15 -0400
+        Tue, 14 Apr 2020 06:32:38 -0400
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAXIva102548;
-        Tue, 14 Apr 2020 10:34:02 GMT
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EATIE1098998;
+        Tue, 14 Apr 2020 10:32:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=fLLGgDIZYKTl/K7Rv2wzVJUYY95uXKkMAzYoUJKoSr4=;
- b=pzj9wFdO6UuLBRV1gnIhBEnvHJEGC+EW3nNC+U2TYItOi1p7UK1Hbiur6weNi6MQg3Gk
- A3+OWY05X2CUhZ5zQz/z2fSKPnxrKFtWIjlCJK6h2wtVjrGX/W7pA/Hz86XlrjMrrsa5
- 5KscoKa4nHcv45mF8RQzK6X/0GgxD6OtQwsnvs2QAwOskOZi0PhAeUb+sTcQoXuO+Ruk
- nlPQlzpN7sh1hfuh0OmU8NJh7LEjZ4fFGgo4gpUHZSbZV3e4crI2MZHQRF9tDoD3gtX3
- /QPyUfQaYd3A/h1XiIa+0AuB9jNePkYXhM4BL+8XQDbJIrJD0rSQPN9JEiVAVccrQBL+ mg== 
+ bh=MDCxMbwZCIalkERKeoAG/k67T3C98x/pTWapXX1xkMk=;
+ b=p1SpySKC/FngDeAc5GiZkWb0Y/SW2geU1EWRcPOB9FLkIhbc6R6AbqTWGcJSFowL8Vca
+ Pf9xiQMGBeGey0pFmAsOtJI/yuFLgYwBdEJym1QIcT3Q9FilDHUkuBpT5fqwo6B5Plh4
+ RtY8D0Hs/VTlGeGPEeBkxOVHG5ecjpgSRenDVWNiBZ9SExU59jr7Me+KzNcGhwqEF3AM
+ NEolvtnVjNq28fGX3my6KzZSAlXY2Q7OqfvwJxWiKVS/mOKsHDvlbIVEijt2P2mxwwrU
+ n8HNcgB+/dTRwwtUYVBJYtVhSSl/i4irLqtmOLhYZzkjHB/Un36mSQmMPyk3f05j9YBG tg== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 30b6hpkms6-1
+        by userp2120.oracle.com with ESMTP id 30b6hpkmeq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:34:02 +0000
+        Tue, 14 Apr 2020 10:32:02 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAW0uY123393;
-        Tue, 14 Apr 2020 10:32:01 GMT
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAVxaJ123210;
+        Tue, 14 Apr 2020 10:32:02 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30bqpfxns9-1
+        by aserp3020.oracle.com with ESMTP id 30bqpfxnx9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:32:01 +0000
+        Tue, 14 Apr 2020 10:32:02 +0000
 Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EAVuwu013703;
-        Tue, 14 Apr 2020 10:31:58 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EAVwlD013715;
+        Tue, 14 Apr 2020 10:31:59 GMT
 Received: from linux-1.home (/92.157.90.160)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 03:31:55 -0700
+        with ESMTP ; Tue, 14 Apr 2020 03:31:58 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
         alexandre.chartre@oracle.com
-Subject: [PATCH V3 4/9] objtool: Handle return instruction with intra-function call
-Date:   Tue, 14 Apr 2020 12:36:13 +0200
-Message-Id: <20200414103618.12657-5-alexandre.chartre@oracle.com>
+Subject: [PATCH V3 5/9] objtool: Add return address unwind hints
+Date:   Tue, 14 Apr 2020 12:36:14 +0200
+Message-Id: <20200414103618.12657-6-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200414103618.12657-1-alexandre.chartre@oracle.com>
 References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
@@ -61,229 +61,197 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adult
  mlxlogscore=999 clxscore=1015 mlxscore=0 phishscore=0 suspectscore=1
  lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140087
+ engine=8.12.0-2003020000 definitions=main-2004140086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intra-function calls are implemented in objtool like unconditional
-jumps. Keep track of intra-functin calls return addresses so that
-objtool can make a return instruction continues the flow at the
-right location.
+Add the UNWIND_HINT_RADDR_DELETE and UNWIND_HINT_RADDR_ALTER unwind
+hint macros to flag instructions which remove or modify return
+addresses.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- tools/objtool/arch/x86/decode.c |   7 +++
- tools/objtool/check.c           | 104 ++++++++++++++++++++++++++++++--
- tools/objtool/check.h           |   3 +
- 3 files changed, 110 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/orc_types.h       |  2 +
+ arch/x86/include/asm/unwind_hints.h    | 23 +++++++++
+ tools/arch/x86/include/asm/orc_types.h |  2 +
+ tools/objtool/check.c                  | 67 ++++++++++++++++++++++++++
+ 4 files changed, 94 insertions(+)
 
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index f4d70b8835c4..76b593bb2e4f 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -427,6 +427,13 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
- 	case 0xc2:
- 	case 0xc3:
- 		*type = INSN_RETURN;
-+		/*
-+		 * For the impact on the stack, a ret behaves like
-+		 * a pop of the return address.
-+		 */
-+		op->src.type = OP_SRC_POP;
-+		op->dest.type = OP_DEST_REG;
-+		op->dest.reg = CFI_RA;
- 		break;
+diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
+index 6e060907c163..5c1141175d51 100644
+--- a/arch/x86/include/asm/orc_types.h
++++ b/arch/x86/include/asm/orc_types.h
+@@ -60,6 +60,8 @@
+ #define ORC_TYPE_REGS_IRET		2
+ #define UNWIND_HINT_TYPE_SAVE		3
+ #define UNWIND_HINT_TYPE_RESTORE	4
++#define UNWIND_HINT_TYPE_RADDR_ALTER	6
++#define UNWIND_HINT_TYPE_RADDR_DELETE	7
  
- 	case 0xca: /* retf */
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index ad362c5de281..8b1df659cd68 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -26,9 +26,50 @@ struct alternative {
- 	bool skip_orig;
- };
+ #ifndef __ASSEMBLY__
+ /*
+diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
+index f5e2eb12cb71..5211d2c5b7a2 100644
+--- a/arch/x86/include/asm/unwind_hints.h
++++ b/arch/x86/include/asm/unwind_hints.h
+@@ -94,6 +94,23 @@
+ 	UNWIND_HINT type=UNWIND_HINT_TYPE_RESTORE
+ .endm
  
 +/*
-+ * List to keep track of intra-function call return addresses.
-+ * The list is a simple static array because we don't expect
-+ * to have a lot of nested intra-function calls.
++ * RADDR_DELETE: Used on instructions (other than ret instruction)
++ * which remove a return address from the stack. count is the number
++ * of return address which are removed.
 + */
-+#define RADDR_COUNT_MAX		32
-+#define RADDR_ALTERED		((void *)-1)
++.macro UNWIND_HINT_RADDR_DELETE count=1
++	UNWIND_HINT type=UNWIND_HINT_TYPE_RADDR_DELETE sp_offset=\count
++.endm
 +
-+static struct instruction *raddr_list[RADDR_COUNT_MAX];
-+static int raddr_count;
++/*
++ * RADDR_ALTER: Used on instructions which change a return address on
++ * the stack. count is the number of return address which are changed.
++ */
++.macro UNWIND_HINT_RADDR_ALTER count=1
++	UNWIND_HINT type=UNWIND_HINT_TYPE_RADDR_ALTER sp_offset=\count
++.endm
 +
- const char *objname;
- struct cfi_state initial_func_cfi;
+ #else /* !__ASSEMBLY__ */
  
-+static void raddr_clear(void)
-+{
-+	raddr_count = 0;
-+}
+ #define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
+@@ -112,6 +129,12 @@
+ 
+ #define UNWIND_HINT_RESTORE UNWIND_HINT(0, 0, UNWIND_HINT_TYPE_RESTORE, 0)
+ 
++#define UNWIND_HINT_RADDR_ALTER(count)	\
++	UNWIND_HINT(0, count, UNWIND_HINT_TYPE_RADDR_ALTER, 0)
 +
-+static bool raddr_push(struct instruction *insn)
-+{
-+	if (raddr_count == RADDR_COUNT_MAX) {
-+		WARN_FUNC("return address list is full",
-+			  insn->sec, insn->offset);
-+		return false;
-+	}
++#define UNWIND_HINT_RADDR_DELETE(count)	\
++	UNWIND_HINT(0, count, UNWIND_HINT_TYPE_RADDR_DELETE, 0)
 +
-+	raddr_list[raddr_count++] = insn;
-+	return true;
-+}
-+
-+static bool raddr_pop(struct instruction **insn)
-+{
-+	if (raddr_count == 0)
-+		return false;
-+
-+	*insn = raddr_list[--raddr_count];
-+	return true;
-+}
-+
-+static int validate_branch(struct objtool_file *file, struct symbol *func,
-+			   struct instruction *from,
-+			   struct instruction *first, struct insn_state state);
-+
- struct instruction *find_insn(struct objtool_file *file,
- 			      struct section *sec, unsigned long offset)
- {
-@@ -2039,8 +2080,52 @@ static int validate_sibling_call(struct instruction *insn, struct insn_state *st
- 	return validate_call(insn, state);
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_X86_UNWIND_HINTS_H */
+diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
+index 6e060907c163..5c1141175d51 100644
+--- a/tools/arch/x86/include/asm/orc_types.h
++++ b/tools/arch/x86/include/asm/orc_types.h
+@@ -60,6 +60,8 @@
+ #define ORC_TYPE_REGS_IRET		2
+ #define UNWIND_HINT_TYPE_SAVE		3
+ #define UNWIND_HINT_TYPE_RESTORE	4
++#define UNWIND_HINT_TYPE_RADDR_ALTER	6
++#define UNWIND_HINT_TYPE_RADDR_DELETE	7
+ 
+ #ifndef __ASSEMBLY__
+ /*
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 8b1df659cd68..0574ce8e232d 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -66,6 +66,28 @@ static bool raddr_pop(struct instruction **insn)
+ 	return true;
  }
  
--static int validate_return(struct symbol *func, struct instruction *insn, struct insn_state *state)
-+static int validate_return_address(struct objtool_file *file,
-+				   struct symbol *func,
-+				   struct instruction *insn,
-+				   struct insn_state *state)
- {
-+	struct instruction *raddr_insn;
-+	int ret;
++static bool raddr_delete(int count)
++{
++	if (raddr_count < count)
++		return false;
 +
-+	while (raddr_pop(&raddr_insn)) {
-+		/*
-+		 * We are branching somewhere and so processing
-+		 * a return instruction. So update the stack
-+		 * state for this instruction.
-+		 */
-+		update_insn_state(insn, state);
-+
-+		/*
-+		 * If the return address has no instruction then
-+		 * that's the end of the function.
-+		 */
-+		if (!raddr_insn)
-+			break;
-+
-+		/*
-+		 * If we are branching to a defined address then
-+		 * just do an unconditional jump there.
-+		 */
-+		ret = validate_branch(file, func, insn,
-+				      raddr_insn, *state);
-+		if (ret) {
-+			if (backtrace)
-+				BT_FUNC("(ret-branch)", insn);
-+			return ret;
-+		}
-+
-+		return 0;
-+	}
-+
-+	return -1;
++	raddr_count -= count;
++	return true;
 +}
 +
-+static int validate_return(struct objtool_file *file, struct symbol *func,
-+			   struct instruction *insn, struct insn_state *state)
++static bool raddr_alter(int count)
 +{
-+	int ret;
++	int i;
 +
- 	if (state->uaccess && !func_uaccess_safe(func)) {
- 		WARN_FUNC("return with UACCESS enabled",
- 			  insn->sec, insn->offset);
-@@ -2059,6 +2144,11 @@ static int validate_return(struct symbol *func, struct instruction *insn, struct
- 		return 1;
- 	}
++	if (raddr_count < count)
++		false;
++
++	for (i = 0; i < count; i++)
++		raddr_list[raddr_count - 1 - i] = RADDR_ALTERED;
++
++	return true;
++}
++
+ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			   struct instruction *from,
+ 			   struct instruction *first, struct insn_state state);
+@@ -1314,6 +1336,14 @@ static int read_unwind_hints(struct objtool_file *file)
+ 			insn->restore = true;
+ 			insn->hint = true;
+ 			continue;
++
++		} else if (hint->type == UNWIND_HINT_TYPE_RADDR_DELETE) {
++			insn->raddr_delete = hint->sp_offset;
++			continue;
++
++		} else if (hint->type == UNWIND_HINT_TYPE_RADDR_ALTER) {
++			insn->raddr_alter = hint->sp_offset;
++			continue;
+ 		}
  
-+	/* check if we have return address to branch to */
-+	ret = validate_return_address(file, func, insn, state);
-+	if (ret >= 0)
-+		return ret;
+ 		insn->hint = true;
+@@ -1526,6 +1556,13 @@ static bool has_modified_stack_frame(struct insn_state *state)
+ 	    state->drap)
+ 		return true;
+ 
++	/*
++	 * If the stack was altered then don't check registers because
++	 * a callee-saved registers might have been pushed on the stack.
++	 */
++	if (state->stack_altered)
++		return false;
 +
- 	if (func && has_modified_stack_frame(state)) {
- 		WARN_FUNC("return with modified stack frame",
- 			  insn->sec, insn->offset);
-@@ -2200,7 +2290,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 	for (i = 0; i < CFI_NUM_REGS; i++)
+ 		if (state->regs[i].base != initial_func_cfi.regs[i].base ||
+ 		    state->regs[i].offset != initial_func_cfi.regs[i].offset)
+@@ -2103,6 +2140,15 @@ static int validate_return_address(struct objtool_file *file,
+ 		if (!raddr_insn)
+ 			break;
+ 
++		/*
++		 * If this is a dynamic branch then we expect this
++		 * branch to return or not, depending on the defined
++		 * list of RA we have, so just continue the processing
++		 * of the RA list.
++		 */
++		if (raddr_insn == RADDR_ALTERED)
++			continue;
++
+ 		/*
+ 		 * If we are branching to a defined address then
+ 		 * just do an unconditional jump there.
+@@ -2287,6 +2333,27 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 				return 0;
+ 		}
+ 
++		if (insn->raddr_delete) {
++			/* delete return address */
++			if (!raddr_delete(insn->raddr_delete)) {
++				WARN_FUNC("fail to delete %d return address",
++					  insn->sec, insn->offset,
++					  insn->raddr_delete);
++				return 1;
++			}
++			state.stack_altered = true;
++
++		} else if (insn->raddr_alter) {
++			/* alter return address */
++			if (!raddr_alter(insn->raddr_alter)) {
++				WARN_FUNC("fail to alter %d return address",
++					  insn->sec, insn->offset,
++					  insn->raddr_alter);
++				return 1;
++			}
++			state.stack_altered = true;
++		}
++
  		switch (insn->type) {
  
  		case INSN_RETURN:
--			return validate_return(func, insn, &state);
-+			return validate_return(file, func, insn, &state);
- 
- 		case INSN_CALL:
- 		case INSN_CALL_DYNAMIC:
-@@ -2223,12 +2313,17 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
- 				/*
- 				 * The call instruction can update the stack
- 				 * state. Then make the intra-function call
--				 * behaves like and unconditional jump.
-+				 * behaves like and unconditional jump. We
-+				 * track the return address to handle any
-+				 * return instruction.
- 				 */
- 				ret = update_insn_state(insn, &state);
- 				if (ret)
- 					return ret;
- 
-+				if (!raddr_push(next_insn))
-+					return 1;
-+
- 				ret = validate_branch(file, func, insn,
- 						      insn->jump_dest, state);
- 				if (ret) {
-@@ -2383,6 +2478,7 @@ static int validate_unwind_hints(struct objtool_file *file)
- 
- 	for_each_insn(file, insn) {
- 		if (insn->hint && !insn->visited) {
-+			raddr_clear();
- 			ret = validate_branch(file, insn->func,
- 					      NULL, insn, state);
- 			if (ret && backtrace)
-@@ -2522,7 +2618,7 @@ static int validate_section(struct objtool_file *file, struct section *sec)
- 			continue;
- 
- 		state.uaccess = func->uaccess_safe;
--
-+		raddr_clear();
- 		ret = validate_branch(file, func, NULL, insn, state);
- 		if (ret && backtrace)
- 			BT_FUNC("<=== (func)", insn);
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 6a80903fc4aa..f7dbecd46bed 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -23,6 +23,7 @@ struct insn_state {
- 	unsigned int uaccess_stack;
- 	int drap_reg, drap_offset;
- 	struct cfi_reg vals[CFI_NUM_REGS];
-+	bool stack_altered;
- };
- 
- struct instruction {
-@@ -39,6 +40,8 @@ struct instruction {
- 	bool intra_function_call;
- 	bool retpoline_safe;
- 	u8 visited;
-+	u8 raddr_delete;
-+	u8 raddr_alter;
- 	struct symbol *call_dest;
- 	struct instruction *jump_dest;
- 	struct instruction *first_jump_src;
 -- 
 2.18.2
 
