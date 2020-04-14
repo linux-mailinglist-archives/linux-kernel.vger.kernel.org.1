@@ -2,149 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F451A8E86
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E5B1A8E8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391900AbgDNWZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 18:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
+        id S2391960AbgDNW1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 18:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391879AbgDNWZC (ORCPT
+        by vger.kernel.org with ESMTP id S2391937AbgDNW11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 18:25:02 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7803FC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:25:02 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id r20so611859pfh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:25:02 -0700 (PDT)
+        Tue, 14 Apr 2020 18:27:27 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C7CC061A0C;
+        Tue, 14 Apr 2020 15:27:27 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id m8so1595738lji.1;
+        Tue, 14 Apr 2020 15:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o6i20Ks1PEy0O2Dez1crBLWSnGkxHA1qZ6Sv65Y5ZcE=;
-        b=bmlnEgpOTsqn8jWMcxn9YPJfTQ2qJzPH+g1Mg0JzBWIy3G6ewnL6gvNwUexCEy+G/G
-         Z/icrTbm6ig5neLhjjHSbppVp0ZyApdxNapUlQtkL/8T0L1Lq61csRBGAaUA/DVv1lRM
-         KPD9pj755ZQihBzbjGXcwdbLg7UQIvhwglFQWm1tTdPzpyQafypNyi2cFC6GY48ZYqmA
-         XyVEAqEZWwZplV8drZ54w5IEnRhJxN+F+vk4WLCKMbse/Vv6xJuINTfY1SrKvelgAYPh
-         SEgOgTW+oM1CN48HrF9rY5h9w/h4OSEFI4g8vWlisXsov3fUPfbkPA10ilLctcknksai
-         9vtQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QLp0HygEu7GAg7oIbA1nV2W2je4E098v4ACpDylFIzM=;
+        b=jTvRC3oZmu88HXsxGlEHPY1mOriSkUGFTmPPFIwXNtGPlHEe0j7GY6sdt+h2c+bS6g
+         dmVay9zs7sypuuukxtcdkuYPsHYzcfKYb/VxO4NRhuAHQaDJrdfnSe/MGOEuzbvpnNak
+         4sOCbCHlTd0IWMp1jOJPBAbIy/cLgNo6TJTId3a78w99dRmt5W2iy0YbvBz2cmddd9Aa
+         DPohWeAY9MHygXGmA8OswQONs2SVjLlrCwHwuJSvTao+OpwgD0T94synKT/um+Sx8eBy
+         7pfjd7t/s2FVun3z3xv8pRJ72hIgEKyB6RZAY/eg4dagXPCh0kv6ZA7HXf3aBJS4mZUJ
+         kUGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o6i20Ks1PEy0O2Dez1crBLWSnGkxHA1qZ6Sv65Y5ZcE=;
-        b=qMR24KHVCpxg040bICTfHwXN5cFPzzZMdUAwfjKsggcJMR/y89YqVWO602E90c4bPe
-         be+gef37rqb1Sl3eY+b1ilqP6Pn9QiJEhEg+/AMxZixSfJc6HGWHwtwydJwAv0qriSzP
-         5b+vikNrq4GWJrjWGLpbIZoyKJjlNHa0CvOs6GY+frTrnH+u/FddQ0JgRiUtXr+33ffQ
-         hCUyBHaox/8IBW6IE1Eq+MU6AU23esu8m5v+lgGdwi0AjYNluoO3r9fflkY84+WSAMLO
-         KdlMLgkzAqEAL3F6tuMJimAGu9GYT7sSakKzzhYzXzvWX8XM/8axesLu1+eCeH2h9j9z
-         Zcbg==
-X-Gm-Message-State: AGi0PuZY4TSEsAuHlPkX6E2v0CEgzt5gA5JJIIJhQ4kMeh1ktK4eBd8d
-        WZDzLZtx6NEd8bV6SezETEYYiw==
-X-Google-Smtp-Source: APiQypL0GsDHjhCV+L1MOkC/mR6A9G4Q3663J9tosl/v69Mi9xv+tX2h21MJvEapbUUaAITtAPKDnw==
-X-Received: by 2002:a63:e60a:: with SMTP id g10mr23481248pgh.51.1586903101953;
-        Tue, 14 Apr 2020 15:25:01 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 7sm8245619pff.109.2020.04.14.15.25.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QLp0HygEu7GAg7oIbA1nV2W2je4E098v4ACpDylFIzM=;
+        b=ugxWfVrS4pK6TNUFabUwooxPls5geWWnbHzA1Ul/dKUu/MzOJfQeZoXrR+QiK+L20l
+         dDfF8dkggdnIrHkF+3TT30DhXR2jtqGljSJTeR+ANDowa61lLAQnwf+m6svafnFBm38k
+         oI7J6h1P4djUL5nhZgRuW/CpUHLB7fndxnfvOcLAesXAUPc36B8AygHzVy5/l9r7U3wK
+         hsISUCkHYKWz20F3amntxBCjvG5Q7/iK3E7Qux0YDevJbCakycYKSmS1Z+bkb4TCiAW2
+         MbcbJGwDxszkv0Dl7xMZZ9GuM7ViS+zaoqHQKgT0npD28+Jj93hvD2eQoLWhnYvmw712
+         i+zA==
+X-Gm-Message-State: AGi0PuadI5sea+33UQaYlelYCBiuPOIQYDxMZxj+cVjQCiE3BB9wx/6D
+        2D5QfYz1mpwNakWp4eyBjWo=
+X-Google-Smtp-Source: APiQypI4hypqmE1WZVsRt9dqJ0ppHkmo+BzzonvWd7fBadIG+jBzgCyEIgFkNq5zK26r0UJb6C9BwQ==
+X-Received: by 2002:a2e:a36c:: with SMTP id i12mr1317201ljn.24.1586903245819;
+        Tue, 14 Apr 2020 15:27:25 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.gmail.com with ESMTPSA id f21sm11063528lfk.94.2020.04.14.15.27.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 15:25:01 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 15:25:17 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] soc: qcom: rpmhpd: Allow RPMHPD driver to be
- loaded as a module
-Message-ID: <20200414222517.GN576963@builder.lan>
-References: <20200326224459.105170-1-john.stultz@linaro.org>
- <20200326224459.105170-4-john.stultz@linaro.org>
+        Tue, 14 Apr 2020 15:27:25 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] iio: magnetometer: ak8974: Silence deferred-probe error
+Date:   Wed, 15 Apr 2020 01:27:13 +0300
+Message-Id: <20200414222713.32660-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200326224459.105170-4-john.stultz@linaro.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 26 Mar 15:44 PDT 2020, John Stultz wrote:
+It's not uncommon that voltage regulator becomes available later during
+kernel's boot process, in this case there is no need to print a noisy
+error message. This patch moves the message about unavailable regulator
+to the debug level in a case of the deferred-probe error and also amends
+the message with error code.
 
-> This patch allow the rpmhpd driver to be loaded as a permenent
-> module. Meaning it can be loaded from a module, but then cannot
-> be unloaded.
-> 
-> Ideally, it would include a remove hook and related logic, but
-> apparently the genpd code isn't able to track usage and cleaning
-> things up?
-> 
-> So making it a permenent module at least improves things slightly
-> over requiring it to be a built in driver.
-> 
-> Feedback would be appreciated!
-> 
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/iio/magnetometer/ak8974.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+diff --git a/drivers/iio/magnetometer/ak8974.c b/drivers/iio/magnetometer/ak8974.c
+index d32996702110..cc3861f97d42 100644
+--- a/drivers/iio/magnetometer/ak8974.c
++++ b/drivers/iio/magnetometer/ak8974.c
+@@ -718,6 +718,7 @@ static const struct regmap_config ak8974_regmap_config = {
+ static int ak8974_probe(struct i2c_client *i2c,
+ 			const struct i2c_device_id *id)
+ {
++	const char *level = KERN_ERR;
+ 	struct iio_dev *indio_dev;
+ 	struct ak8974 *ak8974;
+ 	unsigned long irq_trig;
+@@ -746,7 +747,11 @@ static int ak8974_probe(struct i2c_client *i2c,
+ 				      ARRAY_SIZE(ak8974->regs),
+ 				      ak8974->regs);
+ 	if (ret < 0) {
+-		dev_err(&i2c->dev, "cannot get regulators\n");
++		if (ret == -EPROBE_DEFER)
++			level = KERN_DEBUG;
++
++		dev_printk(level, &i2c->dev, "cannot get regulators: %d\n",
++			   ret);
+ 		return ret;
+ 	}
+ 
+-- 
+2.26.0
 
-and applied.
-
-Regards,
-Bjorn
-
-> ---
->  drivers/soc/qcom/Kconfig  | 2 +-
->  drivers/soc/qcom/rpmhpd.c | 5 +++++
->  2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index ac91eaf810f7..ffc04285840b 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -114,7 +114,7 @@ config QCOM_RPMH
->  	  help apply the aggregated state on the resource.
->  
->  config QCOM_RPMHPD
-> -	bool "Qualcomm RPMh Power domain driver"
-> +	tristate "Qualcomm RPMh Power domain driver"
->  	depends on QCOM_RPMH && QCOM_COMMAND_DB
->  	help
->  	  QCOM RPMh Power domain driver to support power-domains with
-> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-> index 4d264d0672c4..0bb12d5870a7 100644
-> --- a/drivers/soc/qcom/rpmhpd.c
-> +++ b/drivers/soc/qcom/rpmhpd.c
-> @@ -4,6 +4,7 @@
->  #include <linux/err.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
-> +#include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/pm_domain.h>
->  #include <linux/slab.h>
-> @@ -189,6 +190,7 @@ static const struct of_device_id rpmhpd_match_table[] = {
->  	{ .compatible = "qcom,sm8150-rpmhpd", .data = &sm8150_desc },
->  	{ }
->  };
-> +MODULE_DEVICE_TABLE(of, rpmhpd_match_table);
->  
->  static int rpmhpd_send_corner(struct rpmhpd *pd, int state,
->  			      unsigned int corner, bool sync)
-> @@ -460,3 +462,6 @@ static int __init rpmhpd_init(void)
->  	return platform_driver_register(&rpmhpd_driver);
->  }
->  core_initcall(rpmhpd_init);
-> +
-> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. RPMh Power Domain Driver");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.17.1
-> 
