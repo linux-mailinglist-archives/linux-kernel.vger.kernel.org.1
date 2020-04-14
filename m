@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8DE1A8AAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68681A8ACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504718AbgDNT07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
+        id S1731224AbgDNTbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730049AbgDNTYp (ORCPT
+        by vger.kernel.org with ESMTP id S2504776AbgDNT3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:24:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBB0C08C5F2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:18:40 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p8so340542pgi.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:18:40 -0700 (PDT)
+        Tue, 14 Apr 2020 15:29:50 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EF1C02C444
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:20:43 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id z6so299831plk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:20:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=P9uGK/l9+upt2147+kcKvfUBL5T6QGch+S3tGbTmzhg=;
-        b=WFGud2tBPWFna3TtJBPDwDAuc3HGHK64EaaZKf9mtGIDlcqcqYj+zc5/SdWWRMWshu
-         raTwvHD7blUEj+visUbTeVR/CmwIC4XYp9lmYsXLyaJPZ3ZVp14dQCZwCgF6//ssCtXR
-         0kMk3I6NrQ4quQmpa5nYNEojOp7zczNpCEM3vPAfNRSWnufba2qs902hbkoro4+2x/iz
-         FPjdJMuI04crXUgqCwJxr1hpuJZEo3UncZ80cbCsoRkZx4R1HlU/ZxJ+rB759ZBSsmWA
-         9BJEu8ErySIBz8RRagX/0hFlQTX/hsOlz4XJF+DTn0lVQLrx/oGqN0SNRXj4fZuBebnL
-         eKYA==
+        bh=IlUPdhKtIbUzJOWhzH8G7CEIltrnGC+nIP0WHGWZMgU=;
+        b=VdPvHOuedrUPrbOlD0+nUakV+M1CzUEwuJFqiS3Xx7oaGbOw2harQFQq1U59pVYsiG
+         +QAD+SkkXgVARYN0MSOc0QwaB2Jgy8v3XTXlIsRTdRDSV8yk9zZHAQ2y4jvFiEyz3XHE
+         7YXQrKCLBOBDCC/2P8bENLJ4utU8LnGnCk131xMn2eazCAg5NFPkJcVTAkcrtjoNjt8o
+         umW7WurDWUYEqIfZJ68QphhKbw9EaCZb9BBq6Je3u0xwLEcXVEn2jxMK+RQ5r4Q0twdT
+         2IuNMJY0g08zNEFIWsZWpLucJ4rmre2MUBIKozG0Ui0kmYPsm860qwPiHHd0LeKrhfpt
+         CKQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=P9uGK/l9+upt2147+kcKvfUBL5T6QGch+S3tGbTmzhg=;
-        b=YBY1K+nswlZChucjvQQK9FjJ+htp5nNrdlbw3paa3dzQZPk9fqwoqLx/5eFkoiuMza
-         TbW0bV1Vo+n9YOpggiG0iXR+F3dEOm3eVFai4JEslJzTZNujzxy18n3BgjJZG0KFGwJs
-         r2C++ZY7klV8Pk5kCJAn8VS2RZpIIR5+duhgYwBb3k3eKyHi0yyQgViLxaLIc5PAaFTQ
-         6HE8+qL4AiekXuJWFuL0As4AEBxa67yFBDjtXUBs6ESHzLyoFdrhEsAEtcN4muIC9xSY
-         g8xIJeLJDYogo9PQeCrtjtgIITNqmiyVpv3A8NFFYem/5oX1HuneczafkE2GM/65kwH9
-         xEgA==
-X-Gm-Message-State: AGi0PuYyMN5NCy6T/IfFyG2QmfkhqPw9JSfBVfJae5tQ440t2qm4Ysx+
-        iMSJ4gf0vuiHYTyBvyC8BgEZUw==
-X-Google-Smtp-Source: APiQypK8wVeo3OinH7VyXKPdkf8oibdS0+kfLLeCbEyQbUEH3ydOeW4wh59RRBV09oWKbrzrBA9/PA==
-X-Received: by 2002:aa7:9d89:: with SMTP id f9mr3546328pfq.194.1586891919386;
-        Tue, 14 Apr 2020 12:18:39 -0700 (PDT)
+        bh=IlUPdhKtIbUzJOWhzH8G7CEIltrnGC+nIP0WHGWZMgU=;
+        b=n0NRigkDbGTy8GBXo3xnTciGz4jIktHnUSL+bSs3ZbJM02TGH3K0AII6ypC3pJsJIB
+         ZypRHOVIIkAx2Riyo/iBdysttx5SM2RTXMM0os3MghuiWhS2dDMgfUnzINSU7YZ8SnNm
+         DmNGlVohsB8zYIRvT7jJZ92LubW4CEChCe4OEwvTKdNiLu+79inhQyu8F5F/FjV8ccHN
+         orc/7qxuOi6dLp/B/K70hRpSjxhYq3J4O7ArZ5tP2RsRsb0EGzj3zMGJIgdCq9hi1+iU
+         Wqamxl5IdOgQ2lbqwVq3OfEmpv85/BLlO0K1SX6hsVEcB6Fic/OPFwPoOnF+kBul2pTa
+         xnAA==
+X-Gm-Message-State: AGi0Puaj7MzAI0Xf4xWBXVfunjZp+sXY7dfu5tvE7ygQ3cyF1946JJPK
+        LdlQDjUjkvJbm6GWHWEwteI/686Lr1w=
+X-Google-Smtp-Source: APiQypLUUpRxtuhcuQO3KJ+niNqlHwUCt95RC6MVvVR+0zXpkrnql0jYr8IiLloI/8o87V94dEkE4w==
+X-Received: by 2002:a17:90a:3086:: with SMTP id h6mr1912285pjb.49.1586892042521;
+        Tue, 14 Apr 2020 12:20:42 -0700 (PDT)
 Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id r28sm5417712pfg.186.2020.04.14.12.18.38
+        by smtp.gmail.com with ESMTPSA id a1sm11692054pfl.188.2020.04.14.12.20.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:18:38 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 12:18:37 -0700 (PDT)
+        Tue, 14 Apr 2020 12:20:41 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 12:20:41 -0700 (PDT)
 From:   David Rientjes <rientjes@google.com>
 X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-cc:     Christoph Hellwig <hch@lst.de>,
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Tom Lendacky <thomas.lendacky@amd.com>,
         "Singh, Brijesh" <brijesh.singh@amd.com>,
         "Grimm, Jon" <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
 Subject: Re: [rfc v2 4/6] dma-direct: atomic allocations must come from atomic
  coherent pools
-In-Reply-To: <26df6b35-af63-bf17-0c21-51684afa6f67@amd.com>
-Message-ID: <alpine.DEB.2.22.394.2004141216090.2583@chino.kir.corp.google.com>
+In-Reply-To: <20200414064332.GB23359@lst.de>
+Message-ID: <alpine.DEB.2.22.394.2004141218510.2583@chino.kir.corp.google.com>
 References: <alpine.DEB.2.21.1912311738130.68206@chino.kir.corp.google.com> <b22416ec-cc28-3fd2-3a10-89840be173fa@amd.com> <alpine.DEB.2.21.2002280118461.165532@chino.kir.corp.google.com> <alpine.DEB.2.21.2003011535510.213582@chino.kir.corp.google.com>
- <alpine.DEB.2.21.2004081418490.19661@chino.kir.corp.google.com> <alpine.DEB.2.21.2004081420060.19661@chino.kir.corp.google.com> <26df6b35-af63-bf17-0c21-51684afa6f67@amd.com>
+ <alpine.DEB.2.21.2004081418490.19661@chino.kir.corp.google.com> <alpine.DEB.2.21.2004081420060.19661@chino.kir.corp.google.com> <20200414064332.GB23359@lst.de>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -71,38 +71,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Apr 2020, Tom Lendacky wrote:
+On Tue, 14 Apr 2020, Christoph Hellwig wrote:
 
-> > When a device required unencrypted memory and the context does not allow
-> 
-> required => requires
-> 
-
-Fixed, thanks.
-
-> > blocking, memory must be returned from the atomic coherent pools.
-> > 
-> > This avoids the remap when CONFIG_DMA_DIRECT_REMAP is not enabled and the
-> > config only requires CONFIG_DMA_COHERENT_POOL.  This will be used for
-> > CONFIG_AMD_MEM_ENCRYPT in a subsequent patch.
-> > 
-> > Keep all memory in these pools unencrypted.
-> > 
-> > Signed-off-by: David Rientjes <rientjes@google.com>
-> > ---
-> >   kernel/dma/direct.c | 16 ++++++++++++++++
-> >   kernel/dma/pool.c   | 15 +++++++++++++--
-> >   2 files changed, 29 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> > index 70800ca64f13..44165263c185 100644
-> > --- a/kernel/dma/direct.c
-> > +++ b/kernel/dma/direct.c
-> > @@ -124,6 +124,18 @@ void *dma_direct_alloc_pages(struct device *dev, size_t
-> > size,
-> >   	struct page *page;
-> >   	void *ret;
-> >   +	/*
+> > +	/*
 > > +	 * Unencrypted memory must come directly from DMA atomic pools if
 > > +	 * blocking is not allowed.
 > > +	 */
@@ -114,127 +85,103 @@ Fixed, thanks.
 > > +		goto done;
 > > +	}
 > > +
-> >   	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> >   	    dma_alloc_need_uncached(dev, attrs) &&
-> >   	    !gfpflags_allow_blocking(gfp)) {
-> > @@ -203,6 +215,10 @@ void dma_direct_free_pages(struct device *dev, size_t
-> > size, void *cpu_addr,
-> >   {
-> >   	unsigned int page_order = get_order(size);
-> >   +	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
-> > +	    dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
-> > +		return;
-> > +
-> >   	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
-> >   	    !force_dma_unencrypted(dev)) {
-> >   		/* cpu_addr is a struct page cookie, not a kernel address */
-> > diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> > index e14c5a2da734..6685ab89cfa7 100644
-> > --- a/kernel/dma/pool.c
-> > +++ b/kernel/dma/pool.c
-> > @@ -9,6 +9,7 @@
-> >   #include <linux/dma-contiguous.h>
-> >   #include <linux/init.h>
-> >   #include <linux/genalloc.h>
-> > +#include <linux/set_memory.h>
-> >   #include <linux/slab.h>
-> >   #include <linux/vmalloc.h>
-> >   #include <linux/workqueue.h>
-> > @@ -55,12 +56,20 @@ static int atomic_pool_expand(struct gen_pool *pool,
-> > size_t pool_size,
-> >     	arch_dma_prep_coherent(page, pool_size);
-> >   +#ifdef CONFIG_DMA_DIRECT_REMAP
-> >   	addr = dma_common_contiguous_remap(page, pool_size,
-> >   					   pgprot_dmacoherent(PAGE_KERNEL),
-> >   					   __builtin_return_address(0));
-> >   	if (!addr)
-> >   		goto free_page;
-> > -
-> > +#else
-> > +	addr = page_to_virt(page);
-> > +#endif
-> > +	/*
-> > +	 * Memory in the atomic DMA pools must be unencrypted, the pools do
-> > not
-> > +	 * shrink so no re-encryption occurs in dma_direct_free_pages().
-> > +	 */
-> > +	set_memory_decrypted((unsigned long)page_to_virt(page), 1 << order);
-> >   	ret = gen_pool_add_virt(pool, (unsigned long)addr, page_to_phys(page),
-> >   				pool_size, NUMA_NO_NODE);
-> >   	if (ret)
-> > @@ -69,8 +78,10 @@ static int atomic_pool_expand(struct gen_pool *pool,
-> > size_t pool_size,
-> >   	return 0;
-> >     remove_mapping:
-> > +#ifdef CONFIG_DMA_DIRECT_REMAP
-> >   	dma_common_free_remap(addr, pool_size);
+> >  	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+> >  	    dma_alloc_need_uncached(dev, attrs) &&
+> >  	    !gfpflags_allow_blocking(gfp)) {
 > 
-> You're about to free the memory, but you've called set_memory_decrypted()
-> against it, so you need to do a set_memory_encrypted() to bring it back to a
-> state ready for allocation again.
+> Can we keep a single conditional for the pool allocations?  Maybe
+> add a new dma_alloc_from_pool helper ala:
 > 
+> static inline bool dma_alloc_from_pool(struct device *dev, gfp_t gfp)
+> {
+> 	if (!IS_ENABLED(CONFIG_DMA_COHERENT_POOL))
+> 		return false;
+> 	if (gfpflags_allow_blocking(gfp))
+> 		return false;
+> 	if (force_dma_unencrypted(dev))
+> 		return true;
+> 	if (dma_alloc_need_uncached(dev))
+> 		return true;
+> }
 
-Ah, good catch, thanks.  I notice that I should also be checking the 
-return value of set_memory_decrypted() because pages added to the coherent 
-pools *must* be unencrypted.  If it fails, we fail the expansion.
+Looks good, fixed.  I renamed it to dma_should_alloc_from_pool() to avoid 
+confusing it with the actual allocation function and added a 
+dma_should_free_from_pool() as well.
 
-And do the same thing for set_memory_encrypted(), which would be a bizarre 
-situation (decrypt succeeded, encrypt failed), by simply leaking the page.
-
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -7,6 +7,7 @@
- #include <linux/dma-contiguous.h>
- #include <linux/init.h>
- #include <linux/genalloc.h>
-+#include <linux/set_memory.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/workqueue.h>
-@@ -53,22 +54,42 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -75,6 +75,39 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
+ 			min_not_zero(dev->coherent_dma_mask, dev->bus_dma_limit);
+ }
  
- 	arch_dma_prep_coherent(page, pool_size);
++/*
++ * Decrypting memory is allowed to block, so if this device requires
++ * unencrypted memory it must come from atomic pools.
++ */
++static inline bool dma_should_alloc_from_pool(struct device *dev, gfp_t gfp,
++					      unsigned long attrs)
++{
++	if (!IS_ENABLED(CONFIG_DMA_COHERENTPOOL))
++		return false;
++	if (gfpflags_allow_blocking(gfp))
++		return false;
++	if (force_dma_unencrypted(dev))
++		return true;
++	if (!IS_ENABLED(CONFIG_DMA_DIRECT_REMAP))
++		return false;
++	if (dma_alloc_need_uncached(dev, attrs))
++		return true;
++	return false;
++}
++
++static inline bool dma_should_free_from_pool(struct device *dev,
++					     unsigned long attrs)
++{
++	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL))
++		return true;
++	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
++	    !force_dma_unencrypted(dev))
++		return false;
++	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP))
++		return true;
++	return false;
++}
++
+ struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
+ 		gfp_t gfp, unsigned long attrs)
+ {
+@@ -124,9 +157,7 @@ void *dma_direct_alloc_pages(struct device *dev, size_t size,
+ 	struct page *page;
+ 	void *ret;
  
-+#ifdef CONFIG_DMA_DIRECT_REMAP
- 	addr = dma_common_contiguous_remap(page, pool_size,
- 					   pgprot_dmacoherent(PAGE_KERNEL),
- 					   __builtin_return_address(0));
- 	if (!addr)
- 		goto free_page;
+-	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+-	    dma_alloc_need_uncached(dev, attrs) &&
+-	    !gfpflags_allow_blocking(gfp)) {
++	if (dma_should_alloc_from_pool(dev, gfp, attrs)) {
+ 		ret = dma_alloc_from_pool(dev, PAGE_ALIGN(size), &page, gfp);
+ 		if (!ret)
+ 			return NULL;
+@@ -202,6 +233,11 @@ void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
+ {
+ 	unsigned int page_order = get_order(size);
+ 
++	/* If cpu_addr is not from an atomic pool, dma_free_from_pool() fails */
++	if (dma_should_free_from_pool(dev, attrs) &&
++	    dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
++		return;
++
+ 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+ 	    !force_dma_unencrypted(dev)) {
+ 		/* cpu_addr is a struct page cookie, not a kernel address */
+@@ -209,10 +245,6 @@ void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
+ 		return;
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+-	    dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
+-		return;
 -
-+#else
-+	addr = page_to_virt(page);
-+#endif
-+	/*
-+	 * Memory in the atomic DMA pools must be unencrypted, the pools do not
-+	 * shrink so no re-encryption occurs in dma_direct_free_pages().
-+	 */
-+	ret = set_memory_decrypted((unsigned long)page_to_virt(page),
-+				   1 << order);
-+	if (ret)
-+		goto remove_mapping;
- 	ret = gen_pool_add_virt(pool, (unsigned long)addr, page_to_phys(page),
- 				pool_size, NUMA_NO_NODE);
- 	if (ret)
--		goto remove_mapping;
-+		goto encrypt_mapping;
+ 	if (force_dma_unencrypted(dev))
+ 		set_memory_encrypted((unsigned long)cpu_addr, 1 << page_order);
  
- 	return 0;
- 
-+encrypt_mapping:
-+	ret = set_memory_encrypted((unsigned long)page_to_virt(page),
-+				   1 << order);
-+	if (WARN_ON_ONCE(ret)) {
-+		/* Decrypt succeeded but encrypt failed, purposely leak */
-+		goto out;
-+	}
- remove_mapping:
-+#ifdef CONFIG_DMA_DIRECT_REMAP
- 	dma_common_free_remap(addr, pool_size);
--free_page:
-+#endif
-+free_page: __maybe_unused
- 	if (!dma_release_from_contiguous(NULL, page, 1 << order))
- 		__free_pages(page, order);
- out:
