@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BDC1A7643
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0491A7658
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436962AbgDNIiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436951AbgDNIiI (ORCPT
+        id S2437027AbgDNImn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:42:43 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17852 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2436845AbgDNImi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:38:08 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD8EC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:38:07 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id f82so7804638ilh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Jo/o9ww/4cJSnmnkD3CjyH8WMNoX0+k4o9KsdfhD1SU=;
-        b=y8PtE+gTsDZZwWFwSeHHeCFQ33Ojb2y6ulbiOVndaSWifuuU1qY5CJhInz8wkvASVH
-         yVPA5Cg4kidytaGezrBCLdW4Ot8vgNCUOjK1xXp0gMXNgy8sAT71WrdTTw6cF9Lg/9aR
-         0j5+CLbOZOKInlCz7qORieFxv7d/WB/5Ft+UWYOoOcqt45CjWh0vGWn+jiDIsbJub6Zx
-         6RTgxEu9otv8/DDGf2UCmwNYUDW1jtxjvh3oN5hh+yh8eGHq0OO3mKBpvqGx7mJBFtFt
-         FPlMkosertwNnlsQqcXiYpSZpteWM6yEM5v1cMAMZi4xQ9cYoOikip2laVHl5Mv5niBy
-         b5bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Jo/o9ww/4cJSnmnkD3CjyH8WMNoX0+k4o9KsdfhD1SU=;
-        b=QcAZnF8SKCEZPhMI3BefK3FKKow/HBmW48qa66UrD5GZ9+K3e1eYhp8dGOgaYu2utv
-         /zl5vUlO8LsP9xoOP7pJwOyodKuyD45RNEuywiWI23EtCOGWN1otg9McdppBBeD7o+Rc
-         aRBxZ7OTCzk7e8ekD9OFimVOwCMNrCnVmR35vAbJz+bCEUCZgw/OywXiGSrUNJR4Bdve
-         mTmtOzl61RsZj6Bu4XaweCisXz6EpLCjfbt31HEmBD+OUwMbq/8hJUgW+l4GEXUyAFvk
-         vB9TB8bEc1XQas6kWtZXhkeaTxQisW2cKWg2CG58V7E+mbuABlAPA59Ysrs9koWgLiDl
-         7pMA==
-X-Gm-Message-State: AGi0Pubdwg4KOXnTIbPDtQRasS8/L5aXIFI17ft2FHGEpBP5TZQibfF2
-        /vEJdqFp6krRElqNx0HraBQ2khpYvuYQmE16Ti8WoA==
-X-Google-Smtp-Source: APiQypJLEx+4wdr30LFxsnO4FePdVk1/hUYO2QfJBCM4GEMyVVTdfS1Zgqb6bqkEsd+A63s85UfcT0IaUyDRqecuwjY=
-X-Received: by 2002:a92:dac8:: with SMTP id o8mr12258552ilq.189.1586853487047;
- Tue, 14 Apr 2020 01:38:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200211131240.15853-1-brgl@bgdev.pl> <CAMRc=Mc=gTrpQsMdOTBJaYT6JLg=o17Mm78ijAGUJYE2pXcCQQ@mail.gmail.com>
- <20200413180728.0714da3d@archlinux>
-In-Reply-To: <20200413180728.0714da3d@archlinux>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 14 Apr 2020 10:37:55 +0200
-Message-ID: <CAMRc=MenWERT6VegvdRkwJ5xKwa01QRK+BbE2GhEk-+Jw36GvA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] irq/irq_sim: try to improve the API
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Tue, 14 Apr 2020 04:42:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1586853598; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=ZSK1M9iyq2xeDVWV8f1PWAKe/9uCU4E9T6vOsK6u9aSiBWGXfIn0pocsjl4tzWveQh2ZDy2cj1b7bpHgekQf0jbXo9LUSmHOeFntpMA9PPG8b23qxVeQDSY4EsbYXLiuAT1HFLfypwEDqH3WZQeK5l7MGE8gNsnNqPEbAdLbAlU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1586853598; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=5yxE8rjIQbfWB2zY24IJme7e+SE38jsS1KkXESLePEI=; 
+        b=MxrSvTiMyZFwn8zPfXMUcshZgT9ZAOJ0+qDa6+Tzu6So7Sme1O/aiY+OqbHehQy4rx3Xw09wK2lY2ViNCEJpA1yP8gFpRCNHDfyGSPKKWhGbLu/guUngLhylu0oHCtT3ggf/NpQGrV50PP2CpYp0098dw1hWvD/QtR4tAy5dycc=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586853598;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=5yxE8rjIQbfWB2zY24IJme7e+SE38jsS1KkXESLePEI=;
+        b=GpdV1a2IgBQOShDin5PNisEXA6+bNxd8Mf4rATLprEMaKlc4jf5QVVU3k27MHqSA
+        UeRk2dKl2ZRMbjt9syeLztoXGin7EcYipNexBIvvaQFIBtsgI+VxL4WIGrfrnDqUgNf
+        gaPqGT9RgEkxsHstO7khtgGjXMV3drq4ap00TVuE=
+Received: from localhost (122.235.212.87 [122.235.212.87]) by mx.zoho.com.cn
+        with SMTPS id 1586853596243411.62253278794117; Tue, 14 Apr 2020 16:39:56 +0800 (CST)
+Date:   Tue, 14 Apr 2020 16:39:57 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-mips@vger.kernel.org, dietmar.eggemann@arm.com,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robert Richter <rric@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
         Marc Zyngier <maz@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Paul Burton <paulburton@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        " =?GB18030?B?1tzn/L3c?= (Zhou Yanjie)" <zhouyanjie@wanyeetech.com>,
+        YunQiang Su <syq@debian.org>, Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Steve Winslow <swinslow@gmail.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Peter Xu <peterx@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 01/11] MIPS: setup: Drop prefill_possible_map
+Message-ID: <20200414163957.00006d65@flygoat.com>
+In-Reply-To: <20200414082123.GA6459@bogus>
+References: <20200412032123.3896114-1-jiaxun.yang@flygoat.com>
+        <20200412032123.3896114-2-jiaxun.yang@flygoat.com>
+        <20200414082123.GA6459@bogus>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ZohoCNMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pon., 13 kwi 2020 o 19:07 Jonathan Cameron <jic23@kernel.org> napisa=C5=82(=
-a):
->
-> > Hi,
-> >
-> > it's been three weeks, so gentle ping on that.
-> >
-> > Or should I resend the entire series with a more elaborate commit
-> > message for patch 1/6?
->
-> I'd resend it now if nothing has happened that I missed.  Merge window
-> having just closed, it's the perfect time for a rebase on rc1.
->
+On Tue, 14 Apr 2020 09:21:36 +0100
+Sudeep Holla <sudeep.holla@arm.com> wrote:
 
-Yeah, I'll resend the first two patches which are less controversial
-and then see with the rest of them.
+> On Sun, Apr 12, 2020 at 11:20:31AM +0800, Jiaxun Yang wrote:
+> > All the plat_smp_setup are setting up possible cpus in their
+> > platform code. So prefill_possible_map is actually overwriting
+> > platform's setup, which seems unreasonable.
+> >   
+> 
+> Why don't you rearrange the code so that this still remains as is and
+> the platforms can override if they need. If you do so, you don't need
+> the change in 04/11 as I suggested previously.
 
-Bart
+Actually this code break a case that cpumask is not continuous.
+It do happen on some MIPS platforms.
+
+Yes. rearrange this is a option but I think it is making the logic
+unnecessarily complex.
+
+If you think that's better I'll do so.
+
+Thanks.
+> 
+
+--
+Jiaxun Yang
