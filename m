@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737791A8AA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928331A8A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504665AbgDNTZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33972 "EHLO mail.kernel.org"
+        id S1730116AbgDNTZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:25:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504637AbgDNTYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2504621AbgDNTYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Apr 2020 15:24:20 -0400
-Subject: Re: [GIT PULL] afs: Fixes
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.7-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586891103;
-        bh=rxcX3bkiTxcRaV5uIf1VGYjtryE+LFQC/F5AUl8hJtU=;
+        s=default; t=1586891122;
+        bh=HMUCX6aWm71uge2BoPhYzk7fH+SUIkv3Ru9XRaQuLNU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=XI+iFxHGSPhXA/9OrrwIZrvl/P2DJD/HXbStttid4I4GR425ULpTi4CfsNJI1sbHi
-         QAnVkjMGiwLa7oxFhOdjEN2Foo0UjGV55A9Y4zx+Bls24yg+cmxafxD/1VniON6Mc4
-         ORC+YNntjo/4ow7v7GyxPiPAXC2uV9xZV0QmkpTA=
+        b=z2Am7yZ9Y6qIZ+x31ILB+uyNWwcbIcSyLo9IF0AyGIWnM7Dh28PMl4sErQo+wDe95
+         0zWy1rp1oOAyF2hpudVmADjltiEqcmThWlQVOfvS66ktyD3pbV+3nXdTAnMdu3l2wp
+         1qQ8Ntaf6PiCB/Tu5J+iiBBgFWTiwGout1cny5xc=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <2940559.1586789415@warthog.procyon.org.uk>
-References: <2940559.1586789415@warthog.procyon.org.uk>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <2940559.1586789415@warthog.procyon.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
- tags/afs-fixes-20200413
-X-PR-Tracked-Commit-Id: 40fc81027f892284ce31f8b6de1e497f5b47e71f
+In-Reply-To: <20200414102102.7jci4pzsp5tdoifr@debian>
+References: <20200414102102.7jci4pzsp5tdoifr@debian>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200414102102.7jci4pzsp5tdoifr@debian>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git
+ tags/hyperv-fixes-signed
+X-PR-Tracked-Commit-Id: f3a99e761efa616028b255b4de58e9b5b87c5545
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f4cd66682b2728734b2fc44f5f1e83a5c740b5cf
-Message-Id: <158689110356.29674.8805335271309740535.pr-tracker-bot@kernel.org>
-Date:   Tue, 14 Apr 2020 19:05:03 +0000
-To:     David Howells <dhowells@redhat.com>
-Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 8632e9b5645bbc2331d21d892b0d6961c1a08429
+Message-Id: <158689112259.29674.18320264839412857827.pr-tracker-bot@kernel.org>
+Date:   Tue, 14 Apr 2020 19:05:22 +0000
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, mikelley@microsoft.com,
+        haiyangz@microsoft.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 13 Apr 2020 15:50:15 +0100:
+The pull request you sent on Tue, 14 Apr 2020 11:21:02 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-20200413
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f4cd66682b2728734b2fc44f5f1e83a5c740b5cf
+https://git.kernel.org/torvalds/c/8632e9b5645bbc2331d21d892b0d6961c1a08429
 
 Thank you!
 
