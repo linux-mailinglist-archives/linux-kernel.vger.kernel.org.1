@@ -2,152 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647C31A8F48
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86DF1A8F52
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634401AbgDNXrz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Apr 2020 19:47:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61459 "EHLO mga11.intel.com"
+        id S2634445AbgDNXvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 19:51:03 -0400
+Received: from mga04.intel.com ([192.55.52.120]:36919 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2634390AbgDNXrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 19:47:46 -0400
-IronPort-SDR: ASxAReHKm6cZ9kuqRKnSxCurTy5vf+Pbi7jkgA3is8cNv+5Hv8R1XqLstDJDeM//ubOsqC4fUZ
- 7D8AyEUx2QnA==
+        id S2634428AbgDNXuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 19:50:55 -0400
+IronPort-SDR: Lv9fSdOFHF8JR5EcGWT0PFeWldiIvc+M/5fpR6D58iYSofv7YcpZamXbAxQvl4hQgN2pKphhTc
+ SsyiDnkEastw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 16:47:45 -0700
-IronPort-SDR: HJEwfmx2SlLZPGikH6t0hQXnR0ePb56U5BQzHKT4XGZ+/3vb8VlyroeVtSYWf0JrbYhiiKd1kK
- 2vnv/4bA4F2g==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 16:50:51 -0700
+IronPort-SDR: t5C1nSFtW0xCwRHV+Dz1bLrVUM00lOHSfY5Tqo4WM0a9oTKMELO0JaeZwNdCoGYyJwPlVX/PoH
+ gPBMY2rXumAQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="400120235"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by orsmga004.jf.intel.com with ESMTP; 14 Apr 2020 16:47:44 -0700
-Received: from fmsmsx123.amr.corp.intel.com (10.18.125.38) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 14 Apr 2020 16:47:44 -0700
-Received: from shsmsx101.ccr.corp.intel.com (10.239.4.153) by
- fmsmsx123.amr.corp.intel.com (10.18.125.38) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 14 Apr 2020 16:47:43 -0700
-Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.225]) by
- SHSMSX101.ccr.corp.intel.com ([169.254.1.129]) with mapi id 14.03.0439.000;
- Wed, 15 Apr 2020 07:47:41 +0800
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>
-Subject: RE: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
-Thread-Topic: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
-Thread-Index: AQHWAvq+z2SPyfblHkGvV1oKjQsO9ahaFEoAgAB7VgCAAS14gP//zqQAgAEODYCABAXlIIAALvMAgAFssACAACIBAIABY/uQgAHtwgCAEWzRgIAAG8+AgABw0ICAALrWAIAAEIMAgABZOwCAAJqrwA==
-Date:   Tue, 14 Apr 2020 23:47:40 +0000
-Message-ID: <AADFC41AFE54684AB9EE6CBC0274A5D19D81F901@SHSMSX104.ccr.corp.intel.com>
-References: <1585178227-17061-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1585178227-17061-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200326092316.GA31648@infradead.org>
-        <20200326094442.5be042ce@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D7ECB45@SHSMSX104.ccr.corp.intel.com>
-        <20200327074702.GA27959@infradead.org>
-        <20200327165335.397f24a3@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D7FE150@SHSMSX104.ccr.corp.intel.com>
-        <20200330090746.23c5599c@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D8011A9@SHSMSX104.ccr.corp.intel.com>
-        <20200331085444.44bee0bb@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
-        <20200402113604.6eea1e6f@jacob-builder>
-        <20200413134157.395981a6@jacob-builder> <20200413162129.313b3b5a@w520.home>
-        <20200413220515.25a107b6@jacob-builder> <20200414101358.3ae66ac5@w520.home>
-        <20200414101304.27e587eb@jacob-builder>
- <20200414153226.30d8cab3@jacob-builder>
-In-Reply-To: <20200414153226.30d8cab3@jacob-builder>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+   d="scan'208";a="245554405"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Apr 2020 16:50:50 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jOVKM-0007wq-1M; Wed, 15 Apr 2020 07:50:50 +0800
+Date:   Wed, 15 Apr 2020 07:49:09 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ bdf89df3c54518eed879d8fac7577fcfb220c67e
+Message-ID: <5e964bf5.W3lvYMMAWF8BWUHS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Sent: Wednesday, April 15, 2020 6:32 AM
-> 
-> On Tue, 14 Apr 2020 10:13:04 -0700
-> Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
-> 
-> > > > >  In any of the proposed solutions, the
-> > > > > IOMMU driver is ultimately responsible for validating the user
-> > > > > data, so do we want vfio performing the copy_from_user() to an
-> > > > > object that could later be assumed to be sanitized, or should
-> > > > > vfio just pass a user pointer to make it obvious that the
-> > > > > consumer is responsible for all the user protections?  Seems
-> > > > > like the latter.
-> > > > I like the latter as well.
-> > > >
-> On a second thought, I think the former is better. Two reasons:
-> 
-> 1. IOMMU API such as page_response is also used in baremetal. So it is
-> not suitable to pass a __user *.
-> https://www.spinics.net/lists/arm-kernel/msg798677.html
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: bdf89df3c54518eed879d8fac7577fcfb220c67e  x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
 
-You can have a wrapped version accepting a __user* and an internal
-version for kernel pointers.
+elapsed time: 481m
 
-> 
-> 2. Some data are in the mandatory (fixed offset, never removed or
-> extended) portion of the uAPI structure. It is simpler for VFIO to
-> extract that and pass it to IOMMU API. For example, the PASID value used
-> for unbind_gpasid(). VFIO also need to sanitize the PASID value to make
-> sure it belongs to the same VM that did the allocation.
+configs tested: 174
+configs skipped: 14
 
-I don't think this makes much difference. If anyway you still plan to
-let IOMMU driver parse some user pointers, why not making a clear
-split to have it sparse all IOMMU specific fields?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks
-Kevin
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+riscv                               defconfig
+ia64                                defconfig
+mips                              allnoconfig
+s390                             allyesconfig
+powerpc                             defconfig
+mips                      malta_kvm_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200414
+x86_64               randconfig-a002-20200414
+x86_64               randconfig-a003-20200414
+i386                 randconfig-a001-20200414
+i386                 randconfig-a002-20200414
+i386                 randconfig-a003-20200414
+alpha                randconfig-a001-20200414
+m68k                 randconfig-a001-20200414
+nds32                randconfig-a001-20200414
+parisc               randconfig-a001-20200414
+riscv                randconfig-a001-20200414
+alpha                randconfig-a001-20200415
+m68k                 randconfig-a001-20200415
+mips                 randconfig-a001-20200415
+nds32                randconfig-a001-20200415
+parisc               randconfig-a001-20200415
+riscv                randconfig-a001-20200415
+c6x                  randconfig-a001-20200414
+h8300                randconfig-a001-20200414
+microblaze           randconfig-a001-20200414
+nios2                randconfig-a001-20200414
+sparc64              randconfig-a001-20200414
+c6x                  randconfig-a001-20200415
+h8300                randconfig-a001-20200415
+microblaze           randconfig-a001-20200415
+nios2                randconfig-a001-20200415
+sparc64              randconfig-a001-20200415
+csky                 randconfig-a001-20200414
+openrisc             randconfig-a001-20200414
+s390                 randconfig-a001-20200414
+sh                   randconfig-a001-20200414
+xtensa               randconfig-a001-20200414
+csky                 randconfig-a001-20200415
+openrisc             randconfig-a001-20200415
+s390                 randconfig-a001-20200415
+sh                   randconfig-a001-20200415
+xtensa               randconfig-a001-20200415
+x86_64               randconfig-b001-20200414
+x86_64               randconfig-b002-20200414
+x86_64               randconfig-b003-20200414
+i386                 randconfig-b001-20200414
+i386                 randconfig-b002-20200414
+i386                 randconfig-b003-20200414
+x86_64               randconfig-c002-20200414
+x86_64               randconfig-c003-20200414
+i386                 randconfig-c001-20200414
+i386                 randconfig-c002-20200414
+i386                 randconfig-c003-20200414
+i386                 randconfig-d002-20200415
+x86_64               randconfig-d003-20200415
+i386                 randconfig-d003-20200415
+x86_64               randconfig-d001-20200415
+i386                 randconfig-d001-20200415
+x86_64               randconfig-d002-20200415
+x86_64               randconfig-g001-20200414
+x86_64               randconfig-g002-20200414
+x86_64               randconfig-g003-20200414
+i386                 randconfig-g001-20200414
+i386                 randconfig-g002-20200414
+i386                 randconfig-g003-20200414
+x86_64               randconfig-h001-20200414
+x86_64               randconfig-h002-20200414
+x86_64               randconfig-h003-20200414
+i386                 randconfig-h001-20200414
+i386                 randconfig-h002-20200414
+i386                 randconfig-h003-20200414
+x86_64               randconfig-h001-20200415
+x86_64               randconfig-h002-20200415
+x86_64               randconfig-h003-20200415
+i386                 randconfig-h001-20200415
+i386                 randconfig-h002-20200415
+i386                 randconfig-h003-20200415
+arc                  randconfig-a001-20200415
+arm                  randconfig-a001-20200415
+arm64                randconfig-a001-20200415
+ia64                 randconfig-a001-20200415
+powerpc              randconfig-a001-20200415
+sparc                randconfig-a001-20200415
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
 
-> 
-> 
-> > > > >  That still really
-> > > > > doesn't address what's in that user data blob yet, but the vfio
-> > > > > interface could be:
-> > > > >
-> > > > > struct {
-> > > > > 	__u32 argsz;
-> > > > > 	__u32 flags;
-> > > > > 	__u8  data[];
-> > > > > }
-> > > > >
-> > > > > Where flags might be partitioned like we do for DEVICE_FEATURE
-> > > > > to indicate the format of data and what vfio should do with it,
-> > > > > and data might simply be defined as a (__u64 __user *).
-> > > > >
-> > > > So, __user * will be passed to IOMMU driver if VFIO checks minsz
-> > > > include flags and they are valid.
-> > > > IOMMU driver can copy the rest based on the mandatory
-> > > > version/minsz and flags in the IOMMU uAPI structs.
-> > > > Does it sound right? This is really choice #2.
-> > >
-> > > Sounds like each IOMMU UAPI struct just needs to have an embedded
-> > > size and flags field, but yes.
-> > >
-> > Yes, an argsz field can be added to each UAPI. There are already flags
-> > or the equivalent. IOMMU driver can process the __user * based on the
-> > argsz, flags, check argsz against offsetofend(iommu_uapi_struct,
-> > last_element), etc.;
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
