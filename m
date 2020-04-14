@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55AC1A8DE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1161A8DF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634023AbgDNVly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:41:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2633973AbgDNVk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:40:28 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EEC32076C;
-        Tue, 14 Apr 2020 21:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586900428;
-        bh=ve7sv4les00ZVqpVE/yt4gMPSgxJivLn9fk5bQ5+EmY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w/mx/JlWob8BANxK2lx+xGXhxtrKDIUO0pqls7LKmCmybl82tcTprQERGRPUWLSIc
-         DmG7aHkm7XMTtbRcj/NBtwJiX/PKbTAe3lnBx7EAI8rslN8+KIhBqqfzO1KTC9of9r
-         msqoqsOIgoa9iD4JgszOzQUlC0ngAeDee2y9vQjU=
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        sparclinux@vger.kernel.org, kernel-team@android.com
-Subject: [RESEND PATCH 4/4] sparc32: mm: Reduce allocation size for PMD and PTE tables
-Date:   Tue, 14 Apr 2020 22:40:11 +0100
-Message-Id: <20200414214011.2699-5-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200414214011.2699-1-will@kernel.org>
-References: <20200414214011.2699-1-will@kernel.org>
+        id S2634088AbgDNVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2633992AbgDNVlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 17:41:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A98DC061A0F;
+        Tue, 14 Apr 2020 14:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6fW3z+0t6iwTFLSm5U6E4jEaZgRMxQt5XSHRbl0FIRU=; b=GLXZ6cso7/Kc9otHNvl8xNFk/k
+        3UnSjYeKFsTUOkbVxZK/gCzgj1My1hl1o3jN3fQjv1wk+Wcz3SnclnAqLfm/yckHoXM7vds9UZWPk
+        HiZCwOWAXCGu8TV0dcePkHD5azQHaMnHr6dltqVKK1OESvty+X5Zwsy+1hg+KF9s7e5rRTJNd4stR
+        xTkUdigirsUtpJxm86+4YWDYH6VbuvVVqnjwGKKd3UI3rC3yG4o+c77Yq0+n46YXKePWcmCaf5IzP
+        fVUyWu0XWZWK4NiaUttgeKRC2lNfWOK5+c1qSqDnVzPX1/Na7uCSAF0p8QPY6a5B1GiPXQCNwLED9
+        2svhZsBQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOTIY-00026w-Rw; Tue, 14 Apr 2020 21:40:51 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8BF8F981086; Tue, 14 Apr 2020 23:40:48 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 23:40:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        x86@kernel.org, arnd@arndb.de, srinivas.pandruvada@linux.intel.com,
+        bberg@redhat.com, bp@suse.de,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
+ vector altogether
+Message-ID: <20200414214048.GL2483@worktop.programming.kicks-ass.net>
+References: <20200407063345.4484-1-Jason@zx2c4.com>
+ <20200407063345.4484-3-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407063345.4484-3-Jason@zx2c4.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the page table allocator can free page table allocations
-smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
-to avoid needlessly wasting memory.
+On Tue, Apr 07, 2020 at 12:33:45AM -0600, Jason A. Donenfeld wrote:
+> The thermal IRQ handler uses 1.21% CPU on my system when it's hot from
+> compiling things. Indeed looking at /proc/interrupts reveals quite a lot
+> of events coming in. Beyond logging them, the existing drivers on the
+> system don't appear to do very much that I'm interested in. So, add a
+> way to disable this entirely so that I can regain precious CPU cycles.
 
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/sparc/include/asm/pgtsrmmu.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Why is this MCE code?!? hysterical raisins?
 
-diff --git a/arch/sparc/include/asm/pgtsrmmu.h b/arch/sparc/include/asm/pgtsrmmu.h
-index 58ea8e8c6ee7..7708d015712b 100644
---- a/arch/sparc/include/asm/pgtsrmmu.h
-+++ b/arch/sparc/include/asm/pgtsrmmu.h
-@@ -17,8 +17,8 @@
- /* Number of contexts is implementation-dependent; 64k is the most we support */
- #define SRMMU_MAX_CONTEXTS	65536
- 
--#define SRMMU_PTE_TABLE_SIZE		(PAGE_SIZE)
--#define SRMMU_PMD_TABLE_SIZE		(PAGE_SIZE)
-+#define SRMMU_PTE_TABLE_SIZE		(PTRS_PER_PTE*4)
-+#define SRMMU_PMD_TABLE_SIZE		(PTRS_PER_PMD*4)
- #define SRMMU_PGD_TABLE_SIZE		(PTRS_PER_PGD*4)
- 
- /* Definition of the values in the ET field of PTD's and PTE's */
--- 
-2.26.0.110.g2183baf09c-goog
+Anyway, I wonder if this is something we should hook up to
+SCHED_THERMAL_PRESSURE, Rafael?
 
+> diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+> index f996ffb887bc..d14f1922fb49 100644
+> --- a/arch/x86/kernel/cpu/mce/intel.c
+> +++ b/arch/x86/kernel/cpu/mce/intel.c
+> @@ -511,7 +511,8 @@ static void intel_ppin_init(struct cpuinfo_x86 *c)
+>  
+>  void mce_intel_feature_init(struct cpuinfo_x86 *c)
+>  {
+> -	intel_init_thermal(c);
+> +	if (IS_ENABLED(CONFIG_X86_THERMAL_VECTOR))
+> +		intel_init_thermal(c);
+>  	intel_init_cmci();
+>  	intel_init_lmce();
+>  	intel_ppin_init(c);
+> -- 
+> 2.26.0
+> 
