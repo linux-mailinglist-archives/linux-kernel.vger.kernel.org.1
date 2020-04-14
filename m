@@ -2,258 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB221A79BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C051A79C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439434AbgDNLkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:40:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729841AbgDNLj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:39:56 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C490C2075E;
-        Tue, 14 Apr 2020 11:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586864395;
-        bh=Nxof0yrGJT+J+BS0g4iJqP7y+qHSa0WXTsVfEK8CQo4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=KgjROVB2HQss8gWLu+/6vttD68gG+EC6AGlc0CMUUSqFJknAn8DYdeHo8HMFBrJ1C
-         lyR9Q4v+EwLCDlzJKy6yRj6ChE/WRKbqrvdR/WiT/5SUK1XKT55yyMeWlbX6iqBtcL
-         rU7ng0/Pnjozc8bKlovuL1r75zn1hTkN9a7gdIMw=
-Date:   Tue, 14 Apr 2020 12:39:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Applied "ASoC: samsung: s3c24xx-i2s: Fix build after removal of DAI suspend/resume" to the asoc tree
-In-Reply-To:  <20200413124548.28197-1-krzk@kernel.org>
-Message-Id:  <applied-20200413124548.28197-1-krzk@kernel.org>
-X-Patchwork-Hint: ignore
+        id S2439472AbgDNLll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 07:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2439459AbgDNLlg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 07:41:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06D3C061A0C;
+        Tue, 14 Apr 2020 04:41:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t4so4540275plq.12;
+        Tue, 14 Apr 2020 04:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=8Esq4uJjc7hCqZPSyfuH3UXfV8N/MZeW3NHhinZ8EQA=;
+        b=ocqZqq6sP10NyE5Oqrsyu24BO4bUv9d+CybYLvjUEA0qRTbQq8IAo2pJTWQfIqu4RO
+         sPTYsA+WN55nEjfpiAKwJ3efgvE0y02zIRGr4QJLeGvUEOTkWEwmF8lPwgWo+rxrPEs5
+         VDTf42M1YbD+ARAsRZhdeD47bvnZpwfdPk63IxzHlEP4FOS+xZOTFLokGOmvq6qCsYSC
+         9tfWtMbUwXgESksl6KkJnUtYDYhwxUwpcnrbpFt8xAH3B/hJvFo4WpPegEXCjs4dhUzZ
+         W26SU5gqovyT9qgqJ6qWu6cT8BV0oBUpmf+pSVOyif6EAbW821Qd95yr49cfUdak8sxQ
+         mhEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=8Esq4uJjc7hCqZPSyfuH3UXfV8N/MZeW3NHhinZ8EQA=;
+        b=WGFvk2eopzzhnzAKMqczAIyD6wLlBVfs7PY3INiZdxfU4MPoGd4n3TTWjqarVcnweU
+         C5Yt9OmQcvvdATPOIYsmM1eOXWh0r4RUve1Me1zIlD6+oqn2mXTKOVexUMrQ1Ov+/o0X
+         ynOXyCsBNxbUJlVv0/wwC/ZkXbv4XCxbcLcSRlPLyTi6IEgqAjHU7pp70Qm47VbQa8ws
+         Jf3MRlCZfJv0WkX8lIv3Wu3p5whHDO113j81OCw19rXVwykUvjsP5Uc/P1H7L3FI/5BQ
+         MUYifou97+SfNF2BarIGH0Re0WqMR+xW+pdPB0CanvoGes7kyAcQxhxrkQnC/O1YhLYa
+         EaMw==
+X-Gm-Message-State: AGi0PuYM1E+KZqhuTkSMqNpb470s3CdfuWvXcLewXGUJuc9u8cjggT1f
+        v1t7DbgwdN962Kd9Oo4Vx+k=
+X-Google-Smtp-Source: APiQypLIBjtk6RQd/AotCq9xnqN6ML09PMuOg/nS9Dm4xLrHmr38av9P0xvvmudk1+K5veWBSwJi4w==
+X-Received: by 2002:a17:90a:2281:: with SMTP id s1mr27766299pjc.68.1586864495571;
+        Tue, 14 Apr 2020 04:41:35 -0700 (PDT)
+Received: from localhost ([203.18.28.220])
+        by smtp.gmail.com with ESMTPSA id 132sm11155833pfc.183.2020.04.14.04.41.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 04:41:35 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 21:39:53 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 4/4] mm/vmalloc: Hugepage vmalloc mappings
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, x86@kernel.org
+References: <20200413125303.423864-1-npiggin@gmail.com>
+        <20200413125303.423864-5-npiggin@gmail.com>
+        <20200413134106.GN21484@bombadil.infradead.org>
+In-Reply-To: <20200413134106.GN21484@bombadil.infradead.org>
+MIME-Version: 1.0
+Message-Id: <1586863931.xb4yeowkao.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch
+Excerpts from Matthew Wilcox's message of April 13, 2020 11:41 pm:
+> On Mon, Apr 13, 2020 at 10:53:03PM +1000, Nicholas Piggin wrote:
+>> +static int vmap_pages_range_noflush(unsigned long start, unsigned long =
+end,
+>> +				    pgprot_t prot, struct page **pages,
+>> +				    unsigned int page_shift)
+>> +{
+>> +	if (page_shift =3D=3D PAGE_SIZE) {
+>=20
+> ... I think you meant 'page_shift =3D=3D PAGE_SHIFT'
 
-   ASoC: samsung: s3c24xx-i2s: Fix build after removal of DAI suspend/resume
+Thanks, good catch. I obviously didn't test the fallback path (the
+other path works for small pages, it just goes one at a time).
 
-has been applied to the asoc tree at
+> Overall I like this series, although it's a bit biased towards CPUs
+> which have page sizes which match PMD/PUD sizes.  It doesn't offer the
+> possibility of using 64kB page sizes on ARM, for example.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+No, it's just an incremental step on existing huge vmap stuff in
+tree, so such a thing would be out of scope.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> But it's a
+> step in the right direction.
+>=20
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I don't know about moving kernel maps away from a generic Linux page
+table format. I quite like moving to it and making it as generic as
+possible.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+On the other hand, I also would like to make some arch-specific
+allowances for certain special cases that may not fit within the
+standard page table format, but it might be a much more specific and
+limited interface than the general vmalloc stuff.
 
 Thanks,
-Mark
-
-From ec21bdc6dd16d74b3674ef1fd12ae8e4e7418603 Mon Sep 17 00:00:00 2001
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Mon, 13 Apr 2020 14:45:48 +0200
-Subject: [PATCH] ASoC: samsung: s3c24xx-i2s: Fix build after removal of DAI
- suspend/resume
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Commit 450312b640f9 ("ASoC: soc-core: remove DAI suspend/resume")
-removed the DAI side suspend/resume hooks and switched entirely to
-component suspend/resume.  However the Samsung SoC s3c-i2s-v2 driver was
-not updated.
-
-Move the suspend/resume hooks from s3c-i2s-v2.c to s3c2412-i2s.c while
-changing dai to component which allows to keep the struct
-snd_soc_component_driver const.
-
-This fixes build errors:
-
-    sound/soc/samsung/s3c-i2s-v2.c: In function ‘s3c_i2sv2_register_component’:
-    sound/soc/samsung/s3c-i2s-v2.c:730:9: error: ‘struct snd_soc_dai_driver’ has no member named ‘suspend’
-      dai_drv->suspend = s3c2412_i2s_suspend;
-
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 450312b640f9 ("ASoC: soc-core: remove DAI suspend/resume")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Link: https://lore.kernel.org/r/20200413124548.28197-1-krzk@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/s3c-i2s-v2.c  | 57 ---------------------------------
- sound/soc/samsung/s3c2412-i2s.c | 56 ++++++++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+), 57 deletions(-)
-
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index 358887848293..5e95c30fb2ba 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -656,60 +656,6 @@ void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
- }
- EXPORT_SYMBOL_GPL(s3c_i2sv2_cleanup);
- 
--#ifdef CONFIG_PM
--static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--	u32 iismod;
--
--	if (dai->active) {
--		i2s->suspend_iismod = readl(i2s->regs + S3C2412_IISMOD);
--		i2s->suspend_iiscon = readl(i2s->regs + S3C2412_IISCON);
--		i2s->suspend_iispsr = readl(i2s->regs + S3C2412_IISPSR);
--
--		/* some basic suspend checks */
--
--		iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
--			pr_warn("%s: RXDMA active?\n", __func__);
--
--		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
--			pr_warn("%s: TXDMA active?\n", __func__);
--
--		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
--			pr_warn("%s: IIS active\n", __func__);
--	}
--
--	return 0;
--}
--
--static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--
--	pr_info("dai_active %d, IISMOD %08x, IISCON %08x\n",
--		dai->active, i2s->suspend_iismod, i2s->suspend_iiscon);
--
--	if (dai->active) {
--		writel(i2s->suspend_iiscon, i2s->regs + S3C2412_IISCON);
--		writel(i2s->suspend_iismod, i2s->regs + S3C2412_IISMOD);
--		writel(i2s->suspend_iispsr, i2s->regs + S3C2412_IISPSR);
--
--		writel(S3C2412_IISFIC_RXFLUSH | S3C2412_IISFIC_TXFLUSH,
--		       i2s->regs + S3C2412_IISFIC);
--
--		ndelay(250);
--		writel(0x0, i2s->regs + S3C2412_IISFIC);
--	}
--
--	return 0;
--}
--#else
--#define s3c2412_i2s_suspend NULL
--#define s3c2412_i2s_resume  NULL
--#endif
--
- int s3c_i2sv2_register_component(struct device *dev, int id,
- 			   const struct snd_soc_component_driver *cmp_drv,
- 			   struct snd_soc_dai_driver *dai_drv)
-@@ -727,9 +673,6 @@ int s3c_i2sv2_register_component(struct device *dev, int id,
- 	if (!ops->delay)
- 		ops->delay = s3c2412_i2s_delay;
- 
--	dai_drv->suspend = s3c2412_i2s_suspend;
--	dai_drv->resume = s3c2412_i2s_resume;
--
- 	return devm_snd_soc_register_component(dev, cmp_drv, dai_drv, 1);
- }
- EXPORT_SYMBOL_GPL(s3c_i2sv2_register_component);
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 787a3f6e9f24..b35d828c1cfe 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -117,6 +117,60 @@ static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM
-+static int s3c2412_i2s_suspend(struct snd_soc_component *component)
-+{
-+	struct s3c_i2sv2_info *i2s = snd_soc_component_get_drvdata(component);
-+	u32 iismod;
-+
-+	if (component->active) {
-+		i2s->suspend_iismod = readl(i2s->regs + S3C2412_IISMOD);
-+		i2s->suspend_iiscon = readl(i2s->regs + S3C2412_IISCON);
-+		i2s->suspend_iispsr = readl(i2s->regs + S3C2412_IISPSR);
-+
-+		/* some basic suspend checks */
-+
-+		iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
-+			pr_warn("%s: RXDMA active?\n", __func__);
-+
-+		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
-+			pr_warn("%s: TXDMA active?\n", __func__);
-+
-+		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
-+			pr_warn("%s: IIS active\n", __func__);
-+	}
-+
-+	return 0;
-+}
-+
-+static int s3c2412_i2s_resume(struct snd_soc_component *component)
-+{
-+	struct s3c_i2sv2_info *i2s = snd_soc_component_get_drvdata(component);
-+
-+	pr_info("component_active %d, IISMOD %08x, IISCON %08x\n",
-+		component->active, i2s->suspend_iismod, i2s->suspend_iiscon);
-+
-+	if (component->active) {
-+		writel(i2s->suspend_iiscon, i2s->regs + S3C2412_IISCON);
-+		writel(i2s->suspend_iismod, i2s->regs + S3C2412_IISMOD);
-+		writel(i2s->suspend_iispsr, i2s->regs + S3C2412_IISPSR);
-+
-+		writel(S3C2412_IISFIC_RXFLUSH | S3C2412_IISFIC_TXFLUSH,
-+		       i2s->regs + S3C2412_IISFIC);
-+
-+		ndelay(250);
-+		writel(0x0, i2s->regs + S3C2412_IISFIC);
-+	}
-+
-+	return 0;
-+}
-+#else
-+#define s3c2412_i2s_suspend NULL
-+#define s3c2412_i2s_resume  NULL
-+#endif
-+
- #define S3C2412_I2S_RATES \
- 	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
- 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-@@ -146,6 +200,8 @@ static struct snd_soc_dai_driver s3c2412_i2s_dai = {
- 
- static const struct snd_soc_component_driver s3c2412_i2s_component = {
- 	.name		= "s3c2412-i2s",
-+	.suspend	= s3c2412_i2s_suspend,
-+	.resume		= s3c2412_i2s_resume,
- };
- 
- static int s3c2412_iis_dev_probe(struct platform_device *pdev)
--- 
-2.20.1
-
+Nick
