@@ -2,100 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078A01A78B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDF51A78E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438588AbgDNKpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:45:12 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7494 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438559AbgDNKoL (ORCPT
+        id S2438721AbgDNK4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:56:08 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41820 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438407AbgDNKeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:44:11 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9591ad0001>; Tue, 14 Apr 2020 03:34:21 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 14 Apr 2020 03:36:10 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 14 Apr 2020 03:36:10 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
- 2020 10:36:09 +0000
-Received: from [10.26.73.15] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
- 2020 10:36:06 +0000
-Subject: Re: [PATCH 4.14 00/38] 4.14.176-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200411115437.795556138@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <3c24966c-eb4c-d99a-67ea-d2592143100a@nvidia.com>
-Date:   Tue, 14 Apr 2020 11:36:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586860462; bh=3wwQdwm2zxXX7jgsDaXpMCfGRvIeeYiR991RevpkigM=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=a7u3ZMlvkqmSlFqSEZovMc7q0NTyYcwvS9RSq/Wezc9+MZats9h5iDB3gFue3Z7w+
-         TBFCITO6OCpFQZxT2tzgLwa1b5GXNeoWs30vYBekgg3jh7zPNhyY+cAn5VnYOckCmE
-         HWXBx0POA9JF7AeFYDTwpTazsbBrGm/YSrR2ygDdWY7tOCHg3BeUbbmDpmDAIP62jb
-         +gGB4uvk5r6B4FRD3LVSFRuGBvNMnKwSUWqi59zHZ1OfHlGNsCMzFrybY82nORuJeM
-         Edy8Bl8+y+Jnwk+WVGzPcfQZW7F2ypukzUcX6CfnLn3Xq3k1Kflnc6foyonmTpBNLi
-         5LSKk7RqmVKig==
+        Tue, 14 Apr 2020 06:34:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAXI6P102563;
+        Tue, 14 Apr 2020 10:34:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=M8MvkDpLyHCF3YAFTo6D5bpm4FyG8RWh04rIgFIGDTc=;
+ b=e0djzw/gAjSZac/wMBtbjiY9qsuwkuOFYBlhthLzM/ooy3+F5O6jO4FEonqBaGuCJ7Ap
+ +DebQfdjkSkekTEKq31QCDrziLi4fsjFQToW7G4Z+vVsmORTerlEbd/KKawLVUyO73EX
+ YPhRGYWzRrf5xbBydp+LSo9ZFujcxqdGjUan2QeG8JF0bltxs9QYlOLtqYjMr0uXRzZu
+ zOBtQMmRVVYDg3anWyobDWGAGsnVB8wN6kxgQngw5BP4n4LKaPO72GxNU0B/lYwiTY3l
+ VtXjRLSPMx+c66yEU7MG31tFbN182VCehjf3QbQWwdGy9Swslu4j+ZefTsPCvdAaTdJK Pg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30b6hpkms5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 10:34:01 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAW0gU123332;
+        Tue, 14 Apr 2020 10:32:01 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30bqpfxnq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 10:32:00 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EAVmjb013580;
+        Tue, 14 Apr 2020 10:31:53 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 03:31:48 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
+        alexandre.chartre@oracle.com
+Subject: [PATCH V3 0/9] objtool changes to check retpoline code
+Date:   Tue, 14 Apr 2020 12:36:09 +0200
+Message-Id: <20200414103618.12657-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140087
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140087
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 11/04/2020 13:08, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.176 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.176-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+This is version 3 of the patchset previously named "objtool changes to
+remove all ANNOTATE_NOSPEC_ALTERNATIVE". This patchset proposes two
+main changes:
 
-All tests are passing for Tegra ...
+ 1. Add intra-function call support to objtool. This allows objtool
+    to check code like retpoline and RSB stuffing. Such code is present
+    in alternative and it is not currently checked because of
+    ANNOTATE_NOSPEC_ALTERNATIVE directives.
 
-Test results for stable-v4.14:
-    8 builds:	8 pass, 0 fail
-    16 boots:	16 pass, 0 fail
-    24 tests:	24 pass, 0 fail
+ 2. Add alternative code validation in objtool. For stack unwinding to
+    work, Peter and Josh have clearly explained that alternative code
+    should have the same stack change sequence as the original code.
+    This patchset adds this capability to objtool.
 
-Linux version:	4.14.176-rc1-g42fb2965c7ca
-Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
-                tegra210-p2371-2180, tegra30-cardhu-a04
+After changes 1, we could remove the ANNOTATE_SPEC_ALTERNATIVE directives
+from retpoline/RSB alternatives, and alternatives would be correclty checked
+by objtool. But, because of changes 2, objtool would now report inconsistency
+in alternatives, like this:
 
-Cheers
-Jon
+  AS      arch/x86/lib/retpoline.o
+arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_thunk_rax()+0x0: error in alternative
+arch/x86/lib/retpoline.o: warning: objtool: .altinstr_replacement+0x0: in alternative 1
+arch/x86/lib/retpoline.o: warning: objtool: .altinstr_replacement+0x5: misaligned alternative state change
+arch/x86/lib/retpoline.o: warning: objtool: .altinstr_replacement+0x11: in alternative 2
+arch/x86/lib/retpoline.o: warning: objtool: .altinstr_replacement+0x14: misaligned alternative state change
+
+So this pachset doesn't remove ANNOTATE_NOSPEC_ALTERNATIVE directives
+(unlike v1 and v2). But it makes objtool able to detect inconsistent
+alternatives. Then such alternative will need to be refactored to
+have stack unwinding information compatible with the original code.
+For example, here is Peter suggestion for retpoline code:
+  https://lkml.org/lkml/2020/4/8/905
+
+
+Changes:
+
+v2->v3:
+ - rebase on v5.7-rc1
+ - add alternative code validation in objtool
+ - add return address unwind hints
+ - track return address to correctly handle ret with intra-function call
+ - remove inclusion of PeterZ UNWIND_HINT_RET_OFFSET patch
+ - move alt_group changes to appropriate patch
+ - move stack changes for calls to INSN_CALL decode
+
+v1->v2:
+ - replace RETPOLINE_RET with PeterZ UNWIND_HINT_RET_OFFSET
+ - make objtool intra-function call action architecture dependent
+ - objtool now automatically detects and validates all intra-function
+   calls but it issues a warning if the call was not explicitly tagged
+ - change __FILL_RETURN_BUFFER to work with objtool
+ - add generic ANNOTATE_INTRA_FUNCTION_CALL macro
+ - remove all ANNOTATE_SPEC_ALTERNATIVE (even for __FILL_RETURN_BUFFER)
+
+Thanks,
+
+alex.
+
+-----
+
+Alexandre Chartre (9):
+  objtool: is_fentry_call() crashes if call has no destination
+  objtool: Allow branches within the same alternative.
+  objtool: Add support for intra-function calls
+  objtool: Handle return instruction with intra-function call
+  objtool: Add return address unwind hints
+  objtool: Report inconsistent stack changes in alternative
+  x86/speculation: Change __FILL_RETURN_BUFFER to work with objtool
+  x86/speculation: Add return address unwind hints to retpoline and RSB
+    stuffing
+  x86/speculation: Annotate intra-function calls
+
+ arch/x86/include/asm/nospec-branch.h          |  42 +-
+ arch/x86/include/asm/orc_types.h              |   2 +
+ arch/x86/include/asm/unwind_hints.h           |  23 +
+ include/linux/frame.h                         |  11 +
+ tools/arch/x86/include/asm/orc_types.h        |   2 +
+ .../Documentation/stack-validation.txt        |   8 +
+ tools/objtool/arch/x86/decode.c               |  13 +
+ tools/objtool/check.c                         | 480 ++++++++++++++++--
+ tools/objtool/check.h                         |   8 +-
+ 9 files changed, 545 insertions(+), 44 deletions(-)
 
 -- 
-nvpublic
+2.18.2
+
