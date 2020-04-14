@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995131A85D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6445E1A8625
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407509AbgDNQuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:50:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
+        id S2391853AbgDNQyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:54:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440480AbgDNQtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:39 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S2440322AbgDNQtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:15 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 726472137B;
-        Tue, 14 Apr 2020 16:49:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26E0121D90;
+        Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882978;
-        bh=UvXZ+IxoIeeey089XnZGi/88/VdiyQwT0ComwzdImDA=;
+        s=default; t=1586882943;
+        bh=v18zGgJXDcniarmFK/fb0SPUGXtE0+ENUUwwpi/DtwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ntlI9LgX+ytnJs8ED0kZgkN/4SxtCotaGpTTagmvYyUzw9VuyZOjcFC4OWpxPYu1j
-         PyM9busMDB2J46H57wrdQm6DdxXKm2+PdfrwwQA7WgwKCAMc/feIm2fS3KauJoXLWz
-         Fkktld+KsUlX6EcBCvBCkky93zcvXROOdIzzWXfU=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Subject: [PATCH 12/15] tools headers UAPI: Sync drm/i915_drm.h with the kernel sources
-Date:   Tue, 14 Apr 2020 13:48:51 -0300
-Message-Id: <20200414164854.26026-13-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
-References: <20200414164854.26026-1-acme@kernel.org>
+        b=ZlPZp3Hb89eeuvHOHc9kIUvGyJJFisVziUspxeE/DApQC0TMpnBh7uKbWKuh55dro
+         TA6Q5dQWLmccf0srgF1M5KkVJX6cTdwgiyc5z9HpQG6AX6E2TiRff1E8TwRnI9gFqE
+         zdZ9Xb2XU7HmLvedWLnT5m7IyQYjPR8b73BsHuTU=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jOOk9-0068mx-D0; Tue, 14 Apr 2020 18:49:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org
+Subject: [PATCH v2 26/33] docs: i2c: rename i2c.svg to i2c_bus.svg
+Date:   Tue, 14 Apr 2020 18:48:52 +0200
+Message-Id: <ecf3d51909ce46b3e84a1df4b36f07d76989e5da.1586881715.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,59 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+When generating the PDF output, the Documentation/i2c dir
+will generate an i2c.pdf. The same happens with i2c.svg:
+it will also produce a file with the same name, at the same dir.
 
-To pick the change in:
+This causes errors when building the PDF output. So, rename the
+image to i2c_bus.svg.
 
-  88be76cdafc7 ("drm/i915: Allow userspace to specify ringsize on construction")
-
-That don't result in any changes in tooling, just silences this perf
-build warning:
-
-  Warning: Kernel ABI header at 'tools/include/uapi/drm/i915_drm.h' differs from latest version at 'include/uapi/drm/i915_drm.h'
-  diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Acked-by: Wolfram Sang <wsa@the-dreams.de>
 ---
- tools/include/uapi/drm/i915_drm.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ Documentation/i2c/{i2c.svg => i2c_bus.svg} | 2 +-
+ Documentation/i2c/summary.rst              | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+ rename Documentation/i2c/{i2c.svg => i2c_bus.svg} (99%)
 
-diff --git a/tools/include/uapi/drm/i915_drm.h b/tools/include/uapi/drm/i915_drm.h
-index 829c0a48577f..2813e579b480 100644
---- a/tools/include/uapi/drm/i915_drm.h
-+++ b/tools/include/uapi/drm/i915_drm.h
-@@ -1619,6 +1619,27 @@ struct drm_i915_gem_context_param {
-  * By default, new contexts allow persistence.
-  */
- #define I915_CONTEXT_PARAM_PERSISTENCE	0xb
-+
-+/*
-+ * I915_CONTEXT_PARAM_RINGSIZE:
-+ *
-+ * Sets the size of the CS ringbuffer to use for logical ring contexts. This
-+ * applies a limit of how many batches can be queued to HW before the caller
-+ * is blocked due to lack of space for more commands.
-+ *
-+ * Only reliably possible to be set prior to first use, i.e. during
-+ * construction. At any later point, the current execution must be flushed as
-+ * the ring can only be changed while the context is idle. Note, the ringsize
-+ * can be specified as a constructor property, see
-+ * I915_CONTEXT_CREATE_EXT_SETPARAM, but can also be set later if required.
-+ *
-+ * Only applies to the current set of engine and lost when those engines
-+ * are replaced by a new mapping (see I915_CONTEXT_PARAM_ENGINES).
-+ *
-+ * Must be between 4 - 512 KiB, in intervals of page size [4 KiB].
-+ * Default is 16 KiB.
-+ */
-+#define I915_CONTEXT_PARAM_RINGSIZE	0xc
- /* Must be kept compact -- no holes and well documented */
+diff --git a/Documentation/i2c/i2c.svg b/Documentation/i2c/i2c_bus.svg
+similarity index 99%
+rename from Documentation/i2c/i2c.svg
+rename to Documentation/i2c/i2c_bus.svg
+index 5979405ad1c3..3170de976373 100644
+--- a/Documentation/i2c/i2c.svg
++++ b/Documentation/i2c/i2c_bus.svg
+@@ -9,7 +9,7 @@
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+-   sodipodi:docname="i2c.svg"
++   sodipodi:docname="i2c_bus.svg"
+    inkscape:version="0.92.3 (2405546, 2018-03-11)"
+    version="1.1"
+    id="svg2"
+diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
+index ce7230025b33..136c4e333be7 100644
+--- a/Documentation/i2c/summary.rst
++++ b/Documentation/i2c/summary.rst
+@@ -34,7 +34,7 @@ Terminology
+ Using the terminology from the official documentation, the I2C bus connects
+ one or more *master* chips and one or more *slave* chips.
  
- 	__u64 value;
+-.. kernel-figure::  i2c.svg
++.. kernel-figure::  i2c_bus.svg
+    :alt:    Simple I2C bus with one master and 3 slaves
+ 
+    Simple I2C bus
 -- 
-2.21.1
+2.25.2
 
