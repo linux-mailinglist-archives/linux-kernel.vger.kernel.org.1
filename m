@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED09D1A7414
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580DE1A742B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406328AbgDNHEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 03:04:33 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:55970 "EHLO inva021.nxp.com"
+        id S2406387AbgDNHFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:05:03 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:57340 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406310AbgDNHEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:04:30 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9B99120005B;
-        Tue, 14 Apr 2020 09:04:28 +0200 (CEST)
+        id S2406330AbgDNHEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 03:04:35 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A45721A0315;
+        Tue, 14 Apr 2020 09:04:33 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0053D200336;
-        Tue, 14 Apr 2020 09:04:23 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0858C1A031C;
+        Tue, 14 Apr 2020 09:04:28 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DDE8A402E2;
-        Tue, 14 Apr 2020 15:04:15 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1690D402FC;
+        Tue, 14 Apr 2020 15:04:17 +0800 (SGT)
 From:   Shengjiu Wang <shengjiu.wang@nxp.com>
 To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
         festevam@gmail.com, broonie@kernel.org,
@@ -27,9 +27,9 @@ To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
         tiwai@suse.com, robh+dt@kernel.org, mark.rutland@arm.com,
         devicetree@vger.kernel.org
 Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 2/7] ASoC: dt-bindings: fsl_asrc: Add new property fsl,asrc-format
-Date:   Tue, 14 Apr 2020 14:56:02 +0800
-Message-Id: <f952cd0ead3816d0c208891d7c8c3895187394a3.1586845137.git.shengjiu.wang@nxp.com>
+Subject: [PATCH v8 3/7] ASoC: fsl-asoc-card: Support new property fsl,asrc-format
+Date:   Tue, 14 Apr 2020 14:56:03 +0800
+Message-Id: <d345821ea8016283e1b1d80bed5fc373272f79de.1586845138.git.shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1586845137.git.shengjiu.wang@nxp.com>
 References: <cover.1586845137.git.shengjiu.wang@nxp.com>
@@ -41,37 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support new EASRC and simplify the code structure,
-We decide to share the common structure between them. This bring
-a problem that EASRC accept format directly from devicetree, but
-ASRC accept width from devicetree.
-
 In order to align with new ESARC, we add new property fsl,asrc-format.
-The fsl,asrc-format can replace the fsl,asrc-width, then driver
+The fsl,asrc-format can replace the fsl,asrc-width, driver
 can accept format from devicetree, don't need to convert it to
 format through width.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- Documentation/devicetree/bindings/sound/fsl,asrc.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/fsl/fsl-asoc-card.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-index cb9a25165503..998b4c8a7f78 100644
---- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-@@ -51,6 +51,10 @@ Optional properties:
- 			  will be in use as default. Otherwise, the big endian
- 			  mode will be in use for all the device registers.
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index bb33601fab84..cf4feb835743 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -680,17 +680,23 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 			goto asrc_fail;
+ 		}
  
-+   - fsl,asrc-format	: Defines a mutual sample format used by DPCM Back
-+			  Ends, which can replace the fsl,asrc-width.
-+			  The value is 2 (S16_LE), or 6 (S24_LE).
-+
- Example:
+-		ret = of_property_read_u32(asrc_np, "fsl,asrc-width", &width);
++		ret = of_property_read_u32(asrc_np, "fsl,asrc-format",
++					   &priv->asrc_format);
+ 		if (ret) {
+-			dev_err(&pdev->dev, "failed to get output rate\n");
+-			ret = -EINVAL;
+-			goto asrc_fail;
+-		}
++			/* Fallback to old binding; translate to asrc_format */
++			ret = of_property_read_u32(asrc_np, "fsl,asrc-width",
++						   &width);
++			if (ret) {
++				dev_err(&pdev->dev,
++					"failed to decide output format\n");
++				goto asrc_fail;
++			}
  
- asrc: asrc@2034000 {
+-		if (width == 24)
+-			priv->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
+-		else
+-			priv->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
++			if (width == 24)
++				priv->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
++			else
++				priv->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
++		}
+ 	}
+ 
+ 	/* Finish card registering */
 -- 
 2.21.0
 
