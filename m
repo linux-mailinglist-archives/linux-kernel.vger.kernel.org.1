@@ -2,63 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894C21A8D3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00D51A8D49
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633674AbgDNVFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:05:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732446AbgDNVFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:05:22 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3E3A2074D;
-        Tue, 14 Apr 2020 21:05:21 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 17:05:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Matt Helsley <mhelsley@vmware.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [RFC][PATCH 00/36] objtool: Make recordmcount a subcommand
-Message-ID: <20200414170520.4d347caa@gandalf.local.home>
-In-Reply-To: <20200414204729.GJ2483@worktop.programming.kicks-ass.net>
-References: <cover.1586468801.git.mhelsley@vmware.com>
-        <3a3f70df-07b0-91d9-33e1-e997e72b0c5c@redhat.com>
-        <20200414093506.7b91bbbb@gandalf.local.home>
-        <064f41bd-0dfe-e875-df7c-214184c29fa7@redhat.com>
-        <20200414115458.093e221b@gandalf.local.home>
-        <20200414200910.GB118458@rlwimi.vmware.com>
-        <20200414204729.GJ2483@worktop.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2633705AbgDNVGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2633695AbgDNVGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 17:06:23 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488DC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:06:23 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h69so467851pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3UvKGtfoV0Ab32vRdr+A6Zs78juH/jsZy4Qb8qV2VBM=;
+        b=NmI1aKh3fNiZ7q6mGa1CY2Xphm7W/86aLKU/xiEPRgHYCvdtOF4npN5ImLGt5z7zS1
+         bjui72TB7vCN3Ihfic9xLlS0qkRQ/s7RC6OgNDLko2SlWQcQiLoaxLzRySZrCcKGyNdZ
+         c2ohqf48YZAO7+LaPru0/QPOc+Ob4IKBbu71kWvjOATeDL0FoDQNMHQuZodPCep5mMdC
+         siBnJb1DZ4qrZrcQqLwXA+3HKXS+eZ9bEfXDBzUF1+cpQOVU8FcWhqxZTjZqPp71Z83n
+         OYNa7tBorgTtSaafNbRdxZ1nkXcP1LSE2ln/uPRtXgfXz+gjhY89gV+wN5GhFKnQBot2
+         DEfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3UvKGtfoV0Ab32vRdr+A6Zs78juH/jsZy4Qb8qV2VBM=;
+        b=r5EnezOFeMtGt4Wad+P+RLUW9+zIja5THGYGzix/1NJrgnFCYHcd3SqnjZ9E74VxIZ
+         X1Og6Zk67bjf54zi192lzP1zZtMm5p2ee0XQwLoGF1PE7nDUOJkvHwVunwxRYNDQrSz9
+         PpreYjq8rv0RXpcYMtThEzhlgEQrcnEu9hHASvOAsJAgNEGaUVseHD4xzOWV2+E38Tc5
+         1wdgYVY9Qxz7OwTxaf9A33SA2EjrQxuDKxEd9NkO7V9F8v1AvaMJAVdhnhhDgTlfPDNC
+         wH/Kl79kNqDoXcXFonTX+go73Ng4m4cNIY0eYwkSRJJ12XLFZ9HtnxSasbgHDj7X/F/O
+         obwQ==
+X-Gm-Message-State: AGi0PuYrv2i5hMvdabpSnN+bOw9on2xqwe7aV0GZkNjtj6y1as7ISM2J
+        CqUtEVq7bsKSet2eTPPv8Ypl9/6AlY+azlJLfB4+Ww==
+X-Google-Smtp-Source: APiQypJSOr24T/kguntD7Zk4YDXQavG7g2d5ycUzc+E8+Az5udZcbG54+2+ZBYe2KO8mdJQcNUB8sQqwb/ie6G6H30I=
+X-Received: by 2002:a62:8343:: with SMTP id h64mr26164739pfe.166.1586898382787;
+ Tue, 14 Apr 2020 14:06:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAFd5g45GbSX1BkuaH=8639ESHi-MCGkpFhEZZpycm9=jQb93rg@mail.gmail.com>
+ <CAFd5g47aaE+tGeHPrQmhfi6_nrvi1K4DvtRodh=zN21-uiQ1DQ@mail.gmail.com>
+ <20200305223350.GA2852@mara.localdomain> <20200306120525.GC68079@kuha.fi.intel.com>
+ <CAFd5g45c9L4BBRNtxtQf_NFr2bR6Wgt9uOHW86gzb6Ozeb0SBA@mail.gmail.com>
+ <CAFd5g45cdygYfxGoCkk710tLXFADeLNb+6w-=vhkDMLP9OM7bw@mail.gmail.com>
+ <20200310111837.GA1368052@kuha.fi.intel.com> <CAFd5g452sDMZToU+FDa-Odbkd_t1708gcRMAZQG+U4LnV=Xqgw@mail.gmail.com>
+ <CA+G9fYuwv+TEhgi46pjs2-GCe0mmMHyki9nAokvGCEA2syK5Dg@mail.gmail.com>
+ <CAFd5g46Bwd8HS9-xjHLh_rB59Nfw8iAnM6aFe0QPcveewDUT6g@mail.gmail.com>
+ <20200414081513.GD2828150@kuha.fi.intel.com> <CAFd5g46KeNu6bmDHBiJtGqEBQEyo1ooh=wK_PJbNih+2UCLoNQ@mail.gmail.com>
+ <CAFd5g44s5NQvT8TG_x4rwbqoa7zWzkV0TX+ETZoQdOB7OwXCPQ@mail.gmail.com>
+In-Reply-To: <CAFd5g44s5NQvT8TG_x4rwbqoa7zWzkV0TX+ETZoQdOB7OwXCPQ@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 14 Apr 2020 14:06:11 -0700
+Message-ID: <CAFd5g46Sxtc44hK=T_vo7CfYu-GROkuweDk_nz6uoJYaVgMOeg@mail.gmail.com>
+Subject: Re: BUG: kernel NULL pointer dereference, address: 00 - ida_free+0x76/0x140
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "rafael.j.wysocki" <rafael.j.wysocki@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        lkft-triage@lists.linaro.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 22:47:29 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Apr 14, 2020 at 12:27 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Tue, Apr 14, 2020 at 12:18 PM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > On Tue, Apr 14, 2020 at 1:15 AM Heikki Krogerus
+> > <heikki.krogerus@linux.intel.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Tue, Apr 07, 2020 at 01:56:16PM -0700, Brendan Higgins wrote:
+> > > > On Tue, Apr 7, 2020 at 2:25 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > > >
+> > > > > On Wed, 11 Mar 2020 at 02:16, Brendan Higgins <brendanhiggins@google.com> wrote:
+> > > > > > > > > > > > > > > Steps reproduce by using kselftests,
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > >           - lsmod || true
+> > > > > > > > > > > > > > >           - cd /opt/kselftests/default-in-kernel/lib/
+> > > > > > > > > > > > > > >           - export PATH=/opt/kselftests/default-in-kernel/kselftest:$PATH
+> > > > > > > > > > > > > > >           - ./printf.sh || true
+> > > > > > > > > > > > > > >           - ./bitmap.sh || true
+> > > > > > > > > > > > > > >           - ./prime_numbers.sh || true
+> > > > > > > > > > > > > > >           - ./strscpy.sh || true
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > x86_64 kernel BUG dump.
+> > > > > > > > > > > > > > > + ./printf.sh
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Oops, I am wondering if I broke this with my change "Revert "software
+> > > > > > > > > > > > > node: Simplify software_node_release() function"":
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=d1c19322388d6935b534b494a2c223dd089e30dd
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > I am still investigating, will update later.
+> > > > > > > > > > > >
+> > > > > > > > > > > > Okay, yeah, I am pretty sure I caused the breakage. I got an email
+> > > > > > > > > > > > from kernel test robot a couple days ago that I didn't see:
+> > > > > > > > > > > >
+> > > > > > > > > > > > https://lists.01.org/hyperkitty/list/lkp@lists.01.org/thread/N3ZN5XH7HK24JVEJ5WSQD2SK6YCDRILR/
+> > > > > > > > > > > >
+> > > > > > > > > > > > It shows the same breakage after applying this change.
+> > > > > > > > > > > >
+> > > > > > > > > > > > I am still investigating how my change broke it, nevertheless.
+> > > > > > > > > > >
+> > > > > > > > > > > As nodes in the tree are being removed, the code before the patch that
+> > > > > > > > > > > "simplified" the software_node_release() function accessed the node's parent
+> > > > > > > > > > > in its release function.
+> > > > > > > > > > >
+> > > > > > > > > > > And if CONFIG_DEBUG_KOBJECT_RELEASE is defined, the release functions are no
+> > > > > > > > > > > longer necessarily called in order, leading to referencing released memory.
+> > > > > > > > > > > Oops!
+> > > > > > > > > > >
+> > > > > > > > > > > So Heikki's patch actually fixed a bug. :-)
+> > > > > > > > > >
+> > > > > > > > > > Well, I think it just hid the problem. It looks like the core
+> > > > > > > > > > (lib/kobject.c) allows the parent kobject to be released before the
+> > > > > > > > > > last child kobject is released. To be honest, that does not sound
+> > > > > > > > > > right to me...
+> > > > > > > > > >
+> > > > > > > > > > I think we can workaround this problem by taking reference to the
+> > > > > > > > > > parent when the child is added, and then releasing it when the child
+> > > > > > > > > > is released, and in that way be guaranteed that the parent will not
+> > > > > > > > > > disappear before the child is fully released, but that still does not
+> > > > > > > > > > feel right. It feels more like the core is not doing it's job to me.
+> > > > > > > > > > The parent just should not be released before its children.
+> > > > > > > > > >
+> > > > > > > > > > Either I'm wrong about that, and we still should take the reference on
+> > > > > > > > > > the parent, or we revert my patch like Brendan proposed and then fix
+> > > > > > > > >
+> > > > > > > > > Either way, isn't it wrong to release the node ID before deleting the
+> > > > > > > > > sysfs entry? I am not sure that my fix was the correct one, but I
+> > > > > > > > > believe the bug that Heidi and I found is actually a bug.
+> > > > > > >
+> > > > > > > I agree.
+> > > > > > >
+> > > > > > > > > > the core with something like this (warning, I did not even try to
+> > > > > > > > > > compile that):
+> > > > > > > > >
+> > > > > > > > > I will try it out.
+> > > > > > > > >
+> > > > > > > > > > diff --git a/lib/kobject.c b/lib/kobject.c
+> > > > > > > > > > index 83198cb37d8d..ec5774992337 100644
+> > > > > > > > > > --- a/lib/kobject.c
+> > > > > > > > > > +++ b/lib/kobject.c
+> > > > > > > > > > @@ -680,6 +680,12 @@ static void kobject_cleanup(struct kobject *kobj)
+> > > > > > > > > >                 kobject_uevent(kobj, KOBJ_REMOVE);
+> > > > > > > > > >         }
+> > > > > > > > > >
+> > > > > > > > > > +       if (t && t->release) {
+> > > > > > > > > > +               pr_debug("kobject: '%s' (%p): calling ktype release\n",
+> > > > > > > > > > +                        kobject_name(kobj), kobj);
+> > > > > > > > > > +               t->release(kobj);
+> > > > > > > > > > +       }
+> > > > > > > > > > +
+> > > > > > > > > >         /* remove from sysfs if the caller did not do it */
+> > > > > > > > > >         if (kobj->state_in_sysfs) {
+> > > > > > > > > >                 pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+> > > > > > > > > > @@ -687,12 +693,6 @@ static void kobject_cleanup(struct kobject *kobj)
+> > > > > > > > > >                 kobject_del(kobj);
+> > > > > > > > > >         }
+> > > > > > > > > >
+> > > > > > > > > > -       if (t && t->release) {
+> > > > > > > > > > -               pr_debug("kobject: '%s' (%p): calling ktype release\n",
+> > > > > > > > > > -                        kobject_name(kobj), kobj);
+> > > > > > > > > > -               t->release(kobj);
+> > > > > > > > > > -       }
+> > > > > > > > > > -
+> > > > > > > > > >         /* free name if we allocated it */
+> > > > > > > > > >         if (name) {
+> > > > > > > > > >                 pr_debug("kobject: '%s': free name\n", name);
+> > > > > > > >
+> > > > > > > > Alright, so I tried it and it looks like Heikki's suggestion worked.
+> > > > > > > >
+> > > > > > > > Is everyone comfortable going this route?
+> > > > > > >
+> > > > > > > Hold on. Another way to fix the problem is to increment the parent's
+> > > > > > > reference count before that kobject_del(kobj) is called, and then
+> > > > > > > decrementing it after t->release(kobj) is called. It may be safer to
+> > > > > > > fix the problem like that.
+> > > > > >
+> > > > > > Right, this was your first suggestion above, right? That actually made
+> > > > > > more sense to me, but you seemed skeptical of it due to it being
+> > > > > > messier, which makes sense.
+> > > > > >
+> > > > > > Nevertheless, having children take a reference seems like the right
+> > > > > > thing to do because the children need to degregister themselves from
+> > > > > > the parent. Calling t->release() ahead of kobject_del() seems to
+> > > > > > reintroduce the problem that I pointed out, albeit *much* more
+> > > > > > briefly. If I understand correctly, it is always wrong to have a sysfs
+> > > > > > entry that points to a partially deallocated kobject. Please correct
+> > > > > > me if I am wrong.
+> > > > > >
+> > > > > > So I think there are two solutions: Either we have to ensure that each
+> > > > > > child is deallocated first so we can preserve the kobject_del() and
+> > > > > > then t->release() ordering, or we have to add some sort of "locking"
+> > > > > > mechanism to prevent the kobject from being accessed by anything other
+> > > > > > than the deallocation code until it is fully deallocated; well, it
+> > > > > > would have to prevent any access at all :-). I think it goes without
+> > > > > > saying that this "locking" idea is pretty flawed.
+> > > > > >
+> > > > > > The problem with just having children take a reference is that the
+> > > > > > kobject children already take a reference to their parent, so it seems
+> > > > > > like the kobject should be smart enough to deallocate children rather
+> > > > > > than having swnode have to keep a separate tally of children, no?
+> > > > > >
+> > > > > > Sorry if this all seems obvious, I am not an expert on this part of the kernel.
+> > > > > >
+> > > > > > > My example above proofs that there is the problem, but it changes the
+> > > > > > > order of execution which I think can always have other consequences.
+> > > > > > >
+> > > > > > > > Also, should I send this fix as a separate patch? Or do people want me
+> > > > > > > > to send an updated revision of my revert patch with the fix?
+> > > > > > >
+> > > > > > > This needs to be send in its own separate patch. Ideally it could be
+> > > > > > > send together with the revert in the same series, but I'm not sure
+> > > > > > > that's possible anymore. Didn't Greg pick the revert already?
+> > > > > >
+> > > > > > Sounds good.
+> > > > > >
+> > > > > > I did already let Greg know when he emailed us on backporting the
+> > > > > > patch to stable, and he acked saying he removed them. So as long as
+> > > > > > these are not in the queue for 5.6 (it is not in Linus' tree yet), we
+> > > > > > should be good.
+> > > > >
+> > > > > The reported bug is still noticed on Linux mainline master branch
+> > > > > The Kernel BUG noticed on x86_64 and i386 running selftest on Linux
+> > > > > mainline kernel 5.6.0.
+> > > >
+> > > > Oh sorry, I thought that this patch was dropped from the maintainer's
+> > > > for-next branch.
+> > > >
+> > > > Heikki, what do you think about my suggestion of having kobject
+> > > > deallocate its children?
+> > >
+> > > I'm not sure what was this suggestion?
+> > >
+> > > > In the meantime, are people cool with the patch that Heikki proposed
+> > > > as a temporary mitigation? I think my solution might be a bit more
+> > > > involved. If I don't hear anything back, I will send out Heikki's
+> > > > suggestion as a patch.
+> > >
+> > > Why not just take the reference to the parent like I proposed?
+> > >
+> > > diff --git a/lib/kobject.c b/lib/kobject.c
+> > > index 83198cb37d8d..173046c423f8 100644
+> > > --- a/lib/kobject.c
+> > > +++ b/lib/kobject.c
+> > > @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
+> > >   */
+> > >  static void kobject_cleanup(struct kobject *kobj)
+> > >  {
+> > > +       struct kobject *parent = kobj->parent;
+> > >         struct kobj_type *t = get_ktype(kobj);
+> > >         const char *name = kobj->name;
+> > >
+> > > @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
+> > >                 kobject_uevent(kobj, KOBJ_REMOVE);
+> > >         }
+> > >
+> > > +       /* make sure the parent is not released before the (last) child */
+> > > +       kobject_get(parent)
+> > > +
+> > >         /* remove from sysfs if the caller did not do it */
+> > >         if (kobj->state_in_sysfs) {
+> > >                 pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+> > > @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
+> > >                 t->release(kobj);
+> > >         }
+> > >
+> > > +       kobject_put(parent);
+> > > +
+> > >         /* free name if we allocated it */
+> > >         if (name) {
+> > >                 pr_debug("kobject: '%s': free name\n", name);
+> >
+> > Ah, I think that will work. Sorry, I just thought that was a bit
+> > kludgy, but if you are okay with doing it that way, I think it will
+> > work.
+> >
+> > I will try it and send out a patch.
+>
+> I think I am also going to send out a new test case, in a separate
+> patch of course, that exercises this logic. Kind of annoying having
+> the printf test catching this.
 
-> On Tue, Apr 14, 2020 at 01:09:10PM -0700, Matt Helsley wrote:
-> > I also noticed that, for example, sorttable uses the same ELF code /
-> > patterns as recordmcount -- like the double-include trick. Of course
-> > it operates on a larger scale than per-object-file and so there might
-> > only be code maintenance savings there...  
-> 
-> I'm >< close to having objtool run on vmlinux in the link stage too :-)
+For anyone interested, I sent out an RFC for this test case here:
 
-Do we want that? Matters how long that takes. One reason I avoided running
-recordmcount on vmlinux was because I didn't want to add to the build time
-that much if I only needed to compile a single object.
-
-If it's fast, then there shouldn't be anything to worry about, but if it
-takes a minute on a common machine, that's one minute added to all builds,
-no matter how little you had to compile.
-
--- Steve
+https://lore.kernel.org/lkml/20200414210142.191327-1-brendanhiggins@google.com/T/#u
