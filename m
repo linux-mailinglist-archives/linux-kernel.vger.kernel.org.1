@@ -2,168 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92A61A7E39
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3ABC1A7DF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732389AbgDNNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:35:35 -0400
-Received: from mail-am6eur05on2065.outbound.protection.outlook.com ([40.107.22.65]:61665
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732306AbgDNNds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:33:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nYVr0b8CBeye+NiPTj5SkaORkeba5IEIFqNIHU64u0nTNe+5Pj5bH6lboq816IAm3gY8jp06ABe1rwrjj1JUP2p9ldqB+8zqX135gO2hPY+bJ5vAHZUWUWAmiELTWJdWuoOOTgHbK61cj8xccZerpX6emls8K1bcVciTy7hkIMKqvNYlvFKLAuWkxDImKt16QI13+wqFmEvzZhc7DBEIQzCYGCEp1TBkMUCllMJEaJNpSX1rGlVvTYoyVHoXr93ZiarVzZxglBbpdUzADohetJRMsK6GjTu2A+E00Clu2eGDb90xoramNmqdpw1IfzkbZAbzlha+XtuWsip2Ru5Vsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NL8sIrTPMTjTw9dEwdqXWMZa6J4Z+Xvn3kfU2jnW7ZU=;
- b=lnlDz3in/ET3LOcvPudKu+Sjk3EOKnm+E4UmUp1crGWEEZWdBiT7TV93Xhu4cL5sutxVr3q7un4r9VAHksRMaqWqfDVwVoU9KiRk6iwdBWhFhKoIt4PtFZCof7kEB29/E7H9G9gB6vP4QtiIjLPrcIjBNvNirAZK0plBgmQhOaGD612FiAO/Wbj8GHvc+LrgdQ15kD3tXDPeOt2q2ZFZwkifqtPdwJCOCdr3q7SGYTBGzPtUlF+zeURBFmkh3f7up/zCHlgBCPpbY5cYSRhggBjTJlPQHO+Vz0E+8hFBY6KpewTLqfv/ZnjxfNTQ8WHnFRaLLxl4uSW4VvkT7ITVng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NL8sIrTPMTjTw9dEwdqXWMZa6J4Z+Xvn3kfU2jnW7ZU=;
- b=iYJPYjzb1rLswxH7HXZUp6Cvpkmtg7NTqi3Fm5N1GdT4WoRVc7OK+mip2KONWIhalCIbqAdZFih7pW9CQIZJTx8BpwGMMd4Yb6cMeDC8Uyz3aTCHjtIUmq2+GUJr1L8SjrBq1+P44LzOqEg2DlUNSIZcXS+pu7G5YF2YYNzadRs=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-Received: from AM0PR04MB4481.eurprd04.prod.outlook.com (2603:10a6:208:70::15)
- by AM0PR04MB6868.eurprd04.prod.outlook.com (2603:10a6:208:18c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Tue, 14 Apr
- 2020 13:33:01 +0000
-Received: from AM0PR04MB4481.eurprd04.prod.outlook.com
- ([fe80::ad44:6b0d:205d:f8fc]) by AM0PR04MB4481.eurprd04.prod.outlook.com
- ([fe80::ad44:6b0d:205d:f8fc%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
- 13:33:00 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, robh+dt@kernel.org,
-        jaswinder.singh@linaro.org, linux@rempel-privat.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        Anson.Huang@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 2/2] arm64: dts: imx8qxp: support scu mailbox channel
-Date:   Tue, 14 Apr 2020 21:24:28 +0800
-Message-Id: <1586870668-32630-2-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586870668-32630-1-git-send-email-peng.fan@nxp.com>
-References: <1586870668-32630-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0118.apcprd03.prod.outlook.com
- (2603:1096:4:91::22) To AM0PR04MB4481.eurprd04.prod.outlook.com
- (2603:10a6:208:70::15)
+        id S1732037AbgDNN20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:28:26 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38407 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731850AbgDNNY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:24:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586870693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xK5X/B7ag2uXKoGEZNCA7U2ETPUP/XgJDhZI72OQB2Y=;
+        b=DoCaXk7/xkegaxE3dCAyd8sCHh9pIVGt8fM6AZXlh5E6jeIzfi8kjcMfAnfxyNnc0+lRsZ
+        Ru1W6LK8nsxxvOkpjkwK4xVKGxg1/lhGqU5EMdLBYTlnksgMAh0Zbdb2NFe7+8acsDg8LT
+        KyUmcHQFoEjDqR8VT0F2Ck+1baw/BA0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-Uvd9Fv2QMGigEFabfu1PyA-1; Tue, 14 Apr 2020 09:24:51 -0400
+X-MC-Unique: Uvd9Fv2QMGigEFabfu1PyA-1
+Received: by mail-wr1-f71.google.com with SMTP id o10so8627076wrj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:24:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xK5X/B7ag2uXKoGEZNCA7U2ETPUP/XgJDhZI72OQB2Y=;
+        b=TUve6uOqMzKPq7twpd8vVBPNjBvqvue/lNbvqXLEnJ5FWSYLCLMr0eXvmbog4+IgRD
+         s1asvihG/p8F4UWIOTqYPTCsrDmbWBjPiKuT59vG41AVhozLFlNOUY8gyJl5DvOVUk2K
+         fvVwQ+Lm84Mz2S+FTqtdrPyWEL5QEVK2LXwHy48C6nv+pZ4L8vvbv2sxZLl5u271hVju
+         NHKDq4UopBmFVLoqxUsuNbNqY97hRGxwiMAmuCUk93rZrNy3v0CP6Kh1ti+1jbZpkvRC
+         /OgNiyco9lua3bQE3AYsM23xugvjVA0KNW8+O5oBCqJ36P+bm3y+GsVPAp18exuQRETE
+         1RhA==
+X-Gm-Message-State: AGi0PuZUa9dGScbRH5syC7f7O2IoWyfYHzhpvMrns+JDDulTU1lAv36+
+        eC9hF0Qf88ErP1JBK137cFKcVYN5NpzvTWrMCg3UwGXkylydszxJgDDL4/zoREUFyBFo6zqhuLO
+        xVMzjeAKKi99Lv1lqf1hbuFiA
+X-Received: by 2002:a7b:c2a1:: with SMTP id c1mr22766284wmk.138.1586870690274;
+        Tue, 14 Apr 2020 06:24:50 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ/EVunTSUHM+/VekOfjL62vR964qaRjHEtICG+w1z2Qry21JAfW49aG+MVMwm/rqoz3V4yWg==
+X-Received: by 2002:a7b:c2a1:: with SMTP id c1mr22766234wmk.138.1586870689517;
+        Tue, 14 Apr 2020 06:24:49 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id b82sm20112230wme.25.2020.04.14.06.24.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Apr 2020 06:24:48 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: intel_int0002_vgpio: Only bind to the
+ INT0002 dev when using s2idle
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "5 . 3+" <stable@vger.kernel.org>
+References: <20200407213058.62870-1-hdegoede@redhat.com>
+ <CAKErNvqM9ax8RB+Hm0e70a_uk_Ok3KfSQDmy0q9jKFaAQM3Fsg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <b876973e-71f4-1dbc-1b41-138f81511685@redhat.com>
+Date:   Tue, 14 Apr 2020 15:24:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.67) by SG2PR03CA0118.apcprd03.prod.outlook.com (2603:1096:4:91::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2921.12 via Frontend Transport; Tue, 14 Apr 2020 13:32:57 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2a184a8c-946a-4af0-0999-08d7e07859f5
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6868:|AM0PR04MB6868:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB68688E76B335E4772DF9956988DA0@AM0PR04MB6868.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-Forefront-PRVS: 0373D94D15
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4481.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(136003)(366004)(396003)(39860400002)(376002)(2906002)(16526019)(7416002)(5660300002)(956004)(2616005)(15650500001)(6666004)(26005)(69590400007)(86362001)(316002)(186003)(8936002)(966005)(6506007)(6486002)(478600001)(4326008)(52116002)(81156014)(9686003)(66556008)(8676002)(66476007)(36756003)(66946007)(6512007)(32563001);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jcr7FG5oesmp6OUNXN+9PqqSFhXw6dR4chiSvm7Rwmn2y7JWSetwNFu1MUe2PZv2XcjPG1NDxEua7VCzeZOVOeZ31Y53Xp0XfIo40vyyc39QWlA2P85qimvisO6OgkfA5rZSe/Xv0QtaiqGEstF9u5klvIRkHCG90mzMZ4+Dz1d6lDF5m5x1E2j1ij2dsVdqSBTvVEBHYeZ+EwPVDSooUaZQClfrBKMZV/38Qrdone+X7m8SmaoSFgkXwlbylq+GXvTD0+vWyNlDDM8zTn4tGksiZaVmMy+cDSmOZ1phAStY+X+8p4jks5t1iqq6ON24Hzl7qg8p9kyBHtr/tkEpthTOEfkS/kukN4GJ74k9xxf93rH0CM2K8wQemMA26tTvlUocCWHY7nRMSfOXRnguyn1ozdbLr7St09hlXpclt9VsDU4cmpWjYSCk1BHpLFCwyy0eCBxR5+jatd5ZIzaonU3mHfgKgGQ9Y607h4Iwg+HutqlW2XqupfJJ42EgHOLROZW2Xtc6zRn3R+4xVxljvt9/wH+G6w/7gDjEqIYW+LVnNSMZ3hL0xbGw2xa8bLkpx7DesZ9aZFhjJRPwpAvKnB3bqR36mtV5kWTGZzqvVmg=
-X-MS-Exchange-AntiSpam-MessageData: vvT2gq6wM7azpESHDRLspFcLfgxsnKZFi3DiUGIoO3tjsNYXHXRCSQN4VrH5c0lZLMqvdRoR/Vs2fR2eAvbiE4zPvu22RZ9pr+a5RPiW0+TktP9mMz59f/ngGfGb3hBAHagIIXlvlmf2COKOn5s2Ow==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a184a8c-946a-4af0-0999-08d7e07859f5
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2020 13:33:00.7971
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1dEZexGQXlb590SyZt4PKbI/tXqi/N+/XSiSkzgOSksO3omwvwVnqA5jqdT65AcAiI+RzXWGzYyRe2mkaUa3oQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6868
+In-Reply-To: <CAKErNvqM9ax8RB+Hm0e70a_uk_Ok3KfSQDmy0q9jKFaAQM3Fsg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hi,
 
-With mailbox driver support i.MX8 SCU MU channel, we could
-use it to avoid trigger interrupts for each TR/RR registers
-in one MU, instead, only one RX interrupt for a recv and
-one TX interrupt for a send.
+On 4/8/20 2:11 PM, Maxim Mikityanskiy wrote:
+> On Wed, Apr 8, 2020 at 12:31 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Commit 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement
+>> irq_set_wake on Bay Trail") stopped passing irq_set_wake requests on to
+>> the parents IRQ because this was breaking suspend (causing immediate
+>> wakeups) on an Asus E202SA.
+>>
+>> This workaround for this issue is mostly fine, on most Cherry Trail
+>> devices where we need the INT0002 device for wakeups by e.g. USB kbds,
+>> the parent IRQ is shared with the ACPI SCI and that is marked as wakeup
+>> anyways.
+>>
+>> But not on all devices, specifically on a Medion Akoya E1239T there is
+>> no SCI at all, and because the irq_set_wake request is not passed on to
+>> the parent IRQ, wake up by the builtin USB kbd does not work here.
+>>
+>> So the workaround for the Asus E202SA immediate wake problem is causing
+>> problems elsewhere; and in hindsight it is not the correct fix,
+>> the Asus E202SA uses Airmont CPU cores, but this does not mean it is a
+>> Cherry Trail based device, Brasswell uses Airmont CPU cores too and this
+>> actually is a Braswell device.
+>>
+>> Most (all?) Braswell devices use classic S3 mode suspend rather then
+>> s2idle suspend and in this case directly dealing with PME events as
+>> the INT0002 driver does likely is not the best idea, so that this is
+>> causing issues is not surprising.
+>>
+>> Replace the workaround of not passing irq_set_wake requests on to the
+>> parents IRQ, by not binding to the INT0002 device when s2idle is not used.
+>> This fixes USB kbd wakeups not working on some Cherry Trail devices,
+>> while still avoiding mucking with the wakeup flags on the Asus E202SA
+>> (and other Brasswell devices).
+> 
+> I tested this patch over kernel 5.6.2 on Asus E202SA and didn't notice
+> any regressions. Wakeup by opening lid, by pressing a button on
+> keyboard, by USB keyboard — all seem to work fine. So, if appropriate:
+> 
+> Tested-by: Maxim Mikityanskiy <maxtram95@gmail.com>
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
+Thank you for testing this.
 
-Note:
- This patch needs https://patchwork.kernel.org/patch/11446659/
- The other three patches in the patchset has been in linux-next
+> I have a question though. After your patch this driver will basically
+> be a no-op on my laptop. Does it mean I don't even need it in the
+> first place? What about the IRQ storm this driver is meant to deal
+> with — does it never happen on Braswell? What are the reproduction
+> steps to verify my hardware is not affected? I have that INT0002
+> device, so I'm worried it may cause issues if not bound to the driver.
 
- arch/arm64/boot/dts/freescale/imx8qxp.dtsi | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+I do not expect Braswell platforms to suffer from the IRQ storm
+issue. That was something which I hit on a Cherry Trail based device.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-index e8ffb7590656..d1c3c98e4b39 100644
---- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-@@ -141,17 +141,11 @@
- 
- 	scu {
- 		compatible = "fsl,imx-scu";
--		mbox-names = "tx0", "tx1", "tx2", "tx3",
--			     "rx0", "rx1", "rx2", "rx3",
-+		mbox-names = "tx0",
-+			     "rx0",
- 			     "gip3";
- 		mboxes = <&lsio_mu1 0 0
--			  &lsio_mu1 0 1
--			  &lsio_mu1 0 2
--			  &lsio_mu1 0 3
- 			  &lsio_mu1 1 0
--			  &lsio_mu1 1 1
--			  &lsio_mu1 1 2
--			  &lsio_mu1 1 3
- 			  &lsio_mu1 3 3>;
- 
- 		clk: clock-controller {
-@@ -548,14 +542,14 @@
- 		};
- 
- 		lsio_mu1: mailbox@5d1c0000 {
--			compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
-+			compatible = "fsl,imx8-mu-scu", "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
- 			reg = <0x5d1c0000 0x10000>;
- 			interrupts = <GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>;
- 			#mbox-cells = <2>;
- 		};
- 
- 		lsio_mu2: mailbox@5d1d0000 {
--			compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
-+			compatible = "fsl,imx8-mu-scu", "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
- 			reg = <0x5d1d0000 0x10000>;
- 			interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
- 			#mbox-cells = <2>;
-@@ -563,7 +557,7 @@
- 		};
- 
- 		lsio_mu3: mailbox@5d1e0000 {
--			compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
-+			compatible = "fsl,imx8-mu-scu", "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
- 			reg = <0x5d1e0000 0x10000>;
- 			interrupts = <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH>;
- 			#mbox-cells = <2>;
-@@ -571,7 +565,7 @@
- 		};
- 
- 		lsio_mu4: mailbox@5d1f0000 {
--			compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
-+			compatible = "fsl,imx8-mu-scu", "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
- 			reg = <0x5d1f0000 0x10000>;
- 			interrupts = <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
- 			#mbox-cells = <2>;
--- 
-2.16.4
+To test this, try waking up the device from suspend by an USB attached
+keyboard (this may not work, in that case wake it some other way).
+
+After this do:
+
+cat /proc/interrupts | grep " 9-fasteoi"
+
+This should output something like this:
+
+[root@localhost ~]# cat /proc/interrupts | grep " 9-fasteoi"
+    9:          0          0          0          0   IO-APIC    9-fasteoi   acpi
+
+Repeat this a couple of times, of the numbers after the 9:
+increase (very) rapidly you have an interrupt storm. Likely
+they will either be fully unchanged or change very slowly.
+
+Note if nothing is output then IRQ 9 is not used on your
+model, then the INT0002 device cannot cause an interrupt storm.
+
+Regards,
+
+Hans
+
+
+
+> 
+>> Cc: Maxim Mikityanskiy <maxtram95@gmail.com>
+>> Cc: 5.3+ <stable@vger.kernel.org> # 5.3+
+>> Fixes: 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement irq_set_wake on Bay Trail")
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>   drivers/platform/x86/intel_int0002_vgpio.c | 18 +++++-------------
+>>   1 file changed, 5 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platform/x86/intel_int0002_vgpio.c
+>> index 55f088f535e2..e8bec72d3823 100644
+>> --- a/drivers/platform/x86/intel_int0002_vgpio.c
+>> +++ b/drivers/platform/x86/intel_int0002_vgpio.c
+>> @@ -143,21 +143,9 @@ static struct irq_chip int0002_byt_irqchip = {
+>>          .irq_set_wake           = int0002_irq_set_wake,
+>>   };
+>>
+>> -static struct irq_chip int0002_cht_irqchip = {
+>> -       .name                   = DRV_NAME,
+>> -       .irq_ack                = int0002_irq_ack,
+>> -       .irq_mask               = int0002_irq_mask,
+>> -       .irq_unmask             = int0002_irq_unmask,
+>> -       /*
+>> -        * No set_wake, on CHT the IRQ is typically shared with the ACPI SCI
+>> -        * and we don't want to mess with the ACPI SCI irq settings.
+>> -        */
+>> -       .flags                  = IRQCHIP_SKIP_SET_WAKE,
+>> -};
+>> -
+>>   static const struct x86_cpu_id int0002_cpu_ids[] = {
+>>          INTEL_CPU_FAM6(ATOM_SILVERMONT, int0002_byt_irqchip),   /* Valleyview, Bay Trail  */
+>> -       INTEL_CPU_FAM6(ATOM_AIRMONT, int0002_cht_irqchip),      /* Braswell, Cherry Trail */
+>> +       INTEL_CPU_FAM6(ATOM_AIRMONT, int0002_byt_irqchip),      /* Braswell, Cherry Trail */
+>>          {}
+>>   };
+>>
+>> @@ -181,6 +169,10 @@ static int int0002_probe(struct platform_device *pdev)
+>>          if (!cpu_id)
+>>                  return -ENODEV;
+>>
+>> +       /* We only need to directly deal with PMEs when using s2idle */
+>> +       if (!pm_suspend_default_s2idle())
+>> +               return -ENODEV;
+>> +
+>>          irq = platform_get_irq(pdev, 0);
+>>          if (irq < 0)
+>>                  return irq;
+>> --
+>> 2.26.0
+>>
+> 
 
