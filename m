@@ -2,59 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E331AABE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB6E1A7EFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414705AbgDOP0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:26:46 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:36328 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1414683AbgDOP0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:26:15 -0400
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jOjuy-0006EH-RF; Thu, 16 Apr 2020 01:25:37 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 01:25:36 +1000
-Date:   Tue, 14 Apr 2020 23:57:31 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] lib/mpi: Fix building for powerpc with clang
-Message-ID: <20200414135731.GA8766@gondor.apana.org.au>
-References: <20200413195041.24064-1-natechancellor@gmail.com>
+        id S2388554AbgDNN6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388513AbgDNN6b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:58:31 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24FAC061A0C;
+        Tue, 14 Apr 2020 06:58:30 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id r26so14095107wmh.0;
+        Tue, 14 Apr 2020 06:58:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=shNjxK2XZi1SBgNMZlObJi0kerdnPGniLRexipno8Aw=;
+        b=i3ptBY/ez3Oo/1/XjdW66FOjERVUY+KxiP/0oUYA3/TRzcFzt6p+vzYFmA3kr0stYu
+         2HtKP6BexVXp6h6iZagIVX4IfEtcWFyjNYdOtfSgJy4M6Y/KtK0s2ppV+WVgeuTUY+6I
+         cbOmZv+cQGy775YaEyYWVr51UJc9PHzuMDRGEygWNzPZkZNHIoJ+I/8w0/Af8g2Dow+7
+         QSHVIYRdcw7ydzYMZPSb8Qc10WZB+8u63b0LjufKNjzWLWP/hQQtfDJgJzYHlKvcf54m
+         hzxQ2WD9uOGJmzDxc7aIWc8rAb3JZjpP7rPpkJbqwt9FhrnWZQ0nTFS59+pD6MJp5kR5
+         PiyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=shNjxK2XZi1SBgNMZlObJi0kerdnPGniLRexipno8Aw=;
+        b=ZpwHYUgv3R0K/bx7E6kOy8Ob8RnWTimBL+NyL8eXSm5fx/nazQTxlJNGH2ONfNAdli
+         D8pCJMXah7zapkBOMzjD889AeAcAH+BlAo5428Fr6aFfZP00qe6sm7zaNqW9vJX55eeL
+         AOTRkPJskuJRO1kakY7WdWgnoEW2uVixO4nJUNycDTHJWmGRrLpz5+CfqzCOmt/gyMhR
+         GPdyIxtFY4O9ms6HLnd+RUHqR+bnChJT7tCwEU/o/jKUlC2qbbLpfXwWTE85Xr8zTIzt
+         jBdV2YyywvaTkDegO1RaX77YcGrAzSIhSiGqxta9/4Yu7QwfxlgAlUVcfYSYoN3b9xpu
+         GF4A==
+X-Gm-Message-State: AGi0PubkXuuEVdEIQISZEsp072AspBSKltEiMeZ902taeTYY8Hs6Y8nx
+        J1Pge6g1Hl+TqO9QXzHLmj0=
+X-Google-Smtp-Source: APiQypJnpCKxrTz2rJ7RiPyVd3Z7CdK6nXF5XVpomjZm7GVdu8lqiAw3ETD0/uxvcPenl+bWtJRhbw==
+X-Received: by 2002:a1c:4b0a:: with SMTP id y10mr45278wma.24.1586872709606;
+        Tue, 14 Apr 2020 06:58:29 -0700 (PDT)
+Received: from localhost (pD9E51D62.dip0.t-ipconnect.de. [217.229.29.98])
+        by smtp.gmail.com with ESMTPSA id q18sm12282012wmj.11.2020.04.14.06.58.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 06:58:28 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 15:58:27 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] pwm: Add missing '\n' in log messages
+Message-ID: <20200414135827.GB3593749@ulmo>
+References: <20200411153528.30130-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/WwmFnJnmDyWGHa4"
 Content-Disposition: inline
-In-Reply-To: <20200413195041.24064-1-natechancellor@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200411153528.30130-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 12:50:42PM -0700, Nathan Chancellor wrote:
-> 0day reports over and over on an powerpc randconfig with clang:
-> 
-> lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
-> inline asm context requiring an l-value: remove the cast or build with
-> -fheinous-gnu-extensions
-> 
-> Remove the superfluous casts, which have been done previously for x86
-> and arm32 in commit dea632cadd12 ("lib/mpi: fix build with clang") and
-> commit 7b7c1df2883d ("lib/mpi/longlong.h: fix building with 32-bit
-> x86").
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/991
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+--/WwmFnJnmDyWGHa4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Apr 11, 2020 at 05:35:28PM +0200, Christophe JAILLET wrote:
+> Message logged by 'dev_xxx()' or 'pr_xxx()' should end with a '\n'.
+>=20
+> Fixes: 3ad1f3a33286 ("pwm: Implement some checks for lowlevel drivers")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/pwm/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index 9973c442b455..bca04965bfe6 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -537,7 +537,7 @@ static void pwm_apply_state_debug(struct pwm_device *=
+pwm,
+> =20
+>  	if (!state->enabled && s2.enabled && s2.duty_cycle > 0)
+>  		dev_warn(chip->dev,
+> -			 "requested disabled, but yielded enabled with duty > 0");
+> +			 "requested disabled, but yielded enabled with duty > 0\n");
+> =20
+>  	/* reapply the state that the driver reported being configured. */
+>  	err =3D chip->ops->apply(chip, pwm, &s1);
+
+I don't think this is strictly necessary any longer since the logging
+functions are supposed to add these themselves nowadays. But I like the
+consistency of this, so I'll apply this anyway.
+
+Thanks,
+Thierry
+
+--/WwmFnJnmDyWGHa4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6VwYMACgkQ3SOs138+
+s6Fzlg//b9ON8vAP4sRTnLHsUC0mCmY2XcrY0P5eCKvrjAivAAswf7qGNpzKcBN1
+FUzY74P+qLClXRXFcciVxdGCaPzb+dynFkizSZC5wqBathkkFK3WMAjfFkjH2fe5
+2pLX7gpMvlrlneBVM52ZrR2KK4fAonlQe7Xq07vKQ6K8stWmQblhGZNKXlCaK4fi
+gkzWQKzHvWML6Bzu5Zrk21Z/BxPeT4gHl0jxo3ZnsHhv1ZveNkDHDLB1ybDjTaEj
+p+faT8bCf4bSPp8OlpnJpP6d0yzAxcDO6gDRCEH/jaBUaZDkHEgjsSDxkL5H+lkp
+s8N/kJ9q+0qSivxQyFLPTGyUoUm5C/xkT81UrwWEQMbouN7FVBelXVs9SLKfUSbA
+noAYtOMxz8V4AxtUNniYyzo1ir8gqB4kZTUmr+cn0mP68WJHvmTHe/ElmC/bn8uK
+N92cuJnV0s4A+5SrPi4mDpLA4FP8m2MBAsEDKd5j1tPfBY7HrHgdgZkNxSIiehNQ
++5rzl2LyBfx8rnz/Ljw02TpgJX/pNELNrM/Oa4jy3QoDiIlaUpoL5/d9QrIbt71d
+UlGep4cyvSvRlsY0CZDJhABtsjb6zLix/Rc6x0jCL45rwGVLilLbKgoHedCEllvu
+ueo5JO9bxbeHxPi+II1uGQ07LNd3TJyRZMVjSggpscDcfmfJCTc=
+=cwju
+-----END PGP SIGNATURE-----
+
+--/WwmFnJnmDyWGHa4--
