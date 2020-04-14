@@ -2,131 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107BF1A7F71
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179501A7F69
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389535AbgDNOSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:18:47 -0400
-Received: from mga09.intel.com ([134.134.136.24]:2867 "EHLO mga09.intel.com"
+        id S2389416AbgDNOSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:18:02 -0400
+Received: from mout.web.de ([217.72.192.78]:40805 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389449AbgDNOSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:18:42 -0400
-IronPort-SDR: n43S6aWBfOIE+rassvK5ChimVM5f/sKoFm/U5zFWXK4ExS4a4hx7GQ8lmrbqydVkkSX/Slg1xB
- LxL/XMBsT7QA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 07:18:41 -0700
-IronPort-SDR: 8WT6N8GvHPslDndi0ySiMxgySi7g+kqKVAHKVdF4HU1IZhPuzfzp4N1R6P0bjWy4k/uyJl34Qx
- bB8G2jheDpbg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
-   d="scan'208";a="288229034"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Apr 2020 07:18:39 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jOMOc-0000XZ-F6; Tue, 14 Apr 2020 22:18:38 +0800
-Date:   Tue, 14 Apr 2020 22:17:42 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: drivers/gpu/drm/bridge/display-connector.c:34:48: warning: Clarify
- calculation precedence for '&' and '?'. [clarifyCalculation]
-Message-ID: <202004142240.uydqaASd%lkp@intel.com>
+        id S2389351AbgDNORx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 10:17:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586873866;
+        bh=4WQE4NvHZfPUXbCw2ByJM584SzfmIjQKDB3/3syx6sg=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=DHYujF+DNZUE26nTYaM28tAuxQkFlhFP35tvb7SirWYLeoOndesMD5Sct4wtNr41Z
+         NknKuqRNknUk3s8BOc9ZeP5uPWobk5m/damut0al2lm1JLZjgXpjnZHla10YaEG4kv
+         TRO6QhfZ4smz4hk6N6L2AQwfUs4OT87L9H4KDqRU=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.49.66.171]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LhNnw-1itTcg1wBc-00mZ2v; Tue, 14
+ Apr 2020 16:17:46 +0200
+Subject: Re: [v2] mm/ksm: Fix NULL pointer dereference when KSM zero page is
+ enabled
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200414075622.69822-1-songmuchun@bytedance.com>
+ <ff540216-7f3e-9841-4896-81907540404d@web.de>
+ <CAMZfGtVpMK38odpd3Ady_xW0hyMpN89Vwo_WNXBZz0yGaZzFQg@mail.gmail.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <36a7d091-440b-a3db-c93f-713fc7cfbb5c@web.de>
+Date:   Tue, 14 Apr 2020 16:17:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMZfGtVpMK38odpd3Ady_xW0hyMpN89Vwo_WNXBZz0yGaZzFQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SGknuvvPbw0cwfLy5Q0drBCgQoEK2J36fOKPhh+909KOCwtnp1Q
+ 32cQVjEJ2kmF1VxaSxTIwL2I8hV0uecuVU17zC/JbohqVhCx546NIOcLeeH1gO9ClS8vWcU
+ ZWIbYYlj9Z4l7IPcT9dIbk5oDKo8kSeSg9kzltmq6xmJN2etG5EmD5Hj54b+8rhulekUJkK
+ jovxlkSXYQkLdmra3L5Fw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3enSZaqb9YE=:ZT0eR9XURv7Y4asZBIk8FL
+ fT9nj9Y6YxWFa4XZgijlNea1tp40C3OP1xdf5kF2PfZuK8N6RN9zNEH+GT3NduberChRwkfq9
+ nXDNuWNEMHNJCEnYLaHquWWopCCQgTULlNkRkcir7nM4qopjaQ56Zfw3k7D4xjf7BYhaCGg6v
+ OGLJzxv34eH8bkAnMYzwPZvlBWGPR8PdVDBJwSMrIViSo8axoPu8TR0LP1eKKp6AznCK8PwYV
+ CYIfsgqtjZYwZ/VTTUwFHs5wQtGKMpGq2qEtdOJ56wT0ooDQ6SK4Y0Rfjuhy36n1KCj7Bjs+H
+ +3oYD67sUSMqi9lo/s6Vd2XxRA4w/s7pTt3A0y+xCMfStUomVPHjrdV6IGEP8CtDbxXDamm5v
+ hWJyjBY76fjwSoC5FtrVpcXb/EpLadPkU4i6f6RV0euGBsrEurJv7tRzchHWrtpm0qT5z3WDZ
+ okqeXrVdQoqMD4Cmuqdv+gmw57tryO8oFvqOB/0Xsc9giooJvHGkjbFhOikKR/iXR+0w45KSs
+ Va2ljAJPwjB+bOXpDtRzI9LWSW0BwFjMivNPOWMouR4ytpIF85JZAL3ButYjGQ/xthaEebZbD
+ pq69g54o69xYK0zqdUiDZqcQcR2eNnVOP9WdUFhSE+GU6/Np137/bA3mnqp+BWqqsgcrJSukc
+ evjZZAosDOvCNRXDx/nAteBL6ERBgng6KMb4mp4gqjzCJcbWigAKUetm2NXoj/ZYcOL1AOrtL
+ ei7ltJi9hi7kWNAGGT6W892hcybBeF/xLDwSaf/2xRJ+kFGR2gKhhGJqJKO2jDqiI4b3wTafF
+ ZL/ALcK75tWO0wMlDDmW5qpejOAPDisn4YKoD/rEeqXnkrwxNaV3tTnRxYJOgMWdsvJQze8D6
+ 2AoDnTNtsarcFpocv0zP1TSAJk0CVOkfom3hJ8HHpQZ0OSVcpqWO7oYPo26uAHF62HSaOh5cR
+ Q3LaSW0TYvpKA4JhYdbpcXiZp0gFp3rby0mvCNKRzSsjhcVIufjkOT5bSjHevk+wB3GnPv9KT
+ vGvibj947XOxbiX9n4oFiE9Ev6tEKOCbtY00il1v/CkEABU+qSuDP/Hac96MrL5WPzyBlimg7
+ ZO922LmSthNbzuImxO66EJ2WgVyyPiHHI7hYDFBQ45QVh96LVE8DEPyw+lbcpC1bl9vkgohFl
+ r13rIsazV7T7ezYtIYkuSTFJoxKhF4biP2G/LJlpmrlfmi+MQjAZ23BjMDbzPIulavUUJpSuT
+ vkNfFXb6Gl8d7ZSO4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8f3d9f354286745c751374f5f1fcafee6b3f3136
-commit: 0c275c30176b2e7871c6ac5fb0ed548f81e0fa27 drm/bridge: Add bridge driver for display connectors
-date:   7 weeks ago
+>>> to crash when we access vma->vm_mm(its offset is 0x40) later in
+>>
+>> Will another fine-tuning become relevant also for this wording?
+>
+> Sorry, I don't understand what this means because of my poor English.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
+Our language knowledge can evolve over time.
 
 
-cppcheck warnings: (new ones prefixed by >>)
+> Could you explain it again.
 
->> drivers/gpu/drm/ttm/ttm_bo.c:409:9: warning: Identical condition and return expression 'r', return value is always 0 [identicalConditionAfterEarlyExit]
-    return r;
-           ^
-   drivers/gpu/drm/ttm/ttm_bo.c:396:6: note: If condition 'r' is true, the function will return/exit
-    if (r)
-        ^
-   drivers/gpu/drm/ttm/ttm_bo.c:409:9: note: Returning identical expression 'r'
-    return r;
-           ^
-   drivers/gpu/drm/ttm/ttm_bo.c:100:9: warning: The scope of the variable 'ret' can be reduced. [variableScope]
-    int i, ret, mem_type;
-           ^
-   drivers/gpu/drm/ttm/ttm_bo.c:572:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
-    int ret;
-        ^
-   drivers/gpu/drm/ttm/ttm_bo.c:913:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
-    int ret;
-        ^
-   drivers/gpu/drm/ttm/ttm_bo.c:1241:7: warning: The scope of the variable 'locked' can be reduced. [variableScope]
-    bool locked;
-         ^
-   drivers/gpu/drm/ttm/ttm_bo.c:1623:31: warning: The scope of the variable 'man' can be reduced. [variableScope]
-    struct ttm_mem_type_manager *man;
-                                 ^
-   drivers/gpu/drm/ttm/ttm_bo.c:1822:28: warning: Local variable 'ctx' shadows outer argument [shadowArgument]
-     struct ttm_operation_ctx ctx = { false, false };
-                              ^
-   drivers/gpu/drm/ttm/ttm_bo.c:1775:74: note: Shadowed declaration
-   int ttm_bo_swapout(struct ttm_bo_global *glob, struct ttm_operation_ctx *ctx)
-                                                                            ^
-   drivers/gpu/drm/ttm/ttm_bo.c:1822:28: note: Shadow variable
-     struct ttm_operation_ctx ctx = { false, false };
-                              ^
---
->> drivers/gpu/drm/drm_bridge.c:1006:7: warning: Local variable 'ret' shadows outer variable [shadowVariable]
-     int ret;
-         ^
-   drivers/gpu/drm/drm_bridge.c:994:6: note: Shadowed declaration
-    int ret;
-        ^
-   drivers/gpu/drm/drm_bridge.c:1006:7: note: Shadow variable
-     int ret;
-         ^
---
->> drivers/gpu/drm/bridge/display-connector.c:34:48: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
-    return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
-                                                  ^
---
->> drivers/gpu/drm/tidss/tidss_scale_coefs.c:159:15: warning: struct member 'Anonymous0::name' is never used. [unusedStructMember]
-     const char *name;
-                 ^
---
-   drivers/gpu/drm/tidss/tidss_dispc.c:1929:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
-    int ret;
-        ^
->> drivers/gpu/drm/tidss/tidss_dispc.c:2312:11: warning: Shifting signed 32-bit value by 31 bits is implementation-defined behaviour [shiftTooManyBitsSigned]
-      v |= 1 << 31;
-             ^
+You integrated a few of my suggestions into your message selection. - Than=
+ks.
+I wonder why you did not like the following small adjustment possibilities
+so far.
 
-vim +34 drivers/gpu/drm/bridge/display-connector.c
+  to a crash =E2=80=A6 vm_mm (its =E2=80=A6
 
-    30	
-    31	static int display_connector_attach(struct drm_bridge *bridge,
-    32					    enum drm_bridge_attach_flags flags)
-    33	{
-  > 34		return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
-    35	}
-    36	
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>> Will any other tags become helpful in such a case?
+>
+> How about changing
+>     "following calltrace is captured in kernel 4.19 with KSM zero page"
+> to
+>    "The following calltrace is captured with the following patch applied=
+:
+>        e86c59b1b12d ("mm/ksm: improve deduplication of zero pages with
+> colouring")
+>     "
+> ?
+
+I find it unlikely that such a wording alternative would be more appropria=
+te
+while I became just curious for related development consequences around
+the usage of a longterm kernel version.
+
+Would you like to reuse the term =E2=80=9Ccall trace=E2=80=9D?
+
+Regards,
+Markus
