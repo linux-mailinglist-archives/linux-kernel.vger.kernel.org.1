@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652391A8BBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988271A8C12
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505348AbgDNT7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:59:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:50661 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731053AbgDNT6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:58:23 -0400
-IronPort-SDR: zG49AjFpBKZzOYozt6qw0qRxLrAwTeHJRkf5oMZ3sKXXW0zQ8laTZxP00sdnlAfm5BzLZoOgpH
- UpofhJOL1Qbg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:58:21 -0700
-IronPort-SDR: luUCkfmnkOthQB7k3FD7/z/f2Fe1nIR7IEbxbAwxqumnSiD6m4Mt1g/3ZUThB9XL6JznlC7Edb
- HDHa/uV1OXMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="454674819"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Apr 2020 12:58:21 -0700
-Date:   Tue, 14 Apr 2020 12:58:21 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
-Message-ID: <20200414195820.GE1853609@iweiny-DESK2.sc.intel.com>
-References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-10-ira.weiny@intel.com>
- <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com>
- <20200414161509.GF6742@magnolia>
- <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
+        id S2632841AbgDNUO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2632825AbgDNUOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:14:46 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA1C061BD3;
+        Tue, 14 Apr 2020 12:58:45 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id e17so7893681ybq.0;
+        Tue, 14 Apr 2020 12:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GNxgPPM4n2ujMawZGS0HyHorgM1gpVp/anc4VzVl3U8=;
+        b=mUXhWcLskvqOcwmIDaztUH/RxMxbg4sS/9GYSD08uGIEVyl0iz5WH10Ounm4jH3bP6
+         Bc+znuOupuZWbV2UIvNrxIE69HdFLORK6/IbFspNMefhoC2TrA/gpeaAkIVydH+WCACW
+         oAjJLeKQqhAxADjapWPVoHTp6dmMIZpYPHA4C012WPe/YHLabmYx9OHJHydOfJmoF1BG
+         RUglQAsacRDOUfVOmrH11aj/m0+0ozDIsEqa2ZK8l5T3Tdi34fw9mAS6JZ8RkB/i8cV0
+         uCmcemCp8Ri92TqFucj4fEHTZAAd3abOlg53bHe8Ge8qhRNjdwRMR6FK/GvwsnXbh8bd
+         nDTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GNxgPPM4n2ujMawZGS0HyHorgM1gpVp/anc4VzVl3U8=;
+        b=e2Ry80shEjg9wmZvIV/hv8WlmwOyzprO/x88pBHQs1dR96oIJMFJdFA3WGNcRmFNe5
+         fvQ3+89jFEKZZpAVfAvJX3qIayhc74WzjBRTPmM5ZeIwLJldZ2GL4bEI7YBwb+AIntEe
+         Hr6JEL+1huX1WS/YRGb+MXabWpuCGwKErKNr6EZdvCsj6XF+iMZI8Wqjw2x4jlDB+Co3
+         WqeVy9QEiyRW/PLtB4NtQ8TZkCbrYTKGCr+XkRnjpQe4/tL3nJeBSJlloQH/6XzPTCvm
+         HGrqE2PxMN6VhKB1zAXgfkvDlfrxkcIde4PjUAZR4TkzfxGd71yCW5YQFRDSF8Ij12kq
+         K4nA==
+X-Gm-Message-State: AGi0PuYUKBTMYrr61TupUWxYqzdmeieGYFlGOWuWJ/TeK5M2Og+AdyB5
+        E5gmggNFQgYf9+YgZDGo3NAl6wM59Jh0TVX4BuQ=
+X-Google-Smtp-Source: APiQypJN5cWKfU4KSqHxDKZJHAGcb3fPrJTJAFfYVdg0wvrOrwPXCVsAsVoQ1s1vQir2tqnSureNzNJq3rjM6EsKb4Q=
+X-Received: by 2002:a25:b78b:: with SMTP id n11mr3040477ybh.376.1586894324869;
+ Tue, 14 Apr 2020 12:58:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <CAEUGjKiLPQP9wp0AgLUvHgKBOe9We2a-RQaZ7cd7CvhnarwWiw@mail.gmail.com>
+ <CAKywueT0Q9WkANNsg8cEDwGZSMaaE5c4LHuEeMhVDzJAzycroQ@mail.gmail.com> <CAEUGjKhSBNQboKOMFMgos9OQfxcLQZsXp8aBrUSFcaSe1saH2Q@mail.gmail.com>
+In-Reply-To: <CAEUGjKhSBNQboKOMFMgos9OQfxcLQZsXp8aBrUSFcaSe1saH2Q@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 14 Apr 2020 14:58:33 -0500
+Message-ID: <CAH2r5mt1k5t8rSH1KizeSrcLaN1Fn3GWeMvDPwT2Kfq43UAWaQ@mail.gmail.com>
+Subject: Re: [PATCH] cifs: improve read performance for page size 64KB &
+ cache=strict & vers=2.1+
+To:     Jones Syue <jonessyue@qnap.com>
+Cc:     Pavel Shilovsky <piastryyy@gmail.com>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        Samba Technical <samba-technical@lists.samba.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 12:04:57PM -0700, Dan Williams wrote:
-> On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+Did you also test (at least briefly) with vers=3D1.0 since some of your
+code affects that code path too?
+
+And if anyone figures out how to configure an x86_64 Linux to use
+PAGE_SIZE of 64K or larger let me know...
+
+On Sun, Apr 12, 2020 at 9:24 PM Jones Syue via samba-technical
+<samba-technical@lists.samba.org> wrote:
+>
+> Hello Pavel
+>
+> Thanks for kindly reviewing!
+> Please find the attached v2.patch.
+>
+> --
+> Regards,
+> Jones Syue | =E8=96=9B=E6=87=B7=E5=AE=97
+> QNAP Systems, Inc.
+>
+>
+> On Sat, Apr 11, 2020 at 2:25 AM Pavel Shilovsky <piastryyy@gmail.com> wro=
+te:
 > >
-> > On Mon, Apr 13, 2020 at 10:21:26PM -0700, Dan Williams wrote:
-> > > On Sun, Apr 12, 2020 at 10:41 PM <ira.weiny@intel.com> wrote:
-> > > >
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > >
-> > > > Update the Usage section to reflect the new individual dax selection
-> > > > functionality.
-> > > >
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > >
-> > > > ---
-> > > > Changes from V6:
-> > > >         Update to allow setting FS_XFLAG_DAX any time.
-> > > >         Update with list of behaviors from Darrick
-> > > >         https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
-> > > >
-> > > > Changes from V5:
-> > > >         Update to reflect the agreed upon semantics
-> > > >         https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> > > > ---
-> > > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
-> > > >  1 file changed, 163 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-> > > > index 679729442fd2..af14c1b330a9 100644
-> > > > --- a/Documentation/filesystems/dax.txt
-> > > > +++ b/Documentation/filesystems/dax.txt
-> > > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
-> > > >  Usage
-> > > >  -----
-> > > >
-> > > > -If you have a block device which supports DAX, you can make a filesystem
-> > > > +If you have a block device which supports DAX, you can make a file system
-> > > >  on it as usual.  The DAX code currently only supports files with a block
-> > > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
-> > > > -size when creating the filesystem.  When mounting it, use the "-o dax"
-> > > > -option on the command line or add 'dax' to the options in /etc/fstab.
-> > > > +size when creating the file system.
-> > > > +
-> > > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
-> > > > +different at this time.
-> > > > +
-> > > > +Enabling DAX on ext4
-> > > > +--------------------
-> > > > +
-> > > > +When mounting the filesystem, use the "-o dax" option on the command line or
-> > > > +add 'dax' to the options in /etc/fstab.
-> > > > +
-> > > > +
-> > > > +Enabling DAX on xfs
-> > > > +-------------------
-> > > > +
-> > > > +Summary
-> > > > +-------
-> > > > +
-> > > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
-> > > > +    file accesses go directly to persistent memory, bypassing the page
-> > > > +    cache.
-> > >
-> > > I had reserved some quibbling with this wording, but now that this is
-> > > being proposed as documentation I'll let my quibbling fly. "dax" may
-> > > imply, but does not require persistent memory nor does it necessarily
-> > > "bypass page cache". For example on configurations that support dax,
-> > > but turn off MAP_SYNC (like virtio-pmem), a software flush is
-> > > required. Instead, if we're going to define "dax" here I'd prefer it
-> > > be a #include of the man page definition that is careful (IIRC) to
-> > > only talk about semantics and not backend implementation details. In
-> > > other words, dax is to page-cache as direct-io is to page cache,
-> > > effectively not there, but dig a bit deeper and you may find it.
+> > Hi Jones,
 > >
-> > Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
-> 
-> No, I was referring to the proposed wording for STATX_ATTR_DAX.
-> There's no reason for this description to say anything divergent from
-> that description.
+> > Thanks for the patch!
+> >
+> > It will work although it is probably a little bit cleaner to
+> > initialize server->max_read to server->maxBuf for SMB1 and use the
+> > server->max_read in the readpages condition check instead.
+> >
+> > @Others, thoughts?
+> >
+> > --
+> > Best regards,
+> > Pavel Shilovsky
 
-Ok I think the best text would be to simply refer to the STATX_ATTR_DAX man
-page here.  Something like:
 
-<quote>
- 1. There exists an in-kernel access mode flag S_DAX that is set when file
-    accesses is enabled for 'DAX'.  Applications must call statx to discover
-    the current S_DAX state (STATX_ATTR_DAX).  See the man page for statx for
-    more details.
-</quote>
 
-Ira
+--=20
+Thanks,
 
+Steve
