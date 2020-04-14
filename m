@@ -2,122 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C3D1A75BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523501A769F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436498AbgDNIUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:20:14 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:47169 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407079AbgDNITd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:19:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=39;SR=0;TI=SMTPD_---0TvVqOrg_1586852360;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvVqOrg_1586852360)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 14 Apr 2020 16:19:21 +0800
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
- <20200116215222.GA64230@cmpxchg.org>
- <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
- <20200413180725.GA99267@cmpxchg.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <42d5c2cb-3019-993f-eba7-33a1d69ef699@linux.alibaba.com>
-Date:   Tue, 14 Apr 2020 16:19:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200413180725.GA99267@cmpxchg.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+        id S2437191AbgDNIw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:52:26 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:15190 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437054AbgDNIuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:50:54 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 491dgS2JJKz9tydL;
+        Tue, 14 Apr 2020 10:19:16 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=s0amyLnl; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id PaihnKQY4NHJ; Tue, 14 Apr 2020 10:19:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 491dgS16YHz9tycJ;
+        Tue, 14 Apr 2020 10:19:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1586852356; bh=GMrCjNEWVR8Y/FEQ5WhfC37NQuAEPumqmo0nYt9WLpE=;
+        h=From:Subject:To:Cc:Date:From;
+        b=s0amyLnlMQABR6KuiAkBN7Qvv+oMmu29N90RlNa8Z1iCTlRwt5fd0+MuTmhctVZph
+         2xrDDnh63ZbKTyycUBgYDWhPpBY1TsKG4IDgRDID/C+FSjSC/SeTvMezp9ikZrqTJL
+         It/r7wCgKWouoC5CUeJnZohgCfm1G74rinLWBaU4=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2952F8B797;
+        Tue, 14 Apr 2020 10:19:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id rizMjqV5zcdu; Tue, 14 Apr 2020 10:19:17 +0200 (CEST)
+Received: from localhost.localdomain (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BABCA8B796;
+        Tue, 14 Apr 2020 10:19:16 +0200 (CEST)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 77D936578A; Tue, 14 Apr 2020 08:19:16 +0000 (UTC)
+Message-Id: <cover.1586852082.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [PATCH v3 00/13] Modernise powerpc 40x
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, michal.simek@xilinx.com,
+        arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 14 Apr 2020 08:19:16 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v1 and v2 of this series were aiming at removing 40x entirely,
+but it led to protests.
 
+v3 is trying to start modernising powerpc 40x:
+- Rework TLB miss handlers to not use PTE_ATOMIC_UPDATES and _PAGE_HWWRITE
+- Remove old versions of 40x processors, namely 403 and 405GP and associated
+errata.
+- Last two patches are trivial changes in TLB miss handlers to reduce number
+of scratch registers.
 
-ÔÚ 2020/4/14 ÉÏÎç2:07, Johannes Weiner Ð´µÀ:
-> But isolation actually needs to lock out charging, or it would operate
-> on the wrong list:
-> 
-> isolation:                                     commit_charge:
-> if (TestClearPageLRU(page))
->                                                page->mem_cgroup = new
->   // page is still physically on
->   // the root_mem_cgroup's LRU. We're
->   // updating the wrong list:
->   memcg = page->mem_cgroup
->   spin_lock(memcg->lru_lock)
->   del_page_from_lru_list(page, memcg)
->   spin_unlock(memcg->lru_lock)
-> 
-> lrucare really is a mess. Even before this patch series, it makes
-> things tricky and subtle and error prone.
-> 
-> The only reason we're doing it is for when there is swapping without
-> swap tracking, in which case swap reahadead needs to put pages on the
-> LRU but cannot charge them until we have a faulting vma later.
-> 
-> But it's not clear how practical such a configuration is. Both memory
-> and swap are shared resources, and isolation isn't really effective
-> when you restrict access to memory but then let workloads swap freely.
-> 
-> Plus, the overhead of tracking is tiny - 512k per G of swap (0.04%).
-> 
-> Maybe we should just delete MEMCG_SWAP and unconditionally track swap
-> entry ownership when the memory controller is enabled. I don't see a
-> good reason not to, and it would simplify the entire swapin path, the
-> LRU locking, and the page->mem_cgroup stabilization rules.
+I would have liked to test it with QEMU, but I get the following error when
+trying to start QEMU for machine ref405ep.
 
-Hi Johannes,
+	qemu-system-ppc: Could not load PowerPC BIOS 'ppc405_rom.bin'
 
-I think what you mean here is to keep swap_cgroup id even it was swaped,
-then we read back the page from swap disk, we don't need to charge it.
-So all other memcg charge are just happens on non lru list, thus we have
-no isolation required in above awkward scenario.
+Can someone help with that ?
 
-That sounds a good idea. so, split_huge_page and mem_cgroup_migrate should
-be safe, tasks cgroup migration may needs extra from_vec->lru_lock. Is that
-right?
+Christophe Leroy (12):
+  powerpc/40x: Rework 40x PTE access and TLB miss
+  powerpc/pgtable: Drop PTE_ATOMIC_UPDATES
+  powerpc/40x: Remove support for IBM 403GCX
+  powerpc/40x: Remove STB03xxx
+  powerpc/40x: Remove WALNUT
+  powerpc/40x: Remove EP405
+  powerpc/40x: Remove support for ISS Simulator
+  powerpc/40x: Remove support for IBM 405GP
+  powerpc/40x: Remove IBM405 Erratum #51
+  powerpc: Remove IBM405 Erratum #77
+  powerpc/40x: Avoid using r12 in TLB miss handlers
+  powerpc/40x: Don't save CR in SPRN_SPRG_SCRATCH6
 
-That's a good idea. I'm glad to have a try...
+Michal Simek (1):
+  powerpc: Remove Xilinx PPC405/PPC440 support
 
-BTW,
-As to the memcg swapped page mixed in swap disk timely. Maybe we could try
-Tim Chen's swap_slot for memcg. What's your idea?
+ Documentation/devicetree/bindings/xilinx.txt | 143 ------
+ Documentation/powerpc/bootwrapper.rst        |  28 +-
+ arch/powerpc/Kconfig.debug                   |   2 +-
+ arch/powerpc/boot/Makefile                   |  14 +-
+ arch/powerpc/boot/dts/Makefile               |   1 -
+ arch/powerpc/boot/dts/ep405.dts              | 230 ---------
+ arch/powerpc/boot/dts/virtex440-ml507.dts    | 406 ----------------
+ arch/powerpc/boot/dts/virtex440-ml510.dts    | 466 -------------------
+ arch/powerpc/boot/dts/walnut.dts             | 246 ----------
+ arch/powerpc/boot/ep405.c                    |  71 ---
+ arch/powerpc/boot/ops.h                      |   1 -
+ arch/powerpc/boot/serial.c                   |   5 -
+ arch/powerpc/boot/treeboot-walnut.c          |  81 ----
+ arch/powerpc/boot/uartlite.c                 |  79 ----
+ arch/powerpc/boot/virtex.c                   |  97 ----
+ arch/powerpc/boot/virtex405-head.S           |  31 --
+ arch/powerpc/boot/wrapper                    |   8 -
+ arch/powerpc/configs/40x/acadia_defconfig    |   1 -
+ arch/powerpc/configs/40x/ep405_defconfig     |  62 ---
+ arch/powerpc/configs/40x/kilauea_defconfig   |   1 -
+ arch/powerpc/configs/40x/klondike_defconfig  |   1 -
+ arch/powerpc/configs/40x/makalu_defconfig    |   1 -
+ arch/powerpc/configs/40x/obs600_defconfig    |   1 -
+ arch/powerpc/configs/40x/virtex_defconfig    |  75 ---
+ arch/powerpc/configs/44x/virtex5_defconfig   |  74 ---
+ arch/powerpc/configs/ppc40x_defconfig        |   9 -
+ arch/powerpc/configs/ppc44x_defconfig        |   8 -
+ arch/powerpc/include/asm/asm-405.h           |  19 -
+ arch/powerpc/include/asm/atomic.h            |  11 -
+ arch/powerpc/include/asm/bitops.h            |   4 -
+ arch/powerpc/include/asm/cache.h             |   2 +-
+ arch/powerpc/include/asm/cmpxchg.h           |  11 -
+ arch/powerpc/include/asm/futex.h             |   3 -
+ arch/powerpc/include/asm/nohash/32/pgtable.h |  33 --
+ arch/powerpc/include/asm/nohash/32/pte-40x.h |  23 +-
+ arch/powerpc/include/asm/nohash/64/pgtable.h |  27 --
+ arch/powerpc/include/asm/nohash/pgtable.h    |   2 -
+ arch/powerpc/include/asm/reg_booke.h         |  54 ---
+ arch/powerpc/include/asm/spinlock.h          |   4 -
+ arch/powerpc/include/asm/time.h              |  12 -
+ arch/powerpc/include/asm/xilinx_intc.h       |  16 -
+ arch/powerpc/include/asm/xilinx_pci.h        |  21 -
+ arch/powerpc/kernel/cputable.c               | 102 ----
+ arch/powerpc/kernel/entry_32.S               |  11 -
+ arch/powerpc/kernel/head_40x.S               | 316 +++----------
+ arch/powerpc/kernel/misc_32.S                |   9 -
+ arch/powerpc/kernel/setup-common.c           |   4 -
+ arch/powerpc/mm/nohash/40x.c                 |   4 +-
+ arch/powerpc/platforms/40x/Kconfig           |  76 ---
+ arch/powerpc/platforms/40x/Makefile          |   3 -
+ arch/powerpc/platforms/40x/ep405.c           | 123 -----
+ arch/powerpc/platforms/40x/virtex.c          |  54 ---
+ arch/powerpc/platforms/40x/walnut.c          |  65 ---
+ arch/powerpc/platforms/44x/Kconfig           |  40 +-
+ arch/powerpc/platforms/44x/Makefile          |   2 -
+ arch/powerpc/platforms/44x/virtex.c          |  60 ---
+ arch/powerpc/platforms/44x/virtex_ml510.c    |  30 --
+ arch/powerpc/platforms/Kconfig               |   4 -
+ arch/powerpc/sysdev/Makefile                 |   2 -
+ arch/powerpc/sysdev/xilinx_intc.c            |  88 ----
+ arch/powerpc/sysdev/xilinx_pci.c             | 132 ------
+ drivers/char/Kconfig                         |   2 +-
+ drivers/video/fbdev/Kconfig                  |   2 +-
+ 63 files changed, 83 insertions(+), 3430 deletions(-)
+ delete mode 100644 arch/powerpc/boot/dts/ep405.dts
+ delete mode 100644 arch/powerpc/boot/dts/virtex440-ml507.dts
+ delete mode 100644 arch/powerpc/boot/dts/virtex440-ml510.dts
+ delete mode 100644 arch/powerpc/boot/dts/walnut.dts
+ delete mode 100644 arch/powerpc/boot/ep405.c
+ delete mode 100644 arch/powerpc/boot/treeboot-walnut.c
+ delete mode 100644 arch/powerpc/boot/uartlite.c
+ delete mode 100644 arch/powerpc/boot/virtex.c
+ delete mode 100644 arch/powerpc/boot/virtex405-head.S
+ delete mode 100644 arch/powerpc/configs/40x/ep405_defconfig
+ delete mode 100644 arch/powerpc/configs/40x/virtex_defconfig
+ delete mode 100644 arch/powerpc/configs/44x/virtex5_defconfig
+ delete mode 100644 arch/powerpc/include/asm/asm-405.h
+ delete mode 100644 arch/powerpc/include/asm/xilinx_intc.h
+ delete mode 100644 arch/powerpc/include/asm/xilinx_pci.h
+ delete mode 100644 arch/powerpc/platforms/40x/ep405.c
+ delete mode 100644 arch/powerpc/platforms/40x/virtex.c
+ delete mode 100644 arch/powerpc/platforms/40x/walnut.c
+ delete mode 100644 arch/powerpc/platforms/44x/virtex.c
+ delete mode 100644 arch/powerpc/platforms/44x/virtex_ml510.c
+ delete mode 100644 arch/powerpc/sysdev/xilinx_intc.c
+ delete mode 100644 arch/powerpc/sysdev/xilinx_pci.c
 
-Thanks
-Alex
+-- 
+2.25.0
+
