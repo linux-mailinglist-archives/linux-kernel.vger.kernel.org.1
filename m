@@ -2,178 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B0D1A8B85
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C4E1A8B92
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391660AbgDNTwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391637AbgDNTvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:51:20 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E9EC0610D5;
-        Tue, 14 Apr 2020 12:51:20 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a81so15661315wmf.5;
-        Tue, 14 Apr 2020 12:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wmfcMhvG8Z0vEINCyaO7pmox4TkBpgd1lx9zOICoTqE=;
-        b=EtkFVJ4P6kPq5zDhchMj44e/ao7tDFLAS5fHqVSp67Vc69oau+0lapCkGg4FAIEK0Y
-         3FwfBUpis4d+hn4MaQNoyQBYMD1RzN/d7yIslSCMyjynMvOsCK3htGSvk4XqFeC4X/wx
-         Ng74LeujzCDpUAcRKt9CGQw99YaEJdmHfcppaoRR7H8krAU5zuB6vga4msDAkdoKqgO9
-         AvuMS8NRgieEf/lICbyIfw7UrGkFiJvFPJvRPLYgJMxXl2KfNjOYKmHwDvRh79gARiHM
-         ac7Y9lL/7d0CiyZHui9LyXZ5U43j7xh/hXw2H6xTd9SkY/I/KkrKa1zkwgoCosFqrk2U
-         jTMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wmfcMhvG8Z0vEINCyaO7pmox4TkBpgd1lx9zOICoTqE=;
-        b=ABWPnGHK0ls3iMNHOa58zUpB3EUm5BQP+b6MCEapykVFd5y01lH+R+ZPi6byA0gxKY
-         R7tWD/c2wRU89hkIMRtvvYlqysalNMZkBu760GcybPniHTGIptlF1pxfRSMKQhcWW5IY
-         IU6RR1myGZMACK3qhuACK8JdmCuMW1e7LtHul/CxsdZzl+NKWvIGzHB8iB8fkgsx4yjG
-         ZEAouu5uk9qGwT1UHrLbsoUjrFv6LRFhVZWb5p8g5/9L8dgoNCc/VKu/JEcciU38rLO8
-         i8zJwPd00/V1Wi/rJyiHA9TCh9XZwb8fEC97VV8ekeJ/cRpbPd7H0TmjskIGi2oWoczO
-         sm1g==
-X-Gm-Message-State: AGi0PuYcRfvllVPbJj/r1NwOThrgcXUTRA/ot+LqD5T1+TITKUnSgEZx
-        uQQi3qKSexCRR4islLxe7rmaSX6nLJM=
-X-Google-Smtp-Source: APiQypIRkBwsxASMLC6HHXJ5UwuAZ6o8hDlK7RWcSFluHkg0o2JANop6K6rTzyBdwrXR4xh1aml9rQ==
-X-Received: by 2002:a1c:e1c1:: with SMTP id y184mr1450299wmg.143.1586893878852;
-        Tue, 14 Apr 2020 12:51:18 -0700 (PDT)
-Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id s14sm20886844wme.33.2020.04.14.12.51.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:51:18 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org
-Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 2/2] clk: meson: g12a: Prepare the GPU clock tree to change at runtime
-Date:   Tue, 14 Apr 2020 21:50:31 +0200
-Message-Id: <20200414195031.224021-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
-References: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
+        id S2505259AbgDNTxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:53:55 -0400
+Received: from mga11.intel.com ([192.55.52.93]:46409 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505250AbgDNTxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:53:38 -0400
+IronPort-SDR: rYE20Kx336l/e+i8TOVnQQ5/qI6DNckykS750Moj2LriV6mhwyWRysH4HzfegcfdRtOq1oLuH8
+ cKQY4srsvBcA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:53:37 -0700
+IronPort-SDR: K8PzKGe3/jwdy9SXZ7JQqasIBrAoadMme1gQ19RmYmMAkShCgfhcK6r5YaWJVvvgVnvXuPicff
+ XdpRA5fKzmWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
+   d="scan'208";a="277378888"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.0.57]) ([10.213.0.57])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2020 12:53:34 -0700
+Subject: Re: [PATCH] ASoC: Intel: sst: ipc command timeout
+To:     "Lu, Brent" <brent.lu@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc:     Kate Stewart <kstewart@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        "amadeuszx.slawinski@linux.intel.com" 
+        <amadeuszx.slawinski@linux.intel.com>
+References: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
+ <4f495cf1-4740-cf3b-196f-cc850c503b43@linux.intel.com>
+ <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <c8309abf-cbfb-a3db-5aa7-2e2f748a6d34@intel.com>
+Date:   Tue, 14 Apr 2020 21:53:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "mali_0" or "mali_1" clock trees should not be updated while the
-clock is running. Enforce this by setting CLK_SET_RATE_GATE on the
-"mali_0" and "mali_1" gates. This makes the CCF switch to the "mali_1"
-tree when "mali_0" is currently active and vice versa, which is exactly
-what the vendor driver does when updating the frequency of the mali
-clock.
-Also propagate set_rate requests from the gate to the divider and from
-the divider to the the mux so the GPU clock frequency can be updated at
-runtime (which will be required for GPU DVFS). Don't propagate rate
-changes to the mux parents because we don't want to change the MPLL
-clocks (these are reserved for audio).
+On 2020-04-14 18:20, Lu, Brent wrote:
+>>
+>> I have mixed feelings about this.
+>>
+>> One one hand, this looks simple enough.
+>>
+>> But on the other hand we have other users of memcpy_fromio(), including
+>> SOF drivers, so what are the odds we have the same problems in other
+>> places? Wouldn't it be safer to either change this function so that it's
+>> behavior is not ambiguous or compiler-dependent, or fix the compiler?
+>>
+> 
+> Hi Pierre and Amadeusz,
+> 
+> I have to admit that I didn't dig into clang's __builtin_memcpy to see what's
+> happening inside so I don't have direct evidence to say it's clang's problem.
+> What I know is kernel built by clang10 works fine but have this issue once
+> changed to clang11. At first I also suspect that it's a timing issue so I checked
+> the command transaction. The transaction is simple, host writes command
+> in SST_IPCX register, the DSP then writes reply in SST_IPCD register and
+> trigger an interrupt. Finally the irq thread sst_byt_irq_thread() reads the
+> SST_IPCD register to complete the transaction. I added some debug messages
+> to see if there is something wrong in the transaction but it all looks good.
+> 
+> I am also confused that why this only happens to BYT but not BDW since they
+> share the same register accessing code in sst-dsp.c. I checked the code and
+> realized that in BDW, the irq thread (hsw_irq_thread) performs 32-bit register
+> read instead of 64-bit in BYT platform. Therefore I change the code in BYT to
+> use two readl() calls and found the problem is gone. My best guess is it's
+> related to the implementation of __builtin_memcpy() but not sure it's the
+> timing or implementing cause this problem.
+> 
+> 
+> Regards,
+> Brent
+> 
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/meson/g12a.c | 30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+Regs width difference between BDW and BYT comes from specification. BDW 
+has IPC registers which are 32 wide. This fact ain't exactly the reason 
+to modify sst_shim32_read64.
 
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index fad616cac01e..30c15766ebb1 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -3702,7 +3702,9 @@ static struct clk_regmap g12a_hdmi = {
- 
- /*
-  * The MALI IP is clocked by two identical clocks (mali_0 and mali_1)
-- * muxed by a glitch-free switch.
-+ * muxed by a glitch-free switch. The CCF can manage this glitch-free
-+ * mux because it does top-to-bottom updates the each clock tree and
-+ * switches to the "inactive" one when CLK_SET_RATE_GATE is set.
-  */
- static const struct clk_parent_data g12a_mali_0_1_parent_data[] = {
- 	{ .fw_name = "xtal", },
-@@ -3726,7 +3728,13 @@ static struct clk_regmap g12a_mali_0_sel = {
- 		.ops = &clk_regmap_mux_ops,
- 		.parent_data = g12a_mali_0_1_parent_data,
- 		.num_parents = 8,
--		.flags = CLK_SET_RATE_NO_REPARENT,
-+		/*
-+		 * Don't request the parent to change the rate because
-+		 * all GPU frequencies can be derived from the fclk_*
-+		 * clocks and one special GP0_PLL setting. This is
-+		 * important because we need the MPLL clocks for audio.
-+		 */
-+		.flags = 0,
- 	},
- };
- 
-@@ -3743,7 +3751,7 @@ static struct clk_regmap g12a_mali_0_div = {
- 			&g12a_mali_0_sel.hw
- 		},
- 		.num_parents = 1,
--		.flags = CLK_SET_RATE_NO_REPARENT,
-+		.flags = CLK_SET_RATE_PARENT,
- 	},
- };
- 
-@@ -3759,7 +3767,7 @@ static struct clk_regmap g12a_mali_0 = {
- 			&g12a_mali_0_div.hw
- 		},
- 		.num_parents = 1,
--		.flags = CLK_SET_RATE_PARENT,
-+		.flags = CLK_SET_RATE_GATE | CLK_SET_RATE_PARENT,
- 	},
- };
- 
-@@ -3774,7 +3782,13 @@ static struct clk_regmap g12a_mali_1_sel = {
- 		.ops = &clk_regmap_mux_ops,
- 		.parent_data = g12a_mali_0_1_parent_data,
- 		.num_parents = 8,
--		.flags = CLK_SET_RATE_NO_REPARENT,
-+		/*
-+		 * Don't request the parent to change the rate because
-+		 * all GPU frequencies can be derived from the fclk_*
-+		 * clocks and one special GP0_PLL setting. This is
-+		 * important because we need the MPLL clocks for audio.
-+		 */
-+		.flags = 0,
- 	},
- };
- 
-@@ -3791,7 +3805,7 @@ static struct clk_regmap g12a_mali_1_div = {
- 			&g12a_mali_1_sel.hw
- 		},
- 		.num_parents = 1,
--		.flags = CLK_SET_RATE_NO_REPARENT,
-+		.flags = CLK_SET_RATE_PARENT,
- 	},
- };
- 
-@@ -3807,7 +3821,7 @@ static struct clk_regmap g12a_mali_1 = {
- 			&g12a_mali_1_div.hw
- 		},
- 		.num_parents = 1,
--		.flags = CLK_SET_RATE_PARENT,
-+		.flags = CLK_SET_RATE_GATE | CLK_SET_RATE_PARENT,
- 	},
- };
- 
-@@ -3827,7 +3841,7 @@ static struct clk_regmap g12a_mali = {
- 		.ops = &clk_regmap_mux_ops,
- 		.parent_hws = g12a_mali_parent_hws,
- 		.num_parents = 2,
--		.flags = CLK_SET_RATE_NO_REPARENT,
-+		.flags = CLK_SET_RATE_PARENT,
- 	},
- };
- 
--- 
-2.26.0
+I'm sharing Amadeo's point of view. Your change should slow down 
+execution a bit - but that might be just what handlers needed to make 
+everything work again. Debug prints also slow down the execution what 
+could have prevented you from spotting the real problem.
+Let's ignore the memcpy stuff for a moment - could you focus on 
+elaborating the scenario where such issue occurs? Your initial commit 
+message also skips important bits such as platform used when reproducing 
+and so on, please add them.
 
+Thanks,
+Czarek
