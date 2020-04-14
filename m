@@ -2,67 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA3A1A85EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B596B1A85EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502335AbgDNQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:51:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440548AbgDNQvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:51:09 -0400
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 560FF2078A;
-        Tue, 14 Apr 2020 16:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586883069;
-        bh=5ItLj3pw8ICgMslGV/jzi2WlPetpysNmexshbAM8+2Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fny7C1Jr3lw6DvYP3P4R/o+BB7IEzN+oPJXzrc6U328xcACnDY2lLYiQIQ1D8udlH
-         RsdBhYsL48o0lluaI4x/l7MwmKNVmKRfkBokxULYNsrxOKBzJuJnj6lOyW5qD5A2/K
-         httZqYXw2vxiorpan5JMiddA56UtrnQzai215yAc=
-Received: by mail-lf1-f53.google.com with SMTP id t11so306501lfe.4;
-        Tue, 14 Apr 2020 09:51:09 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY9/+ju+XMBFLeorHKUymefpM0xCQfmOe2oPIuxbpyk+8X6hKVg
-        WYG0YtYaA3papQwoO57o4VZZcnhvj+ivQDB7szQ=
-X-Google-Smtp-Source: APiQypI19J8K19veT4EiqcGOziMyMfMCR+Dx1XPgW3Ct5WFJ5x80TGUvwNRUHbxW2Cp528PxmLqewLF8/DF94ZOVYag=
-X-Received: by 2002:a19:494f:: with SMTP id l15mr434803lfj.33.1586883067437;
- Tue, 14 Apr 2020 09:51:07 -0700 (PDT)
+        id S2502345AbgDNQwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:52:17 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50028 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2441029AbgDNQvS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:51:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586883077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xEwW/84Bx+Wn4UVzdKy29mX/tgdsrLXZkRwHZ2M75ns=;
+        b=AH+xoIgYnCAHv9ZmXyrRI2RLrNizErROBc4D/B1HKpjc7Y5kx/14yCp10LLIRWYM+pqYdK
+        VBrZONbC1bnufWaQb1QR9uDQKdlF2n9PS/HkQy0BLIzdr5QerGx5MUljpne60GirQ5pLHD
+        ls2lCzuWwHwMZ8vnkY4NbwcUjBERNls=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-1cSpM5MuMS-25Gm7FYRJJQ-1; Tue, 14 Apr 2020 12:51:15 -0400
+X-MC-Unique: 1cSpM5MuMS-25Gm7FYRJJQ-1
+Received: by mail-wm1-f69.google.com with SMTP id f8so4530499wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:51:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=xEwW/84Bx+Wn4UVzdKy29mX/tgdsrLXZkRwHZ2M75ns=;
+        b=bNZ//FX//pCHpbkdzhdxp+oQUZAqXf6fYtnmnf6QmYtesJcxdDbjbpwj1O/89XkU1X
+         CEqXM1WNNuFs85k7hsdtVzB5VRQaZ1D7e7Zo+pwzH4oYWdIXl/1KGh4ENmI1qPZ2x/Y2
+         2c/zbvD49lDy/9D2WJfUD8TmfPhuBIMt+MzmNrRbfum1itytrpZfrxwiaE7KuSsEJ9rT
+         soIEE0deKQbuEoz/HV1c4l3lPosL9YzNPAj4MDTSfaV3xyeoWsSOgV3boSpzYiVTWpZi
+         NczeROcqhEYFOSLcc5lSdUtYIfApzABHUSnoiTllbD2qiXSXkjuwyvHKUFoJ521XZldB
+         73WQ==
+X-Gm-Message-State: AGi0PubLkNjzUr5jxxtRDOLR61cgZ/Uw4DvjMgSrsZ8gx+O3XKR/2E0W
+        CzeexjScNDCO1OKd2WjkiqJmSDZ0UshP8hr9VksGm/30PQFmX7x5XLoI8Nfy9hALpuPnkS6w7pa
+        VDZlblmTmoJPo5qVs5NsWW5w3
+X-Received: by 2002:a05:600c:2314:: with SMTP id 20mr809882wmo.118.1586883073922;
+        Tue, 14 Apr 2020 09:51:13 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJCdYCN7qTchgvOqHA8okoWjFJVzrdCxgqqIR560y3Z2b+3g4AVFAj455QlShPovTl9i6iVNA==
+X-Received: by 2002:a05:600c:2314:: with SMTP id 20mr809859wmo.118.1586883073583;
+        Tue, 14 Apr 2020 09:51:13 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t20sm9185423wmi.2.2020.04.14.09.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 09:51:12 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH][next] drivers: hv: remove redundant assignment to pointer primary_channel
+In-Reply-To: <20200414152343.243166-1-colin.king@canonical.com>
+References: <20200414152343.243166-1-colin.king@canonical.com>
+Date:   Tue, 14 Apr 2020 18:51:11 +0200
+Message-ID: <87d08axb7k.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <1586779076-101346-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1586779076-101346-1-git-send-email-zou_wei@huawei.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 14 Apr 2020 09:50:56 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7CmnBE4xaS6zUBwXuRN5h-ofwpOBQ9ZU0OFPn0Re-kag@mail.gmail.com>
-Message-ID: <CAPhsuW7CmnBE4xaS6zUBwXuRN5h-ofwpOBQ9ZU0OFPn0Re-kag@mail.gmail.com>
-Subject: Re: [PATCH-next] bpf: Verifier, remove unneeded conversion to bool
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 10:15 PM Zou Wei <zou_wei@huawei.com> wrote:
->
-> This issue was detected by using the Coccinelle software:
->
-> kernel/bpf/verifier.c:1259:16-21: WARNING: conversion to bool not needed here
->
-> The conversion to bool is unneeded, remove it
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Colin King <colin.king@canonical.com> writes:
 
-Acked-by: Song Liu <songliubraving@fb.com>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The pointer primary_channel is being assigned with a value that is never,
+> The assignment is redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/hv/channel_mgmt.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> index ffd7fffa5f83..f7bbb8dc4b0f 100644
+> --- a/drivers/hv/channel_mgmt.c
+> +++ b/drivers/hv/channel_mgmt.c
+> @@ -425,8 +425,6 @@ void hv_process_channel_removal(struct vmbus_channel *channel)
+>  
+>  	if (channel->primary_channel == NULL) {
+>  		list_del(&channel->listentry);
+> -
+> -		primary_channel = channel;
+>  	} else {
+>  		primary_channel = channel->primary_channel;
+>  		spin_lock_irqsave(&primary_channel->lock, flags);
+
+If I'm looking at the right source (5.7-rc1) it *is* beeing used:
+
+	if (channel->primary_channel == NULL) {
+		list_del(&channel->listentry);
+
+		primary_channel = channel;
+	} else {
+		primary_channel = channel->primary_channel;
+		spin_lock_irqsave(&primary_channel->lock, flags);
+		list_del(&channel->sc_list);
+		spin_unlock_irqrestore(&primary_channel->lock, flags);
+	}
+
+	/*
+	 * We need to free the bit for init_vp_index() to work in the case
+	 * of sub-channel, when we reload drivers like hv_netvsc.
+	 */
+	if (channel->affinity_policy == HV_LOCALIZED)
+		cpumask_clear_cpu(channel->target_cpu,
+				  &primary_channel->alloced_cpus_in_node);
+                                   ^^^^^ HERE ^^^^^
+
+-- 
+Vitaly
+
