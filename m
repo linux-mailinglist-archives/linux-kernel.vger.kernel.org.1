@@ -2,72 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739031A70DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 04:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33AB1A72B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 06:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404004AbgDNCNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 22:13:47 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2367 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403967AbgDNCNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 22:13:41 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A6650673AB8245D8F5B5;
-        Tue, 14 Apr 2020 10:13:37 +0800 (CST)
-Received: from [127.0.0.1] (10.173.221.252) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Apr 2020
- 10:13:29 +0800
-To:     Doug Gilbert <dgilbert@interlog.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>
-From:   Wu Bo <wubo40@huawei.com>
-Subject: [PATCH] scsi:sg: add sg_remove_request in sg_write
-Message-ID: <610618d9-e983-fd56-ed0f-639428343af7@huawei.com>
-Date:   Tue, 14 Apr 2020 10:13:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2405364AbgDNEmt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Apr 2020 00:42:49 -0400
+Received: from mail.lintas.net.id ([103.242.106.93]:34946 "EHLO
+        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728974AbgDNEms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 00:42:48 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 5B82432BECBBE;
+        Tue, 14 Apr 2020 09:15:27 +0700 (WIB)
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 35jfPNAhyN5l; Tue, 14 Apr 2020 09:15:26 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 1F61E32BECBC7;
+        Tue, 14 Apr 2020 09:15:26 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at lintas.net.id
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hU297dMI0pC8; Tue, 14 Apr 2020 09:15:25 +0700 (WIB)
+Received: from [100.65.33.38] (unknown [106.210.42.109])
+        by mail.lintas.net.id (Postfix) with ESMTPSA id 7930932BECBB6;
+        Tue, 14 Apr 2020 09:15:18 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.221.252]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?b?QVRFTkNJw5NO?=
+To:     Recipients <bengkulu@lintas.net.id>
+From:   Sistemas administrador <bengkulu@lintas.net.id>
+Date:   Tue, 14 Apr 2020 07:44:16 +0530
+Reply-To: mailsss@mail2world.com
+Message-Id: <20200414021518.7930932BECBB6@mail.lintas.net.id>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+ATENCIÓN;
 
-If the __copy_from_user function return failed,
-it should call sg_remove_request in sg_write.
+Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
 
-Signed-off-by: Wu Bo <wubo40@huawei.com>
----
-  drivers/scsi/sg.c | 4 +++-
-  1 file changed, 3 insertions(+), 1 deletion(-)
+nombre:
+Nombre de usuario:
+contraseña:
+Confirmar contraseña:
+E-mail:
+teléfono:
 
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 4e6af59..ff3f532 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -685,8 +685,10 @@ static int get_sg_io_pack_id(int *pack_id, void 
-__user *buf, size_t count)
-         hp->flags = input_size; /* structure abuse ... */
-         hp->pack_id = old_hdr.pack_id;
-         hp->usr_ptr = NULL;
--       if (copy_from_user(cmnd, buf, cmd_size))
-+       if (copy_from_user(cmnd, buf, cmd_size)) {
-+               sg_remove_request(sfp, srp);
-                 return -EFAULT;
-+       }
-         /*
-          * SG_DXFER_TO_FROM_DEV is functionally equivalent to 
-SG_DXFER_FROM_DEV,
-          * but is is possible that the app intended SG_DXFER_TO_DEV, 
-because there
---
-1.8.3.1
+Si usted no puede revalidar su buzón, el buzón se deshabilitará!
 
+Disculpa las molestias.
+Código de verificación:666690opp4r56 es: 006524.2020
+Correo Soporte Técnico © 2020
+
+¡gracias
+Sistemas administrador
