@@ -2,184 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F941A8A1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA6C1A8AE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504370AbgDNSsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504345AbgDNSrx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:47:53 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F4C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:47:52 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y4so943146ljn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:47:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OyOL12OCCuEtnIYwyab7jevzcvgkgia9hHwlqC2b/cU=;
-        b=PZAoOw3NbV+FJtp3dr1j+nlatrdGdulU5pItNLclPyjrhf7CyG6zlAVQxY50b0EpDU
-         ebHHUI0nLMYLiUaEy8qSIayJglSY+JSBhsG0RoJFCif1nbPg6XUYMtIPrzwEd6L21B6D
-         eMiaPOblgIGOqBJWeooWrfL6SvkGQAaOTSNNO6Lp9XtIHez2UrZ1ZWIaNMyXBhnjPbaL
-         lLFX2CPaZzf0IfFjObpAbweT8dY+tjxm0VLbPnMFpyGtwNx+9HjbD/0dWLjUqNnUuI1u
-         tiv9RMd+lEZFWKv+bI4SS+IkGpaqRpALLHCWMd+xjGN1t+ibMC4JzxMkPXthqEoK9N5E
-         2Djw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OyOL12OCCuEtnIYwyab7jevzcvgkgia9hHwlqC2b/cU=;
-        b=cZNedFs3WojbAm8Zo4zWmll/EYeroHMw1diVBqkjL+9rgR4wpHjIoHQFvIEtDxKdd/
-         S7ei5P1MF1pgdjZaul4ISr5hPeqobqw/OYiLSpf5E1q55Md/7mvepSga/F9yxtdELAhk
-         tNgdvPEE10fs82GRP9nykGmrLcvt1ZW3EkTjUCM/7peuehRRa6qBhKe9tSHvFtJhBC/F
-         Sf6lTHl0kUhZeAZGbA/DneNjTM6xLSI2GqZGnIpEf+ggqAC38e4W0vJ0KffZwpXs6GDj
-         bZJE7eIScAnM2UHZ4sjAKkKwFSmxcNn4YxtmxeBEKTs7rFj4FXOQsE4g3msiOu/3ChOm
-         lLJA==
-X-Gm-Message-State: AGi0Pubr06CRkQA+VckrPcPx5riUQ/8lTSfIyXt95zRf3jBkzaC02XQk
-        YJhmzJssLO3mWNfwlmYEQv3CGASv9GSgsA==
-X-Google-Smtp-Source: APiQypIU0nDoVIJ/vdOxOcyArNCl8ozzP3P/YWU0FeKyu7KGGin9pZl2KpekHTeHZOvoDagifSazJQ==
-X-Received: by 2002:a2e:a308:: with SMTP id l8mr917166lje.282.1586890070861;
-        Tue, 14 Apr 2020 11:47:50 -0700 (PDT)
-Received: from navi.cosmonova.net.ua ([95.67.24.131])
-        by smtp.gmail.com with ESMTPSA id p2sm2029433lji.40.2020.04.14.11.47.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 11:47:50 -0700 (PDT)
-From:   andrew@daynix.com
-To:     virtualization@lists.linux-foundation.org
-Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Fix: buffer overflow during hvc_alloc().
-Date:   Tue, 14 Apr 2020 22:15:03 +0300
-Message-Id: <20200414191503.3471783-1-andrew@daynix.com>
-X-Mailer: git-send-email 2.24.1
+        id S2504892AbgDNTet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:34:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60298 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504805AbgDNTdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:33:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 63506AC2C;
+        Tue, 14 Apr 2020 19:16:04 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 21:16:01 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-crypto@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
+        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] crypto: Remove unnecessary memzero_explicit()
+Message-ID: <20200414191601.GZ25468@kitsune.suse.cz>
+References: <20200413211550.8307-1-longman@redhat.com>
+ <20200413222846.24240-1-longman@redhat.com>
+ <eca85e0b-0af3-c43a-31e4-bd5c3f519798@c-s.fr>
+ <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Melnychenko <andrew@daynix.com>
+On Tue, Apr 14, 2020 at 12:24:36PM -0400, Waiman Long wrote:
+> On 4/14/20 2:08 AM, Christophe Leroy wrote:
+> >
+> >
+> > Le 14/04/2020 à 00:28, Waiman Long a écrit :
+> >> Since kfree_sensitive() will do an implicit memzero_explicit(), there
+> >> is no need to call memzero_explicit() before it. Eliminate those
+> >> memzero_explicit() and simplify the call sites. For better correctness,
+> >> the setting of keylen is also moved down after the key pointer check.
+> >>
+> >> Signed-off-by: Waiman Long <longman@redhat.com>
+> >> ---
+> >>   .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 19 +++++-------------
+> >>   .../allwinner/sun8i-ss/sun8i-ss-cipher.c      | 20 +++++--------------
+> >>   drivers/crypto/amlogic/amlogic-gxl-cipher.c   | 12 +++--------
+> >>   drivers/crypto/inside-secure/safexcel_hash.c  |  3 +--
+> >>   4 files changed, 14 insertions(+), 40 deletions(-)
+> >>
+> >> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> >> b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> >> index aa4e8fdc2b32..8358fac98719 100644
+> >> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> >> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> >> @@ -366,10 +366,7 @@ void sun8i_ce_cipher_exit(struct crypto_tfm *tfm)
+> >>   {
+> >>       struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
+> >>   -    if (op->key) {
+> >> -        memzero_explicit(op->key, op->keylen);
+> >> -        kfree(op->key);
+> >> -    }
+> >> +    kfree_sensitive(op->key);
+> >>       crypto_free_sync_skcipher(op->fallback_tfm);
+> >>       pm_runtime_put_sync_suspend(op->ce->dev);
+> >>   }
+> >> @@ -391,14 +388,11 @@ int sun8i_ce_aes_setkey(struct crypto_skcipher
+> >> *tfm, const u8 *key,
+> >>           dev_dbg(ce->dev, "ERROR: Invalid keylen %u\n", keylen);
+> >>           return -EINVAL;
+> >>       }
+> >> -    if (op->key) {
+> >> -        memzero_explicit(op->key, op->keylen);
+> >> -        kfree(op->key);
+> >> -    }
+> >> -    op->keylen = keylen;
+> >> +    kfree_sensitive(op->key);
+> >>       op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
+> >>       if (!op->key)
+> >>           return -ENOMEM;
+> >> +    op->keylen = keylen;
+> >
+> > Does it matter at all to ensure op->keylen is not set when of->key is
+> > NULL ? I'm not sure.
+> >
+> > But if it does, then op->keylen should be set to 0 when freeing op->key. 
+> 
+> My thinking is that if memory allocation fails, we just don't touch
+> anything and return an error code. I will not explicitly set keylen to 0
+> in this case unless it is specified in the API documentation.
+You already freed the key by now so not touching anything is not
+possible. The key is set to NULL on allocation failure so setting keylen
+to 0 should be redundant. However, setting keylen to 0 is consisent with
+not having a key, and it avoids the possibility of leaking the length
+later should that ever cause any problem.
 
-If there is a lot(more then 16) of virtio-console devices
-or virtio_console module is reloaded
-- buffers 'vtermnos' and 'cons_ops' are overflowed.
-In older kernels it overruns spinlock which leads to kernel freezing:
-https://bugzilla.redhat.com/show_bug.cgi?id=1786239
+Thanks
 
-To reproduce the issue, you can try simple script that
-loads/unloads module. Something like this:
-while [ 1 ]
-do
-  modprobe virtio_console
-  sleep 2
-  modprobe -r virtio_console
-  sleep 2
-done
-
-Description of problem:
-Guest get 'Call Trace' when loading module "virtio_console"
-and unloading it frequently - clearly reproduced on kernel-4.18.0:
-
-[   81.498208] ------------[ cut here ]------------
-[   81.499263] pvqspinlock: lock 0xffffffff92080020 has corrupted value 0xc0774ca0!
-[   81.501000] WARNING: CPU: 0 PID: 785 at kernel/locking/qspinlock_paravirt.h:500 __pv_queued_spin_unlock_slowpath+0xc0/0xd0
-[   81.503173] Modules linked in: virtio_console fuse xt_CHECKSUM ipt_MASQUERADE xt_conntrack ipt_REJECT nft_counter nf_nat_tftp nft_objref nf_conntrack_tftp tun bridge stp llc nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nf_tables_set nft_chain_nat_ipv6 nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 nft_chain_route_ipv6 nft_chain_nat_ipv4 nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_nat nf_conntrack nft_chain_route_ipv4 ip6_tables nft_compat ip_set nf_tables nfnetlink sunrpc bochs_drm drm_vram_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm i2c_piix4 pcspkr crct10dif_pclmul crc32_pclmul joydev ghash_clmulni_intel ip_tables xfs libcrc32c sd_mod sg ata_generic ata_piix virtio_net libata crc32c_intel net_failover failover serio_raw virtio_scsi dm_mirror dm_region_hash dm_log dm_mod [last unloaded: virtio_console]
-[   81.517019] CPU: 0 PID: 785 Comm: kworker/0:2 Kdump: loaded Not tainted 4.18.0-167.el8.x86_64 #1
-[   81.518639] Hardware name: Red Hat KVM, BIOS 1.12.0-5.scrmod+el8.2.0+5159+d8aa4d83 04/01/2014
-[   81.520205] Workqueue: events control_work_handler [virtio_console]
-[   81.521354] RIP: 0010:__pv_queued_spin_unlock_slowpath+0xc0/0xd0
-[   81.522450] Code: 07 00 48 63 7a 10 e8 bf 64 f5 ff 66 90 c3 8b 05 e6 cf d6 01 85 c0 74 01 c3 8b 17 48 89 fe 48 c7 c7 38 4b 29 91 e8 3a 6c fa ff <0f> 0b c3 0f 0b 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 48
-[   81.525830] RSP: 0018:ffffb51a01ffbd70 EFLAGS: 00010282
-[   81.526798] RAX: 0000000000000000 RBX: 0000000000000010 RCX: 0000000000000000
-[   81.528110] RDX: ffff9e66f1826480 RSI: ffff9e66f1816a08 RDI: ffff9e66f1816a08
-[   81.529437] RBP: ffffffff9153ff10 R08: 000000000000026c R09: 0000000000000053
-[   81.530732] R10: 0000000000000000 R11: ffffb51a01ffbc18 R12: ffff9e66cd682200
-[   81.532133] R13: ffffffff9153ff10 R14: ffff9e6685569500 R15: ffff9e66cd682000
-[   81.533442] FS:  0000000000000000(0000) GS:ffff9e66f1800000(0000) knlGS:0000000000000000
-[   81.534914] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   81.535971] CR2: 00005624c55b14d0 CR3: 00000003a023c000 CR4: 00000000003406f0
-[   81.537283] Call Trace:
-[   81.537763]  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
-[   81.539011]  .slowpath+0x9/0xe
-[   81.539585]  hvc_alloc+0x25e/0x300
-[   81.540237]  init_port_console+0x28/0x100 [virtio_console]
-[   81.541251]  handle_control_message.constprop.27+0x1c4/0x310 [virtio_console]
-[   81.542546]  control_work_handler+0x70/0x10c [virtio_console]
-[   81.543601]  process_one_work+0x1a7/0x3b0
-[   81.544356]  worker_thread+0x30/0x390
-[   81.545025]  ? create_worker+0x1a0/0x1a0
-[   81.545749]  kthread+0x112/0x130
-[   81.546358]  ? kthread_flush_work_fn+0x10/0x10
-[   81.547183]  ret_from_fork+0x22/0x40
-[   81.547842] ---[ end trace aa97649bd16c8655 ]---
-[   83.546539] general protection fault: 0000 [#1] SMP NOPTI
-[   83.547422] CPU: 5 PID: 3225 Comm: modprobe Kdump: loaded Tainted: G        W        --------- -  - 4.18.0-167.el8.x86_64 #1
-[   83.549191] Hardware name: Red Hat KVM, BIOS 1.12.0-5.scrmod+el8.2.0+5159+d8aa4d83 04/01/2014
-[   83.550544] RIP: 0010:__pv_queued_spin_lock_slowpath+0x19a/0x2a0
-[   83.551504] Code: c4 c1 ea 12 41 be 01 00 00 00 4c 8d 6d 14 41 83 e4 03 8d 42 ff 49 c1 e4 05 48 98 49 81 c4 40 a5 02 00 4c 03 24 c5 60 48 34 91 <49> 89 2c 24 b8 00 80 00 00 eb 15 84 c0 75 0a 41 0f b6 54 24 14 84
-[   83.554449] RSP: 0018:ffffb51a0323fdb0 EFLAGS: 00010202
-[   83.555290] RAX: 000000000000301c RBX: ffffffff92080020 RCX: 0000000000000001
-[   83.556426] RDX: 000000000000301d RSI: 0000000000000000 RDI: 0000000000000000
-[   83.557556] RBP: ffff9e66f196a540 R08: 000000000000028a R09: ffff9e66d2757788
-[   83.558688] R10: 0000000000000000 R11: 0000000000000000 R12: 646e61725f770b07
-[   83.559821] R13: ffff9e66f196a554 R14: 0000000000000001 R15: 0000000000180000
-[   83.560958] FS:  00007fd5032e8740(0000) GS:ffff9e66f1940000(0000) knlGS:0000000000000000
-[   83.562233] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   83.563149] CR2: 00007fd5022b0da0 CR3: 000000038c334000 CR4: 00000000003406e0
-
-Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
----
- drivers/tty/hvc/hvc_console.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-index 27284a2dcd2b..436cc51c92c3 100644
---- a/drivers/tty/hvc/hvc_console.c
-+++ b/drivers/tty/hvc/hvc_console.c
-@@ -302,10 +302,6 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
- 	vtermnos[index] = vtermno;
- 	cons_ops[index] = ops;
- 
--	/* reserve all indices up to and including this index */
--	if (last_hvc < index)
--		last_hvc = index;
--
- 	/* check if we need to re-register the kernel console */
- 	hvc_check_console(index);
- 
-@@ -960,13 +956,22 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
- 		    cons_ops[i] == hp->ops)
- 			break;
- 
--	/* no matching slot, just use a counter */
--	if (i >= MAX_NR_HVC_CONSOLES)
--		i = ++last_hvc;
-+	if (i >= MAX_NR_HVC_CONSOLES) {
-+
-+		/* find 'empty' slot for console */
-+		for (i = 0; i < MAX_NR_HVC_CONSOLES && vtermnos[i] != -1; i++) {
-+		}
-+
-+		/* no matching slot, just use a counter */
-+		if (i == MAX_NR_HVC_CONSOLES)
-+			i = ++last_hvc + MAX_NR_HVC_CONSOLES;
-+	}
- 
- 	hp->index = i;
--	cons_ops[i] = ops;
--	vtermnos[i] = vtermno;
-+	if (i < MAX_NR_HVC_CONSOLES) {
-+		cons_ops[i] = ops;
-+		vtermnos[i] = vtermno;
-+	}
- 
- 	list_add_tail(&(hp->next), &hvc_structs);
- 	mutex_unlock(&hvc_structs_mutex);
--- 
-2.24.1
-
+Michal
