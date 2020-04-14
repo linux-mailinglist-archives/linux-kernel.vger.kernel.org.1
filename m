@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0231A8ACD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C601A8AB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504823AbgDNTba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
+        id S2504728AbgDNT1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504778AbgDNT3u (ORCPT
+        by vger.kernel.org with ESMTP id S2504700AbgDNT0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:29:50 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CD0C025481
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:23:32 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id u65so389763pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:23:32 -0700 (PDT)
+        Tue, 14 Apr 2020 15:26:42 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F147EC061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:26:41 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ay6so2986395pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=uh/180abQgmQ6BQ7TjempJNClKOaOSf5CJ7rtROtEkE=;
-        b=cBSDD4vrRu2upc6r3gqJwDFaQSWjr+17rSaxPc9/xT79CnR00LWsE6Ow6sJurp1BA5
-         po/AGG98n8lFdQkAWQi+CDtNlbASVECECHMr16HNxN9EVzyN5lct4/KaV7JhTeAhmfNT
-         CKC8vf8rOhffLDtmFRV+XGP/WKpHS7KYBhA2LK/IE5BCOMeA2Ghn6uO2g403g5XEb8Td
-         Uve+jkNURH8epjGee6h9MMB6pIfcQF3E87ZvJhDA4xKu1VYlkBUjJCrZpS2hmnejTScy
-         1uswIyb9bK+TkRw9Y86yKCQWXYLICDOT4HYWtWHkkmGoZls7DTUZxI1i4bRJFzx8C59w
-         fcOw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GBjwHY+AL72Y+T8vcTU277/7t2edTwQD/R5p6feAGn0=;
+        b=fCX3GwpiQSEiUMKpeDVih8hj+JqhwWfdebHtVs0cADaQ3iHqoQ7ZmrmDaUY53dkJpl
+         A5WKCCmkAXrtVjfKFav0oNXvfefO76hr8+DJHnKLwps4R4hNwEneswkOQtrClWDeGDxX
+         HI76iHXV7Gq7giZsdnEvhsZlDb4bUvszNzGLGQw8t2wH8D0sLM3Tbaeu5pnLXlC+jJ5G
+         lsJhRwjJ7W0ie2NbvW+TqoDhJP9fQ7Np/nbq4Qs+P++do5cNW85OgQOqekBnrGwNG/pZ
+         otoSQnqDe1VOiwds65ZqPq0tD1m10m/YueHtixiFsAnRpjMZbrhriDQOU/V+F9gwo8DI
+         y0NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=uh/180abQgmQ6BQ7TjempJNClKOaOSf5CJ7rtROtEkE=;
-        b=mnXRgZNkQf9hi0QS6XIxMSY5UB3Sk+a7st/b7w/pv7CzOi5qJNOubmvJYAysOXbufy
-         PxOdE8igtI6QoY6wImK4TYQiRSdu3Tt4O3PVjMU15hZe0oQ2y4BKWIYQfVTrcLwMaL9A
-         m3oxrlFezKbBX7Dp7r1ZPIo7Bqi7bW3ijl9qUy7/6Gmp36cPiemZ172NWJ6YoPiZAgJ6
-         B4h5o4Prl7ucbE+A3z6xfAJrwS+tCjOk9lwxJZxFydqJVgM7fLaSs7c7D9qmBEwnJxFh
-         JJVxiSg6V00nebx0FUsuxsCJTiYMPIKExDXKfULitqxduC/Ua2xt41lq8J+j8biM/8lK
-         TXjw==
-X-Gm-Message-State: AGi0PuYHnYJc4xlxBYINqQ3p+r4k6+Lo5XL/gc4ci0/9N+rIT9Z4HzyM
-        HJ3w2DPsyUBGDZJusVaaVNfsmw==
-X-Google-Smtp-Source: APiQypIh8dv6EhpHtZfx/oK6c8hvmtzPrPegZc68gIU5zluDsBPHkcGRRKdcXzhMGJ8v56855PjPYw==
-X-Received: by 2002:a63:ca41:: with SMTP id o1mr24177997pgi.419.1586892210952;
-        Tue, 14 Apr 2020 12:23:30 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id 3sm1147978pgh.75.2020.04.14.12.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:23:30 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 12:23:29 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Hillf Danton <hdanton@sina.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "Grimm, Jon" <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
-        linux <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>
-Subject: Re: [rfc v2 3/6] dma-pool: dynamically expanding atomic pools
-In-Reply-To: <20200414064441.GC23359@lst.de>
-Message-ID: <alpine.DEB.2.22.394.2004141222260.2583@chino.kir.corp.google.com>
-References: <alpine.DEB.2.21.1912311738130.68206@chino.kir.corp.google.com> <b22416ec-cc28-3fd2-3a10-89840be173fa@amd.com> <alpine.DEB.2.21.2002280118461.165532@chino.kir.corp.google.com> <alpine.DEB.2.21.2003011535510.213582@chino.kir.corp.google.com>
- <alpine.DEB.2.21.2004081418490.19661@chino.kir.corp.google.com> <20200410145520.17864-1-hdanton@sina.com> <alpine.DEB.2.21.2004101231240.249689@chino.kir.corp.google.com> <20200414064441.GC23359@lst.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GBjwHY+AL72Y+T8vcTU277/7t2edTwQD/R5p6feAGn0=;
+        b=dChRlktPhRoF43Wgbmcok3j8jKyRJncPBImrjVBQCp2Gj2oRrumPiJkFH/5qlUO3+q
+         wRNRsuxXMurbD2SAG4Js8y2Hr+Kr+wgxiblBEhGf7bQMdsqOEKJ0MdDwqFDWucfGgOBn
+         Xh1vaOb5vYZlfyqWte8YMBl9loCn/EtUN6AFtIhM2iixZ6fowJIMUUx9W5OzVQSF5fko
+         zWhVHMy5we73L3CcP1VTWU/ojwykKk63KOoWaZFf09nMsOZZ0q35CTjEvOW8BndtDaGE
+         W9RJt3rKxPfp+8Stu4niAXwNmSqzWCCLlfZEB64XE0IemhfkjQseXCV3qp/sqPjHXoy2
+         GqJQ==
+X-Gm-Message-State: AGi0Pua+tjK69Sqgqc4zSZr+e8YBIpX0lpCLn7hTNvfp0wbzaxfMREQM
+        iHPSOTFPlJb/uDnvgwPil2CW91Deiz/iy046kUbU9w==
+X-Google-Smtp-Source: APiQypKGMp4rdkYV/1cquaVsImLP3ZzjMppuoBalS0ljtPr38FSR8xLUWjRxwP0gMVd5Aii/eLsTsNG+UfBr1nF5MuY=
+X-Received: by 2002:a17:902:cb97:: with SMTP id d23mr1445679ply.232.1586892401135;
+ Tue, 14 Apr 2020 12:26:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200410132706.170811b7@canb.auug.org.au> <27c212c4-b522-561d-411c-e74dc0ff0b74@infradead.org>
+ <CAHk-=wjhsM-n_NzSh=cSdpThX+62-x3EmyKjhMqGHFYEyG0nPg@mail.gmail.com>
+ <2b0f5d2e-3fe5-10c9-2a9a-9a0b341a52d5@infradead.org> <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
+ <bfbcaa67-9656-3a80-fc66-c937297c8be0@infradead.org> <CAHk-=whpvCqcCYvy=_v_F6NTtBSeQbXZ0iLr_smV2NJLT+XACw@mail.gmail.com>
+ <CA+G9fYu47hpXjYtAr32p9yJ97KZqTry+ioAY1S2TqtiKztCYRg@mail.gmail.com> <f90fc906-395b-79be-8f44-3807586766f7@infradead.org>
+In-Reply-To: <f90fc906-395b-79be-8f44-3807586766f7@infradead.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 14 Apr 2020 12:26:29 -0700
+Message-ID: <CAFd5g46ZaEVoMb2hO94A41Z=YH6ntTdXstZUhHu67mwOKY+QsA@mail.gmail.com>
+Subject: Re: linux-next: Tree for Apr 10 (lib/test_printf.ko)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020, Christoph Hellwig wrote:
+On Sat, Apr 11, 2020 at 11:22 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 4/11/20 10:36 PM, Naresh Kamboju wrote:
+> > FYI,
+> >
+> > Is this problem related to,
+> >
+> > Regression reported on Linux next 5.6.0-rc4-next-20200305 on x86_64,
+> > i386, arm and arm64. The steps to reproduce is running kselftests lib
+> > printf.sh test case.
+> > Which is doing modprobe operations.
+> >
+> > BUG: kernel NULL pointer dereference, address: 00 - ida_free+0x76/0x140
+> >
+> > https://lore.kernel.org/linux-kselftest/CAFd5g46Bwd8HS9-xjHLh_rB59Nfw8iAnM6aFe0QPcveewDUT6g@mail.gmail.com/T/
+> >
+>
+> Looks similar. Lots of fwnode, software_node, ida stuff there.
 
-> > I'll rely on Christoph to determine whether it makes sense to add some 
-> > periodic scavening of the atomic pools, whether that's needed for this to 
-> > be merged, or wheter we should enforce some maximum pool size.
-> 
-> I don't really see the point.  In fact the only part of the series
-> I feel uneasy about is the growing of the pools, because it already
-> adds a fair amount of complexity that we might not need for simple
-> things, but shrinking really doesn't make any sense.  So I'm tempted
-> to not ever support shrinking, and even make growing optional code under
-> a new config variable.  We'll also need a way to query the current size
-> through e.g. a debugfs file.
-> 
+Sorry for the late reply, I was out.
 
-New debugfs file sounds good, I'll add it.  If we want to disable dynamic 
-expansion when the pool is depleted under a new config option, let me 
-know.
+Yeah, I am pretty sure it is the same. Heikki proposed a fix that I am
+going to try.
+
+Also, I think I am going to send out a new test case for this that can
+live with the fwnode, software_node stuff. It would be nice if the
+printf test wasn't the only thing testing this stuff.
+
+Thanks!
