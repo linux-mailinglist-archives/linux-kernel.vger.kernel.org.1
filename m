@@ -2,160 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174291A7F0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116FD1A7F11
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388627AbgDNOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:00:02 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:31944 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388611AbgDNN74 (ORCPT
+        id S2388713AbgDNOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388638AbgDNOAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:59:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1586872795; x=1618408795;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=y3HeX6hbTW6zfhkvhP623SjzVtCQObZaAl0NBMbJh7Y=;
-  b=ti1/OlGeMA3PTe0Xw544uC1rvmTQbl1Qvn83fEx7WhYiQTDQL4IP1CB0
-   Nf8s9lblPVlNC1WQi/5ULiDbgMjiyR/usEx35571LUxzCfrdt2z+O+I8B
-   B9TKgbIHlFfITlqh7pWB/0mI0Zc8ajo8hFSNkK2RbvJc6+c3x7Y9SkxXO
-   2a556ReLgGnU18cUNTs6w+NVRACPfsOhEqSCbuixP4TDvlWEaRDFsSYQ6
-   UhH8i6DIHRkY25ukTSzNGbbl23voki5N7+OMWXzHzpheCeM1j3gZOco2Q
-   LHIQ1VaPs6fyxp8U7nNUkt4tqdZhRBWmYEe8zscRQZnpV39oObxowWRIy
-   w==;
-IronPort-SDR: rpHfYsqMtvUE9uYyJ/BLuQsz4dxddUd6LKgw083LNhmMgdoH1/qHcOMTnxvHQ+rf2w9fTe63dh
- 2emfbv/Fu84/1zwIc7QmWBpRyO2/y/bQu9jW8Kd5DiFwxzpwibe2A/KLmVc+B1l+UdtiAQmzQS
- sHDItbefF2Mzo8KD/p8mKOUZptbRrPRCpNgZqu+MCxsOlvMJpyDvpV03weL8RNUTt+tMZ76LWI
- a00UD7wmdPn9GkdIdoPiII3RFz57E/ieUeNxMAkXCgCuJWcWqv+KnMiKQupdh19m2ay7L/5/VL
- 5xg=
-X-IronPort-AV: E=Sophos;i="5.72,382,1580799600"; 
-   d="scan'208";a="73279858"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Apr 2020 06:59:53 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 14 Apr 2020 06:59:38 -0700
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 14 Apr 2020 06:59:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GrbaB/ztNat5qRaM3LDIpRWTZzYE7gsuKGSoGUaafMFG5cp9TuQN4Z9WsytKRKsrEOxtoc3i//uTcY7sMtRKrsLIC8Ok1HXDTv+/bdogjoK4FHuRNpasFetTiMkPsyMO8kjVQPCULva+Catlr1fZkQLJtrHdIGraIpE9vy701w5e6AVt/Z4bhbhkc1UofC7Wc2b+j9T+sPFKr2cpzdkaJjPDv11z5XxNcxxV3T1nFJj3sZsCj+GDLHATZHzUS+zwbpiY/Rb8CiAfL7sanCl+VBnN2Ow1Tc1TplV311gHUzjZjiX91nYEgSKH2utorAV6NMew4Vwc1bR8so+sTUQudA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y3HeX6hbTW6zfhkvhP623SjzVtCQObZaAl0NBMbJh7Y=;
- b=CngjG9bqlJxJ5O1lq1wGyaEEdTmTwahvOQRG/r3+hh9l3eZPltcMLeIo5zJ7+qdAodJPYlhR5uzAVtMgWtpURy4sQWhqIfAHSSSk5mVv4F73Qi5SCEO1S10ogmeByDLOo+du5K6xiEimsAuvYBZcrZRp0d4f4GHiID8i6ZluduxjI0WF/4MkimA/tInvXzeCfUpSHKis/q9SftXI3yssVj77b9G6M+crXTfGWbIOSLErmIM7c4ryqi0ykkTwpNg/MAKURwlHFsa0fLacSHeLqp9+cPNranQS1a66f3IjvBH10UxHmL7wUHt3qxIkwf00i/SG9FVxwksZFWvpCYd9WQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Tue, 14 Apr 2020 10:00:31 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA41C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 07:00:30 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b8so6084118pfp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 07:00:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y3HeX6hbTW6zfhkvhP623SjzVtCQObZaAl0NBMbJh7Y=;
- b=lmOslgtiQwGUhadiyYZktmmJ0GTq56Zggxkklw1G8QEX2svy1OogQtgPygEqugbFq+8OQBJbX8cbme3ahB2jvU+kPFcKTZGj2YxJGjOHir+UZcTzCIJwI56GhuvQqRmmdPA2+2zzcg8tfcpHodQwCr4MZbQSA/yEcgxpVT2gUfk=
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com (2603:10b6:5:69::31) by
- DM6PR11MB3498.namprd11.prod.outlook.com (2603:10b6:5:6c::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2900.16; Tue, 14 Apr 2020 13:59:50 +0000
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::91cb:6555:db9b:53fa]) by DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::91cb:6555:db9b:53fa%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
- 13:59:50 +0000
-From:   <Claudiu.Beznea@microchip.com>
-To:     <alexandre.belloni@bootlin.com>
-CC:     <mark.rutland@arm.com>, <a.zummo@towertech.it>,
-        <jason@lakedaemon.net>, <devicetree@vger.kernel.org>,
-        <maz@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <Ludovic.Desroches@microchip.com>, <robh+dt@kernel.org>,
-        <tglx@linutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH 4/5] ARM: dts: sam9x60: add rtt
-Thread-Topic: [PATCH 4/5] ARM: dts: sam9x60: add rtt
-Thread-Index: AQHWEXCuyP8yxRbKYUqiuXPeALwxyw==
-Date:   Tue, 14 Apr 2020 13:59:50 +0000
-Message-ID: <843ca735-d911-d514-60be-795c71a4e291@microchip.com>
-References: <1586536019-12348-1-git-send-email-claudiu.beznea@microchip.com>
- <1586536019-12348-5-git-send-email-claudiu.beznea@microchip.com>
- <20200410222658.GB3628@piout.net>
- <c4d46198-488b-c5d6-2a66-865a16840dc4@microchip.com>
- <20200413104652.GE3628@piout.net>
- <3116d1fc-af96-1e0c-aa07-3b34cbd58209@microchip.com>
- <20200414111600.GE34509@piout.net>
- <a07d841e-efa9-6c01-69e2-0ed33f9759c5@microchip.com>
- <20200414124741.GJ34509@piout.net>
- <ae278226-7616-5306-a8b5-3f937aa6b322@microchip.com>
- <20200414131255.GK34509@piout.net>
-In-Reply-To: <20200414131255.GK34509@piout.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Claudiu.Beznea@microchip.com; 
-x-originating-ip: [86.120.235.162]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e34e8c83-2755-4a3a-c887-08d7e07c1965
-x-ms-traffictypediagnostic: DM6PR11MB3498:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3498F01FBF954C98F04E281787DA0@DM6PR11MB3498.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0373D94D15
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(136003)(366004)(396003)(376002)(39860400002)(346002)(91956017)(64756008)(76116006)(66446008)(186003)(8676002)(81156014)(966005)(54906003)(86362001)(7416002)(8936002)(66946007)(66476007)(26005)(6916009)(66556008)(53546011)(478600001)(316002)(6512007)(71200400001)(2616005)(31686004)(6506007)(36756003)(4326008)(5660300002)(6486002)(31696002)(2906002);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uO53vypQuCbzrZTNdh9nOpIy/2MOZeuJXkfU5qKDVvCNsBgHDixErGe0nTT2T115m1p9PHispDoX4cRzXpsPENoKYxIsWUVsgnmO7zqDAt8+bZFfEmWlbZBdGaywKB8fRfYVx5eXzyhT8y4bl3BBPDCNphu6qX3+YFIIvyt5u0tE4T1yDs0CxtV/kutg4VLoJoc8CsOCCRmS3p86m+rTVTM/+QBm0nTZC6K19rbBaTZmwfKIPMsFvAjUDWAT97vAt8x6n/oB5QaQkeIa2NuqWJ+rRCIYDff3B39XIg+sGEuiqOmMdblezHptutA9a6hlaQszjEH3RY2wC8yaldnnQ/q6m6Qv0CFFQ7zIhDGBVZi7GysA9/9c4WZRv3A9jnojTlEVA24E8/1JHkbM3PvEjcp5E2zHX5eaKdNdFOMW8tubOcQUh4VHviyK+UtUawek6GOFajqemiTYOe+tjifMiQDzbq4VAeEk41p1xY4ZPu168vIdILVAW+h7HGU3mNhvBM9KkD18I+kRO0qERh5e4A==
-x-ms-exchange-antispam-messagedata: WxNI+fPOlufJhwLg+PjpLIY6zWklf2Gs92YLUlBUOwZdaXhpfmzpjenZ+bW/aEjPakAPFzk8Zt0stM97cjMEQ+q48qv9N42X04NppUaeWvdN8NVHpHTvfV5dO3IRr3mQtv7oB2ltUadNF9xHzNayWg==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F6363A936E53AA43BE204555B34A46F7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FXAHgZfY/WDAJS22zqOeVPqoXgR7iYMdLBK+n2JKck8=;
+        b=twdTfWjVtK8Jvbb3roxO+/806VrXQBKLDvb2EMceKOMymCAWrxZBlk/xAfNmouTW1E
+         qfvBMqEQ10Aj2rG8vwxhGv2I3adsSX3zwRs8wLQEyZtuYWO6WM0HheMg4WvHO7PPs4WP
+         NWZGxEgDbWzWqwRQZqv102Woi9g83v9lhXgXQAY+pGPLcP9zdtslXNn30dcGAkv5bzVO
+         0295JSnhH5rAMeMeRK1aUFTb73bGMqdL5dpZd6SmfyqdMmBFJoaSmsFDhozixCZYR355
+         MI665oCFQyy4YrrVdm0D1dgo0xYLuYA+/e0KZ7PJ4dwzwKaWmW01hAMsmQRWH+Q3bhGI
+         /aeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FXAHgZfY/WDAJS22zqOeVPqoXgR7iYMdLBK+n2JKck8=;
+        b=tXsYPTG+uJgvlBhS+wy5PCFtJ2gPXFZJ04GMTyAYXHgUe2htka60ZfGiK5ngXVpgg0
+         TmqoCkadY1hqt2JXqvWpjln78bT2OR36p3RLZt7nnyj8kuDE+W8nR41IQyFFH7VQDUwT
+         pkx1hVzFj9anQ75CZ1hZ40UJvamCibORJ1rChhP144vTsKTyx2RGYa7BoCXVsSM3vTgn
+         FrKukpqq3UdrRhRWxonNlS/SF8eMl/MK0CwgclJIKc3+btSA08X54TeK8SUcUN7C3eNc
+         Cc3AEUgWpngEbDMw8vaVZYEraOpeGmYJJv2VmbLrRk1sneaaU3GIdXuYg45M4xK3XS8Y
+         SOqA==
+X-Gm-Message-State: AGi0PuboSBlhIDNRiDfosaVu4+mUdmtk1v+BL42+BsSMmgfb+Kif5Cxz
+        lhCyQXWYA2T+TccL2SvYFODW4q3dDGig18G7b01gcg==
+X-Google-Smtp-Source: APiQypKSXhZQVEVBN9qo5EOx6rZ/V65FRY9S2yA8lF1RDzedNPcxXakhf3ZN/kJ3eBsogliBOrKAcz2kFA57SUSakMM=
+X-Received: by 2002:a63:cf02:: with SMTP id j2mr22304641pgg.130.1586872829015;
+ Tue, 14 Apr 2020 07:00:29 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e34e8c83-2755-4a3a-c887-08d7e07c1965
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 13:59:50.1842
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: l1fc+tS6xpsVDUrQD/wGbv1K1qFMSfSzT1AiS7fyAINBMDOnl4169A3rJeXO63QCeIb/qhGIaddf/CQtuM/foPEnqCfkOolE8GhibMOX60w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3498
+References: <20200414031647.124664-1-davidgow@google.com> <20200414031647.124664-3-davidgow@google.com>
+In-Reply-To: <20200414031647.124664-3-davidgow@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 14 Apr 2020 16:00:18 +0200
+Message-ID: <CAAeHK+yT+hPK6Vcj+KWv-7vPk=OQUGvODJUUO3atqHcoVTXvSQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] KUnit: KASAN Integration
+To:     David Gow <davidgow@google.com>
+Cc:     Patricia Alfonso <trishalfonso@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDE0LjA0LjIwMjAgMTY6MTIsIEFsZXhhbmRyZSBCZWxsb25pIHdyb3RlOg0KPiBFWFRF
-Uk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDE0LzA0LzIwMjAgMTM6MDU6
-MDMrMDAwMCwgQ2xhdWRpdS5CZXpuZWFAbWljcm9jaGlwLmNvbSB3cm90ZToNCj4+Pj4+IEJ1dCB0
-aGlzIGlzIHZlcnkgdW5saWtlbHkgdG8gaGFwcGVuIGJlY2F1c2UgdGhpcyB3b3VsZCBiZSBsaW1p
-dGVkIHRvIGENCj4+Pj4+IHNpbmdsZSBib2FyZCBkZXZpY2UgdHJlZSBpbnN0ZWFkIG9mIGltcGFj
-dCBldmVyeSBzYW05eDYwIGJhc2VkIGJvYXJkcy4NCj4+Pj4NCj4+Pj4gVmVyeSB1bmxpa2VseSBi
-dXQgYSBoYXZpbmcgYSBwYXRjaCB3aXRoIGRpZmYgbGlrZSB0aGlzOg0KPj4+Pg0KPj4+PiArJmdw
-YnIgew0KPj4+PiArICAgICBzdGF0dXMgPSAib2theSI7DQo+Pj4+ICt9Ow0KPj4+PiArDQo+Pj4+
-ICsmcnR0IHsNCj4+Pj4gKyAgICAgYXRtZWwscnR0LXJ0Yy10aW1lLXJlZyA9IDwmZ3BiciAweDA+
-Ow0KPj4+PiArICAgICBzdGF0dXMgPSAib2theSI7DQo+Pj4+ICt9Ow0KPj4+PiArDQo+Pj4+DQo+
-Pj4+IGFuZCByZXZlcnRpbmcgaXQgbWF5IGFmZmVjdCB0aGUgb3RoZXIgdXNlcnMgb2YgZ3BiciBp
-biBzYW05eDYwZWsuZHRzLg0KPj4+Pg0KPj4+DQo+Pj4gQWdhaW4sIHRoaXMgYWZmZWN0cyBvbmx5
-IHNhbTl4NjBlay5kdHMgaW5zdGVhZCBvZiBwb3NzaWJseSBtdWx0aXBsZSBEVHMNCj4+PiB0aGF0
-IG1heSBiZSBvdXQgb2YgdHJlZS4gU28gdGhlIHJpc2sgb2YgZG9pbmcgdGhhdCBpcyBudWxsLg0K
-Pj4NCj4+IEFueXdheS4uLiBJJ2xsIG1lcmdlIGl0IGFsdGhvdWdoIEkgZG9uJ3QgY29uc2lkZXIg
-aXMgdGhlIHJpZ2h0IHdheS4NCj4+DQo+IA0KPiBEbyBhcyB5b3Ugd2lzaCBidXQgYSBib2FyZCBE
-VCBjaGFuZ2UgbWl4ZWQgd2l0aCBhIGR0c2kgaXMgYSBubyBnby4NCg0KSSB3YXMgdGFsa2luZyBh
-Ym91dCBtaXhpbmcgdGhlc2U6DQoNCismZ3BiciB7DQorICAgICBzdGF0dXMgPSAib2theSI7DQor
-fTsNCisNCismcnR0IHsNCisgICAgIGF0bWVsLHJ0dC1ydGMtdGltZS1yZWcgPSA8JmdwYnIgMHgw
-PjsNCisgICAgIHN0YXR1cyA9ICJva2F5IjsNCit9Ow0KKw0KDQo+IA0KPiANCj4gLS0NCj4gQWxl
-eGFuZHJlIEJlbGxvbmksIEJvb3RsaW4NCj4gRW1iZWRkZWQgTGludXggYW5kIEtlcm5lbCBlbmdp
-bmVlcmluZw0KPiBodHRwczovL2Jvb3RsaW4uY29tDQo+IA0KPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBsaW51eC1hcm0ta2VybmVsIG1haWxpbmcg
-bGlzdA0KPiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsDQo+IA==
+On Tue, Apr 14, 2020 at 5:17 AM 'David Gow' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> From: Patricia Alfonso <trishalfonso@google.com>
+>
+> Integrate KASAN into KUnit testing framework.
+>         - Fail tests when KASAN reports an error that is not expected
+>         - Use KUNIT_EXPECT_KASAN_FAIL to expect a KASAN error in KASAN
+>         tests
+>         - Expected KASAN reports pass tests and are still printed when run
+>         without kunit_tool (kunit_tool still bypasses the report due to the
+>         test passing)
+>         - KUnit struct in current task used to keep track of the current
+>         test from KASAN code
+>         - Also make KASAN no-longer panic when panic_on_warn and
+>         kasan_multi_shot are enabled (as multi-shot does nothing
+>         otherwise)
+>
+> Make use of "[PATCH v3 kunit-next 1/2] kunit: generalize
+> kunit_resource API beyond allocated resources" and "[PATCH v3
+> kunit-next 2/2] kunit: add support for named resources" from Alan
+> Maguire [1]
+>         - A named resource is added to a test when a KASAN report is
+>          expected
+>         - This resource contains a struct for kasan_data containing
+>         booleans representing if a KASAN report is expected and if a
+>         KASAN report is found
+>
+> [1] (https://lore.kernel.org/linux-kselftest/1583251361-12748-1-git-send-email-alan.maguire@oracle.com/T/#t)
+>
+> Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
+> Signed-off-by: David Gow <davidgow@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> ---
+>  include/kunit/test.h  |  5 +++++
+>  include/linux/kasan.h |  6 ++++++
+>  lib/kunit/test.c      | 13 ++++++++-----
+>  lib/test_kasan.c      | 44 +++++++++++++++++++++++++++++++++++++++----
+>  mm/kasan/report.c     | 34 ++++++++++++++++++++++++++++++++-
+>  5 files changed, 92 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index ac59d18e6bab..1dc3d118f64b 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -225,6 +225,11 @@ struct kunit {
+>         struct list_head resources; /* Protected by lock. */
+>  };
+>
+> +static inline void kunit_set_failure(struct kunit *test)
+> +{
+> +       WRITE_ONCE(test->success, false);
+> +}
+> +
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+>
+>  int kunit_run_tests(struct kunit_suite *suite);
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 5cde9e7c2664..148eaef3e003 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -14,6 +14,12 @@ struct task_struct;
+>  #include <asm/kasan.h>
+>  #include <asm/pgtable.h>
+>
+> +/* kasan_data struct is used in KUnit tests for KASAN expected failures */
+> +struct kunit_kasan_expectation {
+> +       bool report_expected;
+> +       bool report_found;
+> +};
+> +
+>  extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
+>  extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
+>  extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 2cb7c6220a00..030a3281591e 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -10,16 +10,12 @@
+>  #include <linux/kernel.h>
+>  #include <linux/kref.h>
+>  #include <linux/sched/debug.h>
+> +#include <linux/sched.h>
+>
+>  #include "debugfs.h"
+>  #include "string-stream.h"
+>  #include "try-catch-impl.h"
+>
+> -static void kunit_set_failure(struct kunit *test)
+> -{
+> -       WRITE_ONCE(test->success, false);
+> -}
+> -
+>  static void kunit_print_tap_version(void)
+>  {
+>         static bool kunit_has_printed_tap_version;
+> @@ -288,6 +284,10 @@ static void kunit_try_run_case(void *data)
+>         struct kunit_suite *suite = ctx->suite;
+>         struct kunit_case *test_case = ctx->test_case;
+>
+> +#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+> +       current->kunit_test = test;
+> +#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT) */
+> +
+>         /*
+>          * kunit_run_case_internal may encounter a fatal error; if it does,
+>          * abort will be called, this thread will exit, and finally the parent
+> @@ -603,6 +603,9 @@ void kunit_cleanup(struct kunit *test)
+>                 spin_unlock(&test->lock);
+>                 kunit_remove_resource(test, res);
+>         }
+> +#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+> +       current->kunit_test = NULL;
+> +#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT)*/
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_cleanup);
+>
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index 3872d250ed2c..7b4cb107b387 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -23,12 +23,48 @@
+>
+>  #include <asm/page.h>
+>
+> -/*
+> - * Note: test functions are marked noinline so that their names appear in
+> - * reports.
+> +#include <kunit/test.h>
+> +
+> +static struct kunit_resource resource;
+> +static struct kunit_kasan_expectation fail_data;
+> +static bool multishot;
+> +
+> +static int kasan_test_init(struct kunit *test)
+> +{
+> +       /*
+> +        * Temporarily enable multi-shot mode and set panic_on_warn=0.
+> +        * Otherwise, we'd only get a report for the first case.
+> +        */
+> +       multishot = kasan_save_enable_multi_shot();
+> +
+> +       return 0;
+> +}
+> +
+> +static void kasan_test_exit(struct kunit *test)
+> +{
+> +       kasan_restore_multi_shot(multishot);
+> +}
+> +
+> +/**
+> + * KUNIT_EXPECT_KASAN_FAIL() - Causes a test failure when the expression does
+> + * not cause a KASAN error. This uses a KUnit resource named "kasan_data." Do
+> + * Do not use this name for a KUnit resource outside here.
+> + *
+>   */
+> +#define KUNIT_EXPECT_KASAN_FAIL(test, condition) do { \
+> +       fail_data.report_expected = true; \
+> +       fail_data.report_found = false; \
+> +       kunit_add_named_resource(test, \
+> +                               NULL, \
+> +                               NULL, \
+> +                               &resource, \
+> +                               "kasan_data", &fail_data); \
+> +       condition; \
+> +       KUNIT_EXPECT_EQ(test, \
+> +                       fail_data.report_expected, \
+> +                       fail_data.report_found); \
+> +} while (0)
+>
+
+[...]
+
+> -static noinline void __init kmalloc_oob_right(void)
+
+Actually this also needs to be fixed. You remove this line in this
+patch and add it back in the next one. Please test that the kernel
+builds with your patches applied one by one.
+
+>  {
+>         char *ptr;
+>         size_t size = 123;
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 5ef9f24f566b..a58a9f3b7f2c 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -32,6 +32,8 @@
+>
+>  #include <asm/sections.h>
+>
+> +#include <kunit/test.h>
+> +
+>  #include "kasan.h"
+>  #include "../slab.h"
+>
+> @@ -92,7 +94,7 @@ static void end_report(unsigned long *flags)
+>         pr_err("==================================================================\n");
+>         add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
+>         spin_unlock_irqrestore(&report_lock, *flags);
+> -       if (panic_on_warn)
+> +       if (panic_on_warn && !test_bit(KASAN_BIT_MULTI_SHOT, &kasan_flags))
+>                 panic("panic_on_warn set ...\n");
+>         kasan_enable_current();
+>  }
+> @@ -455,12 +457,37 @@ static bool report_enabled(void)
+>         return !test_and_set_bit(KASAN_BIT_REPORTED, &kasan_flags);
+>  }
+>
+> +#if IS_ENABLED(CONFIG_KUNIT)
+> +static void kasan_update_kunit_status(struct kunit *cur_test)
+> +{
+> +       struct kunit_resource *resource;
+> +       struct kunit_kasan_expectation *kasan_data;
+> +
+> +       resource = kunit_find_named_resource(cur_test, "kasan_data");
+> +
+> +       if (!resource) {
+> +               kunit_set_failure(cur_test);
+> +               return;
+> +       }
+> +
+> +       kasan_data = (struct kunit_kasan_expectation *)resource->data;
+> +       kasan_data->report_found = true;
+> +       kunit_put_resource(resource);
+> +}
+> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
+> +
+>  void kasan_report_invalid_free(void *object, unsigned long ip)
+>  {
+>         unsigned long flags;
+>         u8 tag = get_tag(object);
+>
+>         object = reset_tag(object);
+> +
+> +#if IS_ENABLED(CONFIG_KUNIT)
+> +       if (current->kunit_test)
+> +               kasan_update_kunit_status(current->kunit_test);
+> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
+> +
+>         start_report(&flags);
+>         pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", (void *)ip);
+>         print_tags(tag, object);
+> @@ -481,6 +508,11 @@ void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned lon
+>         if (likely(!report_enabled()))
+>                 return;
+>
+> +#if IS_ENABLED(CONFIG_KUNIT)
+> +       if (current->kunit_test)
+> +               kasan_update_kunit_status(current->kunit_test);
+> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
+> +
+>         disable_trace_on_warning();
+>
+>         tagged_addr = (void *)addr;
+> --
+> 2.26.0.110.g2183baf09c-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200414031647.124664-3-davidgow%40google.com.
