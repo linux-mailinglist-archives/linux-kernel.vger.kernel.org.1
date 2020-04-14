@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DDD1A8E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE981A8E56
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634255AbgDNWLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 18:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S2634247AbgDNWLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 18:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2634207AbgDNWKL (ORCPT
+        by vger.kernel.org with ESMTP id S2634208AbgDNWKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 18:10:11 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17EDC061A41;
-        Tue, 14 Apr 2020 15:10:10 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y4so1516515ljn.7;
-        Tue, 14 Apr 2020 15:10:10 -0700 (PDT)
+        Tue, 14 Apr 2020 18:10:13 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8270DC0610D5;
+        Tue, 14 Apr 2020 15:10:12 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k21so1555736ljh.2;
+        Tue, 14 Apr 2020 15:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LSop2fRHEeN0n5T5a31s3xV0wqW+LOYJC5cXPalZm5Q=;
-        b=a2py/2FAfrZLuxoCDH4HxZ9tMAtoDgAUFHDtAX3R3eeCWnR/FO5HOJ5T0sOOzsTKqm
-         mJOAHuh2o4zrvpS+kLd2BcHsxeWz6b6KTfaDhSKli68zlsi3fDyTJ9+3aLsRkcH0sNuN
-         b5NXblqClaF+9+kBLVmHp3RDoNjrJwwKEepBsFaF6x4tqiDdOblq894nNi+llCoSZEal
-         /Zlc29atgGE97MT7i4nDtYpIGdzKXvCfOUzU7AlHEg0DurKbhto42uju2x6RqJxdG7IO
-         C7OmJlO9cNviMTiZb8tGLXGATvIuAyUQ2rFnJtX6HfPgRkHvUhzsZuGmgoq4CJimHMnE
-         888w==
+        bh=HbkBbD06z19K2oXgXWs3e4TxBosadcwBWzBePKeICjY=;
+        b=Vpxw4RH7pN7TMYWjg004zs84g1Nq2W2gMZPJAFNCJKAWpZtwjHwgXRGTGeKNW6iLys
+         Qh7ZomliJM1zoIiZ5gGts5KRmb2UxMvs5HBPh84SSKt4M6THOcvhKCHyYvYuTGj7VGvf
+         +1kivtGEmN+kRVq/WJjxB29kKHYlTxedL9a7O2cvFBJKiwS5sNV5NhR6z7OkxfcGJYMn
+         9PYidUfVvM6lCR06SVa2CRIL5bYHNUJQHf/DNCgveg8o7QbgES7GxNeIIRse6FNFykdc
+         wZRxzzrc9WSHS1UvaaW9IRiiqA+nNidAkUQ6rDqCJzY1dQaocsXNikTTux+cPy4cFban
+         ikIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LSop2fRHEeN0n5T5a31s3xV0wqW+LOYJC5cXPalZm5Q=;
-        b=Jjr3EuS/kkCq89uKZ6F22JBRPyezGwSygNXhorsk4qv28KbduAYZud2LcAN8/l9aKx
-         X9i2KOTVZrkPfTqUfUcROPQqCQc/rvp949OuIO83fceZJiQXjFDmXA3Eq8Hvu0zx9eKN
-         ru4D52w9hPuPIzSlF0VQn2aWNKGMGdKkK4hlsvX36Tf6rWtSpHnkdMmX3d8L0C2DFD5r
-         X3LUObTDPoo2+Kcjn1MbqdNP18+A3m2Alp/0QtpJ13m42D6DCiWZYo1Q2rVlMqmAEYmG
-         z/rPNo4ctRHGb358JIH6qfQr2SpFzZ6wljX+LglClkKNzCybRgNHUARqS3CngrFVgriL
-         Ex1A==
-X-Gm-Message-State: AGi0PuZc+66nsassjQDw+1G7h6dNL4EACCPhBY0nite46xByX5189bMq
-        6kPz9PP6tWGuKiO62HoQ4wI=
-X-Google-Smtp-Source: APiQypJShCEnh6i4AC9mC3/EsPC+BSONeHTSPxNm9mVVKag8PST7G/K1FdtZE5MWUw5iM24kmyfXow==
-X-Received: by 2002:a2e:b177:: with SMTP id a23mr1352934ljm.174.1586902209465;
-        Tue, 14 Apr 2020 15:10:09 -0700 (PDT)
+        bh=HbkBbD06z19K2oXgXWs3e4TxBosadcwBWzBePKeICjY=;
+        b=Ht8Gk3eIZIorRRhzFxU/D0GwsOOJKa8TjCyif1Zra37BVKOes+gFFq3BQwIfmTrIEB
+         Ukkthc+bQr7He8CUH4PTGLoekNLARU74K3YG5eBaQSuods25OqEnxVM0c/SDUMrINMgf
+         ozhARYkd4yUjyckxBlfiG0QVimU0jnxRrn/oNojcgVb08jS53nbKuQrtV1FAkOPozUY1
+         7Z1NIjMu8Wg6u0G4IHPDN+E+RA0ph3CnYb/PWYY4O2HaJxJpb3jQXfv+mO/IkJ09hxpF
+         YeJ3cJtzxxy/rckQ55LLl4UkbfWEF11dROkvoxzIBoCebb6iJQZbRNx8jrChd0KPnYnD
+         dryg==
+X-Gm-Message-State: AGi0PuYu58K+chC1222llYkZOnc+eaXRG/1D0qOs+bARNMpHYBzaBf43
+        XJfJoqqj7RlTzeqkHuW1Ftk=
+X-Google-Smtp-Source: APiQypKHrYML6HyzvaYNM4+EK5v4wBb/se2WLBLZv79wIA7kbWucR+OcFnRHWiI2u7c6OlANpmlVTA==
+X-Received: by 2002:a2e:2413:: with SMTP id k19mr1377135ljk.134.1586902211008;
+        Tue, 14 Apr 2020 15:10:11 -0700 (PDT)
 Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id w27sm13663044lfn.45.2020.04.14.15.10.08
+        by smtp.gmail.com with ESMTPSA id w27sm13663044lfn.45.2020.04.14.15.10.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 15:10:08 -0700 (PDT)
+        Tue, 14 Apr 2020 15:10:10 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -61,9 +61,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Matt Merhar <mattmerhar@protonmail.com>
 Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/6] dt-bindings: ARM: tegra: Add ASUS Google Nexus 7
-Date:   Wed, 15 Apr 2020 01:07:58 +0300
-Message-Id: <20200414220759.29146-6-digetx@gmail.com>
+Subject: [PATCH v4 6/6] ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
+Date:   Wed, 15 Apr 2020 01:07:59 +0300
+Message-Id: <20200414220759.29146-7-digetx@gmail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200414220759.29146-1-digetx@gmail.com>
 References: <20200414220759.29146-1-digetx@gmail.com>
@@ -74,31 +74,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a binding for the Tegra30-based ASUS Google Nexus 7 tablet device.
+Enable several drivers for hardware that is found on Nexus 7 and Acer A500
+tablet devices. Please note that some drivers may require firmware files
+extracted from original Android image.
 
+Link: https://github.com/digetx/linux-firmware
+Link: https://github.com/digetx/alsa-ucm-conf
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/tegra.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/configs/tegra_defconfig | 42 ++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
-index 7fd0b66c69b2..fb3bbf7a5fb4 100644
---- a/Documentation/devicetree/bindings/arm/tegra.yaml
-+++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -62,6 +62,13 @@ properties:
-               - toradex,colibri_t30-eval-v3
-           - const: toradex,colibri_t30
-           - const: nvidia,tegra30
-+      - items:
-+          - const: asus,grouper
-+          - const: nvidia,tegra30
-+      - items:
-+          - const: asus,tilapia
-+          - const: asus,grouper
-+          - const: nvidia,tegra30
-       - items:
-           - enum:
-               - nvidia,dalmore
+diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
+index 0029259a6bf5..b382f06f835b 100644
+--- a/arch/arm/configs/tegra_defconfig
++++ b/arch/arm/configs/tegra_defconfig
+@@ -10,6 +10,8 @@ CONFIG_RT_GROUP_SCHED=y
+ CONFIG_CGROUP_FREEZER=y
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_CGROUP_DEBUG=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
+ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_ELF_CORE is not set
+ CONFIG_EMBEDDED=y
+@@ -18,6 +20,7 @@ CONFIG_SLAB=y
+ CONFIG_ARCH_TEGRA=y
+ CONFIG_SMP=y
+ CONFIG_HIGHMEM=y
++CONFIG_SECCOMP=y
+ CONFIG_ZBOOT_ROM_TEXT=0x0
+ CONFIG_ZBOOT_ROM_BSS=0x0
+ CONFIG_KEXEC=y
+@@ -63,11 +66,17 @@ CONFIG_BT_RFCOMM=y
+ CONFIG_BT_BNEP=y
+ CONFIG_BT_HIDP=y
+ CONFIG_BT_HCIBTUSB=m
++CONFIG_BT_HCIUART=y
++CONFIG_BT_HCIUART_BCM=y
+ CONFIG_CFG80211=y
+ CONFIG_MAC80211=y
+ CONFIG_RFKILL=y
+ CONFIG_RFKILL_INPUT=y
+ CONFIG_RFKILL_GPIO=y
++CONFIG_NFC=y
++CONFIG_NFC_HCI=y
++CONFIG_NFC_SHDLC=y
++CONFIG_NFC_PN544_I2C=y
+ CONFIG_PCI=y
+ CONFIG_PCIEPORTBUS=y
+ CONFIG_PCI_MSI=y
+@@ -106,20 +115,24 @@ CONFIG_INPUT_JOYDEV=y
+ CONFIG_INPUT_EVDEV=y
+ CONFIG_KEYBOARD_GPIO=y
+ CONFIG_KEYBOARD_TEGRA=y
++CONFIG_KEYBOARD_CAP11XX=y
+ CONFIG_KEYBOARD_CROS_EC=y
+ CONFIG_MOUSE_PS2_ELANTECH=y
+ CONFIG_INPUT_TOUCHSCREEN=y
+ CONFIG_TOUCHSCREEN_ATMEL_MXT=y
++CONFIG_TOUCHSCREEN_ELAN=y
+ CONFIG_TOUCHSCREEN_WM97XX=y
+ # CONFIG_TOUCHSCREEN_WM9705 is not set
+ # CONFIG_TOUCHSCREEN_WM9713 is not set
+ CONFIG_TOUCHSCREEN_STMPE=y
+ CONFIG_INPUT_MISC=y
++CONFIG_INPUT_GPIO_VIBRA=y
+ # CONFIG_LEGACY_PTYS is not set
+ CONFIG_SERIAL_8250=y
+ CONFIG_SERIAL_8250_CONSOLE=y
+ CONFIG_SERIAL_OF_PLATFORM=y
+ CONFIG_SERIAL_TEGRA=y
++CONFIG_SERIAL_DEV_BUS=y
+ # CONFIG_HW_RANDOM is not set
+ # CONFIG_I2C_COMPAT is not set
+ CONFIG_I2C_CHARDEV=y
+@@ -131,10 +144,12 @@ CONFIG_SPI_TEGRA114=y
+ CONFIG_SPI_TEGRA20_SFLASH=y
+ CONFIG_SPI_TEGRA20_SLINK=y
+ CONFIG_PINCTRL_AS3722=y
++CONFIG_PINCTRL_MAX77620=y
+ CONFIG_PINCTRL_PALMAS=y
+ CONFIG_GPIO_SYSFS=y
+ CONFIG_GPIO_PCA953X=y
+ CONFIG_GPIO_PCA953X_IRQ=y
++CONFIG_GPIO_MAX77620=y
+ CONFIG_GPIO_PALMAS=y
+ CONFIG_GPIO_TPS6586X=y
+ CONFIG_GPIO_TPS65910=y
+@@ -142,13 +157,21 @@ CONFIG_POWER_RESET=y
+ CONFIG_POWER_RESET_AS3722=y
+ CONFIG_POWER_RESET_GPIO=y
+ CONFIG_BATTERY_SBS=y
++CONFIG_BATTERY_BQ27XXX=y
++CONFIG_CHARGER_GPIO=y
++CONFIG_CHARGER_SMB347=y
+ CONFIG_CHARGER_TPS65090=y
+ CONFIG_SENSORS_LM90=y
+ CONFIG_SENSORS_LM95245=y
++CONFIG_THERMAL=y
++CONFIG_THERMAL_STATISTICS=y
++CONFIG_CPU_THERMAL=y
+ CONFIG_WATCHDOG=y
++CONFIG_MAX77620_WATCHDOG=y
+ CONFIG_TEGRA_WATCHDOG=y
+ CONFIG_MFD_AS3722=y
+ CONFIG_MFD_CROS_EC=y
++CONFIG_MFD_MAX77620=y
+ CONFIG_MFD_MAX8907=y
+ CONFIG_MFD_STMPE=y
+ CONFIG_MFD_PALMAS=y
+@@ -159,6 +182,7 @@ CONFIG_REGULATOR=y
+ CONFIG_REGULATOR_FIXED_VOLTAGE=y
+ CONFIG_REGULATOR_AS3722=y
+ CONFIG_REGULATOR_GPIO=y
++CONFIG_REGULATOR_MAX77620=y
+ CONFIG_REGULATOR_MAX8907=y
+ CONFIG_REGULATOR_PALMAS=y
+ CONFIG_REGULATOR_TPS51632=y
+@@ -174,7 +198,10 @@ CONFIG_USB_GSPCA=y
+ CONFIG_DRM=y
+ CONFIG_DRM_NOUVEAU=m
+ CONFIG_DRM_TEGRA=y
++CONFIG_DRM_TEGRA_STAGING=y
++CONFIG_DRM_PANEL_LVDS=y
+ CONFIG_DRM_PANEL_SIMPLE=y
++CONFIG_DRM_LVDS_CODEC=y
+ # CONFIG_LCD_CLASS_DEVICE is not set
+ CONFIG_BACKLIGHT_CLASS_DEVICE=y
+ # CONFIG_BACKLIGHT_GENERIC is not set
+@@ -238,6 +265,7 @@ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_AS3722=y
+ CONFIG_RTC_DRV_DS1307=y
+ CONFIG_RTC_DRV_MAX8907=y
++CONFIG_RTC_DRV_MAX77686=y
+ CONFIG_RTC_DRV_PALMAS=y
+ CONFIG_RTC_DRV_TPS6586X=y
+ CONFIG_RTC_DRV_TPS65910=y
+@@ -259,11 +287,18 @@ CONFIG_ARCH_TEGRA_2x_SOC=y
+ CONFIG_ARCH_TEGRA_3x_SOC=y
+ CONFIG_ARCH_TEGRA_114_SOC=y
+ CONFIG_ARCH_TEGRA_124_SOC=y
++CONFIG_PM_DEVFREQ=y
++CONFIG_ARM_TEGRA_DEVFREQ=y
++CONFIG_ARM_TEGRA20_DEVFREQ=y
+ CONFIG_MEMORY=y
+ CONFIG_IIO=y
++CONFIG_KXCJK1013=y
+ CONFIG_MPU3050_I2C=y
++CONFIG_INV_MPU6050_I2C=y
++CONFIG_AL3010=y
+ CONFIG_SENSORS_ISL29018=y
+ CONFIG_SENSORS_ISL29028=y
++CONFIG_AK8974=y
+ CONFIG_AK8975=y
+ CONFIG_PWM=y
+ CONFIG_PWM_TEGRA=y
+@@ -283,6 +318,13 @@ CONFIG_TMPFS_POSIX_ACL=y
+ CONFIG_SQUASHFS=y
+ CONFIG_SQUASHFS_LZO=y
+ CONFIG_SQUASHFS_XZ=y
++CONFIG_PSTORE=y
++CONFIG_PSTORE_LZO_COMPRESS=y
++CONFIG_PSTORE_LZ4_COMPRESS=y
++CONFIG_PSTORE_LZ4HC_COMPRESS=y
++CONFIG_PSTORE_842_COMPRESS=y
++CONFIG_PSTORE_CONSOLE=y
++CONFIG_PSTORE_RAM=y
+ CONFIG_NFS_FS=y
+ CONFIG_NFS_V4=y
+ CONFIG_ROOT_NFS=y
 -- 
 2.26.0
 
