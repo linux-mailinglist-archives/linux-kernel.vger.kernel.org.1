@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390101A8BC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA341A8BD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505390AbgDNUAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        id S2505439AbgDNUCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505371AbgDNUAe (ORCPT
+        by vger.kernel.org with ESMTP id S2505416AbgDNUCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:00:34 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B77C03C1A9;
-        Tue, 14 Apr 2020 13:00:33 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y24so15707243wma.4;
-        Tue, 14 Apr 2020 13:00:33 -0700 (PDT)
+        Tue, 14 Apr 2020 16:02:18 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE19C03C1A6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:02:18 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id d8so1186407ljo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QOT6jBh5RHTtvKF0ff1JDdUtPrhDEedCclbut6CMHz8=;
-        b=ltgZG4pYMMJ6ZY7wVTwqMRmtGMNXJXPW1JBs5huXnLLaRWqURGzP/fixWgS5H8iSrx
-         iHzXKkG0yUaEFarf2nj/Z68ZQ1wmM878ugSiUvGFF4tlyFYlh1GXKZu1CbnIfYra9r2I
-         mBORt9ezjUeq+jxZ8rL+j07j1QOX4FdUKW6k9786hy0xN5t+HTUF1OPk7Q/sQObOoo7o
-         SthNf1HbShAgFvvW3m9S1zZYlaCmc8RaOgAgkFX4F7SIo2Hc0BX6+3QZkxnI+NwClyRN
-         70Nd0zBKyecbiGpKobA8HWVeI0DX+bhgRq0oEREm7avl6tmBOBBq8unBLCT691SoWiwS
-         FDcQ==
+        d=qtec.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iy1YXWO5laLm10GzQHnsg5e4RQXfAXSg1PWIeEl3QAU=;
+        b=ajAbHjJbMiUyLCO+fE3RKVK/bVQj2yNamrMl1h60NVGyciFbu341rumSDLdDC9rQ26
+         LHAjI04ozufudiPj3qciitPlc4KYnF81vt6qaxSIALxaBe0N/m88Pov0/1AW3/NhtMC3
+         0YMyh8YvX9QjFsoVLjgx2eHqBxdGwgLdrW6qQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QOT6jBh5RHTtvKF0ff1JDdUtPrhDEedCclbut6CMHz8=;
-        b=TlKK2VoB4ly7qosrfiLYw08uYUeE1zPlgKWM4+/anJ8U5Fv9CkzBiMJm5SqCS+9C34
-         fsoy8aRz5rcTjdw/cTEAI5/Xc6D+xekB4GQ2zk25SRD35+u8FHB/ckI32E+vP3BsSGVS
-         DUqpTWfOyZaIAMYfrCouo2BhE2mNa6M/DhIaT+cXKhWZmrCSSCm7GZANVmWG+yeAkJap
-         rh5885QdpO8UWfkihhp91KhqntlLTvhn+YwOuapcYgOqr65mz3oQfDokCgzOXvAkUGMT
-         v1L0emX2qbkzffzdNOBWd0J5a7cbVYtMJ+jhGVLzyW9U30w3aAQPY/7GJLqwRnN+YACe
-         Pa6Q==
-X-Gm-Message-State: AGi0PuZD6C1/2YoJNJqbXF/nP/MTS6metegJBk52fOrjxBOOOWJxJkz2
-        LFChmgaymPExCvKzuL9lKo7l4gbCfKM=
-X-Google-Smtp-Source: APiQypJxSfupVcVY3tsTEfwY5Bo6ocg546NiCXQLE2PxKF7+H7AGFvO+rPQUNO8wobXymCcuF5vtjQ==
-X-Received: by 2002:a1c:7d4b:: with SMTP id y72mr1493618wmc.11.1586894432487;
-        Tue, 14 Apr 2020 13:00:32 -0700 (PDT)
-Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id b4sm15540253wrv.42.2020.04.14.13.00.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iy1YXWO5laLm10GzQHnsg5e4RQXfAXSg1PWIeEl3QAU=;
+        b=eO0hAOiaORbjSNeK5NgIylgcRtoSgrmAVoRsN6AbBYyGT1xLoKlckDFUDjsA4lbt02
+         3jpKtPQMAwOvXGDaEJ/3smh5F631AKcjgaBzSLdjwX09Ca/r0fjauwfgxNQtXAq4Fqwv
+         K2B8KIcsTI33MhqqFxMkqTjPHbXyJObvQ6NTD/MZ7aMm/upSZKKkoo8N1BwDxAeIudKn
+         5by0w3214JlldPxp79TjNFstLDNW0v5q/UNAoitgDBW+Alz6HAPvNav44zn3W/QIsDCA
+         /r9c2RWdFl3J1n0IaqwbUTkjDU4vJ5afBaD/mAkrmwLO1QAyb4FbOB3oDVED3dD/hwPr
+         ZInQ==
+X-Gm-Message-State: AGi0PuayXiVwxn2J4ZIqLiTjxyOt1rXyW6hHO0qd/I/qfabySdou8r7l
+        Clp5skfq7js+ztMvfgfQq6N3ng==
+X-Google-Smtp-Source: APiQypIWc7hSnSIjw52g80XaetpCRsCdbkcCRnrMGWL5hZRB0mukjm2kA26/FVi1HnDGpty8xHJ69A==
+X-Received: by 2002:a2e:968d:: with SMTP id q13mr1136690lji.62.1586894536533;
+        Tue, 14 Apr 2020 13:02:16 -0700 (PDT)
+Received: from localhost.localdomain (62-243-86-95-cable.dk.customer.tdc.net. [62.243.86.95])
+        by smtp.gmail.com with ESMTPSA id v4sm3525254ljj.104.2020.04.14.13.02.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 13:00:32 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org
-Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 4/4] clk: meson: meson8b: Make the CCF use the glitch-free VPU mux
-Date:   Tue, 14 Apr 2020 22:00:17 +0200
-Message-Id: <20200414200017.226136-5-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200414200017.226136-1-martin.blumenstingl@googlemail.com>
-References: <20200414200017.226136-1-martin.blumenstingl@googlemail.com>
+        Tue, 14 Apr 2020 13:02:15 -0700 (PDT)
+From:   Daniel Gomez <daniel@qtec.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Daniel Gomez <daniel@qtec.com>
+Subject: [RFC PATCH 0/3] v4l2 api changes for imx378 driver
+Date:   Tue, 14 Apr 2020 22:01:48 +0200
+Message-Id: <20200414200151.80089-1-daniel@qtec.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "vpu_0" or "vpu_1" clock trees should not be updated while the
-clock is running. Enforce this by setting CLK_SET_RATE_GATE on the
-"vpu_0" and "vpu_1" gates. This makes the CCF switch to the "vpu_1"
-tree when "vpu_0" is currently active and vice versa, which is exactly
-what the vendor driver does when updating the frequency of the VPU
-clock.
+Hi all,
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/meson/meson8b.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+I would like to discuss with you guys the next two following topics:
 
-diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index ed4b70c2d4bd..427392678fec 100644
---- a/drivers/clk/meson/meson8b.c
-+++ b/drivers/clk/meson/meson8b.c
-@@ -2063,7 +2063,7 @@ static struct clk_regmap meson8b_vpu_0 = {
- 			&meson8b_vpu_0_div.hw
- 		},
- 		.num_parents = 1,
--		.flags = CLK_SET_RATE_PARENT,
-+		.flags = CLK_SET_RATE_GATE | CLK_SET_RATE_PARENT,
- 	},
- };
- 
-@@ -2134,10 +2134,18 @@ static struct clk_regmap meson8b_vpu_1 = {
- 			&meson8b_vpu_1_div.hw
- 		},
- 		.num_parents = 1,
--		.flags = CLK_SET_RATE_PARENT,
-+		.flags = CLK_SET_RATE_GATE | CLK_SET_RATE_PARENT,
- 	},
- };
- 
-+/*
-+ * The VPU clock has two two identical clock trees (vpu_0 and vpu_1)
-+ * muxed by a glitch-free switch on Meson8b and Meson8m2. The CCF can
-+ * actually manage this glitch-free mux because it does top-to-bottom
-+ * updates the each clock tree and switches to the "inactive" one when
-+ * CLK_SET_RATE_GATE is set.
-+ * Meson8 only has vpu_0 and no glitch-free mux.
-+ */
- static struct clk_regmap meson8b_vpu = {
- 	.data = &(struct clk_regmap_mux_data){
- 		.offset = HHI_VPU_CLK_CNTL,
-@@ -2152,7 +2160,7 @@ static struct clk_regmap meson8b_vpu = {
- 			&meson8b_vpu_1.hw,
- 		},
- 		.num_parents = 2,
--		.flags = CLK_SET_RATE_NO_REPARENT,
-+		.flags = CLK_SET_RATE_PARENT,
- 	},
- };
- 
--- 
-2.26.0
+* VIDIOC_SUBDEV_ENUM_FRAME_INTERVAL:
+
+I'm working on a driver for the imx378 sensor but the current v4l2-subdev API 
+(VIDIOC_SUBDEV_ENUM_FRAME_INTERVAL) doesn't allow you to set up a range of frame
+intervals. However, this is supported in the v4l2 device API level. My idea is
+to follow the same approach as the VIDIOC_SUBDEV_ENUM_FRAME_SIZE by setting a
+min and max intervals in the VIDIOC_SUBDEV_ENUM_FRAME_INTERVAL to solve this
+missing support.
+
+This is the current output of VIDIOC_ENUM_FRAMEINTERVALS in continous mode:
+
+v4l2-ctl --list-frameintervals width=1920,height=1080,pixelformat=pRAA \
+-d /dev/video0
+ioctl: VIDIOC_ENUM_FRAMEINTERVALS
+Interval: Continuous 0.029s - 0.607s (1.648-34.797 fps)
+
+This is the current output of VIDIOC_SUBDEV_ENUM_FRAME_INTERVAL:
+
+v4l2-ctl --list-subdev-frameintervals code=0x300f,width=1920,height=1080 \
+-d /dev/v4l-subdev19
+ioctl: VIDIOC_SUBDEV_ENUM_FRAME_INTERVAL (pad=0)
+Interval: 0.029s (34.797 fps)
+
+So, the idea would be to return the interval range from the v4l2-subdev level
+to the device level. Besides that, it would also be necessary to adapt the
+v4l-utils tools (compliance and ctl).
+
+What do you think guys?
+Please, follow the RFC patch series to see my suggestion.
+
+* V4L2_CID_TEMPERATURE:
+
+In addition to this, the driver is able to report as a v4l2 control the
+temperature of the sensor. Since is quite 'general' control I also included the
+v4l2 temperature control as part of the common v4l2 control list.
+
+Would it be also possible?
+
+In the RFC patch series you will find the the modified code for the
+VIDIOC_SUBDEV_ENUM_FRAME_INTERVAL and V4L2_CID_TEMPERATURE topics as well as
+the imx378 driver using the above.
+
+Daniel Gomez (3):
+  media: v4l2-subdev.h: Add min and max enum
+  media: v4l2: Add v4l2 control IDs for temperature
+  media: imx378: Add imx378 camera sensor driver
+
+ drivers/media/i2c/Kconfig            |   11 +
+ drivers/media/i2c/Makefile           |    1 +
+ drivers/media/i2c/imx378.c           | 1829 ++++++++++++++++++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c |    5 +
+ include/uapi/linux/v4l2-controls.h   |    4 +-
+ include/uapi/linux/v4l2-subdev.h     |    6 +-
+ 6 files changed, 1854 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/media/i2c/imx378.c
+
+--
+2.25.1
 
