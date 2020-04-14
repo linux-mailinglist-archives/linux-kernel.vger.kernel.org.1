@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8DE1A8289
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DDB1A828E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440355AbgDNPVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:21:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23595 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2438972AbgDNPVe (ORCPT
+        id S2439316AbgDNPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:22:43 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37691 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438826AbgDNPWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:21:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586877693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t56IV5IcGFIFk76C/Oe4RMyeNWF7V2Xr/OgkHc14pEU=;
-        b=dHQGXyP1wT1EtjFk7l9gFlxzOR5So5EA1qDhTiMPdXv1oRlhaTubDg/b0qsTKxl/ZYqNI4
-        DeeYvxPRfHL9aHuXzjeQ00JqScQtkVTTXAWVr2/N5H2Tm5FAiYnxHv6k+sJLaVBne77gdk
-        kIJ6yusxC3bCh1T405jFBGFjyCOtyUM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-zmazFg1JMD-P2aCg8tKd3Q-1; Tue, 14 Apr 2020 11:21:29 -0400
-X-MC-Unique: zmazFg1JMD-P2aCg8tKd3Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 402C1107ACC7;
-        Tue, 14 Apr 2020 15:21:25 +0000 (UTC)
-Received: from krava (unknown [10.40.195.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 50F905E240;
-        Tue, 14 Apr 2020 15:21:19 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 17:21:16 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Tue, 14 Apr 2020 11:22:31 -0400
+Received: by mail-ot1-f65.google.com with SMTP id z17so5616910oto.4;
+        Tue, 14 Apr 2020 08:22:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AnHn2Q/nKp8vHi8xRLPGA04W9zPV6QThgvNNDvW6Lz4=;
+        b=oYeCqf78I8FW6TzZbU5/EHAung+vdubjK44BPSrBmo2lzpN/8YI7S5ZBygDDDUu0Hi
+         dv8Ji9bMj92KjHFFTuBw5maxg/CXgl/AnbAX97ExjD5RnnjxaU44yyFAED09CRZOgbuq
+         s9tXq80KvOtLX/5NiETKUlEavcRYU8VMOBg/Bh4lPdQJ5FmhHggtwKIJYcWJ6B6wwuMe
+         tszTzmKvR/gP0+gJwOCK8sgdYiSudAAdFPfXWXTsNe49vSyxewdsRi+pooy7ufxPdE0T
+         tpjYxLveLyN2AFhYqKua2z48YnBPAzb0pjam8mnN41fLWe5SgHFJpP1sFdNGKvqkJCyo
+         YF+Q==
+X-Gm-Message-State: AGi0PubWoS37eAqQDbiKgCWvAgA9JslnaiJ2NxiI9XS9aACTwAobFqxp
+        0A7Wv2ImeGYdJTPdvWMHeg==
+X-Google-Smtp-Source: APiQypJR5WeRaPhYCrALFhL48Dtxyk9ODcHd1LOjeRCjBr6tTDoukXibtiqbCGRPmuc2x2B7Gx5QGA==
+X-Received: by 2002:a9d:6354:: with SMTP id y20mr9159168otk.171.1586877750682;
+        Tue, 14 Apr 2020 08:22:30 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q18sm5508097otl.65.2020.04.14.08.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 08:22:29 -0700 (PDT)
+Received: (nullmailer pid 27980 invoked by uid 1000);
+        Tue, 14 Apr 2020 15:22:28 -0000
+Date:   Tue, 14 Apr 2020 10:22:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v8 2/4] tools feature: add support for detecting libpfm4
-Message-ID: <20200414152116.GD208694@krava>
-References: <20200411074631.9486-1-irogers@google.com>
- <20200411074631.9486-3-irogers@google.com>
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: Re: [PATCH v7 1/4] dt-bindings: usb: qcom,dwc3: Introduce
+ interconnect properties for Qualcomm DWC3 driver
+Message-ID: <20200414152228.GA27923@bogus>
+References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
+ <1585718145-29537-2-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200411074631.9486-3-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <1585718145-29537-2-git-send-email-sanm@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 12:46:29AM -0700, Ian Rogers wrote:
-> From: Stephane Eranian <eranian@google.com>
+On Wed,  1 Apr 2020 10:45:42 +0530, Sandeep Maheswaram wrote:
+> Add documentation for the interconnects and interconnect-names
+> properties for USB.
 > 
-> libpfm4 provides an alternate command line encoding of perf events.
-> 
-> Signed-off-by: Stephane Eranian <eranian@google.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
 > ---
->  tools/build/Makefile.feature       | 6 ++++--
->  tools/build/feature/Makefile       | 6 +++++-
->  tools/build/feature/test-libpfm4.c | 9 +++++++++
->  3 files changed, 18 insertions(+), 3 deletions(-)
->  create mode 100644 tools/build/feature/test-libpfm4.c
+>  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 3e0c019ef297..0b651171476f 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -73,7 +73,8 @@ FEATURE_TESTS_BASIC :=                  \
->          libaio				\
->          libzstd				\
->          disassembler-four-args		\
-> -        file-handle
-> +        file-handle			\
-> +        libpfm4
 
-let's treat this the same way as libbpf and do not include
-it in the basic check, which will fail for omst users
-
-jirka
-
+Reviewed-by: Rob Herring <robh@kernel.org>
