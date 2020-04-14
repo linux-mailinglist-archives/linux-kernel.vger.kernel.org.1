@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230E61A8E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B1A1A8E53
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634177AbgDNWJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 18:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S2634236AbgDNWKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 18:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2634162AbgDNWJC (ORCPT
+        by vger.kernel.org with ESMTP id S2634193AbgDNWJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 18:09:02 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA08C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:09:02 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z6so16258881wml.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1LHaTJUSb6YlKNJo8uEXGOXHLnntD8wG0lKLYJJal8o=;
-        b=pDG1h0WC2l6d+f8gKVw4nIQv4pwuJvFp5v/pEj2Ej+aQGcAYfdxMwxHlGR2KPikBrG
-         gm3LjeGPmIer6c6UQcjCLwsewXTnPsijjzDGXkIjU1goeSIBqj9/rujqCsi1G2/tqonr
-         JU3A3l89/ENhF1HfgBjCb79ZfDWmUkIlnmph8vbjCrPNjv/+OTh6ZWF8pl+FiNOR+ieK
-         SIb5805ZLif7vcibXWvbr2D3dbjNsq+nisSOV01wv2z6Da3AZyCGidMHeYPJTymBnPYw
-         XUlrMDABgf7VreSSN0/5Wisng7C2roZHe9ev+0honyQY4Vkn3GrGX2xVtKeLwUfMCfVc
-         l0Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=1LHaTJUSb6YlKNJo8uEXGOXHLnntD8wG0lKLYJJal8o=;
-        b=ZvUwWSMFKNKUgESYYxPP/Nt3qdnm/fVwivXxZdZOi0G4ed52c/+bVj6ITnBfNyztRJ
-         nnFKc/teR+SWQXPrgaXzGUMRBh7Sy7Ym5vP6/30GIDrO2f+WbdBaC9Zkgy+uh3bVKM2r
-         YsqOIjyqihGOzo8tqdtvePpbkmHz0Hi2MZ3wlAbQuWzX17dmKUnQYePfLcS5yXCJCMjb
-         60hdHlePfxzCRcZtGCcfCJbzufjuj9oT9s3e3aqrM+7jJ0bHDpDw74F5VWsEJ1w+RGZQ
-         q+lpY9ctLYjIMg63kzPMeZ9f/a9N0iNeZ5PeyD7F5ycbnNLLIALObXcB/C9g04ozuoLp
-         OfQA==
-X-Gm-Message-State: AGi0PuZqYGn2OE4vQUpnqUd5a0snFB4Cd/NICSCM26/YeqIzp0NQOZH4
-        QD1/jazq6MUUT94VmdNd3VMmFg==
-X-Google-Smtp-Source: APiQypIRvJtGrIVTCK0IyHmrOcpJv9MiXSRrpOpgvddruNqcOcON9TV5nJ6vkoKOsKdMyUBeF3QwXg==
-X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr1899810wmm.9.1586902140997;
-        Tue, 14 Apr 2020 15:09:00 -0700 (PDT)
-Received: from localhost.localdomain (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
-        by smtp.gmail.com with ESMTPSA id a7sm4099973wrs.61.2020.04.14.15.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 15:09:00 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     amit.kucheria@verdurent.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-pm@vger.kernel.org (open list:CPU IDLE TIME MANAGEMENT FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (open list:CPUIDLE DRIVER - ARM
-        PSCI)
-Subject: [PATCH v3 4/4] thermal: cpuidle: Register cpuidle cooling device
-Date:   Wed, 15 Apr 2020 00:08:33 +0200
-Message-Id: <20200414220837.9284-4-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414220837.9284-1-daniel.lezcano@linaro.org>
-References: <20200414220837.9284-1-daniel.lezcano@linaro.org>
+        Tue, 14 Apr 2020 18:09:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D478C061A0C;
+        Tue, 14 Apr 2020 15:09:59 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 3ADDE2A1AC1
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>, kernel@collabora.com,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH] hwspinlock: Simplify Kconfig
+Date:   Tue, 14 Apr 2020 19:09:43 -0300
+Message-Id: <20200414220943.6203-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.26.0.rc2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpuidle driver can be used as a cooling device by injecting idle
-cycles. The DT binding for the idle state added an optional
+Every hwspinlock driver is expected to depend on the
+hwspinlock core, so it's possible to simplify the
+Kconfig, factoring out the HWSPINLOCK dependency.
 
-When the property is set, register the cpuidle driver with the idle
-state node pointer as a cooling device. The thermal framework will do
-the association automatically with the thermal zone via the
-cooling-device defined in the device tree cooling-maps section.
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 ---
- drivers/cpuidle/cpuidle-arm.c  | 5 +++++
- drivers/cpuidle/cpuidle-psci.c | 5 +++++
- 2 files changed, 10 insertions(+)
+ drivers/hwspinlock/Kconfig | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/cpuidle/cpuidle-arm.c b/drivers/cpuidle/cpuidle-arm.c
-index 9e5156d39627..2406ac0ae134 100644
---- a/drivers/cpuidle/cpuidle-arm.c
-+++ b/drivers/cpuidle/cpuidle-arm.c
-@@ -8,6 +8,7 @@
+diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
+index 826a1054100d..32cd26352f38 100644
+--- a/drivers/hwspinlock/Kconfig
++++ b/drivers/hwspinlock/Kconfig
+@@ -6,9 +6,10 @@
+ menuconfig HWSPINLOCK
+ 	bool "Hardware Spinlock drivers"
  
- #define pr_fmt(fmt) "CPUidle arm: " fmt
- 
-+#include <linux/cpu_cooling.h>
- #include <linux/cpuidle.h>
- #include <linux/cpumask.h>
- #include <linux/cpu_pm.h>
-@@ -124,6 +125,10 @@ static int __init arm_idle_init_cpu(int cpu)
- 	if (ret)
- 		goto out_kfree_drv;
- 
-+	ret = cpuidle_cooling_register(drv);
-+	if (ret)
-+		pr_err("Failed to register the idle cooling device: %d\n", ret);
++if HWSPINLOCK
 +
- 	return 0;
+ config HWSPINLOCK_OMAP
+ 	tristate "OMAP Hardware Spinlock device"
+-	depends on HWSPINLOCK
+ 	depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX || SOC_AM33XX || SOC_AM43XX || ARCH_K3 || COMPILE_TEST
+ 	help
+ 	  Say y here to support the OMAP Hardware Spinlock device (firstly
+@@ -18,7 +19,6 @@ config HWSPINLOCK_OMAP
  
- out_kfree_drv:
-diff --git a/drivers/cpuidle/cpuidle-psci.c b/drivers/cpuidle/cpuidle-psci.c
-index edd7a54ef0d3..8e805bff646f 100644
---- a/drivers/cpuidle/cpuidle-psci.c
-+++ b/drivers/cpuidle/cpuidle-psci.c
-@@ -9,6 +9,7 @@
- #define pr_fmt(fmt) "CPUidle PSCI: " fmt
+ config HWSPINLOCK_QCOM
+ 	tristate "Qualcomm Hardware Spinlock device"
+-	depends on HWSPINLOCK
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	select MFD_SYSCON
+ 	help
+@@ -30,7 +30,6 @@ config HWSPINLOCK_QCOM
  
- #include <linux/cpuhotplug.h>
-+#include <linux/cpu_cooling.h>
- #include <linux/cpuidle.h>
- #include <linux/cpumask.h>
- #include <linux/cpu_pm.h>
-@@ -305,6 +306,10 @@ static int __init psci_idle_init_cpu(int cpu)
- 	if (ret)
- 		goto out_kfree_drv;
+ config HWSPINLOCK_SIRF
+ 	tristate "SIRF Hardware Spinlock device"
+-	depends on HWSPINLOCK
+ 	depends on ARCH_SIRF || COMPILE_TEST
+ 	help
+ 	  Say y here to support the SIRF Hardware Spinlock device, which
+@@ -43,7 +42,6 @@ config HWSPINLOCK_SIRF
+ config HWSPINLOCK_SPRD
+ 	tristate "SPRD Hardware Spinlock device"
+ 	depends on ARCH_SPRD || COMPILE_TEST
+-	depends on HWSPINLOCK
+ 	help
+ 	  Say y here to support the SPRD Hardware Spinlock device.
  
-+	ret = cpuidle_cooling_register(drv);
-+	if (ret)
-+		pr_err("Failed to register the idle cooling device: %d\n", ret);
+@@ -52,7 +50,6 @@ config HWSPINLOCK_SPRD
+ config HWSPINLOCK_STM32
+ 	tristate "STM32 Hardware Spinlock device"
+ 	depends on MACH_STM32MP157 || COMPILE_TEST
+-	depends on HWSPINLOCK
+ 	help
+ 	  Say y here to support the STM32 Hardware Spinlock device.
+ 
+@@ -60,7 +57,6 @@ config HWSPINLOCK_STM32
+ 
+ config HSEM_U8500
+ 	tristate "STE Hardware Semaphore functionality"
+-	depends on HWSPINLOCK
+ 	depends on ARCH_U8500 || COMPILE_TEST
+ 	help
+ 	  Say y here to support the STE Hardware Semaphore functionality, which
+@@ -68,3 +64,5 @@ config HSEM_U8500
+ 	  SoC.
+ 
+ 	  If unsure, say N.
 +
- 	return 0;
- 
- out_kfree_drv:
++endif # HWSPINLOCK
 -- 
-2.17.1
+2.26.0.rc2
 
