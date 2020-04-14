@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517931A89F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BAC1A89F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504223AbgDNSm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:42:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504162AbgDNSmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:42:01 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 208EF2082E;
-        Tue, 14 Apr 2020 18:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586889720;
-        bh=92ouK1EZtTn+HmugH5BHACzd3FyOicJdIGabmG3nexM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X/xW7zelTwm+eLJXOa5oraSC7xyJEyB8ZvW05z0FCYozMYFK2a4FqfiL8E+EJkMkB
-         tzcNKGEEUSG1tLaWK/VzGQ5Y/HiIgdk5/KCQRXyrNMe5mGfMX3siaXj3EZx3IpvQG7
-         qsUSEbcxeZQZQWaxbwHU10WBAXPtIii+L+vJqouE=
-Date:   Tue, 14 Apr 2020 21:41:55 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 4/4] kernel/module: Hide vermagic header file
- from general use
-Message-ID: <20200414184155.GB1239315@unreal>
-References: <20200414155732.1236944-1-leon@kernel.org>
- <20200414155732.1236944-5-leon@kernel.org>
- <20200414160349.GH31763@zn.tnic>
+        id S2504235AbgDNSnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504208AbgDNSmm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 14:42:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409C4C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rIV7Tc0uXVh+eJ6y+fStjQcH1El3n85jcYIkYBCjgyc=; b=r9ac1r/EsQKIdOrBiHWUM6Ofs1
+        E0sTjiwSIndZtvieDBNXVhBUNPyXhoA7bpdX5Tiodw5H7sC5FmgA8mdH+oL7WHx5nDjhzvQFJdsvp
+        pb8ROtCIMUHenzJ4/BAbetUwdOx3HbKFxkXK4QZYhDe02H17+rLCdtHeq1uWgaxAC+7avqml3l85V
+        6dYA49N3e/44fD1i4w7bqPQmNDu6UlWNmZK6Z8ZIH1oPAcg0hyodyZBo0fPm4w+E8k7rjtpF15yAo
+        N8INC4MNcgR3beeMfpV00FLQ+0ZTMZQ4GzwNZzO00n/YIkXZD0Dy7mUtPPARKMgTJU5ZoyDwHjfTP
+        45pp9cPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOQW3-00081G-Hn; Tue, 14 Apr 2020 18:42:35 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8A627981086; Tue, 14 Apr 2020 20:42:33 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 20:42:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        jthierry@redhat.com, tglx@linutronix.de
+Subject: Re: [PATCH V3 5/9] objtool: Add return address unwind hints
+Message-ID: <20200414184233.GG2483@worktop.programming.kicks-ass.net>
+References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
+ <20200414103618.12657-6-alexandre.chartre@oracle.com>
+ <20200414161636.GP20713@hirez.programming.kicks-ass.net>
+ <546b2d81-39ca-00e1-4df2-d4eaa18496a4@oracle.com>
+ <20200414175604.GD2483@worktop.programming.kicks-ass.net>
+ <e9e1c4cd-193f-fd5e-65c4-cc9fb159d861@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200414160349.GH31763@zn.tnic>
+In-Reply-To: <e9e1c4cd-193f-fd5e-65c4-cc9fb159d861@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 06:03:50PM +0200, Borislav Petkov wrote:
-> On Tue, Apr 14, 2020 at 06:57:32PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > VERMAGIC* definitions are not supposed to be used by the drivers,
->
-> Yeah, this was only me conjecturing here. But yes, if people agree, this
-> would be one way to do it.
->
-> In any case and FWIW, series looks ok to me:
->
-> Acked-by: Borislav Petkov <bp@suse.de>
+On Tue, Apr 14, 2020 at 08:31:23PM +0200, Alexandre Chartre wrote:
+> On 4/14/20 7:56 PM, Peter Zijlstra wrote:
 
-Thanks, finally kbuild slap me to the face.
-There is a need to change scripts/mod/modpost.c too and find the reason
-why I didn't get any compilation errors.
+> > So what actual problem is it solving?
+> > 
+> 
+> The return stack stuff is here to correctly handle intra-function call so that
+> we can figure out where the ret of an intra-function call should return. We
+> don't have this challenge with regular functions because we know that a ret
+> inside such function just indicates the end of the function.
+> 
+> But when there's an intra-function call, a ret instruction can either:
+>   - continue after the intra-function call (if the stack was unchanged)
+>   - jump somewhere else (if the return address was changed) and eventually
+>     return to the next return address
+>   - indicate the end of the function (if the return address was removed).
+> 
+> So, all this is needed to correctly follow the flow of the code and properly
+> record stack changes.
 
-<...>
->> drivers/gpio/gpio-aspeed.mod.c:3:10: fatal error: linux/vermagic.h: No such file or directory
-       3 | #include <linux/vermagic.h>
-         |          ^~~~~~~~~~~~~~~~~~
-   compilation terminated.
+But which intra-function calls are you worried about here? The RSB
+stuffing ones we have to explicitly forget and the retpoline ones we
+can't follow because they're indirect calls.
 
-<...>
-
-
->
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+So again, who cares about that stack?
