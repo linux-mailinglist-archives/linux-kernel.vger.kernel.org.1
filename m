@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446511A7769
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA821A7784
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437686AbgDNJdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:33:46 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:32950 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729471AbgDNJdn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:33:43 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03E9WbCA156393;
-        Tue, 14 Apr 2020 09:33:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=UE8WB00FR/t1Ou6MhoZLvz36hixyMK/Q2kVRh+MCims=;
- b=FqMCZRfg0iwziz4Nr4jXiJRD51IA8cw38xrS9YL70iYU/yFM7sGSDLl8ogsg8bmjzi48
- ygryOxxDAZCqtsYTPDsP7rUrvkZFG3dEZP4hFUbZwE66tH8Ylcd8/wMcFkdk9ITumvpg
- vP7/3N3R0hYeLTDzNoAEoNPJsVRImiirER3P5Ugir0Y5PAxCoTQiR3NJ35SnRtaZQPmT
- gD/tAnQ7xokyrzW7x2Y1aCMZtCeAOKuqgQQqxVwHOvsamqHHD3kNx+6tS3zJYKfsqvo1
- vmgdl9uwqBEZ7CdeujrONQuaEs6Oo4KeOgkT4+f1jVXM5IeNqGQx/GZ8Oj9Q0UHEzm/W sg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 30b5ar3bnr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 09:33:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03E9D0UR169172;
-        Tue, 14 Apr 2020 09:31:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 30bqm18mt7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 09:31:34 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03E9VRfY014073;
-        Tue, 14 Apr 2020 09:31:27 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 02:31:27 -0700
-Date:   Tue, 14 Apr 2020 12:31:18 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] usb: phy: jz4770: Add a missing '\n' in a log message
-Message-ID: <20200414093118.GD1163@kadam>
-References: <20200411063811.6767-1-christophe.jaillet@wanadoo.fr>
- <ZQKM8Q.561QQF8CXZTU3@crapouillou.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQKM8Q.561QQF8CXZTU3@crapouillou.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=820
- adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140077
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
- clxscore=1011 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
- mlxlogscore=881 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140078
+        id S2437717AbgDNJmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:42:04 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:57580 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728305AbgDNJmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 05:42:01 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9xdhZVecMEnAA--.3S2;
+        Tue, 14 Apr 2020 17:41:50 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] scripts: documentation-file-ref-check: Add line break before exit
+Date:   Tue, 14 Apr 2020 17:41:48 +0800
+Message-Id: <1586857308-2040-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxv9xdhZVecMEnAA--.3S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1DWw4xAw18KF1kGw4kWFg_yoWkZrgE9F
+        Z7tFs5Wr4xArsrCr4kJFsxXF1jgrn7Ww4ruw1rAa1DC3sIka98WFZ7A343uFW7Wry7ZryY
+        kFy8XayxZF1IyjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8uwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU3cTPUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 03:13:47PM +0200, Paul Cercueil wrote:
-> Hi Christophe,
-> 
-> Le sam. 11 avril 2020 à 8:38, Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> a écrit :
-> > Message logged by 'dev_xxx()' or 'pr_xxx()' should end with a '\n'.
-> 
-> Is that so?
-> 
-> From what I could see these macros add the \n themselves if needed. So the
-> \n were omitted on purpose.
-> 
+If execute ./scripts/documentation-file-ref-check in a directory which is
+not a git tree, it will exit without a line break, fix it.
 
-Do a "make drivers/usb/phy/phy-jz4770.i" and look at the string.  The
-patch is correct.
+Without this patch:
 
-regards,
-dan carpenter
+[loongson@localhost linux-5.7-rc1]$ ./scripts/documentation-file-ref-check
+Warning: can't check if file exists, as this is not a git tree[loongson@localhost linux-5.7-rc1]$
+
+With this patch:
+
+[loongson@localhost linux-5.7-rc1]$ ./scripts/documentation-file-ref-check
+Warning: can't check if file exists, as this is not a git tree
+[loongson@localhost linux-5.7-rc1]$
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ scripts/documentation-file-ref-check | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/documentation-file-ref-check b/scripts/documentation-file-ref-check
+index 9a8cc10..c71832b 100755
+--- a/scripts/documentation-file-ref-check
++++ b/scripts/documentation-file-ref-check
+@@ -25,7 +25,7 @@ my $fix = 0;
+ my $warn = 0;
+ 
+ if (! -d ".git") {
+-	printf "Warning: can't check if file exists, as this is not a git tree";
++	printf "Warning: can't check if file exists, as this is not a git tree\n";
+ 	exit 0;
+ }
+ 
+-- 
+2.1.0
 
