@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C3F1A7D8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E130A1A7E06
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731719AbgDNNXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730762AbgDNNWI (ORCPT
+        id S1732210AbgDNN3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:29:46 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59478 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731984AbgDNN1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:22:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A69AC061A0C;
-        Tue, 14 Apr 2020 06:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-        From:Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=/xO2y+KNj9hON1JQS+bVaVwriQ+uSAmHmyINi2Kj5o0=; b=N02kaKONjn1f6k0idk0j63Nywn
-        SASFBsupwu7J40Pphkl+3WdP4ZHkPO1FsGZRs5i98yHpfhsIKSN3+1c38KshDZDiKcaILE4i0fCnT
-        Mc3eAn3IO+FRmJgVq3mztFMaOQUgm97lfqI2EoMStKuX1etLkYPFj/b2cHBrqfrSafT/pPeRrYcD0
-        DvwoMhFUIsmug067CtFasKN5zcznA7LzQ440N/sFWAXDNp97AWNkDgAU1Ndhq6kp/0Zktb18dv84b
-        7LxC3NffP3fuNduC9OTiwBaCCCB+bCkGQlOPol/9R9McKFSMoHTAYqPA67suimwS40Xs18IBePvsN
-        mI5JfHFA==;
-Received: from ip5f5ad4d8.dynamic.kabel-deutschland.de ([95.90.212.216] helo=coco.lan)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOLVh-00028b-06; Tue, 14 Apr 2020 13:21:53 +0000
-Date:   Tue, 14 Apr 2020 15:21:47 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
-        Helen Koike <helen.koike@collabora.com>
-Subject: Re: [PATCH] media: Kconfig: Don't expose API options
-Message-ID: <20200414152147.053b4b29@coco.lan>
-In-Reply-To: <20200414130210.18970-1-ezequiel@collabora.com>
-References: <20200414130210.18970-1-ezequiel@collabora.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 14 Apr 2020 09:27:46 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03EDRh3K105395;
+        Tue, 14 Apr 2020 08:27:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1586870863;
+        bh=SSfo+2V2r4HztN+793q2itLtIjCsMsYwUH2PGgw2Yz8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=X0delyuncZhCV0OGsmD9lstXqLhF0FAqH2lQdTlMguyuuRliTtNz9Y54y3JDpcxYc
+         xtStYyFpW2pUQgsUBzuox4NrDXLMJR8ajILcGl2MeIB84YWTH2hrKGgTjhsdTsZPoG
+         1sm+m2f0SIetbuLzMDB2rSfFtmYjwXI+y9QdgJoc=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03EDRhpp106857
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Apr 2020 08:27:43 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 14
+ Apr 2020 08:27:42 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Tue, 14 Apr 2020 08:27:42 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03EDRgXw112322;
+        Tue, 14 Apr 2020 08:27:42 -0500
+Subject: Re: [PATCH v19 04/18] leds: multicolor: Introduce a multicolor class
+ definition
+To:     =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= <dachaac@gmail.com>,
+        <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200402204311.14998-1-dmurphy@ti.com>
+ <20200402204311.14998-5-dmurphy@ti.com>
+ <78a577ba-667e-804a-b59f-6cc442adb4eb@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <a3f75fad-b235-e627-ab85-740e4533c33b@ti.com>
+Date:   Tue, 14 Apr 2020 08:21:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <78a577ba-667e-804a-b59f-6cc442adb4eb@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 14 Apr 2020 10:02:10 -0300
-Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+Vesa
 
-> There is no need to expose API options; instead,
-> drivers that support a given API are expected to just select it.
-> 
-> Happily, this is currently the case, so simply stop
-> exposing the options.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
->  drivers/media/Kconfig           | 2 +-
->  drivers/media/mc/Kconfig        | 3 +--
->  drivers/media/v4l2-core/Kconfig | 2 +-
->  3 files changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-> index a8def1591352..eef4c6761ffb 100644
-> --- a/drivers/media/Kconfig
-> +++ b/drivers/media/Kconfig
-> @@ -173,7 +173,7 @@ config VIDEO_DEV
->  	  radio devices and by some input devices.
->  
->  config MEDIA_CONTROLLER
-> -	bool "Media Controller API"
-> +	bool
+On 4/9/20 12:25 AM, Vesa Jääskeläinen wrote:
+> Hi,
+>
+> On 2.4.2020 23.42, Dan Murphy wrote:
+>> Introduce a multicolor class that groups colored LEDs
+>> within a LED node.
+>>
+>> The multi color class groups monochrome LEDs and allows controlling two
+>> aspects of the final combined color: hue and lightness. The former is
+>> controlled via <color>_intensity files and the latter is controlled
+>> via brightness file.
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   .../ABI/testing/sysfs-class-led-multicolor    |  42 ++++
+>>   Documentation/leds/index.rst                  |   1 +
+>>   Documentation/leds/leds-class-multicolor.rst  |  95 ++++++++
+>>   drivers/leds/Kconfig                          |  10 +
+>>   drivers/leds/Makefile                         |   1 +
+>>   drivers/leds/led-class-multicolor.c           | 206 ++++++++++++++++++
+>>   include/linux/led-class-multicolor.h          | 121 ++++++++++
+>>   7 files changed, 476 insertions(+)
+>>   create mode 100644 
+>> Documentation/ABI/testing/sysfs-class-led-multicolor
+>>   create mode 100644 Documentation/leds/leds-class-multicolor.rst
+>>   create mode 100644 drivers/leds/led-class-multicolor.c
+>>   create mode 100644 include/linux/led-class-multicolor.h
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-class-led-multicolor 
+>> b/Documentation/ABI/testing/sysfs-class-led-multicolor
+>> new file mode 100644
+>> index 000000000000..1f50324d24fd
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-class-led-multicolor
+>> @@ -0,0 +1,42 @@
+>> +What:        /sys/class/leds/<led>/brightness
+>> +Date:        March 2020
+>> +KernelVersion:    5.8
+>> +Contact:    Dan Murphy <dmurphy@ti.com>
+>> +Description:    read/write
+>> +        Writing to this file will update all LEDs within the group to a
+>> +        calculated percentage of what each color LED intensity is set
+>> +        to. The percentage is calculated for each grouped LED via the
+>> +        equation below:
+>> +
+>> +        led_brightness = brightness * color_intensity/max_brightness
+>> +
+>> +        For additional details please refer to
+>> +        Documentation/leds/leds-class-multicolor.rst.
+>> +
+>> +        The value of the color is from 0 to
+>> +        /sys/class/leds/<led>/max_brightness.
+>> +
+>> +What:        /sys/class/leds/<led>/color_index
+>> +Date:        March 2020
+>> +KernelVersion:    5.8
+>> +Contact:    Dan Murphy <dmurphy@ti.com>
+>> +Description:    read
+>> +        The color_index array, when read, will output the LED colors
+>> +        by name as they are indexed in the color_intensity array.
+>> +
+>> +What:        /sys/class/leds/<led>/num_colors
+>> +Date:        March 2020
+>> +KernelVersion:    5.8
+>> +Contact:    Dan Murphy <dmurphy@ti.com>
+>> +Description:    read
+>> +        The num_colors indicates the number of LEDs defined in the
+>> +        color_intensity and color_index arrays.
+>> +
+>> +What:        /sys/class/leds/<led>/color_intensity
+>> +Date:        March 2020
+>> +KernelVersion:    5.8
+>> +Contact:    Dan Murphy <dmurphy@ti.com>
+>> +Description:    read/write
+>> +        Intensity level for the LED color within the array.
+>> +        The intensities for each color must be entered based on the
+>> +        color_index array.
+>
+> For what it is worth --
+>
+> I see that this interface covers our use cases and I assume that GPIO 
+> LED and PWM LED drivers can be implemented for this after this set is 
+> integrated.
+>
+Thank you for looking
 
-This is not true here... non-embedded drivers like DVB and UVC can work
-with or without the media controller. For them, the API is experimental.
-
->  	default MEDIA_CAMERA_SUPPORT || MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_PLATFORM_SUPPORT
->  	help
->  	  Enable the media controller API used to query media devices internal
-> diff --git a/drivers/media/mc/Kconfig b/drivers/media/mc/Kconfig
-> index 002a918c4c75..0cdf885ce24d 100644
-> --- a/drivers/media/mc/Kconfig
-> +++ b/drivers/media/mc/Kconfig
-> @@ -2,7 +2,6 @@
->  
->  #
->  # Media controller
-> -#	Selectable only for webcam/grabbers, as other drivers don't use it
->  #
->  
->  config MEDIA_CONTROLLER_DVB
-> @@ -14,7 +13,7 @@ config MEDIA_CONTROLLER_DVB
->  	  This is currently experimental.
->  
->  config MEDIA_CONTROLLER_REQUEST_API
-> -	bool "Enable Media controller Request API (EXPERIMENTAL)"
-> +	bool
-
-This sounds OK.
-
-The only reason why I didn't make this change is because of the 
-"EXPERIMENTAL" warning. 
-
-At least while this API is considered experimental, it sounds
-wise to have a warning.
-
-Perhaps we could apply this hunk, and add something like 
-this to media/Kconfig:
-
-comment "Please notice that the enabled Media controller Request API is EXPERIMENTAL"
-	depends on MEDIA_CONTROLLER_REQUEST_API
-
-Regards,
-Mauro
-
->  	depends on MEDIA_CONTROLLER && STAGING_MEDIA
->  	help
->  	  DO NOT ENABLE THIS OPTION UNLESS YOU KNOW WHAT YOU'RE DOING.
-> diff --git a/drivers/media/v4l2-core/Kconfig b/drivers/media/v4l2-core/Kconfig
-> index 3fa75352d04c..d034185856bb 100644
-> --- a/drivers/media/v4l2-core/Kconfig
-> +++ b/drivers/media/v4l2-core/Kconfig
-> @@ -17,7 +17,7 @@ config VIDEO_V4L2_I2C
->  	default y
->  
->  config VIDEO_V4L2_SUBDEV_API
-> -	bool "V4L2 sub-device userspace API"
-> +	bool
->  	depends on VIDEO_DEV && MEDIA_CONTROLLER
->  	help
->  	  Enables the V4L2 sub-device pad-level userspace API used to configure
+Dan
 
 
-
-Thanks,
-Mauro
+> Thanks,
+> Vesa Jääskeläinen
