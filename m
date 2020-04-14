@@ -2,90 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B141A7E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDAE1A7E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387629AbgDNNiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:38:13 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:59075 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502806AbgDNNPa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:15:30 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MxmJs-1j3uc50aLu-00zIi1; Tue, 14 Apr 2020 15:15:27 +0200
-Received: by mail-qk1-f179.google.com with SMTP id w70so8841819qkb.7;
-        Tue, 14 Apr 2020 06:15:26 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaZ5opB60kucpaK2dxIo1LPh1vIWAMOIHqNxBnuUvLBiuht7WaX
-        l68Q8QjBWHmvRfWsPKpNrMC7cLC7CqoXhfmHQ/Q=
-X-Google-Smtp-Source: APiQypKOQ+PuEkXGp7Hz6/dS0o0rdKdh/QEInnUOkTVAVIiLqxS184q6+DgOArKrPli8Cwrbt3SJu+aKb3Opir5v4iw=
-X-Received: by 2002:a37:9d08:: with SMTP id g8mr13992637qke.138.1586870125394;
- Tue, 14 Apr 2020 06:15:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200414070142.288696-1-hch@lst.de> <20200414070142.288696-5-hch@lst.de>
-In-Reply-To: <20200414070142.288696-5-hch@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 14 Apr 2020 15:15:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3HvbPKTkwfWr6PbZ96koO_NrJP1qgk8H1mgk=qUScGkQ@mail.gmail.com>
-Message-ID: <CAK8P3a3HvbPKTkwfWr6PbZ96koO_NrJP1qgk8H1mgk=qUScGkQ@mail.gmail.com>
-Subject: Re: [PATCH 4/8] binfmt_elf: open code copy_siginfo_to_user to
- kernelspace buffer
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:niGzd+JIMAutrTQXi6aKMm7ZjyhZV08h5hlKZzx03Gb3lOmqT6z
- 7i9vKEXvzYnwIGk8z3AGZjTgK2evm1jqoj8C/KsTN2Ng17n0WzNRUfAttBxm+cyLxzHRCbd
- ZgmOELgyTQmtDGKM9c0uepxXWGPrNEb5DvfV8rBFyumfuu2aoBGFr67kqa4kjgCo6DImAZb
- fC212L394gbLr8KoeHrRg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:In4NPF/T4tQ=:D5Hh2GBE1UE4cO2sq1wZiv
- RC3T/YjsyxZv/Ps3c4TABpyGM0qA6CTNR2x4Rks4MoHbc7ZaTIf5R4s61VqPYspc/1nq1v5ul
- e6iKT3tPdL8wn3bTuJp5SqO6ncMhuC2n8ukLKcCkkKdIvd/XjcKdcMr0bmfw3xX17IlLVxwqD
- PcsmOzadW/bIy5VFJFWI8NDupqMlKM8Cxmp+XdqwPmlBSEqTwtUBDT6rl7EEIi6E9Y+IE8iG8
- a8vQNskKzM+Vo1MqAfhXJyxMu1CkvY7xoikclgJ0BAnNSaAAwpgnAcFTj9YAxkcd424JMuTVk
- +bmNAyEQshYaZ4wQBK1cs+mypFEa1q38cWAgCOLcGJqVSLFse6iWTQklWw/3Db2EFxAT8d+f+
- BxcRj4dBk9Cahs+kIctVw9mz7mdBKOZtI5sDIxKv96lWFo16sL5o7jJJBBXTTphXqb6m0ICrV
- frTKlzZnN4qNCGvTrUGSgkxekj/y0XhlnG9vGDX3fsCxw9H7Semf4n8JhdijAWCbEm3auYWMO
- JgY7Gu64sj1PqqvdO52ZIbz0CGPP391WCRIRQkdhvXvqgD6SS9pdncyT4tjohGVM0jQCDnb1w
- DCoK9zdPjPGAahfo3JRZjNtebuHMhMDbI1LN1zci9H8uNZBRvqt6alrXlj6Z9ZJw8BkIaoR+n
- tpOj6W213m7vpp5e5NxGkQB9wdpCUrWQFcS6tvZJqUiy4GXXXvHIUtkJOGjo/qNZWHJH4Oo/N
- 7WyaUiDFlGuBzv+rPC9/aKBgh1ndpMJvQW5Yqoby+LyBpS83Yj70Y0QtBjD45AThagnWckzBU
- db9XVwsjcezC3Zga9uFW8Spn9Jk6s+D3epsJDdiSY3kyhSi/7M=
+        id S2387440AbgDNNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:31:48 -0400
+Received: from 8bytes.org ([81.169.241.247]:34664 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730955AbgDNNP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:15:57 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 71CA32A5; Tue, 14 Apr 2020 15:15:51 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v2 01/33] iommu: Move default domain allocation to separate function
+Date:   Tue, 14 Apr 2020 15:15:10 +0200
+Message-Id: <20200414131542.25608-2-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200414131542.25608-1-joro@8bytes.org>
+References: <20200414131542.25608-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 9:02 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Instead of messing with the address limit just open code the trivial
-> memcpy + memset logic for the native version, and a call to
-> to_compat_siginfo for the compat version.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+From: Joerg Roedel <jroedel@suse.de>
 
-Nice!
+Move the code out of iommu_group_get_for_dev() into a separate
+function.
 
->   */
->  #define user_long_t            compat_long_t
->  #define user_siginfo_t         compat_siginfo_t
-> -#define copy_siginfo_to_user   copy_siginfo_to_user32
-> +#define fill_siginfo_note(note, csigdata, siginfo)             \
-> +do {                                                                   \
-> +       to_compat_siginfo(csigdata, siginfo, compat_siginfo_flags());   \
-> +       fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata); \
-> +} while (0)
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ drivers/iommu/iommu.c | 74 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 45 insertions(+), 29 deletions(-)
 
-I don't think you are changing the behavior here, but I still wonder if it
-is in fact correct for x32: is in_x32_syscall() true here when dumping an
-x32 compat elf process, or should this rather be set according to which
-binfmt_elf copy is being used?
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 2b471419e26c..bfe011760ed1 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -1361,6 +1361,41 @@ struct iommu_group *fsl_mc_device_group(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(fsl_mc_device_group);
+ 
++static int iommu_alloc_default_domain(struct device *dev,
++				      struct iommu_group *group)
++{
++	struct iommu_domain *dom;
++
++	if (group->default_domain)
++		return 0;
++
++	dom = __iommu_domain_alloc(dev->bus, iommu_def_domain_type);
++	if (!dom && iommu_def_domain_type != IOMMU_DOMAIN_DMA) {
++		dom = __iommu_domain_alloc(dev->bus, IOMMU_DOMAIN_DMA);
++		if (dom) {
++			dev_warn(dev,
++				 "failed to allocate default IOMMU domain of type %u; falling back to IOMMU_DOMAIN_DMA",
++				 iommu_def_domain_type);
++		}
++	}
++
++	if (!dom)
++		return -ENOMEM;
++
++	group->default_domain = dom;
++	if (!group->domain)
++		group->domain = dom;
++
++	if (!iommu_dma_strict) {
++		int attr = 1;
++		iommu_domain_set_attr(dom,
++				      DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
++				      &attr);
++	}
++
++	return 0;
++}
++
+ /**
+  * iommu_group_get_for_dev - Find or create the IOMMU group for a device
+  * @dev: target device
+@@ -1393,40 +1428,21 @@ struct iommu_group *iommu_group_get_for_dev(struct device *dev)
+ 
+ 	/*
+ 	 * Try to allocate a default domain - needs support from the
+-	 * IOMMU driver.
++	 * IOMMU driver. There are still some drivers which don't support
++	 * default domains, so the return value is not yet checked.
+ 	 */
+-	if (!group->default_domain) {
+-		struct iommu_domain *dom;
+-
+-		dom = __iommu_domain_alloc(dev->bus, iommu_def_domain_type);
+-		if (!dom && iommu_def_domain_type != IOMMU_DOMAIN_DMA) {
+-			dom = __iommu_domain_alloc(dev->bus, IOMMU_DOMAIN_DMA);
+-			if (dom) {
+-				dev_warn(dev,
+-					 "failed to allocate default IOMMU domain of type %u; falling back to IOMMU_DOMAIN_DMA",
+-					 iommu_def_domain_type);
+-			}
+-		}
+-
+-		group->default_domain = dom;
+-		if (!group->domain)
+-			group->domain = dom;
+-
+-		if (dom && !iommu_dma_strict) {
+-			int attr = 1;
+-			iommu_domain_set_attr(dom,
+-					      DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+-					      &attr);
+-		}
+-	}
++	iommu_alloc_default_domain(dev, group);
+ 
+ 	ret = iommu_group_add_device(group, dev);
+-	if (ret) {
+-		iommu_group_put(group);
+-		return ERR_PTR(ret);
+-	}
++	if (ret)
++		goto out_put_group;
+ 
+ 	return group;
++
++out_put_group:
++	iommu_group_put(group);
++
++	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL(iommu_group_get_for_dev);
+ 
+-- 
+2.17.1
 
-     Arnd
