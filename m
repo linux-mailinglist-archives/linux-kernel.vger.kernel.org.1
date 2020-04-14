@@ -2,83 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7151A8B52
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BF41A8AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505142AbgDNToN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:44:13 -0400
-Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:45892 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728340AbgDNTn7 (ORCPT
+        id S2504653AbgDNT0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504652AbgDNTY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:43:59 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id 2B6EF1802B57F;
-        Tue, 14 Apr 2020 19:06:44 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 00FE6181D341E;
-        Tue, 14 Apr 2020 19:06:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4423:5007:6248:7903:10004:10400:10848:11232:11658:11914:12043:12048:12262:12296:12297:12438:12555:12679:12740:12760:12895:13018:13019:13069:13095:13141:13161:13181:13229:13230:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21212:21365:21433:21451:21627:21660:30054:30070:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:7,LUA_SUMMARY:none
-X-HE-Tag: sky28_1d7a3c1bf3225
-X-Filterd-Recvd-Size: 2209
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 14 Apr 2020 19:06:42 +0000 (UTC)
-Message-ID: <b867ee8a02043ec6b18c9330bfe3a091d66c816c.camel@perches.com>
-Subject: Re: [PATCH] pwm: Add missing '\n' in log messages
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        paul@crapouillou.net, Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Tue, 14 Apr 2020 12:04:32 -0700
-In-Reply-To: <f13a8754-3866-d3d2-eaff-29cb6d14ff8d@wanadoo.fr>
-References: <20200411153528.30130-1-christophe.jaillet@wanadoo.fr>
-         <20200414135827.GB3593749@ulmo>
-         <f13a8754-3866-d3d2-eaff-29cb6d14ff8d@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Tue, 14 Apr 2020 15:24:57 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A298FC061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:05:10 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id s29so1146156edc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gF1rMGZ/eX8G89eh4/hnEQhUj+jW1CwhhogtzydCw04=;
+        b=kAbO6h8rAxnlPUj6sdwoV8am8x/5ArQ2M8OJsFa+YkS1RIfmPHFKEJY18CRNoAGtm7
+         awWWFVONlQPnHlvqkUjg6uL/MDQOGsx73UodjlQ1LEI0blS67rdDe0rfMMkhcyVx59ng
+         /XjBMPm1bEnSuvBdmJaEN8SDQVmOBc6oxlJBCWE3HubVS7g9ZrscxOtIty/JnbdfmKQ5
+         T021eyBs86pI9j73PbTEpEKqK98Liv0/ZE8EBU1YSxeJUST3sasbCURvuo+AU4INgn1d
+         Z99+Dd7JvRBaMHTq2mCVKu5owgzwgF89ly3P04mHKtUgm30djmmPXt0J2awvZLZa4rpe
+         w97w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gF1rMGZ/eX8G89eh4/hnEQhUj+jW1CwhhogtzydCw04=;
+        b=HkPsCh02pt4Wwfz4PQltOfR91/gRl5GYRTytKvaiDKvtj1DcVII/xliR+BeYfUPVj2
+         4pxDl0Vgmd72G/pmydJSv67SxEqVpRDFYyJkhHzMMnr+Ck6aWHudqJJGpJSGPG0kfYvb
+         rh3exKGqhvrECKtQwGLlyHuk3v2C22hMN0vAdgFl+uLludPOuvRzstRNpi3UJJXBMtLj
+         rFvnuBEnh3TxrM2nHcIC8ZqIKMSllACQOTo6TtrCTBEw1Do2Cp0oZEgFkSRV00oa9fKy
+         wFdkLDkSnxyvR5gfIvdH2d8dauICjgrgEuitm5Q5fjvhozadNf7pUyXI32qSDi5DbFBz
+         S5rw==
+X-Gm-Message-State: AGi0PuYwBm5glxKHUfmhNfioKgmX8oBFlm3Yyb7/rAFW4Xxd7bu+HJNr
+        Q/F1+9eEvy/X4oO6CEccLO7NWK5jv3dlMIsiT7Qy9g==
+X-Google-Smtp-Source: APiQypLpxLw06YROHozj/c2cmajSpvDh2ixxHgmlY2cOrNPKW8LKK+/4LBCTENrfuZLVR/Gcbmd1iginW9IYtm3lsUI=
+X-Received: by 2002:aa7:d711:: with SMTP id t17mr9242415edq.296.1586891109388;
+ Tue, 14 Apr 2020 12:05:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200413054046.1560106-1-ira.weiny@intel.com> <20200413054046.1560106-10-ira.weiny@intel.com>
+ <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com> <20200414161509.GF6742@magnolia>
+In-Reply-To: <20200414161509.GF6742@magnolia>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 14 Apr 2020 12:04:57 -0700
+Message-ID: <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
+Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-14 at 20:30 +0200, Christophe JAILLET wrote:
-> Being able to detect early missing trailing '\n' would help maintainers 
-> and patch providers.
-> 
-> You are the 2nd person (I've added Paul Cercueil in copy of my reply) 
-> who reports that he is thinking that it is no more required to add a '\n'.
+On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> On Mon, Apr 13, 2020 at 10:21:26PM -0700, Dan Williams wrote:
+> > On Sun, Apr 12, 2020 at 10:41 PM <ira.weiny@intel.com> wrote:
+> > >
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > >
+> > > Update the Usage section to reflect the new individual dax selection
+> > > functionality.
+> > >
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > >
+> > > ---
+> > > Changes from V6:
+> > >         Update to allow setting FS_XFLAG_DAX any time.
+> > >         Update with list of behaviors from Darrick
+> > >         https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
+> > >
+> > > Changes from V5:
+> > >         Update to reflect the agreed upon semantics
+> > >         https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> > > ---
+> > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
+> > >  1 file changed, 163 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> > > index 679729442fd2..af14c1b330a9 100644
+> > > --- a/Documentation/filesystems/dax.txt
+> > > +++ b/Documentation/filesystems/dax.txt
+> > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
+> > >  Usage
+> > >  -----
+> > >
+> > > -If you have a block device which supports DAX, you can make a filesystem
+> > > +If you have a block device which supports DAX, you can make a file system
+> > >  on it as usual.  The DAX code currently only supports files with a block
+> > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
+> > > -size when creating the filesystem.  When mounting it, use the "-o dax"
+> > > -option on the command line or add 'dax' to the options in /etc/fstab.
+> > > +size when creating the file system.
+> > > +
+> > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
+> > > +different at this time.
+> > > +
+> > > +Enabling DAX on ext4
+> > > +--------------------
+> > > +
+> > > +When mounting the filesystem, use the "-o dax" option on the command line or
+> > > +add 'dax' to the options in /etc/fstab.
+> > > +
+> > > +
+> > > +Enabling DAX on xfs
+> > > +-------------------
+> > > +
+> > > +Summary
+> > > +-------
+> > > +
+> > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
+> > > +    file accesses go directly to persistent memory, bypassing the page
+> > > +    cache.
+> >
+> > I had reserved some quibbling with this wording, but now that this is
+> > being proposed as documentation I'll let my quibbling fly. "dax" may
+> > imply, but does not require persistent memory nor does it necessarily
+> > "bypass page cache". For example on configurations that support dax,
+> > but turn off MAP_SYNC (like virtio-pmem), a software flush is
+> > required. Instead, if we're going to define "dax" here I'd prefer it
+> > be a #include of the man page definition that is careful (IIRC) to
+> > only talk about semantics and not backend implementation details. In
+> > other words, dax is to page-cache as direct-io is to page cache,
+> > effectively not there, but dig a bit deeper and you may find it.
+>
+> Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
 
-The printk subsystem will, for every printk, check
-if the last printk has a newline termination and if
-it doesn't and the current printk does not start with
-KERN_CONT will insert a newline.
-
-The negative to this approach is the last printk,
-if it does not have a newline, is buffered and not
-emitted until another printk occurs.
-
-There is also the (now small) possibility that
-multiple concurrent kernel threads or processes
-could interleave printks without a terminating
-newline and a different process could emit a
-printk that starts with KERN_CONT and the emitted
-message could be garbled.
-
-See:
-
-commit 4bcc595ccd80decb4245096e3d1258989c50ed41
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat Oct 8 20:32:40 2016 -0700
-
-    printk: reinstate KERN_CONT for printing continuation lines
-
-
-
-
+No, I was referring to the proposed wording for STATX_ATTR_DAX.
+There's no reason for this description to say anything divergent from
+that description.
