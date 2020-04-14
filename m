@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDE21A7EC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3021A7EC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgDNNta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:49:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:30458 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388105AbgDNNss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:48:48 -0400
-IronPort-SDR: Wnz1yPzBLW0c1HLt3uEdhL1QT150Y4SrgB5i9x6/WMFQFu1lh/8Xl1QvR+J3PUk5x4V5KC1T3p
- z6Uvo+D2ukFg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 06:48:47 -0700
-IronPort-SDR: Ny/ZagQyHiMzUsJbw7iCuEBiMwf3T11gCmuZPUzB0PbQQ1XB5A6ROCjYYxclPkrI+XrQKUqnLl
- x90OkNyxbUtQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
-   d="scan'208";a="243817401"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Apr 2020 06:48:45 -0700
-Subject: Re: [PATCH v5 2/3] mmc: host: sdhci: Implement the request_atomic()
- API
-To:     Baolin Wang <baolin.wang7@gmail.com>, ulf.hansson@linaro.org
-Cc:     arnd@arndb.de, orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1586744073.git.baolin.wang7@gmail.com>
- <9ed34afa9fb42e0c234065cac5401d7826942b55.1586744073.git.baolin.wang7@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <9d118792-8551-7988-464e-162550bc6614@intel.com>
-Date:   Tue, 14 Apr 2020 16:47:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S2388157AbgDNNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727991AbgDNNsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:48:36 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B04CC061A0C;
+        Tue, 14 Apr 2020 06:48:35 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h11so4666129plr.11;
+        Tue, 14 Apr 2020 06:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tRIC1+fbqgksFCXZuCIwbMy1gMACOqNnoWCEPyufkRo=;
+        b=GaO/qKQOZHoYDBE0SZJhbEGpsDQbuszrib3RZ+LJ4A9j8Jpt43q+nfImee6LnjJ+j/
+         aR8OOlq5dPwT1bFM7V+3RYw78okenlCnJXMsZYvnGOP95JFuWYxDxQQDLadVHaJ0jV8S
+         Dz0RnmM+GdP/zaU++I85DtwtYRhtfdbluCsGpJn9Oy15ByBq6ysdXVIDPMh825yh1wYd
+         pp4dIKSYES6/riRi0KecsSOdbDwZNIvFIiw7pELOFQEBy1kmKs7lbV1UKfikocbd84wz
+         xRLiaQuj4ssVo5PvKaRnZlYgWxbxmm/frB53eAnJVbTEcz17KjfIqMsWPK+e2OW/uYRY
+         G7rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tRIC1+fbqgksFCXZuCIwbMy1gMACOqNnoWCEPyufkRo=;
+        b=pB3BR3sE1ouzJsb/alituJQPzBoaHjSrbjUZhfJqU0fgRpxQ+8ELfzoIrgP3VQUJik
+         cGP5Cl5OOkPzIx7QRGE+JCiFONh6tb1TiPvcXsfPoMZC4JHILNe++mnssk8xERoDYor4
+         /3kmO+qQjeApeCql9Wpn8OgtW3vV9OSKzeh/TJi3ZDBK4wZqXEuLG60f+G1Vt9hhAyGV
+         oX+yBqwmVBa8BkB017PruuXZ220QxS4/WMuEXXEvsexbrXLSrrxOVv2g5jP8s4Lmm7gb
+         5PswPuPafgl4XoeVBtTXBaLintZ4Igpxw4S/LlG9HySHa14gt9IPZ/p+jD/xRddZUf6w
+         8Zag==
+X-Gm-Message-State: AGi0PuaYElEE9qPi1z5dWc/HLORv7eJAO/jRgWIqLCtl5LuLDu0UO4Ga
+        QU8xQQ8pjY4o9ugmnU3qqGk=
+X-Google-Smtp-Source: APiQypKxu4lvNh7B1YEtxxWsTvlQwDsLJQmCevNqmTW3KEEsrC0UcP+R0Mko5eh4rrhyjzXZHSxvwA==
+X-Received: by 2002:a17:90b:3444:: with SMTP id lj4mr185611pjb.37.1586872114531;
+        Tue, 14 Apr 2020 06:48:34 -0700 (PDT)
+Received: from localhost ([89.208.244.140])
+        by smtp.gmail.com with ESMTPSA id g3sm10233341pgd.64.2020.04.14.06.48.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Apr 2020 06:48:34 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     michal.simek@xilinx.com, wsa+renesas@sang-engineering.com,
+        pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, alain.volmat@st.com,
+        linux-i2c@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v1] i2c: busses: convert to devm_platform_get_and_ioremap_resource
+Date:   Tue, 14 Apr 2020 21:48:27 +0800
+Message-Id: <20200414134827.18674-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <9ed34afa9fb42e0c234065cac5401d7826942b55.1586744073.git.baolin.wang7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/20 5:46 am, Baolin Wang wrote:
-> Implement the request_atomic() ops for the sdhci driver to process
-> one request in the atomic context if the card is nonremovable.
-> 
-> Moreover, we should return BUSY flag if controller has not released
-> the inhibit bits to allow HSQ trying to send request again in non-atomic
-> context.
-> 
-> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+use devm_platform_get_and_ioremap_resource() to simplify code, which
+contains platform_get_resource() and devm_ioremap_resource(), it also
+get the resource for use by the following code.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+ drivers/i2c/busses/i2c-cadence.c      | 3 +--
+ drivers/i2c/busses/i2c-pca-platform.c | 3 +--
+ drivers/i2c/busses/i2c-rcar.c         | 4 +---
+ drivers/i2c/busses/i2c-stm32f7.c      | 3 +--
+ 4 files changed, 4 insertions(+), 9 deletions(-)
 
-> ---
->  drivers/mmc/host/sdhci.c | 34 ++++++++++++++++++++++++++++++++++
->  drivers/mmc/host/sdhci.h |  1 +
->  2 files changed, 35 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 10b9570f48aa..0baef595de26 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -2144,6 +2144,40 @@ void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
->  }
->  EXPORT_SYMBOL_GPL(sdhci_request);
->  
-> +int sdhci_request_atomic(struct mmc_host *mmc, struct mmc_request *mrq)
-> +{
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +	struct mmc_command *cmd;
-> +	unsigned long flags;
-> +	int ret = 0;
-> +
-> +	spin_lock_irqsave(&host->lock, flags);
-> +
-> +	if (sdhci_present_error(host, mrq->cmd, true)) {
-> +		sdhci_finish_mrq(host, mrq);
-> +		goto out_finish;
-> +	}
-> +
-> +	cmd = sdhci_manual_cmd23(host, mrq) ? mrq->sbc : mrq->cmd;
-> +
-> +	/*
-> +	 * The HSQ may send a command in interrupt context without polling
-> +	 * the busy signaling, which means we should return BUSY if controller
-> +	 * has not released inhibit bits to allow HSQ trying to send request
-> +	 * again in non-atomic context. So we should not finish this request
-> +	 * here.
-> +	 */
-> +	if (!sdhci_send_command(host, cmd))
-> +		ret = -EBUSY;
-> +	else
-> +		sdhci_led_activate(host);
-> +
-> +out_finish:
-> +	spin_unlock_irqrestore(&host->lock, flags);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(sdhci_request_atomic);
-> +
->  void sdhci_set_bus_width(struct sdhci_host *host, int width)
->  {
->  	u8 ctrl;
-> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> index a7e469c00617..4bd70da7aa00 100644
-> --- a/drivers/mmc/host/sdhci.h
-> +++ b/drivers/mmc/host/sdhci.h
-> @@ -776,6 +776,7 @@ void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
->  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
->  			   unsigned short vdd);
->  void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq);
-> +int sdhci_request_atomic(struct mmc_host *mmc, struct mmc_request *mrq);
->  void sdhci_set_bus_width(struct sdhci_host *host, int width);
->  void sdhci_reset(struct sdhci_host *host, u8 mask);
->  void sdhci_set_uhs_signaling(struct sdhci_host *host, unsigned timing);
-> 
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index 89d58f7d2a25..803c802611eb 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -906,8 +906,7 @@ static int cdns_i2c_probe(struct platform_device *pdev)
+ 		id->quirks = data->quirks;
+ 	}
+ 
+-	r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	id->membase = devm_ioremap_resource(&pdev->dev, r_mem);
++	id->membase = devm_platform_get_and_ioremap_resource(pdev, 0, &r_mem);
+ 	if (IS_ERR(id->membase))
+ 		return PTR_ERR(id->membase);
+ 
+diff --git a/drivers/i2c/busses/i2c-pca-platform.c b/drivers/i2c/busses/i2c-pca-platform.c
+index 635dd697ac0b..546426a470cc 100644
+--- a/drivers/i2c/busses/i2c-pca-platform.c
++++ b/drivers/i2c/busses/i2c-pca-platform.c
+@@ -149,8 +149,7 @@ static int i2c_pca_pf_probe(struct platform_device *pdev)
+ 	if (!i2c)
+ 		return -ENOMEM;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	i2c->reg_base = devm_ioremap_resource(&pdev->dev, res);
++	i2c->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(i2c->reg_base))
+ 		return PTR_ERR(i2c->reg_base);
+ 
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 3b5397aa4ca6..a45c4bf1ec01 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -938,9 +938,7 @@ static int rcar_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->clk);
+ 	}
+ 
+-	priv->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	priv->io = devm_ioremap_resource(dev, priv->res);
++	priv->io = devm_platform_get_and_ioremap_resource(pdev, 0, &priv->res);
+ 	if (IS_ERR(priv->io))
+ 		return PTR_ERR(priv->io);
+ 
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index 330ffed011e0..cf48f8df4423 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -1940,8 +1940,7 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
+ 	if (!i2c_dev)
+ 		return -ENOMEM;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	i2c_dev->base = devm_ioremap_resource(&pdev->dev, res);
++	i2c_dev->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(i2c_dev->base))
+ 		return PTR_ERR(i2c_dev->base);
+ 	phy_addr = (dma_addr_t)res->start;
+-- 
+2.25.0
 
