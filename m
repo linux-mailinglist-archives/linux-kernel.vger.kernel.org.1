@@ -2,344 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E55B1A7863
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69351A7488
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438327AbgDNK3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:29:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3508 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2438297AbgDNK3g (ORCPT
+        id S2406509AbgDNHSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406487AbgDNHS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:29:36 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EA43cp067568;
-        Tue, 14 Apr 2020 06:28:47 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30cx1k4n47-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Apr 2020 06:28:47 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03EA4ZCw069519;
-        Tue, 14 Apr 2020 06:28:47 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30cx1k4n3m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Apr 2020 06:28:47 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03EAQ8l2030289;
-        Tue, 14 Apr 2020 10:28:45 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01wdc.us.ibm.com with ESMTP id 30b5h67snk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Apr 2020 10:28:45 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EASjds42664336
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:28:45 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75C8BB2065;
-        Tue, 14 Apr 2020 10:28:45 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6269B205F;
-        Tue, 14 Apr 2020 10:28:44 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.109.81])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Apr 2020 10:28:44 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 1843B2E30FB; Tue, 14 Apr 2020 12:46:24 +0530 (IST)
-Date:   Tue, 14 Apr 2020 12:46:24 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-        mpe@ellerman.id.au, skiboot@lists.ozlabs.org, oohall@gmail.com,
-        ego@linux.vnet.ibm.com, linuxram@us.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: Re: [PATCH v6 1/3] powerpc/powernv: Introduce interface for
- self-restore support
-Message-ID: <20200414071623.GE24277@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200326071034.12838-1-psampat@linux.ibm.com>
- <20200326071034.12838-2-psampat@linux.ibm.com>
+        Tue, 14 Apr 2020 03:18:26 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18B2C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 00:18:26 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id ay1so4354078plb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 00:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kNViunjrcbq+TCGIf8cu9QtKaO+3xTAUy0wJQn1ojcQ=;
+        b=IVemlTcnko/cPbxzqvhtow7GfBpe8N+UfiS/+WJAiYuDAO9TR8QlmMLhPqcWuB/Zcq
+         DNzDDGS3SVVkzGlngPr2k1KI44zQ0QLJfpQcZOGYZG8XpMXST1mHCLL1aX7vJgIM6WCw
+         hI/B/BIJpgiZZfEM4HavK5fyyxi2+TUBM3HXc9Nkay8EK2PLxbRrH9HqUkBlxqwLE+FN
+         zTD1/HKEEq9Md5SQRyvg/91FKsr5ZC8Gz/3Lvpu6MnIY8VDXkm9VT2E6wkqF9NPZ1oPZ
+         RBZmdSZdKP14Kk3B6DUKgD7e/coCQCN1hwbgyMw4W9D87l8zyu7XpntDHTaP6UnpnDtD
+         4HRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kNViunjrcbq+TCGIf8cu9QtKaO+3xTAUy0wJQn1ojcQ=;
+        b=PhW0x43hZd7jR6TwmaAXuel/VNPVZ2wO2R0SivQ/dHQVL0Qjx4oBT9HBfGRgJKHu4W
+         XdLcj1L3ruaozk7HgjwfBW6TACmBiauYGg13NZgnWa2DdRTxMsSoKCI03GAuqiSDfKs/
+         JHZH7N84AEZvZ1RneI6p5l+RZLe3cRwLtxs2HS7ikRQ09upWK/ZXL4fIzFohN3sbcw0x
+         9MKKOPuQB5VRLNyFtJtauSKIl3kIJP4Kf2ReZYY1FzE2HFl2OsV1/R7ksyyypX81kx8q
+         2u8CBdobLepVRbSoz1q5kqvfS69ZvV5ayk0YW579FGrl8RxdDw4/8l7nRUp8bxVbC0Sh
+         qP6Q==
+X-Gm-Message-State: AGi0PuYWHyZa1p2bG1CoTlWHr0flCQlVC0Ha9Fos+meLwf8DLjCzIabK
+        9ZgACUnwuaxDW8cvH55rK+nPRIHVULg=
+X-Google-Smtp-Source: APiQypI3fTWE+FPRvCAJqw6z2WSdNHQeKfFfKIqQ8O7d9HwUxLT3/sWipQtXaZhfpOWgSY5bXuGyjQ==
+X-Received: by 2002:a17:90b:23ce:: with SMTP id md14mr12280363pjb.164.1586848706084;
+        Tue, 14 Apr 2020 00:18:26 -0700 (PDT)
+Received: from localhost ([122.171.118.46])
+        by smtp.gmail.com with ESMTPSA id c201sm10480026pfc.73.2020.04.14.00.18.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Apr 2020 00:18:25 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 12:48:23 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] opp: Fixup release of clock when using set/put clkname
+Message-ID: <20200414071823.jdhkprtkizyeua23@vireshk-i7>
+References: <1586848508-1320-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200326071034.12838-2-psampat@linux.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_02:2020-04-13,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- impostorscore=0 spamscore=0 malwarescore=0 suspectscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140078
+In-Reply-To: <1586848508-1320-1-git-send-email-rnayak@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 12:40:32PM +0530, Pratik Rajesh Sampat wrote:
-> Introduces an interface that helps determine support for the
-> self-restore API. The commit is isomorphic to the original interface of
-> declaring SPRs to self-restore.
+On 14-04-20, 12:45, Rajendra Nayak wrote:
+> Fixup dev_pm_opp_put_clkname() to check for a valid clock pointer
+> before it does a clk_put, since its likely that
+> _opp_table_kref_release() has already done a clk_put. Also fixup
+
+kref release is the last thing that happens on the table, it can't get
+called after dev_pm_opp_put_clkname().
+
+> _opp_table_kref_release() to set the clock pointer to ERR_PTR(-EINVAL)
+> after its done doing a clk_put so dev_pm_opp_put_clkname() can then
+> catch it.
 > 
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-
-This patch looks good to me.
-
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 > ---
->  arch/powerpc/platforms/powernv/idle.c | 200 +++++++++++++++++++-------
->  1 file changed, 152 insertions(+), 48 deletions(-)
+>  drivers/opp/core.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
-> index 78599bca66c2..858ceb86394d 100644
-> --- a/arch/powerpc/platforms/powernv/idle.c
-> +++ b/arch/powerpc/platforms/powernv/idle.c
-> @@ -32,10 +32,67 @@
->  #define P9_STOP_SPR_MSR 2000
->  #define P9_STOP_SPR_PSSCR      855
-> 
-> +/*
-> + * Type of support for each SPR
-> + * FIRMWARE_RESTORE: firmware restoration supported: calls self-restore OPAL API
-> + */
-> +#define UNSUPPORTED           0x0
-> +#define FIRMWARE_RESTORE      0x1
-> +
->  static u32 supported_cpuidle_states;
->  struct pnv_idle_states_t *pnv_idle_states;
->  int nr_pnv_idle_states;
-> 
-> +struct preferred_sprs {
-> +	u64 spr;
-> +	u32 supported_mode;
-> +};
-> +
-> +/*
-> + * Supported mode: Default support. Can be overwritten during system
-> + *		   initialization
-> + */
-> +struct preferred_sprs preferred_sprs[] = {
-> +	{
-> +		.spr = SPRN_HSPRG0,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = SPRN_LPCR,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = SPRN_HMEER,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = SPRN_HID0,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = P9_STOP_SPR_MSR,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = P9_STOP_SPR_PSSCR,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = SPRN_HID1,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = SPRN_HID4,
-> +		.supported_mode = FIRMWARE_RESTORE,
-> +	},
-> +	{
-> +		.spr = SPRN_HID5,
-> +		.supported_mode = FIRMWARE_RESTORE,
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index e4f01e7..6d064a8 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1061,8 +1061,10 @@ static void _opp_table_kref_release(struct kref *kref)
+>  	_of_clear_opp_table(opp_table);
+>  
+>  	/* Release clk */
+> -	if (!IS_ERR(opp_table->clk))
+> +	if (!IS_ERR(opp_table->clk)) {
+>  		clk_put(opp_table->clk);
+> +		opp_table->clk = ERR_PTR(-EINVAL);
 > +	}
-> +};
-> +
-> +const int nr_preferred_sprs = ARRAY_SIZE(preferred_sprs);
-> +
->  /*
->   * The default stop state that will be used by ppc_md.power_save
->   * function on platforms that support stop instruction.
-> @@ -61,78 +118,125 @@ static bool deepest_stop_found;
-> 
->  static unsigned long power7_offline_type;
-> 
-> -static int pnv_save_sprs_for_deep_states(void)
-> +static int pnv_self_restore_sprs(u64 pir, int cpu, u64 spr)
->  {
-> -	int cpu;
-> +	u64 reg_val;
->  	int rc;
-> 
-> -	/*
-> -	 * hid0, hid1, hid4, hid5, hmeer and lpcr values are symmetric across
-> -	 * all cpus at boot. Get these reg values of current cpu and use the
-> -	 * same across all cpus.
-> -	 */
-> -	uint64_t lpcr_val	= mfspr(SPRN_LPCR);
-> -	uint64_t hid0_val	= mfspr(SPRN_HID0);
-> -	uint64_t hid1_val	= mfspr(SPRN_HID1);
-> -	uint64_t hid4_val	= mfspr(SPRN_HID4);
-> -	uint64_t hid5_val	= mfspr(SPRN_HID5);
-> -	uint64_t hmeer_val	= mfspr(SPRN_HMEER);
-> -	uint64_t msr_val = MSR_IDLE;
-> -	uint64_t psscr_val = pnv_deepest_stop_psscr_val;
-> -
-> -	for_each_present_cpu(cpu) {
-> -		uint64_t pir = get_hard_smp_processor_id(cpu);
-> -		uint64_t hsprg0_val = (uint64_t)paca_ptrs[cpu];
-> -
-> -		rc = opal_slw_set_reg(pir, SPRN_HSPRG0, hsprg0_val);
-> +	switch (spr) {
-> +	case SPRN_HSPRG0:
-> +		reg_val = (uint64_t)paca_ptrs[cpu];
-> +		rc = opal_slw_set_reg(pir, SPRN_HSPRG0, reg_val);
->  		if (rc != 0)
->  			return rc;
-> -
-> -		rc = opal_slw_set_reg(pir, SPRN_LPCR, lpcr_val);
-> +		break;
-> +	case SPRN_LPCR:
-> +		reg_val = mfspr(SPRN_LPCR);
-> +		rc = opal_slw_set_reg(pir, SPRN_LPCR, reg_val);
->  		if (rc != 0)
->  			return rc;
-> -
-> +		break;
-> +	case P9_STOP_SPR_MSR:
-> +		reg_val = MSR_IDLE;
->  		if (cpu_has_feature(CPU_FTR_ARCH_300)) {
-> -			rc = opal_slw_set_reg(pir, P9_STOP_SPR_MSR, msr_val);
-> +			rc = opal_slw_set_reg(pir, P9_STOP_SPR_MSR, reg_val);
->  			if (rc)
->  				return rc;
-> -
-> -			rc = opal_slw_set_reg(pir,
-> -					      P9_STOP_SPR_PSSCR, psscr_val);
-> -
-> +		}
-> +		break;
-> +	case P9_STOP_SPR_PSSCR:
-> +		reg_val = pnv_deepest_stop_psscr_val;
-> +		if (cpu_has_feature(CPU_FTR_ARCH_300)) {
-> +			rc = opal_slw_set_reg(pir, P9_STOP_SPR_PSSCR, reg_val);
->  			if (rc)
->  				return rc;
->  		}
-> -
-> -		/* HIDs are per core registers */
-> +		break;
-> +	case SPRN_HMEER:
-> +		reg_val = mfspr(SPRN_HMEER);
->  		if (cpu_thread_in_core(cpu) == 0) {
-> -
-> -			rc = opal_slw_set_reg(pir, SPRN_HMEER, hmeer_val);
-> -			if (rc != 0)
-> +			rc = opal_slw_set_reg(pir, SPRN_HMEER, reg_val);
-> +			if (rc)
->  				return rc;
-> -
-> -			rc = opal_slw_set_reg(pir, SPRN_HID0, hid0_val);
-> -			if (rc != 0)
-> +		}
-> +		break;
-> +	case SPRN_HID0:
-> +		reg_val = mfspr(SPRN_HID0);
-> +		if (cpu_thread_in_core(cpu) == 0) {
-> +			rc = opal_slw_set_reg(pir, SPRN_HID0, reg_val);
-> +			if (rc)
->  				return rc;
-> +		}
-> +		break;
-> +	case SPRN_HID1:
-> +		reg_val = mfspr(SPRN_HID1);
-> +		if (!cpu_has_feature(CPU_FTR_ARCH_300) &&
-> +		    cpu_thread_in_core(cpu) == 0) {
-> +			rc = opal_slw_set_reg(pir, SPRN_HID1, reg_val);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +		break;
-> +	case SPRN_HID4:
-> +		reg_val = mfspr(SPRN_HID4);
-> +		if (!cpu_has_feature(CPU_FTR_ARCH_300) &&
-> +		    cpu_thread_in_core(cpu) == 0) {
-> +			rc = opal_slw_set_reg(pir, SPRN_HID4, reg_val);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +		break;
-> +	case SPRN_HID5:
-> +		reg_val = mfspr(SPRN_HID5);
-> +		if (!cpu_has_feature(CPU_FTR_ARCH_300) &&
-> +		    cpu_thread_in_core(cpu) == 0) {
-> +			rc = opal_slw_set_reg(pir, SPRN_HID5, reg_val);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +		break;
-> +	default:
-> +		return -EINVAL;
+>  
+>  	WARN_ON(!list_empty(&opp_table->opp_list));
+>  
+> @@ -1744,8 +1746,10 @@ void dev_pm_opp_put_clkname(struct opp_table *opp_table)
+>  	/* Make sure there are no concurrent readers while updating opp_table */
+>  	WARN_ON(!list_empty(&opp_table->opp_list));
+>  
+> -	clk_put(opp_table->clk);
+> -	opp_table->clk = ERR_PTR(-EINVAL);
+> +	if (!IS_ERR(opp_table->clk)) {
+> +		clk_put(opp_table->clk);
+> +		opp_table->clk = ERR_PTR(-EINVAL);
 > +	}
-> +	return 0;
-> +}
-> 
-> -			/* Only p8 needs to set extra HID regiters */
-> -			if (!cpu_has_feature(CPU_FTR_ARCH_300)) {
-> -
-> -				rc = opal_slw_set_reg(pir, SPRN_HID1, hid1_val);
-> -				if (rc != 0)
-> -					return rc;
-> -
-> -				rc = opal_slw_set_reg(pir, SPRN_HID4, hid4_val);
-> -				if (rc != 0)
-> -					return rc;
-> +static int pnv_self_save_restore_sprs(void)
-> +{
-> +	int rc, index, cpu;
-> +	u64 pir;
-> +	struct preferred_sprs curr_spr;
-> 
-> -				rc = opal_slw_set_reg(pir, SPRN_HID5, hid5_val);
-> +	for_each_present_cpu(cpu) {
-> +		pir = get_hard_smp_processor_id(cpu);
-> +		for (index = 0; index < nr_preferred_sprs; index++) {
-> +			curr_spr = preferred_sprs[index];
-> +			/* HIDs are per core register */
-> +			if (cpu_thread_in_core(cpu) != 0 &&
-> +			    (curr_spr.spr == SPRN_HMEER ||
-> +			     curr_spr.spr == SPRN_HID0  ||
-> +			     curr_spr.spr == SPRN_HID1  ||
-> +			     curr_spr.spr == SPRN_HID4  ||
-> +			     curr_spr.spr == SPRN_HID5))
-> +				continue;
-> +			if (curr_spr.supported_mode & FIRMWARE_RESTORE) {
-> +				rc = pnv_self_restore_sprs(pir, cpu,
-> +							   curr_spr.spr);
->  				if (rc != 0)
->  					return rc;
->  			}
->  		}
->  	}
-> +	return 0;
-> +}
-> 
-> +static int pnv_save_sprs_for_deep_states(void)
-> +{
-> +	int rc;
-> +
-> +	rc = pnv_self_save_restore_sprs();
-> +	if (rc != 0)
-> +		return rc;
->  	return 0;
+>  
+>  	dev_pm_opp_put_opp_table(opp_table);
 >  }
-> 
 > -- 
-> 2.17.1
-> 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+
+-- 
+viresh
