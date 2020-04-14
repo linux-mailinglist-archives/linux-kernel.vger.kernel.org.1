@@ -2,110 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41611A74FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077D41A7506
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406782AbgDNHmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 03:42:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52926 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729368AbgDNHmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:42:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 62554AE17;
-        Tue, 14 Apr 2020 07:41:59 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 09:41:58 +0200
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Adam Honse <calcprogrammer1@gmail.com>
-Subject: Re: [PATCH] i2c: piix4: Add second SMBus for X370/X470/X570
-Message-ID: <20200414094158.089dd5ea@endymion>
-In-Reply-To: <20200413150634.474842-1-sebastian.reichel@collabora.com>
-References: <20200413150634.474842-1-sebastian.reichel@collabora.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S2406813AbgDNHml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406798AbgDNHmd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 03:42:33 -0400
+X-Greylist: delayed 800 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Apr 2020 00:42:28 PDT
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFE0C0A3BDC;
+        Tue, 14 Apr 2020 00:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=JJ5p+3/4IGSnlDpePvLUhJym9cud2qctPPEa9hKpgOM=; b=mZGEHRFvMVjixYpNm3y0zpmQjV
+        IC9wydu/Xq4lMZvgsrmgMxNkFERUCAjs3f8J0/5wVTNywoZV3uCEIT8qAAtKV0YO94ZgF2FK51m1H
+        vajT4cliScjbIguGiXn2RA8fC+zCjbCIYKn12IP9YpSPdMocRBFokH08fC7Sfko8e0stwbptBPv+e
+        oouFi+80pNZ7tRxPc2lL+SqmxxShS7ZjVQEGdJg/UPhgnHiYCFbAHvkxLFBh160Yh+srwNXcV1Szw
+        lX6vVL3wX1vFWmyhgEB2vCiFI6oXcr6R6Y1BByOGu5shaghfjpinuSyxHNWHysEQHvA50d/TYeVTV
+        l7cg2/xw==;
+Received: from [2001:4bb8:180:384b:4c21:af7:dd95:e552] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOGDD-00073b-R8; Tue, 14 Apr 2020 07:42:28 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: clean up DMA draining
+Date:   Tue, 14 Apr 2020 09:42:20 +0200
+Message-Id: <20200414074225.332324-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+Hi all,
 
-On Mon, 13 Apr 2020 17:06:34 +0200, Sebastian Reichel wrote:
-> The second interface can be found on X370, X470 and X570 according
-> to the bugzilla entry. I only tested with X570 on an ASRock X570
-> Taichi:
-> 
-> $ lspci -nnv -d 1022:790b
-> 00:14.0 SMBus [0c05]: Advanced Micro Devices, Inc. [AMD] FCH SMBus Controller [1022:790b] (rev 61)
-> 	Subsystem: ASRock Incorporation FCH SMBus Controller [1849:ffff]
-> 	Flags: 66MHz, medium devsel
-> 	Kernel driver in use: piix4_smbus
-> 	Kernel modules: i2c_piix4, sp5100_tco
-> 
-> Before the patch:
-> 
-> $ i2cdetect -l | grep PIIX4
-> i2c-1	unknown   	SMBus PIIX4 adapter port 2 at 0b00	N/A
-> i2c-0	unknown   	SMBus PIIX4 adapter port 0 at 0b00	N/A
-> 
-> After the patch:
-> 
-> $ i2cdetect -l | grep PIIX4
-> i2c-1	unknown   	SMBus PIIX4 adapter port 2 at 0b00	N/A
-> i2c-2	unknown   	SMBus PIIX4 adapter port 1 at 0b20	N/A
-> i2c-0	unknown   	SMBus PIIX4 adapter port 0 at 0b00	N/A
-> 
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202587
-> Reported-by: Adam Honse <calcprogrammer1@gmail.com>
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
-> Hi,
-> 
-> The Bugzilla entry contains a second change, which reduces the timeouts
-> for quicker operation. I did not include that change, since I do not know
-> if this is a good idea for all devices supported by this driver. In any
-> case it should be a separate patch. Let's get the interface working for
-> now.
-> 
-> -- Sebastian
-> ---
->  drivers/i2c/busses/i2c-piix4.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-piix4.c b/drivers/i2c/busses/i2c-piix4.c
-> index 30ded6422e7b..3e89143a0ecf 100644
-> --- a/drivers/i2c/busses/i2c-piix4.c
-> +++ b/drivers/i2c/busses/i2c-piix4.c
-> @@ -976,9 +976,11 @@ static int piix4_probe(struct pci_dev *dev, const struct pci_device_id *id)
->  		}
->  	}
->  
-> -	if (dev->vendor == PCI_VENDOR_ID_AMD &&
-> -	    dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS) {
-> -		retval = piix4_setup_sb800(dev, id, 1);
-> +	if (dev->vendor == PCI_VENDOR_ID_AMD) {
-> +		if (dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS ||
-> +		    dev->device == PCI_DEVICE_ID_AMD_KERNCZ_SMBUS) {
-> +			retval = piix4_setup_sb800(dev, id, 1);
-> +		}
->  	}
->  
->  	if (retval > 0) {
-
-Adam just sent pretty much the same patch:
-
-https://patchwork.ozlabs.org/project/linux-i2c/patch/20200410204843.3856-1-calcprogrammer1@gmail.com/
-
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-
-I'll leave it to Wolfram which one he wants to apply.
-
--- 
-Jean Delvare
-SUSE L3 Support
+currently the dma draining and alignining specific to ATA CDROMs
+and the UFS driver has its ugly hooks in core block code.  Move
+this out into the scsi and ide drivers instead.
