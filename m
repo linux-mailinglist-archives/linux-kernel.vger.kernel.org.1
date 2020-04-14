@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED431A7E0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6D21A7E46
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732244AbgDNNaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:30:01 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:45458 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732087AbgDNN2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:28:55 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03EDSpA4083332;
-        Tue, 14 Apr 2020 08:28:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1586870931;
-        bh=u4MC3vP7IuttKDx8Z8LBQeVWaGt1BmFWT4OrNlLtjYI=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=aVHNXMlcX5EKbH3LTgr3Tjpgm5hRS8r743YqZgixAsfjpDuD99BXSG3fbAkolkifj
-         LfrAHM2RmtlIjxjlub0aFxAwvLfT9LElbnz/OEqQ/DNCTaRwXI7AeIzu47zDT1BhKC
-         oFvgU0YY19CZ6YWqQEVK+zqOy8TpEttwAsYm9U3s=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03EDSpq1003225;
-        Tue, 14 Apr 2020 08:28:51 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 14
- Apr 2020 08:28:51 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 14 Apr 2020 08:28:51 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03EDSpnA008906;
-        Tue, 14 Apr 2020 08:28:51 -0500
-Subject: Re: [PATCH v19 04/18] leds: multicolor: Introduce a multicolor class
- definition
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200402204311.14998-1-dmurphy@ti.com>
- <20200402204311.14998-5-dmurphy@ti.com>
- <e5a789d5-b622-df23-d540-99816851d5f1@ti.com>
-Message-ID: <aa642c7e-c3b5-d326-17e8-73f80babf7c0@ti.com>
-Date:   Tue, 14 Apr 2020 08:23:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1732444AbgDNNgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:36:47 -0400
+Received: from mail-eopbgr60061.outbound.protection.outlook.com ([40.107.6.61]:14995
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728395AbgDNNdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:33:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vi92amGerpA6nAbGKdaNuFLRulK7/xISCpGQ+K1GfNqYKlH47YCE+FovY6uI2rGl8QxKLzwIHgavbBXnp54NRgl+V0Hj82G9dMvLQmIdl4kpwGFeNO26pMoh6ejdCkDh1tnDKDsXcWuFN0pv2eOWntX0GJSdcvsz60dG1vQ5zzQZP9u6nkFtjVZY0N2Sw+aCToEX/KPR1AE4cQ2WHd7xAbFsYDi+ldELesTIOuMlc+qmuSrf7iCS6BjaAj/3bW1TmDOlwrH609XrJPwy3xXKwdkiLEnMeLg2GElqbQ61LEwUs+lA/rMSmauwFHtZYCxpVahiSB89UGZBSfjmLhyinA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d8r56iU6nx/DKLqagQWCqusB9o+EarkpsCAau+xRQlo=;
+ b=Ti+hh6h6Yg0e3gR50xXC+XHOcZEy8J5OmxOdEbsM/GKedGa4Ii69hPRoh6hRSUj1s4c+n4emkvlEUMQT4hUmSg2Cshs+2yAwkkUG/BMKatbn/cuntKDmbHamo4CfEgTHKVC9T/TE4H9ZUX9uUKeKcgNu4xOF3eyE7tj8oGBVJpTpL+HyyzHa8AbzK2u+t52nQOFL9p+kiiHiIC+hGjyAIT39RtYREgcULWmR2i4bZs3lwiIqmhEBWbhoIIk5mFz4Bfg3rXNHZEHyYxA/OMvz1c65NvmScpP80WlUgqiXHZE1URLCCRttZXlVPwiKzgzZt565Pcf/EYXsAUUocPBCJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d8r56iU6nx/DKLqagQWCqusB9o+EarkpsCAau+xRQlo=;
+ b=aT1LOY9erm1exX3/WEHhb3zNeeqx9Kgioy9hbsM904VkUjtaXNNU285Y5SpdDx0ZOHO21ypcZ2aQ2bnnsUScsc3TF/L4eJPcSjygbOdbU9Y63Du25ln0hOtKQR5SS6dgGGcVk442y3YHvjpUBWUNF2VRQLMleGYa4+8DG71sVlI=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=peng.fan@nxp.com; 
+Received: from AM0PR04MB4481.eurprd04.prod.outlook.com (2603:10a6:208:70::15)
+ by AM0PR04MB6868.eurprd04.prod.outlook.com (2603:10a6:208:18c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Tue, 14 Apr
+ 2020 13:32:56 +0000
+Received: from AM0PR04MB4481.eurprd04.prod.outlook.com
+ ([fe80::ad44:6b0d:205d:f8fc]) by AM0PR04MB4481.eurprd04.prod.outlook.com
+ ([fe80::ad44:6b0d:205d:f8fc%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 13:32:56 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, robh+dt@kernel.org,
+        jaswinder.singh@linaro.org, linux@rempel-privat.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 1/2] dt-bindings: mailbox: imx-mu: correct example
+Date:   Tue, 14 Apr 2020 21:24:27 +0800
+Message-Id: <1586870668-32630-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR03CA0118.apcprd03.prod.outlook.com
+ (2603:1096:4:91::22) To AM0PR04MB4481.eurprd04.prod.outlook.com
+ (2603:10a6:208:70::15)
 MIME-Version: 1.0
-In-Reply-To: <e5a789d5-b622-df23-d540-99816851d5f1@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.67) by SG2PR03CA0118.apcprd03.prod.outlook.com (2603:1096:4:91::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2921.12 via Frontend Transport; Tue, 14 Apr 2020 13:32:52 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.67]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 65831955-a08f-4087-1f54-08d7e0785782
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6868:|AM0PR04MB6868:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB6868973C7AFF1E98885E6B4D88DA0@AM0PR04MB6868.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
+X-Forefront-PRVS: 0373D94D15
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4481.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(136003)(366004)(396003)(39860400002)(376002)(2906002)(16526019)(7416002)(5660300002)(956004)(2616005)(15650500001)(6666004)(26005)(69590400007)(86362001)(316002)(186003)(8936002)(6506007)(4744005)(6486002)(478600001)(4326008)(52116002)(81156014)(9686003)(66556008)(8676002)(66476007)(36756003)(66946007)(6512007);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MpnXO7c5PJ3B5T5985cGHJPZKkBsTaF5TRb9zBFKIicyR3f2QcQ20AwS1PxnULm1dyJ0EuvGxWWZiZBiWaTq9Dp+1jfyCM0M7CMKbER5x8tzu3yFq3EA9b9BKedcArSV86fN3KccDLZ6RUF4Cvx49NVX8pbpoorKYiPQPOCojWg4ZAx1tSpcK0u6QXTeeeneodPuPmP+CY6D1FboENIC6E4wdZ2RpsxmeWJvg+X4lA9z8cf1s7ZINGj9zLZM6uY+E1CRcX7c7wZLyckYhSfpN7Fp3PkccaLoPAhxPNnLHzTRd2NXhAyE0JOtycLf6QD//qHG6gEZ7TaW+rQr9pIF/xMuNzE9l7Dmkb202nruTFr5FATKqXPRJVjVpRQpVLaxyjQg/d31VNYph6Mracax5W4ki8eEcCBM9vbVcuD0LwS3hodUV9KVBAXpSDfdWcbIANbXyVuBLQHg4tAzLbj9hdpaG+HnDZ5MyRkpvdzKjZVgTRY14fdsOX8eTKC0Z+Mv
+X-MS-Exchange-AntiSpam-MessageData: 6lwQ1bCmp2oYRoZEEG5lHJ1EmE77+mXjgP4+bXt5kJ3I9th10oBjBrNy/UBJsBXSkRmsowbrRZyZSCNawTM032soiaUkG847c/MIRKdmThKFpJdVudbNt9qyl5knKwtuzpAkoZMLYsPbjXxHfJmE8A==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65831955-a08f-4087-1f54-08d7e0785782
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2020 13:32:56.8235
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0NidV26Tm2GkekpePOo5kc+94hIYfR2Uzn4LNyq079n3jtbW9qqnARr+1D9AVndBW5QzQzlGIvSVvxhz4nHLNA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6868
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel
+From: Peng Fan <peng.fan@nxp.com>
 
-On 4/8/20 11:35 AM, Dan Murphy wrote:
-> Pavel
->
-> On 4/2/20 3:42 PM, Dan Murphy wrote:
->> Introduce a multicolor class that groups colored LEDs
->> within a LED node.
->>
->> The multi color class groups monochrome LEDs and allows controlling two
->> aspects of the final combined color: hue and lightness. The former is
->> controlled via <color>_intensity files and the latter is controlled
->> via brightness file.
->
-> When you get a chance I would like to get your review on this patch as 
-> well before I submit v20
->
-Have you had a chance to review the code?  I want to be able to post the 
-next version but want to make sure there are currently no other major 
-changes.
+The example use i.MX8QXP MU, but actually the MU is compatible with
+i.MX6SX, so add the compatible.
 
-Dan
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ Documentation/devicetree/bindings/mailbox/fsl,mu.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Dan
->
+diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt b/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+index 31486c9f6443..26b7a88c2fea 100644
+--- a/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
++++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+@@ -51,7 +51,7 @@ Optional properties:
+ Examples:
+ --------
+ lsio_mu0: mailbox@5d1b0000 {
+-	compatible = "fsl,imx8qxp-mu";
++	compatible = "fsl,imx8qxp-mu", "fsl,imx6sx-mu";
+ 	reg = <0x0 0x5d1b0000 0x0 0x10000>;
+ 	interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
+ 	#mbox-cells = <2>;
+-- 
+2.16.4
+
