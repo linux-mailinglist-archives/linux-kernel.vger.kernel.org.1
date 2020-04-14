@@ -2,101 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C601A8AB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6048F1A8D8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504728AbgDNT1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504700AbgDNT0m (ORCPT
+        id S2633773AbgDNVUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:20:11 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33536 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633733AbgDNVUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:26:42 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F147EC061A41
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:26:41 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ay6so2986395pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GBjwHY+AL72Y+T8vcTU277/7t2edTwQD/R5p6feAGn0=;
-        b=fCX3GwpiQSEiUMKpeDVih8hj+JqhwWfdebHtVs0cADaQ3iHqoQ7ZmrmDaUY53dkJpl
-         A5WKCCmkAXrtVjfKFav0oNXvfefO76hr8+DJHnKLwps4R4hNwEneswkOQtrClWDeGDxX
-         HI76iHXV7Gq7giZsdnEvhsZlDb4bUvszNzGLGQw8t2wH8D0sLM3Tbaeu5pnLXlC+jJ5G
-         lsJhRwjJ7W0ie2NbvW+TqoDhJP9fQ7Np/nbq4Qs+P++do5cNW85OgQOqekBnrGwNG/pZ
-         otoSQnqDe1VOiwds65ZqPq0tD1m10m/YueHtixiFsAnRpjMZbrhriDQOU/V+F9gwo8DI
-         y0NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GBjwHY+AL72Y+T8vcTU277/7t2edTwQD/R5p6feAGn0=;
-        b=dChRlktPhRoF43Wgbmcok3j8jKyRJncPBImrjVBQCp2Gj2oRrumPiJkFH/5qlUO3+q
-         wRNRsuxXMurbD2SAG4Js8y2Hr+Kr+wgxiblBEhGf7bQMdsqOEKJ0MdDwqFDWucfGgOBn
-         Xh1vaOb5vYZlfyqWte8YMBl9loCn/EtUN6AFtIhM2iixZ6fowJIMUUx9W5OzVQSF5fko
-         zWhVHMy5we73L3CcP1VTWU/ojwykKk63KOoWaZFf09nMsOZZ0q35CTjEvOW8BndtDaGE
-         W9RJt3rKxPfp+8Stu4niAXwNmSqzWCCLlfZEB64XE0IemhfkjQseXCV3qp/sqPjHXoy2
-         GqJQ==
-X-Gm-Message-State: AGi0Pua+tjK69Sqgqc4zSZr+e8YBIpX0lpCLn7hTNvfp0wbzaxfMREQM
-        iHPSOTFPlJb/uDnvgwPil2CW91Deiz/iy046kUbU9w==
-X-Google-Smtp-Source: APiQypKGMp4rdkYV/1cquaVsImLP3ZzjMppuoBalS0ljtPr38FSR8xLUWjRxwP0gMVd5Aii/eLsTsNG+UfBr1nF5MuY=
-X-Received: by 2002:a17:902:cb97:: with SMTP id d23mr1445679ply.232.1586892401135;
- Tue, 14 Apr 2020 12:26:41 -0700 (PDT)
+        Tue, 14 Apr 2020 17:20:03 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EJI6ko177004;
+        Tue, 14 Apr 2020 19:22:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=7lgVDR/YW74DxdzxSbUSp1h4pjd0h8lo/2Ec7yzE08U=;
+ b=Tdc5kLHwUM+SD4iXJl9+i1tcpooxdQlsScCPsLRJeX4khR2F0sxjG5k5Im5Tit0WPW6E
+ 3RUuPDY4wWmKGWazYJ8MYVt66BAwa9+FwbC9v+p6bh5y3/kVx9iQGrW9KQmyZvhJf8Cw
+ oiihEWxQEvqjARgxAbmYy+XLaXJQl+EHnNS8qFbXiVNDvI26bMvt04jzHPfdPCNXlKtc
+ QfC+m1DWaapm1UQM/WYNuLKGxvHUwgWvbN6Hm14fZm/C5ZOim1bsNCR+VFnRE3NimF0h
+ KzpcHereIyGskS/RG1NqxE8csNDvyDKtp45Qv5taD5KmeAQ2RAJX2IduAe43wQcz+YBt jQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30b5um6vpg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 19:22:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EJLkvY091101;
+        Tue, 14 Apr 2020 19:22:55 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30bqcjkcdh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 19:22:55 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EJMrNn007724;
+        Tue, 14 Apr 2020 19:22:53 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 12:22:53 -0700
+Subject: Re: [PATCH V3 5/9] objtool: Add return address unwind hints
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        jthierry@redhat.com, tglx@linutronix.de
+References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
+ <20200414103618.12657-6-alexandre.chartre@oracle.com>
+ <20200414161636.GP20713@hirez.programming.kicks-ass.net>
+ <546b2d81-39ca-00e1-4df2-d4eaa18496a4@oracle.com>
+ <20200414175604.GD2483@worktop.programming.kicks-ass.net>
+ <e9e1c4cd-193f-fd5e-65c4-cc9fb159d861@oracle.com>
+ <20200414184233.GG2483@worktop.programming.kicks-ass.net>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <ed46281f-46e5-10a0-1b61-60a54ea9d84e@oracle.com>
+Date:   Tue, 14 Apr 2020 21:27:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200410132706.170811b7@canb.auug.org.au> <27c212c4-b522-561d-411c-e74dc0ff0b74@infradead.org>
- <CAHk-=wjhsM-n_NzSh=cSdpThX+62-x3EmyKjhMqGHFYEyG0nPg@mail.gmail.com>
- <2b0f5d2e-3fe5-10c9-2a9a-9a0b341a52d5@infradead.org> <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
- <bfbcaa67-9656-3a80-fc66-c937297c8be0@infradead.org> <CAHk-=whpvCqcCYvy=_v_F6NTtBSeQbXZ0iLr_smV2NJLT+XACw@mail.gmail.com>
- <CA+G9fYu47hpXjYtAr32p9yJ97KZqTry+ioAY1S2TqtiKztCYRg@mail.gmail.com> <f90fc906-395b-79be-8f44-3807586766f7@infradead.org>
-In-Reply-To: <f90fc906-395b-79be-8f44-3807586766f7@infradead.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 14 Apr 2020 12:26:29 -0700
-Message-ID: <CAFd5g46ZaEVoMb2hO94A41Z=YH6ntTdXstZUhHu67mwOKY+QsA@mail.gmail.com>
-Subject: Re: linux-next: Tree for Apr 10 (lib/test_printf.ko)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200414184233.GG2483@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140137
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 bulkscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004140136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 11:22 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 4/11/20 10:36 PM, Naresh Kamboju wrote:
-> > FYI,
-> >
-> > Is this problem related to,
-> >
-> > Regression reported on Linux next 5.6.0-rc4-next-20200305 on x86_64,
-> > i386, arm and arm64. The steps to reproduce is running kselftests lib
-> > printf.sh test case.
-> > Which is doing modprobe operations.
-> >
-> > BUG: kernel NULL pointer dereference, address: 00 - ida_free+0x76/0x140
-> >
-> > https://lore.kernel.org/linux-kselftest/CAFd5g46Bwd8HS9-xjHLh_rB59Nfw8iAnM6aFe0QPcveewDUT6g@mail.gmail.com/T/
-> >
->
-> Looks similar. Lots of fwnode, software_node, ida stuff there.
 
-Sorry for the late reply, I was out.
+On 4/14/20 8:42 PM, Peter Zijlstra wrote:
+> On Tue, Apr 14, 2020 at 08:31:23PM +0200, Alexandre Chartre wrote:
+>> On 4/14/20 7:56 PM, Peter Zijlstra wrote:
+> 
+>>> So what actual problem is it solving?
+>>>
+>>
+>> The return stack stuff is here to correctly handle intra-function call so that
+>> we can figure out where the ret of an intra-function call should return. We
+>> don't have this challenge with regular functions because we know that a ret
+>> inside such function just indicates the end of the function.
+>>
+>> But when there's an intra-function call, a ret instruction can either:
+>>    - continue after the intra-function call (if the stack was unchanged)
+>>    - jump somewhere else (if the return address was changed) and eventually
+>>      return to the next return address
+>>    - indicate the end of the function (if the return address was removed).
+>>
+>> So, all this is needed to correctly follow the flow of the code and properly
+>> record stack changes.
+> 
+> But which intra-function calls are you worried about here? The RSB
+> stuffing ones we have to explicitly forget and the retpoline ones we
+> can't follow because they're indirect calls.
+> 
+> So again, who cares about that stack?
+> 
 
-Yeah, I am pretty sure it is the same. Heikki proposed a fix that I am
-going to try.
+This provides a generic code to handle any intra-function call. Currently we have
+the RSB stuffing ones which are forgotten with the UNWIND_HINT_TYPE_RADDR_DELETE
+directive. And for retpoline, they will not return if we have an indirect jump
+(JMP_NOSPEC) but they will return if we have an indirect call (CALL_NOSPEC). The
+code can handle both cases. For example, if we were to have a CALL_NOSPEC invocation
+which is not in an alternative then objtool can now correctly handle it.
 
-Also, I think I am going to send out a new test case for this that can
-live with the fwnode, software_node stuff. It would be nice if the
-printf test wasn't the only thing testing this stuff.
-
-Thanks!
+alex.
