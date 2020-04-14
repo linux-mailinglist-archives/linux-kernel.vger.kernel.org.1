@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7411A72D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 07:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478501A72EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 07:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgDNFMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 01:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405411AbgDNFMf (ORCPT
+        id S2405464AbgDNFVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 01:21:15 -0400
+Received: from m142-177.yeah.net ([123.58.177.142]:23000 "EHLO
+        m142-177.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405440AbgDNFVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 01:12:35 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCCEC008749
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 22:12:34 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id m12so15305366edl.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 22:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lCKH9//GDUVyra9MYbJtXuz/rft75HC1YdEpud3oR/w=;
-        b=wDyM6KBFKLlwwTmGUBwUr0f9mEfcZL3MHRC2qD1g8Ri5hzXZNb/yzQj6Pr/ZKsOXDZ
-         i8o1+jiGMZA6uHKUntfBZb+bIsOtO7+1LBUceyEI8O/0tAVI4147/8qj5VnTkwYpzp8p
-         OQwtvf3E1orMQsMGR1mGI4iaBrR52m55wkk2YuddOwJVzEJip2u4dKD8u1dHNHC44qyf
-         0p6BxMnrbJM4Vt58Ih9rpAxyb+KxIbYh8GXtZEX5seabEA+alTbGBBCsUbEbv7tMGQbY
-         5acT+NDRcEvCOXYhXjXmABnXdzSRCoer0XRx9DXEbsWcR75NMcPPUrLZjCNRkAkFZcJR
-         U5gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lCKH9//GDUVyra9MYbJtXuz/rft75HC1YdEpud3oR/w=;
-        b=ZiPoox7LsAwiZDJ3S4r6jDZ7RHhZvkl5InJkhnTb3iCJGcsLp7502ZQdAPU17MkvrV
-         IUQrPjRhEKxGodPPAzeKSrSYm9oDwzL7C+2K4NCvYkPsnc/BIsWtvsjAxOtaUHPEmo1D
-         kJ9PEhoGYbaQ4Ndj5/e/lnvOFNYl35/F8X4QXe6GAiTV5AsIxWhSvGON39s5F97bfI0M
-         WKVj/LlGNH8yHVtK2f+xgJLjDTCLEn00DHwuCVczcjjfyuhWJkx61fl8SLwNuToAZhHK
-         EW/dcRnVNnbOzdM9TaaVi0UwBmKPRYIq90hnxWCve8pejBPyoFSVPFeuEi1XgypdXehF
-         6wOA==
-X-Gm-Message-State: AGi0PuYlXQW2mnXYlR6zxtdwc2ae4v96YckK/5ZXO1kK4gQmp/Zil5Nf
-        Q44YFxKyl/uxBwKO7dAc37xPhNbtPdY7wLKwk+PasA==
-X-Google-Smtp-Source: APiQypKjvu1zmWD35TkvQGGIPcBAQQsVLki0XXXLdYacZXLIP+W15lBvsYFcPXTdJ4zV8Nr44sratkgYZ4gJIezi0ik=
-X-Received: by 2002:a17:906:1e42:: with SMTP id i2mr18225259ejj.317.1586841153456;
- Mon, 13 Apr 2020 22:12:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200413054046.1560106-1-ira.weiny@intel.com> <20200413054046.1560106-10-ira.weiny@intel.com>
- <20200413161912.GZ6742@magnolia> <20200414043821.GG1649878@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20200414043821.GG1649878@iweiny-DESK2.sc.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 13 Apr 2020 22:12:22 -0700
-Message-ID: <CAPcyv4hfCnFTRsDv8Kviux7=2teu9Tdyc3HDjNJQpagG-JaM+Q@mail.gmail.com>
-Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+        Tue, 14 Apr 2020 01:21:13 -0400
+X-Greylist: delayed 379 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Apr 2020 01:21:11 EDT
+Received: from vivo.com (localhost [127.0.0.1])
+        by m142-177.yeah.net (Hmail) with ESMTP id 56B0B644120;
+        Tue, 14 Apr 2020 13:14:48 +0800 (CST)
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ABYAfQB-CGWquV67Mtd-zKqb.3.1586841288308.Hmail.wenhu.wang@vivo.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Carl Huang <cjhuang@codeaurora.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nicholas Mc Guire <hofrat@osadl.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@vivo.com
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2Ml0gbmV0OiBxcnRyOiBzZW5kIG1zZ3MgZnJvbSBsb2NhbCBvZiBzYW1lIGlkIGFzIGJyb2FkY2FzdA==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
+In-Reply-To: <20200409193600.GR20625@builder.lan>
+MIME-Version: 1.0
+Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 14 Apr 2020 13:14:48 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Tue, 14 Apr 2020 13:14:48 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VNTU9CQkJCTUpDTkhLSFlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSk5PTU9IQ0pJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6OSI6HSo5Vjg8LAoOLU1MNg8fVgEwChlVSFVKTkNNQ09KSUJLT0xPVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQU1MSko3Bg++
+X-HM-Tid: 0a71771c7ead6473kurs56b0b644120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 9:38 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Mon, Apr 13, 2020 at 09:19:12AM -0700, Darrick J. Wong wrote:
-> > On Sun, Apr 12, 2020 at 10:40:46PM -0700, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > Update the Usage section to reflect the new individual dax selection
-> > > functionality.
-> >
-> > Yum. :)
-> >
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > ---
-> > > Changes from V6:
-> > >     Update to allow setting FS_XFLAG_DAX any time.
-> > >     Update with list of behaviors from Darrick
-> > >     https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
-> > >
-> > > Changes from V5:
-> > >     Update to reflect the agreed upon semantics
-> > >     https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> > > ---
-> > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
-> > >  1 file changed, 163 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-> > > index 679729442fd2..af14c1b330a9 100644
-> > > --- a/Documentation/filesystems/dax.txt
-> > > +++ b/Documentation/filesystems/dax.txt
-> > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
-> > >  Usage
-> > >  -----
-> > >
-> > > -If you have a block device which supports DAX, you can make a filesystem
-> > > +If you have a block device which supports DAX, you can make a file system
-> > >  on it as usual.  The DAX code currently only supports files with a block
-> > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
-> > > -size when creating the filesystem.  When mounting it, use the "-o dax"
-> > > -option on the command line or add 'dax' to the options in /etc/fstab.
-> > > +size when creating the file system.
-> > > +
-> > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
-> > > +different at this time.
-> >
-> > I thought ext2 supports DAX?
->
-> Not that I know of?  Does it?
-
-Yes. Seemed like a good idea at the time, but in retrospect...
-
-In fairness I believe this was also an olive branch to XIP users that
-were transitioned to DAX, so they did not also need to transition
-filesystems.
+CkZyb206IEJqb3JuIEFuZGVyc3NvbiA8Ympvcm4uYW5kZXJzc29uQGxpbmFyby5vcmc+CkRhdGU6
+IDIwMjAtMDQtMTAgMDM6MzY6MDAKVG86ICBXQU5HIFdlbmh1IDx3ZW5odS53YW5nQHZpdm8uY29t
+PgpDYzogICJEYXZpZCBTLiBNaWxsZXIiIDxkYXZlbUBkYXZlbWxvZnQubmV0PixKYWt1YiBLaWNp
+bnNraSA8a3ViYUBrZXJuZWwub3JnPixDYXJsIEh1YW5nIDxjamh1YW5nQGNvZGVhdXJvcmEub3Jn
+PiwKVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+LEFybmQgQmVyZ21hbm4gPGFy
+bmRAYXJuZGIuZGU+LApOaWNob2xhcyBNYyBHdWlyZSA8aG9mcmF0QG9zYWRsLm9yZz4sbmV0ZGV2
+QHZnZXIua2VybmVsLm9yZyxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnLGtlcm5lbEB2aXZv
+LmNvbQpTdWJqZWN0OiBSZTogW1BBVENIIHYyXSBuZXQ6IHFydHI6IHNlbmQgbXNncyBmcm9tIGxv
+Y2FsIG9mIHNhbWUgaWQgYXMgYnJvYWRjYXN0Pk9uIFR1ZSAwNyBBcHIgMjA6MzIgUERUIDIwMjAs
+IFdBTkcgV2VuaHUgd3JvdGU6Cj4KPj4gRnJvbTogV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZv
+LmNvbT4KPj4gCj4+IElmIHRoZSBsb2NhbCBub2RlIGlkKHFydHJfbG9jYWxfbmlkKSBpcyBub3Qg
+bW9kaWZpZWQgYWZ0ZXIgaXRzCj4+IGluaXRpYWxpemF0aW9uLCBpdCBlcXVhbHMgdG8gdGhlIGJy
+b2FkY2FzdCBub2RlIGlkKFFSVFJfTk9ERV9CQ0FTVCkuCj4+IFNvIHRoZSBtZXNzYWdlcyBmcm9t
+IGxvY2FsIG5vZGUgc2hvdWxkIG5vdCBiZSB0YWtlbiBhcyBicm9hZGNhc3QKPj4gYW5kIGtlZXAg
+dGhlIHByb2Nlc3MgZ29pbmcgdG8gc2VuZCB0aGVtIG91dCBhbnl3YXkuCj4+IAo+PiBUaGUgZGVm
+aW5pdGlvbnMgYXJlIGFzIGZvbGxvdzoKPj4gc3RhdGljIHVuc2lnbmVkIGludCBxcnRyX2xvY2Fs
+X25pZCA9IE5VTUFfTk9fTk9ERTsKPj4gCj4+IEZpeGVzOiBjb21taXQgZmRmNWZkMzk3NTY2ICgi
+bmV0OiBxcnRyOiBCcm9hZGNhc3QgbWVzc2FnZXMgb25seSBmcm9tIGNvbnRyb2wgcG9ydCIpCj4+
+IFNpZ25lZC1vZmYtYnk6IFdhbmcgV2VuaHUgPHdlbmh1LndhbmdAdml2by5jb20+Cj4+IC0tLQo+
+PiBDaGFuZ2xvZzoKPj4gIC0gRm9yIGNvZGluZyBzdHlsZSwgbGluZSB1cCB0aGUgbmV3bGluZSBv
+ZiB0aGUgaWYgY29uZGl0aW9uYWwganVkZ2VtZW50Cj4+ICAgIHdpdGggdGhlIG9uZSBleGlzdHMg
+YmVmb3JlLgo+PiAKPj4gIG5ldC9xcnRyL3FydHIuYyB8IDcgKysrKy0tLQo+PiAgMSBmaWxlIGNo
+YW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1naXQg
+YS9uZXQvcXJ0ci9xcnRyLmMgYi9uZXQvcXJ0ci9xcnRyLmMKPj4gaW5kZXggNWE4ZTQyYWQxNTA0
+Li41NDVhNjFmOGVmNzUgMTAwNjQ0Cj4+IC0tLSBhL25ldC9xcnRyL3FydHIuYwo+PiArKysgYi9u
+ZXQvcXJ0ci9xcnRyLmMKPj4gQEAgLTkwNywyMCArOTA3LDIxIEBAIHN0YXRpYyBpbnQgcXJ0cl9z
+ZW5kbXNnKHN0cnVjdCBzb2NrZXQgKnNvY2ssIHN0cnVjdCBtc2doZHIgKm1zZywgc2l6ZV90IGxl
+bikKPj4gIAo+PiAgCW5vZGUgPSBOVUxMOwo+PiAgCWlmIChhZGRyLT5zcV9ub2RlID09IFFSVFJf
+Tk9ERV9CQ0FTVCkgewo+PiAtCQllbnF1ZXVlX2ZuID0gcXJ0cl9iY2FzdF9lbnF1ZXVlOwo+PiAt
+CQlpZiAoYWRkci0+c3FfcG9ydCAhPSBRUlRSX1BPUlRfQ1RSTCkgewo+PiArCQlpZiAoYWRkci0+
+c3FfcG9ydCAhPSBRUlRSX1BPUlRfQ1RSTCAmJgo+PiArCQkJcXJ0cl9sb2NhbF9uaWQgIT0gUVJU
+Ul9OT0RFX0JDQVNUKSB7Cj4KPlNvIHRoaXMgd291bGQgbWVhbiB0aGF0IGlmIGxvY2FsX25pZCBp
+cyBjb25maWd1cmVkIHRvIGJlIHRoZSBiY2FzdAo+YWRkcmVzcyB0aGVuIHJhdGhlciB0aGFuIHJl
+amVjdGluZyBtZXNzYWdlcyB0byBub24tY29udHJvbCBwb3J0cyB3ZSB3aWxsCj5icm9hZGNhc3Qg
+dGhlbS4KPgo+V2hhdCBoYXBwZW5zIHdoZW4gc29tZSBvdGhlciBub2RlIGluIHRoZSBuZXR3b3Jr
+IHJlcGxpZXM/IFdvdWxkbid0IGl0IGJlCj5iZXR0ZXIgdG8gZXhwbGljaXRseSBwcm9oaWJpdCB1
+c2FnZSBvZiB0aGUgYmNhc3QgYWRkcmVzcyBhcyBvdXIgbm9kZQo+YWRkcmVzcz8KCj4+Cj5UaGF0
+IHNhaWQsIGluIHRvcnZhbGRzL21hc3RlciBxcnRyX2xvY2FsX25pZCBpcyBubyBsb25nZXIgaW5p
+dGlhbGl6ZWQgdG8KPlFSVFJfTk9ERV9CQ0FTVCwgYnV0IDEuIFNvIEkgZG9uJ3QgdGhpbmsgeW91
+IG5lZWQgdGhpcyBwYXRjaCBhbnltb3JlLgo+Cj5SZWdhcmRzLAo+Qmpvcm4KCj4KCkhpIEJqb3Ju
+LApZb3UgYXJlIHJpZ2h0LiBJIHNlZSB0aGUgcGF0Y2ggdGhhdCBtb2RpZmllZCB0aGUgbmlkIHRv
+IDEgaW4gbWFpbmxpbmUgdjUuNy1yYzEsCmFuZCBpdCBpcyBiZXR0ZXIgdG8gc29sdmUgYWxsIHRo
+ZSBwcm9ibGVtcy4gQXMgZm9yIHRoaXMgcGF0Y2gsIHRoZSBzaXR1YXRpb24gaXMgdGhhdApJIHdh
+bnQgdG8gdXNlIHFydHIgaW4ga2VybmVsIHRvIGRvIHNvbWV0aGluZyBlbHNlKHRvIGRldmVsb3Ag
+YW5vdGhlciBkcml2ZXIgSSBuYW1lCml0IFJQTU9OOiBSZW1vdGUgUHJvY2Vzc29yIE1vbml0b3Ip
+LCBidXQgdGhlIG5zIG9yIHNlcnZpY2Utcm91dGUgZnVuY3Rpb25hbGl0eQpoYWQgYmVlbiBtaXNz
+aW5nLCBzbyBJIHdyaXRlIGFub3RoZXIgZmlsZSBxc3IuYyBhcyB5b3UgaGFkIGNvbW1ldHRlZCB3
+aGljaApkaWQgdGhlIHNhbWUgdGhpbmcgd2l0aCBucy5jLgoKVGhlIGJhZCB0aGluZyB3YXMgSSBt
+aXNzZWQgdGhlIHBhdGNoIGZyb20gTWFuaXZhbm5hbi4KU28sIGFueXdheSwgdGhpcyBwYXRjaCBp
+cyBub3QgbmVlZGVkIGFueW1vcmUuCgpUaGFua3MsCldlbmh1Cgo+PiAgCQkJcmVsZWFzZV9zb2Nr
+KHNrKTsKPj4gIAkJCXJldHVybiAtRU5PVENPTk47Cj4+ICAJCX0KPj4gKwkJZW5xdWV1ZV9mbiA9
+IHFydHJfYmNhc3RfZW5xdWV1ZTsKPj4gIAl9IGVsc2UgaWYgKGFkZHItPnNxX25vZGUgPT0gaXBj
+LT51cy5zcV9ub2RlKSB7Cj4+ICAJCWVucXVldWVfZm4gPSBxcnRyX2xvY2FsX2VucXVldWU7Cj4+
+ICAJfSBlbHNlIHsKPj4gLQkJZW5xdWV1ZV9mbiA9IHFydHJfbm9kZV9lbnF1ZXVlOwo+PiAgCQlu
+b2RlID0gcXJ0cl9ub2RlX2xvb2t1cChhZGRyLT5zcV9ub2RlKTsKPj4gIAkJaWYgKCFub2RlKSB7
+Cj4+ICAJCQlyZWxlYXNlX3NvY2soc2spOwo+PiAgCQkJcmV0dXJuIC1FQ09OTlJFU0VUOwo+PiAg
+CQl9Cj4+ICsJCWVucXVldWVfZm4gPSBxcnRyX25vZGVfZW5xdWV1ZTsKPj4gIAl9Cj4+ICAKPj4g
+IAlwbGVuID0gKGxlbiArIDMpICYgfjM7Cj4+IC0tIAo+PiAyLjE3LjEKPj4gCg0KDQo=
