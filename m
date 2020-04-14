@@ -2,101 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F551A78B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3D81A78F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438529AbgDNKqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:46:52 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13962 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438564AbgDNKoR (ORCPT
+        id S2438792AbgDNK5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:57:51 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56790 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438366AbgDNKcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:44:17 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9592140000>; Tue, 14 Apr 2020 03:36:04 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 14 Apr 2020 03:36:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 14 Apr 2020 03:36:17 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
- 2020 10:36:17 +0000
-Received: from [10.26.73.15] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
- 2020 10:36:14 +0000
-Subject: Re: [PATCH 4.19 00/54] 4.19.115-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200411115508.284500414@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <396b60aa-4321-d45b-a7d5-c3c5ecfdf16e@nvidia.com>
-Date:   Tue, 14 Apr 2020 11:36:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586860564; bh=BoJcnr2PrBbH7Cgh8hHbvIL3DbI5+hxlaJeBmc9OOdY=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=C8bLlJpt06J7EoH9AY8uXfl/DX+FSLg2wzZyL7+0iDnlMT/JELjbm2+I94G8PdU/z
-         GM3Pd8ZS5bJYqLnQnw+444xhIrAMZDelfC3n+JJE5us7c4yg32RwScN4bOfjNeJqcD
-         AXSplTgBKVDV0b0jqci0+W0CzhJQsKIgOtJKLPlEmklyDF0hi3vT2LGQlIBg3njpDL
-         yGtR/531uT04rR2N6XzF4L2HRnw58oe1yzS+RaZYW1QRYD2VPnh2cuyAhY5t9bjtvb
-         q2PuMcOa7EN08k4VMm5JxVb7HxdFzOvKhDDeVb6zLZvmiqUYVeZDMv4brTVljzeTeN
-         jpp9hBPgBKrwg==
+        Tue, 14 Apr 2020 06:32:18 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EASY2K068586;
+        Tue, 14 Apr 2020 10:31:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=oy0B88zZTavDgEbeaHNdxMJyExBIvcBK9fnifw3uzE8=;
+ b=qosR6TI36M90l1DIyWr3Y55WaL12gD7mB7kXP69EgLJnOcOcm4pSXzGVVA/5Sr4AXfYE
+ Ht+qXW0B1BxYp3+YQWswZLV5iREESPkl+YBAKTLLJkKGKrjRAJDShHKIcRLrGyxeX+0s
+ 0tnhDRvuS3PvK0kdCrdjL3OujFCPg4tSjTPf/xQKofoBzNYUyJcJRvtZoxbUbMgc99C8
+ aOL33B63KSWu87u9WDvrQBD1dREleX5cIij6dLKS4H5E2P0yGsSykzVVoHGfnyrUnHpO
+ S/JjVCwAOcxs8wq4UXMA0a5rMF2lhUTXe5XFDFYXGCOrr3bAuljUhdefs1fqA4845HFR Fw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30b5ar3myj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 10:31:56 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAQwKS001949;
+        Tue, 14 Apr 2020 10:31:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30bqm1cy42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 10:31:56 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EAVsQK010067;
+        Tue, 14 Apr 2020 10:31:54 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 03:31:53 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
+        alexandre.chartre@oracle.com
+Subject: [PATCH V3 3/9] objtool: Add support for intra-function calls
+Date:   Tue, 14 Apr 2020 12:36:12 +0200
+Message-Id: <20200414103618.12657-4-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+In-Reply-To: <20200414103618.12657-1-alexandre.chartre@oracle.com>
+References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004140086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change objtool to support intra-function calls. On x86, an intra-function
+call is represented in objtool as a push onto the stack (of the return
+address), and a jump to the destination address. That way the stack
+information is correctly updated and the call flow is still accurate.
 
-On 11/04/2020 13:08, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.115 release.
-> There are 54 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.115-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+---
+ include/linux/frame.h                         |  11 ++
+ .../Documentation/stack-validation.txt        |   8 ++
+ tools/objtool/arch/x86/decode.c               |   6 +
+ tools/objtool/check.c                         | 126 ++++++++++++++----
+ tools/objtool/check.h                         |   1 +
+ 5 files changed, 128 insertions(+), 24 deletions(-)
 
-All tests are passing for Tegra ...
-
-Test results for stable-v4.19:
-    11 builds:	11 pass, 0 fail
-    22 boots:	22 pass, 0 fail
-    32 tests:	32 pass, 0 fail
-
-Linux version:	4.19.115-rc1-g3b903e5affcf
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra30-cardhu-a04
-
-Cheers
-Jon
-
+diff --git a/include/linux/frame.h b/include/linux/frame.h
+index 02d3ca2d9598..c7178e6c9d48 100644
+--- a/include/linux/frame.h
++++ b/include/linux/frame.h
+@@ -15,9 +15,20 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * This macro indicates that the following intra-function call is valid.
++ * Any non-annotated intra-function call will cause objtool to issue warning.
++ */
++#define ANNOTATE_INTRA_FUNCTION_CALL				\
++	999:							\
++	.pushsection .discard.intra_function_call;		\
++	.long 999b;						\
++	.popsection;
++
+ #else /* !CONFIG_STACK_VALIDATION */
+ 
+ #define STACK_FRAME_NON_STANDARD(func)
++#define ANNOTATE_INTRA_FUNCTION_CALL
+ 
+ #endif /* CONFIG_STACK_VALIDATION */
+ 
+diff --git a/tools/objtool/Documentation/stack-validation.txt b/tools/objtool/Documentation/stack-validation.txt
+index de094670050b..09f863fd32d2 100644
+--- a/tools/objtool/Documentation/stack-validation.txt
++++ b/tools/objtool/Documentation/stack-validation.txt
+@@ -290,6 +290,14 @@ they mean, and suggestions for how to fix them.
+       https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70646
+ 
+ 
++9. file.o: warning: unsupported intra-function call
++
++   This warning means that a direct call is done to a destination which
++   is not at the beginning of a function. If this is a legit call, you
++   can remove this warning by putting the ANNOTATE_INTRA_FUNCTION_CALL
++   directive right before the call.
++
++
+ If the error doesn't seem to make sense, it could be a bug in objtool.
+ Feel free to ask the objtool maintainer for help.
+ 
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index a62e032863a8..f4d70b8835c4 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -437,6 +437,12 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
+ 
+ 	case 0xe8:
+ 		*type = INSN_CALL;
++		/*
++		 * For the impact on the stack, a call behaves like
++		 * a push of an immediate value (the return address).
++		 */
++		op->src.type = OP_SRC_CONST;
++		op->dest.type = OP_DEST_PUSH;
+ 		break;
+ 
+ 	case 0xfc:
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 8f0525d5d895..ad362c5de281 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -654,44 +654,58 @@ static int add_jump_destinations(struct objtool_file *file)
+ 	return 0;
+ }
+ 
++static int configure_call(struct objtool_file *file, struct instruction *insn)
++{
++	unsigned long dest_off;
++
++	dest_off = insn->offset + insn->len + insn->immediate;
++	insn->call_dest = find_func_by_offset(insn->sec, dest_off);
++	if (!insn->call_dest)
++		insn->call_dest = find_symbol_by_offset(insn->sec, dest_off);
++
++	if (insn->call_dest) {
++		/* regular call */
++		if (insn->func && insn->call_dest->type != STT_FUNC) {
++			WARN_FUNC("unsupported call to non-function",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++		return 0;
++	}
++
++	/* intra-function call */
++	if (!insn->intra_function_call)
++		WARN_FUNC("intra-function call", insn->sec, insn->offset);
++
++	dest_off = insn->offset + insn->len + insn->immediate;
++	insn->jump_dest = find_insn(file, insn->sec, dest_off);
++	if (!insn->jump_dest) {
++		WARN_FUNC("can't find call dest at %s+0x%lx",
++			  insn->sec, insn->offset,
++			  insn->sec->name, dest_off);
++		return -1;
++	}
++
++	return 0;
++}
++
+ /*
+  * Find the destination instructions for all calls.
+  */
+ static int add_call_destinations(struct objtool_file *file)
+ {
+ 	struct instruction *insn;
+-	unsigned long dest_off;
+ 	struct rela *rela;
+ 
+ 	for_each_insn(file, insn) {
+-		if (insn->type != INSN_CALL)
++		if (insn->type != INSN_CALL || insn->ignore)
+ 			continue;
+ 
+ 		rela = find_rela_by_dest_range(file->elf, insn->sec,
+ 					       insn->offset, insn->len);
+ 		if (!rela) {
+-			dest_off = insn->offset + insn->len + insn->immediate;
+-			insn->call_dest = find_func_by_offset(insn->sec, dest_off);
+-			if (!insn->call_dest)
+-				insn->call_dest = find_symbol_by_offset(insn->sec, dest_off);
+-
+-			if (insn->ignore)
+-				continue;
+-
+-			if (!insn->call_dest) {
+-				WARN_FUNC("unsupported intra-function call",
+-					  insn->sec, insn->offset);
+-				if (retpoline)
+-					WARN("If this is a retpoline, please patch it in with alternatives and annotate it with ANNOTATE_NOSPEC_ALTERNATIVE.");
+-				return -1;
+-			}
+-
+-			if (insn->func && insn->call_dest->type != STT_FUNC) {
+-				WARN_FUNC("unsupported call to non-function",
+-					  insn->sec, insn->offset);
++			if (configure_call(file, insn))
+ 				return -1;
+-			}
+-
+ 		} else if (rela->sym->type == STT_SECTION) {
+ 			insn->call_dest = find_func_by_offset(rela->sym->sec,
+ 							      rela->addend+4);
+@@ -1337,6 +1351,42 @@ static int read_retpoline_hints(struct objtool_file *file)
+ 	return 0;
+ }
+ 
++static int read_intra_function_call(struct objtool_file *file)
++{
++	struct section *sec;
++	struct instruction *insn;
++	struct rela *rela;
++
++	sec = find_section_by_name(file->elf,
++				   ".rela.discard.intra_function_call");
++	if (!sec)
++		return 0;
++
++	list_for_each_entry(rela, &sec->rela_list, list) {
++		if (rela->sym->type != STT_SECTION) {
++			WARN("unexpected relocation symbol type in %s",
++			     sec->name);
++			return -1;
++		}
++
++		insn = find_insn(file, rela->sym->sec, rela->addend);
++		if (!insn) {
++			WARN("bad .discard.intra_function_call entry");
++			return -1;
++		}
++
++		if (insn->type != INSN_CALL) {
++			WARN_FUNC("intra_function_call not a direct call",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++
++		insn->intra_function_call = true;
++	}
++
++	return 0;
++}
++
+ static void mark_rodata(struct objtool_file *file)
+ {
+ 	struct section *sec;
+@@ -1392,6 +1442,10 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = read_intra_function_call(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_call_destinations(file);
+ 	if (ret)
+ 		return ret;
+@@ -2155,7 +2209,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 				return ret;
+ 
+ 			if (!no_fp && func && !is_fentry_call(insn) &&
+-			    !has_valid_stack_frame(&state)) {
++			    !has_valid_stack_frame(&state) &&
++			    !insn->intra_function_call) {
+ 				WARN_FUNC("call without frame pointer save/setup",
+ 					  sec, insn->offset);
+ 				return 1;
+@@ -2164,6 +2219,29 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			if (dead_end_function(file, insn->call_dest))
+ 				return 0;
+ 
++			if (insn->intra_function_call) {
++				/*
++				 * The call instruction can update the stack
++				 * state. Then make the intra-function call
++				 * behaves like and unconditional jump.
++				 */
++				ret = update_insn_state(insn, &state);
++				if (ret)
++					return ret;
++
++				ret = validate_branch(file, func, insn,
++						      insn->jump_dest, state);
++				if (ret) {
++					if (backtrace) {
++						BT_FUNC("(intra-function call)",
++							insn);
++					}
++					return ret;
++				}
++
++				return 0;
++			}
++
+ 			break;
+ 
+ 		case INSN_JUMP_CONDITIONAL:
+diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+index 953db38dfc35..6a80903fc4aa 100644
+--- a/tools/objtool/check.h
++++ b/tools/objtool/check.h
+@@ -36,6 +36,7 @@ struct instruction {
+ 	int alt_group;
+ 	bool dead_end, ignore, ignore_alts;
+ 	bool hint, save, restore;
++	bool intra_function_call;
+ 	bool retpoline_safe;
+ 	u8 visited;
+ 	struct symbol *call_dest;
 -- 
-nvpublic
+2.18.2
+
