@@ -2,342 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A76B1A7979
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9229E1A7454
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439154AbgDNLaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:30:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18080 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2439121AbgDNL27 (ORCPT
+        id S2406436AbgDNHJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:09:48 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:42988 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728832AbgDNHJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:28:59 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EB4jui015701;
-        Tue, 14 Apr 2020 07:28:46 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30bad8m8g3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Apr 2020 07:28:46 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03EB54Xc017625;
-        Tue, 14 Apr 2020 07:28:45 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30bad8m8fn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Apr 2020 07:28:45 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03EBMULn030882;
-        Tue, 14 Apr 2020 11:28:44 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04wdc.us.ibm.com with ESMTP id 30b5h6g5ra-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Apr 2020 11:28:44 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EBShNI55116192
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 11:28:43 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA42B78064;
-        Tue, 14 Apr 2020 11:28:43 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2E797805E;
-        Tue, 14 Apr 2020 11:28:42 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.109.81])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Apr 2020 11:28:42 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 72BE52E3019; Tue, 14 Apr 2020 12:38:20 +0530 (IST)
-Date:   Tue, 14 Apr 2020 12:38:20 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     skiboot@lists.ozlabs.org, oohall@gmail.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-        mpe@ellerman.id.au, ego@linux.vnet.ibm.com, linuxram@us.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: Re: [PATCH v6 4/4] Advertise the self-save and self-restore
- attributes in the device tree
-Message-ID: <20200414070820.GC24277@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200326070917.12744-1-psampat@linux.ibm.com>
- <20200326070917.12744-5-psampat@linux.ibm.com>
+        Tue, 14 Apr 2020 03:09:47 -0400
+Received: by mail-oi1-f195.google.com with SMTP id d7so4558424oif.9;
+        Tue, 14 Apr 2020 00:09:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Z5zt2CUahX5IsPzgShiRFj23zj/g56lthuN3s9ga2E=;
+        b=fsFjPs6Y14mHhPJvwHG2nVoLYDeiYpwPqBi643pwYF8SsT936r5ZjyTw0+nzLN8NBZ
+         bswe+kkXZn0SDEeHK/9XVIKGOBfwSLqfmYS1dj8PRhVEHMIwg/zKaAfuLZiFpW+5ZK/O
+         KN/7iWu3GIKwYlMTlkPKL/E+/90in7Sd3M89Vk80M3lzlHeNoq8n2ehSg321k79a2ryB
+         uv/88vIUAGMGWxkRZTWcbtZI0GEvxTlxAbnH5vvR9DkzUWxI5kPU3NEkmEB9b7B/Jnw4
+         ZqBZ3BWnlrJP5JK1U+4Dnmo9G1RyWDi6UXnZ41hPQu7CidyZPpU8ntDcuW1il1Es9QUp
+         zXLA==
+X-Gm-Message-State: AGi0PubIsK/GfVSGqwICoMA8o+/vfisRtQV4MnHM4RjGUpf/GrnRQUuX
+        HffUSV6qfJErxPRTp4ybrRnILZdG98eMRPf6EFA=
+X-Google-Smtp-Source: APiQypJPAEdSB0/mCpnigVvRvJ7XIRVHn8kPh4UNvKk3GhriQALdtPNdVHc6H4U6yfJQ1kTqUN+mE1pGe6RO8Ue6wUc=
+X-Received: by 2002:aca:f541:: with SMTP id t62mr257295oih.148.1586848186462;
+ Tue, 14 Apr 2020 00:09:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200326070917.12744-5-psampat@linux.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_02:2020-04-14,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 priorityscore=1501 suspectscore=2
- impostorscore=0 phishscore=0 spamscore=0 clxscore=1015 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140092
+References: <20200413041709.3630-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20200413041709.3630-1-christophe.jaillet@wanadoo.fr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 14 Apr 2020 09:09:35 +0200
+Message-ID: <CAMuHMdXoVGkRh63=H6P29JSS6yNCyKZdsAX1_qUNC_mH=aymyw@mail.gmail.com>
+Subject: Re: [PATCH] clk: renesas: r9a06g032: Fix some typo in comments
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pratik,
+On Mon, Apr 13, 2020 at 5:12 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+> This file seems to be for R9A06G032 only. So replace reference to
+> R9A09G032 by R9A06G032 to avoid confusion.
+>
+> AFAIK, R9A09G032 does'nt exist.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-On Thu, Mar 26, 2020 at 12:39:17PM +0530, Pratik Rajesh Sampat wrote:
-> Support for self save and self restore interface is advertised in the
-> device tree, along with the list of SPRs it supports for each.
-> 
-> The Special Purpose Register identification is encoded in a 2048 bitmask
-> structure, where each bit signifies the identification key of that SPR
-> which is consistent with that of the POWER architecture set for that
-> register.
-> 
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-> ---
->  .../ibm,opal/power-mgt/self-restore.rst       |  27 ++++
->  .../ibm,opal/power-mgt/self-save.rst          |  27 ++++
->  hw/slw.c                                      | 116 ++++++++++++++++++
->  include/skiboot.h                             |   1 +
->  4 files changed, 171 insertions(+)
->  create mode 100644 doc/device-tree/ibm,opal/power-mgt/self-restore.rst
->  create mode 100644 doc/device-tree/ibm,opal/power-mgt/self-save.rst
-> 
-> diff --git a/doc/device-tree/ibm,opal/power-mgt/self-restore.rst b/doc/device-tree/ibm,opal/power-mgt/self-restore.rst
-> new file mode 100644
-> index 00000000..2a2269f7
-> --- /dev/null
-> +++ b/doc/device-tree/ibm,opal/power-mgt/self-restore.rst
-> @@ -0,0 +1,27 @@
-> +ibm,opal/power-mgt/self-restore device tree entries
-> +===================================================
-> +
-> +This node exports the bitmask representing the special purpose registers that
-> +the self-restore API currently supports.
-> +
-> +Example:
-> +
-> +.. code-block:: dts
-> +
-> +  self-restore {
-> +        sprn-bitmask = <0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x42010000 0x0 0x0
-> +                        0x20000 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x0 0x100000 0x900000 0x0 0x0 0x530000 0x0 0x0 0x0
-> +                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x10000>;
-> +        phandle = <0x1c7>;
-> +  };
-> +
-> +sprn-bitmask
-> +------------
-> +
-> +This property is a bitmask of of all the existing SPRs and if the SPR is
-> +supported, the corresponding bit of the SPR number is set to 1.
-> +The representation of the bits are left-right, i.e the MSB of the first
-> +doubleword represants the 0th bit.
-> diff --git a/doc/device-tree/ibm,opal/power-mgt/self-save.rst b/doc/device-tree/ibm,opal/power-mgt/self-save.rst
-> new file mode 100644
-> index 00000000..c367720e
-> --- /dev/null
-> +++ b/doc/device-tree/ibm,opal/power-mgt/self-save.rst
-> @@ -0,0 +1,27 @@
-> +ibm,opal/power-mgt/self-save device tree entries
-> +===================================================
-> +
-> +This node exports the bitmask representing the special purpose registers that
-> +the self-save API currently supports.
-> +
-> +Example:
-> +
-> +.. code-block:: dts
-> +
-> +  self-save {
-> +        sprn-bitmask = <0x0 0x0 0x0 0x0 0x100000 0x0 0x0 0x0 0x42010000 0x0 0x0
-> +                        0x20000 0x0 0x0 0x0 0x10000 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x0 0x0 0x100000 0x840000 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-> +                        0x0 0x10000>;
-> +        phandle = <0x1c8>;
-> +  };
-> +
-> +sprn-bitmask
-> +------------
-> +
-> +This property is a bitmask of of all the existing SPRs and if the SPR is
-> +supported, the corresponding bit of the SPR number is set to 1.
-> +The representation of the bits are left-right, i.e the MSB of the first
-> +doubleword represants the 0th bit.
-> diff --git a/hw/slw.c b/hw/slw.c
-> index 6a09cc2c..9d1fe2c5 100644
-> --- a/hw/slw.c
-> +++ b/hw/slw.c
-> @@ -29,6 +29,7 @@
->  #include <sbe_xip_image.h>
-> 
->  static uint32_t slw_saved_reset[0x100];
-> +#define SPR_BITMAP_LENGTH	2048
-> 
->  static bool slw_current_le = false;
-> 
-> @@ -750,6 +751,119 @@ static void slw_late_init_p9(struct proc_chip *chip)
->  	}
->  }
-> 
-> +/* Add device tree properties to determine self-save | restore */
-> +void add_cpu_self_save_restore_properties(void)
-> +{
-> +	struct dt_node *self_restore, *self_save, *power_mgt;
-> +	uint64_t *self_save_mask, *self_restore_mask;
-> +	bool self_save_supported = true;
-> +	uint64_t compVector = -1;
-> +	struct proc_chip *chip;
-> +	int i, rc;
-> +
-> +	const uint64_t self_restore_regs[] = {
-> +		P8_SPR_HRMOR,
-> +		P8_SPR_HMEER,
-> +		P8_SPR_PMICR,
-> +		P8_SPR_PMCR,
-> +		P8_SPR_HID0,
-> +		P8_SPR_HID1,
-> +		P8_SPR_HID4,
-> +		P8_SPR_HID5,
-> +		P8_SPR_HSPRG0,
-> +		P8_SPR_LPCR,
-> +		P8_MSR_MSR
-> +	};
-> +
-> +	const uint64_t self_save_regs[] = {
-> +		P9_STOP_SPR_DAWR,
-> +		P9_STOP_SPR_HSPRG0,
-> +		P9_STOP_SPR_LDBAR,
-> +		P9_STOP_SPR_LPCR,
-> +		P9_STOP_SPR_PSSCR,
-> +		P9_STOP_SPR_MSR,
-> +		P9_STOP_SPR_HRMOR,
-> +		P9_STOP_SPR_HMEER,
-> +		P9_STOP_SPR_PMCR,
-> +		P9_STOP_SPR_PTCR
-> +	};
-> +
-> +	chip = next_chip(NULL);
-> +	assert(chip);
-> +	rc = proc_stop_api_discover_capability((void *) chip->homer_base,
-> +					       &compVector);
-> +	if (rc == STOP_SAVE_ARG_INVALID_IMG) {
-> +		prlog(PR_DEBUG, "HOMER BASE INVALID\n");
-> +		return;
-> +	} else if (rc == STOP_SAVE_API_IMG_INCOMPATIBLE) {
-> +		prlog(PR_DEBUG, "STOP API running incompatible versions\n");
-> +		if ((compVector & SELF_RESTORE_VER_MISMATCH) == 0) {
-> +			prlog(PR_DEBUG, "Self-save API unsupported\n");
-> +			self_save_supported = false;
-> +		}
-> +	}
-> +
-> +	power_mgt = dt_find_by_path(dt_root, "/ibm,opal/power-mgt");
-> +	if (!power_mgt) {
-> +		prerror("OCC: dt node /ibm,opal/power-mgt not found\n");
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in clk-renesas-for-v5.8.
 
-The prerror/warning in this function should be prefixed with "SLW"
-instead of "OCC" here. This function has nothing to do with OCC.
+Gr{oetje,eeting}s,
 
+                        Geert
 
-> +		return;
-> +	}
-> +
-> +	self_restore = dt_new(power_mgt, "self-restore");
-> +	if (!self_restore) {
-> +		prerror("OCC: Failed to create self restore node");
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Ditto.
-
-> +		return;
-> +	}
-> +
-> +	self_restore_mask = zalloc(SPR_BITMAP_LENGTH / 8);
-> +	if (!self_restore_mask)
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(self_restore_regs); i++) {
-> +		int bitmask_idx = self_restore_regs[i] / 64;
-> +		uint64_t bitmask_pos = self_restore_regs[i] % 64;
-> +		self_restore_mask[bitmask_idx] |= 1ul << bitmask_pos;
-> +	}
-> +
-> +	for (i = 0; i < (SPR_BITMAP_LENGTH / 64); i++) {
-> +		self_restore_mask[i] = cpu_to_be64(self_restore_mask[i]);
-> +	}
-> +
-> +	dt_add_property(self_restore, "sprn-bitmask", self_restore_mask,
-> +			SPR_BITMAP_LENGTH / 8);
-> +	dt_add_property_string(self_restore, "compatible",
-> +			       "ibm,opal-self-restore");
-> +	free(self_restore_mask);
-> +
-> +	if (proc_gen != proc_gen_p9 || !self_save_supported)
-
-We need a 
-prlog(PR_INFO, "SLW: self-save not supported on this platform");
-
-?
-
-> +		return;
-
-
-> +
-> +	self_save = dt_new(power_mgt, "self-save");
-> +	if (!self_save) {
-> +		prerror("OCC: Failed to create self save node");
-> +		return;
-> +	}
-> +
-> +	self_save_mask = zalloc(SPR_BITMAP_LENGTH / 8);
-> +	if (!self_save_mask)
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(self_save_regs); i++) {
-> +		int bitmask_idx = self_save_regs[i] / 64;
-> +		uint64_t bitmask_pos = self_save_regs[i] % 64;
-> +		self_save_mask[bitmask_idx] |= 1ul << bitmask_pos;
-> +	}
-> +
-> +	for (i = 0; i < (SPR_BITMAP_LENGTH / 64); i++) {
-> +		self_save_mask[i] = cpu_to_be64(self_save_mask[i]);
-> +	}
-> +
-> +	dt_add_property(self_save, "sprn-bitmask", self_save_mask,
-> +			SPR_BITMAP_LENGTH / 8);
-> +	dt_add_property_string(self_save, "compatible", "ibm,opal-self-save");
-> +	free(self_save_mask);
-> +}
-> +
->  /* Add device tree properties to describe idle states */
->  void add_cpu_idle_state_properties(void)
->  {
-> @@ -1563,4 +1677,6 @@ void slw_init(void)
->  		}
->  	}
->  	add_cpu_idle_state_properties();
-> +	if (has_deep_states)
-> +		add_cpu_self_save_restore_properties();
->  }
-> diff --git a/include/skiboot.h b/include/skiboot.h
-> index 9ced240e..d3631dea 100644
-> --- a/include/skiboot.h
-> +++ b/include/skiboot.h
-> @@ -209,6 +209,7 @@ extern void early_uart_init(void);
->  extern void homer_init(void);
->  extern void slw_init(void);
->  extern void add_cpu_idle_state_properties(void);
-> +extern void add_cpu_self_save_restore_properties(void);
->  extern void lpc_rtc_init(void);
-
-Apart from these minor quibbles,
-
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-
-> 
->  /* flash support */
-> -- 
-> 2.24.1
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
