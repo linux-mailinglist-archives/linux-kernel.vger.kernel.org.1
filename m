@@ -2,135 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080DD1A7B77
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A21F1A7B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502395AbgDNMzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:55:44 -0400
-Received: from mga09.intel.com ([134.134.136.24]:61364 "EHLO mga09.intel.com"
+        id S2502366AbgDNMzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:55:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:54860 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502340AbgDNMzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:55:40 -0400
-IronPort-SDR: hMoVI6hEo1ARLEjvoUHwDPYkzzWIEIr5qcuzpgoEkT0MMSZPbzNNbM8tiyeInL8cxdCqAI13eA
- lgUFKkMQGwbg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 05:55:39 -0700
-IronPort-SDR: diMMi4QqTqFKA5bJPJZ/exdxzAePKcr19ME8m96/fIUeRLLyglld6JKCFMfuF7xh/Nlpq/A1yt
- 4TaulNDIFepg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; 
-   d="scan'208";a="453526355"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Apr 2020 05:55:35 -0700
-Subject: Re: [PATCH] mmc: cqhci: Avoid false "cqhci: CQE stuck on" by not
- open-coding timeout loop
-To:     Douglas Anderson <dianders@chromium.org>,
-        Ritesh Harjani <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Venkat Gopalakrishnan <venkatg@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Konstantin Dorfman <kdorfman@codeaurora.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Subhash Jadavani <subhashj@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <20200413162717.1.Idece266f5c8793193b57a1ddb1066d030c6af8e0@changeid>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <e3806686-8a86-59b6-0497-04d02ced40f3@intel.com>
-Date:   Tue, 14 Apr 2020 15:54:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S2502340AbgDNMy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:54:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2209630E;
+        Tue, 14 Apr 2020 05:54:58 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.30.4])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1966E3F73D;
+        Tue, 14 Apr 2020 05:54:56 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 13:54:54 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH] ARM64: fixed dump_backtrace() when task running on
+ another cpu
+Message-ID: <20200414125454.GE2486@C02TD0UTHF1T.local>
+References: <1586425106-7369-1-git-send-email-wangqing@vivo.com>
+ <1586769788-5954-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20200413162717.1.Idece266f5c8793193b57a1ddb1066d030c6af8e0@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586769788-5954-1-git-send-email-wangqing@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/20 2:27 am, Douglas Anderson wrote:
-> Open-coding a timeout loop invariably leads to errors with handling
-> the timeout properly in one corner case or another.  In the case of
-> cqhci we might report "CQE stuck on" even if it wasn't stuck on.
-> You'd just need this sequence of events to happen in cqhci_off():
+On Mon, Apr 13, 2020 at 05:23:08PM +0800, Wang Qing wrote:
+> >Hi,
+> >
+> >On Thu, Apr 09, 2020 at 05:38:16PM +0800, Wang Qing wrote:
+> >> We cannot get FP and PC when the task is running on another CPU,
+> >> task->thread.cpu_context is the last time the task was switched out,
+> >> it's better to give a reminder than to provide wrong information.
+> >> 
+> >> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> >
+> >Are you seeing this happen anywhere in particular today?
 > 
-> 1. Call ktime_get().
-> 2. Something happens to interrupt the CPU for > 100 us (context switch
->    or interrupt).
-> 3. Check time and; set "timed_out" to true since > 100 us.
-> 4. Read CQHCI_CTL.
-> 5. Both "reg & CQHCI_HALT" and "timed_out" are true, so break.
-> 6. Since "timed_out" is true, falsely print the error message.
+> This problem is not so obvious, because it will not cause any exceptions
+> but will show "old" stack always ending with switch_to, I finally confirmed
+> the problem through debugging.
 > 
-> Rather than fixing the polling loop, use readx_poll_timeout() like
-> many people do.  This has been time tested to handle the corner cases.
-> 
-> Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> For example:Task blocked in spinlock/interrupt/busy loop, I want to print
+> the backtrace when detected(like PSI in Android), the printing is wrong(old).
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Sure, but *where* are you seeing this?
 
+Is this a problem in mainline, or only in code that you add?
+ 
+> >
+> >> ---
+> >>  arch/arm64/kernel/traps.c | 8 ++++++++
+> >>  1 file changed, 8 insertions(+)
+> >> 
+> >> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+> >> index cf402be..c04e3e8 100644
+> >> --- a/arch/arm64/kernel/traps.c
+> >> +++ b/arch/arm64/kernel/traps.c
+> >> @@ -106,6 +106,14 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+> >>  		start_backtrace(&frame,
+> >>  				(unsigned long)__builtin_frame_address(0),
+> >>  				(unsigned long)dump_backtrace);
+> >> +	} else if (tsk->on_cpu) {
+> >> +		/*
+> >> +		 * The task is running in another cpu, so the call stack
+> >> +		 * is changing and we cannot get it.
+> >> +		 */
+> >> +		pr_warn("tsk: %s is running in CPU%d, Don't call trace!\n",
+> >> +			tsk->comm, tsk->cpu);
+> >
+> >I believe that we can race with a concurrent write to tsk->cpu in both
+> >cases above. We could use READ_ONCE() to get a snapshot, but we can
+> >still race and miss cases where the task was runnning as we backtrace
+> >it.
+> >
+> >Thanks,
+> >Mark.
+> 
+> I will use task_cpu(tsk) instead of tsk->cpu, and add task_running_oncpu() in
+> include/linux/sched.h instead of tsk->on_cpu, but as you said, by this patch,
+> we can still race and miss cases where the task was runnning as we backtrace.
+> 
+> But from the user's perspective, printing wrong backtrace is confused when
+> we call this function while task already running. However, it's reasonable to
+> print the last backtrace when task enter running during the function is called.
 
-> ---
-> 
->  drivers/mmc/host/cqhci.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/cqhci.c b/drivers/mmc/host/cqhci.c
-> index c2239ee2c0ef..75934f3c117e 100644
-> --- a/drivers/mmc/host/cqhci.c
-> +++ b/drivers/mmc/host/cqhci.c
-> @@ -5,6 +5,7 @@
->  #include <linux/delay.h>
->  #include <linux/highmem.h>
->  #include <linux/io.h>
-> +#include <linux/iopoll.h>
->  #include <linux/module.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/slab.h>
-> @@ -349,12 +350,16 @@ static int cqhci_enable(struct mmc_host *mmc, struct mmc_card *card)
->  /* CQHCI is idle and should halt immediately, so set a small timeout */
->  #define CQHCI_OFF_TIMEOUT 100
->  
-> +static u32 cqhci_read_ctl(struct cqhci_host *cq_host)
-> +{
-> +	return cqhci_readl(cq_host, CQHCI_CTL);
-> +}
-> +
->  static void cqhci_off(struct mmc_host *mmc)
->  {
->  	struct cqhci_host *cq_host = mmc->cqe_private;
-> -	ktime_t timeout;
-> -	bool timed_out;
->  	u32 reg;
-> +	int err;
->  
->  	if (!cq_host->enabled || !mmc->cqe_on || cq_host->recovery_halt)
->  		return;
-> @@ -364,15 +369,9 @@ static void cqhci_off(struct mmc_host *mmc)
->  
->  	cqhci_writel(cq_host, CQHCI_HALT, CQHCI_CTL);
->  
-> -	timeout = ktime_add_us(ktime_get(), CQHCI_OFF_TIMEOUT);
-> -	while (1) {
-> -		timed_out = ktime_compare(ktime_get(), timeout) > 0;
-> -		reg = cqhci_readl(cq_host, CQHCI_CTL);
-> -		if ((reg & CQHCI_HALT) || timed_out)
-> -			break;
-> -	}
-> -
-> -	if (timed_out)
-> +	err = readx_poll_timeout(cqhci_read_ctl, cq_host, reg,
-> +				 reg & CQHCI_HALT, 0, CQHCI_OFF_TIMEOUT);
-> +	if (err < 0)
->  		pr_err("%s: cqhci: CQE stuck on\n", mmc_hostname(mmc));
->  	else
->  		pr_debug("%s: cqhci: CQE off\n", mmc_hostname(mmc));
-> 
+The contract of dump_backtrace() is that it's only called for either:
 
+* the current task
+* a task that is blocked in switch_to()
+
+... so I don't think that the current behaviour is wrong as such, though
+if it's easy to catch misuse I agree it would be nice to do so for
+robustness.
+
+However, we can alwatys race here, so detecting this case is best-effort
+and not entirely reliable, and I don't want to leave the impression that
+it is. I'm also not a fan of pr_warn() here, since this is indicative of
+a kernel bug rather than a user/system issue, and can spam the console
+due to a lack of ratelimiting.
+
+So, based on whether this is a problem in existing code, I'd like that
+code fix first, and then we can consider adding a WARN_ONCE() or
+something ratelimited. Ideally something that'll give us the bactrace or
+the code that's calling dump_backtrace() erroneously.
+
+Thanks,
+Mark.
