@@ -2,315 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4DD1A85A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529761A864A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440285AbgDNQsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2440039AbgDNQsa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:48:30 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F17DC061A0C;
-        Tue, 14 Apr 2020 09:48:30 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ay6so2890483pjb.0;
-        Tue, 14 Apr 2020 09:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Bi99qAi48G22a67oDOvX8KlGshqRvGxoHEsTVpbL5dI=;
-        b=ZnVBhoFn9z6HnvVhPA2/ThWZMjWCRzaYIE2bVZUXtpl+C66EYzX9Wp++J9SWLione8
-         F2L0laXw2dDaWO9Bl7OP9A4iWzKY77iNVPYMrC1AEg+3WaTWPz3KD+fBuXCKEMMU4NF0
-         bKd1xbPKc/Zei4IovL/Q9LPqiD/JAU2k11MPv4CGkWJlONShx7fFCwT+4YFiPRdPnY+d
-         +a459hGG/a3wfRPoKcEuLnaGivSBkWZaVqs0YZjiOWxUvieSBVWx9MCzHWF5zRqBeXxp
-         pFC+aWw65lElbbslhoDbM9KEWng9M6BgiTBT4MZn75EUVaiMhx8lsuH8oOqqZV+Mln+M
-         B3uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Bi99qAi48G22a67oDOvX8KlGshqRvGxoHEsTVpbL5dI=;
-        b=Sh03drzfAE9B9AlNS+TkEPQbOGLVYW+mUahnDrN8wiKaMHfBX2yWHqpIa+e+zotK+e
-         0G3lU2wUy2jsBi0YYqODp+/6SsB+qs0K7R5jHUg4LRUvz+lyLn2qEwtwgfSzbi02rq4r
-         rPVJFEYnlLyLLoS3Lv3KR7UD8gE2x2xsSrRcYeYAWU01cyCT9cnxPnzLEVL/qok01mk8
-         fyaiB2FL2H/q6PuA/yxKhQQy6kDyXtlPaaTJe0hcLeDsGkUMg+T/NIFXnRldoA0j5T30
-         5/49tKJbkRIfqrfydZEUpngUmCG40ihaOT5qbiSP7fKmm2xaiFU1DOygrQAWX2uQUWkF
-         2YdA==
-X-Gm-Message-State: AGi0PuaYDxY9IQxhypOMP8Z6E5j2MfHN6h3pWUrSLqEMQ2Dg1hmRQEsR
-        oa1jT+PC+XKvSNCQLqDejJEfPPw0Y1E=
-X-Google-Smtp-Source: APiQypKNH3cxL/ORhZQPKFOs/upSB/tmbxxcoa+otSGlYdN27fy20e0G4BeN8qzoDDcGl0cUjV6SvA==
-X-Received: by 2002:a17:902:b785:: with SMTP id e5mr715454pls.31.1586882909728;
-        Tue, 14 Apr 2020 09:48:29 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.50.207])
-        by smtp.gmail.com with ESMTPSA id k24sm11292993pfk.164.2020.04.14.09.48.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Apr 2020 09:48:28 -0700 (PDT)
-From:   Rishi Gupta <gupt21@gmail.com>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, Rishi Gupta <gupt21@gmail.com>
-Subject: [PATCH 1/1] HID: mcp2221: add GPIO functionality support
-Date:   Tue, 14 Apr 2020 22:18:14 +0530
-Message-Id: <1586882894-19905-1-git-send-email-gupt21@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S2391398AbgDNQzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:55:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440299AbgDNQtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:08 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64BDD20787;
+        Tue, 14 Apr 2020 16:49:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586882942;
+        bh=hpU3ilpDhIBh1EkpHoT8CRglKxDNGuySrswIRHuRmXU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qP/fh2JuBrTWMBDU0Po9QgHcYacrRlFhnHwEY8en7h953JH1K2J6xRWgtWi+ouXIY
+         3gGiDenojv2rrUzJ4Wxk3whARW64aaikv0MOeHbofi1sPuRVe5IZT8BpzPaRPNxcO+
+         07Ps8XSWU9UmRtIfijlblMPlQG+5+iBYwuA7KjAY=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jOOk8-0068kv-FR; Tue, 14 Apr 2020 18:49:00 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh@kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-crypto@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-afs@lists.infradead.org,
+        ecryptfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-pci@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-spi@vger.kernel.org,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-usb@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Matthias Brugger <mbrugger@suse.com>, netdev@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux1394-devel@lists.sourceforge.net
+Subject: [PATCH v2 00/33] Documentation fixes for Kernel 5.8
+Date:   Tue, 14 Apr 2020 18:48:26 +0200
+Message-Id: <cover.1586881715.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MCP2221 has 4 pins that can be used as GPIO or configured
-for alternate functionality such as clock generation and
-IRQ detection. This patch adds support for GPIO functionality.
+Patches 1 to 5 contain changes to the documentation toolset:
 
-To set direction of a pin or to toggle its state after it
-has been configured as GPIO, driver sends command to mcp2221
-and parses response received from mcp2221. Based on this
-response either 0 or appropriate error code is returned to
-GPIO framework.
+- The first 3 patches help to reduce a lot the number of reported
+  kernel-doc issues, by making the tool more smart.
 
-To get the direction or current state of a pin, driver
-sends command and read response from the device. Based on
-the response received from device direction or value
-is sent to the GPIO framework.
+- Patches 4 and 5 are meant to partially address the PDF
+  build, with now requires Sphinx version 2.4 or upper.
 
-Command from driver to mcp2221 device are output report.
-Response received from mcp2221 is input report.
+The remaining patches fix broken references detected by
+this tool:
 
-Datasheet (page 45-48) contains details about how to decode
-the response received from device:
-http://ww1.microchip.com/downloads/en/DeviceDoc/20005565B.pdf
+        ./scripts/documentation-file-ref-check
 
-Signed-off-by: Rishi Gupta <gupt21@gmail.com>
----
- drivers/hid/hid-mcp2221.c | 169 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 169 insertions(+)
+and address other random errors due to tags being mis-interpreted
+or mis-used.
 
-diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
-index d958475..e1b93ce3 100644
---- a/drivers/hid/hid-mcp2221.c
-+++ b/drivers/hid/hid-mcp2221.c
-@@ -15,6 +15,7 @@
- #include <linux/hid.h>
- #include <linux/hidraw.h>
- #include <linux/i2c.h>
-+#include <linux/gpio/driver.h>
- #include "hid-ids.h"
- 
- /* Commands codes in a raw output report */
-@@ -27,6 +28,8 @@ enum {
- 	MCP2221_I2C_PARAM_OR_STATUS	= 0x10,
- 	MCP2221_I2C_SET_SPEED = 0x20,
- 	MCP2221_I2C_CANCEL = 0x10,
-+	MCP2221_GPIO_SET = 0x50,
-+	MCP2221_GPIO_GET = 0x51,
- };
- 
- /* Response codes in a raw input report */
-@@ -42,6 +45,8 @@ enum {
- 	MCP2221_I2C_WRADDRL_SEND = 0x21,
- 	MCP2221_I2C_ADDR_NACK = 0x25,
- 	MCP2221_I2C_READ_COMPL = 0x55,
-+	MCP2221_ALT_F_NOT_GPIOV = 0xEE,
-+	MCP2221_ALT_F_NOT_GPIOD = 0xEF,
- };
- 
- /*
-@@ -59,6 +64,9 @@ struct mcp2221 {
- 	int rxbuf_idx;
- 	int status;
- 	u8 cur_i2c_clk_div;
-+	struct gpio_chip *gc;
-+	u8 gp_idx;
-+	u8 gpio_dir;
- };
- 
- /*
-@@ -526,6 +534,110 @@ static const struct i2c_algorithm mcp_i2c_algo = {
- 	.functionality = mcp_i2c_func,
- };
- 
-+static int mcp_gpio_get(struct gpio_chip *gc,
-+				unsigned int offset)
-+{
-+	int ret;
-+	struct mcp2221 *mcp = gpiochip_get_data(gc);
-+
-+	mcp->txbuf[0] = MCP2221_GPIO_GET;
-+
-+	mcp->gp_idx = (offset + 1) * 2;
-+
-+	mutex_lock(&mcp->lock);
-+	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
-+	mutex_unlock(&mcp->lock);
-+
-+	return ret;
-+}
-+
-+static void mcp_gpio_set(struct gpio_chip *gc,
-+				unsigned int offset, int value)
-+{
-+	struct mcp2221 *mcp = gpiochip_get_data(gc);
-+
-+	memset(mcp->txbuf, 0, 18);
-+	mcp->txbuf[0] = MCP2221_GPIO_SET;
-+
-+	mcp->gp_idx = ((offset + 1) * 4) - 1;
-+
-+	mcp->txbuf[mcp->gp_idx - 1] = 1;
-+	mcp->txbuf[mcp->gp_idx] = !!value;
-+
-+	mutex_lock(&mcp->lock);
-+	mcp_send_data_req_status(mcp, mcp->txbuf, 18);
-+	mutex_unlock(&mcp->lock);
-+}
-+
-+static int mcp_gpio_dir_set(struct mcp2221 *mcp,
-+				unsigned int offset, u8 val)
-+{
-+	memset(mcp->txbuf, 0, 18);
-+	mcp->txbuf[0] = MCP2221_GPIO_SET;
-+
-+	mcp->gp_idx = (offset + 1) * 5;
-+
-+	mcp->txbuf[mcp->gp_idx - 1] = 1;
-+	mcp->txbuf[mcp->gp_idx] = val;
-+
-+	return mcp_send_data_req_status(mcp, mcp->txbuf, 18);
-+}
-+
-+static int mcp_gpio_direction_input(struct gpio_chip *gc,
-+				unsigned int offset)
-+{
-+	int ret;
-+	struct mcp2221 *mcp = gpiochip_get_data(gc);
-+
-+	mutex_lock(&mcp->lock);
-+	ret = mcp_gpio_dir_set(mcp, offset, 0);
-+	mutex_unlock(&mcp->lock);
-+
-+	return ret;
-+}
-+
-+static int mcp_gpio_direction_output(struct gpio_chip *gc,
-+				unsigned int offset, int value)
-+{
-+	int ret;
-+	struct mcp2221 *mcp = gpiochip_get_data(gc);
-+
-+	mutex_lock(&mcp->lock);
-+	ret = mcp_gpio_dir_set(mcp, offset, 1);
-+	mutex_unlock(&mcp->lock);
-+
-+	/* Can't configure as output, bailout early */
-+	if (ret)
-+		return ret;
-+
-+	mcp_gpio_set(gc, offset, value);
-+
-+	return 0;
-+}
-+
-+static int mcp_gpio_get_direction(struct gpio_chip *gc,
-+				unsigned int offset)
-+{
-+	int ret;
-+	struct mcp2221 *mcp = gpiochip_get_data(gc);
-+
-+	mcp->txbuf[0] = MCP2221_GPIO_GET;
-+
-+	mcp->gp_idx = (offset + 1) * 2;
-+
-+	mutex_lock(&mcp->lock);
-+	ret = mcp_send_data_req_status(mcp, mcp->txbuf, 1);
-+	mutex_unlock(&mcp->lock);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (mcp->gpio_dir)
-+		return GPIO_LINE_DIRECTION_IN;
-+
-+	return GPIO_LINE_DIRECTION_OUT;
-+}
-+
- /* Gives current state of i2c engine inside mcp2221 */
- static int mcp_get_i2c_eng_state(struct mcp2221 *mcp,
- 				u8 *data, u8 idx)
-@@ -638,6 +750,39 @@ static int mcp2221_raw_event(struct hid_device *hdev,
- 		complete(&mcp->wait_in_report);
- 		break;
- 
-+	case MCP2221_GPIO_GET:
-+		switch (data[1]) {
-+		case MCP2221_SUCCESS:
-+			if ((data[mcp->gp_idx] == MCP2221_ALT_F_NOT_GPIOV) ||
-+				(data[mcp->gp_idx + 1] == MCP2221_ALT_F_NOT_GPIOD)) {
-+				mcp->status = -ENOENT;
-+			} else {
-+				mcp->status = !!data[mcp->gp_idx];
-+				mcp->gpio_dir = !!data[mcp->gp_idx + 1];
-+			}
-+			break;
-+		default:
-+			mcp->status = -EAGAIN;
-+		}
-+		complete(&mcp->wait_in_report);
-+		break;
-+
-+	case MCP2221_GPIO_SET:
-+		switch (data[1]) {
-+		case MCP2221_SUCCESS:
-+			if ((data[mcp->gp_idx] == MCP2221_ALT_F_NOT_GPIOV) ||
-+				(data[mcp->gp_idx - 1] == MCP2221_ALT_F_NOT_GPIOV)) {
-+				mcp->status = -ENOENT;
-+			} else {
-+				mcp->status = 0;
-+			}
-+			break;
-+		default:
-+			mcp->status = -EAGAIN;
-+		}
-+		complete(&mcp->wait_in_report);
-+		break;
-+
- 	default:
- 		mcp->status = -EIO;
- 		complete(&mcp->wait_in_report);
-@@ -702,8 +847,32 @@ static int mcp2221_probe(struct hid_device *hdev,
- 	}
- 	i2c_set_adapdata(&mcp->adapter, mcp);
- 
-+	/* Setup GPIO chip */
-+	mcp->gc = devm_kzalloc(&hdev->dev, sizeof(*mcp->gc), GFP_KERNEL);
-+	if (!mcp->gc) {
-+		ret = -ENOMEM;
-+		goto err_gc;
-+	}
-+
-+	mcp->gc->label = "mcp2221_gpio";
-+	mcp->gc->direction_input = mcp_gpio_direction_input;
-+	mcp->gc->direction_output = mcp_gpio_direction_output;
-+	mcp->gc->get_direction = mcp_gpio_get_direction;
-+	mcp->gc->set = mcp_gpio_set;
-+	mcp->gc->get = mcp_gpio_get;
-+	mcp->gc->ngpio = 4;
-+	mcp->gc->base = -1;
-+	mcp->gc->can_sleep = 1;
-+	mcp->gc->parent = &hdev->dev;
-+
-+	ret = devm_gpiochip_add_data(&hdev->dev, mcp->gc, mcp);
-+	if (ret)
-+		goto err_gc;
-+
- 	return 0;
- 
-+err_gc:
-+	i2c_del_adapter(&mcp->adapter);
- err_i2c:
- 	hid_hw_close(mcp->hdev);
- err_hstop:
+They are independent each other, but some may depend on
+the kernel-doc improvements.
+
+PS.: Due to the large number of C/C, I opted to keep a smaller
+set of C/C at this first e-mail (only e-mails with "L:" tag from
+MAINTAINERS file).
+
+Jon,
+
+Those patches should apply cleanly at docs-next, once you
+pull from v5.7-rc1.
+
+
+-
+
+v2:
+
+- patches re-ordered;
+- added reviewed/acked-by tags;
+- rebased on the top of docs-next + v5.7-rc1.
+
+
+Mauro Carvalho Chehab (33):
+  scripts: kernel-doc: proper handle @foo->bar()
+  scripts: kernel-doc: accept negation like !@var
+  scripts: kernel-doc: accept blank lines on parameter description
+  docs: update recommended Sphinx version to 2.4.4
+  docs: LaTeX/PDF: drop list of documents
+  MAINTAINERS: dt: update display/allwinner file entry
+  MAINTAINERS: dt: fix pointers for ARM Integrator, Versatile and
+    RealView
+  docs: dt: fix broken reference to phy-cadence-torrent.yaml
+  docs: fix broken references to text files
+  docs: fix broken references for ReST files that moved around
+  docs: filesystems: fix renamed references
+  docs: amu: supress some Sphinx warnings
+  docs: arm64: booting.rst: get rid of some warnings
+  docs: pci: boot-interrupts.rst: improve html output
+  docs: ras: get rid of some warnings
+  docs: ras: don't need to repeat twice the same thing
+  docs: infiniband: verbs.c: fix some documentation warnings
+  docs: spi: spi.h: fix a doc building warning
+  docs: drivers: fix some warnings at base/platform.c when building docs
+  docs: mm: userfaultfd.rst: use ``foo`` for literals
+  docs: mm: userfaultfd.rst: use a cross-reference for a section
+  docs: vm: index.rst: add an orphan doc to the building system
+  docs: dt: qcom,dwc3.txt: fix cross-reference for a converted file
+  docs: dt: fix a broken reference for a file converted to json
+  docs: powerpc: cxl.rst: mark two section titles as such
+  docs: i2c: rename i2c.svg to i2c_bus.svg
+  docs: Makefile: place final pdf docs on a separate dir
+  docs: dt: rockchip,dwc3.txt: fix a pointer to a renamed file
+  ata: libata-core: fix a doc warning
+  firewire: firewire-cdev.hL get rid of a docs warning
+  fs: inode.c: get rid of docs warnings
+  futex: get rid of a kernel-docs build warning
+  lib: bitmap.c: get rid of some doc warnings
+
+ Documentation/ABI/stable/sysfs-devices-node   |   2 +-
+ Documentation/ABI/testing/procfs-smaps_rollup |   2 +-
+ Documentation/Makefile                        |   6 +-
+ Documentation/PCI/boot-interrupts.rst         |  34 +--
+ Documentation/admin-guide/cpu-load.rst        |   2 +-
+ Documentation/admin-guide/mm/userfaultfd.rst  | 209 +++++++++---------
+ Documentation/admin-guide/nfs/nfsroot.rst     |   2 +-
+ Documentation/admin-guide/ras.rst             |  18 +-
+ Documentation/arm64/amu.rst                   |   5 +
+ Documentation/arm64/booting.rst               |  36 +--
+ Documentation/conf.py                         |  38 ----
+ .../bindings/net/qualcomm-bluetooth.txt       |   2 +-
+ .../bindings/phy/ti,phy-j721e-wiz.yaml        |   2 +-
+ .../devicetree/bindings/usb/qcom,dwc3.txt     |   4 +-
+ .../devicetree/bindings/usb/rockchip,dwc3.txt |   2 +-
+ .../doc-guide/maintainer-profile.rst          |   2 +-
+ .../driver-api/driver-model/device.rst        |   4 +-
+ .../driver-api/driver-model/overview.rst      |   2 +-
+ Documentation/filesystems/dax.txt             |   2 +-
+ Documentation/filesystems/dnotify.txt         |   2 +-
+ .../filesystems/ramfs-rootfs-initramfs.rst    |   2 +-
+ Documentation/filesystems/sysfs.rst           |   2 +-
+ Documentation/i2c/{i2c.svg => i2c_bus.svg}    |   2 +-
+ Documentation/i2c/summary.rst                 |   2 +-
+ Documentation/memory-barriers.txt             |   2 +-
+ Documentation/powerpc/cxl.rst                 |   2 +
+ .../powerpc/firmware-assisted-dump.rst        |   2 +-
+ Documentation/process/adding-syscalls.rst     |   2 +-
+ Documentation/process/submit-checklist.rst    |   2 +-
+ Documentation/sphinx/requirements.txt         |   2 +-
+ .../it_IT/process/adding-syscalls.rst         |   2 +-
+ .../it_IT/process/submit-checklist.rst        |   2 +-
+ .../translations/ko_KR/memory-barriers.txt    |   2 +-
+ .../translations/zh_CN/filesystems/sysfs.txt  |   8 +-
+ .../zh_CN/process/submit-checklist.rst        |   2 +-
+ Documentation/virt/kvm/arm/pvtime.rst         |   2 +-
+ Documentation/virt/kvm/devices/vcpu.rst       |   2 +-
+ Documentation/virt/kvm/hypercalls.rst         |   4 +-
+ Documentation/virt/kvm/mmu.rst                |   2 +-
+ Documentation/virt/kvm/review-checklist.rst   |   2 +-
+ Documentation/vm/index.rst                    |   1 +
+ MAINTAINERS                                   |   7 +-
+ arch/powerpc/include/uapi/asm/kvm_para.h      |   2 +-
+ arch/x86/kvm/mmu/mmu.c                        |   2 +-
+ drivers/ata/libata-core.c                     |   2 +-
+ drivers/base/core.c                           |   2 +-
+ drivers/base/platform.c                       |   6 +-
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |   2 +-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c |   2 +-
+ .../allwinner/sun8i-ss/sun8i-ss-cipher.c      |   2 +-
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c |   2 +-
+ drivers/gpu/drm/Kconfig                       |   2 +-
+ drivers/gpu/drm/drm_ioctl.c                   |   2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |   2 +-
+ drivers/hwtracing/coresight/Kconfig           |   2 +-
+ drivers/infiniband/core/verbs.c               |   7 +-
+ drivers/media/v4l2-core/v4l2-fwnode.c         |   2 +-
+ fs/Kconfig                                    |   2 +-
+ fs/Kconfig.binfmt                             |   2 +-
+ fs/adfs/Kconfig                               |   2 +-
+ fs/affs/Kconfig                               |   2 +-
+ fs/afs/Kconfig                                |   6 +-
+ fs/bfs/Kconfig                                |   2 +-
+ fs/cramfs/Kconfig                             |   2 +-
+ fs/ecryptfs/Kconfig                           |   2 +-
+ fs/fat/Kconfig                                |   8 +-
+ fs/fuse/Kconfig                               |   2 +-
+ fs/fuse/dev.c                                 |   2 +-
+ fs/hfs/Kconfig                                |   2 +-
+ fs/hpfs/Kconfig                               |   2 +-
+ fs/inode.c                                    |   6 +-
+ fs/isofs/Kconfig                              |   2 +-
+ fs/namespace.c                                |   2 +-
+ fs/notify/inotify/Kconfig                     |   2 +-
+ fs/ntfs/Kconfig                               |   2 +-
+ fs/ocfs2/Kconfig                              |   2 +-
+ fs/overlayfs/Kconfig                          |   6 +-
+ fs/proc/Kconfig                               |   4 +-
+ fs/romfs/Kconfig                              |   2 +-
+ fs/sysfs/dir.c                                |   2 +-
+ fs/sysfs/file.c                               |   2 +-
+ fs/sysfs/mount.c                              |   2 +-
+ fs/sysfs/symlink.c                            |   2 +-
+ fs/sysv/Kconfig                               |   2 +-
+ fs/udf/Kconfig                                |   2 +-
+ include/linux/kobject.h                       |   2 +-
+ include/linux/kobject_ns.h                    |   2 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/relay.h                         |   2 +-
+ include/linux/spi/spi.h                       |   1 +
+ include/linux/sysfs.h                         |   2 +-
+ include/uapi/linux/ethtool_netlink.h          |   2 +-
+ include/uapi/linux/firewire-cdev.h            |   2 +-
+ include/uapi/linux/kvm.h                      |   4 +-
+ include/uapi/rdma/rdma_user_ioctl_cmds.h      |   2 +-
+ kernel/futex.c                                |   3 +
+ kernel/relay.c                                |   2 +-
+ lib/bitmap.c                                  |  27 +--
+ lib/kobject.c                                 |   4 +-
+ mm/gup.c                                      |  12 +-
+ scripts/kernel-doc                            |  41 ++--
+ tools/include/uapi/linux/kvm.h                |   4 +-
+ virt/kvm/arm/vgic/vgic-mmio-v3.c              |   2 +-
+ virt/kvm/arm/vgic/vgic.h                      |   4 +-
+ 104 files changed, 343 insertions(+), 326 deletions(-)
+ rename Documentation/i2c/{i2c.svg => i2c_bus.svg} (99%)
+
 -- 
-2.7.4
+2.25.2
+
 
