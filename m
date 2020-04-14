@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBDC1A8E83
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FE81A8E87
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 00:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391878AbgDNWYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 18:24:50 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29517 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387970AbgDNWYT (ORCPT
+        id S2391935AbgDNWZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 18:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391879AbgDNWZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 18:24:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586903058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TgHjv4gAaYYtx+HoAQH9PJ5czrGv0CeeW4y4HFuI5UM=;
-        b=SgrX9+CyAAq4P97cyMSi3FHkTn7HOqNxP2VdJH+QCCF5bdmPpnZ0B8zLQeOsnGV3WQQwNY
-        ZPnUIUYl09Vfs5pM5HdAzrlW8eLg4/beCvVzKrSXQztCsR3qVjaPr1meYHYNKYkucgHx9i
-        8OEsdnuMVjgq6VTlq4PP4Rh0hmhd0GA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-ZxAkttFQP3eFsYHxH4ZOPA-1; Tue, 14 Apr 2020 18:24:14 -0400
-X-MC-Unique: ZxAkttFQP3eFsYHxH4ZOPA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 940711005513;
-        Tue, 14 Apr 2020 22:24:12 +0000 (UTC)
-Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D48E1001B0B;
-        Tue, 14 Apr 2020 22:24:10 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 17:24:07 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Jason Yan <yanaijie@huawei.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        peterz@infradead.org, shile.zhang@linux.alibaba.com,
-        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] x86/unwind/orc: make some symbols static
-Message-ID: <20200414222407.zygtmimv4ixwnxcz@treble>
-References: <20200413082203.22853-1-yanaijie@huawei.com>
- <alpine.LSU.2.21.2004141121110.6508@pobox.suse.cz>
+        Tue, 14 Apr 2020 18:25:44 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B866C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 15:25:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RGZB7ae/M0io69TXtZXpt/WVolg10zvCmI4RiKooIhY=; b=f1arLuVkBWrOzrndQG4SYz2zdt
+        FxURcJ1jbpOYqhr+OGRKYG3NNk/UM91ZkH+aY0HTSEUBP+sfL3afkLyu/Rcp2tdbP0CWWzdtnN86R
+        ejX+ieyK4FQD6VB2EklKVnN+5bYPUci+n66z6ngnRwi6YIAtYUleDs/Tjfrj86/V1i4wSVFICQZHO
+        Fixfv0eSBKQ4XTO0vHVOiJc3RwMf4U6hPeSxRCdFWuk7Osx6qBsIcbbnMxOHD58zUUgkZ+lbKtUQh
+        xHVqKstD+n7tqjJR3AgN9HBghgrppm7g5vH/az2IzMqN4maTV7ahUdMt+XidI0BcInmkAyKEvhc0q
+        ffC0Mq/Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOTzX-0008BR-OJ; Tue, 14 Apr 2020 22:25:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 069BA305F3F;
+        Wed, 15 Apr 2020 00:25:12 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B042D2BB08C26; Wed, 15 Apr 2020 00:25:12 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 00:25:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Matt Helsley <mhelsley@vmware.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [RFC][PATCH 00/36] objtool: Make recordmcount a subcommand
+Message-ID: <20200414222512.GX20730@hirez.programming.kicks-ass.net>
+References: <cover.1586468801.git.mhelsley@vmware.com>
+ <3a3f70df-07b0-91d9-33e1-e997e72b0c5c@redhat.com>
+ <20200414093506.7b91bbbb@gandalf.local.home>
+ <064f41bd-0dfe-e875-df7c-214184c29fa7@redhat.com>
+ <20200414115458.093e221b@gandalf.local.home>
+ <20200414200910.GB118458@rlwimi.vmware.com>
+ <20200414204729.GJ2483@worktop.programming.kicks-ass.net>
+ <20200414170520.4d347caa@gandalf.local.home>
+ <20200414211754.GK2483@worktop.programming.kicks-ass.net>
+ <20200414174702.1d540e24@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2004141121110.6508@pobox.suse.cz>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200414174702.1d540e24@gandalf.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 11:22:50AM +0200, Miroslav Benes wrote:
-> On Mon, 13 Apr 2020, Jason Yan wrote:
+On Tue, Apr 14, 2020 at 05:47:02PM -0400, Steven Rostedt wrote:
+> On Tue, 14 Apr 2020 23:17:54 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> > Fix the following sparse warning:
+> > > Do we want that? Matters how long that takes.  
 > > 
-> > arch/x86/kernel/unwind_orc.c:19:5: warning: symbol 'cur_orc_ip_table'
-> > was not declared. Should it be static?
-> > arch/x86/kernel/unwind_orc.c:20:18: warning: symbol 'cur_orc_table' was
-> > not declared. Should it be static?
-> > arch/x86/kernel/unwind_orc.c:22:14: warning: symbol 'lookup_num_blocks'
-> > was not declared. Should it be static?
-> > arch/x86/kernel/unwind_orc.c:23:6: warning: symbol 'orc_init' was not
-> > declared. Should it be static?
-> > 
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> > ---
-> >  arch/x86/kernel/unwind_orc.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-> > index e9cc182aa97e..0dbabc469ce2 100644
-> > --- a/arch/x86/kernel/unwind_orc.c
-> > +++ b/arch/x86/kernel/unwind_orc.c
-> > @@ -16,11 +16,11 @@ extern struct orc_entry __start_orc_unwind[];
-> >  extern struct orc_entry __stop_orc_unwind[];
-> >  
-> >  static DEFINE_MUTEX(sort_mutex);
-> > -int *cur_orc_ip_table = __start_orc_unwind_ip;
-> > -struct orc_entry *cur_orc_table = __start_orc_unwind;
-> > +static int *cur_orc_ip_table = __start_orc_unwind_ip;
-> > +static struct orc_entry *cur_orc_table = __start_orc_unwind;
-> >  
-> > -unsigned int lookup_num_blocks;
-> > -bool orc_init;
-> > +static unsigned int lookup_num_blocks;
-> > +static bool orc_init;
-> >  
-> >  static inline unsigned long orc_ip(const int *ip)
-> >  {
-> > -- 
+> > We do want that, however it is conditional on CONFIG_DEBUG_ENTRY and
+> > does some rather specific validation. On a defconfig based kernel it
+> > takes ~2.5 seconds, significantly more an an allyesconfig.
 > 
-> Thanks for the patch, but Josh already fixed it in 
-> https://lore.kernel.org/lkml/63b5cab2e28b9c08854fc57f5b512a9ccf76ad95.1584033751.git.jpoimboe@redhat.com/
+> Is that timed on your laptop, or on the monster machine you normally do your
+> builds on?
 > 
-> Josh, any plans to add the patch set into the current queue?
+> 2.5 seconds for you may be 2.5 minutes for others! ;-)
 
-Yeah, I have a v2 coming one of these days...
+Final link pass, and objtool, is single threaded, the ~2.5s were on an
+old-ish 2.8GHz part, ie, most laptops are faster today.
 
--- 
-Josh
-
+The machine has a few more cores than laptops have, so total build time
+is still managable, unlike laptops. Also, it being a server part, it
+suffers less thermal issues.
