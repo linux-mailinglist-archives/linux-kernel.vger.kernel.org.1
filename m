@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF571A8F07
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C52E1A8F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392105AbgDNXSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 19:18:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57892 "EHLO mail.kernel.org"
+        id S2392118AbgDNXUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 19:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392083AbgDNXSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 19:18:51 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+        id S1731159AbgDNXU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 19:20:27 -0400
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D68C2072D;
-        Tue, 14 Apr 2020 23:18:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EC142084D
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 23:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586906330;
-        bh=TIDIviyEYvN23MqFWk6rl7nwsfElsevepgo9cj0fDa0=;
+        s=default; t=1586906427;
+        bh=ZOpLQhnRd08sOnvMFaa91+VED600Lo361J+I/x4HT/U=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BlTi57WWPhRfW7sJMv5MxtonFNkCoY3uTo3bX4GCktl3OJfOEMkXo/jFDOgJC3Xhx
-         YYZwkDurIo88TwaWUqFS6rvVSLyvaJpZb+mYFSf0te1Mrgh938AILR0wS/rK6kk+wG
-         zu0wwxVhweZhfP5OXayIki3MMJ01LkvWJNk014kg=
-Received: by mail-ed1-f44.google.com with SMTP id s10so1941321edy.9;
-        Tue, 14 Apr 2020 16:18:50 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaXBhiHzKA+fXdcC18G/yCx4pfV5NTJRnBkoXF4KiJeysm0wNhl
-        QYzYb1EV/IczxYeoL+msTnchvztQi0CDJpk6UA==
-X-Google-Smtp-Source: APiQypLlqRYq43AAFMZg/IO4wBtIyFmNe19LoGBoUzW3+lEwF9tJ5dD9i42daP7Zkk0pVFZPG7mhoy00oQKf+v9hKRU=
-X-Received: by 2002:aa7:c649:: with SMTP id z9mr8144084edr.288.1586906328844;
- Tue, 14 Apr 2020 16:18:48 -0700 (PDT)
+        b=GLsNtWv62Q2xFLHzli9xxQrcjowu/vSVQ47ptlXB7uRq2TkuSj8zc+g3vDTitOlCr
+         Rl1DcfgjJN7XfdwTiXf+v9/l+HiBK62qm0MrTquyEuoTahuaEE2QjflboRa6E2ypb4
+         WfJJnA6yBzhCuMOcyop8FjQoAtNKwqL16/YNGxc4=
+Received: by mail-wr1-f53.google.com with SMTP id u13so16136047wrp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 16:20:27 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaiWzunaK7muriCAFyHPqWT0eIjYGC4/ZL8f/vLpQGj3+XZKdr/
+        L6rqKxXgRX0k/UeK06noMvlvafCZG9g6BHpCtLbQaw==
+X-Google-Smtp-Source: APiQypIqH10bim2r4lvd1sxTZHDU3AEdyqSct6JzQQXaspuA276JVwhLKjqUPouRRDYyyo5BMdWnC4IWbiZNOQeCsFY=
+X-Received: by 2002:adf:bc05:: with SMTP id s5mr25696906wrg.70.1586906425665;
+ Tue, 14 Apr 2020 16:20:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200414030815.192104-1-hsinyi@chromium.org> <20200414030815.192104-2-hsinyi@chromium.org>
-In-Reply-To: <20200414030815.192104-2-hsinyi@chromium.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 15 Apr 2020 07:18:37 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__oL1LxFxmBSp+cC__ZcGVifQ3f+gPKSWFZKJV4aRCDJw@mail.gmail.com>
-Message-ID: <CAAOTY__oL1LxFxmBSp+cC__ZcGVifQ3f+gPKSWFZKJV4aRCDJw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] media: mtk-mdp: Use correct aliases name
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        devicetree@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
+References: <a5b07aa9-96ea-a9b5-13db-e5dcbd7760e6@intel.com>
+ <BEA3CCB8-5127-4E6A-9696-E293C00BFA82@amacapital.net> <CABV8kRxqcCmPKtX3DDOf+47Re1hO1gMeUPhCd6HtDP0-SpcSBw@mail.gmail.com>
+In-Reply-To: <CABV8kRxqcCmPKtX3DDOf+47Re1hO1gMeUPhCd6HtDP0-SpcSBw@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 14 Apr 2020 16:20:14 -0700
+X-Gmail-Original-Message-ID: <CALCETrVmsWZ+w6C4RV50DWoL0Qaiy+S6BtXr=QKQEg3MYgAc6w@mail.gmail.com>
+Message-ID: <CALCETrVmsWZ+w6C4RV50DWoL0Qaiy+S6BtXr=QKQEg3MYgAc6w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0 per-thread
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kyle Huey <khuey@kylehuey.com>,
+        "Robert O'Callahan" <robert@ocallahan.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -58,49 +58,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Hsin-Yi:
+On Tue, Apr 7, 2020 at 11:30 AM Keno Fischer <keno@juliacomputing.com> wrot=
+e:
+>
+> > TSX!
+>
+> Yes, it's problematic, but luckily turns out to
+> be ok in practice if masked off in cpuid.
+>
+> > I think rr should give the raw KVM API at least a try.  It should be po=
+ssible to fire up a vCPU in CPL3 in the correct state.  No guest kernel req=
+uired.  I don=E2=80=99t know if there will be issues with the perf API, tho=
+ugh.
+>
+> Yes, I've looked into it, but stopped short of doing a
+> complete implementation. Using KVM to solve it
+> for replay would probably be feasible with a moderate
+> amount of engineering work, since rr does very few
+> syscalls during replay. I'm a bit afraid of the
+> performance implications, but I don't have numbers on this.
+>
+> Record and diversions are a lot harder though, because
+> in this mode the tracee is a live process and able to do
+> syscalls (and needs to receive signals and all that good
+> stuff associated with being a real process). For diversions,
+> performance isn't super important, so we could probably
+> emulate this, but for record, performance is quite critical.
+> I assume it would be possible to add a feature to KVM
+> where it forwards syscalls made in guest CPL3 to the real
+> kernel without round-trip through userspace, but I'm just
+> seeing myself back here asking
+> for a weird KVM feature that nobody but me wants ;)
+> (well almost nobody, as I mentioned, there's an
+> academic project that tried this with a custom kernel
+> plugin - http://dune.scs.stanford.edu/).
+>
+> Admittedly, the use case for this feature during record is
+> less pressing, since in our (operational) case
+> the replay machines tend to be much newer than
+> the record machines, but I wouldn't be surprised if I got
+> bit by this as soon as the next user xstate component gets
+> added and users start sending me those kinds of traces,
+> even if we mask off the feature in CPUID (which rr already
+> supports for record for similar reasons).
 
-Hsin-Yi Wang <hsinyi@chromium.org> =E6=96=BC 2020=E5=B9=B44=E6=9C=8814=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8811:08=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> aliases property name must include only lowercase and '-'. Fix in dts
-> and driver.
->
+I'm imagining that rr would do record the usual way with normal XCR0
+(why would you want to record with an unusual XCR0?) and replay would
+use KVM.  I'm not sure about diversions.  This way KVM wouldn't need
+to deal with syscalls.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> ---
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/medi=
-a/platform/mtk-mdp/mtk_mdp_comp.c
-> index 14991685adb7..58abfbdfb82d 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> @@ -15,10 +15,10 @@
->
->
->  static const char * const mtk_mdp_comp_stem[MTK_MDP_COMP_TYPE_MAX] =3D {
-> -       "mdp_rdma",
-> -       "mdp_rsz",
-> -       "mdp_wdma",
-> -       "mdp_wrot",
-> +       "mdp-rdma",
-> +       "mdp-rsz",
-> +       "mdp-wdma",
-> +       "mdp-wrot",
->  };
->
->  struct mtk_mdp_comp_match {
-> --
-> 2.26.0.110.g2183baf09c-goog
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Would this work?
