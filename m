@@ -2,122 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EDA1A7A3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518BC1A7A40
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgDNMB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:01:29 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:40032 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439755AbgDNMBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:01:24 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <heiko@sntech.de>)
-        id 1jOKFk-0008I1-1j; Tue, 14 Apr 2020 14:01:20 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: rockchip: remove bus-width from mmc nodes in rk3308.dtsi
-Date:   Tue, 14 Apr 2020 14:01:19 +0200
-Message-ID: <2038198.JSHZf9jCco@diego>
-In-Reply-To: <f19b6b48-2950-abca-7dee-31c24118c3ef@gmail.com>
-References: <20200413193652.1952-1-jbx6244@gmail.com> <20c81edc-247c-8db0-2b3c-a6c2fcad6b4e@arm.com> <f19b6b48-2950-abca-7dee-31c24118c3ef@gmail.com>
+        id S1729765AbgDNMCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:02:08 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43616 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2439770AbgDNMBy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:01:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586865711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=oy3KnAjRvqT0+WY1/sYt3PxCeRGxJcftfgNWdCKT3uA=;
+        b=IpMwgq4CAX8inAD+PiicUDLRwrV4S3ykLLfcrvwIh38uyWl46PfY9xRQSe+hi5iodIXMqq
+        uqGsgvkHuOqvKm/cX99L85Fy1un3M+a9SjTWh3+0l4sAXQhvxTwSrqM+/aHphHsjFRt9d7
+        pdldPuZuZslybfjgnzMZ7hwavd4sktY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-sqHMthJPN9aKW-oGmmIrRg-1; Tue, 14 Apr 2020 08:01:48 -0400
+X-MC-Unique: sqHMthJPN9aKW-oGmmIrRg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BA31190D340;
+        Tue, 14 Apr 2020 12:01:46 +0000 (UTC)
+Received: from [10.36.113.201] (ovpn-113-201.ams2.redhat.com [10.36.113.201])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 374D2116D7B;
+        Tue, 14 Apr 2020 12:01:44 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/4] mm: Add PG_zero support
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20200412090728.GA19572@open-light-1.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <7de81a1c-0568-b8dd-02c5-b109a2e74a04@redhat.com>
+Date:   Tue, 14 Apr 2020 14:01:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200412090728.GA19572@open-light-1.localdomain>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+On 12.04.20 11:07, liliangleo wrote:
+> Zero out the page content usually happens when allocating pages,
+> this is a time consuming operation, it makes pin and mlock
+> operation very slowly, especially for a large batch of memory.
+>=20
+> This patch introduce a new feature for zero out pages before page
+> allocation, it can help to speed up page allocation.
+>=20
+> The idea is very simple, zero out free pages when the system is
+> not busy and mark the page with PG_zero, when allocating a page,
+> if the page need to be filled with zero, check the flag in the
+> struct page, if it's marked as PG_zero, zero out can be skipped,
+> it can save cpu time and speed up page allocation.
+>=20
+> This serial is based on the feature 'free page reporting' which
+> introduced by Alexander Duyck=20
+>=20
+> We can benefit from this feature in the flowing case:
+>     1. User space mlock a large chunk of memory
+>     2. VFIO pin pages for DMA
+>     3. Allocating transparent huge page
+>     4. Speed up page fault process
+>=20
+> My original intention for adding this feature is to shorten
+> VM creation time when VFIO device is attached, it works good=20
+> and the VM creation time is reduced obviously.=20
+>=20
+> Creating a VM [64G RAM, 32 CPUs] with GPU passthrough
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> QEMU use 4K pages, THP is off
+>                   round1      round2      round3
+> w/o this patch:    23.5s       24.7s       24.6s=20
+> w/ this patch:     10.2s       10.3s       11.2s
+>=20
+> QEMU use 4K pages, THP is on
+>                   round1      round2      round3
+> w/o this patch:    17.9s       14.8s       14.9s=20
+> w/ this patch:     1.9s        1.8s        1.9s
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>=20
+> Look forward to your feedbacks.
 
-Am Dienstag, 14. April 2020, 13:45:00 CEST schrieb Johan Jonker:
-> Hi Robin, Heiko,
-> 
-> If the Rockchip DT maintainers(= Heiko) agree that the new line for the
-> 'bus-width' properties is that it should be placed in dtsi I'll produce
-> a version 2. Please advise what should be done with the other Rockchip
-> SoCs. Change them too?
+I somehow have the feeling that this should not be glued to free page
+reporting. After all, you are proposing your own status indicator for
+each buddy page (PG_zero) already, which would mean you can build
+something similar to free page reporting fairly easily, and have it
+co-exist.
 
-(1) as Robin pointed out bus-width and pinctrl containing the bus-pins
-    should be in the same file, as they describe parts of the same property
-(2) essentially it is ok for pinctrl-defaults to live in the dtsi, when there
-    are no pin variants ... (like the uartX_mY pin variants), so if you enable
-    a node and only have essentially one pin variant to enable, this should
-    live in the soc dtsi (like essentially all boards using 4-pin sdmmc
-    and 8-pin emmc)
-(3) Fixing other devicetrees is optional, so I won't oppose it of course
-    but it's also not something "that must be done" ;-)
+The free page reporting infrastructure is helpful when wanting to
+asynchronously batch-process higher-order pages. I don't see the
+immediate need for the "batch-processing here".
 
+E.g., why not simply zero out pages as they are freed/placed into free
+lists? Especially, this is one of the simple alternatives to free page
+reporting as we have it today (guest zeroes free pages, hypervisor
+detects free pages using e.g., ksm).
 
-Heiko
+That could even allow you to avoid the PG_zero flag completely. E.g.,
+once the feature is activated and running, all pages in the buddy free
+lists are zeroed out already. Zeroing happens synchronously from the
+page-freeing thread, not when starting a guest.
 
+Having that said, I agree with Dave here, that there might be better
+alternatives for this somewhat-special-case.
 
-> On 4/14/20 12:02 PM, Robin Murphy wrote:
-> > On 2020-04-13 8:36 pm, Johan Jonker wrote:
-> >> The 'bus-width' property for mmc nodes is defined both in
-> >> 'rk3308.dtsi' and 'rk3308-roc-cc.dts'.
-> >> In line with the other Rockchip SoCs define that in a user dts only,
-> >> so remove all entries from mmc nodes in 'rk3308.dtsi'.
-> > 
-> > Judging by the pinctrl entries, these represent the number of pins
-> > provided by the SoC itself. Obviously boards need to override that if
-> > for some reason they don't wire up all the available data lines, but it
-> > seems backwards to have every board restate the SoC's default value.
-> > 
-> > In fact, having brought it up, for this particular case the pinctrl
-> > setting is inherently related to the bus width, so having one without
-> > the other in either place doesn't smell right.
-> > 
-> > Robin.
-> > 
-> >> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> >> ---
-> >>   arch/arm64/boot/dts/rockchip/rk3308.dtsi | 3 ---
-> >>   1 file changed, 3 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> >> b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> >> index a9b98555d..130771ede 100644
-> >> --- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> >> +++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> >> @@ -587,7 +587,6 @@
-> >>           compatible = "rockchip,rk3308-dw-mshc",
-> >> "rockchip,rk3288-dw-mshc";
-> >>           reg = <0x0 0xff480000 0x0 0x4000>;
-> >>           interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
-> >> -        bus-width = <4>;
-> >>           clocks = <&cru HCLK_SDMMC>, <&cru SCLK_SDMMC>,
-> >>                <&cru SCLK_SDMMC_DRV>, <&cru SCLK_SDMMC_SAMPLE>;
-> >>           clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-> >> @@ -602,7 +601,6 @@
-> >>           compatible = "rockchip,rk3308-dw-mshc",
-> >> "rockchip,rk3288-dw-mshc";
-> >>           reg = <0x0 0xff490000 0x0 0x4000>;
-> >>           interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
-> >> -        bus-width = <8>;
-> >>           clocks = <&cru HCLK_EMMC>, <&cru SCLK_EMMC>,
-> >>                <&cru SCLK_EMMC_DRV>, <&cru SCLK_EMMC_SAMPLE>;
-> >>           clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-> >> @@ -615,7 +613,6 @@
-> >>           compatible = "rockchip,rk3308-dw-mshc",
-> >> "rockchip,rk3288-dw-mshc";
-> >>           reg = <0x0 0xff4a0000 0x0 0x4000>;
-> >>           interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-> >> -        bus-width = <4>;
-> >>           clocks = <&cru HCLK_SDIO>, <&cru SCLK_SDIO>,
-> >>                <&cru SCLK_SDIO_DRV>, <&cru SCLK_SDIO_SAMPLE>;
-> >>           clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-> >>
-> 
-> 
+--=20
+Thanks,
 
-
-
+David / dhildenb
 
