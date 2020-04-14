@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FF41A8B20
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7181A8ABD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505048AbgDNTkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:40:36 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38807 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505002AbgDNTjC (ORCPT
+        id S2504766AbgDNT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:29:03 -0400
+Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:41858 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504730AbgDNT25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:39:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586893141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RUlH4sbSgo9eT5+QKvwXQtoxUNAaT+Wa5wO2eVFJNO0=;
-        b=CzCmIF6lBbpPKVMqXaJFh30Je7aWjdzUydqhA07g5S5X/vsrbl50w1J6S3zIpXR6Tq+7f2
-        /euGa9BafelOVgNMrwmIsgUj/VrpxWzXIwfzrebY7ikgVfMrtMU0va1G5i42OwnIL0St/2
-        fl0AhcPciZQqWWKQ2WDI3BT/ygQe2MA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-UVDK63RMMBK0YMgqki-D8Q-1; Tue, 14 Apr 2020 15:08:18 -0400
-X-MC-Unique: UVDK63RMMBK0YMgqki-D8Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 253AE800D53;
-        Tue, 14 Apr 2020 19:08:17 +0000 (UTC)
-Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7103B126518;
-        Tue, 14 Apr 2020 19:08:16 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 14:08:14 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
- module_disable_ro()
-Message-ID: <20200414190814.glra2gceqgy34iyx@treble>
-References: <cover.1586881704.git.jpoimboe@redhat.com>
- <20200414182726.GF2483@worktop.programming.kicks-ass.net>
+        Tue, 14 Apr 2020 15:28:57 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id 2B1CF18064C30;
+        Tue, 14 Apr 2020 19:12:00 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 032BF100E7B45;
+        Tue, 14 Apr 2020 19:12:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3867:3868:3871:3872:3873:3874:4321:5007:6691:10004:10400:11026:11232:11658:11914:12296:12297:12438:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:21080:21212:21627:21660:21939:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rain29_4b79cd438ab50
+X-Filterd-Recvd-Size: 1707
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 14 Apr 2020 19:11:58 +0000 (UTC)
+Message-ID: <19df87f5d093a6c2721316811aca1c90d287bf1d.camel@perches.com>
+Subject: Re: [PATCH] pwm: Add missing '\n' in log messages
+From:   Joe Perches <joe@perches.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, paul@crapouillou.net,
+        u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Date:   Tue, 14 Apr 2020 12:09:49 -0700
+In-Reply-To: <20200414184925.GA12862@kadam>
+References: <20200411153528.30130-1-christophe.jaillet@wanadoo.fr>
+         <20200414135827.GB3593749@ulmo>
+         <f13a8754-3866-d3d2-eaff-29cb6d14ff8d@wanadoo.fr>
+         <20200414184925.GA12862@kadam>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200414182726.GF2483@worktop.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 08:27:26PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 14, 2020 at 11:28:36AM -0500, Josh Poimboeuf wrote:
-> > Better late than never, these patches add simplifications and
-> > improvements for some issues Peter found six months ago, as part of his
-> > non-writable text code (W^X) cleanups.
+On Tue, 2020-04-14 at 21:49 +0300, Dan Carpenter wrote:
+> Huh...
 > 
-> Excellent stuff, thanks!!
->
-> I'll go brush up these two patches then:
+> If you look at dev_vprintk_emit().  It looks like if
+> create_syslog_header() returns a string then vprintk_store() will add
+> a newline.
 > 
->   https://lkml.kernel.org/r/20191018074634.801435443@infradead.org
->   https://lkml.kernel.org/r/20191018074634.858645375@infradead.org
+> I guess that means that dev_printk() can't be used to pr_cont().  And
+> probably that's deliberate because using pr_cont() after boot is racy
+> anyway.
 
-Ah right, I meant to bring that up.  I actually played around with those
-patches.  While it would be nice to figure out a way to converge the
-ftrace module init, I didn't really like the first patch.
+Perhaps that's true, it didn't used to be.
 
-It bothers me that both the notifiers and the module init() both see the
-same MODULE_STATE_COMING state, but only in the former case is the text
-writable.
+There are couple dozen or so KERN_CONT uses after a dev_<level>
+without a newline, so those _might_ be broken, but I don't thinks so.
 
-I think it's cognitively simpler if MODULE_STATE_COMING always means the
-same thing, like the comments imply, "fully formed" and thus
-not-writable:
-
-enum module_state {
-	MODULE_STATE_LIVE,	/* Normal state. */
-	MODULE_STATE_COMING,	/* Full formed, running module_init. */
-	MODULE_STATE_GOING,	/* Going away. */
-	MODULE_STATE_UNFORMED,	/* Still setting it up. */
-};
-
-And, it keeps tighter constraints on what a notifier can do, which is a
-good thing if we can get away with it.
-
-> and write a patch that makes the x86 code throw a wobbly on W+X.
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Thanks!
-
--- 
-Josh
+$ git grep -P -A10 '\bdev_\w+\s*\(' | \
+  grep -P -B10 "KERN_CONT|pr_cont"
 
