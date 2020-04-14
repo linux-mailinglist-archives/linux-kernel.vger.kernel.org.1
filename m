@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854761A770D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CD61A771A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437446AbgDNJLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437407AbgDNJLD (ORCPT
+        id S2437487AbgDNJMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:12:18 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39743 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437448AbgDNJME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:11:03 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FBCC0A3BD0;
-        Tue, 14 Apr 2020 02:11:03 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id r14so5773123pfl.12;
-        Tue, 14 Apr 2020 02:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32ds5tL0YEBK/fjJ+CT4RkbpJZ2m0HbKxbVRo9m7pVg=;
-        b=hrh7iBsMf81wW8o2XOz392GPw9NQQ+0GNz5p1FysFnPSRSMyPwH4RoxYvPfP0ajscY
-         xUdofOONEWCkmE4tGN16loAG2e3/82SExQU4WGMsVazrNyhzifvxLgeO3kiOu7HT/QLR
-         pThArRqDhqmfY4NqkQzz6krhQs5TY5lnSVFpydOnDdFo3SmOwv75Lp0+m3v1ZYxpnz8z
-         kiKHtoB0kLpmVKFgnjp85MqboIeflrwvwGtrQqsgHhfejLRfyKYXDFsT7DAMMFELQDo9
-         1YJLo7QlGpi/bRONcHni6cP4lSp5ezYGFRxXEvJ6upEBdNiYeLsVIxQUmYGXaU5bEY5I
-         4nSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32ds5tL0YEBK/fjJ+CT4RkbpJZ2m0HbKxbVRo9m7pVg=;
-        b=Qpj7Mxi5LR6ktNaX/ccRFa0i67e1zEWoFijW2EU+O905jtEng8ex++lpU9nuOQryiI
-         lfReq7dJdFlZpRS0oOlVincM6ojYGLID9E9KfwhKuRMwjwqWSdlQ3DYcbx6G5NoO0pWm
-         38AJ2PZffufPsvPTvPQ8KtG15EhATATCArb/T4dNo+WrZgu+Ar9lLDk4GT4G2NT+siio
-         aDjwQrDZuc7LwTaUFfMwtjwXNMzruTMEAE6EP4vDhHR1h29T/g9WzcIs+/0SjfzBkcSQ
-         PRfBr59MBeGfuEbA/26JQix7tpZHRnn3y/Ol5bQAyrffHjuHZ0hBvRguYa+/0Yb3Lg32
-         XV2A==
-X-Gm-Message-State: AGi0PuYVyk+QaLSITw9jYwEIFFlxx29Oukl4LJxN+AguW9dy54sKuJ4k
-        d2V3UFyAUBiY8ZupWM0HAhF7gWB1sl1Y+vpomwM=
-X-Google-Smtp-Source: APiQypLZHb9q22KG1TM33678SbhBoclm0DhV+XJRNjOggDfRSvaXtIguQHLzedNRUEV1rBir3XaigO6BiPQArS8wfNI=
-X-Received: by 2002:a63:1d4:: with SMTP id 203mr20275328pgb.74.1586855463228;
- Tue, 14 Apr 2020 02:11:03 -0700 (PDT)
+        Tue, 14 Apr 2020 05:12:04 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jOHbr-0004gm-E5; Tue, 14 Apr 2020 09:11:59 +0000
+Subject: Re: [PATCH] media: mantis: remove redundant assignment to variable
+ err
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200410113913.14430-1-colin.king@canonical.com>
+ <CAAEAJfCQaCCoShLPTA+EWUhMXdF6bKAxcOCj2SR5nPXMmk7LQg@mail.gmail.com>
+ <20200414085922.GA1163@kadam>
+From:   Colin Ian King <colin.king@canonical.com>
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <de5e07e8-0bc7-efc5-b9cd-c0b26d9f707e@canonical.com>
+Date:   Tue, 14 Apr 2020 10:11:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200408175058.2.I1f56fe698017f22d6e825c913c256d5afc2ad69f@changeid>
- <CAHp75VcuPoVK_+KV+88Di1dUFZ9S8-1nNqo2s8a_n3vgSMoecg@mail.gmail.com> <CAHcu+VZMiFVt9L9kNCTtsmxUP-7tO+pBpCOtMHQPotuye_2w1A@mail.gmail.com>
-In-Reply-To: <CAHcu+VZMiFVt9L9kNCTtsmxUP-7tO+pBpCOtMHQPotuye_2w1A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Apr 2020 12:10:56 +0300
-Message-ID: <CAHp75VemvD0mvDHWorSFhqOKaQ1Y_vLYVAQmnb8iz30AH431+Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2 v8] iio: Add SEMTECH SX9310/9311 sensor driver
-To:     Daniel Campello <campello@google.com>
-Cc:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200414085922.GA1163@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 1:56 AM Daniel Campello <campello@google.com> wrote:
-> On Fri, Apr 10, 2020 at 4:52 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Thu, Apr 9, 2020 at 2:54 AM Daniel Campello <campello@chromium.org> wrote:
+On 14/04/2020 09:59, Dan Carpenter wrote:
+> On Sat, Apr 11, 2020 at 07:53:51PM -0300, Ezequiel Garcia wrote:
+>> There's a redundant err assignment right below here,
+>> which you can also get rid of:
+>>
+>> -       err = mantis_frontend_power(mantis, POWER_ON);
+>> +       mantis_frontend_power(mantis, POWER_ON);
+>>
+>> I can't test this, but calling mantis_frontend_power twice
+>> is possibly redundant.
+> 
+> To me that code really looks like a hack-around for flakey hardware and
+> I would be afraid to delete it.  But the "err =" could be removed.
+> 
+>>
+>> Also, what's the gain from this cleanup? The driver is super
+>> old, and it seems any modern compiler would be oblivious
+>> of the redundant assignment.
+> 
+> Eventually we would like to enable that warning by default but there are
+> still thousands of pointless assignments so it will take years of
+> small fixes like this.  Generally cleaning up warnings is good.
 
-As far I understand you agreed on the rest.
-Correct?
+They are indeed trivial fixes but can allow us to later find real
+unassigned variable bugs in the future when new code gets added and does
+not set these variables.
 
-...
+Colin
+> 
+> regards,
+> dan carpenter
+> 
 
-> > > Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
-> > > Signed-off-by: Enrico Granata <egranata@chromium.org>
-> >
-> > This is not understandable. Are they who helped you develop the code
-> > (we have a special tag, i.e. Co-developed-by in addition to SoB), or
-> > just people in the middle? Then the question is, how come author is
-> > you and not Gwendal?
-> >
-> This patch was initially developed by Gwendal and Enrico (here:
-> crrev.com/c/1089826).
-
-So, tags should include
- SoB: Gwendal ...
- Co-developed-by: Enrico ...
- SoB: Enrico ...
- Co-developed-by: yours (if you developed it)
- SoB: yours
-
-and on top git commit --amend --author="Gwendal  ..."
-
-...
-
-> > > +#define SX9310_REG_IRQ_MSK                             0x03
-> >
-> > Is MSK abbreviation in datasheet? Please spell it how it's in datasheet.
-> Yes, they indead use MSK.
-
-Okay!
-
-
--- 
-With Best Regards,
-Andy Shevchenko
