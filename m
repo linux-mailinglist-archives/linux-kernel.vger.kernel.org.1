@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822E91A74D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D231A74E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406675AbgDNHeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 03:34:17 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:32817 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406666AbgDNHeL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:34:11 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 47C4ABDB;
-        Tue, 14 Apr 2020 03:34:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 14 Apr 2020 03:34:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=LBhKkgRT725GUf9jEN+2zEk/o6Q
-        t0cWoESUX5EZnFas=; b=vRekPm9rDn8y1dn5G6GkAbKOh6Ymhs14ovB6yezBml9
-        exBDwqih6icHJSdJGvaTDwn1ElOCq9jQVAfsR9yyYfmk6RXbaHanvcJpyeMkoB5d
-        pq1+ANjJS2IoB2quCGCgovDU9xG/9+FduDVKX8RwfLRze5UJ4kxmbwC44/KhtVZW
-        UXpiMrO+4CbLT5V5XxMCAOn6FyGuAiKzMJ++SbMnLE3qnQ0ohlUSM2QRrk37zBoh
-        q+PdMqeoW1UYLjcz6ni8Gei6msO7qmHwQ17oh62syDth1usyMVU3UXHRe8tiIpnR
-        oa+YuAPspEonTgalEmoBVD5Z9rsbe91JKyR2V/wtl6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LBhKkg
-        RT725GUf9jEN+2zEk/o6Qt0cWoESUX5EZnFas=; b=Y1CPFzZeJaW1D5NZudM8P4
-        VwqpTA4gGWfSZF9dohWOUgVoUSYrcnsSMeyiy+pqmj8exTuNflxienU+e8jJQho6
-        uNhCEpMSbD9pVCqlnjOzIPrB0eoOXmr7fifMpwy8zBNN2D6MTklntg10O4zOpkof
-        aEwJZv+sE//t0IbNuyxBiroazSIKH4wPn1xQ3zLu/aIgXGf3LzYtCGBNQv0do6BF
-        1nF/m0ZRqMGDTEfoA4tCIOB7PtSaq87VhEANXhjStcCRQeFMrRJo2zrm51mvc7ii
-        /kx5R6enNRKRKC/LKs2fySN28N3cISHfslSycJNy8PslwIvVuYk2d+DsPw3mTR1A
-        ==
-X-ME-Sender: <xms:a2eVXrkvsFUCAikOM0TFwV5lGWcR1xBtRTpK5V0HK-zI8lsBekSrqA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfedtgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
-    drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:a2eVXk-Mn84AZsSqUxS9zLQwmN-IsHzrg_3Srf_ZtiHjkT453m8v7g>
-    <xmx:a2eVXnNfjdeCPDbeoxW9BVFSIItLYaJeEvFDLiWGzjbTT7Huk5B4rQ>
-    <xmx:a2eVXm-THMmHC1dbxuHwV4Zfwnui3Jm-xhYDlnCIXFMS2wJiU1xiMA>
-    <xmx:cWeVXv3L30ajP49vtRbiuTxbJQ01m1K9hPJd-lmZFLBaIa-JXNxS7A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 60B1B3280064;
-        Tue, 14 Apr 2020 03:34:03 -0400 (EDT)
-Date:   Tue, 14 Apr 2020 09:34:02 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     wens@csie.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 0/3] arm64: dts: allwinner: h6: OrangePi Lite2 and One
- Plus DTs
-Message-ID: <20200414073402.7qfdbtn4jom4rvh6@gilmour.lan>
-References: <20200413062433.1145043-1-jernej.skrabec@siol.net>
+        id S2406708AbgDNHgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:36:06 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2048 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2406685AbgDNHfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 03:35:50 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id D5C64DEAE293C60B34A0;
+        Tue, 14 Apr 2020 08:35:45 +0100 (IST)
+Received: from [127.0.0.1] (10.47.2.216) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 14 Apr
+ 2020 08:35:44 +0100
+Subject: Re: [PATCH 6/9] scsi: libsas: Add missing annotation for
+ sas_ata_qc_issue()
+To:     Jules Irenge <jbi.octave@gmail.com>, <linux-kernel@vger.kernel.org>
+CC:     <boqun.feng@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Allison Randal <allison@lohutok.net>,
+        Hannes Reinecke <hare@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:SCSI SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Jason Yan <yanaijie@huawei.com>
+References: <0/9> <20200411001933.10072-1-jbi.octave@gmail.com>
+ <20200411001933.10072-7-jbi.octave@gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <66630a8b-436e-5210-3654-dc3c4a17a05d@huawei.com>
+Date:   Tue, 14 Apr 2020 08:35:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bxl4can4rfdluf7e"
-Content-Disposition: inline
-In-Reply-To: <20200413062433.1145043-1-jernej.skrabec@siol.net>
+In-Reply-To: <20200411001933.10072-7-jbi.octave@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.2.216]
+X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/04/2020 01:19, Jules Irenge wrote:
+> Sparse reports a warning at sas_ata_qc_issue()
+> 
+> warning: context imbalance in sas_ata_qc_issue() - unexpected unlock
+> The root cause is the missing annotation at sas_ata_qc_issue()
+> 
+> Add the missing __must_hold(ap->lock) annotation
+> 
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 
---bxl4can4rfdluf7e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+that looks ok...
 
-On Mon, Apr 13, 2020 at 08:24:30AM +0200, Jernej Skrabec wrote:
-> This series adds missing nodes for OrangePi Lite2 and One Plus and
-> fixes USB OTG mode to host because there is no way to toggle VBUS
-> power supply on/off.
->
-> The only remaining board specific functionality not enabled is USB3
-> on OrangePi Lite2, but for that USB connector power supply support
-> has to be added to driver first.
->
-> Please take a look.
+Reviewed-by: John Garry <john.garry@huawei.com>
 
-Applied all three, thanks!
-Maxime
+> ---
+>   drivers/scsi/libsas/sas_ata.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+> index c5a828a041e0..5d716d388707 100644
+> --- a/drivers/scsi/libsas/sas_ata.c
+> +++ b/drivers/scsi/libsas/sas_ata.c
+> @@ -160,6 +160,7 @@ static void sas_ata_task_done(struct sas_task *task)
+>   }
+>   
+>   static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+> +	__must_hold(ap->lock)
+>   {
+>   	struct sas_task *task;
+>   	struct scatterlist *sg;
+> 
 
---bxl4can4rfdluf7e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXpVnagAKCRDj7w1vZxhR
-xStmAQC2chM8vw0xMLPtHaFXgaLTF8837sWGbKvl8jDcqLna5QEA9HsyVfnVQNQV
-xyi363QBArJKoKIJEdYpXvGVKfYfzwg=
-=GKw8
------END PGP SIGNATURE-----
-
---bxl4can4rfdluf7e--
