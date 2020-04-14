@@ -2,133 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30C81A7A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704471A7A5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439884AbgDNMIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729743AbgDNMIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:08:38 -0400
-Received: from Mani-XPS-13-9360 (unknown [157.46.102.247])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2439907AbgDNMJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:09:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44616 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2439886AbgDNMIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:08:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586866132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BICdmTDYO4rOQ/Tod0xREH+kF4MdkX3G6Bj84FXcA2A=;
+        b=EDTo166rMiV8sUGNcp2ueAfmN7W3GKhL7ul+S+9h75gN7SApN2jnP6fCXFo5smFBhY+uAW
+        McZu3fcJpkZYyxSXBRe4viDLyNxLvTsk7Lnv4qoj08zi2dPnFbpoc9id/9Fr/XF1fIC7xD
+        3tGIsRZgMUaCg7TLECvSCm8RGde6NnE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-yO-Soot9MZmg4CXOz5LTNg-1; Tue, 14 Apr 2020 08:08:48 -0400
+X-MC-Unique: yO-Soot9MZmg4CXOz5LTNg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 116702075E;
-        Tue, 14 Apr 2020 12:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586866117;
-        bh=AE6abk0P8o5HO1zDl/JX0fKcg0o808yfPOCIO2osquY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oJmt0e7Mc6E3lk6HAbtBuiKU6vXBUAwMK/TnzGyynf7dDDFqpcx/q06D3nF5AlTR4
-         a71xgApVGPHC1WCz6w8eYqMj+xaaqUwqMwl2Dvz2xXWekAZdifB8N8i29LuXkA9Hl4
-         uHzM8Zz1kMtMk3/dRdmCzVWaz6wAxu18KfZv4/Qk=
-Date:   Tue, 14 Apr 2020 17:38:26 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, narcisaanamaria12@gmail.com,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] iio: chemical: Add support for external Reset and
- Wakeup in CCS811
-Message-ID: <20200414120325.GA28388@Mani-XPS-13-9360>
-References: <20200412183658.6755-1-mani@kernel.org>
- <20200412183658.6755-3-mani@kernel.org>
- <CAHp75VdCK26wXiw0c=1fc0vKsea4w=tthCBrroLOqqaDbwuMVQ@mail.gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76A9A800D5C;
+        Tue, 14 Apr 2020 12:08:46 +0000 (UTC)
+Received: from gondolin (ovpn-113-32.ams2.redhat.com [10.36.113.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D519410013A1;
+        Tue, 14 Apr 2020 12:08:40 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 14:08:38 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pmorel@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
+Subject: Re: [PATCH v7 03/15] s390/zcrypt: driver callback to indicate
+ resource in use
+Message-ID: <20200414140838.54f777b8.cohuck@redhat.com>
+In-Reply-To: <20200407192015.19887-4-akrowiak@linux.ibm.com>
+References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
+        <20200407192015.19887-4-akrowiak@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdCK26wXiw0c=1fc0vKsea4w=tthCBrroLOqqaDbwuMVQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 11:20:42PM +0300, Andy Shevchenko wrote:
-> On Mon, Apr 13, 2020 at 8:34 AM <mani@kernel.org> wrote:
-> >
-> > From: Manivannan Sadhasivam <mani@kernel.org>
-> >
-> > CCS811 VOC sensor exposes nRESET and nWAKE pins which can be connected
-> > to GPIO pins of the host controller. These pins can be used to externally
-> > release the device from reset and also to wake it up before any I2C
-> > transaction. The initial driver support assumed that the nRESET pin is not
-> > connected and the nWAKE pin is tied to ground.
-> >
-> > This commit improves it by adding support for controlling those two pins
-> > externally using a host controller. For the case of reset, if the hardware
-> > reset is not available, the mechanism to do software reset is also added.
-> >
-> > As a side effect of doing this, the IIO device allocation needs to be
-> > slightly moved to top of probe to make use of priv data early.
-> 
-> ...
-> 
-> > +#define CCS811_SW_RESET                0xFF
-> 
-> 
-> > +       reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-> > +                                            GPIOD_OUT_LOW);
-> > +       if (IS_ERR(reset_gpio)) {
-> > +               dev_err(&client->dev, "Failed to acquire reset gpio\n");
-> 
-> > +               return -EINVAL;
-> 
-> Do not shadow actual error code.
-> 
+On Tue,  7 Apr 2020 15:20:03 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Okay. Will change below instance as well.
+> Introduces a new driver callback to prevent a root user from unbinding
+> an AP queue from its device driver if the queue is in use. The intent of
+> this callback is to provide a driver with the means to prevent a root user
+> from inadvertently taking a queue away from a guest and giving it to the
+> host while the guest is still using it. The callback will
+> be invoked whenever a change to the AP bus's sysfs apmask or aqmask
+> attributes would result in one or more AP queues being removed from its
+> driver. If the callback responds in the affirmative for any driver
+> queried, the change to the apmask or aqmask will be rejected with a device
+> in use error.
+> 
+> For this patch, only non-default drivers will be queried. Currently,
+> there is only one non-default driver, the vfio_ap device driver. The
+> vfio_ap device driver manages AP queues passed through to one or more
+> guests and we don't want to unexpectedly take AP resources away from
+> guests which are most likely independently administered.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/ap_bus.c | 144 +++++++++++++++++++++++++++++++++--
+>  drivers/s390/crypto/ap_bus.h |   4 +
+>  2 files changed, 142 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
+> index 5256e3ce84e5..af15c095e76a 100644
+> --- a/drivers/s390/crypto/ap_bus.c
+> +++ b/drivers/s390/crypto/ap_bus.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/mod_devicetable.h>
+>  #include <linux/debugfs.h>
+>  #include <linux/ctype.h>
+> +#include <linux/module.h>
+>  
+>  #include "ap_bus.h"
+>  #include "ap_debug.h"
+> @@ -995,9 +996,11 @@ int ap_parse_mask_str(const char *str,
+>  	newmap = kmalloc(size, GFP_KERNEL);
+>  	if (!newmap)
+>  		return -ENOMEM;
+> -	if (mutex_lock_interruptible(lock)) {
+> -		kfree(newmap);
+> -		return -ERESTARTSYS;
+> +	if (lock) {
+> +		if (mutex_lock_interruptible(lock)) {
+> +			kfree(newmap);
+> +			return -ERESTARTSYS;
+> +		}
 
-> > +       }
-> > +
-> > +       /* Try to reset using nRESET pin if available else do SW reset */
-> > +       if (reset_gpio) {
-> > +               gpiod_set_value(reset_gpio, 1);
-> > +               usleep_range(20, 30);
-> > +               gpiod_set_value(reset_gpio, 0);
-> > +       } else {
-> 
-> > +               static const u8 reset_seq[] = {
-> > +                       0xFF, 0x11, 0xE5, 0x72, 0x8A,
-> > +               };
-> 
-> Is 0xFF here is CCS811_SW_RESET? If so, can you put it explicitly?
-> 
+This whole function is a bit odd. It seems all masks we want to
+manipulate are always guarded by the ap_perms_mutex, and the need for
+allowing lock == NULL comes from wanting to call this function with the
+ap_perms_mutex already held.
 
-Nope. CCS811_SW_RESET is the register address whereas 0xFF here is the actual
-value return to the register. I don't know what these values in array represent.
-So will keep them as it is.
+That would argue for a locked/unlocked version of this function... but
+looking at it, why do we lock the way we do? The one thing this
+function (prior to this patch) does outside of the holding of the mutex
+is the allocation and freeing of newmap. But with this patch, we do the
+allocation and freeing of newmap while holding the mutex. Something
+seems a bit weird here.
 
-Thanks,
-Mani
+>  	}
+>  
+>  	if (*str == '+' || *str == '-') {
 
-> > +               ret = i2c_smbus_write_i2c_block_data(client, CCS811_SW_RESET,
-> > +                                            sizeof(reset_seq), reset_seq);
-> > +               if (ret < 0) {
-> > +                       dev_err(&client->dev, "Failed to reset sensor\n");
-> > +                       return ret;
-> > +               }
-> > +       }
-> 
-> ...
-> 
-> > +       data->wakeup_gpio = devm_gpiod_get_optional(&client->dev, "wakeup",
-> > +                                                   GPIOD_OUT_HIGH);
-> > +       if (IS_ERR(data->wakeup_gpio)) {
-> > +               dev_err(&client->dev, "Failed to acquire wakeup gpio\n");
-> 
-> > +               return -EINVAL;
-> 
-> Ditto.
-> 
-> > +       }
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
