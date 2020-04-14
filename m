@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BC91A8ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425211A8AC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504773AbgDNT3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504753AbgDNT26 (ORCPT
+        id S2504800AbgDNTac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:30:32 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:35296 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504783AbgDNTaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:28:58 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C789C061A41
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:28:57 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id x11so888521otp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yXl5LngxcEox6tFkMcsHWj7/e31HOzYbZGvPkAeshzo=;
-        b=ejCS7DL3ag6duTxMi2Ewpv00tGgVeaaEYl909NqixmQ15Qfq51ylCT9rHeFXSPUOk2
-         vtyBZ6NZuEAQdkWQHdUA1JMWEZ5a6JIJb0+mJx2uExrZl2LAL3R0IkdFluJ5FE4QU0H3
-         XAZImBwtrpZeU6j+JV+hS3nuxF3J2vNG6uk42/IVOlWQo4YYxfDSRoioISx/gckZPhmt
-         CQ2i4dwZhU7B1CYMJik4ck7ILQHs9mpEkR5EF377I+1sComWBiqgdjX+IdeAa6W8E8KK
-         a2DSXOfoToBilcypqD49C2OvoP8jMRnBBfFpAJyp0pwsff8FnqzSXoiUU7D68iQ4qpqO
-         rdug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yXl5LngxcEox6tFkMcsHWj7/e31HOzYbZGvPkAeshzo=;
-        b=Lq37kmiYzg0W6n5tWGXb2VQGwLNwkLRnBgZzFhuPZGGXMN7VANsreVc2pvj0OtjbnK
-         UuEpTVOkRmHFmu8jLAyG1oDD49SK8jBOVkUuiuGneIkFEOgtcIHfwJaK1+TwOq2vdkNZ
-         MkhVeDyag3DFotknmEK+ze8zJHVHIJT8cJQb+m/V9HRofF91it1aqjBcwb2gVU93aW6z
-         /M38UjZjFbrtjpacd6wo8ffd3bCcUH4cj18O81765Y9skU1A+fKjnJuuEtXn23hUkthQ
-         twxNssp2amJEEKzGtKh/bMwNKrkvojPy4V0iFtzHRXEPSmPZu0pp9bu7p/EJorhS7vSu
-         8BmQ==
-X-Gm-Message-State: AGi0PuaWRSpUGHlN8m4UusNCM35a9cdWwdOVbf/LcfoQzfcBjOuz3ODm
-        +kFKv/mhCTYkSkI8Jr3KCP62STBSac4fDJ19hgiVUA==
-X-Google-Smtp-Source: APiQypLNgzWQIOmbMjbOIDPabi7ahVlW8rXca4fleUQzDSYq/+Zo4l7gzAwDGKt/X8yYn92PkHHYUl5oOnJLWGe/36A=
-X-Received: by 2002:a4a:3006:: with SMTP id q6mr10846802oof.70.1586892536562;
- Tue, 14 Apr 2020 12:28:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200414185744.84581-1-john.stultz@linaro.org> <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
-In-Reply-To: <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 14 Apr 2020 12:28:45 -0700
-Message-ID: <CALAqxLWS7+wqARFVoDStVcf-B77sPc6GaHBKebfMh1gXyUP4HQ@mail.gmail.com>
-Subject: Re: [RESEND][PATCH v2] phy: qcom-qusb2: Re add "qcom,sdm845-qusb2-phy"
- compat string
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 14 Apr 2020 15:30:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586892597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=4nt9rcH2RnKfJzDA58agnsCRn6rTIqNaptR/6NgozyU=;
+        b=O+QkETadPHScdgH5/HUWWvDreF5nfvNDSiY7QfBIlpSThBp0tzinjqODomR7C9ZgtyxZV0
+        FahXcGampD7e2WQxp1ckp+03XMeVbaSMq3AWjLMoi6ahb1ZtbsVv3td8000txW61GIixI7
+        Oby0TjMPWGRaWj9nMkLLjO5D6450fYs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-Xc2oPvfjP7mbYjWGtjiEGA-1; Tue, 14 Apr 2020 15:29:55 -0400
+X-MC-Unique: Xc2oPvfjP7mbYjWGtjiEGA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6723C107ACC9;
+        Tue, 14 Apr 2020 19:29:52 +0000 (UTC)
+Received: from llong.com (ovpn-118-173.rdu2.redhat.com [10.10.118.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F1F4419C70;
+        Tue, 14 Apr 2020 19:29:46 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 3/3] btrfs: Use kfree() in btrfs_ioctl_get_subvol_info()
+Date:   Tue, 14 Apr 2020 15:29:33 -0400
+Message-Id: <20200414192933.26846-1-longman@redhat.com>
+In-Reply-To: <20200413211550.8307-1-longman@redhat.com>
+References: <20200413211550.8307-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 12:14 PM Doug Anderson <dianders@chromium.org> wrote:
-> On Tue, Apr 14, 2020 at 11:57 AM John Stultz <john.stultz@linaro.org> wrote:
-> >
-> > This patch fixes a regression in 5.7-rc1.
-> >
-> > In commit 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2
-> > PHY support"), the change was made to add "qcom,qusb2-v2-phy"
-> > as a generic compat string. However the change also removed
-> > the "qcom,sdm845-qusb2-phy" compat string, which is documented
-> > in the binding and already in use.
-> >
-> > This patch re-adds the "qcom,sdm845-qusb2-phy" compat string
-> > which allows the driver to continue to work with existing dts
-> > entries such as found on the db845c.
-> >
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Doug Anderson <dianders@chromium.org>
-> > Cc: Manu Gautam <mgautam@codeaurora.org>
-> > Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-> > Cc: Matthias Kaehlcke <mka@chromium.org>
-> > Cc: Stephen Boyd <swboyd@chromium.org>
-> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> > Cc: linux-arm-msm@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Fixes: 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2 PHY support")
-> > Reported-by: YongQin Liu <yongqin.liu@linaro.org>
-> > Signed-off-by: John Stultz <john.stultz@linaro.org>
->
-> Re-adding reviews from:
-> https://lore.kernel.org/r/158631458374.216820.17829557619378130779@swboyd.mtv.corp.google.com
-> https://lore.kernel.org/r/CAD=FV=Wh9_4a-cDGPdpMrXUi_HmJvS-a2Ubeyo5WG3sgwVWKKQ@mail.gmail.com
->
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+In btrfs_ioctl_get_subvol_info(), there is a classic case where kzalloc()
+was incorrectly paired with kzfree(). According to David Sterba, there
+isn't any sensitive information in the subvol_info that needs to be
+cleared before freeing. So kfree_sensitive() isn't really needed,
+use kfree() instead.
 
-Ah! Sorry, I thought I had added those to my git commit, but
-apparently I didn't!
+Reported-by: David Sterba <dsterba@suse.cz>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/btrfs/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Many thanks!
--john
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index eab3f8510426..5070bd2436b7 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2691,7 +2691,7 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
+ 	btrfs_put_root(root);
+ out_free:
+ 	btrfs_free_path(path);
+-	kfree_sensitive(subvol_info);
++	kfree(subvol_info);
+ 	return ret;
+ }
+ 
+-- 
+2.18.1
+
