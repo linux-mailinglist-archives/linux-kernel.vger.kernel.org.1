@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A381A85E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B191A8626
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502190AbgDNQvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:51:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
+        id S2391160AbgDNQyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440406AbgDNQtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:21 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S2439740AbgDNQtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:14 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEC8420656;
-        Tue, 14 Apr 2020 16:49:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D198C21841;
+        Tue, 14 Apr 2020 16:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882956;
-        bh=/mHARHeWczRi1L5tDKAwMG7VRaHqjAqAAZDBdAFAoJE=;
+        s=default; t=1586882943;
+        bh=2dtxiXcqpLlxzQY41glPzfxzzobbNtue35byn94ocz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0hDy+lq50lzxBnb1keJMR5ZhFNyRO3L5S+NZ2mJbZ9CvgWUzIy8B54nSUvEB+alk0
-         Re541EWfc0j6Tb16rBoCNcTAebnm8RfcqirAPj0KXXFfTjMp18BAokdGxigUE8Fe0P
-         laYaWpwb1nCHHo8BEQoRQoRLm76mv1dm0gLvdB8k=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH 05/15] tools headers UAPI: Sync sched.h with the kernel
-Date:   Tue, 14 Apr 2020 13:48:44 -0300
-Message-Id: <20200414164854.26026-6-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
-References: <20200414164854.26026-1-acme@kernel.org>
+        b=BTcUVYT35Bif541OWFBjhRZVaczzSVCp/TLrRGiS4EnMeiYgLfYgyso427WtnNRZ8
+         CxgcFeDZrtiUdWrEnsWCRmmSesDtNpmgiPhn/ChY5oiAWEnzmlqw5Q9KbnNsqE4GTq
+         zG8bwaaGcc+RQV6XJI5S7iodrRD1buFn/CF8eMcc=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jOOk9-0068mK-45; Tue, 14 Apr 2020 18:49:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH v2 18/33] docs: spi: spi.h: fix a doc building warning
+Date:   Tue, 14 Apr 2020 18:48:44 +0200
+Message-Id: <1c701b3ac903dc0bc304dca958fbdee53bd38dc3.1586881715.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,77 +44,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+We need to add a blank line to avoid this warning:
 
-To get the changes in:
+	./include/linux/spi/spi.h:401: WARNING: Unexpected indentation.
 
-  ef2c41cf38a7 ("clone3: allow spawning processes into cgroups")
-
-Add that to 'perf trace's clone 'flags' decoder.
-
-This silences this perf build warning:
-
-  Warning: Kernel ABI header at 'tools/include/uapi/linux/sched.h' differs from latest version at 'include/uapi/linux/sched.h'
-  diff -u tools/include/uapi/linux/sched.h include/uapi/linux/sched.h
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/include/uapi/linux/sched.h | 5 +++++
- tools/perf/trace/beauty/clone.c  | 1 +
- 2 files changed, 6 insertions(+)
+ include/linux/spi/spi.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/include/uapi/linux/sched.h b/tools/include/uapi/linux/sched.h
-index 2e3bc22c6f20..3bac0a8ceab2 100644
---- a/tools/include/uapi/linux/sched.h
-+++ b/tools/include/uapi/linux/sched.h
-@@ -35,6 +35,7 @@
- 
- /* Flags for the clone3() syscall. */
- #define CLONE_CLEAR_SIGHAND 0x100000000ULL /* Clear any signal handler and reset to SIG_DFL. */
-+#define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
- 
- /*
-  * cloning flags intersect with CSIGNAL so can be used with unshare and clone3
-@@ -81,6 +82,8 @@
-  * @set_tid_size: This defines the size of the array referenced
-  *                in @set_tid. This cannot be larger than the
-  *                kernel's limit of nested PID namespaces.
-+ * @cgroup:       If CLONE_INTO_CGROUP is specified set this to
-+ *                a file descriptor for the cgroup.
-  *
-  * The structure is versioned by size and thus extensible.
-  * New struct members must go at the end of the struct and
-@@ -97,11 +100,13 @@ struct clone_args {
- 	__aligned_u64 tls;
- 	__aligned_u64 set_tid;
- 	__aligned_u64 set_tid_size;
-+	__aligned_u64 cgroup;
- };
- #endif
- 
- #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
- #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
-+#define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
- 
- /*
-  * Scheduling policies
-diff --git a/tools/perf/trace/beauty/clone.c b/tools/perf/trace/beauty/clone.c
-index 062ca849c8fd..f4db894e0af6 100644
---- a/tools/perf/trace/beauty/clone.c
-+++ b/tools/perf/trace/beauty/clone.c
-@@ -46,6 +46,7 @@ static size_t clone__scnprintf_flags(unsigned long flags, char *bf, size_t size,
- 	P_FLAG(NEWNET);
- 	P_FLAG(IO);
- 	P_FLAG(CLEAR_SIGHAND);
-+	P_FLAG(INTO_CGROUP);
- #undef P_FLAG
- 
- 	if (flags)
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 38286de779e3..aac57b5b7c21 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -394,6 +394,7 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  *                   for example doing DMA mapping.  Called from threaded
+  *                   context.
+  * @transfer_one: transfer a single spi_transfer.
++ *
+  *                  - return 0 if the transfer is finished,
+  *                  - return 1 if the transfer is still in progress. When
+  *                    the driver is finished with this transfer it must
 -- 
-2.21.1
+2.25.2
 
