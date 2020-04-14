@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195691A8B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEE01A8B70
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505174AbgDNTpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S2505204AbgDNTsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505166AbgDNTo7 (ORCPT
+        by vger.kernel.org with ESMTP id S2505166AbgDNTpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:44:59 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E09C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:44:59 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id b7so8939097oic.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Sse3YVjmkw8Kxhj4W0BzsXVTXj+DMzOM5AWzuhlcxPw=;
-        b=dMLK5QR7kXyYrreXVqY0/IEcHw0kXYcBBas7vj2arYyVzQYQRqWksNpKDzIowinfyJ
-         QNZz4rosnFYul6H/+vvskzpN+KTiOpk0+GTL0XEfd6E9WlicaGqzKqhrnodt372nnYVv
-         4VrAfhyqF4LsT21KKhhBKAm/SFeinRnYS45YprOjuOH2+UvTuxiI6bxHxtoQVh5bMW0n
-         qiIpA3RJ34PsGh8Ns+35S+UsRvTy2ScfGlTgfK6tf2LMsMpPo8Gf7oijLMuXRgwkzaXc
-         PsVNcXSXKW+NNTmFL8llSdDNpLqAVaKEA40yjvlgDlfrtAFoCAEmM6xHoCSH2kmBgRUM
-         I7Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=Sse3YVjmkw8Kxhj4W0BzsXVTXj+DMzOM5AWzuhlcxPw=;
-        b=hr053nUCaA+L4gWB/iW2TLQFJacSXGl4mgZG15e+P/wsxB+9/9rIQeUG55GfHsuGGd
-         Ri4U4ya0SJtdBsWnH2c0HsKaF0OYxGTunfDjjy7rxso4SFL0too9bWg/Try7lwgyzWQb
-         debneM8vXBz15Sl/F27bzym7DDGXZJJ8Qh2Zlu7pY+oi7IP3hutACTObzpi3VEyqzdPy
-         Fjyvg0Rep9JHyApYBitCq18t67/ZGjaXkij+G9KXiKxj9VxHGSGtBLKWUSdVFMfna4Hr
-         ztbxTCvgZADQAZMnY0O+bEORiYRqQpKPfSlWTaopSEylYYlZvQtEP7b8xzKUayYB7a38
-         zaHQ==
-X-Gm-Message-State: AGi0PuYtFrjGGatmkERBEpuX+QmaVpmzPycsWpEksjg3LeQdOr4JS96L
-        SMINfPAQFzE3nMvFnPd9aA==
-X-Google-Smtp-Source: APiQypL7gIovUtkdhOS8jiMCup5q6jBnTpjqNKNfhnnWTz2gZvNa9d8otokGawTqRpoo5N7qOHaRiA==
-X-Received: by 2002:aca:4085:: with SMTP id n127mr1320346oia.62.1586893498335;
-        Tue, 14 Apr 2020 12:44:58 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id e14sm6308381oop.42.2020.04.14.12.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:44:57 -0700 (PDT)
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
-        by serve.minyard.net (Postfix) with ESMTPSA id 81257181888;
-        Tue, 14 Apr 2020 19:44:56 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 14:44:55 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] ipmi:bt-bmc: Delete superfluous dev_warm() in
- bt_bmc_config_irq()
-Message-ID: <20200414194455.GH3587@minyard.net>
-Reply-To: minyard@acm.org
-References: <20200414141951.19120-1-tangbin@cmss.chinamobile.com>
+        Tue, 14 Apr 2020 15:45:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8DAC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=qiGDdgrymzs3lmhrk9O/Fh6Zpf8KL3+mfXiGBIdA72Q=; b=Ov9Px5z+q5KNIHq3yt1v5Jr77j
+        VtNf1+7arPv5fEqoCFrBblJej1Iu0OwmZx8BrX3g6RhaCxcZaCRy3M/Wb4qcs+GeB7yiazICcuJF0
+        QGKZBYe1990B9qvV6u2HhBT2WAYl5sIA8n+eFAwr5HmSGe44S01dQHLXfHE97ydbtsB4tVU+xFuHU
+        oyDG8w709Ik4IGQJ16q0pEtD7ZEdQ1y5tKoBJm5my8m/PsVlqU2L9NfDr5XFdlqOMr1GchEsDqhQj
+        i2sB8Ku/gyqPAGiDmFkTP539x2v9JsaoaMidiAP09BfH03YV/2jyHJav9KXlsH8ZetqbzF7dpQNlL
+        gmUO/AKQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jORVH-0002f3-9V; Tue, 14 Apr 2020 19:45:51 +0000
+Subject: Re: [PATCH] staging: tools: string.c doc fix
+To:     Daniel Bovensiepen <daniel@bovensiepen.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20200414185430.GA14496@daboVM>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <266382a3-a5f4-5934-8130-aead5eeec264@infradead.org>
+Date:   Tue, 14 Apr 2020 12:45:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414141951.19120-1-tangbin@cmss.chinamobile.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200414185430.GA14496@daboVM>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:19:51PM +0800, Tang Bin wrote:
-> The priority of dev_warm() is higher than dev_info(),so if the
-> function bt_bmc_probe() uses dev_info() to print error message,
-> the dev_warm() is redundant.Thus should be removed.
+On 4/14/20 11:54 AM, Daniel Bovensiepen wrote:
+> Fix spelling error in the comment.
 
-Actually, this needs to be left in.  That error is not just a that irqs
-were not configured, that's an error that something else went wrong.
+Nope, that's math-speak for "if and only if."
 
-
--corey
-
-> 
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Daniel Bovensiepen <daniel@bovensiepen.net>
 > ---
->  drivers/char/ipmi/bt-bmc.c | 1 -
->  1 file changed, 1 deletion(-)
+>  tools/lib/string.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
-> index cd0349bff..1d4bf5c65 100644
-> --- a/drivers/char/ipmi/bt-bmc.c
-> +++ b/drivers/char/ipmi/bt-bmc.c
-> @@ -406,7 +406,6 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
->  	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
->  			      DEVICE_NAME, bt_bmc);
->  	if (rc < 0) {
-> -		dev_warn(dev, "Unable to request IRQ %d\n", bt_bmc->irq);
->  		bt_bmc->irq = 0;
->  		return rc;
->  	}
-> -- 
-> 2.20.1.windows.1
+> diff --git a/tools/lib/string.c b/tools/lib/string.c
+> index f645343815de..f73a1020fad9 100644
+> --- a/tools/lib/string.c
+> +++ b/tools/lib/string.c
+> @@ -41,7 +41,7 @@ void *memdup(const void *src, size_t len)
+>   * @s: input string
+>   * @res: result
+>   *
+> - * This routine returns 0 iff the first character is one of 'Yy1Nn0', or
+> + * This routine returns 0 if the first character is one of 'Yy1Nn0', or
+>   * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
+>   * pointed to by res is updated upon finding a match.
+>   */
 > 
-> 
-> 
+
+-- 
+~Randy
+
