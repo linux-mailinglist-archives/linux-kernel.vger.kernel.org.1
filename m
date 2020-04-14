@@ -2,64 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141A91A7BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BBA1A7BA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502500AbgDNNCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2502475AbgDNNCL (ORCPT
+        id S2502513AbgDNNDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:03:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57156 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2502485AbgDNNC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:02:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9952DC061A0C;
-        Tue, 14 Apr 2020 06:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T6z0bd+fqDvkVl7fHhA0/8UcwUryWcByqLrcGyIrH5s=; b=bOGD0uXfBJxjATisnWE13caPpw
-        yM9EhSXpjZ/69j68Wx2mvv4rPOnCCnL4tZZOnQ/NrScoRBkaop1XY/iOcVOh0AkRZpQOQz5AVjtpv
-        cMV61Q/X5bapJJYHYlrURSsjHy7o3Gg83EN4vlKiDfRTyRH5zdQnD3aKzJJQD/Kfm9D/MZmyrS5dF
-        6Bl0eEJCl5IRt9WB6xgPE10wzHrxN2D4jZ8Wklbvo3XU7xQtw94VjIEPtaSS9ZKYl/NsjwULmC+Yi
-        /zy17VuWZ3bNc0Ndims46fX3T7ww6xbwzSO+4eEXTFMbss0b2VRfn9nH14CqQ8MjZl0Uf7RSHY+CP
-        kRablIbA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOLCV-0005fb-Ei; Tue, 14 Apr 2020 13:02:03 +0000
-Date:   Tue, 14 Apr 2020 06:02:03 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v2 4/4] mm/vmalloc: Hugepage vmalloc mappings
-Message-ID: <20200414130203.GA20867@infradead.org>
-References: <20200413125303.423864-1-npiggin@gmail.com>
- <20200413125303.423864-5-npiggin@gmail.com>
- <20200414072316.GA5503@infradead.org>
- <1586864403.0qfilei2ft.astroid@bobo.none>
+        Tue, 14 Apr 2020 09:02:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586869345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KYrjFdKV0F0kc/rQUca0FTze+6bSQcKKl07Ya/wHr0=;
+        b=hDLGuK38yVtcUBvM/ohTt4iK5EfqEQWi95kkyNyAg5Y2Yi+31Cd7DfMar0Mm9UCmpaRI0H
+        /QkMjRojuzzxmEamNvBixkLztFlw4EwPFe9jj5RtTcYgbycD1faTKX6bCIy+zAna2pg64d
+        ZbPAOyWXVyWtnY5N0veCaN0wlZrSDJc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-lQWz2TjjPiOvng-9rirdaw-1; Tue, 14 Apr 2020 09:02:23 -0400
+X-MC-Unique: lQWz2TjjPiOvng-9rirdaw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0566D18C35A2;
+        Tue, 14 Apr 2020 13:02:22 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-116-15.gru2.redhat.com [10.97.116.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D1F1060C88;
+        Tue, 14 Apr 2020 13:02:10 +0000 (UTC)
+Subject: Re: [PATCH 01/10] KVM: selftests: Take vcpu pointer instead of id in
+ vm_vcpu_rm()
+To:     Andrew Jones <drjones@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>
+References: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+ <20200410231707.7128-2-sean.j.christopherson@intel.com>
+ <b696c5b9-2507-8849-e196-37c83806cfdf@redhat.com>
+ <20200413212659.GB21204@linux.intel.com>
+ <20200414082556.nfdgec63kuqknpxc@kamzik.brq.redhat.com>
+From:   Wainer dos Santos Moschetta <wainersm@redhat.com>
+Message-ID: <023b0cb2-50d7-9145-d065-32436d429806@redhat.com>
+Date:   Tue, 14 Apr 2020 10:02:08 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586864403.0qfilei2ft.astroid@bobo.none>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200414082556.nfdgec63kuqknpxc@kamzik.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:13:44PM +1000, Nicholas Piggin wrote:
-> Which case? Usually the answer would be because you don't want to use
-> contiguous physical memory and/or you don't want to use the linear 
-> mapping.
 
-But with huge pages you do by definition already use large contiguous
-areas.  So you want allocations larger than "small" huge pages but not
-using gigantic pages using vmalloc?
+On 4/14/20 5:25 AM, Andrew Jones wrote:
+> On Mon, Apr 13, 2020 at 02:26:59PM -0700, Sean Christopherson wrote:
+>> On Mon, Apr 13, 2020 at 03:26:55PM -0300, Wainer dos Santos Moschetta wrote:
+>>> On 4/10/20 8:16 PM, Sean Christopherson wrote:
+>>>> The sole caller of vm_vcpu_rm() already has the vcpu pointer, take it
+>>>> directly instead of doing an extra lookup.
+>>>
+>>> Most of (if not all) vcpu related functions in kvm_util.c receives an id, so
+>>> this change creates an inconsistency.
+>> Ya, but taking the id is done out of "necessity", as everything is public
+>> and for whatever reason the design of the selftest framework is to not
+>> expose 'struct vcpu' outside of the utils.  vm_vcpu_rm() is internal only,
+>> IMO pulling the id out of the vcpu just to lookup the same vcpu is a waste
+>> of time.
+> Agreed
+
+
+Thanks Sean and Andrew for your comments. I'm not in position to 
+change/propose any design of kvm selftests but even though I aimed to 
+foster this discussion.
+
+So, please, consider my Reviewed-by...
+
+- Wainer
+
+
+>
+>> FWIW, I think the whole vcpuid thing is a bad interface, almost all the
+>> tests end up defining an arbitrary number for the sole VCPU_ID, i.e. the
+>> vcpuid interface just adds a pointless layer of obfuscation.  I haven't
+>> looked through all the tests, but returning the vcpu and making the struct
+>> opaque, same as kvm_vm, seems like it would yield more readable code with
+>> less overhead.
+> Agreed
+>
+>> While I'm on a soapbox, hiding 'struct vcpu' and 'struct kvm_vm' also seems
+>> rather silly, but at least that doesn't directly lead to funky code.
+> Agreed. While the concept has been slowly growing on me, I think accessor
+> functions for each of the structs members are growing even faster...
+>
+> Thanks,
+> drew
+>
+>>> Disregarding the above comment, the changes look good to me. So:
+>>>
+>>> Reviewed-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
+>>>
+>>>
+>>>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>>>> ---
+>>>>   tools/testing/selftests/kvm/lib/kvm_util.c | 7 +++----
+>>>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+>>>> index 8a3523d4434f..9a783c20dd26 100644
+>>>> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+>>>> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+>>>> @@ -393,7 +393,7 @@ struct vcpu *vcpu_find(struct kvm_vm *vm, uint32_t vcpuid)
+>>>>    *
+>>>>    * Input Args:
+>>>>    *   vm - Virtual Machine
+>>>> - *   vcpuid - VCPU ID
+>>>> + *   vcpu - VCPU to remove
+>>>>    *
+>>>>    * Output Args: None
+>>>>    *
+>>>> @@ -401,9 +401,8 @@ struct vcpu *vcpu_find(struct kvm_vm *vm, uint32_t vcpuid)
+>>>>    *
+>>>>    * Within the VM specified by vm, removes the VCPU given by vcpuid.
+>>>>    */
+>>>> -static void vm_vcpu_rm(struct kvm_vm *vm, uint32_t vcpuid)
+>>>> +static void vm_vcpu_rm(struct kvm_vm *vm, struct vcpu *vcpu)
+>>>>   {
+>>>> -	struct vcpu *vcpu = vcpu_find(vm, vcpuid);
+>>>>   	int ret;
+>>>>   	ret = munmap(vcpu->state, sizeof(*vcpu->state));
+>>>> @@ -427,7 +426,7 @@ void kvm_vm_release(struct kvm_vm *vmp)
+>>>>   	int ret;
+>>>>   	while (vmp->vcpu_head)
+>>>> -		vm_vcpu_rm(vmp, vmp->vcpu_head->id);
+>>>> +		vm_vcpu_rm(vmp, vmp->vcpu_head);
+>>>>   	ret = close(vmp->fd);
+>>>>   	TEST_ASSERT(ret == 0, "Close of vm fd failed,\n"
+
