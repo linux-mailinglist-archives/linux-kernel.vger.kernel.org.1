@@ -2,153 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E4A1A8BAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D811A8BB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505315AbgDNT57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:57:59 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:38619 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505301AbgDNT53 (ORCPT
+        id S2505343AbgDNT6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:58:42 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53384 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505237AbgDNT6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:57:29 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 6B92922FEC;
-        Tue, 14 Apr 2020 21:57:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1586894236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c1MxhBoeYs71xwy2H0AJkghL+7Y+1QwLOd9ofZWf8mY=;
-        b=oYyi/K9Wgv1J8oUv562gbV/e/cxfMAv1K6H8unRKColnTKhwpm+o2zuVXXywnycQemE920
-        49lVQd/oeC++cP1U8UAjd2wqxmRkE+CsXw4zAXo8aqoBXwRTVNIy+ObJKwMDB2s3LXJS0A
-        SUYA2YwD+G6uEd0VIP7BN8x0gr1wjC0=
+        Tue, 14 Apr 2020 15:58:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EJrX81023001;
+        Tue, 14 Apr 2020 19:57:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=QClYHgr+9BhJGdZR+Dsv1ZrmLXwWc1xNA/wZJVLWvKU=;
+ b=yl/1AbADQUscbGwLHYu8U9vzcZLQ7NEWedTYV2gzcaaDjiLwUKpQztyrdeh220Mvc/xn
+ Y4bvFD0l5bxqeMdrdU/wmMkxzxYjSwgFV8ueQi5ksrtDOqpRDila4ZN0CQ3VAjOfeS+V
+ BXjeqJKbxztVSsFq/n1yGb5QKCndrqLi+T6x33qYrxBSMqYTAgoQjAk/zmj4kll1w1Tv
+ SRgfAuwO+83FDqPv3V2mYB9OBrOeuomCzaFuilNtu5hWD4NOVtEOTsb9BQogOJWZcJJ6
+ NbAKj7HaAT9YX6nvOAgJuSRQcAg5cZx3cToEwvGn1PmNdn8ekPV/tP0/O1A6zNVjEwqS QA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30b6hpq0qy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 19:57:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EJvlKT014315;
+        Tue, 14 Apr 2020 19:57:59 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30bqcjnyy8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 19:57:58 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EJvu3Q026932;
+        Tue, 14 Apr 2020 19:57:56 GMT
+Received: from localhost (/10.159.239.16)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 12:57:55 -0700
+Date:   Tue, 14 Apr 2020 12:57:54 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
+Message-ID: <20200414195754.GH6742@magnolia>
+References: <20200413054046.1560106-1-ira.weiny@intel.com>
+ <20200413054046.1560106-10-ira.weiny@intel.com>
+ <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com>
+ <20200414161509.GF6742@magnolia>
+ <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 14 Apr 2020 21:57:15 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 10/16] gpio: add a reusable generic gpio_chip using
- regmap
-In-Reply-To: <62d157198a75a59ada15c496deeab49b@walle.cc>
-References: <20200402203656.27047-1-michael@walle.cc>
- <20200402203656.27047-11-michael@walle.cc>
- <CAMpxmJVE3PgVCxkQ-ryc5=KSrKcpdmk1cnJUxJBz9QFCx-e_+A@mail.gmail.com>
- <80bd8661ec8a1f5eda3f09a267846eaa@walle.cc>
- <CAMpxmJVC7e9JnHzBo-h8M1+KmcA32=Rvxo7+znH=-kAbcCr_LQ@mail.gmail.com>
- <e0388a2137e23d76b2415a7549c01dd1@walle.cc>
- <CAMpxmJW1x4Orh1BZ4TUoCsYeaAAZ4NBUNvoMG9JgP0iLvXTOtg@mail.gmail.com>
- <62d157198a75a59ada15c496deeab49b@walle.cc>
-Message-ID: <eab972adf53bbac20b5a9e613fcfb5b0@walle.cc>
-X-Sender: michael@walle.cc
-User-Agent: Roundcube Webmail/1.3.10
-X-Spamd-Bar: +
-X-Spam-Level: *
-X-Rspamd-Server: web
-X-Spam-Status: No, score=1.40
-X-Spam-Score: 1.40
-X-Rspamd-Queue-Id: 6B92922FEC
-X-Spamd-Result: default: False [1.40 / 15.00];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         NEURAL_HAM(-0.00)[-0.400];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,linaro.org,kernel.org,suse.com,roeck-us.net,gmail.com,pengutronix.de,linux-watchdog.org,nxp.com,linutronix.de,lakedaemon.net,linuxfoundation.org];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140140
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1011 mlxscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140139
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark, Hi Bartosz, Hi Linus,
-
-Am 2020-04-14 20:41, schrieb Michael Walle:
-> Am 2020-04-14 19:00, schrieb Bartosz Golaszewski:
->> wt., 14 kwi 2020 o 12:07 Michael Walle <michael@walle.cc> napisał(a):
->>> >>
->>> >> So the best from a user perspective I've could come up with was:
->>> >>
->>> >>    ->base_reg = GPIO_REGMAP_ADDR(addr);
->>> >>
->>> >> I'm open for suggestions.
->>> >>
->>> >
->>> > Maybe setting the pointer to ERR_PTR(-ENOENT) which will result in
->>> > IS_ERR() returning true?
->>> 
->>> Unfortunatly, its not a pointer, but only a regular unsigned int (ie
->>> the type the regmap API has for its "reg" property). It could be a
->>> pointer of course but then the user would have to allocate additional
->>> memory.
->>> 
->>> -michael
->>> 
->> 
->> Eek, of course it's not a pointer. If possible I'd like to avoid this
->> GPIO_REGMAP_ADDR() macro, so how about having some separate field for
->> invalid offsets making every offset 'valid' by default?
+On Tue, Apr 14, 2020 at 12:04:57PM -0700, Dan Williams wrote:
+> On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+> >
+> > On Mon, Apr 13, 2020 at 10:21:26PM -0700, Dan Williams wrote:
+> > > On Sun, Apr 12, 2020 at 10:41 PM <ira.weiny@intel.com> wrote:
+> > > >
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > >
+> > > > Update the Usage section to reflect the new individual dax selection
+> > > > functionality.
+> > > >
+> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > >
+> > > > ---
+> > > > Changes from V6:
+> > > >         Update to allow setting FS_XFLAG_DAX any time.
+> > > >         Update with list of behaviors from Darrick
+> > > >         https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
+> > > >
+> > > > Changes from V5:
+> > > >         Update to reflect the agreed upon semantics
+> > > >         https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> > > > ---
+> > > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
+> > > >  1 file changed, 163 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> > > > index 679729442fd2..af14c1b330a9 100644
+> > > > --- a/Documentation/filesystems/dax.txt
+> > > > +++ b/Documentation/filesystems/dax.txt
+> > > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
+> > > >  Usage
+> > > >  -----
+> > > >
+> > > > -If you have a block device which supports DAX, you can make a filesystem
+> > > > +If you have a block device which supports DAX, you can make a file system
+> > > >  on it as usual.  The DAX code currently only supports files with a block
+> > > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
+> > > > -size when creating the filesystem.  When mounting it, use the "-o dax"
+> > > > -option on the command line or add 'dax' to the options in /etc/fstab.
+> > > > +size when creating the file system.
+> > > > +
+> > > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
+> > > > +different at this time.
+> > > > +
+> > > > +Enabling DAX on ext4
+> > > > +--------------------
+> > > > +
+> > > > +When mounting the filesystem, use the "-o dax" option on the command line or
+> > > > +add 'dax' to the options in /etc/fstab.
+> > > > +
+> > > > +
+> > > > +Enabling DAX on xfs
+> > > > +-------------------
+> > > > +
+> > > > +Summary
+> > > > +-------
+> > > > +
+> > > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
+> > > > +    file accesses go directly to persistent memory, bypassing the page
+> > > > +    cache.
+> > >
+> > > I had reserved some quibbling with this wording, but now that this is
+> > > being proposed as documentation I'll let my quibbling fly. "dax" may
+> > > imply, but does not require persistent memory nor does it necessarily
+> > > "bypass page cache". For example on configurations that support dax,
+> > > but turn off MAP_SYNC (like virtio-pmem), a software flush is
+> > > required. Instead, if we're going to define "dax" here I'd prefer it
+> > > be a #include of the man page definition that is careful (IIRC) to
+> > > only talk about semantics and not backend implementation details. In
+> > > other words, dax is to page-cache as direct-io is to page cache,
+> > > effectively not there, but dig a bit deeper and you may find it.
+> >
+> > Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
 > 
-> IMHO this has the same problems as mentioned in the response to Mark's
-> idea. Normally, the user sets only some addresses, thus he has to mark
-> all other as invalid. And if you add another address, you have to touch
-> all the drivers to mark it as invalid.
-> 
-> We could add some force bits like the "use_ack" flag in the bgpio 
-> driver,
-> where you can force the use of the value 0. But I'd really like to find
-> a better way..
+> No, I was referring to the proposed wording for STATX_ATTR_DAX.
+> There's no reason for this description to say anything divergent from
+> that description.
 
-So what about the following:
+Ahh, ok.  Something like this, then:
 
-#define GPIO_REGMAP_ADDR_ZERO (unsigned int)(-1)
+ 1. There exists an in-kernel access mode flag S_DAX.  When set, the
+    file is in the DAX (cpu direct access) state.  DAX state attempts to
+    minimize software cache effects for both I/O and memory mappings of
+    this file.  The S_DAX state is exposed to userspace via the
+    STATX_ATTR_DAX statx flag.
 
-So this way the user might assign the base addresses the normal way
-except when he wants to use zero, in that case he has to use
+    See the STATX_ATTR_DAX in the statx(2) manpage for more information.
 
-   ->base_adr = GPIO_REGMAP_ADDR_ZERO;
-
-gpio-regmap.c could use then:
-
-if (base_addr)
-   something_useful(gpio_regmap_addr(base_addr));
-
-unsigned int gpio_regmap_addr(unsigned int addr)
-{
-   return (addr == GPIO_REGMAP_ADDR_ZERO) ? 0 : addr;
-}
-
--michael
+--D
