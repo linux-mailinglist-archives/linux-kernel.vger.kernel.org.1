@@ -2,120 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A51D1A7896
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C2F1A78A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438485AbgDNKlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2438403AbgDNKeL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:34:11 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37778C0610D6;
-        Tue, 14 Apr 2020 03:34:11 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOItI-0008Ti-9o; Tue, 14 Apr 2020 12:34:04 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E6D5D1C0086;
-        Tue, 14 Apr 2020 12:34:03 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 10:34:03 -0000
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] objtool: Fix CONFIG_UBSAN_TRAP unreachable warnings
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <6653ad73c6b59c049211bd7c11ed3809c20ee9f5.1585761021.git.jpoimboe@redhat.com>
-References: <6653ad73c6b59c049211bd7c11ed3809c20ee9f5.1585761021.git.jpoimboe@redhat.com>
+        id S2438536AbgDNKn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:43:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48660 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438448AbgDNKfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 06:35:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 873BAABB2;
+        Tue, 14 Apr 2020 10:35:33 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 20:35:24 +1000
+From:   Aleksa Sarai <asarai@suse.de>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH man-pages v2 2/2] openat2.2: document new openat2(2)
+ syscall
+Message-ID: <20200414103524.wjhyfobzpjk236o7@yavin.dot.cyphar.com>
+References: <20200202151907.23587-1-cyphar@cyphar.com>
+ <20200202151907.23587-3-cyphar@cyphar.com>
+ <1567baea-5476-6d21-4f03-142def0f62e3@gmail.com>
+ <20200331143911.lokfoq3lqfri2mgy@yavin.dot.cyphar.com>
+ <cd3a6aad-b906-ee57-1b5b-5939b9602ad0@gmail.com>
+ <20200412164943.imwpdj5qgtyfn5de@yavin.dot.cyphar.com>
+ <cd1438ab-cfc6-b286-849e-d7de0d5c7258@gmail.com>
 MIME-Version: 1.0
-Message-ID: <158686044342.28353.9170954952502687843.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="imnm2xqfgm757zs2"
+Content-Disposition: inline
+In-Reply-To: <cd1438ab-cfc6-b286-849e-d7de0d5c7258@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     bd841d6154f5f41f8a32d3c1b0bc229e326e640a
-Gitweb:        https://git.kernel.org/tip/bd841d6154f5f41f8a32d3c1b0bc229e326e640a
-Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Wed, 01 Apr 2020 13:23:25 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 14 Apr 2020 11:55:09 +02:00
+--imnm2xqfgm757zs2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-objtool: Fix CONFIG_UBSAN_TRAP unreachable warnings
+On 2020-04-13, Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
+> >>>> .\" FIXME I find the "previously-functional systems" in the previous
+> >>>> .\" sentence a little odd (since openat2() ia new sysycall), so I wo=
+uld
+> >>>> .\" like to clarify a little...
+> >>>> .\" Are you referring to the scenario where someone might take an
+> >>>> .\" existing application that uses openat() and replaces the uses
+> >>>> .\" of openat() with openat2()? In which case, is it correct to
+> >>>> .\" understand that you mean that one should not just indiscriminate=
+ly
+> >>>> .\" add the RESOLVE_NO_XDEV flag to all of the openat2() calls?
+> >>>> .\" If I'm not on the right track, could you point me in the right
+> >>>> .\" direction please.
+> >>>
+> >>> This is mostly meant as a warning to hopefully avoid applications
+> >>> because the developer didn't realise that system paths may contain
+> >>> symlinks or bind-mounts. For an application which has switched to
+> >>> openat2() and then uses RESOLVE_NO_SYMLINKS for a non-security reason,
+> >>> it's possible that on some distributions (or future versions of a
+> >>> distribution) that their application will stop working because a syst=
+em
+> >>> path suddenly contains a symlink or is a bind-mount.
+> >>>
+> >>> This was a concern which was brought up on LWN some time ago. If you =
+can
+> >>> think of a phrasing that makes this more clear, I'd appreciate it.
+> >>
+> >> Thanks. I've made the text:
+> >>
+> >>                      Applications  that  employ  the RESOLVE_NO_XDEV f=
+lag
+> >>                      are encouraged to make its use configurable  (unl=
+ess
+> >>                      it is used for a specific security purpose), as b=
+ind
+> >>                      mounts are widely used by end-users.   Setting  t=
+his
+> >>                      flag indiscriminately=E2=80=94i.e., for purposes =
+not specif=E2=80=90
+> >>                      ically related to security=E2=80=94for all uses o=
+f openat2()
+> >>                      may  result  in  spurious errors on previously-fu=
+nc=E2=80=90
+> >>                      tional systems.  This may occur if, for  example,=
+  a
+> >>                      system  pathname  that  is used by an application=
+ is
+> >>                      modified (e.g., in a new  distribution  release) =
+ so
+> >>                      that  a  pathname  component  (now)  contains a b=
+ind
+> >>                      mount.
+> >>
+> >> Okay?
+> >=20
+> > Yup,
+>=20
+> Thanks.
+>=20
+> > and the same text should be used for the same warning I gave for
+> > RESOLVE_NO_SYMLINKS (for the same reason, because system paths may
+> > switch to symlinks -- the prime example being what Arch Linux did
+> > several years ago).
+>=20
+> Okay -- I added similar text to RESOLVE_NO_SYMLINKS.
 
-CONFIG_UBSAN_TRAP causes GCC to emit a UD2 whenever it encounters an
-unreachable code path.  This includes __builtin_unreachable().  Because
-the BUG() macro uses __builtin_unreachable() after it emits its own UD2,
-this results in a double UD2.  In this case objtool rightfully detects
-that the second UD2 is unreachable:
+Much appreciated.
 
-  init/main.o: warning: objtool: repair_env_string()+0x1c8: unreachable instruction
+> >>>> .\" FIXME: what specific details in symlink(7) are being referred
+> >>>> .\" by the following sentence? It's not clear.
+> >>>
+> >>> The section on magic-links, but you're right that the sentence orderi=
+ng
+> >>> is a bit odd. It should probably go after the first sentence.
+> >>
+> >> I must admit that I'm still confused. There's only the briefest of=20
+> >> mentions of magic links in symlink(7). Perhaps that needs to be fixed?
+> >=20
+> > It wouldn't hurt to add a longer description of magic-links in
+> > symlink(7). I'll send you a small patch to beef up the description (I
+> > had planned to include a longer rewrite with the O_EMPTYPATH patches but
+> > those require quite a bit more work to land).
+>=20
+> That would be great. Thank you!
 
-We weren't able to figure out a way to get rid of the double UD2s, so
-just silence the warning.
+I'll cook something up later this week.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/6653ad73c6b59c049211bd7c11ed3809c20ee9f5.1585761021.git.jpoimboe@redhat.com
----
- tools/objtool/check.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+> >> And, while I think of it, the text just preceding that FIXME says:
+> >>
+> >>     Due to the potential danger of unknowingly opening=20
+> >>     these magic links, it may be preferable for users to=20
+> >>     disable their resolution entirely.
+> >>
+> >> This sentence reads a little strangely. Could you please give me some
+> >> concrete examples, and I will try rewording that sentence a bit.
+> >=20
+> > The primary example is that certain files (such as tty devices) are
+> > best not opened by an unsuspecting program (if you do not have a
+> > controlling TTY, and you open such a file that console becomes your
+> > controlling TTY unless you use O_NOCTTY).
+> >=20
+> > But more generally, magic-links allow programs to be "beamed" all over
+> > the system (bypassing ordinary mount namespace restrictions). Since they
+> > are fairly rarely used intentionally by most programs, this is more of a
+> > tip to programmers that maybe they should play it safe and disallow
+> > magic-links unless they are expecting to have to use them.
+>=20
+>=20
+> I've reworked the text on RESOLVE_NO_MAGICLINKS substantially:
+>=20
+>        RESOLVE_NO_MAGICLINKS
+>               Disallow all magic-link resolution during path reso=E2=80=90
+>               lution.
+>=20
+>               Magic links are symbolic link-like objects that  are
+>               most  notably  found  in  proc(5);  examples include
+>               /proc/[pid]/exe  and  /proc/[pid]/fd/*.   (See  sym=E2=80=90
+>               link(7) for more details.)
+>=20
+>               Unknowingly  opening  magic  links  can be risky for
+>               some applications.  Examples of such  risks  include
+>               the following:
+>=20
+>               =C2=B7 If the process opening a pathname is a controlling
+>                 process that currently has no controlling terminal
+>                 (see  credentials(7)),  then  opening a magic link
+>                 inside /proc/[pid]/fd that happens to refer  to  a
+>                 terminal would cause the process to acquire a con=E2=80=90
+>                 trolling terminal.
+>=20
+>               =C2=B7 In  a  containerized  environment,  a  magic  link
+>                 inside  /proc  may  refer to an object outside the
+>                 container, and thus may provide a means to  escape
+>                 from the container.
+>=20
+> [The above example derives from https://lwn.net/Articles/796868/]
+>=20
+>               Because  of such risks, an application may prefer to
+>               disable   magic   link    resolution    using    the
+>               RESOLVE_NO_MAGICLINKS flag.
+>=20
+>               If  the trailing component (i.e., basename) of path=E2=80=90
+>               name is a magic link, and  how.flags  contains  both
+>               O_PATH  and O_NOFOLLOW, then an O_PATH file descrip=E2=80=90
+>               tor referencing the magic link will be returned.
+>=20
+> How does the above look?
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 8dd01f9..4811325 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2364,14 +2364,27 @@ static bool ignore_unreachable_insn(struct instruction *insn)
- 	    !strcmp(insn->sec->name, ".altinstr_aux"))
- 		return true;
- 
-+	if (!insn->func)
-+		return false;
-+
-+	/*
-+	 * CONFIG_UBSAN_TRAP inserts a UD2 when it sees
-+	 * __builtin_unreachable().  The BUG() macro has an unreachable() after
-+	 * the UD2, which causes GCC's undefined trap logic to emit another UD2
-+	 * (or occasionally a JMP to UD2).
-+	 */
-+	if (list_prev_entry(insn, list)->dead_end &&
-+	    (insn->type == INSN_BUG ||
-+	     (insn->type == INSN_JUMP_UNCONDITIONAL &&
-+	      insn->jump_dest && insn->jump_dest->type == INSN_BUG)))
-+		return true;
-+
- 	/*
- 	 * Check if this (or a subsequent) instruction is related to
- 	 * CONFIG_UBSAN or CONFIG_KASAN.
- 	 *
- 	 * End the search at 5 instructions to avoid going into the weeds.
- 	 */
--	if (!insn->func)
--		return false;
- 	for (i = 0; i < 5; i++) {
- 
- 		if (is_kasan_insn(insn) || is_ubsan_insn(insn))
+The changes look correct, though you could end up going through procfs
+even if you weren't resolving a path inside proc directly (since you can
+bind-mount symlinks or have a symlink to procfs). But I'm not sure if
+it's necessary to outline all the ways a program could be tricked into
+doing something unintended.
+
+> Also, regarding the last paragraph, I  have a question.  The
+> text doesn't seem quite to relate to the rest of the discussion.
+> Should it be saying something like:
+>=20
+> If the trailing component (i.e., basename) of pathname is a magic link,
+> **how.resolve contains RESOLVE_NO_MAGICLINKS,**
+> and how.flags contains both O_PATH and O_NOFOLLOW, then an O_PATH
+> file descriptor referencing the magic link will be returned.
+>=20
+> ?
+
+Yes, that is what I meant to write -- and I believe that the
+RESOLVE_NO_SYMLINKS section is missing similar text in the second
+paragraph (except it should refer to RESOLVE_NO_SYMLINKS, obviously).
+
+Thanks!
+
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--imnm2xqfgm757zs2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEXzbGxhtUYBJKdfWmnhiqJn3bjbQFAl6VkekACgkQnhiqJn3b
+jbRFCBAAySOXNoi4rBtphTOrPpV04SkFI3zJXufokazx9NSB/q0Wn399VAyuwORF
+R8Zlq+6SvA/jDR/oOBduXIWOWs1wcnI3a+fBF5lhm63Gidvf1NroIAYnHS+kJ91Z
+gnZlleHHx9QOwYp3Ds6CTphKBJ5kYIArTIMaPyrEyd7gmDyT+oEJ25s+WidiYDUe
+I0IVdjLJNc9U7QG2va02xhv91QSkZYDvsZH+mjcZs1fZAksccEIB8oovUUz7sI8t
+mLlpHdcx9X+75QJozHyzoBB4Zh0fyndkzVpgKyvZgS2ZKWzra94Lln0ZBv/jP+kl
+4Lk0a1L0YIrr2EYXVgcjQM+G8HOozVYQfoaabtdxLB5qKTv3Xlfb/imeOAG0d86K
+9pUANSuDg0JQwFcxnIcEDoNtmiRdmovF67wdBM73z001TScYuBchwQALkBAwbpXF
+OAi0wrOv6oZ7xpoCHEY5jrV472fGA/3fnBR+eV/9X2jEjmsLTFZSaINxvRTNZT1H
+ClxmIEJE0pkS1FsuBCxYyihpTWNZ2nDlSmSZAxNrz9/s7zyAvOUEr1zY3yACsjLJ
+Xx0A/TiTdvm4d8/Zw6cteImWKVXxj6Wko1pLvXTbOEgv3xQV1WAe4hbvraqUnoB0
+PBSuKd7vQtGxlg9cHOEPGablYwu4SXnIgQPBszoGOBT6vRNf5Jo=
+=vLXb
+-----END PGP SIGNATURE-----
+
+--imnm2xqfgm757zs2--
