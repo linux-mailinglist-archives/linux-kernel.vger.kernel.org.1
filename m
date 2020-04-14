@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4061F1A8F1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6091A8F21
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392134AbgDNX2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 19:28:21 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:35884 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731252AbgDNX2M (ORCPT
+        id S2392145AbgDNX3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 19:29:48 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:51542 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731159AbgDNX3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 19:28:12 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B2AE41280C044;
-        Tue, 14 Apr 2020 16:28:08 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 16:27:15 -0700 (PDT)
-Message-Id: <20200414.162715.162785138701944842.davem@davemloft.net>
-To:     dhowells@redhat.com
-Cc:     netdev@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rxrpc: Fix DATA Tx to disable nofrag for UDP on
- AF_INET6 socket
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <158678263441.2860393.4171676680352045929.stgit@warthog.procyon.org.uk>
-References: <158678263441.2860393.4171676680352045929.stgit@warthog.procyon.org.uk>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 14 Apr 2020 16:28:08 -0700 (PDT)
+        Tue, 14 Apr 2020 19:29:44 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D0DC6C00CC;
+        Tue, 14 Apr 2020 23:29:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1586906982; bh=cbwVPNBBMDU3Qsse2SdkAJsbA5fiCp4ztKxUhtvleWQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I9YbktXPbOUEqFICj4aMMImlRJrFxMgJgrPXue5z/GF4twcfeXC/PudnuBQn/VckG
+         UR6hyiuapJKc6nnZJDCLPw9BhOl2EvPC3lUesbR3nRrOEupwJl/JhCZI0Qq3qpqaSi
+         s3vpDOALJcUmc5XQnImHE2OW97N8JMnMhcns0wW8/Yz4A5AJQsu6X42DHNof/xPm3T
+         vU79f60Ouz3TYNOu9mPeLnfLmNjj/l9XwNgQDGTO9ny9ZV32AtbPMnqeYa7v96JpZ7
+         NjleVLXs3Rs23sIhNZkjNnuwq5KLIDG+s6ITwpIUXowkS/VvMPE62/Vd3Rm7Jd3IrZ
+         x3+BBCnZoG6uQ==
+Received: from paltsev-e7480.internal.synopsys.com (ru20-e7250.internal.synopsys.com [10.225.48.89])
+        by mailhost.synopsys.com (Postfix) with ESMTP id C1FB0A005C;
+        Tue, 14 Apr 2020 23:29:35 +0000 (UTC)
+From:   Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+To:     dri-devel@lists.freedesktop.org,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Subject: [PATCH v3 0/2] DRM: ARC: add HDMI 2.0 TX encoder support
+Date:   Wed, 15 Apr 2020 02:29:27 +0300
+Message-Id: <20200414232929.22788-1-Eugeniy.Paltsev@synopsys.com>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
-Date: Mon, 13 Apr 2020 13:57:14 +0100
+Changes v1->v2:
+ * use DT Schema format please (.yaml files) for DT bindings
 
-> Fix the DATA packet transmission to disable nofrag for UDPv4 on an AF_INET6
-> socket as well as UDPv6 when trying to transmit fragmentably.
-> 
-> Without this, packets filled to the normal size used by the kernel AFS
-> client of 1412 bytes be rejected by udp_sendmsg() with EMSGSIZE
-> immediately.  The ->sk_error_report() notification hook is called, but
-> rxrpc doesn't generate a trace for it.
-> 
-> This is a temporary fix; a more permanent solution needs to involve
-> changing the size of the packets being filled in accordance with the MTU,
-> which isn't currently done in AF_RXRPC.  The reason for not doing so was
-> that, barring the last packet in an rx jumbo packet, jumbos can only be
-> assembled out of 1412-byte packets - and the plan was to construct jumbos
-> on the fly at transmission time.
-> 
-> Also, there's no point turning on IPV6_MTU_DISCOVER, since IPv6 has to
-> engage in this anyway since fragmentation is only done by the sender.  We
-> can then condense the switch-statement in rxrpc_send_data_packet().
-> 
-> Fixes: 75b54cb57ca3 ("rxrpc: Add IPv6 support")
-> Signed-off-by: David Howells <dhowells@redhat.com>
+Changes v2->v3:
+ * Add missing 'interrupts' property in DT bindings
+ * Drop dummy 'dw_hdmi_bridge_mode_valid'
+ * Change bracing format of 'of_device_id' structure
+ * Change compatible string to "snps,arc-dw-hdmi-hsdk"
+   Now DT binding file is snps,arc-dw-hdmi.yaml and compatible is
+   "snps,arc-dw-hdmi-<soc/board>"
+ * Minor fixes
 
-Applied, thanks David.
+Eugeniy Paltsev (2):
+  DRM: ARC: add HDMI 2.0 TX encoder support
+  dt-bindings: Document the Synopsys ARC HDMI TX bindings
+
+ .../display/bridge/snps,arc-dw-hdmi.yaml      | 136 ++++++++++++++++++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/Makefile                      |   2 +-
+ drivers/gpu/drm/arc/Kconfig                   |   7 +
+ drivers/gpu/drm/arc/Makefile                  |   1 +
+ drivers/gpu/drm/arc/arc-dw-hdmi.c             | 116 +++++++++++++++
+ 6 files changed, 267 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/snps,arc-dw-hdmi.yaml
+ create mode 100644 drivers/gpu/drm/arc/arc-dw-hdmi.c
+
+-- 
+2.21.1
+
