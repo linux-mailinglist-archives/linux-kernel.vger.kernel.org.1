@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92681A85DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236341A85FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502017AbgDNQu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:50:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
+        id S2440740AbgDNQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:53:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501927AbgDNQtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:45 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S2440353AbgDNQtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:17 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8046D2074D;
-        Tue, 14 Apr 2020 16:49:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DF4F221F5;
+        Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882984;
-        bh=8M5iDu5PwoDE1Dny/0OctQ7rhm+19W6g5gJF6xGFJqc=;
+        s=default; t=1586882943;
+        bh=wsFZ0dq0htlamdDYAFNWLSa+EU5LvOOu2mo8l16eQAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTf/tWOBtQQDXe3of19U7HIJG7EuA3IyNKB/9aZnHzFqpqXtNpr5UUbp4g4ke2XZG
-         V6yRV0s6k5p2yvZbwAGuQwYbyj3zuniP8Xycc4a9N6hFrBlE/nqo3LWMZOPY6FrwXw
-         QrwJB2vSTjL38fw3kq70zs24l98sK3eelzlHaFuM=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 14/15] tools headers: Adopt verbatim copy of compiletime_assert() from kernel sources
-Date:   Tue, 14 Apr 2020 13:48:53 -0300
-Message-Id: <20200414164854.26026-15-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
-References: <20200414164854.26026-1-acme@kernel.org>
+        b=00QR/v378l2mpUnh0nK73LuCv/8q/0eesk/z3uzf0VgvoSwSqOOcDCwX8S2njiOs0
+         3hy4iTymKnKAiS5/E+7U2OBC4ZcSvlXF28iVV76b0vfnEuK5hWEw7o2WQbVEBaXbYu
+         XckvIBStzCWMNh7g4sks/dzawmUMNBPOteB9rSAY=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jOOk9-0068n3-Dn; Tue, 14 Apr 2020 18:49:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v2 27/33] docs: Makefile: place final pdf docs on a separate dir
+Date:   Tue, 14 Apr 2020 18:48:53 +0200
+Message-Id: <832752cbc9678a6e8d3d634bc3356d655d44684f.1586881715.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,55 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+The Sphinx build system for PDF is too complex and generate
+lots of ancillary files, including one PDF file for each
+image.
 
-Will be needed when syncing the linux/bits.h header, in the next cset.
+So, at the end, the main latex dir has 156 pdf files, instead
+of the 71 ones that would match each generated book. That's
+confusing and it makes harder to identify when something didn't
+work.
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+So, instead, let's move the final PDF output(s) to a separate
+dir. This way, the latex/ dir will have the temporary and the
+final *.tex files, while the final pdf files that built ok
+will be under the pdf/ directory.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/include/linux/compiler.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ Documentation/Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
-index 1827c2f973f9..180f7714a5f1 100644
---- a/tools/include/linux/compiler.h
-+++ b/tools/include/linux/compiler.h
-@@ -10,6 +10,32 @@
- # define __compiletime_error(message)
- #endif
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index cc786d11a028..db1fc35ded50 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -98,7 +98,11 @@ else # HAVE_PDFLATEX
  
-+#ifdef __OPTIMIZE__
-+# define __compiletime_assert(condition, msg, prefix, suffix)		\
-+	do {								\
-+		extern void prefix ## suffix(void) __compiletime_error(msg); \
-+		if (!(condition))					\
-+			prefix ## suffix();				\
-+	} while (0)
-+#else
-+# define __compiletime_assert(condition, msg, prefix, suffix) do { } while (0)
-+#endif
-+
-+#define _compiletime_assert(condition, msg, prefix, suffix) \
-+	__compiletime_assert(condition, msg, prefix, suffix)
-+
-+/**
-+ * compiletime_assert - break build and emit msg if condition is false
-+ * @condition: a compile-time constant condition to check
-+ * @msg:       a message to emit if condition is false
-+ *
-+ * In tradition of POSIX assert, this macro will break the build if the
-+ * supplied condition is *false*, emitting the supplied error message if the
-+ * compiler has support to do so.
-+ */
-+#define compiletime_assert(condition, msg) \
-+	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-+
- /* Optimization barrier */
- /* The "volatile" is due to gcc bugs */
- #define barrier() __asm__ __volatile__("": : :"memory")
+ pdfdocs: latexdocs
+ 	@$(srctree)/scripts/sphinx-pre-install --version-check
+-	$(foreach var,$(SPHINXDIRS), $(MAKE) PDFLATEX="$(PDFLATEX)" LATEXOPTS="$(LATEXOPTS)" -C $(BUILDDIR)/$(var)/latex || exit;)
++	$(foreach var,$(SPHINXDIRS), \
++	   $(MAKE) PDFLATEX="$(PDFLATEX)" LATEXOPTS="$(LATEXOPTS)" -C $(BUILDDIR)/$(var)/latex || exit; \
++	   mkdir -p $(BUILDDIR)/$(var)/pdf; \
++	   mv $(subst .tex,.pdf,$(wildcard $(BUILDDIR)/$(var)/latex/*.tex)) $(BUILDDIR)/$(var)/pdf/; \
++	)
+ 
+ endif # HAVE_PDFLATEX
+ 
 -- 
-2.21.1
+2.25.2
 
