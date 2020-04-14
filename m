@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B89F1A8AA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FF41A8B20
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504686AbgDNT0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504654AbgDNTY4 (ORCPT
+        id S2505048AbgDNTkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:40:36 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38807 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2505002AbgDNTjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:24:56 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC98C03C1A6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:06:59 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id u11so677506vsu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f7KrnRzyyOUemPRVsSUSW7supihjD0aQaPjITXcbeLk=;
-        b=kepiQP1oWmWQkilPnEBSKatdjUR3EE60+QwIJjoai4XqsbJg4+7PZQWRyq2meKTDqq
-         U1NTYx+3Wr89EDUCIm9olKYp1EoY+W4BHV9q7VO8idCaiTP6Lm4E5VmXUoJ2AGRFhriY
-         Da+cFwBBH7Nv7E5bfANSfnNH0J8nmp6cQAwVw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f7KrnRzyyOUemPRVsSUSW7supihjD0aQaPjITXcbeLk=;
-        b=XNIWwHRqgimE8ExuQRpjOtVvm/9wg1bEeVM09J/M1M4qVoYqSj5eauKm7bedOPs9HB
-         3CZVoRHipVT/74skRV8jzoLvVeMkoK/9CN67TQ0XTbw5UOfNj9PdypFuXZjSKgDFG2hE
-         enjbdK6drGlzub+yCgmGr0QGCZhWYQfCK6cLf10hsuf2KsXN2n+lXDzZMEclnn6ExUrs
-         xvWtxSpTwaUtG4666RmdlhPkM7jFVudB6YtBgTVNo8M6XOcqn1FjQRhoS/87gvb+cC9c
-         vVzjxmIVfrbshTexaSXGI2o5Bi1cuZbireqnAr32qAAmGz3FGLSwTYlQ4xLELcjdcpgf
-         AnPw==
-X-Gm-Message-State: AGi0PubPuWFjWfH+ZTrM+qgzzaepYpRmUKM2j6xK2v/HNOZcBcau6SBW
-        VAjjOsLbyxlFKQ0lcFJucLx/3dOGFcM=
-X-Google-Smtp-Source: APiQypJrUhyYA6eIUGGgJcjrqq1cwsp/c/5N3NCgUojyXGkteJmlTHd/jobI+4R52CMh5aoP0a31hg==
-X-Received: by 2002:a67:eb92:: with SMTP id e18mr1570404vso.67.1586891218191;
-        Tue, 14 Apr 2020 12:06:58 -0700 (PDT)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id t67sm3101675vkc.39.2020.04.14.12.06.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 12:06:57 -0700 (PDT)
-Received: by mail-vs1-f50.google.com with SMTP id u11so677459vsu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:06:57 -0700 (PDT)
-X-Received: by 2002:a67:8dc8:: with SMTP id p191mr1616800vsd.198.1586891216585;
- Tue, 14 Apr 2020 12:06:56 -0700 (PDT)
+        Tue, 14 Apr 2020 15:39:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586893141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RUlH4sbSgo9eT5+QKvwXQtoxUNAaT+Wa5wO2eVFJNO0=;
+        b=CzCmIF6lBbpPKVMqXaJFh30Je7aWjdzUydqhA07g5S5X/vsrbl50w1J6S3zIpXR6Tq+7f2
+        /euGa9BafelOVgNMrwmIsgUj/VrpxWzXIwfzrebY7ikgVfMrtMU0va1G5i42OwnIL0St/2
+        fl0AhcPciZQqWWKQ2WDI3BT/ygQe2MA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-UVDK63RMMBK0YMgqki-D8Q-1; Tue, 14 Apr 2020 15:08:18 -0400
+X-MC-Unique: UVDK63RMMBK0YMgqki-D8Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 253AE800D53;
+        Tue, 14 Apr 2020 19:08:17 +0000 (UTC)
+Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7103B126518;
+        Tue, 14 Apr 2020 19:08:16 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 14:08:14 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
+ module_disable_ro()
+Message-ID: <20200414190814.glra2gceqgy34iyx@treble>
+References: <cover.1586881704.git.jpoimboe@redhat.com>
+ <20200414182726.GF2483@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200414185744.84581-1-john.stultz@linaro.org>
-In-Reply-To: <20200414185744.84581-1-john.stultz@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 14 Apr 2020 12:06:45 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
-Message-ID: <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
-Subject: Re: [RESEND][PATCH v2] phy: qcom-qusb2: Re add "qcom,sdm845-qusb2-phy"
- compat string
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200414182726.GF2483@worktop.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Apr 14, 2020 at 11:57 AM John Stultz <john.stultz@linaro.org> wrote:
+On Tue, Apr 14, 2020 at 08:27:26PM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 14, 2020 at 11:28:36AM -0500, Josh Poimboeuf wrote:
+> > Better late than never, these patches add simplifications and
+> > improvements for some issues Peter found six months ago, as part of his
+> > non-writable text code (W^X) cleanups.
+> 
+> Excellent stuff, thanks!!
 >
-> This patch fixes a regression in 5.7-rc1.
->
-> In commit 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2
-> PHY support"), the change was made to add "qcom,qusb2-v2-phy"
-> as a generic compat string. However the change also removed
-> the "qcom,sdm845-qusb2-phy" compat string, which is documented
-> in the binding and already in use.
->
-> This patch re-adds the "qcom,sdm845-qusb2-phy" compat string
-> which allows the driver to continue to work with existing dts
-> entries such as found on the db845c.
->
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Doug Anderson <dianders@chromium.org>
-> Cc: Manu Gautam <mgautam@codeaurora.org>
-> Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Fixes: 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2 PHY support")
-> Reported-by: YongQin Liu <yongqin.liu@linaro.org>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> I'll go brush up these two patches then:
+> 
+>   https://lkml.kernel.org/r/20191018074634.801435443@infradead.org
+>   https://lkml.kernel.org/r/20191018074634.858645375@infradead.org
 
-Re-adding reviews from:
-https://lore.kernel.org/r/158631458374.216820.17829557619378130779@swboyd.mtv.corp.google.com
-https://lore.kernel.org/r/CAD=FV=Wh9_4a-cDGPdpMrXUi_HmJvS-a2Ubeyo5WG3sgwVWKKQ@mail.gmail.com
+Ah right, I meant to bring that up.  I actually played around with those
+patches.  While it would be nice to figure out a way to converge the
+ftrace module init, I didn't really like the first patch.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+It bothers me that both the notifiers and the module init() both see the
+same MODULE_STATE_COMING state, but only in the former case is the text
+writable.
 
-...as of an hour ago Bjorn also picked up:
+I think it's cognitively simpler if MODULE_STATE_COMING always means the
+same thing, like the comments imply, "fully formed" and thus
+not-writable:
 
-https://lore.kernel.org/r/1583747589-17267-8-git-send-email-sanm@codeaurora.org
+enum module_state {
+	MODULE_STATE_LIVE,	/* Normal state. */
+	MODULE_STATE_COMING,	/* Full formed, running module_init. */
+	MODULE_STATE_GOING,	/* Going away. */
+	MODULE_STATE_UNFORMED,	/* Still setting it up. */
+};
 
-...and it's now in the Qualcomm for-next and ci-next.  It's still a
-bit of a pain that -rc1 will have the regression since many other
-maintainers will base their next branches on that, but not much to be
-done about it now.
+And, it keeps tighter constraints on what a notifier can do, which is a
+good thing if we can get away with it.
 
--Doug
+> and write a patch that makes the x86 code throw a wobbly on W+X.
+> 
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+
+Thanks!
+
+-- 
+Josh
+
