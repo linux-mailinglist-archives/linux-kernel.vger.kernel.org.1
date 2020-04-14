@@ -2,141 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490361A75F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372E21A758F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436743AbgDNIZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S2407039AbgDNILZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436713AbgDNIYo (ORCPT
+        by vger.kernel.org with ESMTP id S2407026AbgDNILS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:24:44 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on062d.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe02::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B96AC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:18:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iTmsh+6u1b+9LKOIQNJww3FgO1MUSDFclLXRVxfVPk9WUPTH0Szhs//ArCi7gxV4SnyvgsR0H9gw7i2ULoh4rY+ZNysNlAlKvyzxvI/AwLE1VQQXl43jiZCb0lylNm4Nuq9PA2XtMPswDNTBsoAL/MMoVmuhEmHJCcAMrQJqIlbohginnMDrMlGFxjcFgP9PI/hrlX9QnkaZSrg6GIFZFwkdg50eW+VhzvhHgwqeEx1roUXiz9MZ4g+xE5IKtyy6DzvDeqBQ2HkayOiztdJkcMS3l5cOMRIgkmZfM0Q8kfSRjJpZdcAbiW3sJlSTKLIRO/2Z7lRR1TZtWAdftw9g+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4tC66cTJ89BNeaHvzMKQcbO3/xuvJdWcFBmJTwpL6Tc=;
- b=XnmRDvPp6u/Wqd23K1vTP6EbKy0FuXgQHYX9WZDatcaaos0OwrB/pJVlOtXLAvSCFA+H/tyb2UiYIgPOenjCHfpmtRySq+2nxdxxfvfsRs9+wZMZKU46sRo+Gc3sHKbcosMpZsfF1yOmqkcFFY8rqX3BFLuRKrWu650u29ZKU/139aV6tP3JYYTa3GvXY/o8S4ylVoXIUiXN4LJFMF3MgBLaV+yAcgDSvrAmRtcNNmY9nB+ynIJ0oUeDq7ElX5ysCCka5fq6Rw4Rulw0kEstlk0b/jOB1HNhiHXWy38+T2Ps4SvbYu63ZkbtFhDfkHy+A8oEPMppS1zVg+qH7kpw2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4tC66cTJ89BNeaHvzMKQcbO3/xuvJdWcFBmJTwpL6Tc=;
- b=PU3oFjoC6LmUjmT+GgiO2GsdEqCc6lFM6fYz/dLQI1YTo+U6+pKMFZAEW9YTkXXXmox0bX+HHncdKDag3SSRpYzfqbvXUfU/2ibD7Sz+Z+qLpqnNKAud0ZrBk7Qf40p+dqktzOulMHwAGDjRrdaG6DZhrdgZMBjXV7bsyGtMs+M=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-Received: from AM0PR04MB4481.eurprd04.prod.outlook.com (2603:10a6:208:70::15)
- by AM0PR04MB6724.eurprd04.prod.outlook.com (2603:10a6:208:17a::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.16; Tue, 14 Apr
- 2020 08:18:41 +0000
-Received: from AM0PR04MB4481.eurprd04.prod.outlook.com
- ([fe80::ad44:6b0d:205d:f8fc]) by AM0PR04MB4481.eurprd04.prod.outlook.com
- ([fe80::ad44:6b0d:205d:f8fc%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
- 08:18:41 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de,
-        jassisinghbrar@gmail.com, o.rempel@pengutronix.de,
-        leonard.crestez@nxp.com
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        Anson.Huang@nxp.com, aisheng.dong@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] mailbox: imx-mailbox: fix scu msg header size check
-Date:   Tue, 14 Apr 2020 16:10:26 +0800
-Message-Id: <1586851826-16596-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0093.apcprd02.prod.outlook.com
- (2603:1096:4:90::33) To AM0PR04MB4481.eurprd04.prod.outlook.com
- (2603:10a6:208:70::15)
+        Tue, 14 Apr 2020 04:11:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9ECBC0A3BDC
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=O3a96vzOf8hcQ+GezCIAovhsKAxB8eo+WBGQ45KCX08=; b=POeXOIAptoTj/Yv6Ki2m1jlizY
+        SxzCLvkF1HNMJqQxXxGYrkEtBQCB86xeql3/X+yfB9OGtIznYp/evwZFEqU6yV9GNXYeHPO77F+LX
+        fNLOF1JgUhd0mcQZBLYhSN1utCuvFesLW6jT2Eys1R3rBQOaKkiKIc8msi8jU4aKZJfWihFHrOMZo
+        2zdtGfUKzkJF8s86Edb9VhlsK2t2wwhsdtWIKThTMHM6DbncakxX/CVJLtOKHlgqJlOckb8nM8dT5
+        SWJOQVoB21dEFVpsaFbTqHfckHB38+JD6flXhIOEUM94Rl1B9QCYnJexQWdNLwuG0DMZPMIe4pUKM
+        U6GuOFwA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOGey-0004qv-0O; Tue, 14 Apr 2020 08:11:08 +0000
+Date:   Tue, 14 Apr 2020 01:11:07 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>
+Subject: Re: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
+Message-ID: <20200414081107.GA7315@infradead.org>
+References: <AADFC41AFE54684AB9EE6CBC0274A5D19D7ECB45@SHSMSX104.ccr.corp.intel.com>
+ <20200327074702.GA27959@infradead.org>
+ <20200327165335.397f24a3@jacob-builder>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D7FE150@SHSMSX104.ccr.corp.intel.com>
+ <20200330090746.23c5599c@jacob-builder>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D8011A9@SHSMSX104.ccr.corp.intel.com>
+ <20200331085444.44bee0bb@jacob-builder>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
+ <20200402113604.6eea1e6f@jacob-builder>
+ <20200413134157.395981a6@jacob-builder>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.67) by SG2PR02CA0093.apcprd02.prod.outlook.com (2603:1096:4:90::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2900.16 via Frontend Transport; Tue, 14 Apr 2020 08:18:37 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 641d2a65-68c9-460c-0027-08d7e04c70ce
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6724:|AM0PR04MB6724:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB67241FFA827BDA53397544A288DA0@AM0PR04MB6724.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-Forefront-PRVS: 0373D94D15
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4481.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(346002)(396003)(39850400004)(136003)(366004)(69590400007)(316002)(16526019)(8936002)(9686003)(6512007)(8676002)(5660300002)(478600001)(66946007)(66476007)(81156014)(6666004)(2906002)(36756003)(66556008)(86362001)(52116002)(186003)(2616005)(4326008)(26005)(6506007)(956004)(15650500001)(6486002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 93Zb3XKBd7s3dUxmpSUpB/9fHGkGAb80nIUZ351TSrge3k7pt1UkWeEOobxm1mlijjJtdpEQmOtDkYTX7/dANH9/HTrFnsJPDNnhhKOFh1lUOHh+JcNRjGeD7d3pakSAgRC0YJ+rMiGcsPpjKHYZOIbmdJ7i/z7pw1injAZOV5PpvU9LseQDdhgjQe4vo5kKQL/jRT67fSkKJdGY28yr5n3JgBESMKQCfAweJE8FO5oKSzsvB5L3Eki6qz1mgdzWhg9ScUk65iMkrNhtTMZZnoHIE2Vi3a9Imdxf8eNvrjXx4f86MJi78X2pmHoJLOJuh9pnx/mh/4wOQsPt4XmM0goKVpXq3hzZDn4njDdabW9/oASQwfMytqn03+XIuOD4hOW5dkAM1vZSuAjW58gEGNrCZR7XBX6xT2Opd5LnkGleGNJtA+Y9b7XQCTDU46oyYiUmor704jwBHICgcR1o+QKzzI25zMXMFOuXqOQijSKfrDU28h/mNDdPO3olPqdN
-X-MS-Exchange-AntiSpam-MessageData: TOfm9Iue543fqmYrmFvZuioKoiOZLRDgA1QIKQxHLD2nYNggMYSVk7JtPxnrl0Gs+QqKkOrEtrIAa+dyaPus4/eEi+SNWtsl/FTNLcSQ9eMkGQc3H2pgqrNsXmwVhId8+EK5imqV8CrkKWGY0R0yXA==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 641d2a65-68c9-460c-0027-08d7e04c70ce
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2020 08:18:41.3138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ayxUYNV3b+gqRX7Fa2ed2WnMAW59YjmMzGjdy+kxdrgMvFOq3/KB/MX85boWt4bK90q4Sz987Ao6ggXom4JBQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6724
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413134157.395981a6@jacob-builder>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Mon, Apr 13, 2020 at 01:41:57PM -0700, Jacob Pan wrote:
+> Hi All,
+> 
+> Just a gentle reminder, any feedback on the options I listed below? New
+> ideas will be even better.
+> 
+> Christoph, does the explanation make sense to you? We do have the
+> capability/flag based scheme for IOMMU API extension, the version is
+> mainly used for size lookup. Compatibility checking is another use of
+> the version, it makes checking easy when a vIOMMU is launched.
 
-The i.MX8 SCU message header size is the number of "u32" elements,
-not "u8", so fix the check.
-
-Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-Addresses-Coverity-ID: 1461658 ("Memory - corruptions")
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
-
-V2:
- I not include the fixes tag, since this patch still in next tree.
-
- drivers/mailbox/imx-mailbox.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
-index 7906624a731c..c2398cb63ea0 100644
---- a/drivers/mailbox/imx-mailbox.c
-+++ b/drivers/mailbox/imx-mailbox.c
-@@ -154,12 +154,12 @@ static int imx_mu_scu_tx(struct imx_mu_priv *priv,
- 
- 	switch (cp->type) {
- 	case IMX_MU_TYPE_TX:
--		if (msg->hdr.size > sizeof(*msg)) {
-+		if (msg->hdr.size > (sizeof(*msg) / 4)) {
- 			/*
- 			 * The real message size can be different to
- 			 * struct imx_sc_rpc_msg_max size
- 			 */
--			dev_err(priv->dev, "Exceed max msg size (%zu) on TX, got: %i\n", sizeof(*msg), msg->hdr.size);
-+			dev_err(priv->dev, "Exceed max msg size (%zu) on TX, got: %i\n", sizeof(*msg) / 4, msg->hdr.size);
- 			return -EINVAL;
- 		}
- 
-@@ -198,9 +198,9 @@ static int imx_mu_scu_rx(struct imx_mu_priv *priv,
- 	imx_mu_xcr_rmw(priv, 0, IMX_MU_xCR_RIEn(0));
- 	*data++ = imx_mu_read(priv, priv->dcfg->xRR[0]);
- 
--	if (msg.hdr.size > sizeof(msg)) {
-+	if (msg.hdr.size > (sizeof(msg) / 4)) {
- 		dev_err(priv->dev, "Exceed max msg size (%zu) on RX, got: %i\n",
--			sizeof(msg), msg.hdr.size);
-+			sizeof(msg) / 4, msg.hdr.size);
- 		return -EINVAL;
- 	}
- 
--- 
-2.16.4
-
+No.  If you truely need different versions use different ioctl
+identifiers.  If it really is just the size pass the size and not a
+version.
