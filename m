@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BF01A75E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C3D1A75BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436673AbgDNIYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:24:06 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60225 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436523AbgDNIVC (ORCPT
+        id S2436498AbgDNIUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:20:14 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:47169 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407079AbgDNITd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:21:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586852461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TtBLM3c8JTLmBP2uDmSrWuT9/+Pwll6JJwpjBt6QX00=;
-        b=Gp1QYLF1PrEgX3vAu+dXARdbbNzC1ycYKeG+e0+OpE4vNR7LX6VMIJvieYXs4I87X9JUX/
-        gzuj5HEc/iaB6nLYR4Z289isVPNRjpA/FaBzKZI6u0tRNFN9Hc5SnZ4PMicCjfqTZnyeXs
-        lgf+SPEheVAIOy5fbj3vM1Ma0KNTWZQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-J1iW7KjONDavI80bIPdQkA-1; Tue, 14 Apr 2020 04:19:02 -0400
-X-MC-Unique: J1iW7KjONDavI80bIPdQkA-1
-Received: by mail-wm1-f71.google.com with SMTP id h184so300020wmf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:19:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TtBLM3c8JTLmBP2uDmSrWuT9/+Pwll6JJwpjBt6QX00=;
-        b=Cgr8HCbif3MIqeAvrbaP65wJqr84FJUqsxgXLu8MBWiCQ2vuevr+gQV1oi5aks2jlU
-         KqkAeDePvcGp0XO6mbrBrOMO4a7lal2QVJud/M+eSPonzeCBZKmGetB+s4BsT3FsHLQO
-         /B496O27X7AtR6hHGrAQu7CmyswBlYsIgyn8DC10pfnL7mazCIO2cri35jsu16NmhIni
-         /gubrk2xYnqPKTsR4jK1oEHWNQehJD3iQsr0Q8NTavcsl6MK0vC36iLDoPQFyDHGnrUs
-         9vI+zhwH8XoQzuI5nDOqfM6Ttvu/E+mrr/F0TvRo/NtylIvwIc6/UuPNWMHmwXqiyIVk
-         eQmw==
-X-Gm-Message-State: AGi0Pua5o8/XF2SH8cxwjfgzerASJX726memW3T52H+E0FeFi4+P6enJ
-        FwnMwJk+BnUGKhoWIj1vXPUqO7a2a0PuTqHKc079HiICaixpg+4f0ewBwHd5m7zWe9UvoqXPXcw
-        8hR/l7gWYOnBdVWzowiM2Q/+9
-X-Received: by 2002:a05:6000:8b:: with SMTP id m11mr8390693wrx.168.1586852341223;
-        Tue, 14 Apr 2020 01:19:01 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKNVMzJLyv+Go05DzXWcde1VJnPobjfS5TpC3OSGCsAYJkHQBkL4kr8iyDzRWBXP64iQWFZGA==
-X-Received: by 2002:a05:6000:8b:: with SMTP id m11mr8390681wrx.168.1586852340970;
-        Tue, 14 Apr 2020 01:19:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:e159:eda1:c472:fcfa? ([2001:b07:6468:f312:e159:eda1:c472:fcfa])
-        by smtp.gmail.com with ESMTPSA id o28sm3426907wra.84.2020.04.14.01.18.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 01:19:00 -0700 (PDT)
-Subject: Re: [PATCH] kvm_host: unify VM_STAT and VCPU_STAT definitions in a
- single place
-To:     =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org
-References: <20200413140332.22896-1-eesposit@redhat.com>
- <03a481a8-bcf2-8755-d113-71ef393508bf@amsat.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bf870876-9f9a-7ba8-d941-a3883e519eed@redhat.com>
-Date:   Tue, 14 Apr 2020 10:18:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 14 Apr 2020 04:19:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=39;SR=0;TI=SMTPD_---0TvVqOrg_1586852360;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvVqOrg_1586852360)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 14 Apr 2020 16:19:21 +0800
+Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
+ <20200116215222.GA64230@cmpxchg.org>
+ <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
+ <20200413180725.GA99267@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <42d5c2cb-3019-993f-eba7-33a1d69ef699@linux.alibaba.com>
+Date:   Tue, 14 Apr 2020 16:19:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <03a481a8-bcf2-8755-d113-71ef393508bf@amsat.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200413180725.GA99267@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/20 23:34, Philippe Mathieu-DaudÃ© wrote:
->> +#define VM_STAT(x, ...) offsetof(struct kvm, stat.x), KVM_STAT_VM, ## __VA_ARGS__
->> +#define VCPU_STAT(x, ...) offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU, ## __VA_ARGS__
-> I find this macro expanding into multiple fields odd... Maybe a matter
-> of taste. Sugggestion, have the macro define the full structure, as in
-> the arm64 arch:
+
+
+ÔÚ 2020/4/14 ÉÏÎç2:07, Johannes Weiner Ð´µÀ:
+> But isolation actually needs to lock out charging, or it would operate
+> on the wrong list:
 > 
-> #define VM_STAT(n, x, ...) { n, offsetof(struct kvm, stat.x),
-> KVM_STAT_VM, ## __VA_ARGS__ }
+> isolation:                                     commit_charge:
+> if (TestClearPageLRU(page))
+>                                                page->mem_cgroup = new
+>   // page is still physically on
+>   // the root_mem_cgroup's LRU. We're
+>   // updating the wrong list:
+>   memcg = page->mem_cgroup
+>   spin_lock(memcg->lru_lock)
+>   del_page_from_lru_list(page, memcg)
+>   spin_unlock(memcg->lru_lock)
 > 
-> Ditto for VCPU_STAT().
+> lrucare really is a mess. Even before this patch series, it makes
+> things tricky and subtle and error prone.
 > 
+> The only reason we're doing it is for when there is swapping without
+> swap tracking, in which case swap reahadead needs to put pages on the
+> LRU but cannot charge them until we have a faulting vma later.
+> 
+> But it's not clear how practical such a configuration is. Both memory
+> and swap are shared resources, and isolation isn't really effective
+> when you restrict access to memory but then let workloads swap freely.
+> 
+> Plus, the overhead of tracking is tiny - 512k per G of swap (0.04%).
+> 
+> Maybe we should just delete MEMCG_SWAP and unconditionally track swap
+> entry ownership when the memory controller is enabled. I don't see a
+> good reason not to, and it would simplify the entire swapin path, the
+> LRU locking, and the page->mem_cgroup stabilization rules.
 
-Yes, that's a good idea.  Emanuele, can you switch it to this format?
+Hi Johannes,
 
-Thanks,
+I think what you mean here is to keep swap_cgroup id even it was swaped,
+then we read back the page from swap disk, we don't need to charge it.
+So all other memcg charge are just happens on non lru list, thus we have
+no isolation required in above awkward scenario.
 
-Paolo
+That sounds a good idea. so, split_huge_page and mem_cgroup_migrate should
+be safe, tasks cgroup migration may needs extra from_vec->lru_lock. Is that
+right?
 
+That's a good idea. I'm glad to have a try...
+
+BTW,
+As to the memcg swapped page mixed in swap disk timely. Maybe we could try
+Tim Chen's swap_slot for memcg. What's your idea?
+
+Thanks
+Alex
