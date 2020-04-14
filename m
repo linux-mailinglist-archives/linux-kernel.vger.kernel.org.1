@@ -2,125 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3644B1A8AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7340B1A8AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504670AbgDNTZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S2504710AbgDNT0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504638AbgDNTYs (ORCPT
+        by vger.kernel.org with ESMTP id S1730096AbgDNTYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:24:48 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABD9C03C1AE
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:16:51 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y17so14430532iow.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:16:51 -0700 (PDT)
+        Tue, 14 Apr 2020 15:24:45 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C976CC08ED7C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:18:42 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cl8so4530338pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:18:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+1oMW+73zk/UZsuvxoLBAtK4iQfyId+yP/pRZMyvftU=;
-        b=tyyZshw7bi1xv4INHCsKppsByOssHMw5Hd7CChfUn5fyS1quMU/wi/0vSvbLRN5Q0Z
-         r7/t/Nqn3DgGrPZ6Jy/twcQR9eVD5ut3IZ5y95BBYziXbcHSsWHD8PEn8Khsi4aK9HQR
-         AbD3EZZXzOUzdC1O48m+N7JWA/ToQYtJQeE7IZDY9hkLAn8b+VHP086jenTJFWFmSqLf
-         iNoEZhJVGtkAnCxQ2m1r1WTrKgcWCw+2RlRZMPDjaMfjsdwTCc3Q5UbacoLyeHYtWnxV
-         N2bzPBr6iuhTgBiKWew8o30nyelngep2WnqwIHjZD8DDvzJfoXbpev800Kwjvd+0p1lw
-         LifQ==
+         :cc;
+        bh=9+M6Pn4GgRujfdty6eeHXakq5Khx9VZcPgigNopm4jo=;
+        b=twJvBaXa02w3g8WiVFlHn8ntYIdw/yIj1nUgMG/eakdQZmhF2XqZHd4odiS+31mS2e
+         gzU3L49LtqK4GPDrA9HNak8MZ6J/hYs5psatwpEVxuYWYUlwbsExTl95hQEb4LqaDr2c
+         zwfw02wJHR74A/V9wZITuDkw5c1evZWm2UyJGAGeB4A64G0D4/4p9gaFhdqoE0wkhyYV
+         0jY31Y9N9PIdddsA9gMIURAY6XHkARexddMUDUf4q71Gx5WUvcB3qFCNgsI6nmXlnWw4
+         9LrK7Zodk8m24WEIQyO9gq7zeFNq0KykMBQ6xlnw35gFZCH0qbm8VzdiR0kwc2O7YZXX
+         I8Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+1oMW+73zk/UZsuvxoLBAtK4iQfyId+yP/pRZMyvftU=;
-        b=CXhsCgSxRHHYyk4Kf8OIa7D5S9NPXeOS1Cn62qzuxEoZSpJjlKrlAudoM3XT6V9wKV
-         l2SK9jPnK3XfXtpJzTt1M6Wyg1gZ+IH1EBycMypwBlcULrjHCHVhgvY6jboVWv+v4gkp
-         nSZFs/En+SgNLOoBpAkM7+tm1vsGcGYLtQXWrNAI2/5ZIxMMIWgfATwDaBpqWscgm78e
-         QchDzv2zmiazGrO3TgygzScrbDtKYM9KOZlwTfuXRLBJgzAqAmB4rwciOSUT4V4orWm2
-         OrY8H40ZTf/ezZVmDYTh1HTG4DpyLScA0/s5CU4U6973GvLg69RjYNdFiXUk4HyzlRxG
-         /ICg==
-X-Gm-Message-State: AGi0PuY7YB/ALAip0Hltl+TwEJRU0WYck3l5grgiNFWE19+69ZhGJPt5
-        pVO6L2hJt5y+2pb1TaaduFEwGQWfipoMq03M1tE=
-X-Google-Smtp-Source: APiQypLvVvaTJ20aRKds80SKfsfkdBP/7YX1znqZgfJflhsOKwwQiDSz+3hfYAWKl5ISCQaexOI42mWWAQkQ2dRBER0=
-X-Received: by 2002:a6b:dd16:: with SMTP id f22mr11506998ioc.178.1586891810616;
- Tue, 14 Apr 2020 12:16:50 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=9+M6Pn4GgRujfdty6eeHXakq5Khx9VZcPgigNopm4jo=;
+        b=XIZ2sky2VNRs4y5onon+WCa0JaNBk4ZYm9JkPUjREAInUqO04gIJMHJdWdhuOEyyJ3
+         t26mBwsA4kLx8kAjma4fSixDvNyYeLjPz3YSM4tjwmw7O5IrkY5pbKGEsIKIdLA+3HYt
+         AqD9jCkx1kDUh5+/l+qS34Q8Lpa7b/U015xLPAOCvUjzP43YL0KNoKizwHvI1Q+ALxjt
+         +Ai/2Pq08rue7pg44DR86n3RqehqJbQzxxRdWz6N/vzW9wyJip3l07HsvGuN3lQdILc+
+         IkUgsB321uUOAbfra9Rn6GR2C1uhUS5wuEpKyGo1wb9hIOzl6r8HxL8N8h1zdyijQSBV
+         RuSg==
+X-Gm-Message-State: AGi0Pual3uSyywsr+H9sXSbOZsDpGkwCgj9x4Xy1FG4BeKFC+c7VcWW0
+        1R0mVccOiR4c1XFX1SHTOQW+mEAw4x0B0vfvTc2L6w==
+X-Google-Smtp-Source: APiQypLxakUPPheSHg62X3tD+BdDedT+hk8I8o/owKCoH/az+/mxqtzznke01AUARkTEVXaIiQG4iR9uVn96qodXtw4=
+X-Received: by 2002:a17:902:8ec1:: with SMTP id x1mr1362004plo.325.1586891921911;
+ Tue, 14 Apr 2020 12:18:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200411200632.4045-1-peron.clem@gmail.com> <20200411200632.4045-2-peron.clem@gmail.com>
- <c96f31a2-6ff4-31aa-aaac-2ce9eafb3bfe@arm.com> <CAJiuCcegkNGQ7j4jcT1rBpSLqG1c-nb8g0wq+Nbvt-dGj7am2Q@mail.gmail.com>
- <CAJiuCceU662o7QGJ=mmT3pzVWK7uJUN=6+NKQnZ=Cfj9c2nw7A@mail.gmail.com>
- <d6465e7e-8e05-8b7d-16bd-f40877969089@arm.com> <CAJiuCccv2XPLY6sjcgvvrG5a8ONYHa_xn9i-YUDKUDK5a0DY=A@mail.gmail.com>
- <CAJiuCcfa9ro1V4nBzfD48cCuHpEsLaNA5P0bb-tQ3hcWUCtpkA@mail.gmail.com>
- <000f26f4-3640-797f-c7f6-4b31a5e2669e@arm.com> <CAJiuCccF3tmbmMWNh0nC5WRJ1_iPdj6f1oH1zYMSue_pFrXsPQ@mail.gmail.com>
- <20200414185523.GO5412@sirena.org.uk>
-In-Reply-To: <20200414185523.GO5412@sirena.org.uk>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Tue, 14 Apr 2020 21:16:39 +0200
-Message-ID: <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/panfrost: add devfreq regulator support
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CAFd5g45GbSX1BkuaH=8639ESHi-MCGkpFhEZZpycm9=jQb93rg@mail.gmail.com>
+ <CAFd5g47aaE+tGeHPrQmhfi6_nrvi1K4DvtRodh=zN21-uiQ1DQ@mail.gmail.com>
+ <20200305223350.GA2852@mara.localdomain> <20200306120525.GC68079@kuha.fi.intel.com>
+ <CAFd5g45c9L4BBRNtxtQf_NFr2bR6Wgt9uOHW86gzb6Ozeb0SBA@mail.gmail.com>
+ <CAFd5g45cdygYfxGoCkk710tLXFADeLNb+6w-=vhkDMLP9OM7bw@mail.gmail.com>
+ <20200310111837.GA1368052@kuha.fi.intel.com> <CAFd5g452sDMZToU+FDa-Odbkd_t1708gcRMAZQG+U4LnV=Xqgw@mail.gmail.com>
+ <CA+G9fYuwv+TEhgi46pjs2-GCe0mmMHyki9nAokvGCEA2syK5Dg@mail.gmail.com>
+ <CAFd5g46Bwd8HS9-xjHLh_rB59Nfw8iAnM6aFe0QPcveewDUT6g@mail.gmail.com> <20200414081513.GD2828150@kuha.fi.intel.com>
+In-Reply-To: <20200414081513.GD2828150@kuha.fi.intel.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 14 Apr 2020 12:18:30 -0700
+Message-ID: <CAFd5g46KeNu6bmDHBiJtGqEBQEyo1ooh=wK_PJbNih+2UCLoNQ@mail.gmail.com>
+Subject: Re: BUG: kernel NULL pointer dereference, address: 00 - ida_free+0x76/0x140
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "rafael.j.wysocki" <rafael.j.wysocki@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        lkft-triage@lists.linaro.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-On Tue, 14 Apr 2020 at 20:55, Mark Brown <broonie@kernel.org> wrote:
+On Tue, Apr 14, 2020 at 1:15 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
 >
-> On Tue, Apr 14, 2020 at 08:20:23PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Hi Liam and Mark,
+> Hi,
 >
-> You might want to flag stuff like this in the subject line, I very
-> nearly deleted this without opening it since most of the email I get
-> about panfrost appears to be coming from me having sent patches rather
-> than being relevant.
-
-Ok will do next time,
-
+> On Tue, Apr 07, 2020 at 01:56:16PM -0700, Brendan Higgins wrote:
+> > On Tue, Apr 7, 2020 at 2:25 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > >
+> > > On Wed, 11 Mar 2020 at 02:16, Brendan Higgins <brendanhiggins@google.com> wrote:
+> > > > > > > > > > > > > Steps reproduce by using kselftests,
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >           - lsmod || true
+> > > > > > > > > > > > >           - cd /opt/kselftests/default-in-kernel/lib/
+> > > > > > > > > > > > >           - export PATH=/opt/kselftests/default-in-kernel/kselftest:$PATH
+> > > > > > > > > > > > >           - ./printf.sh || true
+> > > > > > > > > > > > >           - ./bitmap.sh || true
+> > > > > > > > > > > > >           - ./prime_numbers.sh || true
+> > > > > > > > > > > > >           - ./strscpy.sh || true
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > x86_64 kernel BUG dump.
+> > > > > > > > > > > > > + ./printf.sh
+> > > > > > > > > > >
+> > > > > > > > > > > Oops, I am wondering if I broke this with my change "Revert "software
+> > > > > > > > > > > node: Simplify software_node_release() function"":
+> > > > > > > > > > >
+> > > > > > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=d1c19322388d6935b534b494a2c223dd089e30dd
+> > > > > > > > > > >
+> > > > > > > > > > > I am still investigating, will update later.
+> > > > > > > > > >
+> > > > > > > > > > Okay, yeah, I am pretty sure I caused the breakage. I got an email
+> > > > > > > > > > from kernel test robot a couple days ago that I didn't see:
+> > > > > > > > > >
+> > > > > > > > > > https://lists.01.org/hyperkitty/list/lkp@lists.01.org/thread/N3ZN5XH7HK24JVEJ5WSQD2SK6YCDRILR/
+> > > > > > > > > >
+> > > > > > > > > > It shows the same breakage after applying this change.
+> > > > > > > > > >
+> > > > > > > > > > I am still investigating how my change broke it, nevertheless.
+> > > > > > > > >
+> > > > > > > > > As nodes in the tree are being removed, the code before the patch that
+> > > > > > > > > "simplified" the software_node_release() function accessed the node's parent
+> > > > > > > > > in its release function.
+> > > > > > > > >
+> > > > > > > > > And if CONFIG_DEBUG_KOBJECT_RELEASE is defined, the release functions are no
+> > > > > > > > > longer necessarily called in order, leading to referencing released memory.
+> > > > > > > > > Oops!
+> > > > > > > > >
+> > > > > > > > > So Heikki's patch actually fixed a bug. :-)
+> > > > > > > >
+> > > > > > > > Well, I think it just hid the problem. It looks like the core
+> > > > > > > > (lib/kobject.c) allows the parent kobject to be released before the
+> > > > > > > > last child kobject is released. To be honest, that does not sound
+> > > > > > > > right to me...
+> > > > > > > >
+> > > > > > > > I think we can workaround this problem by taking reference to the
+> > > > > > > > parent when the child is added, and then releasing it when the child
+> > > > > > > > is released, and in that way be guaranteed that the parent will not
+> > > > > > > > disappear before the child is fully released, but that still does not
+> > > > > > > > feel right. It feels more like the core is not doing it's job to me.
+> > > > > > > > The parent just should not be released before its children.
+> > > > > > > >
+> > > > > > > > Either I'm wrong about that, and we still should take the reference on
+> > > > > > > > the parent, or we revert my patch like Brendan proposed and then fix
+> > > > > > >
+> > > > > > > Either way, isn't it wrong to release the node ID before deleting the
+> > > > > > > sysfs entry? I am not sure that my fix was the correct one, but I
+> > > > > > > believe the bug that Heidi and I found is actually a bug.
+> > > > >
+> > > > > I agree.
+> > > > >
+> > > > > > > > the core with something like this (warning, I did not even try to
+> > > > > > > > compile that):
+> > > > > > >
+> > > > > > > I will try it out.
+> > > > > > >
+> > > > > > > > diff --git a/lib/kobject.c b/lib/kobject.c
+> > > > > > > > index 83198cb37d8d..ec5774992337 100644
+> > > > > > > > --- a/lib/kobject.c
+> > > > > > > > +++ b/lib/kobject.c
+> > > > > > > > @@ -680,6 +680,12 @@ static void kobject_cleanup(struct kobject *kobj)
+> > > > > > > >                 kobject_uevent(kobj, KOBJ_REMOVE);
+> > > > > > > >         }
+> > > > > > > >
+> > > > > > > > +       if (t && t->release) {
+> > > > > > > > +               pr_debug("kobject: '%s' (%p): calling ktype release\n",
+> > > > > > > > +                        kobject_name(kobj), kobj);
+> > > > > > > > +               t->release(kobj);
+> > > > > > > > +       }
+> > > > > > > > +
+> > > > > > > >         /* remove from sysfs if the caller did not do it */
+> > > > > > > >         if (kobj->state_in_sysfs) {
+> > > > > > > >                 pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+> > > > > > > > @@ -687,12 +693,6 @@ static void kobject_cleanup(struct kobject *kobj)
+> > > > > > > >                 kobject_del(kobj);
+> > > > > > > >         }
+> > > > > > > >
+> > > > > > > > -       if (t && t->release) {
+> > > > > > > > -               pr_debug("kobject: '%s' (%p): calling ktype release\n",
+> > > > > > > > -                        kobject_name(kobj), kobj);
+> > > > > > > > -               t->release(kobj);
+> > > > > > > > -       }
+> > > > > > > > -
+> > > > > > > >         /* free name if we allocated it */
+> > > > > > > >         if (name) {
+> > > > > > > >                 pr_debug("kobject: '%s': free name\n", name);
+> > > > > >
+> > > > > > Alright, so I tried it and it looks like Heikki's suggestion worked.
+> > > > > >
+> > > > > > Is everyone comfortable going this route?
+> > > > >
+> > > > > Hold on. Another way to fix the problem is to increment the parent's
+> > > > > reference count before that kobject_del(kobj) is called, and then
+> > > > > decrementing it after t->release(kobj) is called. It may be safer to
+> > > > > fix the problem like that.
+> > > >
+> > > > Right, this was your first suggestion above, right? That actually made
+> > > > more sense to me, but you seemed skeptical of it due to it being
+> > > > messier, which makes sense.
+> > > >
+> > > > Nevertheless, having children take a reference seems like the right
+> > > > thing to do because the children need to degregister themselves from
+> > > > the parent. Calling t->release() ahead of kobject_del() seems to
+> > > > reintroduce the problem that I pointed out, albeit *much* more
+> > > > briefly. If I understand correctly, it is always wrong to have a sysfs
+> > > > entry that points to a partially deallocated kobject. Please correct
+> > > > me if I am wrong.
+> > > >
+> > > > So I think there are two solutions: Either we have to ensure that each
+> > > > child is deallocated first so we can preserve the kobject_del() and
+> > > > then t->release() ordering, or we have to add some sort of "locking"
+> > > > mechanism to prevent the kobject from being accessed by anything other
+> > > > than the deallocation code until it is fully deallocated; well, it
+> > > > would have to prevent any access at all :-). I think it goes without
+> > > > saying that this "locking" idea is pretty flawed.
+> > > >
+> > > > The problem with just having children take a reference is that the
+> > > > kobject children already take a reference to their parent, so it seems
+> > > > like the kobject should be smart enough to deallocate children rather
+> > > > than having swnode have to keep a separate tally of children, no?
+> > > >
+> > > > Sorry if this all seems obvious, I am not an expert on this part of the kernel.
+> > > >
+> > > > > My example above proofs that there is the problem, but it changes the
+> > > > > order of execution which I think can always have other consequences.
+> > > > >
+> > > > > > Also, should I send this fix as a separate patch? Or do people want me
+> > > > > > to send an updated revision of my revert patch with the fix?
+> > > > >
+> > > > > This needs to be send in its own separate patch. Ideally it could be
+> > > > > send together with the revert in the same series, but I'm not sure
+> > > > > that's possible anymore. Didn't Greg pick the revert already?
+> > > >
+> > > > Sounds good.
+> > > >
+> > > > I did already let Greg know when he emailed us on backporting the
+> > > > patch to stable, and he acked saying he removed them. So as long as
+> > > > these are not in the queue for 5.6 (it is not in Linus' tree yet), we
+> > > > should be good.
+> > >
+> > > The reported bug is still noticed on Linux mainline master branch
+> > > The Kernel BUG noticed on x86_64 and i386 running selftest on Linux
+> > > mainline kernel 5.6.0.
+> >
+> > Oh sorry, I thought that this patch was dropped from the maintainer's
+> > for-next branch.
+> >
+> > Heikki, what do you think about my suggestion of having kobject
+> > deallocate its children?
 >
-> > We are having an issue with Panfrost driver registering two times the
-> > same regulator and giving an error when trying to create the debugfs
-> > folder.
+> I'm not sure what was this suggestion?
 >
-> > Could you clarify if it is allowed for a device to register two times
-> > the same regulator?
+> > In the meantime, are people cool with the patch that Heikki proposed
+> > as a temporary mitigation? I think my solution might be a bit more
+> > involved. If I don't hear anything back, I will send out Heikki's
+> > suggestion as a patch.
 >
-> > I check Documentation/power/regulator/regulator.rst but this point is
-> > not specified.
+> Why not just take the reference to the parent like I proposed?
 >
-> We don't actively prevent it and I can't think what other than debugfs
-> might run into problems (and that's just a warning) but it does seem
-> like a weird thing to want to do and like it's pointing to some
-> confusion in your code with two different parts of the device
-> controlling the same supply independently.  What's the use case here?
+> diff --git a/lib/kobject.c b/lib/kobject.c
+> index 83198cb37d8d..173046c423f8 100644
+> --- a/lib/kobject.c
+> +++ b/lib/kobject.c
+> @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
+>   */
+>  static void kobject_cleanup(struct kobject *kobj)
+>  {
+> +       struct kobject *parent = kobj->parent;
+>         struct kobj_type *t = get_ktype(kobj);
+>         const char *name = kobj->name;
+>
+> @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
+>                 kobject_uevent(kobj, KOBJ_REMOVE);
+>         }
+>
+> +       /* make sure the parent is not released before the (last) child */
+> +       kobject_get(parent)
+> +
+>         /* remove from sysfs if the caller did not do it */
+>         if (kobj->state_in_sysfs) {
+>                 pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+> @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
+>                 t->release(kobj);
+>         }
+>
+> +       kobject_put(parent);
+> +
+>         /* free name if we allocated it */
+>         if (name) {
+>                 pr_debug("kobject: '%s': free name\n", name);
 
-Panfrost first probe clock, reset and regulator in device_init:
-https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/gpu/drm/panfrost/p=
-anfrost_drv.c#L602
-Then it probe for optional devfreq, devfreq will get opp tables and
-also get regulator again.
-https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/gpu/drm/panfrost/p=
-anfrost_drv.c#L609
+Ah, I think that will work. Sorry, I just thought that was a bit
+kludgy, but if you are okay with doing it that way, I think it will
+work.
 
-That's can be reworked and Panfrost can only probe regulator if there
-is no opp-table.
-
-But if multiple regulator is not an issue and as each request is logic.
-The first in device_init assure to enable the regulator and the second
-in OPP assure the voltage level.
-
-Maybe we can just fix this warning?
-
-Thanks,
-Clement
+I will try it and send out a patch.
