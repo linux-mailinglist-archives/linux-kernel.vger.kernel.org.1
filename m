@@ -2,258 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4691A88E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500A01A88EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503651AbgDNSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2503629AbgDNSOP (ORCPT
+        id S2503683AbgDNSOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:14:50 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33735 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503671AbgDNSOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:14:15 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B55C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:14:14 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id f13so5977173ybk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ANLrY4ni7/9H944gaMoVhVUXyiL5aEmRMiwWCB+UJKE=;
-        b=iLnREQsqffwaJy3FePccTuETnEVFwlaFpld2yrIrRXQ7A36BwmrE1GlAwupPa5L47g
-         VmnZWDR9jqg/phbSSPtf8QcENJgUg7GH8O5O2/NbFIEYHag5LVgk3Wge6H63DxzZd6P9
-         MItSwoJezoC7yFPTOHK2U0vX9qFBErGLI9hJ7kPLq6rhbzCAAfwuhsB0p3yilxsr9mpX
-         Qai3Q3wqsMvrXZ3kklG5YlM5Um7gWA8NXiJEy3fSFEHoewS5hPrA3R4nORvxYnHvJC+q
-         yxcAMO8IPG3pGrXtWLD+zjvnoXEXvf2AALtjJ1UdXw9Dj757IeTV9LfNWmidYc8N+1Yz
-         P6pg==
+        Tue, 14 Apr 2020 14:14:47 -0400
+Received: by mail-ot1-f68.google.com with SMTP id j26so414481ots.0;
+        Tue, 14 Apr 2020 11:14:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ANLrY4ni7/9H944gaMoVhVUXyiL5aEmRMiwWCB+UJKE=;
-        b=OHILTKaLan5q5TqA/Eo7SF+YYZPd2od2EbUZ4yIWIVDZ6TjmQVYk3kniOauxQcPPTX
-         JIKot3xpLdRYXUdfJojwKU6svguL+Cwmvda1DVlcKmpgsUdoY9WkYbhfAILyBJgShopx
-         P2dFOS6Nmtz4gyTasSCTH4D0Tny9UaiqhswPoy8pnEO9zYxzjLRRcWwN7X96NNNo8RGT
-         vJW/Dl5TPwNck/e2YQTe9/LATw90yYF/SejUuwmZNPLi1y/6K+tEiikypxr/qDidr0as
-         8BSDU6jVfC2R9uGrEpnfCnwgWPehgHBfmp1Q/hxDhKvw7V6ybS/xn6EK2s4ifh9hZai4
-         TThA==
-X-Gm-Message-State: AGi0PuY0ElF2qhSrhKvolyVKN7Mq6GQMuiOQNG6g59yYRc9t+gS62pfv
-        4mJTmukMFU7t9BNPHIS0dJtCs7eSoPxj8AQZVoeYVQ==
-X-Google-Smtp-Source: APiQypJykLo1er/rJmbEdiyFYjwm7+CD4HzCNR2GAZsEgaOKmBtuRhgU0Ng44D7rAjxhNkfFtPyHmipGv/BFzHbg8Nw=
-X-Received: by 2002:a25:aaa4:: with SMTP id t33mr2030364ybi.324.1586888053511;
- Tue, 14 Apr 2020 11:14:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vo+OgfcLNvRkk7b5MXN+3p/k/pIzdHE7xLuHzqtnamk=;
+        b=aetBvNee6921I484h0Ks6mj4ZkbFiZS/lHjtqYW9UfHY0WVWBHwez3goyP1DBHBJqO
+         XKiu6/aiv42PDl8pBXE69kCZwVnkCTrpfNV6QFSe2vqbsSjFMsFYTn1NeAzvz/FQ7LV2
+         eTSoaQmeqRBrqRHVDQctih53Z0iJEXaDeXoOvRbznQUhlq+HsQiinfXIvdkJ+HrA3pzv
+         wrFXZC2V5bFI7VlYuvILIZs77kuJeDLLISRRmutIr0TZDnwDv1wD6zV9RV07cjDjG2Lt
+         dkIUJCwcXF6q0qQciN3UGOPJzvSGimtFQnhGuHJ/QVlQPkFGm3mTjpReQA9C/DbiHN09
+         FJPw==
+X-Gm-Message-State: AGi0PubUps7WhEajzHfxPUpsj2+p4zDRO+lsDtcdcCmKmnGxHbkaBzOt
+        rxmWy5L24bw4FZ8fnEUIiZRsALs=
+X-Google-Smtp-Source: APiQypKVLpJlG8c1B5PJ1L+aaHIRDG6Xc7WJ9Gk7A+JotcjqcV7ZsbWp8UQdCQSVEqQaQL3Ly19FYg==
+X-Received: by 2002:a9d:5187:: with SMTP id y7mr18979852otg.159.1586888085983;
+        Tue, 14 Apr 2020 11:14:45 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o73sm5658056ota.77.2020.04.14.11.14.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 11:14:45 -0700 (PDT)
+Received: (nullmailer pid 17428 invoked by uid 1000);
+        Tue, 14 Apr 2020 18:14:44 -0000
+Date:   Tue, 14 Apr 2020 13:14:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     skomatineni@nvidia.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, frankc@nvidia.com, hverkuil@xs4all.nl,
+        sakari.ailus@iki.fi, helen.koike@collabora.com, digetx@gmail.com,
+        sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v6 5/9] dt-binding: tegra: Add VI and CSI bindings
+Message-ID: <20200414181444.GA17346@bogus>
+References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
+ <1585963507-12610-6-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-References: <20200411074631.9486-1-irogers@google.com> <20200411074631.9486-5-irogers@google.com>
- <20200414152102.GC208694@krava>
-In-Reply-To: <20200414152102.GC208694@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Apr 2020 11:14:01 -0700
-Message-ID: <CAP-5=fW6LgbEodo0StNXBm+hjEEhrQ8JFBU8tYEfeoCURmakaQ@mail.gmail.com>
-Subject: Re: [PATCH v8 4/4] perf tools: add support for libpfm4
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1585963507-12610-6-git-send-email-skomatineni@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 8:21 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Sat, Apr 11, 2020 at 12:46:31AM -0700, Ian Rogers wrote:
->
-> SNIP
->
-> >  TAG_FOLDERS= . ../lib ../include
-> >  TAG_FILES= ../../include/uapi/linux/perf_event.h
-> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> > index 965ef017496f..7b64cd34266e 100644
-> > --- a/tools/perf/builtin-list.c
-> > +++ b/tools/perf/builtin-list.c
-> > @@ -18,6 +18,10 @@
-> >  #include <subcmd/parse-options.h>
-> >  #include <stdio.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include "util/pfm.h"
-> > +#endif
->
-> so we have the HAVE_LIBPFM you could do the:
->
-> #ifdef HAVE_LIBPFM
-> #else
-> #endif
->
-> in util/pfm.h and add stubs for libpfm_initialize and others
-> in case HAVE_LIBPFM is not defined.. that clear out all the
-> #ifdefs in the change
->
->
-> SNIP
->
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index b6322eb0f423..8b323151f22c 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -313,6 +313,15 @@ static struct test generic_tests[] = {
-> >               .desc = "maps__merge_in",
-> >               .func = test__maps__merge_in,
-> >       },
-> > +     {
-> > +             .desc = "Test libpfm4 support",
-> > +             .func = test__pfm,
-> > +             .subtest = {
-> > +                     .skip_if_fail   = true,
-> > +                     .get_nr         = test__pfm_subtest_get_nr,
-> > +                     .get_desc       = test__pfm_subtest_get_desc,
-> > +             }
->
-> awesome :)
->
-> SNIP
->
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index d23db6755f51..83ad76d3d2be 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -2447,9 +2447,15 @@ bool perf_evsel__fallback(struct evsel *evsel, int err,
-> >               const char *sep = ":";
-> >
-> >               /* Is there already the separator in the name. */
-> > +#ifndef HAVE_LIBPFM
-> >               if (strchr(name, '/') ||
-> >                   strchr(name, ':'))
-> >                       sep = "";
-> > +#else
-> > +             if (strchr(name, '/') ||
-> > +                 (strchr(name, ':') && !evsel->is_libpfm_event))
-> > +                     sep = "";
-> > +#endif
->
->
->   ^^^^^^^^
->
-> >
-> >               if (asprintf(&new_name, "%s%su", name, sep) < 0)
-> >                       return false;
-> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> > index 53187c501ee8..397d335d5e24 100644
-> > --- a/tools/perf/util/evsel.h
-> > +++ b/tools/perf/util/evsel.h
-> > @@ -76,6 +76,9 @@ struct evsel {
-> >       bool                    ignore_missing_thread;
-> >       bool                    forced_leader;
-> >       bool                    use_uncore_alias;
-> > +#ifdef HAVE_LIBPFM
-> > +     bool                    is_libpfm_event;
-> > +#endif
->
-> perhaps we could had this one in unconditionaly,
-> because I think we have some members like that
-> for aux tracing.. and that would remove the #ifdef
-> above
->
->
-> SNIP
->
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +struct evsel *parse_events__pfm_add_event(int idx, struct perf_event_attr *attr,
-> > +                                     char *name, struct perf_pmu *pmu)
-> > +{
-> > +     return __add_event(NULL, &idx, attr, false, name, pmu, NULL, false,
-> > +                        NULL);
-> > +}
-> > +#endif
->
-> could you instead add parse_events__add_event and call it from pfm code?
+On Fri, 3 Apr 2020 18:25:03 -0700, Sowjanya Komatineni wrote:
+> Tegra contains VI controller which can support up to 6 MIPI CSI
+> camera sensors.
+> 
+> Each Tegra CSI port from CSI unit can be one-to-one mapper to
+> VI channel and can capture from an external camera sensor or
+> from built-in test pattern generator.
+> 
+> This patch adds dt-bindings for Tegra VI and CSI.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../display/tegra/nvidia,tegra20-host1x.txt        | 73 ++++++++++++++++++----
+>  1 file changed, 60 insertions(+), 13 deletions(-)
+> 
 
-I wasn't clear whether this was just a name change given the different
-arguments on existing functions. Hopefully everything is addressed in
-the v9 set:
-https://lore.kernel.org/lkml/20200414181054.22435-2-irogers@google.com/T/#m32fc3e3605e49b01e12418f59ef3977cab0561ed
-
-Thanks,
-Ian
-
-> SNIP
->
-> > +             pmu = perf_pmu__find_by_type((unsigned int)attr.type);
-> > +             evsel = parse_events__pfm_add_event(evlist->core.nr_entries,
-> > +                                             &attr, q, pmu);
-> > +             if (evsel == NULL)
-> > +                     goto error;
-> > +
-> > +             evsel->is_libpfm_event = true;
-> > +
-> > +             evlist__add(evlist, evsel);
-> > +
-> > +             if (grp_evt == 0)
-> > +                     grp_leader = evsel;
-> > +
-> > +             if (grp_evt > -1) {
-> > +                     evsel->leader = grp_leader;
-> > +                     grp_leader->core.nr_members++;
-> > +                     grp_evt++;
-> > +             }
-> > +
-> > +             if (*sep == '}') {
-> > +                     if (grp_evt < 0) {
-> > +                             ui__error("cannot close a non-existing event group\n");
-> > +                             goto error;
-> > +                     }
-> > +                     evlist->nr_groups++;
-> > +                     grp_leader = NULL;
-> > +                     grp_evt = -1;
-> > +             }
-> > +             evsel->is_libpfm_event = true;
->
-> seems to be set twice in here
->
->
-> > +     }
-> > +     return 0;
-> > +error:
-> > +     free(p_orig);
-> > +     return -1;
-> > +}
-> > +
-> > +static const char *srcs[PFM_ATTR_CTRL_MAX] = {
-> > +     [PFM_ATTR_CTRL_UNKNOWN] = "???",
-> > +     [PFM_ATTR_CTRL_PMU] = "PMU",
-> > +     [PFM_ATTR_CTRL_PERF_EVENT] = "perf_event",
-> > +};
->
-> SNIP
->
-> thanks,
-> jirka
->
+Reviewed-by: Rob Herring <robh@kernel.org>
