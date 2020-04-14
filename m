@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABDD1A8AB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BC91A8ABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504750AbgDNT2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57372 "EHLO
+        id S2504773AbgDNT3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504730AbgDNT2o (ORCPT
+        by vger.kernel.org with ESMTP id S2504753AbgDNT26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:28:44 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57030C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:28:43 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id t3so10821470qkg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:28:43 -0700 (PDT)
+        Tue, 14 Apr 2020 15:28:58 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C789C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:28:57 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id x11so888521otp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IORMumCebuze4EyI4LOyKESUzl1Jcbf1Jp+K7sS8I70=;
-        b=ESkBcoVswaFsly4kmPHKJVb+78TgajiEpVqF1tU8LgTu2iXzxsXcGjF6O4bKbweLq1
-         yAQyXkmWSkH2sJteZkfThdHQuCVtX1fQnjNJNaUhMmNW8h3CJ71kdPd2cvsWt6Fb0CVO
-         GSik1aq66pL6+LZtJGgw9+TAdLXakjfM3U6maibzKy4wrcqSd3Y2xxIvL+CgzJDFI3Xp
-         iMAHRD64SR81483P2dlIEAK1g+52a29rb9wNCuZY4ejZVt5VR3Fn8kBmkuCSrv0CJ2q9
-         PQ3p0/IQVHwYXwHjfJkdI8dsgbY5bPk90FFDhPPafBqy9qH5KsM2868wUhY67qDcrOSK
-         yXlg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yXl5LngxcEox6tFkMcsHWj7/e31HOzYbZGvPkAeshzo=;
+        b=ejCS7DL3ag6duTxMi2Ewpv00tGgVeaaEYl909NqixmQ15Qfq51ylCT9rHeFXSPUOk2
+         vtyBZ6NZuEAQdkWQHdUA1JMWEZ5a6JIJb0+mJx2uExrZl2LAL3R0IkdFluJ5FE4QU0H3
+         XAZImBwtrpZeU6j+JV+hS3nuxF3J2vNG6uk42/IVOlWQo4YYxfDSRoioISx/gckZPhmt
+         CQ2i4dwZhU7B1CYMJik4ck7ILQHs9mpEkR5EF377I+1sComWBiqgdjX+IdeAa6W8E8KK
+         a2DSXOfoToBilcypqD49C2OvoP8jMRnBBfFpAJyp0pwsff8FnqzSXoiUU7D68iQ4qpqO
+         rdug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IORMumCebuze4EyI4LOyKESUzl1Jcbf1Jp+K7sS8I70=;
-        b=eyPITpFah5eZKa5MX/MMYmekoq/wXAFt8Ags/rLGpV+T8i2UYNhYU6zkGqx/YBFCPY
-         v25as7MB3H+lW8VC+Dm7Aj8j5F17KHmFi7A88AiH06hEj/6vI5hW/tOzzksXnhhf8a9z
-         mZoxULQRuo7x7dzPC3s3NS6fxLk3AK0xEed1EQUrj09S7KzRe7iyJnXUnkUlxaYuUfOT
-         /txlmj4cfx5yXFZiiG0hMFJktp9KOQ900ZWXrJ94lOar4ehRPo/YgBLQdMoscJsNKORK
-         EtT9dXEaJ4Zn7MrWcb1YYiAEggBp5lw734//VC/Pd5yP6HPgPBwPqGAiLef6Pv6WwpOR
-         Jw+g==
-X-Gm-Message-State: AGi0PuaKSvlo4eUcE+QAV84+Z2b3j0VoqchtTqmWOsxP6Cv1KYS/bfR7
-        AjczAwYGlY9wwHhxX+dQCWaQYg==
-X-Google-Smtp-Source: APiQypI3u+h9kUnqMBm13TwpxGsENaSz5GhDxDugW473o9Jks3w0wtIYTRQcpCEOvn4Q7jD3a2excQ==
-X-Received: by 2002:ae9:e214:: with SMTP id c20mr11087674qkc.107.1586892522518;
-        Tue, 14 Apr 2020 12:28:42 -0700 (PDT)
-Received: from localhost ([2601:441:27f:8f73:faf4:f79d:8a53:5ca2])
-        by smtp.gmail.com with ESMTPSA id m1sm11944411qtm.22.2020.04.14.12.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:28:41 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 14:28:40 -0500
-From:   Dan Rue <dan.rue@linaro.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Qian Cai <cai@lca.pw>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
-Message-ID: <20200414192840.4yp3zqbe2tgtesve@xps.therub.org>
-References: <20200408014010.80428-1-peterx@redhat.com>
- <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
- <CACT4Y+bhQVcpSkSh_OZ5ZanfFZUqn2iypLhG_Z-nWKTkaYr1jw@mail.gmail.com>
- <CAHk-=wgjGgfUfVm_DpTay5TS03pLCgUWqRpQS++90fSE2V-e=g@mail.gmail.com>
- <20200410092951.6db32bfe@canb.auug.org.au>
- <7325374A-6072-44E4-85EE-F97FC7E8565F@lca.pw>
- <CACT4Y+ZE1XhYpTsjP1J1PyUsEHYKvchww71aHb7UnSk5=4xUrw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yXl5LngxcEox6tFkMcsHWj7/e31HOzYbZGvPkAeshzo=;
+        b=Lq37kmiYzg0W6n5tWGXb2VQGwLNwkLRnBgZzFhuPZGGXMN7VANsreVc2pvj0OtjbnK
+         UuEpTVOkRmHFmu8jLAyG1oDD49SK8jBOVkUuiuGneIkFEOgtcIHfwJaK1+TwOq2vdkNZ
+         MkhVeDyag3DFotknmEK+ze8zJHVHIJT8cJQb+m/V9HRofF91it1aqjBcwb2gVU93aW6z
+         /M38UjZjFbrtjpacd6wo8ffd3bCcUH4cj18O81765Y9skU1A+fKjnJuuEtXn23hUkthQ
+         twxNssp2amJEEKzGtKh/bMwNKrkvojPy4V0iFtzHRXEPSmPZu0pp9bu7p/EJorhS7vSu
+         8BmQ==
+X-Gm-Message-State: AGi0PuaWRSpUGHlN8m4UusNCM35a9cdWwdOVbf/LcfoQzfcBjOuz3ODm
+        +kFKv/mhCTYkSkI8Jr3KCP62STBSac4fDJ19hgiVUA==
+X-Google-Smtp-Source: APiQypLNgzWQIOmbMjbOIDPabi7ahVlW8rXca4fleUQzDSYq/+Zo4l7gzAwDGKt/X8yYn92PkHHYUl5oOnJLWGe/36A=
+X-Received: by 2002:a4a:3006:: with SMTP id q6mr10846802oof.70.1586892536562;
+ Tue, 14 Apr 2020 12:28:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZE1XhYpTsjP1J1PyUsEHYKvchww71aHb7UnSk5=4xUrw@mail.gmail.com>
+References: <20200414185744.84581-1-john.stultz@linaro.org> <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
+In-Reply-To: <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 14 Apr 2020 12:28:45 -0700
+Message-ID: <CALAqxLWS7+wqARFVoDStVcf-B77sPc6GaHBKebfMh1gXyUP4HQ@mail.gmail.com>
+Subject: Re: [RESEND][PATCH v2] phy: qcom-qusb2: Re add "qcom,sdm845-qusb2-phy"
+ compat string
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:12:50PM +0200, Dmitry Vyukov wrote:
-> On Tue, Apr 14, 2020 at 12:06 AM Qian Cai <cai@lca.pw> wrote:
-> > Well, there are other CI's beyond syzbot.
-> > On the other hand, this makes me worry who is testing on linux-next every day.
-> 
-> How do these use-after-free's and locking bugs get past the
-> unit-testing systems (which syzbot is not) and remain unnoticed for so
-> long?...
-> syzbot uses the dumbest VMs (GCE), so everything it triggers during
-> boot should be triggerable pretty much everywhere.
-> It seems to be an action point for the testing systems. "Boot to ssh"
-> is not the best criteria. Again if there is a LOCKDEP error, we are
-> not catching any more LOCKDEP errors during subsequent testing. If
-> there is a use-after-free, that's a serious error on its own and KASAN
-> produces only 1 error by default as well. And as far as I understand,
-> lots of kernel testing systems don't even enable KASAN, which is very
-> wrong.
-> I've talked to +Dan Rue re this few days ago. Hopefully LKFT will
-> start catching these as part of unit testing. Which should help with
-> syzbot testing as well.
+On Tue, Apr 14, 2020 at 12:14 PM Doug Anderson <dianders@chromium.org> wrote:
+> On Tue, Apr 14, 2020 at 11:57 AM John Stultz <john.stultz@linaro.org> wrote:
+> >
+> > This patch fixes a regression in 5.7-rc1.
+> >
+> > In commit 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2
+> > PHY support"), the change was made to add "qcom,qusb2-v2-phy"
+> > as a generic compat string. However the change also removed
+> > the "qcom,sdm845-qusb2-phy" compat string, which is documented
+> > in the binding and already in use.
+> >
+> > This patch re-adds the "qcom,sdm845-qusb2-phy" compat string
+> > which allows the driver to continue to work with existing dts
+> > entries such as found on the db845c.
+> >
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Doug Anderson <dianders@chromium.org>
+> > Cc: Manu Gautam <mgautam@codeaurora.org>
+> > Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+> > Cc: Matthias Kaehlcke <mka@chromium.org>
+> > Cc: Stephen Boyd <swboyd@chromium.org>
+> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> > Cc: linux-arm-msm@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Fixes: 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2 PHY support")
+> > Reported-by: YongQin Liu <yongqin.liu@linaro.org>
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
+>
+> Re-adding reviews from:
+> https://lore.kernel.org/r/158631458374.216820.17829557619378130779@swboyd.mtv.corp.google.com
+> https://lore.kernel.org/r/CAD=FV=Wh9_4a-cDGPdpMrXUi_HmJvS-a2Ubeyo5WG3sgwVWKKQ@mail.gmail.com
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-LKFT has recently added testing with KASAN enabled and improved the
-kernel log parsing to catch more of this class of errors while
-performing our regular functional testing.
+Ah! Sorry, I thought I had added those to my git commit, but
+apparently I didn't!
 
-Incidentally, -next was also broken for us from March 25 through April 5
-due to a perf build failure[0], which eventually made itself all the way
-down into v5.6 release and I believe the first two 5.6.x stable
-releases.
-
-For -next, LKFT's gap is primarily reporting. We do build and run over
-30k tests on every -next daily release, but we send out issues manually
-when we see them because triaging is still a manual effort. We're
-working to build better automated reporting. If anyone is interested in
-watching LKFT's -next results more closely (warning, it's a bit noisy),
-please let me know. Watching the results at https://lkft.linaro.org
-provides some overall health indications, but again, it gets pretty
-difficult to figure out signal from noise once you start drilling down
-without sufficient context of the system.
-
-Dan
-
-[0] https://lore.kernel.org/stable/CA+G9fYsZjmf34pQT1DeLN_DDwvxCWEkbzBfF0q2VERHb25dfZQ@mail.gmail.com/
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Many thanks!
+-john
