@@ -2,127 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B57E1A88E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A151A88D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503669AbgDNSOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
+        id S2503595AbgDNSNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2503655AbgDNSOb (ORCPT
+        by vger.kernel.org with ESMTP id S2503463AbgDNSK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:14:31 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8B8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:14:30 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b11so4201719wrs.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:14:30 -0700 (PDT)
+        Tue, 14 Apr 2020 14:10:59 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85554C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:10:59 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id a8so653877plm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JkyvlKP4pHrJ8AdiuVHbCpIXULnDIYo0wPYklEdrEI0=;
-        b=i3/RJsjOiDyODApqcCHy5k6pUbD94Xgeu24o+JvyJIO0/hUev+OnyeoBeZUgiakGf8
-         cp1FGWJ2T3J5BY1mSv0W+CQD8k6aIy13OhLWPyvd5Oir5QAl47ngBE9vCogp28eH8FFu
-         Kr03rbEX2PcMMC7gxtPsrcLvZY3Qj+IlDw70oBumA/eMaZBjBNF/ISO0zfnTl787SSs+
-         fC05nyPsgEObHjd9uYNHw6MRJtN69fmlMOikk5tkQhbTgqalmG1MvrKL1xcQ6n51LLHr
-         +lQaCzUSSvF/GP/5639o77troTwlp4ZsiEl0z1wfoTkQJWNNzdgPzH8Y9QeMeL3jU7qe
-         jFRA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=xt0FQ7OhM8EukqmyFFBnqkbyoPvDMRZ1tj92oHDfRac=;
+        b=qKlEoBJ4Ls7aWoEZydMYbtlUT6ayNtVD/g/Z/0sllm1cAJvFSaoDidG2B9+Fpu4616
+         C6Q6b/mGrEFKgF2MH4qkq8fg+FLzlikyJGibDQxtCrxrn4/qp9bYZBQ7h7gCGQUaHb2O
+         5UdseWPJZfUzDDyCT4G+gU0DaQZ+Lll3tRLQJ1g0XC/zWm7sjAScT2T2zhVW2wEhzgOs
+         PgO2wExDPO7P8R+xhM6jtW6KxC3hglsjRiolEVi/rZEsemmLH2BNRkRxZLsFBbDt9HE6
+         Ik19YrT8kZdetkVr/reD1VcFBHlj7lITRo4moOU3Ex8gqa/kkgE6LTMCRwSd28fget2d
+         N5uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JkyvlKP4pHrJ8AdiuVHbCpIXULnDIYo0wPYklEdrEI0=;
-        b=Mm6/37ZB+FdE0LSz75i2ipDWT1qsHGMHmPPOi+lB1xgA6pS18rKt/mRg76v+5iBcbM
-         sT/223ew/a9IARH0c1xkEnGavYu2TPm/ClWRuEBde9Sds4K9S9iSg+uYHBK1QGIrNJNT
-         upQaRd7kcQI8cS+oMxIQ2RmT6SrT743I6dG81IeCmgVXfCkU/QTw+cZt/zHUB+Zq6+8E
-         eAR4A/YuMUhq3vr05nfVhxg/nACongfrIWSs07vpd2tapOfD6/yjG0cDGRbq4ChSiQhI
-         jv3/GJq2Yb/WfUWmSuIhNFlAzxq4FD1a35StzfxL1vV2pN4ksedoj4DAUY8Lujd4GHFZ
-         r1Ng==
-X-Gm-Message-State: AGi0Pub3bo3d8xxE9LKp4UWgw5+ilgoD11m7gG6sUDEMr+c7nd+o+2fY
-        IEPI0AqDixbjI9c0Ox3HXuvdJP5UOIdo3Q==
-X-Google-Smtp-Source: APiQypKuhwoq30JHZAbW4ywOg0qHXXSg5sZ8KHXcL7JXIhJgwQOYdAIWuzx+IL/PNq9ZS+9GksFmwg==
-X-Received: by 2002:a5d:4306:: with SMTP id h6mr24048996wrq.234.1586888069502;
-        Tue, 14 Apr 2020 11:14:29 -0700 (PDT)
-Received: from localhost.localdomain (dh207-97-22.xnet.hr. [88.207.97.22])
-        by smtp.googlemail.com with ESMTPSA id w12sm5387763wrk.56.2020.04.14.11.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 11:14:29 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH v2 3/3] dts: ipq4019: add MDIO node
-Date:   Tue, 14 Apr 2020 20:10:16 +0200
-Message-Id: <20200414181012.114905-3-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200414181012.114905-1-robert.marko@sartura.hr>
-References: <20200414181012.114905-1-robert.marko@sartura.hr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=xt0FQ7OhM8EukqmyFFBnqkbyoPvDMRZ1tj92oHDfRac=;
+        b=NswrxwAjQ6HcJMbm2V9OZKG+BGttVQpe16fI/Fbg4gSn1yl3/YPyS9hpdGDlGkp61+
+         Tgh8FIaq+b90zhfgX3JKdJng+qDHupTuJuQj6WJYqeAPldUoBFIkYTnbQxhcl5AJmRUY
+         SsZUeI2AXcxJE8Zo7hqHN3WUc92ylDTPtKXa43KxGLUEAMJHoUuLw+gEUk5yPrOdCaJh
+         eATFQ2R7s5D+HMjwJHaQ3MGJGeyXq4TzN7fe6FcJMkXXEycrPvABcxuaVqxhZiAyOaH+
+         dcL2NlSP3I/q79Ytb7YrbSahqGCtHdzIX8W7+UbwxLBjwmJwVRUO9o81ohmk5sDKr8/A
+         4v2A==
+X-Gm-Message-State: AGi0PuaJ0f+TETvuxMC1O4uce6HW3BHUdeo4kJ28NVawxACtR/gifGD8
+        oPropfXnm0JGsEXvk6EjT5y4eiXFP5s1
+X-Google-Smtp-Source: APiQypIyUVWAsxE+Gp+G/oBfsOKCxc1sl3WLIRsd5mNcbFq0X0SR3kDxSXyA+G4PY3EiyUyCH2fB+FDVM7B1
+X-Received: by 2002:a63:f615:: with SMTP id m21mr22855697pgh.107.1586887858880;
+ Tue, 14 Apr 2020 11:10:58 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 11:10:50 -0700
+Message-Id: <20200414181054.22435-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [PATCH v9 0/4] perf tools: add support for libpfm4
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the necessary MDIO interface node
-to the Qualcomm IPQ4019 DTSI.
+This patch links perf with the libpfm4 library if it is available
+and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
+contains hardware event tables for all processors supported by
+perf_events. It is a helper library that helps convert from a
+symbolic event name to the event encoding required by the
+underlying kernel interface. This library is open-source and
+available from: http://perfmon2.sf.net.
+    
+With this patch, it is possible to specify full hardware events
+by name. Hardware filters are also supported. Events must be
+specified via the --pfm-events and not -e option. Both options
+are active at the same time and it is possible to mix and match:
+    
+$ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
 
-Built-in QCA8337N switch is managed using it,
-and since we have a driver for it lets add it.
+v9 addresses review comments from jolsa@redhat.com in particular to reduce the
+   number of ifdefs and to make the feature extra rather than basic.
+v8 addresses review comments from jolsa@redhat.com.
+   Breaks the patch into 4, adds a test and moves the libpfm code into its
+   own file. perf list encoding tries to be closer to existing:
+...
+skx pfm-events
+  UNHALTED_CORE_CYCLES
+    [Count core clock cycles whenever the clock signal on the specific ...
+  UNHALTED_REFERENCE_CYCLES
+    [Unhalted reference cycles]
+  INSTRUCTION_RETIRED
+    [Number of instructions at retirement]
+  INSTRUCTIONS_RETIRED
+    [This is an alias for INSTRUCTION_RETIRED]
+  BRANCH_INSTRUCTIONS_RETIRED
+    [Count branch instructions at retirement. Specifically, this event ...
+  MISPREDICTED_BRANCH_RETIRED
+    [Count mispredicted branch instructions at retirement. ...
+  BACLEARS
+    [Branch re-steered]
+      BACLEARS:ANY
+        [Number of front-end re-steers due to BPU misprediction]
+  BR_INST_RETIRED
+    [Branch instructions retired (Precise Event)]
+      BR_INST_RETIRED:CONDITIONAL
+        [Counts all taken and not taken macro conditional branch ...
+...
+  and supports --long-desc/-v:
+...
+  BACLEARS
+    [Branch re-steered]
+      Code  : 0xe6
+      BACLEARS:ANY
+        [Number of front-end re-steers due to BPU misprediction]
+        Umask : 0x01 : PMU: [default] 
+      Modif : PMU: [e] : edge level (may require counter-mask >= 1) ...
+      Modif : PMU: [i] : invert (boolean)
+      Modif : PMU: [c] : counter-mask in range [0-255] (integer)
+      Modif : PMU: [t] : measure any thread (boolean)
+      Modif : PMU: [intx] : monitor only inside transactional memory ...
+      Modif : PMU: [intxcp] : do not count occurrences inside aborted ...
+      Modif : perf_event: [u] : monitor at user level (boolean)
+      Modif : perf_event: [k] : monitor at kernel level (boolean)
+      Modif : perf_event: [period] : sampling period (integer)
+      Modif : perf_event: [freq] : sampling frequency (Hz) (integer)
+      Modif : perf_event: [excl] : exclusive access (boolean)
+      Modif : perf_event: [mg] : monitor guest execution (boolean)
+      Modif : perf_event: [mh] : monitor host execution (boolean)
+      Modif : perf_event: [cpu] : CPU to program (integer)
+      Modif : perf_event: [pinned] : pin event to counters (boolean)
+  BR_INST_RETIRED
+    [Branch instructions retired (Precise Event)]
+      Code  : 0xc4
+      BR_INST_RETIRED:CONDITIONAL
+        [Counts all taken and not taken macro conditional branch ...
+        Umask : 0x01 : PMU: [precise]
 
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
- arch/arm/boot/dts/qcom-ipq4019.dtsi | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+v7 rebases and adds fallback code for libpfm4 events.
+   The fallback code is to force user only priv level in case the
+   perf_event_open() syscall failed for permissions reason.
+   the fallback forces a user privilege level restriction on the event
+   string, so depending on the syntax either u or :u is needed.
+    
+   But libpfm4 can use a : or . as the separator, so simply searching
+   for ':' vs. '/' is not good enough to determine the syntax needed.
+   Therefore, this patch introduces a new evsel boolean field to mark
+   events coming from  libpfm4. The field is then used to adjust the
+   fallback string.
+v6 was a rebase.
+v5 was a rebase.
+v4 was a rebase on
+   git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+   branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
+   missed in v3.
+v3 is against acme/perf/core and removes a diagnostic warning.
+v2 of this patch makes the --pfm-events man page documentation
+   conditional on libpfm4 behing configured. It tidies some of the
+   documentation and adds the feature test missed in the v1 patch.
 
-diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-index b4803a428340..80d0a69e9fed 100644
---- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-@@ -578,6 +578,34 @@ wifi1: wifi@a800000 {
- 			status = "disabled";
- 		};
- 
-+		mdio: mdio@90000 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "qcom,ipq40xx-mdio";
-+			reg = <0x90000 0x64>;
-+			status = "disabled";
-+
-+			ethphy0: ethernet-phy@0 {
-+				reg = <0>;
-+			};
-+
-+			ethphy1: ethernet-phy@1 {
-+				reg = <1>;
-+			};
-+
-+			ethphy2: ethernet-phy@2 {
-+				reg = <2>;
-+			};
-+
-+			ethphy3: ethernet-phy@3 {
-+				reg = <3>;
-+			};
-+
-+			ethphy4: ethernet-phy@4 {
-+				reg = <4>;
-+			};
-+		};
-+
- 		usb3_ss_phy: ssphy@9a000 {
- 			compatible = "qcom,usb-ss-ipq4019-phy";
- 			#phy-cells = <0>;
+Ian Rogers (1):
+  perf doc: allow ASCIIDOC_EXTRA to be an argument
+
+Stephane Eranian (3):
+  tools feature: add support for detecting libpfm4
+  perf pmu: add perf_pmu__find_by_type helper
+  perf tools: add support for libpfm4
+
+ tools/build/Makefile.feature             |   3 +-
+ tools/build/feature/Makefile             |   6 +-
+ tools/build/feature/test-libpfm4.c       |   9 +
+ tools/perf/Documentation/Makefile        |   4 +-
+ tools/perf/Documentation/perf-record.txt |  11 +
+ tools/perf/Documentation/perf-stat.txt   |  10 +
+ tools/perf/Documentation/perf-top.txt    |  11 +
+ tools/perf/Makefile.config               |  12 +
+ tools/perf/Makefile.perf                 |   6 +-
+ tools/perf/builtin-list.c                |  12 +-
+ tools/perf/builtin-record.c              |  11 +
+ tools/perf/builtin-stat.c                |  13 ++
+ tools/perf/builtin-top.c                 |   8 +
+ tools/perf/tests/Build                   |   1 +
+ tools/perf/tests/builtin-test.c          |   9 +
+ tools/perf/tests/pfm.c                   | 207 +++++++++++++++++
+ tools/perf/tests/tests.h                 |   3 +
+ tools/perf/util/Build                    |   2 +
+ tools/perf/util/evsel.c                  |   2 +-
+ tools/perf/util/evsel.h                  |   1 +
+ tools/perf/util/parse-events.c           |  30 ++-
+ tools/perf/util/parse-events.h           |   4 +
+ tools/perf/util/pfm.c                    | 278 +++++++++++++++++++++++
+ tools/perf/util/pfm.h                    |  43 ++++
+ tools/perf/util/pmu.c                    |  11 +
+ tools/perf/util/pmu.h                    |   1 +
+ 26 files changed, 693 insertions(+), 15 deletions(-)
+ create mode 100644 tools/build/feature/test-libpfm4.c
+ create mode 100644 tools/perf/tests/pfm.c
+ create mode 100644 tools/perf/util/pfm.c
+ create mode 100644 tools/perf/util/pfm.h
+
 -- 
-2.26.0
+2.26.0.110.g2183baf09c-goog
 
