@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4781A8887
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6071A8896
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503336AbgDNSFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:05:18 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38889 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503320AbgDNSFM (ORCPT
+        id S2503391AbgDNSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2503383AbgDNSF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:05:12 -0400
-Received: by mail-ot1-f68.google.com with SMTP id k21so593738otl.5;
-        Tue, 14 Apr 2020 11:05:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zyyunDAx2uwMbONH8a30TAmLrXMLmxuwK8FL24ovkME=;
-        b=JFxQUOQkSPavTwKxaFjhv/X3LDTpupPeFo0eKLKjS5poICwObiX7bA7UcKA1wRQuiu
-         KJlvG/PpnEDRMiyV6LDM9WCniJWHA+BcX5aQNDKmVF3HZPvSWWCQSlZab5KNAAXOwuw0
-         809MLwv5cW3O3PGGhUsDoU7swVQv/m8XrIPLTMZ+m2th6reXvqc5jp9aT9Lq90rZ0UYz
-         TQPuvSDxxY6H9+AZSEGGqlXvywCb06mWNwErHyZPsGeDgZVjKHx95ro0poiPwcXSG8qv
-         VHaAEditzZStcFuSQ9VPz+lE22Bx6spXVj+DJm/bPa7KJH0LJZXrL9BnpWDlB76v8yPJ
-         8Abw==
-X-Gm-Message-State: AGi0PuZu0IURcrgbcTftmzKk25SxkVgTPf7gG0r2hA0u0rmKIWFgl6y/
-        9tDC7CE+3jTOfYgpIeJAD9ToBvI=
-X-Google-Smtp-Source: APiQypLDJoJx7Di661s5byWD9ZVHoJghminhZPKnbjGm47MDfVVSc1w/i75wcXKy25C30Z1LkclSBg==
-X-Received: by 2002:a9d:b8c:: with SMTP id 12mr19626038oth.205.1586887511542;
-        Tue, 14 Apr 2020 11:05:11 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e21sm6180403ooh.31.2020.04.14.11.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 11:05:11 -0700 (PDT)
-Received: (nullmailer pid 22106 invoked by uid 1000);
-        Tue, 14 Apr 2020 18:05:10 -0000
-Date:   Tue, 14 Apr 2020 13:05:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Christophe Roullier <christophe.roullier@st.com>
-Cc:     davem@davemloft.net, robh+dt@kernel.org, mark.rutland@arm.com,
-        mripard@kernel.org, martin.blumenstingl@googlemail.com,
-        alexandru.ardelean@analog.com, narmstrong@baylibre.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        christophe.roullier@st.com, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH V2 2/2] dt-bindings: net: dwmac: Convert stm32 dwmac to
- DT schema
-Message-ID: <20200414180509.GA21967@bogus>
-References: <20200403140415.29641-1-christophe.roullier@st.com>
- <20200403140415.29641-3-christophe.roullier@st.com>
+        Tue, 14 Apr 2020 14:05:58 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B0DC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KweB4QuPPovogJ/b7HJZC7qbwDcSIuXed6bpI29U9Gg=; b=V8Ir9IZ4xyRcKjAO825c4ArGPl
+        Bkn9m1PaOuwrsYwsQmBviMIK0S/5Y+ByLuBPc0tKPdkmeHOcOaCekZ7z0rGXpv7XiY0r5SLzYJlmT
+        W5fsut/h+/TrkjJqH2UVyRYzrAEymceyj5F3redJFFQ76ZHUbfBO1TvROBndrFgFsf5vvDQkwHYHj
+        zSoxWDd4kpT7jZkDL3JK7ZnD4JF4xR5DI6dg/GYw9H/eJmk4TNFUGs1cNo+gzIGxNTHzEK5KKd1Oe
+        ZK1NlFrlj4lWN19V1DB7yWqdsP199uRjqbszjkdTJ+1+r9rHOTC84vG6xzt0F6NwiMuqxlSbc8bYQ
+        6ipGItIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOPwS-0000CG-Ow; Tue, 14 Apr 2020 18:05:49 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 08C8B981086; Tue, 14 Apr 2020 20:05:46 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 20:05:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "Park, Kyung Min" <kyung.min.park@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>
+Subject: Re: [PATCH v3 3/3] x86/delay: Introduce TPAUSE delay
+Message-ID: <20200414180545.GE2483@worktop.programming.kicks-ass.net>
+References: <1586561395-50914-1-git-send-email-kyung.min.park@intel.com>
+ <1586561395-50914-4-git-send-email-kyung.min.park@intel.com>
+ <20200414103106.GK20713@hirez.programming.kicks-ass.net>
+ <3908561D78D1C84285E8C5FCA982C28F7F5E3E80@ORSMSX115.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403140415.29641-3-christophe.roullier@st.com>
+In-Reply-To: <3908561D78D1C84285E8C5FCA982C28F7F5E3E80@ORSMSX115.amr.corp.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Apr 2020 16:04:15 +0200, Christophe Roullier wrote:
-> Convert stm32 dwmac to DT schema.
+On Tue, Apr 14, 2020 at 06:00:21PM +0000, Luck, Tony wrote:
+> >> +static inline void __tpause(u32 ecx, u32 edx, u32 eax)
+> >> +{
+> >> +	/* "tpause %ecx, %edx, %eax;" */
+> >> +	asm volatile(".byte 0x66, 0x0f, 0xae, 0xf1\t\n"
+> >> +		     :
+> >> +		     : "c"(ecx), "d"(edx), "a"(eax));
+> >> +}
+> >
+> > Can we please get a comment stating from what binutils version this
+> > opcode has a mnemonic? That way, when we raise the minimum binutils
+> > version we can easily grep and find such things.
 > 
-> Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
-> ---
->  .../devicetree/bindings/net/stm32-dwmac.txt   |  44 -----
->  .../devicetree/bindings/net/stm32-dwmac.yaml  | 150 ++++++++++++++++++
->  2 files changed, 150 insertions(+), 44 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/stm32-dwmac.txt
->  create mode 100644 Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> Or maybe use arch/x86/Kconfig.assembler to set up a CONFIG_AS_TPAUSE?
 > 
+> Then the code can read something like (syntax may need fixing)
+> 
+> #ifdef CONFIG_AS_TPAUSE
+> 		asm volatile("tpause %ecx\n", : : "c"(ecx), "d"(edx), "a"(eax));
+> #else
+> 		asm volatile(".byte hex gibberish ...
+> #endif
 
-Applied, thanks.
-
-Rob
+Then we still need a comment to know when we can kill that...
