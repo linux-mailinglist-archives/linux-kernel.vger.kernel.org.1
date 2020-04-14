@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCF91A7736
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382191A773B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437571AbgDNJUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:20:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:51518 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728324AbgDNJUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:20:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3E6C1FB;
-        Tue, 14 Apr 2020 02:20:09 -0700 (PDT)
-Received: from [192.168.1.19] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28B823F6C4;
-        Tue, 14 Apr 2020 02:20:07 -0700 (PDT)
-Subject: Re: [PATCH 1/4] sched/topology: Store root domain CPU capacity sum
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200408095012.3819-1-dietmar.eggemann@arm.com>
- <20200408095012.3819-2-dietmar.eggemann@arm.com>
- <CAKfTPtC4_+dTddLdoFMdzUvsXwWyi3bUOXcg9kstC8RzZS_a+A@mail.gmail.com>
- <42cc3878-4c57-96ba-3ebd-1b4d4ef87fae@arm.com>
- <CAKfTPtDS_qwPH+TwoFWPz6QRzG1N=t46ZvGN=w6zbOtnGAdOeQ@mail.gmail.com>
- <d2ace353-cdf3-c22a-2b19-7fa33281fe27@arm.com>
- <CAKfTPtC2yQeBnm3QfCnZCo5jbAF7VYqFpBGDuzAkdUysc8yvrA@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <b34be03b-280b-e084-6bc3-552ee58917af@arm.com>
-Date:   Tue, 14 Apr 2020 11:20:05 +0200
+        id S2437588AbgDNJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:21:10 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:37628 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437568AbgDNJVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 05:21:03 -0400
+Received: by mail-lf1-f68.google.com with SMTP id t11so8802962lfe.4;
+        Tue, 14 Apr 2020 02:21:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LywWFJk14UpQ6bDY3nfxNnszaV03Hsnpt1J5lFZIdc4=;
+        b=CHc2dSSsspRqkTPrdH1LqDfBZ0eFSFjv0cl4l58VoBC+33oSpbOkhlSSMjVppjLBr+
+         1ylMpoltQSxsc23OUIZ0zuoawgwRv67Pq28L0BnSudmaCigJE2hhIlcqmSAATqT4/4vB
+         ejqBowiuTUm0MYxxN5/ckx41w4rCVm01iCnS7j0b2LXupPXU2jI517UnCSKFhN2xqwEk
+         Ci+sj6eZ1lNIGZcEiqPfVFC81ekvGdIuST+rFRhO7HznlXMJQTbVcXfhzAaiTMHw8Plv
+         jeLy+/pK5RY0GR3ujIE/QxAo+XeMgW/aRHlfinTWA2WWlzxyH0yo4DWOJ2VEl+a+HYyb
+         T1zQ==
+X-Gm-Message-State: AGi0PuZ3vn3tWZ5lt4VU+ubelaJw/GSPWvJ1sQ82u5eW3Nz4R6pDSxdg
+        m1KzVd8iMbOW3rwwG4xcK5uDJO4jHz0=
+X-Google-Smtp-Source: APiQypI5GgR4aLihNN/8n444oF17+wSmXZMTHVQCCUThjYgd10aTZwcq9crkU2ou4vSCpeFGP7xSow==
+X-Received: by 2002:a05:6512:54e:: with SMTP id h14mr13068942lfl.56.1586856059445;
+        Tue, 14 Apr 2020 02:20:59 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-231-41.ip.moscow.rt.ru. [188.32.231.41])
+        by smtp.gmail.com with ESMTPSA id a10sm4088622ljp.16.2020.04.14.02.20.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Apr 2020 02:20:58 -0700 (PDT)
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <20200331094054.24441-1-w@1wt.eu>
+ <20200331094054.24441-8-w@1wt.eu>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Subject: Re: [PATCH 07/23] floppy: use symbolic register names in the sparc64
+ port
+Message-ID: <bcaddeb1-7017-9ac7-fd76-ebd1146b4293@linux.com>
+Date:   Tue, 14 Apr 2020 12:20:57 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtC2yQeBnm3QfCnZCo5jbAF7VYqFpBGDuzAkdUysc8yvrA@mail.gmail.com>
+In-Reply-To: <20200331094054.24441-8-w@1wt.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.04.20 16:13, Vincent Guittot wrote:
-> On Thu, 9 Apr 2020 at 15:50, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>
->> On 08.04.20 19:03, Vincent Guittot wrote:
->>> On Wed, 8 Apr 2020 at 18:31, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>>>
->>>> On 08.04.20 14:29, Vincent Guittot wrote:
->>>>> On Wed, 8 Apr 2020 at 11:50, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+Hi,
 
-[...]
+On 3/31/20 12:40 PM, Willy Tarreau wrote:
+-		printk("floppy: Asked to read unknown port %lx\n", port);
+> +		printk("floppy: Asked to read unknown port %lx\n", reg);
 
->> And it looks like that asym_cpu_capacity_level() [topology.c] would fail
->> if we would use capacity_orig_of() instead of arch_scale_cpu_capacity().
-> 
-> Yes I agree.  See below
-> 
->> post_init_entity_util_avg() [fair.c] and sugov_get_util()
->> [cpufreq_schedutil.c] would be temporarily off until
->> update_cpu_capacity() has updated cpu_rq(cpu)->cpu_capacity_orig.
-> 
-> I think that we could even get rid of this update in
-> update_cpu_capacity(). cpu_capacity_orig should be set while building
-> the sched_domain topology because the topology itself is built based
-> on this max cpu  capacity with asym_cpu_capacity_level(). So changing
-> the capacity without rebuilding the domain could break the
-> sched_domain topology correctness.
+> -		printk("floppy: Asked to write to unknown port %lx\n", port);
+> +		printk("floppy: Asked to write to unknown port %lx\n", reg);
 
-True. rq->cpu_capacity_orig could be set early in build_sched_domains(),
-before the call to asym_cpu_capacity_level() or within this function.
+sparc64 showed a couple of warnings in printks (I will send fixes)
+./arch/sparc/include/asm/floppy_64.h: In function ‘sun_82077_fd_inb’:
+./arch/sparc/include/asm/floppy_64.h:106:48: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+  106 |   printk("floppy: Asked to read unknown port %lx\n", reg);
+      |                                              ~~^     ~~~
+      |                                                |     |
+      |                                                |     unsigned int
+      |                                                long unsigned int
+      |                                              %x
+./arch/sparc/include/asm/floppy_64.h: In function ‘sun_82077_fd_outb’:
+./arch/sparc/include/asm/floppy_64.h:125:52: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+  125 |   printk("floppy: Asked to write to unknown port %lx\n", reg);
+      |                                                  ~~^     ~~~
+      |                                                    |     |
+      |                                                    |     unsigned int
+      |                                                    long unsigned int
+      |                                                  %x
 
-> And we can't really set cpu_capacity_orig earlier during the boot
-> because the capacity of b.L is set late during the boot and a rebuild
-> of the sched_domain topology is then triggered.
-> 
->>
->> compute_energy() [fair.c] is guarded by sched_energy_enabled() from
->> being used at startup.
->>
->> scale_rt_capacity() could be changed in case we call it after the
->> cpu_rq(cpu)->cpu_capacity_orig = arch_scale_cpu_capacity(cpu) in
->> update_cpu_capacity().
-> 
-> With the removal of the update in update_cpu_capacity(), we don't have
-> a problem anymore, isn't it ?
-
-True.
-
->> The Energy Model (and CPUfreq cooling) code would need
->> capacity_orig_of() exported. arch_scale_cpu_capacity() currently is
->> exported via include/linux/sched/topology.h.
-> 
-> Not sure that we need to export it outside scheduler, they can still
-> use arch_scale_cpu_capacity()
-
-OK, let's change this for the task scheduler only.
-
->> I guess Pelt and 'scale invariant Deadline bandwidth enforcement' should
->> continue using arch_scale_cpu_capacity() in sync with
->> arch_scale_freq_capacity().
-> 
-> Why can't they use capacity_orig_of ?
-> we keep using arch_scale_freq_capacity() because it's dynamic but we
-> don't really need to keep using arch_scale_cpu_capacity()
-
-OK, Pelt is task scheduler so it can be changed here as well.
-
-I'm going to create a patch following these ideas.
-
-[...]
+A couple of new warnings.
