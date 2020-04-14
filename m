@@ -2,149 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8CD1A8C5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B7B1A8C4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633032AbgDNUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:20:29 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49248 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633019AbgDNUU1 (ORCPT
+        id S2632993AbgDNUSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2632986AbgDNUSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:20:27 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EKI6DJ068660;
-        Tue, 14 Apr 2020 20:20:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=kBixCm0Lp4xgEtRfMMtpHFUSc5P8Az1CT0L+J0eMpic=;
- b=DJI+TbrNZDm34an1OO8npTHA9saH76RVmYn+mixaRt0Dt/AgSREuWa9eX0I0FJrESAeO
- H+PoFMQaooWgdyZbGMqDTrg6RgiP4c5d5133iy7ls8mDqA3UH9bk48RGX0rCSHU362BQ
- 6w4KXtHrM6QfmcmFA5ETiUrbQSobk/B08OYlxA9f63GiMDkleSjHv38UDXFR0av7q63k
- FWwYoZIQ1XhvjR000+YFnqBkRi1nJM8jl9EUm/NywzOmaxe1GcfcyauXuZGMcU00jAim
- dFStAhJQtalufZqynrrub/jXsLsvEzoSusFXj5k0EPWh4wZr/L2Ec3opfVOPkfVec7Gg Iw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 30b5um75m3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 20:20:13 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EKGxwn010793;
-        Tue, 14 Apr 2020 20:18:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30bqm2umvc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 20:18:12 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EKIACR030708;
-        Tue, 14 Apr 2020 20:18:10 GMT
-Received: from localhost (/10.159.239.16)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 13:18:10 -0700
-Date:   Tue, 14 Apr 2020 13:18:08 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
-Message-ID: <20200414201808.GI6742@magnolia>
-References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-10-ira.weiny@intel.com>
- <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com>
- <20200414161509.GF6742@magnolia>
- <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
- <20200414195754.GH6742@magnolia>
- <20200414200015.GF1853609@iweiny-DESK2.sc.intel.com>
+        Tue, 14 Apr 2020 16:18:36 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDD5C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:18:35 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id j4so1016587otr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 13:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rLY3E9TB/AARP5ZcaClXMaDKsCbI8tUQJ+pv7T0Vfno=;
+        b=ZqS4I9LRZs9vfonnUEXi4MrM6h+oq5OJhahQ9xq6CTRHyTB4R9s1z5sb+llkZJoYJS
+         x/Wm1suRUG1Cws+auj6F2IEVbrzhqIf7KS+n69S/s3S0DPdhUe5xtFePYdkSWNUnw6fY
+         cLFVA1EZQUnpmbyMGur1vb0ND99t6xhV8h1rJTO/tr4Oi+6CLxpMJxwl8xRqmsybrefV
+         6BZmhpDQsc1pKGodFruNncZbGzwI6SWALyiRCnRu0Wxca9IrgARZ/h3umrdNdR3CxGvn
+         u6dWLYvzZggf80uAcnCzNT5B3Gkk2QtEzVTsDtZVLxr0vfqQVPCk9KmhEgo5T2iRve/y
+         FeIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=rLY3E9TB/AARP5ZcaClXMaDKsCbI8tUQJ+pv7T0Vfno=;
+        b=Jr+/Cq48Vd9TUaRYXIC9dQGjnd09jfAvyuovCqytIV18dle3J59nFGZS5iH9aEQp+u
+         LIQeRFzi9wCP/91ICADJD4FMnJB05kDtUI02I5sEqz7cMtToVf6K2j7Zu/VvqQllUK2m
+         XGp/ypYtGG4Oo2rpp7kCa/1g+pH+aqp0TCTHxkLCt0tTWNYbc9Sbs3w41Sv83W42r8nJ
+         kys3yIIWfpCPY2ZWr03SGHkT8JeiSSonDAPmFrixaY3tjoyD1zslBG1j8/KQP4gd2j6w
+         zQMbL2jutVwt14PPAadZewmWnn/7C1NUqAF2xrSHEy1lXrHfB9aMWMmQZ9lnmtklN+ch
+         aOuA==
+X-Gm-Message-State: AGi0Pua09Bre8W367AMa7ZRUMNjfy8+qj45e4jHizZ5g3krBBwooBcOQ
+        edxlceMbYBq0LMVg8HHjEQ==
+X-Google-Smtp-Source: APiQypITkTCya6Z7MQTVnb9o1d9yzK8+NK79ZCFn/twBseE2eVwuqCIU1xYHRvAbOd5C4Ny5y9S5ww==
+X-Received: by 2002:a9d:1d45:: with SMTP id m63mr11854342otm.271.1586895515050;
+        Tue, 14 Apr 2020 13:18:35 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.149.130])
+        by smtp.gmail.com with ESMTPSA id p25sm5802615oth.49.2020.04.14.13.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 13:18:34 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by serve.minyard.net (Postfix) with ESMTPSA id A90F8181888;
+        Tue, 14 Apr 2020 20:18:33 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 15:18:32 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH 3/3] ipmi:bt-bmc: Fix error handling and status check
+Message-ID: <20200414201832.GJ3587@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200414141423.4968-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200414200015.GF1853609@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20200414141423.4968-1-tangbin@cmss.chinamobile.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 bulkscore=0 mlxscore=0
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
- phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140143
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:00:15PM -0700, Ira Weiny wrote:
-> On Tue, Apr 14, 2020 at 12:57:54PM -0700, Darrick J. Wong wrote:
-> > On Tue, Apr 14, 2020 at 12:04:57PM -0700, Dan Williams wrote:
-> > > On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
-> 
-> [snip]
-> 
-> > > > > > +
-> > > > > > +Enabling DAX on xfs
-> > > > > > +-------------------
-> > > > > > +
-> > > > > > +Summary
-> > > > > > +-------
-> > > > > > +
-> > > > > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
-> > > > > > +    file accesses go directly to persistent memory, bypassing the page
-> > > > > > +    cache.
-> > > > >
-> > > > > I had reserved some quibbling with this wording, but now that this is
-> > > > > being proposed as documentation I'll let my quibbling fly. "dax" may
-> > > > > imply, but does not require persistent memory nor does it necessarily
-> > > > > "bypass page cache". For example on configurations that support dax,
-> > > > > but turn off MAP_SYNC (like virtio-pmem), a software flush is
-> > > > > required. Instead, if we're going to define "dax" here I'd prefer it
-> > > > > be a #include of the man page definition that is careful (IIRC) to
-> > > > > only talk about semantics and not backend implementation details. In
-> > > > > other words, dax is to page-cache as direct-io is to page cache,
-> > > > > effectively not there, but dig a bit deeper and you may find it.
-> > > >
-> > > > Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
-> > > 
-> > > No, I was referring to the proposed wording for STATX_ATTR_DAX.
-> > > There's no reason for this description to say anything divergent from
-> > > that description.
-> > 
-> > Ahh, ok.  Something like this, then:
-> > 
-> >  1. There exists an in-kernel access mode flag S_DAX.  When set, the
-> >     file is in the DAX (cpu direct access) state.  DAX state attempts to
-> >     minimize software cache effects for both I/O and memory mappings of
-> >     this file.  The S_DAX state is exposed to userspace via the
-> >     STATX_ATTR_DAX statx flag.
-> > 
-> >     See the STATX_ATTR_DAX in the statx(2) manpage for more information.
-> 
-> We crossed in the ether!!!  I propose even less details here...  Leave all the
-> details to the man page.
-> 
-> <quote>
-> 1. There exists an in-kernel access mode flag S_DAX that is set when file
->     accesses is enabled for 'DAX'.  Applications must call statx to discover
->     the current S_DAX state (STATX_ATTR_DAX).  See the man page for statx for
->     more details.
-> </quote>
+On Tue, Apr 14, 2020 at 10:14:24PM +0800, Tang Bin wrote:
+> If the function platform_get_irq() failed, the negative
+> value returned will not be detected here. So fix error
+> handling in bt_bmc_config_irq(). And if devm_request_irq()
+> failed, 'bt_bmc->irq' is assigned to zero maybe redundant,
+> it may be more suitable for using the correct negative values
+> to make the status check in the function bt_bmc_remove().
 
-Why stop cutting there? :)
+Comments inline..
 
- 1. There exists an in-kernel file access mode flag S_DAX that
-    corresponds to the statx flag STATX_ATTR_DIRECT_LOAD_STORE.  See the
-    manpage for statx(2) for details about this access mode.
+> 
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+> ---
+>  drivers/char/ipmi/bt-bmc.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
+> index 1d4bf5c65..1740c6dc8 100644
+> --- a/drivers/char/ipmi/bt-bmc.c
+> +++ b/drivers/char/ipmi/bt-bmc.c
+> @@ -399,16 +399,14 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
+>  	struct device *dev = &pdev->dev;
+>  	int rc;
+>  
+> -	bt_bmc->irq = platform_get_irq(pdev, 0);
+> -	if (!bt_bmc->irq)
+> -		return -ENODEV;
+> +	bt_bmc->irq = platform_get_irq_optional(pdev, 0);
+> +	if (bt_bmc->irq < 0)
+> +		return bt_bmc->irq;
+>  
+>  	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
+>  			      DEVICE_NAME, bt_bmc);
+> -	if (rc < 0) {
+> -		bt_bmc->irq = 0;
+> +	if (rc < 0)
+>  		return rc;
 
---D
+I don't think this part is correct.  You will want to set bt_bmc->irq to
+rc here to match what is done elsewhere so it's the error if negative.
 
-> Ira
+Also, I believe this function should no longer return an error.  It
+should just set the irq to the error if one happens.  The driver needs
+to continue to operate even if it can't get its interrupt.
+
+The rest of the changes are correct, I believe.
+
+-corey
+
+> -	}
+>  
+>  	/*
+>  	 * Configure IRQs on the bmc clearing the H2B and HBUSY bits;
+> @@ -499,7 +497,7 @@ static int bt_bmc_remove(struct platform_device *pdev)
+>  	struct bt_bmc *bt_bmc = dev_get_drvdata(&pdev->dev);
+>  
+>  	misc_deregister(&bt_bmc->miscdev);
+> -	if (!bt_bmc->irq)
+> +	if (bt_bmc->irq < 0)
+>  		del_timer_sync(&bt_bmc->poll_timer);
+>  	return 0;
+>  }
+> -- 
+> 2.20.1.windows.1
+> 
+> 
 > 
