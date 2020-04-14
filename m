@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1661A81C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BF91A81D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437684AbgDNPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:14:35 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:54473 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437681AbgDNPNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:13:49 -0400
-Received: by mail-wm1-f65.google.com with SMTP id h2so13341992wmb.4;
-        Tue, 14 Apr 2020 08:13:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HmBLSR0xc1v+9c640X8yq/gCGBtmZiJRhg2yrai8Uso=;
-        b=D14QHr9SaRvNqJrN7V4ylJqJZJppU9twbzkK/fNI+KX4UE4L+iib2DfQxpN0Kyf9k0
-         0jWxU8/32Xv3x3XlfJ86tDihFLVOxvOlzEi+ZMdwJLITS8dFK0BX1BnSFMbIukqCz67j
-         Ry1D6UKhhWu8p54BC/8irvBUyM3rgmP6+q/b2UJkE1sNp9+K1kUVaK3Hqvzd2UaPuxIZ
-         anSMQsSW2BVe26VRK/LLL2FrqobB6z1ttZtlJECb+JJs28wjdhWhRht82hzPbhtmGZQY
-         R0TVcuvCAw7BpJsD+qr74o0Ega4Th5Rzz6uz0/Q9BGJM7Sc2yzOzFgFMlpPGsGilpct1
-         7zIg==
-X-Gm-Message-State: AGi0PuZzw+k35gwrD6pHLwZlJLjT1GDlWp2uALnwrcBTshm1PN1umiRv
-        3/JHGYY/h+9WzdYhOwjiHQA=
-X-Google-Smtp-Source: APiQypKJS2zs752mK3EmkKLPxDY+LMikzE4AHuLMlZzMU6rlOFHrjCq5D1gZZCfYEUzJLxq6M+CEVA==
-X-Received: by 2002:a7b:c190:: with SMTP id y16mr393464wmi.50.1586877227391;
-        Tue, 14 Apr 2020 08:13:47 -0700 (PDT)
-Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
-        by smtp.gmail.com with ESMTPSA id t67sm20386094wmg.40.2020.04.14.08.13.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 08:13:46 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 16:13:44 +0100
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>,
-        Gao Xiang <xiang@kernel.org>
-Subject: Re: [PATCH 21/29] mm: remove the pgprot argument to __vmalloc
-Message-ID: <20200414151344.zgt2pnq7cjq2bgv6@debian>
-References: <20200414131348.444715-1-hch@lst.de>
- <20200414131348.444715-22-hch@lst.de>
+        id S2437973AbgDNPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:15:19 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36710 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437266AbgDNPPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:15:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Wb8f39hCjGcYV8+AHNSAescCyaLfOVyVKTEaqlWfHFA=; b=rXukUfJulQmi7iSIMYWiAq9QR6
+        JXRXBujHbPtK1TQRqgGBlXbmwkIa5/8xprYf1whWGTnGar8OAbVX+Qel6l8H0iYPf4kpQGsFnCxYo
+        F0NYB3fyVHQtiPMsP1pPBLoC+PP88zvzGx82OwcsQEXCaZWQT+LEw/Tpz5fT9Fv2a7ho=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jONH8-002fp9-VA; Tue, 14 Apr 2020 17:14:58 +0200
+Date:   Tue, 14 Apr 2020 17:14:58 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christophe ROULLIER <christophe.roullier@st.com>
+Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        Peppe CAVALLARO <peppe.cavallaro@st.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCHv2 1/1] net: ethernet: stmmac: simplify phy modes
+ management for stm32
+Message-ID: <20200414151458.GA637127@lunn.ch>
+References: <20200316090907.18488-1-christophe.roullier@st.com>
+ <cb0a5dd3-02da-7d60-7069-a8ee080ad239@st.com>
+ <ecbfd26c-8dcb-3763-c1aa-ccc4c110aefa@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200414131348.444715-22-hch@lst.de>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <ecbfd26c-8dcb-3763-c1aa-ccc4c110aefa@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 03:13:40PM +0200, Christoph Hellwig wrote:
-> The pgprot argument to __vmalloc is always PROT_KERNEL now, so remove
-> it.
+On Tue, Apr 14, 2020 at 03:10:26PM +0000, Christophe ROULLIER wrote:
+> Hi,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com> [hyperv]
-> Acked-by: Gao Xiang <xiang@kernel.org> [erofs]
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/hyperv/hv_init.c              |  3 +--
-[...]
-> 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 5a4b363ba67b..a3d689dfc745 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -95,8 +95,7 @@ static int hv_cpu_init(unsigned int cpu)
->  	 * not be stopped in the case of CPU offlining and the VM will hang.
->  	 */
->  	if (!*hvp) {
-> -		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO,
-> -				 PAGE_KERNEL);
-> +		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
->  	}
+> Gentle reminder
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+Hi Christophe
+
+You are more likely to have success if you repost.
+
+    Andrew
