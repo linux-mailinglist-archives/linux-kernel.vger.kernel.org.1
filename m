@@ -2,131 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB351A7BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3271A77EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502587AbgDNNIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:08:42 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38612 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730314AbgDNNId (ORCPT
+        id S2438036AbgDNJ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437925AbgDNJ4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:08:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAY6PH104127;
-        Tue, 14 Apr 2020 10:36:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=7IB4h4vyHZWuhixM+o7hLit581/PbOa3rBB6fd0VUW8=;
- b=MZPcMzQjDfxCxXNIYeqRN9HocfuwqrmnTenxdO2rqeN2uXqKXipO3qic8tbl3CbmAfkd
- V280YB2ZkN7oIwRxDneQg4GZHn/+aZQlq3o49sFIt/5eETL8v9nhgAR4iD/5wj+NZ4L8
- Lb1xHUE04kmF1i8pZ6kAEs2pLU9Zmdm77AL7UW28fPvPIX2ZGMWMGK2UVnHEkfcW15IQ
- aMRX44wom+dKiU2FK8yH3jZM5U1S0UKGq5TuA+JNfVqVwYsOhFjGxZW1xDVhMlByNZSa
- qF8z8HPudP2SzAQ0vTewEvJF5ABa8OARycNnB/DPBuC0KvNeohXeH7GlnlyIBMjzogwz Eg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 30b5um3pc6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:36:41 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAW0pY123322;
-        Tue, 14 Apr 2020 10:36:41 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30bqpfy3g0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:36:41 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EAabmn015613;
-        Tue, 14 Apr 2020 10:36:37 GMT
-Received: from mihai.localdomain (/10.153.73.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 03:36:36 -0700
-From:   Mihai Carabas <mihai.carabas@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mihai Carabas <mihai.carabas@oracle.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86: microcode: fix return value for microcode late loading
-Date:   Tue, 14 Apr 2020 12:55:35 +0300
-Message-Id: <1586858135-29337-1-git-send-email-mihai.carabas@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- adultscore=0 bulkscore=0 spamscore=0 suspectscore=1 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 bulkscore=0 mlxscore=0
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
- phishscore=0 spamscore=0 suspectscore=1 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140087
+        Tue, 14 Apr 2020 05:56:40 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1FCC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 02:56:39 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id z12so11381031ilb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 02:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8mTNRog1G9NWOtzic5n9BO42Qp3FLPijpt9pvlrD31Y=;
+        b=qhOQagm3THBbvlxAE3Rn2heuILfmBp/l1AIRXXRKjGasf3aAUh7sEfVQcTOkl3HwA5
+         AGOughY6DCPGc/MuRrrmAFSKnzurk90fqFyOlR50UlCDAoK4cl3BWzQAigY91SGhfMVm
+         VCCh+QvAUgargxxeOpEtPmYiENOydD04UFelLdKRaXnUliSeaXDvANSzYewCSFyWSdaE
+         OkUSvoda9SV5uw0f3O0Hb+9uV4KZ5Sbe5dThWCsE3Y0MVbKtj757hZ9+smGcLWmnFhIa
+         YhTuXG1AOnrRllRakaOz0zBgCYvhr3hxDzKYy2JAz7DFNkmEQzLc4xHzQrMCTiW6HBOl
+         1Oxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8mTNRog1G9NWOtzic5n9BO42Qp3FLPijpt9pvlrD31Y=;
+        b=LCvGmhvIPdRZzgYupazYoYY6azlTOiHao22fzj9JBC/bPVJdGc7FP8GJkHxHEzYGh8
+         NAnTfzfDU0vPp6VwJby0AyrP9shyQc/Dmgt/9thwpPHiGEP/pomPxBmrtXXgaTS8qPGc
+         4YKGPAvRfTEwf8qDxp0/0suP8YHwWfoaevjNxl365zDSKTHmDS1goxkrCsAwirFwELp9
+         kqvJso+bWKCTkDNHd/c3ny12ajrZY0OiVWGYXknZ+srOaDp77vSEPI6DiEFhverdEHpS
+         XMciYzdgz/zPNOcffhTYkgT9it2A1sDwcWxi1WXNg0qlD59WRO8i5H2ABkno3Wfa29Tc
+         6RMw==
+X-Gm-Message-State: AGi0Pub+5KvG9a//m07Z0HUnUTDb3mzH9O19ChFk5zuanhuoR35UGAei
+        qjpXWaZGCny79eDzvj7CLI7lQ4Uxs8Q7VtMYp2AJ6A==
+X-Google-Smtp-Source: APiQypLc7vO+U+uz9b8s/sGSMGpFqNHTJ9dIn0wIr4ttnCsma2EKuI05wVk56hvQwfQo+bBCeyWmIxzGlNztFQeLPM0=
+X-Received: by 2002:a92:5f17:: with SMTP id t23mr7609747ilb.2.1586858198824;
+ Tue, 14 Apr 2020 02:56:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200414075622.69822-1-songmuchun@bytedance.com> <ff540216-7f3e-9841-4896-81907540404d@web.de>
+In-Reply-To: <ff540216-7f3e-9841-4896-81907540404d@web.de>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 14 Apr 2020 17:56:02 +0800
+Message-ID: <CAMZfGtVpMK38odpd3Ady_xW0hyMpN89Vwo_WNXBZz0yGaZzFQg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm/ksm: Fix NULL pointer dereference
+ when KSM zero page is enabled
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Xiongchun Duan <duanxiongchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value from stop_machine might not be consistent.
+On Tue, Apr 14, 2020 at 5:17 PM Markus Elfring <Markus.Elfring@web.de> wrote:
+>
+> > to crash when we access vma->vm_mm(its offset is 0x40) later in
+>
+> Will another fine-tuning become relevant also for this wording?
+>
 
-stop_machine_cpuslocked returns:
-- zero if all functions have returned 0
-- a non-zero value if at least one of the functions returned
-a non-zero value
+Sorry, I don't understand what this means because of my poor English.
+Could you explain it again. Thanks.
 
-There is no way to know if it is negative or positive. So make
-__reload_late return 0 on success, or negative otherwise.
+>
+> > following calltrace is captured in kernel 4.19 with KSM zero page
+>
+> Can the mentioned Linux version trigger any special software
+> development concerns?
+>
+> Will any other tags become helpful in such a case?
 
-Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
----
- arch/x86/kernel/cpu/microcode/core.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+How about changing
+    "following calltrace is captured in kernel 4.19 with KSM zero page"
+to
+   "The following calltrace is captured with the following patch applied:
+       e86c59b1b12d ("mm/ksm: improve deduplication of zero pages with
+colouring")
+    "
+?
 
-diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 7019d4b..336003e 100644
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -545,8 +545,7 @@ static int __wait_for_cpus(atomic_t *t, long long timeout)
- /*
-  * Returns:
-  * < 0 - on error
-- *   0 - no update done
-- *   1 - microcode was updated
-+ *   0 - success (no update done or microcode was updated)
-  */
- static int __reload_late(void *info)
- {
-@@ -573,11 +572,9 @@ static int __reload_late(void *info)
- 	else
- 		goto wait_for_siblings;
- 
--	if (err > UCODE_NFOUND) {
-+	if (err >= UCODE_NFOUND) {
- 		pr_warn("Error reloading microcode on CPU %d\n", cpu);
- 		ret = -1;
--	} else if (err == UCODE_UPDATED || err == UCODE_OK) {
--		ret = 1;
- 	}
- 
- wait_for_siblings:
-@@ -608,7 +605,7 @@ static int microcode_reload_late(void)
- 	atomic_set(&late_cpus_out, 0);
- 
- 	ret = stop_machine_cpuslocked(__reload_late, NULL, cpu_online_mask);
--	if (ret > 0)
-+	if (ret == 0)
- 		microcode_check();
- 
- 	pr_info("Reload completed, microcode revision: 0x%x\n", boot_cpu_data.microcode);
-@@ -649,7 +646,7 @@ static ssize_t reload_store(struct device *dev,
- put:
- 	put_online_cpus();
- 
--	if (ret >= 0)
-+	if (ret == 0)
- 		ret = size;
- 
- 	return ret;
 -- 
-1.8.3.1
-
+Yours,
+Muchun
