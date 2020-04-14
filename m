@@ -2,228 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7910E1A7AA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BBC1A7AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440065AbgDNMX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440053AbgDNMXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:23:54 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53E3620732;
-        Tue, 14 Apr 2020 12:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586867033;
-        bh=HO68f48Xhk1eA5LYUtWE07mUQhbLIhm8b3XNLus8Z7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gbD7t+j/tuM3YwdcvzylisLeDIKYDiBHL29WWCTO2WxU3f0EJgtm7kJqGbEKyoQj2
-         xSUxvyJeQpWQQeL8XWNquZUdy9GG6qMVPbL4aBlMZWc/TsQdNzhgChw63E/mWyqSHr
-         GbAlJZGfmYl6sSpwjstxHtrlnE3ds4vr80PmpIss=
-Date:   Tue, 14 Apr 2020 15:23:49 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
-        thomas.lendacky@amd.com, keyur@os.amperecomputing.com,
-        pcnet32@frontier.com, vfalico@gmail.com, j.vosburgh@gmail.com,
-        linux-acenic@sunsite.dk, mripard@kernel.org, heiko@sntech.de,
-        mark.einon@gmail.com, chris.snook@gmail.com,
-        linux-rockchip@lists.infradead.org, iyappan@os.amperecomputing.com,
-        irusskikh@marvell.com, dave@thedillows.org, netanel@amazon.com,
-        quan@os.amperecomputing.com, jcliburn@gmail.com,
-        LinoSanfilippo@gmx.de, linux-arm-kernel@lists.infradead.org,
-        andreas@gaisler.com, andy@greyhouse.net, netdev@vger.kernel.org,
-        thor.thayer@linux.intel.com, linux-kernel@vger.kernel.org,
-        ionut@badula.org, akiyano@amazon.com, jes@trained-monkey.org,
-        nios2-dev@lists.rocketboards.org, wens@csie.org
-Subject: Re: [PATCH] net/3com/3c515: Fix MODULE_ARCH_VERMAGIC redefinition
-Message-ID: <20200414122349.GB1011271@unreal>
-References: <20200413045555.GE334007@unreal>
- <20200412.220739.516022706077351913.davem@davemloft.net>
- <20200413052637.GG334007@unreal>
- <20200412.223604.1160930629964379276.davem@davemloft.net>
- <20200413080452.GA3772@zn.tnic>
- <20200413084026.GH334007@unreal>
+        id S2440102AbgDNMZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2440076AbgDNMZ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:25:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134F7C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=JWvCln94FnW9GCxvyp3f47DfIQwsM51DTgd2A4D782s=; b=Rc1sp0HpIVGZ2DL9BtEZiHycaN
+        tUer5w8J9tKs7IvHWCO6u0GkyQ4AqF2Zitk5jwyQQRy9JrT1LJ8pk1J/f3/4wLT2P8pRgNwHwk5ix
+        KJwPrTEczvIi4jrbRduArDuQBUy5666iQ1fuI7azW7RCOX0HAS0YdNbcT2O9rhL8Ek1PygQTXTcpK
+        md4/Cn4tmDpWjILEzWqF2KEw87BqdZt31xj5TVbFskZkCCXdKxIRXLo9v0esrhsiZnu3KuG0HsaPa
+        6VW74W3SCuNRUivlOn05TNBq+bSEE8PWG20yhQwO2RaJVjlhD/HZQvvtlZgNktFkWaiTP8Xr1rQtu
+        qohE7vfA==;
+Received: from [2001:4bb8:180:384b:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOKcn-0003eN-Ri; Tue, 14 Apr 2020 12:25:10 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     iommu@lists.linux-foundation.org,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     linuxppc-dev@lists.ozlabs.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: generic DMA bypass flag v3
+Date:   Tue, 14 Apr 2020 14:25:02 +0200
+Message-Id: <20200414122506.438134-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413084026.GH334007@unreal>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 11:40:26AM +0300, Leon Romanovsky wrote:
-> On Mon, Apr 13, 2020 at 10:04:52AM +0200, Borislav Petkov wrote:
-> > On Sun, Apr 12, 2020 at 10:36:04PM -0700, David Miller wrote:
-> > > From: Leon Romanovsky <leon@kernel.org>
-> > > Date: Mon, 13 Apr 2020 08:26:37 +0300
-> > >
-> > > > How do you want us to handle it? Boris resend, me to send, you to fix?
-> > >
-> > > Anyone other than me can do it ;-)
-> >
-> > Ok, here's what I'm thinking: that vermagic.h is normally automatically
-> > included in the *mod.c as part of the module creation, see add_header()
-> > in modpost.c.
-> >
-> > So then perhaps drivers should not use it directly due to the current
-> > inclusion order:
-> >
-> > linux/module.h includes asm/module.h and that arch-specific header
-> > defines MODULE_VERMAGIC* for the respective arch.
-> >
-> > linux/vermagic.h defines all those fallbacks for those MODULE_VERMAGIC*
-> > things and if the inclusion order is swapped - we get the redefinition
-> > warning.
-> >
-> > Yesterday I tried the below - basically get rid of all the remaining
-> > includers of linux/vermagic.h but two are left:
-> >
-> > drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:18:#include <linux/vermagic.h>
-> > drivers/net/ethernet/netronome/nfp/nfp_main.c:17:#include <linux/vermagic.h>
-> >
-> > because both use VERMAGIC_STRING directly.
-> >
-> > So,
-> >
-> > * one could either allow that and sort the inclusion order so that, for
-> > example, asm/module.h includes linux/vermagic.h and thus the fallbacks
-> > are there present.
-> >
-> > or
-> >
-> > * remove all uses of VERMAGIC_STRING from the drivers, add a header
-> > guard which prevents people from using it directly and leave
-> > VERMAGIC_STRING only to the internal module machinery in the kernel.
-> >
-> > Judging by how only a handful of old drivers are even using that,
-> > perhaps not too far fetched.
-> >
-> > In any case, this needs a maintainer decision.
-> >
-> > Leon, if you wanna do it whatever you guys end up agreeing on, just go
-> > ahead and submit the patches - it's not like I don't have anything else
-> > on the TODO :-) Just add a Reported-by: me and that should be enough.
->
-> I broke it so I should fix and will send a patch today/tomorrow.
+Hi all,
 
-ok, the patches are here, will wait for the kbuild results and will send.
-https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git/log/?h=vermagic
+I've recently beeing chatting with Lu about using dma-iommu and
+per-device DMA ops in the intel IOMMU driver, and one missing feature
+in dma-iommu is a bypass mode where the direct mapping is used even
+when an iommu is attached to improve performance.  The powerpc
+code already has a similar mode, so I'd like to move it to the core
+DMA mapping code.  As part of that I noticed that the current
+powerpc code has a little bug in that it used the wrong check in the
+dma_sync_* routines to see if the direct mapping code is used.
 
-Thanks
+These two patches just add the generic code and move powerpc over,
+the intel IOMMU bits will require a separate discussion.
 
->
-> Thanks
->
-> >
-> > If you're busy too, lemme know and I'll put it on my todo then.
-> >
-> > Thx.
-> >
-> > diff --git a/drivers/net/bonding/bonding_priv.h b/drivers/net/bonding/bonding_priv.h
-> > index 45b77bc8c7b3..48cdf3a49a7d 100644
-> > --- a/drivers/net/bonding/bonding_priv.h
-> > +++ b/drivers/net/bonding/bonding_priv.h
-> > @@ -14,7 +14,7 @@
-> >
-> >  #ifndef _BONDING_PRIV_H
-> >  #define _BONDING_PRIV_H
-> > -#include <linux/vermagic.h>
-> > +#include <generated/utsrelease.h>
-> >
-> >  #define DRV_NAME	"bonding"
-> >  #define DRV_DESCRIPTION	"Ethernet Channel Bonding Driver"
-> > diff --git a/drivers/net/ethernet/3com/3c509.c b/drivers/net/ethernet/3com/3c509.c
-> > index b762176a1406..139d0120f511 100644
-> > --- a/drivers/net/ethernet/3com/3c509.c
-> > +++ b/drivers/net/ethernet/3com/3c509.c
-> > @@ -85,7 +85,6 @@
-> >  #include <linux/device.h>
-> >  #include <linux/eisa.h>
-> >  #include <linux/bitops.h>
-> > -#include <linux/vermagic.h>
-> >
-> >  #include <linux/uaccess.h>
-> >  #include <asm/io.h>
-> > diff --git a/drivers/net/ethernet/3com/3c515.c b/drivers/net/ethernet/3com/3c515.c
-> > index 90312fcd6319..47b4215bb93b 100644
-> > --- a/drivers/net/ethernet/3com/3c515.c
-> > +++ b/drivers/net/ethernet/3com/3c515.c
-> > @@ -22,7 +22,6 @@
-> >
-> >  */
-> >
-> > -#include <linux/vermagic.h>
-> >  #define DRV_NAME		"3c515"
-> >
-> >  #define CORKSCREW 1
-> > diff --git a/drivers/net/ethernet/adaptec/starfire.c b/drivers/net/ethernet/adaptec/starfire.c
-> > index 2db42211329f..a64191fc2af9 100644
-> > --- a/drivers/net/ethernet/adaptec/starfire.c
-> > +++ b/drivers/net/ethernet/adaptec/starfire.c
-> > @@ -45,7 +45,6 @@
-> >  #include <asm/processor.h>		/* Processor type for cache alignment. */
-> >  #include <linux/uaccess.h>
-> >  #include <asm/io.h>
-> > -#include <linux/vermagic.h>
-> >
-> >  /*
-> >   * The current frame processor firmware fails to checksum a fragment
-> > diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> > index 588c62e9add7..3ed150512091 100644
-> > --- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> > +++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> > @@ -6,7 +6,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/netdevice.h>
-> >  #include <linux/utsname.h>
-> > -#include <linux/vermagic.h>
-> > +#include <generated/utsrelease.h>
-> >
-> >  #include "ionic.h"
-> >  #include "ionic_bus.h"
-> > diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
-> > index 65c23ef6408d..b3c05ff05783 100644
-> > --- a/drivers/power/supply/test_power.c
-> > +++ b/drivers/power/supply/test_power.c
-> > @@ -16,7 +16,7 @@
-> >  #include <linux/power_supply.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/delay.h>
-> > -#include <linux/vermagic.h>
-> > +#include <generated/utsrelease.h>
-> >
-> >  enum test_power_id {
-> >  	TEST_AC,
-> > diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-> > index 89d0b1827aaf..adab97e500cf 100644
-> > --- a/net/ethtool/ioctl.c
-> > +++ b/net/ethtool/ioctl.c
-> > @@ -17,7 +17,6 @@
-> >  #include <linux/phy.h>
-> >  #include <linux/bitops.h>
-> >  #include <linux/uaccess.h>
-> > -#include <linux/vermagic.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/sfp.h>
-> >  #include <linux/slab.h>
-> > @@ -29,6 +28,8 @@
-> >  #include <net/flow_offload.h>
-> >  #include <linux/ethtool_netlink.h>
-> >
-> > +#include <generated/utsrelease.h>
-> > +
-> >  #include "common.h"
-> >
-> >  /*
-> >
-> >
-> > --
-> > Regards/Gruss,
-> >     Boris.
-> >
-> > https://people.kernel.org/tglx/notes-about-netiquette
+The x86 AMD Gart code also has a bypass mode, but it is a lot
+strange, so I'm not going to touch it for now.
+
+Changes since v2:
+ - move the dma mapping helpers out of line
+ - check for possible direct mappings using the dma mask
+
+Changes since v1:
+ - rebased to the current dma-mapping-for-next tree
