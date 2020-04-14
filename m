@@ -2,116 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9FB1A83F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAF41A8400
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391196AbgDNP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:58:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
+        id S2387720AbgDNP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:59:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:58974 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391163AbgDNP6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:58:16 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2015206D5;
-        Tue, 14 Apr 2020 15:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586879895;
-        bh=HmaU3l3swntVmTdV5jrthH/lFKI1N3adOZ+7biFLSOI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=dxVMlYZXoaXe/aiN330f9RuzDmQjZoNCvN62MZ9dHRvl65zKDCwjTGXWhhNe7wjK4
-         ld5qvIbx0Qrfvc23Klc24ONin5cq6TltqWHPXkgmp0478PKpHyk2fwTDuVBMN4eIyS
-         zqpV+LK0YbvaBGVOJ57xUAhozogNVdHAt/SnPiGI=
-Date:   Tue, 14 Apr 2020 16:58:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, broonie@kernel.org,
-        Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Applied "regulator: qcom_rpm: remove defined but not used 'pm8921_ftsmps'" to the regulator tree
-In-Reply-To:  <20200409114026.38383-1-yanaijie@huawei.com>
-Message-Id:  <applied-20200409114026.38383-1-yanaijie@huawei.com>
-X-Patchwork-Hint: ignore
+        id S1732397AbgDNP7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:59:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6163F31B;
+        Tue, 14 Apr 2020 08:59:18 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFD073F6C4;
+        Tue, 14 Apr 2020 08:59:17 -0700 (PDT)
+Subject: Re: stop messing with set_fs in arm_sdei
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200414142302.448447-1-hch@lst.de>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <cc0b5d01-bd19-3437-a76e-2d1daa86f9a4@arm.com>
+Date:   Tue, 14 Apr 2020 16:59:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200414142302.448447-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch
+Hi Christoph,
 
-   regulator: qcom_rpm: remove defined but not used 'pm8921_ftsmps'
+On 14/04/2020 15:23, Christoph Hellwig wrote:
+> can you take a look at this series?  I've been trying to figure out
+> what the set_fs in arm_sdei is good for, and could not find any
+> good reason.  But I don't have any hardware implementing this interface,
+> so the changes are entirely untested.
 
-has been applied to the regulator tree at
+Its a firmware thing, think of it as a firmware assisted software NMI.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git 
+The arch code save/restores set_fs() because the entry code does that when taking an
+exception from EL1. SDEI does the same because it doesn't come via the same entry code. It
+does it in C because that C is always run before the handler, something that isn't true
+for the regular assembly version.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The regular entry code does this because any exception may have interrupted code that had
+addr_limit set to something else:
+https://bugs.chromium.org/p/project-zero/issues/detail?id=822
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+and the patch that fixed it: commit e19a6ee2460b "arm64: kernel: Save and restore UAO and
+addr_limit on exception entry"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
 Thanks,
-Mark
 
-From d2c2c218ea3f46cabd0955307d246e18371565dd Mon Sep 17 00:00:00 2001
-From: Jason Yan <yanaijie@huawei.com>
-Date: Thu, 9 Apr 2020 19:40:26 +0800
-Subject: [PATCH] regulator: qcom_rpm: remove defined but not used
- 'pm8921_ftsmps'
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Fix the following gcc warning:
-
-drivers/regulator/qcom_rpm-regulator.c:607:34: warning: ‘pm8921_ftsmps’
-defined but not used [-Wunused-const-variable=]
- static const struct qcom_rpm_reg pm8921_ftsmps = {
-                                  ^~~~~~~~~~~~~
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200409114026.38383-1-yanaijie@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/regulator/qcom_rpm-regulator.c | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/drivers/regulator/qcom_rpm-regulator.c b/drivers/regulator/qcom_rpm-regulator.c
-index 7fc97f23fcf4..1ee8ec686ed3 100644
---- a/drivers/regulator/qcom_rpm-regulator.c
-+++ b/drivers/regulator/qcom_rpm-regulator.c
-@@ -604,16 +604,6 @@ static const struct qcom_rpm_reg pm8921_smps = {
- 	.supports_force_mode_bypass = false,
- };
- 
--static const struct qcom_rpm_reg pm8921_ftsmps = {
--	.desc.linear_ranges = ftsmps_ranges,
--	.desc.n_linear_ranges = ARRAY_SIZE(ftsmps_ranges),
--	.desc.n_voltages = 101,
--	.desc.ops = &uV_ops,
--	.parts = &rpm8960_smps_parts,
--	.supports_force_mode_auto = true,
--	.supports_force_mode_bypass = false,
--};
--
- static const struct qcom_rpm_reg pm8921_ncp = {
- 	.desc.linear_ranges = ncp_ranges,
- 	.desc.n_linear_ranges = ARRAY_SIZE(ncp_ranges),
--- 
-2.20.1
-
+James
