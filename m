@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CFA1A8620
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312B21A862B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391285AbgDNQyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:54:20 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58057 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2440696AbgDNQw6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:52:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586883177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NH9riSJWIwA5MJGEKQ1bph+dSoJ7N2LR20v9on+n36c=;
-        b=DEfA6DnDToVNektqackuxJE0Xrq80DG3HGf9ipu5rPxtHVlwa3XMWz7rd/aLpJ0EMrZSX+
-        gTtxuXotWmbXGfyGU2H2mT0+sL6x+aOGLcEFq1Z+Ws5khk0kGddUe16zZdNdDMCqxU7B7W
-        z2nkN7nUvd8p1Sg1si8hmFikUXl1B/8=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-PidPBT5jME6izHRyTxvetg-1; Tue, 14 Apr 2020 12:52:53 -0400
-X-MC-Unique: PidPBT5jME6izHRyTxvetg-1
-Received: by mail-qt1-f199.google.com with SMTP id u13so2201376qtk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:52:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=NH9riSJWIwA5MJGEKQ1bph+dSoJ7N2LR20v9on+n36c=;
-        b=GrSTyJyVRi5vfs2Y6gjTDrvDlzts65DelqWKQc9aJGdr1NG8OqwVO9nJ9WrIBlyHkg
-         NQbUeU98ZyE7uS3XGc7R5JMRrnQ8FZUUIjVNswoittL/aar0SBQWUti0qjaPIZtUkI2H
-         rBrAMM+FjPjF6dBiurmYmYwU17U5p8tDGF84W4N/ntCmjtiH5/kDqwwgQti/OI2+BNH9
-         HxwqzX1ZYtG68inoUKnhcC8y6NtRAQ+mA4sxeUh8jjSmiGQ88sbbM0IjsCt6PhhdfCQU
-         faBeflIiXA8XTKEPSivMusAGuOGYKHPSRsurzZP/ViBBqhoR3w1lTD6jKrYZDGHyjw9k
-         aGVg==
-X-Gm-Message-State: AGi0PuYxBl6kT5kUXAmeEIh5MgIGYjZFMt5J8cosd8A2YkwcS1vXb8e3
-        IZcCZ6pXwTALjHv2388JA7Lurn0ieb/0dPN7x/lFrq0MHywOdjCwvGyi0O/ruY0m0FfXKSklicj
-        2K2KINJopVLZnmbtXPPaa7KEx
-X-Received: by 2002:aed:33a4:: with SMTP id v33mr16397042qtd.289.1586883173353;
-        Tue, 14 Apr 2020 09:52:53 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLJ3Yw9j9pzYkEgXk1oqksYr1eCgriQZ9BixGsOQAVs0d1y/GYfsWqxFhJ8l+Ojwa6qT9mvYQ==
-X-Received: by 2002:aed:33a4:: with SMTP id v33mr16397015qtd.289.1586883173059;
-        Tue, 14 Apr 2020 09:52:53 -0700 (PDT)
-Received: from Ruby.lyude.net (static-173-76-190-23.bstnma.ftas.verizon.net. [173.76.190.23])
-        by smtp.gmail.com with ESMTPSA id c27sm11511330qte.49.2020.04.14.09.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 09:52:52 -0700 (PDT)
-Message-ID: <a2d9da054ace3f0ff59373c5a6252f25e1c3df4b.camel@redhat.com>
-Subject: Re: [PATCH 1/9] drm/vblank: Add vblank works
-From:   Lyude Paul <lyude@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, nouveau@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
-Date:   Tue, 14 Apr 2020 12:52:51 -0400
-In-Reply-To: <20200413204243.GL60335@mtj.duckdns.org>
-References: <20200318004159.235623-1-lyude@redhat.com>
-         <20200318004159.235623-2-lyude@redhat.com>
-         <20200318134657.GV2363188@phenom.ffwll.local>
-         <e4fb0c39ec024d60587e5e1e70b171b99eb537f4.camel@redhat.com>
-         <faf63d8a9ed23c16af69762f59d0dca6b2bf085f.camel@redhat.com>
-         <96cb912809f99d04cd5cdd46c77b66b8c1163380.camel@redhat.com>
-         <20200413204243.GL60335@mtj.duckdns.org>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S2388583AbgDNQyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391183AbgDNQyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:54:14 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF0DC2074D;
+        Tue, 14 Apr 2020 16:54:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586883254;
+        bh=xlHJWks6qOP5nSm1EhRE7DQL41dwmEhs+KL2QMTW7YA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZHuKMfxx+Vsl0dArDpDVMC82H+nkz2g07ycCte6YNwFeQJgbxPyJZI8+adyhAEFd
+         VFJsMhPrneosGJZ5PvDAkmX5fuYjA0VlWMPbktjJclNqI69RldfwlUAjTSb/WUdu1r
+         ys0s8T4hyL520KJEtXC9gQQUCC+Sna+6o11WxW38=
+Date:   Tue, 14 Apr 2020 17:54:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 18/33] docs: spi: spi.h: fix a doc building warning
+Message-ID: <20200414165411.GF5412@sirena.org.uk>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
+ <1c701b3ac903dc0bc304dca958fbdee53bd38dc3.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="E7i4zwmWs5DOuDSH"
+Content-Disposition: inline
+In-Reply-To: <1c701b3ac903dc0bc304dca958fbdee53bd38dc3.1586881715.git.mchehab+huawei@kernel.org>
+X-Cookie: I've only got 12 cards.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-13 at 16:42 -0400, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Apr 13, 2020 at 04:18:57PM -0400, Lyude Paul wrote:
-> > Hi Tejun! Sorry to bother you, but have you had a chance to look at any of
-> > this yet? Would like to continue moving this forward
-> 
-> Sorry, wasn't following this thread. Have you looked at kthread_worker?
-> 
 
-Hi, thanks for the response! And yes-I think this would actually be perfect
-for what we need, I guess one question I might as well ask since I've got you
-here: would patches to expose an unlocked version of kthread_queue_worker() be
-accepted? With something like that I should be able to just reuse the
-delayed_work_list and spinlocks that come with kthread_worker which would make
-the vblank works implementation a bit easier
->  
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kthread.h#n71
-> 
-> And, thanks a lot for the vblank explanation. I really enjoyed readin it. :)
-> 
--- 
-Cheers,
-	Lyude Paul (she/her)
-	Associate Software Engineer at Red Hat
+--E7i4zwmWs5DOuDSH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 14, 2020 at 06:48:44PM +0200, Mauro Carvalho Chehab wrote:
+> We need to add a blank line to avoid this warning:
+>=20
+> 	./include/linux/spi/spi.h:401: WARNING: Unexpected indentation.
+>=20
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  include/linux/spi/spi.h | 1 +
+
+I thought I'd acked this previously?
+
+--E7i4zwmWs5DOuDSH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6V6rMACgkQJNaLcl1U
+h9DsNwf/XHI3tLwo6AEck5iQILDT6ARxZ3Hyb4atCbyNCJOPH/3VFDbANgIah+es
+iPQAhuoWcCJiXZ47xTQAfCSXE26KYIPplmBo6lYEjCrNL1drYn1PIQ55PVqu7R/l
+vhoUAMZI+5/q0d/rqbqTC3Fe72mYtEV9zVG5rzwyjpXNGAce9RpY5hMaiKzwN3zj
+wU1WhxHB8n5qMQPFsfIDBfpGYTCgzQpv9tunvOGi34KqXoLqVT+4+yBGkyt1eug/
+aV+Gb4jxwjnNzCqmq4p7e/XokHHpeOBbArBGBVE3AUQpaJmVUw4HH4XybEn9mRuF
+1mImFIlu2/AlGTRAcSLKM+7laMPJtw==
+=zkPe
+-----END PGP SIGNATURE-----
+
+--E7i4zwmWs5DOuDSH--
