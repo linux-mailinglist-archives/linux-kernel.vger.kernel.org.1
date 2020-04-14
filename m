@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0131A8BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E031A8C13
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505357AbgDNT7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
+        id S2632849AbgDNUPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731053AbgDNT7p (ORCPT
+        by vger.kernel.org with ESMTP id S2632810AbgDNUOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:59:45 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on20619.outbound.protection.outlook.com [IPv6:2a01:111:f400:7d00::619])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE099C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:54:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j6xL0GrY/tFoNahqe+hs1n/qqY28teNHmaKNZ+aIWV2qRott0LHC0zeUz2Ksrn2Kbp5uk6Au+/DJ3VEzjfC/sysTQuk0qM9qakwLJnBdNqXrSRo4YqZSXsOFTUCVM5B8OsdKqL7xI0MTwTfB8OOjLejHkfoq35UU9R5MYAJv9+3fkl8onNveBhUMHK6aMajcnjeYzPkUi8QBMb1K/lYxGpsgAfO1Na35I9Xc6SS1y8cQOHnzbmh4sRPKUqygah1NhZU5o4rcQ3E7W+wAzcVQO1UwwSR7tyTfS5YqeIgEroepxgIPrOwl/RQWi4V56LgkEI18LcKPAOQ1IvFGo+SiXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NAbA7TrEcUnypmMqfcDxi3hA4qK/qCuWGuM1yqv9xNM=;
- b=BeQP0W25zWF7WpctH6E9kvuqSIK/NhKNAdv5+UVvU2iDeKc5jtb4jLrgGi5TrTtydvyMvQhRVZ1fX3n9oKf4VNxZ79UsTamzEWLDU2UWh2ixu8LLUN76oSKoDokE7M1mFZVuXhuvmkg2tyE8eYNAf3WkjltazqAkV3sDuoLFsUQJOzS4DHPk6NQZ4sw1pSbuB90KWMQHKE7uvvpNYxtHIkmrdVKKnBGmXkyau8sC1A9lLpaG9rjdpc9bb03uEO+iYaYCRZd2Vyerr0Rh2J7dNEfA5j4T9lhZwNnd69iJ3As0JvDzAelRJJluF3ZPQ52WMdAOIyH0rHYRM0ZEaUtiiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NAbA7TrEcUnypmMqfcDxi3hA4qK/qCuWGuM1yqv9xNM=;
- b=UBzHBSnQcVFu0Flrm6GKq83vIVxCxLhEdtx+XXEOIJbkHY2nov7ctPIr/9Pe7RBGZm9kzX5e1xPgO3i6tXo4QHbZnDGxvCZvoCfJhP6PBUFNhUdn+zOtxSuo3qonGkAHfGmwbNnA5j4vcB8bJJqme/CUTSBPbRxMl7d/0ZtpN6c=
-Received: from VI1PR04MB6941.eurprd04.prod.outlook.com (2603:10a6:803:12e::23)
- by VI1PR04MB4573.eurprd04.prod.outlook.com (2603:10a6:803:73::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.17; Tue, 14 Apr
- 2020 19:54:29 +0000
-Received: from VI1PR04MB6941.eurprd04.prod.outlook.com
- ([fe80::289c:fdf8:faf0:3200]) by VI1PR04MB6941.eurprd04.prod.outlook.com
- ([fe80::289c:fdf8:faf0:3200%2]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
- 19:54:29 +0000
-From:   Leonard Crestez <leonard.crestez@nxp.com>
-To:     Peng Fan <peng.fan@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>
-CC:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
-Thread-Topic: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
-Thread-Index: AQHWEmDd5kEp+mUChUCEq05fLBSjFw==
-Date:   Tue, 14 Apr 2020 19:54:29 +0000
-Message-ID: <VI1PR04MB69417717438360A9858DD0D6EEDA0@VI1PR04MB6941.eurprd04.prod.outlook.com>
-References: <1586870475-32532-1-git-send-email-peng.fan@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonard.crestez@nxp.com; 
-x-originating-ip: [95.76.3.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d1d2ecd9-3fd5-46a5-8aeb-08d7e0ada4e0
-x-ms-traffictypediagnostic: VI1PR04MB4573:|VI1PR04MB4573:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB45730CF46F0347609CA553DAEEDA0@VI1PR04MB4573.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1247;
-x-forefront-prvs: 0373D94D15
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB6941.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(9686003)(316002)(6506007)(110136005)(54906003)(5660300002)(7696005)(53546011)(52536014)(558084003)(71200400001)(55016002)(33656002)(66556008)(8676002)(91956017)(4326008)(26005)(66476007)(76116006)(44832011)(8936002)(2906002)(186003)(64756008)(478600001)(66446008)(66946007)(81156014)(86362001)(15650500001);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a1AhqmjX3lbRSqlbWv3YRxRV/UdZK+SIS2iKRNQUGlPtYILaeFvF4eQ9puGLEnhflt2bLTrSDZECLcCHS51ANc0ITevqXfF6yFFqtDHzR8/QTXFDdPASfkmkx5LnT1rkjeyBcIKBh/WKEAEbtJyUxy7s+Tmz3dSwqsCCpgnPi/Bbv/eh7nlSjP813AR6RB3Rjy390s95xYigjATZtJPf0dl33jSHX2h3eyQljSzmirUuKNW/dL/UKYgwpa6Hn9+yefJAyIkwMwPKEKs1RZ4wFfCA7Xz0Cp+Qa6GGdzwOLXLDlUTUk2wjqERuhz7Ff6cPNuY7ejyqzybKYELWfXoPKO94nb4uhWbLiklPRyaKkjfAg8Mbm0O1XuUMBiZecES/rOYAS7q+QyInJq3wilA97SUWArYgoqP5puJV/zxp2PHj4Bw/itL2xc0FLgRr03sZ
-x-ms-exchange-antispam-messagedata: JKP8+Y+26ZNQZnpHKZQZ4/huXFB+BM+XXOOZb1qc1+t38a5ZcgnjtCwlWaHHnMtTem/NulMTkgMkuwkKOTJqtBHp7nYlRAsy1Q1Emkc//Z2GOUdl59YNrctcXXtzw0kSGB1mY42WzhENdi2SWAtw7A==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 14 Apr 2020 16:14:51 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E5CC061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:55:44 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id f19so14584215iog.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sjVvZonb0hVGjhdZ35VWK21WqwfB1XaKuSBkV0Zyjh0=;
+        b=PvNd+JcVIrErvIye2eIVifVi9exD5Rgm72/G+zjK72njls/t+oLDlFGJsW98dujywT
+         4XjOKGsIZADatakxpcHQBqMe7NgqrmCsotFm4GnOGy4vsttMaWLGW8UO0ZQwbvZfyg5N
+         VYUfSBF6hI/2JCKAJ+EQ3DiuZvYmSJA3wQIwIw1GvgvF8U0YHtv3cOJKHT/pLmusZ0i5
+         wUS4/Q4uYw4iJ2spiaTC+yG7VYNSowyLRNz6d56ajnLlMEeBEPEMk2hCqvkf/xsAWI+6
+         nmLEgDu/dHzlHtFPoltUGrYDTCnYjwte9eG+1jrx/QfHaOcvBnursf3Pnjvv5TfwOy0s
+         ff2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sjVvZonb0hVGjhdZ35VWK21WqwfB1XaKuSBkV0Zyjh0=;
+        b=f8Nuzt13pMvmt6nWFTd8dmKGGHzfvaqFGZIjK6yhiaJ84uua5EO1GkfNRj0fdt+dLf
+         hEVkW7Mc/SWp4iI+jGIk4FVoFhuXC52RynMBtq9zeGuyfCW/7v/2GRB+5lV90lpM0cH+
+         vc6ooxoYQQM9hD1XySIE8AKS+pt8u8AfUjeqAdEFogMskhd8d7Z4AQ9+daCiun6Tw7Zi
+         88+DXuetKh0E21Lzd5fraBjuqtYDAg+BMlnbgkUvaWg3kDoJcOgGndq/DCkxoud9s88G
+         HIx8blRutVNVjEnWuSrL99jUoHk4G/Xy1Z7HVclUdVBa0L8dHe2GF18vHO5WgnJn7oiu
+         fJIA==
+X-Gm-Message-State: AGi0PuarCXBhpvx5g1WP4aRt5jfioMynbKaUaWOA7edghJqwl+Zh3Gu/
+        QTdv/DZGWdaqSf8tUqL380YtcTHXC4H4bsNfPS98+w==
+X-Google-Smtp-Source: APiQypJuSkKnSFW+a5lugNBcUtA3MoeGUC7wQc61G10VXtYgncmQO6k3h4ozTE1pckGKZdNGz3nVuCqt5qO9VwKvjGc=
+X-Received: by 2002:a05:6602:2182:: with SMTP id b2mr22542641iob.19.1586894144019;
+ Tue, 14 Apr 2020 12:55:44 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1d2ecd9-3fd5-46a5-8aeb-08d7e0ada4e0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 19:54:29.4684
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8kWnKJANn7VXq5W/KhF0gyXWaPLpBumki6omih3Dwj9c9cmcD9Vkx9mcEG1eq+1HxJQYeLdRodV7LOzBSTWkOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4573
+References: <20200407011259.GA72735@juliacomputing.com> <8f95e8b4-415f-1652-bb02-0a7c631c72ac@intel.com>
+ <CABV8kRw1TQsqs+z43bSfZ5isctuFGMB4g_ztDYihiiXHcy4nVA@mail.gmail.com>
+ <5208ad1e-cd9b-d57e-15b0-0ca935fccacd@intel.com> <CABV8kRzfR32+MpAvTAPHCN902WtHSxySujcO2yAB3OT0caVDJg@mail.gmail.com>
+ <9921cb2e-a7cb-c1d0-b120-c08f06be7c7f@intel.com> <CABV8kRxDkE1dQh0c2FkFpkUruiR0aD-hXbgd5-jcoCDiwYHs1A@mail.gmail.com>
+In-Reply-To: <CABV8kRxDkE1dQh0c2FkFpkUruiR0aD-hXbgd5-jcoCDiwYHs1A@mail.gmail.com>
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Tue, 14 Apr 2020 15:55:07 -0400
+Message-ID: <CABV8kRy6M8_-An5TEvBATAz+MxdaQqbCLBEZbJsaz=aZiV48wA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0 per-thread
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kyle Huey <khuey@kylehuey.com>,
+        "Robert O'Callahan" <robert@ocallahan.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-14 4:30 PM, Peng Fan wrote:=0A=
-> From: Peng Fan <peng.fan@nxp.com>=0A=
-> =0A=
-> The i.MX8 SCU message header size is the number of "u32" elements,=0A=
-> not "u8", so fix the check.=0A=
-> =0A=
-> Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>=0A=
-> Addresses-Coverity-ID: 1461658 ("Memory - corruptions")=0A=
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>=0A=
-=0A=
-Reviewed-by: Leonard Crestez <leonard.crestez@nxp.com>=0A=
+Hi everyone,
+
+I'd like to continue this discussion along two directions:
+
+1) In this patch, what should happen to signal frames?
+
+I continue to think that it would be good for these to observe
+the process' XCR0, but I understand the argument that we
+should not let the XCR0 setting modify any kernel behavior
+whatsoever. Andy, I would in particular appreciate your views
+on this since I believe you thought it should do the latter.
+
+2) What would a solution based on the raw KVM API look like?
+
+I'm still afraid that going down the KVM route would just end up
+back in the same situation as we're in right now, but I'd like to
+explore this further, so here's my current thinking: Particularly for
+recording, the process does need to look very much like a regular
+linux process, so we can get recording of syscalls and signal state right.
+I don't have enough of an intuition for the performance implications
+of this. For example, suppose we added a way for the kernel to
+directly take syscalls from guest CPL3 - what would the cost
+of incurring a vmexit for every syscall be? I suppose another
+idea would be to build a minimal linux kernel that sits in guest
+CPL0 and emulates at least the process state and other high
+frequency syscalls, but forwards the rest to the host kernel.
+Seems potentially doable, but a bit brittle - is there prior art
+here I should be aware of, e.g. from people looking at securing
+containers? As I mentioned, I had looked at Project Dune
+before (http://dune.scs.stanford.edu/), which does seem to
+do a lot of the things I would need, though it doesn't appear
+to currently be handling signals at all, and of course it's also
+not really KVM based, but rather
+KVM-but-copy-pasted-and-manually-hacked-up-in-a-separate.ko
+based.
+
+I may also be missing a completely obvious way to do this -
+my apologies if so. I would certainly appreciate any insight on
+how to achieve the set of requirements here (multiple tracees
+with potentially differing XCR0 values, faithful and performant
+provision of syscalls/signals to the tracees) on top of KVM.
+
+If we can figure out a good way forward with KVM, I'd be quite
+interested in it, since I think there may be additional performance
+games that could be played by having part of rr be in guest CPL0,
+I'm just unsure that KVM is really the right abstraction here, so
+I'd like to think through it a bit.
+
+Keno
