@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD6E1A7EBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A3F1A7EC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388135AbgDNNsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:48:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgDNNsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:48:36 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE8CF20578;
-        Tue, 14 Apr 2020 13:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586872115;
-        bh=UimtK8BS+z6249dpjydCR1nS+KStjsmtkIoy2fTPFY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h/EswtYrYPQqt8bEH5HANugKsgmAW70/E489d4ddJWgjb1Q5oIaYcwa3Is0HzHbn8
-         dK8StPcYEMKxlorlhotq11DEMcgwBrgaUObMq0izl9u3jcwijgxfKlwIFyiyygSryd
-         fNuO9j9wSNlibtxM6cNGuF6rEMyr8jZQyHgBswJc=
-Date:   Tue, 14 Apr 2020 14:48:31 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>, mingo@redhat.com,
-        mingo@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] seqlock: Use while instead of if+goto in
- __read_seqcount_begin
-Message-ID: <20200414134830.GB28750@willie-the-truck>
-References: <20200409134558.90863-1-songmuchun@bytedance.com>
- <20200410115658.GB24814@willie-the-truck>
- <20200414110516.GO20713@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414110516.GO20713@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728618AbgDNNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:49:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8472 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388027AbgDNNsm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:48:42 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EDYdWZ100004
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:48:41 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30cvqfd99j-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:48:41 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <zohar@linux.ibm.com>;
+        Tue, 14 Apr 2020 14:48:00 +0100
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 14 Apr 2020 14:47:55 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EDmY7P37028098
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 13:48:34 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A1BCAE051;
+        Tue, 14 Apr 2020 13:48:34 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67B60AE04D;
+        Tue, 14 Apr 2020 13:48:33 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.80.236.92])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 14 Apr 2020 13:48:33 +0000 (GMT)
+Subject: Re: [PATCH] evm: Fix possible memory leak in evm_calc_hmac_or_hash()
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
+        stable@vger.kernel.org
+Date:   Tue, 14 Apr 2020 09:48:32 -0400
+In-Reply-To: <20200414080131.29411-1-roberto.sassu@huawei.com>
+References: <20200414080131.29411-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20041413-0020-0000-0000-000003C7B0C1
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041413-0021-0000-0000-000022208C90
+Message-Id: <1586872112.7311.194.camel@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-14_05:2020-04-14,2020-04-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ impostorscore=0 adultscore=0 spamscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:05:16PM +0200, Peter Zijlstra wrote:
-> On Fri, Apr 10, 2020 at 12:56:58PM +0100, Will Deacon wrote:
-> > On Thu, Apr 09, 2020 at 09:45:58PM +0800, Muchun Song wrote:
-> > > The creators of the C language gave us the while keyword. Let's use
-> > > that instead of synthesizing it from if+goto.
-> > > 
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > ---
-> > >  include/linux/seqlock.h | 6 +-----
-> > >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > > 
-> > > diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-> > > index 8b97204f35a77..7bdea019814ce 100644
-> > > --- a/include/linux/seqlock.h
-> > > +++ b/include/linux/seqlock.h
-> > > @@ -125,12 +125,8 @@ static inline unsigned __read_seqcount_begin(const seqcount_t *s)
-> > >  {
-> > >  	unsigned ret;
-> > >  
-> > > -repeat:
-> > > -	ret = READ_ONCE(s->sequence);
-> > > -	if (unlikely(ret & 1)) {
-> > > +	while (unlikely((ret = READ_ONCE(s->sequence)) & 1))
-> > >  		cpu_relax();
-> > > -		goto repeat;
-> > > -	}
-> > >  	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
-> > >  	return ret;
-> > 
-> > Patch looks fine to me, but I'll leave it to Peter as I don't have a
-> > preference either way.
+Thanks, Roberto.
+
+Sorry for the delays in reviewing the miscellaneous set of IMA patches
+you previously posted.  They're next on my "todo" list.
+
+Mimi
+
+On Tue, 2020-04-14 at 10:01 +0200, Roberto Sassu wrote:
+> Don't immediately return if the signature is portable and security.ima is
+> not present. Just set error so that memory allocated is freed before
+> returning from evm_calc_hmac_or_hash().
 > 
-> Linus sometimes prefers the goto variant as that better expresses the
-> exception model. But like Will, I don't particularly care. That said,
-> Will, would it make sense to use smp_cond_load_relaxed() here ?
+> Cc: stable@vger.kernel.org
+> Fixes: 50b977481fce9 ("EVM: Add support for portable signature format")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  security/integrity/evm/evm_crypto.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+> index 35682852ddea..499ea01b2edc 100644
+> --- a/security/integrity/evm/evm_crypto.c
+> +++ b/security/integrity/evm/evm_crypto.c
+> @@ -241,7 +241,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
+>  
+>  	/* Portable EVM signatures must include an IMA hash */
+>  	if (type == EVM_XATTR_PORTABLE_DIGSIG && !ima_present)
+> -		return -EPERM;
+> +		error = -EPERM;
+>  out:
+>  	kfree(xattr_value);
+>  	kfree(desc);
 
-Oh yeah, good thinking. Didn't spot that one, but it should work well as
-long as smp_cond_load_relaxed() always implies a control dependency (surely
-it has to?)
-
-Will
