@@ -2,162 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CD61A7259
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 06:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF711A725F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 06:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405191AbgDNERA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 00:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        id S2405212AbgDNES1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 00:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405167AbgDNEQs (ORCPT
+        by vger.kernel.org with ESMTP id S2405149AbgDNESX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 00:16:48 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6097C0A3BDC;
-        Mon, 13 Apr 2020 21:16:47 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a25so12727367wrd.0;
-        Mon, 13 Apr 2020 21:16:47 -0700 (PDT)
+        Tue, 14 Apr 2020 00:18:23 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E70C0A3BDC;
+        Mon, 13 Apr 2020 21:18:23 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t16so378797plo.7;
+        Mon, 13 Apr 2020 21:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=8+FrUca9gQRLeYSS11nklym7WjOSuUcaGzg4kk+01tQ=;
-        b=pupj91GB0MguZ3qm6Rz3Fej2+i4TI2Ni4aQKc7mhm+6OQB8W7zvGLpXk6N1ldiM0PM
-         UwiICYKKlj/9cNwuN10x8/jNZj2O858PeAU25ExxtTddQIgVuLh2vNKpwncE+fT9giPK
-         ey4YhzBUMWC/GQS5lJn1mRhkotxQdz1lyMwXWfBso0mFPazLDAdBBuMlsRll9VdavIqx
-         dlALdfQd0ZqqY9L/I05KQa5EFV32rK11UUoUkzwfDxgokvY5cq+S8ZrAzyMMY0mvk6cs
-         c7v2Qp6J3X/vKHy5S+IonJebr2wmWDxea1bVjEuT/FU/H2G2U5brpcI42LZADiAHlLbZ
-         80GQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4xcEG33EjZw/LrE9HUefk/4aqk4uWI4YbQ1ppYifMxQ=;
+        b=bJNNYYSu2+okRxcogXY4Y6Mt80VD42NQX8DnoADvAreT9VLW/HkbVBErMRlDi9GItv
+         SApNFY5KNNe2bJ/cRN/XZtRa9zibZlOLKu9LfEujzunzjyxXwHLEGQzOy5PEyIS3F/gj
+         P1KXvfAIU3y/23yp8pmFsq9hPPDm/T/r5QtPUlp9uRito14FJtVg2HpwEHeNbJqUsBGU
+         u7CZd/6rhIkEHF8iJw/fuq8+9WuidTSuaH18GlayTmOs3cypu976JRiXsXMCcBjz7dkN
+         WNBvZzXU8tNb+3C9aYWyGD5SeExdbnTDjAROdvYoYaTZcrRXuuAwzALxH/s28J8qbbf4
+         pr2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=8+FrUca9gQRLeYSS11nklym7WjOSuUcaGzg4kk+01tQ=;
-        b=o4eESWmp/uvahvlTmUKatLGF5kvN/FZcer9kSHTd9lo5P41SNxdXwWsamH1tfTMC/K
-         maRfM0J5LHT5aTaTBEWBjykFGTJDi9LnbiDmUwT/IloiNdIrDuHi2OdAh3jqaHva7FR8
-         oUgzpB8pLbCj9kSe39sktVmqNJUBIgzO9vrziiipwp1O5Tx9Rd74kwb4BoY2aVgRd3UB
-         eYL3Yz5CtvfuaCu5M5juOjS23bU8AYIbixxQcyYl67fL7qW+YgDVjppOYGcGtFYbVVUC
-         un5j/LIxzy2++XT4+JnOuHv2RGY11bREFIG9iY9X2tAgc7tHvvYRfWPie65tIXArEz9s
-         6rbg==
-X-Gm-Message-State: AGi0PuZk6JkQwot/zkUicJDbTHkNqCjPi+FrGuTrJO/nnxlHB8gx/+Yq
-        uQM2aqDhHLcJnUImRNRqaiDrptsN
-X-Google-Smtp-Source: APiQypK7D1pS3X0E8mch1uooa9sSpvYvwAtKVfaDNpmQrYlmVj4QRIdfwkICUTrLBnc9/6sDI3KdAw==
-X-Received: by 2002:adf:ed07:: with SMTP id a7mr22431728wro.2.1586837806339;
-        Mon, 13 Apr 2020 21:16:46 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n4sm16704471wmi.20.2020.04.13.21.16.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4xcEG33EjZw/LrE9HUefk/4aqk4uWI4YbQ1ppYifMxQ=;
+        b=NERyEZMi+DLs49tjuQMk6GieEmZuTXGJllIlnWCbrG4TaL68//l+B23mG9hpBkGXJe
+         X3pCNUTXojQ1Q9aIIeYqsC5bJzOhEAvA8HAPjM9I5IUNKmhc8enKojfFl3nnuePikpZh
+         5LgBrJ7+ZFFg+449y38DfnF6PPXcZ2sJQkvwxiHaYzxTAxDdK5R+GRY7QVq/mRcVvA9F
+         Ii+hrv9vXTFVn5uIPJrBjT17eBN0IBk9DL16ICn1ZELn6z8fHcCpJEs9X56bqEyhnN5k
+         EO65t1/xh/qji29M/4AT5tcEf0nG0d1gNjpXVIUGpNM5J1gDDvQauHLScq4WIPp4ijDG
+         C34g==
+X-Gm-Message-State: AGi0Pubk4004q3rxughHIAfIAVfy2kOkiwuBYV05pgSTReIrpg+rhTDb
+        P792MAB+RSaNgaIUWDrG6Lc=
+X-Google-Smtp-Source: APiQypKuSyu00FmXhbJYSusoKPKJUDFO7cmxWS0GS6JihlkrNj5XZmR8P7/jpgJ0Xoqz5gD7hUchPw==
+X-Received: by 2002:a17:90b:f13:: with SMTP id br19mr11533283pjb.153.1586837902552;
+        Mon, 13 Apr 2020 21:18:22 -0700 (PDT)
+Received: from osboxes.am.sony.com (ip68-225-228-191.oc.oc.cox.net. [68.225.228.191])
+        by smtp.gmail.com with ESMTPSA id v94sm1021202pjb.39.2020.04.13.21.18.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 21:16:45 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
-        linux-kernel@vger.kernel.org (open list), davem@davemloft.net,
-        kuba@kernel.org
-Subject: [PATCH net 4/4] net: dsa: b53: Rework ARL bin logic
-Date:   Mon, 13 Apr 2020 21:16:30 -0700
-Message-Id: <20200414041630.5740-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414041630.5740-1-f.fainelli@gmail.com>
-References: <20200414041630.5740-1-f.fainelli@gmail.com>
+        Mon, 13 Apr 2020 21:18:21 -0700 (PDT)
+From:   Maciej Grochowski <maciek.grochowski@gmail.com>
+To:     dan.j.williams@intel.com, vkoul@kernel.org
+Cc:     Maciej Grochowski <maciej.grochowski@pm.me>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] include/linux/dmaengine: Typos fixes in API documentation
+Date:   Tue, 14 Apr 2020 00:17:03 -0400
+Message-Id: <20200414041703.6661-1-maciek.grochowski@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When asking the ARL to read a MAC address, we will get a number of bins
-returned in a single read. Out of those bins, there can essentially be 3
-states:
+From: Maciej Grochowski <maciej.grochowski@pm.me>
 
-- all bins are full, we have no space left, and we can either replace an
-  existing address or return that full condition
-
-- the MAC address was found, then we need to return its bin index and
-  modify that one, and only that one
-
-- the MAC address was not found and we have a least one bin free, we use
-  that bin index location then
-
-The code would unfortunately fail on all counts.
-
-Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Maciej Grochowski <maciej.grochowski@pm.me>
 ---
- drivers/net/dsa/b53/b53_common.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+ include/linux/dmaengine.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index e937bf365490..b2b2c4a301bf 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1483,6 +1483,7 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
- 			u16 vid, struct b53_arl_entry *ent, u8 *idx,
- 			bool is_valid)
- {
-+	DECLARE_BITMAP(free_bins, dev->num_arl_entries);
- 	unsigned int i;
- 	int ret;
- 
-@@ -1490,6 +1491,8 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
- 	if (ret)
- 		return ret;
- 
-+	bitmap_zero(free_bins, dev->num_arl_entries);
-+
- 	/* Read the bins */
- 	for (i = 0; i < dev->num_arl_entries; i++) {
- 		u64 mac_vid;
-@@ -1501,16 +1504,24 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
- 			   B53_ARLTBL_DATA_ENTRY(i), &fwd_entry);
- 		b53_arl_to_entry(ent, mac_vid, fwd_entry);
- 
--		if (!(fwd_entry & ARLTBL_VALID))
-+		if (!(fwd_entry & ARLTBL_VALID)) {
-+			set_bit(i, free_bins);
- 			continue;
-+		}
- 		if ((mac_vid & ARLTBL_MAC_MASK) != mac)
- 			continue;
- 		if (dev->vlan_enabled &&
- 		    ((mac_vid >> ARLTBL_VID_S) & ARLTBL_VID_MASK) != vid)
- 			continue;
- 		*idx = i;
-+		return 0;
- 	}
- 
-+	if (bitmap_weight(free_bins, dev->num_arl_entries) == 0)
-+		return -ENOSPC;
-+
-+	*idx = find_first_bit(free_bins, dev->num_arl_entries);
-+
- 	return -ENOENT;
- }
- 
-@@ -1537,13 +1548,21 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
- 
- 	ret = b53_arl_read(dev, mac, vid, &ent, &idx, is_valid);
- 	/* If this is a read, just finish now */
--	if (op)
-+	if (op && ret != -ENOENT)
- 		return ret;
- 
- 	/* We could not find a matching MAC, so reset to a new entry */
--	if (ret) {
-+	switch (ret) {
-+	case -ENOSPC:
-+		dev_warn(dev->dev, "no space left in ARL\n");
-+		return ret;
-+	case -ENOENT:
-+		dev_dbg(dev->dev, "{%pM,%.4d} not found, using idx: %d\n", addr, vid, idx);
- 		fwd_entry = 0;
--		idx = 1;
-+		break;
-+	default:
-+		dev_dbg(dev->dev, "{%pM,%.4d} found, using idx: %d\n", addr, vid, idx);
-+		break;
- 	}
- 
- 	/* For multicast address, the port is a bitmask and the validity
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 21065c04c4ac..31e58ec9f741 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -83,9 +83,9 @@ enum dma_transfer_direction {
+ /**
+  * Interleaved Transfer Request
+  * ----------------------------
+- * A chunk is collection of contiguous bytes to be transfered.
++ * A chunk is collection of contiguous bytes to be transferred.
+  * The gap(in bytes) between two chunks is called inter-chunk-gap(ICG).
+- * ICGs may or maynot change between chunks.
++ * ICGs may or may not change between chunks.
+  * A FRAME is the smallest series of contiguous {chunk,icg} pairs,
+  *  that when repeated an integral number of times, specifies the transfer.
+  * A transfer template is specification of a Frame, the number of times
+@@ -1069,7 +1069,7 @@ static inline int dmaengine_terminate_all(struct dma_chan *chan)
+  * dmaengine_synchronize() needs to be called before it is safe to free
+  * any memory that is accessed by previously submitted descriptors or before
+  * freeing any resources accessed from within the completion callback of any
+- * perviously submitted descriptors.
++ * previously submitted descriptors.
+  *
+  * This function can be called from atomic context as well as from within a
+  * complete callback of a descriptor submitted on the same channel.
+@@ -1091,7 +1091,7 @@ static inline int dmaengine_terminate_async(struct dma_chan *chan)
+  *
+  * Synchronizes to the DMA channel termination to the current context. When this
+  * function returns it is guaranteed that all transfers for previously issued
+- * descriptors have stopped and and it is safe to free the memory assoicated
++ * descriptors have stopped and it is safe to free the memory associated
+  * with them. Furthermore it is guaranteed that all complete callback functions
+  * for a previously submitted descriptor have finished running and it is safe to
+  * free resources accessed from within the complete callbacks.
 -- 
-2.17.1
+2.20.1
 
