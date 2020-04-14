@@ -2,58 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9341A7F26
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E388A1A7F2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388933AbgDNOFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:05:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388896AbgDNOEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:04:53 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388968AbgDNOHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733074AbgDNOGu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 10:06:50 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA28C061A0C;
+        Tue, 14 Apr 2020 07:06:50 -0700 (PDT)
+Received: from floko.floko.floko (unknown [IPv6:2804:431:e7cc:79a2:b6f7:4033:5775:cc3a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AF0720578;
-        Tue, 14 Apr 2020 14:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586873093;
-        bh=hVpr3xCUkRKguWKyc1ILzFBoFkjzpErKoe/9LdPq1gA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kfo1/la7UmQmGIQOQ/UwqeJYeFaWCo9vV3JK+zTRtdlUcXRAhPCvWAINbcOFbvMRZ
-         moRVRrPOBZhKEZxa3/S8gGwSxuK8clwxVUoWMpxHv5bE4bNf4SWyrnmMy243nvwQ/V
-         3IDFBXOMOnDorntQTi+KkdpRpNvMMHFs4dOl/m3k=
-Date:   Tue, 14 Apr 2020 16:04:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>
-Cc:     devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        john.stultz@linaro.org, anders.pedersen@arm.com,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Darren Hart (VMware)" <dvhart@infradead.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] staging: android: ion: Skip sync if not mapped
-Message-ID: <20200414140451.GA845920@kroah.com>
-References: <20200414134629.54567-1-orjan.eide@arm.com>
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8DF162A0B2A;
+        Tue, 14 Apr 2020 15:06:44 +0100 (BST)
+From:   Helen Koike <helen.koike@collabora.com>
+To:     devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org
+Cc:     kernel@collabora.com, jbx6244@gmail.com,
+        Eddie Cai <eddie.cai.linux@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] arm64: dts: rockchip: add isp and sensors for scarlet
+Date:   Tue, 14 Apr 2020 11:06:34 -0300
+Message-Id: <20200414140634.915086-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200414134629.54567-1-orjan.eide@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 03:46:27PM +0200, Ørjan Eide wrote:
-> IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
+From: Eddie Cai <eddie.cai.linux@gmail.com>
 
-Does not work for kernel patches, sorry, now deleted :(
+Enable ISP and camera sensor ov2685 and ov5695 for scarlet.
+
+Verified with:
+    make ARCH=arm64 dtbs_check
+
+Signed-off-by: Shunqian Zheng <zhengsq@rock-chips.com>
+Signed-off-by: Eddie Cai <eddie.cai.linux@gmail.com>
+Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+---
+This patch is based on:
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/527854
+
+It should be merged after moving the bidings out of staging:
+https://patchwork.kernel.org/project/linux-media/list/?series=266089
+---
+ .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi | 74 +++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
+index 4373ed732af76..ae08205aa8e24 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
+@@ -296,6 +296,52 @@ camera: &i2c7 {
+ 
+ 	/* 24M mclk is shared between world and user cameras */
+ 	pinctrl-0 = <&i2c7_xfer &test_clkout1>;
++
++	/* Rear-facing camera */
++	wcam: camera@36 {
++		compatible = "ovti,ov5695";
++		reg = <0x36>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&wcam_rst>;
++
++		clocks = <&cru SCLK_TESTCLKOUT1>;
++		clock-names = "xvclk";
++
++		avdd-supply = <&pp2800_cam>;
++		dvdd-supply = <&pp1250_cam>;
++		dovdd-supply = <&pp1800_s0>;
++		reset-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;
++
++		port {
++			wcam_out: endpoint {
++				remote-endpoint = <&mipi_in_wcam>;
++				data-lanes = <1 2>;
++			};
++		};
++	};
++
++	/* Front-facing camera */
++	ucam: camera@3c {
++		compatible = "ovti,ov2685";
++		reg = <0x3c>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&ucam_rst>;
++
++		clocks = <&cru SCLK_TESTCLKOUT1>;
++		clock-names = "xvclk";
++
++		avdd-supply = <&pp2800_cam>;
++		dovdd-supply = <&pp1800_s0>;
++		dvdd-supply = <&pp1800_s0>;
++		reset-gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
++
++		port {
++			ucam_out: endpoint {
++				remote-endpoint = <&mipi_in_ucam>;
++				data-lanes = <1>;
++			};
++		};
++	};
+ };
+ 
+ &cdn_dp {
+@@ -353,10 +399,38 @@ &io_domains {
+ 	gpio1830-supply = <&pp1800_s0>;		/* APIO4_VDD;  4c 4d */
+ };
+ 
++&isp0 {
++	status = "okay";
++
++	ports {
++		port@0 {
++			mipi_in_wcam: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&wcam_out>;
++				data-lanes = <1 2>;
++			};
++
++			mipi_in_ucam: endpoint@1 {
++				reg = <1>;
++				remote-endpoint = <&ucam_out>;
++				data-lanes = <1>;
++			};
++		};
++	};
++};
++
++&isp0_mmu {
++	status = "okay";
++};
++
+ &max98357a {
+ 	sdmode-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+ };
+ 
++&mipi_dphy_rx0 {
++	status = "okay";
++};
++
+ &mipi_dsi {
+ 	status = "okay";
+ 	clock-master;
+-- 
+2.26.0
+
