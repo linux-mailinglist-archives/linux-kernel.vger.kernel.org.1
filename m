@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46531A8624
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9131A8619
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391318AbgDNQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55256 "EHLO mail.kernel.org"
+        id S1732788AbgDNQx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440337AbgDNQtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2440340AbgDNQtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Apr 2020 12:49:16 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CAA7221ED;
+        by mail.kernel.org (Postfix) with ESMTPSA id 42236221F6;
         Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586882943;
-        bh=kEy4QClsDKqYpuy6jSsVkkfgbzM9x8NxA08DUYZUD4M=;
+        bh=HotOvguNSrEPHftfF9hKyBfJBsne6Ihdoy/T4tXbhYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0x85DR/GN5i6ltb3aDBHGUVJS/R58au7KZ/t3BGbddVS/LY0PWBI3wX9RBFvNO9+
-         TispshdXtRWp9yKm94/VAFBm/equLxIz7D5hF38cvMGadD8O2aeeo6sreuUJ8WhvGg
-         b3DnD/bENQOMZbnuTcv3jHXVdUt+6a2cIOmqKYXE=
+        b=prVWUfSoL29beoF3B8BnWxinw0hgTYZ9QutzwrR5I+mcnioelfXrouule3uEC+8r5
+         8/ZE53E7GLZhJxItuhFPRr1px26DEdXpmaj99q8plWyON67f+8mLBpAeEyl33tY5b2
+         VQAWbSypRYasYtJaQq8C3MxOFRFyK5GDv81Na4Rc=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jOOk9-0068nI-Gp; Tue, 14 Apr 2020 18:49:01 +0200
+        id 1jOOk9-0068nN-Hg; Tue, 14 Apr 2020 18:49:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net
-Subject: [PATCH v2 30/33] firewire: firewire-cdev.hL get rid of a docs warning
-Date:   Tue, 14 Apr 2020 18:48:56 +0200
-Message-Id: <9b2501a41eba27ccdd4603cac2353c0efba7a90a.1586881715.git.mchehab+huawei@kernel.org>
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 31/33] fs: inode.c: get rid of docs warnings
+Date:   Tue, 14 Apr 2020 18:48:57 +0200
+Message-Id: <e8da46a0e57f2af6d63a0c53665495075698e28a.1586881715.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
 References: <cover.1586881715.git.mchehab+huawei@kernel.org>
@@ -45,33 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This warning:
+Use *foo makes the toolchain to think that this is an emphasis, causing
+those warnings:
 
-	./include/uapi/linux/firewire-cdev.h:312: WARNING: Inline literal start-string without end-string.
+	./fs/inode.c:1609: WARNING: Inline emphasis start-string without end-string.
+	./fs/inode.c:1609: WARNING: Inline emphasis start-string without end-string.
+	./fs/inode.c:1615: WARNING: Inline emphasis start-string without end-string.
 
-is because %FOO doesn't work if there's a parenthesis at the
-string (as a parenthesis may indicate a function). So, mark
-the literal block using the alternate ``FOO`` syntax.
+So, use, instead, ``*foo``, in order to mark it as a literal block.
 
-Acked-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- include/uapi/linux/firewire-cdev.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/linux/firewire-cdev.h b/include/uapi/linux/firewire-cdev.h
-index 1acd2b179aef..7e5b5c10a49c 100644
---- a/include/uapi/linux/firewire-cdev.h
-+++ b/include/uapi/linux/firewire-cdev.h
-@@ -308,7 +308,7 @@ struct fw_cdev_event_iso_interrupt_mc {
- /**
-  * struct fw_cdev_event_iso_resource - Iso resources were allocated or freed
-  * @closure:	See &fw_cdev_event_common;
-- *		set by %FW_CDEV_IOC_(DE)ALLOCATE_ISO_RESOURCE(_ONCE) ioctl
-+ *		set by``FW_CDEV_IOC_(DE)ALLOCATE_ISO_RESOURCE(_ONCE)`` ioctl
-  * @type:	%FW_CDEV_EVENT_ISO_RESOURCE_ALLOCATED or
-  *		%FW_CDEV_EVENT_ISO_RESOURCE_DEALLOCATED
-  * @handle:	Reference by which an allocated resource can be deallocated
+diff --git a/fs/inode.c b/fs/inode.c
+index 93d9252a00ab..37226a9cfa4f 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1606,14 +1606,14 @@ EXPORT_SYMBOL(iput);
+  *	@inode:  inode owning the block number being requested
+  *	@block: pointer containing the block to find
+  *
+- *	Replaces the value in *block with the block number on the device holding
++ *	Replaces the value in ``*block`` with the block number on the device holding
+  *	corresponding to the requested block number in the file.
+  *	That is, asked for block 4 of inode 1 the function will replace the
+- *	4 in *block, with disk block relative to the disk start that holds that
++ *	4 in ``*block``, with disk block relative to the disk start that holds that
+  *	block of the file.
+  *
+  *	Returns -EINVAL in case of error, 0 otherwise. If mapping falls into a
+- *	hole, returns 0 and *block is also set to 0.
++ *	hole, returns 0 and ``*block`` is also set to 0.
+  */
+ int bmap(struct inode *inode, sector_t *block)
+ {
 -- 
 2.25.2
 
