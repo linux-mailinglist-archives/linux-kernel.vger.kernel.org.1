@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8743F1A7E10
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B141A7E58
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387531AbgDNNa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:30:29 -0400
-Received: from 8bytes.org ([81.169.241.247]:34728 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502860AbgDNNP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:15:58 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 6821A2B0; Tue, 14 Apr 2020 15:15:51 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v2 00/33] iommu: Move iommu_group setup to IOMMU core code
+        id S2387629AbgDNNiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:38:13 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:59075 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502806AbgDNNPa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:15:30 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MxmJs-1j3uc50aLu-00zIi1; Tue, 14 Apr 2020 15:15:27 +0200
+Received: by mail-qk1-f179.google.com with SMTP id w70so8841819qkb.7;
+        Tue, 14 Apr 2020 06:15:26 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaZ5opB60kucpaK2dxIo1LPh1vIWAMOIHqNxBnuUvLBiuht7WaX
+        l68Q8QjBWHmvRfWsPKpNrMC7cLC7CqoXhfmHQ/Q=
+X-Google-Smtp-Source: APiQypKOQ+PuEkXGp7Hz6/dS0o0rdKdh/QEInnUOkTVAVIiLqxS184q6+DgOArKrPli8Cwrbt3SJu+aKb3Opir5v4iw=
+X-Received: by 2002:a37:9d08:: with SMTP id g8mr13992637qke.138.1586870125394;
+ Tue, 14 Apr 2020 06:15:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200414070142.288696-1-hch@lst.de> <20200414070142.288696-5-hch@lst.de>
+In-Reply-To: <20200414070142.288696-5-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
 Date:   Tue, 14 Apr 2020 15:15:09 +0200
-Message-Id: <20200414131542.25608-1-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
+X-Gmail-Original-Message-ID: <CAK8P3a3HvbPKTkwfWr6PbZ96koO_NrJP1qgk8H1mgk=qUScGkQ@mail.gmail.com>
+Message-ID: <CAK8P3a3HvbPKTkwfWr6PbZ96koO_NrJP1qgk8H1mgk=qUScGkQ@mail.gmail.com>
+Subject: Re: [PATCH 4/8] binfmt_elf: open code copy_siginfo_to_user to
+ kernelspace buffer
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:niGzd+JIMAutrTQXi6aKMm7ZjyhZV08h5hlKZzx03Gb3lOmqT6z
+ 7i9vKEXvzYnwIGk8z3AGZjTgK2evm1jqoj8C/KsTN2Ng17n0WzNRUfAttBxm+cyLxzHRCbd
+ ZgmOELgyTQmtDGKM9c0uepxXWGPrNEb5DvfV8rBFyumfuu2aoBGFr67kqa4kjgCo6DImAZb
+ fC212L394gbLr8KoeHrRg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:In4NPF/T4tQ=:D5Hh2GBE1UE4cO2sq1wZiv
+ RC3T/YjsyxZv/Ps3c4TABpyGM0qA6CTNR2x4Rks4MoHbc7ZaTIf5R4s61VqPYspc/1nq1v5ul
+ e6iKT3tPdL8wn3bTuJp5SqO6ncMhuC2n8ukLKcCkkKdIvd/XjcKdcMr0bmfw3xX17IlLVxwqD
+ PcsmOzadW/bIy5VFJFWI8NDupqMlKM8Cxmp+XdqwPmlBSEqTwtUBDT6rl7EEIi6E9Y+IE8iG8
+ a8vQNskKzM+Vo1MqAfhXJyxMu1CkvY7xoikclgJ0BAnNSaAAwpgnAcFTj9YAxkcd424JMuTVk
+ +bmNAyEQshYaZ4wQBK1cs+mypFEa1q38cWAgCOLcGJqVSLFse6iWTQklWw/3Db2EFxAT8d+f+
+ BxcRj4dBk9Cahs+kIctVw9mz7mdBKOZtI5sDIxKv96lWFo16sL5o7jJJBBXTTphXqb6m0ICrV
+ frTKlzZnN4qNCGvTrUGSgkxekj/y0XhlnG9vGDX3fsCxw9H7Semf4n8JhdijAWCbEm3auYWMO
+ JgY7Gu64sj1PqqvdO52ZIbz0CGPP391WCRIRQkdhvXvqgD6SS9pdncyT4tjohGVM0jQCDnb1w
+ DCoK9zdPjPGAahfo3JRZjNtebuHMhMDbI1LN1zci9H8uNZBRvqt6alrXlj6Z9ZJw8BkIaoR+n
+ tpOj6W213m7vpp5e5NxGkQB9wdpCUrWQFcS6tvZJqUiy4GXXXvHIUtkJOGjo/qNZWHJH4Oo/N
+ 7WyaUiDFlGuBzv+rPC9/aKBgh1ndpMJvQW5Yqoby+LyBpS83Yj70Y0QtBjD45AThagnWckzBU
+ db9XVwsjcezC3Zga9uFW8Spn9Jk6s+D3epsJDdiSY3kyhSi/7M=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Apr 14, 2020 at 9:02 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Instead of messing with the address limit just open code the trivial
+> memcpy + memset logic for the native version, and a call to
+> to_compat_siginfo for the compat version.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-here is the second version of this patch-set. The first version with
-some more introductory text can be found here:
+Nice!
 
-	https://lore.kernel.org/lkml/20200407183742.4344-1-joro@8bytes.org/
+>   */
+>  #define user_long_t            compat_long_t
+>  #define user_siginfo_t         compat_siginfo_t
+> -#define copy_siginfo_to_user   copy_siginfo_to_user32
+> +#define fill_siginfo_note(note, csigdata, siginfo)             \
+> +do {                                                                   \
+> +       to_compat_siginfo(csigdata, siginfo, compat_siginfo_flags());   \
+> +       fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata); \
+> +} while (0)
 
-Changes v1->v2:
+I don't think you are changing the behavior here, but I still wonder if it
+is in fact correct for x32: is in_x32_syscall() true here when dumping an
+x32 compat elf process, or should this rather be set according to which
+binfmt_elf copy is being used?
 
-	* Rebased to v5.7-rc1
-
-	* Re-wrote the arm-smmu changes as suggested by Robin Murphy
-
-	* Re-worked the Exynos patches to hopefully not break the
-	  driver anymore
-
-	* Fixed a missing mutex_unlock() reported by Marek Szyprowski,
-	  thanks for that.
-
-There is also a git-branch available with these patches applied:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-probe-device-v2
-
-Please review.
-
-Thanks,
-
-	Joerg
-
-Joerg Roedel (32):
-  iommu: Move default domain allocation to separate function
-  iommu/amd: Implement iommu_ops->def_domain_type call-back
-  iommu/vt-d: Wire up iommu_ops->def_domain_type
-  iommu/amd: Remove dma_mask check from check_device()
-  iommu/amd: Return -ENODEV in add_device when device is not handled by
-    IOMMU
-  iommu: Add probe_device() and remove_device() call-backs
-  iommu: Move default domain allocation to iommu_probe_device()
-  iommu: Keep a list of allocated groups in __iommu_probe_device()
-  iommu: Move new probe_device path to separate function
-  iommu: Split off default domain allocation from group assignment
-  iommu: Move iommu_group_create_direct_mappings() out of
-    iommu_group_add_device()
-  iommu: Export bus_iommu_probe() and make is safe for re-probing
-  iommu/amd: Remove dev_data->passthrough
-  iommu/amd: Convert to probe/release_device() call-backs
-  iommu/vt-d: Convert to probe/release_device() call-backs
-  iommu/arm-smmu: Convert to probe/release_device() call-backs
-  iommu/pamu: Convert to probe/release_device() call-backs
-  iommu/s390: Convert to probe/release_device() call-backs
-  iommu/virtio: Convert to probe/release_device() call-backs
-  iommu/msm: Convert to probe/release_device() call-backs
-  iommu/mediatek: Convert to probe/release_device() call-backs
-  iommu/mediatek-v1 Convert to probe/release_device() call-backs
-  iommu/qcom: Convert to probe/release_device() call-backs
-  iommu/rockchip: Convert to probe/release_device() call-backs
-  iommu/tegra: Convert to probe/release_device() call-backs
-  iommu/renesas: Convert to probe/release_device() call-backs
-  iommu/omap: Remove orphan_dev tracking
-  iommu/omap: Convert to probe/release_device() call-backs
-  iommu/exynos: Use first SYSMMU in controllers list for IOMMU core
-  iommu/exynos: Convert to probe/release_device() call-backs
-  iommu: Remove add_device()/remove_device() code-paths
-  iommu: Unexport iommu_group_get_for_dev()
-
-Sai Praneeth Prakhya (1):
-  iommu: Add def_domain_type() callback in iommu_ops
-
- drivers/iommu/amd_iommu.c       |  97 ++++----
- drivers/iommu/amd_iommu_types.h |   1 -
- drivers/iommu/arm-smmu-v3.c     |  38 +--
- drivers/iommu/arm-smmu.c        |  39 ++--
- drivers/iommu/exynos-iommu.c    |  24 +-
- drivers/iommu/fsl_pamu_domain.c |  22 +-
- drivers/iommu/intel-iommu.c     |  68 +-----
- drivers/iommu/iommu.c           | 393 +++++++++++++++++++++++++-------
- drivers/iommu/ipmmu-vmsa.c      |  60 ++---
- drivers/iommu/msm_iommu.c       |  34 +--
- drivers/iommu/mtk_iommu.c       |  24 +-
- drivers/iommu/mtk_iommu_v1.c    |  50 ++--
- drivers/iommu/omap-iommu.c      |  99 ++------
- drivers/iommu/qcom_iommu.c      |  24 +-
- drivers/iommu/rockchip-iommu.c  |  26 +--
- drivers/iommu/s390-iommu.c      |  22 +-
- drivers/iommu/tegra-gart.c      |  24 +-
- drivers/iommu/tegra-smmu.c      |  31 +--
- drivers/iommu/virtio-iommu.c    |  41 +---
- include/linux/iommu.h           |  21 +-
- 20 files changed, 533 insertions(+), 605 deletions(-)
-
--- 
-2.17.1
-
+     Arnd
