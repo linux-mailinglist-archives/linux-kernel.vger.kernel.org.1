@@ -2,176 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1CC1A8671
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE30C1A8681
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 19:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501951AbgDNQ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:59:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56793 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407527AbgDNQ6j (ORCPT
+        id S2388540AbgDNRAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 13:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729758AbgDNRAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:58:39 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jOOtQ-00042i-1M; Tue, 14 Apr 2020 16:58:36 +0000
-Subject: Re: [PATCH][next] drivers: hv: remove redundant assignment to pointer
- primary_channel
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
-References: <20200414152343.243166-1-colin.king@canonical.com>
- <87d08axb7k.fsf@vitty.brq.redhat.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
- mQINBE6TJCgBEACo6nMNvy06zNKj5tiwDsXXS+LhT+LwtEsy9EnraKYXAf2xwazcICSjX06e
- fanlyhB0figzQO0n/tP7BcfMVNG7n1+DC71mSyRK1ZERcG1523ajvdZOxbBCTvTitYOy3bjs
- +LXKqeVMhK3mRvdTjjmVpWnWqJ1LL+Hn12ysDVVfkbtuIm2NoaSEC8Ae8LSSyCMecd22d9Pn
- LR4UeFgrWEkQsqROq6ZDJT9pBLGe1ZS0pVGhkRyBP9GP65oPev39SmfAx9R92SYJygCy0pPv
- BMWKvEZS/7bpetPNx6l2xu9UvwoeEbpzUvH26PHO3DDAv0ynJugPCoxlGPVf3zcfGQxy3oty
- dNTWkP6Wh3Q85m+AlifgKZudjZLrO6c+fAw/jFu1UMjNuyhgShtFU7NvEzL3RqzFf9O1qM2m
- uj83IeFQ1FZ65QAiCdTa3npz1vHc7N4uEQBUxyXgXfCI+A5yDnjHwzU0Y3RYS52TA3nfa08y
- LGPLTf5wyAREkFYou20vh5vRvPASoXx6auVf1MuxokDShVhxLpryBnlKCobs4voxN54BUO7m
- zuERXN8kadsxGFzItAyfKYzEiJrpUB1yhm78AecDyiPlMjl99xXk0zs9lcKriaByVUv/NsyJ
- FQj/kmdxox3XHi9K29kopFszm1tFiDwCFr/xumbZcMY17Yi2bQARAQABtCVDb2xpbiBLaW5n
- IDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+iQI2BBMBCAAhBQJOkyQoAhsDBQsJCAcDBRUK
- CQgLBRYCAwEAAh4BAheAAAoJEGjCh9/GqAImsBcP9i6C/qLewfi7iVcOwqF9avfGzOPf7CVr
- n8CayQnlWQPchmGKk6W2qgnWI2YLIkADh53TS0VeSQ7Tetj8f1gV75eP0Sr/oT/9ovn38QZ2
- vN8hpZp0GxOUrzkvvPjpH+zdmKSaUsHGp8idfPpZX7XeBO0yojAs669+3BrnBcU5wW45SjSV
- nfmVj1ZZj3/yBunb+hgNH1QRcm8ZPICpjvSsGFClTdB4xu2AR28eMiL/TTg9k8Gt72mOvhf0
- fS0/BUwcP8qp1TdgOFyiYpI8CGyzbfwwuGANPSupGaqtIRVf+/KaOdYUM3dx/wFozZb93Kws
- gXR4z6tyvYCkEg3x0Xl9BoUUyn9Jp5e6FOph2t7TgUvv9dgQOsZ+V9jFJplMhN1HPhuSnkvP
- 5/PrX8hNOIYuT/o1AC7K5KXQmr6hkkxasjx16PnCPLpbCF5pFwcXc907eQ4+b/42k+7E3fDA
- Erm9blEPINtt2yG2UeqEkL+qoebjFJxY9d4r8PFbEUWMT+t3+dmhr/62NfZxrB0nTHxDVIia
- u8xM+23iDRsymnI1w0R78yaa0Eea3+f79QsoRW27Kvu191cU7QdW1eZm05wO8QUvdFagVVdW
- Zg2DE63Fiin1AkGpaeZG9Dw8HL3pJAJiDe0KOpuq9lndHoGHs3MSa3iyQqpQKzxM6sBXWGfk
- EkK5Ag0ETpMkKAEQAMX6HP5zSoXRHnwPCIzwz8+inMW7mJ60GmXSNTOCVoqExkopbuUCvinN
- 4Tg+AnhnBB3R1KTHreFGoz3rcV7fmJeut6CWnBnGBtsaW5Emmh6gZbO5SlcTpl7QDacgIUuT
- v1pgewVHCcrKiX0zQDJkcK8FeLUcB2PXuJd6sJg39kgsPlI7R0OJCXnvT/VGnd3XPSXXoO4K
- cr5fcjsZPxn0HdYCvooJGI/Qau+imPHCSPhnX3WY/9q5/WqlY9cQA8tUC+7mgzt2VMjFft1h
- rp/CVybW6htm+a1d4MS4cndORsWBEetnC6HnQYwuC4bVCOEg9eXMTv88FCzOHnMbE+PxxHzW
- 3Gzor/QYZGcis+EIiU6hNTwv4F6fFkXfW6611JwfDUQCAHoCxF3B13xr0BH5d2EcbNB6XyQb
- IGngwDvnTyKHQv34wE+4KtKxxyPBX36Z+xOzOttmiwiFWkFp4c2tQymHAV70dsZTBB5Lq06v
- 6nJs601Qd6InlpTc2mjd5mRZUZ48/Y7i+vyuNVDXFkwhYDXzFRotO9VJqtXv8iqMtvS4xPPo
- 2DtJx6qOyDE7gnfmk84IbyDLzlOZ3k0p7jorXEaw0bbPN9dDpw2Sh9TJAUZVssK119DJZXv5
- 2BSc6c+GtMqkV8nmWdakunN7Qt/JbTcKlbH3HjIyXBy8gXDaEto5ABEBAAGJAh8EGAEIAAkF
- Ak6TJCgCGwwACgkQaMKH38aoAiZ4lg/+N2mkx5vsBmcsZVd3ys3sIsG18w6RcJZo5SGMxEBj
- t1UgyIXWI9lzpKCKIxKx0bskmEyMy4tPEDSRfZno/T7p1mU7hsM4owi/ic0aGBKP025Iok9G
- LKJcooP/A2c9dUV0FmygecRcbIAUaeJ27gotQkiJKbi0cl2gyTRlolKbC3R23K24LUhYfx4h
- pWj8CHoXEJrOdHO8Y0XH7059xzv5oxnXl2SD1dqA66INnX+vpW4TD2i+eQNPgfkECzKzGj+r
- KRfhdDZFBJj8/e131Y0t5cu+3Vok1FzBwgQqBnkA7dhBsQm3V0R8JTtMAqJGmyOcL+JCJAca
- 3Yi81yLyhmYzcRASLvJmoPTsDp2kZOdGr05Dt8aGPRJL33Jm+igfd8EgcDYtG6+F8MCBOult
- TTAu+QAijRPZv1KhEJXwUSke9HZvzo1tNTlY3h6plBsBufELu0mnqQvHZmfa5Ay99dF+dL1H
- WNp62+mTeHsX6v9EACH4S+Cw9Q1qJElFEu9/1vFNBmGY2vDv14gU2xEiS2eIvKiYl/b5Y85Q
- QLOHWV8up73KK5Qq/6bm4BqVd1rKGI9un8kezUQNGBKre2KKs6wquH8oynDP/baoYxEGMXBg
- GF/qjOC6OY+U7kNUW3N/A7J3M2VdOTLu3hVTzJMZdlMmmsg74azvZDV75dUigqXcwjE=
-Message-ID: <606c442c-1923-77d4-c350-e06878172c44@canonical.com>
-Date:   Tue, 14 Apr 2020 17:58:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Apr 2020 13:00:43 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2F6C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 10:00:42 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id j4so13973785qkc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 10:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GIN7IF6qYtKF4gSfr/AeRIvPX7/eCFsh4TApVUETWoE=;
+        b=WJK29o3K5MXm6p3VWzbGrHsk0KBRUyWWpDHcGXG/HUX36uIXx5JyvHKhiu1s3JtLtU
+         V7gkFI/q1KmdLMhMMUxBqFlgpBaa0ZkNYnWmTKON4gWBw5jxIE0XBUAq91eeIGYap3zZ
+         OYhvWUkFkEL5+ErE8/pYC7Unq7WRkY9b6ox3OTtr13DORJy7fe4UWueM3dLYCpcH+haM
+         7s83titQwzbdrha9nbAnzXASShQuNXplRRlunOROJBdfg3Qf8CHG61pH9bI8Yw4wFfA2
+         c4dSOcHuk/T/b5dEH1oSwrARzE52d5vcmU9CxIdgyuhRNmOaqHvCyIjmpsCkx6zA/Qs+
+         xdOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GIN7IF6qYtKF4gSfr/AeRIvPX7/eCFsh4TApVUETWoE=;
+        b=YNWOBgYD2+ibpJB/L8zCyOdz/KHVwjbETT3ITfw0Z6Aa1E8UzI51jzD1aFcbcsTBZz
+         s9DHGi+rBtk4HkGcH7lPFDWFi/f3DfukV83Wb9nz0G6ZpW9yKfQbSwNFZPbo8KP23hu3
+         ZSFRryrXsNVc1GjuYpxjoiON4rEdiQc+l80OUSd3zyw06KCOIUL2Nl3oCTQ7yzGrTNE7
+         911p8WogdEMaBF0H90xYR4eVrvFYniDB74eXgrBP/uupi66QTUOdnG3kKd2KE+8zZHhs
+         YItLXnfT63hj4as+bGl0PbkLACr0afSZjdDKGa+ig+UuT3GAYv+mOiP3SGbbSqVdMv7E
+         oqcQ==
+X-Gm-Message-State: AGi0PuZ2HAzz41LqWtK0bxP7C2d7rYwWytyGFnip+HFmB/ms/APqxzWn
+        GnOQYlqwjYiW5jXVSKihQnSSkxjdLsh9yOSU9efHu5gZ
+X-Google-Smtp-Source: APiQypJAVUbx87PMTgMxPYPAUoh9xIaPNebw3vKNOCwEq+Xku6Borru68lB1wY/XGBsCVLhWsPFHE8/a8s5sITgt6DA=
+X-Received: by 2002:a05:620a:5f1:: with SMTP id z17mr18160792qkg.21.1586883642039;
+ Tue, 14 Apr 2020 10:00:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87d08axb7k.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200402203656.27047-1-michael@walle.cc> <20200402203656.27047-11-michael@walle.cc>
+ <CAMpxmJVE3PgVCxkQ-ryc5=KSrKcpdmk1cnJUxJBz9QFCx-e_+A@mail.gmail.com>
+ <80bd8661ec8a1f5eda3f09a267846eaa@walle.cc> <CAMpxmJVC7e9JnHzBo-h8M1+KmcA32=Rvxo7+znH=-kAbcCr_LQ@mail.gmail.com>
+ <e0388a2137e23d76b2415a7549c01dd1@walle.cc>
+In-Reply-To: <e0388a2137e23d76b2415a7549c01dd1@walle.cc>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 14 Apr 2020 19:00:30 +0200
+Message-ID: <CAMpxmJW1x4Orh1BZ4TUoCsYeaAAZ4NBUNvoMG9JgP0iLvXTOtg@mail.gmail.com>
+Subject: Re: [PATCH v2 10/16] gpio: add a reusable generic gpio_chip using regmap
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/2020 17:51, Vitaly Kuznetsov wrote:
-> Colin King <colin.king@canonical.com> writes:
-> 
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The pointer primary_channel is being assigned with a value that is never,
->> The assignment is redundant and can be removed.
->>
->> Addresses-Coverity: ("Unused value")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/hv/channel_mgmt.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
->> index ffd7fffa5f83..f7bbb8dc4b0f 100644
->> --- a/drivers/hv/channel_mgmt.c
->> +++ b/drivers/hv/channel_mgmt.c
->> @@ -425,8 +425,6 @@ void hv_process_channel_removal(struct vmbus_channel *channel)
->>  
->>  	if (channel->primary_channel == NULL) {
->>  		list_del(&channel->listentry);
->> -
->> -		primary_channel = channel;
->>  	} else {
->>  		primary_channel = channel->primary_channel;
->>  		spin_lock_irqsave(&primary_channel->lock, flags);
-> 
-> If I'm looking at the right source (5.7-rc1) it *is* beeing used:
-> 
-> 	if (channel->primary_channel == NULL) {
-> 		list_del(&channel->listentry);
-> 
-> 		primary_channel = channel;
-> 	} else {
-> 		primary_channel = channel->primary_channel;
-> 		spin_lock_irqsave(&primary_channel->lock, flags);
-> 		list_del(&channel->sc_list);
-> 		spin_unlock_irqrestore(&primary_channel->lock, flags);
-> 	}
-> 
-> 	/*
-> 	 * We need to free the bit for init_vp_index() to work in the case
-> 	 * of sub-channel, when we reload drivers like hv_netvsc.
-> 	 */
-> 	if (channel->affinity_policy == HV_LOCALIZED)
-> 		cpumask_clear_cpu(channel->target_cpu,
-> 				  &primary_channel->alloced_cpus_in_node);
->                                    ^^^^^ HERE ^^^^^
-> 
+wt., 14 kwi 2020 o 12:07 Michael Walle <michael@walle.cc> napisa=C5=82(a):
+> >>
+> >> So the best from a user perspective I've could come up with was:
+> >>
+> >>    ->base_reg =3D GPIO_REGMAP_ADDR(addr);
+> >>
+> >> I'm open for suggestions.
+> >>
+> >
+> > Maybe setting the pointer to ERR_PTR(-ENOENT) which will result in
+> > IS_ERR() returning true?
+>
+> Unfortunatly, its not a pointer, but only a regular unsigned int (ie
+> the type the regmap API has for its "reg" property). It could be a
+> pointer of course but then the user would have to allocate additional
+> memory.
+>
+> -michael
+>
 
-I was basing my change on linux-next that has removed a hunk of code:
+Eek, of course it's not a pointer. If possible I'd like to avoid this
+GPIO_REGMAP_ADDR() macro, so how about having some separate field for
+invalid offsets making every offset 'valid' by default?
 
-commit bcefa400900739310e8ef0cb34cbe029c404455c
-Author: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Date:   Mon Apr 6 02:15:11 2020 +0200
+Linus: do you have a better idea?
 
-    Drivers: hv: vmbus: Remove the unused HV_LOCALIZED channel affinity
-logic
-
-    The logic is unused since commit 509879bdb30b8 ("Drivers: hv: Introduce
-    a policy for controlling channel affinity").
-
-    This logic assumes that a channel target_cpu doesn't change during the
-    lifetime of a channel, but this assumption is incompatible with the new
-    functionality that allows changing the vCPU a channel will interrupt.
-
-    Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-    Link:
-https://lore.kernel.org/r/20200406001514.19876-9-parri.andrea@gmail.com
-    Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-    Signed-off-by: Wei Liu <wei.liu@kernel.org>
-
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 7fb6eb647f14..476592b0bc00 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -433,14 +433,6 @@ void hv_process_channel_removal(struct
-vmbus_channel *channel)
-                spin_unlock_irqrestore(&primary_channel->lock, flags);
-        }
-
--       /*
--        * We need to free the bit for init_vp_index() to work in the case
--        * of sub-channel, when we reload drivers like hv_netvsc.
--        */
--       if (channel->affinity_policy == HV_LOCALIZED)
--               cpumask_clear_cpu(channel->target_cpu,
--                                 &primary_channel->alloced_cpus_in_node);
--
-
+Bart
