@@ -2,107 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F249D1A75FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31ACA1A7600
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436763AbgDNIZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:25:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:50906 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436753AbgDNIZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:25:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81E131FB;
-        Tue, 14 Apr 2020 01:25:32 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 855603F73D;
-        Tue, 14 Apr 2020 01:25:23 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 09:25:20 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, dietmar.eggemann@arm.com,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robert Richter <rric@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Enrico Weigelt <info@metux.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Steve Winslow <swinslow@gmail.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Peter Xu <peterx@redhat.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 03/11] arch_topology: Make it avilable for MIPS
-Message-ID: <20200414082520.GB6459@bogus>
-References: <20200412032123.3896114-1-jiaxun.yang@flygoat.com>
- <20200412032123.3896114-4-jiaxun.yang@flygoat.com>
+        id S2436777AbgDNI0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:26:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33807 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2436767AbgDNI0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:26:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586852774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7XKy2uSMzlsVUHR3bvdi0/jwn8IqYuRkSqt7prdnHg0=;
+        b=OXslx5M1XGasPhUmOa4wSo9tWds0QXjTeyaYbaoEmL/qPlzvWVF4ExlDgyfcszXA+9mvrx
+        dhioFrKyzShGEx0m36tA573/d2nzKwB4Gsvq/yfjJltqdFrzkLQarX28Hq3DeO4Vj5MFHv
+        4hfRhKaaLd84vCgnBIktxnpIwnXOOzw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-68-DgTxY84wMJib1-rqSYAARQ-1; Tue, 14 Apr 2020 04:26:12 -0400
+X-MC-Unique: DgTxY84wMJib1-rqSYAARQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7C94107ACCD;
+        Tue, 14 Apr 2020 08:26:11 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.195.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A0D9510013A1;
+        Tue, 14 Apr 2020 08:25:59 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 10:25:56 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Wainer dos Santos Moschetta <wainersm@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH 01/10] KVM: selftests: Take vcpu pointer instead of id in
+ vm_vcpu_rm()
+Message-ID: <20200414082556.nfdgec63kuqknpxc@kamzik.brq.redhat.com>
+References: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+ <20200410231707.7128-2-sean.j.christopherson@intel.com>
+ <b696c5b9-2507-8849-e196-37c83806cfdf@redhat.com>
+ <20200413212659.GB21204@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200412032123.3896114-4-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200413212659.GB21204@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 11:20:33AM +0800, Jiaxun Yang wrote:
-> Simply drop unnecessary archtecture limitions and add dummy
-> function for platforms without OF support.
-> As some of the functions are conflicting with Arm's platform
-> implementations, we mark them as weak.
+On Mon, Apr 13, 2020 at 02:26:59PM -0700, Sean Christopherson wrote:
+> On Mon, Apr 13, 2020 at 03:26:55PM -0300, Wainer dos Santos Moschetta wrote:
+> > 
+> > On 4/10/20 8:16 PM, Sean Christopherson wrote:
+> > >The sole caller of vm_vcpu_rm() already has the vcpu pointer, take it
+> > >directly instead of doing an extra lookup.
+> > 
+> > 
+> > Most of (if not all) vcpu related functions in kvm_util.c receives an id, so
+> > this change creates an inconsistency.
 > 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> --
-> v2: Use weak instead of ifdef to exclude functions for Arm.
-> ---
->  drivers/base/arch_topology.c | 116 ++++++++++++++++++-----------------
->  1 file changed, 60 insertions(+), 56 deletions(-)
+> Ya, but taking the id is done out of "necessity", as everything is public
+> and for whatever reason the design of the selftest framework is to not
+> expose 'struct vcpu' outside of the utils.  vm_vcpu_rm() is internal only,
+> IMO pulling the id out of the vcpu just to lookup the same vcpu is a waste
+> of time.
+
+Agreed
+
 > 
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 4d0a0038b476..13dc4fbf043f 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -143,57 +143,6 @@ void topology_normalize_cpu_scale(void)
->  	}
->  }
->  
-> -bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+> FWIW, I think the whole vcpuid thing is a bad interface, almost all the
+> tests end up defining an arbitrary number for the sole VCPU_ID, i.e. the
+> vcpuid interface just adds a pointless layer of obfuscation.  I haven't
+> looked through all the tests, but returning the vcpu and making the struct
+> opaque, same as kvm_vm, seems like it would yield more readable code with
+> less overhead.
 
-This function is not under any #ifdefery and you are adding it but the
-commit message indicates opposite. Please state the reason why this needs
-to be moved under #ifdef
+Agreed
 
--- 
-Regards,
-Sudeep
+> 
+> While I'm on a soapbox, hiding 'struct vcpu' and 'struct kvm_vm' also seems
+> rather silly, but at least that doesn't directly lead to funky code.
+
+Agreed. While the concept has been slowly growing on me, I think accessor
+functions for each of the structs members are growing even faster...
+
+Thanks,
+drew
+
+> 
+> > Disregarding the above comment, the changes look good to me. So:
+> > 
+> > Reviewed-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
+> > 
+> > 
+> > >
+> > >Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > >---
+> > >  tools/testing/selftests/kvm/lib/kvm_util.c | 7 +++----
+> > >  1 file changed, 3 insertions(+), 4 deletions(-)
+> > >
+> > >diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > >index 8a3523d4434f..9a783c20dd26 100644
+> > >--- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> > >+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > >@@ -393,7 +393,7 @@ struct vcpu *vcpu_find(struct kvm_vm *vm, uint32_t vcpuid)
+> > >   *
+> > >   * Input Args:
+> > >   *   vm - Virtual Machine
+> > >- *   vcpuid - VCPU ID
+> > >+ *   vcpu - VCPU to remove
+> > >   *
+> > >   * Output Args: None
+> > >   *
+> > >@@ -401,9 +401,8 @@ struct vcpu *vcpu_find(struct kvm_vm *vm, uint32_t vcpuid)
+> > >   *
+> > >   * Within the VM specified by vm, removes the VCPU given by vcpuid.
+> > >   */
+> > >-static void vm_vcpu_rm(struct kvm_vm *vm, uint32_t vcpuid)
+> > >+static void vm_vcpu_rm(struct kvm_vm *vm, struct vcpu *vcpu)
+> > >  {
+> > >-	struct vcpu *vcpu = vcpu_find(vm, vcpuid);
+> > >  	int ret;
+> > >  	ret = munmap(vcpu->state, sizeof(*vcpu->state));
+> > >@@ -427,7 +426,7 @@ void kvm_vm_release(struct kvm_vm *vmp)
+> > >  	int ret;
+> > >  	while (vmp->vcpu_head)
+> > >-		vm_vcpu_rm(vmp, vmp->vcpu_head->id);
+> > >+		vm_vcpu_rm(vmp, vmp->vcpu_head);
+> > >  	ret = close(vmp->fd);
+> > >  	TEST_ASSERT(ret == 0, "Close of vm fd failed,\n"
+> > 
+> 
+
