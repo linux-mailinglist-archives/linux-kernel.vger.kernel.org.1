@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175E01A85DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185721A862F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441022AbgDNQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55812 "EHLO mail.kernel.org"
+        id S2391261AbgDNQzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:55:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440445AbgDNQt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:29 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S2440303AbgDNQtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:14 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 959CC215A4;
-        Tue, 14 Apr 2020 16:49:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 106E321D7E;
+        Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882969;
-        bh=ooRDyaPgSsVt4tLNtUCnIAPFTG4dZFZGWj4c122vd84=;
+        s=default; t=1586882943;
+        bh=Xa4eCTaLzmS4b0NF3iSeiftCTKHdHpFXSyP6M3NqjHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SeHHlKJrJjmFhWQD566xMcVZZ3RgShp6zE6sXdagx6I3JTVzCJKuOOS2UZym6bIg/
-         HmEvKoLKwdCG+hv5sYQZRcNu088IZzXQN66IJ/xpxdPKyrcYC4qKr0GcEDeyHWN4ab
-         geawZG7XtYlnh9lMuA/TYI8TC7yqHUzYevZr89vU=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 09/15] tools headers UAPI: Sync linux/fscrypt.h with the kernel sources
-Date:   Tue, 14 Apr 2020 13:48:48 -0300
-Message-Id: <20200414164854.26026-10-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
-References: <20200414164854.26026-1-acme@kernel.org>
+        b=VkbPpxxHKM6zyF0AoWTSyC8aiyGS9V6CJGQmtxzTnbYA7gn3IYZ2A+JmOg9h/Vj33
+         Ao4ltwSKN3w02ctU5lH09ImGFI+styAgN0N7C8tuVIxyQRemVn9+RpT5TrU+bi2k8n
+         T984BihHbFtfEdJlQX+iiuh88hdOsl4gO+PhiwGA=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jOOk9-0068mf-9U; Tue, 14 Apr 2020 18:49:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v2 22/33] docs: vm: index.rst: add an orphan doc to the building system
+Date:   Tue, 14 Apr 2020 18:48:48 +0200
+Message-Id: <146432ae6965a2bb62c929a6b62f9d4010986622.1586881715.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,72 +43,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+The new free_page_reporting.rst file is not listed at the index.
 
-To pick the changes from:
-
-  e98ad464750c ("fscrypt: add FS_IOC_GET_ENCRYPTION_NONCE ioctl")
-
-That don't trigger any changes in tooling.
-
-This silences this perf build warning:
-
-  Warning: Kernel ABI header at 'tools/include/uapi/linux/fscrypt.h' differs from latest version at 'include/uapi/linux/fscrypt.h'
-  diff -u tools/include/uapi/linux/fscrypt.h include/uapi/linux/fscrypt.h
-
-In time we should come up with something like:
-
-  $ tools/perf/trace/beauty/fsconfig.sh
-  static const char *fsconfig_cmds[] = {
-  	[0] = "SET_FLAG",
-  	[1] = "SET_STRING",
-  	[2] = "SET_BINARY",
-  	[3] = "SET_PATH",
-  	[4] = "SET_PATH_EMPTY",
-  	[5] = "SET_FD",
-  	[6] = "CMD_CREATE",
-  	[7] = "CMD_RECONFIGURE",
-  };
-  $
-
-And:
-
-  $ tools/perf/trace/beauty/drm_ioctl.sh | head
-  #ifndef DRM_COMMAND_BASE
-  #define DRM_COMMAND_BASE                0x40
-  #endif
-  static const char *drm_ioctl_cmds[] = {
-  	[0x00] = "VERSION",
-  	[0x01] = "GET_UNIQUE",
-  	[0x02] = "GET_MAGIC",
-  	[0x03] = "IRQ_BUSID",
-  	[0x04] = "GET_MAP",
-  	[0x05] = "GET_CLIENT",
-  $
-
-For fscrypt's ioctls.
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Eric Biggers <ebiggers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/include/uapi/linux/fscrypt.h | 1 +
+ Documentation/vm/index.rst | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/include/uapi/linux/fscrypt.h b/tools/include/uapi/linux/fscrypt.h
-index 0d8a6f47711c..a10e3cdc2839 100644
---- a/tools/include/uapi/linux/fscrypt.h
-+++ b/tools/include/uapi/linux/fscrypt.h
-@@ -163,6 +163,7 @@ struct fscrypt_get_key_status_arg {
- #define FS_IOC_REMOVE_ENCRYPTION_KEY		_IOWR('f', 24, struct fscrypt_remove_key_arg)
- #define FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS	_IOWR('f', 25, struct fscrypt_remove_key_arg)
- #define FS_IOC_GET_ENCRYPTION_KEY_STATUS	_IOWR('f', 26, struct fscrypt_get_key_status_arg)
-+#define FS_IOC_GET_ENCRYPTION_NONCE		_IOR('f', 27, __u8[16])
- 
- /**********************************************************************/
- 
+diff --git a/Documentation/vm/index.rst b/Documentation/vm/index.rst
+index e8d943b21cf9..611140ffef7e 100644
+--- a/Documentation/vm/index.rst
++++ b/Documentation/vm/index.rst
+@@ -31,6 +31,7 @@ descriptions of data structures and algorithms.
+    active_mm
+    balance
+    cleancache
++   free_page_reporting
+    frontswap
+    highmem
+    hmm
 -- 
-2.21.1
+2.25.2
 
