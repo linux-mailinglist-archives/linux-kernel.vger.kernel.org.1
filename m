@@ -2,140 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962E61A8404
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2ED1A8417
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391211AbgDNP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:59:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43282 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732397AbgDNP7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:59:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7EE14AC77;
-        Tue, 14 Apr 2020 15:59:28 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED4581E125F; Tue, 14 Apr 2020 17:59:27 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 17:59:27 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
-Message-ID: <20200414155927.GH28226@quack2.suse.cz>
-References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-8-ira.weiny@intel.com>
- <20200414152630.GE28226@quack2.suse.cz>
- <20200414154501.GH1649878@iweiny-DESK2.sc.intel.com>
+        id S2388081AbgDNQEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:04:05 -0400
+Received: from smtprelay0149.hostedemail.com ([216.40.44.149]:37068 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388149AbgDNQDd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:03:33 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 7AA5E18016BAA;
+        Tue, 14 Apr 2020 16:03:29 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1461:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:7514:7903:8957:10004:10226:10848:11026:11232:11233:11473:11658:11876:11914:12043:12296:12297:12438:12555:12663:12740:12760:12895:12986:13019:13095:13439:14181:14659:14721:21080:21324:21433:21451:21524:21525:21627:21990:30003:30012:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: hope66_1e399ae4d9553
+X-Filterd-Recvd-Size: 5838
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 14 Apr 2020 16:03:27 +0000 (UTC)
+Message-ID: <d3725a08531898adc1bfb1e6d875888c434b42d6.camel@perches.com>
+Subject: Re: [PATCH 1/2] staging: rtl8192u: Refactoring setKey function
+From:   Joe Perches <joe@perches.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Camylla Goncalves Cantanheide <c.cantanheide@gmail.com>
+Cc:     gregkh@linuxfoundation.org, navid.emamdoost@gmail.com,
+        sylphrenadin@gmail.com, nishkadg.linux@gmail.com,
+        stephen@brennan.io, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org
+Date:   Tue, 14 Apr 2020 09:01:18 -0700
+In-Reply-To: <20200414123326.GG1163@kadam>
+References: <20200413030129.861-1-c.cantanheide@gmail.com>
+         <20200414123326.GG1163@kadam>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414154501.GH1649878@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-04-20 08:45:01, Ira Weiny wrote:
-> On Tue, Apr 14, 2020 at 05:26:30PM +0200, Jan Kara wrote:
-> > On Sun 12-04-20 22:40:44, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > DAX effective mode changes (setting of S_DAX) require inode eviction.
-> > > 
-> > > Define a flag which can be set to inform the VFS layer that inodes
-> > > should not be cached.  This will expedite the eviction of those nodes
-> > > requiring reload.
-> > > 
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+On Tue, 2020-04-14 at 15:33 +0300, Dan Carpenter wrote:
+> On Mon, Apr 13, 2020 at 03:01:28AM +0000, Camylla Goncalves Cantanheide wrote:
+> > Changes of the local variable value and
+> > modification in the seletive repetition structure.
 > > 
-> > This inode flag will have a limited impact because usually dentry will
-> > still hold inode reference. So until dentry is evicted, inode stays as
-> > well.
 > 
-> Agreed but at least this keeps the inode from being cached until that time.
+> This changelog isn't totally clear why you're doing this.  Just say:
+> "I am refactorying setKey() to make it more clear.  I have unrolled the
+> first two iterations through the loop.  This patch will not change
+> runtime."
 > 
-> FWIW the ext4 patches seem to have a much longer delay when issuing drop_caches
-> and I'm not 100% sure why.  I've sent out those patches RFC to get the
-> discussions started.  I feel like I have missed something there but it does
-> eventually flip the S_DAX flag.
+> So long as it's clear what you're trying to do and why, that's the
+> important thing with a commit message.
 > 
-> > So I think we'd need something like DCACHE_DONTCACHE flag as well to
-> > discard a dentry whenever dentry usecount hits zero (which will be
-> > generally on last file close). What do you think?
-> 
-> I wanted to do something like this but I was not sure how to trigger the
-> DCACHE_DONTCACHE on the correct 'parent' dentry.  Can't their be multiple
-> dentries pointing to the same inode?
-> 
-> In which case, would you need to flag them all?
-
-There can be multiple dentries in case there are hardlinks. There can be
-also multiple entries in case the filesystem is NFS-exported and there are
-some disconnected dentries (those will however get discarded automatically
-once they are unused). You could actually iterate the list of all dentries
-(they are all part of inode->i_dentry list) and mark them all. This would
-still miss the case if there are more hardlinks and a dentry for a new link
-gets instantiated later but I guess I would not bother with this
-cornercase.
-
-								Honza
-
-> > And I'd note that checking for I_DONTCACHE flag in dput() isn't
-> > straightforward because of locking so that's why I suggest separate dentry
-> > flag.
+> > Signed-off-by: Camylla Goncalves Cantanheide <c.cantanheide@gmail.com>
+> > ---
+> >  drivers/staging/rtl8192u/r8192U_core.c | 52 ++++++++++++--------------
+> >  1 file changed, 24 insertions(+), 28 deletions(-)
 > > 
-> > 								Honza
-> > 
-> > > ---
-> > >  include/linux/fs.h | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > > index a818ced22961..e2db71d150c3 100644
-> > > --- a/include/linux/fs.h
-> > > +++ b/include/linux/fs.h
-> > > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> > >   *
-> > >   * I_CREATING		New object's inode in the middle of setting up.
-> > >   *
-> > > + * I_DONTCACHE		Do not cache the inode
-> > > + *
-> > >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> > >   */
-> > >  #define I_DIRTY_SYNC		(1 << 0)
-> > > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> > >  #define I_WB_SWITCH		(1 << 13)
-> > >  #define I_OVL_INUSE		(1 << 14)
-> > >  #define I_CREATING		(1 << 15)
-> > > +#define I_DONTCACHE		(1 << 16)
-> > >  
-> > >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-> > >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
-> > > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
-> > >  extern int generic_delete_inode(struct inode *inode);
-> > >  static inline int generic_drop_inode(struct inode *inode)
-> > >  {
-> > > -	return !inode->i_nlink || inode_unhashed(inode);
-> > > +	return !inode->i_nlink || inode_unhashed(inode) ||
-> > > +		(inode->i_state & I_DONTCACHE);
-> > >  }
-> > >  
-> > >  extern struct inode *ilookup5_nowait(struct super_block *sb,
-> > > -- 
-> > > 2.25.1
-> > > 
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> > diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+> > index 9b8d85a4855d..87c02aee3854 100644
+> > --- a/drivers/staging/rtl8192u/r8192U_core.c
+> > +++ b/drivers/staging/rtl8192u/r8192U_core.c
+> > @@ -4880,7 +4880,7 @@ void EnableHWSecurityConfig8192(struct net_device *dev)
+> >  void setKey(struct net_device *dev, u8 entryno, u8 keyindex, u16 keytype,
+> >  	    u8 *macaddr, u8 defaultkey, u32 *keycontent)
+> >  {
+> > -	u32 target_command = 0;
+> > +	u32 target_command = CAM_CONTENT_COUNT * entryno |  BIT(31) | BIT(16);
+> >  	u32 target_content = 0;
+> >  	u16 us_config = 0;
+> >  	u8 i;
+> > @@ -4890,39 +4890,35 @@ void setKey(struct net_device *dev, u8 entryno, u8 keyindex, u16 keytype,
+> >  
+> >  	RT_TRACE(COMP_SEC,
+> >  		 "====>to %s, dev:%p, EntryNo:%d, KeyIndex:%d, KeyType:%d, MacAddr%pM\n",
+> > -        	 __func__, dev, entryno, keyindex, keytype, macaddr);
+> > +		 __func__, dev, entryno, keyindex, keytype, macaddr);
+> 
+> Do this white space change in a separate patch.
+> 
+> >  
+> >  	if (defaultkey)
+> >  		us_config |= BIT(15) | (keytype << 2);
+> >  	else
+> >  		us_config |= BIT(15) | (keytype << 2) | keyindex;
+> >  
+> > -	for (i = 0; i < CAM_CONTENT_COUNT; i++) {
+> > -		target_command  = i + CAM_CONTENT_COUNT * entryno;
+> > -		target_command |= BIT(31) | BIT(16);
+> > -
+> > -		if (i == 0) { /* MAC|Config */
+> > -			target_content = (u32)(*(macaddr + 0)) << 16 |
+> > -					(u32)(*(macaddr + 1)) << 24 |
+> > -					(u32)us_config;
+> > -
+> > -			write_nic_dword(dev, WCAMI, target_content);
+> > -			write_nic_dword(dev, RWCAM, target_command);
+> > -		} else if (i == 1) { /* MAC */
+> > -			target_content = (u32)(*(macaddr + 2))	 |
+> > -					(u32)(*(macaddr + 3)) <<  8 |
+> > -					(u32)(*(macaddr + 4)) << 16 |
+> > -					(u32)(*(macaddr + 5)) << 24;
+> > -			write_nic_dword(dev, WCAMI, target_content);
+> > -			write_nic_dword(dev, RWCAM, target_command);
+> > -		} else {
+> > -			/* Key Material */
+> > -			if (keycontent) {
+> > -				write_nic_dword(dev, WCAMI,
+> > -						*(keycontent + i - 2));
+> > -				write_nic_dword(dev, RWCAM, target_command);
+> > -                	}
+> > -		}
+> > +	target_content = macaddr[0] << 16 |
+> > +			 macaddr[0] << 24 |
+> > +			(u32)us_config;
+> > +
+> > +	write_nic_dword(dev, WCAMI, target_content);
+> > +	write_nic_dword(dev, RWCAM, target_command++);
+> > +
+> > +	/* MAC */
+> > +	target_content = macaddr[2]	  |
+> > +			 macaddr[3] <<  8 |
+> > +			 macaddr[4] << 16 |
+> > +			 macaddr[5] << 24;
+> > +	write_nic_dword(dev, WCAMI, target_content);
+> > +	write_nic_dword(dev, RWCAM, target_command++);
+> > +
+> > +	/* Key Material */
+> > +	if (!keycontent)
+> > +		return;
+> > +
+> > +	for (i = 2; i < CAM_CONTENT_COUNT; i++) {
+> > +		write_nic_dword(dev, WCAMI, *keycontent++);
+> 
+> This code was wrong in the original as well, but now that I see the bug
+> let's fix it.  CAM_CONTENT_COUNT is 8.  8 - 2 = 6.  We are writing 6
+> u32 variables to write_nic_dword().  But the *keycontent buffer only has
+> 4 u32 variables so it is a buffer overflow.
+
+Did you find the overflow with smatch?
+
+Perhaps this but it'll write 0's for the
+last couple cam entries instead of random
+address values.
+
+Dunno what effect that'd have.  Likely none.
+
+---
+ drivers/staging/rtl8192u/r8192U_wx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8192u/r8192U_wx.c b/drivers/staging/rtl8192u/r8192U_wx.c
+index 100532..923c0c 100644
+--- a/drivers/staging/rtl8192u/r8192U_wx.c
++++ b/drivers/staging/rtl8192u/r8192U_wx.c
+@@ -733,7 +733,7 @@ static int r8192_wx_set_enc_ext(struct net_device *dev,
+ 	{
+ 		u8 broadcast_addr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+ 		u8 zero[6] = {0};
+-		u32 key[4] = {0};
++		u32 key[6] = {0};
+ 		struct iw_encode_ext *ext = (struct iw_encode_ext *)extra;
+ 		struct iw_point *encoding = &wrqu->encoding;
+ 		u8 idx = 0, alg = 0, group = 0;
+
+
+
