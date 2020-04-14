@@ -2,252 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354241A7AE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2AF1A7AF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 14:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502076AbgDNMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 08:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2502064AbgDNMgk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:36:40 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A2FC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:36:40 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y17so12967522iow.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 05:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=93PxLx/bBhSXZHPMANtDysGYDalKpS3C/enNpIgyfaA=;
-        b=oDhVu2wG3zhmPrmqPL0/4JjUoRVazgmBRZk4h1cE9oPa3GmmtDVTpeZGk19tYNQmwQ
-         lh+ajsWoGSL9FcZmIQKLE1LWXy6QcKZ6kddBJVw57rQtc5Bl89X72wPKbRQJuUpUrJdB
-         wRXOK4w8Nm5oT+D8fY9nFK4zscL2/OrKKm79fgyl0MoTymdV8KfbL7LStioAl+hg3yEA
-         PHSt5bq9omK9Ul9wZ6aDHoBm/K9TH/fAiH7Rr7ghh/hTCEH5ETC5K6zuABHAzzixS0ul
-         b8aocmIq9tM17Kxal9BPhFXJ9K1EI2LkLPzxT13IPcJrfYFLfxB2rC5hdE/+pkb680wN
-         Zgdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=93PxLx/bBhSXZHPMANtDysGYDalKpS3C/enNpIgyfaA=;
-        b=H/qw6bkIpweiBEPMkNSuAOBEceCGIPXqGrKhzpXJLoA1bb6912brjBfqYU16yGBAlp
-         RdyNYpcaiRf6Mjv9kc3IdFz9LDVTFu1JaqN+yxdZqvZjydOvbVfSca4Nmc1eJq/FoLSe
-         XYDVj3xZE36bEKzcdwNyw3S1FpjV6QMy8hG6heD9B2EJwbFcaAW5VDM61rM2Sh9XILK6
-         dT9V4LzRi7zJdJnqbhuBo/M/bdbZFD32HkQ4KDzlLfRVXfJUWfOVoEWJ7CntXAAv/WNM
-         aHlH+oo/aTJWwyEIGrlsjhCId9IRrxIlnIxz+S8P0Fsa/Y4mA46AVDGHC2FOd/aAzzwk
-         MBSA==
-X-Gm-Message-State: AGi0PubsTrc3BZUoVSUlSdcXalztwNbcTsMRv/MDmsQ9ce2R9Q/Ozj6b
-        atVq+gsnqCQg6deoCCH8P6cGctW1gaaxzA==
-X-Google-Smtp-Source: APiQypIHLgsSAAgr45LYobbDafEn2cSAk7E4X70gOIxDTh0w02hjQaH2p409t+miWUGfGpliZ4WtGw==
-X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr4751189jaq.44.1586867799011;
-        Tue, 14 Apr 2020 05:36:39 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id j20sm4442418iok.54.2020.04.14.05.36.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 05:36:38 -0700 (PDT)
-Subject: Re: [PATCH 2/4] remoteproc: Split firmware name allocation from
- rproc_alloc()
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>, ohad@wizery.com,
-        s-anna@ti.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200413193401.27234-1-mathieu.poirier@linaro.org>
- <20200413193401.27234-3-mathieu.poirier@linaro.org>
- <bd8cc8d5-94c1-5767-d089-535731fc1055@linaro.org>
- <20200414005506.GG20625@builder.lan>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <73c2c86d-cc4a-9706-458b-02a522528eaf@linaro.org>
-Date:   Tue, 14 Apr 2020 07:36:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2440134AbgDNMkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 08:40:09 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50652 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2440125AbgDNMkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 08:40:06 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 00FCB62405C43A7BFF93;
+        Tue, 14 Apr 2020 20:40:04 +0800 (CST)
+Received: from [127.0.0.1] (10.173.221.49) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Apr 2020
+ 20:39:54 +0800
+Subject: Re: [PATCH] arm64: panic on synchronous external abort in kernel
+ context
+To:     James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>, <tglx@linutronix.de>,
+        <tanxiaofei@huawei.com>, <wangxiongfeng2@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200410015245.23230-1-xiexiuqi@huawei.com>
+ <20200414105923.GA2486@C02TD0UTHF1T.local>
+ <adc93578-5cfc-09c3-0b88-b265e310ef97@arm.com>
+From:   Xie XiuQi <xiexiuqi@huawei.com>
+Message-ID: <21997719-c521-c39a-f521-54feae16fc45@huawei.com>
+Date:   Tue, 14 Apr 2020 20:39:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200414005506.GG20625@builder.lan>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <adc93578-5cfc-09c3-0b88-b265e310ef97@arm.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.221.49]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/20 7:55 PM, Bjorn Andersson wrote:
-> On Mon 13 Apr 13:56 PDT 2020, Alex Elder wrote:
+Hi James,
+
+On 2020/4/14 20:16, James Morse wrote:
+> Hi Xie,
 > 
->> On 4/13/20 2:33 PM, Mathieu Poirier wrote:
->>> Make the firmware name allocation a function on its own in order to
->>> introduce more flexibility to function rproc_alloc().
->>>
->>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-. . .
-
->>> ---
->>>  drivers/remoteproc/remoteproc_core.c | 66 ++++++++++++++++------------
->>>  1 file changed, 39 insertions(+), 27 deletions(-)
->>>
->>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->>> index 80056513ae71..4dee63f319ba 100644
->>> --- a/drivers/remoteproc/remoteproc_core.c
->>> +++ b/drivers/remoteproc/remoteproc_core.c
->>> @@ -1979,6 +1979,33 @@ static const struct device_type rproc_type = {
->>>  	.release	= rproc_type_release,
->>>  };
->>>  
->>> +static int rproc_alloc_firmware(struct rproc *rproc,
->>> +				const char *name, const char *firmware)
->>> +{
->>> +	char *p, *template = "rproc-%s-fw";
->>> +	int name_len;
->>
->> Not a big deal (and maybe it's not consistent with other nearby
->> style) but template and name_len could be defined inside the
->> "if (!firmware)" block.
->>
+> On 14/04/2020 11:59, Mark Rutland wrote:
+>> On Fri, Apr 10, 2020 at 09:52:45AM +0800, Xie XiuQi wrote:
+>>> We should panic even panic_on_oops is not set, when we can't recover
+>>> from synchronous external abort in kernel context.
 > 
-> I prefer variables declared in the beginning of the function, so I'm
-> happy with this.
-
-It should be obvious that this is fine with me.
-
->>> +	if (!firmware) {
->>> +		/*
->>> +		 * If the caller didn't pass in a firmware name then
->>> +		 * construct a default name.
->>> +		 */
->>> +		name_len = strlen(name) + strlen(template) - 2 + 1;
->>> +		p = kmalloc(name_len, GFP_KERNEL);
->>
->>
->> I don't know if it would be an improvement, but you could
->> check for a null p value below for both cases.  I.e.:
->>
->> 		if (p)
->> 			snprintf(p, ...);
->>
+> Hmm, fault-from-kernel-context doesn't mean the fault affects the kernel. If the kernel is
+> reading or writing from user-space memory for a syscall, its the user-space memory that is
+> affected. This thread can't make progress, so we kill it.
+> If its a kernel thread or we were in irq context, we panic().
 > 
-> Moving the common NULL check and return out seems nice, but given that
-> we then have to have this positive conditional I think the end result is
-> more complex.
-> 
-> That said, if we're not just doing a verbatim copy from rproc_alloc() I
-> think we should make this function:
-> 
-> 	if (!firmware)
-> 		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
-> 	else
-> 		p = kstrdup_const(firmware, GFP_KERNEL);
+> I don't think you really want all faults that happen as a result of a kernel access to be
+> fatal!
 
-You know, I wanted to suggest this but I didn't know the
-name of the function (kasprintf()) and didn't take the time
-to find it.  I wholly agree with your suggestion.
+Yes, you're right. I just want to fix a hung up when ras error inject testing.
 
-The only additional minor tweak I'd add is that I prefer
-using a non-negated condition where possible, though it
-doesn't always "look right."  So:
+panic_on_oops is not set in the kernel image for testing. When receiving a sea in kernel
+context, the PE trap in do_exit(), and can't return any more.
 
-	if (firmware)
-		rproc->firmware = kstrdup_const(firmware, GFP_KERNEL);
-	else
-		rproc->firmware = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
+I analyze the source code, the call trace might like this:
+   do_mem_abort
+     -> arm64_notify_die
+        -> die                    # kernel context, call die() directly;
+           -> do_exit             # kernel process context, call do_exit(SIGSEGV);
+              -> do_task_dead()   # call do_task_dead(), and hung up this core;
 
-					-Alex
-
-> 	rproc->firmware = p;
 > 
-> 	return p ? 0 : -ENOMEM;
+> [...]
 > 
-> Regards,
-> Bjorn
+>> What exactly are you trying to catch here? If you are seeing a problem
+>> in practice, can you please share your log from a crash?
 > 
->> (more below)
->>
->>> +		if (!p)
->>> +			return -ENOMEM;
->>> +		snprintf(p, name_len, template, name);
->>> +	} else {
->>> +		p = kstrdup(firmware, GFP_KERNEL);
->>> +		if (!p)
->>> +			return -ENOMEM;
->>> +	}
->>> +
->>
->> 	if (!p)
->> 		return -ENOMEM;
->> 	
->>> +	rproc->firmware = p;
->>> +
->>> +	return 0;
->>> +}
->>> +
->>>  /**
->>>   * rproc_alloc() - allocate a remote processor handle
->>>   * @dev: the underlying device
->>> @@ -2007,42 +2034,21 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->>>  			  const char *firmware, int len)
->>>  {
->>>  	struct rproc *rproc;
->>> -	char *p, *template = "rproc-%s-fw";
->>> -	int name_len;
->>>  
->>>  	if (!dev || !name || !ops)
->>>  		return NULL;
->>>  
->>> -	if (!firmware) {
->>> -		/*
->>> -		 * If the caller didn't pass in a firmware name then
->>> -		 * construct a default name.
->>> -		 */
->>> -		name_len = strlen(name) + strlen(template) - 2 + 1;
->>> -		p = kmalloc(name_len, GFP_KERNEL);
->>> -		if (!p)
->>> -			return NULL;
->>> -		snprintf(p, name_len, template, name);
->>> -	} else {
->>> -		p = kstrdup(firmware, GFP_KERNEL);
->>> -		if (!p)
->>> -			return NULL;
->>> -	}
->>> -
->>>  	rproc = kzalloc(sizeof(struct rproc) + len, GFP_KERNEL);
->>> -	if (!rproc) {
->>> -		kfree(p);
->>> +	if (!rproc)
->>>  		return NULL;
->>> -	}
->>> +
->>> +	if (rproc_alloc_firmware(rproc, name, firmware))
->>> +		goto free_rproc;
->>>  
->>>  	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
->>> -	if (!rproc->ops) {
->>> -		kfree(p);
->>> -		kfree(rproc);
->>> -		return NULL;
->>> -	}
->>> +	if (!rproc->ops)
->>> +		goto free_firmware;
->>>  
->>> -	rproc->firmware = p;
->>>  	rproc->name = name;
->>>  	rproc->priv = &rproc[1];
->>>  	rproc->auto_boot = true;
->>> @@ -2091,6 +2097,12 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->>>  	rproc->state = RPROC_OFFLINE;
->>>  
->>>  	return rproc;
->>> +
->>> +free_firmware:
->>> +	kfree(rproc->firmware);
->>> +free_rproc:
->>> +	kfree(rproc);
->>> +	return NULL;
->>>  }
->>>  EXPORT_SYMBOL(rproc_alloc);
->>>  
->>>
->>
+> Yes please!
+> 
+
+crash log:
+
+NOTICE:  [TotemRasIntCpuNodeEri]:[1879L]
+NOTICE:  [RasEriInterrupt]:[173L]NodeTYP2Status = 0x0
+[  387.740609] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 9
+[  387.748837] {1}[Hardware Error]: event severity: recoverable
+[  387.754470] {1}[Hardware Error]:  Error 0, type: recoverable
+[  387.760103] {1}[Hardware Error]:   section_type: ARM processor error
+[  387.766425] {1}[Hardware Error]:   MIDR: 0x00000000481fd010
+[  387.771972] {1}[Hardware Error]:   Multiprocessor Affinity Register (MPIDR): 0x0000000081080000
+[  387.780628] {1}[Hardware Error]:   error affinity level: 0
+[  387.786088] {1}[Hardware Error]:   running state: 0x1
+[  387.791115] {1}[Hardware Error]:   Power State Coordination Interface state: 0
+[  387.798301] {1}[Hardware Error]:   Error info structure 0:
+[  387.803761] {1}[Hardware Error]:   num errors: 1
+[  387.808356] {1}[Hardware Error]:    error_type: 0, cache error
+[  387.814160] {1}[Hardware Error]:    error_info: 0x0000000024400017
+[  387.820311] {1}[Hardware Error]:     transaction type: Instruction
+[  387.826461] {1}[Hardware Error]:     operation type: Generic error (type cannot be determined)
+[  387.835031] {1}[Hardware Error]:     cache level: 1
+[  387.839878] {1}[Hardware Error]:     the error has been corrected
+[  387.845942] {1}[Hardware Error]:    physical fault address: 0x00000027caf50770
+[  387.853162] Internal error: synchronous external abort: 96000610 [#1] PREEMPT SMP
+[  387.860611] Modules linked in: l1l2_inject(O) vfio_iommu_type1 vfio_pci vfio_virqfd vfio ib_ipoib ib_umad rpcrdma ib_iser libiscsi scsi_transport_iscsi hns_roce_hw_v2 crct10dif_ce ses hns3 hclge hnae3 hisi_trng_v2 rng_core hisi_zip hisi_sec2 hisi_hpre hisi_qm uacce hisi_sas_v3_hw hisi_sas_main libsas scsi_transport_sas
+[  387.888725] CPU: 0 PID: 940 Comm: kworker/0:3 Kdump: loaded Tainted: G           O      5.5.0-rc4-g5993cbe #1
+[  387.898592] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS V3.B210.01 03/12/2020
+[
+ Message from  387.907429] Workqueue: events error_inject [l1l2_inject]
+[  387.914098] pstate: 80c00009 (Nzcv daif +PAN +UAO)
+ s[yslogd@localho  387.918867] pc : lsu_inj_ue+0x58/0x70 [l1l2_inject]
+[  387.925103] lr : error_inject+0x64/0xb0 [l1l2_inject]
+[  387.930132] sp : ffff800020af3d90
+[  387.933435] x29: ffff800020af3d90 x28: 0000000000000000
+st[ at Mar 30 11:  387.938723] x27: ffff0027dae6e838 x26: ffff80001178bcc8
+[  387.945391] x25: 0000000000000000 x24: ffffa2c77162e090
+[  387.950680] x23: 0000000000000000 x22: ffff2027d7c33d40
+33[:55 ...
+ ker  387.955968] x21: ffff2027d7c37a00 x20: ffff0027d679c000
+[  387.962636] x19: ffffa2c77162e088 x18: 0000000020cbf59a
+ne[l:Internal err  387.967924] x17: 000000000000000e x16: ffffa2c7b812bc98
+[  387.974592] x15: 0000000000000001 x14: 0000000000000000
+[  387.979880] x13: ffff2027cf75a780 x12: ffffa2c7b8299c18
+or[: synchronous   387.985168] x11: 0000000000000000 x10: 00000000000009f0
+[  387.991836] x9 : ffff800020af3d50 x8 : fefefefefefefeff
+ex[ternal abort:   387.997124] x7 : 0000000000000000 x6 : 001d4ed88e000000
+[  388.003792] x5 : 000073746e657665 x4 : 0000080110f81381
+[  388.009080] x3 : 000000000000002f x2 : 807fffffffffffff
+96[000610 [#1] PR  388.014369] x1 : ffffa2c77162c518 x0 : 0000000000000081
+[  388.021037] Call trace:
+EEMPT SMP
+[  388.023475]  lsu_inj_ue+0x58/0x70 [l1l2_inject]
+[  388.029019]  error_inject+0x64/0xb0 [l1l2_inject]
+[  388.033707]  process_one_work+0x158/0x4b8
+[  388.037699]  worker_thread+0x50/0x498
+[  388.041348]  kthread+0xfc/0x128
+[  388.044480]  ret_from_fork+0x10/0x1c
+[  388.048042] Code: b2790000 d519f780 f9800020 d5033f9f (58001001)
+[  388.054109] ---[ end trace 39d51c21b0e42ba6 ]---
+
+core 0 hung up at here.
+
+> 
+> I suspect you want to make memory_failure() smarter about faults that affect the kernel
+> text or data. If so, please do it in memory_failure() where it benefits all architectures,
+> and all methods of reporting errors.
+> (we may need a 'synchronous' hint to memory_failure(), it expects everything to be
+> asynchronous).
+> 
+> If its not memory, we should extend the RAS handling to know what this error is, and that
+> it is fatal. (e.g. PE state is infected)
+> 
+> 
+> Thanks,
+> 
+> James
+> .
+> 
 
