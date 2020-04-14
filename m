@@ -2,233 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86DF1A8F52
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EA31A8F50
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634445AbgDNXvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 19:51:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:36919 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2634428AbgDNXuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 19:50:55 -0400
-IronPort-SDR: Lv9fSdOFHF8JR5EcGWT0PFeWldiIvc+M/5fpR6D58iYSofv7YcpZamXbAxQvl4hQgN2pKphhTc
- SsyiDnkEastw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 16:50:51 -0700
-IronPort-SDR: t5C1nSFtW0xCwRHV+Dz1bLrVUM00lOHSfY5Tqo4WM0a9oTKMELO0JaeZwNdCoGYyJwPlVX/PoH
- gPBMY2rXumAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="245554405"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Apr 2020 16:50:50 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jOVKM-0007wq-1M; Wed, 15 Apr 2020 07:50:50 +0800
-Date:   Wed, 15 Apr 2020 07:49:09 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- bdf89df3c54518eed879d8fac7577fcfb220c67e
-Message-ID: <5e964bf5.W3lvYMMAWF8BWUHS%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1731575AbgDNXuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 19:50:14 -0400
+Received: from sonic303-3.consmr.mail.bf2.yahoo.com ([74.6.131.42]:46379 "EHLO
+        sonic303-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2634390AbgDNXtv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 19:49:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586908188; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=QEk5giC2E2UGQIVRGgpT5FWmxdxL7/FYimF3RLvQrFvsjl5lb9T/31Bcjuyne7/6UiQ9nii8h3Q0f0DOunHtvYjSQALVSsKzHf9myTPOO5uPxQePAUJvKFphmHZh6HYHv5QqouWsvz0nVeYVJjFOiUZCN8vGlhl2nLHFHLlN1HwVPPl5y30ZUt4Emxc+dLAxqg7nkroTgfRiH3jKQmVrP2JHR9fWH+eBdMu6EFFcmUjtm7vWwoZWiQQpQsgqvlAwWOrNxQzJyj4NogE6Os3syBH8FvLFbfDObF3be/yFZe/uYfd4yOu90vq0T60cpeF4/Y69OlyrC3JyqERa5f8m5g==
+X-YMail-OSG: NBwRheUVM1ma19dQlmiiXTI6OMUjJrCS__K3kWf_V_IsjA4Zm0SyMKtn1C_7wzI
+ ZVZQy2JywAioe612M3yMQRky43HB_istmhwtQyVwq8RZZOVjd066E0s5wXY3OG1MAnaPMMKyJBPS
+ YIUVDvZJJDJZjB54ST15Yn5gCF.W_gbgMAD4bwd1QDd9wVNrLjNn43VABJxeUNCSaCiB9McYXzrI
+ wDO5dntcATPqZbl9n.SCSVbeRJB.yMxz7XjJyx3fgKWxRFtHxIQb9Kt4tOZi6akQh_K9_e2gi6Bm
+ t7AwQkscTQklSABFlIRvyPY7RsHxd6uAJWVsBy.YxZqsulsX8LHh3M0NVoaOeKRMlPwEFYGnsjdL
+ Ctm73vXW1U.nBDYfqqiOl8B5dXPHnFSLmBn3etX4IyiQTVudK85blUKQz3rYZLUnnUnZcsA6XZSd
+ .O_GD4QdjzkGodorp8u3DJ_Urdk.CxO3P.i6tm0kJHs1VvS2Fo7YSNYuU9iQUWqKjsKg3jPgORcK
+ AgeWT7GqwK2LIA9qpQt7WdW1z1Q65bkELT1LiIe6R5HVdoYWalnKFu9Bke_W_Kad9kk9ibMrCL4L
+ QOOjJrwg3lbClJdA43HMiEe7NZCNWiMDzLL8.AHKTwZBT.TNbhJBiAZLS6ju4RLx4VMYEfmNRnHs
+ SZX02p78pJNfGbGEH0UDQKZnglUTFwZ6X7t_XtSsHMBFjiqWryELrNVJG1Sb2eJMstMczms.jTv_
+ 2GWCB9bpo.iieznETuMQfGATO9Gn81pQJCpgGPIKJVbu_7PvmgfA3Fu0A0dRuZChPpjQQ0_l8QkD
+ 0PzoKGOf1VMactN20NwC9re5Y9MUu0VvT1WffIeYPF2STLvlK5CehQfaxTcYKLTD49njaIrFdY5x
+ IP4Vtn3KhNkXNJEwuaxzAbTI9ZpxAiHUcq36PEORLQvaMRD4_Wy6.z_G1NbullvgbbhwnM62moQr
+ bdHZ6Q1QcO.tWisndeuoGU8g7GjLV.x98Y6XlmIyeEVeJwAuCGLq6qZSFwDGa9O.daIL7BJSQOXP
+ Ydk5MAIXZnIR8VaUG6gRTg97kGD3MzkvBg9ul6DHaNZlv7QK0N4TeZT4_OR4A1xWiO2kTMYR6I_Y
+ cGEH6ZC8AU.e.M25ZZJ.rp90glTqPRxmWsEQ4CAUxyIEg39eJaFZGVax4HILbwBr4dKqw_uYOL2p
+ _pRZrUaW5lHqUQALbtG_fSaFvUsDPq0T2LdZlzjxrxBzLKzEjgVLW26H98bdi1ZaY.s_Y3VHoo.3
+ Ei9E5nvWB3iOvH6sELH0r13Tb76fWmQ0uoxRmR0O1P_8A51eQb5WxSjWH76zSafIakBg.lLPnZEy
+ D
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Tue, 14 Apr 2020 23:49:48 +0000
+Date:   Tue, 14 Apr 2020 23:49:45 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaabrunel209@gmail.com>
+Reply-To: mrs.minaabrunel2021@aol.com
+Message-ID: <127520250.441952.1586908185814@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <127520250.441952.1586908185814.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15651 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: bdf89df3c54518eed879d8fac7577fcfb220c67e  x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
 
-elapsed time: 481m
 
-configs tested: 174
-configs skipped: 14
+My Dear in the lord
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-riscv                               defconfig
-ia64                                defconfig
-mips                              allnoconfig
-s390                             allyesconfig
-powerpc                             defconfig
-mips                      malta_kvm_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200414
-x86_64               randconfig-a002-20200414
-x86_64               randconfig-a003-20200414
-i386                 randconfig-a001-20200414
-i386                 randconfig-a002-20200414
-i386                 randconfig-a003-20200414
-alpha                randconfig-a001-20200414
-m68k                 randconfig-a001-20200414
-nds32                randconfig-a001-20200414
-parisc               randconfig-a001-20200414
-riscv                randconfig-a001-20200414
-alpha                randconfig-a001-20200415
-m68k                 randconfig-a001-20200415
-mips                 randconfig-a001-20200415
-nds32                randconfig-a001-20200415
-parisc               randconfig-a001-20200415
-riscv                randconfig-a001-20200415
-c6x                  randconfig-a001-20200414
-h8300                randconfig-a001-20200414
-microblaze           randconfig-a001-20200414
-nios2                randconfig-a001-20200414
-sparc64              randconfig-a001-20200414
-c6x                  randconfig-a001-20200415
-h8300                randconfig-a001-20200415
-microblaze           randconfig-a001-20200415
-nios2                randconfig-a001-20200415
-sparc64              randconfig-a001-20200415
-csky                 randconfig-a001-20200414
-openrisc             randconfig-a001-20200414
-s390                 randconfig-a001-20200414
-sh                   randconfig-a001-20200414
-xtensa               randconfig-a001-20200414
-csky                 randconfig-a001-20200415
-openrisc             randconfig-a001-20200415
-s390                 randconfig-a001-20200415
-sh                   randconfig-a001-20200415
-xtensa               randconfig-a001-20200415
-x86_64               randconfig-b001-20200414
-x86_64               randconfig-b002-20200414
-x86_64               randconfig-b003-20200414
-i386                 randconfig-b001-20200414
-i386                 randconfig-b002-20200414
-i386                 randconfig-b003-20200414
-x86_64               randconfig-c002-20200414
-x86_64               randconfig-c003-20200414
-i386                 randconfig-c001-20200414
-i386                 randconfig-c002-20200414
-i386                 randconfig-c003-20200414
-i386                 randconfig-d002-20200415
-x86_64               randconfig-d003-20200415
-i386                 randconfig-d003-20200415
-x86_64               randconfig-d001-20200415
-i386                 randconfig-d001-20200415
-x86_64               randconfig-d002-20200415
-x86_64               randconfig-g001-20200414
-x86_64               randconfig-g002-20200414
-x86_64               randconfig-g003-20200414
-i386                 randconfig-g001-20200414
-i386                 randconfig-g002-20200414
-i386                 randconfig-g003-20200414
-x86_64               randconfig-h001-20200414
-x86_64               randconfig-h002-20200414
-x86_64               randconfig-h003-20200414
-i386                 randconfig-h001-20200414
-i386                 randconfig-h002-20200414
-i386                 randconfig-h003-20200414
-x86_64               randconfig-h001-20200415
-x86_64               randconfig-h002-20200415
-x86_64               randconfig-h003-20200415
-i386                 randconfig-h001-20200415
-i386                 randconfig-h002-20200415
-i386                 randconfig-h003-20200415
-arc                  randconfig-a001-20200415
-arm                  randconfig-a001-20200415
-arm64                randconfig-a001-20200415
-ia64                 randconfig-a001-20200415
-powerpc              randconfig-a001-20200415
-sparc                randconfig-a001-20200415
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
+e capital city of Italy in Southern Europe. The money was from the sale of =
+his company and death benefits payment and entitlements of my deceased husb=
+and by his company.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
