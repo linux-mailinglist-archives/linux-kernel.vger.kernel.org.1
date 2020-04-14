@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC50C1A85ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CFA1A8620
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440547AbgDNQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:52:07 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33416 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440657AbgDNQv3 (ORCPT
+        id S2391285AbgDNQyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:54:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58057 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2440696AbgDNQw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:51:29 -0400
-Received: by mail-ot1-f68.google.com with SMTP id j26so93979ots.0;
-        Tue, 14 Apr 2020 09:51:29 -0700 (PDT)
+        Tue, 14 Apr 2020 12:52:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586883177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NH9riSJWIwA5MJGEKQ1bph+dSoJ7N2LR20v9on+n36c=;
+        b=DEfA6DnDToVNektqackuxJE0Xrq80DG3HGf9ipu5rPxtHVlwa3XMWz7rd/aLpJ0EMrZSX+
+        gTtxuXotWmbXGfyGU2H2mT0+sL6x+aOGLcEFq1Z+Ws5khk0kGddUe16zZdNdDMCqxU7B7W
+        z2nkN7nUvd8p1Sg1si8hmFikUXl1B/8=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-PidPBT5jME6izHRyTxvetg-1; Tue, 14 Apr 2020 12:52:53 -0400
+X-MC-Unique: PidPBT5jME6izHRyTxvetg-1
+Received: by mail-qt1-f199.google.com with SMTP id u13so2201376qtk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:52:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E0UhtU0hOfN1mtluPKd6UxG6VtUuYZXqq6zaVbM+sI0=;
-        b=O8kJaC2uYpCUsb7tA1jLJBmfhVAcro4KT01QHr2VDCVsIj+OXRheog2EKQwxW+llxt
-         fX7l8xEkfhpEKvqJHJ3Q/AKbgzMlLR88KKw0B96nN5Y7DFEMm+iE7IuCBnm9Pp3B3180
-         Jf9ztI/xyBVp5PHQn5CR3SUu5tGpJDYi61KtPitYYqh7T6PzFSDAdb0DpFOVE77er1fo
-         w7tiwVt4A9IzSsi/rFXWXwlBQ9Cx0S6BCE/QoATyQa8d1Rb1Oabv/Brt0mrLQyUgYx5r
-         MrFFdVXpfO8wIDyLro2fvS120+YYFWbEKwY4bWfSV2xXW6E+2Y2H6iGiqrO9znjynSvx
-         5y5w==
-X-Gm-Message-State: AGi0PubS6VP6TvVriGwsGZDfV6LMqop6Y2/MOCSeM4L496Nd0EiQK6gL
-        8FRsEaGAnLm0jBdgFwtpIQ==
-X-Google-Smtp-Source: APiQypIcslAsL6nTfjJohaUj1ZXbBo8tbhnBXcKvkKOBU0ppY4P1+HG4u8r7j/Gyi1aadTNcJDyzCw==
-X-Received: by 2002:a4a:e0d1:: with SMTP id e17mr9696815oot.53.1586883088742;
-        Tue, 14 Apr 2020 09:51:28 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s13sm6235555oov.28.2020.04.14.09.51.27
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=NH9riSJWIwA5MJGEKQ1bph+dSoJ7N2LR20v9on+n36c=;
+        b=GrSTyJyVRi5vfs2Y6gjTDrvDlzts65DelqWKQc9aJGdr1NG8OqwVO9nJ9WrIBlyHkg
+         NQbUeU98ZyE7uS3XGc7R5JMRrnQ8FZUUIjVNswoittL/aar0SBQWUti0qjaPIZtUkI2H
+         rBrAMM+FjPjF6dBiurmYmYwU17U5p8tDGF84W4N/ntCmjtiH5/kDqwwgQti/OI2+BNH9
+         HxwqzX1ZYtG68inoUKnhcC8y6NtRAQ+mA4sxeUh8jjSmiGQ88sbbM0IjsCt6PhhdfCQU
+         faBeflIiXA8XTKEPSivMusAGuOGYKHPSRsurzZP/ViBBqhoR3w1lTD6jKrYZDGHyjw9k
+         aGVg==
+X-Gm-Message-State: AGi0PuYxBl6kT5kUXAmeEIh5MgIGYjZFMt5J8cosd8A2YkwcS1vXb8e3
+        IZcCZ6pXwTALjHv2388JA7Lurn0ieb/0dPN7x/lFrq0MHywOdjCwvGyi0O/ruY0m0FfXKSklicj
+        2K2KINJopVLZnmbtXPPaa7KEx
+X-Received: by 2002:aed:33a4:: with SMTP id v33mr16397042qtd.289.1586883173353;
+        Tue, 14 Apr 2020 09:52:53 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLJ3Yw9j9pzYkEgXk1oqksYr1eCgriQZ9BixGsOQAVs0d1y/GYfsWqxFhJ8l+Ojwa6qT9mvYQ==
+X-Received: by 2002:aed:33a4:: with SMTP id v33mr16397015qtd.289.1586883173059;
+        Tue, 14 Apr 2020 09:52:53 -0700 (PDT)
+Received: from Ruby.lyude.net (static-173-76-190-23.bstnma.ftas.verizon.net. [173.76.190.23])
+        by smtp.gmail.com with ESMTPSA id c27sm11511330qte.49.2020.04.14.09.52.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 09:51:28 -0700 (PDT)
-Received: (nullmailer pid 22116 invoked by uid 1000);
-        Tue, 14 Apr 2020 16:51:27 -0000
-Date:   Tue, 14 Apr 2020 11:51:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: Re: [PATCH v5 1/3] dt-bindings: phy: qcom,qmp: Convert QMP PHY
- bindings to yaml
-Message-ID: <20200414165127.GA21637@bogus>
-References: <1585809534-11244-1-git-send-email-sanm@codeaurora.org>
- <1585809534-11244-2-git-send-email-sanm@codeaurora.org>
+        Tue, 14 Apr 2020 09:52:52 -0700 (PDT)
+Message-ID: <a2d9da054ace3f0ff59373c5a6252f25e1c3df4b.camel@redhat.com>
+Subject: Re: [PATCH 1/9] drm/vblank: Add vblank works
+From:   Lyude Paul <lyude@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, nouveau@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
+Date:   Tue, 14 Apr 2020 12:52:51 -0400
+In-Reply-To: <20200413204243.GL60335@mtj.duckdns.org>
+References: <20200318004159.235623-1-lyude@redhat.com>
+         <20200318004159.235623-2-lyude@redhat.com>
+         <20200318134657.GV2363188@phenom.ffwll.local>
+         <e4fb0c39ec024d60587e5e1e70b171b99eb537f4.camel@redhat.com>
+         <faf63d8a9ed23c16af69762f59d0dca6b2bf085f.camel@redhat.com>
+         <96cb912809f99d04cd5cdd46c77b66b8c1163380.camel@redhat.com>
+         <20200413204243.GL60335@mtj.duckdns.org>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1585809534-11244-2-git-send-email-sanm@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  2 Apr 2020 12:08:52 +0530, Sandeep Maheswaram wrote:
-> Convert QMP PHY bindings to DT schema format using json-schema.
+On Mon, 2020-04-13 at 16:42 -0400, Tejun Heo wrote:
+> Hello,
 > 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  .../devicetree/bindings/phy/qcom,qmp-phy.yaml      | 332 +++++++++++++++++++++
->  .../devicetree/bindings/phy/qcom-qmp-phy.txt       | 242 ---------------
->  2 files changed, 332 insertions(+), 242 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
->  delete mode 100644 Documentation/devicetree/bindings/phy/qcom-qmp-phy.txt
+> On Mon, Apr 13, 2020 at 04:18:57PM -0400, Lyude Paul wrote:
+> > Hi Tejun! Sorry to bother you, but have you had a chance to look at any of
+> > this yet? Would like to continue moving this forward
+> 
+> Sorry, wasn't following this thread. Have you looked at kthread_worker?
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi, thanks for the response! And yes-I think this would actually be perfect
+for what we need, I guess one question I might as well ask since I've got you
+here: would patches to expose an unlocked version of kthread_queue_worker() be
+accepted? With something like that I should be able to just reuse the
+delayed_work_list and spinlocks that come with kthread_worker which would make
+the vblank works implementation a bit easier
+>  
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kthread.h#n71
+> 
+> And, thanks a lot for the vblank explanation. I really enjoyed readin it. :)
+> 
+-- 
+Cheers,
+	Lyude Paul (she/her)
+	Associate Software Engineer at Red Hat
+
