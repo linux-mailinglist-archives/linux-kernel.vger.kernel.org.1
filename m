@@ -2,243 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D021A8BE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275371A8C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505479AbgDNUDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:03:20 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55765 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505445AbgDNUCv (ORCPT
+        id S2632865AbgDNUPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2632824AbgDNUOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:02:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586894569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=55O3NEeOmFMu2pI5z7Txh645s57BVO3ScH0+97Mu2jE=;
-        b=drZVtAqGtA22psCAfcnEKXj5DW5QIypeQMu8yXsScRxOBHBY4ezEs+IZMjt50Pv3sJcIAM
-        uGuBpDT+7aSGCGlZDs4RRx1gU9qoFvQN8vw/KlBlWncJ8Lh/eoHv3BxugS/ba/SNnunnSk
-        yNB/uNo2Nby0A+ntCiafyy7svaSr1sA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-9yYcqMz-OTCLtF2LTf-VbA-1; Tue, 14 Apr 2020 16:02:45 -0400
-X-MC-Unique: 9yYcqMz-OTCLtF2LTf-VbA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D33A1005509;
-        Tue, 14 Apr 2020 20:02:42 +0000 (UTC)
-Received: from llong.com (ovpn-118-173.rdu2.redhat.com [10.10.118.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 89A065C1A2;
-        Tue, 14 Apr 2020 20:02:35 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH v3 2/3] crypto: Remove unnecessary memzero_explicit()
-Date:   Tue, 14 Apr 2020 16:02:14 -0400
-Message-Id: <20200414200214.1873-1-longman@redhat.com>
-In-Reply-To: <20200413211550.8307-1-longman@redhat.com>
-References: <20200413211550.8307-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Tue, 14 Apr 2020 16:14:46 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20608.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6F5C061A10;
+        Tue, 14 Apr 2020 13:04:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EW7co+8Nu+u5BlrEXXfwjpa5SDHB2uDCvDZoJbOSouePuVkl0TrPTYw1kU9mvvC1fre1vIYwUmo8U+GgkqH0aluUtiDSLFuU2PIkzYELg8uP+NTAPeTjadHItf3tBUojW7yBAbOlY52V70sVbwFTIeAvglwuNhwXZboJim+DIrQTnOfbSVi2RS/4fu3T5OBSW7vjGNxaXqd5mlASwpfwOyb08hFOq7YJ2n3n56kGtGfUX6V5z+Kgp4KS0kn3KjgtkahUkqiympnXV5yYeQXwCnhDwOe6+cmrADsnKtdbgA9kO5WLjKYBsGyv2Uj7bqxxFO/hENKalGlkhgUVvbEpvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2csmqSF8Oe5PBqXsxosUGpKAOc+oXHtZhuIHh6sR6i4=;
+ b=DUdGywhwVII5gGFJnhMtHMKKPvE5+4OvEP0/OdEKljOpZB9NzJuZHRUAD0LfpHe+hzhtXTP/gsVjUb8wUTItFxS3wOzOP8AbkeDWVedspGZejx75kr7c7f0y9pR6A/JXbFjRqd7RTM3UjZnWVpURbSO6X0gnAgO3eUFzLkplCET4iWdRp5xstoBcY0BPzYYsXHFQfnjlo1DpQ62aA8lW4aHxbYFNfGD1uOG6pGWt99vfFMJ8fV6XOcyCu4lSQ7DbPAQD9Vz3Hg/kHKVxE2s7Ke6J49o8GToblATtPD1E9dt6AOippRJb6NKaTVNfaeKNWWwTK9Jymw9/LvV1KgQm1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2csmqSF8Oe5PBqXsxosUGpKAOc+oXHtZhuIHh6sR6i4=;
+ b=lgD/KdHWeEm5tBEgvOVxjnvaPIUFS7X8FqiU+3UyoSbC1iH1mbijDStikSnPUIMlbFBbxrDLui3DGxb0XdAjO/38fpkDSgVH1w37PinlgE4m6IDQ6V+7Z+HnUt30oVpI0WlXgBXl1gcq0rXbUn1bF+/Ge0rKOiw2+JAnxFCOnc8=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Thomas.Lendacky@amd.com; 
+Received: from DM6PR12MB3163.namprd12.prod.outlook.com (2603:10b6:5:15e::26)
+ by DM6PR12MB2730.namprd12.prod.outlook.com (2603:10b6:5:41::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Tue, 14 Apr
+ 2020 20:04:46 +0000
+Received: from DM6PR12MB3163.namprd12.prod.outlook.com
+ ([fe80::f0f9:a88f:f840:2733]) by DM6PR12MB3163.namprd12.prod.outlook.com
+ ([fe80::f0f9:a88f:f840:2733%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 20:04:46 +0000
+Subject: Re: [PATCH 40/70] x86/sev-es: Setup per-cpu GHCBs for the runtime
+ handler
+To:     Mike Stunes <mstunes@vmware.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+References: <20200319091407.1481-1-joro@8bytes.org>
+ <20200319091407.1481-41-joro@8bytes.org>
+ <A7DF63B4-6589-4386-9302-6B7F8BE0D9BA@vmware.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <09757a84-1d81-74d5-c425-cff241f02ab9@amd.com>
+Date:   Tue, 14 Apr 2020 15:04:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+In-Reply-To: <A7DF63B4-6589-4386-9302-6B7F8BE0D9BA@vmware.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR16CA0058.namprd16.prod.outlook.com
+ (2603:10b6:805:ca::35) To DM6PR12MB3163.namprd12.prod.outlook.com
+ (2603:10b6:5:15e::26)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN6PR16CA0058.namprd16.prod.outlook.com (2603:10b6:805:ca::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.17 via Frontend Transport; Tue, 14 Apr 2020 20:04:44 +0000
+X-Originating-IP: [67.79.209.213]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2d88baec-7789-4b0f-0589-08d7e0af1408
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2730:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB27301705DD1835E5EE57C9A5ECDA0@DM6PR12MB2730.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-Forefront-PRVS: 0373D94D15
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39850400004)(396003)(366004)(346002)(376002)(136003)(110136005)(54906003)(31686004)(5660300002)(8936002)(6486002)(316002)(7416002)(8676002)(66556008)(66946007)(66476007)(81156014)(4326008)(26005)(956004)(186003)(16526019)(86362001)(478600001)(31696002)(2616005)(6512007)(36756003)(52116002)(6506007)(53546011)(2906002);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P+9+lJO65BqVwKwfMoujGV3sf4YpG2eCuzAHByLpzOzbJtukbcWfkJDvONCIchkzwEMjdD936ZscwSVXDuTLpa3Bi1qXPDvANy03Ynd4la/aPgvYyik1B2Q7Ssj1zZaJCE52FkhcuuGNviGLYuXYuEROuiAobs9m7MIljv7J1TvZRK5DqgZEGTgBgu1wVFCVwPMAEo9edPaWukMky3agvbSxdFbxmK7sCYfCS1GCiFxO7YS8Grx6MnFRq7G2g1oUzbm11jPrHuQ1tVj4OdSQjH0Db3GkU9d75y92Dhk+ciaTQIXMCbZ4+yVZz1ooEarF3H+No5HusHfdMgy9WkicfA4lkbe30bUy6GKX3ItjMyAwNi08of4uYtdjjzSnLCACghyJ1Jgaig9e8hKvpyx1NSmGDOfwXIG9NsKKVU7NaBzYTK4h2Tg6mRGeubEHO4Xx
+X-MS-Exchange-AntiSpam-MessageData: jVKhd/ZTgd45QYJsJoPVhQy8kFS6DAAMbxql5MDnd7gHDEMf6uQkGo/Jwx3mFmsmfSW7O2wkQBMI0m82DnKypFqriiT3kTMvAySJIxYXEhOvl5yIC9fOve4E9NnGLNXPj7IoN0Plya5sWVqrWuIi1g==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d88baec-7789-4b0f-0589-08d7e0af1408
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2020 20:04:45.9121
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fR+sn7Xb32FPeaon4HUWoZpK+isbhOd0bidW5D6YKoXedmbVCT5CRz0gcSeQSSIXC/SPyY2VuKFVm5agHiI6eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2730
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since kfree_sensitive() will do an implicit memzero_explicit(),
-there is no need to call memzero_explicit() before it. Eliminate those
-memzero_explicit() and simplify the call sites. For better correctness,
-keylen is cleared if key memory allocation fails.
+On 4/14/20 2:03 PM, Mike Stunes wrote:
+> On Mar 19, 2020, at 2:13 AM, Joerg Roedel <joro@8bytes.org> wrote:
+>>
+>> From: Tom Lendacky <thomas.lendacky@amd.com>
+>>
+>> The runtime handler needs a GHCB per CPU. Set them up and map them
+>> unencrypted.
+>>
+>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+>> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+>> ---
+>> arch/x86/include/asm/mem_encrypt.h |  2 ++
+>> arch/x86/kernel/sev-es.c           | 28 +++++++++++++++++++++++++++-
+>> arch/x86/kernel/traps.c            |  3 +++
+>> 3 files changed, 32 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+>> index c17980e8db78..4bf5286310a0 100644
+>> --- a/arch/x86/kernel/sev-es.c
+>> +++ b/arch/x86/kernel/sev-es.c
+>> @@ -197,6 +203,26 @@ static bool __init sev_es_setup_ghcb(void)
+>> 	return true;
+>> }
+>>
+>> +void sev_es_init_ghcbs(void)
+>> +{
+>> +	int cpu;
+>> +
+>> +	if (!sev_es_active())
+>> +		return;
+>> +
+>> +	/* Allocate GHCB pages */
+>> +	ghcb_page = __alloc_percpu(sizeof(struct ghcb), PAGE_SIZE);
+>> +
+>> +	/* Initialize per-cpu GHCB pages */
+>> +	for_each_possible_cpu(cpu) {
+>> +		struct ghcb *ghcb = (struct ghcb *)per_cpu_ptr(ghcb_page, cpu);
+>> +
+>> +		set_memory_decrypted((unsigned long)ghcb,
+>> +				     sizeof(*ghcb) >> PAGE_SHIFT);
+>> +		memset(ghcb, 0, sizeof(*ghcb));
+>> +	}
+>> +}
+>> +
+> 
+> set_memory_decrypted needs to check the return value. I see it
+> consistently return ENOMEM. I've traced that back to split_large_page
+> in arch/x86/mm/pat/set_memory.c.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 23 +++++++-----------
- .../allwinner/sun8i-ss/sun8i-ss-cipher.c      | 24 +++++++------------
- drivers/crypto/amlogic/amlogic-gxl-cipher.c   | 14 ++++-------
- drivers/crypto/inside-secure/safexcel_hash.c  |  3 +--
- 4 files changed, 24 insertions(+), 40 deletions(-)
+At that point the guest won't be able to communicate with the hypervisor, 
+too. Maybe we should BUG() here to terminate further processing?
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index aa4e8fdc2b32..a2bac10d2876 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -366,10 +366,7 @@ void sun8i_ce_cipher_exit(struct crypto_tfm *tfm)
- {
- 	struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	crypto_free_sync_skcipher(op->fallback_tfm);
- 	pm_runtime_put_sync_suspend(op->ce->dev);
- }
-@@ -391,14 +388,13 @@ int sun8i_ce_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		dev_dbg(ce->dev, "ERROR: Invalid keylen %u\n", keylen);
- 		return -EINVAL;
- 	}
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
--	if (!op->key)
-+	if (unlikely(!op->key)) {
-+		op->keylen = 0;
- 		return -ENOMEM;
-+	}
- 
- 	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
- 	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
-@@ -416,14 +412,13 @@ int sun8i_ce_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	if (err)
- 		return err;
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
--	if (!op->key)
-+	if (unlikely(!op->key)) {
-+		op->keylen = 0;
- 		return -ENOMEM;
-+	}
- 
- 	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
- 	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-index 5246ef4f5430..a24d567a6c36 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
-@@ -249,7 +249,6 @@ static int sun8i_ss_cipher(struct skcipher_request *areq)
- 			offset = areq->cryptlen - ivsize;
- 			if (rctx->op_dir & SS_DECRYPTION) {
- 				memcpy(areq->iv, backup_iv, ivsize);
--				memzero_explicit(backup_iv, ivsize);
- 				kfree_sensitive(backup_iv);
- 			} else {
- 				scatterwalk_map_and_copy(areq->iv, areq->dst, offset,
-@@ -367,10 +366,7 @@ void sun8i_ss_cipher_exit(struct crypto_tfm *tfm)
- {
- 	struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	crypto_free_sync_skcipher(op->fallback_tfm);
- 	pm_runtime_put_sync(op->ss->dev);
- }
-@@ -392,14 +388,13 @@ int sun8i_ss_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		dev_dbg(ss->dev, "ERROR: Invalid keylen %u\n", keylen);
- 		return -EINVAL;
- 	}
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
--	if (!op->key)
-+	if (unlikely(!op->key))
-+		op->keylen = 0;
- 		return -ENOMEM;
-+	}
- 
- 	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
- 	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
-@@ -418,14 +413,13 @@ int sun8i_ss_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		return -EINVAL;
- 	}
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
--	if (!op->key)
-+	if (unlikely(!op->key))
-+		op->keylen = 0;
- 		return -ENOMEM;
-+	}
- 
- 	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
- 	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
-diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-index fd1269900d67..5312bad7534e 100644
---- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-+++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-@@ -341,10 +341,7 @@ void meson_cipher_exit(struct crypto_tfm *tfm)
- {
- 	struct meson_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
- 
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	crypto_free_sync_skcipher(op->fallback_tfm);
- }
- 
-@@ -368,14 +365,13 @@ int meson_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		dev_dbg(mc->dev, "ERROR: Invalid keylen %u\n", keylen);
- 		return -EINVAL;
- 	}
--	if (op->key) {
--		memzero_explicit(op->key, op->keylen);
--		kfree(op->key);
--	}
-+	kfree_sensitive(op->key);
- 	op->keylen = keylen;
- 	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
--	if (!op->key)
-+	if (unlikely(!op->key))
-+		op->keylen = 0;
- 		return -ENOMEM;
-+	}
- 
- 	return crypto_sync_skcipher_setkey(op->fallback_tfm, key, keylen);
- }
-diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index 43962bc709c6..4a2d162914de 100644
---- a/drivers/crypto/inside-secure/safexcel_hash.c
-+++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -1081,8 +1081,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
- 		}
- 
- 		/* Avoid leaking */
--		memzero_explicit(keydup, keylen);
--		kfree(keydup);
-+		kfree_sensitive(keydup);
- 
- 		if (ret)
- 			return ret;
--- 
-2.18.1
+Thanks,
+Tom
 
+> 
