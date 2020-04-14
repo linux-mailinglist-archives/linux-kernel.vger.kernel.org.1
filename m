@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE0A1A8A5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504DB1A8A6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504555AbgDNS7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:59:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:33388 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504532AbgDNS7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:59:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62C6A1FB;
-        Tue, 14 Apr 2020 11:58:57 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4AF3D3F68F;
-        Tue, 14 Apr 2020 11:58:55 -0700 (PDT)
-References: <20200414150556.10920-1-qais.yousef@arm.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Paul Turner <pjt@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Josh Don <joshdon@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] sched/rt: Distribute tasks in find_lowest_rq()
-In-reply-to: <20200414150556.10920-1-qais.yousef@arm.com>
-Date:   Tue, 14 Apr 2020 19:58:49 +0100
-Message-ID: <jhjh7xlvqqe.mognet@arm.com>
+        id S2504578AbgDNTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504540AbgDNTAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:00:43 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA876C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:00:42 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m19so597780lfq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vku39TN+p8W1cXG35tH9xBj8XE2RMoUOgq+LnuxWOGc=;
+        b=rNuMkIEsC4qajqgUvs5Frlpje0uAD8GkEIHjosF8sq4n2OnrChikeB3fsuKOG/rJ4c
+         Nrh91u1nEqfMxgdrdcAWV5KajTRPvwtWqmE8bJzF64ae2pQ+K1BhO26kpsDVnzADehle
+         1CC5HospidLMjwvkQtWJSIz549zH7abBvoN6b5IhUhprAO/jxWY21CPTVoE6i6aAt9gS
+         weVY1qSTM5VyQ4VZ8erSp44DI0ua/5QaKEwP9drIaN0jD14Di3Mm2EKs9f5z7+E85uqg
+         y4GwqN9XehWXO68+Apz4MHkes+pyxB4zi4sDjCimCBCiluKdBUdoWL2w4WJPQULWrqci
+         w4UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vku39TN+p8W1cXG35tH9xBj8XE2RMoUOgq+LnuxWOGc=;
+        b=oC2/71C3y/SxCix262qBKce1mvd1sR5TTcl3y0lxfr/xIqMBkVDZIRLJL4EL3kD+4F
+         6HgthZpf74GragNXCiTCtQecnb1DDPUBEuK0eHyacwztSiv3AN3E5auHtWfDVtIE0u/U
+         QLLvcn94mIU8shit1L3bngJDQTwZObY9DRLLXSZXif604Tt9MtXp+z8o5ntNmn9Nt4Gc
+         UKARpc89yjb8FfzqvEewpFNehnQb90m+U8xYWlMMiWB/n47IpnQeEVr55YUm/92ZfGnu
+         P4uKsV6LlNIQQ6feZBtnIFJe4CRkMJ0KrtbiTHHUORYncvxePREM0/QRCT1tOtEH9Unv
+         ik/g==
+X-Gm-Message-State: AGi0PuZ+kFW8xzc0A4Q7oeOmqomSLOWFXR49SzUK1QYNtrbEZ5CwdjtJ
+        R8Bff1ZvVK7UAAgXHQfsWizVRfFEKlhi41293/zdNQWm
+X-Google-Smtp-Source: APiQypJghBXx+OqXpdcaUnjKNCywSLM1ufuFhoEC2HYC+rFBDg+uV3fLp3aPSO0JR3plIeP29EYSKJaWLGUDK93YN3g=
+X-Received: by 2002:ac2:57cc:: with SMTP id k12mr701931lfo.69.1586890841018;
+ Tue, 14 Apr 2020 12:00:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200414181140.145825-1-sebastian.reichel@collabora.com>
+In-Reply-To: <20200414181140.145825-1-sebastian.reichel@collabora.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 14 Apr 2020 16:01:10 -0300
+Message-ID: <CAOMZO5C5CVz=2gUm70ewt=etpW8yUp+OLQ7qKWOt-_+OCPRmuQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Fix VAG power-on handling
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Sebastian,
 
-On 14/04/20 16:05, Qais Yousef wrote:
-> Now that we have a proper function that returns a 'random' CPU in a mask [1]
-> utilize that in find_lowest_rq() to solve the thundering herd issue described
-> in this thread
+On Tue, Apr 14, 2020 at 3:11 PM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
 >
->       https://lore.kernel.org/lkml/20200219140243.wfljmupcrwm2jelo@e107158-lin/
+> As mentioned slightly out of patch context in the code, there
+> is no reset routine for the chip. On boards where the chip is
+> supplied by a fixed regulator, it might not even be resetted
+> during (e.g. watchdog) reboot and can be in any state.
 >
-> But as a pre-amble, I noticed that the new cpumask_any_and_distribute() is
-> actually an alias for cpumask_any_and() which is documented as returning
-> a 'random' cpu but actually just does cpumask_first_and().
+> If the device is probed with VAG enabled, the driver's probe
+> routine will generate a loud pop sound when ANA_POWER is
+> being programmed. Avoid this by properly disabling just the
+> VAG bit and waiting the required power down time.
 >
-> The first 3 patches cleanup the API so that the whole family of
-> cpumask_any*() take advantage of the new 'random' behavior
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-I'm a bit wary about such blanket changes. I feel like most places impacted
-by this change don't gain anything by using the random thing. In sched land
-that would be:
-
-- The single cpumask_any() in core.c::select_task_rq()
-- Pretty much any function that wants a CPU id to dereference a
-  root_domain; there's some of them in deadline.c, topology.c
-
-Looking some more into it, there's shadier things:
-
-- cpufreq_offline() uses cpumask_any() to figure out the new policy
-  leader... That one should be cpumask_first()
-- gic_set_affinity() uses cpumask_any_and() (in the common case). If this
-  starts using randomness, you will stop affining e.g. all SPIs to CPU0
-  by default (!!!)
-- ... and there might be more
-
-I think people went with cpumask_any_* mostly because there is just
-cpumask_first() while there are more cpumask_any_* variants, and since
-those have been returning the first set CPU for over a decade people just
-went with it.
-
-To move this forward, I would suggest renaming the current cpumask_any_*()
-into cpumask_first_*(), and THEN introduce the new pseudo-random
-ones. People are then free to hand-fix specific locations if it makes sense
-there, like you're doing for RT.
-
-I think it's safe to say the vast majority of the current callers do not
-require randomness - the exceptions should mainly be scheduler / workqueues
-and the like.
-
-> and in patch
-> 4 I convert the cpumask_first_and() --> cpumask_any_and() in find_lowest_rq()
-> to allow to better distribute the RT tasks that wake up simultaneously.
->
-> [1] https://lore.kernel.org/lkml/20200311010113.136465-1-joshdon@google.com/
->
-> CC: Juri Lelli <juri.lelli@redhat.com>
-> CC: Vincent Guittot <vincent.guittot@linaro.org>
-> CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> CC: Steven Rostedt <rostedt@goodmis.org>
-> CC: Ben Segall <bsegall@google.com>
-> CC: Mel Gorman <mgorman@suse.de>
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> CC: Yury Norov <yury.norov@gmail.com>
-> CC: Paul Turner <pjt@google.com>
-> CC: Alexey Dobriyan <adobriyan@gmail.com>
-> CC: Josh Don <joshdon@google.com>
-> CC: Pavan Kondeti <pkondeti@codeaurora.org>
-> CC: linux-kernel@vger.kernel.org
->
-> Qais Yousef (4):
->   cpumask: Rename cpumask_any_and_distribute
->   cpumask: Make cpumask_any() truly random
->   cpumask: Convert cpumask_any_but() to the new random function
->   sched/rt: Better distribute tasks that wakeup simultaneously
->
->  include/linux/cpumask.h | 33 ++++++-----------
->  kernel/sched/core.c     |  2 +-
->  kernel/sched/rt.c       |  4 +-
->  lib/cpumask.c           | 82 +++++++++++++++++++++++++++--------------
->  4 files changed, 68 insertions(+), 53 deletions(-)
+Reviewed-by: Fabio Estevam <festivem@gmail.com>
