@@ -2,136 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BF31A8180
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1733A1A8184
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437082AbgDNPJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:09:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11530 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2440280AbgDNPIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:08:34 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EF49XE052373
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:08:33 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30b6sg8av6-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:08:32 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <agordeev@linux.ibm.com>;
-        Tue, 14 Apr 2020 16:07:55 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 14 Apr 2020 16:07:54 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EF8RnQ54132906
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 15:08:27 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5BADC4C040;
-        Tue, 14 Apr 2020 15:08:27 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 149244C046;
-        Tue, 14 Apr 2020 15:08:27 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.30.155])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Apr 2020 15:08:26 +0000 (GMT)
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>, linux-mm@kvack.org
-Subject: [PATCH RESEND 2/2] mm/mmap.c: deny fixed mappings outside of allowed limits
-Date:   Tue, 14 Apr 2020 17:08:23 +0200
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1586876678.git.agordeev@linux.ibm.com>
-References: <cover.1586876678.git.agordeev@linux.ibm.com>
-X-TM-AS-GCONF: 00
-x-cbid: 20041415-0016-0000-0000-0000030470C8
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041415-0017-0000-0000-0000336868F9
-Message-Id: <b00a3b7d5f4761b8ac789393164f25e1abc48d8d.1586876678.git.agordeev@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_07:2020-04-14,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 malwarescore=0 clxscore=1015 mlxscore=0
- phishscore=0 adultscore=0 priorityscore=1501 impostorscore=0
- mlxlogscore=550 suspectscore=1 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004140123
+        id S2437004AbgDNPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:09:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440299AbgDNPIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:08:43 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5765A2076D;
+        Tue, 14 Apr 2020 15:08:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586876921;
+        bh=GLM7ITcjNGNqxFgguUrT1MtQmHq3TEbDWtKuGuJeo2w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UT9cWIzX59N5Dp/DAqfP+XZ9ucR8iFlnC1CvLDdSIp4fp9+3b+M5kKrb6OHu58a5k
+         ro20mPG3qeWc17ZkLZSq/fWkig8Y4RDmXLz7OPlVA2FwvSoddrfngn9nqbuD7N3I64
+         kfzwhd3jFwNLAUP6jq+NApr8mJRJnV98nhzlKozg=
+Date:   Tue, 14 Apr 2020 11:08:40 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Stefano Brivio <sbrivio@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.5 27/35] netfilter: nf_tables: Allow set
+ back-ends to report partial overlaps on insertion
+Message-ID: <20200414150840.GD1068@sasha-vm>
+References: <20200407000058.16423-1-sashal@kernel.org>
+ <20200407000058.16423-27-sashal@kernel.org>
+ <20200407021848.626df832@redhat.com>
+ <20200413163900.GO27528@sasha-vm>
+ <20200413223858.17b0f487@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200413223858.17b0f487@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible to request a fixed mapping address below
-mmap_min_addr and succeed. This update adds early checks
-of mmap_min_addr and mmap_end boundaries and fixes the
-above issue.
+On Mon, Apr 13, 2020 at 10:38:58PM +0200, Stefano Brivio wrote:
+>On Mon, 13 Apr 2020 12:39:00 -0400
+>Sasha Levin <sashal@kernel.org> wrote:
+>
+>> On Tue, Apr 07, 2020 at 02:18:48AM +0200, Stefano Brivio wrote:
+>>
+>> >I'm used to not Cc: stable on networking patches (Dave's net.git),
+>> >but I guess I should instead if they go through nf.git (Pablo's tree),
+>> >right?
+>>
+>> Yup, this confusion has caused for quite a few netfilter fixes to not
+>> land in -stable. If it goes through Pablo's tree (and unless he intructs
+>> otherwise), you should Cc stable.
+>
+>Hah, thanks for clarifying.
+>
+>What do you think I should do specifically with 72239f2795fa
+>("netfilter: nft_set_rbtree: Drop spurious condition for overlap detection
+>on insertion")?
+>
+>I haven't Cc'ed stable on that one. Can I expect AUTOSEL to pick it up
+>anyway?
 
-CC: linux-mm@kvack.org
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- mm/mmap.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+I'll make sure it gets queued up when it hits Linus's tree :)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 5b22d47..9a16e25 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -62,6 +62,14 @@
- #define arch_mmap_check(addr, len, flags)	(0)
- #endif
- 
-+#ifndef arch_get_mmap_end
-+#define arch_get_mmap_end(addr)	(TASK_SIZE)
-+#endif
-+
-+#ifndef arch_get_mmap_base
-+#define arch_get_mmap_base(addr, base) (base)
-+#endif
-+
- #ifdef CONFIG_HAVE_ARCH_MMAP_RND_BITS
- const int mmap_rnd_bits_min = CONFIG_ARCH_MMAP_RND_BITS_MIN;
- const int mmap_rnd_bits_max = CONFIG_ARCH_MMAP_RND_BITS_MAX;
-@@ -1369,6 +1377,7 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 			unsigned long pgoff, unsigned long *populate,
- 			struct list_head *uf)
- {
-+	const unsigned long mmap_end = arch_get_mmap_end(addr);
- 	struct mm_struct *mm = current->mm;
- 	int pkey = 0;
- 
-@@ -1391,8 +1400,12 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 	if (flags & MAP_FIXED_NOREPLACE)
- 		flags |= MAP_FIXED;
- 
--	if (!(flags & MAP_FIXED))
-+	if (flags & MAP_FIXED) {
-+		if ((addr < mmap_min_addr) || (addr > mmap_end))
-+			return -ENOMEM;
-+	} else {
- 		addr = round_hint_to_min(addr);
-+	}
- 
- 	/* Careful about overflows.. */
- 	len = PAGE_ALIGN(len);
-@@ -2089,14 +2102,6 @@ unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info)
- 	return addr;
- }
- 
--#ifndef arch_get_mmap_end
--#define arch_get_mmap_end(addr)	(TASK_SIZE)
--#endif
--
--#ifndef arch_get_mmap_base
--#define arch_get_mmap_base(addr, base) (base)
--#endif
--
- /* Get an address range which is currently unmapped.
-  * For shmat() with addr=0.
-  *
 -- 
-1.8.3.1
-
+Thanks,
+Sasha
