@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB221A8C56
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125961A8C63
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633017AbgDNUT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:19:28 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33934 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2632966AbgDNUTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:19:19 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DD388521;
-        Tue, 14 Apr 2020 22:19:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586895557;
-        bh=+UhAukuHpWBQw5cLcXoxWsl3QYmiftvO+F62gY+DOGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qAyB0QMoFxjy4QyceMIsascEC65p391ITrJJHsqG3JgqkgHjET9sYmXcUApgnNXfE
-         HyrCHh1hPH9C34IeDxpKlx3lwGP9DEaBmgfJeeo0G1aktnr45Eh3NPrkHuqyGOTJmD
-         3GB9h1SYiaE+TeLJjQOvs3eBiHEnG0ifRuczLiyM=
-Date:   Tue, 14 Apr 2020 23:19:05 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 1/3] dt-bindings: phy: Add DT bindings for Xilinx
- ZynqMP PSGTR PHY
-Message-ID: <20200414201905.GK19819@pendragon.ideasonboard.com>
-References: <20200401221025.26087-1-laurent.pinchart@ideasonboard.com>
- <20200401221025.26087-2-laurent.pinchart@ideasonboard.com>
- <20200414164717.GA11384@bogus>
+        id S2633042AbgDNUXA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Apr 2020 16:23:00 -0400
+Received: from mga06.intel.com ([134.134.136.31]:52201 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2633019AbgDNUWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:22:45 -0400
+IronPort-SDR: TaG4wlkcMUzvzbGZWoWhj5AiYzGSnQ56NJoK2i09u24qDwhgkH0XKUFezb6UmXJjYBDFzDaiz+
+ jM6uDlBjl4OA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 13:22:42 -0700
+IronPort-SDR: V0+HOszgHeIq+0rekuUIV0Y5Q1Ykf6UNOYs4D2TW1H2VxAUm2gYsw9HXh0Xx3tblx45u/ZzrI5
+ 5d9Vclu4QyOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
+   d="scan'208";a="245510622"
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Apr 2020 13:22:42 -0700
+Received: from orsmsx158.amr.corp.intel.com (10.22.240.20) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 14 Apr 2020 13:22:41 -0700
+Received: from orsmsx108.amr.corp.intel.com ([169.254.2.172]) by
+ ORSMSX158.amr.corp.intel.com ([169.254.10.99]) with mapi id 14.03.0439.000;
+ Tue, 14 Apr 2020 13:22:41 -0700
+From:   "Moore, Robert" <robert.moore@intel.com>
+To:     Jason Yan <yanaijie@huawei.com>,
+        "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+Thread-Topic: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+Thread-Index: AQHWEZysu7u4opIOMUyKgwd1vmqkR6h5D5pA
+Date:   Tue, 14 Apr 2020 20:22:40 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3C68A849E@ORSMSX108.amr.corp.intel.com>
+References: <20200413143156.22633-1-yanaijie@huawei.com>
+In-Reply-To: <20200413143156.22633-1-yanaijie@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200414164717.GA11384@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+I think we've discussed this in the past. ARRAY_SIZE is not standard, and will get in the way of portability:
 
-On Tue, Apr 14, 2020 at 11:47:17AM -0500, Rob Herring wrote:
-> On Thu, Apr 02, 2020 at 01:10:23AM +0300, Laurent Pinchart wrote:
-> > From: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-> > 
-> > Add DT bindings for the Xilinx ZynqMP PHY. ZynqMP SoCs have a High Speed
-> > Processing System Gigabit Transceiver which provides PHY capabilities to
-> > USB, SATA, PCIE, Display Port and Ehernet SGMII controllers.
-> > 
-> > Signed-off-by: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > ---
-> > Changes since v6:
-> > 
-> > - Fixed specification of compatible-dependent xlnx,tx-termination-fix
-> >   property
-> > - Dropped status property from example
-> > - Use 4 spaces to indent example
-> > 
-> > Changes since v5:
-> > 
-> > - Document clocks and clock-names properties
-> > - Document resets and reset-names properties
-> > - Replace subnodes with an additional entry in the PHY cells
-> > - Drop lane frequency PHY cell, replaced by reference clock phandle
-> > - Convert bindings to YAML
-> > - Reword the subject line
-> > - Drop Rob's R-b as the bindings have significantly changed
-> > - Drop resets and reset-names properties
-> > ---
-> >  .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++++++++++++++++++
-> >  include/dt-bindings/phy/phy.h                 |   1 +
-> >  2 files changed, 106 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> > new file mode 100644
-> > index 000000000000..d28ddca7b90e
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> > @@ -0,0 +1,105 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> 
-> I think I said this already, but dual license please.
+On gcc v7.4.0:
+../../../source/components/resources/rsdumpinfo.c:335:25: note: in expansion of macro 'ACPI_RSD_TABLE_SIZE'
+     {ACPI_RSD_TITLE,    ACPI_RSD_TABLE_SIZE (AcpiRsDumpGenericReg),         "Generic Register",         NULL},
 
-It's still pending legal review on Xilinx's side. I've decided to post
-v7 without waiting for that to get the rest of the review done while
-waiting for the license change green light, which I don't assume would
-be denied.
+../../../source/components/resources/rsdumpinfo.c:166:37: error: initializer element is not constant
+ #define ACPI_RSD_TABLE_SIZE(name)   ARRAY_SIZE (name)
 
--- 
-Regards,
 
-Laurent Pinchart
+And, on MSVC 2017:
+Severity	Code	Description	Project	File	Line	Suppression State
+Warning	C4013	'ARRAY_SIZE' undefined; assuming extern returning int	AcpiExec	c:\acpica\source\components\resources\rsdumpinfo.c	179	
+-----Original Message-----
+From: Jason Yan <yanaijie@huawei.com> 
+Sent: Monday, April 13, 2020 7:32 AM
+To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; lenb@kernel.org; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
+Cc: Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+
+Fix the following coccicheck warning:
+
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/acpi/acpica/rsdumpinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpica/rsdumpinfo.c b/drivers/acpi/acpica/rsdumpinfo.c
+index cafa8134b4c6..f1ba4cd8080f 100644
+--- a/drivers/acpi/acpica/rsdumpinfo.c
++++ b/drivers/acpi/acpica/rsdumpinfo.c
+@@ -15,7 +15,7 @@ ACPI_MODULE_NAME("rsdumpinfo")  #if defined(ACPI_DEBUG_OUTPUT) || defined(ACPI_DISASSEMBLER) || defined(ACPI_DEBUGGER)
+ #define ACPI_RSD_OFFSET(f)          (u8) ACPI_OFFSET (union acpi_resource_data,f)
+ #define ACPI_PRT_OFFSET(f)          (u8) ACPI_OFFSET (struct acpi_pci_routing_table,f)
+-#define ACPI_RSD_TABLE_SIZE(name)   (sizeof(name) / sizeof (struct acpi_rsdump_info))
++#define ACPI_RSD_TABLE_SIZE(name)   ARRAY_SIZE(name)
+ /*******************************************************************************
+  *
+  * Resource Descriptor info tables
+--
+2.21.1
+
