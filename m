@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9C81A8BB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652391A8BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505334AbgDNT62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:58:28 -0400
-Received: from mga18.intel.com ([134.134.136.126]:62397 "EHLO mga18.intel.com"
+        id S2505348AbgDNT7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:59:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:50661 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505317AbgDNT6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:58:17 -0400
-IronPort-SDR: iWC8AtW5tZSY/zT8y1nVewR3JcuaoC7zTX7ARFhpd5cV/FbBvd2joj14j6KwcIUWoSGVEIVMSU
- 5qeL+b4vZH3A==
+        id S1731053AbgDNT6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:58:23 -0400
+IronPort-SDR: zG49AjFpBKZzOYozt6qw0qRxLrAwTeHJRkf5oMZ3sKXXW0zQ8laTZxP00sdnlAfm5BzLZoOgpH
+ UpofhJOL1Qbg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:58:12 -0700
-IronPort-SDR: pdkL40ELjhuGUKWhIbAR8yzLKgEiDVcAac7aIY1qps6kzICYdSwEa96h/zysx5ct0vNL07nkcF
- bqYXZDkhB8ZA==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:58:21 -0700
+IronPort-SDR: luUCkfmnkOthQB7k3FD7/z/f2Fe1nIR7IEbxbAwxqumnSiD6m4Mt1g/3ZUThB9XL6JznlC7Edb
+ HDHa/uV1OXMg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="332280312"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.134.69.31])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:58:11 -0700
-Message-ID: <24c4ac84671b97b5092413689b4bf224b73bc51b.camel@linux.intel.com>
-Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
- vector altogether
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
-        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        bberg@redhat.com, bp@suse.de
-Date:   Tue, 14 Apr 2020 12:58:04 -0700
-In-Reply-To: <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com>
-References: <20200407063345.4484-1-Jason@zx2c4.com>
-         <20200407063345.4484-3-Jason@zx2c4.com>
-         <0e189a4fe1e69b08afc859ce83623a0e5ea0c08b.camel@linux.intel.com>
-         <CAHmME9pigvAgK3Bje6DkFEcdyWwi7-C7D6QEo4YiH_cbJvxqhQ@mail.gmail.com>
-         <4b75ec34ccff5abdc0b1c04a5ac39455ddd4f49b.camel@linux.intel.com>
-         <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
+   d="scan'208";a="454674819"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Apr 2020 12:58:21 -0700
+Date:   Tue, 14 Apr 2020 12:58:21 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
+Message-ID: <20200414195820.GE1853609@iweiny-DESK2.sc.intel.com>
+References: <20200413054046.1560106-1-ira.weiny@intel.com>
+ <20200413054046.1560106-10-ira.weiny@intel.com>
+ <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com>
+ <20200414161509.GF6742@magnolia>
+ <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-14 at 13:41 -0600, Jason A. Donenfeld wrote:
-> On Tue, Apr 14, 2020 at 8:45 AM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> > On Mon, 2020-04-13 at 22:21 -0600, Jason A. Donenfeld wrote:
-> > > On Mon, Apr 13, 2020 at 9:38 PM Srinivas Pandruvada
-> > > <srinivas.pandruvada@linux.intel.com> wrote:
-> > > > On Tue, 2020-04-07 at 00:33 -0600, Jason A. Donenfeld wrote:
-> > > > > The thermal IRQ handler uses 1.21% CPU on my system when it's
-> > > > > hot
-> > > > > from
-> > > > > compiling things. Indeed looking at /proc/interrupts reveals
-> > > > > quite a
-> > > > > lot
-> > > > I am curious why you are hitting threshold frequently?
-> > > > What is rdmsr 0x1a2
-> > > 
-> > > 5640000
-> > You are getting too many interrupts at 95C. You should look at your
-> > cooling system.
-> > 
-> > > > > of events coming in. Beyond logging them, the existing
-> > > > > drivers on
-> > > > > the
-> > > > > system don't appear to do very much that I'm interested in.
-> > > > > So,
-> > > > > add a
-> > > > > way to disable this entirely so that I can regain precious
-> > > > > CPU
-> > > > > cycles.
-> > > > It is showing amount of time system is running in a constrained
-> > > > environment. Lots of real time and HPC folks really care about
-> > > > this.
-> > > 
-> > > Which is why this patch adds an option, not a full removal or
-> > > something. Real time and HPC people can keep their expensive
-> > > interrupt. Other people with different varieties of system
-> > > disable
-> > > it.
-> > Generally compile time flag is not desirable. If it is what
-> > required
-> > then we should have boot time flag something in lines of existing
-> > "int_pln_enable" option.
+On Tue, Apr 14, 2020 at 12:04:57PM -0700, Dan Williams wrote:
+> On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+> >
+> > On Mon, Apr 13, 2020 at 10:21:26PM -0700, Dan Williams wrote:
+> > > On Sun, Apr 12, 2020 at 10:41 PM <ira.weiny@intel.com> wrote:
+> > > >
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > >
+> > > > Update the Usage section to reflect the new individual dax selection
+> > > > functionality.
+> > > >
+> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > >
+> > > > ---
+> > > > Changes from V6:
+> > > >         Update to allow setting FS_XFLAG_DAX any time.
+> > > >         Update with list of behaviors from Darrick
+> > > >         https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
+> > > >
+> > > > Changes from V5:
+> > > >         Update to reflect the agreed upon semantics
+> > > >         https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> > > > ---
+> > > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
+> > > >  1 file changed, 163 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> > > > index 679729442fd2..af14c1b330a9 100644
+> > > > --- a/Documentation/filesystems/dax.txt
+> > > > +++ b/Documentation/filesystems/dax.txt
+> > > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
+> > > >  Usage
+> > > >  -----
+> > > >
+> > > > -If you have a block device which supports DAX, you can make a filesystem
+> > > > +If you have a block device which supports DAX, you can make a file system
+> > > >  on it as usual.  The DAX code currently only supports files with a block
+> > > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
+> > > > -size when creating the filesystem.  When mounting it, use the "-o dax"
+> > > > -option on the command line or add 'dax' to the options in /etc/fstab.
+> > > > +size when creating the file system.
+> > > > +
+> > > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
+> > > > +different at this time.
+> > > > +
+> > > > +Enabling DAX on ext4
+> > > > +--------------------
+> > > > +
+> > > > +When mounting the filesystem, use the "-o dax" option on the command line or
+> > > > +add 'dax' to the options in /etc/fstab.
+> > > > +
+> > > > +
+> > > > +Enabling DAX on xfs
+> > > > +-------------------
+> > > > +
+> > > > +Summary
+> > > > +-------
+> > > > +
+> > > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
+> > > > +    file accesses go directly to persistent memory, bypassing the page
+> > > > +    cache.
+> > >
+> > > I had reserved some quibbling with this wording, but now that this is
+> > > being proposed as documentation I'll let my quibbling fly. "dax" may
+> > > imply, but does not require persistent memory nor does it necessarily
+> > > "bypass page cache". For example on configurations that support dax,
+> > > but turn off MAP_SYNC (like virtio-pmem), a software flush is
+> > > required. Instead, if we're going to define "dax" here I'd prefer it
+> > > be a #include of the man page definition that is careful (IIRC) to
+> > > only talk about semantics and not backend implementation details. In
+> > > other words, dax is to page-cache as direct-io is to page cache,
+> > > effectively not there, but dig a bit deeper and you may find it.
+> >
+> > Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
 > 
-> Generally it is desirable, and extremely common too. This thermal
-> code
-> -- which mostly functions to print some messages into kmsg -- is very
-> verbose. This is not something I want to compile into smaller
-> systems.
-> This is the reason why kconfig has options in the first place. I'm
-> not
-> sure yet-another boottime flag makes sense for this.
+> No, I was referring to the proposed wording for STATX_ATTR_DAX.
+> There's no reason for this description to say anything divergent from
+> that description.
 
-Can you send log which is still showing verbose prints with the latest
-kernel? I can see interrupts will still fire.
+Ok I think the best text would be to simply refer to the STATX_ATTR_DAX man
+page here.  Something like:
 
-If it is, then temperature trend is still above 95C and cooling systems
-is not in control. In another window, print in loop (with sleep 1)
-/sys/class/thermal/thermal_zone*/temp
-for the zone for which "type == x86_pkg_temp"
+<quote>
+ 1. There exists an in-kernel access mode flag S_DAX that is set when file
+    accesses is enabled for 'DAX'.  Applications must call statx to discover
+    the current S_DAX state (STATX_ATTR_DAX).  See the man page for statx for
+    more details.
+</quote>
 
-
-
+Ira
 
