@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FE51A7177
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9021A716E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404418AbgDNDFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:05:37 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48472 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404405AbgDNDFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:05:32 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A1BFD200277;
-        Tue, 14 Apr 2020 05:05:31 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9A8C0200280;
-        Tue, 14 Apr 2020 05:05:29 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AAED04028B;
-        Tue, 14 Apr 2020 11:05:26 +0800 (SGT)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     obh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhao Qiang <qiang.zhao@nxp.com>
-Subject: [PATCH 2/2] ls1043ardb: add ds26522 node to dts
-Date:   Tue, 14 Apr 2020 11:01:24 +0800
-Message-Id: <20200414030124.37673-2-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414030124.37673-1-qiang.zhao@nxp.com>
-References: <20200414030124.37673-1-qiang.zhao@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2404391AbgDNDE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:04:27 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2313 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404366AbgDNDEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 23:04:20 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 3826CD28A6A4E787588D;
+        Tue, 14 Apr 2020 11:04:16 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.173.222.27) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 14 Apr 2020 11:04:08 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <kvmarm@lists.cs.columbia.edu>
+CC:     <maz@kernel.org>, <james.morse@arm.com>,
+        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH 0/2] KVM: arm64: vgic_irq: Fix memory leaks
+Date:   Tue, 14 Apr 2020 11:03:46 +0800
+Message-ID: <20200414030349.625-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.173.222.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Qiang <qiang.zhao@nxp.com>
+A memory leak on vgic_irq structure was recently reported by kmemleak
+on the guest destroy (or shutdown). It turned out that there're still
+pending interrupts (LPI) staying in the vcpu's ap_list during destroy
+so that KVM can't free the vgic_irq structure due to an extra refcount.
 
-add ds26522 node to fsl-ls1043a-rdb.dts
+Patch #1 is intended to fix this issue. Patch #2 is a memory leak fix
+on the error path, noticed while debugging.
 
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Zenghui Yu (2):
+  KVM: arm64: vgic-v3: Retire all pending LPIs on vcpu destroy
+  KVM: arm64: vgic-its: Fix memory leak on the error path of
+    vgic_add_lpi()
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
-index 96e87ba..b60c742 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
-@@ -94,6 +94,22 @@
- 		reg = <0>;
- 		spi-max-frequency = <1000000>; /* input clock */
- 	};
-+
-+	slic@2 {
-+		compatible = "maxim,ds26522";
-+		reg = <2>;
-+		spi-max-frequency = <2000000>;
-+		fsl,spi-cs-sck-delay = <100>;
-+		fsl,spi-sck-cs-delay = <50>;
-+	};
-+
-+	slic@3 {
-+		compatible = "maxim,ds26522";
-+		reg = <3>;
-+		spi-max-frequency = <2000000>;
-+		fsl,spi-cs-sck-delay = <100>;
-+		fsl,spi-sck-cs-delay = <50>;
-+	};
- };
- 
- &uqe {
+ virt/kvm/arm/vgic/vgic-init.c | 6 ++++++
+ virt/kvm/arm/vgic/vgic-its.c  | 8 ++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
 -- 
-2.9.5
+2.19.1
+
 
