@@ -2,232 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20BE1A77CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260EE1A77D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437965AbgDNJvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:51:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:51958 "EHLO foss.arm.com"
+        id S2438001AbgDNJvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437894AbgDNJtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:49:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7C541FB;
-        Tue, 14 Apr 2020 02:49:43 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.1.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6EC2C3F6C4;
-        Tue, 14 Apr 2020 02:49:40 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        maz@kernel.org, suzuki.poulose@arm.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 16/16] arm64/cpufeature: Replace all open bits shift encodings with macros
-Date:   Tue, 14 Apr 2020 15:18:30 +0530
-Message-Id: <1586857710-17154-17-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586857710-17154-1-git-send-email-anshuman.khandual@arm.com>
-References: <1586857710-17154-1-git-send-email-anshuman.khandual@arm.com>
+        id S2437931AbgDNJuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 05:50:20 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C3272072D;
+        Tue, 14 Apr 2020 09:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586857819;
+        bh=UjAhtjsT9rMrkz4Nk/bCMqZ4k1bEVfRcJ4ozupVxmNU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FkdEBg58ZembEkKLyFNmOM6x5hbkt0evo5m40h9TeX5R33VL9j0/g0IQ8EM5cioJ5
+         AZ40YFxPIDPWN0GKPHoPSmd2E+QhjHEBo2DVyxFvoF6fWpxWxuH335dWnk8K+TV7ri
+         23z0WKJ5ZGWC3egja4Yvnk5aN9SnPdWk8dGY9gA0=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jOICv-0036Cw-P9; Tue, 14 Apr 2020 10:50:17 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Zenghui Yu <yuzenghui@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/2] GICv4.1 fixes for 5.7
+Date:   Tue, 14 Apr 2020 10:50:11 +0100
+Message-Id: <20200414095013.2821418-1-maz@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, yuzenghui@huawei.com, eric.auger@redhat.com, jason@lakedaemon.net, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are many open bits shift encodings for various CPU ID registers that
-are scattered across cpufeature. This replaces them with register specific
-sensible macro definitions. This should not have any functional change.
+Here's a couple of GICv4.1 fixes for issues that have been found
+during the 5.7 merge window.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
+The first one implements the "Dirty+Valid" feature, where the
+hypervisor can wait for the GIC to have finish parsing the VPT before
+entering the guest. The feature was optional in GICv4.0, but is now
+mandatory in GICv4.1, so let's take advantage of it.
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/arm64/include/asm/sysreg.h | 28 +++++++++++++++++
- arch/arm64/kernel/cpufeature.c  | 53 +++++++++++++++++----------------
- 2 files changed, 55 insertions(+), 26 deletions(-)
+The second patch fixes an issue where the kernel shouts about the
+effective affinity of VSGIs not being updated, which is the absolute
+truth. Let's fix it.
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 9dd7cc52349a..4b85917fec71 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -761,6 +761,7 @@
- /* id_aa64dfr0 */
- #define ID_AA64DFR0_MTPMU_SHIFT		48
- #define ID_AA64DFR0_TRACEFILT_SHIFT	40
-+#define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
- #define ID_AA64DFR0_PMSVER_SHIFT	32
- #define ID_AA64DFR0_CTX_CMPS_SHIFT	28
- #define ID_AA64DFR0_WRPS_SHIFT		20
-@@ -804,18 +805,40 @@
- #define ID_ISAR6_DP_SHIFT		4
- #define ID_ISAR6_JSCVT_SHIFT		0
- 
-+#define ID_MMFR0_INNERSHR_SHIFT		28
-+#define ID_MMFR0_FCSE_SHIFT		24
-+#define ID_MMFR0_AUXREG_SHIFT		20
-+#define ID_MMFR0_TCM_SHIFT		16
-+#define ID_MMFR0_SHARELVL_SHIFT		12
-+#define ID_MMFR0_OUTERSHR_SHIFT		8
-+#define ID_MMFR0_PMSA_SHIFT		4
-+#define ID_MMFR0_VMSA_SHIFT		0
-+
- #define ID_MMFR4_EVT_SHIFT		28
- #define ID_MMFR4_CCIDX_SHIFT		24
- #define ID_MMFR4_LSM_SHIFT		20
- #define ID_MMFR4_HPDS_SHIFT		16
- #define ID_MMFR4_CNP_SHIFT		12
- #define ID_MMFR4_XNX_SHIFT		8
-+#define ID_MMFR4_AC2_SHIFT		4
- #define ID_MMFR4_SPECSEI_SHIFT		0
- 
- #define ID_MMFR5_ETS_SHIFT		0
- 
- #define ID_PFR0_DIT_SHIFT		24
- #define ID_PFR0_CSV2_SHIFT		16
-+#define ID_PFR0_STATE3_SHIFT		12
-+#define ID_PFR0_STATE2_SHIFT		8
-+#define ID_PFR0_STATE1_SHIFT		4
-+#define ID_PFR0_STATE0_SHIFT		0
-+
-+#define ID_DFR0_PERFMON_SHIFT		24
-+#define ID_DFR0_MPROFDBG_SHIFT		20
-+#define ID_DFR0_MMAPTRC_SHIFT		16
-+#define ID_DFR0_COPTRC_SHIFT		12
-+#define ID_DFR0_MMAPDBG_SHIFT		8
-+#define ID_DFR0_COPSDBG_SHIFT		4
-+#define ID_DFR0_COPDBG_SHIFT		0
- 
- #define ID_PFR2_SSBS_SHIFT		4
- #define ID_PFR2_CSV3_SHIFT		0
-@@ -838,6 +861,11 @@
- #define MVFR1_FPDNAN_SHIFT		4
- #define MVFR1_FPFTZ_SHIFT		0
- 
-+#define MVFR2_FPMISC_SHIFT		4
-+#define MVFR2_SIMDMISC_SHIFT		0
-+
-+#define DCZID_DZP_SHIFT			4
-+#define DCZID_BS_SHIFT			0
- 
- #define ID_AA64MMFR0_TGRAN4_SHIFT	28
- #define ID_AA64MMFR0_TGRAN64_SHIFT	24
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index f7117c48fe5f..c0f9334d5b36 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -291,7 +291,7 @@ static const struct arm64_ftr_bits ftr_ctr[] = {
- 	 * make use of *minLine.
- 	 * If we have differing I-cache policies, report it as the weakest - VIPT.
- 	 */
--	ARM64_FTR_BITS(FTR_VISIBLE, FTR_NONSTRICT, FTR_EXACT, 14, 2, ICACHE_POLICY_VIPT),	/* L1Ip */
-+	ARM64_FTR_BITS(FTR_VISIBLE, FTR_NONSTRICT, FTR_EXACT, CTR_L1IP_SHIFT, 2, ICACHE_POLICY_VIPT),	/* L1Ip */
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, CTR_IMINLINE_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
-@@ -302,21 +302,21 @@ struct arm64_ftr_reg arm64_ftr_reg_ctrel0 = {
- };
- 
- static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
--	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 28, 4, 0xf),	/* InnerShr */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 24, 4, 0),	/* FCSE */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, 20, 4, 0),	/* AuxReg */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 16, 4, 0),	/* TCM */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 12, 4, 0),	/* ShareLvl */
--	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 8, 4, 0xf),	/* OuterShr */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 4, 4, 0),	/* PMSA */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 0, 4, 0),	/* VMSA */
-+	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_INNERSHR_SHIFT, 4, 0xf),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_FCSE_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_MMFR0_AUXREG_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_TCM_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_SHARELVL_SHIFT, 4, 0),
-+	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_OUTERSHR_SHIFT, 4, 0xf),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_PMSA_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR0_VMSA_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
- 
- static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
- 	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_MTPMU_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_TRACEFILT_SHIFT, 4, 0),
--	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 36, 28, 0),
-+	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_DOUBLELOCK_SHIFT, 28, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_PMSVER_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_CTX_CMPS_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_WRPS_SHIFT, 4, 0),
-@@ -332,14 +332,14 @@ static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
- };
- 
- static const struct arm64_ftr_bits ftr_mvfr2[] = {
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 4, 4, 0),		/* FPMisc */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 0, 4, 0),		/* SIMDMisc */
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, MVFR2_FPMISC_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, MVFR2_SIMDMISC_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
- 
- static const struct arm64_ftr_bits ftr_dczid[] = {
--	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_EXACT, 4, 1, 1),		/* DZP */
--	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, 0, 4, 0),	/* BS */
-+	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_EXACT, DCZID_DZP_SHIFT, 1, 1),
-+	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, DCZID_BS_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
- 
-@@ -371,7 +371,8 @@ static const struct arm64_ftr_bits ftr_id_mmfr4[] = {
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_HPDS_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_CNP_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_XNX_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 4, 4, 0),	/* ac2 */
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_AC2_SHIFT, 4, 0),
-+
- 	/*
- 	 * SpecSEI = 1 indicates that the PE might generate an SError on an
- 	 * external abort on speculative read. It is safe to assume that an
-@@ -401,10 +402,10 @@ static const struct arm64_ftr_bits ftr_id_isar6[] = {
- static const struct arm64_ftr_bits ftr_id_pfr0[] = {
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_DIT_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_PFR0_CSV2_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 12, 4, 0),		/* State3 */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 8, 4, 0),		/* State2 */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 4, 4, 0),		/* State1 */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 0, 4, 0),		/* State0 */
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_STATE3_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_STATE2_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_STATE1_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_STATE0_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
- 
-@@ -415,13 +416,13 @@ static const struct arm64_ftr_bits ftr_id_pfr2[] = {
- };
- 
- static const struct arm64_ftr_bits ftr_id_dfr0[] = {
--	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 24, 4, 0xf),	/* PerfMon */
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 20, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 16, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 12, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 8, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 4, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 0, 4, 0),
-+	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_PERFMON_SHIFT, 4, 0xf),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_MPROFDBG_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_MMAPTRC_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_COPTRC_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_MMAPDBG_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_COPSDBG_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR0_COPDBG_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
- 
+I plan to send these fixes as part of a bigger pull request for -rc2.
+
+Thanks,
+
+	M.
+
+Marc Zyngier (2):
+  irqchip/gic-v4.1: Add support for VPENDBASER's Dirty+Valid signaling
+  irqchip/gic-v4.1: Update effective affinity of virtual SGIs
+
+ drivers/irqchip/irq-gic-v3-its.c   | 20 ++++++++++++++++++++
+ drivers/irqchip/irq-gic-v3.c       | 11 +++++++----
+ include/linux/irqchip/arm-gic-v3.h |  2 ++
+ 3 files changed, 29 insertions(+), 4 deletions(-)
+
 -- 
-2.20.1
+2.25.1
 
