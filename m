@@ -2,97 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B741A77F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D0E1A779B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438052AbgDNJ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:58:18 -0400
-Received: from m17617.mail.qiye.163.com ([59.111.176.17]:3089 "EHLO
-        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438040AbgDNJ6O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:58:14 -0400
-Received: from wangqing-virtual-machine.localdomain (unknown [157.0.31.122])
-        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id ED667262F71;
-        Tue, 14 Apr 2020 17:47:25 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: Re: [PATCH 1/2] [V2 1/2]sched:add task_running_oncpu
-Date:   Tue, 14 Apr 2020 17:47:12 +0800
-Message-Id: <1586857633-2747-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586779466-4439-2-git-send-email-wangqing@vivo.com>
-References: <1586779466-4439-2-git-send-email-wangqing@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSlVDS01LS0tKSkhPQ0xJT1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mz46SCo4ITgwAgoVDzgaAjc2
-        HEsKCgxVSlVKTkNNQ05MTU9NSkxNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZSk5M
-        VUtVSEpVSklJWVdZCAFZQUhLSUk3Bg++
-X-HM-Tid: 0a71781618279375kuwsed667262f71
+        id S2437762AbgDNJri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:47:38 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33296 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437751AbgDNJrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 05:47:32 -0400
+Received: from zn.tnic (p200300EC2F0C1D005C4E4F759039C6AE.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1d00:5c4e:4f75:9039:c6ae])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ED52D1EC0CD8;
+        Tue, 14 Apr 2020 11:47:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1586857650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lHfGyF9osXLBwlBHvpFjg/cBrJLwNrhf6lbtAhTR8+I=;
+        b=cUtsx7qwb/HFkqpohuwggklJI6APilMQ5YpXq0i9pQQa5yZweKvBKKUXRsFz8+bZYNh6WV
+        kT6TkaTUYHLpgNUHvKPffjcozziTgYNlvOsboJ4jYtFyIH+EBNuNltRuH10ch3z00QfHxg
+        ZSJ9dH7MTsJQWX+5PimLtnrIn5SJsjU=
+Date:   Tue, 14 Apr 2020 11:47:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jlu@pengutronix.de, mchehab@kernel.org, tony.luck@intel.com,
+        james.morse@arm.com, rrichter@marvell.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] EDAC/armada_xp: Fix some log messages
+Message-ID: <20200414094725.GA31737@zn.tnic>
+References: <20200413041556.3514-1-christophe.jaillet@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200413041556.3514-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On Mon, 13 Apr 2020 at 14:04, Wang Qing <wangqing@vivo.com> wrote:
->>
->> We have no interface whether the task is running,
->> so we need to add an interface and distinguish CONFIG_SMP.
->>
->> Signed-off-by: Wang Qing <wangqing@vivo.com>
->> ---
->>  include/linux/sched.h | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index 4418f5c..13cc8f5 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -1843,6 +1843,11 @@ static inline unsigned int task_cpu(const struct task_struct *p)
->>
->>  extern void set_task_cpu(struct task_struct *p, unsigned int cpu);
->>
->> +static inline int task_running_oncpu(const struct task_struct *p)
->
->This function name is too close from task_running_on_cpu() and can be
->misleading as the difference is only "_"
->Also, how task_running_oncpu() is different from task_running() ?
+On Mon, Apr 13, 2020 at 06:15:56AM +0200, Christophe JAILLET wrote:
+> Fix some spelling (s/Aramda/Armada/) in 1 log message and in 1 comment.
+> 
+> While at it, add some trailing '\n' in some other log message.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/edac/armada_xp_edac.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 
-I think task_running() should be renamed to task_running_on_rq(), this is what
-it originally mean. And the task_running_oncpu I added should be called 
-task_running(). This solves the confusing naming problem that already exists.
+Applied, thanks.
 
-Thanks,
-Wang Qing.
+-- 
+Regards/Gruss,
+    Boris.
 
->
->> +{
->> +       return p->on_cpu;
->> +}
->> +
->>  #else
->>
->>  static inline unsigned int task_cpu(const struct task_struct *p)
->> @@ -1854,6 +1859,11 @@ static inline void set_task_cpu(struct task_struct *p, unsigned int cpu)
->>  {
->>  }
->>
->> +static inline int task_running_oncpu(const struct task_struct *p)
->> +{
->> +       return p == current;
->> +}
->> +
->>  #endif /* CONFIG_SMP */
->>
->>  /*
->> --
->> 2.7.4
->>
+https://people.kernel.org/tglx/notes-about-netiquette
