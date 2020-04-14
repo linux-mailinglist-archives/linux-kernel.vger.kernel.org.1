@@ -2,234 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3B41A81CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1570F1A81C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437364AbgDNPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2437509AbgDNPMu (ORCPT
+        id S2437401AbgDNPN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:13:56 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28065 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437531AbgDNPM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:12:50 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EF7C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:12:49 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f13so14727460wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rxT3vou5Ng+mQOZHM3dbFCXV6meSuH1elQDi0zPfdzI=;
-        b=d0lbYpoHGJvCsc+g8nt+4TtD3NySeZvbdlGW1KKvb6a20nuvghJPaqzeBDra+EjoI/
-         dH4/9TSUOa3OdEaJb+wI8zRamhlIJjfO3l2FmGsRGjcTkVlSZ1cZvFJUItmYMPk1Ujr5
-         yFPykgC0yt8FOSIW35+fzjqSOcvq/CDRitl7+gbJBDu1/d174wVg38jGrsifgLMafxqp
-         Eda6AlxwCgiYpZqaYXF25odui3kZ6HnsdSLmHFCJGhcRRA8RO/UCBpq4QpnNHp7DuuM5
-         hVDpxTdMp/wJrcRgFCXfSAfopEiKvSa2+jEPam4H7FcU9qgoJz2G58KR59LckaLnfTou
-         chuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rxT3vou5Ng+mQOZHM3dbFCXV6meSuH1elQDi0zPfdzI=;
-        b=MniHyO+dEsWNq7Ll1ewKhp8OnjLpZ6UyojiahHtARFt/Qnj+eEx2Yc4z3gdhpsfv1K
-         EcVfbAlcpJdIItjVDhtRZYcuvgpkNRiBHvki9tojbJnmKCjT+2lLDdi1Uv994s4sv4us
-         TkgqEHLfGSX98VSKMpiURQmQAZs15oY2JNACsqIrf8zsNVRrXmeGDiCbUfaHifiE8NWf
-         DglI0KyTnz8TWCvJvurqhJRFP+xCy6AoLiIFQ44XQNQaBvvoIjmBSBKoqEiviQB7Ci1o
-         7+XmNTxDcbRhwrVV2ciM71i8blih2XYX85DLFDtgtbrjFFmRWqgVkM61kYqGMfJ0VWin
-         CT4A==
-X-Gm-Message-State: AGi0PubZLB3s6h/uuULtqXViagGEES67YSdcm8GOxvlVPcxNcaY26LEd
-        eItcZ3teK6zIDVhKypdgFhQ=
-X-Google-Smtp-Source: APiQypK3G3FyKLKbfD9Pms5jxsBQE/WA38s7A6vwbkv/il5B79vmC9oQSkYQLlfH5eFcm/iHa9xaBA==
-X-Received: by 2002:adf:f1cd:: with SMTP id z13mr13562208wro.166.1586877168520;
-        Tue, 14 Apr 2020 08:12:48 -0700 (PDT)
-Received: from luca020400-arch.lan ([2001:b07:5d33:19f:e2b6:8927:31e7:d93f])
-        by smtp.googlemail.com with ESMTPSA id q4sm20622523wmj.1.2020.04.14.08.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 08:12:47 -0700 (PDT)
-From:   Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
-        freak07 <michalechner92@googlemail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ntfs: Fix ntfs_test_inode and ntfs_init_locked_inode function type
-Date:   Tue, 14 Apr 2020 17:12:46 +0200
-Message-Id: <20200414151246.627197-1-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200414145903.GA11720@infradead.org>
-References: <20200414145903.GA11720@infradead.org>
+        Tue, 14 Apr 2020 11:12:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586877177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hWdxsxQ1IMDhmXo5WAMFE5k2BVlneem3CQpGkc+AuvY=;
+        b=e9gZ1tOgRcN8dlqXtCfqShtwpKxYMsetLehLda7a/WijSKrwDW8yyinYnuWuY7izkjUeqH
+        Y1BGVDA23Kv8UShrnZna0py4l4giGH0oDktWkJrFSWLctZ3mHqkynMjR+N3EjGGfcsDzWO
+        7Vumdy9ppPK3Axc539uVPCcsjaW7NpI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-76-3BpvUORRMJS8qDbO7QY6GQ-1; Tue, 14 Apr 2020 11:12:53 -0400
+X-MC-Unique: 3BpvUORRMJS8qDbO7QY6GQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D58D41137840;
+        Tue, 14 Apr 2020 15:12:51 +0000 (UTC)
+Received: from krava (unknown [10.40.195.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE27C5C1BE;
+        Tue, 14 Apr 2020 15:12:49 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 17:12:47 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf stat: force error in fallback on :k events
+Message-ID: <20200414151247.GB208694@krava>
+References: <20200413235515.221467-1-irogers@google.com>
+ <20200414130209.GD117177@krava>
+ <CAP-5=fVM6gg3Bo5jHwYG=vhLZ-HQaQfwZFg_=DwRJOmHqRRDMA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fVM6gg3Bo5jHwYG=vhLZ-HQaQfwZFg_=DwRJOmHqRRDMA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the kernel is built with CFI we hit a __cfi_check_fail
-while mounting a partition
+On Tue, Apr 14, 2020 at 07:38:17AM -0700, Ian Rogers wrote:
+> On Tue, Apr 14, 2020 at 6:02 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Mon, Apr 13, 2020 at 04:55:15PM -0700, Ian Rogers wrote:
+> > > From: Stephane Eranian <eranian@google.com>
+> > >
+> > > When it is not possible for a non-privilege perf command
+> > > to monitor at the kernel level (:k), the fallback code forces
+> > > a :u. That works if the event was previously monitoring both levels.
+> > > But if the event was already constrained to kernel only, then it does
+> > > not make sense to restrict it to user only.
+> > > Given the code works by exclusion, a kernel only event would have:
+> > > attr->exclude_user = 1
+> > > The fallback code would add:
+> > > attr->exclude_kernel = 1;
+> > >
+> > > In the end the end would not monitor in either the user level or kernel
+> > > level. In other words, it would count nothing.
+> > >
+> > > An event programmed to monitor kernel only cannot be switched to user only
+> > > without seriously warning the user.
+> > >
+> > > This patch forces an error in this case to make it clear the request
+> > > cannot really be satisfied.
+> > >
+> > > Signed-off-by: Stephane Eranian <eranian@google.com>
+> > > Reviewed-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/perf/util/evsel.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > > index d23db6755f51..d1e8862b86ce 100644
+> > > --- a/tools/perf/util/evsel.c
+> > > +++ b/tools/perf/util/evsel.c
+> > > @@ -2446,6 +2446,13 @@ bool perf_evsel__fallback(struct evsel *evsel, int err,
+> > >               char *new_name;
+> > >               const char *sep = ":";
+> > >
+> > > +             if (evsel->core.attr.exclude_user) {
+> > > +                     scnprintf(msg, msgsize,
+> > > +"kernel.perf_event_paranoid=%d, event set to exclude user, so cannot also exclude kernel",
+> > > +                             paranoid);
+> > > +                     return false;
+> >
+> > I'm not able to get this error printed, it seems to be
+> > overwritten by perf_evsel__open_strerror call
+> >
+> > please include perf example with the new output
+> 
+> Agreed, it is possible the change builtin-top/sched/record so that on
+> error the msg is checked and dumped in verbose mode. I think it is
+> also fine to just remove the scnprintf. Do you have a preference?
 
-Call trace:
-__cfi_check_fail+0x1c/0x24
-name_to_dev_t+0x0/0x404
-iget5_locked+0x594/0x5e8
-ntfs_fill_super+0xbfc/0x43ec
-mount_bdev+0x30c/0x3cc
-ntfs_mount+0x18/0x24
-mount_fs+0x1b0/0x380
-vfs_kern_mount+0x90/0x398
-do_mount+0x5d8/0x1a10
-SyS_mount+0x108/0x144
-el0_svc_naked+0x34/0x38
+not sure ;-) but let's make sure we don't remove some expected output
 
-Fixing iget5_locked and ilookup5 callers seems enough
+jirka
 
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
-Tested-by: freak07 <michalechner92@googlemail.com>
----
- fs/ntfs/dir.c   |  2 +-
- fs/ntfs/inode.c | 23 ++++++++++++-----------
- fs/ntfs/inode.h |  4 +---
- fs/ntfs/mft.c   |  5 ++---
- 4 files changed, 16 insertions(+), 18 deletions(-)
-
-diff --git a/fs/ntfs/dir.c b/fs/ntfs/dir.c
-index 3c4811469ae8..e278bfc5ee7f 100644
---- a/fs/ntfs/dir.c
-+++ b/fs/ntfs/dir.c
-@@ -1503,7 +1503,7 @@ static int ntfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
- 	na.type = AT_BITMAP;
- 	na.name = I30;
- 	na.name_len = 4;
--	bmp_vi = ilookup5(vi->i_sb, vi->i_ino, (test_t)ntfs_test_inode, &na);
-+	bmp_vi = ilookup5(vi->i_sb, vi->i_ino, ntfs_test_inode, &na);
- 	if (bmp_vi) {
-  		write_inode_now(bmp_vi, !datasync);
- 		iput(bmp_vi);
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index d4359a1df3d5..34c919bc0dfe 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -30,7 +30,7 @@
- /**
-  * ntfs_test_inode - compare two (possibly fake) inodes for equality
-  * @vi:		vfs inode which to test
-- * @na:		ntfs attribute which is being tested with
-+ * @data:		data which is being tested with
-  *
-  * Compare the ntfs attribute embedded in the ntfs specific part of the vfs
-  * inode @vi for equality with the ntfs attribute @na.
-@@ -43,8 +43,9 @@
-  * NOTE: This function runs with the inode_hash_lock spin lock held so it is not
-  * allowed to sleep.
-  */
--int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
-+int ntfs_test_inode(struct inode *vi, void *data)
- {
-+	ntfs_attr *na = data;
- 	ntfs_inode *ni;
- 
- 	if (vi->i_ino != na->mft_no)
-@@ -72,7 +73,7 @@ int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
- /**
-  * ntfs_init_locked_inode - initialize an inode
-  * @vi:		vfs inode to initialize
-- * @na:		ntfs attribute which to initialize @vi to
-+ * @data:		data which to initialize @vi to
-  *
-  * Initialize the vfs inode @vi with the values from the ntfs attribute @na in
-  * order to enable ntfs_test_inode() to do its work.
-@@ -87,8 +88,9 @@ int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
-  * NOTE: This function runs with the inode->i_lock spin lock held so it is not
-  * allowed to sleep. (Hence the GFP_ATOMIC allocation.)
-  */
--static int ntfs_init_locked_inode(struct inode *vi, ntfs_attr *na)
-+static int ntfs_init_locked_inode(struct inode *vi, void *data)
- {
-+	ntfs_attr *na = data;
- 	ntfs_inode *ni = NTFS_I(vi);
- 
- 	vi->i_ino = na->mft_no;
-@@ -131,7 +133,6 @@ static int ntfs_init_locked_inode(struct inode *vi, ntfs_attr *na)
- 	return 0;
- }
- 
--typedef int (*set_t)(struct inode *, void *);
- static int ntfs_read_locked_inode(struct inode *vi);
- static int ntfs_read_locked_attr_inode(struct inode *base_vi, struct inode *vi);
- static int ntfs_read_locked_index_inode(struct inode *base_vi,
-@@ -164,8 +165,8 @@ struct inode *ntfs_iget(struct super_block *sb, unsigned long mft_no)
- 	na.name = NULL;
- 	na.name_len = 0;
- 
--	vi = iget5_locked(sb, mft_no, (test_t)ntfs_test_inode,
--			(set_t)ntfs_init_locked_inode, &na);
-+	vi = iget5_locked(sb, mft_no, ntfs_test_inode,
-+			ntfs_init_locked_inode, &na);
- 	if (unlikely(!vi))
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -225,8 +226,8 @@ struct inode *ntfs_attr_iget(struct inode *base_vi, ATTR_TYPE type,
- 	na.name = name;
- 	na.name_len = name_len;
- 
--	vi = iget5_locked(base_vi->i_sb, na.mft_no, (test_t)ntfs_test_inode,
--			(set_t)ntfs_init_locked_inode, &na);
-+	vi = iget5_locked(base_vi->i_sb, na.mft_no, ntfs_test_inode,
-+			ntfs_init_locked_inode, &na);
- 	if (unlikely(!vi))
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -280,8 +281,8 @@ struct inode *ntfs_index_iget(struct inode *base_vi, ntfschar *name,
- 	na.name = name;
- 	na.name_len = name_len;
- 
--	vi = iget5_locked(base_vi->i_sb, na.mft_no, (test_t)ntfs_test_inode,
--			(set_t)ntfs_init_locked_inode, &na);
-+	vi = iget5_locked(base_vi->i_sb, na.mft_no, ntfs_test_inode,
-+			ntfs_init_locked_inode, &na);
- 	if (unlikely(!vi))
- 		return ERR_PTR(-ENOMEM);
- 
-diff --git a/fs/ntfs/inode.h b/fs/ntfs/inode.h
-index 98e670fbdd31..363e4e820673 100644
---- a/fs/ntfs/inode.h
-+++ b/fs/ntfs/inode.h
-@@ -253,9 +253,7 @@ typedef struct {
- 	ATTR_TYPE type;
- } ntfs_attr;
- 
--typedef int (*test_t)(struct inode *, void *);
--
--extern int ntfs_test_inode(struct inode *vi, ntfs_attr *na);
-+extern int ntfs_test_inode(struct inode *vi, void *data);
- 
- extern struct inode *ntfs_iget(struct super_block *sb, unsigned long mft_no);
- extern struct inode *ntfs_attr_iget(struct inode *base_vi, ATTR_TYPE type,
-diff --git a/fs/ntfs/mft.c b/fs/ntfs/mft.c
-index 3aac5c917afe..1f1dbf4c41b5 100644
---- a/fs/ntfs/mft.c
-+++ b/fs/ntfs/mft.c
-@@ -958,7 +958,7 @@ bool ntfs_may_write_mft_record(ntfs_volume *vol, const unsigned long mft_no,
- 		 * dirty code path of the inode dirty code path when writing
- 		 * $MFT occurs.
- 		 */
--		vi = ilookup5_nowait(sb, mft_no, (test_t)ntfs_test_inode, &na);
-+		vi = ilookup5_nowait(sb, mft_no, ntfs_test_inode, &na);
- 	}
- 	if (vi) {
- 		ntfs_debug("Base inode 0x%lx is in icache.", mft_no);
-@@ -1019,8 +1019,7 @@ bool ntfs_may_write_mft_record(ntfs_volume *vol, const unsigned long mft_no,
- 		vi = igrab(mft_vi);
- 		BUG_ON(vi != mft_vi);
- 	} else
--		vi = ilookup5_nowait(sb, na.mft_no, (test_t)ntfs_test_inode,
--				&na);
-+		vi = ilookup5_nowait(sb, na.mft_no, ntfs_test_inode, &na);
- 	if (!vi) {
- 		/*
- 		 * The base inode is not in icache, write this extent mft
--- 
-2.26.0
+> 
+> Thanks,
+> Ian
+> 
+> > thanks,
+> > jirka
+> >
+> > > +             }
+> > > +
+> > >               /* Is there already the separator in the name. */
+> > >               if (strchr(name, '/') ||
+> > >                   strchr(name, ':'))
+> > > --
+> > > 2.26.0.110.g2183baf09c-goog
+> > >
+> >
+> 
 
