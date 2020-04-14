@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691681A89F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517931A89F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504216AbgDNSmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:42:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39228 "EHLO mail.kernel.org"
+        id S2504223AbgDNSm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:42:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504184AbgDNSmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:42:17 -0400
-Received: from localhost.localdomain (unknown [157.50.36.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2504162AbgDNSmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 14:42:01 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C7B2208FE;
-        Tue, 14 Apr 2020 18:42:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 208EF2082E;
+        Tue, 14 Apr 2020 18:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586889737;
-        bh=lfSCUvZbahM1QeSSb7gds/7IyrvOA74gzlG0YM7J3PQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kq9hj8bzUBKBAXYzKGghDESvE+FHwmEbLm3Uo1eZ7vJlewn1ZeIz02zPskSlR1lAH
-         Lv+7741CN1QAw45svmDXbfSzkRXBriwJ4b65yLNqtrViWmn9dgo43DcDx7bn16yRJj
-         ERq1lG1O7baibJqrwl5OwpcTR39ZM9U/6Tzb5lgg=
-From:   mani@kernel.org
-To:     jic23@kernel.org, robh+dt@kernel.org, narcisaanamaria12@gmail.com
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
-        Manivannan Sadhasivam <mani@kernel.org>
-Subject: [PATCH v3 3/3] dt-bindings: serial: Add binding for software flow control in STM32 UART
-Date:   Wed, 15 Apr 2020 00:11:47 +0530
-Message-Id: <20200414184147.4857-4-mani@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414184147.4857-1-mani@kernel.org>
-References: <20200414184147.4857-1-mani@kernel.org>
+        s=default; t=1586889720;
+        bh=92ouK1EZtTn+HmugH5BHACzd3FyOicJdIGabmG3nexM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X/xW7zelTwm+eLJXOa5oraSC7xyJEyB8ZvW05z0FCYozMYFK2a4FqfiL8E+EJkMkB
+         tzcNKGEEUSG1tLaWK/VzGQ5Y/HiIgdk5/KCQRXyrNMe5mGfMX3siaXj3EZx3IpvQG7
+         qsUSEbcxeZQZQWaxbwHU10WBAXPtIii+L+vJqouE=
+Date:   Tue, 14 Apr 2020 21:41:55 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 4/4] kernel/module: Hide vermagic header file
+ from general use
+Message-ID: <20200414184155.GB1239315@unreal>
+References: <20200414155732.1236944-1-leon@kernel.org>
+ <20200414155732.1236944-5-leon@kernel.org>
+ <20200414160349.GH31763@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200414160349.GH31763@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <mani@kernel.org>
+On Tue, Apr 14, 2020 at 06:03:50PM +0200, Borislav Petkov wrote:
+> On Tue, Apr 14, 2020 at 06:57:32PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > VERMAGIC* definitions are not supposed to be used by the drivers,
+>
+> Yeah, this was only me conjecturing here. But yes, if people agree, this
+> would be one way to do it.
+>
+> In any case and FWIW, series looks ok to me:
+>
+> Acked-by: Borislav Petkov <bp@suse.de>
 
-Add devicetree binding for software flow control in STM32 UART
-controller. While at it, let's also fix one schema error reported by
-`make dtbs_check`.
+Thanks, finally kbuild slap me to the face.
+There is a need to change scripts/mod/modpost.c too and find the reason
+why I didn't get any compilation errors.
 
-Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
----
- .../devicetree/bindings/serial/st,stm32-uart.yaml | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+<...>
+>> drivers/gpio/gpio-aspeed.mod.c:3:10: fatal error: linux/vermagic.h: No such file or directory
+       3 | #include <linux/vermagic.h>
+         |          ^~~~~~~~~~~~~~~~~~
+   compilation terminated.
 
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 238c44192d31..ea5797a1b403 100644
---- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-@@ -38,13 +38,26 @@ properties:
-     description: enable hardware flow control
-     $ref: /schemas/types.yaml#/definitions/flag
- 
-+  st,sw-flow-ctrl:
-+    description: enable software flow control
-+    $ref: /schemas/types.yaml#/definitions/flag
-+
-+  rts-gpios:
-+    description: RTS pin used if st,sw-flow-ctrl is true
-+    maxItems: 1
-+
-+  cts-gpios:
-+    description: CTS pin used if st,sw-flow-ctrl is true
-+    maxItems: 1
-+
-   dmas:
-     minItems: 1
-     maxItems: 2
- 
-   dma-names:
-     items:
--      enum: [ rx, tx ]
-+      - const: rx
-+      - const: tx
-     minItems: 1
-     maxItems: 2
- 
--- 
-2.17.1
+<...>
 
+
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
