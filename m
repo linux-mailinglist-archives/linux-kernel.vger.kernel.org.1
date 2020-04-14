@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E901A77A8
+	by mail.lfdr.de (Postfix) with ESMTP id C40B61A77A9
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 11:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437806AbgDNJsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 05:48:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:51778 "EHLO foss.arm.com"
+        id S2437815AbgDNJsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 05:48:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:51792 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437780AbgDNJst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:48:49 -0400
+        id S2437801AbgDNJsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 05:48:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8A331FB;
-        Tue, 14 Apr 2020 02:48:47 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0063E31B;
+        Tue, 14 Apr 2020 02:48:51 -0700 (PDT)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.1.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 26F5A3F6C4;
-        Tue, 14 Apr 2020 02:48:43 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5D7103F6C4;
+        Tue, 14 Apr 2020 02:48:48 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
         maz@kernel.org, suzuki.poulose@arm.com,
         Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Morse <james.morse@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 00/16] arm64/cpufeature: Introduce ID_PFR2, ID_DFR1, ID_MMFR5 and other changes
-Date:   Tue, 14 Apr 2020 15:18:14 +0530
-Message-Id: <1586857710-17154-1-git-send-email-anshuman.khandual@arm.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 01/16] arm64/cpufeature: Add explicit ftr_id_isar0[] for ID_ISAR0 register
+Date:   Tue, 14 Apr 2020 15:18:15 +0530
+Message-Id: <1586857710-17154-2-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1586857710-17154-1-git-send-email-anshuman.khandual@arm.com>
+References: <1586857710-17154-1-git-send-email-anshuman.khandual@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is primarily motivated from an adhoc list from Mark Rutland
-during our previous ID_ISAR6 discussion [1]. The current proposal also
-accommodates some more suggestions from Will and Suzuki.
-
-This series adds missing 32 bit system registers (ID_PFR2, ID_DFR1 and
-ID_MMFR5), adds missing features bits on all existing system registers
-(32 and 64 bit) and some other miscellaneous changes. While here it also
-includes a patch which does macro replacement for various open bits shift
-encodings for various CPU ID registers. There is a slight re-order of the
-patches here as compared to the previous version (V1).
-
-This series is based on v5.7-rc1. All feature bits enabled here can be
-referred in ARM DDI 0487F.a specification. Though I have tried to select
-appropriate values for each new feature being added here, there might be
-some inconsistencies (or mistakes). In which case, please do let me know
-if anything needs to change. Thank you.
-
-[1] https://patchwork.kernel.org/patch/11287805/
+ID_ISAR0[31..28] bits are RES0 in ARMv8, Reserved/UNK in ARMv7. Currently
+these bits get exposed through generic_id_ftr32[] which is not desirable.
+Hence define an explicit ftr_id_isar0[] array for ID_ISAR0 register where
+those bits can be hidden.
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com> 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: James Morse <james.morse@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: kvmarm@lists.cs.columbia.edu
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 
-Changes in V2:
+Suggested-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/arm64/include/asm/sysreg.h |  8 ++++++++
+ arch/arm64/kernel/cpufeature.c  | 14 ++++++++++++--
+ 2 files changed, 20 insertions(+), 2 deletions(-)
 
-- Added Suggested-by tag from Mark Rutland for all changes he had proposed
-- Added comment for SpecSEI feature on why it is HIGHER_SAFE per Suzuki
-- Added a patch which makes ID_AA64DFR0_DOUBLELOCK a signed feature per Suzuki
-- Added ID_DFR1 and ID_MMFR5 system register definitions per Will
-- Added remaining features bits for relevant 64 bit system registers per Will
-- Changed commit message on [PATCH 5/7] regarding TraceFilt feature per Suzuki
-- Changed ID_PFR2.CSV3 (FTR_STRICT -> FTR_NONSTRICT) as 64 bit registers per Will
-- Changed ID_PFR0.CSV2 (FTR_STRICT -> FTR_NONSTRICT) as 64 bit registers per Will 
-- Changed some commit messages
-
-Changes in V1: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=234093)
-
-Anshuman Khandual (16):
-  arm64/cpufeature: Add explicit ftr_id_isar0[] for ID_ISAR0 register
-  arm64/cpufeature: Drop TraceFilt feature exposure from ID_DFR0 register
-  arm64/cpufeature: Make doublelock a signed feature in ID_AA64DFR0
-  arm64/cpufeature: Introduce ID_PFR2 CPU register
-  arm64/cpufeature: Introduce ID_DFR1 CPU register
-  arm64/cpufeature: Introduce ID_MMFR5 CPU register
-  arm64/cpufeature: Add remaining feature bits in ID_PFR0 register
-  arm64/cpufeature: Add remaining feature bits in ID_MMFR4 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64ISAR0 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64PFR0 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64PFR1 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64MMFR0 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64MMFR1 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64MMFR2 register
-  arm64/cpufeature: Add remaining feature bits in ID_AA64DFR0 register
-  arm64/cpufeature: Replace all open bits shift encodings with macros
-
- arch/arm64/include/asm/cpu.h    |   3 +
- arch/arm64/include/asm/sysreg.h |  90 ++++++++++++++++++++
- arch/arm64/kernel/cpufeature.c  | 141 +++++++++++++++++++++++++-------
- arch/arm64/kernel/cpuinfo.c     |   3 +
- arch/arm64/kvm/sys_regs.c       |   6 +-
- 5 files changed, 211 insertions(+), 32 deletions(-)
-
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index ebc622432831..f6341065b929 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -750,6 +750,14 @@
+ 
+ #define ID_DFR0_PERFMON_8_1		0x4
+ 
++#define ID_ISAR0_DIVIDE_SHIFT		24
++#define ID_ISAR0_DEBUG_SHIFT		20
++#define ID_ISAR0_COPROC_SHIFT		16
++#define ID_ISAR0_CMPBRANCH_SHIFT	12
++#define ID_ISAR0_BITFIELD_SHIFT		8
++#define ID_ISAR0_BITCOUNT_SHIFT		4
++#define ID_ISAR0_SWAP_SHIFT		0
++
+ #define ID_ISAR5_RDM_SHIFT		24
+ #define ID_ISAR5_CRC32_SHIFT		16
+ #define ID_ISAR5_SHA2_SHIFT		12
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 9fac745aa7bb..7b0f8b59bf59 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -316,6 +316,16 @@ static const struct arm64_ftr_bits ftr_dczid[] = {
+ 	ARM64_FTR_END,
+ };
+ 
++static const struct arm64_ftr_bits ftr_id_isar0[] = {
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_DIVIDE_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_DEBUG_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_COPROC_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_CMPBRANCH_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_BITFIELD_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_BITCOUNT_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR0_SWAP_SHIFT, 4, 0),
++	ARM64_FTR_END,
++};
+ 
+ static const struct arm64_ftr_bits ftr_id_isar5[] = {
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_ISAR5_RDM_SHIFT, 4, 0),
+@@ -373,7 +383,7 @@ static const struct arm64_ftr_bits ftr_zcr[] = {
+  * Common ftr bits for a 32bit register with all hidden, strict
+  * attributes, with 4bit feature fields and a default safe value of
+  * 0. Covers the following 32bit registers:
+- * id_isar[0-4], id_mmfr[1-3], id_pfr1, mvfr[0-1]
++ * id_isar[1-4], id_mmfr[1-3], id_pfr1, mvfr[0-1]
+  */
+ static const struct arm64_ftr_bits ftr_generic_32bits[] = {
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 28, 4, 0),
+@@ -419,7 +429,7 @@ static const struct __ftr_reg_entry {
+ 	ARM64_FTR_REG(SYS_ID_MMFR3_EL1, ftr_generic_32bits),
+ 
+ 	/* Op1 = 0, CRn = 0, CRm = 2 */
+-	ARM64_FTR_REG(SYS_ID_ISAR0_EL1, ftr_generic_32bits),
++	ARM64_FTR_REG(SYS_ID_ISAR0_EL1, ftr_id_isar0),
+ 	ARM64_FTR_REG(SYS_ID_ISAR1_EL1, ftr_generic_32bits),
+ 	ARM64_FTR_REG(SYS_ID_ISAR2_EL1, ftr_generic_32bits),
+ 	ARM64_FTR_REG(SYS_ID_ISAR3_EL1, ftr_generic_32bits),
 -- 
 2.20.1
 
