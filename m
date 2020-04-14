@@ -2,248 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885511A89EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3A71A89E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504194AbgDNSm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:42:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504169AbgDNSmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:42:06 -0400
-Received: from localhost.localdomain (unknown [157.50.36.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2504168AbgDNSmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:42:05 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:42151 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729777AbgDNSlw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 14:41:52 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C1442078A;
-        Tue, 14 Apr 2020 18:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586889725;
-        bh=GmR7lfNoDSQr8Ig6vDLzXWqlig8GgJx5VD62/dqRlrA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q3d82hU1cv8zRNH4RBVEcdGMMxnC6rril8XOse701E9rKVvEjJvzPfulyERNm+fvY
-         HyIg+QZVXKdy2wK1tIG68vUGkMLladoEDHmbvtrH2kNJ3iKNdDs/x5OcXyqdD8u4/U
-         pSarCcjSI7AHkroaaNZ+M8xBg+lQ8qftR468N1bY=
-From:   mani@kernel.org
-To:     jic23@kernel.org, robh+dt@kernel.org, narcisaanamaria12@gmail.com
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
-        Manivannan Sadhasivam <mani@kernel.org>
-Subject: [PATCH v3 1/3] iio: chemical: Add support for external Reset and Wakeup in CCS811
-Date:   Wed, 15 Apr 2020 00:11:45 +0530
-Message-Id: <20200414184147.4857-2-mani@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414184147.4857-1-mani@kernel.org>
-References: <20200414184147.4857-1-mani@kernel.org>
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 02BB72222E;
+        Tue, 14 Apr 2020 20:41:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1586889706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8iSoKOFISTm7e3WSV4reMrghBve1U8G6s6rKNmMUNA=;
+        b=rtveXxXS06F/NYmV9F2bGS5feXtMfE9gJBoboXZn8qEe9Lv/Pdw+PkB3WYbQaCUuxLEI6I
+        01s6XbVlOTMD8dnUpTguXYKOq3sSaQOCnztQCPF9doXoASZlztSVASr7gO1ILou1R9B2WC
+        mzBh5hFIxbe65adMWQoMX24W8N21isE=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 14 Apr 2020 20:41:45 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 10/16] gpio: add a reusable generic gpio_chip using
+ regmap
+In-Reply-To: <CAMpxmJW1x4Orh1BZ4TUoCsYeaAAZ4NBUNvoMG9JgP0iLvXTOtg@mail.gmail.com>
+References: <20200402203656.27047-1-michael@walle.cc>
+ <20200402203656.27047-11-michael@walle.cc>
+ <CAMpxmJVE3PgVCxkQ-ryc5=KSrKcpdmk1cnJUxJBz9QFCx-e_+A@mail.gmail.com>
+ <80bd8661ec8a1f5eda3f09a267846eaa@walle.cc>
+ <CAMpxmJVC7e9JnHzBo-h8M1+KmcA32=Rvxo7+znH=-kAbcCr_LQ@mail.gmail.com>
+ <e0388a2137e23d76b2415a7549c01dd1@walle.cc>
+ <CAMpxmJW1x4Orh1BZ4TUoCsYeaAAZ4NBUNvoMG9JgP0iLvXTOtg@mail.gmail.com>
+Message-ID: <62d157198a75a59ada15c496deeab49b@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.10
+X-Spamd-Bar: +
+X-Spam-Level: *
+X-Rspamd-Server: web
+X-Spam-Status: No, score=1.40
+X-Spam-Score: 1.40
+X-Rspamd-Queue-Id: 02BB72222E
+X-Spamd-Result: default: False [1.40 / 15.00];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_TWELVE(0.00)[23];
+         NEURAL_HAM(-0.00)[-1.082];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,linaro.org,kernel.org,suse.com,roeck-us.net,gmail.com,pengutronix.de,linux-watchdog.org,nxp.com,linutronix.de,lakedaemon.net,linuxfoundation.org];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <mani@kernel.org>
+Am 2020-04-14 19:00, schrieb Bartosz Golaszewski:
+> wt., 14 kwi 2020 o 12:07 Michael Walle <michael@walle.cc> napisał(a):
+>> >>
+>> >> So the best from a user perspective I've could come up with was:
+>> >>
+>> >>    ->base_reg = GPIO_REGMAP_ADDR(addr);
+>> >>
+>> >> I'm open for suggestions.
+>> >>
+>> >
+>> > Maybe setting the pointer to ERR_PTR(-ENOENT) which will result in
+>> > IS_ERR() returning true?
+>> 
+>> Unfortunatly, its not a pointer, but only a regular unsigned int (ie
+>> the type the regmap API has for its "reg" property). It could be a
+>> pointer of course but then the user would have to allocate additional
+>> memory.
+>> 
+>> -michael
+>> 
+> 
+> Eek, of course it's not a pointer. If possible I'd like to avoid this
+> GPIO_REGMAP_ADDR() macro, so how about having some separate field for
+> invalid offsets making every offset 'valid' by default?
 
-CCS811 VOC sensor exposes nRESET and nWAKE pins which can be connected
-to GPIO pins of the host controller. These pins can be used to externally
-release the device from reset and also to wake it up before any I2C
-transaction. The initial driver support assumed that the nRESET pin is not
-connected and the nWAKE pin is tied to ground.
+IMHO this has the same problems as mentioned in the response to Mark's
+idea. Normally, the user sets only some addresses, thus he has to mark
+all other as invalid. And if you add another address, you have to touch
+all the drivers to mark it as invalid.
 
-This commit improves it by adding support for controlling those two pins
-externally using a host controller. For the case of reset, if the hardware
-reset is not available, the mechanism to do software reset is also added.
+We could add some force bits like the "use_ack" flag in the bgpio 
+driver,
+where you can force the use of the value 0. But I'd really like to find
+a better way..
 
-As a side effect of doing this, the IIO device allocation needs to be
-slightly moved to top of probe to make use of priv data early.
+-michael
 
-Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
----
- drivers/iio/chemical/ccs811.c | 105 ++++++++++++++++++++++++++++++----
- 1 file changed, 94 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/iio/chemical/ccs811.c b/drivers/iio/chemical/ccs811.c
-index 2ebdfc35bcda..1500e4b0dfbd 100644
---- a/drivers/iio/chemical/ccs811.c
-+++ b/drivers/iio/chemical/ccs811.c
-@@ -16,6 +16,7 @@
-  */
- 
- #include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/buffer.h>
-@@ -36,6 +37,7 @@
- #define CCS811_ERR		0xE0
- /* Used to transition from boot to application mode */
- #define CCS811_APP_START	0xF4
-+#define CCS811_SW_RESET		0xFF
- 
- /* Status register flags */
- #define CCS811_STATUS_ERROR		BIT(0)
-@@ -74,6 +76,7 @@ struct ccs811_data {
- 	struct mutex lock; /* Protect readings */
- 	struct ccs811_reading buffer;
- 	struct iio_trigger *drdy_trig;
-+	struct gpio_desc *wakeup_gpio;
- 	bool drdy_trig_on;
- };
- 
-@@ -166,10 +169,25 @@ static int ccs811_setup(struct i2c_client *client)
- 					 CCS811_MODE_IAQ_1SEC);
- }
- 
-+static void ccs811_set_wakeup(struct ccs811_data *data, bool enable)
-+{
-+	if (!data->wakeup_gpio)
-+		return;
-+
-+	gpiod_set_value(data->wakeup_gpio, enable);
-+
-+	if (enable)
-+		usleep_range(50, 60);
-+	else
-+		usleep_range(20, 30);
-+}
-+
- static int ccs811_get_measurement(struct ccs811_data *data)
- {
- 	int ret, tries = 11;
- 
-+	ccs811_set_wakeup(data, true);
-+
- 	/* Maximum waiting time: 1s, as measurements are made every second */
- 	while (tries-- > 0) {
- 		ret = i2c_smbus_read_byte_data(data->client, CCS811_STATUS);
-@@ -183,9 +201,12 @@ static int ccs811_get_measurement(struct ccs811_data *data)
- 	if (!(ret & CCS811_STATUS_DATA_READY))
- 		return -EIO;
- 
--	return i2c_smbus_read_i2c_block_data(data->client,
-+	ret = i2c_smbus_read_i2c_block_data(data->client,
- 					    CCS811_ALG_RESULT_DATA, 8,
- 					    (char *)&data->buffer);
-+	ccs811_set_wakeup(data, false);
-+
-+	return ret;
- }
- 
- static int ccs811_read_raw(struct iio_dev *indio_dev,
-@@ -336,6 +357,45 @@ static irqreturn_t ccs811_data_rdy_trigger_poll(int irq, void *private)
- 	return IRQ_HANDLED;
- }
- 
-+static int ccs811_reset(struct i2c_client *client)
-+{
-+	struct gpio_desc *reset_gpio;
-+	int ret;
-+
-+	reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-+					     GPIOD_OUT_LOW);
-+	if (IS_ERR(reset_gpio))
-+		return PTR_ERR(reset_gpio);
-+
-+	/* Try to reset using nRESET pin if available else do SW reset */
-+	if (reset_gpio) {
-+		gpiod_set_value(reset_gpio, 1);
-+		usleep_range(20, 30);
-+		gpiod_set_value(reset_gpio, 0);
-+	} else {
-+		/*
-+		 * As per the datasheet, this sequence of values needs to be
-+		 * written to the SW_RESET register for triggering the soft
-+		 * reset in the device and placing it in boot mode.
-+		 */
-+		static const u8 reset_seq[] = {
-+			0x11, 0xE5, 0x72, 0x8A,
-+		};
-+
-+		ret = i2c_smbus_write_i2c_block_data(client, CCS811_SW_RESET,
-+					     sizeof(reset_seq), reset_seq);
-+		if (ret < 0) {
-+			dev_err(&client->dev, "Failed to reset sensor\n");
-+			return ret;
-+		}
-+	}
-+
-+	/* tSTART delay required after reset */
-+	usleep_range(1000, 2000);
-+
-+	return 0;
-+}
-+
- static int ccs811_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
- {
-@@ -348,36 +408,59 @@ static int ccs811_probe(struct i2c_client *client,
- 				     | I2C_FUNC_SMBUS_READ_I2C_BLOCK))
- 		return -EOPNOTSUPP;
- 
-+	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	data = iio_priv(indio_dev);
-+	i2c_set_clientdata(client, indio_dev);
-+	data->client = client;
-+
-+	data->wakeup_gpio = devm_gpiod_get_optional(&client->dev, "wakeup",
-+						    GPIOD_OUT_HIGH);
-+	if (IS_ERR(data->wakeup_gpio))
-+		return PTR_ERR(data->wakeup_gpio);
-+
-+	ccs811_set_wakeup(data, true);
-+
-+	ret = ccs811_reset(client);
-+	if (ret) {
-+		ccs811_set_wakeup(data, false);
-+		return ret;
-+	}
-+
- 	/* Check hardware id (should be 0x81 for this family of devices) */
- 	ret = i2c_smbus_read_byte_data(client, CCS811_HW_ID);
--	if (ret < 0)
-+	if (ret < 0) {
-+		ccs811_set_wakeup(data, false);
- 		return ret;
-+	}
- 
- 	if (ret != CCS811_HW_ID_VALUE) {
- 		dev_err(&client->dev, "hardware id doesn't match CCS81x\n");
-+		ccs811_set_wakeup(data, false);
- 		return -ENODEV;
- 	}
- 
- 	ret = i2c_smbus_read_byte_data(client, CCS811_HW_VERSION);
--	if (ret < 0)
-+	if (ret < 0) {
-+		ccs811_set_wakeup(data, false);
- 		return ret;
-+	}
- 
- 	if ((ret & CCS811_HW_VERSION_MASK) != CCS811_HW_VERSION_VALUE) {
- 		dev_err(&client->dev, "no CCS811 sensor\n");
-+		ccs811_set_wakeup(data, false);
- 		return -ENODEV;
- 	}
- 
--	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
--	if (!indio_dev)
--		return -ENOMEM;
--
- 	ret = ccs811_setup(client);
--	if (ret < 0)
-+	if (ret < 0) {
-+		ccs811_set_wakeup(data, false);
- 		return ret;
-+	}
- 
--	data = iio_priv(indio_dev);
--	i2c_set_clientdata(client, indio_dev);
--	data->client = client;
-+	ccs811_set_wakeup(data, false);
- 
- 	mutex_init(&data->lock);
- 
--- 
-2.17.1
-
+> 
+> Linus: do you have a better idea?
+> 
+> Bart
