@@ -2,72 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3411A7A09
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52581A7A12
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgDNLtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 07:49:17 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:37041 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728426AbgDNLtM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 07:49:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0TvWiAKo_1586864932;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TvWiAKo_1586864932)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 14 Apr 2020 19:48:52 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, zhangliguang@linux.alibaba.com,
-        zhang.jia@linux.alibaba.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tianjia.zhang@linux.alibaba.com
-Subject: [PATCH 2/2] ima: simplify function process_buffer_measurement
-Date:   Tue, 14 Apr 2020 19:48:50 +0800
-Message-Id: <20200414114850.98622-3-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414114850.98622-1-tianjia.zhang@linux.alibaba.com>
-References: <20200414114850.98622-1-tianjia.zhang@linux.alibaba.com>
+        id S2439635AbgDNLtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 07:49:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56442 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729575AbgDNLtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 07:49:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5522CAD63;
+        Tue, 14 Apr 2020 11:49:46 +0000 (UTC)
+Subject: Re: [PATCH RFC] mm: compaction: avoid migrating non-cma pages to a
+ cma area
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Qian Cai <cai@lca.pw>, Andrea Arcangeli <aarcange@redhat.com>,
+        Joonsoo Kim <js1304@gmail.com>
+References: <20200408194119.1076232-1-guro@fb.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <225868db-b9b0-3614-de0f-4b264023df2b@suse.cz>
+Date:   Tue, 14 Apr 2020 13:49:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200408194119.1076232-1-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate judgment code to make it more suitable for linux
-code style.
+On 4/8/20 9:41 PM, Roman Gushchin wrote:
+> Compaction does treat cma pageblocks on pair with any movable
+> pageblocks. It means it can easily move non-cma pages into a cma zone.
+> 
+> It can create problems for the cma allocator.
+> 
+> The particular problem I'm looking at is related to btrfs metadata
+> pages, which are allocated without __GFP_MOVABLE, but beside that
+> are generic pagecache pages. In fact, they are sometimes movable
+> and sometimes not, depending on whether they are dirty and also
+> on the extent buffer reference counter.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- security/integrity/ima/ima_main.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Hm I think I'd rather make such pages really unmovable (by a pin?) than deny the
+whole CMA area to compaction. Would it be feasible?
 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 9d0abedeae77..55cbbe97ce6e 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -750,15 +750,15 @@ void process_buffer_measurement(const void *buf, int size,
- 		goto out;
- 
- 	ret = ima_store_template(entry, violation, NULL, buf, pcr);
--
--	if (ret < 0)
--		ima_free_template_entry(entry);
--
--out:
- 	if (ret < 0)
--		pr_devel("%s: failed, result: %d\n", __func__, ret);
-+		goto out_free_entry;
- 
- 	return;
-+
-+out_free_entry:
-+	ima_free_template_entry(entry);
-+out:
-+	pr_devel("%s: failed, result: %d\n", __func__, ret);
- }
- 
- /**
--- 
-2.17.1
+> Compaction moves them to the hugetlb_cma area, and then sometimes
+> the cma allocator fails to move them back from the cma area. It
+> results in failures of gigantic hugepages allocations.
+> 
+> Also in general cma areas are reserved close to the end of a zone,
+> and it's where compaction tries to migrate pages. It means
+> compaction will aggressively fill cma areas, which makes not much
+> sense.
+
+So now the free page scanner will have to skip those areas, which is not much
+effective. But I suspect a worse problem in __compaction_suitable() which will
+now falsely report that there are enough free pages, so compaction will start
+but fail to do anytning. Minimally the __zone_watermark_ok() check there would
+have to lose ALLOC_CMA, but there might be other similar checks that would need
+adjusting.
+
+And long-term what happens if the "CMA using ZONE_MOVABLE" approach is merged
+and there are not more CMA migratetypes to test? Might this change actually also
+avoid your issue, as said pages without __GFP_MOVABLE won't end up in a
+ZONE_MOVABLE?
+
+> So to avoid it, let's preserve non-cma pages from being moved into
+> a cma area. Because cma areas are usually quite large and the number
+> of areas is small, it should not significantly affect the memory
+> fragmentation.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  mm/compaction.c | 6 ++++++
+>  mm/internal.h   | 1 +
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 46f0fcc93081..9b047cbb1c74 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1159,6 +1159,10 @@ static bool suitable_migration_target(struct compact_control *cc,
+>  			return false;
+>  	}
+>  
+> +	/* Do not bring pages non-cma pages into a cma area */
+> +	if (is_migrate_cma(get_pageblock_migratetype(page)) && !cc->cma)
+> +		return false;
+> +
+>  	if (cc->ignore_block_suitable)
+>  		return true;
+>  
+> @@ -1832,6 +1836,8 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>  		if (!low_pfn)
+>  			return ISOLATE_ABORT;
+>  
+> +		cc->cma = is_migrate_cma(get_pageblock_migratetype(page));
+> +
+>  		/*
+>  		 * Either we isolated something and proceed with migration. Or
+>  		 * we failed and compact_zone should decide if we should
+> diff --git a/mm/internal.h b/mm/internal.h
+> index b5634e78f01d..0ce649da824b 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -232,6 +232,7 @@ struct compact_control {
+>  	bool contended;			/* Signal lock or sched contention */
+>  	bool rescan;			/* Rescanning the same pageblock */
+>  	bool alloc_contig;		/* alloc_contig_range allocation */
+> +	bool cma;			/* migratepages contains cma pages */
+>  };
+>  
+>  /*
+> 
 
