@@ -2,212 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED8A1A8C31
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37201A8BF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632857AbgDNUPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2632822AbgDNUOq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:14:46 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BE6C03C1A6;
-        Tue, 14 Apr 2020 13:05:25 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id c138so446819pfc.0;
-        Tue, 14 Apr 2020 13:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WO49U3CojIPJ8FYnW7/AVcVTFMeuQ1/UiHUfJDgiAxU=;
-        b=s38jFPzpMQyzrgRfWEkRVpx3BQrmGDSC0GnahsExhsMBKjp1EPkClCuHwMlyRK95Vp
-         pem2yrn0Dyg/Gh4n7C07N1viukHCOClXz72Vws42txesS7kQk4qAmOV/vTY5xSPf89wx
-         kr65R3IHfA+nwsCKH0IbPNjt37z1IVDXiKmbZsVO/xC2aQYqb9LUbab15ypr1Rs/jJgf
-         1cHYzmzsIXswfqbOSt2O34U20XbufjphXF2Z4J0wgSaCU3MGbRtW3ACqyeAtIDKkp8Hq
-         FFf7Dg9dlEq/ChafohjggQqXrTf8/+7RR8uJNBYohTVD/SeCVCFujhQXZqapAODAODmI
-         E31w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WO49U3CojIPJ8FYnW7/AVcVTFMeuQ1/UiHUfJDgiAxU=;
-        b=HeBSABfnxM2ciE3mAmds4sjx7LHtxOJhe2hG4pNvhxPox8QWrOIUXpIkHjZhAMS7HP
-         QfY46sCNLYTfmAMU67Du1MKlRSRcSDgLvEKBaKUaWTTLllVexHs5zf2VtWG++4+I5S1p
-         ilaEALK/WZSvT27tVgFjVxJaUjuMuU+UxpP4jpDcGogDV5pjS5vlKexTPg9WGbteOiDD
-         RSWXO5e9TkdR1r9gkiYQrICDmOlVi3rIdu76W9OSOaHy9hCyo9Wh6+T0KGq9+beoukyx
-         iy8oNAH/kwLjDThiTQOu43hTQ8Uxwhr+udOP0vlqxWZaxwye0TjRQUOTjbh2KrY+K0cZ
-         YZEg==
-X-Gm-Message-State: AGi0PubuA00rI44aBptrpqqVwsI3pvPK8zZAULpkF70/E2SjaixYuFYE
-        fcyhJihTPlDKnrIATWzU7JypvphI
-X-Google-Smtp-Source: APiQypIOPv72sj9XFebTeXkfUnAvmlFr5j/fB4pQD4Stl52w0o+TJYZ+nI+Squ24ZpUBlPkqB3eVIQ==
-X-Received: by 2002:a62:cfc3:: with SMTP id b186mr24120852pfg.311.1586894724786;
-        Tue, 14 Apr 2020 13:05:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a22sm6626136pfg.169.2020.04.14.13.05.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 13:05:23 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: typec: tcpm: Ignore CC and vbus changes in
- PORT_RESET change
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200402215947.176577-1-badhri@google.com>
- <20200414120407.GE2828150@kuha.fi.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <c2f718cc-4a3a-7b83-da7d-fe739ee0909a@roeck-us.net>
-Date:   Tue, 14 Apr 2020 13:05:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2505503AbgDNUJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:09:21 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:34807 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505445AbgDNUJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:09:18 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id f26f0e78;
+        Tue, 14 Apr 2020 19:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=pAmOQHaOEgfqZI+i6EXjutI5JI0=; b=WpGA60
+        xAHYTARIO3swYDmA4JV0vCZkvEcHJ3GZyWQMM+IB6CJmjPVeukhIiA9sY/HKsLih
+        J2i4kEHnUyxZl+OyPcXhgzQ50NsInr3ol6OBwQKU84rInXfFLHQnF37tdzgY5c0I
+        B+7NNxYWyl1WpcJ29TU1jh5HyjAwr3cIsfZxoq1gSOj/wpDfLU99y2hEr8SPHKPs
+        PoKv4ec3dJAwV1xhIbPIHw7KYBAJYzNhpFEuvzgqfJYINOzPKOSpPtqEopaXF59f
+        uPvKy8IgT+uQvZZOgIjbDly0iXkmrB4xmFxYuxk3ILvT4pRL6vODIgDpV0pCVPw8
+        eiB2j9cw6YXpqbFA==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c8bef353 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 14 Apr 2020 19:59:24 +0000 (UTC)
+Received: by mail-il1-f170.google.com with SMTP id b18so1054276ilf.2;
+        Tue, 14 Apr 2020 13:09:16 -0700 (PDT)
+X-Gm-Message-State: AGi0Puag8TqoJOZE4tDFn8R/te/5kVMQmHlAYiw3xUQ9xc22p+2iPRfv
+        2mXv3L2udu69XttBEDZMIPYpt5Cqh/NciMpCSx0=
+X-Google-Smtp-Source: APiQypJZ0K1mNpMSy98DlJSx/G/Z6de7g5ow7ZKNiKa5yFTU8yGzF8WbxCEpjqHPzJ5mTQ/IUejV7KubA9PAo/tUM7A=
+X-Received: by 2002:a92:9fc2:: with SMTP id z63mr1980508ilk.64.1586894955909;
+ Tue, 14 Apr 2020 13:09:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200414120407.GE2828150@kuha.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200407063345.4484-1-Jason@zx2c4.com> <20200407063345.4484-3-Jason@zx2c4.com>
+ <0e189a4fe1e69b08afc859ce83623a0e5ea0c08b.camel@linux.intel.com>
+ <CAHmME9pigvAgK3Bje6DkFEcdyWwi7-C7D6QEo4YiH_cbJvxqhQ@mail.gmail.com>
+ <4b75ec34ccff5abdc0b1c04a5ac39455ddd4f49b.camel@linux.intel.com>
+ <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com> <24c4ac84671b97b5092413689b4bf224b73bc51b.camel@linux.intel.com>
+In-Reply-To: <24c4ac84671b97b5092413689b4bf224b73bc51b.camel@linux.intel.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 14 Apr 2020 14:09:05 -0600
+X-Gmail-Original-Message-ID: <CAHmME9p1v7mMkMf1j4FQpNm5MWAO+TeQdvn0bh_XPjpXwyJkLg@mail.gmail.com>
+Message-ID: <CAHmME9p1v7mMkMf1j4FQpNm5MWAO+TeQdvn0bh_XPjpXwyJkLg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
+ vector altogether
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        bberg@redhat.com, bp@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/20 5:04 AM, Heikki Krogerus wrote:
-> On Thu, Apr 02, 2020 at 02:59:47PM -0700, Badhri Jagan Sridharan wrote:
->> After PORT_RESET, the port is set to the appropriate
->> default_state. Ignore processing CC changes here as this
->> could cause the port to be switched into sink states
->> by default.
->>
->> echo source > /sys/class/typec/port0/port_type
->>
->> Before:
->> [  154.528547] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms
->> [  154.528560] CC1: 0 -> 0, CC2: 3 -> 0 [state PORT_RESET, polarity 0, disconnected]
->> [  154.528564] state change PORT_RESET -> SNK_UNATTACHED
->>
->> After:
->> [  151.068814] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev3 NONE_AMS]
->> [  151.072440] CC1: 3 -> 0, CC2: 0 -> 0 [state PORT_RESET, polarity 0, disconnected]
->> [  151.172117] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
->> [  151.172136] pending state change PORT_RESET_WAIT_OFF -> SRC_UNATTACHED @ 870 ms [rev3 NONE_AMS]
->> [  152.060106] state change PORT_RESET_WAIT_OFF -> SRC_UNATTACHED [delayed 870 ms]
->> [  152.060118] Start toggling
-> 
-> Guenter, can you take a look at this?
-> 
+On Tue, Apr 14, 2020 at 1:58 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Tue, 2020-04-14 at 13:41 -0600, Jason A. Donenfeld wrote:
+> > On Tue, Apr 14, 2020 at 8:45 AM Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > On Mon, 2020-04-13 at 22:21 -0600, Jason A. Donenfeld wrote:
+> > > > On Mon, Apr 13, 2020 at 9:38 PM Srinivas Pandruvada
+> > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > > On Tue, 2020-04-07 at 00:33 -0600, Jason A. Donenfeld wrote:
+> > > > > > The thermal IRQ handler uses 1.21% CPU on my system when it's
+> > > > > > hot
+> > > > > > from
+> > > > > > compiling things. Indeed looking at /proc/interrupts reveals
+> > > > > > quite a
+> > > > > > lot
+> > > > > I am curious why you are hitting threshold frequently?
+> > > > > What is rdmsr 0x1a2
+> > > >
+> > > > 5640000
+> > > You are getting too many interrupts at 95C. You should look at your
+> > > cooling system.
+> > >
+> > > > > > of events coming in. Beyond logging them, the existing
+> > > > > > drivers on
+> > > > > > the
+> > > > > > system don't appear to do very much that I'm interested in.
+> > > > > > So,
+> > > > > > add a
+> > > > > > way to disable this entirely so that I can regain precious
+> > > > > > CPU
+> > > > > > cycles.
+> > > > > It is showing amount of time system is running in a constrained
+> > > > > environment. Lots of real time and HPC folks really care about
+> > > > > this.
+> > > >
+> > > > Which is why this patch adds an option, not a full removal or
+> > > > something. Real time and HPC people can keep their expensive
+> > > > interrupt. Other people with different varieties of system
+> > > > disable
+> > > > it.
+> > > Generally compile time flag is not desirable. If it is what
+> > > required
+> > > then we should have boot time flag something in lines of existing
+> > > "int_pln_enable" option.
+> >
+> > Generally it is desirable, and extremely common too. This thermal
+> > code
+> > -- which mostly functions to print some messages into kmsg -- is very
+> > verbose. This is not something I want to compile into smaller
+> > systems.
+> > This is the reason why kconfig has options in the first place. I'm
+> > not
+> > sure yet-another boottime flag makes sense for this.
+>
+> Can you send log which is still showing verbose prints with the latest
+> kernel? I can see interrupts will still fire.
+>
+> If it is, then temperature trend is still above 95C and cooling systems
+> is not in control. In another window, print in loop (with sleep 1)
+> /sys/class/thermal/thermal_zone*/temp
+> for the zone for which "type == x86_pkg_temp"
 
-Sorry, looks like I missed the original patch. Makes sense to me.
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
->> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
->> ---
->>  drivers/usb/typec/tcpm/tcpm.c | 26 ++++++++++++++++++++++++++
->>  1 file changed, 26 insertions(+)
->>
->> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
->> index de3576e6530ab2..82b19ebd7838e0 100644
->> --- a/drivers/usb/typec/tcpm/tcpm.c
->> +++ b/drivers/usb/typec/tcpm/tcpm.c
->> @@ -3794,6 +3794,14 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
->>  		 */
->>  		break;
->>  
->> +	case PORT_RESET:
->> +	case PORT_RESET_WAIT_OFF:
->> +		/*
->> +		 * State set back to default mode once the timer completes.
->> +		 * Ignore CC changes here.
->> +		 */
->> +		break;
->> +
->>  	default:
->>  		if (tcpm_port_is_disconnected(port))
->>  			tcpm_set_state(port, unattached_state(port), 0);
->> @@ -3855,6 +3863,15 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
->>  	case SRC_TRY_DEBOUNCE:
->>  		/* Do nothing, waiting for sink detection */
->>  		break;
->> +
->> +	case PORT_RESET:
->> +	case PORT_RESET_WAIT_OFF:
->> +		/*
->> +		 * State set back to default mode once the timer completes.
->> +		 * Ignore vbus changes here.
->> +		 */
->> +		break;
->> +
->>  	default:
->>  		break;
->>  	}
->> @@ -3908,10 +3925,19 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
->>  	case PORT_RESET_WAIT_OFF:
->>  		tcpm_set_state(port, tcpm_default_state(port), 0);
->>  		break;
->> +
->>  	case SRC_TRY_WAIT:
->>  	case SRC_TRY_DEBOUNCE:
->>  		/* Do nothing, waiting for sink detection */
->>  		break;
->> +
->> +	case PORT_RESET:
->> +		/*
->> +		 * State set back to default mode once the timer completes.
->> +		 * Ignore vbus changes here.
->> +		 */
->> +		break;
->> +
->>  	default:
->>  		if (port->pwr_role == TYPEC_SINK &&
->>  		    port->attached)
->> -- 
->> 2.26.0.292.g33ef6b2f38-goog
-> 
-> thanks,
-> 
-
+It sounds like you're interested in debugging the cooling system of my
+[brand new Thinkpad P1 gen 2] laptop. I appreciate the concern, but
+that's really not the purpose of this patch. The purpose of this patch
+is to enable disabling the sizable thermal interrupt code, that does
+absolutely nothing for a wide variety of systems that do not want that
+code in their kernel. In other words, I don't think the particular
+thinkpad cooling aspects have anything to do with the need to add the
+trivial Kconfig option to not compile this code. I realize it's your
+code and you might really like it, but that doesn't mean everyone
+wants it in their kernel image.
