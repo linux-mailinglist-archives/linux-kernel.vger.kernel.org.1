@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6411A850C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39ED1A8511
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391748AbgDNQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S2391765AbgDNQdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391601AbgDNQcg (ORCPT
+        by vger.kernel.org with ESMTP id S2391745AbgDNQdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:32:36 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4CFC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:32:36 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b62so13926007qkf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:32:36 -0700 (PDT)
+        Tue, 14 Apr 2020 12:33:09 -0400
+Received: from mail-vs1-xe4a.google.com (mail-vs1-xe4a.google.com [IPv6:2607:f8b0:4864:20::e4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CC1C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:33:09 -0700 (PDT)
+Received: by mail-vs1-xe4a.google.com with SMTP id x14so172770vsn.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 09:33:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QBdKhl12xvvYi9lcxj1S9EA5zV6NRqJ0DNsgwZaL5f0=;
-        b=bGSSp+1WA5PYJleV9ifx6NNnf93E6ao5JcRqKpwnklWFlxyK7FUkcisjZaCRvqQIDY
-         XjVzONiep1xbXRC+TQ8OrlINiYy/Z0j7ng22kRs4pG6i7dN4zHeRSmNW5Fq2rsindx9Z
-         es8/FlpOaZT4RzmV4YFvcD9/9HR9ySqyzfqtxPxRBNfG5N1eyihCeuzOjfqWBrP7DQyU
-         sX6zjLXg1/mYyvzXinc0g9Xg9V7QUFPyD5tjcE6aX9P5wWzAUr3po/BJ4aanhAtyPjN1
-         8uTX7UEbD8b6klDvQ8o6lzbJFrXbS+P8ooinQ5r/7/hCxaVslUfBje7vcFcvPzpB21pG
-         0nsQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=C/WMPxWmNKBqJ/Zz9SNZ/9dLp/Pjl7eWvbmkGXyv5l8=;
+        b=gwOWdDcr8K2xj9bCTj7H5OL85GAIl6qKwa9aYWhyWu1Rn5CPfXHvSHlcLupYSb+aNy
+         Hhvbi7HVhzDRTVj1FQJhmoVvVW0EJ45dX1P6BDPkSE/+XklQDRWskVCf0zeCRRdQvXog
+         iBOjzhbsYUBtOdcFJnwtrxajIPEzSc58MWMoqofCIGjCmQuLE4DKZhCRSNAydisOSAhj
+         ILLq36JK5Ke6AD0l/kg/Z6WzFiIqOig6iBOEeLGDDrBw762y0GBLAH+Bb0+ynatGlrkS
+         C+e9T2LfS+F5yZTVUFEwAnkfN0fe5gOmUNc7Bcu1aYgve/Lj9EmOsoX83Q5BObCWGYjs
+         0M2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QBdKhl12xvvYi9lcxj1S9EA5zV6NRqJ0DNsgwZaL5f0=;
-        b=siFCEkl1L9kuVGdtzTMSKMGMvcXpInoS6R+5RMB77l+4ATUHBA2MJDRnZBBPByZbg7
-         zzdXgZsj1FZzXTf8yPzdU6SxSPTilNKum/xdnSDePqvC8ie6PpvvbtkhuFf1YmRMXDPX
-         s54UwSI7VxYetEWvE95LVhmajkI6EVcbrdmcKy6qZQug5+GrtPgX2kCW1JyNYN6nO/5n
-         wWm47tB+LVM2M805FJ77tLK9ULzJ0/aWNLU4SINR7L2BKzXv04EEktn0VhsbgVAHvDHW
-         OwqXw5+D4L9EgW4xhhAl2R7Jk2P8SzQ6wMzEPJORbHQDfIM3TtK8CUPkSJ6AU/wUgC70
-         +4Wg==
-X-Gm-Message-State: AGi0Pub9NGM8ZKMYjgF5TfZbSrNnUCGg7Tz2Tp2xpDa7Lq0+gnLgRghW
-        iX/JTy3Cae9jFleZdTDMI29pcg==
-X-Google-Smtp-Source: APiQypL35bvylggzZE0yMT8vcGrCFxCjV/OJPpuQpN3/dXZvvHERYdDgIWBReT0U8zOAMVy0imoEUw==
-X-Received: by 2002:a37:6393:: with SMTP id x141mr3886719qkb.179.1586881955711;
-        Tue, 14 Apr 2020 09:32:35 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id m1sm11597515qtm.22.2020.04.14.09.32.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 09:32:35 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jOOUE-0006Ly-OX; Tue, 14 Apr 2020 13:32:34 -0300
-Date:   Tue, 14 Apr 2020 13:32:34 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm/gup: dereference page table entry using helper
-Message-ID: <20200414163234.GG5100@ziepe.ca>
-References: <1586877001-19138-1-git-send-email-agordeev@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586877001-19138-1-git-send-email-agordeev@linux.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=C/WMPxWmNKBqJ/Zz9SNZ/9dLp/Pjl7eWvbmkGXyv5l8=;
+        b=BFjyM1ZzKOEEsC5PetRhaHNFyjlfGzNMNC2BXd0r9iIuJnW/IV9szMzwcq8HMFNOo+
+         UTtfnZEFi3Q7dCgvqn+CbGdzlMRk93txQjIm/mI+luWeZC7sZJe1cEl+RkkfDGcUE4Hu
+         8CuqkVX4qg4DzE/pqE6w5s6ovvp56nc3mICxPj1/mt71WAJfez73eJOrqqwBTZs9e30y
+         gCdzJIapg6cfCygolZl7UMQqEFICARgpHYaAQONjvInz3zPqJ1TqoNXSREJZ0dNYgIgv
+         7sxaAp55GY/InGTwgZpibWjwfd/kWvU6VHquWrVi9BUu66Sa5GI3Y7fm3UAE2H+pfU/W
+         V65A==
+X-Gm-Message-State: AGi0PuZq1btV7YxA8uExi5Gsi8Urlz8w7USd4cIRush9FgyWYMOA6zNQ
+        0SOVSKI5GjddnDMBn1mr3teHo0cTunl1
+X-Google-Smtp-Source: APiQypL2292vcdQOPgM/pbOZPk9A8GWPQ48YdWAzRpisGiQjViIba//xyUIANE+PSCLKQ5rg8OUQVFnSzjm+
+X-Received: by 2002:a67:2284:: with SMTP id i126mr890118vsi.223.1586881988191;
+ Tue, 14 Apr 2020 09:33:08 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 09:32:55 -0700
+Message-Id: <20200414163255.66437-1-maskray@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [PATCH v2] arm64: Delete the space separator in __emit_inst
+From:   Fangrui Song <maskray@google.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Jian Cai <jiancai@google.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 05:10:01PM +0200, Alexander Gordeev wrote:
-> Commit 0005d20 ("mm/gup: Move page table entry dereference
-> into helper function") wrapped access to page table entries
-> larger than sizeof(long) into a race-aware accessor. One of
-> the two dereferences in gup_fast path was however overlooked.
-> 
-> CC: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> CC: linux-mm@kvack.org
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
->  mm/gup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index d53f7dd..eceb98b 100644
-> +++ b/mm/gup.c
-> @@ -2208,7 +2208,7 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
->  		if (!head)
->  			goto pte_unmap;
->  
-> -		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
-> +		if (unlikely(pte_val(pte) != pte_val(gup_get_pte(ptep)))) {
+In assembly, many instances of __emit_inst(x) expand to a directive. In
+a few places __emit_inst(x) is used as an assembler macro argument. For
+example, in arch/arm64/kvm/hyp/entry.S
 
-It doesn't seem like this needs the special helper as it is just
-checking that the pte hasn't changed, it doesn't need to be read
-exactly.
+  ALTERNATIVE(nop, SET_PSTATE_PAN(1), ARM64_HAS_PAN, CONFIG_ARM64_PAN)
 
-But it probably should technically still be a READ_ONCE. Although I
-think the atomic inside try_grab_compound_head prevents any real
-problems.
+expands to the following by the C preprocessor:
 
-Jason
+  alternative_insn nop, .inst (0xd500401f | ((0) << 16 | (4) << 5) | ((!!1) << 8)), 4, 1
+
+Both comma and space are separators, with an exception that content
+inside a pair of parentheses/quotes is not split, so the clang
+integrated assembler splits the arguments to:
+
+   nop, .inst, (0xd500401f | ((0) << 16 | (4) << 5) | ((!!1) << 8)), 4, 1
+
+GNU as preprocesses the input with do_scrub_chars(). Its arm64 backend
+(along with many other non-x86 backends) sees:
+
+  alternative_insn nop,.inst(0xd500401f|((0)<<16|(4)<<5)|((!!1)<<8)),4,1
+  # .inst(...) is parsed as one argument
+
+while its x86 backend sees:
+
+  alternative_insn nop,.inst (0xd500401f|((0)<<16|(4)<<5)|((!!1)<<8)),4,1
+  # The extra space before '(' makes the whole .inst (...) parsed as two arguments
+
+The non-x86 backend's behavior is considered unintentional
+(https://sourceware.org/bugzilla/show_bug.cgi?id=25750).
+So drop the space separator inside `.inst (...)` to make the clang
+integrated assembler work.
+
+Suggested-by: Ilie Halip <ilie.halip@gmail.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/939
+---
+ arch/arm64/include/asm/sysreg.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index ebc622432831..c4ac0ac25a00 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -49,7 +49,9 @@
+ #ifndef CONFIG_BROKEN_GAS_INST
+ 
+ #ifdef __ASSEMBLY__
+-#define __emit_inst(x)			.inst (x)
++// The space separator is omitted so that __emit_inst(x) can be parsed as
++// either an assembler directive or an assembler macro argument.
++#define __emit_inst(x)			.inst(x)
+ #else
+ #define __emit_inst(x)			".inst " __stringify((x)) "\n\t"
+ #endif
+-- 
+2.26.0.110.g2183baf09c-goog
+
