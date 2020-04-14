@@ -2,65 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C140E1A8979
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F34F1A8995
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503959AbgDNS1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2503947AbgDNS13 (ORCPT
+        id S2504035AbgDNSaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:30:17 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:30410 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503994AbgDNSaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:27:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBD2C061A0C;
-        Tue, 14 Apr 2020 11:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w2oScmLWvNS0pE9g0BNFVGRJ1Z3X4h/XpiGkuoMfTl8=; b=tD3LQn4fu/VaX7Xe/1Od68HJYr
-        pQsue+85LW0nQVRKGurdh9H89+cq+T7kyJK81NIT/34ojHpMLUsNro0ArivA2S8eX5d2kbOcq7q3n
-        C16cG89tI/IOhvjg0reh1ApEsmxAL/UIaMByTx2VoL/EsNoCBaK97mxF1/ypRYj9w7Y1PyQ6wVU37
-        VpOuv24MwH0C0JrSMk8gEFV8glwMK9kySl3I53rr1anvD37m99Shsy0d5k6S2isvE97N62nmkoGi6
-        MVUvxqCHAbJFNiaOPw/Rn/nu6wCcOxItpQyELcpbZ0diuG7IhS2qYfX9RpmUfucBzt0OEkpTcZZoT
-        JG4Ccq9A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOQHR-0005cu-1P; Tue, 14 Apr 2020 18:27:29 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 118D1981086; Tue, 14 Apr 2020 20:27:27 +0200 (CEST)
-Date:   Tue, 14 Apr 2020 20:27:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
- module_disable_ro()
-Message-ID: <20200414182726.GF2483@worktop.programming.kicks-ass.net>
-References: <cover.1586881704.git.jpoimboe@redhat.com>
+        Tue, 14 Apr 2020 14:30:10 -0400
+Received: from [192.168.42.210] ([93.22.132.55])
+        by mwinf5d85 with ME
+        id SiW42200V1Bs39H03iW4Yb; Tue, 14 Apr 2020 20:30:06 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 14 Apr 2020 20:30:06 +0200
+X-ME-IP: 93.22.132.55
+Subject: Re: [PATCH] pwm: Add missing '\n' in log messages
+To:     Thierry Reding <thierry.reding@gmail.com>, paul@crapouillou.net,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20200411153528.30130-1-christophe.jaillet@wanadoo.fr>
+ <20200414135827.GB3593749@ulmo>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f13a8754-3866-d3d2-eaff-29cb6d14ff8d@wanadoo.fr>
+Date:   Tue, 14 Apr 2020 20:30:04 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1586881704.git.jpoimboe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200414135827.GB3593749@ulmo>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 11:28:36AM -0500, Josh Poimboeuf wrote:
-> Better late than never, these patches add simplifications and
-> improvements for some issues Peter found six months ago, as part of his
-> non-writable text code (W^X) cleanups.
+Le 14/04/2020 à 15:58, Thierry Reding a écrit :
+> On Sat, Apr 11, 2020 at 05:35:28PM +0200, Christophe JAILLET wrote:
+>> Message logged by 'dev_xxx()' or 'pr_xxx()' should end with a '\n'.
+>>
+>> Fixes: 3ad1f3a33286 ("pwm: Implement some checks for lowlevel drivers")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/pwm/core.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+>> index 9973c442b455..bca04965bfe6 100644
+>> --- a/drivers/pwm/core.c
+>> +++ b/drivers/pwm/core.c
+>> @@ -537,7 +537,7 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
+>>   
+>>   	if (!state->enabled && s2.enabled && s2.duty_cycle > 0)
+>>   		dev_warn(chip->dev,
+>> -			 "requested disabled, but yielded enabled with duty > 0");
+>> +			 "requested disabled, but yielded enabled with duty > 0\n");
+>>   
+>>   	/* reapply the state that the driver reported being configured. */
+>>   	err = chip->ops->apply(chip, pwm, &s1);
+> I don't think this is strictly necessary any longer since the logging
+> functions are supposed to add these themselves nowadays. But I like the
+> consistency of this, so I'll apply this anyway.
+>
+> Thanks,
+> Thierry
 
-Excellent stuff, thanks!!
+Hi Thierry,
 
-I'll go brush up these two patches then:
+I've sent more or less 10 similar patches against files updated 
+recently, that is to say against files which are actively maintained.
 
-  https://lkml.kernel.org/r/20191018074634.801435443@infradead.org
-  https://lkml.kernel.org/r/20191018074634.858645375@infradead.org
+I've done it to get feedback on the acceptances rate of such proposals.
+The goal is not to flood everyone with such patches, but rather to see 
+if adding a new kind of test to checkpatch.pl makes sense.
 
-and write a patch that makes the x86 code throw a wobbly on W+X.
+Being able to detect early missing trailing '\n' would help maintainers 
+and patch providers.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+You are the 2nd person (I've added Paul Cercueil in copy of my reply) 
+who reports that he is thinking that it is no more required to add a '\n'.
+
+
+If you have any pointer about it, it would be much appreciated.
+
+It would mean, that either this additional checkpatch test is useless, 
+or maybe that it should be reversed and spot *un*needed '\n'.
+
+CJ
