@@ -2,58 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BD01A8377
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEF91A8385
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440676AbgDNPkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2440589AbgDNPjF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:39:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4ADC061A0C;
-        Tue, 14 Apr 2020 08:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=hd4t6UpBw/U2nwAH5NiBAQAKzb
-        C5yTzRywoBDTATsMVd9nMoYdYHN7OJQSbRKt/98EZJAhJI8Z+Q40hSzGGTbHw6jtSVQRZB3LwDU4j
-        hzOuqpCBqgx5dhKtVmfaT48J3/Zieu+dkf1bugB22UOrLTxPzdfMCAgLd6hI0MM4DyiBm3231muXz
-        rqZ0SysoUxqRJI1VEs0fNUGrXJ49BECVILv47DUskETLnXHXQlCiUTXqEUpN/F6votQ+Jujv1u0aU
-        Aq5rK08BmNDxv8PYYsK+Qb1FRqGMmtg+h1ghlgIQ3qCxQJwf14YtKmSaS4W3cd0rrFbFPrMWoSz6i
-        fFMEfM2g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jONdz-00047t-F4; Tue, 14 Apr 2020 15:38:35 +0000
-Date:   Tue, 14 Apr 2020 08:38:35 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/5] blktrace: fix debugfs use after free
-Message-ID: <20200414153835.GA25765@infradead.org>
-References: <20200414041902.16769-1-mcgrof@kernel.org>
- <20200414041902.16769-3-mcgrof@kernel.org>
+        id S2440738AbgDNPlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:41:21 -0400
+Received: from mout.gmx.net ([212.227.15.15]:59275 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440139AbgDNPjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:39:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1586878765;
+        bh=+u2iRiz1u12jwTbT/cGxZTl9XtZZVJufsVEXnJf4nCA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=CFH4FMU+Ebu/ZmFQWHLJ36BFtaM1k5CfjGwExBxFPCxvf5RZxFgCQan2l2BMhZRn6
+         qPJcUZzw16V5U/gBADjIqZa1QWuyEBjXN6F3nweit2w6d3PfIhu7XVreuK/P0bgMkw
+         4VUMVAqwXsSzt1k5OMUPZB1AvG6OOvlsjAVNwigo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MGQnP-1jTcJN48Y1-00GsDx; Tue, 14 Apr 2020 17:39:25 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
+        Malcolm Priestley <tvboxspy@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
+        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] staging: vt6656: Rebase all rejected patches
+Date:   Tue, 14 Apr 2020 17:38:44 +0200
+Message-Id: <20200414153849.5785-1-oscar.carter@gmx.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414041902.16769-3-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QQb6EyE/aNv98TLvWbJYq/6pzAteOapf8MImXiw6u9mX4eiR0LC
+ 0ow577hgTtLtpsj/eDMQ349AkQcYbujaXIyP7U+HLqjpsehlPbLf8sLccr2o3qwUiI5IWAM
+ w0fjXDGPKt96fXr1SP/iXmNFxFbLS6/jSBsW3SunJzs5UPE50Bnof8x+81j25h77uvxdYUQ
+ t7pH6SsP8Q5bFU3a/5Bdw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iz1lzCIK/m4=:bWfixinPbNKztKuQWGd3FT
+ eVDQm4uurnyxi9/oNJegL8NR9cPLO3zVVzr8Jz8WeRA5TO+oFzygoNRfPLbeHPnbL5+3mUPiy
+ DWwm4k2zFBFX26CZ7m2xie4q3ZWzjysFH1K7G7og4F72RnKnFP3nR1i7+pGhq6AfvU6NsFTwl
+ SE472oiqEYCS8XcomfJPyncQ+uib4BRmFuxGmvqZ8FTTrJresPLxuX/rzLVi8bZjDWs1UGtk/
+ 8ScMhq2oEvwk+d03hbLMGPuRuzJqd9+R8JOr1kFIF4TLeYbu3eSs65UuXCyYWCc0gqySDQZRx
+ W1RWeSmVNC29oFVag0lbOYioWFpVFgBaJhlitZHSqjpqZ+Mly8WRBLoijI1zgPxHsEuRT9XJB
+ 1BA/V/q4MgV3KlG02QzkVSudOYLeQ5g2cHCpU7nKBOHcL2fgv3WoYmhQS7WuZWJGWuvEYvev7
+ 1qyW1WkM3T6d7Hr/HMnBhEDo1DS315hBziVejxz1tddZEbU7snk7c/H8v+9e8OH/Ggrm8z5mB
+ zTYsps9I7uYMpIkO9ZW1XKHZFeHYVjGjAAUMCK6n0T2u0jC7ZH6S9NZ0d1vzG6zAoPFl2J9pC
+ cGGbOPs7PRVdJftMw3pz9c0dj6H39foBf4Wlu7kjJlEoQReE/Z0bEC/cQsSWlf/iJPzrwRqlf
+ rZrdHaS3zSlpPcYKTqN1QASVipGE1CClQAX2X18Cu9nk8aUtQpM49IpzVkQzJMX6iw2XjwOCG
+ e56l/dnN6u/6I35McZ9XCoVc8gvQoG2hJesLt/km2Rm/1kTnn7LMvljDiNK9tC2nt0sSkC28s
+ PxDO6GbW6iB+fLSZUCh3XQE2zyif3Og8yRHrPIFky/8ry4YQGAd2BzfQvzOPmyQH1XIroXUe8
+ newM+78eO4yN9Ky2x4cSJ/pQ7rJVqHvuZvUhV0n4gZytffaSN7s5hIKrYc2ZfVLnpJFMwWB4z
+ SyCtw/w48ImNh2ItmQ832yvmzL3cH3Hdr+9FWqiz5gLMYbX/EOLO/WP0/JqmhRGqT4Hi2Of6p
+ Z6POK0MeDlFC86B1j3v5NYOUK8LcoBLfiOwus65Y8U71lG0/V96BlbHbvrsPFKF38oDY0MaT9
+ S7pNr1dpCu1KB7D4q0A0F/DpROom9P+sPLZ3/pDtGF5D0MllIN3KUqIHBYIDJUPQJLNCAFyRm
+ 5JFX/7Qd+sais7ocm66Ru5gN5FKNl58EW57mnRk5J8sifqPHcfkXv2KB/yc78+/Nc+57ITLDJ
+ fUifORz+xUJS6lP/q
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good:
+This patch series makes a "rebase" of all the patches that were
+previously rejected because they did not apply.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+The first patch uses the error code returned by the vnt_control_out
+function as the returned value of the vnt_rf_write_embedded function
+instead of a boolean value. This way, the return value is an error code.
+Also, fix all the vnt_rf_write_embedded calls accordingly.
+
+The second patch uses the BIT() macro instead of the bit left shift
+operator.
+
+The third patch use the define RATE_11M present in the file "device.h"
+instead of the magic number 3.
+
+The fourth patch creates a constant array with the values of the
+"phy->signal" variable for every rate and makes a refactor of the
+assignment of this variable.
+
+The fifth path takes out the "phy->service" assignment from the if-else
+statement due to it's the same for the two branches.
+
+Oscar Carter (5):
+  staging: vt6656: Return error code in vnt_rf_write_embedded function
+  staging: vt6656: Use BIT() macro instead of bit shift operator
+  staging: vt6656: Use define instead of magic number for tx_rate
+  staging: vt6656: Refactor the assignment of the phy->signal variable
+  staging: vt6656: Remove duplicate code for the phy->service assignment
+
+ drivers/staging/vt6656/baseband.c | 111 ++++++++----------------------
+ drivers/staging/vt6656/card.c     |   4 +-
+ drivers/staging/vt6656/rf.c       |  99 ++++++++++++++++----------
+ 3 files changed, 95 insertions(+), 119 deletions(-)
+
+=2D-
+2.20.1
+
