@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76561A78BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1352D1A792E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 13:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438625AbgDNKsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:48:50 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17432 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438579AbgDNKow (ORCPT
+        id S2390825AbgDNLMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 07:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728734AbgDNLMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:44:52 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e95920a0000>; Tue, 14 Apr 2020 03:35:54 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 14 Apr 2020 03:36:51 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 14 Apr 2020 03:36:51 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
- 2020 10:36:51 +0000
-Received: from [10.26.73.15] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Apr
- 2020 10:36:48 +0000
-Subject: Re: [PATCH 5.6 00/38] 5.6.4-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200411115459.324496182@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <240fd9ce-cfe2-9920-0239-aa6941770bfd@nvidia.com>
-Date:   Tue, 14 Apr 2020 11:36:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 14 Apr 2020 07:12:18 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A42C061A0C;
+        Tue, 14 Apr 2020 04:12:17 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1jOIxX-00Gpsu-6e; Tue, 14 Apr 2020 12:38:27 +0200
+Message-ID: <ed2b00dfda5b6ce46a2c2a33093ee56f77af6a8f.camel@sipsolutions.net>
+Subject: Re: WARNING in hwsim_new_radio_nl
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     syzbot <syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Date:   Tue, 14 Apr 2020 12:38:22 +0200
+In-Reply-To: <000000000000cb517b05a32c917b@google.com> (sfid-20200413_160506_506947_12BA215F)
+References: <000000000000cb517b05a32c917b@google.com>
+         (sfid-20200413_160506_506947_12BA215F)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586860554; bh=ouW1gBdxALORER7/l4t6VpJdJr9XKhztykWpX1NOvZ8=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=OgEdqCb4QwknuLHCwrl8nMJpuB2X/T10602viQdBAzZIK73/TnF21jLifXDcrf/FD
-         MUD5T+49iIIXX2CFhOfYd/GId7nxKrYtiOI8AoUbM9vH4JH56/T4tA2KpioTsD5Bal
-         w+BA7nkVBT0uY8kpiXGqMpCzmsHP81clWhl6Cky5PNGrDdPvZSi8mnHAuBEoK9Hwne
-         Hh1kK1i1wGdwcs1ZasVBdAYeYSyGCBz9GfH4ZyzrScLHFGc+Ajg/FcUZlBqFLuorzi
-         dnCldAgSBpGpRHXTaVIEw9idnvjHLXfU5JFbBd7LWHwlPK+6X4/7NGq2ODR44Xpc+F
-         8lHK4HP3RQujg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi syzbot keepers,
 
-On 11/04/2020 13:09, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.6.4 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 2020-04-13 at 07:05 -0700, syzbot wrote:
+> syzbot has bisected this bug to:
 > 
-> Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
-> Anything received after that time might be too late.
+> commit 01cacb00b35cb62b139f07d5f84bcf0eeda8eff6
+> Author: Paolo Abeni <pabeni@redhat.com>
+> Date:   Fri Mar 27 21:48:51 2020 +0000
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> and the diffstat can be found below.
+>     mptcp: add netlink-based PM
 > 
-> thanks,
-> 
-> greg k-h
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10225bb3e00000
 
-All tests are passing for Tegra ...
+This is, fairly obviously, incorrect. Same with the bisection for
+6693adf1698864d21734, which is really the same underlying problem as
+this one (though at a different code site).
 
-Test results for stable-v5.6:
-    13 builds:	13 pass, 0 fail
-    24 boots:	24 pass, 0 fail
-    40 tests:	40 pass, 0 fail
+However, it stands out that this was bisected to a commit that adds a
+new generic netlink family in both cases.
 
-Linux version:	5.6.4-rc1-g62251e4703ac
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
+This makes sense - the reproducer identifies the family by *number*, but
+that number isn't stable, generic netlink families should be identified
+by *name*.
 
-Cheers
-Jon
+Perhaps somehow syzbot could be taught that, so that the bisection is
+stable across kernels with different generic netlink families
+registered?
 
--- 
-nvpublic
+Alternatively, we _could_ add some kind of stable ID mode, but I'm not
+sure we really want to ... since that would mean people start hardcoding
+IDs?
+
+johannes
+
