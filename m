@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69161A8220
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6210B1A827C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407375AbgDNPTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2407346AbgDNPS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:18:27 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBB0C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:18:27 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id i7so17671385edq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 08:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=2B5JEphvGSEmArjcQp8zVW6BsLCz04Pb5dyINM1AD7E=;
-        b=ErckJpatXNhjHKBtwo3gUowTEmO6Qej4USOx7ZOf4n9HRSmnUXhEG9TYpSL91E9yXE
-         ZH43EIFKVIF+Rpdq+aJbsOcJVnYbHJOd2mKQH3myqI4WOFgIpxm5OofN+KYAJI0h+v6B
-         twOyIcYUa2D0JEePOs17aGw1udod5FMr4MilRKvEX82myXKB3kT22mO+ux8bre7OZ6CQ
-         2MOcTwk76JPKcF210fRnA+RIUiwMIEzVZbAgepXACGW7V33oDJcuzxUvJv28RRU0bOPC
-         eYtilG0OBxU6cqrhXzRbymX36j+DZEAUL4/GfQEVETQN/x+f1ImpKd2HT6lRxBNV02Bi
-         7hTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=2B5JEphvGSEmArjcQp8zVW6BsLCz04Pb5dyINM1AD7E=;
-        b=MLqzeziYhk7UEmZD7kxwcPunnu02zTJCCBu85MicMxzpy+SPM8ToyMr9P5l3hIuKeU
-         BQaDybGL6J15QulUW0SKvfXWwk2MspYW/IpD2rm7Bs5z/OdVEiDSolmah3VIJYXuRxot
-         Q6kVC+c40hyxT0+aMnFbJHgUodbqJ7n1frjsjkWQRRHvwRraDWgHwESCtIzID9Y7rX6L
-         fkat+Y3y9yr6dxsiyCEV984FjlusgD+XRUx0H0UMBidkGan9eGgIY14zOE6jhnOgLpIB
-         7zWp41UtMCDKSaYxDRPwuWMUkvUBNveAkT42obqijQgPT79jyExfS0Y0aioOW0hU/exf
-         6OwA==
-X-Gm-Message-State: AGi0PuaT5oUOHaIQPP1noSdeCaZ4ZlNsrJmVC+X2Rnpq4Hi5bLGTCr0W
-        +udeD8V9IheLxQRue8C0q1x+d4H7S/VTmbZYR95MNA==
-X-Google-Smtp-Source: APiQypKrxaD3dW7p/ukmIiJsq9ZpPMaaov3H+Lx4JblhF/ducUf0VeDq9Tsd6CWoZGhOVI6zLpSAdaB8Mk0qL0S2iZo=
-X-Received: by 2002:a17:906:4a94:: with SMTP id x20mr618829eju.306.1586877506001;
- Tue, 14 Apr 2020 08:18:26 -0700 (PDT)
+        id S2407432AbgDNPUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:20:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46424 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438742AbgDNPUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:20:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 73C92AC26;
+        Tue, 14 Apr 2020 15:20:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 83F15DA823; Tue, 14 Apr 2020 17:19:31 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 17:19:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] btrfs: Fix backref.c selftest compilation warning
+Message-ID: <20200414151931.GU5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Tang Bin <tangbin@cmss.chinamobile.com>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+References: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Received: by 2002:aa7:d9c2:0:0:0:0:0 with HTTP; Tue, 14 Apr 2020 08:18:25
- -0700 (PDT)
-From:   john bujma <j.bumatg@gmail.com>
-Date:   Tue, 14 Apr 2020 15:18:25 +0000
-Message-ID: <CAOmErKMxbPVEiwy9WiX1W2LGirE91AGEygCcaWHQuZ9M6wus6A@mail.gmail.com>
-Subject: PAYMENT NOTIFICATION LETTER
-To:     j.bumatg@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Welcome To Western Union Money Transfer Lome-Togo
-Website: http://locations.westernunion.com/search/togo
+On Sat, Apr 11, 2020 at 11:49:15PM +0800, Tang Bin wrote:
+> Fix missing braces compilation warning in the ARM
+> compiler environment:
+>     fs/btrfs/backref.c: In function ‘is_shared_data_backref’:
+>     fs/btrfs/backref.c:394:9: warning: missing braces around initializer [-Wmissing-braces]
+>       struct prelim_ref target = {0};
+>     fs/btrfs/backref.c:394:9: warning: (near initialization for ‘target.rbnode’) [-Wmissing-braces]
+> 
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+> ---
+>  fs/btrfs/backref.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index 9c380e7..0cc0257 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -391,7 +391,7 @@ static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
+>  	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
+>  	struct rb_node *parent = NULL;
+>  	struct prelim_ref *ref = NULL;
+> -	struct prelim_ref target = {0};
+> +	struct prelim_ref target = {};
 
-Hello Customer,
+I wonder why this initialization is a problem while there are about 20
+other uses of "{0}". The warning is about the embedded rbnode, but why
+does a more recent compiler not warn about that? Is this a missing fix
+from the one you use?
 
-Apart from the CORONA VIRUS that spreading all over the countries , We
-are to announce to you that you have been awarded Bonus with the sum
-of  Eight Hundred Fifty Thousand United State Dollars(Us$850,000.00)
-in our office as one of the customer who using the Western Union and
-Money Gram in daily business transaction.
-
-This is 2020 Award Bonus from World bank USA connected with central
-bank of Togo. All you do is to contact Western Union director
-Dr.Fedinand Umeh via Email ( internationalwesternunionassoc@gmail.com
-) he will give you direction on how you will be receiving the Funds
-daily,remember to send him your full information to avoid wrong
-transfer Such as,
-
-1. Your full name:-------------------------------
-2. Home address:-------------------------------
-3. Country:---------------------------------------
-4. Phone Number:-----------------------------
-5. Occupation:-----------------------------------
-6. Scan copy of passport:----------------------------
-7.Your e-mail address:---------------------------------
-
-Your faithfully
-Mr.John Buma.
-Senior Staff.
+I don't mind fixing compiler warnings as long as it bothers enough
+people, eg. we have fixes reported by gcc 7 but I'm hesitant to fix
+anything older without a good reason.
