@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3B61A7169
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4821F1A734B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 08:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404374AbgDNDET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:04:19 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40354 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404365AbgDNDES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:04:18 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6D786713A8348FFE5486;
-        Tue, 14 Apr 2020 11:04:16 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.173.222.27) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 14 Apr 2020 11:04:09 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <kvmarm@lists.cs.columbia.edu>
-CC:     <maz@kernel.org>, <james.morse@arm.com>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH 2/2] KVM: arm64: vgic-its: Fix memory leak on the error path of vgic_add_lpi()
-Date:   Tue, 14 Apr 2020 11:03:48 +0800
-Message-ID: <20200414030349.625-3-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
-In-Reply-To: <20200414030349.625-1-yuzenghui@huawei.com>
-References: <20200414030349.625-1-yuzenghui@huawei.com>
+        id S2405758AbgDNGHE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Apr 2020 02:07:04 -0400
+Received: from mail.lintas.net.id ([103.242.106.93]:34612 "EHLO
+        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405711AbgDNGHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 02:07:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id C2B7532BFC4EE;
+        Tue, 14 Apr 2020 10:05:32 +0700 (WIB)
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TTYr8DR-nom2; Tue, 14 Apr 2020 10:05:32 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 1A2F732C0BF58;
+        Tue, 14 Apr 2020 10:05:32 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at lintas.net.id
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id grOd6r-fIloB; Tue, 14 Apr 2020 10:05:31 +0700 (WIB)
+Received: from [100.65.33.38] (unknown [106.210.42.109])
+        by mail.lintas.net.id (Postfix) with ESMTPSA id EF8B732BFD253;
+        Tue, 14 Apr 2020 10:05:21 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.173.222.27]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?b?QVRFTsOHw4NPICAg?=
+To:     Recipients <bengkulu@lintas.net.id>
+From:   Administrador de Sistemass <bengkulu@lintas.net.id>
+Date:   Tue, 14 Apr 2020 08:34:19 +0530
+Reply-To: mailsss@mail2world.com'
+Message-Id: <20200414030521.EF8B732BFD253@mail.lintas.net.id>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we're going to fail out the vgic_add_lpi(), let's make sure the
-allocated vgic_irq memory is also freed. Though it seems that both
-cases are unlikely to fail.
+ATENÇÃO;
 
-Cc: Zengruan Ye <yezengruan@huawei.com>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- virt/kvm/arm/vgic/vgic-its.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Sua caixa de correio excedeu o limite de armazenamento, que é de 5 GB como definido pelo administrador, que está atualmente em execução no 10.9GB, você pode não ser capaz de enviar ou receber novas mensagens até que você re-validar a sua caixa de correio. Para revalidar sua caixa de correio, envie os seguintes dados abaixo:
 
-diff --git a/virt/kvm/arm/vgic/vgic-its.c b/virt/kvm/arm/vgic/vgic-its.c
-index d53d34a33e35..3c3b6a0f2dce 100644
---- a/virt/kvm/arm/vgic/vgic-its.c
-+++ b/virt/kvm/arm/vgic/vgic-its.c
-@@ -98,12 +98,16 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
- 	 * the respective config data from memory here upon mapping the LPI.
- 	 */
- 	ret = update_lpi_config(kvm, irq, NULL, false);
--	if (ret)
-+	if (ret) {
-+		kfree(irq);
- 		return ERR_PTR(ret);
-+	}
- 
- 	ret = vgic_v3_lpi_sync_pending_status(kvm, irq);
--	if (ret)
-+	if (ret) {
-+		kfree(irq);
- 		return ERR_PTR(ret);
-+	}
- 
- 	return irq;
- }
--- 
-2.19.1
+nome:
+Nome de usuário:
+senha:
+Confirme a Senha :
+Endereço de e-mail:
+Telefone:
 
+Se você não conseguir revalidar sua caixa de correio, sua caixa postal vai ser desativado!
 
+Lamentamos o inconveniente.
+Código de verificação: pt:p9uyba98139>2020 Correio Técnico Suporte ©2020
+
+obrigado
+Administrador de Sistemas
