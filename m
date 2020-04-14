@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847871A8F4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A701A8F55
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 01:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634420AbgDNXuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 19:50:00 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:42099 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731575AbgDNXtu (ORCPT
+        id S2634456AbgDNXxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 19:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634436AbgDNXwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 19:49:50 -0400
-Received: by mail-ot1-f68.google.com with SMTP id l21so1594100otd.9;
-        Tue, 14 Apr 2020 16:49:50 -0700 (PDT)
+        Tue, 14 Apr 2020 19:52:43 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828BDC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 16:52:43 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x3so702773pfp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 16:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nsE/zPXLukbuT4tup7W97Wf9aeYqGS/dqAMllkUu/1M=;
+        b=uXq1gtTUfkD0AFtaHQlj7XCYPYGPnOr2CgQvVRpjgEsqAySk6Bpqim74UBRthkvnGy
+         kgHbDE6DCPM9mVLAH2viG7iS46J2yUYEd4mwoDiSnqR+rvcL741YKWoGcLJLLT75XA8Q
+         f23PdawgWpb/bviXrYM8lWscOc55S8nCby/sRYKQnQv4Ylfkvl+kNacj06euID9IURhk
+         U9JCyfik93Rz1UWqRbp538F2CpzNrMu/Wn0YJVsPIg9lXhd0crtf2ScJkcH9DdWEEcQc
+         19c4yEXh0HQnkXlX6rny7Qv2+OUf8RJBb1tr7IhezNL/Lu0lNa9x2SrbUtl7ZkuF5g5z
+         1KIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ErGz/RmN1nNcMdKysMZ4QZyfLOTmTqEmcgzrHidWa00=;
-        b=ZWlJ/WpzzGu9qjM6IHUPGp3r7lcNJkd1Jz/xzLAVSkcFmlle0/tn4byoxvyup8gVxF
-         QVCUtEzU5gBMY/AJ3x1AqFf93UKvnZsglCX7mfvtVQggSDqHVuOWVtVlptvz0JS8rZkN
-         oRWMSGFgaM9mqxz6lxbcxVg/hHv5Kk0HXZtf8WVJe7aq1hGsAJ5elcURsdbVaffCh1NZ
-         0WK7oNIK2GnKEG4ONV/2wAhDcQpndjuiBTi5XzCNPcwCe2zZdHPu6CFruRO3arwzfqX/
-         NOQjg9xyfxz7F16hmNB8NPD9+c1uVFU/T/a/4HrONSxajZZp/CbXqaWVUhmKA0th6yeU
-         dkVg==
-X-Gm-Message-State: AGi0PuY14HRlCkA/ovHyYmvirOqpIjHJ1QUEFYq7k0/lCX8mrzxt7ft2
-        Fq7Ivb/21VIvFSYZPVc2kA==
-X-Google-Smtp-Source: APiQypJZufTrwX1G/fitQmoTtHPOYT+eQR62XJjFIzEKrvQjyVS3XgX0fIR0P3iFCf2lzUhQvtbcGw==
-X-Received: by 2002:a9d:441:: with SMTP id 59mr10612961otc.236.1586908189851;
-        Tue, 14 Apr 2020 16:49:49 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l7sm5632301otj.52.2020.04.14.16.49.48
+         :mime-version:content-disposition:in-reply-to;
+        bh=nsE/zPXLukbuT4tup7W97Wf9aeYqGS/dqAMllkUu/1M=;
+        b=PSISFkd+OFEQw6mS5HzPXOxgC0ugVPzkqdoCoMJne1fU3zpw97mGQ7bR3aCBoCzkg/
+         vTcmgHEt96ct34QOW+VZuZDkAbt9yTxXnEej/s5xC04w6WDtyx8zI9Usp7JHNM+3YMlP
+         I41oFfzkUKmVXSw4VuL1R9A/G9Qx62cfve/ngw+Pi3O7QAbynccAcFWYs2hZFNsSdUdG
+         IJufBUcsmgD6VCZEUVUYnQyc5JuPsYsjZ2yGciBFDzex7hKlxCvXvyaQ5uPYacrgWvID
+         +l7NgP0IuxFjotawZ+qvL8M39Wo2W9XqLzCoKsPOD/dkvE+dzULI+XTZF/AgLOI/Z9Ve
+         r8Yg==
+X-Gm-Message-State: AGi0PuZADEXXbchy1OrC4d5+8xKOckts91t2YBDScZVt0dYelqJWft2R
+        OUigch8b5waiacCHKUw4d+7/og==
+X-Google-Smtp-Source: APiQypI4FTZH+v2mWi0AaGiBlFnDQl7dE0xr+3sTy7dgwpo0dC93JROHj3vczfWR9tFYefOxybVgjQ==
+X-Received: by 2002:a62:5289:: with SMTP id g131mr24254719pfb.210.1586908362831;
+        Tue, 14 Apr 2020 16:52:42 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id d18sm2476595pfq.177.2020.04.14.16.52.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 16:49:49 -0700 (PDT)
-Received: (nullmailer pid 28246 invoked by uid 1000);
-        Tue, 14 Apr 2020 23:49:48 -0000
-Date:   Tue, 14 Apr 2020 18:49:47 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dhananjay Kangude <dkangude@cadence.com>
-Cc:     linux-edac@vger.kernel.org, bp@alien8.de, mchehab@kernel.org,
-        tony.luck@intel.com, james.morse@arm.com,
-        linux-kernel@vger.kernel.org, mparab@cadence.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: edac: Add cadence ddr mc support
-Message-ID: <20200414234947.GA24554@bogus>
-References: <20200406131341.1253-1-dkangude@cadence.com>
- <20200406131341.1253-2-dkangude@cadence.com>
+        Tue, 14 Apr 2020 16:52:41 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 16:52:39 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [RESEND][PATCH v2] phy: qcom-qusb2: Re add
+ "qcom,sdm845-qusb2-phy" compat string
+Message-ID: <20200414235239.GJ892431@yoga>
+References: <20200414185744.84581-1-john.stultz@linaro.org>
+ <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406131341.1253-2-dkangude@cadence.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAD=FV=XT_icz04g4M+iZHZRzjM1jnuHgkPBsaVmzc1wyoUe=7A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 03:13:40PM +0200, Dhananjay Kangude wrote:
-> Add documentation for cadence ddr memory controller EDAC DTS bindings
+On Tue 14 Apr 12:06 PDT 2020, Doug Anderson wrote:
+
+> Hi,
 > 
-> Signed-off-by: Dhananjay Kangude <dkangude@cadence.com>
-> ---
->  .../devicetree/bindings/edac/cdns,ddr-edac.yaml    |   47 ++++++++++++++++++++
->  1 files changed, 47 insertions(+), 0 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/edac/cdns,ddr-edac.yaml
+> On Tue, Apr 14, 2020 at 11:57 AM John Stultz <john.stultz@linaro.org> wrote:
+> >
+> > This patch fixes a regression in 5.7-rc1.
+> >
+> > In commit 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2
+> > PHY support"), the change was made to add "qcom,qusb2-v2-phy"
+> > as a generic compat string. However the change also removed
+> > the "qcom,sdm845-qusb2-phy" compat string, which is documented
+> > in the binding and already in use.
+> >
+> > This patch re-adds the "qcom,sdm845-qusb2-phy" compat string
+> > which allows the driver to continue to work with existing dts
+> > entries such as found on the db845c.
+> >
+> > Cc: Andy Gross <agross@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Doug Anderson <dianders@chromium.org>
+> > Cc: Manu Gautam <mgautam@codeaurora.org>
+> > Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+> > Cc: Matthias Kaehlcke <mka@chromium.org>
+> > Cc: Stephen Boyd <swboyd@chromium.org>
+> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> > Cc: linux-arm-msm@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Fixes: 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2 PHY support")
+> > Reported-by: YongQin Liu <yongqin.liu@linaro.org>
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
 > 
-> diff --git a/Documentation/devicetree/bindings/edac/cdns,ddr-edac.yaml b/Documentation/devicetree/bindings/edac/cdns,ddr-edac.yaml
-> new file mode 100644
-> index 0000000..30ea757
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/edac/cdns,ddr-edac.yaml
-> @@ -0,0 +1,47 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/edac/cdns,ddr-edac.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cadence DDR IP with ECC support (EDAC)
-> +
-> +description:
-> +  This binding describes the Cadence DDR/LPDDR IP with ECC feature enabled
-> +  to detect and correct CE/UE errors.
-> +
-> +maintainers:
-> +  - Dhananjay Kangdue <dkangude@cadence.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - cdns,ddr4-mc
-
-Surely there's more than 1 version?
-
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 2
-> +    items:
-> +      - description:
-> +          Register block of DDR/LPDDR apb registers up to mapped area.
-> +          Mapped area contains the register set for memory controller,
-> +          phy and PI module register set doesn't part of this mapping.
-
-doesn't part of this mapping?
-
-Need a description for the 2nd region.
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    edac: edac@fd100000 {
-
-memory-controller@
-
-> +        compatible = "cdns,ddr4-mc-edac";
-
-Doesn't match.
-
-> +        reg = <0xfd100000 0x4000>;
-> +        interrupts = <0x00 0x01 0x04>;
-> +    };
-> +...
-> -- 
-> 1.7.1
+> Re-adding reviews from:
+> https://lore.kernel.org/r/158631458374.216820.17829557619378130779@swboyd.mtv.corp.google.com
+> https://lore.kernel.org/r/CAD=FV=Wh9_4a-cDGPdpMrXUi_HmJvS-a2Ubeyo5WG3sgwVWKKQ@mail.gmail.com
 > 
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> 
+> ...as of an hour ago Bjorn also picked up:
+> 
+> https://lore.kernel.org/r/1583747589-17267-8-git-send-email-sanm@codeaurora.org
+> 
+> ...and it's now in the Qualcomm for-next and ci-next.  It's still a
+> bit of a pain that -rc1 will have the regression since many other
+> maintainers will base their next branches on that, but not much to be
+> done about it now.
+> 
+
+The regression is in the driver, so we want this patch landed in v5.7.
+The dts change is heading for 5.8.
+
+Regards,
+Bjorn
