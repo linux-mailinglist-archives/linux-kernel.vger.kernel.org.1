@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2211A789B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E001A785B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 12:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438516AbgDNKml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 06:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37480 "EHLO mail.kernel.org"
+        id S2438302AbgDNKYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 06:24:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:52518 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438410AbgDNKe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:34:28 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97AE520857;
-        Tue, 14 Apr 2020 10:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586859931;
-        bh=7AnjB2puNCQx4Q9gGmOLxxCHf1XfRWpqRH6zopFpoVk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GQGO0/OM3WUST01CJFl44QRvJ8uVmMSy5LgxUUHU49aXdr0ZONt8V8eS1n7bwy29k
-         YZNczl5EOFPVjMTk6gLCG9OAvgT+966N5eSCvCi1cEjrbOZFIpV1i6i2Mop7F983go
-         TJlE8TxWUNFXI4TvyvlNA91Mdnf6q/nIXHKzeE28=
-Received: by pali.im (Postfix)
-        id A4E1E770; Tue, 14 Apr 2020 12:25:29 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: tegra: Fix reporting GPIO error value
-Date:   Tue, 14 Apr 2020 12:25:12 +0200
-Message-Id: <20200414102512.27506-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S2438288AbgDNKVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 06:21:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA7FF1FB;
+        Tue, 14 Apr 2020 03:21:11 -0700 (PDT)
+Received: from [10.37.12.1] (unknown [10.37.12.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A4FE3F6C4;
+        Tue, 14 Apr 2020 03:21:10 -0700 (PDT)
+Subject: Re: [PATCH] coresight: Fix support for sparsely populated ports
+To:     mathieu.poirier@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, saiprakash.ranjan@codeaurora.org,
+        leo.yan@linaro.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, mike.leach@linaro.org
+References: <20200409110316.409148-1-suzuki.poulose@arm.com>
+ <20200410181745.GA13684@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <e63508ed-44ca-3844-809c-a8b356a89bf4@arm.com>
+Date:   Tue, 14 Apr 2020 11:25:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200410181745.GA13684@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Error code is stored in rp->reset_gpio and not in err variable.
+Hi Mathieu,
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- drivers/pci/controller/pci-tegra.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 04/10/2020 07:17 PM, Mathieu Poirier wrote:
+> Hi Suzuki,
+> 
+> On Thu, Apr 09, 2020 at 12:03:16PM +0100, Suzuki K Poulose wrote:
+>> On some systems the firmware may not describe all the ports
+>> connected to a component (e.g, for security reasons). This
+>> could be especially problematic for "funnels" where we could
+>> end up in modifying memory beyond the allocated space for
+>> refcounts.
 
-diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-index 0e03cef72840..378d5a8773c7 100644
---- a/drivers/pci/controller/pci-tegra.c
-+++ b/drivers/pci/controller/pci-tegra.c
-@@ -2314,8 +2314,8 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
- 			if (PTR_ERR(rp->reset_gpio) == -ENOENT) {
- 				rp->reset_gpio = NULL;
- 			} else {
--				dev_err(dev, "failed to get reset GPIO: %d\n",
--					err);
-+				dev_err(dev, "failed to get reset GPIO: %ld\n",
-+					PTR_ERR(rp->reset_gpio));
- 				return PTR_ERR(rp->reset_gpio);
- 			}
- 		}
--- 
-2.20.1
+...
 
+>> @@ -672,10 +687,14 @@ static int acpi_coresight_parse_graph(struct acpi_device *adev,
+>>   			return dir;
+>>   
+>>   		if (dir == ACPI_CORESIGHT_LINK_MASTER) {
+>> -			pdata->nr_outport++;
+>> +			if (ptr->outport > pdata->nr_outport)
+>> +				pdata->nr_outport = ptr->outport;
+>>   			ptr++;
+>>   		} else {
+>> -			pdata->nr_inport++;
+>> +			WARN_ON(pdata->nr_inport == ptr->child_port);
+>> +			/* Do not move the ptr for input connections */
+>> +			if (ptr->child_port > pdata->nr_inport)
+>> +				pdata->nr_inport = ptr->child_port;
+> 
+> How you are using the current ptr as a scratch pad for input port was definitely
+> a brain twister this morning...  I would certainly appreciate a richer comment
+> so that I (or anyone else) doesn't have to go through the same process the next
+> time around.
+> 
+
+Sure, it deserves a better comment. I will add something like :
+
+	/*
+	 * We don't track input connection details for a device,
+	 * except for the highest input port number. Thus we could
+	 * reuse the current record as a scratch pad and reuse it
+	 * by not moving the ptr ahead.
+	 */
+
+
+
+>>   /**
+>> - * struct coresight_platform_data - data harvested from the DT specification
+>> - * @nr_inport:	number of input ports for this component.
+>> - * @nr_outport:	number of output ports for this component.
+>> - * @conns:	Array of nr_outport connections from this component
+>> + * struct coresight_platform_data - data harvested from the firmware
+>> + * specification.
+>> + *
+>> + * @nr_inport:	Number of elements for the input connections.
+>> + * @nr_outport:	Number of elements for the output connections.
+>> + * @conns:	Sparse arrray of nr_outport connections from this component.
+> 
+> s/arrray/array
+> 
+> Please rebase your work on my the coresight-next branch.  Other than the above
+> this patch looks fine to me.
+
+Thanks for the heads up, will do.
+
+Cheers
+Suzuki
