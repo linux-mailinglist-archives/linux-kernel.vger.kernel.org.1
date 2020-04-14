@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317C11A85DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CBE1A85D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 18:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502070AbgDNQuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 12:50:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
+        id S2440802AbgDNQt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 12:49:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440461AbgDNQtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:49:36 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S2440313AbgDNQtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:49:15 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4430721734;
-        Tue, 14 Apr 2020 16:49:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1910221D7F;
+        Tue, 14 Apr 2020 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586882975;
-        bh=IyXCB/Gshsv4ZXplxm2A4QdYz94WdQJKVQgSgbKpCKM=;
+        s=default; t=1586882943;
+        bh=JNdzVpz9Z7yg2D0nVFa2uGzWJ8/+Wsh+62E+aydGZzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c3ygblLYHiQj0KT4ClT3lOIBQHUjnegalr3hSYM7yhnaTDT4EE9DN9LgmHZO/cozL
-         k+07MGyGtLqs2b6vmjWaYdWrj3lTeaAylhT/QkROuQ1siRhjfJ4v1o+SE2Mq2I27DL
-         UDxk3Xmkxd+dqrAgrll8iZOhHfZPnkPsHPKAeMT8=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Daniel Stone <daniels@collabora.com>,
-        Lyude Paul <lyude@redhat.com>
-Subject: [PATCH 11/15] tools headers UAPI: Update tools's copy of drm.h headers
-Date:   Tue, 14 Apr 2020 13:48:50 -0300
-Message-Id: <20200414164854.26026-12-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200414164854.26026-1-acme@kernel.org>
-References: <20200414164854.26026-1-acme@kernel.org>
+        b=pUCG8jhe86W6kanMzas8ZHncgj+seFcThXs2JKTePr++6of8aHjZRl2WoSnQy8Zt3
+         T49S/q3HImd1aMdkf9B+4gU8kiqpaW8+FQkgnohanObJadYJhPYzLMUz+yQrHBiBfD
+         mw/wgqoqBheU4SBpIwxEWuTUdsRqfRojQSVwPhGQ=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jOOk9-0068mp-BS; Tue, 14 Apr 2020 18:49:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Matthias Brugger <mbrugger@suse.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 24/33] docs: dt: fix a broken reference for a file converted to json
+Date:   Tue, 14 Apr 2020 18:48:50 +0200
+Message-Id: <9b1603e254d39c9607bfedefeedaafd2c44aeb19.1586881715.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <cover.1586881715.git.mchehab+huawei@kernel.org>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,60 +48,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Changeset 32ced09d7903 ("dt-bindings: serial: Convert slave-device bindings to json-schema")
+moved a binding to json and updated the links.
 
-Picking the changes from:
+Yet, one link was not changed, due to a merge conflict.
 
-  455e00f1412f ("drm: Add getfb2 ioctl")
+Update this one too.
 
-Silencing these perf build warnings:
-
-  Warning: Kernel ABI header at 'tools/include/uapi/drm/drm.h' differs from latest version at 'include/uapi/drm/drm.h'
-  diff -u tools/include/uapi/drm/drm.h include/uapi/drm/drm.h
-
-Now 'perf trace' and other code that might use the
-tools/perf/trace/beauty autogenerated tables will be able to translate
-this new ioctl code into a string:
-
-  $ tools/perf/trace/beauty/drm_ioctl.sh > before
-  $ cp include/uapi/drm/drm.h tools/include/uapi/drm/drm.h
-  $ tools/perf/trace/beauty/drm_ioctl.sh > after
-  $ diff -u before after
-  --- before	2020-04-14 09:28:45.461821077 -0300
-  +++ after	2020-04-14 09:28:53.594782685 -0300
-  @@ -107,6 +107,7 @@
-   	[0xCB] = "SYNCOBJ_QUERY",
-   	[0xCC] = "SYNCOBJ_TRANSFER",
-   	[0xCD] = "SYNCOBJ_TIMELINE_SIGNAL",
-  +	[0xCE] = "MODE_GETFB2",
-   	[DRM_COMMAND_BASE + 0x00] = "I915_INIT",
-   	[DRM_COMMAND_BASE + 0x01] = "I915_FLUSH",
-   	[DRM_COMMAND_BASE + 0x02] = "I915_FLIP",
-  $
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Daniel Stone <daniels@collabora.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 32ced09d7903 ("dt-bindings: serial: Convert slave-device bindings to json-schema")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/include/uapi/drm/drm.h | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/include/uapi/drm/drm.h b/tools/include/uapi/drm/drm.h
-index 868bf7996c0f..808b48a93330 100644
---- a/tools/include/uapi/drm/drm.h
-+++ b/tools/include/uapi/drm/drm.h
-@@ -948,6 +948,8 @@ extern "C" {
- #define DRM_IOCTL_SYNCOBJ_TRANSFER	DRM_IOWR(0xCC, struct drm_syncobj_transfer)
- #define DRM_IOCTL_SYNCOBJ_TIMELINE_SIGNAL	DRM_IOWR(0xCD, struct drm_syncobj_timeline_array)
+diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+index beca6466d59a..d2202791c1d4 100644
+--- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
++++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+@@ -29,7 +29,7 @@ Required properties for compatible string qcom,wcn399x-bt:
  
-+#define DRM_IOCTL_MODE_GETFB2		DRM_IOWR(0xCE, struct drm_mode_fb_cmd2)
-+
- /**
-  * Device specific ioctls should only be in their respective headers
-  * The device specific ioctl range is from 0x40 to 0x9f.
+ Optional properties for compatible string qcom,wcn399x-bt:
+ 
+- - max-speed: see Documentation/devicetree/bindings/serial/slave-device.txt
++ - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
+  - firmware-name: specify the name of nvm firmware to load
+  - clocks: clock provided to the controller
+ 
 -- 
-2.21.1
+2.25.2
 
