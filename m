@@ -2,158 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEEA1A8D91
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6249D1A8DBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633786AbgDNVVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2633777AbgDNVVU (ORCPT
+        id S2633925AbgDNVdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:33:03 -0400
+Received: from 15.mo6.mail-out.ovh.net ([188.165.39.161]:59558 "EHLO
+        15.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633860AbgDNVbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:21:20 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BDDC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:21:20 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w65so525140pfc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=qYUxUinpAV+jTdIPlQ2ftanC+VH4TYtMDBpvx6CaE/M=;
-        b=e6D9UKxRfuRB6Vg27Qve4+YFdRAD4xfEU/6fiSyFULykIaaqQmkoKD2e9ao9hIBax8
-         BIg3X9WuPUCvye8P3WyERQJJmZ4no8QQNxBFjt8wy/gPFWEL+qcpQOi0WWSA3MVnH1gN
-         nxjTcN0XIJfb9nPMSkfPXl4vSaCFCt8Z1f8so=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=qYUxUinpAV+jTdIPlQ2ftanC+VH4TYtMDBpvx6CaE/M=;
-        b=hIx9iDnP7JQREASSblvDsE0jLNzm144NAfX38tGHUzt9O5BxZ39zxq3CHYweJoQQrq
-         QLuxQRyoNjh/vEbXol4e2KGtxUGkyEf3bBtq9b9sGgcK4+aVE2dJzOJehv7XZGmnR+2n
-         fUDlBn33FXxrpCGeGTt5Bl6A0Y28wSlz/6zuXPuDVhnol0bWedy5l0F9zDPywm4OjegT
-         kaV7s/Da0x5DdHPoAECmq9qqbQwcynNTz6ZJSHfpDWfeovAWPQT3vKXWPnIuTmU0KfJ0
-         bLP4EIjtEQQJP23pRrRgY5o3aeL6pfKMHNE3q3asByMA9dqz5xAaB9G2UHQr0R6OP7j1
-         vTTg==
-X-Gm-Message-State: AGi0PuY1AWIJGRaK/AphjmCRaodELUiBYe0N3gby1W04GoWivjbfr5CB
-        /QLvM5Ywa1ZOgBWdjya/s0NXRA==
-X-Google-Smtp-Source: APiQypJvfbBsusLiO4aMQUZyDZaiL2beLstkyOYsDAsnSSXRrCDtVIAiTW4XcNJVdxbo/iotiywFWQ==
-X-Received: by 2002:a63:c101:: with SMTP id w1mr10203522pgf.126.1586899279542;
-        Tue, 14 Apr 2020 14:21:19 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id i13sm11701085pfa.113.2020.04.14.14.21.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 14:21:18 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 14 Apr 2020 17:31:48 -0400
+Received: from player714.ha.ovh.net (unknown [10.108.35.215])
+        by mo6.mail-out.ovh.net (Postfix) with ESMTP id DF0B12049DD
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 23:21:56 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player714.ha.ovh.net (Postfix) with ESMTPSA id 8EA5A11551A57;
+        Tue, 14 Apr 2020 21:21:47 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 23:21:37 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        NeilBrown <neilb@suse.de>, Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] docs: admin-guide: merge sections for the
+ kernel.modprobe sysctl
+Message-ID: <20200414232137.37301572@heffalump.sk2.org>
+In-Reply-To: <20200414172430.230293-1-ebiggers@kernel.org>
+References: <20200414172430.230293-1-ebiggers@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1585809534-11244-2-git-send-email-sanm@codeaurora.org>
-References: <1585809534-11244-1-git-send-email-sanm@codeaurora.org> <1585809534-11244-2-git-send-email-sanm@codeaurora.org>
-Subject: Re: [PATCH v5 1/3] dt-bindings: phy: qcom,qmp: Convert QMP PHY bindings to yaml
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>, robdclark@gmail.com,
-        abhinavk@codeaurora.org, nganji@codeaurora.org,
-        jsanka@codeaurora.org, aravindh@codeaurora.org,
-        hoegsberg@google.com, dri-devel@lists.freedesktop.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Date:   Tue, 14 Apr 2020 14:21:17 -0700
-Message-ID: <158689927748.105027.5367465616284167712@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/+MMOYGDEQHeD1zd57H4NBI/"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 2987012454176869791
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrfedugdduiedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtdefreertddvnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjedugedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (2020-04-01 23:38:52)
-> Convert QMP PHY bindings to DT schema format using json-schema.
+--Sig_/+MMOYGDEQHeD1zd57H4NBI/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 14 Apr 2020 10:24:30 -0700, Eric Biggers <ebiggers@kernel.org> wrot=
+e:
+> From: Eric Biggers <ebiggers@google.com>
 >=20
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> Documentation for the kernel.modprobe sysctl was added both by
+> commit 0317c5371e6a ("docs: merge debugging-modules.txt into
+> sysctl/kernel.rst") and by commit 6e7158250625 ("docs: admin-guide:
+> document the kernel.modprobe sysctl"), resulting in the same sysctl
+> being documented in two places.  Merge these into one place.
+>=20
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+
+Reviewed-by: Stephen Kitt <steve@sk2.org>
+
+Thanks for taking care of this!
+
 > ---
->  .../devicetree/bindings/phy/qcom,qmp-phy.yaml      | 332 +++++++++++++++=
-++++++
->  .../devicetree/bindings/phy/qcom-qmp-phy.txt       | 242 ---------------
->  2 files changed, 332 insertions(+), 242 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/qcom,qmp-phy.ya=
-ml
->  delete mode 100644 Documentation/devicetree/bindings/phy/qcom-qmp-phy.txt
 >=20
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Do=
-cumentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> new file mode 100644
-> index 0000000..18a8985
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> @@ -0,0 +1,332 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> Jon, could you take this through the docs tree as a fix for 5.7?
+>=20
+>  Documentation/admin-guide/sysctl/kernel.rst | 47 +++++++++------------
+>  1 file changed, 19 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst
+> b/Documentation/admin-guide/sysctl/kernel.rst index
+> 39c95c0e13d30..0d427fd109419 100644 ---
+> a/Documentation/admin-guide/sysctl/kernel.rst +++
+> b/Documentation/admin-guide/sysctl/kernel.rst @@ -390,9 +390,17 @@ When
+> ``kptr_restrict`` is set to 2, kernel pointers printed using modprobe
+>  =3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> -This gives the full path of the modprobe command which the kernel will
+> -use to load modules. This can be used to debug module loading
+> -requests::
+> +The full path to the usermode helper for autoloading kernel modules,
+> +by default "/sbin/modprobe".  This binary is executed when the kernel
+> +requests a module.  For example, if userspace passes an unknown
+> +filesystem type to mount(), then the kernel will automatically request
+> +the corresponding filesystem module by executing this usermode helper.
+> +This usermode helper should insert the needed module into the kernel.
 > +
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/phy/qcom,qmp-phy.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +This sysctl only affects module autoloading.  It has no effect on the
+> +ability to explicitly insert modules.
 > +
-> +title: Qualcomm QMP PHY controller
-> +
-> +maintainers:
-> +  - Manu Gautam <mgautam@codeaurora.org>
-> +
-> +description:
-> +  QMP phy controller supports physical layer functionality for a number =
-of
-> +  controllers on Qualcomm chipsets, such as, PCIe, UFS, and USB.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,ipq8074-qmp-pcie-phy
-> +      - qcom,msm8996-qmp-pcie-phy
-> +      - qcom,msm8996-qmp-ufs-phy
-> +      - qcom,msm8996-qmp-usb3-phy
-> +      - qcom,msm8998-qmp-pcie-phy
-> +      - qcom,msm8998-qmp-ufs-phy
-> +      - qcom,msm8998-qmp-usb3-phy
-> +      - qcom,sdm845-qhp-pcie-phy
-> +      - qcom,sdm845-qmp-pcie-phy
-> +      - qcom,sdm845-qmp-ufs-phy
-> +      - qcom,sdm845-qmp-usb3-phy
-> +      - qcom,sdm845-qmp-usb3-uni-phy
-> +      - qcom,sm8150-qmp-ufs-phy
-> +
-> +  reg:
-> +    minItems: 1
-> +    items:
-> +      - description: Address and length of PHY's common serdes block.
-> +      - description: Address and length of the DP_COM control block.
+> +This sysctl can be used to debug module loading requests::
+> =20
+>      echo '#! /bin/sh' > /tmp/modprobe
+>      echo 'echo "$@" >> /tmp/modprobe.log' >> /tmp/modprobe
+> @@ -400,10 +408,15 @@ requests::
+>      chmod a+x /tmp/modprobe
+>      echo /tmp/modprobe > /proc/sys/kernel/modprobe
+> =20
+> -This only applies when the *kernel* is requesting that the module be
+> -loaded; it won't have any effect if the module is being loaded
+> -explicitly using ``modprobe`` from userspace.
+> +Alternatively, if this sysctl is set to the empty string, then module
+> +autoloading is completely disabled.  The kernel will not try to
+> +execute a usermode helper at all, nor will it call the
+> +kernel_module_request LSM hook.
+> =20
+> +If CONFIG_STATIC_USERMODEHELPER=3Dy is set in the kernel configuration,
+> +then the configured static usermode helper overrides this sysctl,
+> +except that the empty string is still accepted to completely disable
+> +module autoloading as described above.
+> =20
+>  modules_disabled
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> @@ -446,28 +459,6 @@ Notes:
+>       successful IPC object allocation. If an IPC object allocation sysca=
+ll
+>       fails, it is undefined if the value remains unmodified or is reset =
+to
+> -1.=20
+> -modprobe:
+> -=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> -
+> -The path to the usermode helper for autoloading kernel modules, by
+> -default "/sbin/modprobe".  This binary is executed when the kernel
+> -requests a module.  For example, if userspace passes an unknown
+> -filesystem type to mount(), then the kernel will automatically request
+> -the corresponding filesystem module by executing this usermode helper.
+> -This usermode helper should insert the needed module into the kernel.
+> -
+> -This sysctl only affects module autoloading.  It has no effect on the
+> -ability to explicitly insert modules.
+> -
+> -If this sysctl is set to the empty string, then module autoloading is
+> -completely disabled.  The kernel will not try to execute a usermode
+> -helper at all, nor will it call the kernel_module_request LSM hook.
+> -
+> -If CONFIG_STATIC_USERMODEHELPER=3Dy is set in the kernel configuration,
+> -then the configured static usermode helper overrides this sysctl,
+> -except that the empty string is still accepted to completely disable
+> -module autoloading as described above.
+> -
+>  nmi_watchdog
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> --=20
+> 2.26.0.110.g2183baf09c-goog
+>=20
 
-This DP_COM block is only for one compatible. Is it possible to split
-that compatible out of this binding so we can enforce the reg property
-being either one or two items?
+Regards,
 
-In addition, I don't quite understand how this binding is supposed to
-work with the DP phy that sits inside qcom,sdm845-qmp-usb3-phy and then
-gets muxed out on the USB pins on sdm845 and sc7180 SoCs. Can you fill
-me in on how we plan to share the pins between the two phys so that all
-the combinations of DP and USB over the type-c pins will work here? My
-understanding is that the pins that are controlled by this hardware
-block are basically a full USB type-c connector pinout[1] (except that
-D+/D- isn't there and the VBUS and CC lines go to the PMIC). Either way,
-we get the TX1/2 and RX1/2 pins to use, so we can do 4x lanes of DP or
-2x lanes DP and 2x lanes of USB. There's also a type-c orientation
-flipper bit that can flip the DP and USB phy lanes to the correct TX/RX
-pins on the SoC. And then the DP phy has a lane remapper to change the
-logical DP lane to the physical DP lane. It's a complex piece of
-hardware that isn't fully represented by this binding.
+Stephen
 
-[1] https://en.wikipedia.org/wiki/USB-C#/media/File:USB_Type-C_Receptacle_P=
-inout.svg
+--Sig_/+MMOYGDEQHeD1zd57H4NBI/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl6WKWEACgkQgNMC9Yht
+g5xHkQ/+PfaiRj8GZ0xTZ/vjJGIJK7CbRdxmF4Aq2UUtjdbUT4c2kHzjIrLDJnOr
+ukca2RlGdSB6k/dLeJ/kYUdYBKc82Nzg6q0ealt515lw5lDiYJ5q/yoMaMbRAIeB
+rbyKiBIFzUNmE1lTMVJfAFwn0ZlM5BKdJsjUiQb2QxaRQ8rKKe3CRASlmqR3Y+9/
+Lpu9geuKtyg7p+kLkra9HK3ay/bjn4ciupxyBvU38rfKsVjAOP0VmeSd2uf8Dfb8
+WX0OcptNzWayalS8MkbwkEJMq4n761Ye39qRhJTCtJZkpDRUZnTGIl/+DVjj9w9K
+kwvVRueNHu4ww7NE349+u4eVqElArsk1/Rua0HxBBZ7dAJ0U2km67liMmYs4rfmg
+KRUktx+vjiNobdfXqmBEl3yZve0Q3XQDFhnoK7UWsv7xIgFG937qr7r7/9wHRRmK
+C9txSRQfKJCRMfj8KOXs8ocZTMTlM3MU3SUwviHc5YxENtG66Kg4tVqF3ZQJ49C4
+EuLQpcuSMSTa7uFSKTzEbX6gFW8DQsHRVEXcEl/0zuNpu/ECmLavbk0ZK7EX1VsP
+hgxhH0MgZmQYdA7yV4d5vuVthTDTEEAG9XWa0UDo62KR1RgaSs+iyO1LXebDZiMc
+LL4A+whZYHCgN6DriItBA/GInvR2U8gyhDtcFhUNhoJY0BJwbfc=
+=1aqM
+-----END PGP SIGNATURE-----
+
+--Sig_/+MMOYGDEQHeD1zd57H4NBI/--
