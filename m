@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE631A8989
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FCA1A89A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503986AbgDNS3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:29:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58838 "EHLO
+        id S2504018AbgDNSco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:32:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33064 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729648AbgDNS3I (ORCPT
+        with ESMTP id S2503999AbgDNSck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:29:08 -0400
+        Tue, 14 Apr 2020 14:32:40 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EIAB7L076596;
-        Tue, 14 Apr 2020 18:28:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=cimUPVtfjS/Wbbbse4n50p0R0R56tjhdBkxdd46cVqM=;
- b=Sc/miCdLt8x6mNA4jz4sZWit/VDyixzBlI6uaAhsuguWUD7Fy498rQ14g1zoPrzXIx3r
- bCgA6A9uj91TYQwU5RWZsX3Lc3R2l2DoysZ0WMNF9mXoVikSO8+ggv/ph4OH31w6zSfo
- 9VIhbkNidopHpnJ5KoOfmJ4ZWqBOkI4rGf3Y7P3cT1CN1HiXsgBPHVJwn2AFyzR3n1sO
- f+Dxrd/EfAqyu/r6iNqdKFS0TuTlKcz2Zz7jPJLAvw+s+fCFukqARmR/wkW3UKVtS6qY
- Je5KdnB23CfEudqUKxRGumDiUpuYSi/9cQafyoLtsyk4ZLibYcBfE1V80Eg+GBww2C19 gQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 30b5um6kp5-1
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EIABfO076585;
+        Tue, 14 Apr 2020 18:32:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=GTvnzmPIuo+zTA3LV2i2vcOkGvW+n0eKPUcwXXWxyHQ=;
+ b=Lv1rUkd0In8etyKFdwJQxVsGJI9E/m4wkPCei6qvgpMHTkjq79ezUkpDfzxL0ULw84Zd
+ CzideGZzS16NPhzCt00rz5zjoFeRAzgUHat4N8d4snKi+8AVseHWf+ENxBiH+wvamMVD
+ imcNE06zwyq1Auk/yX/ZkMXg5+fLu3pZTYprduPzMtYu3MKJ17rFItAP5Xvo3fN+/KAy
+ sysPKjMlaFpJuf8ACFcuufkyzxnFe2oAAkUqyXon17LUoQPPfVKY+0ZNLRbT3pOVFtzK
+ CpAJGmWqcdD54wJffz4Z5HFJ6z5ZKHTVC5t8BhhzJzIO80V9mdTSm0+/vyZqtIAWrWum Cw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30b5um6mdq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 18:28:51 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EI7DvV129643;
-        Tue, 14 Apr 2020 18:26:51 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 30ctaav76x-1
+        Tue, 14 Apr 2020 18:32:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EI77AP155020;
+        Tue, 14 Apr 2020 18:32:30 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 30bqm2j9hm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 18:26:51 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EIQnTT010384;
-        Tue, 14 Apr 2020 18:26:49 GMT
-Received: from linux-1.home (/10.175.33.16)
+        Tue, 14 Apr 2020 18:32:30 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EIWSSx020662;
+        Tue, 14 Apr 2020 18:32:28 GMT
+Received: from kadam (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 11:26:49 -0700
-Subject: Re: [PATCH V3 5/9] objtool: Add return address unwind hints
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
- <20200414103618.12657-6-alexandre.chartre@oracle.com>
- <20200414161636.GP20713@hirez.programming.kicks-ass.net>
- <546b2d81-39ca-00e1-4df2-d4eaa18496a4@oracle.com>
- <20200414175604.GD2483@worktop.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <e9e1c4cd-193f-fd5e-65c4-cc9fb159d861@oracle.com>
-Date:   Tue, 14 Apr 2020 20:31:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        with ESMTP ; Tue, 14 Apr 2020 11:32:27 -0700
+Date:   Tue, 14 Apr 2020 21:32:18 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Camylla Goncalves Cantanheide <c.cantanheide@gmail.com>,
+        gregkh@linuxfoundation.org, navid.emamdoost@gmail.com,
+        sylphrenadin@gmail.com, nishkadg.linux@gmail.com,
+        stephen@brennan.io, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org
+Subject: Re: [PATCH 1/2] staging: rtl8192u: Refactoring setKey function
+Message-ID: <20200414181812.GE14511@kadam>
+References: <20200413030129.861-1-c.cantanheide@gmail.com>
+ <20200414123326.GG1163@kadam>
+ <d3725a08531898adc1bfb1e6d875888c434b42d6.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <20200414175604.GD2483@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3725a08531898adc1bfb1e6d875888c434b42d6.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=915
+ adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004140131
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 bulkscore=0 mlxscore=0
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
+ mlxlogscore=983 lowpriorityscore=0 impostorscore=0 adultscore=0
  phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2004140131
@@ -76,57 +75,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/14/20 7:56 PM, Peter Zijlstra wrote:
-> On Tue, Apr 14, 2020 at 06:40:12PM +0200, Alexandre Chartre wrote:
->>
->> On 4/14/20 6:16 PM, Peter Zijlstra wrote:
->>> On Tue, Apr 14, 2020 at 12:36:14PM +0200, Alexandre Chartre wrote:
->>>> Add the UNWIND_HINT_RADDR_DELETE and UNWIND_HINT_RADDR_ALTER unwind
->>>> hint macros to flag instructions which remove or modify return
->>>> addresses.
->>>
->>> I'm confused by this thing; why? AFAICT the rest of the patches are
->>> actually simpler without this one.
->>>
->>
->> This is required to indicate to objtool that assembly instructions are
->> changing return addresses. For example, in patch 8:
->>
->> For retpoline:
->>
->> @@ -88,6 +96,7 @@
->>   	lfence
->>   	jmp	.Lspec_trap_\@
->>   .Ldo_rop_\@:
->> +	UNWIND_HINT_RADDR_ALTER
->>   	mov	\reg, (%_ASM_SP)
->>   	ret
->>   .endm
->>
->> The unwind hint indicates that the return address has been altered, so the
->> code won't return to the return address which was on the stack.
+On Tue, Apr 14, 2020 at 09:01:18AM -0700, Joe Perches wrote:
+> On Tue, 2020-04-14 at 15:33 +0300, Dan Carpenter wrote:
+> > On Mon, Apr 13, 2020 at 03:01:28AM +0000, Camylla Goncalves Cantanheide wrote:
+> > > +
+> > > +	for (i = 2; i < CAM_CONTENT_COUNT; i++) {
+> > > +		write_nic_dword(dev, WCAMI, *keycontent++);
+> > 
+> > This code was wrong in the original as well, but now that I see the bug
+> > let's fix it.  CAM_CONTENT_COUNT is 8.  8 - 2 = 6.  We are writing 6
+> > u32 variables to write_nic_dword().  But the *keycontent buffer only has
+> > 4 u32 variables so it is a buffer overflow.
 > 
-> But if you hadn't added that return stack stuff in the first place,
-> you'd not have needed that HINT.
-> 
-> So what actual problem is it solving?
-> 
+> Did you find the overflow with smatch?
 
-The return stack stuff is here to correctly handle intra-function call so that
-we can figure out where the ret of an intra-function call should return. We
-don't have this challenge with regular functions because we know that a ret
-inside such function just indicates the end of the function.
+No.  Smatch isn't smart enough to understand that *(keycontent + i - 2)
+is an array overflow.  It thinks *(keycontent + i) is an array overflow
+but the "- 2" confuses it.  Also Smatch isn't smart enough to parse the
+*keycontent++.  It takes a shortcut when it parses loops.
 
-But when there's an intra-function call, a ret instruction can either:
-   - continue after the intra-function call (if the stack was unchanged)
-   - jump somewhere else (if the return address was changed) and eventually
-     return to the next return address
-   - indicate the end of the function (if the return address was removed).
+To be honest, I just didn't like starting the loop from 2 and was trying
+to see if there was a better define to use.
 
-So, all this is needed to correctly follow the flow of the code and properly
-record stack changes.
+I agree that your solution of making the buffer larger is probably the
+safest approach given that none of us really know the hardware.
 
-alex.
+regards,
+dan carpenter
 
