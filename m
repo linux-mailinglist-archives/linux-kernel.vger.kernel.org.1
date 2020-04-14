@@ -2,120 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4CE1A8002
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D181A8017
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391116AbgDNOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391079AbgDNOkc (ORCPT
+        id S2404192AbgDNOnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:43:42 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29477 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2403976AbgDNOn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:40:32 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3A0C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 07:40:31 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id o127so13505135iof.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 07:40:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YbefgXjXgHeUC3P4hR4bxjpF4217ar6Ws14g5K+3oCQ=;
-        b=Wwje0Rntf8ZnrrhqYnDu0SzHV0cPoc8qcICufXPzSHt4np2xlG+adB6yz6d0yfi5/t
-         FFgDG4PgjM/yauxNSgZOCTwIj6893wuEoglOIXx3r004MbrRCwo9dXocnO5wlSvfJog+
-         W0+yY+0KD0b0zVRCNJfbuEz/+yWWAsVxObApzsBNxpNUBzCJdx6NGf/FW8puQhE227TT
-         4Lp4U1Wm6g0barnTOOSt/NAegtzSNCMcQ2PAE6mADnANg9fiu/V+r2ZMxOW1Ki8fR5Pu
-         gLVTt1W8cC60zqsETdr9WgpVRoXG8UCjAuClt8OSYww44XXBdM8XDqtjX1FMHvxv+J1t
-         dExg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YbefgXjXgHeUC3P4hR4bxjpF4217ar6Ws14g5K+3oCQ=;
-        b=ALmmsG5Qqu7lXmyOb1Flmd/R/+HLUhBsuWBiI37kEKu8Rnd7lWjb0HEh88JcsCnIwM
-         +uqpy/3ueQYD3Exz9itQC9YHYWX+zLnm4NH+CTNzFfix829MB5hU0gpq7GFHbOrh44ND
-         h2GIMGaTEX0D/5xIGboEx98szdNCFNzfGkGpyEPPIXu/3nqlQD39ePjvZdyf4x/DJSda
-         ItW4stWsDA1o3d+5inUshcKtJ7EP9KwxRTwSM2Ac7hJqw0WP7/o6TaygPcK8lolk3Yko
-         uylnGGL8XumimXT4a6F/TT9AGL2ub3IU0GEDfJSf96T9oHPru2aJmL//pgbJAnzp0qot
-         ydYw==
-X-Gm-Message-State: AGi0Pubd42FgPqTn7OXwZSZbec6sXqdfde/O0DNmJ/vX/BSit+zus8O8
-        fxm92KP+kuDuqSM4AyS2da7gcIZyIIiz9WD9xRWzJA==
-X-Google-Smtp-Source: APiQypIOEDWyBC+MJXnFhM3K3bceWhoQdw2kV3ecdpznyv+m3gsZ+ZKEJD7FpxP9SK4xSRSupxvj9RZtJnPi/kYxX+M=
-X-Received: by 2002:a02:cca3:: with SMTP id t3mr13412804jap.3.1586875231002;
- Tue, 14 Apr 2020 07:40:31 -0700 (PDT)
+        Tue, 14 Apr 2020 10:43:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586875407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TCQsKiBpTP+4gDkO61IkKBIdivNFECjdnvdrNPVMnYU=;
+        b=NBY/IyZo0jFtgU7KCz/cXuh5W+0slvmxGGz2IliqAhxaSWVVEWIiyt2MSe4e7lIX1z/yin
+        5pnf+1mheog5seX0B7n04qdD9dj3CeLKzMX430Opk+zRn7C6nP8Y8oBs4atvF0OCA3Ten4
+        Oxp5E943QsOGIz1BpevDq0ewsrVjH90=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-lUoDxhRQMQSosFfCl7Mm-Q-1; Tue, 14 Apr 2020 10:43:25 -0400
+X-MC-Unique: lUoDxhRQMQSosFfCl7Mm-Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4DEA1088381;
+        Tue, 14 Apr 2020 14:43:23 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-116-15.gru2.redhat.com [10.97.116.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BA645D9CD;
+        Tue, 14 Apr 2020 14:43:11 +0000 (UTC)
+Subject: Re: [PATCH 09/10] KVM: selftests: Make set_memory_region_test common
+ to all architectures
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Andrew Jones <drjones@redhat.com>
+References: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+ <20200410231707.7128-10-sean.j.christopherson@intel.com>
+From:   Wainer dos Santos Moschetta <wainersm@redhat.com>
+Message-ID: <6a58ddfc-2d1d-63fb-9910-0ba4a6a81862@redhat.com>
+Date:   Tue, 14 Apr 2020 11:43:09 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-References: <20200414075622.69822-1-songmuchun@bytedance.com>
- <ff540216-7f3e-9841-4896-81907540404d@web.de> <CAMZfGtVpMK38odpd3Ady_xW0hyMpN89Vwo_WNXBZz0yGaZzFQg@mail.gmail.com>
- <36a7d091-440b-a3db-c93f-713fc7cfbb5c@web.de>
-In-Reply-To: <36a7d091-440b-a3db-c93f-713fc7cfbb5c@web.de>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 14 Apr 2020 22:39:55 +0800
-Message-ID: <CAMZfGtX1wPY=B30Rroj4kDhfU43G0jO8T9CeR3AzjGAD6=nGTQ@mail.gmail.com>
-Subject: Re: [External] Re: [v2] mm/ksm: Fix NULL pointer dereference when KSM
- zero page is enabled
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Xiongchun Duan <duanxiongchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200410231707.7128-10-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:17 PM Markus Elfring <Markus.Elfring@web.de> wro=
-te:
->
-> >>> to crash when we access vma->vm_mm(its offset is 0x40) later in
-> >>
-> >> Will another fine-tuning become relevant also for this wording?
-> >
-> > Sorry, I don't understand what this means because of my poor English.
->
-> Our language knowledge can evolve over time.
->
->
-> > Could you explain it again.
->
-> You integrated a few of my suggestions into your message selection. - Tha=
-nks.
-> I wonder why you did not like the following small adjustment possibilitie=
-s
-> so far.
->
->   to a crash =E2=80=A6 vm_mm (its =E2=80=A6
->
+Hi Sean,
 
-Thanks a lot. I will fix it.
+On 4/10/20 8:17 PM, Sean Christopherson wrote:
+> Make set_memory_region_test available on all architectures by wrapping
+> the bits that are x86-specific in ifdefs.  All architectures can do
+> no-harm testing of running with zero memslots, and a future testcase
+> to create the maximum number of memslots will also be architecture
+> agnostic.
+
+I got this series successfully compiled in aarch64 and s390x. However=20
+the zero memslot test fails on both arches on vcpu_run().
+
+The machines I borrowed got RHEL-8.1.0 installed (kernel 4.18.0-147).=20
+Perhaps I am using a too old kernel? Anyway, trying to get at least an=20
+aarch64 box with newer kernel to double check.
+
+The error on aarch64:
+
+Testing KVM_RUN with zero added memory regions
+=3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+ =A0 lib/kvm_util.c:1179: ret =3D=3D 0
+ =A0 pid=3D83625 tid=3D83625 - Exec format error
+ =A0=A0=A0=A0 1=A0=A0=A0 0x000000000040114f: test_zero_memory_regions at=20
+set_memory_region_test.c:313
+ =A0=A0=A0=A0 2=A0=A0=A0 =A0(inlined by) main at set_memory_region_test.c=
+:383
+ =A0=A0=A0=A0 3=A0=A0=A0 0x0000ffff92e70d63: ?? ??:0
+ =A0=A0=A0=A0 4=A0=A0=A0 0x0000000000401367: _start at :?
+ =A0 KVM_RUN IOCTL failed, rc: -1 errno: 8
+
+And on s390x:
+
+Testing KVM_RUN with zero added memory regions
+=3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+ =A0 lib/kvm_util.c:1179: ret =3D=3D 0
+ =A0 pid=3D41263 tid=3D-1 - Invalid argument
+ =A0=A0=A0=A0 1=A0=A0=A0 0x00000000010029b5: vcpu_run at kvm_util.c:1178
+ =A0=A0=A0=A0 2=A0=A0=A0 0x0000000001001563: test_zero_memory_regions at=20
+set_memory_region_test.c:313
+ =A0=A0=A0=A0 3=A0=A0=A0 =A0(inlined by) main at set_memory_region_test.c=
+:383
+ =A0=A0=A0=A0 4=A0=A0=A0 0x000003ffb80a3611: ?? ??:0
+ =A0=A0=A0=A0 5=A0=A0=A0 0x00000000010017bd: .annobin_init.c.hot at crt1.=
+o:?
+ =A0=A0=A0=A0 6=A0=A0=A0 0xffffffffffffffff: ?? ??:0
+ =A0 KVM_RUN IOCTL failed, rc: -1 errno: 14
+
+Thanks,
+
+Wainer
 
 >
-> >> Will any other tags become helpful in such a case?
-> >
-> > How about changing
-> >     "following calltrace is captured in kernel 4.19 with KSM zero page"
-> > to
-> >    "The following calltrace is captured with the following patch applie=
-d:
-> >        e86c59b1b12d ("mm/ksm: improve deduplication of zero pages with
-> > colouring")
-> >     "
-> > ?
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>   tools/testing/selftests/kvm/.gitignore              |  2 +-
+>   tools/testing/selftests/kvm/Makefile                |  4 +++-
+>   .../kvm/{x86_64 =3D> }/set_memory_region_test.c       | 13 ++++++++++=
+++-
+>   3 files changed, 16 insertions(+), 3 deletions(-)
+>   rename tools/testing/selftests/kvm/{x86_64 =3D> }/set_memory_region_t=
+est.c (97%)
 >
-> I find it unlikely that such a wording alternative would be more appropri=
-ate
-> while I became just curious for related development consequences around
-> the usage of a longterm kernel version.
->
-> Would you like to reuse the term =E2=80=9Ccall trace=E2=80=9D?
->
+> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/sel=
+ftests/kvm/.gitignore
+> index 16877c3daabf..5947cc119abc 100644
+> --- a/tools/testing/selftests/kvm/.gitignore
+> +++ b/tools/testing/selftests/kvm/.gitignore
+> @@ -6,7 +6,6 @@
+>   /x86_64/hyperv_cpuid
+>   /x86_64/mmio_warning_test
+>   /x86_64/platform_info_test
+> -/x86_64/set_memory_region_test
+>   /x86_64/set_sregs_test
+>   /x86_64/smm_test
+>   /x86_64/state_test
+> @@ -21,4 +20,5 @@
+>   /demand_paging_test
+>   /dirty_log_test
+>   /kvm_create_max_vcpus
+> +/set_memory_region_test
+>   /steal_time
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selft=
+ests/kvm/Makefile
+> index 712a2ddd2a27..7af62030c12f 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -17,7 +17,6 @@ TEST_GEN_PROGS_x86_64 +=3D x86_64/evmcs_test
+>   TEST_GEN_PROGS_x86_64 +=3D x86_64/hyperv_cpuid
+>   TEST_GEN_PROGS_x86_64 +=3D x86_64/mmio_warning_test
+>   TEST_GEN_PROGS_x86_64 +=3D x86_64/platform_info_test
+> -TEST_GEN_PROGS_x86_64 +=3D x86_64/set_memory_region_test
+>   TEST_GEN_PROGS_x86_64 +=3D x86_64/set_sregs_test
+>   TEST_GEN_PROGS_x86_64 +=3D x86_64/smm_test
+>   TEST_GEN_PROGS_x86_64 +=3D x86_64/state_test
+> @@ -32,12 +31,14 @@ TEST_GEN_PROGS_x86_64 +=3D clear_dirty_log_test
+>   TEST_GEN_PROGS_x86_64 +=3D demand_paging_test
+>   TEST_GEN_PROGS_x86_64 +=3D dirty_log_test
+>   TEST_GEN_PROGS_x86_64 +=3D kvm_create_max_vcpus
+> +TEST_GEN_PROGS_x86_64 +=3D set_memory_region_test
+>   TEST_GEN_PROGS_x86_64 +=3D steal_time
+>  =20
+>   TEST_GEN_PROGS_aarch64 +=3D clear_dirty_log_test
+>   TEST_GEN_PROGS_aarch64 +=3D demand_paging_test
+>   TEST_GEN_PROGS_aarch64 +=3D dirty_log_test
+>   TEST_GEN_PROGS_aarch64 +=3D kvm_create_max_vcpus
+> +TEST_GEN_PROGS_aarch64 +=3D set_memory_region_test
+>   TEST_GEN_PROGS_aarch64 +=3D steal_time
+>  =20
+>   TEST_GEN_PROGS_s390x =3D s390x/memop
+> @@ -46,6 +47,7 @@ TEST_GEN_PROGS_s390x +=3D s390x/sync_regs_test
+>   TEST_GEN_PROGS_s390x +=3D demand_paging_test
+>   TEST_GEN_PROGS_s390x +=3D dirty_log_test
+>   TEST_GEN_PROGS_s390x +=3D kvm_create_max_vcpus
+> +TEST_GEN_PROGS_s390x +=3D set_memory_region_test
+>  =20
+>   TEST_GEN_PROGS +=3D $(TEST_GEN_PROGS_$(UNAME_M))
+>   LIBKVM +=3D $(LIBKVM_$(UNAME_M))
+> diff --git a/tools/testing/selftests/kvm/x86_64/set_memory_region_test.=
+c b/tools/testing/selftests/kvm/set_memory_region_test.c
+> similarity index 97%
+> rename from tools/testing/selftests/kvm/x86_64/set_memory_region_test.c
+> rename to tools/testing/selftests/kvm/set_memory_region_test.c
+> index c274ce6b4ba2..0f36941ebb96 100644
+> --- a/tools/testing/selftests/kvm/x86_64/set_memory_region_test.c
+> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+> @@ -18,6 +18,7 @@
+>  =20
+>   #define VCPU_ID 0
+>  =20
+> +#ifdef __x86_64__
+>   /*
+>    * Somewhat arbitrary location and slot, intended to not overlap anyt=
+hing.  The
+>    * location and size are specifically 2mb sized/aligned so that the i=
+nitial
+> @@ -288,6 +289,7 @@ static void test_delete_memory_region(void)
+>  =20
+>   	kvm_vm_free(vm);
+>   }
+> +#endif /* __x86_64__ */
+>  =20
+>   static void test_zero_memory_regions(void)
+>   {
+> @@ -299,13 +301,18 @@ static void test_zero_memory_regions(void)
+>   	vm =3D vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+>   	vm_vcpu_add(vm, VCPU_ID);
+>  =20
+> +#ifdef __x86_64__
+>   	TEST_ASSERT(!ioctl(vm_get_fd(vm), KVM_SET_NR_MMU_PAGES, 64),
+>   		    "KVM_SET_NR_MMU_PAGES failed, errno =3D %d\n", errno);
+> -
+> +#endif
+>   	vcpu_run(vm, VCPU_ID);
+>  =20
+>   	run =3D vcpu_state(vm, VCPU_ID);
+> +#ifdef __x86_64__
+>   	TEST_ASSERT(run->exit_reason =3D=3D KVM_EXIT_INTERNAL_ERROR,
+> +#else
+> +	TEST_ASSERT(run->exit_reason !=3D KVM_EXIT_UNKNOWN,
+> +#endif
+>   		    "Unexpected exit_reason =3D %u\n", run->exit_reason);
+>  =20
+>   	kvm_vm_free(vm);
+> @@ -313,13 +320,16 @@ static void test_zero_memory_regions(void)
+>  =20
+>   int main(int argc, char *argv[])
+>   {
+> +#ifdef __x86_64__
+>   	int i, loops;
+> +#endif
+>  =20
+>   	/* Tell stdout not to buffer its content */
+>   	setbuf(stdout, NULL);
+>  =20
+>   	test_zero_memory_regions();
+>  =20
+> +#ifdef __x86_64__
+>   	if (argc > 1)
+>   		loops =3D atoi(argv[1]);
+>   	else
+> @@ -332,6 +342,7 @@ int main(int argc, char *argv[])
+>   	pr_info("Testing DELETE of in-use region, %d loops\n", loops);
+>   	for (i =3D 0; i < loops; i++)
+>   		test_delete_memory_region();
+> +#endif
+>  =20
+>   	return 0;
+>   }
 
-OK, I will reuse the =E2=80=9Ccall trace=E2=80=9D. Thanks again.
-
-Anyone else have any suggestions? If not, I will post another v4 version
-to fix the commit message that Markus mentioned.
-
---=20
-Yours,
-Muchun
