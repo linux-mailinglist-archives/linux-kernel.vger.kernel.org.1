@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B171A74AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FD41A74CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 09:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406628AbgDNH1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 03:27:01 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:46785 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406601AbgDNH07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:26:59 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 53153D5D;
-        Tue, 14 Apr 2020 03:26:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 14 Apr 2020 03:26:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=z5MESemy4at/XiMeE9culKqPajy
-        dX3epVv5bu8NCS5w=; b=PXG4m4efaHFOdBKDqGRkoY2NYHF2ZZYCSBMozPP5yrd
-        nnkZAXOdrI7nGrf5+VAo/62LK2HK9ZW9wDsN575yJcSUBWn4xRvTxXBXkeNVPFes
-        du6tju/KHaxU5dAcJ1PBcqOjYsuarlTS+42JExPvkjv3aUUj1J3mDGOpgTnsltS0
-        FMdZDF0hJ7TMWq6el7FyAseVd5XTfqR3ZkDDftKudGzNYh7Rg2vAKaqcOUPUeD6I
-        /XRFIUq61uu+BdxQ81B5nqYNOamVQk/G6nSp2XjhtqBbid5/+2mvvuwKk8YKF9xT
-        SYTS11RzebGWUAC1IdM9AzZ4GEoh4EFvs5p+CR5YvEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=z5MESe
-        my4at/XiMeE9culKqPajydX3epVv5bu8NCS5w=; b=3pGPxyk4nmhLT2XV141JuX
-        x2T8ZazVfOyohOVn0CIKFQyoY4b6Om3gMbnppgBRtp204W4UQDe8eM98AAtHNbot
-        Uy9/KP9dfxDVkL760mbxzrVuh+w1E3iKTQPxziukmm238VgmNrZwbITQNoKJWSNt
-        bEL0uJdMuklClnxU+qKCpSdQVovD1gsAER5LlQpeFZ+i5ckbbVDUMMW7hwblHVzA
-        FZ2AiOddZQZQ5JgYTGVOp2wYNaF/i0c7NDnvLM+XvsCckwQ4IZsQax9f4LWLX56i
-        RLEqS/XMEshBwCdO5ZWv/8K5pstBaTixJdWVnmx3fQ1sHJTyb/85C64u30TDj+pw
-        ==
-X-ME-Sender: <xms:wGWVXjaMgOfD0xad5bMbf6M25CsI48g4oQh7HcdxthdHjFvJC6DtzQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfedtgdduudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
-    drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:wGWVXmosoca5IhQD4qQOWu1xdUoFNPGEyHW8sYuDSINnKQhOfupgMw>
-    <xmx:wGWVXg8S6v-WWIYvAaRCWVx7H6CEidQ6W9pDJdAW3mW3LltU3x2qag>
-    <xmx:wGWVXt8ztvlroAi1N_2A33jFe05gAxvbdMKUJdFYYwHRcAnysWS0_w>
-    <xmx:wGWVXljUWYsWAlO-k7eSnaW4xx1k7xiMHBwrHOUzNYWP44J_F7bYcg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5C2C0328006A;
-        Tue, 14 Apr 2020 03:26:56 -0400 (EDT)
-Date:   Tue, 14 Apr 2020 09:26:53 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Joe Perches <joe@perches.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: point to display schemas in DRM DRIVERS FOR
- ALLWINNER A10
-Message-ID: <20200414072653.x2mvytbsvnjiqiij@gilmour.lan>
-References: <20200413075329.10717-1-lukas.bulwahn@gmail.com>
+        id S2406641AbgDNHaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 03:30:00 -0400
+Received: from mga01.intel.com ([192.55.52.88]:46489 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406631AbgDNH35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 03:29:57 -0400
+IronPort-SDR: 6e9ILlvig8Iv7RrHr/qR+YoqIz/22i3gdcK9g2uQXpsfUhSTL0oxKd8KHy7E5gfU4/oDaESdUi
+ mOZxyoys9TBQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 00:29:56 -0700
+IronPort-SDR: EsEakIQVMAszRJ7SduQBFy1ioFSV3Wt4cZnXwXUPa8/MmyJOeYCuONkiJ9OMJ/Pdb8JlVtZMsO
+ Hfki/ckE7k8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,381,1580803200"; 
+   d="scan'208";a="256426116"
+Received: from elenamax-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.42.208])
+  by orsmga006.jf.intel.com with ESMTP; 14 Apr 2020 00:29:51 -0700
+Date:   Tue, 14 Apr 2020 10:29:50 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        linux-integrity@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v2] qtpm2: Export tpm2_get_cc_attrs_tbl for ibmvtpm
+ driver as module
+Message-ID: <20200414072950.GD8403@linux.intel.com>
+References: <20200319010017.738677-1-stefanb@linux.vnet.ibm.com>
+ <20200319195706.GD24804@linux.intel.com>
+ <2BF66599-184A-4647-BC57-105A1512F119@linux.vnet.ibm.com>
+ <20200402193134.GC10314@linux.intel.com>
+ <87k12ikhye.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kdkzdphvlzzoj572"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413075329.10717-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <87k12ikhye.fsf@mpe.ellerman.id.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 14, 2020 at 10:51:37AM +1000, Michael Ellerman wrote:
+> Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> writes:
+> > On Wed, Apr 01, 2020 at 02:40:30PM +0530, Sachin Sant wrote:
+> >> > On 20-Mar-2020, at 1:27 AM, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+> >> > 
+> >> > On Wed, Mar 18, 2020 at 09:00:17PM -0400, Stefan Berger wrote:
+> >> >> From: Stefan Berger <stefanb@linux.ibm.com>
+> >> >> 
+> >> >> This patch fixes the following problem when the ibmvtpm driver
+> >> >> is built as a module:
+> >> >> 
+> >> >> ERROR: modpost: "tpm2_get_cc_attrs_tbl" [drivers/char/tpm/tpm_ibmvtpm.ko] undefined!
+> >> >> make[1]: *** [scripts/Makefile.modpost:94: __modpost] Error 1
+> >> >> make: *** [Makefile:1298: modules] Error 2
+> >> >> 
+> >> >> Fixes: 18b3670d79ae ("tpm: ibmvtpm: Add support for TPM2")
+> >> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >> >> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> >> >> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> >> > 
+> >> 
+> >> Ping. This failure can now be seen in mainline (cad18da0af) as well.
+> >
+> > It is in my tree
+> 
+> Can you please send it to Linus?
+> 
+> cheers
 
---kdkzdphvlzzoj572
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes.
 
-On Mon, Apr 13, 2020 at 09:53:29AM +0200, Lukas Bulwahn wrote:
-> Commit f5a98bfe7b37 ("dt-bindings: display: Convert Allwinner display
-> pipeline to schemas") replaced sunxi/sun4i-drm.txt with
-> allwinner,sun*.yaml files in Documentation/devicetree/bindings/display/,
-> but did not adjust DRM DRIVERS FOR ALLWINNER A10.
->
-> Since then, ./scripts/get_maintainer.pl --self-test complains:
->
->   warning: no file matches \
->   F: Documentation/devicetree/bindings/display/sunxi/sun4i-drm.txt
->
-> Point to allwinner display schemas in DRM DRIVERS FOR ALLWINNER A10.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Thanks!
-Maxime
-
---kdkzdphvlzzoj572
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXpVlvQAKCRDj7w1vZxhR
-xVrnAPwPo+G3ObIsBJnK9D9AJ9dsl+LIKPP4Qz+TT7i4cgMDMAEAvnuVM7N5ZdVk
-yXUCRUxY6YQ5gMDbTD43X/MsWZqHmQ8=
-=gv8H
------END PGP SIGNATURE-----
-
---kdkzdphvlzzoj572--
+/Jarkko
