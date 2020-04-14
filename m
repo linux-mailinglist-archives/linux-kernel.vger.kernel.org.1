@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3D91A8AD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7601A8AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504863AbgDNTeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        id S2504908AbgDNTf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504842AbgDNTdk (ORCPT
+        by vger.kernel.org with ESMTP id S2504805AbgDNTf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:33:40 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EBFC0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:33:39 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id p19so520586qve.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:33:39 -0700 (PDT)
+        Tue, 14 Apr 2020 15:35:26 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CBDC061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:35:26 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 71so11230072qtc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=8dnkQ9M3xI6On5BSh1/mhM6wNLNSVaCuNmJxtnHMKQk=;
-        b=j02DrJAJJMYYgQIUy1JTsUOwROPiKWFCYonh6yaIg0yjBkI7sW/ZCXWHB3l802npmp
-         bYy2/EcDTPLn0/iuzVb4x85UU2Nq/ZY9dpCCfTjXBFNaq2BW8zidhYBYt7AzkbTyHqEx
-         fKxdQ+E96b4q2cb28IOD47KEjHifg7tVjb1lW0i+y87/rHdkfki3d0DcOUJOtws4hOnI
-         6LuC08+F3VlCgq9il2WJHfDhUMyMRo6bZYUy7sUS+lWgsIe9HVl+E7zL3JuvGCTIy7CE
-         UFSJwifhn/w8dAKoeXJHnUc4V/hSx+Cy827SG0+Y5fH46DOr95sbY2ZqL45CmGPZm0XQ
-         kAlA==
+        bh=OXJFZbYBpiO58VUw07gYc4E/OSY8mUkuPUysvFQz2V0=;
+        b=cQ+NRduOwAzvm2yDJN6zTbfsK8uOlb1aGIZE4Rc/HmJs9v1y/Y+g6AiQBmU5IUy32c
+         RYMD7+e+H1X/23KXbEUYmLDfQGeRzDjoxcCCk08Y6ZbY4+g5OhQvPZEeWE6rJ+KctOoU
+         hrOYCozcPd7hx7RgvBIF5nNkhWVOu36xMhQwa/68+sEu9iyeobI2HRYNM+PHxruCZ7dU
+         z87qZOb7q2rYKTt4kqErEnVH2ySKdULeHkv/q88foeBc4Y92zQCUkNG0XH8LNqY/s3dl
+         gvXnLkr2yryNImzCFGmFYhZtUKDmzpypX0wEoFa2pKEN80h4oWvdRVmeSdMgreqns+Rt
+         /+ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8dnkQ9M3xI6On5BSh1/mhM6wNLNSVaCuNmJxtnHMKQk=;
-        b=D9phPFWwszl4F+OicOpUPl58yC7dzkiGhEpw5KVgUOJnK6gXtTgGmgw+HgmJFRmzvu
-         3p4mEeMSIlNoLiUhiTAECQKWmiS90+ssbQORmtKl4k9speO9X9UOBPbDxLgDFpAPHjs3
-         QvbQnRqFGRsRqkhvDp58DLc5QODziSnpF5jy4al6glocAdpENO2w2ZcquSJxmw1HT7Wt
-         WOn30qVBPbo6BE9MQm52rr6UKzkRq8zp9Z3aVCsWG3mg4TwoIcUf6taaXiIZSE7z5KU7
-         mkb5dtWLkjcmdqPH2Z5k/amIXEvnWoO3JB1CMAuOpj2BXvejgE+ILiRWNKltaQvHmDI9
-         XYDg==
-X-Gm-Message-State: AGi0PuZY6X53RoCeCyjg40Usqml+/aqnv8GYTVnrURELYyXtI5PoJV/i
-        xq27LJjc1UgIryWw1ubJPs0HtYlNgqlcgw==
-X-Google-Smtp-Source: APiQypL0GLPU2qVCJsM0kf2FXn3IWzAgvpM/edl/Z91YfQTa69LDuZZfAydhjhxbF4ueX1QhOkOzNw==
-X-Received: by 2002:a0c:e092:: with SMTP id l18mr1565731qvk.116.1586892818419;
-        Tue, 14 Apr 2020 12:33:38 -0700 (PDT)
+        bh=OXJFZbYBpiO58VUw07gYc4E/OSY8mUkuPUysvFQz2V0=;
+        b=UB2FPcdpsT7/y/XjYMGGqD0AMw2jveaVQ3nxRV6091CtY4KG2cQ3ETlyw6FwLeMj5I
+         WvRZ8lYnWglw5V7R+YtBxvwGG16AlLBXSJba7JT9zYln/N1n3W//5wi26VqnIf2Nm+J3
+         OUnSFIrwcxV8j4lR0kQVqnuUH0CoCyLujdk3BioES05/86RI1w+i9gt09luI4GEEfnrs
+         y2eqdvlNdOEaRGbGF8Gofzvase5z/UZscUtsPgff0/L7ie/e8FAf0nZUVk1nHYXyU6Rx
+         3qojGdZj4DwOhFKjXKvKU+f7XIelNC5vwJ3K9FrsVbK0C3psRMdTD58l2P/CjzfUt7C8
+         PM2g==
+X-Gm-Message-State: AGi0PuaYRvacSorTy/ahpH7+3a2sP654Y6Weqx1T2Pq/eNKsM8XafUpX
+        Q16Z24UU0bXL8dDh5NV8EAGr5Q==
+X-Google-Smtp-Source: APiQypLS//lWANiI1tO5rY6sUH89pCMuYW1DdkcAUQi3ikXObHpKKCSfGooh8Lyi/XQAWLm9n1+W+Q==
+X-Received: by 2002:ac8:1a8a:: with SMTP id x10mr17535588qtj.154.1586892925288;
+        Tue, 14 Apr 2020 12:35:25 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o6sm5702880qkj.126.2020.04.14.12.33.37
+        by smtp.gmail.com with ESMTPSA id 28sm764089qkp.10.2020.04.14.12.35.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 12:33:37 -0700 (PDT)
+        Tue, 14 Apr 2020 12:35:24 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jORJR-0005TM-EB; Tue, 14 Apr 2020 16:33:37 -0300
-Date:   Tue, 14 Apr 2020 16:33:37 -0300
+        id 1jORLA-0006rU-Ew; Tue, 14 Apr 2020 16:35:24 -0300
+Date:   Tue, 14 Apr 2020 16:35:24 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 17/33] docs: infiniband: verbs.c: fix some
- documentation warnings
-Message-ID: <20200414193337.GA20929@ziepe.ca>
-References: <cover.1586881715.git.mchehab+huawei@kernel.org>
- <4c5466d0f450c5a9952138150c3485740b37f9c5.1586881715.git.mchehab+huawei@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
+        dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] IB/qib: remove unused variable ret
+Message-ID: <20200414193524.GA26198@ziepe.ca>
+References: <1586745724-107477-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4c5466d0f450c5a9952138150c3485740b37f9c5.1586881715.git.mchehab+huawei@kernel.org>
+In-Reply-To: <1586745724-107477-1-git-send-email-zou_wei@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 06:48:43PM +0200, Mauro Carvalho Chehab wrote:
-> Parsing this file with kernel-doc produce some warnings:
+On Mon, Apr 13, 2020 at 10:42:04AM +0800, Zou Wei wrote:
+> This patch fixes below warnings reported by coccicheck
 > 
-> 	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
-> 	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
-> 	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
-> 	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
-> 	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
-> 	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
+> drivers/infiniband/hw/qib/qib_iba7322.c:6878:8-11:
+> Unneeded variable: "ret". Return "0" on line 6907
+> drivers/infiniband/hw/qib/qib_iba7322.c:2378:5-8:
+> Unneeded variable: "ret". Return "0" on line 2513
 > 
-> Address them by adding an extra blank line and converting the
-> parameters on one of the arguments to a table.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 > ---
->  drivers/infiniband/core/verbs.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  drivers/infiniband/hw/qib/qib_iba7322.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 
-As before we can take RDMA patches through the RDMA tree, so applied
-to for-next
+Applied to for-next, thanks
 
-Thanks,
 Jason
