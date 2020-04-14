@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03CE1A8B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BAD1A8C33
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505212AbgDNTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        id S2632872AbgDNUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 16:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505188AbgDNTr1 (ORCPT
+        by vger.kernel.org with ESMTP id S2632823AbgDNUOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:47:27 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158C2C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:47:25 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z26so1100345ljz.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:47:24 -0700 (PDT)
+        Tue, 14 Apr 2020 16:14:45 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B0FC0610D6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:58:34 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id y84so772949pfb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JJK+Q+UKkDQaruBYiWcWjNudKJdkietMzkyNFKfwUfY=;
-        b=NI2CbHQmy0JJhl4ytQt1TbKJDLFhbGdB6cugYS+62mNdDgladQHA0hgMSpm0uXhk9o
-         OenLF/9qzYoyXCkuv5tboOvQ6DYSBgPak6ZedVQ8kUkb2+i3/FPQaVyVDxSnO7vm1ajm
-         O8Ee2EwUzbtxLpnuvL5B21vXVbTPdRKawqDL3gkIiIr+Jrz202HaTyAyl3ggcMnK6bgF
-         aHJmI2L8Q4H3BoMBCL08Cbenfkc2Ktqw+9w5IwhZlfXIkOWQjb/acdtVBaaBe5mpT7GX
-         kwMHIbu70LH9UdN5hfijW4qXB2bKDyy7J84+hu3Wd69S/RaX2rI2sxEYDfE0xTjOAuIN
-         MV3g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=nxgycjZCK6bQ5TksD/KbhY7IXRvt1UDt7K60PjJOJP8=;
+        b=reaaSqsDSb7MU9D89DGulCaGJQFBMZImkY9bkZDBFhJ0A+F/ibJ8fLskK6kTy1rqDY
+         1g1cek9xaVK1K1GzRJxEjDrqJeIWwK95rrQno/wsthv6vS5xAaH9Q5uw9P4kLN+7oSau
+         uiI0LBMvubr6PFG/F4L/WN/My/uC5tDAK65ezHSrUjlQij5UZviKicZsDsjbPBrOqf5h
+         pys2sLm1iAEx9CWzMeyOwd6XNa5p32LeZW5FEbeCkewBXS3MkSv3aaQ3x3gMS9ntoON5
+         CleMlNe/yR53PBjvsnGXc95UX/zpYDM5vaIqdLjk12vdFTsJuyEkuiHs3PMuPFuXaNUQ
+         CWew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JJK+Q+UKkDQaruBYiWcWjNudKJdkietMzkyNFKfwUfY=;
-        b=hWufysNL6BsReUyWqSw44D3w4emGDsEECdXVgPqxuEx96hx5OubOzFKbFrYXkDoJNN
-         D8ZnG8bkLJ2BDYvVCbHq4+iqlH+HNKgamJHiCFuqqnt54V3sRAXmiE/0FNZZ6+C7AMVE
-         l/AsnO9cJ0mcYs1M9IXCdAZJFeNE1F2bALRnBHXhvxTYTURR8yVQ2QwvARHiJKwgr/Mp
-         ZUpkqhtOZhBKMsnik6znyHbRubgb21PF/eTy+DbZ8S4a02TgVA4W3r2jRr1STTfnFTSG
-         o+RLOoEJZAOdJtKaJsKgkIgRAJX5QZctic1XWcPBhxWOt4HFHyJkYV6Kf75GcwDDzMpW
-         U8dg==
-X-Gm-Message-State: AGi0PuY6RNmhGH/6BBkGbVsU52FE2WWx0SI8kfVsiLstVERvL5nFHd9M
-        z+B4t3RxyenShaQZBlgDfEZpGnWM7IqX8YCICHQ=
-X-Google-Smtp-Source: APiQypLGUYk3suy/eSUDKH5ICT7nYCw/nP+Vjdcx+EdWiVN7l3yhVL9RbojbaGVteYNrgDbwy7b43T8oKlKY7EU+/X4=
-X-Received: by 2002:a2e:6c05:: with SMTP id h5mr1012285ljc.217.1586893643490;
- Tue, 14 Apr 2020 12:47:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200407095107.1988-1-miles.chen@mediatek.com> <20200407181908.GB94792@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20200407181908.GB94792@iweiny-DESK2.sc.intel.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Wed, 15 Apr 2020 01:25:07 +0530
-Message-ID: <CAFqt6zYztssQEgMJtafr_ZdMYvBwAU-BZ4Z4tOWQPJ6eFnHq2Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/gup: fix null pointer dereference detected by coverity
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Miles Chen <miles.chen@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=nxgycjZCK6bQ5TksD/KbhY7IXRvt1UDt7K60PjJOJP8=;
+        b=oTh9y3ztQd8n+tz7mqPGhBRFMugeo++rgyPuP4uMivM38JuAOoL5vG3kHu/gchOThN
+         W51sPS0yAiGnShyt2cff4cSJ8x2J64SITjxQ+CwYuHrLLtTDbnurVuZtKJ7sfNdN57NA
+         mCj7RjDaNZYAn59lnYEbQBMQQHfIbTtxykDwcJuj+UX5RQ0PvR9cbAhGHSqjbE8YoB/m
+         YHC+LTXHzFrG/1NHxZmwLmqgXEt5mLRznHMtNMES2yYu3rqiKRhLTAqJFTfz1GUL9JwK
+         +Q9i+XsN/cQ9ylQdhUGV5N4hOvZ1wN9jOvEBrW7bsNVtOzaoK6PJa63Ukz2KpEHShkV9
+         tY7Q==
+X-Gm-Message-State: AGi0PuaPSlcK1PFiUuaQ8iJGI6t6pGX8flrdBuRU53HP5exmytxUPRz6
+        dCWG3idTisM8gwSBKXF/q/Pu6QNY
+X-Google-Smtp-Source: APiQypKWHBdZ+kl0ZEvAN8m4Nb+5nzmzO63G3Uomz8LI1Ofdi8MQd3ATGzMC1oSg/4pqf3nJD2qQpYFM
+X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr1993775pjr.22.1586894313617;
+ Tue, 14 Apr 2020 12:58:33 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 12:56:38 -0700
+Message-Id: <20200414195638.156123-1-gbiv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [PATCH] tools/build: tweak unused value workaround
+From:   George Burgess IV <gbiv@google.com>
+To:     akpm@linux-foundation.org
+Cc:     ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        George Burgess IV <gbiv@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 11:49 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Tue, Apr 07, 2020 at 05:51:07PM +0800, Miles Chen wrote:
-> > In fixup_user_fault(), it is possible that unlocked is NULL,
-> > so we should test unlocked before using it.
-> >
-> > For example, in arch/arc/kernel/process.c, NULL is passed
-> > to fixup_user_fault().
-> >
-> > SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new)
-> > {
-> > ...
-> >       ret = fixup_user_fault(current, current->mm, (unsigned long) uaddr,
-> >                              FAULT_FLAG_WRITE, NULL);
-> > ...
-> > }
-> >
-> > Fixes: 4a9e1cda2748 ("mm: bring in additional flag for fixup_user_fault to signal unlock")
-> > Signed-off-by: Miles Chen <miles.chen@mediatek.com>
->
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Clang has -Wself-assign enabled by default under -Wall, which always
+gets -Werror'ed on this file, causing sync-compare-and-swap to be
+disabled by default. The generally-accepted way to spell "this value is
+intentionally unused," is casting it to `void`. This is accepted by both
+GCC and Clang with -Wall enabled: https://godbolt.org/z/qqZ9r3
 
-Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
+Signed-off-by: George Burgess IV <gbiv@google.com>
+---
+ tools/build/feature/test-sync-compare-and-swap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> > ---
-> >  mm/gup.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index da3e03185144..a68d11dc232d 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -1230,7 +1230,8 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
-> >       if (ret & VM_FAULT_RETRY) {
-> >               down_read(&mm->mmap_sem);
-> >               if (!(fault_flags & FAULT_FLAG_TRIED)) {
-> > -                     *unlocked = true;
-> > +                     if (unlocked)
-> > +                             *unlocked = true;
-> >                       fault_flags |= FAULT_FLAG_TRIED;
-> >                       goto retry;
-> >               }
-> > --
-> > 2.18.0
->
+diff --git a/tools/build/feature/test-sync-compare-and-swap.c b/tools/build/feature/test-sync-compare-and-swap.c
+index 1e38d1930a97..3bc6b0768a53 100644
+--- a/tools/build/feature/test-sync-compare-and-swap.c
++++ b/tools/build/feature/test-sync-compare-and-swap.c
+@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
+ {
+ 	uint64_t old, new = argc;
+ 
+-	argv = argv;
++	(void)argv;
+ 	do {
+ 		old = __sync_val_compare_and_swap(&x, 0, 0);
+ 	} while (!__sync_bool_compare_and_swap(&x, old, new));
+-- 
+2.26.0.110.g2183baf09c-goog
+
