@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BEF1A7BF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D191A7BCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502632AbgDNNJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:09:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47669 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2502601AbgDNNJG (ORCPT
+        id S2502585AbgDNNII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730314AbgDNNIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:09:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586869745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hBYiVbPBfUS+AcwD+sXBpDKSbw0tQLOGN9sYzZKYAmI=;
-        b=BTAN21WocSEZDEQm2BhK4woJchErWB0xzslg0PRL+jaW73JuBBrb4U+r4OkMNKBbmzZ4UU
-        SCbUG2wUypFUui+uF2bDpjjfzTzcGjJONpKqua7ehfBP327KAv9KBAk5zaFQIpt7gAzXFP
-        mOe73lGOE/I3IOT6gqpXRWTm7whysyw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-PA7uLtZsM327ACx1G3T_7g-1; Tue, 14 Apr 2020 09:07:49 -0400
-X-MC-Unique: PA7uLtZsM327ACx1G3T_7g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96CEA8048E4;
-        Tue, 14 Apr 2020 13:07:05 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5AB5418A8E;
-        Tue, 14 Apr 2020 13:06:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200413211550.8307-2-longman@redhat.com>
-References: <20200413211550.8307-2-longman@redhat.com> <20200413211550.8307-1-longman@redhat.com>
-To:     Waiman Long <longman@redhat.com>, herbert@gondor.apana.org.au
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-crypto@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
+        Tue, 14 Apr 2020 09:08:02 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E57C061A0C;
+        Tue, 14 Apr 2020 06:08:01 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id h2so12882097wmb.4;
+        Tue, 14 Apr 2020 06:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NTg88EBEg4qOXVBL74JDWDn01n0VKUHWmo8g8ottwjk=;
+        b=doeIn3Si97S/MngUsuOx9N4xLfiWQ81AHOxJsgpJhSAaWdJ2Vx25UzrTmv1oMFjUT5
+         2QrtYy8fiNH4Kn3zuur6CtddJ+sA9PjIDuvapuo+7hezmgeX1gCLq8q/cvM0dqtWRJ+s
+         RRbl7AO5mYAqbZIYfFOfsLhszvuoM1XdzCh6gHiYb2MIgUpFnlvCr3wmp+TG3kxnoWi2
+         KTfOQAqt+s4VSLVL7pdljX4nIVsSCXJW1iUCV2XueyHuhYle+s3TZXZVNctwVQ/UWr18
+         WrkPmWYC/UlioNHys+m0chulDlp4tIJTjsliPfReuZdcpT6juGkIrPquN6zRthwd3wzu
+         0ZSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NTg88EBEg4qOXVBL74JDWDn01n0VKUHWmo8g8ottwjk=;
+        b=kfmPpT/MOie0nZYLux8VUwp+gTfDh681xjPGEzrFoKV9KZOCzHAEmEpLaQXTa2NP50
+         /gkQnzkL2QSH33IP6DUpt5Th8tiLlsBX2oVlzOhd6Jr9DZwfMgY5ZS1ypMxOhmPyEjjG
+         qy7S8X638prKM3gg+8Q5ilm+DCn3X0KQ85DXR7FOyd8KKSaQ3br8MFUBZVkIzRNJ4Zh3
+         wFaLnqKZQvE+2g3jxlGI9gElg9G90Bbt5SAA/5Ri7qlgjMM3zakwI+9pIdb6Gn3JcDNw
+         /sYLAXVWPBhM+NKcSG7OEhdiHn2KMuhn/G5fECeOhKY2sCFaIedWOfmoaLHqtvX/0pFg
+         aupA==
+X-Gm-Message-State: AGi0Pub/NVKjxacGwySPhgQsoKhj0S8OXxnu/Yd4Wb2hpUUuC+xJ5o7W
+        o/720RD1VLGPLbL3SgZnau6Sc92Y1yFlhKudm3I=
+X-Google-Smtp-Source: APiQypLRdOptdfBucYqQMnGBtfQiQYTTSA5SWpTYFLPJ+tWQQHwbFT4r0uERcCDlgiqUc8evR7fd9G2UXxUjtwOwvAI=
+X-Received: by 2002:a7b:cc8e:: with SMTP id p14mr23079662wma.70.1586869680226;
+ Tue, 14 Apr 2020 06:08:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3807473.1586869616.1@warthog.procyon.org.uk>
-Date:   Tue, 14 Apr 2020 14:06:56 +0100
-Message-ID: <3807474.1586869616@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <f4eaf0ca-6cd6-c224-9205-bf64ca533ff5@molgen.mpg.de>
+ <dcc4851e-0ab5-683a-2cf2-687d64a3c9da@molgen.mpg.de> <CADnq5_OXdpEebFY3+kyQb-WEw0Rb6cqoOFKGqgxaigU5hean1g@mail.gmail.com>
+ <20200414082150.GD4149624@kroah.com>
+In-Reply-To: <20200414082150.GD4149624@kroah.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 14 Apr 2020 09:07:49 -0400
+Message-ID: <CADnq5_NCnHFO9kZY-8L34B3uVX5aghXO8+gXNC_cPMOnP7UGAg@mail.gmail.com>
+Subject: Re: [regression 5.7-rc1] System does not power off, just halts
+To:     Greg KH <greg@kroah.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Prike Liang <Prike.Liang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        regressions@leemhuis.info, David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "for 3.8" <stable@vger.kernel.org>, Huang Rui <ray.huang@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mengbing Wang <Mengbing.Wang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Waiman Long <longman@redhat.com> wrote:
+On Tue, Apr 14, 2020 at 4:21 AM Greg KH <greg@kroah.com> wrote:
+>
+> On Mon, Apr 13, 2020 at 01:48:58PM -0400, Alex Deucher wrote:
+> > On Mon, Apr 13, 2020 at 1:47 PM Paul Menzel <pmenzel@molgen.mpg.de> wro=
+te:
+> > >
+> > > Dear Prike, dear Alex, dear Linux folks,
+> > >
+> > >
+> > > Am 13.04.20 um 10:44 schrieb Paul Menzel:
+> > >
+> > > > A regression between causes a system with the AMD board MSI B350M M=
+ORTAR
+> > > > (MS-7A37) with an AMD Ryzen 3 2200G not to power off any more but j=
+ust
+> > > > to halt.
+> > > >
+> > > > The regression is introduced in 9ebe5422ad6c..b032227c6293. I am in=
+ the
+> > > > process to bisect this, but maybe somebody already has an idea.
+> > >
+> > > I found the Easter egg:
+> > >
+> > > > commit 487eca11a321ef33bcf4ca5adb3c0c4954db1b58
+> > > > Author: Prike Liang <Prike.Liang@amd.com>
+> > > > Date:   Tue Apr 7 20:21:26 2020 +0800
+> > > >
+> > > >     drm/amdgpu: fix gfx hang during suspend with video playback (v2=
+)
+> > > >
+> > > >     The system will be hang up during S3 suspend because of SMU is =
+pending
+> > > >     for GC not respose the register CP_HQD_ACTIVE access request.Th=
+is issue
+> > > >     root cause of accessing the GC register under enter GFX CGGPG a=
+nd can
+> > > >     be fixed by disable GFX CGPG before perform suspend.
+> > > >
+> > > >     v2: Use disable the GFX CGPG instead of RLC safe mode guard.
+> > > >
+> > > >     Signed-off-by: Prike Liang <Prike.Liang@amd.com>
+> > > >     Tested-by: Mengbing Wang <Mengbing.Wang@amd.com>
+> > > >     Reviewed-by: Huang Rui <ray.huang@amd.com>
+> > > >     Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> > > >     Cc: stable@vger.kernel.org
+> > >
+> > > It reverts cleanly on top of 5.7-rc1, and this fixes the issue.
+> > >
+> > > Greg, please do not apply this to the stable series. The commit messa=
+ge
+> > > doesn=E2=80=99t even reference a issue/bug report, and doesn=E2=80=99=
+t give a detailed
+> > > problem description. What system is it?
+> > >
+> > > Dave, Alex, how to proceed? Revert? I created issue 1094 [1].
+> >
+> > Already fixed:
+> > https://patchwork.freedesktop.org/patch/361195/
+>
+> Any reason that doesn't have a cc: stable tag on it?
+>
+> And is it committed to any tree at the moment?
 
-> As said by Linus:
-> 
->   A symmetric naming is only helpful if it implies symmetries in use.
->   Otherwise it's actively misleading.
-> 
->   In "kzalloc()", the z is meaningful and an important part of what the
->   caller wants.
-> 
->   In "kzfree()", the z is actively detrimental, because maybe in the
->   future we really _might_ want to use that "memfill(0xdeadbeef)" or
->   something. The "zero" part of the interface isn't even _relevant_.
-> 
-> The main reason that kzfree() exists is to clear sensitive information
-> that should not be leaked to other future users of the same memory
-> objects.
-> 
-> Rename kzfree() to kfree_sensitive() to follow the example of the
-> recently added kvfree_sensitive() and make the intention of the API
-> more explicit. In addition, memzero_explicit() is used to clear the
-> memory to make sure that it won't get optimized away by the compiler.
-> 
-> The renaming is done by using the command sequence:
-> 
->   git grep -w --name-only kzfree |\
->   xargs sed -i 's/\bkzfree\b/kfree_sensitive/'
-> 
-> followed by some editing of the kfree_sensitive() kerneldoc and the
-> use of memzero_explicit() instead of memset().
-> 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+It's going out in my -fixes pull this week with a stable tag.
 
-Since this changes a lot of crypto stuff, does it make sense for it to go via
-the crypto tree?
+Alex
 
-Acked-by: David Howells <dhowells@redhat.com>
-
+>
+> thanks,
+>
+> greg k-h
