@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D009D1A8830
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6FA1A885D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503217AbgDNSBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:01:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23052 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2503177AbgDNSBW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586887280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z05Q+2Rh6hZ2Arh2dMLAzEQOInQCTBfGLKRs8w+a0Pk=;
-        b=cXTGo/8XY2ijXepE8k1eOgM/LZ2pI79khsm025PrMsyZObh+NzG83h5f7/ztE9uU8JpfTg
-        4X96jPbID8MoDFtYlW0ZKU6f4fyO2aNn54UQ3RtTy1S9jc0KxfXAAkvSB0fTi2fhVH6An+
-        3myUZE3h5iCU6HNB6wzhIOhJQiBVP0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-3uTR-LcoO8a8gbEDYIqANw-1; Tue, 14 Apr 2020 14:01:13 -0400
-X-MC-Unique: 3uTR-LcoO8a8gbEDYIqANw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2503300AbgDNSC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:02:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503187AbgDNSB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 14:01:27 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C666986A07C;
-        Tue, 14 Apr 2020 18:01:11 +0000 (UTC)
-Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2994360BE0;
-        Tue, 14 Apr 2020 18:01:11 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 13:01:09 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 1/7] livepatch: Apply vmlinux-specific KLP relocations
- early
-Message-ID: <20200414180109.da4v2b4ifpixuzn3@treble>
-References: <cover.1586881704.git.jpoimboe@redhat.com>
- <8c3af42719fe0add37605ede634c7035a90f9acc.1586881704.git.jpoimboe@redhat.com>
- <20200414174406.GC2483@worktop.programming.kicks-ass.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3922A20767;
+        Tue, 14 Apr 2020 18:01:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586887287;
+        bh=PtAFfHJJmm+j+Kb6LPSRoxHltnduIZpLutVkxDiIp6M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PNGC55v0Lk+cz0A6FXEaVrU1+fhb/3ILrbT3nI3yKEMti6V/jdpmJEqkcIzPAVtUW
+         pm/J+Q3/0/XbKwkpE9qJ1O0MrF/cz56h3K53dF2MyIKuWxOxyUCAwXHqHcvviyZkzq
+         3Xpro0hMvZ+5shzFBI0w52SsOG8ok9SJpGIQZQeE=
+Date:   Tue, 14 Apr 2020 19:01:22 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     devicetree@vger.kernel.org, Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Steve Winslow <swinslow@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: patch set ltc2632
+Message-ID: <20200414190122.6881a478@archlinux>
+In-Reply-To: <20200414062648.19013-1-chris.ruehl@gtsys.com.hk>
+References: <20200414062648.19013-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200414174406.GC2483@worktop.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 07:44:06PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 14, 2020 at 11:28:37AM -0500, Josh Poimboeuf wrote:
-> > KLP relocations are livepatch-specific relocations which are applied to
-> >   1) vmlinux-specific KLP relocation sections
-> > 
-> >      .klp.rela.vmlinux.{sec}
-> > 
-> >      These are relocations (applied to the KLP module) which reference
-> >      unexported vmlinux symbols.
-> > 
-> >   2) module-specific KLP relocation sections
-> > 
-> >      .klp.rela.{module}.{sec}:
-> > 
-> >      These are relocations (applied to the KLP module) which reference
-> >      unexported or exported module symbols.
+On Tue, 14 Apr 2020 14:26:43 +0800
+Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
+
+> Patchset to extend ltc2632 spi driver to support the similar chip set
+> ltc2634.
+> * Patch v2 1/3 update documentation struct ltc2632_chip_info
+> * Patch v2 2/3 patch ltc2632.c,Kconfig,ltc2632.txt(devtree)
+> * Patch v2 3/3 convert ltc2632.txt to yaml format named lltc,ltc2632.yaml
+Hi Chris,
+
+Still something going on with your git send-email.  Are you sending these one
+by one perhaps?  Or maybe have something odd in your .git/config?
+
+These have turned up as a series of independent messages as the in-reply-to
+field isn't set in the patches (which should point to this one).
+git-send-email will do that automatically by default if pointed at all the
+files in one go.
+
+Thanks,
+
+Jonathan
 > 
-> Is there something that disallows a module from being called 'vmlinux' ?
-> If not, we might want to enforce this somewhere.
-
-I'm pretty sure we don't have a check for that anywhere, though the KLP
-module would almost certainly fail during the module load when it
-couldn't find the vmlinux.ko symbols it needed.
-
-It wouldn't hurt to add a check somewhere though.  Maybe in
-klp_module_coming() since the restriction only applies to
-CONFIG_LIVEPATCH...
-
--- 
-Josh
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+> 
 
