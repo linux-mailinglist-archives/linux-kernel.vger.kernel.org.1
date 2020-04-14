@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B551A8A1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2171C1A8A33
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504384AbgDNSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 14:48:18 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:36516 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504372AbgDNSsM (ORCPT
+        id S2504451AbgDNSuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:50:20 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44224 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504407AbgDNStx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:48:12 -0400
-Received: by mail-io1-f71.google.com with SMTP id p9so523334ioh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:48:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=blKpKhStMAbwnW14AFefOWzQ8dyB6AcHqCMBWAoqBxo=;
-        b=lczVSruP56O13PIt2Tcr/SfZG62k1SjCDk0YA3aUAe5yNic9vVZKnvAz+SlSDBxIit
-         wTp9RiP+ShtEwnJ8zKYblCncks4ThtNmrPni7rAiokQMr9ezEvvg3xsigHF0SghRBRWd
-         liHfzHwdufSy1twnyD6ma/TsxWj8xAz5iVX6oFCBiLX+VSJKfUHlZmaDkZE8OJhRE8sH
-         oNKMQbMA7z2pjKeRVpAFMMzV3TQ6pLTd8MtxWImlNDAOwOhPZPBfMczkHXDcl9h3qUWt
-         pCnZyAYy3roQM6fSnv2eL2/Y6YMNV5RPni2L3OCdJAeQKBsmZmRp2/BUl0wDpXdCVIFt
-         Q46Q==
-X-Gm-Message-State: AGi0PuZEexR9P1htLFTFzhn7sjftVEme183obKj29igg27T4VWyDuiB0
-        Ss74tA4I/WbNt5Im2/9P3aacViXA0WLSiyXgJuQE0wfpGE0a
-X-Google-Smtp-Source: APiQypJqEqlZyH/jnYwChct6pYjyaF2Qyu5UHI3TEhsudCgq0LFiNYA0FZcNldEKSSTwE7V+x9B5RxvOFP4/qUfwVkF/0G2WkZ4Z
+        Tue, 14 Apr 2020 14:49:53 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EIeAUR125070;
+        Tue, 14 Apr 2020 18:49:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=q4qne1W5zGbbsc7dFpIdBBMnXKX3IuZywtcs1GLXfAk=;
+ b=AEUBmdw5FvchfI0MAffJp5KIT5P8nawjMtj2+vu0SSs2fyMVNPkQKhs+9E2nvpcygU9d
+ eJPWCPoP4EEtZ/Xm8zRIhmOCeiqhX5GrfR4Y8cIwgoF+Z7C+Wfky70YmUBDdtNnWRfzN
+ mLKOB+OF7VoHYojZEdjeCuhEAAb74n4AJQE/tWtJkZBYxxKGVcW29q+uosslRPh6no7L
+ lWRgeC4fYHVg//FEnvHkwHXtkpPBBkjTa3HdMFJSZ/wMUoqF59sHjH3Dh/N9x6o+A8GV
+ tmssRsqcYhSS3dUkf71nDK4vEfucSbVeRC3k93ye47JRQT0wgiysZSmefCCVZRJlu4QF jA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30b5um6q6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 18:49:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EIc7PK008702;
+        Tue, 14 Apr 2020 18:49:35 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30bqphh50g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 18:49:35 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03EInXgC004751;
+        Tue, 14 Apr 2020 18:49:33 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 11:49:32 -0700
+Date:   Tue, 14 Apr 2020 21:49:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, paul@crapouillou.net,
+        Joe Perches <joe@perches.com>, u.kleine-koenig@pengutronix.de,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] pwm: Add missing '\n' in log messages
+Message-ID: <20200414184925.GA12862@kadam>
+References: <20200411153528.30130-1-christophe.jaillet@wanadoo.fr>
+ <20200414135827.GB3593749@ulmo>
+ <f13a8754-3866-d3d2-eaff-29cb6d14ff8d@wanadoo.fr>
 MIME-Version: 1.0
-X-Received: by 2002:a92:498e:: with SMTP id k14mr1538771ilg.160.1586890091797;
- Tue, 14 Apr 2020 11:48:11 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 11:48:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003823e405a344a481@google.com>
-Subject: WARNING: stack recursion on stack type 2
-From:   syzbot <syzbot+a518ca2ae9f86ff95079@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f13a8754-3866-d3d2-eaff-29cb6d14ff8d@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=864 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140132
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 bulkscore=0 mlxscore=0
+ mlxlogscore=939 lowpriorityscore=0 impostorscore=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004140132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Huh...
 
-syzbot found the following crash on:
+If you look at dev_vprintk_emit().  It looks like if
+create_syslog_header() returns a string then vprintk_store() will add
+a newline.
 
-HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to __get_user_x..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1688db5de00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
-dashboard link: https://syzkaller.appspot.com/bug?extid=a518ca2ae9f86ff95079
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+I guess that means that dev_printk() can't be used to pr_cont().  And
+probably that's deliberate because using pr_cont() after boot is racy
+anyway.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+regards,
+dan carpenter
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a518ca2ae9f86ff95079@syzkaller.appspotmail.com
-
-WARNING: stack recursion on stack type 2
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
