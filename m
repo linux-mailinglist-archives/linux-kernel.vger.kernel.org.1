@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D481A8DF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCCD1A8DF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634096AbgDNVou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:44:50 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:42919 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634063AbgDNVnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:43:35 -0400
-Received: by mail-ot1-f68.google.com with SMTP id l21so1293192otd.9;
-        Tue, 14 Apr 2020 14:43:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uvozqtfEr9bESGHX3UpchnJ8A2PhYWDydvpfuPdbYhc=;
-        b=LFvHQf8Mk/gqumaNa/DXw9NVbBhHqkurBN4w0C1wN3WZK14YO6wkHWu5EKDErI5fZS
-         YNMXBR8hxKofRgqXuyj5SEkdUIIqCvj3LatYo9RydZ88U+bxKBdhxfw+j/886sFYHfsZ
-         6wx5dZuv2sVzh2Ld6VV4TBHw0QF6TM3BhTOS9yeM+kIkqephzqxnMXmfNhoC7EG/pHyr
-         SULuh4JaLOUJ8qAPCdcUp46mfuUMWBZdKhpazOBLQYWJQeudkwLCnOk14Q83WwmaBdwW
-         UoyEoG3rAE+2eMSebAFIK5z6ncv9LGodjPjvsmb8JrNRBe3MXkubmz2mUNlZebg8UH2i
-         YG9g==
-X-Gm-Message-State: AGi0PuYpxBY0vOPvNeGqqKdgXN5WpuKZWBUehgAjz+M+3dwuwv0yu2m/
-        xVxw2Mtzx03yW/AhcZMMYQ==
-X-Google-Smtp-Source: APiQypKkc3mkxopBmD8q3Q9BAh/YpU4AikDfqfbekmDrulLTaWnF6YhmPFGgCuE0Wn2xDDc3dm4eEw==
-X-Received: by 2002:a9d:24a4:: with SMTP id z33mr20460527ota.105.1586900614278;
-        Tue, 14 Apr 2020 14:43:34 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e3sm4970371oii.6.2020.04.14.14.43.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 14:43:33 -0700 (PDT)
-Received: (nullmailer pid 9000 invoked by uid 1000);
-        Tue, 14 Apr 2020 21:43:32 -0000
-Date:   Tue, 14 Apr 2020 16:43:32 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Linux-imx@nxp.com
-Subject: Re: [PATCH 2/2] dt-bindings: watchdog: Convert i.MX7ULP to
- json-schema
-Message-ID: <20200414214332.GA8620@bogus>
-References: <1586831568-24635-1-git-send-email-Anson.Huang@nxp.com>
- <1586831568-24635-2-git-send-email-Anson.Huang@nxp.com>
+        id S2634127AbgDNVpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:45:45 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29042 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2634084AbgDNVol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 17:44:41 -0400
+IronPort-SDR: 2C1T3I+iVq7QRiYfsOPKizffsckmTlBDnlcMnGhz0glz37luvuJ0IS32rWAhv0PXD+tQcWYIVx
+ 6dDIPT9SK8ZA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 14:44:35 -0700
+IronPort-SDR: Ppf+++9IpQ95AZ4JOb3oWVi6pLy0XoDu2jTmK7uJZBWggT44Q/pCwWrzZT1WqsqPEbUBB4eICA
+ 1q5HYNJqGIog==
+X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
+   d="scan'208";a="332306739"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.134.69.31])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 14:44:33 -0700
+Message-ID: <44b08ce4e636934b1179dba41b80df3a8033a975.camel@linux.intel.com>
+Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
+ vector altogether
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        x86@kernel.org, arnd@arndb.de, bberg@redhat.com, bp@suse.de,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Date:   Tue, 14 Apr 2020 14:44:32 -0700
+In-Reply-To: <20200414214048.GL2483@worktop.programming.kicks-ass.net>
+References: <20200407063345.4484-1-Jason@zx2c4.com>
+         <20200407063345.4484-3-Jason@zx2c4.com>
+         <20200414214048.GL2483@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586831568-24635-2-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 10:32:48 +0800, Anson Huang wrote:
-> Convert the i.MX7ULP watchdog binding to DT schema format using json-schema.
+On Tue, 2020-04-14 at 23:40 +0200, Peter Zijlstra wrote:
+> On Tue, Apr 07, 2020 at 12:33:45AM -0600, Jason A. Donenfeld wrote:
+> > The thermal IRQ handler uses 1.21% CPU on my system when it's hot
+> > from
+> > compiling things. Indeed looking at /proc/interrupts reveals quite
+> > a lot
+> > of events coming in. Beyond logging them, the existing drivers on
+> > the
+> > system don't appear to do very much that I'm interested in. So, add
+> > a
+> > way to disable this entirely so that I can regain precious CPU
+> > cycles.
 > 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../bindings/watchdog/fsl-imx7ulp-wdt.txt          | 22 --------
->  .../bindings/watchdog/fsl-imx7ulp-wdt.yaml         | 60 ++++++++++++++++++++++
->  2 files changed, 60 insertions(+), 22 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.txt
->  create mode 100644 Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.yaml
+> Why is this MCE code?!? hysterical raisins?
+When this code was developed long time ago, it was also doing mce
+logging. But it is no longer doing mce logging, but code is still
+there.
+
+
 > 
+> Anyway, I wonder if this is something we should hook up to
+> SCHED_THERMAL_PRESSURE, Rafael?
+> 
+> > diff --git a/arch/x86/kernel/cpu/mce/intel.c
+> > b/arch/x86/kernel/cpu/mce/intel.c
+> > index f996ffb887bc..d14f1922fb49 100644
+> > --- a/arch/x86/kernel/cpu/mce/intel.c
+> > +++ b/arch/x86/kernel/cpu/mce/intel.c
+> > @@ -511,7 +511,8 @@ static void intel_ppin_init(struct cpuinfo_x86
+> > *c)
+> >  
+> >  void mce_intel_feature_init(struct cpuinfo_x86 *c)
+> >  {
+> > -	intel_init_thermal(c);
+> > +	if (IS_ENABLED(CONFIG_X86_THERMAL_VECTOR))
+> > +		intel_init_thermal(c);
+> >  	intel_init_cmci();
+> >  	intel_init_lmce();
+> >  	intel_ppin_init(c);
+> > -- 
+> > 2.26.0
+> > 
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/watchdog/fsl-imx7ulp-wdt.example.dt.yaml: watchdog@403d0000: 'timeout-sec' does not match any of the regexes: 'pinctrl-[0-9]+'
-
-See https://patchwork.ozlabs.org/patch/1270024
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
