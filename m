@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BE81A7E2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AA41A7E3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgDNNdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727825AbgDNNc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:32:27 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4049C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:32:26 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id k21so12523712ljh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PL1qV4rNoqECyojOXOX+qjKZBMB6ykqsNqwBvbzionM=;
-        b=fj6dRfJueU93JLtAj9ltpUVcudfQ6pO7neITBQlY+zpG6krZTSQsunTafyhAjXMpK1
-         Sva0c3U/fX3f3JvRVWlfEIjYPScaxmnLuqclj6a4NdeGwNoSsX2Wx7a4ip0eao289Fin
-         qdlAqvJJ87cbEOmfSRuC0b6WBxWBG3XOhX3UEvBIQ5g/FveRd43VMRP/M/6XQ5BUEwvo
-         WV6IdOdd+U8qFKYDOswpjJRsY5rzgV7i/KMHghU7RIoA5esKeHDdjaQ8qGMa2oXJgBxF
-         Vsqkmia17d6EDjMNq96T9083nVCoQfNq2qhcBJ48p+TTv1D6CSER0536aoUNEUAxSXhM
-         MjSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PL1qV4rNoqECyojOXOX+qjKZBMB6ykqsNqwBvbzionM=;
-        b=g0pPH5U2R8Am89Ww3Kh6Q6L0ivkr/LntyEYhqy6wdmgJ8QABZWJdEJSd18E8MPNPvt
-         HBwRSmYUrzvkh/C6hCh5ZcOJeTruE8UwUbexju0J/+cJSiblHPR5RXdyoxD3FK0dW2uH
-         /Tt0TkNIpQjN8sHbn6nlQQ3Mpk+XGuAxKfGGQcziWF+sdAlHdIq/59YnSt+ByTNZeA+P
-         Qi39Z+bhseosOmzqIQAwtsfP37dcXKJwkjpBcuoOefi7bRXsCclYD0nCtRS2kMn+xom/
-         XJ/kloaA7TDKnDAPhWM20jNlaKx3sy9Tt2cxuPaAWj7WYeYYXlzJfUB9VF2eG/YkQoTz
-         p4cg==
-X-Gm-Message-State: AGi0PuZLCIl/5zWcKxRzng3NgZky28Avu3eVQI/typuc/d2xVsUu8GaZ
-        nfSzVSX+CqmYcAiljvgS6ab5orQ1W2Hu5UMFFHA=
-X-Google-Smtp-Source: APiQypL9ubPg9X2xTig9P1oQmBHUPak5Twtx59MPEa+o38OQeAQhiuoTlIIp3kNs2Qco2pjx0xEiKcJuOZkCLhAy8Dc=
-X-Received: by 2002:a05:651c:30b:: with SMTP id a11mr137759ljp.164.1586871145310;
- Tue, 14 Apr 2020 06:32:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <1586870475-32532-1-git-send-email-peng.fan@nxp.com>
-In-Reply-To: <1586870475-32532-1-git-send-email-peng.fan@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 14 Apr 2020 10:32:54 -0300
-Message-ID: <CAOMZO5APoqzvptc9gY2r69MzZ=gjTnsr2UV519xJmKmEkcx3=g@mail.gmail.com>
-Subject: Re: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
+        id S1732406AbgDNNfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:35:50 -0400
+Received: from mail-am6eur05on2061.outbound.protection.outlook.com ([40.107.22.61]:58272
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727825AbgDNNeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:34:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZeJ6k4wxEdK2zYWOeeuDL6u1H8YrLIfwLeuHTqfG0pGxUwnwJq035xUNsxEY/fZpbCSa1T3n+KSkqHRR6UPOiyYOjU7f+o6Uf68667X/rYu70IDYYZRiWZfWPdp0w+pPNwiGnmDm8MQqoow0WcKCr5KFAHGt4072i6VZmboULREoPQZuqzEj3Eqe11D3Ke559muzPh9Bn8fuJk5cayxniBOpqIreQNtSZci4P2UyMVFrlqLikrKc/vWJrtW8e3cKS2Z86H0AEc6CuOeTtO5wl0X/9I/1p4YkKeJHOCd06nUKpGxIC7eNQC7pET7NoipRLuteBKWRoCs8OIzqRVxNLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WwmGGOYnBgwFKBhGKd+Oi3bygyZv05RHLcgJPFunLCg=;
+ b=F6+QJbNZRkF0UKuknFNjjsAHp/GJqzgkxQs4+sBJas4Xdo77oMuDdPEGpDbheBrLizEtfqhVAGvgQyMcS2y7Io2g9dqCmAzAulD9PsbR7VohmigwGveetk+0L3OdDRxeQRMF5AnTTKMO1kfUaRst/WU9QYGSB4ETSGPDj3Hl17X9xLHUkraQ22UAluyG6SeYmflp9zmxRHfOosqW2xNJMPZ+8lgJABQkvaQsqoinj2T+0zQl9S8c50Y46VxM3C4/MMHW+zt2s+yO5Rp4xv/u3WJz/I/4T6ZdZ8fBQxZRml1VGCkGttZV55tCzQB45wrGKmOsTBGanScn3s4fdWEoyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WwmGGOYnBgwFKBhGKd+Oi3bygyZv05RHLcgJPFunLCg=;
+ b=HI9a5upTNZQBJfstQp+aNIWq0Z/zzI0oJpO94uMoO32eoPQGztSZsAumlDloAZXvAi3fQQmsqspGlOgSH0aQyLeBTxUdT0QFReFWf4ikHPxHKYyDP7VcMQgAAiI+TPjDhp5Aqtwn/Ldb1hQVluDh4rR5bom8zqiugqaZxauBZ6Q=
+Received: from AM0PR04MB4481.eurprd04.prod.outlook.com (2603:10a6:208:70::15)
+ by AM0PR04MB6868.eurprd04.prod.outlook.com (2603:10a6:208:18c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Tue, 14 Apr
+ 2020 13:34:20 +0000
+Received: from AM0PR04MB4481.eurprd04.prod.outlook.com
+ ([fe80::ad44:6b0d:205d:f8fc]) by AM0PR04MB4481.eurprd04.prod.outlook.com
+ ([fe80::ad44:6b0d:205d:f8fc%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 13:34:20 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Fabio Estevam <festevam@gmail.com>
+CC:     Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        jassisinghbrar@gmail.com, Oleksij Rempel <o.rempel@pengutronix.de>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
         Leonard Crestez <leonard.crestez@nxp.com>,
         Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Yongcai Huang <Anson.Huang@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
         "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: RE: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
+Thread-Topic: [PATCH V2] mailbox: imx-mailbox: fix scu msg header size check
+Thread-Index: AQHWEmDdM8QPFjiGdUiIpKIFO8zVmah4naUAgAAACBA=
+Date:   Tue, 14 Apr 2020 13:34:20 +0000
+Message-ID: <AM0PR04MB44819E180407DF7CD1D4194488DA0@AM0PR04MB4481.eurprd04.prod.outlook.com>
+References: <1586870475-32532-1-git-send-email-peng.fan@nxp.com>
+ <CAOMZO5APoqzvptc9gY2r69MzZ=gjTnsr2UV519xJmKmEkcx3=g@mail.gmail.com>
+In-Reply-To: <CAOMZO5APoqzvptc9gY2r69MzZ=gjTnsr2UV519xJmKmEkcx3=g@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=peng.fan@nxp.com; 
+x-originating-ip: [180.107.26.236]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 424b8497-5c37-4934-36cb-08d7e078899c
+x-ms-traffictypediagnostic: AM0PR04MB6868:|AM0PR04MB6868:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR04MB68689DD9D43565D4F3C459BE88DA0@AM0PR04MB6868.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0373D94D15
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4481.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(136003)(366004)(396003)(39860400002)(376002)(2906002)(5660300002)(15650500001)(44832011)(26005)(76116006)(86362001)(33656002)(71200400001)(6916009)(316002)(186003)(8936002)(53546011)(6506007)(4744005)(7696005)(478600001)(4326008)(81156014)(9686003)(64756008)(66446008)(52536014)(66556008)(8676002)(54906003)(66476007)(55016002)(66946007);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IGpji+Xwtyk0Ly8Rj/dqZXLNAs8Mw/eQstAJTM2vArsDCI0jrZpGtCZHn2BH5mNvsshf/ojd8wguUnduBMmfBT8ELb/Gyq/46FYwJ6VXQzQ6puzL74sKZZwo5bIBDKhMf70rSStum9RyxYII8Ux6QgdAmezKNXVRNBGJKXy8lhwRyKxIgbZRcaRK0BD3CRzYRGVrlRlq0DJPKzG1ZT+U3c1HIH+nYFRPCYIwXJeL69Z2fgjoctvEJJbKrF8sWhcXmaLvwt48ePl3ts7s7DpLbLzWe3dpemIQ5eUD9ksSVAIMiz1H19GXKUDY+H2bYHSflKNtxqWKH/uxeKyDoe3vWjAr8stOB3/4eXc0PPNwnPrMURgpyMFxa8xFkt3QgHz1tKO8hKdO5VmLc5/EF4iFOMYUbBYaLn0DGvYQpoRJmeySjtWA3OrYmGlOlRV28Nmr
+x-ms-exchange-antispam-messagedata: 04GebbzK7Nrw05PGp9JYC7XLzT3UL81muYfY19BVwnwLRdLgKobvtKZBICl3uqwdrvuY419Dnnqbcex+Ydh+Md+PGLrAkcG1XMXEFfEpDXcgP+gldTuQoKSRBJEM9d8QrjH/BIJncqOJ2ELa3C1mQA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 424b8497-5c37-4934-36cb-08d7e078899c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 13:34:20.4158
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VwSMlxUZECQ6lOi43YCAmM0TXkgYCZT8xp1ZmfBmqF7nLDoj/TlUbln8OSmHO061NQH24g5/IrpWzcHRwih5YQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6868
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
-
-On Tue, Apr 14, 2020 at 10:30 AM <peng.fan@nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> The i.MX8 SCU message header size is the number of "u32" elements,
-> not "u8", so fix the check.
-
-Since this is a fix, please add a Fixes tag
+SGkgRmFiaW8sDQoNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBWMl0gbWFpbGJveDogaW14LW1haWxi
+b3g6IGZpeCBzY3UgbXNnIGhlYWRlciBzaXplIGNoZWNrDQo+IA0KPiBIaSBQZW5nLA0KPiANCj4g
+T24gVHVlLCBBcHIgMTQsIDIwMjAgYXQgMTA6MzAgQU0gPHBlbmcuZmFuQG54cC5jb20+IHdyb3Rl
+Og0KPiA+DQo+ID4gRnJvbTogUGVuZyBGYW4gPHBlbmcuZmFuQG54cC5jb20+DQo+ID4NCj4gPiBU
+aGUgaS5NWDggU0NVIG1lc3NhZ2UgaGVhZGVyIHNpemUgaXMgdGhlIG51bWJlciBvZiAidTMyIiBl
+bGVtZW50cywgbm90DQo+ID4gInU4Iiwgc28gZml4IHRoZSBjaGVjay4NCj4gDQo+IFNpbmNlIHRo
+aXMgaXMgYSBmaXgsIHBsZWFzZSBhZGQgYSBGaXhlcyB0YWcNCg0KVGhlIHBhdGNoIGlzIGluIExp
+bnV4LW5leHQgdHJlZSwgbm90IGluIGxpbnVzIHRyZWUgbm93LCBzbyBhIGZpeGVzIHRhZyB3b3Vs
+ZCBiZSBpbnZhbGlkDQphZnRlciBwYXRjaCBnb2VzIGZyb20gbmV4dCB0byBsaW51cyB0cmVlLg0K
+DQpUaGFua3MsDQpQZW5nLg0K
