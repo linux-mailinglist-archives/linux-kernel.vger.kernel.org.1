@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E031A8C13
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 22:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03CE1A8B6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632849AbgDNUPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 16:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
+        id S2505212AbgDNTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2632810AbgDNUOv (ORCPT
+        by vger.kernel.org with ESMTP id S2505188AbgDNTr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 16:14:51 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E5CC061A41
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:55:44 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id f19so14584215iog.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:55:44 -0700 (PDT)
+        Tue, 14 Apr 2020 15:47:27 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158C2C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:47:25 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z26so1100345ljz.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sjVvZonb0hVGjhdZ35VWK21WqwfB1XaKuSBkV0Zyjh0=;
-        b=PvNd+JcVIrErvIye2eIVifVi9exD5Rgm72/G+zjK72njls/t+oLDlFGJsW98dujywT
-         4XjOKGsIZADatakxpcHQBqMe7NgqrmCsotFm4GnOGy4vsttMaWLGW8UO0ZQwbvZfyg5N
-         VYUfSBF6hI/2JCKAJ+EQ3DiuZvYmSJA3wQIwIw1GvgvF8U0YHtv3cOJKHT/pLmusZ0i5
-         wUS4/Q4uYw4iJ2spiaTC+yG7VYNSowyLRNz6d56ajnLlMEeBEPEMk2hCqvkf/xsAWI+6
-         nmLEgDu/dHzlHtFPoltUGrYDTCnYjwte9eG+1jrx/QfHaOcvBnursf3Pnjvv5TfwOy0s
-         ff2A==
+        bh=JJK+Q+UKkDQaruBYiWcWjNudKJdkietMzkyNFKfwUfY=;
+        b=NI2CbHQmy0JJhl4ytQt1TbKJDLFhbGdB6cugYS+62mNdDgladQHA0hgMSpm0uXhk9o
+         OenLF/9qzYoyXCkuv5tboOvQ6DYSBgPak6ZedVQ8kUkb2+i3/FPQaVyVDxSnO7vm1ajm
+         O8Ee2EwUzbtxLpnuvL5B21vXVbTPdRKawqDL3gkIiIr+Jrz202HaTyAyl3ggcMnK6bgF
+         aHJmI2L8Q4H3BoMBCL08Cbenfkc2Ktqw+9w5IwhZlfXIkOWQjb/acdtVBaaBe5mpT7GX
+         kwMHIbu70LH9UdN5hfijW4qXB2bKDyy7J84+hu3Wd69S/RaX2rI2sxEYDfE0xTjOAuIN
+         MV3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sjVvZonb0hVGjhdZ35VWK21WqwfB1XaKuSBkV0Zyjh0=;
-        b=f8Nuzt13pMvmt6nWFTd8dmKGGHzfvaqFGZIjK6yhiaJ84uua5EO1GkfNRj0fdt+dLf
-         hEVkW7Mc/SWp4iI+jGIk4FVoFhuXC52RynMBtq9zeGuyfCW/7v/2GRB+5lV90lpM0cH+
-         vc6ooxoYQQM9hD1XySIE8AKS+pt8u8AfUjeqAdEFogMskhd8d7Z4AQ9+daCiun6Tw7Zi
-         88+DXuetKh0E21Lzd5fraBjuqtYDAg+BMlnbgkUvaWg3kDoJcOgGndq/DCkxoud9s88G
-         HIx8blRutVNVjEnWuSrL99jUoHk4G/Xy1Z7HVclUdVBa0L8dHe2GF18vHO5WgnJn7oiu
-         fJIA==
-X-Gm-Message-State: AGi0PuarCXBhpvx5g1WP4aRt5jfioMynbKaUaWOA7edghJqwl+Zh3Gu/
-        QTdv/DZGWdaqSf8tUqL380YtcTHXC4H4bsNfPS98+w==
-X-Google-Smtp-Source: APiQypJuSkKnSFW+a5lugNBcUtA3MoeGUC7wQc61G10VXtYgncmQO6k3h4ozTE1pckGKZdNGz3nVuCqt5qO9VwKvjGc=
-X-Received: by 2002:a05:6602:2182:: with SMTP id b2mr22542641iob.19.1586894144019;
- Tue, 14 Apr 2020 12:55:44 -0700 (PDT)
+        bh=JJK+Q+UKkDQaruBYiWcWjNudKJdkietMzkyNFKfwUfY=;
+        b=hWufysNL6BsReUyWqSw44D3w4emGDsEECdXVgPqxuEx96hx5OubOzFKbFrYXkDoJNN
+         D8ZnG8bkLJ2BDYvVCbHq4+iqlH+HNKgamJHiCFuqqnt54V3sRAXmiE/0FNZZ6+C7AMVE
+         l/AsnO9cJ0mcYs1M9IXCdAZJFeNE1F2bALRnBHXhvxTYTURR8yVQ2QwvARHiJKwgr/Mp
+         ZUpkqhtOZhBKMsnik6znyHbRubgb21PF/eTy+DbZ8S4a02TgVA4W3r2jRr1STTfnFTSG
+         o+RLOoEJZAOdJtKaJsKgkIgRAJX5QZctic1XWcPBhxWOt4HFHyJkYV6Kf75GcwDDzMpW
+         U8dg==
+X-Gm-Message-State: AGi0PuY6RNmhGH/6BBkGbVsU52FE2WWx0SI8kfVsiLstVERvL5nFHd9M
+        z+B4t3RxyenShaQZBlgDfEZpGnWM7IqX8YCICHQ=
+X-Google-Smtp-Source: APiQypLGUYk3suy/eSUDKH5ICT7nYCw/nP+Vjdcx+EdWiVN7l3yhVL9RbojbaGVteYNrgDbwy7b43T8oKlKY7EU+/X4=
+X-Received: by 2002:a2e:6c05:: with SMTP id h5mr1012285ljc.217.1586893643490;
+ Tue, 14 Apr 2020 12:47:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200407011259.GA72735@juliacomputing.com> <8f95e8b4-415f-1652-bb02-0a7c631c72ac@intel.com>
- <CABV8kRw1TQsqs+z43bSfZ5isctuFGMB4g_ztDYihiiXHcy4nVA@mail.gmail.com>
- <5208ad1e-cd9b-d57e-15b0-0ca935fccacd@intel.com> <CABV8kRzfR32+MpAvTAPHCN902WtHSxySujcO2yAB3OT0caVDJg@mail.gmail.com>
- <9921cb2e-a7cb-c1d0-b120-c08f06be7c7f@intel.com> <CABV8kRxDkE1dQh0c2FkFpkUruiR0aD-hXbgd5-jcoCDiwYHs1A@mail.gmail.com>
-In-Reply-To: <CABV8kRxDkE1dQh0c2FkFpkUruiR0aD-hXbgd5-jcoCDiwYHs1A@mail.gmail.com>
-From:   Keno Fischer <keno@juliacomputing.com>
-Date:   Tue, 14 Apr 2020 15:55:07 -0400
-Message-ID: <CABV8kRy6M8_-An5TEvBATAz+MxdaQqbCLBEZbJsaz=aZiV48wA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0 per-thread
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kyle Huey <khuey@kylehuey.com>,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Peter Zijlstra <peterz@infradead.org>
+References: <20200407095107.1988-1-miles.chen@mediatek.com> <20200407181908.GB94792@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20200407181908.GB94792@iweiny-DESK2.sc.intel.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 15 Apr 2020 01:25:07 +0530
+Message-ID: <CAFqt6zYztssQEgMJtafr_ZdMYvBwAU-BZ4Z4tOWQPJ6eFnHq2Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/gup: fix null pointer dereference detected by coverity
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Miles Chen <miles.chen@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+On Tue, Apr 7, 2020 at 11:49 PM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Tue, Apr 07, 2020 at 05:51:07PM +0800, Miles Chen wrote:
+> > In fixup_user_fault(), it is possible that unlocked is NULL,
+> > so we should test unlocked before using it.
+> >
+> > For example, in arch/arc/kernel/process.c, NULL is passed
+> > to fixup_user_fault().
+> >
+> > SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new)
+> > {
+> > ...
+> >       ret = fixup_user_fault(current, current->mm, (unsigned long) uaddr,
+> >                              FAULT_FLAG_WRITE, NULL);
+> > ...
+> > }
+> >
+> > Fixes: 4a9e1cda2748 ("mm: bring in additional flag for fixup_user_fault to signal unlock")
+> > Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-I'd like to continue this discussion along two directions:
+Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-1) In this patch, what should happen to signal frames?
-
-I continue to think that it would be good for these to observe
-the process' XCR0, but I understand the argument that we
-should not let the XCR0 setting modify any kernel behavior
-whatsoever. Andy, I would in particular appreciate your views
-on this since I believe you thought it should do the latter.
-
-2) What would a solution based on the raw KVM API look like?
-
-I'm still afraid that going down the KVM route would just end up
-back in the same situation as we're in right now, but I'd like to
-explore this further, so here's my current thinking: Particularly for
-recording, the process does need to look very much like a regular
-linux process, so we can get recording of syscalls and signal state right.
-I don't have enough of an intuition for the performance implications
-of this. For example, suppose we added a way for the kernel to
-directly take syscalls from guest CPL3 - what would the cost
-of incurring a vmexit for every syscall be? I suppose another
-idea would be to build a minimal linux kernel that sits in guest
-CPL0 and emulates at least the process state and other high
-frequency syscalls, but forwards the rest to the host kernel.
-Seems potentially doable, but a bit brittle - is there prior art
-here I should be aware of, e.g. from people looking at securing
-containers? As I mentioned, I had looked at Project Dune
-before (http://dune.scs.stanford.edu/), which does seem to
-do a lot of the things I would need, though it doesn't appear
-to currently be handling signals at all, and of course it's also
-not really KVM based, but rather
-KVM-but-copy-pasted-and-manually-hacked-up-in-a-separate.ko
-based.
-
-I may also be missing a completely obvious way to do this -
-my apologies if so. I would certainly appreciate any insight on
-how to achieve the set of requirements here (multiple tracees
-with potentially differing XCR0 values, faithful and performant
-provision of syscalls/signals to the tracees) on top of KVM.
-
-If we can figure out a good way forward with KVM, I'd be quite
-interested in it, since I think there may be additional performance
-games that could be played by having part of rr be in guest CPL0,
-I'm just unsure that KVM is really the right abstraction here, so
-I'd like to think through it a bit.
-
-Keno
+>
+> > ---
+> >  mm/gup.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index da3e03185144..a68d11dc232d 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -1230,7 +1230,8 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
+> >       if (ret & VM_FAULT_RETRY) {
+> >               down_read(&mm->mmap_sem);
+> >               if (!(fault_flags & FAULT_FLAG_TRIED)) {
+> > -                     *unlocked = true;
+> > +                     if (unlocked)
+> > +                             *unlocked = true;
+> >                       fault_flags |= FAULT_FLAG_TRIED;
+> >                       goto retry;
+> >               }
+> > --
+> > 2.18.0
+>
