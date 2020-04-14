@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D6E1A7191
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7161A7198
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404487AbgDNDRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404224AbgDNDRP (ORCPT
+        id S2404507AbgDNDRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:17:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45374 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404489AbgDNDRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:17:15 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07992C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:17:15 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id i26so10582285pfk.20
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=gxEoz/v6zI9kY9dLzPfoceYRowmrIoXtyev6zAIHHPw=;
-        b=uc1OBjTiiSXG30kfljGMlpVcpXmDGsLmUjZtB0I8qQSHDSRYWXtgiwUgidg45QReKI
-         wTGrybQZhRMOmV8jHzToluSkO75v5jgOdUE65cZuGfVbmngjyxhhmpie5FyzuDU2azps
-         PCjiynfxw/6lB0bxh6ZxkC4b9glGl4DLVhpzB+vrnpbL6LJlZOrrAVyCsyi/OeV06gTu
-         4fVDWmvmPwxg5UBaemLviDhfjidwvY7rAx7FHwtvkYkKt1bxY9hI1veSl8qLEV7AbojW
-         k4VFIlREcOIeZj9wQP7E/D2HshMdOs3UySfbAs8sJjGdbm/q7y26Ig/2Nua6Qwnqj2u1
-         aRgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=gxEoz/v6zI9kY9dLzPfoceYRowmrIoXtyev6zAIHHPw=;
-        b=X5t8jA7m+pbTIx998ltqmSACflse77rdGXcSsO2L6aq6RM05ZoZwNV8fD3ABkNvq+9
-         /iE+7jl+s4FjuyYc6jPPydkcNPegU31aXz2IUaUz4i/gWxEn243sMntFmsuomgy5+4Hk
-         /rDCtsXa6B9Qq0R8rJdiH2hNUxf9/zNqqX3Ennan9na5y59tY2gKttr44+dGQRpYrneG
-         rWzO8MbVSsf8G9tmrD41L7R6drliI4R/tL/G5vu2WDpbY7PPse804y1yW1XA7/RI5F92
-         56NVBy55h8DZ+sTwO4FbYJyc+Tf0AGMbkykZ1aTM0QZa4m1KQSWRSTXXS+OXMe/tyZJp
-         F1zg==
-X-Gm-Message-State: AGi0PubsI4DhIMiZBOWDe6ArK78aFy+D46QkqzlzxqnUG/fLQOa51a57
-        cQzH7j8rIwSbCbf0kC/NZx7WH8C8BSQe9A==
-X-Google-Smtp-Source: APiQypIerSJJKGlbfphtAsom/uiMTUNo/u6cTOKUfW048G0iRUNJlEqD2Jc36VelAjyN/v4FksWQsP3Vyc1EOw==
-X-Received: by 2002:a17:90b:19c9:: with SMTP id nm9mr827821pjb.86.1586834234588;
- Mon, 13 Apr 2020 20:17:14 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 20:16:43 -0700
-Message-Id: <20200414031647.124664-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH v5 0/4] KUnit-KASAN Integration
-From:   David Gow <davidgow@google.com>
-To:     trishalfonso@google.com, brendanhiggins@google.com,
-        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 13 Apr 2020 23:17:35 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03E34GRO069644
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 23:17:34 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30b7gw3uws-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 23:17:34 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <ravi.bangoria@linux.ibm.com>;
+        Tue, 14 Apr 2020 04:17:15 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 14 Apr 2020 04:17:10 +0100
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03E3HQIH60096710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 03:17:26 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7033D52054;
+        Tue, 14 Apr 2020 03:17:26 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.60.157])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DE98652067;
+        Tue, 14 Apr 2020 03:17:11 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au, mikey@neuling.org
+Cc:     apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
+        christophe.leroy@c-s.fr, naveen.n.rao@linux.vnet.ibm.com,
+        peterz@infradead.org, jolsa@kernel.org, oleg@redhat.com,
+        fweisbec@gmail.com, mingo@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        ravi.bangoria@linux.ibm.com
+Subject: [PATCH v3 00/16] powerpc/watchpoint: Preparation for more than one watchpoint
+Date:   Tue, 14 Apr 2020 08:46:43 +0530
+X-Mailer: git-send-email 2.25.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20041403-0012-0000-0000-000003A410A8
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041403-0013-0000-0000-000021E1457A
+Message-Id: <20200414031659.58875-1-ravi.bangoria@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-13_11:2020-04-13,2020-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=643 clxscore=1015 malwarescore=0 mlxscore=0 impostorscore=0
+ spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140020
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset contains everything needed to integrate KASAN and KUnit.
+So far, powerpc Book3S code has been written with an assumption of only
+one watchpoint. But future power architecture is introducing second
+watchpoint register (DAWR). Even though this patchset does not enable
+2nd DAWR, it make the infrastructure ready so that enabling 2nd DAWR
+should just be a matter of changing count.
 
-KUnit will be able to:
-(1) Fail tests when an unexpected KASAN error occurs
-(2) Pass tests when an expected KASAN error occurs
+Existing functionality works fine with the patchset. I've tested it with
+perf, ptrace(gdb), xmon. All hw-breakpoint selftests are passing as well.
+And I've build tested for 8xx and 'AMCC 44x, 46x or 47x'.
 
-Convert KASAN tests to KUnit with the exception of copy_user_test
-because KUnit is unable to test those.
+Note: kvm or PowerVM guest is not enabled yet.
 
-Add documentation on how to run the KASAN tests with KUnit and what to
-expect when running these tests.
+v2:
+  https://lore.kernel.org/linuxppc-dev/20200401061309.92442-1-ravi.bangoria@linux.ibm.com
 
-Depends on "[PATCH v3 kunit-next 0/2] kunit: extend kunit resources
-API" patchset [1]
+v2->v3:
+ - Few minor improvements as suggested by Christophe
+ - Rebased to powerpc/next
 
+Ravi Bangoria (16):
+  powerpc/watchpoint: Rename current DAWR macros
+  powerpc/watchpoint: Add SPRN macros for second DAWR
+  powerpc/watchpoint: Introduce function to get nr watchpoints
+    dynamically
+  powerpc/watchpoint/ptrace: Return actual num of available watchpoints
+  powerpc/watchpoint: Provide DAWR number to set_dawr
+  powerpc/watchpoint: Provide DAWR number to __set_breakpoint
+  powerpc/watchpoint: Get watchpoint count dynamically while disabling
+    them
+  powerpc/watchpoint: Disable all available watchpoints when
+    !dawr_force_enable
+  powerpc/watchpoint: Convert thread_struct->hw_brk to an array
+  powerpc/watchpoint: Use loop for thread_struct->ptrace_bps
+  powerpc/watchpoint: Introduce is_ptrace_bp() function
+  powerpc/watchpoint: Use builtin ALIGN*() macros
+  powerpc/watchpoint: Prepare handler to handle more than one
+    watcnhpoint
+  powerpc/watchpoint: Don't allow concurrent perf and ptrace events
+  powerpc/watchpoint/xmon: Don't allow breakpoint overwriting
+  powerpc/watchpoint/xmon: Support 2nd dawr
 
-Changes from v4:
- - KASAN no longer will panic on errors if both panic_on_warn and
-   kasan_multishot are enabled.
- - As a result, the KASAN tests will no-longer disable panic_on_warn.
- - This also means panic_on_warn no-longer needs to be exported.
- - The use of temporary "kasan_data" variables has been cleaned up
-   somewhat.
- - A potential refcount/resource leak should multiple KASAN errors
-   appear during an assertion was fixed.
- - Some wording changes to the KASAN test Kconfig entries.
-
-Changes from v3:
- - KUNIT_SET_KASAN_DATA and KUNIT_DO_EXPECT_KASAN_FAIL have been
- combined and included in KUNIT_DO_EXPECT_KASAN_FAIL() instead.
- - Reordered logic in kasan_update_kunit_status() in report.c to be
- easier to read.
- - Added comment to not use the name "kasan_data" for any kunit tests
- outside of KUNIT_EXPECT_KASAN_FAIL().
-
-Changes since v2:
- - Due to Alan's changes in [1], KUnit can be built as a module.
- - The name of the tests that could not be run with KUnit has been
- changed to be more generic: test_kasan_module.
- - Documentation on how to run the new KASAN tests and what to expect
- when running them has been added.
- - Some variables and functions are now static.
- - Now save/restore panic_on_warn in a similar way to kasan_multi_shot
- and renamed the init/exit functions to be more generic to accommodate.
- - Due to [2] in kasan_strings, kasan_memchr, and
- kasan_memcmp will fail if CONFIG_AMD_MEM_ENCRYPT is enabled so return
- early and print message explaining this circumstance.
- - Changed preprocessor checks to C checks where applicable.
-
-Changes since v1:
- - Make use of Alan Maguire's suggestion to use his patch that allows
-   static resources for integration instead of adding a new attribute to
-   the kunit struct
- - All KUNIT_EXPECT_KASAN_FAIL statements are local to each test
- - The definition of KUNIT_EXPECT_KASAN_FAIL is local to the
-   test_kasan.c file since it seems this is the only place this will
-   be used.
- - Integration relies on KUnit being builtin
- - copy_user_test has been separated into its own file since KUnit
-   is unable to test these. This can be run as a module just as before,
-   using CONFIG_TEST_KASAN_USER
- - The addition to the current task has been separated into its own
-   patch as this is a significant enough change to be on its own.
-
-
-[1] https://lore.kernel.org/linux-kselftest/1585313122-26441-1-git-send-email-alan.maguire@oracle.com/T/#t
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=206337
-
-Patricia Alfonso (4):
-  Add KUnit Struct to Current Task
-  KUnit: KASAN Integration
-  KASAN: Port KASAN Tests to KUnit
-  KASAN: Testing Documentation
-
- Documentation/dev-tools/kasan.rst |  70 ++++
- include/kunit/test.h              |   5 +
- include/linux/kasan.h             |   6 +
- include/linux/sched.h             |   4 +
- lib/Kconfig.kasan                 |  18 +-
- lib/Makefile                      |   3 +-
- lib/kunit/test.c                  |  13 +-
- lib/test_kasan.c                  | 668 +++++++++++++-----------------
- lib/test_kasan_module.c           |  76 ++++
- mm/kasan/report.c                 |  34 +-
- 10 files changed, 504 insertions(+), 393 deletions(-)
- create mode 100644 lib/test_kasan_module.c
+ arch/powerpc/include/asm/cputable.h       |   6 +-
+ arch/powerpc/include/asm/debug.h          |   2 +-
+ arch/powerpc/include/asm/hw_breakpoint.h  |  32 +-
+ arch/powerpc/include/asm/processor.h      |   6 +-
+ arch/powerpc/include/asm/reg.h            |   6 +-
+ arch/powerpc/include/asm/sstep.h          |   2 +
+ arch/powerpc/kernel/dawr.c                |  23 +-
+ arch/powerpc/kernel/hw_breakpoint.c       | 646 ++++++++++++++++++----
+ arch/powerpc/kernel/process.c             |  85 +--
+ arch/powerpc/kernel/ptrace/ptrace-noadv.c |  72 ++-
+ arch/powerpc/kernel/ptrace/ptrace32.c     |   4 +-
+ arch/powerpc/kernel/signal.c              |  12 +-
+ arch/powerpc/kvm/book3s_hv.c              |  12 +-
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S   |  18 +-
+ arch/powerpc/xmon/xmon.c                  |  99 +++-
+ kernel/events/hw_breakpoint.c             |  16 +
+ 16 files changed, 814 insertions(+), 227 deletions(-)
 
 -- 
-2.26.0.110.g2183baf09c-goog
+2.21.1
 
