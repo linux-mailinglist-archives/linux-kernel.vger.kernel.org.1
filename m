@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289861A8B39
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DD51A8B43
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505059AbgDNTky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:40:54 -0400
-Received: from mga12.intel.com ([192.55.52.136]:59971 "EHLO mga12.intel.com"
+        id S2505101AbgDNTla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:41:30 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:38323 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505034AbgDNTjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:39:53 -0400
-IronPort-SDR: 9udZDNIetMdTLDgz92JTZohTV9yhzUFIF+4Nhm+xer3tMBOnifQQ7riCGJ2P8cRNbMY+KL2a3V
- nQXRO/cMtRqA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:39:53 -0700
-IronPort-SDR: jwBrX7DN0JzzBuuEtGDysHoEvsUWmL3iCQ9lRJ3paKFP8WejhWaNT7aV8D+b7r6QtnNSTXCBDR
- 1utJOvtdJe3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="245503305"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Apr 2020 12:39:53 -0700
-Date:   Tue, 14 Apr 2020 12:39:53 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm/gup: dereference page table entry using helper
-Message-ID: <20200414193952.GC1853609@iweiny-DESK2.sc.intel.com>
-References: <1586877001-19138-1-git-send-email-agordeev@linux.ibm.com>
- <20200414163234.GG5100@ziepe.ca>
- <20200414185829.GB1853609@iweiny-DESK2.sc.intel.com>
- <20200414190620.GJ5100@ziepe.ca>
+        id S2504949AbgDNTl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:41:27 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id e19eaa70;
+        Tue, 14 Apr 2020 19:31:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=h/aE5SG6wxx7pSOie0SLEE7AeHU=; b=ueL7pC
+        5QY12n2HfHdvyvsYLpUVOW4X2stzK6kd4Z1g0X2SRgYM0vQwjlaUR8Wrs2zH4/AJ
+        dyh9G7LCTMREU+GFZDVnKVQldKIZ6Qg/JxLm9Nw6f+9TnfncYuiQe6Yj2rMpJeDE
+        h6BDJpdhCloK6DbabBkJOT0RuKX9mHE/bnZrpB7zu88Cz8K00KGV+rH8iujAmJXI
+        FJYgIOIzD05lhSBzQWRsE6COyU4LMD9tpUOIEQ/BryOSslHi5Z9KRPisuzHSYx8K
+        CICUxlFKLqTUXN8kWxvYiSS+B/HNv/hZb4tU71GyDwFpyLvGp7X6fHACD+2z5mfT
+        dcwcMvD7E2oJkHRw==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e6fd408d (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 14 Apr 2020 19:31:28 +0000 (UTC)
+Received: by mail-il1-f170.google.com with SMTP id i2so902523ils.12;
+        Tue, 14 Apr 2020 12:41:20 -0700 (PDT)
+X-Gm-Message-State: AGi0Pubd6kI6GaWTYl2jUWdsoQugfsqQWrYJIqvqc2YZ28P9C1Of3ZP/
+        orMKLthdb7etz4naXK6Of4rDKHfQkLtmo2xtVes=
+X-Google-Smtp-Source: APiQypLkVGkvLIsHGulPITZS3NPQWVdbPBZMqpBJ0lrhd8gs1AWtilULaBZVAcr5z+2q9NRlWUnLHZL2vlZjHqcVXh0=
+X-Received: by 2002:a92:c7a3:: with SMTP id f3mr1922827ilk.207.1586893279635;
+ Tue, 14 Apr 2020 12:41:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414190620.GJ5100@ziepe.ca>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200407063345.4484-1-Jason@zx2c4.com> <20200407063345.4484-3-Jason@zx2c4.com>
+ <0e189a4fe1e69b08afc859ce83623a0e5ea0c08b.camel@linux.intel.com>
+ <CAHmME9pigvAgK3Bje6DkFEcdyWwi7-C7D6QEo4YiH_cbJvxqhQ@mail.gmail.com> <4b75ec34ccff5abdc0b1c04a5ac39455ddd4f49b.camel@linux.intel.com>
+In-Reply-To: <4b75ec34ccff5abdc0b1c04a5ac39455ddd4f49b.camel@linux.intel.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 14 Apr 2020 13:41:08 -0600
+X-Gmail-Original-Message-ID: <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com>
+Message-ID: <CAHmME9rfXXPepanaxR6EBimSNkJp6KTuNLkYcSceGwZXp_j-Kw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] x86/mce/therm_throt: allow disabling the thermal
+ vector altogether
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        X86 ML <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        bberg@redhat.com, bp@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 04:06:20PM -0300, Jason Gunthorpe wrote:
-> On Tue, Apr 14, 2020 at 11:58:29AM -0700, Ira Weiny wrote:
-> > On Tue, Apr 14, 2020 at 01:32:34PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Apr 14, 2020 at 05:10:01PM +0200, Alexander Gordeev wrote:
-> > > > Commit 0005d20 ("mm/gup: Move page table entry dereference
-> > > > into helper function") wrapped access to page table entries
-> > > > larger than sizeof(long) into a race-aware accessor. One of
-> > > > the two dereferences in gup_fast path was however overlooked.
-> > > > 
-> > > > CC: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > > CC: linux-mm@kvack.org
-> > > > Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> > > >  mm/gup.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/mm/gup.c b/mm/gup.c
-> > > > index d53f7dd..eceb98b 100644
-> > > > +++ b/mm/gup.c
-> > > > @@ -2208,7 +2208,7 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
-> > > >  		if (!head)
-> > > >  			goto pte_unmap;
-> > > >  
-> > > > -		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
-> > > > +		if (unlikely(pte_val(pte) != pte_val(gup_get_pte(ptep)))) {
-> > > 
-> > > It doesn't seem like this needs the special helper as it is just
-> > > checking that the pte hasn't changed, it doesn't need to be read
-> > > exactly.
-> > > 
-> > > But it probably should technically still be a READ_ONCE. Although I
-> > > think the atomic inside try_grab_compound_head prevents any real
-> > > problems.
-> > 
-> > I think we should go for consistency here and use the helper function.
-> 
-> It seems quite expensive to do two more unncessary barriers..
+On Tue, Apr 14, 2020 at 8:45 AM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Mon, 2020-04-13 at 22:21 -0600, Jason A. Donenfeld wrote:
+> > On Mon, Apr 13, 2020 at 9:38 PM Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > On Tue, 2020-04-07 at 00:33 -0600, Jason A. Donenfeld wrote:
+> > > > The thermal IRQ handler uses 1.21% CPU on my system when it's hot
+> > > > from
+> > > > compiling things. Indeed looking at /proc/interrupts reveals
+> > > > quite a
+> > > > lot
+> > > I am curious why you are hitting threshold frequently?
+> > > What is rdmsr 0x1a2
+> >
+> > 5640000
+> You are getting too many interrupts at 95C. You should look at your
+> cooling system.
+>
+> >
+> > > > of events coming in. Beyond logging them, the existing drivers on
+> > > > the
+> > > > system don't appear to do very much that I'm interested in. So,
+> > > > add a
+> > > > way to disable this entirely so that I can regain precious CPU
+> > > > cycles.
+> > > It is showing amount of time system is running in a constrained
+> > > environment. Lots of real time and HPC folks really care about
+> > > this.
+> >
+> > Which is why this patch adds an option, not a full removal or
+> > something. Real time and HPC people can keep their expensive
+> > interrupt. Other people with different varieties of system
+> > disable
+> > it.
+> Generally compile time flag is not desirable. If it is what required
+> then we should have boot time flag something in lines of existing
+> "int_pln_enable" option.
 
-But won't a failure to read the 'real' pte result in falling back to GUP slow?
-
-Not sure which is worse?
-
-And most arch's don't suffer from this...
-
-Ira
-
+Generally it is desirable, and extremely common too. This thermal code
+-- which mostly functions to print some messages into kmsg -- is very
+verbose. This is not something I want to compile into smaller systems.
+This is the reason why kconfig has options in the first place. I'm not
+sure yet-another boottime flag makes sense for this.
