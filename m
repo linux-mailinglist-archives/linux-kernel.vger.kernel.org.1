@@ -2,159 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7F91A71AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD591A71A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404607AbgDNDTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:19:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41638 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404573AbgDNDTb (ORCPT
+        id S2404546AbgDNDSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404523AbgDNDRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:19:31 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03E34hwA056633
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 23:19:30 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30d4kurqww-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 23:19:30 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <ravi.bangoria@linux.ibm.com>;
-        Tue, 14 Apr 2020 04:19:24 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 14 Apr 2020 04:19:19 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03E3JMiU44892174
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 03:19:22 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6987252051;
-        Tue, 14 Apr 2020 03:19:22 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.60.157])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 9D9F25204F;
-        Tue, 14 Apr 2020 03:19:03 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au, mikey@neuling.org
-Cc:     apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
-        christophe.leroy@c-s.fr, naveen.n.rao@linux.vnet.ibm.com,
-        peterz@infradead.org, jolsa@kernel.org, oleg@redhat.com,
-        fweisbec@gmail.com, mingo@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        ravi.bangoria@linux.ibm.com
-Subject: [PATCH v3 05/16] powerpc/watchpoint: Provide DAWR number to set_dawr
-Date:   Tue, 14 Apr 2020 08:46:48 +0530
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200414031659.58875-1-ravi.bangoria@linux.ibm.com>
-References: <20200414031659.58875-1-ravi.bangoria@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041403-0028-0000-0000-000003F7CE08
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041403-0029-0000-0000-000024BD78D9
-Message-Id: <20200414031659.58875-6-ravi.bangoria@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-13_11:2020-04-13,2020-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=872
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140020
+        Mon, 13 Apr 2020 23:17:52 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AF4C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:17:52 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d4so8749984plr.18
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=lyafSFvaDeRHLhmsBZNecjQ1f+rw68vrQlYD5+Y3w5w=;
+        b=CWNeHW1RO5sckHu6dLDpxyBDTx4Cg4OOH4TyzDUrypTV4Iqtnp2LvVxgZGi6ibcHVT
+         QCFUPYNS7rg2mlXcTkM+W0ha59BbxI2NoZQqV8kznf/hB/mOnhqDOgYz/Q4x9WvxQqtP
+         FDLd8yHlCcKguTvTvjqqlsRPy0pWzQHm99xKMK1swgEcq0WzNWfFmnhDzf4Vg4yreNIf
+         qtegHdg9SfaSNX6m6iOTTbG5lAR7jkp0QEkwQ3ji6DonV/ZBQ0vyD36qSQQ+7U3KrxGn
+         UqdGaHZzR7yMeeiFQoAzKLWGvyintTXYBco3E5dJE5R9jczdlO4mEPkTwVEBcwnmhOqU
+         /Zcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=lyafSFvaDeRHLhmsBZNecjQ1f+rw68vrQlYD5+Y3w5w=;
+        b=P8VCEMyeBco97Kejvz6tVfcMu0e1uj4LsG/R9H5Gd8SB/ay9WAj1XdFfUZO7XtMFUE
+         Um19EvwyV/2urdjZQU3DFxLPImkSjq3RZrAVExBmYv1LyfrbROHmpOkWAcvlhLj8e1WM
+         1eXJJ1o336rr3gtcr6uvgrr5JxpLEwUvy/BNIbsv5siConTvCLE3Np055guiMox5vQJx
+         78HNNLubhaxkuemnD7lXNRqJZjSjiR+mzP6dM4p0skbWbuJMU5tvZX/yH24TmeTs1FNh
+         Nl5MIWwvnPo9fkQKLPhVDmE/amcMuFgYq3D6gU+TGiVz4xdT+TuofgXECxVaaLc3d6Ol
+         SxWA==
+X-Gm-Message-State: AGi0PuZfQeLE+BSIeVauR1ljDafhKiszespQFJgrcnNwHla4oOaJiDDx
+        A4bRzQd7V2N1c0a4W9ZKDvxOmSy4bmS8fQ==
+X-Google-Smtp-Source: APiQypJa/aSFUd/BKg0xZ7tNeHgpbWs6EfLUQ46ZU+1HNZdQVHpeU9HKe0IRRR9LN/VkxpUAEc0tH2n31sVb8w==
+X-Received: by 2002:a17:90a:d101:: with SMTP id l1mr25196004pju.1.1586834271190;
+ Mon, 13 Apr 2020 20:17:51 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 20:16:48 -0700
+In-Reply-To: <20200414031647.124664-1-davidgow@google.com>
+Message-Id: <20200414031647.124664-5-davidgow@google.com>
+Mime-Version: 1.0
+References: <20200414031647.124664-1-davidgow@google.com>
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [PATCH v5 4/4] KASAN: Testing Documentation
+From:   David Gow <davidgow@google.com>
+To:     trishalfonso@google.com, brendanhiggins@google.com,
+        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce new parameter 'nr' to set_dawr() which indicates which DAWR
-should be programed.
+From: Patricia Alfonso <trishalfonso@google.com>
 
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Include documentation on how to test KASAN using CONFIG_TEST_KASAN and
+CONFIG_TEST_KASAN_USER.
+
+Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: David Gow <davidgow@google.com>
 ---
- arch/powerpc/include/asm/hw_breakpoint.h |  4 ++--
- arch/powerpc/kernel/dawr.c               | 15 ++++++++++-----
- arch/powerpc/kernel/process.c            |  2 +-
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ Documentation/dev-tools/kasan.rst | 70 +++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
-index 518b41eef924..5b3b02834e0b 100644
---- a/arch/powerpc/include/asm/hw_breakpoint.h
-+++ b/arch/powerpc/include/asm/hw_breakpoint.h
-@@ -104,10 +104,10 @@ static inline bool dawr_enabled(void)
- {
- 	return dawr_force_enable;
- }
--int set_dawr(struct arch_hw_breakpoint *brk);
-+int set_dawr(int nr, struct arch_hw_breakpoint *brk);
- #else
- static inline bool dawr_enabled(void) { return false; }
--static inline int set_dawr(struct arch_hw_breakpoint *brk) { return -1; }
-+static inline int set_dawr(int nr, struct arch_hw_breakpoint *brk) { return -1; }
- #endif
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index c652d740735d..287ba063d9f6 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -281,3 +281,73 @@ unmapped. This will require changes in arch-specific code.
  
- #endif	/* __KERNEL__ */
-diff --git a/arch/powerpc/kernel/dawr.c b/arch/powerpc/kernel/dawr.c
-index e91b613bf137..8114ad3a8574 100644
---- a/arch/powerpc/kernel/dawr.c
-+++ b/arch/powerpc/kernel/dawr.c
-@@ -16,7 +16,7 @@
- bool dawr_force_enable;
- EXPORT_SYMBOL_GPL(dawr_force_enable);
- 
--int set_dawr(struct arch_hw_breakpoint *brk)
-+int set_dawr(int nr, struct arch_hw_breakpoint *brk)
- {
- 	unsigned long dawr, dawrx, mrd;
- 
-@@ -39,15 +39,20 @@ int set_dawr(struct arch_hw_breakpoint *brk)
- 	if (ppc_md.set_dawr)
- 		return ppc_md.set_dawr(dawr, dawrx);
- 
--	mtspr(SPRN_DAWR0, dawr);
--	mtspr(SPRN_DAWRX0, dawrx);
-+	if (nr == 0) {
-+		mtspr(SPRN_DAWR0, dawr);
-+		mtspr(SPRN_DAWRX0, dawrx);
-+	} else {
-+		mtspr(SPRN_DAWR1, dawr);
-+		mtspr(SPRN_DAWRX1, dawrx);
-+	}
- 
- 	return 0;
- }
- 
- static void set_dawr_cb(void *info)
- {
--	set_dawr(info);
-+	set_dawr(0, info);
- }
- 
- static ssize_t dawr_write_file_bool(struct file *file,
-@@ -60,7 +65,7 @@ static ssize_t dawr_write_file_bool(struct file *file,
- 	/* Send error to user if they hypervisor won't allow us to write DAWR */
- 	if (!dawr_force_enable &&
- 	    firmware_has_feature(FW_FEATURE_LPAR) &&
--	    set_dawr(&null_brk) != H_SUCCESS)
-+	    set_dawr(0, &null_brk) != H_SUCCESS)
- 		return -ENODEV;
- 
- 	rc = debugfs_write_file_bool(file, user_buf, count, ppos);
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 9c21288f8645..14aba1295b10 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -806,7 +806,7 @@ void __set_breakpoint(struct arch_hw_breakpoint *brk)
- 
- 	if (dawr_enabled())
- 		// Power8 or later
--		set_dawr(brk);
-+		set_dawr(0, brk);
- 	else if (IS_ENABLED(CONFIG_PPC_8xx))
- 		set_breakpoint_8xx(brk);
- 	else if (!cpu_has_feature(CPU_FTR_ARCH_207S))
+ This allows ``VMAP_STACK`` support on x86, and can simplify support of
+ architectures that do not have a fixed module region.
++
++CONFIG_TEST_KASAN & CONFIG_TEST_KASAN_USER
++-------------------------------------------
++
++``CONFIG_TEST_KASAN`` utilizes the KUnit Test Framework for testing.
++This means each test focuses on a small unit of functionality and
++there are a few ways these tests can be run.
++
++Each test will print the KASAN report if an error is detected and then
++print the number of the test and the status of the test:
++
++pass::
++
++        ok 28 - kmalloc_double_kzfree
++or, if kmalloc failed::
++
++        # kmalloc_large_oob_right: ASSERTION FAILED at lib/test_kasan.c:163
++        Expected ptr is not null, but is
++        not ok 4 - kmalloc_large_oob_right
++or, if a KASAN report was expected, but not found::
++
++        # kmalloc_double_kzfree: EXPECTATION FAILED at lib/test_kasan.c:629
++        Expected kasan_data->report_expected == kasan_data->report_found, but
++        kasan_data->report_expected == 1
++        kasan_data->report_found == 0
++        not ok 28 - kmalloc_double_kzfree
++
++All test statuses are tracked as they run and an overall status will
++be printed at the end::
++
++        ok 1 - kasan_kunit_test
++
++or::
++
++        not ok 1 - kasan_kunit_test
++
++(1) Loadable Module
++~~~~~~~~~~~~~~~~~~~~
++
++With ``CONFIG_KUNIT`` built-in, ``CONFIG_TEST_KASAN`` can be built as
++a loadable module and run on any architecture that supports KASAN
++using something like insmod or modprobe.
++
++(2) Built-In
++~~~~~~~~~~~~~
++
++With ``CONFIG_KUNIT`` built-in, ``CONFIG_TEST_KASAN`` can be built-in
++on any architecure that supports KASAN. These and any other KUnit
++tests enabled will run and print the results at boot as a late-init
++call.
++
++(3) Using kunit_tool
++~~~~~~~~~~~~~~~~~~~~~
++
++With ``CONFIG_KUNIT`` and ``CONFIG_TEST_KASAN`` built-in, we can also
++use kunit_tool to see the results of these along with other KUnit
++tests in a more readable way. This will not print the KASAN reports
++of tests that passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_ for more up-to-date
++information on kunit_tool.
++
++.. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
++
++``CONFIG_TEST_KASAN_USER`` is a set of KASAN tests that could not be
++converted to KUnit. These tests can be run only as a module with
++``CONFIG_TEST_KASAN_USER`` built as a loadable module and
++``CONFIG_KASAN`` built-in. The type of error expected and the
++function being run is printed before the expression expected to give
++an error. Then the error is printed, if found, and that test
++should be interpretted to pass only if the error was the one expected
++by the test.
 -- 
-2.21.1
+2.26.0.110.g2183baf09c-goog
 
