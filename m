@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47461A800C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987831A801E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 16:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404037AbgDNOnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 10:43:31 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:42749 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403941AbgDNOnQ (ORCPT
+        id S2391113AbgDNOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 10:44:25 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:36994 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391047AbgDNOoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:43:16 -0400
-Received: by mail-pg1-f194.google.com with SMTP id g6so6081794pgs.9;
-        Tue, 14 Apr 2020 07:43:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ISpaCA7mjN5YjkHYISL3HSq+S++mjTHZ6Lu/DzWzgxg=;
-        b=TIBdpUNc4hD0uk2v2NBi0PeszdnyJON+rnJHdFQYgr7JrMXnHxSIUDHPJEsI5+bkvp
-         R9xbA1No7G+7LpEFf09bDylFQEBEXryTs3dLX4zC7cF2sU0K3pJr1Z6IONZj0F0zj117
-         eyDvkJrc5O/1oH+nYUdEPJ2WFI2TISRfMhJIdPxWqUOlXgDNOUN7iMIMCU80XS34dWAO
-         NcscPxY+EDhcCEt5EXB9W2PbEN4d+2kH6edPtktidRl+Uf9QHEDt8qEe1Md0wbxj/TLm
-         Leekl/OsI3ILhn5e5R2agXIL0mThBAy6AAsQ6RsgBHCa+rddZnHeizT906kmgMI603Dm
-         KqzA==
-X-Gm-Message-State: AGi0PubPgpMjmatSIfg87sg+HzWp/Rx5hN2+JFPjeq+KFymRZ4FZE4fc
-        zVw1McGY9DFuzhJo2odXV7Y=
-X-Google-Smtp-Source: APiQypKYnkcJwA8lBILHDaTEYsu7MMvchjuIIOFNWKTQsueYRWsxR236WZye6IlT0+1XV9h4RXp4Tg==
-X-Received: by 2002:a63:ec44:: with SMTP id r4mr21490047pgj.425.1586875395070;
-        Tue, 14 Apr 2020 07:43:15 -0700 (PDT)
-Received: from sultan-box.localdomain (static-198-54-129-52.cust.tzulo.com. [198.54.129.52])
-        by smtp.gmail.com with ESMTPSA id y123sm11056229pfb.13.2020.04.14.07.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 07:43:14 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 07:43:09 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     stable@vger.kernel.org, Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tue, 14 Apr 2020 10:44:10 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 9B2F340443;
+        Tue, 14 Apr 2020 14:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1586875449; bh=CyQLY6qA9b5hLjN1QZuqQF+tTWfcH+oMNp9NHfFqATo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DrTqvCEdWVVYU7NdGBLWNrjs+MH9B2O5Rb2ohpc1in5xryOIb4U2EbiL0Ef/wkcwH
+         Ki6Z1BAHuoCMQ36goSJCv8xY48STOzlRx3+2FtESSqdA68MYyHVzYLMvk+BMNHgwj0
+         kWe78JO7FcyPIDJeUnguuEpHsEyw7e/1ci17vyCB2AN6uzAeotF9wxkmuAQl+Bjy3b
+         oTUemcFSQDQ4lXMnofiTX/KdQl6MpFlbXjznW9j1XFBnym0SoXlVjC/kroqNOZaR6G
+         MEMi5MoKzduGVQ5EHHHMBami3dMKcLYJArQCsE4lM31psZxZkphYiY/UsITV8xKLbe
+         fC1z3rJUXgOfQ==
+Received: from paltsev-e7480.internal.synopsys.com (unknown [10.225.48.89])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 653FBA005C;
+        Tue, 14 Apr 2020 14:44:04 +0000 (UTC)
+From:   Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+To:     dri-devel@lists.freedesktop.org,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] drm/i915: Synchronize active and retire callbacks
-Message-ID: <20200414144309.GB2082@sultan-box.localdomain>
-References: <20200404024156.GA10382@sultan-box.localdomain>
- <20200407064007.7599-1-sultan@kerneltoast.com>
- <20200414061312.GA90768@sultan-box.localdomain>
- <158685263618.16269.9317893477736764675@build.alporthouse.com>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Subject: [PATCH v2 0/2] DRM: ARC: add HDMI 2.0 TX encoder support
+Date:   Tue, 14 Apr 2020 17:44:00 +0300
+Message-Id: <20200414144402.27643-1-Eugeniy.Paltsev@synopsys.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158685263618.16269.9317893477736764675@build.alporthouse.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 09:23:56AM +0100, Chris Wilson wrote:
-> Quoting Sultan Alsawaf (2020-04-14 07:13:12)
-> > Chris,
-> > 
-> > Could you please take a look at this? This really is quite an important fix.
-> 
-> It's crazy. See a266bf420060 for a patch that should be applied to v5.4
-> -Chris
+Changes v1->v2:
+ * use DT Schema format please (.yaml files) for DT bindings
 
-What? a266bf420060 was part of 5.4.0-rc7, so it's already in 5.4. And if you
-read the commit message, you would see that the problem in question affects
-Linus' tree.
+Eugeniy Paltsev (2):
+  DRM: ARC: add HDMI 2.0 TX encoder support
+  dt-bindings: Document the Synopsys ARC HDMI TX bindings
 
-You can break i915 in 5.6 by just adding a small delay:
+ .../display/bridge/snps,arc-dw-hdmi.yaml      | 131 ++++++++++++++++++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/Makefile                      |   2 +-
+ drivers/gpu/drm/arc/Kconfig                   |   7 +
+ drivers/gpu/drm/arc/Makefile                  |   1 +
+ drivers/gpu/drm/arc/arc-dw-hdmi.c             | 126 +++++++++++++++++
+ 6 files changed, 272 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/snps,arc-dw-hdmi.yaml
+ create mode 100644 drivers/gpu/drm/arc/arc-dw-hdmi.c
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_ring.c b/drivers/gpu/drm/i915/gt/intel_ring.c
-index 6ff803f397c4..3a7968effdfd 100644
---- a/drivers/gpu/drm/i915/gt/intel_ring.c
-+++ b/drivers/gpu/drm/i915/gt/intel_ring.c
-@@ -10,6 +10,7 @@
- #include "intel_engine.h"
- #include "intel_ring.h"
- #include "intel_timeline.h"
-+#include <linux/delay.h>
- 
- unsigned int intel_ring_update_space(struct intel_ring *ring)
- {
-@@ -92,6 +93,9 @@ void intel_ring_unpin(struct intel_ring *ring)
- 	else
- 		i915_gem_object_unpin_map(vma->obj);
- 
-+	mdelay(1);
-+	ring->vaddr = NULL;
-+
- 	i915_vma_make_purgeable(vma);
- 	i915_vma_unpin(vma);
- }
+-- 
+2.21.1
 
-This is how I reproduced the race in question. I can't even reach the greeter on
-my laptop with this, because i915 dies before that.
-
-Sultan
