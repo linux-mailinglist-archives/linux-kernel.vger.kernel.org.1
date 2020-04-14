@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5775E1A7DD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783821A7D25
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731708AbgDNN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:26:02 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:38584 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2502881AbgDNNQC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:16:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586870160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fkgBK9xnpU8Tu3dZHUSNLZnfPluOMQrIKm9bQ1t2jqg=;
-        b=b1bVuonvr/JIGfQWurak0N3bHyZbH0acpd9wXv+CNFWCJZJPKg/hlXurOlwv3zCUx67pit
-        acvjmOhpVraFX8qwFvcms2vy0VaNrdazzWYMrZapfUnE4JD3/j+9p6N2l5EYypsm6cLQlp
-        YJYLAWsl37vVxpyJOCpybFr6SWse2PA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-YWaPvv61PlOyaXj1ZubTnQ-1; Tue, 14 Apr 2020 09:15:57 -0400
-X-MC-Unique: YWaPvv61PlOyaXj1ZubTnQ-1
-Received: by mail-wr1-f69.google.com with SMTP id 11so2339384wrc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:15:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fkgBK9xnpU8Tu3dZHUSNLZnfPluOMQrIKm9bQ1t2jqg=;
-        b=W7SOP7wnsaEblldROoIKHtf6JnOkEWJPLI2tuS4VbtJHV4RwzKM5h84hbRbUIBQahH
-         nZgqmbKFx29yI7LrunFmeElFJQms/W6HQVItPNbgVIfqKdfeDmJXetDq0Dy2hPKWGkJH
-         Sb2LpZy8OugqQ1s4zhhWKUzxiQF8fE/vwhSLMBqvt7uEcNcMT02poZfxsJ+WqwyFviaX
-         43IlEXeUJnRKBxEPWirhPvHHUctI/a5Ty3M+xSEDJmzG3DUgAkVpvmO2TBLm0YYsdK9/
-         nRUrM9mHu79/RYDv6dXdf1d610jkb8VHmsq82kbGQpBdn+XYiMvX8MLACB5qp2ljqZDg
-         5g7g==
-X-Gm-Message-State: AGi0PubZTJE2xvJNJwagDx7oU3OLaJ356/UGw5o2vui51Ok3tAzYIaZ+
-        9lhR7aNT9JlSgLzVfC2zpU4WiwOrEdoIRhJwIwSnXlpmsMy1grDhPTekK3V0Z9EB5oOq7VaOGWh
-        8nmP2i7OfE1Li9DwOkmQFMj+Q
-X-Received: by 2002:a5d:6145:: with SMTP id y5mr3671372wrt.126.1586870155645;
-        Tue, 14 Apr 2020 06:15:55 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIYnGXCmimjktgJ31Rsn05nuM82C4sRRSEJSiXVM+BE/3APQErQB0fwpedAZZG7kleviTPIyA==
-X-Received: by 2002:a5d:6145:: with SMTP id y5mr3671335wrt.126.1586870155233;
-        Tue, 14 Apr 2020 06:15:55 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id y15sm19420635wro.68.2020.04.14.06.15.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 06:15:54 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: intel_int0002_vgpio: Only bind to the
- INT0002 dev when using s2idle
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxim Mikityanskiy <maxtram95@gmail.com>,
-        "5 . 3+" <stable@vger.kernel.org>
-References: <20200407213058.62870-1-hdegoede@redhat.com>
- <cfd3171a-94fb-7382-28e1-a236cb6759cc@redhat.com>
- <CAHp75VdqQnHbMSSeoDESMgywH-1VxBTT=Uo_GLV1aycmg=MXtA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <32d57d33-5278-aead-1545-fac1ab936fbd@redhat.com>
-Date:   Tue, 14 Apr 2020 15:15:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1730713AbgDNNTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:19:34 -0400
+Received: from 8bytes.org ([81.169.241.247]:35566 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502999AbgDNNRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:17:30 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 7CE0145B; Tue, 14 Apr 2020 15:17:26 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 15:17:24 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [RFC PATCH 33/34] iommu: Remove add_device()/remove_device()
+ code-paths
+Message-ID: <20200414131724.GA14731@8bytes.org>
+References: <20200407183742.4344-1-joro@8bytes.org>
+ <CGME20200407183806eucas1p2cf45fbce5a43a6b4fe3a623b28da0606@eucas1p2.samsung.com>
+ <20200407183742.4344-34-joro@8bytes.org>
+ <1a88547f-ac90-825e-e529-a56c2c4e0391@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdqQnHbMSSeoDESMgywH-1VxBTT=Uo_GLV1aycmg=MXtA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a88547f-ac90-825e-e529-a56c2c4e0391@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Marek,
 
-On 4/8/20 12:26 AM, Andy Shevchenko wrote:
-> On Wed, Apr 8, 2020 at 1:24 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi all,
->>
->> I just realized that I should have added a cover letter to this
->> patch to discuss how to merge it.
->>
->> Rafael has already queued up the
->> "[PATCH v3 2/2] platform/x86: intel_int0002_vgpio: Use acpi_register_wakeup_handler()"
->> in his tree. Looking at both patches the parts of the file the
->> touch are different enough that that should not be a problem though.
->>
->> So I guess this can go through platform/x86 as usual, or
->> (assuming everyone is ok with the change itself) alternatively
->> Rafael can take it to make sure there will be no conflicts?
+On Fri, Apr 10, 2020 at 12:39:38PM +0200, Marek Szyprowski wrote:
+> > +		if (!group->default_domain)
+> > +			continue;
 > 
-> You will need different patches for v5.7 and the rest.
-> In v5.7 new CPU macros are in use.
+> It doesn't look straight from the above diff, but this continue leaks 
+> group->lock taken.
 
-I see, I will send out a v2 rebased on top of 5.7-rc1.
+You are right, thanks for the review! I fixed it in v2.
 
 Regards,
 
-Hans
+	Joerg
 
