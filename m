@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372E21A758F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778111A7597
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 10:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407039AbgDNILZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 04:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
+        id S2407060AbgDNIN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 04:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2407026AbgDNILS (ORCPT
+        by vger.kernel.org with ESMTP id S2407053AbgDNINQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:11:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9ECBC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:11:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O3a96vzOf8hcQ+GezCIAovhsKAxB8eo+WBGQ45KCX08=; b=POeXOIAptoTj/Yv6Ki2m1jlizY
-        SxzCLvkF1HNMJqQxXxGYrkEtBQCB86xeql3/X+yfB9OGtIznYp/evwZFEqU6yV9GNXYeHPO77F+LX
-        fNLOF1JgUhd0mcQZBLYhSN1utCuvFesLW6jT2Eys1R3rBQOaKkiKIc8msi8jU4aKZJfWihFHrOMZo
-        2zdtGfUKzkJF8s86Edb9VhlsK2t2wwhsdtWIKThTMHM6DbncakxX/CVJLtOKHlgqJlOckb8nM8dT5
-        SWJOQVoB21dEFVpsaFbTqHfckHB38+JD6flXhIOEUM94Rl1B9QCYnJexQWdNLwuG0DMZPMIe4pUKM
-        U6GuOFwA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOGey-0004qv-0O; Tue, 14 Apr 2020 08:11:08 +0000
-Date:   Tue, 14 Apr 2020 01:11:07 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>
-Subject: Re: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
-Message-ID: <20200414081107.GA7315@infradead.org>
-References: <AADFC41AFE54684AB9EE6CBC0274A5D19D7ECB45@SHSMSX104.ccr.corp.intel.com>
- <20200327074702.GA27959@infradead.org>
- <20200327165335.397f24a3@jacob-builder>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D7FE150@SHSMSX104.ccr.corp.intel.com>
- <20200330090746.23c5599c@jacob-builder>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8011A9@SHSMSX104.ccr.corp.intel.com>
- <20200331085444.44bee0bb@jacob-builder>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
- <20200402113604.6eea1e6f@jacob-builder>
- <20200413134157.395981a6@jacob-builder>
+        Tue, 14 Apr 2020 04:13:16 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8A8C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:13:16 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id m8so11493616lji.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 01:13:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k0AFfJl+/HREBpAIEr3R3eD3vK7f3cLfChMESLkU3ZA=;
+        b=R7MEsHh0lV4EXqX7criLWoVHxwcphg0cIVvwHu7eqCeSqw7hZftgjGd7GQ+n2F+Rp2
+         i6qdeAOTKFxlHIw4gWfQO475elR/gAC5ydvsHyB8vK+offO085GBrkQ9+9n8XzWSUwNk
+         66+BGHjTBsex2X4lMaqkXwxnCR39ZVg5hC2aabqpwTZEE01Gfvz0jbFHPghf/QsCSn+8
+         lHUpDeWQT5E8J65/B+hAsFEc8/JHugwmPf6s0UYSwTkJeiKly8uoKb19yCDqNQ2ENQeE
+         ADtQmlyLuxhZ/99+oXVa29uiR88fJkIYD/dnq5akaYcwXKBamwZtbdafzMV7N/n2YDcq
+         9ftQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k0AFfJl+/HREBpAIEr3R3eD3vK7f3cLfChMESLkU3ZA=;
+        b=kN7RS/uVJGb3I1K2BgMaC4+FBwwBtCJCT7FKVgOhTu3hINmMb8PWf91wd2HnH6r1nj
+         0oQRAtzA4jnbOFDgfRlqB13cgWgnxZmdV176rVboQMqbLhuNRXJrG/sHM9VE3+bECcC6
+         MBoFVrbMNruoxoH5W1dMhbtS++5xLX3sNAN18WxH9+NRvaqSroxxeu6mmMhBchR33h3t
+         83YO+POelanwl3XjxRtXALD7Zx7CCSM42h2sUjfxnh1MRog5UEiL72U3oQfGR+GxaY84
+         RwAMuuEd44DqLJwUPioF7Dw/3Pp9iTTl0SyKYn9/TKkNCtVjs4XMOz5IJw+9o3ac/Est
+         yN/w==
+X-Gm-Message-State: AGi0PuZhppYf7kgcy3Gh7iA6zVTV/jVvMgzaqgGrMJGihf6PHT82BCQx
+        eyH6f3XHQM4PbT23jdmdFUzTe5y/XmClvXRqrCdwygOoLIQ=
+X-Google-Smtp-Source: APiQypL3bt30tO1xq5I3jaKWN9l0ktN8iS7ZbgbyWNRt1DbCqbWTui4gMILpBogAJY4hxAlK+cx4KrI7mbrx/Xr8eGQ=
+X-Received: by 2002:a2e:2a85:: with SMTP id q127mr3203163ljq.273.1586851994890;
+ Tue, 14 Apr 2020 01:13:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413134157.395981a6@jacob-builder>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200331114116.21642-1-maco@android.com>
+In-Reply-To: <20200331114116.21642-1-maco@android.com>
+From:   Martijn Coenen <maco@android.com>
+Date:   Tue, 14 Apr 2020 10:13:04 +0200
+Message-ID: <CAB0TPYHt=8EDMUKijn62SmNUEHpt0dGKxxe3uz9BVmwPrVkznQ@mail.gmail.com>
+Subject: Re: [PATCH] loop: Call loop_config_discard() only after new config is applied.
+To:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 01:41:57PM -0700, Jacob Pan wrote:
-> Hi All,
-> 
-> Just a gentle reminder, any feedback on the options I listed below? New
-> ideas will be even better.
-> 
-> Christoph, does the explanation make sense to you? We do have the
-> capability/flag based scheme for IOMMU API extension, the version is
-> mainly used for size lookup. Compatibility checking is another use of
-> the version, it makes checking easy when a vIOMMU is launched.
+Folks, any thoughts about this one?
 
-No.  If you truely need different versions use different ioctl
-identifiers.  If it really is just the size pass the size and not a
-version.
+Thanks,
+Martijn
+
+On Tue, Mar 31, 2020 at 1:41 PM Martijn Coenen <maco@android.com> wrote:
+>
+> loop_set_status() calls loop_config_discard() to configure discard for
+> the loop device; however, the discard configuration depends on whether
+> the loop device uses encryption, and when we call it the encryption
+> configuration has not been updated yet. Move the call down so we apply
+> the correct discard configuration based on the new configuration.
+>
+> Signed-off-by: Martijn Coenen <maco@android.com>
+> ---
+>  drivers/block/loop.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index 739b372a5112..7c9dcb6007a6 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -1312,8 +1312,6 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+>                 }
+>         }
+>
+> -       loop_config_discard(lo);
+> -
+>         memcpy(lo->lo_file_name, info->lo_file_name, LO_NAME_SIZE);
+>         memcpy(lo->lo_crypt_name, info->lo_crypt_name, LO_NAME_SIZE);
+>         lo->lo_file_name[LO_NAME_SIZE-1] = 0;
+> @@ -1337,6 +1335,8 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+>                 lo->lo_key_owner = uid;
+>         }
+>
+> +       loop_config_discard(lo);
+> +
+>         /* update dio if lo_offset or transfer is changed */
+>         __loop_update_dio(lo, lo->use_dio);
+>
+> --
+> 2.26.0.rc2.310.g2932bb562d-goog
+>
