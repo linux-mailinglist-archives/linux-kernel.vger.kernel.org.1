@@ -2,82 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7661A8D43
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671451A8D38
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 23:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633692AbgDNVGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 17:06:04 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:46542 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633551AbgDNVBc (ORCPT
+        id S2633655AbgDNVFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 17:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2633573AbgDNVB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 17:01:32 -0400
-Received: by mail-oi1-f194.google.com with SMTP id q204so11682878oia.13;
-        Tue, 14 Apr 2020 14:01:25 -0700 (PDT)
+        Tue, 14 Apr 2020 17:01:57 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E9AC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:01:56 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id c13so954889plq.22
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 14:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZT9uearJKSnBiqdjC5QhzgxpTglsuQMI/wN8PXUX9eU=;
+        b=mb2PRhSeg1kyS8eXbE+AHB8pbDmwauqFv3Af67l0qf34soIrNE2+PWJOVmY4xCLD1M
+         ZLtTcCqfWh9mRht24aCgrcUfedC5EV2jeNL7+jyl1j9v5wwt+P3S7ANJ6cxqO/VziGgC
+         zmj8gSM9CvaA2/VZSRFSRY09dktytU1aPnSIOnTPGtEYBla4CzZzLH1W4OgRFnvfc8Nr
+         TlSjYxMZV3HjTQXRQ5zc6IeWqJkwLzQBS5eEZaxWrQXwNflqtNJZ0xc1uOy/gSb9eBrq
+         MMh8L8QmGi3ECF5n2tOY2luFyZxoi8q5E1h19B0c5gaI4ahhu6iWY5Lak7lX+7Jh9/zl
+         kysA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/4q9z9CtbQoeUL4sjp69CWFYfpcu9GjxICIs0C/YRTE=;
-        b=hzxH4wZVRTjkuuoll0KwHDeNBQ2dAcHr4nIvt4rCg1eaWwsfiPuJ8Ikqs6TJ7Ratub
-         /5afsp9RucGpvQ3+WIGB6rU0t8GJNF2Ybivew3vFuCDDaNTWdXgWC14yqwhyA3O/wrdk
-         ZFTPRuZBhGQd8P3kJytli1BRYN02XIiUNKk4u1CPdWZmRBLEyxfSlTCF7H4WlLostI96
-         DLtXH17Fu9nM2htCKl8aptLHyeOQS+YqG/CP12AUFwBD/PTRzGA4bIWFyB9XFQoSg0Cu
-         C/39o5zWyjEew+TcmH+/bzloj2/laAQfCwvfdwgVJ3v/i5B7lV75tA+j7qUIeno4FWTz
-         FMKQ==
-X-Gm-Message-State: AGi0PuaQGZTEW43Hb0GzSN8cbYlHzax2wK1+e/5ymHO/e53kDnmJnv+2
-        KJi7q+lAyImkdIvro4YkRg==
-X-Google-Smtp-Source: APiQypI6YZD7oeKx39WNYQypRqxQiWc8g9J/Skpj6aGznKhkptIeKHcBjqvf0DXjF7vScaZA6pawWw==
-X-Received: by 2002:aca:4286:: with SMTP id p128mr16319888oia.29.1586898084666;
-        Tue, 14 Apr 2020 14:01:24 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g12sm1166031otk.71.2020.04.14.14.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 14:01:23 -0700 (PDT)
-Received: (nullmailer pid 3300 invoked by uid 1000);
-        Tue, 14 Apr 2020 21:01:22 -0000
-Date:   Tue, 14 Apr 2020 16:01:22 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 23/33] docs: dt: qcom,dwc3.txt: fix cross-reference
- for a converted file
-Message-ID: <20200414210122.GA3250@bogus>
-References: <cover.1586881715.git.mchehab+huawei@kernel.org>
- <a055c564f2a79aa748064329d938db8b3c8edd58.1586881715.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a055c564f2a79aa748064329d938db8b3c8edd58.1586881715.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZT9uearJKSnBiqdjC5QhzgxpTglsuQMI/wN8PXUX9eU=;
+        b=myK3cFGz6g0jfLhypqgQmUIijD/YOSzI4y/wHdpUM6zXnTVNsKFhjUP4MhwBFiDmja
+         E52hDBQleZ2yJ3enf95Ej1ACXYsIRUwBIx5SLmyQdpXoXRzPJzqSdyVLucec3wwmLqvm
+         eUunKiyMcOn0ivUdbvlAtFN24nsEUc0uRnRflyk53tsE4cQ6kDRXPeaa48RTCBn4zf0N
+         Aaior1vszZj/5lgljiEqnoE2+6bsLKuzoXF5fv1EGd2pPJOE6oxx0AOAt4Cs+fSYPuVA
+         vz/zvih/WJVsyuYPAwI3bw2cgVuK2sMnVdxNlpZ/Xc3vs7Q29QddgrHNj0x+vj7Un+Jh
+         gGRw==
+X-Gm-Message-State: AGi0PuYM+/tVOmjKSkDX+3/pCG/lwBm+mRfFbTtc557UNUYAp0ORLHLk
+        R+aLfJfuU4+no49TgK4GiFTz1csXm2w/FJUgh8B9Sw==
+X-Google-Smtp-Source: APiQypJk6hNUQUA3Bisgo76EBfo2lDVWAGKtRAaH5IY81miVwxuR5o6DC3Snabvte1Vdaw+giAxDZtEfV7zCyd0/4I1tmg==
+X-Received: by 2002:a17:90a:718c:: with SMTP id i12mr2318668pjk.142.1586898116262;
+ Tue, 14 Apr 2020 14:01:56 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 14:01:42 -0700
+Message-Id: <20200414210142.191327-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [RFC v1] software: node: test: add test to exercise parent child add/remove
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 18:48:49 +0200, Mauro Carvalho Chehab wrote:
-> The qcom-qusb2-phy.txt file was converted and renamed to yaml.
-> Update cross-reference accordingly.
-> 
-> Fixes: 8ce65d8d38df ("dt-bindings: phy: qcom,qusb2: Convert QUSB2 phy bindings to yaml")
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+Add test which adds a tree of software_nodes, checks that the nodes
+exist, and then removes the tree. This exercises a bug reported by
+Naresh Kamboju <naresh.kamboju@linaro.org>, and pretty much just takes a
+test case from the test_printf Kselftest module and refocusses it on
+adding and then removing a tree of software_nodes.
 
-Applied, thanks.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
 
-Rob
+I am not sure if this should be rolled into the property entry test, or
+should be moved somewhere else; nevertheless, testing the software node
+API seems like a good idea and this seems like a good place to start.
+
+---
+ drivers/base/test/Kconfig              | 14 ++++++++
+ drivers/base/test/Makefile             |  2 ++
+ drivers/base/test/software-node-test.c | 46 ++++++++++++++++++++++++++
+ 3 files changed, 62 insertions(+)
+ create mode 100644 drivers/base/test/software-node-test.c
+
+diff --git a/drivers/base/test/Kconfig b/drivers/base/test/Kconfig
+index 305c7751184a..b42f385fe233 100644
+--- a/drivers/base/test/Kconfig
++++ b/drivers/base/test/Kconfig
+@@ -11,3 +11,17 @@ config TEST_ASYNC_DRIVER_PROBE
+ config KUNIT_DRIVER_PE_TEST
+ 	bool "KUnit Tests for property entry API"
+ 	depends on KUNIT=y
++config KUNIT_DRIVER_SOFTWARE_NODE_TEST
++	bool "KUnit Tests for software node API"
++	depends on KUNIT=y
++	help
++	  This builds the software node API tests.
++
++	  KUnit tests run during boot and output the results to the debug log
++	  in TAP format (http://testanything.org/). Only useful for kernel devs
++	  and are not for inclusion into a production build.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
+diff --git a/drivers/base/test/Makefile b/drivers/base/test/Makefile
+index 3ca56367c84b..63325e8a5288 100644
+--- a/drivers/base/test/Makefile
++++ b/drivers/base/test/Makefile
+@@ -2,3 +2,5 @@
+ obj-$(CONFIG_TEST_ASYNC_DRIVER_PROBE)	+= test_async_driver_probe.o
+ 
+ obj-$(CONFIG_KUNIT_DRIVER_PE_TEST) += property-entry-test.o
++
++obj-$(CONFIG_KUNIT_DRIVER_SOFTWARE_NODE_TEST) += software-node-test.o
+diff --git a/drivers/base/test/software-node-test.c b/drivers/base/test/software-node-test.c
+new file mode 100644
+index 000000000000..0609cbd9aa0a
+--- /dev/null
++++ b/drivers/base/test/software-node-test.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++// Unit tests for software node API
++//
++// Copyright 2020 Google LLC.
++
++#include <kunit/test.h>
++#include <linux/property.h>
++#include <linux/types.h>
++
++static void software_node_test_register_nodes(struct kunit *test)
++{
++	const struct software_node softnodes[] = {
++		{ .name = "first", },
++		{ .name = "second", .parent = &softnodes[0], },
++		{ .name = "third", .parent = &softnodes[1], },
++		{}
++	};
++	const char * const full_name = "first/second/third";
++	char *buf;
++
++	buf = kunit_kzalloc(test, strlen(full_name), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
++
++	KUNIT_ASSERT_EQ(test, software_node_register_nodes(softnodes), 0);
++
++	/* Check that all the nodes exist. */
++	KUNIT_ASSERT_EQ(test,
++			(size_t)sprintf(buf, "%pfw",
++					software_node_fwnode(&softnodes[2])),
++			strlen(full_name));
++	KUNIT_EXPECT_STREQ(test, buf, full_name);
++
++	software_node_unregister_nodes(softnodes);
++}
++
++static struct kunit_case software_node_test_cases[] = {
++	KUNIT_CASE(software_node_test_register_nodes),
++	{}
++};
++
++static struct kunit_suite software_node_test_suite = {
++	.name = "software-node",
++	.test_cases = software_node_test_cases,
++};
++
++kunit_test_suite(software_node_test_suite);
+
+base-commit: 8632e9b5645bbc2331d21d892b0d6961c1a08429
+-- 
+2.26.0.110.g2183baf09c-goog
+
