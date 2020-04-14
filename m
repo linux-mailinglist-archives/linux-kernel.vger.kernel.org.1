@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA0C1A8B8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B0D1A8B85
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505229AbgDNTwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S2391660AbgDNTwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391640AbgDNTvU (ORCPT
+        by vger.kernel.org with ESMTP id S2391637AbgDNTvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Apr 2020 15:51:20 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD36C061A41;
-        Tue, 14 Apr 2020 12:51:19 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id y24so15675050wma.4;
-        Tue, 14 Apr 2020 12:51:19 -0700 (PDT)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E9EC0610D5;
+        Tue, 14 Apr 2020 12:51:20 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a81so15661315wmf.5;
+        Tue, 14 Apr 2020 12:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=buqvW+rh8aGkpkt6IACKm4M4fmbaWcmA3j17X8abtHA=;
-        b=bS3/ROK/sffJXwV2Rj/G7kYPdJZgF8fmwMTwrUtrs4+TIJR2cD/R+dEM9aVovzLVRM
-         pzi6C1aISUmH8ksCMqc3gm92h6/1Uq8KKn0Ypay5lSIl6V0owSap/QGLjCyAEDMtl9o6
-         SvQfNryeGB2JDGc2JKmDQnnlG9ddJz20U/gsG38nHZiN4+dklzXWfw6u103Bhu/aYtaf
-         fCQxZFaTuYaQkzteOC0UIk22jXkpuYCJ6YawiGWnZMX2ABBTggi9qPxxFLTGK17AQK6H
-         IDjnwSBJg3aGm5n9ZaxVo+Ni4nS3685k7fXE8zp2to0b41sTjZWj6gWmZv4f6Y1CAxKC
-         KI9g==
+        bh=wmfcMhvG8Z0vEINCyaO7pmox4TkBpgd1lx9zOICoTqE=;
+        b=EtkFVJ4P6kPq5zDhchMj44e/ao7tDFLAS5fHqVSp67Vc69oau+0lapCkGg4FAIEK0Y
+         3FwfBUpis4d+hn4MaQNoyQBYMD1RzN/d7yIslSCMyjynMvOsCK3htGSvk4XqFeC4X/wx
+         Ng74LeujzCDpUAcRKt9CGQw99YaEJdmHfcppaoRR7H8krAU5zuB6vga4msDAkdoKqgO9
+         AvuMS8NRgieEf/lICbyIfw7UrGkFiJvFPJvRPLYgJMxXl2KfNjOYKmHwDvRh79gARiHM
+         ac7Y9lL/7d0CiyZHui9LyXZ5U43j7xh/hXw2H6xTd9SkY/I/KkrKa1zkwgoCosFqrk2U
+         jTMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=buqvW+rh8aGkpkt6IACKm4M4fmbaWcmA3j17X8abtHA=;
-        b=DUg7+C+PbZMtyN5Kfzk2QaGjdYEniydwpv6RGVNufp11q9V8MB4RVmMX75J6peI9s9
-         4sk0yucc4VVKw+ymzleA3OCu+WG2XuBB/xFriDQrHgoFdDKcyfgf0w2frSWX0kYsxAkF
-         /ARkLO89nWnL46Uo0UiOpup0acKN2fvjMahSl9KJBk6f+Tbe95eNgLEMwIV4jz5dSX3N
-         NOIfW+Z5j+qbwJnGgJFvGDSIeZpKvZ5iJbJ75AN5sBJpUlHIC5CZmBJiUU5BYuGMdSvm
-         P3v2SxZgq8QMaB+oqW9c20ZOwyBMH8UfeB5+Hn64kr4EhYD873nmKu49LOsAYyAtr7GH
-         heOQ==
-X-Gm-Message-State: AGi0PuaCl8WBVvBPHy2G0PgyJySXGJfvf0B7h04mao7wUkU2N3CDA1pD
-        SqX1z5qqJwq1U39xqFsBloY=
-X-Google-Smtp-Source: APiQypK10yXfw/ApupMZEh8RomMmpTZfJoDiWwllfVAKE0XMN2fASSf+G5DjYOUuv0o/FowDJZafKQ==
-X-Received: by 2002:a1c:f20c:: with SMTP id s12mr1544202wmc.83.1586893877796;
-        Tue, 14 Apr 2020 12:51:17 -0700 (PDT)
+        bh=wmfcMhvG8Z0vEINCyaO7pmox4TkBpgd1lx9zOICoTqE=;
+        b=ABWPnGHK0ls3iMNHOa58zUpB3EUm5BQP+b6MCEapykVFd5y01lH+R+ZPi6byA0gxKY
+         R7tWD/c2wRU89hkIMRtvvYlqysalNMZkBu760GcybPniHTGIptlF1pxfRSMKQhcWW5IY
+         IU6RR1myGZMACK3qhuACK8JdmCuMW1e7LtHul/CxsdZzl+NKWvIGzHB8iB8fkgsx4yjG
+         ZEAouu5uk9qGwT1UHrLbsoUjrFv6LRFhVZWb5p8g5/9L8dgoNCc/VKu/JEcciU38rLO8
+         i8zJwPd00/V1Wi/rJyiHA9TCh9XZwb8fEC97VV8ekeJ/cRpbPd7H0TmjskIGi2oWoczO
+         sm1g==
+X-Gm-Message-State: AGi0PuYcRfvllVPbJj/r1NwOThrgcXUTRA/ot+LqD5T1+TITKUnSgEZx
+        uQQi3qKSexCRR4islLxe7rmaSX6nLJM=
+X-Google-Smtp-Source: APiQypIRkBwsxASMLC6HHXJ5UwuAZ6o8hDlK7RWcSFluHkg0o2JANop6K6rTzyBdwrXR4xh1aml9rQ==
+X-Received: by 2002:a1c:e1c1:: with SMTP id y184mr1450299wmg.143.1586893878852;
+        Tue, 14 Apr 2020 12:51:18 -0700 (PDT)
 Received: from localhost.localdomain (p200300F13717DF00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3717:df00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id s14sm20886844wme.33.2020.04.14.12.51.16
+        by smtp.googlemail.com with ESMTPSA id s14sm20886844wme.33.2020.04.14.12.51.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 12:51:17 -0700 (PDT)
+        Tue, 14 Apr 2020 12:51:18 -0700 (PDT)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
         linux-clk@vger.kernel.org
 Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 1/2] clk: meson: gxbb: Prepare the GPU clock tree to change at runtime
-Date:   Tue, 14 Apr 2020 21:50:30 +0200
-Message-Id: <20200414195031.224021-2-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 2/2] clk: meson: g12a: Prepare the GPU clock tree to change at runtime
+Date:   Tue, 14 Apr 2020 21:50:31 +0200
+Message-Id: <20200414195031.224021-3-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
 References: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
@@ -81,14 +81,14 @@ clocks (these are reserved for audio).
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/clk/meson/gxbb.c | 40 ++++++++++++++++++++++------------------
- 1 file changed, 22 insertions(+), 18 deletions(-)
+ drivers/clk/meson/g12a.c | 30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
-index 5fd6a574f8c3..0a68af6eec3d 100644
---- a/drivers/clk/meson/gxbb.c
-+++ b/drivers/clk/meson/gxbb.c
-@@ -957,7 +957,9 @@ static struct clk_regmap gxbb_sar_adc_clk = {
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index fad616cac01e..30c15766ebb1 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -3702,7 +3702,9 @@ static struct clk_regmap g12a_hdmi = {
  
  /*
   * The MALI IP is clocked by two identical clocks (mali_0 and mali_1)
@@ -97,18 +97,11 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
 + * mux because it does top-to-bottom updates the each clock tree and
 + * switches to the "inactive" one when CLK_SET_RATE_GATE is set.
   */
- 
- static const struct clk_parent_data gxbb_mali_0_1_parent_data[] = {
-@@ -980,14 +982,15 @@ static struct clk_regmap gxbb_mali_0_sel = {
- 	.hw.init = &(struct clk_init_data){
- 		.name = "mali_0_sel",
+ static const struct clk_parent_data g12a_mali_0_1_parent_data[] = {
+ 	{ .fw_name = "xtal", },
+@@ -3726,7 +3728,13 @@ static struct clk_regmap g12a_mali_0_sel = {
  		.ops = &clk_regmap_mux_ops,
--		/*
--		 * bits 10:9 selects from 8 possible parents:
--		 * xtal, gp0_pll, mpll2, mpll1, fclk_div7,
--		 * fclk_div4, fclk_div3, fclk_div5
--		 */
- 		.parent_data = gxbb_mali_0_1_parent_data,
+ 		.parent_data = g12a_mali_0_1_parent_data,
  		.num_parents = 8,
 -		.flags = CLK_SET_RATE_NO_REPARENT,
 +		/*
@@ -121,8 +114,8 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
  	},
  };
  
-@@ -1004,7 +1007,7 @@ static struct clk_regmap gxbb_mali_0_div = {
- 			&gxbb_mali_0_sel.hw
+@@ -3743,7 +3751,7 @@ static struct clk_regmap g12a_mali_0_div = {
+ 			&g12a_mali_0_sel.hw
  		},
  		.num_parents = 1,
 -		.flags = CLK_SET_RATE_NO_REPARENT,
@@ -130,8 +123,8 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
  	},
  };
  
-@@ -1020,7 +1023,7 @@ static struct clk_regmap gxbb_mali_0 = {
- 			&gxbb_mali_0_div.hw
+@@ -3759,7 +3767,7 @@ static struct clk_regmap g12a_mali_0 = {
+ 			&g12a_mali_0_div.hw
  		},
  		.num_parents = 1,
 -		.flags = CLK_SET_RATE_PARENT,
@@ -139,16 +132,9 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
  	},
  };
  
-@@ -1033,14 +1036,15 @@ static struct clk_regmap gxbb_mali_1_sel = {
- 	.hw.init = &(struct clk_init_data){
- 		.name = "mali_1_sel",
+@@ -3774,7 +3782,13 @@ static struct clk_regmap g12a_mali_1_sel = {
  		.ops = &clk_regmap_mux_ops,
--		/*
--		 * bits 10:9 selects from 8 possible parents:
--		 * xtal, gp0_pll, mpll2, mpll1, fclk_div7,
--		 * fclk_div4, fclk_div3, fclk_div5
--		 */
- 		.parent_data = gxbb_mali_0_1_parent_data,
+ 		.parent_data = g12a_mali_0_1_parent_data,
  		.num_parents = 8,
 -		.flags = CLK_SET_RATE_NO_REPARENT,
 +		/*
@@ -161,8 +147,8 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
  	},
  };
  
-@@ -1057,7 +1061,7 @@ static struct clk_regmap gxbb_mali_1_div = {
- 			&gxbb_mali_1_sel.hw
+@@ -3791,7 +3805,7 @@ static struct clk_regmap g12a_mali_1_div = {
+ 			&g12a_mali_1_sel.hw
  		},
  		.num_parents = 1,
 -		.flags = CLK_SET_RATE_NO_REPARENT,
@@ -170,8 +156,8 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
  	},
  };
  
-@@ -1073,7 +1077,7 @@ static struct clk_regmap gxbb_mali_1 = {
- 			&gxbb_mali_1_div.hw
+@@ -3807,7 +3821,7 @@ static struct clk_regmap g12a_mali_1 = {
+ 			&g12a_mali_1_div.hw
  		},
  		.num_parents = 1,
 -		.flags = CLK_SET_RATE_PARENT,
@@ -179,9 +165,9 @@ index 5fd6a574f8c3..0a68af6eec3d 100644
  	},
  };
  
-@@ -1093,7 +1097,7 @@ static struct clk_regmap gxbb_mali = {
+@@ -3827,7 +3841,7 @@ static struct clk_regmap g12a_mali = {
  		.ops = &clk_regmap_mux_ops,
- 		.parent_hws = gxbb_mali_parent_hws,
+ 		.parent_hws = g12a_mali_parent_hws,
  		.num_parents = 2,
 -		.flags = CLK_SET_RATE_NO_REPARENT,
 +		.flags = CLK_SET_RATE_PARENT,
