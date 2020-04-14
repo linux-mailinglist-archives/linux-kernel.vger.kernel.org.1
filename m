@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928331A8A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02FC1A8A9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgDNTZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:25:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33968 "EHLO mail.kernel.org"
+        id S1730106AbgDNTYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:24:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504621AbgDNTYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2504638AbgDNTYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Apr 2020 15:24:20 -0400
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.7-rc1
+Subject: Re: [GIT PULL] Btrfs fixes for 5.7-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586891122;
-        bh=HMUCX6aWm71uge2BoPhYzk7fH+SUIkv3Ru9XRaQuLNU=;
+        s=default; t=1586891123;
+        bh=Mi6b47e7sZxf4lucQ8ES01EeyQZOSRxAHXiLRU0VwDg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=z2Am7yZ9Y6qIZ+x31ILB+uyNWwcbIcSyLo9IF0AyGIWnM7Dh28PMl4sErQo+wDe95
-         0zWy1rp1oOAyF2hpudVmADjltiEqcmThWlQVOfvS66ktyD3pbV+3nXdTAnMdu3l2wp
-         1qQ8Ntaf6PiCB/Tu5J+iiBBgFWTiwGout1cny5xc=
+        b=IN4H6DoD4MgQSG7CApDYBhwspxleLmWgsm6N3H3bGJEZX5lr+v9/ifDqmDzxlwy5y
+         lUbFRG0wmIQwQjjwXeDUW8qdTB5nsFzqfMpL5u9NE48gWNgLZ1LOiMckYudtLLvVqu
+         hmOoJeVbqtnqx2BiYEfA2gefveLIfd1m2TyoV840=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200414102102.7jci4pzsp5tdoifr@debian>
-References: <20200414102102.7jci4pzsp5tdoifr@debian>
+In-Reply-To: <cover.1586868872.git.dsterba@suse.com>
+References: <cover.1586868872.git.dsterba@suse.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200414102102.7jci4pzsp5tdoifr@debian>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git
- tags/hyperv-fixes-signed
-X-PR-Tracked-Commit-Id: f3a99e761efa616028b255b4de58e9b5b87c5545
+X-PR-Tracked-Message-Id: <cover.1586868872.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc1-tag
+X-PR-Tracked-Commit-Id: 34c51814b2b87cb2e5a98c92fe957db2ee8e27f4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8632e9b5645bbc2331d21d892b0d6961c1a08429
-Message-Id: <158689112259.29674.18320264839412857827.pr-tracker-bot@kernel.org>
-Date:   Tue, 14 Apr 2020 19:05:22 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, mikelley@microsoft.com,
-        haiyangz@microsoft.com
+X-PR-Merge-Commit-Id: 6cc9306b8fc03019e81e4f10c93ff0528cba5217
+Message-Id: <158689112373.29674.16323985983606188540.pr-tracker-bot@kernel.org>
+Date:   Tue, 14 Apr 2020 19:05:23 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 14 Apr 2020 11:21:02 +0100:
+The pull request you sent on Tue, 14 Apr 2020 15:59:45 +0200:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc1-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8632e9b5645bbc2331d21d892b0d6961c1a08429
+https://git.kernel.org/torvalds/c/6cc9306b8fc03019e81e4f10c93ff0528cba5217
 
 Thank you!
 
