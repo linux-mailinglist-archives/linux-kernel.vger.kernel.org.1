@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878CC1A7D19
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5775E1A7DD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 15:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503060AbgDNNSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 09:18:39 -0400
-Received: from 8bytes.org ([81.169.241.247]:35234 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502917AbgDNNQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:16:10 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id E6E79984; Tue, 14 Apr 2020 15:15:57 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v2 33/33] iommu: Unexport iommu_group_get_for_dev()
-Date:   Tue, 14 Apr 2020 15:15:42 +0200
-Message-Id: <20200414131542.25608-34-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200414131542.25608-1-joro@8bytes.org>
-References: <20200414131542.25608-1-joro@8bytes.org>
+        id S1731708AbgDNN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 09:26:02 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:38584 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2502881AbgDNNQC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:16:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586870160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fkgBK9xnpU8Tu3dZHUSNLZnfPluOMQrIKm9bQ1t2jqg=;
+        b=b1bVuonvr/JIGfQWurak0N3bHyZbH0acpd9wXv+CNFWCJZJPKg/hlXurOlwv3zCUx67pit
+        acvjmOhpVraFX8qwFvcms2vy0VaNrdazzWYMrZapfUnE4JD3/j+9p6N2l5EYypsm6cLQlp
+        YJYLAWsl37vVxpyJOCpybFr6SWse2PA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-YWaPvv61PlOyaXj1ZubTnQ-1; Tue, 14 Apr 2020 09:15:57 -0400
+X-MC-Unique: YWaPvv61PlOyaXj1ZubTnQ-1
+Received: by mail-wr1-f69.google.com with SMTP id 11so2339384wrc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 06:15:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fkgBK9xnpU8Tu3dZHUSNLZnfPluOMQrIKm9bQ1t2jqg=;
+        b=W7SOP7wnsaEblldROoIKHtf6JnOkEWJPLI2tuS4VbtJHV4RwzKM5h84hbRbUIBQahH
+         nZgqmbKFx29yI7LrunFmeElFJQms/W6HQVItPNbgVIfqKdfeDmJXetDq0Dy2hPKWGkJH
+         Sb2LpZy8OugqQ1s4zhhWKUzxiQF8fE/vwhSLMBqvt7uEcNcMT02poZfxsJ+WqwyFviaX
+         43IlEXeUJnRKBxEPWirhPvHHUctI/a5Ty3M+xSEDJmzG3DUgAkVpvmO2TBLm0YYsdK9/
+         nRUrM9mHu79/RYDv6dXdf1d610jkb8VHmsq82kbGQpBdn+XYiMvX8MLACB5qp2ljqZDg
+         5g7g==
+X-Gm-Message-State: AGi0PubZTJE2xvJNJwagDx7oU3OLaJ356/UGw5o2vui51Ok3tAzYIaZ+
+        9lhR7aNT9JlSgLzVfC2zpU4WiwOrEdoIRhJwIwSnXlpmsMy1grDhPTekK3V0Z9EB5oOq7VaOGWh
+        8nmP2i7OfE1Li9DwOkmQFMj+Q
+X-Received: by 2002:a5d:6145:: with SMTP id y5mr3671372wrt.126.1586870155645;
+        Tue, 14 Apr 2020 06:15:55 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIYnGXCmimjktgJ31Rsn05nuM82C4sRRSEJSiXVM+BE/3APQErQB0fwpedAZZG7kleviTPIyA==
+X-Received: by 2002:a5d:6145:: with SMTP id y5mr3671335wrt.126.1586870155233;
+        Tue, 14 Apr 2020 06:15:55 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id y15sm19420635wro.68.2020.04.14.06.15.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Apr 2020 06:15:54 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: intel_int0002_vgpio: Only bind to the
+ INT0002 dev when using s2idle
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maxim Mikityanskiy <maxtram95@gmail.com>,
+        "5 . 3+" <stable@vger.kernel.org>
+References: <20200407213058.62870-1-hdegoede@redhat.com>
+ <cfd3171a-94fb-7382-28e1-a236cb6759cc@redhat.com>
+ <CAHp75VdqQnHbMSSeoDESMgywH-1VxBTT=Uo_GLV1aycmg=MXtA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <32d57d33-5278-aead-1545-fac1ab936fbd@redhat.com>
+Date:   Tue, 14 Apr 2020 15:15:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VdqQnHbMSSeoDESMgywH-1VxBTT=Uo_GLV1aycmg=MXtA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+Hi,
 
-The function is now only used in IOMMU core code and shouldn't be used
-outside of it anyway, so remove the export for it.
+On 4/8/20 12:26 AM, Andy Shevchenko wrote:
+> On Wed, Apr 8, 2020 at 1:24 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi all,
+>>
+>> I just realized that I should have added a cover letter to this
+>> patch to discuss how to merge it.
+>>
+>> Rafael has already queued up the
+>> "[PATCH v3 2/2] platform/x86: intel_int0002_vgpio: Use acpi_register_wakeup_handler()"
+>> in his tree. Looking at both patches the parts of the file the
+>> touch are different enough that that should not be a problem though.
+>>
+>> So I guess this can go through platform/x86 as usual, or
+>> (assuming everyone is ok with the change itself) alternatively
+>> Rafael can take it to make sure there will be no conflicts?
+> 
+> You will need different patches for v5.7 and the rest.
+> In v5.7 new CPU macros are in use.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- drivers/iommu/iommu.c | 4 ++--
- include/linux/iommu.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+I see, I will send out a v2 rebased on top of 5.7-rc1.
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 9a7120746b8e..e9413732c61e 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -91,6 +91,7 @@ static void __iommu_detach_group(struct iommu_domain *domain,
- 				 struct iommu_group *group);
- static int iommu_create_device_direct_mappings(struct iommu_group *group,
- 					       struct device *dev);
-+static struct iommu_group *iommu_group_get_for_dev(struct device *dev);
- 
- #define IOMMU_GROUP_ATTR(_name, _mode, _show, _store)		\
- struct iommu_group_attribute iommu_group_attr_##_name =		\
-@@ -1483,7 +1484,7 @@ static int iommu_alloc_default_domain(struct device *dev)
-  * to the returned IOMMU group, which will already include the provided
-  * device.  The reference should be released with iommu_group_put().
-  */
--struct iommu_group *iommu_group_get_for_dev(struct device *dev)
-+static struct iommu_group *iommu_group_get_for_dev(struct device *dev)
- {
- 	const struct iommu_ops *ops = dev->bus->iommu_ops;
- 	struct iommu_group *group;
-@@ -1514,7 +1515,6 @@ struct iommu_group *iommu_group_get_for_dev(struct device *dev)
- 
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL(iommu_group_get_for_dev);
- 
- struct iommu_domain *iommu_group_default_domain(struct iommu_group *group)
- {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index dd076366383f..7cfd2dddb49d 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -527,7 +527,6 @@ extern int iommu_page_response(struct device *dev,
- 			       struct iommu_page_response *msg);
- 
- extern int iommu_group_id(struct iommu_group *group);
--extern struct iommu_group *iommu_group_get_for_dev(struct device *dev);
- extern struct iommu_domain *iommu_group_default_domain(struct iommu_group *);
- 
- extern int iommu_domain_get_attr(struct iommu_domain *domain, enum iommu_attr,
--- 
-2.17.1
+Regards,
+
+Hans
 
