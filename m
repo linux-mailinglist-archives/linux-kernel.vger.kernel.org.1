@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7008D1A8B1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E867E1A8B3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505024AbgDNTjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:39:40 -0400
-Received: from mga04.intel.com ([192.55.52.120]:20368 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504935AbgDNTiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:38:04 -0400
-IronPort-SDR: oAKLFXDXNH+KwFraP2LPccTZHn67TF/32WTkmzsSSyYdqU3b1aESbNgCBLlClyJl5NxgEegJ7Y
- xBEDlpRenXiw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 12:38:03 -0700
-IronPort-SDR: MXSWKYs+SPkaIF67mS1eFroTQmYjl86e8bKTFoPxIT8VWh2Ghd+fSHHAzQw/i+LeAQWu51fHyG
- PAgF0hsKVy+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,384,1580803200"; 
-   d="scan'208";a="253292411"
-Received: from jclobus-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.42.176])
-  by orsmga003.jf.intel.com with ESMTP; 14 Apr 2020 12:38:01 -0700
-Date:   Tue, 14 Apr 2020 22:38:00 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     shuah <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Nikita Sobolev <Nikita.Sobolev@synopsys.com>,
-        Tadeusz Struk <tadeusz.struk@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "Kernel selftests: tpm2: check for tpm support"
-Message-ID: <20200414193800.GE13000@linux.intel.com>
-References: <20200412142309.71807-1-jarkko.sakkinen@linux.intel.com>
- <3921a93f-120c-0201-4af5-591bf4e6a0b0@kernel.org>
- <20200414193722.GD13000@linux.intel.com>
+        id S2505078AbgDNTlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 15:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2505029AbgDNTjv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:39:51 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D4AC061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:39:51 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id k28so706420lfe.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qRs5i4iVAKA4TTRujU3GhWk99mVzfuZXxL+8IzLaq00=;
+        b=HP4M9PaOeDZ5Rjcv9V2eDLSMU9Szdx7xY7b2n7tP7awEgqgz0TeBMaAZDXXw5N1MV+
+         hmsV+bZUVJAXt+2gd5lV3+jiG1SW/bbEl8TzRqf68raINWJVdyvtFGThXpgC1p+Ltyi6
+         +AGpE1Kkqct7VoUWSG4Rjk/ONitbFKHLBgHZWdvSsGFi1YJGExzK/gw1EdWCBhndMWOq
+         6Av4TdtSr5NKtYFuVm9faWi3WZvh+7DgA3PKD69Q+cCA1sK5hkmUX9B2UlcO4NlSXFaq
+         C8FyPMiO21Q+jGqFKDOZ6Gc0IJJX9toSqlxac4rzoxD2aMEiiincaZUqKyinoWN+Mycy
+         Y88Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qRs5i4iVAKA4TTRujU3GhWk99mVzfuZXxL+8IzLaq00=;
+        b=qSKy0y1uZTUUmOpQcgHwOD/o+rJx5V6wIIUOUj2lJgA7QW2jsR5K++UQv9q8jiX+K9
+         IG6nxOMS9NbVL5hK1vVd5mPExONGxr4wlYBdnvsQllw46oCCMbDcETV19KOz3kb+Yoiw
+         r15Yboj1mSTQOk2ZVeX87yVol2PT7eO/VeCAFgBTbHjEOMDrgHfs1JzMjYTB6kXdwCpu
+         rbD04L9tDG8q2xZquax83ej4nGVS32GmVpDDj8izbYfFpCPmNhkU68KIU56IklSw6XOR
+         9wwXyxD0gb22gK/Mh3yOOzBto5USTFg87ibKFkpFWB+jYOqkVwe9ETujUAj+t2/mO1PZ
+         nfCg==
+X-Gm-Message-State: AGi0PuavlxME6JUBs4eexCZATmbgy1Ih+0XhVDHLBV5VeLaueM480vfY
+        rA4FZ94zwg68u+kG/zjD5vGGhuCPFi4=
+X-Google-Smtp-Source: APiQypI+s5n9rB+qwjmjZHIypmy+J644bf/a7w1c+pOeelNxSUe1AtB3mEv6uQTT+cLbbQwbQY9Crg==
+X-Received: by 2002:a19:6b03:: with SMTP id d3mr798341lfa.209.1586893189426;
+        Tue, 14 Apr 2020 12:39:49 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id 6sm10989254lfy.97.2020.04.14.12.39.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 12:39:48 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 21:39:48 +0200
+From:   Niklas <niklas.soderlund@ragnatech.se>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] media: rcar-vin: Add support for
+ MEDIA_BUS_FMT_SRGGB8_1X8 format
+Message-ID: <20200414193948.GA350588@oden.dyn.berto.se>
+References: <1583838364-12932-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200310124605.GO2975348@oden.dyn.berto.se>
+ <OSBPR01MB35905FFB621C2F4222692832AAFF0@OSBPR01MB3590.jpnprd01.prod.outlook.com>
+ <20200310140625.GA88560@oden.dyn.berto.se>
+ <CA+V-a8vsYGdx6AtgqwS0LXREn4hu-EjVh2D5Dp_rHmpazBYG5A@mail.gmail.com>
+ <20200319150329.GB3192108@oden.dyn.berto.se>
+ <CA+V-a8u8=H-6WfaYMLWH73zo5ehP8cu9D-tdGULk=Hkvq4KuAQ@mail.gmail.com>
+ <20200330120745.GA3213219@oden.dyn.berto.se>
+ <CA+V-a8vbTc0DZ15y0zZ97PH6khwQVxz=M-8_kgx1AiKkdg5QaA@mail.gmail.com>
+ <20200407095620.GA1716317@oden.dyn.berto.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200414193722.GD13000@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200407095620.GA1716317@oden.dyn.berto.se>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:37:25PM +0300, Jarkko Sakkinen wrote:
-> On Tue, Apr 14, 2020 at 09:12:05AM -0600, shuah wrote:
-> > On 4/12/20 8:23 AM, Jarkko Sakkinen wrote:
-> > > This reverts commit b32694cd0724d4ceca2c62cc7c3d3a8d1ffa11fc.
-> > > 
-> > > The original comment
-> > 
-> > commit I assume.
-> > 
-> >  was neither reviewed nor tested. Thus, this the
-> > > *only* possible action to take.
-> > > 
-> > 
-> > Bummer. I will apply this right away.
+Hi Lad,
+
+I spent all day playing with different solutions to how to move forward 
+with this. My main problem is I have no setup where I can produce RAW 
+image formats to test. But reading the datasheet I see the problem you 
+are trying to solve.
+
+I think for now the best solution might be to in rvin_crop_scale_comp() 
+add a check for if the pixelformat is RAW and cut the value written to 
+VNIS_REG in half. The bpp for the format shall still be set to 1.
+
+
+    fmt = rvin_format_from_pixel(vin, vin->format.pixelformat);
+    stride = vin->format.bytesperline / fmt->bpp;
+
+    if (vin->format.pixelformat == V4L2_PIX_FMT_SRGGB8)
+        stride /= 2;
+
+    rvin_write(vin, stride, VNIS_REG);
+
+I would also add a nice big comment above the if () that explains why 
+the stride is cut in half for raw.
+
+On 2020-04-07 11:56:23 +0200, Niklas wrote:
+> Hi Lad,
 > 
-> No worries, and fine with the change as long as I'm able to
-> review and try it out :-) Sorry for the dull tone!
+> On 2020-04-06 18:20:33 +0100, Lad, Prabhakar wrote:
+> > Did you manage to get the required information on this ?
+> 
+> I'm still working on it, sorry for not completing it last week. I will 
+> let you know as soon as I can.
+> 
+> -- 
+> Regards,
+> Niklas Söderlund
 
-I mean refined change after this revert has been applied.
-
-/Jarkko
+-- 
+Regards,
+Niklas Söderlund
