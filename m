@@ -2,162 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26301A8AC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 21:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F941A8A1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 20:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504787AbgDNTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 15:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
+        id S2504370AbgDNSsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 14:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504780AbgDNT3y (ORCPT
+        by vger.kernel.org with ESMTP id S2504345AbgDNSrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:29:54 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06F6C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:13:28 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id q73so476174qvq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 12:13:28 -0700 (PDT)
+        Tue, 14 Apr 2020 14:47:53 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F4C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:47:52 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y4so943146ljn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 11:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=C6LPr57lWZSC64vGG3m/7F9hGv26FkwkUKQlSSD5fmM=;
-        b=V4bgcKO2h4/hftGysjiOqp+faJ0fUnfl7CGmiLnBy/3ERjUn/9x/GKW6pDj6zQG06n
-         VPOlgs2Zg0Q8xXAzpZjFl28BXF5zLuGLvz5wy45lopsUoFSURYo2FlKzCzzfG5KNkWr0
-         mOBaK4IQhoIWa5AZjgIrxRd9FsGl1MYZh9TEyeFJ2udxHR5I8wGmkDpKI31+FV02GJat
-         aN8EFTcYCFP5Q1hcPSUi+1l6jkZlOrvtZ+kXa3N9ncA7BOWaQjBtrctXae65LRarAQMp
-         oYcJrw40qyD+lVF1nlO6XTnveyVPcjCVcmAdK8dYGHSB+TPbaveTq/eeb2aRfmBx1zzt
-         VujQ==
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OyOL12OCCuEtnIYwyab7jevzcvgkgia9hHwlqC2b/cU=;
+        b=PZAoOw3NbV+FJtp3dr1j+nlatrdGdulU5pItNLclPyjrhf7CyG6zlAVQxY50b0EpDU
+         ebHHUI0nLMYLiUaEy8qSIayJglSY+JSBhsG0RoJFCif1nbPg6XUYMtIPrzwEd6L21B6D
+         eMiaPOblgIGOqBJWeooWrfL6SvkGQAaOTSNNO6Lp9XtIHez2UrZ1ZWIaNMyXBhnjPbaL
+         lLFX2CPaZzf0IfFjObpAbweT8dY+tjxm0VLbPnMFpyGtwNx+9HjbD/0dWLjUqNnUuI1u
+         tiv9RMd+lEZFWKv+bI4SS+IkGpaqRpALLHCWMd+xjGN1t+ibMC4JzxMkPXthqEoK9N5E
+         2Djw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C6LPr57lWZSC64vGG3m/7F9hGv26FkwkUKQlSSD5fmM=;
-        b=qlfujIqK3JLm+773PWSz55ZBO84MTLM0yUgw0bZADYVbOtqgjkv/mO21XvTFyqqcMk
-         S9eusEWwhEjNECn8cKjPgLTcZANoCrfy+6j2Iqab3LyfWWFpUNvvzDGv+rKAte5TN3/Y
-         SKV/yoVYyiEqEKHwDvCkhmVviiKBwb7zdY/ZAoJsWaDmpn2frs/CfQviycEO8h5gLMue
-         FB4OEnpt3ZVEf3C7YdrkmYCmMaALVYXjY1hjOQtxI6+qdkXrkHomB18WJFVCBXVHicIb
-         uwBOb5eQO//ICEzBraiVF3j8iLaU6xJKTAb4PdLkRJatG+f7FRqNzf9aLkS5ULoxyvrY
-         lHMQ==
-X-Gm-Message-State: AGi0PuZU6XpI0PcghHDHNWhs9H9gKqA3ewpnOyZ5Kws2RIPdcu79CadA
-        CfazZeuf6ew/YXc8o0dZftqAQw==
-X-Google-Smtp-Source: APiQypLLCv2q5t5WCFmLAy+rjUFaEQYxU9HiJ0USBdZygY8Tz/BJrFvCc+y6FL6Fqeq3MzWGhmXWtQ==
-X-Received: by 2002:a05:6214:7ec:: with SMTP id bp12mr1544772qvb.33.1586891608126;
-        Tue, 14 Apr 2020 12:13:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id v33sm11252906qtd.88.2020.04.14.12.13.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 12:13:27 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jOQzv-0003S0-1H; Tue, 14 Apr 2020 16:13:27 -0300
-Date:   Tue, 14 Apr 2020 16:13:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v5] mm/hugetlb: fix a addressing exception caused by
- huge_pte_offset
-Message-ID: <20200414191327.GK5100@ziepe.ca>
-References: <20200413010342.771-1-longpeng2@huawei.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OyOL12OCCuEtnIYwyab7jevzcvgkgia9hHwlqC2b/cU=;
+        b=cZNedFs3WojbAm8Zo4zWmll/EYeroHMw1diVBqkjL+9rgR4wpHjIoHQFvIEtDxKdd/
+         S7ei5P1MF1pgdjZaul4ISr5hPeqobqw/OYiLSpf5E1q55Md/7mvepSga/F9yxtdELAhk
+         tNgdvPEE10fs82GRP9nykGmrLcvt1ZW3EkTjUCM/7peuehRRa6qBhKe9tSHvFtJhBC/F
+         Sf6lTHl0kUhZeAZGbA/DneNjTM6xLSI2GqZGnIpEf+ggqAC38e4W0vJ0KffZwpXs6GDj
+         bZJE7eIScAnM2UHZ4sjAKkKwFSmxcNn4YxtmxeBEKTs7rFj4FXOQsE4g3msiOu/3ChOm
+         lLJA==
+X-Gm-Message-State: AGi0Pubr06CRkQA+VckrPcPx5riUQ/8lTSfIyXt95zRf3jBkzaC02XQk
+        YJhmzJssLO3mWNfwlmYEQv3CGASv9GSgsA==
+X-Google-Smtp-Source: APiQypIU0nDoVIJ/vdOxOcyArNCl8ozzP3P/YWU0FeKyu7KGGin9pZl2KpekHTeHZOvoDagifSazJQ==
+X-Received: by 2002:a2e:a308:: with SMTP id l8mr917166lje.282.1586890070861;
+        Tue, 14 Apr 2020 11:47:50 -0700 (PDT)
+Received: from navi.cosmonova.net.ua ([95.67.24.131])
+        by smtp.gmail.com with ESMTPSA id p2sm2029433lji.40.2020.04.14.11.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 11:47:50 -0700 (PDT)
+From:   andrew@daynix.com
+To:     virtualization@lists.linux-foundation.org
+Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Fix: buffer overflow during hvc_alloc().
+Date:   Tue, 14 Apr 2020 22:15:03 +0300
+Message-Id: <20200414191503.3471783-1-andrew@daynix.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413010342.771-1-longpeng2@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 09:03:42AM +0800, Longpeng(Mike) wrote:
-> From: Longpeng <longpeng2@huawei.com>
-> 
-> Our machine encountered a panic(addressing exception) after run
-> for a long time and the calltrace is:
-> RIP: 0010:[<ffffffff9dff0587>]  [<ffffffff9dff0587>] hugetlb_fault+0x307/0xbe0
-> RSP: 0018:ffff9567fc27f808  EFLAGS: 00010286
-> RAX: e800c03ff1258d48 RBX: ffffd3bb003b69c0 RCX: e800c03ff1258d48
-> RDX: 17ff3fc00eda72b7 RSI: 00003ffffffff000 RDI: e800c03ff1258d48
-> RBP: ffff9567fc27f8c8 R08: e800c03ff1258d48 R09: 0000000000000080
-> R10: ffffaba0704c22a8 R11: 0000000000000001 R12: ffff95c87b4b60d8
-> R13: 00005fff00000000 R14: 0000000000000000 R15: ffff9567face8074
-> FS:  00007fe2d9ffb700(0000) GS:ffff956900e40000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffd3bb003b69c0 CR3: 000000be67374000 CR4: 00000000003627e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  [<ffffffff9df9b71b>] ? unlock_page+0x2b/0x30
->  [<ffffffff9dff04a2>] ? hugetlb_fault+0x222/0xbe0
->  [<ffffffff9dff1405>] follow_hugetlb_page+0x175/0x540
->  [<ffffffff9e15b825>] ? cpumask_next_and+0x35/0x50
->  [<ffffffff9dfc7230>] __get_user_pages+0x2a0/0x7e0
->  [<ffffffff9dfc648d>] __get_user_pages_unlocked+0x15d/0x210
->  [<ffffffffc068cfc5>] __gfn_to_pfn_memslot+0x3c5/0x460 [kvm]
->  [<ffffffffc06b28be>] try_async_pf+0x6e/0x2a0 [kvm]
->  [<ffffffffc06b4b41>] tdp_page_fault+0x151/0x2d0 [kvm]
->  ...
->  [<ffffffffc06a6f90>] kvm_arch_vcpu_ioctl_run+0x330/0x490 [kvm]
->  [<ffffffffc068d919>] kvm_vcpu_ioctl+0x309/0x6d0 [kvm]
->  [<ffffffff9deaa8c2>] ? dequeue_signal+0x32/0x180
->  [<ffffffff9deae34d>] ? do_sigtimedwait+0xcd/0x230
->  [<ffffffff9e03aed0>] do_vfs_ioctl+0x3f0/0x540
->  [<ffffffff9e03b0c1>] SyS_ioctl+0xa1/0xc0
->  [<ffffffff9e53879b>] system_call_fastpath+0x22/0x27
-> 
-> For 1G hugepages, huge_pte_offset() wants to return NULL or pudp, but it
-> may return a wrong 'pmdp' if there is a race. Please look at the following
-> code snippet:
->     ...
->     pud = pud_offset(p4d, addr);
->     if (sz != PUD_SIZE && pud_none(*pud))
->         return NULL;
->     /* hugepage or swap? */
->     if (pud_huge(*pud) || !pud_present(*pud))
->         return (pte_t *)pud;
-> 
->     pmd = pmd_offset(pud, addr);
->     if (sz != PMD_SIZE && pmd_none(*pmd))
->         return NULL;
->     /* hugepage or swap? */
->     if (pmd_huge(*pmd) || !pmd_present(*pmd))
->         return (pte_t *)pmd;
->     ...
-> 
-> The following sequence would trigger this bug:
-> 1. CPU0: sz = PUD_SIZE and *pud = 0 , continue
-> 1. CPU0: "pud_huge(*pud)" is false
-> 2. CPU1: calling hugetlb_no_page and set *pud to xxxx8e7(PRESENT)
-> 3. CPU0: "!pud_present(*pud)" is false, continue
-> 4. CPU0: pmd = pmd_offset(pud, addr) and maybe return a wrong pmdp
-> However, we want CPU0 to return NULL or pudp in this case.
-> 
-> We must make sure there is exactly one dereference of pud and pmd.
-> 
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Longpeng <longpeng2@huawei.com>
-> ---
-> v4 -> v5:
->   fix a bug of on i386
-> v3 -> v4:
->   fix a typo s/p4g/p4d.  [Jason]
-> v2 -> v3:
->   make sure p4d/pud/pmd be dereferenced once. [Jason]
-> 
-> ---
->  mm/hugetlb.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
+From: Andrew Melnychenko <andrew@daynix.com>
 
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+If there is a lot(more then 16) of virtio-console devices
+or virtio_console module is reloaded
+- buffers 'vtermnos' and 'cons_ops' are overflowed.
+In older kernels it overruns spinlock which leads to kernel freezing:
+https://bugzilla.redhat.com/show_bug.cgi?id=1786239
 
-Jason
+To reproduce the issue, you can try simple script that
+loads/unloads module. Something like this:
+while [ 1 ]
+do
+  modprobe virtio_console
+  sleep 2
+  modprobe -r virtio_console
+  sleep 2
+done
+
+Description of problem:
+Guest get 'Call Trace' when loading module "virtio_console"
+and unloading it frequently - clearly reproduced on kernel-4.18.0:
+
+[   81.498208] ------------[ cut here ]------------
+[   81.499263] pvqspinlock: lock 0xffffffff92080020 has corrupted value 0xc0774ca0!
+[   81.501000] WARNING: CPU: 0 PID: 785 at kernel/locking/qspinlock_paravirt.h:500 __pv_queued_spin_unlock_slowpath+0xc0/0xd0
+[   81.503173] Modules linked in: virtio_console fuse xt_CHECKSUM ipt_MASQUERADE xt_conntrack ipt_REJECT nft_counter nf_nat_tftp nft_objref nf_conntrack_tftp tun bridge stp llc nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nf_tables_set nft_chain_nat_ipv6 nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 nft_chain_route_ipv6 nft_chain_nat_ipv4 nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_nat nf_conntrack nft_chain_route_ipv4 ip6_tables nft_compat ip_set nf_tables nfnetlink sunrpc bochs_drm drm_vram_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm i2c_piix4 pcspkr crct10dif_pclmul crc32_pclmul joydev ghash_clmulni_intel ip_tables xfs libcrc32c sd_mod sg ata_generic ata_piix virtio_net libata crc32c_intel net_failover failover serio_raw virtio_scsi dm_mirror dm_region_hash dm_log dm_mod [last unloaded: virtio_console]
+[   81.517019] CPU: 0 PID: 785 Comm: kworker/0:2 Kdump: loaded Not tainted 4.18.0-167.el8.x86_64 #1
+[   81.518639] Hardware name: Red Hat KVM, BIOS 1.12.0-5.scrmod+el8.2.0+5159+d8aa4d83 04/01/2014
+[   81.520205] Workqueue: events control_work_handler [virtio_console]
+[   81.521354] RIP: 0010:__pv_queued_spin_unlock_slowpath+0xc0/0xd0
+[   81.522450] Code: 07 00 48 63 7a 10 e8 bf 64 f5 ff 66 90 c3 8b 05 e6 cf d6 01 85 c0 74 01 c3 8b 17 48 89 fe 48 c7 c7 38 4b 29 91 e8 3a 6c fa ff <0f> 0b c3 0f 0b 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 48
+[   81.525830] RSP: 0018:ffffb51a01ffbd70 EFLAGS: 00010282
+[   81.526798] RAX: 0000000000000000 RBX: 0000000000000010 RCX: 0000000000000000
+[   81.528110] RDX: ffff9e66f1826480 RSI: ffff9e66f1816a08 RDI: ffff9e66f1816a08
+[   81.529437] RBP: ffffffff9153ff10 R08: 000000000000026c R09: 0000000000000053
+[   81.530732] R10: 0000000000000000 R11: ffffb51a01ffbc18 R12: ffff9e66cd682200
+[   81.532133] R13: ffffffff9153ff10 R14: ffff9e6685569500 R15: ffff9e66cd682000
+[   81.533442] FS:  0000000000000000(0000) GS:ffff9e66f1800000(0000) knlGS:0000000000000000
+[   81.534914] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   81.535971] CR2: 00005624c55b14d0 CR3: 00000003a023c000 CR4: 00000000003406f0
+[   81.537283] Call Trace:
+[   81.537763]  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
+[   81.539011]  .slowpath+0x9/0xe
+[   81.539585]  hvc_alloc+0x25e/0x300
+[   81.540237]  init_port_console+0x28/0x100 [virtio_console]
+[   81.541251]  handle_control_message.constprop.27+0x1c4/0x310 [virtio_console]
+[   81.542546]  control_work_handler+0x70/0x10c [virtio_console]
+[   81.543601]  process_one_work+0x1a7/0x3b0
+[   81.544356]  worker_thread+0x30/0x390
+[   81.545025]  ? create_worker+0x1a0/0x1a0
+[   81.545749]  kthread+0x112/0x130
+[   81.546358]  ? kthread_flush_work_fn+0x10/0x10
+[   81.547183]  ret_from_fork+0x22/0x40
+[   81.547842] ---[ end trace aa97649bd16c8655 ]---
+[   83.546539] general protection fault: 0000 [#1] SMP NOPTI
+[   83.547422] CPU: 5 PID: 3225 Comm: modprobe Kdump: loaded Tainted: G        W        --------- -  - 4.18.0-167.el8.x86_64 #1
+[   83.549191] Hardware name: Red Hat KVM, BIOS 1.12.0-5.scrmod+el8.2.0+5159+d8aa4d83 04/01/2014
+[   83.550544] RIP: 0010:__pv_queued_spin_lock_slowpath+0x19a/0x2a0
+[   83.551504] Code: c4 c1 ea 12 41 be 01 00 00 00 4c 8d 6d 14 41 83 e4 03 8d 42 ff 49 c1 e4 05 48 98 49 81 c4 40 a5 02 00 4c 03 24 c5 60 48 34 91 <49> 89 2c 24 b8 00 80 00 00 eb 15 84 c0 75 0a 41 0f b6 54 24 14 84
+[   83.554449] RSP: 0018:ffffb51a0323fdb0 EFLAGS: 00010202
+[   83.555290] RAX: 000000000000301c RBX: ffffffff92080020 RCX: 0000000000000001
+[   83.556426] RDX: 000000000000301d RSI: 0000000000000000 RDI: 0000000000000000
+[   83.557556] RBP: ffff9e66f196a540 R08: 000000000000028a R09: ffff9e66d2757788
+[   83.558688] R10: 0000000000000000 R11: 0000000000000000 R12: 646e61725f770b07
+[   83.559821] R13: ffff9e66f196a554 R14: 0000000000000001 R15: 0000000000180000
+[   83.560958] FS:  00007fd5032e8740(0000) GS:ffff9e66f1940000(0000) knlGS:0000000000000000
+[   83.562233] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   83.563149] CR2: 00007fd5022b0da0 CR3: 000000038c334000 CR4: 00000000003406e0
+
+Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
+---
+ drivers/tty/hvc/hvc_console.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+index 27284a2dcd2b..436cc51c92c3 100644
+--- a/drivers/tty/hvc/hvc_console.c
++++ b/drivers/tty/hvc/hvc_console.c
+@@ -302,10 +302,6 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
+ 	vtermnos[index] = vtermno;
+ 	cons_ops[index] = ops;
+ 
+-	/* reserve all indices up to and including this index */
+-	if (last_hvc < index)
+-		last_hvc = index;
+-
+ 	/* check if we need to re-register the kernel console */
+ 	hvc_check_console(index);
+ 
+@@ -960,13 +956,22 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+ 		    cons_ops[i] == hp->ops)
+ 			break;
+ 
+-	/* no matching slot, just use a counter */
+-	if (i >= MAX_NR_HVC_CONSOLES)
+-		i = ++last_hvc;
++	if (i >= MAX_NR_HVC_CONSOLES) {
++
++		/* find 'empty' slot for console */
++		for (i = 0; i < MAX_NR_HVC_CONSOLES && vtermnos[i] != -1; i++) {
++		}
++
++		/* no matching slot, just use a counter */
++		if (i == MAX_NR_HVC_CONSOLES)
++			i = ++last_hvc + MAX_NR_HVC_CONSOLES;
++	}
+ 
+ 	hp->index = i;
+-	cons_ops[i] = ops;
+-	vtermnos[i] = vtermno;
++	if (i < MAX_NR_HVC_CONSOLES) {
++		cons_ops[i] = ops;
++		vtermnos[i] = vtermno;
++	}
+ 
+ 	list_add_tail(&(hp->next), &hvc_structs);
+ 	mutex_unlock(&hvc_structs_mutex);
+-- 
+2.24.1
+
