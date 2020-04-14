@@ -2,106 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2BA1A8185
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2E21A8186
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440342AbgDNPJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2440317AbgDNPJC (ORCPT
+        id S2437086AbgDNPKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:10:06 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:12613 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437001AbgDNPJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:09:02 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4ACC061A0C;
-        Tue, 14 Apr 2020 08:09:02 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w65so27508pfc.12;
-        Tue, 14 Apr 2020 08:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iIwIisg8wJsKulzHMel4nnap62IsdUq5I7BD8EdMy3U=;
-        b=P6sHGcFsX1qm5pPBVeNB8LSBcEJG8cqvJ/iXSAAlTRjJmNwGQlzdBYyGlDGi5y2soU
-         NxQqLtXnCKnYU92WMkjzF8j40JGiyiOM7CEH/QkTX9p7nf+rG7XXIar2rYTSofk0cjzt
-         CfQuWMXqBhUh84K95BlmyeNJNtElrONAcreildOOnByS3pOd9oNstYX01mELuBZ5IX5j
-         28ummg1turkUdKROs6ZKIgp7SJH5gDnTZ6fzJlMEPC2g9UnbuBPBQCB5u37vdjctfhxL
-         mLwj3UmKDHrvJofVKg7y5QQGdp5ZiW5qAgsEtX5YdF5BUJzpZKPFqbn6aBludu3y73h4
-         Qrow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iIwIisg8wJsKulzHMel4nnap62IsdUq5I7BD8EdMy3U=;
-        b=QZzvLUIlEqDV1kTjmREUhIRM3aSvZw+LyDMjNcUPUfEHzPTQbYMhYIt2EHqyqJnhUK
-         IEV4fdeqIzU0ZfpF46bD6fET2eGaG4eJHtQMlF4b1AOy6qbsBTi7iWaDJn7QiuQpOf9e
-         8AbzxqduOL1w2k60SU+PQqNA3kUQy2HVHBh0YoQN9JZ+IENDTHhV5YDLx6fIcqG7dX8t
-         BzK7+D7M0sY9CSynD9OEkGiYEnzuVlN47znXSUzexGrEoWyg/sQUy0swdXtCcx2ALLTA
-         PWMQQU2YBSroqKAfxoG9zF+B0y48rSZs/jooEeXqSnfX5lO1SYpzmkAafhsMertMpMqm
-         pQXA==
-X-Gm-Message-State: AGi0PuY/7i26CWXD5nBm621xLECHXHlTAzBCbhczfPx9SjACD928LkNv
-        g8LRjdAAg0GVKwjt2ZM9WPJ8HRa+XWG8dNHHLMBWD7+QMlY=
-X-Google-Smtp-Source: APiQypIV3Zd98XVLtAsSdItRS2H+IZAJWUv+z9c5WVBVR9hPzW7VmKVLVj0gbXBqyItcafrn5j3EEUKAUw2MVwvbnpo=
-X-Received: by 2002:a63:5511:: with SMTP id j17mr6514062pgb.4.1586876941742;
- Tue, 14 Apr 2020 08:09:01 -0700 (PDT)
+        Tue, 14 Apr 2020 11:09:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586876961; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=OS+STgIODNgZTcpBgh6hwEBupTearScuPMfVu+byNqk=;
+ b=kqWNaAN06UfJczZ6yKWwhOzTpzDDCv6IacLCGQrDOrpOuL7VL53t/YSjfPvIZ0LOZig6Rpu0
+ XYrsOhD7dh/XTtirRDnAoE0VrZ4x5eyu5M7SRxWM8uOKFuczitNatmvBGT08SXX8hMyDBe58
+ atT9RGRYy7zmtCdNZzowDJu5yd8=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e95d21d.7fe913496d88-smtp-out-n01;
+ Tue, 14 Apr 2020 15:09:17 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E73AC433CB; Tue, 14 Apr 2020 15:09:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A766C433BA;
+        Tue, 14 Apr 2020 15:09:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9A766C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200413164402.v9.1.I6ed779cd21abf3e70f21c1562bbda81f590976ab@changeid>
- <20200413164402.v9.2.I1f56fe698017f22d6e825c913c256d5afc2ad69f@changeid>
-In-Reply-To: <20200413164402.v9.2.I1f56fe698017f22d6e825c913c256d5afc2ad69f@changeid>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Apr 2020 18:08:54 +0300
-Message-ID: <CAHp75Vfe3HAdKFbkXKrwVCnp=oziPY5GDrHTYJWPTW7OOX3LwQ@mail.gmail.com>
-Subject: Re: [PATCH v9 2/2] iio: Add SEMTECH SX9310/9311 sensor driver
-To:     Daniel Campello <campello@chromium.org>
-Cc:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] qtnfmac: Simplify code in _attach functions
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200407193233.9439-1-christophe.jaillet@wanadoo.fr>
+References: <20200407193233.9439-1-christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     imitsyanko@quantenna.com, avinashp@quantenna.com,
+        smatyukevich@quantenna.com, davem@davemloft.net,
+        huangfq.daxian@gmail.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
+Message-Id: <20200414150917.1E73AC433CB@smtp.codeaurora.org>
+Date:   Tue, 14 Apr 2020 15:09:17 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 4:43 PM Daniel Campello <campello@chromium.org> wrote:
->
-> Add SEMTECH SX9310/9311 driver.
->
-> The device has the following entry points:
->
-> Usual frequency:
-> - sampling_frequency
-> - sampling_frequency_available
->
-> Instant reading of current values for different sensors:
-> - in_proximity0_raw
-> - in_proximity1_raw
-> - in_proximity2_raw
-> - in_proximity3_comb_raw
-> and associated events in events/
->
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
-> Signed-off-by: Enrico Granata <egranata@chromium.org>
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> ---
->
-> Changes in v9:
->   - Updated Copyright
->   - Updated macro definitions
->   - Simplified return condition checks
->   - Removed ACPI and of table macros
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-Thank you for an update.
-It seems you missed few comments from previous round.
+> There is no need to re-implement 'netdev_alloc_skb_ip_align()' here.
+> Keep the code simple.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Reviewed-by: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+c960e2b384ef qtnfmac: Simplify code in _attach functions
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/patch/11478939/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
