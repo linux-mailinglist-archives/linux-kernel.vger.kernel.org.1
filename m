@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1838D1A8182
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115FA1A816D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 17:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436973AbgDNPJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 11:09:43 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24078 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436870AbgDNPIh (ORCPT
+        id S2440237AbgDNPIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 11:08:05 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:25205 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2440202AbgDNPHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:08:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586876916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=KqvdvPMVZP9GhLam1e8X/uCXyRLGbaBc4BNhj+P59mw=;
-        b=ZgbD7ia5HG8w59z+nULOTPd3Ahtvkd5tp/bQ1dcCXP0U6IFeopFgLrNvIwG5dQVRMW0Yxn
-        Ou2fCeFLerM8VINSnYrn0yB7xZ0No84prUK2B5vHXYwHjBxdJJRO3pOiyl1qSXHuHASDRa
-        VNmSsNnSvGrALfrzBDphi8/46+I1TmY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-XZ3qLv-yOUejSdncIk2Eiw-1; Tue, 14 Apr 2020 11:08:34 -0400
-X-MC-Unique: XZ3qLv-yOUejSdncIk2Eiw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 14 Apr 2020 11:07:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586876852; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=pzkx7xJD1kBHfGD+u6PRwl7F+O1g7GJzrEjUCdwfk/E=;
+ b=kRM9L2re+bU432M7oNCQ2HSWbX0m5nOVxEe1/8upFff6aM09o0Jl9yHE5IjQ7XftFPCwEg4+
+ boPd1Gc8yMcLwXp2om88OgrLh/7lkZ6ADlsaiam5AwbQk6DwvfltGmB8ufs38lm84bgX2ahl
+ p1kpa0ToNcrgpr67tV58RfNlvfI=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e95d1b0.7f7bb752a650-smtp-out-n01;
+ Tue, 14 Apr 2020 15:07:28 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D6DA0C4478C; Tue, 14 Apr 2020 15:07:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EA1810CE780;
-        Tue, 14 Apr 2020 15:08:32 +0000 (UTC)
-Received: from localhost (ovpn-116-111.rdu2.redhat.com [10.10.116.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 07F9627098;
-        Tue, 14 Apr 2020 15:08:31 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.9.219-rt142
-Date:   Tue, 14 Apr 2020 15:06:33 -0000
-Message-ID: <158687679390.397792.8613444289630927615@tagon>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6BEFC433CB;
+        Tue, 14 Apr 2020 15:07:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6BEFC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] rtw88: Add delay on polling h2c command status bit
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200407073331.397-1-kai.heng.feng@canonical.com>
+References: <20200407073331.397-1-kai.heng.feng@canonical.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     yhchuang@realtek.com, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org (open list:REALTEK WIRELESS DRIVER
+        (rtw88)), netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
+Message-Id: <20200414150728.D6DA0C4478C@smtp.codeaurora.org>
+Date:   Tue, 14 Apr 2020 15:07:28 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
 
-I'm pleased to announce the 4.9.219-rt142 stable release.
+> On some systems we can constanly see rtw88 complains:
+> [39584.721375] rtw_pci 0000:03:00.0: failed to send h2c command
+> 
+> Increase interval of each check to wait the status bit really changed.
+> 
+> Use read_poll_timeout() macro which fits anything we need here.
+> 
+> Suggested-by: Kalle Valo <kvalo@codeaurora.org>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Note that 4.9-rt is in maintenance mode, so this is merely a merge of the
-upstream stable updates, with no changes to the PREEMPT_RT patches.
+Patch applied to wireless-drivers-next.git, thanks.
 
-You can get this release via the git tree at:
+6343a6d4b213 rtw88: Add delay on polling h2c command status bit
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+-- 
+https://patchwork.kernel.org/patch/11477667/
 
-  branch: v4.9-rt
-  Head SHA1: a3ddf39c50c383f479faafde2e4e2167568724cb
-
-Or to build 4.9.219-rt142 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.219.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.219-rt142.patch.xz
-
-
-You can also build from 4.9.218-rt141 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/incr/patch-4.9.218-rt141-rt142.patch.xz
-
-Enjoy!
-Clark
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
