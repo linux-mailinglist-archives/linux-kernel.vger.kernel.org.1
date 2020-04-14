@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C812D1A7196
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D881A71AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 05:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404498AbgDNDRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 23:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404486AbgDNDRe (ORCPT
+        id S2404590AbgDNDSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 23:18:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60242 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404573AbgDNDSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 23:17:34 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB92C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:17:34 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id p13so10336402pgk.18
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 20:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=qmS4Dws1dS9Cf9mpNh1dkBLiz6hqHz5k1HrVTs3BHIU=;
-        b=tniFeokiM0fcdzRPHG1ZbY9ozBysDVZ/aYvbq902VEONvODDGN/4/AT7Q/QD43RaKG
-         A1SPyDQUACNvXr8ytYrkcN7tkAvv28uU02BFBJryzTx876TVzWaft4V6l9RXExPBRjIm
-         aSi9pMgHwnv6rIPIdSj1ZKpYdqljYl1+o2o2GWV/+Wr2bkpxuDI4hGJQbXdq6od6c8Om
-         9xdLlOxCICXwcuG6aB1tSJdAKkOcXcZgJrfOajKOOf5mGJp+d5gjj/XiZCWCQ5l8fKJ6
-         ydKrqljfMn/rMylk4TKt+nHAEX9YlDL8ye+X4LaBoYCZO3cJMz1/NuKNlMGbuGnPAoO9
-         RyZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=qmS4Dws1dS9Cf9mpNh1dkBLiz6hqHz5k1HrVTs3BHIU=;
-        b=m61db3kofiHvt7KoP/ljGmOmxzQT92al/fyxIdj+rz2Ws8WeNXuy04tW2EICMzleJI
-         zMvVubk4xaBdFW0vV0PqKugZfqmVSf51AfTqatj7TeQKjlaObGCazFbXZyvNk72OMgAt
-         ZuL9xmg8AalgwP1Hl06GsqNDL8d20ne/rzkUbZFR8Pw+xP+Y4I9FMAduOmZrLiySkMr6
-         T9APL+XYncV4xlMPckzbIdhl3PthkahbquwuppMvvcO6f1Rwx8heQujejZuC2cpOTU2z
-         uFqIS34mM9EcCNaL6r3vEMXOKH7F3fKctWb76xR9J6PTayRR0oczIrjXdrI2+9xU1/AO
-         c7fw==
-X-Gm-Message-State: AGi0PuaZvd7hKolEmxmLOSZVAgFQcL6BA3wnOg3T6G2FcwavXxeB9nvn
-        0XJkJA5K0fAhe4FGUE1Fw7yfILOyWJPa3Q==
-X-Google-Smtp-Source: APiQypKW5TDCpyIvzemzn/s78Ld1CH+htFCh8fWOvNw2ECN6IMlElhfG7YP8qxjm0N6Glpf+/LH8+Hhn27QBOQ==
-X-Received: by 2002:a17:90a:ea05:: with SMTP id w5mr5197470pjy.143.1586834254059;
- Mon, 13 Apr 2020 20:17:34 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 20:16:45 -0700
-In-Reply-To: <20200414031647.124664-1-davidgow@google.com>
-Message-Id: <20200414031647.124664-2-davidgow@google.com>
-Mime-Version: 1.0
-References: <20200414031647.124664-1-davidgow@google.com>
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH v5 1/4] Add KUnit Struct to Current Task
-From:   David Gow <davidgow@google.com>
-To:     trishalfonso@google.com, brendanhiggins@google.com,
-        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 13 Apr 2020 23:18:44 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03E33hYi124655
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 23:18:42 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30bad882e1-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 23:18:42 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <ravi.bangoria@linux.ibm.com>;
+        Tue, 14 Apr 2020 04:18:06 +0100
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 14 Apr 2020 04:18:01 +0100
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03E3IYjU41287980
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 03:18:34 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 05A3552050;
+        Tue, 14 Apr 2020 03:18:34 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.60.157])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 640615204F;
+        Tue, 14 Apr 2020 03:18:08 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au, mikey@neuling.org
+Cc:     apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
+        christophe.leroy@c-s.fr, naveen.n.rao@linux.vnet.ibm.com,
+        peterz@infradead.org, jolsa@kernel.org, oleg@redhat.com,
+        fweisbec@gmail.com, mingo@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        ravi.bangoria@linux.ibm.com
+Subject: [PATCH v3 03/16] powerpc/watchpoint: Introduce function to get nr watchpoints dynamically
+Date:   Tue, 14 Apr 2020 08:46:46 +0530
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <20200414031659.58875-1-ravi.bangoria@linux.ibm.com>
+References: <20200414031659.58875-1-ravi.bangoria@linux.ibm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20041403-0016-0000-0000-000003041960
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041403-0017-0000-0000-000033680D02
+Message-Id: <20200414031659.58875-4-ravi.bangoria@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-13_11:2020-04-13,2020-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ mlxlogscore=974 adultscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 phishscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140024
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patricia Alfonso <trishalfonso@google.com>
+So far we had only one watchpoint, so we have hardcoded HBP_NUM to 1.
+But future Power architecture is introducing 2nd DAWR and thus kernel
+should be able to dynamically find actual number of watchpoints
+supported by hw it's running on. Introduce function for the same.
+Also convert HBP_NUM macro to HBP_NUM_MAX, which will now represent
+maximum number of watchpoints supported by Powerpc.
 
-In order to integrate debugging tools like KASAN into the KUnit
-framework, add KUnit struct to the current task to keep track of the
-current KUnit test.
-
-Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 ---
- include/linux/sched.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/powerpc/include/asm/cputable.h      | 6 +++++-
+ arch/powerpc/include/asm/hw_breakpoint.h | 5 +++++
+ arch/powerpc/include/asm/processor.h     | 2 +-
+ arch/powerpc/kernel/hw_breakpoint.c      | 2 +-
+ 4 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 04278493bf15..7ca3e5068316 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1180,6 +1180,10 @@ struct task_struct {
- 	unsigned int			kasan_depth;
- #endif
+diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+index 40a4d3c6fd99..c67b94f3334c 100644
+--- a/arch/powerpc/include/asm/cputable.h
++++ b/arch/powerpc/include/asm/cputable.h
+@@ -614,7 +614,11 @@ enum {
+ };
+ #endif /* __powerpc64__ */
  
-+#if IS_ENABLED(CONFIG_KUNIT)
-+	struct kunit			*kunit_test;
-+#endif
+-#define HBP_NUM 1
++/*
++ * Maximum number of hw breakpoint supported on powerpc. Number of
++ * breakpoints supported by actual hw might be less than this.
++ */
++#define HBP_NUM_MAX	1
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
+index f2f8d8aa8e3b..518b41eef924 100644
+--- a/arch/powerpc/include/asm/hw_breakpoint.h
++++ b/arch/powerpc/include/asm/hw_breakpoint.h
+@@ -43,6 +43,11 @@ struct arch_hw_breakpoint {
+ #define DABR_MAX_LEN	8
+ #define DAWR_MAX_LEN	512
+ 
++static inline int nr_wp_slots(void)
++{
++	return HBP_NUM_MAX;
++}
 +
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	/* Index of current stored address in ret_stack: */
- 	int				curr_ret_stack;
+ #ifdef CONFIG_HAVE_HW_BREAKPOINT
+ #include <linux/kdebug.h>
+ #include <asm/reg.h>
+diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
+index eedcbfb9a6ff..90f6dbc7ff00 100644
+--- a/arch/powerpc/include/asm/processor.h
++++ b/arch/powerpc/include/asm/processor.h
+@@ -180,7 +180,7 @@ struct thread_struct {
+ 	int		fpexc_mode;	/* floating-point exception mode */
+ 	unsigned int	align_ctl;	/* alignment handling control */
+ #ifdef CONFIG_HAVE_HW_BREAKPOINT
+-	struct perf_event *ptrace_bps[HBP_NUM];
++	struct perf_event *ptrace_bps[HBP_NUM_MAX];
+ 	/*
+ 	 * Helps identify source of single-step exception and subsequent
+ 	 * hw-breakpoint enablement
+diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
+index 72f461bd70fb..4120349e2abe 100644
+--- a/arch/powerpc/kernel/hw_breakpoint.c
++++ b/arch/powerpc/kernel/hw_breakpoint.c
+@@ -38,7 +38,7 @@ static DEFINE_PER_CPU(struct perf_event *, bp_per_reg);
+ int hw_breakpoint_slots(int type)
+ {
+ 	if (type == TYPE_DATA)
+-		return HBP_NUM;
++		return nr_wp_slots();
+ 	return 0;		/* no instruction breakpoints available */
+ }
+ 
 -- 
-2.26.0.110.g2183baf09c-goog
+2.21.1
 
