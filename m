@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82001AA0D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456241AA13C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369611AbgDOMcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:32:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53368 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369595AbgDOMbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:31:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C7A69AC11;
-        Wed, 15 Apr 2020 12:31:41 +0000 (UTC)
-Date:   Wed, 15 Apr 2020 14:31:40 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 07/33] iommu: Add probe_device() and remove_device()
- call-backs
-Message-ID: <20200415123140.GC21899@suse.de>
-References: <20200414131542.25608-1-joro@8bytes.org>
- <20200414131542.25608-8-joro@8bytes.org>
- <0ad37581-b464-30ac-c503-4c0daaf43867@linux.intel.com>
+        id S369801AbgDOMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:35:13 -0400
+Received: from m177134.mail.qiye.163.com ([123.58.177.134]:2551 "EHLO
+        m177134.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S369745AbgDOMeX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:34:23 -0400
+Received: from ubuntu.localdomain (unknown [58.251.74.226])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id A5EC54E23DF;
+        Wed, 15 Apr 2020 20:34:16 +0800 (CST)
+From:   Wang Wenhu <wenhu.wang@vivo.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        oss@buserror.net, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>
+Subject: [PATCH 0/5] drivers: uio: new driver uio_fsl_85xx_cache_sram
+Date:   Wed, 15 Apr 2020 05:33:41 -0700
+Message-Id: <20200415123346.116212-1-wenhu.wang@vivo.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ad37581-b464-30ac-c503-4c0daaf43867@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUlXWQgYFAkeWUFZTVVPTklLS0tKT0pKT0hDWVdZKFlBSE
+        83V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MjI6KSo*CTgzQwgDA0I5IzQc
+        MzMKCQxVSlVKTkNNQk5PS05CS0tMVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUlKSk43Bg++
+X-HM-Tid: 0a717dd534d09376kuwsa5ec54e23df
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:36:20PM +0800, Lu Baolu wrote:
-> On 2020/4/14 21:15, Joerg Roedel wrote:
-> > From: Joerg Roedel<jroedel@suse.de>
-> > 
-> > Add call-backs to 'struct iommu_ops' as an alternative to the
-> > add_device() and remove_device() call-backs, which will be removed when
-> > all drivers are converted.
-> > 
-> > The new call-backs will not setupt IOMMU groups and domains anymore,
-> > so also add a probe_finalize() call-back where the IOMMU driver can do
-> > per-device setup work which require the device to be set up with a
-> > group and a domain.
-> 
-> The subject is inaccurate. probe_device() and release_device() are
-> added to replace the add and remove pair.
+This series add a new uio driver for freescale 85xx platforms to
+access the Cache-Sram form user level. This is extremely helpful
+for the user-space applications that require high performance memory
+accesses.
 
-This patch does not replace them yet, it just adds the new call-backs.
-The removal of add_device()/remove_device() happens later in the
-patch-set when all drivers are converted.
+It fixes the compile errors and warning of the hardware level drivers
+and implements the uio driver in uio_fsl_85xx_cache_sram.c.
 
-Regards,
+Wang Wenhu (5):
+  powerpc: 85xx: make FSL_85XX_CACHE_SRAM configurable
+  powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+  drivers: uio: new driver for fsl_85xx_cache_sram
 
-	Joerg
+ arch/powerpc/platforms/85xx/Kconfig       |   2 +-
+ arch/powerpc/platforms/Kconfig.cputype    |   5 +-
+ arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
+ arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
+ drivers/uio/Kconfig                       |   8 +
+ drivers/uio/Makefile                      |   1 +
+ drivers/uio/uio_fsl_85xx_cache_sram.c     | 195 ++++++++++++++++++++++
+ 7 files changed, 211 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+
+-- 
+2.17.1
 
