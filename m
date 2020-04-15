@@ -2,118 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D551AB2CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613191AB2D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442077AbgDOUgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:36:02 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47253 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442057AbgDOUfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:35:47 -0400
-IronPort-SDR: v2jzf+uZCIhhwil2OtdLqgKtlqGdIXa/vgh3xh4fWHLxA6IwhKdoPHqVXd/EsfJgErqcLvmFq1
- ZWAgLrv9GNlQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 13:35:45 -0700
-IronPort-SDR: /55+O5N/UbItG3G97jMjCRmgjrO6760jL2891MlOgBl73B9Ign+1Bxjt8KEJp/URH6OJVIh6Ra
- cVUrFMAToMQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="454056534"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Apr 2020 13:35:44 -0700
-Date:   Wed, 15 Apr 2020 13:35:44 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 3/8] fs/ext4: Disallow encryption if inode is DAX
-Message-ID: <20200415203544.GC2309605@iweiny-DESK2.sc.intel.com>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-4-ira.weiny@intel.com>
- <20200415120241.GF6126@quack2.suse.cz>
+        id S2442090AbgDOUj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 16:39:27 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:45002 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2438172AbgDOUjY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 16:39:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TvduEle_1586983159;
+Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0TvduEle_1586983159)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 16 Apr 2020 04:39:21 +0800
+Subject: Re: [PATCHv3, RESEND 5/8] khugepaged: Allow to collapse a page shared
+ across fork
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20200413125220.663-1-kirill.shutemov@linux.intel.com>
+ <20200413125220.663-6-kirill.shutemov@linux.intel.com>
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+Message-ID: <a50c62d2-f51c-12f8-4d21-730715fb4a71@linux.alibaba.com>
+Date:   Wed, 15 Apr 2020 13:39:16 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415120241.GF6126@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200413125220.663-6-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:02:41PM +0200, Jan Kara wrote:
-> On Mon 13-04-20 21:00:25, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Encryption and DAX are incompatible.  Changing the DAX mode due to a
-> > change in Encryption mode is wrong without a corresponding
-> > address_space_operations update.
-> > 
-> > Make the 2 options mutually exclusive by returning an error if DAX was
-> > set first.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  fs/ext4/super.c | 10 +---------
-> >  1 file changed, 1 insertion(+), 9 deletions(-)
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 0c7c4adb664e..b14863058115 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -1325,7 +1325,7 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> >  	if (inode->i_ino == EXT4_ROOT_INO)
-> >  		return -EPERM;
-> >  
-> > -	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
-> > +	if (WARN_ON_ONCE(IS_DAX(inode)))
-> 
-> Also here I don't think WARN_ON_ONCE() is warranted once we allow per-inode
-> setting of DAX. It will then become a regular error condition...
 
-Removed.
-Ira
 
-> 
-> 								Honza
-> 
-> >  		return -EINVAL;
-> >  
-> >  	res = ext4_convert_inline_data(inode);
-> > @@ -1349,10 +1349,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> >  			ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> >  			ext4_clear_inode_state(inode,
-> >  					EXT4_STATE_MAY_INLINE_DATA);
-> > -			/*
-> > -			 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> > -			 * S_DAX may be disabled
-> > -			 */
-> >  			ext4_set_inode_flags(inode);
-> >  		}
-> >  		return res;
-> > @@ -1376,10 +1372,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> >  				    ctx, len, 0);
-> >  	if (!res) {
-> >  		ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> > -		/*
-> > -		 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> > -		 * S_DAX may be disabled
-> > -		 */
-> >  		ext4_set_inode_flags(inode);
-> >  		res = ext4_mark_inode_dirty(handle, inode);
-> >  		if (res)
-> > -- 
-> > 2.25.1
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+On 4/13/20 5:52 AM, Kirill A. Shutemov wrote:
+> The page can be included into collapse as long as it doesn't have extra
+> pins (from GUP or otherwise).
+>
+> Logic to check the refcound is moved to a separate function.
+
+s/refcound/refcount
+
+> Note that the function is ready to deal with compound pages. It's
+> preparation for the following patch.
+>
+> VM_BUG_ON_PAGE() was removed from __collapse_huge_page_copy() as the
+> invariant it checks is no longer valid: the source can be mapped
+> multiple times now.
+>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>   mm/khugepaged.c | 41 ++++++++++++++++++++++++++++++-----------
+>   1 file changed, 30 insertions(+), 11 deletions(-)
+
+Just a minor typo problem.
+
+Acked-by: Yang Shi <yang.shi@linux.alibaba.com>
+
+>
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index e3e41c2768d8..f9864644c3b7 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -529,6 +529,24 @@ static void release_pte_pages(pte_t *pte, pte_t *_pte)
+>   	}
+>   }
+>   
+> +static bool is_refcount_suitable(struct page *page)
+> +{
+> +	int expected_refcount, refcount;
+> +
+> +	refcount = page_count(page);
+> +	expected_refcount = total_mapcount(page);
+> +	if (PageSwapCache(page))
+> +		expected_refcount += compound_nr(page);
+> +
+> +	if (IS_ENABLED(CONFIG_DEBUG_VM) && expected_refcount > refcount) {
+> +		pr_err("expected_refcount: %d, refcount: %d\n",
+> +				expected_refcount, refcount);
+> +		dump_page(page, "Unexpected refcount");
+> +	}
+> +
+> +	return page_count(page) == expected_refcount;
+> +}
+> +
+>   static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+>   					unsigned long address,
+>   					pte_t *pte)
+> @@ -581,11 +599,17 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+>   		}
+>   
+>   		/*
+> -		 * cannot use mapcount: can't collapse if there's a gup pin.
+> -		 * The page must only be referenced by the scanned process
+> -		 * and page swap cache.
+> +		 * Check if the page has any GUP (or other external) pins.
+> +		 *
+> +		 * The page table that maps the page has been already unlinked
+> +		 * from the page table tree and this process cannot get
+> +		 * an additinal pin on the page.
+> +		 *
+> +		 * New pins can come later if the page is shared across fork,
+> +		 * but not for the this process. It is fine. The other process
+> +		 * cannot write to the page, only trigger CoW.
+>   		 */
+> -		if (page_count(page) != 1 + PageSwapCache(page)) {
+> +		if (!is_refcount_suitable(page)) {
+>   			unlock_page(page);
+>   			result = SCAN_PAGE_COUNT;
+>   			goto out;
+> @@ -672,7 +696,6 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
+>   		} else {
+>   			src_page = pte_page(pteval);
+>   			copy_user_highpage(page, src_page, address, vma);
+> -			VM_BUG_ON_PAGE(page_mapcount(src_page) != 1, src_page);
+>   			release_pte_page(src_page);
+>   			/*
+>   			 * ptl mostly unnecessary, but preempt has to
+> @@ -1201,12 +1224,8 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+>   			goto out_unmap;
+>   		}
+>   
+> -		/*
+> -		 * cannot use mapcount: can't collapse if there's a gup pin.
+> -		 * The page must only be referenced by the scanned process
+> -		 * and page swap cache.
+> -		 */
+> -		if (page_count(page) != 1 + PageSwapCache(page)) {
+> +		/* Check if the page has any GUP (or other external) pins */
+> +		if (!is_refcount_suitable(page)) {
+>   			result = SCAN_PAGE_COUNT;
+>   			goto out_unmap;
+>   		}
+
