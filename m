@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0FC1A90B6
+	by mail.lfdr.de (Postfix) with ESMTP id 025771A90B4
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392822AbgDOCBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 22:01:24 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63489 "EHLO mga01.intel.com"
+        id S2392806AbgDOCBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 22:01:07 -0400
+Received: from mga03.intel.com ([134.134.136.65]:3687 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392790AbgDOCAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 22:00:53 -0400
-IronPort-SDR: L5q2/D431jl2s7iplkK44IqhPyXEYikQgjnWjpHXrwbbrG7WGma3sCxRqthY6lzpv8F9z3gB7O
- 5fL+2CQWSaGQ==
+        id S2392787AbgDOCAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 22:00:50 -0400
+IronPort-SDR: libmFuml4gWZJrXucal+oyo9BBjxdbYotEH9TOcSJjOgvEQwGuXUn4OOsKstBOXcOe50BpPVGr
+ gf6ft86N3OBA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 19:00:48 -0700
-IronPort-SDR: L4b2+r3W2nuNIZaF0Cw0EN1D8mAOAn9oeHqU7fXxuLswcKQVTB9YOYEQXzffIqb2qfL9szgLMY
- wWdJ30mhStyw==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 19:00:47 -0700
+IronPort-SDR: xTo17sh+82AMLuv2VOtea4TGMn/0JpXvyWV5rSWDZGAXuMASAZcjAXSu2Cz7LHR4wJ3mr53+fo
+ aqgCwRIHHsJQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,385,1580803200"; 
-   d="scan'208";a="242172309"
+   d="scan'208";a="298867841"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 14 Apr 2020 19:00:46 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Apr 2020 19:00:46 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jOXM6-000B1T-3S; Wed, 15 Apr 2020 10:00:46 +0800
-Date:   Wed, 15 Apr 2020 10:00:17 +0800
+        id 1jOXM5-000Awf-El; Wed, 15 Apr 2020 10:00:45 +0800
+Date:   Wed, 15 Apr 2020 10:00:18 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:kfree_rcu.2020.04.13c] BUILD SUCCESS
- b5acbe24289dc3be5d041c94a8bb0d173c2e0fa2
-Message-ID: <5e966ab1.hCQ1siB5m3FKYqQN%lkp@intel.com>
+Subject: [rcu:stall.2020.04.13d] BUILD SUCCESS
+ fc2a7ed3c2d296e2a7be284a23214d3d94452ac4
+Message-ID: <5e966ab2.GpqdytUPKyC1S8gm%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,8 +43,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  kfree_rcu.2020.04.13c
-branch HEAD: b5acbe24289dc3be5d041c94a8bb0d173c2e0fa2  rcu: Add rcu_gp_might_be_stalled()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  stall.2020.04.13d
+branch HEAD: fc2a7ed3c2d296e2a7be284a23214d3d94452ac4  rcu: Remove self-stack-trace when all quiescent states seen
 
 elapsed time: 483m
 
@@ -69,12 +69,11 @@ arm                        shmobile_defconfig
 arm                           sunxi_defconfig
 arm64                               defconfig
 sparc                            allyesconfig
-um                                  defconfig
-xtensa                       common_defconfig
 mips                      fuloong2e_defconfig
 riscv                               defconfig
 s390                             alldefconfig
 mips                              allnoconfig
+um                                  defconfig
 ia64                                defconfig
 powerpc                             defconfig
 mips                      malta_kvm_defconfig
@@ -93,6 +92,7 @@ nios2                         10m50_defconfig
 nios2                         3c120_defconfig
 openrisc                    or1ksim_defconfig
 openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
 xtensa                          iss_defconfig
 alpha                               defconfig
 csky                                defconfig
