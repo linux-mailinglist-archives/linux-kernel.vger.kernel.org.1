@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ACC1AAA56
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38501AAA83
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370847AbgDOOkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2636694AbgDOOi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:38:56 -0400
-Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0355208FE;
-        Wed, 15 Apr 2020 14:38:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586961535;
-        bh=ZAn4fVnJ4h8lZBxjSOeAHVxgiPImQxaKF8vbfwxbuBU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tY9DqELbHXMpCmMz7SI/RXBBslV4N4wsou2WI3/3UnO+r12JlS/Hw5tBYAhh8CBYa
-         VOJeIo9y1326Vwm+Ljt/F8EfjAgXoiV380QX1+aANgr5WJWJ4Ky2OORGjt0IW4Qa6b
-         sWpxqqs2ekudjFMLk89UTtCnUiJrPxx8b/tKGReg=
-Date:   Wed, 15 Apr 2020 16:38:51 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     rishi gupta <gupt21@gmail.com>
-Cc:     linux-doc@vger.kernel.org, corbet@lwn.net,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Correct place to put the new doc for "How to use this driver"
-Message-ID: <20200415163851.2e5f96f8@coco.lan>
-In-Reply-To: <CALUj-gsRgkEyRe3vubEeWx8ENwEyE+Fzv4bKKDZ+iq3urRG0BA@mail.gmail.com>
-References: <CALUj-gsRgkEyRe3vubEeWx8ENwEyE+Fzv4bKKDZ+iq3urRG0BA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2634558AbgDOOmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:42:21 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:38109 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2636734AbgDOOkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:40:19 -0400
+Received: by mail-oi1-f193.google.com with SMTP id x21so7423663oic.5;
+        Wed, 15 Apr 2020 07:40:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JuvzyUQda56xAYCtJ1sYbNZE0RbPskAoqaEeQtvOFTc=;
+        b=Lm1SGHp1ePyVnSm8uGOUhjUuQugLoiqDF3i3pc3v/io2tYwopAXfLGrUZpAlY+KPkR
+         uJSRRnxUet1jAUqMYd2vfUbYArisZNOKSznGMKJ3txzgbGXzZqUToUw6ba282wIivcuv
+         HwIJ9U2jw1MhSQeIBmqqNfoWdKRx7XWdkLRf6ah0T8QkZp2I7UkkzzvwK/BU2u9vBse/
+         IStit7d8gG5MUcXE8HZyvaa0TAqKkzeogmxEsN3x0yFWuP14Qo1MVL/yhZgTjdYG343X
+         fNJy/BerqUGIj3lb352rX7ynWqzoVCIgzFC17Y7egIBx59inYMcHfF/2TbpiB5YN5e5u
+         QNLw==
+X-Gm-Message-State: AGi0PubXUwENK1l3z3uniWGVQS2YRsCjPDgFPUNnK/u7iR9+we2e5I1m
+        AyW2SCeWcYW34WXs9UmsZA==
+X-Google-Smtp-Source: APiQypKQDJ7OUo2PH72nmsevzWtRJ1xyeW5rr9pORlJ4+DM6LMTt1YQKtYojzR45dQWjeWOKMSmnqA==
+X-Received: by 2002:aca:ecce:: with SMTP id k197mr15969614oih.127.1586961617711;
+        Wed, 15 Apr 2020 07:40:17 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y131sm6420487oie.39.2020.04.15.07.40.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 07:40:17 -0700 (PDT)
+Received: (nullmailer pid 11685 invoked by uid 1000);
+        Wed, 15 Apr 2020 14:40:16 -0000
+Date:   Wed, 15 Apr 2020 09:40:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, mark.rutland@arm.com
+Subject: Re: [PATCHv6 4/5] dt-bindings: documentation: add clock bindings
+ information for Agilex
+Message-ID: <20200415144016.GA26244@bogus>
+References: <20200406160418.27476-1-dinguyen@kernel.org>
+ <20200406160418.27476-5-dinguyen@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406160418.27476-5-dinguyen@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 15 Apr 2020 09:25:02 +0530
-rishi gupta <gupt21@gmail.com> escreveu:
-
-> Hi Team,
+On Mon, Apr 06, 2020 at 11:04:17AM -0500, Dinh Nguyen wrote:
+> Document the Agilex clock bindings, and add the clock header file. The
+> clock header is an enumeration of all the different clocks on the Agilex
+> platform.
 > 
-> I need to add a documentation file to let users know "how to use this driver".
-> Specifically this one (tty-ttyvs.rst): https://lkml.org/lkml/2020/2/15/153
+> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+> ---
+> v6: fix build error by adding descriptions for clocks and reg in
+>     properties
+> v5: update license to GPL-2.0-only
+>     Add additionalProperties
+>     Add clock input for clkmgr
+> v4: really fix build error(comment formatting was wrong)
+> v3: address comments from Stephen Boyd
+>     fix build error(tab removed in line 37)
+>     renamed to intel,agilex.yaml
+> v2: convert original document to YAML
+> ---
+>  .../bindings/clock/intel,agilex.yaml          | 46 ++++++++++++
+>  include/dt-bindings/clock/agilex-clock.h      | 70 +++++++++++++++++++
+>  2 files changed, 116 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/intel,agilex.yaml
+>  create mode 100644 include/dt-bindings/clock/agilex-clock.h
 > 
-> (1) I am unable to find any directory where it will fit. This driver
-> belongs to Virtual TTY device category.
-> Any suggestions where to put it?
+> diff --git a/Documentation/devicetree/bindings/clock/intel,agilex.yaml b/Documentation/devicetree/bindings/clock/intel,agilex.yaml
+> new file mode 100644
+> index 000000000000..83bca2661ec3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/intel,agilex.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
 
-Docs focused on driver usage belongs to the admin-guide.
+Dual license new bindings:
 
-> 
-> (2) After putting it is it mandatory to link it to
-> Documentation/index.rst as suggested here
-> https://www.kernel.org/doc/html/latest/doc-guide/index.html
+(GPL-2.0-only OR BSD-2-Clause)
 
-You should actually add it to Documentation/admin-guide/index.rst.
+With that:
 
-> 
-> Regards,
-> Rishi
-
-
-
-Thanks,
-Mauro
+Reviewed-by: Rob Herring <robh@kernel.org>
