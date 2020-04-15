@@ -2,152 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771E81A981E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB921A9824
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408383AbgDOJM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:12:56 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:13063 "EHLO pegase1.c-s.fr"
+        id S2635951AbgDOJNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:13:44 -0400
+Received: from mout.web.de ([212.227.17.12]:44603 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408349AbgDOJMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:12:50 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 492Gpk5yV6z9tyhC;
-        Wed, 15 Apr 2020 11:12:46 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=l3bXNSrG; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id TaUh6lmL-P5o; Wed, 15 Apr 2020 11:12:46 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 492Gpk4cxWz9tyh9;
-        Wed, 15 Apr 2020 11:12:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1586941966; bh=dV6YOiJ4H7/Y4XRgt4cAkIwhpU0OWRnUnXsQ0TRfdTQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=l3bXNSrGdxlnjlWOnENO9yr6woUzN6ZgWaFq0AeIbus2cgvd5vr++ZYzkKQD5rUfk
-         wgf04+Ea7y8Pc4hBCTZm3k4kIvjtxa3VIUV/aMcjX+kcT+EV9MdeSHnycTXiaqXSVT
-         pQhi3bHOfa4chGHCdXqoHHn+pvVwwc1LteiUO7wg=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C180E8B922;
-        Wed, 15 Apr 2020 11:12:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id CWq1knqHjwR5; Wed, 15 Apr 2020 11:12:47 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4B6258B91F;
-        Wed, 15 Apr 2020 11:12:47 +0200 (CEST)
-Subject: Re: [RFC PATCH] powerpc/lib: Fixing use a temporary mm for code
- patching
-To:     Christopher M Riedl <cmr@informatik.wtf>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <c88b13ede49744d81fdab32e037a7ae10f0b241f.1585233657.git.christophe.leroy@c-s.fr>
- <581069710.188209.1586927814880@privateemail.com>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <badfcf58-9fcb-6189-c9db-e8429f88799e@c-s.fr>
-Date:   Wed, 15 Apr 2020 11:12:35 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+        id S2635935AbgDOJN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:13:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586941975;
+        bh=aF/C7Wndq+5/EojKQWfWa0n9swu/SKYhBYliHCYiM1k=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=gCRce2tzBrlAFJx1eeMLqXHnHZz15R3Isrn9BET6G0hxd4Ee/gT8EZF+FHJrOqwCa
+         dkNOOavxCz8kHiH3MYLzXsEVlmm7oW5dHTHfdJEmtYztNLg7zHHUWHl48SrgySwPCd
+         JkAaQsHG6U2pRkuhUszwk7dVgAzKSIQwRZ8/jsEA=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.48.133.192]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0McFLP-1jeoCm2fJP-00JZAF; Wed, 15
+ Apr 2020 11:12:55 +0200
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, linux-wimax@intel.com,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Kangjie Lu <kjlu@umn.edu>, Yuan Zhang <yuanxzhang@fudan.edu.cn>
+Subject: Re: [PATCH] wimax/i2400m: Fix potential urb refcnt leak
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <517c4bae-d34c-855f-1872-2eed37eed54f@web.de>
+Date:   Wed, 15 Apr 2020 11:12:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <581069710.188209.1586927814880@privateemail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZncVkhbtrnKLLwUNQ2aGkrSYO2tmuC/VkDiRQ6UC9Y/NTOTc/sZ
+ 2w41dsK7RMaXavT53d7UYqU5g2ethfuqWK9cD80YXwRcZz8yvnngeGAv2QiFTKO9TtrxKKV
+ l7Ux5QspBF3L5V33jPsj9CG1NxeGJCLZDAJ/ika8KePmwVkIMMTy66IFkBwN4sUb6Wv+PxY
+ rSMCISL3LXLAU7Atshx5A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PTnxMbnxWKk=:UoUC+bztBu9PYEECNA6P83
+ PuTZrEizWXvds+UFQnRz3iw3iI3rwyBZsXHgFhUhW8BuhhwyyhdR3RvakBIGhb8mm3atYttfU
+ nUfMqYQWRAWnoNwnPJy4EHBi5EuUzIiPcf1GT7eSzaSRS+IMFCly2zCiZ+BfABrT5yekIlvG7
+ K1ftKkSUY/d8aJPjHBnTYiLwilt4yZdDBh9aPgSLVQh5WBh+zwYcY+FHYhb4zdzz4LVVtkcBe
+ ogiK7U/j3qp3Tcl5ggstALRkz72vJIFAVjPZWFo8jZHpgg03DIxTNDNsaoAr8B7NSFyRJpk0N
+ LZYoxuRhaYSU7eHRFtPIf751Lynz20lFMKXS2uhviFZdyx1WhUDFBYdqDgutEeawnJQ44oZ/d
+ zSfW/nwxbItdV67S9EKwyC4+4zNuGsp88976YPIE5y1elUNASm9tJQ6SZQS6LU0Mg9aF/om4o
+ W3cp2TyPL+eG31Hkk8MSl4t0Fa6nRUEAq0U8beKJfwHyT1L7oQyYYRR6Ozicbm43viMSoHMqi
+ I8Gh5fqOA22oPQBDiYLD2zlla7BHjPz+eZvP+nVAeilqr8WbS8bfPJN5gRx+RFsjkrvVD+E+U
+ 3yozBs5gLjm9jKBCoSm1PlY3SQo3Er+5hpNez6Ct0ImDt8IVS8EP+2c77Uj+FJdjLcGWFhUSz
+ 4+bKE94mLSG2ayiD92yMZr01ivFT+cmQJ5pfw22vNID6RQ14yF7Imm/T3zMpwv/yhwwtbdvBV
+ 18TsEe5yODk2NbfU0PNAnQzd5wJz9wToxZN3Ec17lBd7q1QErHO2WbY7fnY2ghjYYjhDFiStI
+ d2G1WCLiV8iXChPPbO+6pY5xHvbKgOP+wpYuJm/jm8ejZob7lZAqcsOnDTydcwFxbcJhO+CO1
+ FgglKvrMg+IBvuyMPuX3YoO7nD2HCbnAzMZTrybr9nTah3nLbG8PDIofswYWutzhRQexp7CKT
+ YxweuTRdOOuaocGAcaXXjmhL/XfMAvy4lTbkJ1JyV1LAQm3Jb36kk3sMq2wWgLUbFMuhTI5T6
+ bbE2wJxzFbS2ldWztljA42Rrvc6wbmkBRZOp8QZlx75zNUQIw2CVT267xufbs4LL1MOPacWJO
+ 2y5VYY9eUqnxqCJJ5OPMpYq0gxHU+5z4KvQVsGa9dQGMp86lQLsr4PtRsWE2KIyijqhhlzdaf
+ Jkh6jj484n2uaHWyUMYksQyDpWOpqtZyh155Tr5SXCUKrtwXq46Sw9zZJHW07T4mn57OLyH1G
+ o811f8nJMYAAA+k8r
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> The issue happens in all paths of i2400mu_bus_bm_wait_for_ack(), which
+> forget to decrease the refcnt increased by usb_get_urb(), causing a
+> refcnt leak.
 
+How do you think about to mention the term =E2=80=9Creference counting=E2=
+=80=9D in
+the commit message?
 
-Le 15/04/2020 à 07:16, Christopher M Riedl a écrit :
->> On March 26, 2020 9:42 AM Christophe Leroy <christophe.leroy@c-s.fr> wrote:
->>
->>   
->> This patch fixes the RFC series identified below.
->> It fixes three points:
->> - Failure with CONFIG_PPC_KUAP
->> - Failure to write do to lack of DIRTY bit set on the 8xx
->> - Inadequaly complex WARN post verification
->>
->> However, it has an impact on the CPU load. Here is the time
->> needed on an 8xx to run the ftrace selftests without and
->> with this series:
->> - Without CONFIG_STRICT_KERNEL_RWX		==> 38 seconds
->> - With CONFIG_STRICT_KERNEL_RWX			==> 40 seconds
->> - With CONFIG_STRICT_KERNEL_RWX + this series	==> 43 seconds
->>
->> Link: https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=166003
->> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
->> ---
->>   arch/powerpc/lib/code-patching.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
->> index f156132e8975..4ccff427592e 100644
->> --- a/arch/powerpc/lib/code-patching.c
->> +++ b/arch/powerpc/lib/code-patching.c
->> @@ -97,6 +97,7 @@ static int map_patch(const void *addr, struct patch_mapping *patch_mapping)
->>   	}
->>   
->>   	pte = mk_pte(page, pgprot);
->> +	pte = pte_mkdirty(pte);
->>   	set_pte_at(patching_mm, patching_addr, ptep, pte);
->>   
->>   	init_temp_mm(&patch_mapping->temp_mm, patching_mm);
->> @@ -168,7 +169,9 @@ static int do_patch_instruction(unsigned int *addr, unsigned int instr)
->>   			(offset_in_page((unsigned long)addr) /
->>   				sizeof(unsigned int));
->>   
->> +	allow_write_to_user(patch_addr, sizeof(instr));
->>   	__patch_instruction(addr, instr, patch_addr);
->> +	prevent_write_to_user(patch_addr, sizeof(instr));
->>
-> 
-> On radix we can map the page with PAGE_KERNEL protection which ends up
-> setting EAA[0] in the radix PTE. This means the KUAP (AMR) protection is
-> ignored (ISA v3.0b Fig. 35) since we are accessing the page from MSR[PR]=0.
-> 
-> Can we employ a similar approach on the 8xx? I would prefer *not* to wrap
-> the __patch_instruction() with the allow_/prevent_write_to_user() KUAP things
-> because this is a temporary kernel mapping which really isn't userspace in
-> the usual sense.
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the change descri=
+ption?
 
-On the 8xx, that's pretty different.
-
-The PTE doesn't control whether a page is user page or a kernel page. 
-The only thing that is set in the PTE is whether a page is linked to a 
-given PID or not.
-PAGE_KERNEL tells that the page can be addressed with any PID.
-
-The user access right is given by a kind of zone, which is in the PGD 
-entry. Every pages above PAGE_OFFSET are defined as belonging to zone 0. 
-Every pages below PAGE_OFFSET are defined as belonging to zone 1.
-
-By default, zone 0 can only be accessed by kernel, and zone 1 can only 
-be accessed by user. When kernel wants to access zone 1, it temporarily 
-changes properties of zone 1 to allow both kernel and user accesses.
-
-So, if your mapping is below PAGE_OFFSET, it is in zone 1 and kernel 
-must unlock it to access it.
-
-
-And this is more or less the same on hash/32. This is managed by segment 
-registers. One segment register corresponds to a 256Mbytes area. Every 
-pages below PAGE_OFFSET can only be read by default by kernel. Only user 
-can write if the PTE allows it. When the kernel needs to write at an 
-address below PAGE_OFFSET, it must change the segment properties in the 
-corresponding segment register.
-
-So, for both cases, if we want to have it local to a task while still 
-allowing kernel access, it means we have to define a new special area 
-between TASK_SIZE and PAGE_OFFSET which belongs to kernel zone.
-
-That looks complex to me for a small benefit, especially as 8xx is not 
-SMP and neither are most of the hash/32 targets.
-
-Christophe
+Regards,
+Markus
