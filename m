@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCD91A927C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531A61A927F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407982AbgDOF3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 01:29:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30113 "EHLO mga18.intel.com"
+        id S2393287AbgDOF3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 01:29:45 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30107 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407921AbgDOF3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 01:29:08 -0400
-IronPort-SDR: I+9YLMgCYySH95coasCZU3256f/o+FJuqcXrYQ+OIZQqhaOjFDKBE94eUG5WLDlU8Ju3De76A9
- vI5UhOFx/EkA==
+        id S2407943AbgDOF3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 01:29:09 -0400
+IronPort-SDR: VXREnu7J2pEwjojH6gByQnSH43eYqVWmUtuRAwRG+Sy/Cgh8sr61gzyVtVpreq6krSGferIWoE
+ BkodrgWqlYgA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 22:29:06 -0700
-IronPort-SDR: kzJs5swUCQyXbXQgnABwQPoXcjozjv8J9h3VYxP0kNLONwAX1xT90OSggwBh9MAw6Os1WzFgCx
- TyeaA+sGLZZQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 22:29:08 -0700
+IronPort-SDR: lZptZbeLJ/ybw+uhzFCzSGbQufLCXiwkzbvL5IIHL/oGma7iYjzbDYC0b7xDqSTzZgKzXyn3WI
+ FgLFgmwxdyaw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,385,1580803200"; 
-   d="scan'208";a="277504206"
+   d="scan'208";a="277504213"
 Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2020 22:29:04 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2020 22:29:06 -0700
 From:   Lu Baolu <baolu.lu@linux.intel.com>
 To:     Joerg Roedel <joro@8bytes.org>
 Cc:     ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
         Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 3/7] iommu/vt-d: debugfs: Add support to show inv queue internals
-Date:   Wed, 15 Apr 2020 13:25:38 +0800
-Message-Id: <20200415052542.30421-4-baolu.lu@linux.intel.com>
+Subject: [PATCH v2 4/7] iommu/vt-d: Refactor prq_event_thread()
+Date:   Wed, 15 Apr 2020 13:25:39 +0800
+Message-Id: <20200415052542.30421-5-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200415052542.30421-1-baolu.lu@linux.intel.com>
 References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
@@ -41,111 +41,297 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export invalidation queue internals of each iommu device through
-the debugfs.
-
-Example of such dump on a Skylake machine:
-
-$ sudo cat /sys/kernel/debug/iommu/intel/invalidation_queue
-Invalidation queue on IOMMU: dmar1
- Base: 0x1672c9000      Head: 80        Tail: 80
-Index           qw0                     qw1                     status
-    0   0000000000000004        0000000000000000        0000000000000000
-    1   0000000200000025        00000001672be804        0000000000000000
-    2   0000000000000011        0000000000000000        0000000000000000
-    3   0000000200000025        00000001672be80c        0000000000000000
-    4   00000000000000d2        0000000000000000        0000000000000000
-    5   0000000200000025        00000001672be814        0000000000000000
-    6   0000000000000014        0000000000000000        0000000000000000
-    7   0000000200000025        00000001672be81c        0000000000000000
-    8   0000000000000014        0000000000000000        0000000000000000
-    9   0000000200000025        00000001672be824        0000000000000000
+Move the software processing page request descriptors part from
+prq_event_thread() into a separated function. No any functional
+changes.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/intel-iommu-debugfs.c | 62 +++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ drivers/iommu/intel-svm.c | 256 ++++++++++++++++++++------------------
+ 1 file changed, 135 insertions(+), 121 deletions(-)
 
-diff --git a/drivers/iommu/intel-iommu-debugfs.c b/drivers/iommu/intel-iommu-debugfs.c
-index 3eb1fe240fb0..e3089865b8f3 100644
---- a/drivers/iommu/intel-iommu-debugfs.c
-+++ b/drivers/iommu/intel-iommu-debugfs.c
-@@ -372,6 +372,66 @@ static int domain_translation_struct_show(struct seq_file *m, void *unused)
+diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
+index 83dc4319f661..a1921b462783 100644
+--- a/drivers/iommu/intel-svm.c
++++ b/drivers/iommu/intel-svm.c
+@@ -722,142 +722,156 @@ static bool is_canonical_address(u64 addr)
+ 	return (((saddr << shift) >> shift) == saddr);
  }
- DEFINE_SHOW_ATTRIBUTE(domain_translation_struct);
  
-+static void invalidation_queue_entry_show(struct seq_file *m,
-+					  struct intel_iommu *iommu)
-+{
-+	int index, shift = qi_shift(iommu);
-+	struct qi_desc *desc;
-+	int offset;
+-static irqreturn_t prq_event_thread(int irq, void *d)
++static void process_single_prq(struct intel_iommu *iommu,
++			       struct page_req_dsc *req)
+ {
+-	struct intel_iommu *iommu = d;
+-	struct intel_svm *svm = NULL;
+-	int head, tail, handled = 0;
+-
+-	/* Clear PPR bit before reading head/tail registers, to
+-	 * ensure that we get a new interrupt if needed. */
+-	writel(DMA_PRS_PPR, iommu->reg + DMAR_PRS_REG);
+-
+-	tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
+-	head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
+-	while (head != tail) {
+-		struct intel_svm_dev *sdev;
+-		struct vm_area_struct *vma;
+-		struct page_req_dsc *req;
+-		struct qi_desc resp;
+-		int result;
+-		vm_fault_t ret;
+-		u64 address;
+-
+-		handled = 1;
+-
+-		req = &iommu->prq[head / sizeof(*req)];
++	int result = QI_RESP_FAILURE;
++	struct intel_svm_dev *sdev;
++	struct vm_area_struct *vma;
++	struct intel_svm *svm;
++	struct qi_desc resp;
++	vm_fault_t ret;
++	u64 address;
 +
-+	if (ecap_smts(iommu->ecap))
-+		seq_puts(m, "Index\t\tqw0\t\t\tqw1\t\t\tqw2\t\t\tqw3\t\t\tstatus\n");
-+	else
-+		seq_puts(m, "Index\t\tqw0\t\t\tqw1\t\t\tstatus\n");
-+
-+	for (index = 0; index < QI_LENGTH; index++) {
-+		offset = index << shift;
-+		desc = iommu->qi->desc + offset;
-+		if (ecap_smts(iommu->ecap))
-+			seq_printf(m, "%5d\t%016llx\t%016llx\t%016llx\t%016llx\t%016x\n",
-+				   index, desc->qw0, desc->qw1,
-+				   desc->qw2, desc->qw3,
-+				   iommu->qi->desc_status[index]);
-+		else
-+			seq_printf(m, "%5d\t%016llx\t%016llx\t%016x\n",
-+				   index, desc->qw0, desc->qw1,
-+				   iommu->qi->desc_status[index]);
++	address = (u64)req->addr << VTD_PAGE_SHIFT;
++	if (!req->pasid_present) {
++		pr_err("%s: Page request without PASID: %08llx %08llx\n",
++		       iommu->name, ((unsigned long long *)req)[0],
++		       ((unsigned long long *)req)[1]);
++		goto no_pasid;
 +	}
-+}
-+
-+static int invalidation_queue_show(struct seq_file *m, void *unused)
-+{
-+	struct dmar_drhd_unit *drhd;
-+	struct intel_iommu *iommu;
-+	unsigned long flags;
-+	struct q_inval *qi;
-+	int shift;
-+
+ 
+-		result = QI_RESP_FAILURE;
+-		address = (u64)req->addr << VTD_PAGE_SHIFT;
+-		if (!req->pasid_present) {
+-			pr_err("%s: Page request without PASID: %08llx %08llx\n",
+-			       iommu->name, ((unsigned long long *)req)[0],
+-			       ((unsigned long long *)req)[1]);
+-			goto no_pasid;
+-		}
 +	rcu_read_lock();
-+	for_each_active_iommu(iommu, drhd) {
-+		qi = iommu->qi;
-+		shift = qi_shift(iommu);
-+
-+		if (!qi || !ecap_qis(iommu->ecap))
-+			continue;
-+
-+		seq_printf(m, "Invalidation queue on IOMMU: %s\n", iommu->name);
-+
-+		raw_spin_lock_irqsave(&qi->q_lock, flags);
-+		seq_printf(m, " Base: 0x%llx\tHead: %lld\tTail: %lld\n",
-+			   virt_to_phys(qi->desc),
-+			   dmar_readq(iommu->reg + DMAR_IQH_REG) >> shift,
-+			   dmar_readq(iommu->reg + DMAR_IQT_REG) >> shift);
-+		invalidation_queue_entry_show(m, iommu);
-+		raw_spin_unlock_irqrestore(&qi->q_lock, flags);
-+		seq_putc(m, '\n');
-+	}
++	svm = ioasid_find(NULL, req->pasid, NULL);
++	/*
++	 * It *can't* go away, because the driver is not permitted
++	 * to unbind the mm while any page faults are outstanding.
++	 * So we only need RCU to protect the internal idr code.
++	 */
 +	rcu_read_unlock();
+ 
+-		if (!svm || svm->pasid != req->pasid) {
+-			rcu_read_lock();
+-			svm = ioasid_find(NULL, req->pasid, NULL);
+-			/* It *can't* go away, because the driver is not permitted
+-			 * to unbind the mm while any page faults are outstanding.
+-			 * So we only need RCU to protect the internal idr code. */
+-			rcu_read_unlock();
+-			if (IS_ERR_OR_NULL(svm)) {
+-				pr_err("%s: Page request for invalid PASID %d: %08llx %08llx\n",
+-				       iommu->name, req->pasid, ((unsigned long long *)req)[0],
+-				       ((unsigned long long *)req)[1]);
+-				goto no_pasid;
+-			}
+-		}
++	if (IS_ERR_OR_NULL(svm)) {
++		pr_err("%s: Page request for invalid PASID %d: %08llx %08llx\n",
++		       iommu->name, req->pasid, ((unsigned long long *)req)[0],
++		       ((unsigned long long *)req)[1]);
++		goto no_pasid;
++	}
+ 
+-		result = QI_RESP_INVALID;
+-		/* Since we're using init_mm.pgd directly, we should never take
+-		 * any faults on kernel addresses. */
+-		if (!svm->mm)
+-			goto bad_req;
++	result = QI_RESP_INVALID;
++	/* Since we're using init_mm.pgd directly, we should never take
++	 * any faults on kernel addresses. */
++	if (!svm->mm)
++		goto bad_req;
 +
-+	return 0;
++	/* If address is not canonical, return invalid response */
++	if (!is_canonical_address(address))
++		goto bad_req;
++
++	/* If the mm is already defunct, don't handle faults. */
++	if (!mmget_not_zero(svm->mm))
++		goto bad_req;
++
++	down_read(&svm->mm->mmap_sem);
++	vma = find_extend_vma(svm->mm, address);
++	if (!vma || address < vma->vm_start)
++		goto invalid;
++
++	if (access_error(vma, req))
++		goto invalid;
++
++	ret = handle_mm_fault(vma, address,
++			      req->wr_req ? FAULT_FLAG_WRITE : 0);
++	if (ret & VM_FAULT_ERROR)
++		goto invalid;
++
++	result = QI_RESP_SUCCESS;
++invalid:
++	up_read(&svm->mm->mmap_sem);
++	mmput(svm->mm);
++bad_req:
++	/* Accounting for major/minor faults? */
++	rcu_read_lock();
++	list_for_each_entry_rcu(sdev, &svm->devs, list) {
++		if (sdev->sid == req->rid)
++			break;
++	}
+ 
+-		/* If address is not canonical, return invalid response */
+-		if (!is_canonical_address(address))
+-			goto bad_req;
++	/* Other devices can go away, but the drivers are not permitted
++	 * to unbind while any page faults might be in flight. So it's
++	 * OK to drop the 'lock' here now we have it. */
++	rcu_read_unlock();
+ 
+-		/* If the mm is already defunct, don't handle faults. */
+-		if (!mmget_not_zero(svm->mm))
+-			goto bad_req;
++	if (WARN_ON(&sdev->list == &svm->devs))
++		sdev = NULL;
+ 
+-		down_read(&svm->mm->mmap_sem);
+-		vma = find_extend_vma(svm->mm, address);
+-		if (!vma || address < vma->vm_start)
+-			goto invalid;
++	if (sdev && sdev->ops && sdev->ops->fault_cb) {
++		int rwxp = (req->rd_req << 3) | (req->wr_req << 2) |
++			(req->exe_req << 1) | (req->pm_req);
++		sdev->ops->fault_cb(sdev->dev, req->pasid, req->addr,
++				    req->priv_data, rwxp, result);
++	}
+ 
+-		if (access_error(vma, req))
+-			goto invalid;
++	/* We get here in the error case where the PASID lookup failed,
++	   and these can be NULL. Do not use them below this point! */
++	sdev = NULL;
++	svm = NULL;
++no_pasid:
++	if (req->lpig || req->priv_data_present) {
++		/*
++		 * Per VT-d spec. v3.0 ch7.7, system software must
++		 * respond with page group response if private data
++		 * is present (PDP) or last page in group (LPIG) bit
++		 * is set. This is an additional VT-d feature beyond
++		 * PCI ATS spec.
++		 */
++		resp.qw0 = QI_PGRP_PASID(req->pasid) |
++			QI_PGRP_DID(req->rid) |
++			QI_PGRP_PASID_P(req->pasid_present) |
++			QI_PGRP_PDP(req->pasid_present) |
++			QI_PGRP_RESP_CODE(result) |
++			QI_PGRP_RESP_TYPE;
++		resp.qw1 = QI_PGRP_IDX(req->prg_index) |
++			QI_PGRP_LPIG(req->lpig);
++
++		if (req->priv_data_present)
++			memcpy(&resp.qw2, req->priv_data,
++			       sizeof(req->priv_data));
++		resp.qw2 = 0;
++		resp.qw3 = 0;
++		qi_submit_sync(iommu, &resp, 1, 0);
++	}
 +}
-+DEFINE_SHOW_ATTRIBUTE(invalidation_queue);
+ 
+-		ret = handle_mm_fault(vma, address,
+-				      req->wr_req ? FAULT_FLAG_WRITE : 0);
+-		if (ret & VM_FAULT_ERROR)
+-			goto invalid;
++static void intel_svm_process_prq(struct intel_iommu *iommu,
++				  struct page_req_dsc *prq,
++				  int head, int tail)
++{
++	struct page_req_dsc *req;
+ 
+-		result = QI_RESP_SUCCESS;
+-	invalid:
+-		up_read(&svm->mm->mmap_sem);
+-		mmput(svm->mm);
+-	bad_req:
+-		/* Accounting for major/minor faults? */
+-		rcu_read_lock();
+-		list_for_each_entry_rcu(sdev, &svm->devs, list) {
+-			if (sdev->sid == req->rid)
+-				break;
+-		}
+-		/* Other devices can go away, but the drivers are not permitted
+-		 * to unbind while any page faults might be in flight. So it's
+-		 * OK to drop the 'lock' here now we have it. */
+-		rcu_read_unlock();
+-
+-		if (WARN_ON(&sdev->list == &svm->devs))
+-			sdev = NULL;
+-
+-		if (sdev && sdev->ops && sdev->ops->fault_cb) {
+-			int rwxp = (req->rd_req << 3) | (req->wr_req << 2) |
+-				(req->exe_req << 1) | (req->pm_req);
+-			sdev->ops->fault_cb(sdev->dev, req->pasid, req->addr,
+-					    req->priv_data, rwxp, result);
+-		}
+-		/* We get here in the error case where the PASID lookup failed,
+-		   and these can be NULL. Do not use them below this point! */
+-		sdev = NULL;
+-		svm = NULL;
+-	no_pasid:
+-		if (req->lpig || req->priv_data_present) {
+-			/*
+-			 * Per VT-d spec. v3.0 ch7.7, system software must
+-			 * respond with page group response if private data
+-			 * is present (PDP) or last page in group (LPIG) bit
+-			 * is set. This is an additional VT-d feature beyond
+-			 * PCI ATS spec.
+-			 */
+-			resp.qw0 = QI_PGRP_PASID(req->pasid) |
+-				QI_PGRP_DID(req->rid) |
+-				QI_PGRP_PASID_P(req->pasid_present) |
+-				QI_PGRP_PDP(req->pasid_present) |
+-				QI_PGRP_RESP_CODE(result) |
+-				QI_PGRP_RESP_TYPE;
+-			resp.qw1 = QI_PGRP_IDX(req->prg_index) |
+-				QI_PGRP_LPIG(req->lpig);
+-
+-			if (req->priv_data_present)
+-				memcpy(&resp.qw2, req->priv_data,
+-				       sizeof(req->priv_data));
+-			resp.qw2 = 0;
+-			resp.qw3 = 0;
+-			qi_submit_sync(iommu, &resp, 1, 0);
+-		}
++	while (head != tail) {
++		req = &iommu->prq[head / sizeof(*req)];
++		process_single_prq(iommu, req);
+ 		head = (head + sizeof(*req)) & PRQ_RING_MASK;
+ 	}
++}
 +
- #ifdef CONFIG_IRQ_REMAP
- static void ir_tbl_remap_entry_show(struct seq_file *m,
- 				    struct intel_iommu *iommu)
-@@ -490,6 +550,8 @@ void __init intel_iommu_debugfs_init(void)
- 	debugfs_create_file("domain_translation_struct", 0444,
- 			    intel_iommu_debug, NULL,
- 			    &domain_translation_struct_fops);
-+	debugfs_create_file("invalidation_queue", 0444, intel_iommu_debug,
-+			    NULL, &invalidation_queue_fops);
- #ifdef CONFIG_IRQ_REMAP
- 	debugfs_create_file("ir_translation_struct", 0444, intel_iommu_debug,
- 			    NULL, &ir_translation_struct_fops);
++static irqreturn_t prq_event_thread(int irq, void *d)
++{
++	struct intel_iommu *iommu = d;
++	int head, tail;
+ 
++	/*
++	 * Clear PPR bit before reading head/tail registers, to
++	 * ensure that we get a new interrupt if needed.
++	 */
++	writel(DMA_PRS_PPR, iommu->reg + DMAR_PRS_REG);
++
++	tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
++	head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
++	intel_svm_process_prq(iommu, iommu->prq, head, tail);
+ 	dmar_writeq(iommu->reg + DMAR_PQH_REG, tail);
+ 
+-	return IRQ_RETVAL(handled);
++	return IRQ_RETVAL(1);
+ }
+ 
+ #define to_intel_svm_dev(handle) container_of(handle, struct intel_svm_dev, sva)
 -- 
 2.17.1
 
