@@ -2,156 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B591D1AAE46
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6021AAE49
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416014AbgDOQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1415989AbgDOQ22 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:28:28 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9756BC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:28:28 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id d17so557693wrg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=76FV3ox/3TPbATAAAJw9w7kb0H0TlBYb5fVvS13JcLY=;
-        b=G/nt7PIUIjDbbyNK0gIoeOLcY8ZJ6ogrh7xIpJK5ptEMrpyqCvnEq1Gpc5ntN7Nohb
-         FbLVbkv/SqyxTIKPSI8ArbB3aQC2cnsW7CNY285Nq6a2PjxHNIr/8pFYAG+7EVv0mbSo
-         E9pam/kjTQC+Xto1u4FPAB7uQLe+D9C1L1s3I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=76FV3ox/3TPbATAAAJw9w7kb0H0TlBYb5fVvS13JcLY=;
-        b=seDoYeiOBohqSzYeFkPsWbMyRZza6EOLEpe9ATpOpc64nj4htFNL+6UfnTfnQbtF9Q
-         NsjWuco3wZfWXy12v8UtqawFITb7qjB0NZmRTP11vFoL7sNYTCNiPMJzInlszeDxTzqQ
-         yGMObepFqcQh/yXulQtjPEIQmOFJq+HoDhIQD+RebcTOLpRNpgLFZpYyzvg3+NgIFQ1a
-         o8ifleR8wTQPUz19EjuppyCkbG2bK1Scny9UBuwgX0I3ILnhhqfwC2iTxER+Sbys12oy
-         WtjuZYy6enyiAckjri8zWaoJuQ0PByPSkMfvKMq5VI9raUW20JnZgd4kaTONve7gWHEt
-         87Xw==
-X-Gm-Message-State: AGi0PuYn33UR7UarqpXKIp8dwlzMxTqUVjrXAt0b6e/f/H4HJvIp6yId
-        2/hLLuhpSpmOJSDDln6pcRBx0w==
-X-Google-Smtp-Source: APiQypKNypW8de1wzfd0hzKcNgFo6MjAP9f8TaX90Pu8qjLQ0NPRPLlzR/MtI88oH6r++vBFgaj4EQ==
-X-Received: by 2002:a5d:5742:: with SMTP id q2mr29365255wrw.414.1586968107226;
-        Wed, 15 Apr 2020 09:28:27 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id h2sm5682392wro.9.2020.04.15.09.28.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 09:28:26 -0700 (PDT)
-Subject: Re: [PATCH] test_firmware: remove unnecessary test_fw_mutex in
- test_dev_config_show_xxx
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-References: <20200415002517.4328-1-scott.branden@broadcom.com>
- <202004142010.C0847F5@keescook>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <e2b95fde-0ab7-c0d1-2c64-cceffc458673@broadcom.com>
-Date:   Wed, 15 Apr 2020 09:28:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1416030AbgDOQ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:29:01 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:12688 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1415786AbgDOQ2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:28:43 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 492STj0yyrzCQ;
+        Wed, 15 Apr 2020 18:28:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1586968121; bh=Rsasm2lhH1ZJqFeV4sB6sJTDdBy82LDRARlwkGNJNWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PAbQsHWpbLD2Fo46RRsCnjnjAl/uJZvNeVFbsI4Dn2X8xsLouAhK+Nm42rC+0RS1l
+         ryd81UC0NcB2qSWxgV7cNM+luxbeNGj2KwDhTEk13m5zrRKZ+UMOjI46fCnKyBOSdg
+         4Ft6jkgljR6fRaSKTHT8lPTCkxCqZLnjDCjGtwv5kxQpQG3VtQ3UReeSbhooagqJ3t
+         BNmvdT0zjOxdhqRDWj1T9QszgHlYKtDKFRsELBhHc7cdgvilIuzkHnVjBJ+XmxDql8
+         NJloG6QxssZVgVZ/vCwgoxSyeloGRA5rhw7K8ot+1Gb2Jb8IAdc5xJmKzBoexgWKeR
+         6EBa6MjRMorcw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Wed, 15 Apr 2020 18:28:39 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mmc: sdhci: fix base clock usage in preset value
+Message-ID: <20200415162839.GD19897@qmqm.qmqm.pl>
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <23c3fe72b0ff0eabdbf3a45023a76da1b18a7e90.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <218dd61b-48cc-a161-240f-b3823e8f48cb@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <202004142010.C0847F5@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <218dd61b-48cc-a161-240f-b3823e8f48cb@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On Wed, Apr 15, 2020 at 03:25:52PM +0300, Adrian Hunter wrote:
+> On 2/04/20 2:54 pm, Micha³ Miros³aw wrote:
+> > Fixed commit added an unnecessary read of CLOCK_CONTROL. The value read
+> > is overwritten for programmable clock preset, but is carried over for
+> > divided clock preset. This can confuse sdhci_enable_clk() if the register
+> > has enable bits set for some reason at time time of clock calculation.
+> > value to be ORed with enable flags. Remove the read.
+> 
+> The read is not needed, but drivers usually manage the enable bits,
+> especially disabling the clock before changing the frequency.  What driver
+> is it?
 
-On 2020-04-14 8:10 p.m., Kees Cook wrote:
-> On Tue, Apr 14, 2020 at 05:25:17PM -0700, Scott Branden wrote:
->> Remove unnecessary use of test_fw_mutex in test_dev_config_show_xxx
->> functions that show simple bool, int, and u8.
-> I would expect at least a READ_ONCE(), yes?
-I don't understand why you need a READ_ONCE when removing a mutex around 
-an assignment
-of a parameter passed into a function being assigned to a local variable.
+Hopefully no driver requires this. It's just removing a trap.
 
-Could you please explain your expectations.
->
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->> ---
->>   lib/test_firmware.c | 26 +++-----------------------
->>   1 file changed, 3 insertions(+), 23 deletions(-)
->>
->> diff --git a/lib/test_firmware.c b/lib/test_firmware.c
->> index 0c7fbcf07ac5..9fee2b93a8d1 100644
->> --- a/lib/test_firmware.c
->> +++ b/lib/test_firmware.c
->> @@ -310,27 +310,13 @@ static int test_dev_config_update_bool(const char *buf, size_t size,
->>   	return ret;
->>   }
->>   
->> -static ssize_t
->> -test_dev_config_show_bool(char *buf,
->> -			  bool config)
->> +static ssize_t test_dev_config_show_bool(char *buf, bool val)
->>   {
->> -	bool val;
->> -
->> -	mutex_lock(&test_fw_mutex);
->> -	val = config;
->> -	mutex_unlock(&test_fw_mutex);
->> -
->>   	return snprintf(buf, PAGE_SIZE, "%d\n", val);
->>   }
->>   
->> -static ssize_t test_dev_config_show_int(char *buf, int cfg)
->> +static ssize_t test_dev_config_show_int(char *buf, int val)
->>   {
->> -	int val;
->> -
->> -	mutex_lock(&test_fw_mutex);
->> -	val = cfg;
->> -	mutex_unlock(&test_fw_mutex);
->> -
->>   	return snprintf(buf, PAGE_SIZE, "%d\n", val);
->>   }
->>   
->> @@ -354,14 +340,8 @@ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
->>   	return size;
->>   }
->>   
->> -static ssize_t test_dev_config_show_u8(char *buf, u8 cfg)
->> +static ssize_t test_dev_config_show_u8(char *buf, u8 val)
->>   {
->> -	u8 val;
->> -
->> -	mutex_lock(&test_fw_mutex);
->> -	val = cfg;
->> -	mutex_unlock(&test_fw_mutex);
->> -
->>   	return snprintf(buf, PAGE_SIZE, "%u\n", val);
->>   }
->>   
->> -- 
->> 2.17.1
->>
-
+Best Regards,
+Micha³ Miros³aw
