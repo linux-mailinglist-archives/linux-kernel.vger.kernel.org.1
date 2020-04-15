@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACDE1A91BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 06:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905F71A9334
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388488AbgDOEJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 00:09:00 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49494 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726438AbgDOEIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 00:08:54 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 006F68FE7EA597A0F157;
-        Wed, 15 Apr 2020 12:08:49 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 15 Apr 2020 12:08:41 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <keescook@chromium.org>, <luto@amacapital.net>, <wad@chromium.org>,
-        <shuah@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>, <linux-kselftest@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] selftests/seccomp: Use bitwise instead of arithmetic operator for flags
-Date:   Wed, 15 Apr 2020 12:15:01 +0800
-Message-ID: <1586924101-65940-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S2634837AbgDOGZO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Apr 2020 02:25:14 -0400
+Received: from mail.lintas.net.id ([103.242.106.93]:48280 "EHLO
+        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634829AbgDOGZA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 02:25:00 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 2457B32D0557E;
+        Wed, 15 Apr 2020 11:23:42 +0700 (WIB)
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id cN0CW_iDszBX; Wed, 15 Apr 2020 11:23:41 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 29BFA32D62DDF;
+        Wed, 15 Apr 2020 11:23:37 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at lintas.net.id
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 2gKMyyLshOnP; Wed, 15 Apr 2020 11:23:36 +0700 (WIB)
+Received: from [100.77.84.87] (unknown [110.225.89.158])
+        by mail.lintas.net.id (Postfix) with ESMTPSA id 30AA032D62DD9;
+        Wed, 15 Apr 2020 11:23:29 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Att
+To:     Recipients <administrator@ancol.com>
+From:   Amazon Admin <administrator@ancol.com>
+Date:   Wed, 15 Apr 2020 09:52:27 +0530
+Reply-To: amazon_admin@mail2engineer.com
+Message-Id: <20200415042329.30AA032D62DD9@mail.lintas.net.id>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This silences the following coccinelle warning:
+Dear Amazon Customer,
 
-"WARNING: sum of probable bitmasks, consider |"
+Thank you for shopping with us. Unfortunately, there's a problem with your account. Please verify your account information to us. If you don't verify your account information we have to close your Amazon account.
 
-tools/testing/selftests/seccomp/seccomp_bpf.c:3131:17-18: WARNING: sum of probable bitmasks, consider |
-tools/testing/selftests/seccomp/seccomp_bpf.c:3133:18-19: WARNING: sum of probable bitmasks, consider |
-tools/testing/selftests/seccomp/seccomp_bpf.c:3134:18-19: WARNING: sum of probable bitmasks, consider |
-tools/testing/selftests/seccomp/seccomp_bpf.c:3135:18-19: WARNING: sum of probable bitmasks, consider |
+ Please verify your account on below:
 
-Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Email ID:  
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 89fb3e0..1b4cdf3 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -3128,11 +3128,11 @@ TEST(get_metadata)
- static int user_trap_syscall(int nr, unsigned int flags)
- {
- 	struct sock_filter filter[] = {
--		BPF_STMT(BPF_LD+BPF_W+BPF_ABS,
-+		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
- 			offsetof(struct seccomp_data, nr)),
--		BPF_JUMP(BPF_JMP+BPF_JEQ+BPF_K, nr, 0, 1),
--		BPF_STMT(BPF_RET+BPF_K, SECCOMP_RET_USER_NOTIF),
--		BPF_STMT(BPF_RET+BPF_K, SECCOMP_RET_ALLOW),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, nr, 0, 1),
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF),
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
- 	};
- 
- 	struct sock_fprog prog = {
--- 
-2.6.2
+Password: 
 
+Date Of Birth 
+
+Our customers' security is everything. We will not share any information with another company. Your information safe and secure with us
+
+Regards,
+Amazon Admin
