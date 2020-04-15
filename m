@@ -2,68 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EA81AABAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF1F1AABB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414654AbgDOPSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:18:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1414618AbgDOPSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:18:31 -0400
-Received: from linux-8ccs.fritz.box (p3EE2C7AC.dip0.t-ipconnect.de [62.226.199.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 036222078B;
-        Wed, 15 Apr 2020 15:18:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586963910;
-        bh=hfI1YAAeH1YLsyJL8AT3fmW+XOyfksoJnz+ksoISptA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CzRRiIHrXJVUaxJE1LN1SoTAInBxGPM/shexq+6nTJhWCl5TtWc9fz+RP4yZpTO5I
-         m4BW0njHHuENU3tpoL2BIKMq3p1CEJVBdoNbYON16d5r5iAuuJBrooZgk6yK7O6gYu
-         BQI2Hu3fwte/2jdJB5jUC1zQjqBYzqvcG6Kv2lJw=
-Date:   Wed, 15 Apr 2020 17:18:26 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/7] livepatch: Remove .klp.arch
-Message-ID: <20200415151825.GB6164@linux-8ccs.fritz.box>
-References: <cover.1586881704.git.jpoimboe@redhat.com>
- <eb58cdddfd5d132c4d782978160d49764b09c764.1586881704.git.jpoimboe@redhat.com>
+        id S1414678AbgDOPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:18:58 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47442 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1414655AbgDOPSt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 11:18:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03FFIJcS106389;
+        Wed, 15 Apr 2020 15:18:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=qS/LkJjaAYTu2JH9+UNdmlJWo6ur3h3lKhehibB0yNo=;
+ b=v9dKG7owZ4RXlV8c2Nyq1hlWdpfkmg45nTYtsBXix+l8EaetAcnemybNgy3/7rI5W9jV
+ GmNDVDJ98Fv5tMC+t3nEzmSJkgx273lWmlv+yMABCz7OoXgSH0S1MyQ3IS5mSETQEcmS
+ gEqgkUyfQBOOH6Uiw3Spq8VOr71g4I28OZ5yLmEeR2n+x3NVPYiNb57tOY5rtdFZQNSn
+ Otjj10YQ8cZeDhNPmwLt16+5ZfwR3JPMIf8j6k51vmUkfIhVSJrbQfFvB1w02PIoP3mB
+ i602f4q0tVCCxKLCMKm2Zed9MIxZagKLcxIGnpoNZcujHTALECKt3bKdkRCueinCznRr Jw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30dn95m1jg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Apr 2020 15:18:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03FFD4g3163258;
+        Wed, 15 Apr 2020 15:18:35 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30dyvf0578-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Apr 2020 15:18:35 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03FFIYr6030940;
+        Wed, 15 Apr 2020 15:18:34 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Apr 2020 08:18:34 -0700
+Date:   Wed, 15 Apr 2020 08:18:32 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V8 08/11] fs: Define I_DONTCACNE in VFS layer
+Message-ID: <20200415151832.GQ6742@magnolia>
+References: <20200415064523.2244712-1-ira.weiny@intel.com>
+ <20200415064523.2244712-9-ira.weiny@intel.com>
+ <20200415085216.GE501@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eb58cdddfd5d132c4d782978160d49764b09c764.1586881704.git.jpoimboe@redhat.com>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200415085216.GE501@quack2.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004150113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=2
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004150114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Josh Poimboeuf [14/04/20 11:28 -0500]:
-[snip]
->diff --git a/Documentation/livepatch/module-elf-format.rst b/Documentation/livepatch/module-elf-format.rst
->index 2a591e6f8e6c..629ef7ffb6cf 100644
->--- a/Documentation/livepatch/module-elf-format.rst
->+++ b/Documentation/livepatch/module-elf-format.rst
->@@ -298,17 +298,7 @@ Examples:
->   Note that the 'Ndx' (Section index) for these symbols is SHN_LIVEPATCH (0xff20).
->   "OS" means OS-specific.
->
->-5. Architecture-specific sections
->-=================================
->-Architectures may override arch_klp_init_object_loaded() to perform
->-additional arch-specific tasks when a target module loads, such as applying
->-arch-specific sections. On x86 for example, we must apply per-object
->-.altinstructions and .parainstructions sections when a target module loads.
->-These sections must be prefixed with ".klp.arch.$objname." so that they can
->-be easily identified when iterating through a patch module's Elf sections
->-(See arch/x86/kernel/livepatch.c for a complete example).
->-
->-6. Symbol table and Elf section access
->+5. Symbol table and Elf section access
+On Wed, Apr 15, 2020 at 10:52:16AM +0200, Jan Kara wrote:
+> There's a typo in the subject - I_DONTCACNE.
+> 
+> On Tue 14-04-20 23:45:20, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > DAX effective mode changes (setting of S_DAX) require inode eviction.
+> > 
+> > Define a flag which can be set to inform the VFS layer that inodes
+> > should not be cached.  This will expedite the eviction of those nodes
+> > requiring reload.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  include/linux/fs.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index a818ced22961..e2db71d150c3 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >   *
+> >   * I_CREATING		New object's inode in the middle of setting up.
+> >   *
+> > + * I_DONTCACHE		Do not cache the inode
+> > + *
+> 
+> Maybe, I'd be more specific here and write: "Evict inode as soon as it is
+> not used anymore"?
 
-Nit: I think we need to fix the numbering in the Table of Contents too.
+I had the same two comments about the V7 version of this patch...
+
+--D
+
+> Otherwise the patch looks good to me so feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> Also it would be good to CC Al Viro on this one (and the dentry flag) I
+> guess.
+> 
+> 								Honza
+> 
+> >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
+> >   */
+> >  #define I_DIRTY_SYNC		(1 << 0)
+> > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >  #define I_WB_SWITCH		(1 << 13)
+> >  #define I_OVL_INUSE		(1 << 14)
+> >  #define I_CREATING		(1 << 15)
+> > +#define I_DONTCACHE		(1 << 16)
+> >  
+> >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+> >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
+> > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
+> >  extern int generic_delete_inode(struct inode *inode);
+> >  static inline int generic_drop_inode(struct inode *inode)
+> >  {
+> > -	return !inode->i_nlink || inode_unhashed(inode);
+> > +	return !inode->i_nlink || inode_unhashed(inode) ||
+> > +		(inode->i_state & I_DONTCACHE);
+> >  }
+> >  
+> >  extern struct inode *ilookup5_nowait(struct super_block *sb,
+> > -- 
+> > 2.25.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
