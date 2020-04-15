@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9BD1AA076
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2601A9E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369283AbgDOM1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:27:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56536 "EHLO mx2.suse.de"
+        id S2897904AbgDOLzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:55:21 -0400
+Received: from sauhun.de ([88.99.104.3]:53290 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409161AbgDOLpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:45:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 79949ACD8;
-        Wed, 15 Apr 2020 11:45:19 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5DB121E1250; Wed, 15 Apr 2020 13:45:18 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 13:45:18 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 1/8] fs/ext4: Narrow scope of DAX check in setflags
-Message-ID: <20200415114518.GC6126@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-2-ira.weiny@intel.com>
+        id S2409185AbgDOLpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:45:38 -0400
+Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
+        by pokefinder.org (Postfix) with ESMTPSA id AFE072C1FF1;
+        Wed, 15 Apr 2020 13:45:36 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 13:45:36 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] NVIDIA Tegra I2C synchronization correction
+Message-ID: <20200415114536.GB910@ninjato>
+References: <20200324191217.1829-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
 Content-Disposition: inline
-In-Reply-To: <20200414040030.1802884-2-ira.weiny@intel.com>
+In-Reply-To: <20200324191217.1829-1-digetx@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-04-20 21:00:23, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> When preventing DAX and journaling on an inode.  Use the effective DAX
-> check rather than the mount option.
-> 
-> This will be required to support per inode DAX flags.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Looks good to me. You can add:
+--Fba/0zbH8Xs+Fj9o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+On Tue, Mar 24, 2020 at 10:12:15PM +0300, Dmitry Osipenko wrote:
+> Hello,
+>=20
+> Recently I found a way to reliably reproduce I2C timeouts that happen due
+> to improper synchronizations made by the I2C driver. It's quite easy to
+> reproduce the problem when memory is running on a lower freq + there is
+> some memory activity + CPU could get busy for a significant time. This
+> is the case when KASAN is enabled and CPU is busy while accessing FS via
+> NFS. This small series addresses the found problems.
+>=20
+> Changelog:
+>=20
+> v2: - The "Better handle case where CPU0 is busy for a long time" patch
+>       now preserves the old behavior where completion is checked after
+>       disabling the interrupt, preventing potential race-condition of
+>       the completion awaiting vs interrupt syncing.
+>=20
+> Dmitry Osipenko (2):
+>   i2c: tegra: Better handle case where CPU0 is busy for a long time
+>   i2c: tegra: Synchronize DMA before termination
 
-								Honza
+Patches look good to me. I tend to apply them to for-current instead of
+for-next because they are fixing issues. Even a stable tag?
 
-> ---
->  fs/ext4/ioctl.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index a0ec750018dd..ee3401a32e79 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -405,9 +405,9 @@ static int ext4_ioctl_setflags(struct inode *inode,
->  	if ((jflag ^ oldflags) & (EXT4_JOURNAL_DATA_FL)) {
->  		/*
->  		 * Changes to the journaling mode can cause unsafe changes to
-> -		 * S_DAX if we are using the DAX mount option.
-> +		 * S_DAX if the inode is DAX
->  		 */
-> -		if (test_opt(inode->i_sb, DAX)) {
-> +		if (IS_DAX(inode)) {
->  			err = -EBUSY;
->  			goto flags_out;
->  		}
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+--Fba/0zbH8Xs+Fj9o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6W8+AACgkQFA3kzBSg
+KbbVLBAApD7mx+QXfeiebrOtz1sVemHBiPDyiGMu++48UzBSAWD9V6/01TcHK6wm
+ovJ5euQmL554Drn2nONQReDLuNLvrIG+5zqkGBFHEzpO/o+fad1bTc9daw6WJLja
+Pa97wqs5lYZMR9bZxDS5Dm437+7hzHmBEQWJkSRfsHh87l48jzG2ymuN8pJ1bMWB
++n2aXocb8P7LeD1GT3M1rn/2NOFtCwE194RCBsF8Z/fN0FuesRcDmRcZt6Dmd/cZ
+3x1Ppuv3v5T4cFrRAXb6ySV9Lbr1EC3yCWtmnXGYs98OiaJ6p8qKL3w+gwNIFKWF
+K4lEh/7bMBWeq/CSMX+a4PJBSXsdNHtxClHZOrrAXzxVGVytVKmt/aKbyAV5jHyL
++PKZqbC9LJ1DfAc/CFBNxMfJyj34nYwHbX7tROQK7/3RlO/8nNhBYiabf1ja9f7A
+SBrsxuh3wWoVnj1GylB23IrErugxi7ef1szTNGJaGbsTU6xLwmz8eBtOP6lRU/B2
+G441mFDbymv+cEBKn+BcB9ejMELSma/vJq97zcMSln/z5CuflX7UazIGKygyyu/d
+muJWz3QlakJMwoVlNCgVd9ieAxdC1wudbo0tMj1K2qS/9nYLQmgfPEZe7c00bYb0
+UxYu/e6vrHC7LZ80HliOQZ9N1RI9BL0qbIUEXW5cpCVjxIWfZfk=
+=ah7+
+-----END PGP SIGNATURE-----
+
+--Fba/0zbH8Xs+Fj9o--
