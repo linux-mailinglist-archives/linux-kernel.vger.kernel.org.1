@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6021AAE49
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747A51AAE4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416030AbgDOQ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:29:01 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:12688 "EHLO rere.qmqm.pl"
+        id S1416049AbgDOQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:29:31 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:64108 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415786AbgDOQ2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:28:43 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 492STj0yyrzCQ;
-        Wed, 15 Apr 2020 18:28:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1586968121; bh=Rsasm2lhH1ZJqFeV4sB6sJTDdBy82LDRARlwkGNJNWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PAbQsHWpbLD2Fo46RRsCnjnjAl/uJZvNeVFbsI4Dn2X8xsLouAhK+Nm42rC+0RS1l
-         ryd81UC0NcB2qSWxgV7cNM+luxbeNGj2KwDhTEk13m5zrRKZ+UMOjI46fCnKyBOSdg
-         4Ft6jkgljR6fRaSKTHT8lPTCkxCqZLnjDCjGtwv5kxQpQG3VtQ3UReeSbhooagqJ3t
-         BNmvdT0zjOxdhqRDWj1T9QszgHlYKtDKFRsELBhHc7cdgvilIuzkHnVjBJ+XmxDql8
-         NJloG6QxssZVgVZ/vCwgoxSyeloGRA5rhw7K8ot+1Gb2Jb8IAdc5xJmKzBoexgWKeR
-         6EBa6MjRMorcw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Wed, 15 Apr 2020 18:28:39 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mmc: sdhci: fix base clock usage in preset value
-Message-ID: <20200415162839.GD19897@qmqm.qmqm.pl>
-References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
- <23c3fe72b0ff0eabdbf3a45023a76da1b18a7e90.1585827904.git.mirq-linux@rere.qmqm.pl>
- <218dd61b-48cc-a161-240f-b3823e8f48cb@intel.com>
+        id S1416032AbgDOQ3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:29:21 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 492SVP12Cjz9txkj;
+        Wed, 15 Apr 2020 18:29:17 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=tge7IYZ/; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id JZ7646eSBSlU; Wed, 15 Apr 2020 18:29:17 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 492SVN6p5yz9txkh;
+        Wed, 15 Apr 2020 18:29:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1586968156; bh=xfHuJITqb5Q/rXxXz7dsTfC5so1bmguxJAbFJb+JvX4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=tge7IYZ/1Esm1/UqToOr9SwPn9PsAm+oUG6y75D4TS8DcfWQxToCz685tRKCbf0Ti
+         W45RxwYB6V6hQwTuFYqhxBHXTfvkjxqBZzBJCGUF9uzudTlRm/li/b2oRcxiXA4IOW
+         9VQZvcEY9++n4EVJEri+4erxYp7TzzxlHrvMfnzA=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E45798BB6C;
+        Wed, 15 Apr 2020 18:29:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3IIfz2WXXSIE; Wed, 15 Apr 2020 18:29:16 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 593978BB75;
+        Wed, 15 Apr 2020 18:29:16 +0200 (CEST)
+Subject: Re: [PATCH v2,1/5] powerpc: 85xx: make FSL_85XX_CACHE_SRAM
+ configurable
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, oss@buserror.net,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
+References: <20200415124929.GA3265842@kroah.com>
+ <20200415152442.122873-1-wenhu.wang@vivo.com>
+ <20200415152442.122873-2-wenhu.wang@vivo.com>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <abdeda98-f080-b260-0732-b47f97663754@c-s.fr>
+Date:   Wed, 15 Apr 2020 18:29:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
+In-Reply-To: <20200415152442.122873-2-wenhu.wang@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <218dd61b-48cc-a161-240f-b3823e8f48cb@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 03:25:52PM +0300, Adrian Hunter wrote:
-> On 2/04/20 2:54 pm, Micha³ Miros³aw wrote:
-> > Fixed commit added an unnecessary read of CLOCK_CONTROL. The value read
-> > is overwritten for programmable clock preset, but is carried over for
-> > divided clock preset. This can confuse sdhci_enable_clk() if the register
-> > has enable bits set for some reason at time time of clock calculation.
-> > value to be ORed with enable flags. Remove the read.
-> 
-> The read is not needed, but drivers usually manage the enable bits,
-> especially disabling the clock before changing the frequency.  What driver
-> is it?
 
-Hopefully no driver requires this. It's just removing a trap.
 
-Best Regards,
-Micha³ Miros³aw
+Le 15/04/2020 Ã  17:24, Wang Wenhu a Ã©critÂ :
+> Enable FSL_85XX_CACHE_SRAM selection. On e500 platforms, the cache
+> could be configured and used as a piece of SRAM which is hignly
+> friendly for some user level application performances.
+
+It looks like following patches are fixing errors generated by selecting 
+FSL_85XX_CACHE_SRAM.
+
+So this patch should go after the patches which fixes the errors, ie it 
+should be patch 4 in the series.
+
+Christophe
