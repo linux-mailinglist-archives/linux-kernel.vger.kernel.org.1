@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087621AB356
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9A81AB35B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442391AbgDOVXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 17:23:34 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:59015 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438917AbgDOVXL (ORCPT
+        id S2439000AbgDOVYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 17:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2442380AbgDOVXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 17:23:11 -0400
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id C7B2C200004;
-        Wed, 15 Apr 2020 21:23:07 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 3/3] iio: adc: ti-ads8344: optimize consumption
-Date:   Wed, 15 Apr 2020 23:22:57 +0200
-Message-Id: <20200415212257.161238-4-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200415212257.161238-1-alexandre.belloni@bootlin.com>
-References: <20200415212257.161238-1-alexandre.belloni@bootlin.com>
+        Wed, 15 Apr 2020 17:23:20 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E95C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 14:23:20 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id f82so4853748ilh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 14:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RX9/7s9yBWh914994jEXd2QhL9nBP30B6ZtmmCdyhxc=;
+        b=wTx2LAC/B09d11qUoGdj5u2RYaV0q/DFXuL4o/rD/9hsnsxy3S5NORSu186U+uJ4IE
+         jcC6jzYMmQ8GV9WITPDYUo+pKuC3obDmGC0Pc8ER3fS327RtZQGBFQfF1eT51JVmS8Oy
+         xrUgsO4kteAyb3P/UP2q9WnQ6nfqix6qLUg6mu44rlsXaw3dToxQy2M76TtGAfFbn2BJ
+         E7tUfpIZIncGBuebxAgOKHofF5RRkihw1MhQPSS0pA6KLyxIaZENXf4tirntu1JFB4Pg
+         CMRQw3FLkB6CPLTj3Hc9roAEkcFPGJX6KRm3FCercuGYGSOo66c28Qs4hqqADilgAFHo
+         GZtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RX9/7s9yBWh914994jEXd2QhL9nBP30B6ZtmmCdyhxc=;
+        b=NQCJDscOJWzJ5/EuY5y0ClYlzMEQxj7ovFU9QalF0h4RvfIX8knxh3BA4Y/sAAaqzu
+         sxsUCFKs857UZ1vLYXx6bxGz+OPuS8jSbB1EujdygdM5DbU+cW3WT9f1xeQxlzkX56pc
+         XFOUt/RANDDMYCrsEbrhEZ3QsATKAdqCv0SFTWXA/WXwnj3heHCm84r2hGvOfE2KMVal
+         lGrsAGtpqKngfPPjSPv9I3HWohOM4kRiuOUJDOEpaT9xCghgDw3lq4IuGFhWAWEKJ3cR
+         SvLZejEm7lDHMeG8Y9K01PyraRV1gwgRgUR3qAYiOcUjmgYFojVG2VwWWXM/tu5Fhrjz
+         UqDg==
+X-Gm-Message-State: AGi0PuZDSGnL/Tbb8efgRH54T7cO/IizEGqTfYFkb1r/snaJi95GXmD9
+        1l4XiPJszYEl+Y7ZVNtij+6AnaHo3G3tKg==
+X-Google-Smtp-Source: APiQypJKTAvCDrpOq2KGbM1EjjkdCf379V1hS/PN+AxYI5EfZRkWfFdPypD2jgzQnUDsF1BHxFOw5w==
+X-Received: by 2002:a92:cac7:: with SMTP id m7mr6784000ilq.6.1586985798849;
+        Wed, 15 Apr 2020 14:23:18 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id c19sm2379446ili.63.2020.04.15.14.23.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 14:23:17 -0700 (PDT)
+Subject: Re: [PATCH v2 5/7] remoteproc: Restructure firmware name allocation
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        bjorn.andersson@linaro.org, ohad@wizery.com
+Cc:     s-anna@ti.com, Markus.Elfring@web.de,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200415204858.2448-1-mathieu.poirier@linaro.org>
+ <20200415204858.2448-6-mathieu.poirier@linaro.org>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <9a4b6342-750e-284a-2343-8151b478589b@linaro.org>
+Date:   Wed, 15 Apr 2020 16:23:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200415204858.2448-6-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the clock mode only once, at probe time and then keep the ADC powered
-down between conversions.
+On 4/15/20 3:48 PM, Mathieu Poirier wrote:
+> Improve the readability of function rproc_alloc_firmware() by using
+> a non-negated condition.
+> 
+> Suggested-by: Alex Elder <elder@linaro.org>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/iio/adc/ti-ads8344.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+If it were me, I'd move the comment above the if statement and
+perhaps reword it a little bit to describe what's happening.
+But no matter, this looks good.
 
-diff --git a/drivers/iio/adc/ti-ads8344.c b/drivers/iio/adc/ti-ads8344.c
-index 9b2d3a8ea6bd..0804650d8d8a 100644
---- a/drivers/iio/adc/ti-ads8344.c
-+++ b/drivers/iio/adc/ti-ads8344.c
-@@ -65,7 +65,7 @@ static const struct iio_chan_spec ads8344_channels[] = {
- };
- 
- static int ads8344_adc_conversion(struct ads8344 *adc, int channel,
--				  bool differential)
-+				  bool differential, u8 clock)
- {
- 	struct spi_device *spi = adc->spi;
- 	int ret;
-@@ -75,7 +75,7 @@ static int ads8344_adc_conversion(struct ads8344 *adc, int channel,
- 	if (!differential)
- 		buf[0] |= ADS8344_SINGLE_END;
- 	buf[0] |= ADS8344_CHANNEL(channel);
--	buf[0] |= ADS8344_CLOCK_INTERNAL;
-+	buf[0] |= clock;
- 
- 	ret = spi_write(spi, buf, 1);
- 	if (ret)
-@@ -100,7 +100,7 @@ static int ads8344_read_raw(struct iio_dev *iio,
- 	case IIO_CHAN_INFO_RAW:
- 		mutex_lock(&adc->lock);
- 		*value = ads8344_adc_conversion(adc, channel->scan_index,
--						channel->differential);
-+						channel->differential, 0);
- 		mutex_unlock(&adc->lock);
- 		if (*value < 0)
- 			return *value;
-@@ -155,6 +155,11 @@ static int ads8344_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
-+	/* Do a dummy read and set external clock mode */
-+	ret = ads8344_adc_conversion(adc, 0, 0, ADS8344_CLOCK_INTERNAL);
-+	if (ret < 0)
-+		return ret;
-+
- 	spi_set_drvdata(spi, indio_dev);
- 
- 	ret = iio_device_register(indio_dev);
--- 
-2.25.2
+Reviewed-by: Alex Elder <elder@linaro.org>
+
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index ebaff496ef81..0bfa6998705d 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1984,14 +1984,14 @@ static int rproc_alloc_firmware(struct rproc *rproc,
+>  {
+>  	const char *p;
+>  
+> -	if (!firmware)
+> +	if (firmware)
+> +		p = kstrdup_const(firmware, GFP_KERNEL);
+> +	else
+>  		/*
+>  		 * If the caller didn't pass in a firmware name then
+>  		 * construct a default name.
+>  		 */
+>  		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
+> -	else
+> -		p = kstrdup_const(firmware, GFP_KERNEL);
+>  
+>  	if (!p)
+>  		return -ENOMEM;
+> 
 
