@@ -2,192 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A761A9B35
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE7B1A9B10
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896538AbgDOKoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
+        id S2393896AbgDOKlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2896490AbgDOKXv (ORCPT
+        by vger.kernel.org with ESMTP id S2408536AbgDOKYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:23:51 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3633EC03C1AE;
-        Wed, 15 Apr 2020 03:23:27 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id l11so2209755lfc.5;
-        Wed, 15 Apr 2020 03:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=jKeaCgFpnmK28M7xOrZHtgGEs75wSDfctsMr7/8EUQ4=;
-        b=u0aNUsA/ajvK6mw+4oTArTjesmheWK9IOjPXwcTInScU0ziIdquqPvAoRZ7JWHtU3e
-         azgL3J3mFyNQ45f8l01s2gr+SSy3qihJSborjmg4ASd2rSEMBbhq0/ELiC+24ngeR37Z
-         QOOOJn6nml0YT4MCSCwiFivQdSppsMUYq4y3blVHh9Vdtd4vgzVEAdm+DZnZ4EqT8mZC
-         qEwXBMqVmVuBQeOkxPUkeg+I3OXA7KgWg1mHwKplqBn1diR32MgW/e2JzccROABQ6H5h
-         5kcu1b0A0piOrKPAnsFZD9qUeMfzuMRVoUEJiC6TlLbm6ENviT5U66hzt5bR4JngrtJL
-         91Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=jKeaCgFpnmK28M7xOrZHtgGEs75wSDfctsMr7/8EUQ4=;
-        b=CIGjjRbY5C3nwUsFzGp1c/+WTP6puPVI8PlkfEj17GJwI1RkntVg1PA/YZkudxcEja
-         zQEjUP/VQVOnfqbqICwWC6FE7LzeYouMowml4bsMZlzqYEpddEW1DsCE6bib/2r19/hI
-         Nx+Zs0Wt3LY+ysZIJzU2RIuqXwj850cBLzDDCgvDTayzvU37hAZFRyGxMYRFGMovW1JW
-         gr9N6SddCAaqFgea//oQwmmZSRStXgcMoOiJRHvSkET6omVOxFKxO8eCT/JXPyRabf4Z
-         fLLp9B5RpVdDqR6g28U6GyoKQI+ZriPz+8FsDVyIBnKIO73ZYglu7mZ0WuOJgLVsFo6l
-         Popg==
-X-Gm-Message-State: AGi0PuYWli4sHWBxjPl6C3N+efKb+MTcnBtCps7PcEIZvzFvTb7hWDFL
-        ODoTFJakNFlEPsJCPFdEqTPYwHGi
-X-Google-Smtp-Source: APiQypINp9dsLX1m+G4LnnN392ZDggMCz6RWVuPhP53iuSY5f9+1hGDl1lDNmn3boXKr/63qJ5pMqg==
-X-Received: by 2002:a19:c8cf:: with SMTP id y198mr2545251lff.197.1586946205638;
-        Wed, 15 Apr 2020 03:23:25 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id x23sm12442810lfe.51.2020.04.15.03.23.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 03:23:24 -0700 (PDT)
-From:   chewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] arm64: dts: meson: sm1-khadas-vim3l: add audio playback to vim3l
-Date:   Wed, 15 Apr 2020 10:23:20 +0000
-Message-Id: <20200415102320.4606-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 15 Apr 2020 06:24:20 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05838C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D67l6ZrBlbjgqm81fdLUU6QzODyFsUdr+ktwMeHypO4=; b=gUpoSEebGSj3l7vjKUnUekc+RV
+        0l5beNce78Gpg6mslD2nRFNhy0MTORuiFP9mnrQ0GIeALgKaazntpCPBLrF78SB0FOdD+lx90FWFc
+        PbgfCdLmH05zIm/8qvAmOXpTvEHDukwh6rruhMm9lC7w1u8FPHTt5xW9bzXMvW92XPXGKbwFrJXcQ
+        sbw9Xptahk90YIG8aAIjBo3EebbQyRe3HfNY3DRcoCNkh2j8lhwDzpPigNbPs1Cw47ovTB7WtiB2O
+        yzMXR6tPlHZvFBl/5PUqkF7Ws2V0Lzu0hMuBJzWFvOh9ooKFTP0fhMuyW4lt5K/Y3qKyfNPq3sQuY
+        Ahwjwttg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOfCp-0007KT-GR; Wed, 15 Apr 2020 10:23:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73A223006E0;
+        Wed, 15 Apr 2020 12:23:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5DB3B2BC6F2DD; Wed, 15 Apr 2020 12:23:40 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 12:23:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     CodyYao-oc <CodyYao-oc@zhaoxin.com>
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        cooperyan@zhaoxin.com, codyyao@zhaoxin.com
+Subject: Re: [PATCH] x86/perf: Add hardware performance events support for
+ Zhaoxin CPU.
+Message-ID: <20200415102340.GB20730@hirez.programming.kicks-ass.net>
+References: <1586747669-4827-1-git-send-email-CodyYao-oc@zhaoxin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586747669-4827-1-git-send-email-CodyYao-oc@zhaoxin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Hewitt <christianshewitt@gmail.com>
+On Mon, Apr 13, 2020 at 11:14:29AM +0800, CodyYao-oc wrote:
+> Zhaoxin CPU has provided facilities for monitoring performance
+> via PMU(Performance Monitor Unit), but the functionality is unused so far.
+> Therefore, add support for zhaoxin pmu to make performance related
+> hardware events available.
+> 
+> Signed-off-by: CodyYao-oc <CodyYao-oc@zhaoxin.com>
+> Reported-by: kbuild test robot <lkp@intel.com>
 
-Add the sound and related audio nodes to the VIM3L board.
+What's that reported-by thing? Did the robot complain you didn't have a
+PMU implementation?
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Anyway, I've made the below changes to the patch.
+
 ---
- .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 88 +++++++++++++++++++
- 1 file changed, 88 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-index dbbf29a0dbf6..b900a433ef7a 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
-@@ -8,6 +8,7 @@
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -618,6 +618,7 @@ struct x86_pmu {
  
- #include "meson-sm1.dtsi"
- #include "meson-khadas-vim3.dtsi"
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+ 	/* PMI handler bits */
+ 	unsigned int	late_ack		:1,
++			enabled_ack		:1,
+ 			counter_freezing	:1;
+ 	/*
+ 	 * sysfs attrs
+--- a/arch/x86/events/zhaoxin/core.c
++++ b/arch/x86/events/zhaoxin/core.c
+@@ -357,10 +357,9 @@ static int zhaoxin_pmu_handle_irq(struct
+ {
+ 	struct perf_sample_data data;
+ 	struct cpu_hw_events *cpuc;
+-	int bit;
+-	u64 status;
+-	bool is_zxc = false;
+ 	int handled = 0;
++	u64 status;
++	int bit;
  
- / {
- 	compatible = "khadas,vim3l", "amlogic,sm1";
-@@ -31,6 +32,69 @@
- 		regulator-boot-on;
- 		regulator-always-on;
- 	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		model = "SM1-KHADAS-VIM3L";
-+		audio-aux-devs = <&tdmout_b>;
-+		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+				  <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		/* 8ch hdmi interface */
-+		dai-link-3 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
-+			};
-+		};
-+
-+		/* hdmi glue */
-+		dai-link-4 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+};
-+
-+&arb {
-+	status = "okay";
-+};
-+
-+&clkc_audio {
-+	status = "okay";
- };
+ 	cpuc = this_cpu_ptr(&cpu_hw_events);
+ 	apic_write(APIC_LVTPC, APIC_DM_NMI);
+@@ -369,14 +368,8 @@ static int zhaoxin_pmu_handle_irq(struct
+ 	if (!status)
+ 		goto done;
  
- &cpu0 {
-@@ -61,6 +125,18 @@
- 	clock-latency = <50000>;
- };
+-	if (boot_cpu_data.x86 == 0x06 &&
+-		(boot_cpu_data.x86_model == 0x0f ||
+-			boot_cpu_data.x86_model == 0x19))
+-		is_zxc = true;
+ again:
+-
+-	/*Clearing status works only if the global control is enable on zxc.*/
+-	if (is_zxc)
++	if (x86_pmu.enabled_ack)
+ 		zxc_pmu_ack_status(status);
+ 	else
+ 		zhaoxin_pmu_ack_status(status);
+@@ -504,12 +497,10 @@ static __init void zhaoxin_arch_events_q
+ 	int bit;
  
-+&frddr_a {
-+	status = "okay";
-+};
+ 	/* disable event that reported as not presend by cpuid */
+-	for_each_set_bit(bit, x86_pmu.events_mask,
+-			ARRAY_SIZE(zx_arch_events_map)) {
+-
++	for_each_set_bit(bit, x86_pmu.events_mask, ARRAY_SIZE(zx_arch_events_map)) {
+ 		zx_pmon_event_map[zx_arch_events_map[bit].id] = 0;
+ 		pr_warn("CPUID marked event: \'%s\' unavailable\n",
+-				zx_arch_events_map[bit].name);
++			zx_arch_events_map[bit].name);
+ 	}
+ }
+ 
+@@ -534,12 +525,12 @@ __init int zhaoxin_pmu_init(void)
+ 		return -ENODEV;
+ 
+ 	version = eax.split.version_id;
+-	if (version == 2) {
+-		x86_pmu = zhaoxin_pmu;
+-		pr_info("Version check pass!\n");
+-	} else
++	if (version != 2)
+ 		return -ENODEV;
+ 
++	x86_pmu = zhaoxin_pmu;
++	pr_info("Version check pass!\n");
 +
-+&frddr_b {
-+	status = "okay";
-+};
+ 	x86_pmu.version			= version;
+ 	x86_pmu.num_counters		= eax.split.num_counters;
+ 	x86_pmu.cntval_bits		= eax.split.bit_width;
+@@ -552,11 +543,13 @@ __init int zhaoxin_pmu_init(void)
+ 
+ 	switch (boot_cpu_data.x86) {
+ 	case 0x06:
+-		if (boot_cpu_data.x86_model == 0x0f ||
+-			boot_cpu_data.x86_model == 0x19) {
++		if (boot_cpu_data.x86_model == 0x0f || boot_cpu_data.x86_model == 0x19) {
+ 
+ 			x86_pmu.max_period = x86_pmu.cntval_mask >> 1;
+ 
++			/* Clearing status works only if the global control is enable on zxc. */
++			x86_pmu.enabled_ack = 1;
 +
-+&frddr_c {
-+	status = "okay";
-+};
+ 			x86_pmu.event_constraints = zxc_event_constraints;
+ 			zx_pmon_event_map[PERF_COUNT_HW_INSTRUCTIONS] = 0;
+ 			zx_pmon_event_map[PERF_COUNT_HW_CACHE_REFERENCES] = 0;
+@@ -564,40 +557,37 @@ __init int zhaoxin_pmu_init(void)
+ 			zx_pmon_event_map[PERF_COUNT_HW_BUS_CYCLES] = 0;
+ 
+ 			pr_cont("ZXC events, ");
+-		} else
+-			return -ENODEV;
+-		break;
++			break;
++		}
++		return -ENODEV;
 +
- &pwm_AO_cd {
- 	pinctrl-0 = <&pwm_ao_d_e_pins>;
- 	pinctrl-names = "default";
-@@ -93,3 +169,15 @@
- 	phy-names = "usb2-phy0", "usb2-phy1";
- };
-  */
+ 	case 0x07:
+ 		zx_pmon_event_map[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] =
+-		X86_CONFIG(.event = 0x01, .umask = 0x01, .inv = 0x01, .cmask = 0x01);
++			X86_CONFIG(.event = 0x01, .umask = 0x01, .inv = 0x01, .cmask = 0x01);
+ 
+ 		zx_pmon_event_map[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] =
+-		X86_CONFIG(.event = 0x0f, .umask = 0x04, .inv = 0, .cmask = 0);
++			X86_CONFIG(.event = 0x0f, .umask = 0x04, .inv = 0, .cmask = 0);
+ 
+ 		switch (boot_cpu_data.x86_model) {
+ 		case 0x1b:
+ 			memcpy(hw_cache_event_ids, zxd_hw_cache_event_ids,
+-				sizeof(hw_cache_event_ids));
++			       sizeof(hw_cache_event_ids));
+ 
+ 			x86_pmu.event_constraints = zxd_event_constraints;
+ 
+-			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]
+-				= 0x0700;
+-			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_MISSES]
+-				= 0x0709;
++			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = 0x0700;
++			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_MISSES] = 0x0709;
+ 
+ 			pr_cont("ZXD events, ");
+ 			break;
+ 		case 0x3b:
+ 			memcpy(hw_cache_event_ids, zxe_hw_cache_event_ids,
+-				sizeof(hw_cache_event_ids));
++			       sizeof(hw_cache_event_ids));
+ 
+ 			x86_pmu.event_constraints = zxd_event_constraints;
+ 
+-			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]
+-				= 0x0028;
+-			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_MISSES]
+-				= 0x0029;
++			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = 0x0028;
++			zx_pmon_event_map[PERF_COUNT_HW_BRANCH_MISSES] = 0x0029;
+ 
+ 			pr_cont("ZXE events, ");
+ 			break;
+@@ -605,13 +595,13 @@ __init int zhaoxin_pmu_init(void)
+ 			return -ENODEV;
+ 		}
+ 		break;
 +
-+&tdmif_b {
-+	status = "okay";
-+};
-+
-+&tdmout_b {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
--- 
-2.17.1
-
+ 	default:
+ 		return -ENODEV;
+ 	}
+ 
+ 	x86_pmu.intel_ctrl = (1 << (x86_pmu.num_counters)) - 1;
+-	x86_pmu.intel_ctrl |=
+-		((1LL << x86_pmu.num_counters_fixed)-1) << INTEL_PMC_IDX_FIXED;
++	x86_pmu.intel_ctrl |= ((1LL << x86_pmu.num_counters_fixed)-1) << INTEL_PMC_IDX_FIXED;
+ 
+ 	if (x86_pmu.event_constraints) {
+ 		for_each_event_constraint(c, x86_pmu.event_constraints) {
+--- a/arch/x86/kernel/cpu/perfctr-watchdog.c
++++ b/arch/x86/kernel/cpu/perfctr-watchdog.c
+@@ -63,6 +63,7 @@ static inline unsigned int nmi_perfctr_m
+ 		case 15:
+ 			return msr - MSR_P4_BPU_PERFCTR0;
+ 		}
++		fallthrough;
+ 	case X86_VENDOR_ZHAOXIN:
+ 	case X86_VENDOR_CENTAUR:
+ 		return msr - MSR_ARCH_PERFMON_PERFCTR0;
+@@ -95,6 +96,7 @@ static inline unsigned int nmi_evntsel_m
+ 		case 15:
+ 			return msr - MSR_P4_BSU_ESCR0;
+ 		}
++		fallthrough;
+ 	case X86_VENDOR_ZHAOXIN:
+ 	case X86_VENDOR_CENTAUR:
+ 		return msr - MSR_ARCH_PERFMON_EVENTSEL0;
