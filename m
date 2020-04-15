@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4441AB246
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86D71AB249
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636873AbgDOUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:06:40 -0400
-Received: from mail.kmu-office.ch ([178.209.48.109]:49818 "EHLO
-        mail.kmu-office.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406385AbgDOUGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:06:35 -0400
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id A3EE95C07A7;
-        Wed, 15 Apr 2020 22:06:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1586981187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=18e6r5y/jgXADhhgiX3R6vif1YdVTFwaHH058p3heBc=;
-        b=kzCXjBTXYRcKiwbTlcwjtNog8tdHIMY90JOBql07rNRqIMwQCIZoGNCieVInoqLmPhYZwm
-        4k8P+IzP+CWSyghxueLPF6FHo9o0Wq/NYnUnX48Qv68wgwdblpR+IsAkpJeT0Xz2uQE46I
-        lghJiyJ2GG3Sm5jm1slWnNgNuLwtqOg=
+        id S2437389AbgDOUKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 16:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406385AbgDOUKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 16:10:15 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 566DA206F9;
+        Wed, 15 Apr 2020 20:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586981414;
+        bh=67ePP/U/RtW88bnm56CWxmPtC2oG6sPzueiJMgZY8Jg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IhXhZ7utqXmkOX5wfdaIZCBZQZbN8Au2fe3PNeB51m3j/8qu/cHGJ3nVsDYgoiduj
+         Ki/2GPZ4CaVRWnME5BVnr68uxQYfeExggq4Hxrb4bV5cj1dntLm898/kzD6URKgSDj
+         rf3Y5BgHX4ZP+kAoojWcTElsqGNv/Pfv2xCXQxiU=
+Date:   Wed, 15 Apr 2020 21:10:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v3 05/12] arm64: csum: Disable KASAN for do_csum()
+Message-ID: <20200415201007.GA22393@willie-the-truck>
+References: <20200415165218.20251-1-will@kernel.org>
+ <20200415165218.20251-6-will@kernel.org>
+ <20200415172813.GA2272@lakrids.cambridge.arm.com>
+ <CAK8P3a0x10bCQMC=iGm+fU2G1Vc=Zo-4yjaX4Jwso6rgazVzYw@mail.gmail.com>
+ <20200415194305.GB21804@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Apr 2020 22:06:27 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jian Cai <caij2003@gmail.com>, Manoj Gupta <manojgupta@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Enrico Weigelt <info@metux.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] ARM: replace the sole use of a symbol with its definition
-In-Reply-To: <CAKwvOdk3YG5TFD71E-9vPqssFZW1U3umCR+AWLLp8RZK2zHGsw@mail.gmail.com>
-References: <20200407190558.196865-1-caij2003@gmail.com>
- <CAKwvOdk3YG5TFD71E-9vPqssFZW1U3umCR+AWLLp8RZK2zHGsw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <a6964b6f784266838070f434110661f3@agner.ch>
-X-Sender: stefan@agner.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415194305.GB21804@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-13 20:29, Nick Desaulniers wrote:
-> On Tue, Apr 7, 2020 at 12:09 PM Jian Cai <caij2003@gmail.com> wrote:
->>
->> ALT_UP_B macro sets symbol up_b_offset via .equ to an expression
->> involving another symbol. The macro gets expanded twice when
->> arch/arm/kernel/sleep.S is assembled, creating a scenario where
->> up_b_offset is set to another expression involving symbols while its
->> current value is based on symbols. LLVM integrated assembler does not
->> allow such cases, and based on the documentation of binutils, "Values
->> that are based on expressions involving other symbols are allowed, but
->> some targets may restrict this to only being done once per assembly", so
->> it may be better to avoid such cases as it is not clearly stated which
->> targets should support or disallow them. The fix in this case is simple,
->> as up_b_offset has only one use, so we can replace the use with the
->> definition and get rid of up_b_offset.
->>
->> Signed-off-by: Jian Cai <caij2003@gmail.com>
-
-Thanks for tackling this!
-
+On Wed, Apr 15, 2020 at 08:43:05PM +0100, Will Deacon wrote:
+> On Wed, Apr 15, 2020 at 08:42:16PM +0200, Arnd Bergmann wrote:
+> > On Wed, Apr 15, 2020 at 7:28 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > On Wed, Apr 15, 2020 at 05:52:11PM +0100, Will Deacon wrote:
+> > > > do_csum() over-reads the source buffer and therefore abuses
+> > > > READ_ONCE_NOCHECK() to avoid tripping up KASAN. In preparation for
+> > > > READ_ONCE_NOCHECK() becoming a macro, and therefore losing its
+> > > > '__no_sanitize_address' annotation, just annotate do_csum() explicitly
+> > > > and fall back to normal loads.
+> > >
+> > > I'm confused by this. The whole point of READ_ONCE_NOCHECK() is that it
+> > > isn't checked by KASAN, so if that semantic is removed it has no reason
+> > > to exist.
+> > >
+> > > Changing that will break the unwind/stacktrace code across multiple
+> > > architectures. IIRC they use READ_ONCE_NOCHECK() for two reasons:
+> > >
+> > > 1. Races with concurrent modification, as might happen when a thread's
+> > >    stack is corrupted. Allowing the unwinder to bail out after a sanity
+> > >    check means the resulting report is more useful than a KASAN splat in
+> > >    the unwinder. I made the arm64 unwinder robust to this case.
+> > >
+> > > 2. I believe that the frame record itself /might/ be poisoned by KASAN,
+> > >    since it's not meant to be an accessible object at the C langauge
+> > >    level. I could be wrong about this, and would have to check.
+> > 
+> > I thought the main reason was deadlocks when a READ_ONCE()
+> > is called inside of code that is part of the KASAN handling. If
+> > READ_ONCE() ends up recursively calling itself, the kernel
+> > tends to crash once it overflows its stack.
 > 
-> Probably didn't need the extra parens, but it's fine (unless another
-> reviewer would like a v2).  Maybe Stefan has some thoughts?
-
-Since this is a processor macro I actually prefer to have parentheses
-here. All use sites of ALT_UP_B pass just a label, but still, just to be
-on the safe side.
-
-I was wondering why equ has been used in first place. I don't see an
-advantage other than having a symbol which can be checked. But given
-that this code is stable and don't really need debugging at this point,
-I am fine replacing this to make it work for clang.
-
-
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> That was also my understanding.
 > 
-> Please add Link tags if these correspond to issues in our link
-> tracker, they help us track when and where patches land.
-> Link: https://github.com/ClangBuiltLinux/linux/issues/920
-
-Agreed, please add the link. You can add this when submitting.
-
-With that:
-Reviewed-by: Stefan Agner <stefan@agner.ch>
-
---
-Stefan
-
+> > > I would like to keep the unwinding robust in the first case, even if the
+> > > second case doesn't apply, and I'd prefer to not mark the entirety of
+> > > the unwinding code as unchecked as that's sufficiently large an subtle
+> > > that it could have nasty bugs.
+> > >
+> > > Is there any way we keep something like READ_ONCE_NOCHECK() around even
+> > > if we have to give it reduced functionality relative to READ_ONCE()?
+> > >
+> > > I'm not enirely sure why READ_ONCE_NOCHECK() had to go, so if there's a
+> > > particular pain point I'm happy to take a look.
+> > 
+> > As I understood, only this particular instance was removed, not all of
+> > them.
 > 
->> ---
->>  arch/arm/include/asm/assembler.h | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
->> index 99929122dad7..adee13126c62 100644
->> --- a/arch/arm/include/asm/assembler.h
->> +++ b/arch/arm/include/asm/assembler.h
->> @@ -269,10 +269,9 @@
->>         .endif                                                  ;\
->>         .popsection
->>  #define ALT_UP_B(label)                                        \
->> -       .equ    up_b_offset, label - 9998b                      ;\
->>         .pushsection ".alt.smp.init", "a"                       ;\
->>         .long   9998b                                           ;\
->> -       W(b)    . + up_b_offset                                 ;\
->> +       W(b)    . + (label - 9998b)                                     ;\
->>         .popsection
->>  #else
->>  #define ALT_SMP(instr...)
->> --
->> 2.26.0.292.g33ef6b2f38-goog
->>
+> Right, but the problem is that whether the NOCHECK version gets checked
+> or not now depends on the caller, since it's all just a macro. If we want
+> to fix this, then we could force the nocheck variant to return unsigned
+> long, which simplifies things a lot (completely untested):
+> 
+> 
+> #define READ_ONCE(x)							\
+> ({									\
+> 	compiletime_assert_rwonce_type(x);				\
+> 	__READ_ONCE_SCALAR(x);						\
+> })
+> 
+> unsigned long __no_sanitise_address
+> kasan_nocheck_read_once_ul(const volatile void *p)
+> {
+> 	return READ_ONCE(*p);
+> }
+> 
+> /* Please don't use this */
+> #define READ_ONCE_NOCHECK(x)	kasan_nocheck_read_once_ul(&x)
+> 
+
+Urgh, scratch that. Trying to instantiate READ_ONCE() in compiler.h
+causes a circular header-file dependency between linux/compiler.h
+and asm-generic/barrier.h thanks to smp_read_barrier_depends().
+
+Time to dust off that patch I had splitting up compiler.h.
+
+Will
