@@ -2,229 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6720E1A907D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 03:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D3A1A9080
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 03:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392631AbgDOBbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 21:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2392620AbgDOBbN (ORCPT
+        id S2392642AbgDOBbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 21:31:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30865 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2392633AbgDOBbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 21:31:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B41FC061A0C;
-        Tue, 14 Apr 2020 18:31:13 -0700 (PDT)
-Received: from floko.floko.floko (unknown [IPv6:2804:431:e7cc:79a2:b6f7:4033:5775:cc3a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 14 Apr 2020 21:31:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586914292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1gQDebgdhfevaZB94Up55P4Eie+YbxHp+6IgQaQXMeo=;
+        b=axbnrEX4wjiSgX3FpuY7uyySZQhZrWSFvefMNEMKePAswm2grep1p1gAAJaiSN0H5CX2L/
+        tiqvRwPxT6MkC85GX+Rj0TlNkbaudpHEFNY9XZJBmHlxdUtK0BGzZv0VR79QC/25v5VQGT
+        ZK3uVX1SOaCdivzoKioxB4S+bCnh/+Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-132-6Z9TQ_sIPqS5vnz00oax3Q-1; Tue, 14 Apr 2020 21:31:25 -0400
+X-MC-Unique: 6Z9TQ_sIPqS5vnz00oax3Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: koike)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 4329B2A1C4B;
-        Wed, 15 Apr 2020 02:31:06 +0100 (BST)
-From:   Helen Koike <helen.koike@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, hans.verkuil@cisco.com,
-        skhan@linuxfoundation.org, niklas.soderlund@ragnatech.se,
-        mchehab@kernel.org, Helen Koike <helen.koike@collabora.com>
-Subject: [PATCH v3 4/4] media: vimc: use v4l2_pipeline_stream_{enable,disable} helpers
-Date:   Tue, 14 Apr 2020 22:30:44 -0300
-Message-Id: <20200415013044.1778572-5-helen.koike@collabora.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200415013044.1778572-1-helen.koike@collabora.com>
-References: <20200415013044.1778572-1-helen.koike@collabora.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB363107ACC7;
+        Wed, 15 Apr 2020 01:31:24 +0000 (UTC)
+Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B3F7B9F9BB;
+        Wed, 15 Apr 2020 01:31:20 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 20:31:17 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
+ module_disable_ro()
+Message-ID: <20200415013117.rc7vlidmo4okzypl@treble>
+References: <cover.1586881704.git.jpoimboe@redhat.com>
+ <187a2ccd-1d04-54db-2fd3-8c4ca6872830@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <187a2ccd-1d04-54db-2fd3-8c4ca6872830@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use v4l2_pipeline_stream_{enable,disable} to call .s_stream() subdevice
-callbacks through the pipeline.
+On Tue, Apr 14, 2020 at 08:57:15PM -0400, Joe Lawrence wrote:
+> On 4/14/20 12:28 PM, Josh Poimboeuf wrote:
+> > Better late than never, these patches add simplifications and
+> > improvements for some issues Peter found six months ago, as part of his
+> > non-writable text code (W^X) cleanups.
+> > 
+> > Highlights:
+> > 
+> > - Remove the livepatch arch-specific .klp.arch sections, which were used
+> >    to do paravirt patching and alternatives patching for livepatch
+> >    replacement code.
+> > 
+> > - Add support for jump labels in patched code.
+> 
+> Re: jump labels and late-module patching support...
+> 
+> Is there still an issue of a non-exported static key defined in a
+> to-be-patched module referenced and resolved via klp-relocation when the
+> livepatch module is loaded first?  (Basically the same case I asked Petr
+> about in his split livepatch module PoC. [1])
+> 
+> Or should we declare this an invalid klp-relocation use case and force the
+> livepatch author to use static_key_enabled()?
+> 
+> [1] https://lore.kernel.org/lkml/20200407205740.GA17061@redhat.com/
 
-Tested streaming works with:
+Right, if the static key lives in a module, then it's still not possible
+for a jump label to use it.  I added a check in kpatch-build to block
+that case and suggest static_key_enabled() instead.
 
-media-ctl -d /dev/media0 -V '"Sensor A":0[fmt:SBGGR8_1X8/640x480]'
-media-ctl -d /dev/media0 -V '"Debayer A":0[fmt:SBGGR8_1X8/640x480]'
-media-ctl -d /dev/media0 -V '"Sensor B":0[fmt:SBGGR8_1X8/640x480]'
-media-ctl -d /dev/media0 -V '"Debayer B":0[fmt:SBGGR8_1X8/640x480]'
-media-ctl -d /dev/media0 -V '"Scaler":0[fmt:RGB888_1X24/640x480]'
-media-ctl -d /dev/media0 -V '"Scaler":0[crop:(100,50)/400x150]'
-media-ctl -d /dev/media0 -V '"Scaler":1[fmt:RGB888_1X24/1920x1440]'
-v4l2-ctl -d /dev/video2 -v width=1200,height=450
-v4l2-ctl -d /dev/video0 -v pixelformat=BA81
-v4l2-ctl -d /dev/video1 -v pixelformat=BA81
-v4l2-ctl --stream-mmap --stream-count=10 -d /dev/video2 --stream-to=/tmp/test.raw
+I don't know what the solution is, other than getting rid of late module
+patching.
 
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
+I confess I haven't looked at Petr's patches due to other distractions,
+but I plan to soon.
 
----
-
-Changes in v3:
-- rebase on top of new helpers prototypes
-
-Changes in v2:
-- rebase on top of new helpers prototypes
-
- .../media/test_drivers/vimc/vimc-capture.c    | 28 +++++++----
- .../media/test_drivers/vimc/vimc-streamer.c   | 49 ++-----------------
- 2 files changed, 23 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/media/test_drivers/vimc/vimc-capture.c b/drivers/media/test_drivers/vimc/vimc-capture.c
-index 5315c201314c9..73707634010e9 100644
---- a/drivers/media/test_drivers/vimc/vimc-capture.c
-+++ b/drivers/media/test_drivers/vimc/vimc-capture.c
-@@ -233,21 +233,27 @@ static int vimc_cap_start_streaming(struct vb2_queue *vq, unsigned int count)
- 
- 	vcap->sequence = 0;
- 
--	/* Start the media pipeline */
- 	ret = media_pipeline_start(entity, &vcap->stream.pipe);
--	if (ret) {
--		vimc_cap_return_all_buffers(vcap, VB2_BUF_STATE_QUEUED);
--		return ret;
--	}
-+	if (ret)
-+		goto err_return_all_buffers;
-+
-+	ret = v4l2_pipeline_stream_enable(&vcap->vdev, &vcap->stream.pipe);
-+	if (ret)
-+		goto err_stop_media_pipe;
- 
- 	ret = vimc_streamer_s_stream(&vcap->stream, &vcap->ved, 1);
--	if (ret) {
--		media_pipeline_stop(entity);
--		vimc_cap_return_all_buffers(vcap, VB2_BUF_STATE_QUEUED);
--		return ret;
--	}
-+	if (ret)
-+		goto err_stop_stream;
- 
- 	return 0;
-+
-+err_stop_stream:
-+	v4l2_pipeline_stream_disable(&vcap->vdev, &vcap->stream.pipe);
-+err_stop_media_pipe:
-+	media_pipeline_stop(entity);
-+err_return_all_buffers:
-+	vimc_cap_return_all_buffers(vcap, VB2_BUF_STATE_QUEUED);
-+	return ret;
- }
- 
- /*
-@@ -260,6 +266,8 @@ static void vimc_cap_stop_streaming(struct vb2_queue *vq)
- 
- 	vimc_streamer_s_stream(&vcap->stream, &vcap->ved, 0);
- 
-+	v4l2_pipeline_stream_disable(&vcap->vdev, &vcap->stream.pipe);
-+
- 	/* Stop the media pipeline */
- 	media_pipeline_stop(&vcap->vdev.entity);
- 
-diff --git a/drivers/media/test_drivers/vimc/vimc-streamer.c b/drivers/media/test_drivers/vimc/vimc-streamer.c
-index 65feb3c596db5..c0085f4695c2f 100644
---- a/drivers/media/test_drivers/vimc/vimc-streamer.c
-+++ b/drivers/media/test_drivers/vimc/vimc-streamer.c
-@@ -36,33 +36,6 @@ static struct media_entity *vimc_get_source_entity(struct media_entity *ent)
- 	return NULL;
- }
- 
--/**
-- * vimc_streamer_pipeline_terminate - Disable stream in all ved in stream
-- *
-- * @stream: the pointer to the stream structure with the pipeline to be
-- *	    disabled.
-- *
-- * Calls s_stream to disable the stream in each entity of the pipeline
-- *
-- */
--static void vimc_streamer_pipeline_terminate(struct vimc_stream *stream)
--{
--	struct vimc_ent_device *ved;
--	struct v4l2_subdev *sd;
--
--	while (stream->pipe_size) {
--		stream->pipe_size--;
--		ved = stream->ved_pipeline[stream->pipe_size];
--		stream->ved_pipeline[stream->pipe_size] = NULL;
--
--		if (!is_media_entity_v4l2_subdev(ved->ent))
--			continue;
--
--		sd = media_entity_to_v4l2_subdev(ved->ent);
--		v4l2_subdev_call(sd, video, s_stream, 0);
--	}
--}
--
- /**
-  * vimc_streamer_pipeline_init - Initializes the stream structure
-  *
-@@ -82,27 +55,15 @@ static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
- 	struct media_entity *entity;
- 	struct video_device *vdev;
- 	struct v4l2_subdev *sd;
--	int ret = 0;
- 
- 	stream->pipe_size = 0;
- 	while (stream->pipe_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
- 		if (!ved) {
--			vimc_streamer_pipeline_terminate(stream);
-+			stream->pipe_size = 0;
- 			return -EINVAL;
- 		}
- 		stream->ved_pipeline[stream->pipe_size++] = ved;
- 
--		if (is_media_entity_v4l2_subdev(ved->ent)) {
--			sd = media_entity_to_v4l2_subdev(ved->ent);
--			ret = v4l2_subdev_call(sd, video, s_stream, 1);
--			if (ret && ret != -ENOIOCTLCMD) {
--				dev_err(ved->dev, "subdev_call error %s\n",
--					ved->ent->name);
--				vimc_streamer_pipeline_terminate(stream);
--				return ret;
--			}
--		}
--
- 		entity = vimc_get_source_entity(ved->ent);
- 		/* Check if the end of the pipeline was reached */
- 		if (!entity) {
-@@ -111,7 +72,7 @@ static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
- 				dev_err(ved->dev,
- 					"first entity in the pipe '%s' is not a source\n",
- 					ved->ent->name);
--				vimc_streamer_pipeline_terminate(stream);
-+				stream->pipe_size = 0;
- 				return -EPIPE;
- 			}
- 			return 0;
-@@ -129,7 +90,7 @@ static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
- 		}
- 	}
- 
--	vimc_streamer_pipeline_terminate(stream);
-+	stream->pipe_size = 0;
- 	return -EINVAL;
- }
- 
-@@ -210,7 +171,7 @@ int vimc_streamer_s_stream(struct vimc_stream *stream,
- 		if (IS_ERR(stream->kthread)) {
- 			ret = PTR_ERR(stream->kthread);
- 			dev_err(ved->dev, "kthread_run failed with %d\n", ret);
--			vimc_streamer_pipeline_terminate(stream);
-+			stream->pipe_size = 0;
- 			stream->kthread = NULL;
- 			return ret;
- 		}
-@@ -231,7 +192,7 @@ int vimc_streamer_s_stream(struct vimc_stream *stream,
- 
- 		stream->kthread = NULL;
- 
--		vimc_streamer_pipeline_terminate(stream);
-+		stream->pipe_size = 0;
- 	}
- 
- 	return 0;
 -- 
-2.26.0
+Josh
 
