@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774471A96AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBB71A96F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894608AbgDOIfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725970AbgDOIfr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:35:47 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9B9C061A0C;
-        Wed, 15 Apr 2020 01:35:47 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u10so1951305lfo.8;
-        Wed, 15 Apr 2020 01:35:47 -0700 (PDT)
+        id S2894735AbgDOIjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:39:43 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:60153 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2894712AbgDOIjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:39:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k1/w3TP0F3mXSc/H4GTFUFzXpay4oNzMjeY5aEbI1a4=;
-        b=JXbGT/Cm7B+ndCJZ+ZKxR3FufzVtv6SGGxje1yZjweDGZa1OMOmYRgeKX2uU//CLZq
-         xSaprV9p0fjW4cNEmwZGQ3jGI29UQ9ECWsxqCwYB/3PPRITZEIqxiPserXNaTGf0u3MD
-         ZttxgGLlwVRKfblDqA0MVxD8eJb4hSj4PU7CnNT5c9RnIH8AkFeIgKiGM5JLgOT6zBNJ
-         ZkJwGCFeknax7E+bFHV0tVUxJPfTqLq1Qmo+7EFEGLIVU41pJHY8dl6E7ia6qc3OLNDs
-         N9EwR7Kz7CrLR63LJfF/DfjrU43uINu1Kcgq8/ZVRmR2W7/I2aqa38fW/kTn/0PQvN5X
-         jlCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k1/w3TP0F3mXSc/H4GTFUFzXpay4oNzMjeY5aEbI1a4=;
-        b=aCPQFaGkQImDkeairwlfUF/ikgZt3ypYmwYQKPnsPbDpRdj+YI89SCHIk08De5x2tn
-         2sYPpYQPgSjWfHukg3y6+wOpleYnHe3lbKO0shPWO2XJdQNruqCLv6VqjmK2QqrdDt8x
-         VSZITHDsgxVETzCSHHTuuFD52KdIhgH2403FzHPIsTQYyr0RVwj1CVVp/DiJJeTLVo9o
-         NY6NYjwQt49Fg+zSAZFXMWwSiZbzVO12c7EVkg/4UPtVv4kPmI8RITVgF689A+rhplix
-         cW2ywIXWWmLbz7al1cQ8Z1K4Yrg4nA4Q2h23IU4wlSuFuXOsGckETZNMLZLzTRivXKVT
-         O6hA==
-X-Gm-Message-State: AGi0PuZoT1vRGRwhN35pwVkiUiOpb1nvBmchVU+uE0p3VyHWJVuYFTI4
-        +VKS4bxJT59TQzdOKW+/pmA27+n6FL5IVJUV2z2z
-X-Google-Smtp-Source: APiQypLMYd2W6Hps+Tw5Q0Eu2nK03H0HW0dAfvJDaHZsp7OrdKonQ+OArl4/kj678maqfuFNqbS+QZXRmTlk8h2FJAg=
-X-Received: by 2002:ac2:522e:: with SMTP id i14mr2392294lfl.140.1586939745950;
- Wed, 15 Apr 2020 01:35:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <CADDKRnBdM_T1W=iECrt89hmAmbRRyskGhS4d3ozTz1nWj_i_qQ@mail.gmail.com>
- <CAMj1kXGuMjHi=E6cVGGpwrKF_-KXcj0VRcvAdFS_vmwV7PudCQ@mail.gmail.com>
- <CADDKRnAvC7U6kWdiqmib40cJ7r41COyic4LTdO9utsp4GOJnvA@mail.gmail.com> <CAMj1kXEDJ67oJJjKtDC--VXmr+z8-voPhHnRnaMCEfo5Pc6Sqg@mail.gmail.com>
-In-Reply-To: <CAMj1kXEDJ67oJJjKtDC--VXmr+z8-voPhHnRnaMCEfo5Pc6Sqg@mail.gmail.com>
-From:   =?UTF-8?Q?J=C3=B6rg_Otte?= <jrg.otte@gmail.com>
-Date:   Wed, 15 Apr 2020 10:35:34 +0200
-Message-ID: <CADDKRnBzMPw8cj5CQv93rxydx8LcNVyfs4mfrLvqxBEtH_r3zQ@mail.gmail.com>
-Subject: Re: Kernel V5.7-rc1 doesn't boot (EFI?)
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=e38fCYno9Kg9NlWmZaHhXh61HmgAfMMOj8Y0iA5cL+s=; b=a
+        owa2vF1f4sVbxAm5sfCk7LCq0+kPR80uHE0lAA/A1rhwAAKRyK9bA5YxTWw9+o2X
+        qmbmNqmOTQKzxXMCV2LrOuNIzpCIXf2cuEYGwvX6O3QclJJvAu50bYV9hBDsE18L
+        PN1GkD4XYGi4Ek7gvQrdvacN9IZYcbYlB90iS+KaZ0=
+Received: from localhost.localdomain (unknown [120.229.255.108])
+        by app2 (Coremail) with SMTP id XQUFCgC3voIayJZegFVZAA--.91S3;
+        Wed, 15 Apr 2020 16:38:51 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Ralf Baechle <ralf@linux-mips.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] net: netrom: Fix potential nr_neigh refcnt leak in nr_add_node
+Date:   Wed, 15 Apr 2020 16:36:19 +0800
+Message-Id: <1586939780-69791-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgC3voIayJZegFVZAA--.91S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryDAryfCrW7KF1kWF4UArb_yoWkuFX_GF
+        1kWF9rWwn5Jr40g34jgw4fX39xta18Jr1rXrWfCrWaq34Ygw17ArZ5ur95ur1fWw4rGF98
+        C3s5JrW2y3WxujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbTkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
+        3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
+        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU6Hq7UUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Di., 14. Apr. 2020 um 18:35 Uhr schrieb Ard Biesheuvel <ardb@kernel.org>=
-:
->
-> On Tue, 14 Apr 2020 at 18:32, J=C3=B6rg Otte <jrg.otte@gmail.com> wrote:
-> >
-> > Am Di., 14. Apr. 2020 um 12:50 Uhr schrieb Ard Biesheuvel <ardb@kernel.=
-org>:
-> > >
-> > > On Tue, 14 Apr 2020 at 12:40, J=C3=B6rg Otte <jrg.otte@gmail.com> wro=
-te:
-> > > >
-> > > > Booting my notebook with kernel V57-rc1 I get following
-> > > > display:
-> > > >
-> > > > exit_boot() failed!
-> > > > efi_main() failed!
-> > > > StartImage failed: Buffer Too Small
-> > > >
-> > > > Booting Kernel V5.6 works well.
-> > > >
-> > > > From dmesg (kernel V5.6):
-> > > > efi: EFI v2.31 by Phoenix Technologies Ltd.
-> > > > efi:  ACPI=3D0xdcffe000  ACPI 2.0=3D0xdcffe014  SMBIOS=3D0xdce80000=
-  RNG=3D0xdc3cd198
-> > > > efi: seeding entropy pool
-> > > > efi: [Firmware Bug]: Invalid EFI memory map entries:
-> > > > efi: mem47: [Reserved           |   |  |  |  |  |  |  |  |   |  |  =
-|
-> > > > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
-> > > > efi: mem48: [Reserved           |   |  |  |  |  |  |  |  |   |  |  =
-|
-> > > > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
-> > > > efi: mem49: [Reserved           |   |  |  |  |  |  |  |  |   |  |  =
-|
-> > > > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
-> > > > efi: mem50: [Reserved           |   |  |  |  |  |  |  |  |   |  |  =
-|
-> > > > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
-> > > > efi: mem51: [Reserved           |   |  |  |  |  |  |  |  |   |  |  =
-|
-> > > > |  ] range=3D[0x0000000000000000-0x0000000000000000] (invalid)
-> > > > efi: Removing 5 invalid memory map entries.
-> > > >
-> > >
-> > > Thanks for the report.
-> > >
-> > > Can you try booting with efi=3Dno_disable_early_pci_dma passed via th=
-e
-> > > kernel command line? [*]
-> > >
-> > Yes, that works!
-> >
-> > > If that does not help, can you try to reproduce with this branch?
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=3D=
-efi/urgent
-> >
-> > Should I give that branch a try anyway?
-> >
->
-> Your test proves that BSS is not being cleared correctly, so I have
-> the answer I was looking for. However, I would appreciate it if you
-> could test that branch, just to double check.
->
-> Thanks,
-> Ard.
+nr_add_node() invokes nr_neigh_get_dev(), which returns a local
+reference of the nr_neigh object to "nr_neigh" with increased refcnt.
 
-The branch works for me too!
+When nr_add_node() returns, "nr_neigh" becomes invalid, so the refcount
+should be decreased to keep refcount balanced.
 
-Thanks, J=C3=B6rg
+The issue happens in one normal path of nr_add_node(), which forgets to
+decrease the refcnt increased by nr_neigh_get_dev() and causes a refcnt
+leak. It should decrease the refcnt before the function returns like
+other normal paths do.
+
+Fix this issue by calling nr_neigh_put() before the nr_add_node()
+returns.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ net/netrom/nr_route.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/netrom/nr_route.c b/net/netrom/nr_route.c
+index d41335bad1f8..89cd9de21594 100644
+--- a/net/netrom/nr_route.c
++++ b/net/netrom/nr_route.c
+@@ -208,6 +208,7 @@ static int __must_check nr_add_node(ax25_address *nr, const char *mnemonic,
+ 		/* refcount initialized at 1 */
+ 		spin_unlock_bh(&nr_node_list_lock);
+ 
++		nr_neigh_put(nr_neigh);
+ 		return 0;
+ 	}
+ 	nr_node_lock(nr_node);
+-- 
+2.7.4
+
