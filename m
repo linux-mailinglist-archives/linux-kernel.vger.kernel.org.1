@@ -2,152 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8964A1AABF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2D51AAC0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636946AbgDOPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:33:04 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21425 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2636913AbgDOPdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:33:01 -0400
-IronPort-SDR: +piYAfB5wZUFMed7asrhRsz5LZ4YC4NMH3x8lavBf3veRvIHjhqF4kqGKeuKDQbNAcxoBi4/iU
- Gyo8DCc1pK+w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 08:32:59 -0700
-IronPort-SDR: zAszhCrP0cBmRUBK375yX4GljVs7Z18jsJ86HFuEIjlqxcIX/EPEnOkPYGrkiVj40CsJOWBRfI
- 9ZxQ4i8L2FjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="332530368"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2020 08:32:59 -0700
-Date:   Wed, 15 Apr 2020 08:38:54 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
-Message-ID: <20200415083854.6fefac01@jacob-builder>
-In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D81F901@SHSMSX104.ccr.corp.intel.com>
-References: <1585178227-17061-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200326092316.GA31648@infradead.org>
-        <20200326094442.5be042ce@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D7ECB45@SHSMSX104.ccr.corp.intel.com>
-        <20200327074702.GA27959@infradead.org>
-        <20200327165335.397f24a3@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D7FE150@SHSMSX104.ccr.corp.intel.com>
-        <20200330090746.23c5599c@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D8011A9@SHSMSX104.ccr.corp.intel.com>
-        <20200331085444.44bee0bb@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
-        <20200402113604.6eea1e6f@jacob-builder>
-        <20200413134157.395981a6@jacob-builder>
-        <20200413162129.313b3b5a@w520.home>
-        <20200413220515.25a107b6@jacob-builder>
-        <20200414101358.3ae66ac5@w520.home>
-        <20200414101304.27e587eb@jacob-builder>
-        <20200414153226.30d8cab3@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D81F901@SHSMSX104.ccr.corp.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1414801AbgDOPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1414790AbgDOPjC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 11:39:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B296C061A0C;
+        Wed, 15 Apr 2020 08:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=/ubeyqDgPuZ49K2H989M1CFTSs0zxkITk8SpnN2MOgM=; b=RM65YWgB2FrwDmHMpmXId244x1
+        +bzOybXirLT9VSw15df46nYqfo23glx7t705hV6w6ybWTee9LUfGQqDT1Tpv1XNO3IhWmzKPHXRjD
+        Ztj9DnbQslWR+wZEFVSDaIHekQz0oP8A4FzG8g2IagUWB4WXb0TlzJA9rDJiH6ver+xaamP/e2WfN
+        5ABDq7PaRc5O809U/PhzrwVSp27V90fMScdhrPNrvTHUydhBAM9CjX7Veg2SWK0jvLTjctsiq12oK
+        f6dsHm7B4VE0aDWgs6jYqRTupcobu8xIn2I4fI/oT7M3nUOsw0nOaQjZOCS6x4U3PwcSKZ6Fq4jIh
+        yl549SpQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOk7y-0005WR-6W; Wed, 15 Apr 2020 15:39:02 +0000
+Subject: Re: linux-next: Tree for Apr 15 (MEDIA Kconfig symbols)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20200415152240.2422e06c@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8e4b7065-75c4-8bcf-8ad2-ed21463c494c@infradead.org>
+Date:   Wed, 15 Apr 2020 08:39:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200415152240.2422e06c@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 23:47:40 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+On 4/14/20 10:22 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20200414:
+> 
+> My fixes tree contains:
+> 
+>   6b038bdcd3d1 sh: mm: Fix build error
+> 
+> The qcom tree gained a build failure for which I reverted a commit.
+> 
+> The drm-misc tree gained conflicts against Linus' and the drm-intel trees.
+> 
+> The sound-asoc tree gained build failures so I used the version from
+> next-20200414.
+> 
+> Non-merge commits (relative to Linus' tree): 1793
+>  2505 files changed, 50786 insertions(+), 22669 deletions(-)
+> 
+> ----------------------------------------------------------------------------
+> 
+> I have created today's linux-next tree at
+> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+> are tracking the linux-next tree using git, you should not use "git pull"
+> to do so as that will try to merge the new linux-next release with the
+> old one.  You should use "git fetch" and checkout or reset to the new
+> master.
+> 
+> You can see which trees have been included by looking in the Next/Trees
+> file in the source.  There are also quilt-import.log and merge.log
+> files in the Next directory.  Between each merge, the tree was built
+> with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+> multi_v7_defconfig for arm and a native build of tools/perf. After
+> the final fixups (if any), I do an x86_64 modules_install followed by
+> builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+> ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+> and sparc64 defconfig and htmldocs. And finally, a simple boot test
+> of the powerpc pseries_le_defconfig kernel in qemu (with and without
+> kvm enabled).
+> 
+> Below is a summary of the state of the merge.
+> 
+> I am currently merging 317 trees (counting Linus' and 78 trees of bug
+> fix patches pending for the current merge release).
+> 
+> Stats about the size of the tree over time can be seen at
+> http://neuling.org/linux-next-size.html .
+> 
+> Status of my local build tests will be at
+> http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+> advice about cross compilers/configs that work, we are always open to add
+> more builds.
+> 
+> Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+> Gortmaker for triage and bug fixes.
+> 
 
-> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > Sent: Wednesday, April 15, 2020 6:32 AM
-> > 
-> > On Tue, 14 Apr 2020 10:13:04 -0700
-> > Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
-> >   
-> > > > > >  In any of the proposed solutions, the
-> > > > > > IOMMU driver is ultimately responsible for validating the
-> > > > > > user data, so do we want vfio performing the
-> > > > > > copy_from_user() to an object that could later be assumed
-> > > > > > to be sanitized, or should vfio just pass a user pointer to
-> > > > > > make it obvious that the consumer is responsible for all
-> > > > > > the user protections?  Seems like the latter.  
-> > > > > I like the latter as well.
-> > > > >  
-> > On a second thought, I think the former is better. Two reasons:
-> > 
-> > 1. IOMMU API such as page_response is also used in baremetal. So it
-> > is not suitable to pass a __user *.
-> > https://www.spinics.net/lists/arm-kernel/msg798677.html  
-> 
-> You can have a wrapped version accepting a __user* and an internal
-> version for kernel pointers.
-> 
-I have thought about that also but the problem is that some of the
-flags are processed in the vendor IOMMU ops so it is hard to do that in
-a generic wrapper.
+on i386 or x86_64:
 
-> > 
-> > 2. Some data are in the mandatory (fixed offset, never removed or
-> > extended) portion of the uAPI structure. It is simpler for VFIO to
-> > extract that and pass it to IOMMU API. For example, the PASID value
-> > used for unbind_gpasid(). VFIO also need to sanitize the PASID
-> > value to make sure it belongs to the same VM that did the
-> > allocation.  
-> 
-> I don't think this makes much difference. If anyway you still plan to
-> let IOMMU driver parse some user pointers, why not making a clear
-> split to have it sparse all IOMMU specific fields?
->
-The plan is not to have IOMMU driver parse user pointers. This is the
-"former" case in Alex's comment. I.e. vfio performing the
-copy_from_user based on argsz in IOMMU uAPI.
- 
-> Thanks
-> Kevin
-> 
-> > 
-> >   
-> > > > > >  That still really
-> > > > > > doesn't address what's in that user data blob yet, but the
-> > > > > > vfio interface could be:
-> > > > > >
-> > > > > > struct {
-> > > > > > 	__u32 argsz;
-> > > > > > 	__u32 flags;
-> > > > > > 	__u8  data[];
-> > > > > > }
-> > > > > >
-> > > > > > Where flags might be partitioned like we do for
-> > > > > > DEVICE_FEATURE to indicate the format of data and what vfio
-> > > > > > should do with it, and data might simply be defined as a
-> > > > > > (__u64 __user *). 
-> > > > > So, __user * will be passed to IOMMU driver if VFIO checks
-> > > > > minsz include flags and they are valid.
-> > > > > IOMMU driver can copy the rest based on the mandatory
-> > > > > version/minsz and flags in the IOMMU uAPI structs.
-> > > > > Does it sound right? This is really choice #2.  
-> > > >
-> > > > Sounds like each IOMMU UAPI struct just needs to have an
-> > > > embedded size and flags field, but yes.
-> > > >  
-> > > Yes, an argsz field can be added to each UAPI. There are already
-> > > flags or the equivalent. IOMMU driver can process the __user *
-> > > based on the argsz, flags, check argsz against
-> > > offsetofend(iommu_uapi_struct, last_element), etc.;  
+WARNING: unmet direct dependencies detected for CEC_NOTIFIER
+  Depends on [n]: MEDIA_SUPPORT [=n]
+  Selected by [y]:
+  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
 
-[Jacob Pan]
+WARNING: unmet direct dependencies detected for CEC_CORE
+  Depends on [n]: MEDIA_SUPPORT [=n]
+  Selected by [y]:
+  - DRM_I915 [=y] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y] && CEC_NOTIFIER [=y]
+  - DRM_I2C_NXP_TDA998X [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y] && CEC_NOTIFIER [=y]
+  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+  - DRM_DW_HDMI [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && CEC_NOTIFIER [=y]
+  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+
+WARNING: unmet direct dependencies detected for CEC_NOTIFIER
+  Depends on [n]: MEDIA_SUPPORT [=n]
+  Selected by [y]:
+  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+
+WARNING: unmet direct dependencies detected for CEC_CORE
+  Depends on [n]: MEDIA_SUPPORT [=n]
+  Selected by [y]:
+  - DRM_I915 [=y] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y] && CEC_NOTIFIER [=y]
+  - DRM_I2C_NXP_TDA998X [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y] && CEC_NOTIFIER [=y]
+  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+  - DRM_DW_HDMI [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && CEC_NOTIFIER [=y]
+  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
