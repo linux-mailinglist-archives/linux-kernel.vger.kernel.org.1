@@ -2,345 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E308E1A9BE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E8C1A9BA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896765AbgDOLLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408849AbgDOLJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:09:46 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050BBC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:59:36 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g12so10609352wmh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:from:to:cc:subject:date:in-reply-to:references
-         :in-reply-to;
-        bh=gyOymjuJpKySMZCoUKVOaXwQZFqz9S9M2EkURePP5JQ=;
-        b=aSavr5fcI+OXIFlvsLqoQHRmt7boXGXEmcyhWu3T0F/omWnvm4iDIcBBIohbmgnj5W
-         JvCt1uK3Qgu3BYPz6Oe9maleNLiKPYVM3LyoQj27hZGEnUktPHRshqd3ReGBuJBbNbTc
-         87Y5jNWK0EBZZLyDTy14UnxYUGD+b+1A2lPKjcFpnQrVSPPKyUVE8Wnw72JE/vx3D94U
-         jyz3lw/s0r/IJN9epLTv+ldfuM32xCbAaOOPRIlq91RwBHs2Mj/Q0cpk5DRB2gS44219
-         3i0XpwtgUrrU3ZrU3rXDP4sG9jeoFYcGRYmPW19rZBq1pV7W88XFq91BqrliFYLSRNZb
-         9dAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:to:cc:subject:date:in-reply-to
-         :references:in-reply-to;
-        bh=gyOymjuJpKySMZCoUKVOaXwQZFqz9S9M2EkURePP5JQ=;
-        b=jm74Zp+E2JzJblF/Qhb5VWz3c2IeVb3m294ntqK8r4LKuI10ccxmOLbuG3RHHLr9ba
-         xFRaDG3iFKEpNQ76f1ZpLf4KpMuCpBFSHnQ8cC0YUV3HFWLuukvW06W+YAR9lTc+tp6b
-         OJScFzkYiz2PaxAXefojVWL+31Wnm4Lb4VSe4nOiT4J+5Pl0fk8sKHJ5LanE057/ZU9b
-         jUeivPPgrLerCgLq+YuFOkuqa3acj3rt7nEhi6lJaIpYxnIUIH42VkftkGCRiDQyIpNG
-         DteJF6b+XZYSZuUFVjcewG9D2wPWT7Ya0yN85GfHp/Ivind2QDGFI+15lfyQD5aKyANx
-         zOlA==
-X-Gm-Message-State: AGi0PuZM/i458XZypLTp93wQFc+D6Ag+8mx/TVeSPeech10PkfSMA1Mv
-        6QLhLWarMrIIhtM26YpPmFnVHw==
-X-Google-Smtp-Source: APiQypJztDCWY3SxxxokhuvLaaPLo3CbRWDQ/iFxWNphnpUZe0SQ/R33vBiYdtlOrGu0yYj3ol714Q==
-X-Received: by 2002:a1c:7d90:: with SMTP id y138mr4956426wmc.121.1586948375471;
-        Wed, 15 Apr 2020 03:59:35 -0700 (PDT)
-Received: from lmecxl0524.home (2a01cb058702ff002dd4025d621b0504.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:2dd4:25d:621b:504])
-        by smtp.gmail.com with ESMTPSA id c83sm20122796wmd.23.2020.04.15.03.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 03:59:34 -0700 (PDT)
-Message-ID: <5e96e916.1c69fb81.14365.050b@mx.google.com>
-X-Google-Original-Message-ID: <1583673879-20714-3-git-send-email-peng.fan@nxp.com> (raw)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     peng.fan@nxp.com
-Cc:     devicetree@vger.kernel.org, f.fainelli@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        sudeep.holla@arm.com, viresh.kumar@linaro.org
-Subject: [PATCH V5 2/2] firmware: arm_scmi: add smc/hvc transport
-Date:   Wed, 15 Apr 2020 12:58:58 +0200
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1583673879-20714-3-git-send-email-peng.fan@nxp.com>
-References: <1583673879-20714-3-git-send-email-peng.fan@nxp.com>
-In-Reply-To: <1583673879-20714-1-git-send-email-peng.fan@nxp.com>
+        id S2393889AbgDOLCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:02:13 -0400
+Received: from mout.web.de ([217.72.192.78]:38799 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896697AbgDOLBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:01:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586948425;
+        bh=R6b+YCXNkpmld5Z0AKrGLTjWrOqTjG9Cgl54SpiD9LE=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=WIwfVVtQuCR7EebeJn6ed4ksBEST9zydh8nIG5aN2cTjSX840vfJ91OXXLcROwG8H
+         OMglWeKBxRFwU6dBp7uhVoy0qHBOqxaSmOkHYQoyEsVOPUDWrOg0IuLPoLGlVkJDE9
+         OUWvOdpXezILDE3MtHX9VVMaVIXMNVwpV7mQ/6iM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.48.133.192]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LtnvF-1jEoNI2YUf-0117Vo; Wed, 15
+ Apr 2020 13:00:25 +0200
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kangjie Lu <kjlu@umn.edu>,
+        Yuan Zhang <yuanxzhang@fudan.edu.cn>
+Subject: Re: [PATCH] RDMA/siw: Fix potential siw_mem refcnt leak in
+ nr_add_node
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <08a5af5b-96f8-837c-ff4b-814901ad9ed5@web.de>
+Date:   Wed, 15 Apr 2020 13:00:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gr+Wes45jCDED7l/oZbtpyl17ALJlyj6H2FuHX6hJHhSNQtWonk
+ mu2fhvHDnJrt5NUged7UXeJiEkTePbyH/UADx4PetvnAPzDLKY7+mzgfvlJp+WLm0ynw8TR
+ Jbraz0OP3BcuZaW7L7nRwh7KBNi3Ob/nI9EBiRTgz8BuphsmC7EsAKmUP97GRk/GtoTItZy
+ lEW6RueTLJUdTjQmk4lcA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Hbjir+Sindc=:7qnVU2HkGc1meRZXER6wdX
+ jSGFZvUeGQ2RsKPDW+BK+FTx/6bivuPSuygR6IYKuOeY2n+0FBARyx6zcOEk6RAegugyCPxoN
+ HgPdk4Oz8NhP2TBa2B1kF0mufnnSW7IpIVS7zFQXUVwcPLahSuO1XzR5eIznlo/lH+i21ceuy
+ Q42IdfQ2IQcG+shdrCu1wZSRjOaSsVoG2AtfN3dEjqCuT4BeKsnXjMLxjSqsFTH+nfLMeBLDY
+ Z9MqwOq0uc0GtWZU3MkRXow30FnxJcj9tLq0uH6b2HnaHwZQZBfzyGMItd9YHj5YT8EikPkFW
+ pyovNgj9OE6K+CG//clKohLY8vstw9qYztsxoTAG/7TbJ+CHQApeBZ2WMrlAH77T/WUhjjjJM
+ wMrgYq0EkpGTSbBf1ZcoEQyc5BBq93IbHUHiqHtPYFFF8IclUvOz4/bKIsR5JR4YEqrvXWJoK
+ AJeOax0i/50jd+6ZQgaheG7O2WA5Uf8PGnYovOGAWUTEmQ6AxHJUu8VLbpSLwgJz5NiGmUBME
+ 9XiH7ADM3zBR6J3JvA67zZTRBVc1HzR8CawJbpxFqlyR0GiR7lUykjH3FFYqfxsDhaYoxn5uj
+ UY4qNPbs0yZVkr8LFrfgb7qnIFC5nqoHTGu+FcuoIOfNSKOZ0+llRK+0Xt8DG75xnsT9KH7Wm
+ 0MWvt3c3wLXFWhbZr/WZWoVur/nj/edLHP0yw/f+YMrnuV4NkKiIi8N1tdz6S13mcQYIosffY
+ 7i6ZMOYn8ytqAZy3Jq0s0D3PYmSJYw4n66+WkNMOe3Kaswpq0f+6trNowJsiio7ryD34NYqV4
+ RnxcaY7ucAUnH1K9fRxI6ULaCm+NB9DjuWbL3wDcpf5kx2OxZxWXNHDt69bzKteMbo5ldzMg1
+ 1wgBn2XeC/PN+0mFRdeIET/GESulZEK2hq8CBNemZ7ppAjDqACX8Sqt8UdOIpsE/7VR7aa/6R
+ 2lgeytX2IqskjjumZTPDmKQHfOkpM/x2H/YAZmjYt0ogJQEnuRUDxmjrP22+292m41/1YAHRK
+ UUYdb4x4trmR3p5JtncB1zIeFAAdyZPQNepX45KAWRztNuI0/YT0K4bSvjoCFuHs5e5yxhngp
+ LZ1aALeARzld1H2RxwSq/8a4d5czp984qncjgFS6JF2aOq32yKkbTD5Z65F84Gxj427TekXBB
+ kQO/UlW2mZU0zBunsqPEuV/moP94FfVc+QUVRT05lTT3wpyVnwXuA/5VetKJlQYIchjQCSfMk
+ EFyYjpFN9LLZ7rh3T
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Peng,
+> The issue happens in one error path of siw_fastreg_mr(). When "base_mr"
+> equals to NULL but "mem" is not NULL, the function forgets to decrease
+> the refcnt increased by siw_mem_id2obj() and causes a refcnt leak.
 
-I  have 2 comments on this change. The main is about using
-arm_smccc_1_1_invoke(). Below some details and I added comments
-inside you patch. The second of on SMC return value, see my
-comment in your patch below.
+How do you think about to mention the terms =E2=80=9Cexception handling=E2=
+=80=9D
+and =E2=80=9Creference counting=E2=80=9D in the commit message?
 
-
-About arm_smccc_1_1_invoke(), this functon currently relies on PSCI
-driver to define a conduit method but SCMI agent driver does not
-mandate CONFIG_PSCI to be enable.
-
-Could you add an optional "method" property for "arm,scmi-smc" for platforms
-willing to not rely on PSCI Linux driver? If no property "method" is
-defined in the FDT, invocation relies on arm_smccc_1_1_invoke().
-
-"method" naming mimics what is done in the OP-TEE driver (drivers/tee/optee/).
-Here is a proposal for the documenting property "method" in 
-Documentation/arm,scmi.txt:
-
-- method : "smc" or "hvc"
-            Optional property defining the conduit method for to be used
-	    for invoking the SCMI server in secure world.
-	    "smc" states instruction SMC #0 is used whereas "hvc" states
-	    instruction HVC #0 is used.
-
-
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the change descri=
+ption?
 
 Regards,
-Etienne
-
-
-> From: Peng Fan <peng.fan@nxp.commm>
-> 
-> Take arm,smc-id as the 1st arg, leave the other args as zero for now.
-> There is no Rx, only Tx because of smc/hvc not support Rx.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
->
-> (...)
->
-> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> new file mode 100644
-> index 000000000000..336168e40f49
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/smc.c
-> @@ -0,0 +1,152 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * System Control and Management Interface (SCMI) Message SMC/HVC
-> + * Transport driver
-> + *
-> + * Copyright 2020 NXP
-> + */
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/slab.h>
-> +
-> +#include "common.h"
-> +
-> +/**
-> + * struct scmi_smc - Structure representing a SCMI smc transport
-> + *
-> + * @cinfo: SCMI channel info
-> + * @shmem: Transmit/Receive shared memory area
-> + * @func_id: smc/hvc call function id
-> + */
-> +
-> +struct scmi_smc {
-> +	struct scmi_chan_info *cinfo;
-> +	struct scmi_shared_mem __iomem *shmem;
-> +	u32 func_id;
-> +};
-
-Add here a field for the secure world invocation function handler:
-
-	scmi_arm_smccc_invoke_fn *invoke_fn;
-
-With function proto type defined:
-
-  typedef void (scmi_arm_smccc_invoke_fn)(unsigned long, struct arm_smccc_res *);
-
-And materials to set the invocation hanlder:
-
-/* Simple wrapper functions to be able to use a function pointer */
-static void _smccc_smc(unsigned long func_id, struct arm_smccc_res *res)
-{
-	arm_smccc_smc(func_id, 0, 0, 0, 0, 0, 0, 0, res);
-}
-
-static void _smccc_hvc(unsigned long func_id, struct arm_smccc_res *res)
-{
-        arm_smccc_hvc(func_id, 0, 0, 0, 0, 0, 0, 0, res);
-}
-
-static void _smccc_1_1(unsigned long func_id, struct arm_smccc_res *res)
-{
-	arm_smccc_1_1_invoke(func_id, 0, 0, 0, 0, 0, 0, 0, res);
-}
-
-static scmi_arm_smccc_invoke_fn *get_invoke_function(struct device *dev)
-{
-        const char *method;
-
-        if (device_property_read_string(dev, "method", &method))
-		return _smccc_1_1;
-
-        if (!strcmp("hvc", method))
-                return _smccc_hvc;
-
-        if (!strcmp("smc", method))
-                return _smccc_smc;
-
-        dev_err(dev, "Invalid \"method\" property: %s\n", method);
-        return ERR_PTR(-EINVAL);
-}
- 
-> +
-> +static DEFINE_MUTEX(smc_mutex);
-> +
-> +static bool smc_chan_available(struct device *dev, int idx)
-> +{
-> +	return true;
-> +}
-> +
-> +static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
-> +			  bool tx)
-> +{
-> +	struct device *cdev = cinfo->dev;
-> +	struct scmi_smc *scmi_info;
-> +	resource_size_t size;
-> +	struct resource res;
-> +	struct device_node *np;
-> +	u32 func_id;
-> +	int ret;
-> +
-> +	if (!tx)
-> +		return -ENODEV;
-> +
-> +	scmi_info = devm_kzalloc(dev, sizeof(*scmi_info), GFP_KERNEL);
-> +	if (!scmi_info)
-> +		return -ENOMEM;
-> +
-> +	np = of_parse_phandle(cdev->of_node, "shmem", 0> );
-> +	if (!np)
-> +		np = of_parse_phandle(dev->of_node, "shmem", 0);
-> +	ret = of_address_to_resource(np, 0, &res);
-> +	of_node_put(np);
-> +	if (ret) {
-> +		dev_err(cdev, "failed to get SCMI Tx shared memory\n");
-> +		return ret;
-> +	}
-> +
-> +	size = resource_size(&res);
-> +	scmi_info->shmem = devm_ioremap(dev, res.start, size);
-> +	if (!scmi_info->shmem) {
-> +		dev_err(dev, "failed to ioremap SCMI Tx shared memory\n");
-> +		return -EADDRNOTAVAIL;
-> +	}
-> +
-> +	ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
-> +	if (ret < 0)
-> +		return ret;
-
-Here to get the handler for the invocation method:
-
-	scmi_info->invoke_fn = get_invoke_function(dev);
-	if (IS_ERR(scmi_info->invoke_fn))
-		return PTR_ERR(scmi_info->invoke_fn);
- 
-> +
-> +	scmi_info->func_id = func_id;
-> +	scmi_info->cinfo = cinfo;
-> +	cinfo->transport_info = scmi_info;
-> +
-> +	return 0;
-> +}
-> +
-> +static int smc_chan_free(int id, void *p, void *data)
-> +{
-> +	struct scmi_chan_info *cinfo = p;
-> +	struct scmi_smc *scmi_info = cinfo->transport_info;
-> +
-> +	cinfo->transport_info = NULL;
-> +	scmi_info->cinfo = NULL;
-> +
-> +	scmi_free_channel(cinfo, data, id);
-> +
-> +	return 0;
-> +}
-> +
-> +static int smc_send_message(struct scmi_chan_info *cinfo,
-> +			    struct scmi_xfer *xfer)
-> +{
-> +	struct scmi_smc *scmi_info = cinfo->transport_info;
-> +	struct arm_smccc_res res;
-> +
-> +	mutex_lock(&smc_mutex);
-> +
-> +	shmem_tx_prepare(scmi_info->shmem, xfer);
-> +
-> +	arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0, &res);
-
-Last, here would rahter call the registered handler instead:
-
-	scmi_info->invoke_fn(scmi_info->func_id, &res);
-
-
-> +	scmi_rx_callback(scmi_info->cinfo, shmem_read_header(scmi_info->shmem));
-> +
-> +	mutex_unlock(&smc_mutex);
-> +
-> +	return res.a0;
-
-
-The SCMI server is likely not to return a errno compliant value.
-
-SMCCC specification states that unsupported function IDs should return signed
-extended -1. I suggest to change the return above with:
-
-	return res.a0 == ~0 ? -EINVAL : 0;
-
-
-Regards,
-Etienne
-
-> +}
-> +
-> +static void smc_mark_txdone(struct scmi_chan_info *cinfo, int ret)
-> +{
-> +}
-> +
-> +static void smc_fetch_response(struct scmi_chan_info *cinfo,
-> +			       struct scmi_xfer *xfer)
-> +{
-> +	struct scmi_smc *scmi_info = cinfo->transport_info;
-> +
-> +	shmem_fetch_response(scmi_info->shmem, xfer);
-> +}
-> +
-> +static bool
-> +smc_poll_done(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
-> +{
-> +	struct scmi_smc *scmi_info = cinfo->transport_info;
-> +
-> +	return shmem_poll_done(scmi_info->shmem, xfer);
-> +}
-> +
-> +static struct scmi_transport_ops scmi_smc_ops = {
-> +	.chan_available = smc_chan_available,
-> +	.chan_setup = smc_chan_setup,
-> +	.chan_free = smc_chan_free,
-> +	.send_message = smc_send_message,
-> +	.mark_txdone = smc_mark_txdone,
-> +	.fetch_response = smc_fetch_response,
-> +	.poll_done = smc_poll_done,
-> +};
-> +
-> +const struct scmi_desc scmi_smc_desc = {
-> +	.ops = &scmi_smc_ops,
-> +	.max_rx_timeout_ms = 30,
-> +	.max_msg = 1,
-> +	.max_msg_size = 128,
-> +};
-> -- 
-> 2.16.4
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Markus
