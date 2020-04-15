@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447701AA390
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B351AA3C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgDONL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506078AbgDONLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:11:07 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3513FC061A0C;
-        Wed, 15 Apr 2020 06:11:06 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id z6so19016931wml.2;
-        Wed, 15 Apr 2020 06:11:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1YK31f6d9R7ZKz1959zNs117rXGUB2qZVpteQ8Nm8rE=;
-        b=opvfaQb0ZITpiBld1k4u5Ru6l4CFHpZ7v8Dsm3tWBEB7BZxs190+jPFTPIwCl50rrx
-         NPPMdBa7gnGMXIrhYoOpvsYB8NX67Xjf92Y6es4h/dRkErBjLDBbjqxCGRmV/GjT9ahb
-         4il8jDWH3Wn9uiNiMzxAq8Po0YDsM5JA8B9WcZtp/qDYTMGaTLOYqN0SgUkn/Z7PVcSw
-         hsdfygbK/xTy52wU0y6n7Cqi0wAyu61S/3Nq5uFCyTH1DprmeApdnBrS4oXhcfva95OX
-         RpmoHTicjgAFZXs141O7f9i2gCRF2ctZwxqoP5d51mzkRirXjLJR34W41a7FfOC68577
-         PSXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1YK31f6d9R7ZKz1959zNs117rXGUB2qZVpteQ8Nm8rE=;
-        b=pNWyBTJDoC/NpRuaCrVicAp+NdfEXevTySiPoSmHtvOUym1V8u0XF05+d0ujMjxZ0Q
-         W5y8DgAF7kOpp4LxpdzaqcphCyMwaGE+2tjIfyzN94blgZyz9CEiedgI4A8k0l6qKxht
-         32WBlGRzZwBk60tGM00CUDx6IwDY4YEkZOWuBMtr/AnpAVhB12V/h5XZaWQ0I7dsKBrK
-         y9r2nfW5dibk38ToJqgWk3C1Tpbf1whuBKIN41mNJNIIhUgKYK0/nqb5ez9J1LMXv8VS
-         6eGJzoUkeZhqMKof2ntMJsZt8oP13bgiLmiXYcQiVN715STTxp51bYrIXUt1JZXHA296
-         mwnw==
-X-Gm-Message-State: AGi0PubSVHhSXySvUScZ5VoVD/KqyIaUm3+M+Y7QU57W5IXxjugYopW8
-        5lrWGeHMrGQtB311d34djgU=
-X-Google-Smtp-Source: APiQypKb/YVsijkXt1W8jtMK4h3qXbl3iX+wO+27T2T3+keWoO4EtLb2fRtUtD+xSMEElkqoUaNBbQ==
-X-Received: by 2002:a1c:b70a:: with SMTP id h10mr5272755wmf.172.1586956264930;
-        Wed, 15 Apr 2020 06:11:04 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id c20sm24022450wmd.36.2020.04.15.06.11.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 06:11:04 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: remove bus-width from mmc nodes in rk3308-roc-cc.dts
-Date:   Wed, 15 Apr 2020 15:10:57 +0200
-Message-Id: <20200415131057.2366-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S2506104AbgDONMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:12:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39500 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506082AbgDONLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:11:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=d/88LlrJNj/d4F115V1sgd+wWhjG+NBIkF8dbPSMqas=; b=JVrgbH7sW3JE9NF1Z62PGLkZVF
+        /srK65laMmHpoN9pXWL7MZLX2syPIyp42MB9L4RzHCghJyBGg6z7QjkWjKHXRg5A0ALyCuLgXOZgM
+        uSbkO6RV3HWzolZuxKjMZanEWE2AGJeXKw51SeuLTBwMM3dddKrHJ1mbinkNVUjxADNM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jOhom-002sd1-1u; Wed, 15 Apr 2020 15:11:04 +0200
+Date:   Wed, 15 Apr 2020 15:11:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de
+Subject: Re: [PATCH v1] ethtool: provide UAPI for PHY master/slave
+ configuration.
+Message-ID: <20200415131104.GA657811@lunn.ch>
+References: <20200415121209.12197-1-o.rempel@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415121209.12197-1-o.rempel@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'bus-width' property for mmc nodes is defined both in
-'rk3308.dtsi' and 'rk3308-roc-cc.dts'.
-'bus-width' and pinctrl containing the bus-pins
-should be in the same file, so remove all entries
-from mmc nodes in 'rk3308-roc-cc.dts'.
+On Wed, Apr 15, 2020 at 02:12:09PM +0200, Oleksij Rempel wrote:
+> This UAPI is needed for BroadR-Reach 100BASE-T1 devices. Due to lack of
+> auto-negotiation support, we needed to be able to configure the
+> MASTER-SLAVE role of the port manually or from an application in user
+> space.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts | 2 --
- 1 file changed, 2 deletions(-)
+Hi Oleksij
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
-index aa256350b..8011e9b12 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
-@@ -123,7 +123,6 @@
- };
- 
- &emmc {
--	bus-width = <8>;
- 	cap-mmc-highspeed;
- 	disable-wp;
- 	mmc-hs200-1_8v;
-@@ -171,7 +170,6 @@
- };
- 
- &sdmmc {
--	bus-width = <4>;
- 	cap-mmc-highspeed;
- 	cap-sd-highspeed;
- 	card-detect-delay = <300>;
--- 
-2.11.0
+This is a nice way to do this.
 
+> +/* Port mode */
+> +#define PORT_MODE_MASTER	0x00
+> +#define PORT_MODE_SLAVE		0x01
+> +#define PORT_MODE_MASTER_FORCE	0x02
+> +#define PORT_MODE_SLAVE_FORCE	0x03
+> +#define PORT_MODE_UNKNOWN	0xff
+
+It is not clear to me what PORT_MODE_MASTER and PORT_MODE_SLAVE. Do
+these mean to negotiate master/slave? Maybe some comments, or clearer
+names?
+
+	Andrew
