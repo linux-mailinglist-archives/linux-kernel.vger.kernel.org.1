@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925561AA27E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4761A9D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441338AbgDOM4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56808 "EHLO mail.kernel.org"
+        id S2408993AbgDOLnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:43:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897195AbgDOLhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2897199AbgDOLhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 07:37:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FA58214AF;
-        Wed, 15 Apr 2020 11:36:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 306F520737;
+        Wed, 15 Apr 2020 11:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586950620;
-        bh=mHI9eyVLwiMuBtKcYBlu4Th72kzE+NJHQ4mxUFyM80E=;
+        s=default; t=1586950621;
+        bh=DB1F7DmshMsLEY2YqueSwvxRlGpbDWkuaDaxP+9e9Q0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNNl+w1Men6gwm4cxW1jRk5T2Yp/LA4HryIvMizzKlWve6bWva0xqAkFOFnf3qHVs
-         A5aHuGD3rgL/lOSGSOq61FJppHth5s7fhD9s0YrcTuW66Uiryv6aR/+PqdjbohyINx
-         aLnaJJkdPAzwN5kKYB+LQjwNxK0lEhLcz2D3Ze6A=
+        b=gAxO4S1SJxQXDreBEWehxYJKlq01OzhfwiS+bVtTCEbqYPBqGLTRcgGFXddZ+a1Y/
+         6cLS8AyCM9C1DeVqNxsklvSCAZizhKjJGhePEwfk6KBDbz9ve069Tt6KlelpJOXH4M
+         wd4H6GzMw3FxhgL65gBGcUTVJBrefn8tOagzCRIw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 112/129] ext2: fix empty body warnings when -Wextra is used
-Date:   Wed, 15 Apr 2020 07:34:27 -0400
-Message-Id: <20200415113445.11881-112-sashal@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.6 113/129] f2fs: fix to account compressed blocks in f2fs_compressed_blocks()
+Date:   Wed, 15 Apr 2020 07:34:28 -0400
+Message-Id: <20200415113445.11881-113-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415113445.11881-1-sashal@kernel.org>
 References: <20200415113445.11881-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,55 +43,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit 44a52022e7f15cbaab957df1c14f7a4f527ef7cf ]
+[ Upstream commit 1a67cbe141cf991af252a88143d0fd975be2d9e7 ]
 
-When EXT2_ATTR_DEBUG is not defined, modify the 2 debug macros
-to use the no_printk() macro instead of <nothing>.
-This fixes gcc warnings when -Wextra is used:
+por_fsstress reports inconsistent status in orphan inode, the root cause
+of this is in f2fs_write_raw_pages() we decrease i_compr_blocks incorrectly
+due to wrong calculation in f2fs_compressed_blocks().
 
-../fs/ext2/xattr.c:252:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:258:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:330:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:872:45: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+So this patch exposes below two functions based on __f2fs_cluster_blocks:
+- f2fs_compressed_blocks: get count of compressed blocks in compressed cluster
+- f2fs_cluster_blocks: get count of valid blocks (including reserved blocks)
+in compressed cluster.
 
-I have verified that the only object code change (with gcc 7.5.0) is
-the reversal of some instructions from 'cmp a,b' to 'cmp b,a'.
+Then use f2fs_compress_blocks() to get correct compressed blocks count in
+f2fs_write_raw_pages().
 
-Link: https://lore.kernel.org/r/e18a7395-61fb-2093-18e8-ed4f8cf56248@infradead.org
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jan Kara <jack@suse.com>
-Cc: linux-ext4@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
+sanity_check_inode: inode (ino=ad80) hash inconsistent i_compr_blocks:2, i_blocks:1, run fsck to fix
+
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/xattr.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/f2fs/compress.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 0456bc990b5ee..b91f99d9482e9 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -56,6 +56,7 @@
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index ad8e25a1fbc26..11b13b881ada5 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -536,8 +536,7 @@ static bool __cluster_may_compress(struct compress_ctx *cc)
+ 	return true;
+ }
  
- #include <linux/buffer_head.h>
- #include <linux/init.h>
-+#include <linux/printk.h>
- #include <linux/slab.h>
- #include <linux/mbcache.h>
- #include <linux/quotaops.h>
-@@ -84,8 +85,8 @@
- 		printk("\n"); \
- 	} while (0)
- #else
--# define ea_idebug(f...)
--# define ea_bdebug(f...)
-+# define ea_idebug(inode, f...)	no_printk(f)
-+# define ea_bdebug(bh, f...)	no_printk(f)
- #endif
+-/* return # of compressed block addresses */
+-static int f2fs_compressed_blocks(struct compress_ctx *cc)
++static int __f2fs_cluster_blocks(struct compress_ctx *cc, bool compr)
+ {
+ 	struct dnode_of_data dn;
+ 	int ret;
+@@ -560,8 +559,13 @@ static int f2fs_compressed_blocks(struct compress_ctx *cc)
  
- static int ext2_xattr_set2(struct inode *, struct buffer_head *,
+ 			blkaddr = datablock_addr(dn.inode,
+ 					dn.node_page, dn.ofs_in_node + i);
+-			if (blkaddr != NULL_ADDR)
+-				ret++;
++			if (compr) {
++				if (__is_valid_data_blkaddr(blkaddr))
++					ret++;
++			} else {
++				if (blkaddr != NULL_ADDR)
++					ret++;
++			}
+ 		}
+ 	}
+ fail:
+@@ -569,6 +573,18 @@ static int f2fs_compressed_blocks(struct compress_ctx *cc)
+ 	return ret;
+ }
+ 
++/* return # of compressed blocks in compressed cluster */
++static int f2fs_compressed_blocks(struct compress_ctx *cc)
++{
++	return __f2fs_cluster_blocks(cc, true);
++}
++
++/* return # of valid blocks in compressed cluster */
++static int f2fs_cluster_blocks(struct compress_ctx *cc, bool compr)
++{
++	return __f2fs_cluster_blocks(cc, false);
++}
++
+ int f2fs_is_compressed_cluster(struct inode *inode, pgoff_t index)
+ {
+ 	struct compress_ctx cc = {
+@@ -578,7 +594,7 @@ int f2fs_is_compressed_cluster(struct inode *inode, pgoff_t index)
+ 		.cluster_idx = index >> F2FS_I(inode)->i_log_cluster_size,
+ 	};
+ 
+-	return f2fs_compressed_blocks(&cc);
++	return f2fs_cluster_blocks(&cc, false);
+ }
+ 
+ static bool cluster_may_compress(struct compress_ctx *cc)
+@@ -627,7 +643,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ 	bool prealloc;
+ 
+ retry:
+-	ret = f2fs_compressed_blocks(cc);
++	ret = f2fs_cluster_blocks(cc, false);
+ 	if (ret <= 0)
+ 		return ret;
+ 
 -- 
 2.20.1
 
