@@ -2,21 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBCA1AAFA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426DB1AAFA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411020AbgDOR1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:27:44 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59004 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410993AbgDOR1h (ORCPT
+        id S2411052AbgDOR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410995AbgDOR1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:27:37 -0400
+        Wed, 15 Apr 2020 13:27:38 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD60C061A0F;
+        Wed, 15 Apr 2020 10:27:37 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: sre)
-        with ESMTPSA id C88332A0733
+        with ESMTPSA id D660A2A1D66
 Received: by jupiter.universe (Postfix, from userid 1000)
-        id 1762F4800F7; Wed, 15 Apr 2020 19:27:34 +0200 (CEST)
+        id 19DA24800EA; Wed, 15 Apr 2020 19:27:34 +0200 (CEST)
 From:   Sebastian Reichel <sebastian.reichel@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -26,10 +29,12 @@ Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         kernel@collabora.com,
         Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv2 0/3] Add multiple AUO panels
-Date:   Wed, 15 Apr 2020 19:27:22 +0200
-Message-Id: <20200415172725.84257-1-sebastian.reichel@collabora.com>
+Subject: [PATCHv2 1/3] drm/panel: simple: Add support for AUO G190EAN01 panel
+Date:   Wed, 15 Apr 2020 19:27:23 +0200
+Message-Id: <20200415172725.84257-2-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200415172725.84257-1-sebastian.reichel@collabora.com>
+References: <20200415172725.84257-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -37,25 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add timings for the G190EAN01 dual channel LVDS panel.
 
-Patches are more or less independent of each other. There
-was a previous version for the 12" and 15" panels, which
-was missing the DT binding update. The 19" patch is new,
-for the previous 10" panel a different patch has been merged
-in the meantime.
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ .../bindings/display/panel/panel-simple.yaml  |  2 ++
+ drivers/gpu/drm/panel/panel-simple.c          | 33 +++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
--- Sebastian
-
-Sebastian Reichel (3):
-  drm/panel: simple: Add support for AUO G190EAN01 panel
-  drm/panel: simple: Add support for AUO G156XTN01.0 panel
-  drm/panel: simple: Add support for AUO G121EAN01.4 panel
-
- .../bindings/display/panel/panel-simple.yaml  |  6 ++
- drivers/gpu/drm/panel/panel-simple.c          | 89 +++++++++++++++++++
- 2 files changed, 95 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 8fc117d1547c..7c9a08d846b9 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -59,6 +59,8 @@ properties:
+       - auo,g133han01
+         # AU Optronics Corporation 18.5" FHD (1920x1080) TFT LCD panel
+       - auo,g185han01
++        # AU Optronics Corporation 19.0" (1280x1024) TFT LCD panel
++      - auo,g190ean01
+         # AU Optronics Corporation 31.5" FHD (1920x1080) TFT LCD panel
+       - auo,p320hvn03
+         # AU Optronics Corporation 21.5" FHD (1920x1080) color TFT LCD panel
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 44a1f5dfb571..8d1cf68ca01b 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -933,6 +933,36 @@ static const struct panel_desc auo_g185han01 = {
+ 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+ };
+ 
++static const struct display_timing auo_g190ean01_timings = {
++	.pixelclock = { 90000000, 108000000, 135000000 },
++	.hactive = { 1280, 1280, 1280 },
++	.hfront_porch = { 126, 184, 1266 },
++	.hback_porch = { 84, 122, 844 },
++	.hsync_len = { 70, 102, 704 },
++	.vactive = { 1024, 1024, 1024 },
++	.vfront_porch = { 4, 26, 76 },
++	.vback_porch = { 2, 8, 25 },
++	.vsync_len = { 2, 8, 25 },
++};
++
++static const struct panel_desc auo_g190ean01 = {
++	.timings = &auo_g190ean01_timings,
++	.num_timings = 1,
++	.bpc = 8,
++	.size = {
++		.width = 376,
++		.height = 301,
++	},
++	.delay = {
++		.prepare = 50,
++		.enable = 200,
++		.disable = 110,
++		.unprepare = 1000,
++	},
++	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
++	.connector_type = DRM_MODE_CONNECTOR_LVDS,
++};
++
+ static const struct display_timing auo_p320hvn03_timings = {
+ 	.pixelclock = { 106000000, 148500000, 164000000 },
+ 	.hactive = { 1920, 1920, 1920 },
+@@ -3497,6 +3527,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "auo,g185han01",
+ 		.data = &auo_g185han01,
++	}, {
++		.compatible = "auo,g190ean01",
++		.data = &auo_g190ean01,
+ 	}, {
+ 		.compatible = "auo,p320hvn03",
+ 		.data = &auo_p320hvn03,
 -- 
 2.25.1
 
