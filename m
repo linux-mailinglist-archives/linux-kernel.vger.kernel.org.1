@@ -2,81 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F301A9A68
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A761A9B35
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408605AbgDOK1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:27:11 -0400
-Received: from sauhun.de ([88.99.104.3]:51666 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896454AbgDOKW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:22:57 -0400
-Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
-        by pokefinder.org (Postfix) with ESMTPSA id 450FF2C1FF1;
-        Wed, 15 Apr 2020 12:21:59 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 12:21:58 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     michal.simek@xilinx.com, wsa+renesas@sang-engineering.com,
-        pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, alain.volmat@st.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] i2c: busses: convert to
- devm_platform_get_and_ioremap_resource
-Message-ID: <20200415102158.GH1141@ninjato>
-References: <20200414134827.18674-1-zhengdejin5@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4LFBTxd4L5NLO6ly"
-Content-Disposition: inline
-In-Reply-To: <20200414134827.18674-1-zhengdejin5@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2896538AbgDOKoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2896490AbgDOKXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 06:23:51 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3633EC03C1AE;
+        Wed, 15 Apr 2020 03:23:27 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id l11so2209755lfc.5;
+        Wed, 15 Apr 2020 03:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=jKeaCgFpnmK28M7xOrZHtgGEs75wSDfctsMr7/8EUQ4=;
+        b=u0aNUsA/ajvK6mw+4oTArTjesmheWK9IOjPXwcTInScU0ziIdquqPvAoRZ7JWHtU3e
+         azgL3J3mFyNQ45f8l01s2gr+SSy3qihJSborjmg4ASd2rSEMBbhq0/ELiC+24ngeR37Z
+         QOOOJn6nml0YT4MCSCwiFivQdSppsMUYq4y3blVHh9Vdtd4vgzVEAdm+DZnZ4EqT8mZC
+         qEwXBMqVmVuBQeOkxPUkeg+I3OXA7KgWg1mHwKplqBn1diR32MgW/e2JzccROABQ6H5h
+         5kcu1b0A0piOrKPAnsFZD9qUeMfzuMRVoUEJiC6TlLbm6ENviT5U66hzt5bR4JngrtJL
+         91Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jKeaCgFpnmK28M7xOrZHtgGEs75wSDfctsMr7/8EUQ4=;
+        b=CIGjjRbY5C3nwUsFzGp1c/+WTP6puPVI8PlkfEj17GJwI1RkntVg1PA/YZkudxcEja
+         zQEjUP/VQVOnfqbqICwWC6FE7LzeYouMowml4bsMZlzqYEpddEW1DsCE6bib/2r19/hI
+         Nx+Zs0Wt3LY+ysZIJzU2RIuqXwj850cBLzDDCgvDTayzvU37hAZFRyGxMYRFGMovW1JW
+         gr9N6SddCAaqFgea//oQwmmZSRStXgcMoOiJRHvSkET6omVOxFKxO8eCT/JXPyRabf4Z
+         fLLp9B5RpVdDqR6g28U6GyoKQI+ZriPz+8FsDVyIBnKIO73ZYglu7mZ0WuOJgLVsFo6l
+         Popg==
+X-Gm-Message-State: AGi0PuYWli4sHWBxjPl6C3N+efKb+MTcnBtCps7PcEIZvzFvTb7hWDFL
+        ODoTFJakNFlEPsJCPFdEqTPYwHGi
+X-Google-Smtp-Source: APiQypINp9dsLX1m+G4LnnN392ZDggMCz6RWVuPhP53iuSY5f9+1hGDl1lDNmn3boXKr/63qJ5pMqg==
+X-Received: by 2002:a19:c8cf:: with SMTP id y198mr2545251lff.197.1586946205638;
+        Wed, 15 Apr 2020 03:23:25 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id x23sm12442810lfe.51.2020.04.15.03.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 03:23:24 -0700 (PDT)
+From:   chewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] arm64: dts: meson: sm1-khadas-vim3l: add audio playback to vim3l
+Date:   Wed, 15 Apr 2020 10:23:20 +0000
+Message-Id: <20200415102320.4606-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Christian Hewitt <christianshewitt@gmail.com>
 
---4LFBTxd4L5NLO6ly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the sound and related audio nodes to the VIM3L board.
 
-On Tue, Apr 14, 2020 at 09:48:27PM +0800, Dejin Zheng wrote:
-> use devm_platform_get_and_ioremap_resource() to simplify code, which
-> contains platform_get_resource() and devm_ioremap_resource(), it also
-> get the resource for use by the following code.
->=20
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ .../dts/amlogic/meson-sm1-khadas-vim3l.dts    | 88 +++++++++++++++++++
+ 1 file changed, 88 insertions(+)
 
-Applied to for-next, because it seems 'the new way' but...
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index dbbf29a0dbf6..b900a433ef7a 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -8,6 +8,7 @@
+ 
+ #include "meson-sm1.dtsi"
+ #include "meson-khadas-vim3.dtsi"
++#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+ 
+ / {
+ 	compatible = "khadas,vim3l", "amlogic,sm1";
+@@ -31,6 +32,69 @@
+ 		regulator-boot-on;
+ 		regulator-always-on;
+ 	};
++
++	sound {
++		compatible = "amlogic,axg-sound-card";
++		model = "SM1-KHADAS-VIM3L";
++		audio-aux-devs = <&tdmout_b>;
++		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
++				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
++				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
++				"TDM_B Playback", "TDMOUT_B OUT";
++
++		assigned-clocks = <&clkc CLKID_MPLL2>,
++				  <&clkc CLKID_MPLL0>,
++				  <&clkc CLKID_MPLL1>;
++		assigned-clock-parents = <0>, <0>, <0>;
++		assigned-clock-rates = <294912000>,
++				       <270950400>,
++				       <393216000>;
++		status = "okay";
++
++		dai-link-0 {
++			sound-dai = <&frddr_a>;
++		};
++
++		dai-link-1 {
++			sound-dai = <&frddr_b>;
++		};
++
++		dai-link-2 {
++			sound-dai = <&frddr_c>;
++		};
++
++		/* 8ch hdmi interface */
++		dai-link-3 {
++			sound-dai = <&tdmif_b>;
++			dai-format = "i2s";
++			dai-tdm-slot-tx-mask-0 = <1 1>;
++			dai-tdm-slot-tx-mask-1 = <1 1>;
++			dai-tdm-slot-tx-mask-2 = <1 1>;
++			dai-tdm-slot-tx-mask-3 = <1 1>;
++			mclk-fs = <256>;
++
++			codec {
++				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
++			};
++		};
++
++		/* hdmi glue */
++		dai-link-4 {
++			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
++
++			codec {
++				sound-dai = <&hdmi_tx>;
++			};
++		};
++	};
++};
++
++&arb {
++	status = "okay";
++};
++
++&clkc_audio {
++	status = "okay";
+ };
+ 
+ &cpu0 {
+@@ -61,6 +125,18 @@
+ 	clock-latency = <50000>;
+ };
+ 
++&frddr_a {
++	status = "okay";
++};
++
++&frddr_b {
++	status = "okay";
++};
++
++&frddr_c {
++	status = "okay";
++};
++
+ &pwm_AO_cd {
+ 	pinctrl-0 = <&pwm_ao_d_e_pins>;
+ 	pinctrl-names = "default";
+@@ -93,3 +169,15 @@
+ 	phy-names = "usb2-phy0", "usb2-phy1";
+ };
+  */
++
++&tdmif_b {
++	status = "okay";
++};
++
++&tdmout_b {
++	status = "okay";
++};
++
++&tohdmitx {
++	status = "okay";
++};
+-- 
+2.17.1
 
-> -	r_mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	id->membase =3D devm_ioremap_resource(&pdev->dev, r_mem);
-> +	id->membase =3D devm_platform_get_and_ioremap_resource(pdev, 0, &r_mem);
-
-=2E.. guys, do you really think this one line reduction improves
-readability? Oh well...
-
-
---4LFBTxd4L5NLO6ly
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6W4EIACgkQFA3kzBSg
-KbamCA/+PjnvKJsZh5zv3h9+f+/+k1RNX3gHTRtOpPy+Mq9fWzySA//u0arFuTEo
-fneK30U2oflrSd1cDLiX7rE3/BI9EArmZR2hfFM7TSd1/j77Tx67y12ZP+MfndNH
-I59kfBFQACoJ9QgSrClcTVVwEBUMe/kf2zpHKeXw/ly9eirKQab5hnX4f83nQI3R
-5BtIv/tnyDwvUrKB9vSiUHORa1/5ObvOmgOdwv5peyHBDyjTrkFAsmJoIwZD+iKV
-jX5K3SoBluFaxOIhw23/NwrZv0EfDLEVT6bX9Eo5Yz4ip3WiDrO2JOJiVgAelduW
-WvrIQQIlOs9RPYua8BliSYTfr8lXUESelA5Z5N50g89+ozfH/swHtm6IiubUtW4T
-q36yAh7fuZSwBwWwEO3wvu6z0moIFqw0ZecRA8ucoSRmGOBtlxQsfitJgO6O7Pi3
-6HPJN7l4ZI6DZfTz1yEOOA2TET1UH02n+5exQHJIOecj6v/cg/eUV0MumkDWQ43z
-3eyEuF1ZJT3S9HPbzinCgSms1a7CzeAyyVlJkNwthpI8W8jg1fOXvBRqb4GF4NHL
-koP5MoMDOq7wohB+8P6EIADcQ9TD5pYrc6wt0kqzRbxOIhg3h9nNs0CgPcfF4FQp
-Dqu5c1aMoa9UVSGkhIIMbIW0jBJXEV5fw1CA8LDNLC32kdhCYXw=
-=uSZW
------END PGP SIGNATURE-----
-
---4LFBTxd4L5NLO6ly--
