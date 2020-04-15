@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292931A9603
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52A51A9607
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635752AbgDOIQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:16:32 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2325 "EHLO huawei.com"
+        id S2635764AbgDOIRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:17:00 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34514 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2635729AbgDOIQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:16:29 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9B6F514C4C5638BB6EEE;
-        Wed, 15 Apr 2020 16:16:27 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
- 16:16:20 +0800
+        id S2635729AbgDOIQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:16:57 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 728E89E13340D9F954CC;
+        Wed, 15 Apr 2020 16:16:55 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
+ 16:16:44 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <davem@davemloft.net>, <snelson@pensando.io>, <kuba@kernel.org>,
-        <hkallweit1@gmail.com>, <leon@kernel.org>, <yanaijie@huawei.com>,
-        <mst@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-parisc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <michal.simek@xilinx.com>, <yanaijie@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
 CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] net: tulip: make early_486_chipsets static
-Date:   Wed, 15 Apr 2020 16:42:48 +0800
-Message-ID: <20200415084248.24378-1-yanaijie@huawei.com>
+Subject: [PATCH] firmware: xilinx: make firmware_debugfs_root static
+Date:   Wed, 15 Apr 2020 16:43:11 +0800
+Message-ID: <20200415084311.24857-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,28 +38,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix the following sparse warning:
 
-drivers/net/ethernet/dec/tulip/tulip_core.c:1280:28: warning: symbol
-'early_486_chipsets' was not declared. Should it be static?
+drivers/firmware/xilinx/zynqmp-debug.c:38:15: warning: symbol
+'firmware_debugfs_root' was not declared. Should it be static?
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/net/ethernet/dec/tulip/tulip_core.c | 2 +-
+ drivers/firmware/xilinx/zynqmp-debug.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/tulip_core.c b/drivers/net/ethernet/dec/tulip/tulip_core.c
-index 48ea658aa1a6..15efc294f513 100644
---- a/drivers/net/ethernet/dec/tulip/tulip_core.c
-+++ b/drivers/net/ethernet/dec/tulip/tulip_core.c
-@@ -1277,7 +1277,7 @@ static const struct net_device_ops tulip_netdev_ops = {
- #endif
+diff --git a/drivers/firmware/xilinx/zynqmp-debug.c b/drivers/firmware/xilinx/zynqmp-debug.c
+index c6d0724da4db..43bc6cfdab45 100644
+--- a/drivers/firmware/xilinx/zynqmp-debug.c
++++ b/drivers/firmware/xilinx/zynqmp-debug.c
+@@ -35,7 +35,7 @@ static struct pm_api_info pm_api_list[] = {
+ 	PM_API(PM_QUERY_DATA),
  };
  
--const struct pci_device_id early_486_chipsets[] = {
-+static const struct pci_device_id early_486_chipsets[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82424) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_SI, PCI_DEVICE_ID_SI_496) },
- 	{ },
+-struct dentry *firmware_debugfs_root;
++static struct dentry *firmware_debugfs_root;
+ 
+ /**
+  * zynqmp_pm_argument_value() - Extract argument value from a PM-API request
 -- 
 2.21.1
 
