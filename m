@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A72B1AB0B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6391AB0BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438068AbgDOSax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:30:53 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15525 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405377AbgDOSaq (ORCPT
+        id S1416783AbgDOSbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2441546AbgDOSbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:30:46 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9752670002>; Wed, 15 Apr 2020 11:28:55 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 15 Apr 2020 11:30:44 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 15 Apr 2020 11:30:44 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
- 2020 18:30:44 +0000
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
- DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Wed, 15 Apr 2020 18:30:44 +0000
-Subject: Re: [PATCH] mm/list_lru: Fix a typo in comment "numbesr"->"numbers"
-To:     Ethon Paul <ethp@qq.com>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20200411071041.16161-1-ethp@qq.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <26e00d36-1745-fdc4-14b2-c190fc9d7d8f@nvidia.com>
-Date:   Wed, 15 Apr 2020 11:30:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Wed, 15 Apr 2020 14:31:18 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD416C061A0C;
+        Wed, 15 Apr 2020 11:31:17 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id j20so6321435edj.0;
+        Wed, 15 Apr 2020 11:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SnqHof2dPOXKoAKXV6iF52K+2gAJh/5rV8baIqoPo+o=;
+        b=FlQhQpkChTKQQKHE/kjZW2JHPP/s2wqj9SshjyqQZHZ1Z085P88gpkVzD7mYH4Ej7H
+         /8kITqU0Ici++jfH5rEOOhqHL0jd2qukqDVFVcGnLbYwh/apTw4YNDCH+2M+gmUzrjar
+         hoOwAfFifXLoTbP6k1cH7slupuNak1QwX8L8/7m09MQvu3p7JA+AeUIKvRniPPE9ubhi
+         Pel0J86HNvqJyD6otKJnogaD9EIB9rzqn4z0qryuqX5unULzwv7/rr5r7rW++KNYstiw
+         oWMcguoovE7j4w3t5WO84J6Y3TYN8lQK7tvYJLJAvcFFqrrqRofNt2LxQS7v/bmmp6xn
+         WWmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SnqHof2dPOXKoAKXV6iF52K+2gAJh/5rV8baIqoPo+o=;
+        b=s/ZjJd98cd7CTW6wPeBt2BNTsAu2wt8TWaaVgWykJ7Vb/4Um/MIDxqboJBz7AFWN28
+         vFzL1SZFlcijAx347nPf+sCfc1rQK1UywDasrTPvd0oMj5yiptf05ihpqRbarVWuLCQH
+         ZdobpWMdzesZtH5RY2n/efeUKVPIg2cWMFePhupVgsarVj5dKKfeitoo3bRiNjBqbiYj
+         8f+VFW0BlVgueJyVCOWmsomMwihHibVgSdJibOeYnCMNkp7IO/4cSBV5fM9/rjQsU6TA
+         d2gMi/DIMTkoTv42ToFswx8RWdenHavXKUhAlOg+LFfwxOaAmgOP9Z4Ox5XyU8etKVHL
+         NNAA==
+X-Gm-Message-State: AGi0PuaQTM9UvrdaBMuq+umYbnVgjOl2JPalIVtxj8deLHcayGXl/PRG
+        Pd9zTy6OhijXknyYFEegYBk7NlzfeOF6pgz0wSg=
+X-Google-Smtp-Source: APiQypIRaOcf7VxFnJh078+KvE/8zI4/yu3CzjaNn7Hoogp4F4FsEu0TUbJADLqHifTfYx7wJfx/Q6y04OU6mhoRBdE=
+X-Received: by 2002:a50:c004:: with SMTP id r4mr24970839edb.110.1586975476369;
+ Wed, 15 Apr 2020 11:31:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200411071041.16161-1-ethp@qq.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586975335; bh=pyrf/yGITMuGDCWqp198q+4VK0n1pJc2Po2TKT0z9uw=;
-        h=X-PGP-Universal:Subject:To:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=lT/jSRY3utdgd4OmQhs69ibQDKkP1ogCZRq5yCB3Pln33ny4X7WsNVkKxfBY5c5kZ
-         P7rjpuQ2uKNNIRr3ZxNIXPbjckm1iZqimLf/pU4ZG4QCf6fcZ/+DlJIIee2v9Yphlw
-         8QmWVfHOWZBcf5nyhzZ2lMXqm25X3vYGMZa6JseFR3o7IQfBtX+oP1giA8ijkw/L+M
-         m9x8aL8rkHgAfCxetXkI7DH/tREsfUkKjVWINmGVHepbd07P+IHJ1zmu72ZFEsJgZG
-         C38Si68Intra4X9p0w30zsX1uV/dhT4KnL4tX+SmGVUyRQLHLoL0VvfAHS2snZD3Ry
-         wj668LhUlA7vQ==
+References: <20200414201457.229131-1-martin.blumenstingl@googlemail.com>
+ <20200414201457.229131-3-martin.blumenstingl@googlemail.com> <907211b1-c8d5-39cd-5d2b-dd41efbdc7a7@baylibre.com>
+In-Reply-To: <907211b1-c8d5-39cd-5d2b-dd41efbdc7a7@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 15 Apr 2020 20:31:05 +0200
+Message-ID: <CAFBinCCjHtSNigkeG_M4sVs27SemTMu0hUEQEHk53odAybm6sA@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 2/4] dt-bindings: power: meson-ee-pwrc: add support
+ for the Meson GX SoCs
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     robh+dt@kernel.org, khilman@baylibre.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Neil,
 
-On 4/11/20 12:10 AM, Ethon Paul wrote:
-> There is a typo in comment, fix it.
-> 
-> Signed-off-by: Ethon Paul <ethp@qq.com>
+On Wed, Apr 15, 2020 at 10:51 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+[...]
+> > +            - const: dvin
+before I resend, can you please double-check this reset line?
+it's the only difference compared to G12A so I thought it would make
+sense to check if this is really related to the VPU when we're
+switching from one binding to the other anyways (as now is the time to
+sort out pending issues - in case there is an issue here)
 
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+> > +#define PWRC_GXBB_VPU_ID             0
+> > +#define PWRC_GXBB_ETH_ID             1
+>
+> Should be PWRC_GXBB_ETHERNET_MEM_ID like meson8 bindings.
+I can do that, thank you for looking into this!
 
-> ---
->   mm/list_lru.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/list_lru.c b/mm/list_lru.c
-> index 4d5294c39bba..9222910ab1cb 100644
-> --- a/mm/list_lru.c
-> +++ b/mm/list_lru.c
-> @@ -213,7 +213,7 @@ __list_lru_walk_one(struct list_lru_node *nlru, int memcg_idx,
->   
->   		/*
->   		 * decrement nr_to_walk first so that we don't livelock if we
-> -		 * get stuck on large numbesr of LRU_RETRY items
-> +		 * get stuck on large numbers of LRU_RETRY items
->   		 */
->   		if (!*nr_to_walk)
->   			break;
-> 
+
+Martin
