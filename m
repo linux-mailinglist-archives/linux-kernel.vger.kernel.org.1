@@ -2,210 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313F01A98D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7E61A98DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895509AbgDOJ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:26:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7830 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895484AbgDOJ0x (ORCPT
+        id S2895526AbgDOJ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:28:53 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54692 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895493AbgDOJ2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:26:53 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03F94e4T000539
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:26:52 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30dnmgefpa-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:26:52 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
-        Wed, 15 Apr 2020 10:26:09 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 15 Apr 2020 10:26:05 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03F9QiTZ20185188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Apr 2020 09:26:44 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5C9CD42049;
-        Wed, 15 Apr 2020 09:26:44 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2FD742042;
-        Wed, 15 Apr 2020 09:26:43 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.12.13])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Apr 2020 09:26:43 +0000 (GMT)
-Date:   Wed, 15 Apr 2020 11:26:39 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-next@vger.kernel.org, akpm@linux-foundation.org,
-        jack@suse.cz, kirill@shutemov.name, borntraeger@de.ibm.com,
-        david@redhat.com, aarcange@redhat.com, linux-mm@kvack.org,
-        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH v4 2/2] mm/gup/writeback: add callbacks for inaccessible
- pages
-In-Reply-To: <93dc9885-adb4-8b9d-a62a-e40301053551@intel.com>
-References: <20200306132537.783769-1-imbrenda@linux.ibm.com>
-        <20200306132537.783769-3-imbrenda@linux.ibm.com>
-        <11dc928d-60b4-f04f-1ebf-f4cffb337a6c@intel.com>
-        <20200414180300.52640444@p-imbrenda>
-        <93dc9885-adb4-8b9d-a62a-e40301053551@intel.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 15 Apr 2020 05:28:46 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 86D772A1970
+Subject: Re: media/master bisection: v4l2-compliance-vivid.device-presence on
+ qemu_x86_64
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <5e960bf5.1c69fb81.8a349.6851@mx.google.com>
+ <24564393-f229-6e29-7883-9605ed0d48b4@collabora.com>
+ <20200414233347.2a844b85@coco.lan>
+ <86feeb83-37ac-cbd6-b792-b81d17d559c9@collabora.com>
+Message-ID: <2f32345d-a818-8ec4-afd6-2b9cd9dcdf4a@collabora.com>
+Date:   Wed, 15 Apr 2020 10:28:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <86feeb83-37ac-cbd6-b792-b81d17d559c9@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041509-0020-0000-0000-000003C82C68
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041509-0021-0000-0000-000022210D3B
-Message-Id: <20200415112639.525e25bc@p-imbrenda>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-15_01:2020-04-14,2020-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 adultscore=0
- impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015 mlxscore=0
- bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004150066
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 11:50:16 -0700
-Dave Hansen <dave.hansen@intel.com> wrote:
+On 14/04/2020 22:43, Guillaume Tucker wrote:
+> On 14/04/2020 22:33, Mauro Carvalho Chehab wrote:
+>> Em Tue, 14 Apr 2020 22:23:52 +0100
+>> Guillaume Tucker <guillaume.tucker@collabora.com> escreveu:
+>>
+>>> Please see the bisection report below about absence of the vivid
+>>> driver, which caused v4l2-compliance to fail to run.
+>>>
+>>> Presumably we need to update the configuration fragment used by
+>>> kernelci.org to enable platform drivers.  Until now we've been
+>>> using this:
+>>>
+>>>     CONFIG_MEDIA_SUPPORT=y
+>>>     CONFIG_MEDIA_CAMERA_SUPPORT=y
+>>>     CONFIG_VIDEO_DEV=y
+>>>     CONFIG_VIDEO_V4L2=y
+>>>     CONFIG_V4L_TEST_DRIVERS=y
+>>>     CONFIG_VIDEO_VIVID=y
+>>>     CONFIG_VIDEO_VIVID_MAX_DEVS=64
+>>>
+>>> Do we simply need to add this one in v5.7 onwards?
+>>>
+>>>     CONFIG_MEDIA_PLATFORM_SUPPORT=y
+>>
+>> No, this shouldn't be needed.
+>>
+>> Helen sent us a patch that should likely fix it:
+>>
+>> 	https://git.linuxtv.org/media_tree.git/commit/?id=860b511766a3d95308a942ac09a34e4d1839e706
+>>
+>> Could you please check if this solves the issue?
+> 
+> I see, thanks.  This revision is being built and tested at the
+> moment, I'll check the results when they land in my inbox.
 
-> On 4/14/20 9:03 AM, Claudio Imbrenda wrote:
-> > On Mon, 13 Apr 2020 13:22:24 -0700
-> > Dave Hansen <dave.hansen@intel.com> wrote:
-> >   
-> >> On 3/6/20 5:25 AM, Claudio Imbrenda wrote:  
-> >>> On s390x the function is not supposed to fail, so it is ok to use
-> >>> a WARN_ON on failure. If we ever need some more finegrained
-> >>> handling we can tackle this when we know the details.    
-> >>
-> >> Could you explain a bit why the function can't fail?  
-> > 
-> > the concept of "making accessible" is only to make sure that
-> > accessing the page will not trigger faults or I/O or DMA errors. in
-> > general it does not mean freely accessing the content of the page
-> > in cleartext. 
-> > 
-> > on s390x, protected guest pages can be shared. the guest has to
-> > actively share its pages, and in that case those pages are both
-> > part of the protected VM and freely accessible by the host.  
-> 
-> Oh, that's interesting.
-> 
-> It sounds like there are three separate concepts:
-> 1. Protection
-> 2. Sharing
-> 3. Accessibility
-> 
-> Protected pages may be shared and the request of the guest.
-> Shared pages' plaintext can be accessed by the host.  For unshared
-> pages, the host can only see ciphertext.
-> 
-> I wonder if Documentation/virt/kvm/s390-pv.rst can be beefed up with
-> some of this information.  It seems a bit sparse on this topic.
+Helen's patch was needed, but there were still a couple of
+issues.  First we need to enable this extra option now in the
+config fragment:
 
-that is definitely something that can be fixed.
+    CONFIG_MEDIA_TEST_SUPPORT=y
 
-I will improve the documentation and make sure it properly explains
-all the details of how protected VMs work on s390x.
+as test_drivers/Kconfig starts with "if MEDIA_TEST_SUPPORT".
 
-> As it stands, if I were modifying generic code, I don't think I'd have
-> even a chance of getting an arch_make_page_accessible() in the right
-> spot.
-> 
-> > in our case "making the page accessible" means:  
-> ...
-> >  - if the page was not shared, first encrypt it and then make it
-> >    accessible to the host (both operations performed securely and
-> >    atomically by the hardware)  
-> 
-> What happens to the guest's view of the page when this happens?  Does
-> it keep seeing plaintext?
-> 
-> > then the page can be swapped out, or used for direct I/O (obviously
-> > if you do I/O on a page that was not shared, you cannot expect good
-> > things to happen, since you basically corrupt the memory of the
-> > guest).  
-> 
-> So why even allow access to the encrypted contents if the host can't
-> do anything useful with it?  Is there some reason for going to the
-> trouble of encrypting it and exposing it to the host?
+Then this Kconfig was included when MEDIA_PLATFORM_SUPPORT was
+enabled rather than MEDIA_TEST_SUPPORT in media/Kconfig.  So I've
+just sent a patch to fix this dependency, and now it appears to
+be generating the correct config.  I did a full v4l2-compliance
+run with the vivid driver on my local setup and it all passed.
 
-you should not overwrite it, but you can/should write it out verbatim,
-e.g. for swap
+Guillaume
 
-> > on s390x performing I/O directly on protected pages results in (in
-> > practice) unrecoverable I/O errors, so we want to avoid it at all
-> > costs.  
+>>> On 14/04/2020 20:16, kernelci.org bot wrote:
+>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>>> * This automated bisection report was sent to you on the basis  *
+>>>> * that you may be involved with the breaking commit it has      *
+>>>> * found.  No manual investigation has been done to verify it,   *
+>>>> * and the root cause of the problem may be somewhere else.      *
+>>>> *                                                               *
+>>>> * If you do send a fix, please include this trailer:            *
+>>>> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+>>>> *                                                               *
+>>>> * Hope this helps!                                              *
+>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>>>
+>>>> media/master bisection: v4l2-compliance-vivid.device-presence on qemu_x86_64
+>>>>
+>>>> Summary:
+>>>>   Start:      ba445b7ff43b3 media: dt-bindings: rockchip-vpu: Convert bindings to json-schema
+>>>>   Plain log:  https://storage.kernelci.org//media/master/v5.7-rc1-63-gba445b7ff43b/x86_64/x86_64_defconfig+virtualvideo/gcc-8/lab-collabora/v4l2-compliance-vivid-qemu_x86_64.txt
+>>>>   HTML log:   https://storage.kernelci.org//media/master/v5.7-rc1-63-gba445b7ff43b/x86_64/x86_64_defconfig+virtualvideo/gcc-8/lab-collabora/v4l2-compliance-vivid-qemu_x86_64.html
+>>>>   Result:     06b93644f4d10 media: Kconfig: add an option to filter in/out platform drivers
+>>>>
+>>>> Checks:
+>>>>   revert:     PASS
+>>>>   verify:     PASS
+>>>>
+>>>> Parameters:
+>>>>   Tree:       media
+>>>>   URL:        https://git.linuxtv.org/media_tree.git
+>>>>   Branch:     master
+>>>>   Target:     qemu_x86_64
+>>>>   CPU arch:   x86_64
+>>>>   Lab:        lab-collabora
+>>>>   Compiler:   gcc-8
+>>>>   Config:     x86_64_defconfig+virtualvideo
+>>>>   Test case:  v4l2-compliance-vivid.device-presence
+>>>>
+>>>> Breaking commit found:
+>>>>
+>>>> -------------------------------------------------------------------------------
+>>>> commit 06b93644f4d102bdfc297159121acc1de794d68d
+>>>> Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>>> Date:   Tue Mar 24 10:27:15 2020 +0100
+>>>>
+>>>>     media: Kconfig: add an option to filter in/out platform drivers
+>>>>     
+>>>>     Most systems don't need support for those, while others only
+>>>>     need those, instead of the others.
+>>>>     
+>>>>     So, add an option to filter in/out platform drivers.
+>>>>     
+>>>>     Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>>>
+>>>> diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
+>>>> index 9dfea5c4b6ab7..2b6ea8beb9199 100644
+>>>> --- a/drivers/media/Kconfig
+>>>> +++ b/drivers/media/Kconfig
+>>>> @@ -87,6 +87,18 @@ config MEDIA_CEC_SUPPORT
+>>>>  	  Say Y when you have an HDMI receiver, transmitter or a USB CEC
+>>>>  	  adapter that supports HDMI CEC.
+>>>>  
+>>>> +config MEDIA_PLATFORM_SUPPORT
+>>>> +	bool "Platform-specific devices support"
+>>>> +	help
+>>>> +	  Enable support for complex cameras, codecs, and other hardware
+>>>> +	  that are integrated at the CPU, GPU or on Image Signalling Processor
+>>>> +	  and don't use PCI, USB or Firewire buses.
+>>>> +
+>>>> +	  This is found on Embedded hardware (SoC), on V4L2 codecs and
+>>>> +	  on some GPU and newer CPU chipsets.
+>>>> +
+>>>> +	  Say Y when you want to be able so see such devices.
+>>>> +
+>>>>  source "drivers/media/cec/Kconfig"
+>>>>  
+>>>>  source "drivers/media/mc/Kconfig"
+>>>> @@ -161,15 +173,14 @@ source "drivers/media/dvb-core/Kconfig"
+>>>>  
+>>>>  comment "Media drivers"
+>>>>  
+>>>> -#
+>>>> -# V4L platform/mem2mem drivers
+>>>> -#
+>>>> -
+>>>>  source "drivers/media/usb/Kconfig"
+>>>>  source "drivers/media/pci/Kconfig"
+>>>> +source "drivers/media/radio/Kconfig"
+>>>> +
+>>>> +if MEDIA_PLATFORM_SUPPORT
+>>>>  source "drivers/media/platform/Kconfig"
+>>>>  source "drivers/media/mmc/Kconfig"
+>>>> -source "drivers/media/radio/Kconfig"
+>>>> +endif
+>>>>  
+>>>>  comment "Supported FireWire (IEEE 1394) Adapters"
+>>>>  	depends on DVB_CORE && FIREWIRE
+>>>> -------------------------------------------------------------------------------
+>>>>
+>>>>
+>>>> Git bisection log:
+>>>>
+>>>> -------------------------------------------------------------------------------
+>>>> git bisect start
+>>>> # good: [2632e7b618a7730969f9782593c29ca53553aa22] media: venus: firmware: Ignore secure call error on first resume
+>>>> git bisect good 2632e7b618a7730969f9782593c29ca53553aa22
+>>>> # bad: [ba445b7ff43b3e45836a9a290efdc3a36ea63941] media: dt-bindings: rockchip-vpu: Convert bindings to json-schema
+>>>> git bisect bad ba445b7ff43b3e45836a9a290efdc3a36ea63941
+>>>> # good: [29d9f30d4ce6c7a38745a54a8cddface10013490] Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+>>>> git bisect good 29d9f30d4ce6c7a38745a54a8cddface10013490
+>>>> # good: [e109f506074152b7241bcbd3949a099e776cb802] Merge tag 'mtd/for-5.7' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
+>>>> git bisect good e109f506074152b7241bcbd3949a099e776cb802
+>>>> # good: [aa1a8ce533324d12696a9f4b71dbc5eb561a2e04] Merge tag 'trace-v5.7' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace
+>>>> git bisect good aa1a8ce533324d12696a9f4b71dbc5eb561a2e04
+>>>> # good: [c7b6a566b98524baea6a244186e665d22b633545] mm/gup: Mark lock taken only after a successful retake
+>>>> git bisect good c7b6a566b98524baea6a244186e665d22b633545
+>>>> # good: [e4da01d8333e500e15a674d75885a9dfcfd31e77] Merge tag 'powerpc-5.7-2' of git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux
+>>>> git bisect good e4da01d8333e500e15a674d75885a9dfcfd31e77
+>>>> # good: [6900433e0fbca146d8170bdf876271cdf3053021] Merge tag 'for-linus-5.7-1' of git://github.com/cminyard/linux-ipmi
+>>>> git bisect good 6900433e0fbca146d8170bdf876271cdf3053021
+>>>> # good: [b753101a4ac0b906064a72feec43f5b80a1fe2e5] Merge tag 'kbuild-v5.7-2' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild
+>>>> git bisect good b753101a4ac0b906064a72feec43f5b80a1fe2e5
+>>>> # bad: [4b32216adb010a364f23a055c45e06e839b089f9] media: split test drivers from platform directory
+>>>> git bisect bad 4b32216adb010a364f23a055c45e06e839b089f9
+>>>> # good: [20e2aa812620439d010a3f78ba4e05bc0b3e2861] Merge tag 'perf-urgent-2020-04-12' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+>>>> git bisect good 20e2aa812620439d010a3f78ba4e05bc0b3e2861
+>>>> # good: [0785249f8b93836986e9d1bdeefd2a2c13f160af] Merge tag 'timers-urgent-2020-04-12' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+>>>> git bisect good 0785249f8b93836986e9d1bdeefd2a2c13f160af
+>>>> # good: [3b50142d8528e1efc1c07f69c540f926c58ab3ad] MAINTAINERS: sort field names for all entries
+>>>> git bisect good 3b50142d8528e1efc1c07f69c540f926c58ab3ad
+>>>> # bad: [06b93644f4d102bdfc297159121acc1de794d68d] media: Kconfig: add an option to filter in/out platform drivers
+>>>> git bisect bad 06b93644f4d102bdfc297159121acc1de794d68d
+>>>> # good: [d9d6e1f3d5bbca799910072b2110963250e0b9c6] media: dvb-usb: auto-select CYPRESS_FIRMWARE
+>>>> git bisect good d9d6e1f3d5bbca799910072b2110963250e0b9c6
+>>>> # first bad commit: [06b93644f4d102bdfc297159121acc1de794d68d] media: Kconfig: add an option to filter in/out platform drivers
+>>>> -------------------------------------------------------------------------------
+>>>>   
+>>>
+>>
+>>
+>>
+>> Thanks,
+>> Mauro
+>>
 > 
-> This is understandable, but we usually steer I/O operations in places
-> like the DMA API, not in the core VM.
-> 
-> We *have* the concept of pages to which I/O can't be done.  There are
-> plenty of crippled devices where we have to bounce data into a low
-> buffer before it can go where we really want it to.  I think the AMD
-> SEV patches do this, for instance.
-> 
-> > accessing protected pages from the CPU triggers an exception that
-> > can be handled (and we do handle it, in fact)
-> > 
-> > now imagine a buggy or malicious qemu process crashing the whole
-> > machine just because it did I/O to/from a protected page. we
-> > clearly don't want that.  
-> 
-> Is DMA disallowed to *all* protected pages?  Even pages which the
-> guest has explicitly shared with the host?
-> 
-> 
-> >>> @@ -2807,6 +2807,13 @@ int __test_set_page_writeback(struct page
-> >>> *page, bool keep_write) inc_zone_page_state(page,
-> >>> NR_ZONE_WRITE_PENDING); }
-> >>>  	unlock_page_memcg(page);
-> >>> +	access_ret = arch_make_page_accessible(page);
-> >>> +	/*
-> >>> +	 * If writeback has been triggered on a page that cannot
-> >>> be made
-> >>> +	 * accessible, it is too late to recover here.
-> >>> +	 */
-> >>> +	VM_BUG_ON_PAGE(access_ret != 0, page);
-> >>> +
-> >>>  	return ret;
-> >>>  
-> >>>  }    
-> >>
-> >> This seems like a really odd place to do this.  Writeback is
-> >> specific to block I/O.  I would have thought there were other
-> >> kinds of devices that matter, not just block devices.  
-> > 
-> > well, yes and no. for writeback (block I/O and swap) this is the
-> > right place. at this point we know that the page is present and
-> > nobody else has started doing I/O yet, and I/O will happen
-> > soon-ish. so we make the page accessible. there is no turning back
-> > here, unlike pinning. we are not allowed to fail, we can't   
-> 
-> This description sounds really incomplete to me.
-> 
-> Not all swap involved device I/O.  For instance, zswap doesn't involve
-> any devices.  Would zswap need this hook?
-
-please feel free to write to me privately if you have any further
-questions or doubts :)
-
-
-best regards,
-
-Claudio Imbrenda
 
