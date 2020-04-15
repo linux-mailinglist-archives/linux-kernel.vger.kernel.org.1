@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4F71A97FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854E11A97FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408277AbgDOJH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:07:57 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25045 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408269AbgDOJHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:07:53 -0400
-IronPort-SDR: mcDPuQ8ZC2YWJwiaZaEe7oX4/W6f0bJCaPwY07F8R+QzbMd1Dw/VHInAhiX6l0P3VB4u1DZfHT
- Z2dzdWN3riqg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 02:07:52 -0700
-IronPort-SDR: dIcvUqmm8vkltmzBbRt7swG9EIHcpliBK18dHSes44YOxPl9GSHu+CpHbMxzexYHs+shu+VVQy
- da/XylUQ7VEQ==
-X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
-   d="scan'208";a="427370602"
-Received: from ssolodk-mobl1.ccr.corp.intel.com (HELO localhost) ([10.252.48.37])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 02:07:47 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i915/gt: remove redundant assignment to variable x
-In-Reply-To: <43eb0cbb-9bf0-c99a-470d-8121c3108a5e@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200414092359.GC1163@kadam> <43eb0cbb-9bf0-c99a-470d-8121c3108a5e@canonical.com>
-Date:   Wed, 15 Apr 2020 12:07:44 +0300
-Message-ID: <87blnt5d7j.fsf@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S2408300AbgDOJIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:08:15 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:42851 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2408281AbgDOJIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:08:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586941686; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=zS4c6L0D9jU2WBM14Jk1In+hYKeTXj+XmH473wOiYXQ=; b=EcKwGjHHKnalna0q/Sb1Cn+1jJXG3ZpOiS+rCDL+oF9jAvslWGFYXCd+nDDJITHY0y9St0Sf
+ q0f+euySs9sdfwi7c+aejMD4VwG8q7bYh2PGsNfyDAwjxdzPQCIumleRa7DjLpulII7bBRf1
+ V+dyQI1JILsoWSW72LVsauwTg9g=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e96cef6.7f37d1eac500-smtp-out-n02;
+ Wed, 15 Apr 2020 09:08:06 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EDD4C433CB; Wed, 15 Apr 2020 09:08:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC877C433F2;
+        Wed, 15 Apr 2020 09:08:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC877C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Sahitya Tummala <stummala@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] f2fs: fix long latency due to discard during umount
+Date:   Wed, 15 Apr 2020 14:37:53 +0530
+Message-Id: <1586941673-4296-1-git-send-email-stummala@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020, Colin Ian King <colin.king@canonical.com> wrote:
-> Hi Dan,
->
-> I'd post a revert, but I don't seem to see an upstream commit for this
-> this to revert against. What's the revert policy in these cases? Or can
-> the patch be just ignored by the maintainers so it's not applied?
+F2FS already has a default timeout of 5 secs for discards that
+can be issued during umount, but it can take more than the 5 sec
+timeout if the underlying UFS device queue is already full and there
+are no more available free tags to be used. Fix this by submitting a
+small batch of discard requests so that it won't cause the device
+queue to be full at any time and thus doesn't incur its wait time
+in the umount context.
 
-It has not been applied, and will be ignored, in part thanks to the
-report.
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+---
+v5:
+- rebase on Jaegeuk's dev branch.
+- add a missing change to fix compilation issue.
 
-However I think Dan's report is misleading in that it looks like it's
-about a commit while I think it should emphasize that it's a pre-merge
-report on the patch on the mailing list.
+ fs/f2fs/segment.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-BR,
-Jani.
-
-
-
->
-> Colin
->
->
-> On 14/04/2020 10:23, Dan Carpenter wrote:
->> Hi Colin,
->> 
->> url:    https://github.com/0day-ci/linux/commits/Colin-King/drm-i915-gt-remove-redundant-assignment-to-variable-x/20200411-032731
->> base:   git://anongit.freedesktop.org/drm-intel for-linux-next
->> 
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kbuild test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->> 
->> smatch warnings:
->> drivers/gpu/drm/i915/gt/intel_engine_cs.c:1210 print_request() error: uninitialized symbol 'x'.
->> 
->> # https://github.com/0day-ci/linux/commit/6ee08d455bba0066e8f5f276dcd43d9e3e594dc5
->> git remote add linux-review https://github.com/0day-ci/linux
->> git remote update linux-review
->> git checkout 6ee08d455bba0066e8f5f276dcd43d9e3e594dc5
->> vim +/x +1210 drivers/gpu/drm/i915/gt/intel_engine_cs.c
->> 
->> f636edb214a5ff drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2017-10-09  1202  static void print_request(struct drm_printer *m,
->> e61e0f51ba7974 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-02-21  1203  			  struct i915_request *rq,
->> f636edb214a5ff drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2017-10-09  1204  			  const char *prefix)
->> f636edb214a5ff drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2017-10-09  1205  {
->> ab2681512b4c10 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-03-14  1206  	const char *name = rq->fence.ops->get_timeline_name(&rq->fence);
->> 96d4f03c20d04c drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-05-17  1207  	char buf[80] = "";
->> 6ee08d455bba00 drivers/gpu/drm/i915/gt/intel_engine_cs.c Colin Ian King 2020-04-10  1208  	int x;
->>                                                                                                 ^^^^^
->> 
->> 247870ac8ea729 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-04-24  1209  
->> 247870ac8ea729 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-04-24 @1210  	x = print_sched_attr(rq->i915, &rq->sched.attr, buf, x, sizeof(buf));
->>                                                                                                                                                      ^
->> Uninitialized variable
->> 
->> ab2681512b4c10 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-03-14  1211  
->> b300fde8965fdd drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2019-02-26  1212  	drm_printf(m, "%s %llx:%llx%s%s %s @ %dms: %s\n",
->> b7268c5eed0ab4 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-04-18  1213  		   prefix,
->> b300fde8965fdd drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2019-02-26  1214  		   rq->fence.context, rq->fence.seqno,
->> 8547444137ec61 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2019-01-29  1215  		   i915_request_completed(rq) ? "!" :
->> 8547444137ec61 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2019-01-29  1216  		   i915_request_started(rq) ? "*" :
->> 8547444137ec61 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2019-01-29  1217  		   "",
->> 8c334f24e3b448 drivers/gpu/drm/i915/gt/intel_engine_cs.c Chris Wilson   2019-05-01  1218  		   test_bit(DMA_FENCE_FLAG_SIGNALED_BIT,
->> 8c334f24e3b448 drivers/gpu/drm/i915/gt/intel_engine_cs.c Chris Wilson   2019-05-01  1219  			    &rq->fence.flags) ? "+" :
->> 52c0fdb25c7c91 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2019-01-29  1220  		   test_bit(DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
->> 8c334f24e3b448 drivers/gpu/drm/i915/gt/intel_engine_cs.c Chris Wilson   2019-05-01  1221  			    &rq->fence.flags) ? "-" :
->> 8c334f24e3b448 drivers/gpu/drm/i915/gt/intel_engine_cs.c Chris Wilson   2019-05-01  1222  		   "",
->> 247870ac8ea729 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-04-24  1223  		   buf,
->> f636edb214a5ff drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2017-10-09  1224  		   jiffies_to_msecs(jiffies - rq->emitted_jiffies),
->> ab2681512b4c10 drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2018-03-14  1225  		   name);
->> f636edb214a5ff drivers/gpu/drm/i915/intel_engine_cs.c    Chris Wilson   2017-10-09  1226  }
->> 
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->> 
->
-
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index b7a9421..90c7582 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -1101,7 +1101,6 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
+ 	} else if (discard_type == DPOLICY_FSTRIM) {
+ 		dpolicy->io_aware = false;
+ 	} else if (discard_type == DPOLICY_UMOUNT) {
+-		dpolicy->max_requests = UINT_MAX;
+ 		dpolicy->io_aware = false;
+ 		/* we need to issue all to keep CP_TRIMMED_FLAG */
+ 		dpolicy->granularity = 1;
+@@ -1463,6 +1462,8 @@ static unsigned int __issue_discard_cmd_orderly(struct f2fs_sb_info *sbi,
+ 
+ 	return issued;
+ }
++static unsigned int __wait_all_discard_cmd(struct f2fs_sb_info *sbi,
++					struct discard_policy *dpolicy);
+ 
+ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
+ 					struct discard_policy *dpolicy)
+@@ -1471,12 +1472,14 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
+ 	struct list_head *pend_list;
+ 	struct discard_cmd *dc, *tmp;
+ 	struct blk_plug plug;
+-	int i, issued = 0;
++	int i, issued;
+ 	bool io_interrupted = false;
+ 
+ 	if (dpolicy->timeout)
+ 		f2fs_update_time(sbi, UMOUNT_DISCARD_TIMEOUT);
+ 
++retry:
++	issued = 0;
+ 	for (i = MAX_PLIST_NUM - 1; i >= 0; i--) {
+ 		if (dpolicy->timeout &&
+ 				f2fs_time_over(sbi, UMOUNT_DISCARD_TIMEOUT))
+@@ -1523,6 +1526,11 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
+ 			break;
+ 	}
+ 
++	if (dpolicy->type == DPOLICY_UMOUNT && issued) {
++		__wait_all_discard_cmd(sbi, dpolicy);
++		goto retry;
++	}
++
+ 	if (!issued && io_interrupted)
+ 		issued = -1;
+ 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
