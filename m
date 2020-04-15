@@ -2,261 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33B21AA217
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D5C1AA22B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370409AbgDOMuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:50:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S370362AbgDOMtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:49:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74B43206D5;
-        Wed, 15 Apr 2020 12:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586954971;
-        bh=YudaV565w6btpCVfkDa53B7k9IwUOjEJzRGtCM4oZpg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MvhzHoXnZd6QsEJ4Yfy+sgm47S1WPqDVf1yFwRKpePmQvWl9nCqRzzu8sP0obG5Ai
-         ltjkVY5rOF4O4jAREviY8DLKNSCmqh0MTbT5+vhOgcJqI3VVapO0j0VbBDrLQR9qk4
-         rw4ybt0VHtSEBrlVHXCViFBAeSMRpMweThfY9JRo=
-Date:   Wed, 15 Apr 2020 14:49:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wang Wenhu <wenhu.wang@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, oss@buserror.net,
-        christophe.leroy@c-s.fr, linuxppc-dev@lists.ozlabs.org,
-        kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 5/5] drivers: uio: new driver for fsl_85xx_cache_sram
-Message-ID: <20200415124929.GA3265842@kroah.com>
-References: <20200415123346.116212-1-wenhu.wang@vivo.com>
- <20200415123346.116212-6-wenhu.wang@vivo.com>
-MIME-Version: 1.0
+        id S370476AbgDOMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S370440AbgDOMux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:50:53 -0400
+Received: from mo6-p03-ob.smtp.rzone.de (mo6-p03-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5303::7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CD6C061A0C;
+        Wed, 15 Apr 2020 05:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586955050;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=ZWPeQuNZym8qIi2cOZDzlHwaDAs+LcskJtN8sCgQ/rk=;
+        b=gGbsDyohBd13qIMXzzowNNR9YtVfQZBRB6oeIhs3SNPyi9FVwYzbYeh1+AFY2NamuV
+        QtyXfz2bviGYNw1Wg5cAPWSSsYdp2u+x2AwmbKZcNNMedXx7IoAaUOV7mfdHrbBdPRD2
+        tZDao3W7Jpb08vKwlIVDi1KI4VG0ubRyXx11EwfWEXUbVlmXmmIlAYjMjB4ABMtDxop8
+        u4JH3igeM6AMK/dJLiHta7bzLWfGMwTUVdeKCacvdxrxYeyD1KUeOprm4/Va4537vUnv
+        aF73KY4sOIBFN9AM4JouZo+RQ8fzZQaMQ9PAmkXp2m1cJiEIOgFANtEAI+g72aR09rnW
+        OV/Q==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PtwDConyM="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+        with ESMTPSA id 6028a2w3FCoV1xp
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 15 Apr 2020 14:50:31 +0200 (CEST)
+Subject: Re: [PATCH v6 08/12] arm: dts: s5pv210: Add G3D node
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415123346.116212-6-wenhu.wang@vivo.com>
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAJKOXPcb9KWNAem-CAx_zCS+sZoEHYc0J8x0nk1xjY9hD4-M4w@mail.gmail.com>
+Date:   Wed, 15 Apr 2020 14:50:31 +0200
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap@vger.kernel.org, openpvrsgx-devgroup@letux.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Jonathan Bakker <xc-racer2@live.ca>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AB9B8741-CFF7-414D-9489-D381B539538D@goldelico.com>
+References: <cover.1586939718.git.hns@goldelico.com> <b6733f80546bf3e6b3799f716b9c8e0f407de03d.1586939718.git.hns@goldelico.com> <CAJKOXPcb9KWNAem-CAx_zCS+sZoEHYc0J8x0nk1xjY9hD4-M4w@mail.gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Bakker <xc-racer2@live.ca>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 05:33:46AM -0700, Wang Wenhu wrote:
-> A driver for freescale 85xx platforms to access the Cache-Sram form
-> user level. This is extremely helpful for some user-space applications
-> that require high performance memory accesses.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-> Cc: Scott Wood <oss@buserror.net>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-> ---
->  drivers/uio/Kconfig                   |   8 ++
->  drivers/uio/Makefile                  |   1 +
->  drivers/uio/uio_fsl_85xx_cache_sram.c | 195 ++++++++++++++++++++++++++
->  3 files changed, 204 insertions(+)
->  create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
-> 
-> diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
-> index 202ee81cfc2b..afd38ec13de0 100644
-> --- a/drivers/uio/Kconfig
-> +++ b/drivers/uio/Kconfig
-> @@ -105,6 +105,14 @@ config UIO_NETX
->  	  To compile this driver as a module, choose M here; the module
->  	  will be called uio_netx.
->  
-> +config UIO_FSL_85XX_CACHE_SRAM
-> +	tristate "Freescale 85xx Cache-Sram driver"
-> +	depends on FSL_85XX_CACHE_SRAM
-> +	help
-> +	  Generic driver for accessing the Cache-Sram form user level. This
-> +	  is extremely helpful for some user-space applications that require
-> +	  high performance memory accesses.
-> +
->  config UIO_FSL_ELBC_GPCM
->  	tristate "eLBC/GPCM driver"
->  	depends on FSL_LBC
-> diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
-> index c285dd2a4539..be2056cffc21 100644
-> --- a/drivers/uio/Makefile
-> +++ b/drivers/uio/Makefile
-> @@ -10,4 +10,5 @@ obj-$(CONFIG_UIO_NETX)	+= uio_netx.o
->  obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
->  obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
->  obj-$(CONFIG_UIO_FSL_ELBC_GPCM)	+= uio_fsl_elbc_gpcm.o
-> +obj-$(CONFIG_UIO_FSL_85XX_CACHE_SRAM)	+= uio_fsl_85xx_cache_sram.o
->  obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
-> diff --git a/drivers/uio/uio_fsl_85xx_cache_sram.c b/drivers/uio/uio_fsl_85xx_cache_sram.c
-> new file mode 100644
-> index 000000000000..e11202dd5b93
-> --- /dev/null
-> +++ b/drivers/uio/uio_fsl_85xx_cache_sram.c
-> @@ -0,0 +1,195 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-> + * Copyright (C) 2020 Wang Wenhu <wenhu.wang@vivo.com>
-> + * All rights reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published
-> + * by the Free Software Foundation.
 
-Nit, you don't need this sentance anymore now that you have the SPDX
-line above
+> Am 15.04.2020 um 13:49 schrieb Krzysztof Kozlowski <krzk@kernel.org>:
+>=20
+> On Wed, 15 Apr 2020 at 10:36, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>=20
+>> From: Jonathan Bakker <xc-racer2@live.ca>
+>>=20
+>> to add support for SGX540 GPU.
+>=20
+> Do not continue the subject in commit msg like it is one sentence.
+> These are two separate sentences, so commit msg starts with capital
+> letter and it is sentence by itself.
+>=20
+>> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>> ---
+>> arch/arm/boot/dts/s5pv210.dtsi | 15 +++++++++++++++
+>> 1 file changed, 15 insertions(+)
+>>=20
+>> diff --git a/arch/arm/boot/dts/s5pv210.dtsi =
+b/arch/arm/boot/dts/s5pv210.dtsi
+>> index 2ad642f51fd9..e7fc709c0cca 100644
+>> --- a/arch/arm/boot/dts/s5pv210.dtsi
+>> +++ b/arch/arm/boot/dts/s5pv210.dtsi
+>> @@ -512,6 +512,21 @@ vic3: interrupt-controller@f2300000 {
+>>                        #interrupt-cells =3D <1>;
+>>                };
+>>=20
+>> +               g3d: g3d@f3000000 {
+>> +                       compatible =3D "samsung,s5pv210-sgx540-120";
+>> +                       reg =3D <0xf3000000 0x10000>;
+>> +                       interrupt-parent =3D <&vic2>;
+>> +                       interrupts =3D <10>;
+>> +                       clock-names =3D "sclk";
+>> +                       clocks =3D <&clocks CLK_G3D>;
+>=20
+> Not part of bindings, please remove or add to the bindings.
 
-> + */
-> +
-> +#include <linux/platform_device.h>
-> +#include <linux/uio_driver.h>
-> +#include <linux/stringify.h>
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <asm/fsl_85xx_cache_sram.h>
-> +
-> +#define DRIVER_VERSION	"0.1.0"
+Well, the bindings should describe what is common for all SoC
+and they are quite different in what they need in addition.
 
-Don't do DRIVER_VERSIONs, they never work once the code is in the kernel
-tree.
+Thererfore we have no "additionalProperties: false" in the
+bindings [PATCH v6 01/12].
 
-> +#define DRIVER_NAME	"uio_fsl_85xx_cache_sram"
+>=20
+>> +
+>> +                       power-domains =3D <&pd S5PV210_PD_G3D>;
+>=20
+> Ditto
 
-KBUILD_MODNAME?
+In this case it might be possible to add the clock/power-domains
+etc. to a wrapper node compatible to "simple-pm-bus" or similar
+and make the gpu a child of it.
 
-> +#define UIO_NAME	"uio_cache_sram"
-> +
-> +static const struct of_device_id uio_mpc85xx_l2ctlr_of_match[] = {
-> +	{	.compatible = "uio,fsl,p2020-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p2010-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1020-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1011-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1013-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1022-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,mpc8548-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,mpc8544-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,mpc8572-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,mpc8536-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1021-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1012-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1025-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1016-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1024-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1015-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,p1010-l2-cache-controller",	},
-> +	{	.compatible = "uio,fsl,bsc9131-l2-cache-controller",	},
-> +	{},
-> +};
-> +
-> +static void uio_info_free_internal(struct uio_info *info)
-> +{
-> +	struct uio_mem *uiomem = &info->mem[0];
-> +
-> +	while (uiomem < &info->mem[MAX_UIO_MAPS]) {
-> +		if (uiomem->size) {
-> +			mpc85xx_cache_sram_free(uiomem->internal_addr);
-> +			kfree(uiomem->name);
-> +		}
-> +		uiomem++;
-> +	}
-> +}
-> +
-> +static int uio_fsl_85xx_cache_sram_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *parent = pdev->dev.of_node;
-> +	struct device_node *node = NULL;
-> +	struct uio_info *info;
-> +	struct uio_mem *uiomem;
-> +	const char *dt_name;
-> +	u32 mem_size;
-> +	u32 align;
-> +	void *virt;
-> +	phys_addr_t phys;
-> +	int ret = -ENODEV;
-> +
-> +	/* alloc uio_info for one device */
-> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +	if (!info) {
-> +		dev_err(&pdev->dev, "kzalloc uio_info failed\n");
+@Jontahan: can you please give it a try?
 
-kzalloc already says this.
 
-> +		ret = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +
-> +	/* get optional uio name */
-> +	if (of_property_read_string(parent, "uio_name", &dt_name))
-> +		dt_name = UIO_NAME;
-> +
-> +	info->name = kstrdup(dt_name, GFP_KERNEL);
-> +	if (!info->name) {
-> +		dev_err(&pdev->dev, "error kstrdup uio_name\n");
+>=20
+>> +
+>> +                       assigned-clocks =3D <&clocks MOUT_G3D>, =
+<&clocks DOUT_G3D>;
+>> +                       assigned-clock-rates =3D <0>, <66700000>;
+>> +                       assigned-clock-parents =3D <&clocks =
+MOUT_MPLL>;
+>=20
+> Probably this should have status disabled because you do not set
+> regulator supply.
+>=20
+> Best regards,
+> Krzysztof
 
-kstrdup should have given you an error string already, right?
+BR and thanks,
+Nikolaus
 
-> +		ret = -ENOMEM;
-> +		goto err_info_free;
-> +	}
-> +
-> +	uiomem = &info->mem[0];
-> +	for_each_child_of_node(parent, node) {
-> +		if (!node) {
-> +			dev_err(&pdev->dev, "device's OF-node is NULL\n");
-
-How can this happen?
-
-> +			continue;
-
-Why not error out?
-
-> +		}
-> +
-> +		ret = of_property_read_u32(node, "cache-mem-size", &mem_size);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "missing cache-mem-size value\n");
-
-You don't exit?
-
-> +			continue;
-> +		}
-> +
-> +		if (mem_size == 0) {
-> +			dev_err(&pdev->dev, "cache-mem-size should not be 0\n");
-
-Again, you don't exit?
-
-> +			continue;
-> +		}
-> +
-> +		align = 2;
-> +		while (align < mem_size)
-> +			align *= 2;
-> +		virt = mpc85xx_cache_sram_alloc(mem_size, &phys, align);
-> +		if (!virt) {
-> +			dev_err(&pdev->dev, "allocate 0x%x cache-mem failed\n", mem_size);
-
-You don't exit?
-
-> +			continue;
-> +		}
-> +
-> +		uiomem->memtype = UIO_MEM_PHYS;
-> +		uiomem->addr = phys;
-> +		uiomem->size = mem_size;
-> +		uiomem->name = kstrdup(node->name, GFP_KERNEL);;
-> +		uiomem->internal_addr = virt;
-> +		++uiomem;
-> +
-> +		if (uiomem >= &info->mem[MAX_UIO_MAPS]) {
-> +			dev_warn(&pdev->dev, "device has more than "
-> +				 __stringify(MAX_UIO_MAPS)
-> +				 " I/O memory resources.\n");
-
-What can someone do with that?
-
-thanks,
-
-greg k-h
