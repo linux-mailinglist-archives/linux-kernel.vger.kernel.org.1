@@ -2,264 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D691AABF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537871AABFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414713AbgDOPeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2636948AbgDOPeT (ORCPT
+        id S1414733AbgDOPep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:34:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43876 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1414720AbgDOPee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:34:19 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E98C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:34:18 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:914e:4085:6cfb:e960])
-        by michel.telenet-ops.be with bizsmtp
-        id T3aB2200D3Hq6Dg063aBPZ; Wed, 15 Apr 2020 17:34:15 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jOk3H-0004tg-5J; Wed, 15 Apr 2020 17:34:11 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jOk3H-0007qP-2Q; Wed, 15 Apr 2020 17:34:11 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Miao <eric.miao@nvidia.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v5] ARM: boot: Obtain start of physical memory from DTB
-Date:   Wed, 15 Apr 2020 17:34:09 +0200
-Message-Id: <20200415153409.30112-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        Wed, 15 Apr 2020 11:34:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586964873;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EOsn9WzC2Po9PCvhFuHMXouRRoh7kiQm7oVuP+zKwJQ=;
+        b=hwn9oie776lvjt1MqBo0gV5zgnVgT5cKDp/Se48IZ7faeO53EuvJl6TSEi4KMF7a7hwGMF
+        s0XV6T2W3dRJSVDCvdU0eVd1Vv6fR72U1/zeIIjH7Y4oOMuo9dELnhE3M6JyhO144YeuT2
+        1dfFW/qWB3XaFUmajZvoBuB3SmemApI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-388-4X0w2peNPB6VLyvD1vLIJg-1; Wed, 15 Apr 2020 11:34:29 -0400
+X-MC-Unique: 4X0w2peNPB6VLyvD1vLIJg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCC2C6A6;
+        Wed, 15 Apr 2020 15:34:27 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E200560BF1;
+        Wed, 15 Apr 2020 15:34:20 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 11:34:17 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Amol Grover <frextrite@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-audit@redhat.com, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] kernel: audit.c: Add __rcu notation to RCU pointer
+Message-ID: <20200415153417.svpbimg66vbeuk7u@madcap2.tricolour.ca>
+References: <20191128153203.GA23803@workstation-kernel-dev>
+ <20191130020742.GF157739@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191130020742.GF157739@google.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the start address of physical memory is obtained by masking
-the program counter with a fixed mask of 0xf8000000.  This mask value
-was chosen as a balance between the requirements of different platforms.
-However, this does require that the start address of physical memory is
-a multiple of 128 MiB, precluding booting Linux on platforms where this
-requirement is not fulfilled.
+On 2019-11-29 21:07, Joel Fernandes wrote:
+> On Thu, Nov 28, 2019 at 09:02:03PM +0530, Amol Grover wrote:
+> > add __rcu notation to RCU protected global pointer auditd_conn
+> 
+> Again, please use proper punctuation and captilization. This is unacceptable.
+> Please put more effort into changelog.
+> 
+> Otherwise the patch diff itself looks good to me, with the above nit
+> corrected, you could add my tag to the next revision:
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> thanks,
+> 
+>  - Joel
+> 
+> > 
+> > Fixes multiple instances of sparse error:
+> > error: incompatible types in comparison expression
+> > (different address spaces)
 
-Fix this limitation by obtaining the start address from the DTB instead,
-if available (either explicitly passed, or appended to the kernel).
-Fall back to the traditional method when needed.
+Amol or Joel: Is there a reproducer recipe for this?
 
-This allows to boot Linux on r7s9210/rza2mevb using the 64 MiB of SDRAM
-on the RZA2MEVB sub board, which is located at 0x0C000000 (CS3 space),
-i.e. not at a multiple of 128 MiB.
+> > Signed-off-by: Amol Grover <frextrite@gmail.com>
+> > ---
+> > v2:
+> > - fix erroneous RCU pointer initialization
+> > 
+> >  kernel/audit.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/audit.c b/kernel/audit.c
+> > index da8dc0db5bd3..ff7cfc61f53d 100644
+> > --- a/kernel/audit.c
+> > +++ b/kernel/audit.c
+> > @@ -102,12 +102,13 @@ struct audit_net {
+> >   * This struct is RCU protected; you must either hold the RCU lock for reading
+> >   * or the associated spinlock for writing.
+> >   */
+> > -static struct auditd_connection {
+> > +struct auditd_connection {
+> >  	struct pid *pid;
+> >  	u32 portid;
+> >  	struct net *net;
+> >  	struct rcu_head rcu;
+> > -} *auditd_conn = NULL;
+> > +};
+> > +static struct auditd_connection __rcu *auditd_conn;
+> >  static DEFINE_SPINLOCK(auditd_conn_lock);
+> >  
+> >  /* If audit_rate_limit is non-zero, limit the rate of sending audit records
+> > -- 
+> > 2.24.0
 
-Suggested-by: Nicolas Pitre <nico@fluxnic.net>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
----
-v5:
-  - Add Tested-by, Reviewed-by,
-  - Round up start of memory to satisfy 16 MiB alignment rule,
+- RGB
 
-v4:
-  - Fix stack location after commit 184bf653a7a452c1 ("ARM:
-    decompressor: factor out routine to obtain the inflated image
-    size"),
-
-v3:
-  - Add Reviewed-by,
-  - Fix ATAGs with appended DTB,
-  - Add Tested-by,
-
-v2:
-  - Use "cmp r0, #-1", instead of "cmn r0, #1",
-  - Add missing stack setup,
-  - Support appended DTB.
----
- arch/arm/boot/compressed/Makefile            |  6 ++-
- arch/arm/boot/compressed/fdt_get_mem_start.c | 57 ++++++++++++++++++++
- arch/arm/boot/compressed/head.S              | 54 ++++++++++++++++++-
- 3 files changed, 115 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm/boot/compressed/fdt_get_mem_start.c
-
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 9c11e7490292f0e0..82e4cee97cb5d905 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -86,12 +86,15 @@ libfdt_objs	:= $(addsuffix .o, $(basename $(libfdt)))
- $(addprefix $(obj)/,$(libfdt) $(libfdt_hdrs)): $(obj)/%: $(srctree)/scripts/dtc/libfdt/%
- 	$(call cmd,shipped)
- 
--$(addprefix $(obj)/,$(libfdt_objs) atags_to_fdt.o): \
-+$(addprefix $(obj)/,$(libfdt_objs) atags_to_fdt.o fdt_get_mem_start.o): \
- 	$(addprefix $(obj)/,$(libfdt_hdrs))
- 
- ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
- OBJS	+= $(libfdt_objs) atags_to_fdt.o
- endif
-+ifeq ($(CONFIG_USE_OF),y)
-+OBJS	+= $(libfdt_objs) fdt_get_mem_start.o
-+endif
- 
- targets       := vmlinux vmlinux.lds piggy_data piggy.o \
- 		 lib1funcs.o ashldi3.o bswapsdi2.o \
-@@ -115,6 +118,7 @@ CFLAGS_fdt.o := $(nossp-flags-y)
- CFLAGS_fdt_ro.o := $(nossp-flags-y)
- CFLAGS_fdt_rw.o := $(nossp-flags-y)
- CFLAGS_fdt_wip.o := $(nossp-flags-y)
-+CFLAGS_fdt_get_mem_start.o := $(nossp-flags-y)
- 
- ccflags-y := -fpic $(call cc-option,-mno-single-pic-base,) -fno-builtin \
- 	     -I$(obj) $(DISABLE_ARM_SSP_PER_TASK_PLUGIN)
-diff --git a/arch/arm/boot/compressed/fdt_get_mem_start.c b/arch/arm/boot/compressed/fdt_get_mem_start.c
-new file mode 100644
-index 0000000000000000..e29caa4cbfecb36a
---- /dev/null
-+++ b/arch/arm/boot/compressed/fdt_get_mem_start.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/kernel.h>
-+#include <linux/sizes.h>
-+
-+#include <libfdt.h>
-+
-+static const void *getprop(const void *fdt, const char *node_path,
-+			   const char *property)
-+{
-+	int offset = fdt_path_offset(fdt, node_path);
-+
-+	if (offset == -FDT_ERR_NOTFOUND)
-+		return NULL;
-+
-+	return fdt_getprop(fdt, offset, property, NULL);
-+}
-+
-+static uint32_t get_addr_size(const void *fdt)
-+{
-+	const __be32 *addr_len = getprop(fdt, "/", "#address-cells");
-+
-+	if (!addr_len) {
-+		/* default */
-+		return 1;
-+	}
-+
-+	return fdt32_to_cpu(*addr_len);
-+}
-+
-+/*
-+ * Get the start of physical memory
-+ */
-+
-+unsigned long fdt_get_mem_start(const void *fdt)
-+{
-+	uint32_t addr_size, mem_start;
-+	const __be32 *memory;
-+
-+	if (!fdt)
-+		return -1;
-+
-+	if (*(__be32 *)fdt != cpu_to_fdt32(FDT_MAGIC))
-+		return -1;
-+
-+	/* Find the first memory node */
-+	memory = getprop(fdt, "/memory", "reg");
-+	if (!memory)
-+		return -1;
-+
-+	/* There may be multiple cells on LPAE platforms */
-+	addr_size = get_addr_size(fdt);
-+
-+	mem_start = fdt32_to_cpu(memory[addr_size - 1]);
-+	/* Must be a multiple of 16 MiB for phys/virt patching */
-+	return round_up(mem_start, SZ_16M);
-+}
-diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-index cabdd8f4a2482e2b..2d2a42865b3974da 100644
---- a/arch/arm/boot/compressed/head.S
-+++ b/arch/arm/boot/compressed/head.S
-@@ -254,8 +254,58 @@ not_angel:
- 		.text
- 
- #ifdef CONFIG_AUTO_ZRELADDR
-+#ifdef CONFIG_USE_OF
- 		/*
--		 * Find the start of physical memory.  As we are executing
-+		 * Find the start of physical memory.
-+		 * Try the DTB first, if available.
-+		 */
-+		adr	r0, LC0
-+		ldr	r1, [r0]	@ get absolute LC0
-+		ldr	sp, [r0, #24]	@ get stack location
-+		sub	r1, r0, r1	@ compute relocation offset
-+		add	sp, sp, r1	@ apply relocation
-+
-+#ifdef CONFIG_ARM_APPENDED_DTB
-+		/*
-+		 * Look for an appended DTB. If found, use it and
-+		 * move stack away from it.
-+		 */
-+		ldr	r6, [r0, #12]	@ get &_edata
-+		add	r6, r6, r1	@ relocate it
-+		ldmia	r6, {r0, r5}	@ get DTB signature and size
-+#ifndef __ARMEB__
-+		ldr	r1, =0xedfe0dd0	@ sig is 0xd00dfeed big endian
-+		/* convert DTB size to little endian */
-+		eor	r2, r5, r5, ror #16
-+		bic	r2, r2, #0x00ff0000
-+		mov	r5, r5, ror #8
-+		eor	r5, r5, r2, lsr #8
-+#else
-+		ldr	r1, =0xd00dfeed
-+#endif
-+		cmp	r0, r1		@ do we have a DTB there?
-+		bne	1f
-+
-+		/* preserve 64-bit alignment */
-+		add	r5, r5, #7
-+		bic	r5, r5, #7
-+		add	sp, sp, r5	@ if so, move stack above DTB
-+		mov	r0, r6		@ and extract memory start from DTB
-+		b	2f
-+
-+1:
-+#endif /* CONFIG_ARM_APPENDED_DTB */
-+
-+		mov	r0, r8
-+2:
-+		bl	fdt_get_mem_start
-+		mov	r4, r0
-+		cmp	r0, #-1
-+		bne	1f
-+#endif /* CONFIG_USE_OF */
-+
-+		/*
-+		 * Fall back to the traditional method.  As we are executing
- 		 * without the MMU on, we are in the physical address space.
- 		 * We just need to get rid of any offset by aligning the
- 		 * address.
-@@ -273,6 +323,8 @@ not_angel:
- 		 */
- 		mov	r4, pc
- 		and	r4, r4, #0xf8000000
-+
-+1:
- 		/* Determine final kernel image address. */
- 		add	r4, r4, #TEXT_OFFSET
- #else
--- 
-2.17.1
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
