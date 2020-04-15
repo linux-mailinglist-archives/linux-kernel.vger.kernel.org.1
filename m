@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AAF1A8F82
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5A81A8F84
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392210AbgDOAGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 20:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S2392228AbgDOAGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 20:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634554AbgDOAFB (ORCPT
+        with ESMTP id S2634556AbgDOAFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:05:01 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7376C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 188so659272pgj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
+        Tue, 14 Apr 2020 20:05:03 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042DEC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:03 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h11so567633plr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=ESsKmnN/8XjLZGFCRgaE4t6oba6cTfi788uzFnxL0dM=;
-        b=B8Zpz7TgZ1vEk8R/IpXo/21kD7KbRuD+XLLWXecF+QlLac8VLY2jSNWWBUXQwDhEdH
-         lqqcgClcDh2UJeu8UR4B8dAEiRwzdwUJ3wq/Rdc814Jt8PsyHkUwIDPC7Bu5ApdVzgqc
-         Pfl+mVhUnQpuYKHQMNXiUmkRnL3+OostdVxdmsYR4y63MEzRq0S8Lm5sLkP6zs7m1C1U
-         UX+ZNvmkNypoZBKFiH0Aye9M5y+wEYwVZoPbv0T2HxR4RLDnIEWF8JOGjBmzOvlV0Fo2
-         pK+8Q2H/XmRMQijHm6TF5DygcosQAubi/LPQYJiy0xpzyz7fsMTUpSyFBu/D8p45eevb
-         mDbw==
+        bh=KR6uSQVGwCyM0LnuYfYFDEMfJVon1ni6IuCovgn4/s0=;
+        b=rqKtzwFZVZWUOiIrgJExufYVXu3Tq6MqN9fZu+ZH2YWZFYDd36z9cKaQb1z64mO7tH
+         MqHd3c/DVdGpEppY6hDK2NUcvYFc9GB0boflgmYFjwRnXpj7C88Raa2vtIKHZltPbaZY
+         Yq4XjmwAMnLhc5OAOpmyCEprZER5wgs9TG0NXMxxpAvZslYPLWReI9hEIrUglD3v33nE
+         uvdcK2H6ZpBcTwk6YibzffwOAU+UcafvBxlbh/n+dtdh5ojeU1wXawqu+7tuuraTSg2r
+         hAMC56p50b97myh5kSGVE5o5KJpXUH8ugjcM1X8zg5XSTobhilOhGVEwO0sF61kP7SMB
+         57ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=ESsKmnN/8XjLZGFCRgaE4t6oba6cTfi788uzFnxL0dM=;
-        b=eFpb2rElusuFoHUg9emmoMQ7PrN0STaoidzSLDbHOlsKNMIH2DE5q3Ick4cJdzv2GE
-         HObiX6ybUcouHJGkmhOYrAw3EHiyMjcPZgPrPo04cwnOamLCtGdV674xMad0+vMbauyB
-         8rtUKPooQUw7Elux11dV5UraGTa/zjFYIFg8r9SE0HXaKwDBAX4FTsDU1+FrMP6vGuRn
-         fYWmnQwSJCrR2vzcW8jCcrroXx1yxqdTzW0Y5Pxt+sPal23z7D/a/t143nytS22iOx6P
-         IjKuoFPjRDIUIFvm30IngxOIFeOWGLRehW33obrigNrGWYmHayvnrfU5+O+ndxBwGern
-         CYpQ==
-X-Gm-Message-State: AGi0PuZaytiV4f0HT8n4j+c+oyQJZaP6y3TMInh0QSv9jA/6uGrunktu
-        4bAWGhHIKt9qrGPK87+ZSILI8A==
-X-Google-Smtp-Source: APiQypKpwtllReFLyE2xu1cCo0pm7Ljw/fcrwwCvtindDxqER/rQzn6+x2HPLd5dFwKyTkquVr7vCQ==
-X-Received: by 2002:a63:d904:: with SMTP id r4mr24446955pgg.323.1586909101065;
-        Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
+        bh=KR6uSQVGwCyM0LnuYfYFDEMfJVon1ni6IuCovgn4/s0=;
+        b=IjhZKlYgBZh/GBkvoJpYNEXQvfF/XZWaVbuzd70CA1ytLybHQunDKuGW70zgOTxbWE
+         Y9+Xca/0+nfzBZ6fMwDMJAmanixdS7C7S+RHRZyDWzh6QVh9RVQlTTKh1CRoejIuJhqj
+         v3w10Y+rpkbq9m4JYzurxNssM7i3Q0VHi1QUgD+tsmmAMaBVTRZc+m3XWKdglUEP/ivD
+         sgQ/OXPHuI+yKPGSqdPEQ3GPI8RnrbUQBb8qC6FF0GMlIe6kX4qvh1Zr3XfxUvaZ1/Yh
+         EqQrED/g2LJEbthgXEg+DYg9Rz+MrFNFHoGqG7mHpZMQXCnH6jIKIVG/L9hwfcgO4VbY
+         UKHA==
+X-Gm-Message-State: AGi0PuZzFTzuAiRjA5/JhHUGWKUOH9R8wuXuTbL8C/QN0Ld8WFk51FHn
+        2+ntp8bfDO5YxL+stAwPXFHf2cxW+Io=
+X-Google-Smtp-Source: APiQypITsrLE30A4dNLnVHx0jF/AXyPl+UHgHDtx9Gu90EvJXODyZih95z0Ar2V67vHkb70mSHKTvg==
+X-Received: by 2002:a17:90a:22e9:: with SMTP id s96mr2911139pjc.46.1586909102385;
+        Tue, 14 Apr 2020 17:05:02 -0700 (PDT)
 Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id 128sm1061161pfx.187.2020.04.14.17.05.00
+        by smtp.gmail.com with ESMTPSA id z7sm7286945pfz.216.2020.04.14.17.05.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 17:05:00 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 17:04:59 -0700 (PDT)
+        Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
 From:   David Rientjes <rientjes@google.com>
 X-X-Sender: rientjes@chino.kir.corp.google.com
 To:     Christoph Hellwig <hch@lst.de>,
@@ -59,9 +59,10 @@ cc:     Brijesh Singh <brijesh.singh@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org
-Subject: [patch 5/7] dma-pool: add pool sizes to debugfs
+Subject: [patch 6/7] x86/mm: unencrypted non-blocking DMA allocations use
+ coherent pools
 In-Reply-To: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
-Message-ID: <alpine.DEB.2.22.394.2004141704050.68516@chino.kir.corp.google.com>
+Message-ID: <alpine.DEB.2.22.394.2004141704190.68516@chino.kir.corp.google.com>
 References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
@@ -71,95 +72,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The atomic DMA pools can dynamically expand based on non-blocking
-allocations that need to use it.
+When CONFIG_AMD_MEM_ENCRYPT is enabled and a device requires unencrypted
+DMA, all non-blocking allocations must originate from the atomic DMA
+coherent pools.
 
-Export the sizes of each of these pools, in bytes, through debugfs for
-measurement.
+Select CONFIG_DMA_COHERENT_POOL for CONFIG_AMD_MEM_ENCRYPT.
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: David Rientjes <rientjes@google.com>
 ---
- kernel/dma/pool.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index cf052314d9e4..3e22022c933b 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (C) 2020 Google LLC
-  */
-+#include <linux/debugfs.h>
- #include <linux/dma-direct.h>
- #include <linux/dma-noncoherent.h>
- #include <linux/dma-contiguous.h>
-@@ -15,6 +16,11 @@
- static struct gen_pool *atomic_pool_dma __ro_after_init;
- static struct gen_pool *atomic_pool_dma32 __ro_after_init;
- static struct gen_pool *atomic_pool_kernel __ro_after_init;
-+#ifdef CONFIG_DEBUG_FS
-+static unsigned long pool_size_dma;
-+static unsigned long pool_size_dma32;
-+static unsigned long pool_size_kernel;
-+#endif
- 
- #define DEFAULT_DMA_COHERENT_POOL_SIZE  SZ_256K
- static size_t atomic_pool_size = DEFAULT_DMA_COHERENT_POOL_SIZE;
-@@ -29,6 +35,38 @@ static int __init early_coherent_pool(char *p)
- }
- early_param("coherent_pool", early_coherent_pool);
- 
-+#ifdef CONFIG_DEBUG_FS
-+static void __init dma_atomic_pool_debugfs_init(void)
-+{
-+	struct dentry *root;
-+
-+	root = debugfs_create_dir("dma_pools", NULL);
-+	if (IS_ERR_OR_NULL(root))
-+		return;
-+
-+	debugfs_create_ulong("pool_size_dma", 0400, root, &pool_size_dma);
-+	debugfs_create_ulong("pool_size_dma32", 0400, root, &pool_size_dma32);
-+	debugfs_create_ulong("pool_size_kernel", 0400, root, &pool_size_kernel);
-+}
-+
-+static void dma_atomic_pool_size_add(gfp_t gfp, size_t size)
-+{
-+	if (gfp & __GFP_DMA)
-+		pool_size_dma += size;
-+	else if (gfp & __GFP_DMA32)
-+		pool_size_dma32 += size;
-+	else
-+		pool_size_kernel += size;
-+}
-+#else
-+static inline void dma_atomic_pool_debugfs_init(void)
-+{
-+}
-+static inline void dma_atomic_pool_size_add(gfp_t gfp, size_t size)
-+{
-+}
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 			      gfp_t gfp)
- {
-@@ -76,6 +114,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 	if (ret)
- 		goto encrypt_mapping;
- 
-+	dma_atomic_pool_size_add(gfp, pool_size);
- 	return 0;
- 
- encrypt_mapping:
-@@ -160,6 +199,8 @@ static int __init dma_atomic_pool_init(void)
- 		if (!atomic_pool_dma32)
- 			ret = -ENOMEM;
- 	}
-+
-+	dma_atomic_pool_debugfs_init();
- 	return ret;
- }
- postcore_initcall(dma_atomic_pool_init);
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 1d6104ea8af0..2bf2222819d3 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1520,6 +1520,7 @@ config X86_CPA_STATISTICS
+ config AMD_MEM_ENCRYPT
+ 	bool "AMD Secure Memory Encryption (SME) support"
+ 	depends on X86_64 && CPU_SUP_AMD
++	select DMA_COHERENT_POOL
+ 	select DYNAMIC_PHYSICAL_MASK
+ 	select ARCH_USE_MEMREMAP_PROT
+ 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
