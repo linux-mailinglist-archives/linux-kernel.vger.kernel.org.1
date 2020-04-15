@@ -2,141 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB4A1AAA84
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91301AAA92
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636740AbgDOOmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:42:38 -0400
-Received: from mail-eopbgr40085.outbound.protection.outlook.com ([40.107.4.85]:61607
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2636742AbgDOOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:41:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ex+0SpgjWvUGBYW12OhBAwYgg4VxvsW4IuQleWGEqsnxAc8qCrMDbbOy95AnxnKmf+nsGZ+SUkF8fHToI8eISpRoCmCDOox9Xw2AVQ01TecD28rMa3KaRggtS/10vdei26iqFUVDKK+JZO0GYDUgy5jnJQhrkA+9OZ0eUeN4hhqhd76kzKZb+IqQf33aeBTUSsY/+ogA6jSD0BK4v4cKtrGF8hxSxV0/XZsxdg1L3LnTcw/t708pmQI/+vGKRBPkwwpXTqlzfa7I+7OFG5sQ42Yk/MoBSc65dvN7cXyzR+iSzrx5nCdTcB//DATftr8RYyhYVOFd+HidpTOO5rGZIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UN5QnRcedVZTuVlK057N6B0N5v9K0C2AFFtlJG+C85E=;
- b=OfkLgAw+wx29DLhHrSWcorAGJXIQx0/cgMtFYhBQsxJbb19uuVDjdwmZavM1VE9xQkBblL9OlBYNIbKevJ9PejXC7WlZSq3Yi7CRqBlqp6X1Y7JmXEgQx1kFdk25vLcUL2Ojjr9mjy5HYwRZBn7av2hupOoPNK9EF2NLcPwAlWBrvQ+PB8MTl1IPpmWprxJrgOUXPyDGVWkqYzUTpVDiJANaSdsbRU60ghF9vYB/qgTYnrTbP2/xJMThIEufd8bVoevCWa972ogjHG99/QsRtzkbq7/+eLumnybbPudbu9BscTSl5y1nPTmWA0AEl/7M1+fio0yO2cG9N/5TpNK3yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UN5QnRcedVZTuVlK057N6B0N5v9K0C2AFFtlJG+C85E=;
- b=fxZIjOVQQIYcH1JUGv8SkKrnYgWbIqs9hxTJn3naT8eLml5sbOffS+9JD93TNzd783CO53jNbxgWnCB/wdQKMslCJjeRpw4598STmxJPufKwkpaIyvOb/73KsWbXfcIeUnvZ+OCB6Ssys6evsgXUucd0MnvXorQKDfawiJGAZsc=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5533.eurprd05.prod.outlook.com (2603:10a6:803:96::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Wed, 15 Apr
- 2020 14:41:29 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
- 14:41:29 +0000
-Date:   Wed, 15 Apr 2020 11:41:25 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
-Message-ID: <20200415144125.GU11945@mellanox.com>
-References: <20200321003108.22941-1-rcampbell@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200321003108.22941-1-rcampbell@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR19CA0055.namprd19.prod.outlook.com
- (2603:10b6:208:19b::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S370901AbgDOOnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2634584AbgDOOmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:42:22 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E69C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 07:42:22 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 188so1565364pgj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 07:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TrCr8YaKtrXKuZI1mDLlJ9OwmvLg/1PUlN/6+Ie7Iy0=;
+        b=Rzm5dxhTeaUONGsH972GQ1cAaKsulUeSHXueDBEsqI8cmXTh3SCPNcNqjQ5CFDTa5h
+         EBQ9soIZStcseclUh0yP5zlUIowfh0ce0sZYGy/PfzX/U+/NGIrjEh3eABab7h+60/hz
+         pgsokVn1zTw/hG3mJPqkplXu3r554x7uKaTXB0r0q3T6r1ELTx5v9wViytUbbto8Q8Ip
+         dpym/NWKqOLMvWLZOorTFDWkgr536ve61EELqLbC0ALfHW0VWLJHXG9ZAzadzRLExZCW
+         X2qP2xQy66PsBltBjdCkqzG3vbqeK2UOlflEoG9zaYgGLAsb6H997UH8MDClWBTP/Uka
+         +rlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TrCr8YaKtrXKuZI1mDLlJ9OwmvLg/1PUlN/6+Ie7Iy0=;
+        b=aqJed+NzxvdDqPV2KGI2bsUQnL8O1DJVi6XPlG6jnb91ukKA0bHR0yNX+AwzuR/pMz
+         8QMO9whsBjOVIgHlOQwM82eNO4xlBkjnH4tWHIR6P8aOJmTf69LZUBlDwOZiXESCuIy8
+         JdI/9sbyG2//BFp5mhQLZihrQwjZRn/8aj2lFmqz7BBEZjaXZ8S+ou36jQevvhRbOQgi
+         U5bTI8i5qXKCpv09YYXCjpZR5XtXvSK3NWXHmc6VtAXlAlgV4J74J/DM30XvQUghvO5i
+         9wxGH35wi4qTckCqeKvEtWE3iQL9h8Ne4nPnYpudF+hzNyWuDmhczOWe370EK3j3inQp
+         OZFg==
+X-Gm-Message-State: AGi0PuaXLw/YlnbxL/EzO4XskUOJozoaq9tbv18RCWDXbhkn90D2ca9f
+        dQxxqcLdp78xLiBVmacTxWirWw==
+X-Google-Smtp-Source: APiQypKrD/31MKHUWmycbWqZm3NAXgiF4vyGNvf1olANylF0PjsMdQ5ZiArHj6E665hYlxTSD05JxQ==
+X-Received: by 2002:aa7:8d97:: with SMTP id i23mr27432269pfr.325.1586961741436;
+        Wed, 15 Apr 2020 07:42:21 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id i15sm2199851pfo.195.2020.04.15.07.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 07:42:20 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 07:42:17 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Ilie Halip <ilie.halip@gmail.com>
+Cc:     linux-riscv@lists.infradead.org,
+        Jordan Rupprecht <rupprecht@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mao Han <han_mao@c-sky.com>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] riscv: fix vdso build with lld
+Message-ID: <20200415144217.cxxdfeeepzgikp4n@google.com>
+References: <20200415142959.25673-1-ilie.halip@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR19CA0055.namprd19.prod.outlook.com (2603:10b6:208:19b::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.16 via Frontend Transport; Wed, 15 Apr 2020 14:41:27 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jOjED-0007Uk-5I; Wed, 15 Apr 2020 11:41:25 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 032dd051-1370-4d2c-6a22-08d7e14b1481
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5533:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB55339E3891DBF7E4FEFCE2D5CFDB0@VI1PR05MB5533.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-Forefront-PRVS: 0374433C81
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(136003)(366004)(376002)(346002)(396003)(66476007)(1076003)(8936002)(52116002)(81156014)(8676002)(9746002)(4326008)(33656002)(5660300002)(66946007)(316002)(66556008)(9786002)(54906003)(86362001)(7416002)(2616005)(6916009)(36756003)(2906002)(186003)(478600001)(26005)(24400500001);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YpBxg11EYDmValOU/rCKBsdsr9b9/w/QMIGMupqMlQHq5mTeKy1W3J2Hnza62QrRutuO8PfpoWeXSEPo0shMg4i/PJS0nU1eqgsTYDFgXc3vtbPYKPr1UsetDtFSxUPkSQ+4pdhR+C11mFhjHxFz9Hy4YLgCkHmLMWx7JQi8r58XNiZypKH0sJN6n/v48LOqWFgM/EupckYozNGhpRygbFspvG/gKQ7YHilL6lJC+YIF/CH6alAsAATKike9ERQ5IydT19xdEYlkmMjWbIo7kgCBpVnTgaxwtHLRBbuETNOtDvqYDleDHrqKyvQa6xvLPh3UXFtGN/IqLDxh+a761ThbbyvRxeO+FBktJLcOloOZ8BK0QDDgHkA+pJNKQBpU+CJUIOu7enQ7IvPP3TlMKs8C31VrM7cEWAxulAe0x9LOEoNHmjHRXTIL1fS5eRtqYed8WGGsw9xQt8rzoH8VyOA+4zHddtNjhf9l8Z07nH77um2VOT7MEeSGQMfC+vaY
-X-MS-Exchange-AntiSpam-MessageData: cqSvC6QoY+WBbpkLrhNr0uopG/avHTbOW1kLmJYRva2rtt02/q6NB3iIwusTj9vBAJXuUua9peVN5j+vgUI7K2wZ+sGLXl/KtLzCUWCfjYi5R7cwPhg4liNfSJKxtmeFDgGHh+h0TTrX/DDMWKBdGg==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 032dd051-1370-4d2c-6a22-08d7e14b1481
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2020 14:41:28.9551
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3xZ/q+/oN3DXhbq42Y9j169NR7GypD8m+tEMpVLiXf4aKy1e7DqcEJNfbwDXwEWGYVlvpVl5EoftF3CBzK+NIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5533
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200415142959.25673-1-ilie.halip@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
-> This series adds basic self tests for HMM and are intended for Jason
-> Gunthorpe's rdma tree which has a number of HMM patches applied.
+On 2020-04-15, Ilie Halip wrote:
+>When building with the LLVM linker this error occurrs:
+>    LD      arch/riscv/kernel/vdso/vdso-syms.o
+>  ld.lld: error: no input files
+>
+>This happens because the lld treats -R as an alias to -rpath, as opposed
+>to ld where -R means --just-symbols.
+>
+>Use the long option name for compatibility between the two.
+>
+>Link: https://github.com/ClangBuiltLinux/linux/issues/805
+>Reported-by: Dmitry Golovin <dima@golovin.in>
+>Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+>
+>---
+>Changed in v2:
+>  * a comment line dropped, another one slightly reworded
+>  * added Nick's Reviewed-by
+>---
+> arch/riscv/kernel/vdso/Makefile | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+>diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+>index 33b16f4212f7..a4ee3a0e7d20 100644
+>--- a/arch/riscv/kernel/vdso/Makefile
+>+++ b/arch/riscv/kernel/vdso/Makefile
+>@@ -33,15 +33,15 @@ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+> 	$(call if_changed,vdsold)
+>
+> # We also create a special relocatable object that should mirror the symbol
+>-# table and layout of the linked DSO.  With ld -R we can then refer to
+>-# these symbols in the kernel code rather than hand-coded addresses.
+>+# table and layout of the linked DSO. With ld --just-symbols we can then
+>+# refer to these symbols in the kernel code rather than hand-coded addresses.
+>
+> SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
+> 	-Wl,--build-id -Wl,--hash-style=both
+> $(obj)/vdso-dummy.o: $(src)/vdso.lds $(obj)/rt_sigreturn.o FORCE
+> 	$(call if_changed,vdsold)
+>
+>-LDFLAGS_vdso-syms.o := -r -R
+>+LDFLAGS_vdso-syms.o := -r --just-symbols
+> $(obj)/vdso-syms.o: $(obj)/vdso-dummy.o FORCE
+> 	$(call if_changed,ld)
+>
+>-- 
+>2.17.1
 
-Here are some hunks I noticed while testing this:
+https://lore.kernel.org/linux-riscv/20200402175354.pzhzhumlqsjk66nu@google.com/
 
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2201,7 +2201,8 @@ config TEST_MEMINIT
- 
- config TEST_HMM
- 	tristate "Test HMM (Heterogeneous Memory Management)"
--	depends on DEVICE_PRIVATE
-+	depends on TRANSPARENT_HUGEPAGE
-+	select DEVICE_PRIVATE
- 	select HMM_MIRROR
- 	select MMU_NOTIFIER
- 	help
-
-It fails testing if TRANSPARENT_HUGEPAGE is not on
-
-@@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
- 	spin_lock_init(&mdevice->lock);
- 
- 	cdev_init(&mdevice->cdevice, &dmirror_fops);
-+	mdevice->cdevice.owner = THIS_MODULE;
- 	ret = cdev_add(&mdevice->cdevice, dev, 1);
- 	if (ret)
- 		return ret;
-
-The use of cdev without a struct device is super weird, but it still
-needs this
-
-diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-index 461e4a99a362cf..0647b525a62564 100755
---- a/tools/testing/selftests/vm/test_hmm.sh
-+++ b/tools/testing/selftests/vm/test_hmm.sh
-@@ -59,7 +59,7 @@ run_smoke()
- 	echo "Running smoke test. Note, this test provides basic coverage."
- 
- 	load_driver
--	./hmm-tests
-+	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
- 	unload_driver
- }
-
-Make it runnably reliably
-
-Jason
+Reviewed-by: Fangrui Song <maskray@google.com>
