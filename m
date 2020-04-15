@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04851A9600
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE211A9608
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635737AbgDOIQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2635729AbgDOIQR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:16:17 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C34CC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:16:17 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r7so2625021ljg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j0qOETrZoEuB/v/v2DIKaf1AzjYUQKI4o/HWYtk5Q1I=;
-        b=BBJ4B47pV461JB8hafdD1HSs9rFcq4u/CFI1vxC2XLf+nY9DxQMFZCO0wkA8fnwRzV
-         z5EByMRPSpTtdRUAtlJVw/h/Veuw28jcYkYxdKA7e+qhX7RysmAnOB+Pbp2bt3qxX6oK
-         KusrlgqE90QTNG5/FaUlh8qhzaZG/XVFCYE+7Y7ZPpwMUmRneVlBQDGvPIAOm/4MxaA0
-         h4xwXWCkU2z8N1Bp2mKuTmugUO5q4BcMEHynKVTeNOBL8/9FYNqHYsntP548HpyRZ5sx
-         cTQVxQLrF510PYD//23HZ4zPqP5UT1RohIHiwBj8iyugPb6xjWcaS4vbdQAfs7UPNS5C
-         qOUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j0qOETrZoEuB/v/v2DIKaf1AzjYUQKI4o/HWYtk5Q1I=;
-        b=YScgoVqS0kIuKw+7njLUnMd375Fggz5fRKHf3SJYg6gigydTmji90JbxBa8banpq60
-         mGYEBKNGeaNr6O81oscSsUZ652Uu7uaQj3bpmk+e4Ju8a3qPLPc15ka3ORyZWj3Y4DcY
-         fUdLnviX0MVbLqdI7Cvws6y48Wqs5I7k0Wdv/pzwnblowFLO1pGPpTbm81WLax35tZ4I
-         M2MPHMOYK3daOCReg7oQGjb9ntSe/nCt6BLYelbOKOaecPBhLgzcnsDOyihG4kVsluTR
-         D3vtwlMU788ZUbVucpwTJp7CtuELR8OZuQ12zXd9HLraNjjlCEdK6mQrCGGAqIx5EJ4x
-         9B1Q==
-X-Gm-Message-State: AGi0PuYuxzkUX8gqOy7HphkfLFwWBx0yscxrTceSkfFPLa+bdkgPZRuK
-        9yvagPz/M1edQwanxbQsiYkUGw==
-X-Google-Smtp-Source: APiQypKK2eFrxitYeiW5ZObqNZGRMQRvh8bM+g566NNhmNjDwnVsifl7LxVz7UJKIboEFl0ITTAVoQ==
-X-Received: by 2002:a2e:914c:: with SMTP id q12mr2538316ljg.124.1586938575988;
-        Wed, 15 Apr 2020 01:16:15 -0700 (PDT)
-Received: from localhost (c-c33270d5.07-21-73746f28.bbcust.telenor.se. [213.112.50.195])
-        by smtp.gmail.com with ESMTPSA id f21sm12066627lfk.94.2020.04.15.01.16.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 01:16:15 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] cpufreq: omap: Build driver by default for ARCH_OMAP2PLUS
-Date:   Wed, 15 Apr 2020 10:15:59 +0200
-Message-Id: <20200415081600.29904-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        id S2635774AbgDOIRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:17:05 -0400
+Received: from sauhun.de ([88.99.104.3]:48970 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2635665AbgDOIQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:16:57 -0400
+Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
+        by pokefinder.org (Postfix) with ESMTPSA id 023F92C1F58;
+        Wed, 15 Apr 2020 10:16:54 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 10:16:54 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-i3c@lists.infradead.org,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [RFC PATCH v2 2/6] i2c: allow DT nodes without 'compatible'
+Message-ID: <20200415081654.GC1141@ninjato>
+References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+ <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
+ <11ca7487-ac07-f714-8573-20d1a0040212@lucaceresoli.net>
+ <20200415075911.GA1141@ninjato>
+ <8937e466-fe3f-3686-98a9-8013990bc3f9@ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="E/DnYTRukya0zdZ1"
+Content-Disposition: inline
+In-Reply-To: <8937e466-fe3f-3686-98a9-8013990bc3f9@ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building the mult_v7_defconfig, ARM_TI_CPUFREQ doesn't get enabled
-evenwhen ARCH_OMAP(3|4) is selected. Build ARM_TI_CPUFREQ by default for
-ARCH_OMAP2PLUS.
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- drivers/cpufreq/Kconfig.arm | 1 +
- 1 file changed, 1 insertion(+)
+--E/DnYTRukya0zdZ1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index 15c1a1231516..9481292981f0 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -317,6 +317,7 @@ config ARM_TEGRA186_CPUFREQ
- config ARM_TI_CPUFREQ
- 	bool "Texas Instruments CPUFreq support"
- 	depends on ARCH_OMAP2PLUS
-+	default ARCH_OMAP2PLUS
- 	help
- 	  This driver enables valid OPPs on the running platform based on
- 	  values contained within the SoC in use. Enable this in order to
--- 
-2.20.1
 
+> Aha, is it easy enough to distinguish that difference in user-space so
+> that we can present a specific character to indicate this in i2cdetect?
+> Or is that not so easy?
+
+I thought about it shortly but have not come up with a way of doing
+that. This is the code in i2cdetect:
+
+	/* Set slave address */
+	if (ioctl(file, I2C_SLAVE, i+j) < 0) {
+		if (errno == EBUSY) {
+			printf("UU ");
+			continue;
+		} else {
+			fprintf(stderr, "Error: Could not set "
+				"address to 0x%02x: %s\n", i+j,
+				strerror(errno));
+			return -1;
+		}
+	}
+
+So, if we chose to use another errno to indicate 'reserved' and update
+i2cdetect, all old versions of i2cdetect will have ugly error messages.
+And adding another IOCTL just for printing reserved addresses neither
+sounds great.
+
+
+--E/DnYTRukya0zdZ1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6WwvYACgkQFA3kzBSg
+KbZfTw//TrCAhfJ/znCZ5SkE/evodYpzpW+VCDNvh7VfXv1OKWhQwRPxUWhfOIbo
+l0H1DNk1swBMUICCbWCs0/jJ146amGzUsY/fp8fE8bVtUN9JMg3xuXeMnL5m4dYW
+b+6l7hm8sbHqs+ED6BgRd5fPBJATNVTldukoImwfTsYHpBMTayNgPDeECkdEHfrc
+LBZJwbarG+jvIV4AoDpakG5qg4Gp6D0j5V0lDfEW87DEqtn+/HwZI3QqJ4G2HKqS
+ywhxTHiehdg0ScVk7uijgqXuyJ6uAmRAw5sBehUcTRDO3V5Hqmt2yE2gaGO/VlKj
+JIcdUJjDFVAQJo3VbiwFViFYerxCECvAifRvJmwDwFB5KtsgBmEmBuYolEjXgi0N
+h3mWF+wGZKyRC8ErSahWgAk8QqKjLRlYMSCdddZxOZcd+1NwdyP7PrfL3wvRzZFw
+c/8VNnvFual/M1o/aYViqqAPbiVtj2MfKLm8ZViTKptZg+KUvZjATTv+jac1llo+
+J4rjYwrhJANcmgVFTRlpQwI2iIFprtwO6+PF0HK/MTA6LsbTSNit4IFzWwwgeb+7
+ALJQZMEGGFHx3H0cBaNEs3AY4jE24X1l//0k2QhfadTK3wUwqoZ+i7Mw/gZhtM/O
+tBOu6IgKqeMcmw2e7IvAcMWM8ZCTaoDFF4gt66h4f48LOuVMeG4=
+=964D
+-----END PGP SIGNATURE-----
+
+--E/DnYTRukya0zdZ1--
