@@ -2,153 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A711AB033
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063F41AB04E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411602AbgDOR6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S2436602AbgDOSFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2411585AbgDOR6h (ORCPT
+        by vger.kernel.org with ESMTP id S2404681AbgDOSE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:58:37 -0400
+        Wed, 15 Apr 2020 14:04:56 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BBEC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:58:35 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id b11so990825wrs.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:58:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEDFC061A0C;
+        Wed, 15 Apr 2020 11:04:55 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b11so1025274wrs.6;
+        Wed, 15 Apr 2020 11:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eFD9x/dSIEUfzCFoJjNZCqEIi04lcE4fTMcXRLYjFdQ=;
-        b=jDEpO4Og/WRkRTpK1nmwq1px2vFNMlBEtptiPkL96YTLJ050YqOkFOPf9usax5ANAh
-         xV6KeqcFaQNlqslIEYoTxVae8J0WndPH2ei++qxgBOp4kQ8ToTUfu0uJl4CnPUkWYr6V
-         zAKaiuJjM/9pHxrWdtsaRMYUTQJp+VrXTedMgIjG6Vc8OEZH9LOm3UAitO9HK6d1BaKb
-         gmtVZ6oyd2SH10s3IPcBygZDd21frfRvOL0g0CS4Y1tuoGQsWRB8Vm6OfM1vk1pSpPni
-         VQbWex0Hj/oiGB1J+/LLGJaGmIWYBL+n1zRL1DcwbjIgfARa52/tnDZSkMmu6nhYX8vr
-         RtuQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/8FRo478arD7m2qucaLnwOdz/3bXv43FR5ZsgyXv6Ho=;
+        b=R1B9gtJSvwts8ntK8Ij1ZQRxo8KVqPjQ6/oq/phrw5hrO5rLWL2vP1nB3wa5pny7rt
+         WSRQrcQvkGUI8Twji47UJrYONgw77+rFQKPQfQkSDNdUC/ieAMbtaRKm8sow9kWRXLng
+         +8DL+vVHegL0QTBbH0DAp76R5w33ZHKqeAy2yTiEz8OM312FtqDi5lpoBa3ASRWQiDqP
+         oGwfwqwXRu3UwLf9m2NR/DsSLLrEqTtvr28dRJqs3Ip4yRnIgwO6z8t9NSH0J9KuFsJT
+         u8L2LrqO2uhCbzznqVIB87X3lhf68FDIcYpOE0YSKKwWWBp29Qxf00vQFTZvzrxibsVR
+         gPZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eFD9x/dSIEUfzCFoJjNZCqEIi04lcE4fTMcXRLYjFdQ=;
-        b=M7d8eemzOWDWks7ftMnXy80WICLvAj2nLLHnfLlwEh/ZJWbeY5TIVEdbUAItPN38H/
-         VlIEm/Ev7xJmzwGKjh0W9iGgeJRMXl1XGv6CyCQ7XJh6qXznpM2F6tu8ruz0Uk8VUx+o
-         3XNIVaMBlhWrbzSyd/Uolw5NZ3q1NbC7XGJvU7KJh6Ep5p+SnA+Ji13NcZmtqvzUfE6i
-         EbB1owN7CGehcvMVyEEIPFRjGVCHKU61ONkSaBT4M4mLkFwkxKyKQWqwqQXuDE4DOXST
-         96nEi7Acvd9wDaVnDf+TqbdcagrIPb5Xyxv8+/WRYyuBoMxejA2e5pHPOBDUQ7LTFCS/
-         uqGg==
-X-Gm-Message-State: AGi0PuYo44cIoTKrdVOJ6vekv0+bW/fcwanedzyt8gNl9diqeTUyhhxc
-        Fg+1ox2a6HxVutiM2XQYtHCZHg==
-X-Google-Smtp-Source: APiQypJRVMbsZUt1VUZjyJjcdO/01wBJZiCKW205scfSnwvwm9kAMmQF1elImRzaPco/pydl8EAUQw==
-X-Received: by 2002:adf:fa03:: with SMTP id m3mr18227322wrr.68.1586973514021;
-        Wed, 15 Apr 2020 10:58:34 -0700 (PDT)
-Received: from google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id v16sm354492wml.30.2020.04.15.10.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 10:58:32 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 19:58:25 +0200
-From:   Marco Elver <elver@google.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     brendanhiggins@google.com, frowand.list@gmail.com,
-        gregkh@linuxfoundation.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 kunit-next 1/4] kunit: add debugfs
- /sys/kernel/debug/kunit/<suite>/results display
-Message-ID: <20200415175825.GA79987@google.com>
-References: <1585232710-322-1-git-send-email-alan.maguire@oracle.com>
- <1585232710-322-2-git-send-email-alan.maguire@oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/8FRo478arD7m2qucaLnwOdz/3bXv43FR5ZsgyXv6Ho=;
+        b=a3xADp5VagEA9o2wXLXGWiR3hdEpSqi6D/jJMJHWpdhiJQfB1eSLwbrkIGL77zrnMK
+         y1NSefbsuLQqXthQafoKLHXGC8iybiCmtMpu5ZJOXm64UuZ3nrElh+66Wb+X2abkyryK
+         v+AhcdCuL8MqJqSaqYSMrLfKc12DqTgdAhUaRlO6fEoB0+s08Oq0VmRRGrbBNBx8qvtC
+         z2l7uBwrK/9PRa1Dj9dfNwlYqCgr9OU66K2xxrzFtyVSCUpmMOG7v55scPo0L0VVSq0T
+         5AB/8AOTwSovpBCa5LIQPtHu5TQHKFnv4+VwH50EO39nd6apA3n0JNptToArLYHT4CfU
+         9Vkw==
+X-Gm-Message-State: AGi0PuYGHTkmaKcPPPtyWGvn+ZhLwPQBjoZCE84nzgso9hMegX0eOrek
+        igVDa95aTAcXgtjOcOGxS4Z3jTxCr1boP57WNL46p6Ut
+X-Google-Smtp-Source: APiQypLa70wxauBl8Umg57eLoV2a9izwUGC+7DVCaUZ6CGZwb2JceU+aC/f7UF2fV14mwbXBnJnREvKjneYMEJflMqU=
+X-Received: by 2002:a5d:420d:: with SMTP id n13mr30497310wrq.204.1586973894505;
+ Wed, 15 Apr 2020 11:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1585232710-322-2-git-send-email-alan.maguire@oracle.com>
-User-Agent: Mutt/1.13.2 (2019-12-18)
+References: <20200331203551.20914-1-mporter@konsulko.com>
+In-Reply-To: <20200331203551.20914-1-mporter@konsulko.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Wed, 15 Apr 2020 21:04:43 +0300
+Message-ID: <CAEnQRZCqeJkRPEUYL3k8seuNusLZ6QpT-X-A7E20AMHSYcmaUA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm: fix dma peripheral type for SAI nodes
+To:     Matt Porter <mporter@konsulko.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yibin.gong@nxp.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Mar 31, 2020 at 11:36 PM Matt Porter <mporter@konsulko.com> wrote:
+>
+> The peripheral type specified in the dma phandle for each SAI node
+> is incorrect. Change it to specify the SAI peripheral.
+>
+> Signed-off-by: Matt Porter <mporter@konsulko.com>
 
-On Thu, 26 Mar 2020, Alan Maguire wrote:
+Hi Matt,
 
-> add debugfs support for displaying kunit test suite results; this is
-> especially useful for module-loaded tests to allow disentangling of
-> test result display from other dmesg events.  debugfs support is
-> provided if CONFIG_KUNIT_DEBUGFS=y.
-> 
-> As well as printk()ing messages, we append them to a per-test log.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> Reviewed-by: Frank Rowand <frank.rowand@sony.com>
-> ---
->  include/kunit/test.h   |  54 +++++++++++++++---
->  lib/kunit/Kconfig      |   8 +++
->  lib/kunit/Makefile     |   4 ++
->  lib/kunit/debugfs.c    | 116 ++++++++++++++++++++++++++++++++++++++
->  lib/kunit/debugfs.h    |  30 ++++++++++
->  lib/kunit/kunit-test.c |   4 +-
->  lib/kunit/test.c       | 147 ++++++++++++++++++++++++++++++++++++++-----------
->  7 files changed, 322 insertions(+), 41 deletions(-)
->  create mode 100644 lib/kunit/debugfs.c
->  create mode 100644 lib/kunit/debugfs.h
-> 
-[...]
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 9242f93..a3fa21f 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-[...]
-> -static void kunit_print_ok_not_ok(bool should_indent,
-> +static void kunit_print_ok_not_ok(void *test_or_suite,
-> +				  bool is_test,
->  				  bool is_ok,
->  				  size_t test_number,
->  				  const char *description)
->  {
-> -	const char *indent, *ok_not_ok;
-> -
-> -	if (should_indent)
-> -		indent = "\t";
-> -	else
-> -		indent = "";
-> +	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
-> +	struct kunit *test = is_test ? test_or_suite : NULL;
->  
-> -	if (is_ok)
-> -		ok_not_ok = "ok";
-> +	/*
-> +	 * We do not log the test suite results as doing so would
-> +	 * mean debugfs display would consist of the test suite
-> +	 * description and status prior to individual test results.
-> +	 * Hence directly printk the suite status, and we will
-> +	 * separately seq_printf() the suite status for the debugfs
-> +	 * representation.
-> +	 */
-> +	if (suite)
-> +		pr_info("%s %zd - %s",
+Why do you think this is incorrect?  AFAIK script number 2 works fine
+for SAI. Can you add
+more details on what bug are you encountering?
 
-I think this is missing '\n' -- is this intentional?
-
-With v5.7-rc1, when I run a test via module, the final "ok" is only
-printed once another message is printed to the kernel log (which can
-take a while).
-
-Thanks,
--- Marco
-
-> +			kunit_status_to_string(is_ok),
-> +			test_number, description);
->  	else
-> -		ok_not_ok = "not ok";
-> -
-> -	pr_info("%s%s %zd - %s\n", indent, ok_not_ok, test_number, description);
-> +		kunit_log(KERN_INFO, test, "\t%s %zd - %s",
-> +			  kunit_status_to_string(is_ok),
-> +			  test_number, description);
->  }
-[...]
+Adding Robin the owner of SDMA.
