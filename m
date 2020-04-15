@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDA01A9178
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 05:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320071A917B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 05:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389266AbgDODK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 23:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731048AbgDODKp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 23:10:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A97C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 20:10:45 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r4so868373pgg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 20:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rl9PWj3uTfyqXygouG7eBzkOuRR3ht3SlSVZEdS5vi4=;
-        b=WReb3FooecG/mGVKk7KoTDNmzBB8JA07kS8Wlt7cGOj1b+24cYEuDDpfQIYT19Pgq3
-         D6Lmumf0FVKLo2Mq50BPVQcRiaZfDl6vC92/MGZX/r0LfWfPWUejG4s92xqamybetQPm
-         UmeEt0q1UUwCZuMGpM5Q2JjGxrKiO51WcBNsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rl9PWj3uTfyqXygouG7eBzkOuRR3ht3SlSVZEdS5vi4=;
-        b=dPzPzwiH38nALXYY/YuLTGbGmAc7UnyLFpWFHl0KdudEu7YQWYcM3rBLIxIaxwuikj
-         1a/UeeVHFsESttMJqpUQvzvSXW71LiP35c5bRcKCmVkrGNk9Ul3cAp69NM+cRyZ2Adbj
-         yrmhtgHwtItuzbuB7MSvcKCOXzMO7hpa2ICRCkRJ3KkNhW8zmE2Rflv+fy9vtODCSmak
-         35/3kODlwvxon+K+4ZWmwCNYyCS/zzzXdH+13wC/v0ooMJjRgUyiemlwEkawpaq9J2o1
-         raLlJqDH3E1W41JOShsMclRz6v2OyKe7KD4GQSNeM9L+ZTxB+tfBk0r4e2mLg21kO0Dy
-         Fymw==
-X-Gm-Message-State: AGi0PuYU4DV6hsrjYwgRZHK5yzpiJd/RWopTLMfRvueGzfRR9vFxBcZk
-        mHpwe6xxEHv1FwGml5PD7wLgUQ==
-X-Google-Smtp-Source: APiQypLN7j/9XXU0t6HBqN7MgkhuUOzn37VdNDeJBnJniYxDkolOenYFHYWHDRbtpX384Nu0Yk81cA==
-X-Received: by 2002:a62:e213:: with SMTP id a19mr11074202pfi.180.1586920245009;
-        Tue, 14 Apr 2020 20:10:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 189sm12161684pfg.170.2020.04.14.20.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 20:10:44 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 20:10:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH] test_firmware: remove unnecessary test_fw_mutex in
- test_dev_config_show_xxx
-Message-ID: <202004142010.C0847F5@keescook>
-References: <20200415002517.4328-1-scott.branden@broadcom.com>
+        id S2389407AbgDODOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 23:14:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2322 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731048AbgDODOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 23:14:03 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E965EEBDCFC4ED20D06F;
+        Wed, 15 Apr 2020 11:13:59 +0800 (CST)
+Received: from [127.0.0.1] (10.173.221.195) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
+ 11:13:56 +0800
+Subject: Re: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+To:     "Moore, Robert" <robert.moore@intel.com>,
+        "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200413143156.22633-1-yanaijie@huawei.com>
+ <94F2FBAB4432B54E8AACC7DFDE6C92E3C68A849E@ORSMSX108.amr.corp.intel.com>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <7c560f1c-5074-fa6c-4dbf-fb2ae37b0c46@huawei.com>
+Date:   Wed, 15 Apr 2020 11:13:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415002517.4328-1-scott.branden@broadcom.com>
+In-Reply-To: <94F2FBAB4432B54E8AACC7DFDE6C92E3C68A849E@ORSMSX108.amr.corp.intel.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.173.221.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 05:25:17PM -0700, Scott Branden wrote:
-> Remove unnecessary use of test_fw_mutex in test_dev_config_show_xxx
-> functions that show simple bool, int, and u8.
 
-I would expect at least a READ_ONCE(), yes?
 
+ÔÚ 2020/4/15 4:22, Moore, Robert Ð´µÀ:
+> I think we've discussed this in the past. ARRAY_SIZE is not standard, and will get in the way of portability:
 > 
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+
+Thanks for the explanation. Got it.
+
+
+> On gcc v7.4.0:
+> ../../../source/components/resources/rsdumpinfo.c:335:25: note: in expansion of macro 'ACPI_RSD_TABLE_SIZE'
+>       {ACPI_RSD_TITLE,    ACPI_RSD_TABLE_SIZE (AcpiRsDumpGenericReg),         "Generic Register",         NULL},
+> 
+> ../../../source/components/resources/rsdumpinfo.c:166:37: error: initializer element is not constant
+>   #define ACPI_RSD_TABLE_SIZE(name)   ARRAY_SIZE (name)
+> 
+> 
+> And, on MSVC 2017:
+> Severity	Code	Description	Project	File	Line	Suppression State
+> Warning	C4013	'ARRAY_SIZE' undefined; assuming extern returning int	AcpiExec	c:\acpica\source\components\resources\rsdumpinfo.c	179	
+> -----Original Message-----
+> From: Jason Yan <yanaijie@huawei.com>
+> Sent: Monday, April 13, 2020 7:32 AM
+> To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; lenb@kernel.org; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
+> Cc: Jason Yan <yanaijie@huawei.com>
+> Subject: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+> 
+> Fix the following coccicheck warning:
+> 
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> ./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 > ---
->  lib/test_firmware.c | 26 +++-----------------------
->  1 file changed, 3 insertions(+), 23 deletions(-)
+>   drivers/acpi/acpica/rsdumpinfo.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-> index 0c7fbcf07ac5..9fee2b93a8d1 100644
-> --- a/lib/test_firmware.c
-> +++ b/lib/test_firmware.c
-> @@ -310,27 +310,13 @@ static int test_dev_config_update_bool(const char *buf, size_t size,
->  	return ret;
->  }
->  
-> -static ssize_t
-> -test_dev_config_show_bool(char *buf,
-> -			  bool config)
-> +static ssize_t test_dev_config_show_bool(char *buf, bool val)
->  {
-> -	bool val;
-> -
-> -	mutex_lock(&test_fw_mutex);
-> -	val = config;
-> -	mutex_unlock(&test_fw_mutex);
-> -
->  	return snprintf(buf, PAGE_SIZE, "%d\n", val);
->  }
->  
-> -static ssize_t test_dev_config_show_int(char *buf, int cfg)
-> +static ssize_t test_dev_config_show_int(char *buf, int val)
->  {
-> -	int val;
-> -
-> -	mutex_lock(&test_fw_mutex);
-> -	val = cfg;
-> -	mutex_unlock(&test_fw_mutex);
-> -
->  	return snprintf(buf, PAGE_SIZE, "%d\n", val);
->  }
->  
-> @@ -354,14 +340,8 @@ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
->  	return size;
->  }
->  
-> -static ssize_t test_dev_config_show_u8(char *buf, u8 cfg)
-> +static ssize_t test_dev_config_show_u8(char *buf, u8 val)
->  {
-> -	u8 val;
-> -
-> -	mutex_lock(&test_fw_mutex);
-> -	val = cfg;
-> -	mutex_unlock(&test_fw_mutex);
-> -
->  	return snprintf(buf, PAGE_SIZE, "%u\n", val);
->  }
->  
-> -- 
-> 2.17.1
+> diff --git a/drivers/acpi/acpica/rsdumpinfo.c b/drivers/acpi/acpica/rsdumpinfo.c
+> index cafa8134b4c6..f1ba4cd8080f 100644
+> --- a/drivers/acpi/acpica/rsdumpinfo.c
+> +++ b/drivers/acpi/acpica/rsdumpinfo.c
+> @@ -15,7 +15,7 @@ ACPI_MODULE_NAME("rsdumpinfo")  #if defined(ACPI_DEBUG_OUTPUT) || defined(ACPI_DISASSEMBLER) || defined(ACPI_DEBUGGER)
+>   #define ACPI_RSD_OFFSET(f)          (u8) ACPI_OFFSET (union acpi_resource_data,f)
+>   #define ACPI_PRT_OFFSET(f)          (u8) ACPI_OFFSET (struct acpi_pci_routing_table,f)
+> -#define ACPI_RSD_TABLE_SIZE(name)   (sizeof(name) / sizeof (struct acpi_rsdump_info))
+> +#define ACPI_RSD_TABLE_SIZE(name)   ARRAY_SIZE(name)
+>   /*******************************************************************************
+>    *
+>    * Resource Descriptor info tables
+> --
+> 2.21.1
+> 
+> 
+> .
 > 
 
--- 
-Kees Cook
