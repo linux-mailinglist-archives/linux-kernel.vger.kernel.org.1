@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD1D1AAFD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B6E1AAFDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411325AbgDORdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46300 "EHLO mail.kernel.org"
+        id S2411372AbgDOReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:34:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411129AbgDORbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2411128AbgDORbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 13:31:07 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC7022166E;
-        Wed, 15 Apr 2020 17:31:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 495D92078B;
+        Wed, 15 Apr 2020 17:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586971865;
-        bh=NBTRHQwpI7VXKcRnKdEPYNRajSRwZhec2cc7h/2DMFI=;
+        bh=tUs7MVqj8fYCeqe5q4ykyyDgjMAGfLwr4MXS7UQ0rFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BsOLXdPU4wF6JQAVNEfprum5HraFwCgzukUOc5Rz7U4SaJX162GW8NevpyFH7h96Q
-         03+jBryn3rttYxGWeoUDudmKKWeaiFSDnKLH5OoRMNy3ABVOSf2m/FbgtvOsCj0YUo
-         CUPXEdQ63c6cuLnnpVA4l36/huZNifR4xw8xXmIA=
+        b=Z1y25YPeRyBNNdLdh1P4g7ENct67bxQHBpxwbbjJKZO/VqTff2ZOzSqUSVGYtHVb9
+         3YJPmQV2ta07mCEl1QZhXbiAKMgTrXBfST7jhcMHw7bthdiARb9Cks6nnVCozSMdvC
+         ZTbu8ZvorG1EKFsiEcHMkMQOhKS5iKymYaGLxIO4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/18] torture: Make --kcsan argument also create a summary
-Date:   Wed, 15 Apr 2020 10:30:52 -0700
-Message-Id: <20200415173100.9927-10-paulmck@kernel.org>
+        Jason Yan <yanaijie@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/18] rcutorture: Make rcu_fwds and rcu_fwd_emergency_stop static
+Date:   Wed, 15 Apr 2020 10:30:53 -0700
+Message-Id: <20200415173100.9927-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415173037.GA9768@paulmck-ThinkPad-P72>
 References: <20200415173037.GA9768@paulmck-ThinkPad-P72>
@@ -43,86 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Jason Yan <yanaijie@huawei.com>
 
-The KCSAN tool emits a great many warnings for current kernels, for
-example, a one-hour run of the full set of rcutorture scenarios results
-in no fewer than 3252 such warnings, many of which are duplicates
-or are otherwise closely related.  This commit therefore introduces
-a kcsan-collapse.sh script that maps these warnings down to a set of
-function pairs (22 of them given the 3252 individual warnings), placing
-the resulting list in decreasing order of frequency of occurrence into
-a kcsan.sum file.  If any KCSAN warnings were produced, the pathname of
-this file is emitted at the end of the summary of the rcutorture runs.
+This commit fixes the following sparse warning:
 
+kernel/rcu/rcutorture.c:1695:16: warning: symbol 'rcu_fwds' was not declared. Should it be static?
+kernel/rcu/rcutorture.c:1696:6: warning: symbol 'rcu_fwd_emergency_stop' was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kcsan-collapse.sh     | 22 ++++++++++++++++++++++
- .../selftests/rcutorture/bin/kvm-recheck.sh        |  9 +++++++++
- tools/testing/selftests/rcutorture/bin/kvm.sh      |  1 +
- 3 files changed, 32 insertions(+)
- create mode 100755 tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh b/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
-new file mode 100755
-index 0000000..e5cc6b2
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
-@@ -0,0 +1,22 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# If this was a KCSAN run, collapse the reports in the various console.log
-+# files onto pairs of functions.
-+#
-+# Usage: kcsan-collapse.sh resultsdir
-+#
-+# Copyright (C) 2020 Facebook, Inc.
-+#
-+# Authors: Paul E. McKenney <paulmck@kernel.org>
-+
-+if test -z "$TORTURE_KCONFIG_KCSAN_ARG"
-+then
-+	exit 0
-+fi
-+cat $1/*/console.log |
-+	grep "BUG: KCSAN: " |
-+	sed -e 's/^\[[^]]*] //' |
-+	sort |
-+	uniq -c |
-+	sort -k1nr > $1/kcsan.sum
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-index 0326f4a..736f047 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-@@ -70,6 +70,15 @@ do
- 			fi
- 		fi
- 	done
-+	if test -f "$rd/kcsan.sum"
-+	then
-+		if test -s "$rd/kcsan.sum"
-+		then
-+			echo KCSAN summary in $rd/kcsan.sum
-+		else
-+			echo Clean KCSAN run in $rd
-+		fi
-+	fi
- done
- EDITOR=echo kvm-find-errors.sh "${@: -1}" > $T 2>&1
- ret=$?
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 34b368d..75ae8e3 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -472,6 +472,7 @@ echo
- echo
- echo " --- `date` Test summary:"
- echo Results directory: $resdir/$ds
-+kcsan-collapse.sh $resdir/$ds
- kvm-recheck.sh $resdir/$ds
- ___EOF___
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3d47dca..c7b7594b 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1721,8 +1721,8 @@ struct rcu_fwd {
+ 	unsigned long rcu_launder_gp_seq_start;
+ };
  
+-struct rcu_fwd *rcu_fwds;
+-bool rcu_fwd_emergency_stop;
++static struct rcu_fwd *rcu_fwds;
++static bool rcu_fwd_emergency_stop;
+ 
+ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
+ {
 -- 
 2.9.5
 
