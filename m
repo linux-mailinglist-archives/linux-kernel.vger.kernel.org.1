@@ -2,166 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80FE1AAD80
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F88E1AAD8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415392AbgDOQOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:14:11 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41477 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1415233AbgDOQOD (ORCPT
+        id S2410281AbgDOQPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1415445AbgDOQO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:14:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586967241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RJeTo/zRnrqHhvOgPTgaHSH4vrzTtRuXcGPzKEfUHnY=;
-        b=IrQXpc172A/c9nxpXNbRKtBrk+hkcC8cFUwgnwZ34ymZhfUa9PDCBush1BA/fEZ9lg9yRt
-        7sXjZBhgpdSj/0zkzIiEhVCwrVsTKSTAcgV0r2xX6QGzqEsRaOwzhpz9Js76Jj0LEq8sN+
-        /u55g3Req4bhCfTo59X82c8OiMKL714=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-FeuAhBq8OBeR_yV67TAh2Q-1; Wed, 15 Apr 2020 12:13:59 -0400
-X-MC-Unique: FeuAhBq8OBeR_yV67TAh2Q-1
-Received: by mail-wr1-f71.google.com with SMTP id t8so137326wrq.22
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:13:59 -0700 (PDT)
+        Wed, 15 Apr 2020 12:14:56 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A26C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:14:55 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id i22so403019otp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YY754z9PeJMmvslMfaTQ60iPR2h8d8EcgLpNFKs6TXQ=;
+        b=ensIBQhTLfMUhI/AckVjVSeNIMurfIMWlyjQNC/y5Q1n7X+sGHs4D9Oj738io+6WKn
+         q2Qz6jdWHlsLR8zgo9vbuOru8r2nwbOuQpjauUXlDEyrjyx+/Oru+42U19TfNVW1bm4Q
+         V4m66v0rPlaBKNn4G/i9kCLpyUoayUjPU8Pn0Y9xY3vS6jSERLN8RInC04HBbf5rK3kp
+         0mBGR8KABY3swFRi3z9R2jpb0OPQAF6Z5UmZlfGAU0byMnbraf/GjP1Ovebc9H0MGrCG
+         BY54TPpG+RrUpYd/cqywxRmA5oCwGKtcaBoGxFvBw5G9hnLrVxJCRNuCj6vAAlkRJHtv
+         3kbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RJeTo/zRnrqHhvOgPTgaHSH4vrzTtRuXcGPzKEfUHnY=;
-        b=fwi0mw/K8wYxEJpAfewek81M2Yxa7w+JHREFEbNoQiVGbrUrQtOoePmX5wZLcfcYbY
-         ykYy3bmu0lwrLLXvxmXwkrSbt1KbnkTtUb2hRootXExI6ubACqj4y3hcVHoh8UbCfx29
-         B3dcGuf0B1xBjDa0S2DjMHpNF5Oa5PZhWUKl3E7Eq4WeEvXbOgZfo7nDPuaSnf4Jxflk
-         VZj4a9N7dVWKzqjaRBzzC0EkwPqZX/DydfCABaMegYpYTXKgNmfLeC69gQuKv+q/BcTG
-         VSvOfrJkjOENiXjSyIvKqI9PDlLbOqEwhV5IVclhX6eHM76Ld8JjnMun2AiLBjza/AQw
-         pTjQ==
-X-Gm-Message-State: AGi0PuaOz5UKbFX8mLKja6VqZoLRSH3QwYn3jz6rOT4nhH4JpnVRoqdE
-        K7D0XQnWHxszKDA+jgJ2wiN6kNfb4lN1s3fnfh1tL7hJo8ntS05uGrDyousda5fFWxdHTL3ont/
-        USifbUyl/2o4mxSpco30mhbEt
-X-Received: by 2002:adf:ff82:: with SMTP id j2mr18428722wrr.96.1586967238412;
-        Wed, 15 Apr 2020 09:13:58 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIDz/OV9eeQuwJYvgc7hCdaj4l2fEwtDfmedhtg4jVMeo+Svh1HHKzk8lWg60lun+SjucTPTg==
-X-Received: by 2002:adf:ff82:: with SMTP id j2mr18428685wrr.96.1586967238108;
-        Wed, 15 Apr 2020 09:13:58 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9066:4f2:9fbd:f90e? ([2001:b07:6468:f312:9066:4f2:9fbd:f90e])
-        by smtp.gmail.com with ESMTPSA id p7sm24315229wrf.31.2020.04.15.09.13.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 09:13:57 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in
- small chunks
-To:     Keqian Zhu <zhukeqian1@huawei.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jay Zhou <jianjay.zhou@huawei.com>, wanghaibin.wang@huawei.com
-References: <20200413122023.52583-1-zhukeqian1@huawei.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <be45ec89-2bdb-454b-d20a-c08898e26024@redhat.com>
-Date:   Wed, 15 Apr 2020 18:13:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YY754z9PeJMmvslMfaTQ60iPR2h8d8EcgLpNFKs6TXQ=;
+        b=DfK45xNFCefE+6MRXpC4ZFQaU8FVJgljM/gMqf3C5DaY5/G1VFnde5FRjjBkVQ7ieP
+         7sveVTfhaFn8rxkwsgen8pwhCdIKdsNkI4NcwRj9j7mjqKghGDSjlvqSAeOgMylFcIp7
+         m9htQBtmnX5hjITuSmhQ6uhzcT3nqfveF/rXXletGwgXIR2YYI6998dnhwXc2Z+lzLMk
+         hWrN+rDpEaunyCJ7guNQoSz5s+JkyLQ+yo4hcahiX6pDgaxZu6wtNb12uYMHn+fph1bG
+         zbaHnUMkNsEUXYQotzqx4YcgfhL8CWk/ckJ3MWLjFHQOXr8U3yOVBHwjqRU9euzLdFxj
+         uxeQ==
+X-Gm-Message-State: AGi0PuZjrGNnpJu0D0pDl1JfqradFGuUD3djDSZudJwSwF0eS+FF9NrP
+        DaCxZxgve+0j3r2A9IRwbkW6YQoTFFq/ig9Di/UAh9AAzGo=
+X-Google-Smtp-Source: APiQypKmOr4pyj5woZliOKqqj9jDH9F/Bq9sHVlUWf6TaSVf+a6bzHks4NlheUCnPxbK/0asJqZNCnLSyAr1bvDFDto=
+X-Received: by 2002:a9d:629a:: with SMTP id x26mr21214050otk.201.1586967295087;
+ Wed, 15 Apr 2020 09:14:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200413122023.52583-1-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200225073731.465270-1-avagin@gmail.com> <1c1ab662-5475-9d8b-038b-8411b060202a@arm.com>
+ <CANaxB-xUYOrVnfLPRYVBiASzCH89sZkD6vTdy8EFjT16ZJhLfg@mail.gmail.com> <1d9c4c56-af16-e54f-08ca-76c6570b2d53@arm.com>
+In-Reply-To: <1d9c4c56-af16-e54f-08ca-76c6570b2d53@arm.com>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Wed, 15 Apr 2020 09:14:43 -0700
+Message-ID: <CANaxB-w+_4BUOYb-5+w1xBPoZGOzBh-LYOFCY-WSysgbAAcn_w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] arm64: add the time namespace support
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/20 14:20, Keqian Zhu wrote:
-> There is already support of enabling dirty log graually in small chunks
-> for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
-> small chunks"). This adds support for arm64.
-> 
-> x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
-> is eanbled. However, for arm64, both huge pages and normal pages can be
-> write protected gradually by userspace.
-> 
-> Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
-> Linux VMs with different page size. The memory pressure is 127G in each
-> case. The time taken of memory_global_dirty_log_start in QEMU is listed
-> below:
-> 
-> Page Size      Before    After Optimization
->   4K            650ms         1.8ms
->   2M             4ms          1.8ms
->   1G             2ms          1.8ms
-> 
-> Besides the time reduction, the biggest income is that we will minimize
-> the performance side effect (because of dissloving huge pages and marking
-> memslots dirty) on guest after enabling dirty log.
-> 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  Documentation/virt/kvm/api.rst    |  2 +-
->  arch/arm64/include/asm/kvm_host.h |  3 +++
->  virt/kvm/arm/mmu.c                | 12 ++++++++++--
->  3 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index efbbe570aa9b..0017f63fa44f 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
->  dirty logging can be enabled gradually in small chunks on the first call
->  to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
->  KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
-> -x86 for now).
-> +x86 and arm64 for now).
->  
->  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
->  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 32c8a675e5a4..a723f84fab83 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -46,6 +46,9 @@
->  #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
->  #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
->  
-> +#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
-> +				     KVM_DIRTY_LOG_INITIALLY_SET)
-> +
->  DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
->  
->  extern unsigned int kvm_sve_max_vl;
-> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-> index e3b9ee268823..1077f653a611 100644
-> --- a/virt/kvm/arm/mmu.c
-> +++ b/virt/kvm/arm/mmu.c
-> @@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
->  	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
->  	 * memory slot is write protected.
->  	 */
-> -	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
-> -		kvm_mmu_wp_memory_region(kvm, mem->slot);
-> +	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
-> +		/*
-> +		 * If we're with initial-all-set, we don't need to write
-> +		 * protect any pages because they're all reported as dirty.
-> +		 * Huge pages and normal pages will be write protect gradually.
-> +		 */
-> +		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-> +			kvm_mmu_wp_memory_region(kvm, mem->slot);
-> +		}
-> +	}
->  }
->  
->  int kvm_arch_prepare_memory_region(struct kvm *kvm,
-> 
+On Tue, Apr 14, 2020 at 2:02 AM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+>
+> Hi Andrei,
+>
+> On 4/11/20 8:33 AM, Andrei Vagin wrote:
+> > On Thu, Apr 9, 2020 at 6:23 AM Vincenzo Frascino
+> > <vincenzo.frascino@arm.com> wrote:
+> >>
+> >> I have though a question on something I encountered during the testing of the
+> >> patches: I noticed that all the tests related to CLOCK_BOOTTIME_ALARM fail on
+> >> arm64 (please find the results below the scissors). Is this expected?
+> >
+> > static int alarm_clock_get_timespec(clockid_t which_clock, struct
+> > timespec64 *tp)
+> > {
+> >         struct alarm_base *base = &alarm_bases[clock2alarm(which_clock)];
+> >
+> >         if (!alarmtimer_get_rtcdev())
+> >                 return -EINVAL;
+> >
+> > It is probably that you get EINVAL from here ^^^. I will send a
+> > separate patch to handle this case in tests properly.
+> >
+>
+> This makes sense :) Please let me know when you post the fix so I can test it again.
 
-Marc, what is the status of this patch?
+I have sent this fix: https://lkml.org/lkml/2020/4/15/72
 
-Paolo
+>
+> Are you planning as well to rebase this set?
 
+What is the right tree to rebase on?
+
+Thanks,
+Andrei
