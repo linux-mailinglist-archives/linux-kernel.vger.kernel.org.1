@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439E31AA43A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034FC1AA440
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370701AbgDONUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506285AbgDONTo (ORCPT
+        id S2506240AbgDONVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:21:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34844 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2506299AbgDONUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:19:44 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EDCC061A0C;
-        Wed, 15 Apr 2020 06:19:43 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b11so7742306wrs.6;
-        Wed, 15 Apr 2020 06:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=lfpK/xOIlDnyJhSEQBBYKy273A0qYIk6KaRxAULUFas=;
-        b=Xy0NAs50nauKNzelhrgCoZ1oAYS0by3FW/Xaw2GPXjjbxeHr7P51WtKfCf1iVTlDao
-         1cOOPmWg97iJ76qPu3Zf8K1JeiI+rzszWGk02qVHLNvlaAePVcN0Z1ZL+XQNVE5e9274
-         GYzX7MjCAThNITca93dboFwAqeKUQEJNeSp75p0d8awYnOijpfDLDm0N9I+yyxD6oci7
-         AUyJfwQuq1AqKugkFVaK5DG/Twamt2jjtWUBC/Q78V6LlzCa56wRZOhfgAQvg26w7Zfk
-         Ki+dfNNizSoeEwHuWdzLPllpRX8OzyQKILZp1EwCutUgg3ED3sqXDlxRzrDrAzQvSFX9
-         Bp/A==
+        Wed, 15 Apr 2020 09:20:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586956811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DHcpnN3zus8PcCwIyoMYplMbcGQehFR7QqBvWEqVsuE=;
+        b=QWWKA1MYCpZa9GKAZBwXbNrcw/xrvTP34zZNDbmy0KsDaUm75iU8CHT7wuyPW3MRsu5uDu
+        6kydBLjzlfqT6yO3xf+AhQnjN4MoLUZxPVRgQXiZm2Qv1Vm+yq78Mht3kVNEwgoHBSTHtQ
+        4NU3UFPzigV9x7MmfY9PaUWH50BRXWg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-MOWm1LDHPSOBTSFyjSLRNg-1; Wed, 15 Apr 2020 09:20:09 -0400
+X-MC-Unique: MOWm1LDHPSOBTSFyjSLRNg-1
+Received: by mail-wm1-f70.google.com with SMTP id y1so5757816wmj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 06:20:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=lfpK/xOIlDnyJhSEQBBYKy273A0qYIk6KaRxAULUFas=;
-        b=bBHeMvd4p6pfzZqUQ5yM8GBAZuuS/BtWb31bb32ABhqN6PUzGkDYSa0oWCCDPohrxD
-         BwZ1Fdv3wskLVDfKER+qhlsWGKPFDAZUjbuOAoIUlMzgRfxb/qLPkYAH/uTq3KgwuWkK
-         k/xowWap+PdKC3DTaJ3/oTkV5KOor9wXYFVibyiWuKGmEjsBeEdFevzUvO59ikxLVHEq
-         p3ELX/MQHAWVpJZIdgpw/GoCP3kyv6+ntp3CcjWwlV4djrWj+XGwRGEBsEygVLceArz4
-         Kzl/Gw1n3H6tTPVTUcUz/9nKQ0GJ23TT0aCpa9Vzoi2u5TAyn2w+s8Mq2vhaRy17Q68a
-         4oRA==
-X-Gm-Message-State: AGi0PuZ3MSLAa2hREzCktIdd/tShzn5rlfWHKSID5unkgZN9H13bkmxR
-        ztMB5Vo1dADsOcE7JxYNc9q81JybyWGRIAqsypM=
-X-Google-Smtp-Source: APiQypIW8Pb7KI2m47zG2TSNaiw4mMtQU1+5Wz2hxAJY83V2FfpcUzk0ZWhEopuJDFTjiX0vj3fcibyWGzm0sC1HtaI=
-X-Received: by 2002:adf:ef51:: with SMTP id c17mr28624905wrp.130.1586956782339;
- Wed, 15 Apr 2020 06:19:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DHcpnN3zus8PcCwIyoMYplMbcGQehFR7QqBvWEqVsuE=;
+        b=OgGFSvg4sAasHZ/mUbTg8ysDAkgZ3gQbs0Yq/oIRDA//xpyjr64ti9FwtqRPFXUq3r
+         q6r412QZ3g4qdopQXL3dFMARczjvW07ob9WR8o/CQLvfVHFf/3ypRXRvGFwRRQ9aJWct
+         QPB/ePmst0q5utURSvKA0ncOwET4WE5D4FcqJ1RowgZt6ukMuB6ZKFH5cw4SiQqIEBGF
+         iFMbDr9EGnGAMmogUF8lEinOv2SfpQh3I8Yqhw4WqOPZ+ohbJf2xlck90FR/Qu1EjXKz
+         UNZOqUSgxPHUtbS9+AmHyZZ0Pwdb7nTXcUWfmvdeG4T8EyDe+qsWDUeqAkf4P1cD+Y/a
+         o4EA==
+X-Gm-Message-State: AGi0PuaJrVL+Iuu0YrXeRb0XxOzL9rzcUwJh46HIxoaTo6fgqSC8FLqZ
+        mxwwKAMjzax4cKLCp9fMlMY92rGkVMIbx4K3vEonAVJlqEQaKOZMCYEx9FBGPAQ7KHMZJPXZFCv
+        nk+O+FWRc483XZyNoYnMAHSxf
+X-Received: by 2002:a5d:474b:: with SMTP id o11mr27656759wrs.4.1586956808434;
+        Wed, 15 Apr 2020 06:20:08 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKSn9T6dmuCbbOinp1v8qsospGnxh8RPjaMA1dNhivu9LaFbSUyTIifqKD5tn1BMgnkckWn2w==
+X-Received: by 2002:a5d:474b:: with SMTP id o11mr27656722wrs.4.1586956808058;
+        Wed, 15 Apr 2020 06:20:08 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.194.179])
+        by smtp.gmail.com with ESMTPSA id u30sm2973752wru.13.2020.04.15.06.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 06:20:07 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 15:20:04 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] sched/deadline: Make DL capacity-aware
+Message-ID: <20200415132004.GF9767@localhost.localdomain>
+References: <20200408095012.3819-1-dietmar.eggemann@arm.com>
+ <20200408095012.3819-4-dietmar.eggemann@arm.com>
+ <20200410125253.GE14300@localhost.localdomain>
+ <f0e74500-77d7-a42c-410e-bc5d4d2ecdfb@arm.com>
 MIME-Version: 1.0
-References: <1586254255-28713-1-git-send-email-sumit.garg@linaro.org>
- <CABPxzY+hL=jD6Zy=netP3oqNXg69gDL2g0KiPe40eaXXgZBnxw@mail.gmail.com>
- <CAFA6WYMZAq6X5m++h33ySCa6jOQCq_tHL=8mUi-kPMcn4FH=jA@mail.gmail.com> <CAFA6WYOW9ne0iffwC1dc48a_aSaYkkxQzyHQXTV2Wkob9KOXQg@mail.gmail.com>
-In-Reply-To: <CAFA6WYOW9ne0iffwC1dc48a_aSaYkkxQzyHQXTV2Wkob9KOXQg@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 15 Apr 2020 15:19:30 +0200
-Message-ID: <CA+icZUUDm=WPjmwh5ikp8t+xt7dqTgghCeB8F0+czaUh-sHXxA@mail.gmail.com>
-Subject: Re: [PATCH v2] mac80211: fix race in ieee80211_register_hw()
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Krishna Chaitanya <chaitanya.mgit@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
-        <matthias.schoepfer@ithinx.io>,
-        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
-        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0e74500-77d7-a42c-410e-bc5d4d2ecdfb@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 3:10 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+On 15/04/20 11:39, Dietmar Eggemann wrote:
+> On 10.04.20 14:52, Juri Lelli wrote:
+> > Hi,
+> > 
+> > On 08/04/20 11:50, Dietmar Eggemann wrote:
+> >> From: Luca Abeni <luca.abeni@santannapisa.it>
+> 
+> [...]
+> 
+> >> @@ -1623,10 +1624,19 @@ select_task_rq_dl(struct task_struct *p, int cpu, int sd_flag, int flags)
+> >>  	 * other hand, if it has a shorter deadline, we
+> >>  	 * try to make it stay here, it might be important.
+> >>  	 */
+> >> -	if (unlikely(dl_task(curr)) &&
+> >> -	    (curr->nr_cpus_allowed < 2 ||
+> >> -	     !dl_entity_preempt(&p->dl, &curr->dl)) &&
+> >> -	    (p->nr_cpus_allowed > 1)) {
+> >> +	select_rq = unlikely(dl_task(curr)) &&
+> >> +		    (curr->nr_cpus_allowed < 2 ||
+> >> +		     !dl_entity_preempt(&p->dl, &curr->dl)) &&
+> >> +		    p->nr_cpus_allowed > 1;
+> >> +
+> >> +	/*
+> >> +	 * We take into account the capacity of the CPU to
+> >> +	 * ensure it fits the requirement of the task.
+> >> +	 */
+> >> +	if (static_branch_unlikely(&sched_asym_cpucapacity))
+> >> +		select_rq |= !dl_task_fits_capacity(p, cpu);
+> > 
+> > I'm thinking that, while dl_task_fits_capacity() works well when
+> > selecting idle cpus, in this case we should consider the fact that curr
+> > might be deadline as well and already consuming some of the rq capacity.
+> > 
+> > Do you think we should try to take that into account, maybe using
+> > dl_rq->this_bw ?
+> 
+> So you're saying that cpudl_find(..., later_mask) could return 1 (w/
+> best_cpu (cp->elements[0].cpu) in later_mask).
+> 
+> And that this best_cpu could be a non-fitting CPU for p.
+> 
+> This could happen if cp->free_cpus is empty (no idle CPUs) so we take
+> cpudl_find()'s else path and in case p's deadline < cp->elements[0]
+> deadline.
+> 
+> We could condition the 'return 1' on best_cpu fitting p.
+> 
+> But should we do this for cpudl_find(..., NULL) calls from
+> check_preempt_equal_dl() as well or will this break GEDF?
 
-[.. ]
+So, even by not returning best_cpu, as above, if it doesn't fit p's bw
+requirement, I think we would be breaking GEDF, which however doesn't
+take asym capacities into account. OTOH, if we let p migrate to a cpu
+that can't suit it, it will still be missing its deadlines (plus it
+would be causing deadline misses on the task that was running on
+best_cpu).
 
-> > In case we don't have any further comments, could you fix this nitpick
-> > from Chaitanya while applying or would you like me to respin and send
-> > v3?
->
-> A gentle ping. Is this patch a good candidate for 5.7-rc2?
->
+check_preempt_equal_dl() worries me less, as it is there to service
+corner cases (hopefully not so frequent).
 
-Hi Sumit,
-
-it's in [1] (see [2]) with slightly mods by Johannes but not in Linus tree.
-
-Johannes requested a pull-request means will be merged in a next step
-in net.git and then hopefully land in Linus tree after Dave M.
-requested a pull-request.
-
-Thanks for your patch.
-
-Regards,
-- Sedat -
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/tag/?h=mac80211-for-net-2020-04-15
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/commit/?h=mac80211-for-net-2020-04-15&id=52e04b4ce5d03775b6a78f3ed1097480faacc9fd
