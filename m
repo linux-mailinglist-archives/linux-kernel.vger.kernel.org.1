@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDC81A981D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5F71A9920
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635925AbgDOJMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:12:44 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39176 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2408349AbgDOJMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:12:13 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 30489A6CD76B3349AA29;
-        Wed, 15 Apr 2020 17:12:11 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
- 17:12:00 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH 3/3] scsi: fnic: make vnic_wq_get_ctrl and vnic_wq_alloc_ring static
-Date:   Wed, 15 Apr 2020 17:38:09 +0800
-Message-ID: <20200415093809.9365-3-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200415093809.9365-1-yanaijie@huawei.com>
-References: <20200415093809.9365-1-yanaijie@huawei.com>
+        id S2895719AbgDOJjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:39:39 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:55090 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895690AbgDOJje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:39:34 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-26-3LtwRS6zPnGStZcChf9l-A-1; Wed, 15 Apr 2020 10:39:30 +0100
+X-MC-Unique: 3LtwRS6zPnGStZcChf9l-A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 15 Apr 2020 10:39:30 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 15 Apr 2020 10:39:30 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?utf-8?B?J0NocmlzdGlhbiBLw7ZuaWcn?= <christian.koenig@amd.com>,
+        "Jani Nikula" <jani.nikula@linux.intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Bernard Zhao <bernard@vivo.com>
+CC:     Alex Sierra <alex.sierra@amd.com>, Oak Zeng <Oak.Zeng@amd.com>,
+        "Maling list - DRI developers" <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "kernel@vivo.com" <kernel@vivo.com>, Huang Rui <ray.huang@amd.com>,
+        "Kent Russell" <kent.russell@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        Xiaojie Yuan <xiaojie.yuan@amd.com>
+Subject: RE: [PATCH] Optimized division operation to shift operation
+Thread-Topic: [PATCH] Optimized division operation to shift operation
+Thread-Index: AQHWEvuQwS1rXduVrE2yfaZDBTuKn6h57U6g
+Date:   Wed, 15 Apr 2020 09:39:29 +0000
+Message-ID: <e891ca9944774cbdba577982f0bc7738@AcuMS.aculab.com>
+References: <1586864113-30682-1-git-send-email-bernard@vivo.com>
+ <CADnq5_Phca3L-HGOQz0DPBoARHgwcJRK_a7-WmeFMPkrPWeOeg@mail.gmail.com>
+ <87lfmx5h72.fsf@intel.com> <b5ffc6b7-bfa5-0827-a267-4e8c20027982@amd.com>
+In-Reply-To: <b5ffc6b7-bfa5-0827-a267-4e8c20027982@amd.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
-
-drivers/scsi/fnic/vnic_wq.c:28:5: warning: symbol 'vnic_wq_get_ctrl' was
-not declared. Should it be static?
-drivers/scsi/fnic/vnic_wq.c:40:5: warning: symbol 'vnic_wq_alloc_ring'
-was not declared. Should it be static?
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/scsi/fnic/vnic_wq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/fnic/vnic_wq.c b/drivers/scsi/fnic/vnic_wq.c
-index 015af2cdabaf..442972c04e65 100644
---- a/drivers/scsi/fnic/vnic_wq.c
-+++ b/drivers/scsi/fnic/vnic_wq.c
-@@ -25,7 +25,7 @@
- #include "vnic_wq.h"
- 
- 
--int vnic_wq_get_ctrl(struct vnic_dev *vdev, struct vnic_wq *wq,
-+static int vnic_wq_get_ctrl(struct vnic_dev *vdev, struct vnic_wq *wq,
- 		unsigned int index, enum vnic_res_type res_type)
- {
- 	wq->ctrl = vnic_dev_get_res(vdev, res_type, index);
-@@ -37,7 +37,7 @@ int vnic_wq_get_ctrl(struct vnic_dev *vdev, struct vnic_wq *wq,
- }
- 
- 
--int vnic_wq_alloc_ring(struct vnic_dev *vdev, struct vnic_wq *wq,
-+static int vnic_wq_alloc_ring(struct vnic_dev *vdev, struct vnic_wq *wq,
- 		unsigned int desc_count, unsigned int desc_size)
- {
- 	return vnic_dev_alloc_desc_ring(vdev, &wq->ring, desc_count, desc_size);
--- 
-2.21.1
+RnJvbTogQ2hyaXN0aWFuIEvDtm5pZw0KPiBTZW50OiAxNSBBcHJpbCAyMDIwIDA4OjU3DQo+IEFt
+IDE1LjA0LjIwIHVtIDA5OjQxIHNjaHJpZWIgSmFuaSBOaWt1bGE6DQo+ID4gT24gVHVlLCAxNCBB
+cHIgMjAyMCwgQWxleCBEZXVjaGVyIDxhbGV4ZGV1Y2hlckBnbWFpbC5jb20+IHdyb3RlOg0KPiA+
+PiBPbiBUdWUsIEFwciAxNCwgMjAyMCBhdCA5OjA1IEFNIEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2
+aXZvLmNvbT4gd3JvdGU6DQo+ID4+PiBPbiBzb21lIHByb2Nlc3NvcnMsIHRoZSAvIG9wZXJhdGUg
+d2lsbCBjYWxsIHRoZSBjb21waWxlcmBzIGRpdiBsaWIsDQo+ID4+PiB3aGljaCBpcyBsb3cgZWZm
+aWNpZW50LCBXZSBjYW4gcmVwbGFjZSB0aGUgLyBvcGVyYXRpb24gd2l0aCBzaGlmdCwNCj4gPj4+
+IHNvIHRoYXQgd2UgY2FuIHJlcGxhY2UgdGhlIGNhbGwgb2YgdGhlIGRpdmlzaW9uIGxpYnJhcnkg
+d2l0aCBvbmUNCj4gPj4+IHNoaWZ0IGFzc2VtYmx5IGluc3RydWN0aW9uLg0KPiA+IFRoaXMgd2Fz
+IGFwcGxpZWQgYWxyZWFkeSwgYW5kIGl0J3Mgbm90IGluIGEgZHJpdmVyIEkgbG9vayBhZnRlci4u
+LiBidXQNCj4gPiB0byBtZSB0aGlzIGZlZWxzIGxpa2Ugc29tZXRoaW5nIHRoYXQgcmVhbGx5IHNo
+b3VsZCBiZQ0KPiA+IGp1c3RpZmllZC4gVXNpbmcgPj4gaW5zdGVhZCBvZiAvIGZvciBtdWx0aXBs
+ZXMgb2YgMiBkaXZpc2lvbiBtYXR0ZXJlZCAyMA0KPiA+IHllYXJzIGFnbywgSSdkIGJlIHN1cnBy
+aXNlZCBpZiBpdCBzdGlsbCBkaWQgb24gbW9kZXJuIGNvbXBpbGVycy4NCj4gDQo+IEkgaGF2ZSBz
+aW1pbGFyIHdvcnJpZXMsIGVzcGVjaWFsbHkgc2luY2Ugd2UgcmVwbGFjZSB0aGUgIi8gKDQgKiAy
+KSIgd2l0aA0KPiAiPj4gMyIgaXQncyBtYWtpbmcgdGhlIGNvZGUganVzdCBhIGJpdCBsZXNzIHJl
+YWRhYmxlLg0KPiANCj4gQW5kIHRoYXQgdGhlIGNvZGUgcnVucyBleGFjdGx5IG9uY2Ugd2hpbGUg
+bG9hZGluZyB0aGUgZHJpdmVyIGFuZCBwdXNoaW5nDQo+IHRoZSBmaXJtd2FyZSBpbnRvIHRoZSBo
+YXJkd2FyZS4gU28gcGVyZm9ybWFuY2UgaXMgY29tcGxldGVseSBpcnJlbGV2YW50DQo+IGhlcmUu
+DQoNCkZvcmNlIHRoZSBkaXZpc2lvbiB0byBiZSB1bnNpZ25lZCBhbmQgdGhlIGNvbXBpbGVyIHdp
+bGwgdXNlIGEgc2hpZnQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNp
+ZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsN
+ClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
