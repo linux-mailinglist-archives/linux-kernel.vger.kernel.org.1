@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EB21A9F89
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECED1AA1F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368656AbgDOMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:14:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897462AbgDOLqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:46:50 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B176621569;
-        Wed, 15 Apr 2020 11:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586951209;
-        bh=8Zkwt3Nxc5a6mdUgf20I8irYrlccMGLwx42I/QawL/4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JIKSYAjrEeEeUNZjbKn12Fo1zU7SkxSLPQZhBoM5rur+BNB0R3UNYzakLlQXkx3uc
-         WUwo9R8qr6CDsyL9+gS09kWddIXOlqo+ax7/y/rUOky1924evT0NVv6NliF5MpKAiv
-         BL3lxecoLjEkAN86hNBO7CZAHsacX9hZd3rmN6dQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qian Cai <cai@lca.pw>, Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 22/40] percpu_counter: fix a data race at vm_committed_as
-Date:   Wed, 15 Apr 2020 07:46:05 -0400
-Message-Id: <20200415114623.14972-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415114623.14972-1-sashal@kernel.org>
-References: <20200415114623.14972-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S370277AbgDOMsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S370242AbgDOMrJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:47:09 -0400
+Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC4BC061A0C;
+        Wed, 15 Apr 2020 05:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586954825;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=6/o2eUBt4iN9I0U74c2I8jHNfikxj7yqfISGp3x31ZE=;
+        b=lNs6HWucThpy3Ne1/nN6kfg7hfbpHhjXSde+1bdtjW3wQqRp1cvazGDuvc3fhe2NzZ
+        iLP4AMbcSbM074ClW6SKnXojI9Sg1fuOqNEcfx1L/JAoiPzK9a1KrJWwNcVBDzo8vtFs
+        cNFiftqcZuFF0kq2tE0oF2HXXRtN8M/I0zM3/pr7MHFQAX3pOoui7zrIGv6WfKJnTo1e
+        pVwJjGNEQ/MbNyeydyj2yzKCv6FJPmN/fQR/LR1qQBJ7Kg5nqhLURx9qT9K18rU1uHbl
+        H1raH6FCY2ZuQduRe07zuOEZdR1dwGYmFebMlJuTXeh4sjvhf7vKrNU4lHaIkNHw3vtX
+        Lbzw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qOxWRk4dCz3b9m9rH79DVZTKLB3vWvm2T1hRBz6in0C9d6y"
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2001:16b8:26b3:fd00:4058:8a66:740e:2249]
+        by smtp.strato.de (RZmta 46.4.0 AUTH)
+        with ESMTPSA id 6028a2w3FCkp1ws
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 15 Apr 2020 14:46:51 +0200 (CEST)
+Subject: Re: [PATCH v6 07/12] ARM: DTS: omap5: add sgx gpu child node
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAJKOXPdEkWniffmGZmf=S6E5UxWTdVGXnycqTFftXwo_45rz3w@mail.gmail.com>
+Date:   Wed, 15 Apr 2020 13:46:06 +0200
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap@vger.kernel.org, openpvrsgx-devgroup@letux.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EFA7F2F0-96EA-45D9-B8C8-00DC8C72344D@goldelico.com>
+References: <cover.1586939718.git.hns@goldelico.com> <004611c9660943759b635a87484932869927cf74.1586939718.git.hns@goldelico.com> <CAJKOXPdEkWniffmGZmf=S6E5UxWTdVGXnycqTFftXwo_45rz3w@mail.gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+Hi Krzysztof,
 
-[ Upstream commit 7e2345200262e4a6056580f0231cccdaffc825f3 ]
+> Am 15.04.2020 um 13:38 schrieb Krzysztof Kozlowski <krzk@kernel.org>:
+>=20
+> On Wed, 15 Apr 2020 at 10:36, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>=20
+>> and add interrupt.
+>>=20
+>> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # Pyra-Handheld.
+>=20
+> Don't add your own Tested-by tags. These are implied by authorship,
+> otherwise all patches people make should have such tag.
 
-"vm_committed_as.count" could be accessed concurrently as reported by
-KCSAN,
+Ok I see. AFAIR it originates in several phases of editing to report on =
+which device it was tested.
 
- BUG: KCSAN: data-race in __vm_enough_memory / percpu_counter_add_batch
+Is there a canonical way of writing "tested-on: ${HARDWARE}"?
 
- write to 0xffffffff9451c538 of 8 bytes by task 65879 on cpu 35:
-  percpu_counter_add_batch+0x83/0xd0
-  percpu_counter_add_batch at lib/percpu_counter.c:91
-  __vm_enough_memory+0xb9/0x260
-  dup_mm+0x3a4/0x8f0
-  copy_process+0x2458/0x3240
-  _do_fork+0xaa/0x9f0
-  __do_sys_clone+0x125/0x160
-  __x64_sys_clone+0x70/0x90
-  do_syscall_64+0x91/0xb05
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+E.g. would this be ok?
 
- read to 0xffffffff9451c538 of 8 bytes by task 66773 on cpu 19:
-  __vm_enough_memory+0x199/0x260
-  percpu_counter_read_positive at include/linux/percpu_counter.h:81
-  (inlined by) __vm_enough_memory at mm/util.c:839
-  mmap_region+0x1b2/0xa10
-  do_mmap+0x45c/0x700
-  vm_mmap_pgoff+0xc0/0x130
-  ksys_mmap_pgoff+0x6e/0x300
-  __x64_sys_mmap+0x33/0x40
-  do_syscall_64+0x91/0xb05
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Signed-off: H. Nikolaus Schaller <hns@goldelico.com> # tested on =
+Pyra-Handheld
 
-The read is outside percpu_counter::lock critical section which results in
-a data race.  Fix it by adding a READ_ONCE() in
-percpu_counter_read_positive() which could also service as the existing
-compiler memory barrier.
-
-Signed-off-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Marco Elver <elver@google.com>
-Link: http://lkml.kernel.org/r/1582302724-2804-1-git-send-email-cai@lca.pw
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/linux/percpu_counter.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
-index 4f052496cdfd7..0a4f54dd4737b 100644
---- a/include/linux/percpu_counter.h
-+++ b/include/linux/percpu_counter.h
-@@ -78,9 +78,9 @@ static inline s64 percpu_counter_read(struct percpu_counter *fbc)
-  */
- static inline s64 percpu_counter_read_positive(struct percpu_counter *fbc)
- {
--	s64 ret = fbc->count;
-+	/* Prevent reloads of fbc->count */
-+	s64 ret = READ_ONCE(fbc->count);
- 
--	barrier();		/* Prevent reloads of fbc->count */
- 	if (ret >= 0)
- 		return ret;
- 	return 0;
--- 
-2.20.1
+BR and thanks,
+Nikolaus Schaller
 
