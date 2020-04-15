@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0272F1AB239
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB8B1AB23F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441978AbgDOUCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436756AbgDOUB6 (ORCPT
+        id S2634733AbgDOUCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 16:02:48 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:48229 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436756AbgDOUCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:01:58 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0774CC061A0C;
-        Wed, 15 Apr 2020 13:01:57 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a201so1324036wme.1;
-        Wed, 15 Apr 2020 13:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=iCP6LoyFxExRJqxqIqO0ZCtpb3X9pIKnl0AtHQmrXjs=;
-        b=d7QuDTSV3oT/GjNp4OI65qjAjBfFkEo24nuK8zFcOZnpgc4WHnAIJ8SmZNfPyM+nEw
-         f1TGgcn+brikUxKXefZQn5XLEFe0rK7FFcAVWUjox8ZkUarOdcilxFfrVUWuE9dEyMvJ
-         Mm/TnZZnifu8z6mOSWxAgjq2gtcWOhmZkGm1szp7nXtwAvD9T4f8gHAEv0QSxAVp9rx3
-         HlJMAxZCU4uBPzH5GfScEBZNvTjWjkqjcK+DmgRK19x5a6P7AeVaSjRwcQezDFj+rSci
-         xgxzBLKCXrHAGxCEebROVLDuC/030ioyihdjtlwmIY+/HRsocdtcI6JET7qhdqXOynsk
-         oKcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=iCP6LoyFxExRJqxqIqO0ZCtpb3X9pIKnl0AtHQmrXjs=;
-        b=hKfsR1V+7EiAQ1kDng4w02aRIxe+/0j95bF/ttlG1zoYLBYcU97ayYORkRNzKASthv
-         41LEH8LWaaT+xrFULzdQ7ISMPxy+qESIEJh2zl+Or0O2E3UTBLTPVjY6kGGwFzqSYPcb
-         5pld2KgoKjT6H2UoH5MGq6JmzTavZnMiIeCA0upGLChIj6Wzz70Nphekr+QLFesFhg7N
-         lhLIsfPLC8Y/W70VFFB+MS9xpsXXun5x9vaLN8g13NSIW5q/IN7ZQ6Ky0HICpDLkWVwh
-         oaiuYT190Qp9YXbIginorsl0suATKpkXTck75BDdldjYp2yWEGBn78OhRZofv9x6Wx0M
-         MGvA==
-X-Gm-Message-State: AGi0PuZgpgJBws8wUPhO2lQlRKqUkY3u8tYm0LJYzHxc2w0dDE8h7fpl
-        IRUxSdzKNrKwpG4RiuTYx2k=
-X-Google-Smtp-Source: APiQypIZiSysEEnEGOfY5fZpJcuccPWd4eDhfIDnRcThA/tstm0tS7BGJk0WDy4K33IfCgeGWrNurQ==
-X-Received: by 2002:a1c:1b58:: with SMTP id b85mr896338wmb.112.1586980916609;
-        Wed, 15 Apr 2020 13:01:56 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id s6sm736184wmh.17.2020.04.15.13.01.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 13:01:56 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: net: ethernet-phy: add desciption for ethernet-phy-id1234.d400
-Date:   Wed, 15 Apr 2020 22:01:49 +0200
-Message-Id: <20200415200149.16986-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Wed, 15 Apr 2020 16:02:39 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D7FF0C0007;
+        Wed, 15 Apr 2020 20:02:35 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: 88pm860x: remove useless range check
+Date:   Wed, 15 Apr 2020 22:02:26 +0200
+Message-Id: <20200415200226.157361-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.25.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description below is already in use in
-'rk3228-evb.dts', 'rk3229-xms6.dts' and 'rk3328.dtsi'
-but somehow never added to a document, so add
-"ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22"
-for ethernet-phy nodes on Rockchip platforms to
-'ethernet-phy.yaml'.
+Because the core is now checking the RTC range, it is unnecessary to check
+it again in .set_time/
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- Documentation/devicetree/bindings/net/ethernet-phy.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/rtc/rtc-88pm860x.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-index 8927941c7..5aa141ccc 100644
---- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-+++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-@@ -45,6 +45,9 @@ properties:
-           bits of a vendor specific ID.
-       - items:
-           - pattern: "^ethernet-phy-id[a-f0-9]{4}\\.[a-f0-9]{4}$"
-+          - const: ethernet-phy-ieee802.3-c22
-+      - items:
-+          - pattern: "^ethernet-phy-id[a-f0-9]{4}\\.[a-f0-9]{4}$"
-           - const: ethernet-phy-ieee802.3-c45
+diff --git a/drivers/rtc/rtc-88pm860x.c b/drivers/rtc/rtc-88pm860x.c
+index cc9b14ef90f1..c90457d001e9 100644
+--- a/drivers/rtc/rtc-88pm860x.c
++++ b/drivers/rtc/rtc-88pm860x.c
+@@ -106,12 +106,6 @@ static int pm860x_rtc_set_time(struct device *dev, struct rtc_time *tm)
+ 	unsigned char buf[4];
+ 	unsigned long ticks, base, data;
  
-   reg:
+-	if (tm->tm_year > 206) {
+-		dev_dbg(info->dev, "Set time %d out of range. "
+-			"Please set time between 1970 to 2106.\n",
+-			1900 + tm->tm_year);
+-		return -EINVAL;
+-	}
+ 	ticks = rtc_tm_to_time64(tm);
+ 
+ 	/* load 32-bit read-only counter */
 -- 
-2.11.0
+2.25.2
 
