@@ -2,184 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0431A9907
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC001A990E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895612AbgDOJdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895596AbgDOJdw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:33:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D494C061A0C;
-        Wed, 15 Apr 2020 02:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=CB95q0U4UuPiM6nQZ5HbjcNj7VGPk6sg9SK/YZr2Y2A=; b=RT3bIBBAPMnHkIktW9eMa8cCC
-        uqGjonEHM4JQhPX8TijjW5fTPAiQE/gKV+86By4YCpaLk4Pn8RlfkMW+TJYSSS0dCh2cQyjp3AVlI
-        j+82uCSHhgMXY9esoIyugbb0rhbz+am8ST9FTMSADQCaYq8v8QrXyRTk78QVaSd8OSz8baHju7z27
-        SQDQzGOhUfWqO9s8mWGnidG/0ltIGk7ZlP2/PmUs3rp3NpWYTz/KOOEgHPIunESnM9olMoPK92TOW
-        VDOEYWKU53tLn7YkQg11KOZ1LnHU5EmvOHlnC+JHUh/VPtW12LUhnqdyQoXMESG87YF8WlHXh1iIn
-        hWWAbwcCg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50358)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jOeQP-0005Sy-Kx; Wed, 15 Apr 2020 10:33:41 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jOeQI-0000nm-SM; Wed, 15 Apr 2020 10:33:34 +0100
-Date:   Wed, 15 Apr 2020 10:33:34 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH v2 1/3] net: phy: mdio: add IPQ40xx MDIO driver
-Message-ID: <20200415093334.GC25745@shell.armlinux.org.uk>
-References: <20200414181012.114905-1-robert.marko@sartura.hr>
+        id S2895634AbgDOJfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:35:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:10350 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2895613AbgDOJfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:35:19 -0400
+IronPort-SDR: HOxahpQ08nuLL3rHiQN1oMTcqGy8j0ipai/oxjZ4grQpfLDjBfykxgGZgC7Ymij0JYk6fxATpp
+ G7vlCt5WB4YA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 02:35:18 -0700
+IronPort-SDR: k4rRel3jDwOX9z9ZY15vHKbdib2oiO1AyNV9W1xXF+YaVV8LKuXXH7IdhwsYYovzclndUvdm7d
+ u5JZuYKtSOHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="332447829"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2020 02:35:14 -0700
+Subject: Re: [PATCH 2/2] mmc: sdhci: use FIELD_GET/PREP for capabilities bit
+ masks
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        masahiroy@kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20200408072105.422-1-yamada.masahiro@socionext.com>
+ <20200408072105.422-2-yamada.masahiro@socionext.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <3cc8c9b8-b957-2fef-d6da-47980d1926aa@intel.com>
+Date:   Wed, 15 Apr 2020 12:34:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414181012.114905-1-robert.marko@sartura.hr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200408072105.422-2-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 08:10:11PM +0200, Robert Marko wrote:
-> diff --git a/drivers/net/phy/mdio-ipq40xx.c b/drivers/net/phy/mdio-ipq40xx.c
-> new file mode 100644
-> index 000000000000..d8c11c621f20
-> --- /dev/null
-> +++ b/drivers/net/phy/mdio-ipq40xx.c
-> @@ -0,0 +1,176 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +/* Copyright (c) 2015, The Linux Foundation. All rights reserved. */
-> +/* Copyright (c) 2020 Sartura Ltd. */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/io.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_mdio.h>
-> +#include <linux/phy.h>
-> +#include <linux/platform_device.h>
-> +
+On 8/04/20 10:21 am, Masahiro Yamada wrote:
+> Use FIELD_GET and FIELD_PREP to get access to the register fields.
+> Delete the shift macros. I used GENMASK() for touched macros.
 
-Looking at how these registers are used, they could be renamed:
+That has the side-effect of changing the constants to 64-bit on 64-bit
+platforms, which needs to be mentioned in the commit message.
 
-> +#define MDIO_CTRL_0_REG		0x40
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-This seems to be unused.
+Apart from above:
 
-> +#define MDIO_CTRL_1_REG		0x44
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-MDIO_ADDR_REG
+> ---
+> 
+>  drivers/mmc/host/sdhci-esdhc-imx.c |  4 +++-
+>  drivers/mmc/host/sdhci-of-at91.c   |  5 +++--
+>  drivers/mmc/host/sdhci-pci-core.c  |  8 ++------
+>  drivers/mmc/host/sdhci.c           | 19 +++++++------------
+>  drivers/mmc/host/sdhci.h           | 17 ++++++-----------
+>  5 files changed, 21 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+> index 5ec8e4bf1ac7..38cd83118082 100644
+> --- a/drivers/mmc/host/sdhci-esdhc-imx.c
+> +++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+> @@ -8,6 +8,7 @@
+>   *   Author: Wolfram Sang <kernel@pengutronix.de>
+>   */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/delay.h>
+> @@ -399,7 +400,8 @@ static u32 esdhc_readl_le(struct sdhci_host *host, int reg)
+>  				val = SDHCI_SUPPORT_DDR50 | SDHCI_SUPPORT_SDR104
+>  					| SDHCI_SUPPORT_SDR50
+>  					| SDHCI_USE_SDR50_TUNING
+> -					| (SDHCI_TUNING_MODE_3 << SDHCI_RETUNING_MODE_SHIFT);
+> +					| FIELD_PREP(SDHCI_RETUNING_MODE_MASK,
+> +						     SDHCI_TUNING_MODE_3);
+>  
+>  			if (imx_data->socdata->flags & ESDHC_FLAG_HS400)
+>  				val |= SDHCI_SUPPORT_HS400;
+> diff --git a/drivers/mmc/host/sdhci-of-at91.c b/drivers/mmc/host/sdhci-of-at91.c
+> index c79bff5e2280..25f4e0f4f53b 100644
+> --- a/drivers/mmc/host/sdhci-of-at91.c
+> +++ b/drivers/mmc/host/sdhci-of-at91.c
+> @@ -6,6 +6,7 @@
+>   *		 2015 Ludovic Desroches <ludovic.desroches@atmel.com>
+>   */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+> @@ -179,9 +180,9 @@ static int sdhci_at91_set_clks_presets(struct device *dev)
+>  	clk_mul = gck_rate / clk_base_rate - 1;
+>  
+>  	caps0 &= ~SDHCI_CLOCK_V3_BASE_MASK;
+> -	caps0 |= (clk_base << SDHCI_CLOCK_BASE_SHIFT) & SDHCI_CLOCK_V3_BASE_MASK;
+> +	caps0 |= FIELD_PREP(SDHCI_CLOCK_V3_BASE_MASK, clk_base);
+>  	caps1 &= ~SDHCI_CLOCK_MUL_MASK;
+> -	caps1 |= (clk_mul << SDHCI_CLOCK_MUL_SHIFT) & SDHCI_CLOCK_MUL_MASK;
+> +	caps1 |= FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
+>  	/* Set capabilities in r/w mode. */
+>  	writel(SDMMC_CACR_KEY | SDMMC_CACR_CAPWREN, host->ioaddr + SDMMC_CACR);
+>  	writel(caps0, host->ioaddr + SDHCI_CAPABILITIES);
+> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+> index 525de2454a4d..a98c9476bfc8 100644
+> --- a/drivers/mmc/host/sdhci-pci-core.c
+> +++ b/drivers/mmc/host/sdhci-pci-core.c
+> @@ -249,12 +249,8 @@ static int ricoh_probe(struct sdhci_pci_chip *chip)
+>  static int ricoh_mmc_probe_slot(struct sdhci_pci_slot *slot)
+>  {
+>  	slot->host->caps =
+> -		((0x21 << SDHCI_TIMEOUT_CLK_SHIFT)
+> -			& SDHCI_TIMEOUT_CLK_MASK) |
+> -
+> -		((0x21 << SDHCI_CLOCK_BASE_SHIFT)
+> -			& SDHCI_CLOCK_BASE_MASK) |
+> -
+> +		FIELD_PREP(SDHCI_TIMEOUT_CLK_MASK, 0x21) |
+> +		FIELD_PREP(SDHCI_CLOCK_BASE_MASK, 0x21) |
+>  		SDHCI_TIMEOUT_CLK_UNIT |
+>  		SDHCI_CAN_VDD_330 |
+>  		SDHCI_CAN_DO_HISPD |
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 3f716466fcfd..344a7e0e33fe 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -4117,11 +4117,9 @@ int sdhci_setup_host(struct sdhci_host *host)
+>  	}
+>  
+>  	if (host->version >= SDHCI_SPEC_300)
+> -		host->max_clk = (host->caps & SDHCI_CLOCK_V3_BASE_MASK)
+> -			>> SDHCI_CLOCK_BASE_SHIFT;
+> +		host->max_clk = FIELD_GET(SDHCI_CLOCK_V3_BASE_MASK, host->caps);
+>  	else
+> -		host->max_clk = (host->caps & SDHCI_CLOCK_BASE_MASK)
+> -			>> SDHCI_CLOCK_BASE_SHIFT;
+> +		host->max_clk = FIELD_GET(SDHCI_CLOCK_BASE_MASK, host->caps);
+>  
+>  	host->max_clk *= 1000000;
+>  	if (host->max_clk == 0 || host->quirks &
+> @@ -4139,8 +4137,7 @@ int sdhci_setup_host(struct sdhci_host *host)
+>  	 * In case of Host Controller v3.00, find out whether clock
+>  	 * multiplier is supported.
+>  	 */
+> -	host->clk_mul = (host->caps1 & SDHCI_CLOCK_MUL_MASK) >>
+> -			SDHCI_CLOCK_MUL_SHIFT;
+> +	host->clk_mul = FIELD_GET(SDHCI_CLOCK_MUL_MASK, host->caps1);
+>  
+>  	/*
+>  	 * In case the value in Clock Multiplier is 0, then programmable
+> @@ -4173,8 +4170,7 @@ int sdhci_setup_host(struct sdhci_host *host)
+>  		mmc->f_max = max_clk;
+>  
+>  	if (!(host->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)) {
+> -		host->timeout_clk = (host->caps & SDHCI_TIMEOUT_CLK_MASK) >>
+> -					SDHCI_TIMEOUT_CLK_SHIFT;
+> +		host->timeout_clk = FIELD_GET(SDHCI_TIMEOUT_CLK_MASK, host->caps);
+>  
+>  		if (host->caps & SDHCI_TIMEOUT_CLK_UNIT)
+>  			host->timeout_clk *= 1000;
+> @@ -4326,8 +4322,8 @@ int sdhci_setup_host(struct sdhci_host *host)
+>  		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
+>  
+>  	/* Initial value for re-tuning timer count */
+> -	host->tuning_count = (host->caps1 & SDHCI_RETUNING_TIMER_COUNT_MASK) >>
+> -			     SDHCI_RETUNING_TIMER_COUNT_SHIFT;
+> +	host->tuning_count = FIELD_GET(SDHCI_RETUNING_TIMER_COUNT_MASK,
+> +				       host->caps1);
+>  
+>  	/*
+>  	 * In case Re-tuning Timer is not disabled, the actual value of
+> @@ -4337,8 +4333,7 @@ int sdhci_setup_host(struct sdhci_host *host)
+>  		host->tuning_count = 1 << (host->tuning_count - 1);
+>  
+>  	/* Re-tuning mode supported by the Host Controller */
+> -	host->tuning_mode = (host->caps1 & SDHCI_RETUNING_MODE_MASK) >>
+> -			     SDHCI_RETUNING_MODE_SHIFT;
+> +	host->tuning_mode = FIELD_GET(SDHCI_RETUNING_MODE_MASK, host->caps1);
+>  
+>  	ocr_avail = 0;
+>  
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index b786b68e0302..d7f1441b0fc3 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -200,12 +200,10 @@
+>  #define  SDHCI_CTRL_PRESET_VAL_ENABLE	0x8000
+>  
+>  #define SDHCI_CAPABILITIES	0x40
+> -#define  SDHCI_TIMEOUT_CLK_MASK	0x0000003F
+> -#define  SDHCI_TIMEOUT_CLK_SHIFT 0
+> +#define  SDHCI_TIMEOUT_CLK_MASK		GENMASK(5, 0)
+>  #define  SDHCI_TIMEOUT_CLK_UNIT	0x00000080
+> -#define  SDHCI_CLOCK_BASE_MASK	0x00003F00
+> -#define  SDHCI_CLOCK_V3_BASE_MASK	0x0000FF00
+> -#define  SDHCI_CLOCK_BASE_SHIFT	8
+> +#define  SDHCI_CLOCK_BASE_MASK		GENMASK(13, 8)
+> +#define  SDHCI_CLOCK_V3_BASE_MASK	GENMASK(15, 8)
+>  #define  SDHCI_MAX_BLOCK_MASK	0x00030000
+>  #define  SDHCI_MAX_BLOCK_SHIFT  16
+>  #define  SDHCI_CAN_DO_8BIT	0x00040000
+> @@ -227,13 +225,10 @@
+>  #define  SDHCI_DRIVER_TYPE_A	0x00000010
+>  #define  SDHCI_DRIVER_TYPE_C	0x00000020
+>  #define  SDHCI_DRIVER_TYPE_D	0x00000040
+> -#define  SDHCI_RETUNING_TIMER_COUNT_MASK	0x00000F00
+> -#define  SDHCI_RETUNING_TIMER_COUNT_SHIFT	8
+> +#define  SDHCI_RETUNING_TIMER_COUNT_MASK	GENMASK(11, 8)
+>  #define  SDHCI_USE_SDR50_TUNING			0x00002000
+> -#define  SDHCI_RETUNING_MODE_MASK		0x0000C000
+> -#define  SDHCI_RETUNING_MODE_SHIFT		14
+> -#define  SDHCI_CLOCK_MUL_MASK	0x00FF0000
+> -#define  SDHCI_CLOCK_MUL_SHIFT	16
+> +#define  SDHCI_RETUNING_MODE_MASK		GENMASK(15, 14)
+> +#define  SDHCI_CLOCK_MUL_MASK			GENMASK(23, 16)
+>  #define  SDHCI_CAN_DO_ADMA3	0x08000000
+>  #define  SDHCI_SUPPORT_HS400	0x80000000 /* Non-standard */
+>  
+> 
 
-> +#define MDIO_CTRL_2_REG		0x48
-
-MDIO_DATA_WRITE_REG
-
-> +#define MDIO_CTRL_3_REG		0x4c
-
-MDIO_DATA_READ_REG
-
-> +#define MDIO_CTRL_4_REG		0x50
-> +#define MDIO_CTRL_4_ACCESS_BUSY		BIT(16)
-> +#define MDIO_CTRL_4_ACCESS_START		BIT(8)
-> +#define MDIO_CTRL_4_ACCESS_CODE_READ		0
-> +#define MDIO_CTRL_4_ACCESS_CODE_WRITE	1
-
-MDIO_CMD_* ?
-
-> +
-> +#define IPQ40XX_MDIO_RETRY	1000
-> +#define IPQ40XX_MDIO_DELAY	10
-> +
-> +struct ipq40xx_mdio_data {
-> +	void __iomem	*membase;
-> +};
-> +
-> +static int ipq40xx_mdio_wait_busy(struct mii_bus *bus)
-> +{
-> +	struct ipq40xx_mdio_data *priv = bus->priv;
-> +	int i;
-> +
-> +	for (i = 0; i < IPQ40XX_MDIO_RETRY; i++) {
-> +		unsigned int busy;
-> +
-> +		busy = readl(priv->membase + MDIO_CTRL_4_REG) &
-> +			MDIO_CTRL_4_ACCESS_BUSY;
-> +		if (!busy)
-> +			return 0;
-> +
-> +		/* BUSY might take to be cleard by 15~20 times of loop */
-> +		udelay(IPQ40XX_MDIO_DELAY);
-> +	}
-> +
-> +	dev_err(bus->parent, "MDIO operation timed out\n");
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static int ipq40xx_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
-> +{
-> +	struct ipq40xx_mdio_data *priv = bus->priv;
-> +	int value = 0;
-> +	unsigned int cmd = 0;
-
-No need to initialise either of these, and you can eliminate "value"
-which will then satisfy davem's requirement for reverse-christmas-tree
-ordering of variable declarations.
-
-> +
-> +	/* Reject clause 45 */
-> +	if (regnum & MII_ADDR_C45)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (ipq40xx_mdio_wait_busy(bus))
-> +		return -ETIMEDOUT;
-> +
-> +	/* issue the phy address and reg */
-> +	writel((mii_id << 8) | regnum, priv->membase + MDIO_CTRL_1_REG);
-> +
-> +	cmd = MDIO_CTRL_4_ACCESS_START | MDIO_CTRL_4_ACCESS_CODE_READ;
-> +
-> +	/* issue read command */
-> +	writel(cmd, priv->membase + MDIO_CTRL_4_REG);
-> +
-> +	/* Wait read complete */
-> +	if (ipq40xx_mdio_wait_busy(bus))
-> +		return -ETIMEDOUT;
-> +
-> +	/* Read data */
-> +	value = readl(priv->membase + MDIO_CTRL_3_REG);
-> +
-> +	return value;
-> +}
-> +
-> +static int ipq40xx_mdio_write(struct mii_bus *bus, int mii_id, int regnum,
-> +							 u16 value)
-> +{
-> +	struct ipq40xx_mdio_data *priv = bus->priv;
-> +	unsigned int cmd = 0;
-
-No need to initialise cmd.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
