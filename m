@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC021A9941
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC501A9949
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895809AbgDOJrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895800AbgDOJrY (ORCPT
+        id S2895842AbgDOJs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:48:58 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:55945 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895800AbgDOJss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:47:24 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6975AC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:47:24 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u15so2975752ljd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flowbird.group; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B0qy5LvgHxuRhiqgWueJQ6xJ9sv8tPQCF7n+fvQHiOs=;
-        b=NMrJNqcK5eyfNz31lPbY+TyReQxJrnuEFiiI4ZHZ0RnGAep4m9OjU2s0Rahr5YHYpY
-         6WRSCNOS4baRnCAsvEYr+dpc/PQ6WzUxxo3xfLtRealkbI7fZee+//V3BHy5FJKc/9j9
-         90g6sX9fD4OSQuzvj6/DnLoV1DG5J9cQYAgGEEpl7v2ioZmNBalV6Oq5fKi3raobEXpa
-         Fp4AYfeeJ57k3lRyyTphoQPXEhGnFLELLopIT5C+oSfwpe9Y9ZLHBDQBYPctrB/9Po8g
-         pPMCcgWu8JTWAkQEFXN3DYv2QwvGGVaPmM/bcRIGn8n8FtTHP0YX3J5KDzH3zs6zIy7y
-         xLWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B0qy5LvgHxuRhiqgWueJQ6xJ9sv8tPQCF7n+fvQHiOs=;
-        b=D5tiBIuhXGB81enkweMrwWlUDUDOgoxa/Kypr38RgpG4SRlM0AvBrKqrzyUJ8TpTe1
-         mwAgL7Su18UOpD9iWG6dRsNDk36HIhzt3+FCei9XwvnD4je6YlaLpWQ3IpxTddXQZ1T3
-         wfrDOY3vBvmJRN98JovlrVNtkfBmukZNtXu4jZ+TRCYaufguRayT1BYsfiRLJxgjlga8
-         O9pxYpF72Wh54tpDkpOYUr6u8qOXPYdL5FQGEVr1BwSf52jaY5+oLRUIQLvU2vm4kAJ4
-         rdNyyDTD4JGS61ppJU0RDkSjQEOrPNiQ7ZxRIAM0F+iqBVeH8+/2hboEpG1rWgDsrWsK
-         pmcA==
-X-Gm-Message-State: AGi0PuZbuJ5WScEg6UAT2NeNAF1iPzRy9GeQD7U7HSeGVMHdfNwFEN45
-        YGc9TMpWBmDVsUgu+6fC9fY/vhNWX8t/1k+EgemYrg==
-X-Google-Smtp-Source: APiQypL8XMn5RnIEI3l+oru1L0UvcAugx1E2ZOCgi2uoo8JXWePaVPOi0V09wbIxJKMCZ9MtgPVJV073Y9PJRgdOM4M=
-X-Received: by 2002:a2e:5746:: with SMTP id r6mr2665731ljd.15.1586944042730;
- Wed, 15 Apr 2020 02:47:22 -0700 (PDT)
+        Wed, 15 Apr 2020 05:48:48 -0400
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 22ED924000F;
+        Wed, 15 Apr 2020 09:48:44 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 0/9] clocksource/drivers/timer-atmel-tcb: add sama5d2 support
+Date:   Wed, 15 Apr 2020 11:48:17 +0200
+Message-Id: <20200415094826.132562-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-References: <1583944596-23410-1-git-send-email-yibin.gong@nxp.com>
-In-Reply-To: <1583944596-23410-1-git-send-email-yibin.gong@nxp.com>
-From:   "Fuzzey, Martin" <martin.fuzzey@flowbird.group>
-Date:   Wed, 15 Apr 2020 11:47:11 +0200
-Message-ID: <CANh8QzwanSewjJ98HL_yR1juiHo1RN77JQyNNKrMrud3B0dnww@mail.gmail.com>
-Subject: Re: [PATCH v7 00/13] add ecspi ERR009165 for i.mx6/7 soc family
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, vkoul@kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, dan.j.williams@intel.com,
-        mark.rutland@arm.com, catalin.marinas@arm.com,
-        Will Deacon <will.deacon@arm.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+This series mainly adds sama5d2 support where we need to avoid using
+clock index 0 because that clock is never enabled by the driver.
 
+There is also a rework of the 32khz clock handling so it is not used for
+clockevents on 32 bit counter because the increased rate improves the
+resolution and doesn't have any drawback with that counter width. This
+replaces a patch that has been carried in the linux-rt tree for a while.
 
-On Wed, 11 Mar 2020 at 09:35, Robin Gong <yibin.gong@nxp.com> wrote:
->
-> There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
-> transfer to be send twice in DMA mode. Please get more information from:
-> https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf. The workaround is adding
-> new sdma ram script which works in XCH  mode as PIO inside sdma instead
-> of SMC mode, meanwhile, 'TX_THRESHOLD' should be 0. The issue should be
-> exist on all legacy i.mx6/7 soc family before i.mx6ul.
-> NXP fix this design issue from i.mx6ul, so newer chips including i.mx6ul/
-> 6ull/6sll do not need this workaroud anymore. All other i.mx6/7/8 chips
-> still need this workaroud. This patch set add new 'fsl,imx6ul-ecspi'
-> for ecspi driver and 'ecspi_fixed' in sdma driver to choose if need errata
-> or not.
-> The first two reverted patches should be the same issue, though, it
-> seems 'fixed' by changing to other shp script. Hope Sean or Sascha could
-> have the chance to test this patch set if could fix their issues.
-> Besides, enable sdma support for i.mx8mm/8mq and fix ecspi1 not work
-> on i.mx8mm because the event id is zero.
->
-> PS:
->    Please get sdma firmware from below linux-firmware and copy it to your
-> local rootfs /lib/firmware/imx/sdma.
-> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/imx/sdma
->
+Changes in v2:
+ - Rebased on v5.7-rc1
+ - Moved the binding documentation to its proper place
+ - Added back the atmel,tcb-timer child node documentation
 
-A couple of questions
+Alexandre Belloni (8):
+  dt-bindings: atmel-tcb: convert bindings to json-schema
+  dt-bindings: microchip: atmel,at91rm9200-tcb: add sama5d2 compatible
+  ARM: dts: at91: sama5d2: add TCB GCLK
+  clocksource/drivers/timer-atmel-tcb: rework 32khz clock selection
+  clocksource/drivers/timer-atmel-tcb: fill tcb_config
+  clocksource/drivers/timer-atmel-tcb: stop using the 32kHz for
+    clockevents
+  clocksource/drivers/timer-atmel-tcb: allow selecting first divider
+  clocksource/drivers/timer-atmel-tcb: add sama5d2 support
 
-1) Is this series needed for the i.MX6DL? (the document you linked
-only seems to mention i.MX6D/Q
-2) If the laterst SDMA firmware mentionned above is used will this
-break systems running mainline kernels without this patch series
-applied?
+Kamel Bouhara (1):
+  ARM: at91: add atmel tcb capabilities
 
-Regards,
+ .../devicetree/bindings/mfd/atmel-tcb.txt     |  56 ---------
+ .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 113 ++++++++++++++++++
+ .../bindings/timer/atmel,tcb-timer.yaml       |  51 ++++++++
+ arch/arm/boot/dts/sama5d2.dtsi                |  12 +-
+ drivers/clocksource/timer-atmel-tcb.c         | 101 +++++++++-------
+ include/soc/at91/atmel_tcb.h                  |   5 +
+ 6 files changed, 233 insertions(+), 105 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-tcb.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+ create mode 100644 Documentation/devicetree/bindings/timer/atmel,tcb-timer.yaml
 
-Martin
+-- 
+2.25.2
+
