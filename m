@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6391AB0BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCBE1AB0C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416783AbgDOSbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441546AbgDOSbS (ORCPT
+        id S1416806AbgDOScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:32:18 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15570 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416781AbgDOScN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:31:18 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD416C061A0C;
-        Wed, 15 Apr 2020 11:31:17 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id j20so6321435edj.0;
-        Wed, 15 Apr 2020 11:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SnqHof2dPOXKoAKXV6iF52K+2gAJh/5rV8baIqoPo+o=;
-        b=FlQhQpkChTKQQKHE/kjZW2JHPP/s2wqj9SshjyqQZHZ1Z085P88gpkVzD7mYH4Ej7H
-         /8kITqU0Ici++jfH5rEOOhqHL0jd2qukqDVFVcGnLbYwh/apTw4YNDCH+2M+gmUzrjar
-         hoOwAfFifXLoTbP6k1cH7slupuNak1QwX8L8/7m09MQvu3p7JA+AeUIKvRniPPE9ubhi
-         Pel0J86HNvqJyD6otKJnogaD9EIB9rzqn4z0qryuqX5unULzwv7/rr5r7rW++KNYstiw
-         oWMcguoovE7j4w3t5WO84J6Y3TYN8lQK7tvYJLJAvcFFqrrqRofNt2LxQS7v/bmmp6xn
-         WWmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SnqHof2dPOXKoAKXV6iF52K+2gAJh/5rV8baIqoPo+o=;
-        b=s/ZjJd98cd7CTW6wPeBt2BNTsAu2wt8TWaaVgWykJ7Vb/4Um/MIDxqboJBz7AFWN28
-         vFzL1SZFlcijAx347nPf+sCfc1rQK1UywDasrTPvd0oMj5yiptf05ihpqRbarVWuLCQH
-         ZdobpWMdzesZtH5RY2n/efeUKVPIg2cWMFePhupVgsarVj5dKKfeitoo3bRiNjBqbiYj
-         8f+VFW0BlVgueJyVCOWmsomMwihHibVgSdJibOeYnCMNkp7IO/4cSBV5fM9/rjQsU6TA
-         d2gMi/DIMTkoTv42ToFswx8RWdenHavXKUhAlOg+LFfwxOaAmgOP9Z4Ox5XyU8etKVHL
-         NNAA==
-X-Gm-Message-State: AGi0PuaQTM9UvrdaBMuq+umYbnVgjOl2JPalIVtxj8deLHcayGXl/PRG
-        Pd9zTy6OhijXknyYFEegYBk7NlzfeOF6pgz0wSg=
-X-Google-Smtp-Source: APiQypIRaOcf7VxFnJh078+KvE/8zI4/yu3CzjaNn7Hoogp4F4FsEu0TUbJADLqHifTfYx7wJfx/Q6y04OU6mhoRBdE=
-X-Received: by 2002:a50:c004:: with SMTP id r4mr24970839edb.110.1586975476369;
- Wed, 15 Apr 2020 11:31:16 -0700 (PDT)
+        Wed, 15 Apr 2020 14:32:13 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9752bf0001>; Wed, 15 Apr 2020 11:30:23 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 15 Apr 2020 11:32:13 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 11:32:13 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
+ 2020 18:32:13 +0000
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
+ DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Wed, 15 Apr 2020 18:32:12 +0000
+Subject: Re: [PATCH] mm/memblock: Fix a typo in comment "implict"->"implicit"
+To:     Ethon Paul <ethp@qq.com>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20200411070701.16097-1-ethp@qq.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <3a15563b-de6c-7808-3c3c-f2ff12dc46de@nvidia.com>
+Date:   Wed, 15 Apr 2020 11:32:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200414201457.229131-1-martin.blumenstingl@googlemail.com>
- <20200414201457.229131-3-martin.blumenstingl@googlemail.com> <907211b1-c8d5-39cd-5d2b-dd41efbdc7a7@baylibre.com>
-In-Reply-To: <907211b1-c8d5-39cd-5d2b-dd41efbdc7a7@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Wed, 15 Apr 2020 20:31:05 +0200
-Message-ID: <CAFBinCCjHtSNigkeG_M4sVs27SemTMu0hUEQEHk53odAybm6sA@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 2/4] dt-bindings: power: meson-ee-pwrc: add support
- for the Meson GX SoCs
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     robh+dt@kernel.org, khilman@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200411070701.16097-1-ethp@qq.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586975423; bh=7LwprBHLDzZhAWgs54pXObtERSf8bwUFR+a+iu/GM4w=;
+        h=X-PGP-Universal:Subject:To:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=XKCpi1B1mI62T/RI03mgDa3J6jblKt/0hwmpHZyuC8NgFMeQfw6fpQm5qlUMLc83y
+         umLoxipSaNI6MMdwUSBuSSSLZ7sJdRq4HzZAwA2hFahun3ALiF2LYmvY6s0ubxyvRd
+         GcDcnFSbjEAZZNGNGwkFi1czvkwBxQ4u9DakLtELLr5mJKOeq0jRyUOjshr5YeI8o2
+         wzeEHYehbXQ2ex7kbhpD6Gl5Kbi+3DhE6cTLe0jeEefYiykX4LZJSPTF1ZFGvVRHI6
+         FlRecxFm7EJk+6gMZ3WIgCDMwCPCWHDmLWSyTR1p25zTI3cl92IKfC8erfxPliyvTf
+         1Bm/3oJNGJvqw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
 
-On Wed, Apr 15, 2020 at 10:51 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-[...]
-> > +            - const: dvin
-before I resend, can you please double-check this reset line?
-it's the only difference compared to G12A so I thought it would make
-sense to check if this is really related to the VPU when we're
-switching from one binding to the other anyways (as now is the time to
-sort out pending issues - in case there is an issue here)
+On 4/11/20 12:07 AM, Ethon Paul wrote:
+> There is a typo in commet, fix it.
+> 
+> Signed-off-by: Ethon Paul <ethp@qq.com>
 
-> > +#define PWRC_GXBB_VPU_ID             0
-> > +#define PWRC_GXBB_ETH_ID             1
->
-> Should be PWRC_GXBB_ETHERNET_MEM_ID like meson8 bindings.
-I can do that, thank you for looking into this!
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 
-
-Martin
+> ---
+>   mm/memblock.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 4d06bbaded0f..4cae23d2373a 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -78,7 +78,7 @@
+>    * * memblock_alloc*() - these functions return the **virtual** address
+>    *   of the allocated memory.
+>    *
+> - * Note, that both API variants use implict assumptions about allowed
+> + * Note, that both API variants use implicit assumptions about allowed
+>    * memory ranges and the fallback methods. Consult the documentation
+>    * of memblock_alloc_internal() and memblock_alloc_range_nid()
+>    * functions for more elaborate description.
+> 
