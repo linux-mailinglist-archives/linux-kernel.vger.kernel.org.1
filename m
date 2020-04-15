@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9831AB147
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BEA1AB149
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411850AbgDOTLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:11:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46959 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416844AbgDOSlm (ORCPT
+        id S2503377AbgDOTLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:11:18 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:49263 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416846AbgDOSmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:41:42 -0400
-Received: from static-50-53-47-111.bvtn.or.frontiernet.net ([50.53.47.111] helo=[192.168.192.153])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <john.johansen@canonical.com>)
-        id 1jOmyY-0001iJ-0w; Wed, 15 Apr 2020 18:41:30 +0000
-Subject: Re: [PATCH v2] apparmor: fix potential label refcnt leak in
- aa_change_profile
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        linux-security-module@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, James Morris <jmorris@namei.org>,
-        Kangjie Lu <kjlu@umn.edu>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Yuan Zhang <yuanxzhang@fudan.edu.cn>
-References: <e9f36822-2483-9512-732b-b158ed104bf2@web.de>
-From:   John Johansen <john.johansen@canonical.com>
-Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Canonical
-Message-ID: <f5930264-946a-ad70-a327-62117499681b@canonical.com>
-Date:   Wed, 15 Apr 2020 11:41:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 15 Apr 2020 14:42:35 -0400
+Received: from mail-qk1-f177.google.com ([209.85.222.177]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mcpz0-1ipBG73Ht4-00ZvLZ; Wed, 15 Apr 2020 20:42:33 +0200
+Received: by mail-qk1-f177.google.com with SMTP id j4so18440163qkc.11;
+        Wed, 15 Apr 2020 11:42:33 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYYGv5YSLiGK59bdjApYzeoeRCEyBYw9gvO0T3PRSve31WOUrj+
+        tEAsp2ywfNclTKmOWoIWZzshMmJOm44VgNhd/ac=
+X-Google-Smtp-Source: APiQypIZI3O2p1q4q+8s5Y9SNBauG7Cht4mJENn5T9Wnb7I1L7mfg4xYofW01eLwovwdOixd1cZYkDTm+fpmobGPva8=
+X-Received: by 2002:a37:9d08:: with SMTP id g8mr20477861qke.138.1586976152547;
+ Wed, 15 Apr 2020 11:42:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e9f36822-2483-9512-732b-b158ed104bf2@web.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200415165218.20251-1-will@kernel.org> <20200415165218.20251-6-will@kernel.org>
+ <20200415172813.GA2272@lakrids.cambridge.arm.com>
+In-Reply-To: <20200415172813.GA2272@lakrids.cambridge.arm.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 15 Apr 2020 20:42:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0x10bCQMC=iGm+fU2G1Vc=Zo-4yjaX4Jwso6rgazVzYw@mail.gmail.com>
+Message-ID: <CAK8P3a0x10bCQMC=iGm+fU2G1Vc=Zo-4yjaX4Jwso6rgazVzYw@mail.gmail.com>
+Subject: Re: [PATCH v3 05/12] arm64: csum: Disable KASAN for do_csum()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:GMxvKbBCgEZ5iGutzOR80DSYRJEKh6VL1hO5QbXAsGjD4zhju1R
+ 4z9TjSVzTCyvePIDAsjoAVrzjaAFj4T1FaOJFxjd4iE9LkK08Y2aQXyWvz2eUulAnq0oK3m
+ h+jx6sIblT4TP43YbXhEizAtx76JeWXQZukB/XzdwT84UsF8MA/OO4P6eyxqm53ipuCCnHD
+ UVnOhesPmDQadmV84co3A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UeZFsemGmeo=:p2LIvRBVIpHQjqasZi7c9P
+ IBi8C2nVn+/40xY+0TQTdutYzAx/iIl7v/eg1GeSzckEkcyRJ1RaEM6poWkm2vGjolI/Prxsa
+ eFFCkgz7oe4kGQpnPd3X+wRMqk/SMdXZclpByCU7J0hEXM8fkw2WvXTwkKH5ijQg8baR9ajbB
+ JHuerCn8ZO7BkkFTep7ZE0Sya7wqlPiH0NCDIvVs0JG2kqGQhvJy9VgBg1/lp6z8ujykTe5hp
+ f4V6rR9uoY6+gylsqYCDwWLHB9ENdprK0bPFJg2y6DUC+7G44VIcanl2NWMMkWVPYEtGgrsxD
+ G0D/pi88WLv6HFBaLPFV1WOU67yHU6pNeJ01Dxv+ghAIrozpfYGNETIBQq4YiARZY8U0donmM
+ Wsv5G5SmVyLVEmkaUlUYxPyUgjC/42pNYFmKtXeRZp6vKBNszmYUQb8dS40YE4YZlJtxO1X/Z
+ fI+SD5NBwNu12TJPf2VooiHOQu2IO4a82iw8lWuAtUO9xaS9hxBhGaSCRY0yzeEvNmcsYFnui
+ iqNgW1VbQVA8VNmsEqqITtuvTRhjd1QkRb3K/lx4g7NyqGl+JZUHMddYox53Rg7urNYhrDwl/
+ E202a7zMCCcY0/77Iimc05AAeCpKX91biROdtP5pyj2darwK+hkA7bZHVljCYdzcbDXnTYxqz
+ BmibnQ6j0RecRfwugTWjVWlwANmJzBjWQVAwgNCWZAjfEJLYaRI1+11KfYpLWvrhafYBYy85H
+ zH6NgcTugO6t9xYzeoRcwOtK+oTNg0eyU9BoL8CjQjXtjci34zZzSLmKexN4LH/aLESBs9E2r
+ 22ib2A6e5HpK/CVNPXsT08jbq8gebRqHPZfVcwnoPoMF8UXf1U=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/20 4:27 AM, Markus Elfring wrote:
->> According to the comment of aa_get_current_label(), …
-> 
-> I suggest to make this wording clearer.
-> Would you like to refer to any software documentation here?
-> 
-> 
->> However, when the original object pointed by "label" becomes
->> unreachable because aa_change_profile() returns or a new object
->> is assigned to "label", reference count increased by
->> aa_get_current_label() is not decreased, causing a refcnt leak.
-> 
-> How do you think about to reduce abbreviations in the commit message?
-> 
-> Would you like to add the tag “Fixes” to the change description?
-> 
-Fixes tags are always nice to have filled out, but some times its
-hard to determine or the patch submitter doesn't know how or ...
-If the fixes tags aren't there I will add them before I push them up.
-In this case its
+On Wed, Apr 15, 2020 at 7:28 PM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Will,
+>
+> On Wed, Apr 15, 2020 at 05:52:11PM +0100, Will Deacon wrote:
+> > do_csum() over-reads the source buffer and therefore abuses
+> > READ_ONCE_NOCHECK() to avoid tripping up KASAN. In preparation for
+> > READ_ONCE_NOCHECK() becoming a macro, and therefore losing its
+> > '__no_sanitize_address' annotation, just annotate do_csum() explicitly
+> > and fall back to normal loads.
+>
+> I'm confused by this. The whole point of READ_ONCE_NOCHECK() is that it
+> isn't checked by KASAN, so if that semantic is removed it has no reason
+> to exist.
+>
+> Changing that will break the unwind/stacktrace code across multiple
+> architectures. IIRC they use READ_ONCE_NOCHECK() for two reasons:
+>
+> 1. Races with concurrent modification, as might happen when a thread's
+>    stack is corrupted. Allowing the unwinder to bail out after a sanity
+>    check means the resulting report is more useful than a KASAN splat in
+>    the unwinder. I made the arm64 unwinder robust to this case.
+>
+> 2. I believe that the frame record itself /might/ be poisoned by KASAN,
+>    since it's not meant to be an accessible object at the C langauge
+>    level. I could be wrong about this, and would have to check.
 
-Fixes: 9fcf78cca198 ("apparmor: update domain transitions that are subsets of confinement at nnp")
+I thought the main reason was deadlocks when a READ_ONCE()
+is called inside of code that is part of the KASAN handling. If
+READ_ONCE() ends up recursively calling itself, the kernel
+tends to crash once it overflows its stack.
 
-> Regards,
-> Markus
-> 
+> I would like to keep the unwinding robust in the first case, even if the
+> second case doesn't apply, and I'd prefer to not mark the entirety of
+> the unwinding code as unchecked as that's sufficiently large an subtle
+> that it could have nasty bugs.
+>
+> Is there any way we keep something like READ_ONCE_NOCHECK() around even
+> if we have to give it reduced functionality relative to READ_ONCE()?
+>
+> I'm not enirely sure why READ_ONCE_NOCHECK() had to go, so if there's a
+> particular pain point I'm happy to take a look.
 
+As I understood, only this particular instance was removed, not all of them.
+
+         Arnd
