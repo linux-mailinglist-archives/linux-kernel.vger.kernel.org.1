@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71A21A9674
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AD11A965C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894565AbgDOI3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:29:02 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16774 "EHLO
+        id S2894520AbgDOI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:27:44 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16788 "EHLO
         hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894466AbgDOI1K (ORCPT
+        with ESMTP id S2894471AbgDOI1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 04:27:10 -0400
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e96c4b90000>; Wed, 15 Apr 2020 01:24:25 -0700
+        id <B5e96c4bc0003>; Wed, 15 Apr 2020 01:24:28 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 15 Apr 2020 01:25:23 -0700
+  Wed, 15 Apr 2020 01:25:27 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 01:25:23 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
- 2020 08:25:22 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 15 Apr 2020 08:25:22 +0000
+        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 01:25:27 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
+ 2020 08:25:26 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 15 Apr 2020 08:25:26 +0000
 Received: from nkristam-ubuntu.nvidia.com (Not Verified[10.19.67.128]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e96c4ef0000>; Wed, 15 Apr 2020 01:25:21 -0700
+        id <B5e96c4f20005>; Wed, 15 Apr 2020 01:25:25 -0700
 From:   Nagarjuna Kristam <nkristam@nvidia.com>
 To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
@@ -34,9 +34,9 @@ To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
 CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Nagarjuna Kristam <nkristam@nvidia.com>
-Subject: [PATCH V2 1/8] dt-bindings: phy: tegra-xusb: Add charger-detect property
-Date:   Wed, 15 Apr 2020 13:55:01 +0530
-Message-ID: <1586939108-10075-2-git-send-email-nkristam@nvidia.com>
+Subject: [PATCH V2 2/8] usb: gadget: tegra-xudc: Add vbus_draw support
+Date:   Wed, 15 Apr 2020 13:55:02 +0530
+Message-ID: <1586939108-10075-3-git-send-email-nkristam@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1586939108-10075-1-git-send-email-nkristam@nvidia.com>
 References: <1586939108-10075-1-git-send-email-nkristam@nvidia.com>
@@ -44,49 +44,80 @@ X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586939065; bh=SV8SYGELTW8vG0isvMFMvi6jGyjhj/U0TJjzJY0h4YA=;
+        t=1586939068; bh=dGYpAOijxW3GRCvoqmiBOVWTNifRfJYwZqamEi3UNkM=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
          In-Reply-To:References:X-NVConfidentiality:MIME-Version:
          Content-Type;
-        b=W9Ip2w4sJ4GcC+j42qRE8/LGsCSIOrqZ+8+7GADC/vJBlGvVVjGbltupTQjoBKVpU
-         zlD7HSFxoFF35N/OubsbW05ui8FG2h/MrjE2bioybjIUET9Zx0RoMZPNePqpoEhW4m
-         j4ZW8CuEZ4S8/s0u37ct4Sr+tmQSPyt05gWtQbU1WcqBOI5S1Ul+CN8g9Mm5AwhSSJ
-         ZhGe0t3LlWfFuVKpABfv2gYQnP0d4+Kq3C7kn0k86jLo78v9JtzBL49CfqEPeOCOXR
-         iFLnoFa41s9bRTGRBszW6CcWOkV1wTS2v9rifQz2yuHXiWcdkV+QrYRJckYpd3Jtsm
-         +R1Gztu25QExg==
+        b=c6nU3yHL1CVuyXkrkf++DlgV8JwwzyamZnXysUsHa8WP67YMG6dd+3I8wabebFwbm
+         bGoiqgTcmddjuD9gxGWm1bYxxejUe5l5aw6oxBqluSmCdib/uABPlvj4xiU7g2aivb
+         Fi4v4iArRi48CWskEC1G2EkCr5zVnZchjDVZLzxZB6Sb0+sPF96dqa1Kb7xZzljrTy
+         iNSn24KFqkXeR5IwyQZAXGMb0lfvldv4PMNmtNYx5OUFGcfzLiWNPkwiFE982XtUDW
+         gyr9YA9U1eteSIqwh0k1b/IhapBxIr9fRo0xwILKx2vA9gmrgoQ5u83I8ygSLW44qh
+         FkxdypfGpqdpQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add nvidia,charger-detect boolean property for Tegra210 and Tegra186
-platforms. This property is used to inform driver to perform charger
-detection on corresponding USB 2 port.
+Register vbus_draw to gadget ops and update corresponding vbus
+draw current to usb_phy.
 
 Signed-off-by: Nagarjuna Kristam <nkristam@nvidia.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
 V2:
- - Added Acked-by updates to commit message.
+ - Patch re-based.
 ---
- Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/gadget/udc/tegra-xudc.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt b/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt
-index 38c5fa2..9b2d2dd 100644
---- a/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt
-+++ b/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt
-@@ -190,6 +190,10 @@ Required properties for OTG/Peripheral capable USB2 ports:
-   and peripheral roles. Connector should be added as subnode.
-   See usb/usb-conn-gpio.txt.
+diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
+index 52a6add..9d3c109 100644
+--- a/drivers/usb/gadget/udc/tegra-xudc.c
++++ b/drivers/usb/gadget/udc/tegra-xudc.c
+@@ -492,6 +492,7 @@ struct tegra_xudc {
+ 	bool powergated;
  
-+Optional properties for OTG/Peripheral capable USB2 ports:
-+- nvidia,charger-detect: A boolean property whose presence inform driver to
-+  perform charger-detect activity.
+ 	struct usb_phy **usbphy;
++	struct usb_phy *curr_usbphy;
+ 	struct notifier_block vbus_nb;
+ 
+ 	struct completion disconnect_complete;
+@@ -719,6 +720,7 @@ static int tegra_xudc_vbus_notify(struct notifier_block *nb,
+ 	if (!xudc->suspended && phy_index != -1) {
+ 		xudc->curr_utmi_phy = xudc->utmi_phy[phy_index];
+ 		xudc->curr_usb3_phy = xudc->usb3_phy[phy_index];
++		xudc->curr_usbphy = usbphy;
+ 		schedule_work(&xudc->usb_role_sw_work);
+ 	}
+ 
+@@ -2042,6 +2044,19 @@ static int tegra_xudc_gadget_stop(struct usb_gadget *gadget)
+ 	return 0;
+ }
+ 
++static int tegra_xudc_gadget_vbus_draw(struct usb_gadget *gadget,
++						unsigned int m_a)
++{
++	struct tegra_xudc *xudc = to_xudc(gadget);
 +
- Optional properties:
- - nvidia,internal: A boolean property whose presence determines that a port
-   is internal. In the absence of this property the port is considered to be
++	dev_dbg(xudc->dev, "%s: %u mA\n", __func__, m_a);
++
++	if (xudc->curr_usbphy->chg_type == SDP_TYPE)
++		usb_phy_set_power(xudc->curr_usbphy, m_a);
++
++	return 0;
++}
++
+ static int tegra_xudc_set_selfpowered(struct usb_gadget *gadget, int is_on)
+ {
+ 	struct tegra_xudc *xudc = to_xudc(gadget);
+@@ -2058,6 +2073,7 @@ static struct usb_gadget_ops tegra_xudc_gadget_ops = {
+ 	.pullup = tegra_xudc_gadget_pullup,
+ 	.udc_start = tegra_xudc_gadget_start,
+ 	.udc_stop = tegra_xudc_gadget_stop,
++	.vbus_draw = tegra_xudc_gadget_vbus_draw,
+ 	.set_selfpowered = tegra_xudc_set_selfpowered,
+ };
+ 
 -- 
 2.7.4
 
