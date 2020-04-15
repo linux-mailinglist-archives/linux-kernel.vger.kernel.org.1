@@ -2,120 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5551A9A34
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2547C1A9A2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896355AbgDOKNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:13:02 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:26676 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2896285AbgDOKL3 (ORCPT
+        id S2896314AbgDOKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2896235AbgDOKL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 06:11:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586945489; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=6Fmu2bYxuswkx5JslalXSUya4FFPt0PklF5SeocK9A0=; b=pWFnNubAbbhO64QKx5c8+UHZbyWr1833gK0rSJmQPSmRqRGaoV8Hvm0+r3ytZTgDvmqN86t3
- rq9nUl0IWXXrU6dXQiGw20OoK6PF+LZ2M8wHaAp6L+jroA0Y0W4Jjd1HaVemE0vcccXGz1lZ
- i86RjZ4aR/ATBhQZhYrMpHe/vBM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e96ddc9.7f76bbeaa960-smtp-out-n05;
- Wed, 15 Apr 2020 10:11:21 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 99783C432C2; Wed, 15 Apr 2020 10:11:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBE8FC433F2;
-        Wed, 15 Apr 2020 10:11:19 +0000 (UTC)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB029C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:11:28 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f13so18398617wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=30de/AlaqjlX2SQ6sRQq6eEEGq+Ce5SXtlCKnRfiafQ=;
+        b=jRHh+oFAJV8Tgx5k7HU8HwVLEOIdROElftVnkovMBaV0dYnaGaI26lfUn/Rltxvqw1
+         IrTzQFim4nimJ6tDEDZFwMfbSKq0gIawHT6Z6IvUOEYIaj7Ay81Vnz4gwWNIpTPjOtPk
+         czVljyjYsxvuFUPAWIuDeVPGa2fIFL+SRSUw2CtkR6aGqnoBU5+Qsx1LEJgmZvJOQ70E
+         zB/NPJpD6Ck87Rr2cygLCbpbiM/lRvmB7n5OYtiaKQt/ASJZUrdqqC8Asb6E+y/jCICV
+         /JkQlg4fC4uF+OoaWM1Lya1oXpqG867D9dg2LD0bcXQyKXy02xyt0S8eL7whlZ3rc1Mr
+         KvZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=30de/AlaqjlX2SQ6sRQq6eEEGq+Ce5SXtlCKnRfiafQ=;
+        b=iBd0azRfD63D7g4Q69uiO4yMHbaWwijr1UGpdN0JpucH6empii5+Z7f56C1Xcm2sRN
+         6yRpORMJOccIfbpHo38yYkmMSBAdG0OTLYWIFtb2RJ2jq1Y19Pk4C+5kdZCTI6craFdR
+         1/4wpg/R7spvdzyTK1fzk1LzgQSY4v2KfHjf2Lf9NG9+KOy5rp4AVNK37veBRvW95uLl
+         qkzpVKMIa/ZbHWVz+Sz0+N/TTCdUasLmrVFKK7KNJh5DGIpunTpD2ER/odr7/4hKAaF1
+         hsz1DoDUreM4A0yo1H/yK4uC07y9yh+XbovAFAH8UMeLtWmdzjIxuflPYmFsYL6jvDpZ
+         WPoA==
+X-Gm-Message-State: AGi0PuaG7iBEHg+ILRy3Ah2tuaqXvwT6v739mFrC1e5j69JZiHue1ok2
+        rOHQXT/8X4pLTRyZy/3H4vpS/g==
+X-Google-Smtp-Source: APiQypITjl8sl8rPg8i/DwZP4DdcaJAmWeApCTCpntNLn88ytBpJQ3R0bUll0FQH9UWGZ2HxNOUElA==
+X-Received: by 2002:adf:9d4a:: with SMTP id o10mr26328854wre.99.1586945487115;
+        Wed, 15 Apr 2020 03:11:27 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id x132sm17945135wmg.33.2020.04.15.03.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 03:11:26 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 11:11:22 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+Message-ID: <20200415101122.GA14447@google.com>
+References: <20200403123020.13897-1-qais.yousef@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Apr 2020 15:41:19 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Matthias Kaehlcke <mka@chromium.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Clark <robdclark@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Tomasz Figa <tfiga@chromium.org>
-Subject: Re: [PATCH 0/2] iommu/arm-smmu: Allow client devices to select direct
- mapping
-Message-ID: <44be117e4661f9ccb64480912644420f@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403123020.13897-1-qais.yousef@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+Hi Qais,
 
-On 2020-04-13 20:42, Jordan Crouse wrote:
-> On Thu, Apr 09, 2020 at 04:31:24PM -0700, Matthias Kaehlcke wrote:
->> On Tue, Feb 04, 2020 at 11:12:17PM +0530, Sai Prakash Ranjan wrote:
->> > Hello Robin, Will
->> >
->> > On 2020-01-22 17:18, Sai Prakash Ranjan wrote:
->> > > This series allows drm devices to set a default identity
->> > > mapping using iommu_request_dm_for_dev(). First patch is
->> > > a cleanup to support other SoCs to call into QCOM specific
->> > > implementation and preparation for second patch.
->> > > Second patch sets the default identity domain for drm devices.
->> > >
->> > > Jordan Crouse (1):
->> > >   iommu/arm-smmu: Allow client devices to select direct mapping
->> > >
->> > > Sai Prakash Ranjan (1):
->> > >   iommu: arm-smmu-impl: Convert to a generic reset implementation
->> > >
->> > >  drivers/iommu/arm-smmu-impl.c |  8 +++--
->> > >  drivers/iommu/arm-smmu-qcom.c | 55 +++++++++++++++++++++++++++++++++--
->> > >  drivers/iommu/arm-smmu.c      |  3 ++
->> > >  drivers/iommu/arm-smmu.h      |  5 ++++
->> > >  4 files changed, 65 insertions(+), 6 deletions(-)
->> >
->> > Any review comments?
->> 
->> Ping
->> 
->> What is the status of this series, is it ready to land or are any 
->> changes
->> needed?
->> 
->> Thanks
->> 
->> Matthias
-> 
-> I think this is up in the air following the changes that Joerg 
-> suggested:
-> https://lists.linuxfoundation.org/pipermail/iommu/2020-April/043017.html
-> 
+On Friday 03 Apr 2020 at 13:30:19 (+0100), Qais Yousef wrote:
+<snip>
+> +	/*
+> +	 * The new value will be applied to all RT tasks the next time they
+> +	 * wakeup, assuming the task is using the system default and not a user
+> +	 * specified value. In the latter we shall leave the value as the user
+> +	 * requested.
+> +	 */
+>  	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
+>  	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE) {
+>  		result = -EINVAL;
+>  		goto undo;
+>  	}
+>  
+> +	if (sysctl_sched_rt_default_uclamp_util_min > SCHED_CAPACITY_SCALE) {
+> +		result = -EINVAL;
+> +		goto undo;
+> +	}
 
-1st patch for generic reset in this series is independent and can be 
-merged.
-But seems like requesting direct mapping fails with the joerg's patch 
-series.
+Hmm, checking:
+
+	if (sysctl_sched_rt_default_uclamp_util_min > sysctl_sched_uclamp_util_min)
+
+would probably make sense too, but then that would make writing in
+sysctl_sched_uclamp_util_min cumbersome for sysadmins as they'd need to
+lower the rt default first. Is that the reason for checking against
+SCHED_CAPACITY_SCALE? That might deserve a comment or something.
+
+<snip>
+> @@ -1241,9 +1293,13 @@ static void uclamp_fork(struct task_struct *p)
+>  	for_each_clamp_id(clamp_id) {
+>  		unsigned int clamp_value = uclamp_none(clamp_id);
+>  
+> -		/* By default, RT tasks always get 100% boost */
+> +		/*
+> +		 * By default, RT tasks always get 100% boost, which the admins
+> +		 * are allowed to change via
+> +		 * sysctl_sched_rt_default_uclamp_util_min knob.
+> +		 */
+>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> -			clamp_value = uclamp_none(UCLAMP_MAX);
+> +			clamp_value = sysctl_sched_rt_default_uclamp_util_min;
+>  
+>  		uclamp_se_set(&p->uclamp_req[clamp_id], clamp_value, false);
+>  	}
+
+And that, as per 20200414161320.251897-1-qperret@google.com, should not
+be there :)
+
+Otherwise the patch pretty looks good to me!
 
 Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Quentin
