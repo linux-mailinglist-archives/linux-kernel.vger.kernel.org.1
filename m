@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D1C1A9E91
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9BD1AA076
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897969AbgDOL5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41304 "EHLO mail.kernel.org"
+        id S369283AbgDOM1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:27:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56536 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409286AbgDOLqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:46:21 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E3A621569;
-        Wed, 15 Apr 2020 11:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586951181;
-        bh=zcjOvUCT85bEb9F0JG20QA/GI5+xjX+Y9XXT4eiJ2bs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AIxYfeJ2MgTZG0NVdCbD5i91j8s+u5VKAhEHdFZnz++th8srQDh4hsW+5A+fvx5pH
-         oVX/o/8/2H4CoB3Bz84/v0akvej/V9D8cSxSO0CXHC0gop5XAM7VAcg3YtoUItnSQz
-         41zRO8bvhJuUPzvprzER6hbVzJMw5iuO4TdthXLI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 5.4 84/84] f2fs: fix to wait all node page writeback
-Date:   Wed, 15 Apr 2020 07:44:41 -0400
-Message-Id: <20200415114442.14166-84-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415114442.14166-1-sashal@kernel.org>
-References: <20200415114442.14166-1-sashal@kernel.org>
+        id S2409161AbgDOLpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:45:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 79949ACD8;
+        Wed, 15 Apr 2020 11:45:19 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5DB121E1250; Wed, 15 Apr 2020 13:45:18 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 13:45:18 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/8] fs/ext4: Narrow scope of DAX check in setflags
+Message-ID: <20200415114518.GC6126@quack2.suse.cz>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-2-ira.weiny@intel.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414040030.1802884-2-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+On Mon 13-04-20 21:00:23, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> When preventing DAX and journaling on an inode.  Use the effective DAX
+> check rather than the mount option.
+> 
+> This will be required to support per inode DAX flags.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-[ Upstream commit dc5a941223edd803f476a153abd950cc3a83c3e1 ]
+Looks good to me. You can add:
 
-There is a race condition that we may miss to wait for all node pages
-writeback, fix it.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-- fsync()				- shrink
- - f2fs_do_sync_file
-					 - __write_node_page
-					  - set_page_writeback(page#0)
-					  : remove DIRTY/TOWRITE flag
-  - f2fs_fsync_node_pages
-  : won't find page #0 as TOWRITE flag was removeD
-  - f2fs_wait_on_node_pages_writeback
-  : wont' wait page #0 writeback as it was not in fsync_node_list list.
-					   - f2fs_add_fsync_node_entry
+								Honza
 
-Fixes: 50fa53eccf9f ("f2fs: fix to avoid broken of dnode block list")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/f2fs/node.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 8b66bc4c004b6..f14401a77d601 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1562,15 +1562,16 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
- 	if (atomic && !test_opt(sbi, NOBARRIER))
- 		fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
- 
--	set_page_writeback(page);
--	ClearPageError(page);
--
-+	/* should add to global list before clearing PAGECACHE status */
- 	if (f2fs_in_warm_node_list(sbi, page)) {
- 		seq = f2fs_add_fsync_node_entry(sbi, page);
- 		if (seq_id)
- 			*seq_id = seq;
- 	}
- 
-+	set_page_writeback(page);
-+	ClearPageError(page);
-+
- 	fio.old_blkaddr = ni.blk_addr;
- 	f2fs_do_write_node_page(nid, &fio);
- 	set_node_addr(sbi, &ni, fio.new_blkaddr, is_fsync_dnode(page));
+> ---
+>  fs/ext4/ioctl.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index a0ec750018dd..ee3401a32e79 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -405,9 +405,9 @@ static int ext4_ioctl_setflags(struct inode *inode,
+>  	if ((jflag ^ oldflags) & (EXT4_JOURNAL_DATA_FL)) {
+>  		/*
+>  		 * Changes to the journaling mode can cause unsafe changes to
+> -		 * S_DAX if we are using the DAX mount option.
+> +		 * S_DAX if the inode is DAX
+>  		 */
+> -		if (test_opt(inode->i_sb, DAX)) {
+> +		if (IS_DAX(inode)) {
+>  			err = -EBUSY;
+>  			goto flags_out;
+>  		}
+> -- 
+> 2.25.1
+> 
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
