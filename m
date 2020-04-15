@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE551A92F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BAE1A9303
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393494AbgDOGMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 02:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731298AbgDOGL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 02:11:58 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97C0820737;
-        Wed, 15 Apr 2020 06:11:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586931118;
-        bh=6pe4+qaI7ju1Sn4wwK8IEsC+9CafQ0CfM86Yc2BJYys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NMwl6bwrm7LYbjWQghiA1uHB2jlaKSVoPOoQ5oMcUlOV3jsvnLpwtWLt7yWEsFnKt
-         LTT8/5ozJsp3O1QR6xEK9mUKJWHses15cO0jAi8TPYH1/mGVbDjSyIhxRm44YufI2S
-         5fif3j2wUzVFn1B99967fEl3zbIQwCsIArdtX3jk=
-Date:   Wed, 15 Apr 2020 08:11:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        naresh.kamboju@linaro.org, sakari.ailus@linux.intel.com,
-        andy.shevchenko@gmail.com, hdegoede@redhat.com,
-        rafael.j.wysocki@intel.com, linux-kselftest@vger.kernel.org,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, shuah@kernel.org,
-        anders.roxell@linaro.org, lkft-triage@lists.linaro.org,
-        linux@rasmusvillemoes.dk,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v1] kobject: make sure parent is not released before
- children
-Message-ID: <20200415061154.GA2496263@kroah.com>
-References: <20200414204240.186377-1-brendanhiggins@google.com>
+        id S2393497AbgDOGO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 02:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2393496AbgDOGOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 02:14:54 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53671C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 23:14:53 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id a13so1077456pfa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 23:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HqQvOKqfrHmlAX92Y682AdF2gTPigwd+5eBqOa7fcfE=;
+        b=Df5prwBn+5ezXeOmd8ekPAfWpFczjY16mDdI8p+4Df4zHEeJNSIey/YUZdmd2ArmYO
+         GJ1oVoj4lzgWnaT0TTHmdXzfvcNCHi8JCId35FXkwqW4c6dzhb5pzDKRlFYn/Feta8eA
+         LH1ozPrQgPOZLh9V4iKOJYgXaPwQICXPJlvqRzRLOXatsSbHw3GX/6Uh7w8oV1ClQdLF
+         TT5pLTY9AgC3hYk849f/1m9Dv1+RVIVPjnwPQN1Do+ftkAiT7Y7WaUIbowJcjq9UWnM1
+         ytAgJ62QB8rA5bcgAaO2o8uYlbuvq1NjDprxzbFbzfktDHiTAlmzt9TpjJSNKJ1EMvz0
+         bufg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HqQvOKqfrHmlAX92Y682AdF2gTPigwd+5eBqOa7fcfE=;
+        b=IZDGIqIideN2tbTnF+wHFJ7uEia6FGDpi+uQg9sWKy2xYvJJbpQwXAg8rZS6n7WW4b
+         HJYsCRWozveRUX1jPwfvwiZErDwr/RBujKDKgtx5iUyvYshwjxMoMCR/va3eHuErIHPj
+         S8jvmNvUFIkd3thmBh6zBVoWY2mAh1k5FAgfAifNAfvtBb1+HcbbAXzPGypayMyp8k2S
+         aBKikpxtMO1EuKjGC7nXnSvCXvtLeVN1KfUHp4KUk0s5W44BgDUWKyWK/2ZmB6H2lyhO
+         /8w3cfAapz5Fc3lOLjNcP9qgOZmNDb9T9/UGCxUt/Bw/zP0MLZFXiubr3asQPCeUmpRU
+         cGcw==
+X-Gm-Message-State: AGi0PuYrsk2PfDCk+vLJK5NvybYZxjLro724L3aWlD65xcNMFZq9OrzX
+        aMPJxwD2n/4lKpy+O9W1GbleQg==
+X-Google-Smtp-Source: APiQypK4jsIQQbeIVh7i0t4TdFr1EvsteW6AJaD6lxkNT7mK5sIRI0rfopbstmRfzG2YOPYTpTb5HQ==
+X-Received: by 2002:a63:e210:: with SMTP id q16mr24711275pgh.26.1586931292670;
+        Tue, 14 Apr 2020 23:14:52 -0700 (PDT)
+Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id e196sm2939332pfh.43.2020.04.14.23.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 23:14:52 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Qualcomm SM8250 regulators and UFS
+Date:   Tue, 14 Apr 2020 23:14:28 -0700
+Message-Id: <20200415061430.740854-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414204240.186377-1-brendanhiggins@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:42:40PM -0700, Brendan Higgins wrote:
-> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
-> Previously, kobjects were released before the associated kobj_types;
-> this can cause a kobject deallocation to fail when the kobject has
-> children; an example of this is in software_node_unregister_nodes(); it
-> calls release on the parent before children meaning that children can be
-> released after the parent, which may be needed for removal.
+Define regulators for SM8250 MTP and add UFS nodes.
 
-The simple solution for this is "don't do this" :)
+Bryan O'Donoghue (2):
+  arm64: dts: qcom: sm8250-mtp: Add pm8150, pm8150l and pm8009
+  arm64: dts: qcom: sm8250: Add UFS controller and PHY
 
-> So, take a reference to the parent before we delete a node to ensure
-> that the parent is not released before the children.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
-> Link: https://lore.kernel.org/linux-kselftest/CAFd5g44s5NQvT8TG_x4rwbqoa7zWzkV0TX+ETZoQdOB7OwXCPQ@mail.gmail.com/T/#m71f37f3985f2abd7209c8ca8e0fa4edc45e171d6
-> Co-developed-by: Brendan Higgins <brendanhiggins@google.com>
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
-> 
-> This patch is based on the diff written by Heikki linked above.
-> 
-> Heikki, can you either reply with a Signed-off-by? Otherwise, I can
-> resend with me as the author and I will list you as the Co-developed-by.
-> 
-> Sorry for all the CCs: I just want to make sure everyone who was a party
-> to the original bug sees this.
-> 
-> ---
->  lib/kobject.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/lib/kobject.c b/lib/kobject.c
-> index 83198cb37d8d..5921e2470b46 100644
-> --- a/lib/kobject.c
-> +++ b/lib/kobject.c
-> @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
->   */
->  static void kobject_cleanup(struct kobject *kobj)
->  {
-> +	struct kobject *parent = kobj->parent;
->  	struct kobj_type *t = get_ktype(kobj);
->  	const char *name = kobj->name;
->  
-> @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
->  		kobject_uevent(kobj, KOBJ_REMOVE);
->  	}
->  
-> +	/* make sure the parent is not released before the (last) child */
-> +	kobject_get(parent);
-> +
->  	/* remove from sysfs if the caller did not do it */
->  	if (kobj->state_in_sysfs) {
->  		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
-> @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
->  		t->release(kobj);
->  	}
->  
-> +	kobject_put(parent);
-> +
+ arch/arm64/boot/dts/qcom/sm8250-mtp.dts | 351 ++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi    |  71 +++++
+ 2 files changed, 422 insertions(+)
 
-No, please don't do this.
+-- 
+2.24.0
 
-A child device should have always incremented the parent already if it
-was correctly registered.  We have had this patch been proposed multiple
-times over the years, and every time it was, we said no and went and
-fixed the real issue which was with the user of the interface.
-
-So, what code is causing this to happen?  What parent firmware device is
-being removed that the code didn't walk the tree properly and remove the
-children first?
-
-thanks,
-
-greg k-h
