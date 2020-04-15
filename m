@@ -2,230 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DDF1AABD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09381AABD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634876AbgDOPY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730523AbgDOPYu (ORCPT
+        id S2636897AbgDOPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:25:53 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:14794 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634875AbgDOPZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:24:50 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2854C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:24:49 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a43so5382957edf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:24:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pzKk8PABoQG7wxQ0I283s43OGXBvRZpR46etYCk2nJU=;
-        b=CoVjpaL7NhBMMoCKRoBevTXuzAspL3V4ErYXBJm9TiToXUe8cQJHrpnoCHIa4AVPOP
-         22SNO4CZcW7Pej3gTKD3qsfUjk9kWDt3X49fR0xlMwwnJmBns4++0UAecEIJX42G1nS0
-         7BHgK0y763Koy91FUVMXMtqg74WH0WnS5Bol/OClpF48WAeRCNEE7Qp6ypih0XyJBKMf
-         qEraQNWyF79oLwiN5gCjYDK3pr15xcptOnm5A4J0UU1I2ZcWxU/sws/b3QN3LhjA3Oia
-         Yt1PuKW0pIfusr21cgFZwR7Nd3vWemhKph1sn+GkuoFUeUVDSY4UZUzY/iP3q+NBJcY6
-         P+yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pzKk8PABoQG7wxQ0I283s43OGXBvRZpR46etYCk2nJU=;
-        b=SJSnXcJvKYaQkn+StQKapw32mOSICuVfJjkMWut1w8f5EzqE67KimcV/mlbiyCg6NF
-         ziqxZXyYPwCgV7Dxdn6kNBAHc+JSjfTEORyhKbH1/cRTmtTckXtLJDahMdvUqV2UNPzz
-         /77ft64Oc8eX80Ei7xEdJGHYg+MMjmic+EvPc5iWSz/URsPIB3hw42Wv/iByu1Soiti7
-         51d35mMdth1lt314SQBbIyMkxU+YXlPzkAvpHYLuX3Ay8ekMeMnV2E2kpfd+lGZtQQGg
-         AQFnFVjDQGetD9wMEwb/iqTvZlqf5QzrIEFImSKq3DCV57MZJbI2W+oPD2eaOTmgOcGn
-         7bvg==
-X-Gm-Message-State: AGi0Pubse+60OKp6EgrGrXMjfmDR+ZIP8fpTuuGyd+BWKCWHARbvGBpb
-        pYRNDTnZj5IBEciWmu/wuN/d3vwXgrpES3daMLLdYA==
-X-Google-Smtp-Source: APiQypLYa6qsYZA8UJ9jL6B2Nmt1xK63nCmfDBXxC1o9zNfeIVmU0Lb1H12gXdVVE3znzyupzUc3CQwEYF2Iaq2PLqg=
-X-Received: by 2002:a17:906:32d8:: with SMTP id k24mr5732495ejk.2.1586964288072;
- Wed, 15 Apr 2020 08:24:48 -0700 (PDT)
+        Wed, 15 Apr 2020 11:25:39 -0400
+Received: from ubuntu.localdomain (unknown [58.251.74.226])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 422274E17AD;
+        Wed, 15 Apr 2020 23:25:29 +0800 (CST)
+From:   Wang Wenhu <wenhu.wang@vivo.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        oss@buserror.net, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>
+Subject: [PATCH v2,0/5] drivers: uio: new driver uio_fsl_85xx_cache_sram
+Date:   Wed, 15 Apr 2020 08:24:37 -0700
+Message-Id: <20200415152442.122873-1-wenhu.wang@vivo.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200415124929.GA3265842@kroah.com>
+References: <20200415124929.GA3265842@kroah.com>
 MIME-Version: 1.0
-References: <20200221174248.244748-1-bgeffon@google.com> <20200221174248.244748-3-bgeffon@google.com>
- <b5a4c54d-c358-7b54-c038-c79185330742@gmail.com>
-In-Reply-To: <b5a4c54d-c358-7b54-c038-c79185330742@gmail.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Wed, 15 Apr 2020 08:24:11 -0700
-Message-ID: <CADyq12zchEvZ=veJfQXJ3Bvek810OH4qVc0nETURrOzWxWZ=yw@mail.gmail.com>
-Subject: Re: [PATCH v7] mremap.2: Add information for MREMAP_DONTUNMAP.
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Deacon <will@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        linux-man@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVCTE5CQkJDSElKTkhISVlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PxA6DDo4CDg3PAg3PyoNGRUL
+        HzMwCRZVSlVKTkNNQk1PSEhKTkJKVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUlPS0M3Bg++
+X-HM-Tid: 0a717e71f4179376kuws422274e17ad
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-I'll make those changes and start a new thread.
+This series add a new uio driver for freescale 85xx platforms to
+access the Cache-Sram form user level. This is extremely helpful
+for the user-space applications that require high performance memory
+accesses.
 
-Thanks for the feedback,
-Brian
+It fixes the compile errors and warning of the hardware level drivers
+and implements the uio driver in uio_fsl_85xx_cache_sram.c.
 
-On Tue, Apr 14, 2020 at 11:41 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hello Brian,
->
-> I see that MREMAP_DONTUNMAP has been merged. Thanks for the
-> patch below.
->
-> In addition to Vlastimil's comments, could you please take a look
-> at my comments below.
->
-> On 2/21/20 6:42 PM, Brian Geffon wrote:
-> > Signed-off-by: Brian Geffon <bgeffon@google.com>
-> > ---
-> >  man2/mremap.2 | 30 +++++++++++++++++++++++++++++-
-> >  1 file changed, 29 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/man2/mremap.2 b/man2/mremap.2
-> > index d73fb64fa..54ec67b20 100644
-> > --- a/man2/mremap.2
-> > +++ b/man2/mremap.2
-> > @@ -26,7 +26,8 @@
-> >  .\" 1996-04-12 Tom Bjorkholm <tomb@mydata.se>
-> >  .\"            Update for Linux 1.3.87 and later
-> >  .\" 2005-10-11 mtk: Added NOTES for MREMAP_FIXED; revised EINVAL text.
-> > -.\"
-> > +.\" 2020-02-05 Brian Geffon <bgeffon@google.com>
-> > +.\"            Update for MREMAP_DONTUNMAP.
->
-> No need to add this piece. This info is maintained
-> via the Git log these days.
->
-> >  .TH MREMAP 2 2019-03-06 "Linux" "Linux Programmer's Manual"
-> >  .SH NAME
-> >  mremap \- remap a virtual memory address
-> > @@ -129,6 +130,13 @@ If
-> >  is specified, then
-> >  .B MREMAP_MAYMOVE
-> >  must also be specified.
-> > +.TP
-> > +.BR MREMAP_DONTUNMAP " (since Linux 5.7)"
-> > +This flag which must be used in conjuction with
->
-> s/conjuction/conjunction/
->
-> > +.B MREMAP_MAYMOVE
-> > +remaps a mapping to a new address and it does not unmap the mapping at=
- \fIold_address\fP. This flag can only be used with private anonymous mappi=
-ngs. Any access to the range specified at \fIold_address\fP after completio=
-n will result in a page fault. If a
->
-> Please wrap source lines to no more than about 75 columns.
-> Also, always start new sentences on new lines ("Semantic newlines").
->
-> As a general rule, I prefer formatting to be done like this:
->
-> .BR old_address .
->
-> rather than:
->
-> \fIold_address\fP.
->
-> (Yes, I know there's plenty of existing text that goes the other
-> way, but I try to avoid the \fX...\fP style for new text.
->
-> Re the "Any access to the range ... will result in a page fault", I think
-> it would be helpful to be more explicit. I presume that if we
-> access the range at old_address the mapping is repopulated with
-> zero-filled pages, right? It would be good to note that explicitly,
->
-> > +.BR userfaultfd (2)
-> > +was registered on the mapping specified by \fIold_address\fP it will c=
-ontinue to watch that mapping for faults.
->
-> (See comments above re wrapping and formatting.)
->
-> Perhaps it would be nice to have a short paragraph on use cases?
->
-> >  .PP
-> >  If the memory segment specified by
-> >  .I old_address
-> > @@ -176,6 +184,8 @@ a value other than
-> >  .B MREMAP_MAYMOVE
-> >  or
-> >  .B MREMAP_FIXED
-> > +or
-> > +.B MREMAP_DONTUNMAP
-> >  was specified in
-> >  .IR flags ;
-> >  .IP *
-> > @@ -197,9 +207,17 @@ and
-> >  .IR old_size ;
-> >  .IP *
-> >  .B MREMAP_FIXED
-> > +or
-> > +.B MREMAP_DONTUNMAP
-> >  was specified without also specifying
-> >  .BR MREMAP_MAYMOVE ;
-> >  .IP *
-> > +.B MREMAP_DONTUNMAP
-> > +was specified with an \fIold_address\fP that was not private anonymous=
-;
-> > +.IP *
-> > +.B MREMAP_DONTUNMAP
-> > +was specified and \fIold_size\fP was not equal to \fInew_size\fP;
-> > +.IP *
-> >  \fIold_size\fP was zero and \fIold_address\fP does not refer to a
-> >  shareable mapping (but see BUGS);
-> >  .IP *
-> > @@ -209,10 +227,20 @@ flag was not specified.
-> >  .RE
-> >  .TP
-> >  .B ENOMEM
-> > +Not enough memory was available to complete the operation.
-> > +Possible causes are:
-> > +.RS
-> > +.IP * 3
-> >  The memory area cannot be expanded at the current virtual address, and=
- the
-> >  .B MREMAP_MAYMOVE
-> >  flag is not set in \fIflags\fP.
-> >  Or, there is not enough (virtual) memory available.
-> > +.IP *
-> > +.B MREMAP_DONTUNMAP
-> > +was used without
-> > +.B MREMAP_FIXED
-> > +causing a new mapping to be created that would exceed the virtual memo=
-ry available or it would exceed the maximum number of allowed mappings.
->
-> (See comments above re wrapping.)
->
-> > +.RE
-> >  .SH CONFORMING TO
-> >  This call is Linux-specific, and should not be used in programs
-> >  intended to be portable.
->
->
-> Thanks,
->
-> Michael
->
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+Changes since v1:
+ * Addressed comments of Greg K-H
+ * Moved kfree(info->name) into uio_info_free_internal()
+
+Wang Wenhu (5):
+  powerpc: 85xx: make FSL_85XX_CACHE_SRAM configurable
+  powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+  drivers: uio: new driver for fsl_85xx_cache_sram
+
+ arch/powerpc/platforms/85xx/Kconfig       |   2 +-
+ arch/powerpc/platforms/Kconfig.cputype    |   5 +-
+ arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
+ arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
+ drivers/uio/Kconfig                       |   8 +
+ drivers/uio/Makefile                      |   1 +
+ drivers/uio/uio_fsl_85xx_cache_sram.c     | 182 ++++++++++++++++++++++
+ 7 files changed, 198 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+
+-- 
+2.17.1
+
