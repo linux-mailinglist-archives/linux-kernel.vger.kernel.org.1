@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678E51AACCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A0B1AACD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406052AbgDOQCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:02:18 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36414 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406231AbgDOQCF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:02:05 -0400
-Received: by mail-oi1-f195.google.com with SMTP id s202so10681966oih.3;
-        Wed, 15 Apr 2020 09:02:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=423HVimEHq5Dj2Jz8+OlR5o9pwavv3x54hJ0usDWIDw=;
-        b=UKETlWzEqDrR4nN1yD5/Sib4ZkE+hcv5iYIdCdiexTMXeBmiDvyoR+wXcNCc6u3lAO
-         2ytb2qABEbPIeS8uAvrrpcW1I+3yVZgU3mXiqK/UD0ziJeplLE33kQmKrj4MWoltLud2
-         ahKQsZT03b0TeyXrRtztkXi3cs5M5lrlxgta2r/e0qjgh3FCX+1lSZp8RviWXTkUM9lr
-         y2YggFzHnf09v6a0Ps4YYaaU2F9wCi2hvnkp6eSKkCNyapRTJdQSyL/geOfoQ87mgT3y
-         ZnD6FI8PZkqdMlhpZZHOhoePY/bQbaT0Q820z/kcvQM6ea4BDAsBROy5NAxKXgdqsZBm
-         rltQ==
-X-Gm-Message-State: AGi0PuYDCjN+1jhZCbCPCPTIKCAVFmF8lx9PebUw57KBw9J8Hlb+lube
-        KIQpPA5yQCEFHmb4u5bo1Q==
-X-Google-Smtp-Source: APiQypIC6jqygwZFVB7+DVFz/zsP66LHK3iuIMxgJKYN6XMmFSItZFVNAJ6sRzf4dgEWIgvpTYf8+g==
-X-Received: by 2002:aca:4843:: with SMTP id v64mr18834734oia.13.1586966524049;
-        Wed, 15 Apr 2020 09:02:04 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j90sm6385763otc.21.2020.04.15.09.02.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 09:02:03 -0700 (PDT)
-Received: (nullmailer pid 1964 invoked by uid 1000);
-        Wed, 15 Apr 2020 16:02:02 -0000
-Date:   Wed, 15 Apr 2020 11:02:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH] dt-bindings: timer: renesas: cmt: Convert to json-schema
-Message-ID: <20200415160202.GA30686@bogus>
-References: <20200408091416.25725-1-geert+renesas@glider.be>
- <CAMuHMdWBPS7hZZqPvSyns4OL37Dm21R+eReEAtmH8XUy=qsRqQ@mail.gmail.com>
+        id S2410103AbgDOQCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2410085AbgDOQCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:02:21 -0400
+Received: from localhost (unknown [106.201.106.187])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21F9A21582;
+        Wed, 15 Apr 2020 16:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586966540;
+        bh=e3d4LUjp8nYLchPlf9MGqps5m3topJNlB0bFbA2lpoc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0teLUfV64vmTzBzSuqWQrtjIleMYu4aKKQaY7nH+Dle1urcf3gjhUaqvaaO+0Akwu
+         22j8/YCtvQqVbBbZOCYgnNo6n+R9CCrezf1p54hbCerhAs4jnb6DbI6VnOHruF3nNf
+         K47Jkdq1hxgAp52gsPMGfdi4IDMG/3cP8RQBDJZw=
+Date:   Wed, 15 Apr 2020 21:32:12 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Zhou Wang <wangzhou1@hisilicon.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Zhenfa Qiu <qiuzhenfa@hisilicon.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: hisilicon: fix PCI_MSI dependency
+Message-ID: <20200415160212.GW72691@vkoul-mobl>
+References: <20200408200559.4124238-1-arnd@arndb.de>
+ <5E8E8104.5060307@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWBPS7hZZqPvSyns4OL37Dm21R+eReEAtmH8XUy=qsRqQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5E8E8104.5060307@hisilicon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 03:22:08PM +0200, Geert Uytterhoeven wrote:
-> On Wed, Apr 8, 2020 at 11:14 AM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
-> > Convert the Renesas Compare Match Timer (CMT) Device Tree binding
-> > documentation to json-schema.
-> >
-> > Document missing properties.
-> > Update the example to match reality.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On 09-04-20, 09:57, Zhou Wang wrote:
+> On 2020/4/9 4:05, Arnd Bergmann wrote:
+> > The dependency is phrased incorrectly, so on arm64, it is possible
+> > to build with CONFIG_PCI disabled, resulting a build failure:
+> > 
+> > drivers/dma/hisi_dma.c: In function 'hisi_dma_free_irq_vectors':
+> > drivers/dma/hisi_dma.c:138:2: error: implicit declaration of function 'pci_free_irq_vectors'; did you mean 'pci_alloc_irq_vectors'? [-Werror=implicit-function-declaration]
+> >   138 |  pci_free_irq_vectors(data);
+> >       |  ^~~~~~~~~~~~~~~~~~~~
+> >       |  pci_alloc_irq_vectors
+> > drivers/dma/hisi_dma.c: At top level:
+> > drivers/dma/hisi_dma.c:605:1: warning: data definition has no type or storage class
+> >   605 | module_pci_driver(hisi_dma_pci_driver);
+> >       | ^~~~~~~~~~~~~~~~~
+> > drivers/dma/hisi_dma.c:605:1: error: type defaults to 'int' in declaration of 'module_pci_driver' [-Werror=implicit-int]
+> > drivers/dma/hisi_dma.c:605:1: warning: parameter names (without types) in function declaration
+> > drivers/dma/hisi_dma.c:599:26: error: 'hisi_dma_pci_driver' defined but not used [-Werror=unused-variable]
+> >   599 | static struct pci_driver hisi_dma_pci_driver = {
+> > 
+> > Change it so we always depend on PCI_MSI, even on ARM64
+> > 
+> > Fixes: e9f08b65250d ("dmaengine: hisilicon: Add Kunpeng DMA engine support")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/dma/Kconfig | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> > index 98ae15c82a30..c19e25b140c5 100644
+> > --- a/drivers/dma/Kconfig
+> > +++ b/drivers/dma/Kconfig
+> > @@ -241,7 +241,8 @@ config FSL_RAID
+> >  
+> >  config HISI_DMA
+> >  	tristate "HiSilicon DMA Engine support"
+> > -	depends on ARM64 || (COMPILE_TEST && PCI_MSI)
+> > +	depends on ARM64 || COMPILE_TEST
+> > +	depends on PCI_MSI
+> >  	select DMA_ENGINE
+> >  	select DMA_VIRTUAL_CHANNELS
+> >  	help
+> > 
 > 
-> Oops, I forgot the dreaded "additionalProperties: false".
+> Hi Arnd,
+> 
+> There was a fix from Haibing: https://lkml.org/lkml/2020/3/28/158
+> Maybe Vinod will review and take it later :)
 
-With that fixed,
+It should be in -next tomorrow :)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+-- 
+~Vinod
