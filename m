@@ -2,112 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BA01A9F8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F5C1A9FB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368671AbgDOMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:14:21 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57638 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S368585AbgDOMLw (ORCPT
+        id S368725AbgDOMPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2898084AbgDOMMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:11:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586952703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3g8pOUWTOZg7Xu60Mt7A1x/Ov3i7r+YKQXs6UW5HczM=;
-        b=TX9vN7M8wNoXIs7b+mTp3O3Z9lnzjwOo1Xiwi3SZaKfKRIsjpaVzCOd9YxUDg0fU6W+cJz
-        MQLhQNH6pdXyEoDJeWQXgNKU8VHWuh/HhzgKBjjnxQgzpyPc/zgHv00rfCVksQNlAgeTWa
-        FvdOAyg02kAzRpNnQswwPBo9xJKqnko=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-4jfSZbonPua50qWsx4nm7Q-1; Wed, 15 Apr 2020 08:11:39 -0400
-X-MC-Unique: 4jfSZbonPua50qWsx4nm7Q-1
-Received: by mail-wm1-f69.google.com with SMTP id t62so5684568wma.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:11:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3g8pOUWTOZg7Xu60Mt7A1x/Ov3i7r+YKQXs6UW5HczM=;
-        b=bHryk+4XbDWnmFGOmttAHJFbGPC7TtoX3IDDHj/T0pFAb9kY60Bw0hQq/IYWyZklGF
-         +5X4f1J0Oed7a14cPx48hYkQdTjvC0iWQRZsWkMB83JYgqJEGrsDCKLeM+KOJRCpvA/i
-         WZhMJA8hOltrR3gjfw7PE/+/MWS6hcyh7yB9N9yG/eU4yphdiIs7vsVUUhEQhSRj1dOz
-         bEzaszcbenWBoqeB0unves4k7o0SRVfLv3Li8f+S6oHuHFmAzTSbSZLJu/UtfPtA4iKe
-         gs8lGBBL87Yv/UoBC/K1VaeXs8BeGULYAEpdAd4/F+K2EwAFp1bEyoHD19qIRw+0oBEY
-         BWnQ==
-X-Gm-Message-State: AGi0PuYGNmKqC0CUBtwrd41q8syhURKKScq6ov65Pqlw1xpK72BMWHnY
-        /ECWutKDixardeILZHwQaqpzOvG/O1cpykJfbf1kzWlZpm8bDJdRGkyRLlk3FzVX1p+dvChvW/e
-        Pky/gKNkZlAaRqi1eM+SfQhOj
-X-Received: by 2002:a5d:688f:: with SMTP id h15mr29234455wru.352.1586952698403;
-        Wed, 15 Apr 2020 05:11:38 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKdWpo7ENEPbDqHP93vSXvdpZwuSMQZ1BbP1xfwyNZcod/63Icpez1n6CuR5oR+nIQbYmcMPw==
-X-Received: by 2002:a5d:688f:: with SMTP id h15mr29234435wru.352.1586952698180;
-        Wed, 15 Apr 2020 05:11:38 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9066:4f2:9fbd:f90e? ([2001:b07:6468:f312:9066:4f2:9fbd:f90e])
-        by smtp.gmail.com with ESMTPSA id q8sm22064722wmg.22.2020.04.15.05.11.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 05:11:37 -0700 (PDT)
-Subject: Re: [PATCH 3/4] kvm: Replace vcpu->swait with rcuwait
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     tglx@linutronix.de, bigeasy@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, torvalds@linux-foundation.org,
-        will@kernel.org, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paul Mackerras <paulus@ozlabs.org>,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-References: <20200324044453.15733-1-dave@stgolabs.net>
- <20200324044453.15733-4-dave@stgolabs.net>
- <a6b23828-aa50-bea0-1d2d-03e2871239d4@redhat.com>
- <20200414211243.7vehybdrvbzmbduu@linux-p48b>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b2f87633-8eef-4f84-5e65-a80523ca34f8@redhat.com>
-Date:   Wed, 15 Apr 2020 14:11:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 15 Apr 2020 08:12:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF132C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:12:33 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOgty-0007dM-5F; Wed, 15 Apr 2020 14:12:22 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOgtt-0004Pk-GB; Wed, 15 Apr 2020 14:12:17 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de
+Subject: [PATCH v1] ethtool: provide UAPI for PHY master/slave configuration.
+Date:   Wed, 15 Apr 2020 14:12:09 +0200
+Message-Id: <20200415121209.12197-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <20200414211243.7vehybdrvbzmbduu@linux-p48b>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/20 23:12, Davidlohr Bueso wrote:
-> On Wed, 25 Mar 2020, Paolo Bonzini wrote:
-> 
->> On 24/03/20 05:44, Davidlohr Bueso wrote:
->>> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
->>> index 71244bf87c3a..e049fcb3dffb 100644
->>> --- a/arch/mips/kvm/mips.c
->>> +++ b/arch/mips/kvm/mips.c
->>> @@ -290,8 +290,7 @@ static enum hrtimer_restart
->>> kvm_mips_comparecount_wakeup(struct hrtimer *timer)
->>>     kvm_mips_callbacks->queue_timer_int(vcpu);
->>>
->>>     vcpu->arch.wait = 0;
->>> -    if (swq_has_sleeper(&vcpu->wq))
->>> -        swake_up_one(&vcpu->wq);
->>> +    rcuwait_wake_up(&vcpu->wait)
->>
->> This is missing a semicolon.  (KVM MIPS is known not to compile and will
->> be changed to "depends on BROKEN" in 5.7).
-> 
-> Do you want me to send another version with this fix or do you prefer
-> fixing it when/if picked up?
+This UAPI is needed for BroadR-Reach 100BASE-T1 devices. Due to lack of
+auto-negotiation support, we needed to be able to configure the
+MASTER-SLAVE role of the port manually or from an application in user
+space.
 
-It's up to the TIP tree people, but sending a fixed version is probably
-the best way to get their attention. :)
+The same UAPI can be used for 1000BASE-T or MultiGBASE-T devices to
+force MASTER or SLAVE role. See IEEE 802.3-2018:
+22.2.4.3.7 MASTER-SLAVE control register (Register 9)
+22.2.4.3.8 MASTER-SLAVE status register (Register 10)
+40.5.2 MASTER-SLAVE configuration resolution
+45.2.1.185.1 MASTER-SLAVE config value (1.2100.14)
+45.2.7.10 MultiGBASE-T AN control 1 register (Register 7.32)
 
-I can also queue it myself (for 5.7 even) if I get an Acked-by from
-Peter though.
+The MASTER-SLAVE role affects the clock configuration:
 
-Paolo
+-------------------------------------------------------------------------------
+When the  PHY is configured as MASTER, the PMA Transmit function shall
+source TX_TCLK from a local clock source. When configured as SLAVE, the
+PMA Transmit function shall source TX_TCLK from the clock recovered from
+data stream provided by MASTER.
+
+iMX6Q                     KSZ9031                XXX
+------\                /-----------\        /------------\
+      |                |           |        |            |
+ MAC  |<----RGMII----->| PHY Slave |<------>| PHY Master |
+      |<--- 125 MHz ---+-<------/  |        | \          |
+------/                \-----------/        \------------/
+                                               ^
+                                                \-TX_TCLK
+
+-------------------------------------------------------------------------------
+
+Since some clock or link related issues are only reproducible in a
+specific MASTER-SLAVE-role, MAC and PHY configuration, it is beneficial
+to provide generic (not 100BASE-T1 specific) interface to the user space
+for configuration flexibility and trouble shooting.
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ Documentation/networking/ethtool-netlink.rst |  2 +
+ drivers/net/phy/phy.c                        |  3 +-
+ drivers/net/phy/phy_device.c                 | 75 ++++++++++++++++++++
+ include/linux/phy.h                          |  1 +
+ include/uapi/linux/ethtool.h                 | 11 ++-
+ include/uapi/linux/ethtool_netlink.h         |  1 +
+ include/uapi/linux/mii.h                     |  2 +
+ net/ethtool/linkmodes.c                      |  9 ++-
+ 8 files changed, 101 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+index f1f868479ceb8..83127a6e42b17 100644
+--- a/Documentation/networking/ethtool-netlink.rst
++++ b/Documentation/networking/ethtool-netlink.rst
+@@ -368,6 +368,7 @@ Kernel response contents:
+   ``ETHTOOL_A_LINKMODES_PEER``          bitset  partner link modes
+   ``ETHTOOL_A_LINKMODES_SPEED``         u32     link speed (Mb/s)
+   ``ETHTOOL_A_LINKMODES_DUPLEX``        u8      duplex mode
++  ``ETHTOOL_A_LINKMODES_MASTER_SLAVE``  u8      Master/slave port mode
+   ====================================  ======  ==========================
+ 
+ For ``ETHTOOL_A_LINKMODES_OURS``, value represents advertised modes and mask
+@@ -390,6 +391,7 @@ Request contents:
+   ``ETHTOOL_A_LINKMODES_PEER``          bitset  partner link modes
+   ``ETHTOOL_A_LINKMODES_SPEED``         u32     link speed (Mb/s)
+   ``ETHTOOL_A_LINKMODES_DUPLEX``        u8      duplex mode
++  ``ETHTOOL_A_LINKMODES_MASTER_SLAVE``  u8      Master/slave port mode
+   ====================================  ======  ==========================
+ 
+ ``ETHTOOL_A_LINKMODES_OURS`` bit set allows setting advertised link modes. If
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index d76e038cf2cb5..9f48141f1e701 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -294,7 +294,7 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
+ 			 phydev->advertising, autoneg == AUTONEG_ENABLE);
+ 
+ 	phydev->duplex = duplex;
+-
++	phydev->master_slave = cmd->base.master_slave;
+ 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
+ 
+ 	/* Restart the PHY */
+@@ -313,6 +313,7 @@ void phy_ethtool_ksettings_get(struct phy_device *phydev,
+ 
+ 	cmd->base.speed = phydev->speed;
+ 	cmd->base.duplex = phydev->duplex;
++	cmd->base.master_slave = phydev->master_slave;
+ 	if (phydev->interface == PHY_INTERFACE_MODE_MOCA)
+ 		cmd->base.port = PORT_BNC;
+ 	else
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index c8b0c34030d32..d5edf2bc40e43 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -604,6 +604,7 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 	dev->asym_pause = 0;
+ 	dev->link = 0;
+ 	dev->interface = PHY_INTERFACE_MODE_GMII;
++	dev->master_slave = PORT_MODE_UNKNOWN;
+ 
+ 	dev->autoneg = AUTONEG_ENABLE;
+ 
+@@ -1772,6 +1773,68 @@ int genphy_setup_forced(struct phy_device *phydev)
+ }
+ EXPORT_SYMBOL(genphy_setup_forced);
+ 
++static int genphy_setup_master_slave(struct phy_device *phydev)
++{
++	u16 ctl = 0;
++
++	if (!phydev->is_gigabit_capable)
++		return 0;
++
++	switch (phydev->master_slave) {
++	case PORT_MODE_MASTER:
++		ctl |= CTL1000_PREFER_MASTER;
++		/* fallthrough */
++	case PORT_MODE_SLAVE:
++		/* CTL1000_ENABLE_MASTER is zero */
++		break;
++	case PORT_MODE_MASTER_FORCE:
++		ctl |= CTL1000_AS_MASTER;
++		/* fallthrough */
++	case PORT_MODE_SLAVE_FORCE:
++		ctl |= CTL1000_ENABLE_MASTER;
++		break;
++	case PORT_MODE_UNKNOWN:
++		return 0;
++	default:
++		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
++		return 0;
++	}
++
++	return phy_modify_changed(phydev, MII_CTRL1000,
++				  (CTL1000_ENABLE_MASTER | CTL1000_AS_MASTER |
++				   CTL1000_PREFER_MASTER), ctl);
++}
++
++static int genphy_read_master_slave(struct phy_device *phydev)
++{
++	u16 ctl, stat;
++
++	if (!phydev->is_gigabit_capable)
++		return 0;
++
++	ctl = phy_read(phydev, MII_CTRL1000);
++	if (ctl < 0)
++		return ctl;
++
++	stat = phy_read(phydev, MII_STAT1000);
++	if (stat < 0)
++		return stat;
++
++	if (ctl & CTL1000_ENABLE_MASTER) {
++		if (stat & LPA_1000MSRES)
++			phydev->master_slave = PORT_MODE_MASTER_FORCE;
++		else
++			phydev->master_slave = PORT_MODE_SLAVE_FORCE;
++	} else {
++		if (stat & LPA_1000MSRES)
++			phydev->master_slave = PORT_MODE_MASTER;
++		else
++			phydev->master_slave = PORT_MODE_SLAVE;
++	}
++
++	return 0;
++}
++
+ /**
+  * genphy_restart_aneg - Enable and Restart Autonegotiation
+  * @phydev: target phy_device struct
+@@ -1830,6 +1893,12 @@ int __genphy_config_aneg(struct phy_device *phydev, bool changed)
+ 	if (genphy_config_eee_advert(phydev))
+ 		changed = true;
+ 
++	err = genphy_setup_master_slave(phydev);
++	if (err < 0)
++		return err;
++	else if (err)
++		changed = true;
++
+ 	if (AUTONEG_ENABLE != phydev->autoneg)
+ 		return genphy_setup_forced(phydev);
+ 
+@@ -2062,6 +2131,11 @@ int genphy_read_status(struct phy_device *phydev)
+ 	phydev->duplex = DUPLEX_UNKNOWN;
+ 	phydev->pause = 0;
+ 	phydev->asym_pause = 0;
++	phydev->master_slave = PORT_MODE_UNKNOWN;
++
++	err = genphy_read_master_slave(phydev);
++	if (err < 0)
++		return err;
+ 
+ 	err = genphy_read_lpa(phydev);
+ 	if (err < 0)
+@@ -2103,6 +2177,7 @@ int genphy_c37_read_status(struct phy_device *phydev)
+ 	phydev->duplex = DUPLEX_UNKNOWN;
+ 	phydev->pause = 0;
+ 	phydev->asym_pause = 0;
++	phydev->master_slave = PORT_MODE_UNKNOWN;
+ 
+ 	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
+ 		lpa = phy_read(phydev, MII_LPA);
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index c570e162e05e5..de5f934223069 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -421,6 +421,7 @@ struct phy_device {
+ 	int duplex;
+ 	int pause;
+ 	int asym_pause;
++	int master_slave;
+ 
+ 	/* Union of PHY and Attached devices' supported link modes */
+ 	/* See ethtool.h for more info */
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index 2405ab2263779..bcbc44003c823 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -1659,6 +1659,13 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+ 	return 0;
+ }
+ 
++/* Port mode */
++#define PORT_MODE_MASTER	0x00
++#define PORT_MODE_SLAVE		0x01
++#define PORT_MODE_MASTER_FORCE	0x02
++#define PORT_MODE_SLAVE_FORCE	0x03
++#define PORT_MODE_UNKNOWN	0xff
++
+ /* Which connector port. */
+ #define PORT_TP			0x00
+ #define PORT_AUI		0x01
+@@ -1850,6 +1857,7 @@ enum ethtool_reset_flags {
+  *	autonegotiation; 0 if unknown or not applicable.  Read-only.
+  * @transceiver: Used to distinguish different possible PHY types,
+  *	reported consistently by PHYLIB.  Read-only.
++ * @master_slave: Master or slave port mode.
+  *
+  * If autonegotiation is disabled, the speed and @duplex represent the
+  * fixed link mode and are writable if the driver supports multiple
+@@ -1897,7 +1905,8 @@ struct ethtool_link_settings {
+ 	__u8	eth_tp_mdix_ctrl;
+ 	__s8	link_mode_masks_nwords;
+ 	__u8	transceiver;
+-	__u8	reserved1[3];
++	__u8	master_slave;
++	__u8	reserved1[2];
+ 	__u32	reserved[7];
+ 	__u32	link_mode_masks[0];
+ 	/* layout of link_mode_masks fields:
+diff --git a/include/uapi/linux/ethtool_netlink.h b/include/uapi/linux/ethtool_netlink.h
+index 7e0b460f872c0..e04d47cb5f227 100644
+--- a/include/uapi/linux/ethtool_netlink.h
++++ b/include/uapi/linux/ethtool_netlink.h
+@@ -185,6 +185,7 @@ enum {
+ 	ETHTOOL_A_LINKMODES_PEER,		/* bitset */
+ 	ETHTOOL_A_LINKMODES_SPEED,		/* u32 */
+ 	ETHTOOL_A_LINKMODES_DUPLEX,		/* u8 */
++	ETHTOOL_A_LINKMODES_MASTER_SLAVE,	/* u8 */
+ 
+ 	/* add new constants above here */
+ 	__ETHTOOL_A_LINKMODES_CNT,
+diff --git a/include/uapi/linux/mii.h b/include/uapi/linux/mii.h
+index 0b9c3beda345b..78eac603a84fb 100644
+--- a/include/uapi/linux/mii.h
++++ b/include/uapi/linux/mii.h
+@@ -146,11 +146,13 @@
+ /* 1000BASE-T Control register */
+ #define ADVERTISE_1000FULL	0x0200  /* Advertise 1000BASE-T full duplex */
+ #define ADVERTISE_1000HALF	0x0100  /* Advertise 1000BASE-T half duplex */
++#define CTL1000_PREFER_MASTER	0x0400  /* prefer to operate as master */
+ #define CTL1000_AS_MASTER	0x0800
+ #define CTL1000_ENABLE_MASTER	0x1000
+ 
+ /* 1000BASE-T Status register */
+ #define LPA_1000MSFAIL		0x8000	/* Master/Slave resolution failure */
++#define LPA_1000MSRES		0x4000	/* Master/Slave resolution status */
+ #define LPA_1000LOCALRXOK	0x2000	/* Link partner local receiver status */
+ #define LPA_1000REMRXOK		0x1000	/* Link partner remote receiver status */
+ #define LPA_1000FULL		0x0800	/* Link partner 1000BASE-T full duplex */
+diff --git a/net/ethtool/linkmodes.c b/net/ethtool/linkmodes.c
+index 96f20be64553e..dc15b88e64c6a 100644
+--- a/net/ethtool/linkmodes.c
++++ b/net/ethtool/linkmodes.c
+@@ -27,6 +27,7 @@ linkmodes_get_policy[ETHTOOL_A_LINKMODES_MAX + 1] = {
+ 	[ETHTOOL_A_LINKMODES_PEER]		= { .type = NLA_REJECT },
+ 	[ETHTOOL_A_LINKMODES_SPEED]		= { .type = NLA_REJECT },
+ 	[ETHTOOL_A_LINKMODES_DUPLEX]		= { .type = NLA_REJECT },
++	[ETHTOOL_A_LINKMODES_MASTER_SLAVE]	= { .type = NLA_REJECT },
+ };
+ 
+ static int linkmodes_prepare_data(const struct ethnl_req_info *req_base,
+@@ -69,6 +70,7 @@ static int linkmodes_reply_size(const struct ethnl_req_info *req_base,
+ 	len = nla_total_size(sizeof(u8)) /* LINKMODES_AUTONEG */
+ 		+ nla_total_size(sizeof(u32)) /* LINKMODES_SPEED */
+ 		+ nla_total_size(sizeof(u8)) /* LINKMODES_DUPLEX */
++		+ nla_total_size(sizeof(u8)) /* LINKMODES_MASTER_SLAVE */
+ 		+ 0;
+ 	ret = ethnl_bitset_size(ksettings->link_modes.advertising,
+ 				ksettings->link_modes.supported,
+@@ -119,7 +121,9 @@ static int linkmodes_fill_reply(struct sk_buff *skb,
+ 	}
+ 
+ 	if (nla_put_u32(skb, ETHTOOL_A_LINKMODES_SPEED, lsettings->speed) ||
+-	    nla_put_u8(skb, ETHTOOL_A_LINKMODES_DUPLEX, lsettings->duplex))
++	    nla_put_u8(skb, ETHTOOL_A_LINKMODES_DUPLEX, lsettings->duplex) ||
++	    nla_put_u8(skb, ETHTOOL_A_LINKMODES_MASTER_SLAVE,
++		       lsettings->master_slave))
+ 		return -EMSGSIZE;
+ 
+ 	return 0;
+@@ -248,6 +252,7 @@ linkmodes_set_policy[ETHTOOL_A_LINKMODES_MAX + 1] = {
+ 	[ETHTOOL_A_LINKMODES_PEER]		= { .type = NLA_REJECT },
+ 	[ETHTOOL_A_LINKMODES_SPEED]		= { .type = NLA_U32 },
+ 	[ETHTOOL_A_LINKMODES_DUPLEX]		= { .type = NLA_U8 },
++	[ETHTOOL_A_LINKMODES_MASTER_SLAVE]	= { .type = NLA_U8 },
+ };
+ 
+ /* Set advertised link modes to all supported modes matching requested speed
+@@ -310,6 +315,8 @@ static int ethnl_update_linkmodes(struct genl_info *info, struct nlattr **tb,
+ 			 mod);
+ 	ethnl_update_u8(&lsettings->duplex, tb[ETHTOOL_A_LINKMODES_DUPLEX],
+ 			mod);
++	ethnl_update_u8(&lsettings->master_slave,
++			tb[ETHTOOL_A_LINKMODES_MASTER_SLAVE], mod);
+ 
+ 	if (!tb[ETHTOOL_A_LINKMODES_OURS] && lsettings->autoneg &&
+ 	    (req_speed || req_duplex) &&
+-- 
+2.26.0.rc2
 
