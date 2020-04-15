@@ -2,77 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2780A1AAE58
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A721AAE5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416105AbgDOQbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:31:37 -0400
-Received: from sauhun.de ([88.99.104.3]:56520 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416085AbgDOQb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:31:26 -0400
-Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
-        by pokefinder.org (Postfix) with ESMTPSA id 549FC2C1FF2;
-        Wed, 15 Apr 2020 18:31:24 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 18:31:24 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] i2c: tegra: Synchronize DMA before termination
-Message-ID: <20200415163123.GD2830@ninjato>
-References: <20200324191217.1829-1-digetx@gmail.com>
- <20200324191217.1829-3-digetx@gmail.com>
+        id S1416121AbgDOQcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1416090AbgDOQcE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:32:04 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1BAC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:32:02 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id a10so1542691uad.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qmoc5zikups2YB0r+vesjserrrGc5wDVV4y8pgXM4+w=;
+        b=fg67SeErN3cfY6wJJvBR9ZhgLtFwBcITGGWV1dtc22ncPaPxfoSqiLZ7qVBsuGFM+w
+         ZUz497QbcxmBk3Y/B5BKVINvOOAlgqaTT07aYRt2JjtgruP7lpq1ooFfq4zcdOwy4q2C
+         9Id82wAk2bBqnJ9ezgMnECpedABRDfcUEtgdM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qmoc5zikups2YB0r+vesjserrrGc5wDVV4y8pgXM4+w=;
+        b=MjWLMFA74O2f/C8je45YGZJ4PoQm33sK4vsENN6SVCQqgozFM/QCuFmphBeGvT2Qfo
+         Hl2nUHaVtwrKAf1aU9NaA3Zuiv7BJJXmHfRGfXTq8laocTgYtxCVIUxRvpGiHkqYAGsy
+         C4mj9E/X5na0d49aXnUWPLtEaSg0aXLLva5EERDiUVSwvNEKV04we995SyalELjB0PhP
+         BJ8+ndQ6XAWwwmh145zMrQocZqaAbsTfPHdT+GikkU+C87eVmHGpsxmaP9y96cSPh+/q
+         dRntMXmUceKHjip+wrX67vNZ9dQBPzH4RciH0CppDs2X3mfDrDJE+Hc6adj+xz2xKlBo
+         L08Q==
+X-Gm-Message-State: AGi0PuYrzLHDmL7GLoRozcTsXIwhkj5Ue5Sq9PJVP/6mLJoNo+EfmSK4
+        yRnuNeJMZJiM2mIOz1Tk7Hyqt+DCwmM=
+X-Google-Smtp-Source: APiQypJtK3VBpec75sy6s+fb5cfNrwWaSxcmGyHo3xNaSEqV1hzxWKU/vkFOL6y0NV5/PIZFa2PxmQ==
+X-Received: by 2002:ab0:b13:: with SMTP id b19mr5177776uak.91.1586968320884;
+        Wed, 15 Apr 2020 09:32:00 -0700 (PDT)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id r188sm2211440vsb.20.2020.04.15.09.31.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 09:32:00 -0700 (PDT)
+Received: by mail-vs1-f44.google.com with SMTP id k19so251788vsm.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:31:59 -0700 (PDT)
+X-Received: by 2002:a67:7141:: with SMTP id m62mr5268042vsc.73.1586968319284;
+ Wed, 15 Apr 2020 09:31:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
-Content-Disposition: inline
-In-Reply-To: <20200324191217.1829-3-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200414161320.251897-1-qperret@google.com> <CAD=FV=Vo4h43vS1K1+ziAJhQ3UG+Zrx8JN8Q1tkMWU1Oh6OavA@mail.gmail.com>
+ <20200415082001.GA256573@google.com>
+In-Reply-To: <20200415082001.GA256573@google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 15 Apr 2020 09:31:47 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UB7OZzQO46dV7KOHGqRkgbtaSgLfq55yddyx0L_e37Fg@mail.gmail.com>
+Message-ID: <CAD=FV=UB7OZzQO46dV7KOHGqRkgbtaSgLfq55yddyx0L_e37Fg@mail.gmail.com>
+Subject: Re: [PATCH] sched/core: Fix reset-on-fork from RT with uclamp
+To:     Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, juri.lelli@redhat.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        ctheegal@codeaurora.org, patrick.bellasi@matbug.net,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---AkbCVLjbJ9qUtAXD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Apr 15, 2020 at 1:20 AM Quentin Perret <qperret@google.com> wrote:
+>
+> Hi Doug,
+>
+> On Tuesday 14 Apr 2020 at 13:45:03 (-0700), Doug Anderson wrote:
+> > Hi,
+> >
+> > On Tue, Apr 14, 2020 at 9:13 AM Quentin Perret <qperret@google.com> wrote:
+> > >
+> > > uclamp_fork() resets the uclamp values to their default when the
+> > > reset-on-fork flag is set. It also checks whether the task has a RT
+> > > policy, and sets its uclamp.min to 1024 accordingly. However, during
+> > > reset-on-fork, the task's policy is lowered to SCHED_NORMAL right after,
+> > > hence leading to an erroneous uclamp.min setting for the new task if it
+> > > was forked from RT.
+> > >
+> > > Fix this by removing the unnecessary check on rt_policy() in
+> > > uclamp_fork() as this doesn't make sense if the reset-on-fork flag is
+> > > set.
+> > >
+> > > Reported-by: Chitti Babu Theegala <ctheegal@codeaurora.org>
+> > > Signed-off-by: Quentin Perret <qperret@google.com>
+> > > ---
+> > >  kernel/sched/core.c | 4 ----
+> > >  1 file changed, 4 deletions(-)
+> > >
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 3a61a3b8eaa9..9ea3e484eea2 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -1234,10 +1234,6 @@ static void uclamp_fork(struct task_struct *p)
+> > >         for_each_clamp_id(clamp_id) {
+> > >                 unsigned int clamp_value = uclamp_none(clamp_id);
+> > >
+> > > -               /* By default, RT tasks always get 100% boost */
+> > > -               if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> > > -                       clamp_value = uclamp_none(UCLAMP_MAX);
+> > > -
+> > >                 uclamp_se_set(&p->uclamp_req[clamp_id], clamp_value, false);
+> >
+> > The local variable "clamp_value" doesn't have a lot of value anymore,
+> > does it?  (Pun intended).
+>
+> :)
+>
+> > Remove it?
+>
+> Right, but I figured the generated code should be similar, and
+> 'uclamp_se_set(&p->uclamp_req[clamp_id], uclamp_none(clamp_id), false);'
+> doesn't fit in 80 cols at this identation level, so I kept the local
+> var. No strong opinion, though.
 
-On Tue, Mar 24, 2020 at 10:12:17PM +0300, Dmitry Osipenko wrote:
-> DMA transfer could be completed, but CPU (which handles DMA interrupt)
-> may get too busy and can't handle the interrupt in a timely manner,
-> despite of DMA IRQ being raised. In this case the DMA state needs to
-> synchronized before terminating DMA transfer in order not to miss the
-> DMA transfer completion.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+OK.  It's definitely a bikeshed color issue and since you'll spend
+more time in this bikeshed than I will I'll leave it to you to pick
+the color.
 
-Applied to for-current, thanks!
+I'm not at all an expert on this code but it sure looks sane to me.
+If you think my review tag is worth anything in this context feel free
+to add it, but since you already have Patrick's mine probably adds
+very little value.
 
-
---AkbCVLjbJ9qUtAXD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6XNtsACgkQFA3kzBSg
-KbbADhAAqwvNfOD7mXtxEJtV3RcBhdYNCoJRUtxcGTAHQVpPbAXy6CzQPj/fYsAB
-rUFJEFrFEBBwxemI9pSRgzgR/k1cq/6lxW+S3rH0yaxmSwO0SH2UtctpHnCwI8zQ
-Uk5KwRs5b6jlNaSIWpraI3+7KKMc9n+vpHwqMZAqdqvadgkeyMyLrZq84zZJM1oH
-PB9HUFpEmvxfk0vpI2R7oOSEMYJRZ50z1AX0XfokWwrJ6seqPzDsET3MJLC1bep5
-bLLFD4pHhQ2Cng0DuoEV0APFbpSuW78Yn9nnQY4NdWjE/7UWA35tCdxwsVWSIx0t
-Uqdm4TrYhhJ0neGXb2is8z18NRpsqu9Xyxq5GNFNIKqMeaMRJqy8qDrNfC7vJ4nS
-BdnlYUdQ1SH/IpoCntv7MFFBJ3c11xMKJ1BRXgmltDe+McV0yi5zYND2BIx0B0ZN
-sKe72nwPSalYNYsuCHg3K2wl+mMuZI+l1+TeVrWVK4AHY4RfHp188J/XfhuzJOXm
-PHSZ7L8wMx8b/4iez+J2JtAQCknI93f/tyXxEoCDJBD8Y2PANwzbI5LqVTxiIyq+
-Bwu8bZy0q42hKjN7B2HkF8ynBtumNAZZPc5nlvhLCoG+IdnZKRdjEbvw4e2deQCH
-SHOCCRo+Q1FHRAeiicNlwsSeO0Yoyqz7LVyVBy3dyD6lwjHQReE=
-=C3tM
------END PGP SIGNATURE-----
-
---AkbCVLjbJ9qUtAXD--
+-Doug
