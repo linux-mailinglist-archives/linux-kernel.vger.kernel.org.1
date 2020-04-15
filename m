@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2461AB018
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58C91AB02B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440816AbgDORwo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Apr 2020 13:52:44 -0400
-Received: from mailoutvs60.siol.net ([185.57.226.251]:54451 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2437449AbgDORwl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:52:41 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 7DA5B523E2D;
-        Wed, 15 Apr 2020 19:52:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Mn71HVJwTzMB; Wed, 15 Apr 2020 19:52:38 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 1B19B52389F;
-        Wed, 15 Apr 2020 19:52:38 +0200 (CEST)
-Received: from jernej-laptop.localnet (cpe-194-152-20-232.static.triera.net [194.152.20.232])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 832A5523E96;
-        Wed, 15 Apr 2020 19:52:34 +0200 (CEST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/sun4i: hdmi ddc clk: Fix size of m divider
-Date:   Wed, 15 Apr 2020 19:52:28 +0200
-Message-ID: <1785843.taCxCBeP46@jernej-laptop>
-In-Reply-To: <20200415104214.ndkkxfnufkxgu53r@gilmour.lan>
-References: <20200413095457.1176754-1-jernej.skrabec@siol.net> <1742537.tdWV9SEqCh@jernej-laptop> <20200415104214.ndkkxfnufkxgu53r@gilmour.lan>
+        id S1416554AbgDORzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:55:52 -0400
+Received: from mga14.intel.com ([192.55.52.115]:26430 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437449AbgDORz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:55:26 -0400
+IronPort-SDR: SD3kBL3/MNWGAxxXyJ8CSTsfictFCgpK4W8UjKtnaC9F4ZKATkMBp+L717QKbjfk7zvC9JK+wF
+ L/H/BOn/7XRA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 10:55:22 -0700
+IronPort-SDR: 9AQT2fPHHcmbXSk8vc4uuwqSR7T8sOOIjmbcjQpiEI14xL/xSQtIw7BdQ8c7nA1Iq1cyje/nPa
+ K7/h1ke/QmMA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
+   d="scan'208";a="332567335"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
+  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2020 10:55:22 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [PATCH v2 00/10]  KVM: VMX: Unionize vcpu_vmx.exit_reason
+Date:   Wed, 15 Apr 2020 10:55:09 -0700
+Message-Id: <20200415175519.14230-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 15. april 2020 ob 12:42:14 CEST je Maxime Ripard napisal(a):
-> On Mon, Apr 13, 2020 at 06:09:08PM +0200, Jernej Škrabec wrote:
-> > Dne ponedeljek, 13. april 2020 ob 16:12:39 CEST je Chen-Yu Tsai 
-napisal(a):
-> > > On Mon, Apr 13, 2020 at 6:11 PM Chen-Yu Tsai <wens@csie.org> wrote:
-> > > > On Mon, Apr 13, 2020 at 5:55 PM Jernej Skrabec
-> > > > <jernej.skrabec@siol.net>
-> > 
-> > wrote:
-> > > > > m divider in DDC clock register is 4 bits wide. Fix that.
-> > > > > 
-> > > > > Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
-> > > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > 
-> > > > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-> > > 
-> > > Cc stable?
-> > 
-> > I don't think it's necessary:
-> > 1. It doesn't change much (anything?) for me when reading EDID. I don't
-> > think it's super important to have precise DDC clock in order to properly
-> > read EDID. 2. No matter if it has "Cc stable" tag or not, it will be
-> > eventually picked for stable due to fixes tag.
-> > 
-> > This was only small observation when I was researching EDID readout issue
-> > on A20 board, but sadly, I wasn't able to figure out why reading it
-> > sometimes fails. I noticed similar issue on SoCs with DE2 (most
-> > prominently on OrangePi PC2 - H5), but there was easy workaround - I just
-> > disabled video driver in U- Boot. However, if A20 display driver gets
-> > disabled in U-Boot, it totally breaks video output on my TV when Linux
-> > boots (no output). I guess there is more fundamental problem with clocks
-> > than just field size. I think we should add more constraints in clock
-> > driver, like preset some clock parents and not allow to change parents
-> > when setting rate, but carefully, so simplefb doesn't break. Such
-> > constraints should also solve problems with dual head setups.
-> I disagree here. Doing all sorts of special case just doesn't scale,
-> and we'll never have the special cases sorted out on all the boards
-> (and it's a nightmare to maintain).
-> 
-> Especially since it's basically putting a blanket over the actual
-> issue and looking the other way. If there's something wrong with how
-> we deal with (re)parenting, we should fix that. It impacts more than
-> just DRM, and all the SoCs.
+Convert the exit_reason field in struct vcpu_vmx from a vanilla u32 to a
+union, (ab)using the union to provide access to the basic exit reason and
+flags.
 
-I agree with you that automatic solution would be best, but I just don't see 
-it how it would be done. Dual head display pipeline is pretty complex for 
-clock driver to get it right on it's own. There are different possible setups 
-and some of them are hot pluggable, like HDMI. And there are also SoC specific 
-quirks, like A64, where for some reason, MIPI DPHY and HDMI PHY share same 
-clock parent - PLL_VIDEO0. Technically, MIPI DPHY can be clocked from 
-PLL_PERIPH0 (fixed to 600 MHz), but that's not really helpful. I'm not even 
-sure if there is any good solution to this - certainly HDMI and MIPI can't 
-claim exclusivity and somehow best common rate must be found for PLL_VIDEO0, 
-if that's even possible. I was sure that HDMI PHY on A64 can be clocked from 
-PLL_VIDEO1, which would solve main issue, but to date, I didn't find any way to 
-do that.
+There is a fairly substantial delta relative to v1, as I ran with Vitaly's
+suggestion to split nested_vmx_exit_reflected() into VM-Fail, "L0 wants"
+and "L1 wants", and move the tracepoint into nested_vmx_reflect_vmexit().
+IMO, this yields cleaner and more understandable code overall, and helps
+eliminate caching the basic exit reason (see below) by avoiding large
+functions that repeatedly query the basic exit reason.  The refactoring
+isn't strictly related to making exit_reason a union, but the code would
+conflict horribly and the end code nicely demonstrates the value of using
+a union for the exit reason.
 
-That's pretty off topic, so I hope original patch can be merged as-is.
+There are three motivating factors for making exit_reason a union:
 
-Best regards,
-Jernej
+  - Help avoid bugs where a basic exit reason is compared against the full
+    exit reason, e.g. there have been two bugs where MCE_DURING_VMENTRY
+    was incorrectly compared against the full exit reason.
 
+  - Clarify the intent of related flows, e.g. exit_reason is used for both
+    "basic exit reason" and "full exit reason", and it's not always clear
+    which of the two is intended without a fair bit of digging.
+
+  - Prepare for future Intel features, e.g. SGX, that add new exit flags
+    that are less restricted than FAILED_VMENTRY, i.e. can be set on what
+    is otherwise a standard VM-Exit.
+
+v2:
+  - Don't snapshot the basic exit reason, i.e. either use vmx->exit_reason
+    directly or snapshot the whole thing.  The resulting code is similar
+    to Xiaoyao's original patch, e.g. vmx_handle_exit() now uses
+    "exit_reason.basic" instead of "exit_reason" to reference the basic
+    exit reason.
+  - Split nested_vmx_exit_reflected() into VM-Fail, "L0 wants" and "L1
+    wants", and move the tracepoint into nested_vmx_reflect_vmexit().
+    [Vitaly]
+  - Use a "union vmx_exit_reason exit_reason" to handle a consistency
+    check VM-Exit on VM-Enter in nested_vmx_enter_non_root_mode() to avoid
+    some implicit casting shenanigans. [Vitaly]
+  - Collect tags. [Vitaly]
+
+v1: https://lkml.kernel.org/r/20200312184521.24579-1-sean.j.christopherson@intel.com
+
+
+Sean Christopherson (10):
+  KVM: nVMX: Move reflection check into nested_vmx_reflect_vmexit()
+  KVM: nVMX: Uninline nested_vmx_reflect_vmexit(), i.e. move it to
+    nested.c
+  KVM: nVMX: Move VM-Fail check out of nested_vmx_exit_reflected()
+  KVM: nVMX: Move nested VM-Exit tracepoint into
+    nested_vmx_reflect_vmexit()
+  KVM: nVMX: Split VM-Exit reflection logic into L0 vs. L1 wants
+  KVM: nVMX: Drop a superfluous WARN on reflecting EXTERNAL_INTERRUPT
+  KVM: nVMX: Pull exit_reason from vcpu_vmx in
+    nested_vmx_reflect_vmexit()
+  KVM: nVMX: Cast exit_reason to u16 to check for nested
+    EXTERNAL_INTERRUPT
+  KVM: nVMX: Rename exit_reason to vm_exit_reason for nested VM-Exit
+  KVM: VMX: Convert vcpu_vmx.exit_reason to a union
+
+ arch/x86/kvm/vmx/nested.c | 237 +++++++++++++++++++++++++-------------
+ arch/x86/kvm/vmx/nested.h |  32 +----
+ arch/x86/kvm/vmx/vmx.c    |  66 ++++++-----
+ arch/x86/kvm/vmx/vmx.h    |  25 +++-
+ 4 files changed, 219 insertions(+), 141 deletions(-)
+
+-- 
+2.26.0
 
