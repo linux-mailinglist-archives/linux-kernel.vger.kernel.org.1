@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506BD1A9653
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0281A9667
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894476AbgDOI1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:27:04 -0400
-Received: from mga17.intel.com ([192.55.52.151]:39079 "EHLO mga17.intel.com"
+        id S2894528AbgDOI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:28:01 -0400
+Received: from sauhun.de ([88.99.104.3]:49304 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894462AbgDOI04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:26:56 -0400
-IronPort-SDR: kdWuOOzaNeKQQjjnTevTVzxYxM2K5kA/m+ItWPMOCsLY2FRghR4E3dLBIwgwq72s6/9Ko/muuo
- p26/qOyjFmOg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 01:25:59 -0700
-IronPort-SDR: 5a7UZZIm9TvTEGcNrZpZNtTbbut9jtRf7FLh9wLYQDttWAjWNSQ/q8K/7MTU+gkqrgGdeQptB9
- nTV5e999iZHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
-   d="scan'208";a="363611763"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.208]) ([10.254.210.208])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Apr 2020 01:25:57 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/7] iommu/vt-d: Add page request draining support
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D820475@SHSMSX104.ccr.corp.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <86b04dae-ff11-fc4b-551a-17c0ce352843@linux.intel.com>
-Date:   Wed, 15 Apr 2020 16:25:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2894461AbgDOI1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:27:14 -0400
+Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
+        by pokefinder.org (Postfix) with ESMTPSA id 956F72C1F58;
+        Wed, 15 Apr 2020 10:27:12 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 10:27:12 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-i3c@lists.infradead.org,
+        Kieran Bingham <kieran@ksquared.org.uk>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/6] i2c: of: reserve unknown and ancillary
+ addresses
+Message-ID: <20200415082712.GD1141@ninjato>
+References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D820475@SHSMSX104.ccr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
+Content-Disposition: inline
+In-Reply-To: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
 
-On 2020/4/15 15:57, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Wednesday, April 15, 2020 1:26 PM
->>
->> When a PASID is stopped or terminated, there can be pending PRQs
->> (requests that haven't received responses) in the software and
->> remapping hardware. The pending page requests must be drained
->> so that the pasid could be reused. The register level interface
->> for page request draining is defined in 7.11 of the VT-d spec.
->> This series adds the support for page requests draining.
-> 7.11 doesn't include register-level interface. It just talks about
-> the general requirements on system software, endpoint device
-> and its driver.
-> 
+--DiL7RhKs8rK9YGuF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I will replace this with "spec 7.10 specifies the software steps to
-drain page requests and response".
 
-Best regards,
-baolu
+Status update on this series:
+
+> TODO: make sure there are no concurrency issues in patch 6 when handling
+> the struct i2c_client.
+
+This turns out to be annoying. How to make sure that we don't modify the
+i2c_client while the adapter it is sitting on just gets removed. AFAICS
+we need a new locking scheme just for that and I am not convinced this
+is the way forward.
+
+Also, there is still this small room for regressing when there are DTs
+having multiple addresses specified in the DT and the drivers use
+i2c_new_dummy_client on these addresses. I have verified that no in-tree
+users of i2c_new_dummy (and friends) do work on extra addresses but
+still I'd like to completely avoid this potential regression.
+
+One solution to both problems would be to unregister the reserved device
+when its address is requested. I am working on this prototype currently.
+However, I am not sure yet if one issue might make this approach messy:
+re-registering the reserved device when the probe of the requested
+address fails.
+
+We will see...
+
+
+--DiL7RhKs8rK9YGuF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6WxWAACgkQFA3kzBSg
+Kbae9w//RJrz6RPLZSRlLMCbftnMujapFw1Mb4d6vzU283/gdeAkzuz/C38XWPA8
+xcUJsFWpHCDYOhaXdav0Jf7UL5KssTT2XdrdWneLKmn/QN/8NdeOkiROzTq2pavX
+lcQhC9V9tjGe09MfRlpyg6mZDti/09vxJ6QZbOVpHyJg5chqht1NgwjYtAVCwsby
+Fd3ucuyN5r1rPwyRXuVVnXQ0D/itOsacyLzpAfA3BQNlLPWe71fsytlCrlPX31Ys
++yh7z+0BAprWcPNNXLVrOG87+Agi7p426lpV94D5BsoEbSbdMC97vLShzooOVFBS
+BXhziJ66I1btW/yaXBYO9RWcm0bPH/yN0NTFE9X3H7OqTcVh9TFin33oGR/PEZF0
+gkvDnFLOfCUWLO/697U8x+Km0bN/rsOcdapGkjZaeSxZF/QQ3vWGo4S3AibS9GPA
+scR//jSVYL+iphxlOa08YRqSfPd2L32vDirk4iTsKTt45850jzGcilFkrEKx4uUm
+UTp5VmQkIoVj0CO+E7ByjkM+5yG2o9CTNZHY5X5kLsaiETjGCD0yH4SNrADpiY4o
+F13eHJvBFVGtjR969TuiT4tpAzRh+xKAuJNfC3Z8yRyT/uKSS+RAajfc2SCKoWxC
+6iSF2T57Tclts7MFdaBCeYN5f16uSvyQR5UTSFezGHb1qd642wI=
+=blKZ
+-----END PGP SIGNATURE-----
+
+--DiL7RhKs8rK9YGuF--
