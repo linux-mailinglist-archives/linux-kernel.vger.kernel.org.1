@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9775A1A9863
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DBD1A9872
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895321AbgDOJT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36732 "EHLO mail.kernel.org"
+        id S2408417AbgDOJVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:21:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39360 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895294AbgDOJTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:19:34 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BC4D206A2;
-        Wed, 15 Apr 2020 09:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586942373;
-        bh=okUruJDPJKacfzZ0/FQ2AYhcvGKcB0ud1pJhEHMTmco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BDYTulwRtubO/StyzvoxSGb4Z86eU025StVoxdQmaKKQdMWZuQ6VM4J01YUyn2odB
-         guw1G6SfYFsGjxMWQ8oT6Nqc1trs/EnoFvRMkLU5kwx9t6UBowe5OQK4I7IPadnP4P
-         wusKq93W4BME6BmLB0JXCok9AbgT0+cFAuA4en0U=
-Date:   Wed, 15 Apr 2020 10:19:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "martin.fuzzey@flowbird.group" <martin.fuzzey@flowbird.group>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+        id S2895288AbgDOJTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:19:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 19217ADCC;
+        Wed, 15 Apr 2020 09:19:38 +0000 (UTC)
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: realtek: Document RTD1319 and
+ Realtek PymParticle EVB
+To:     =?UTF-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
+Cc:     "linux-realtek-soc@lists.infradead.org" 
+        <linux-realtek-soc@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v7 00/13] add ecspi ERR009165 for i.mx6/7 soc family
-Message-ID: <20200415091931.GA5265@sirena.org.uk>
-References: <1583944596-23410-1-git-send-email-yibin.gong@nxp.com>
- <VE1PR04MB6638AE84CD338AE1CF26FDFD89DB0@VE1PR04MB6638.eurprd04.prod.outlook.com>
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200204145207.28622-1-james.tai@realtek.com>
+ <20200204145207.28622-2-james.tai@realtek.com>
+ <bf55ccbe-cbdf-7ba7-d701-aa84c20204e3@suse.de>
+ <a9685d4560a6445d81c4919b2a323f68@realtek.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Message-ID: <cb724434-bebf-2a23-fd90-8cd82078459d@suse.de>
+Date:   Wed, 15 Apr 2020 11:19:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6638AE84CD338AE1CF26FDFD89DB0@VE1PR04MB6638.eurprd04.prod.outlook.com>
-X-Cookie: Hire the morally handicapped.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a9685d4560a6445d81c4919b2a323f68@realtek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi James,
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Am 15.04.20 um 10:58 schrieb James Tai [戴志峰]:
+>>> diff --git a/Documentation/devicetree/bindings/arm/realtek.yaml
+>>> b/Documentation/devicetree/bindings/arm/realtek.yaml
+>>> index 845f9c76d6f7..3b48ae71fdd8 100644
+>>> --- a/Documentation/devicetree/bindings/arm/realtek.yaml
+>>> +++ b/Documentation/devicetree/bindings/arm/realtek.yaml
+>>> @@ -42,6 +42,12 @@ properties:
+>>>                  - synology,ds418 # Synology DiskStation DS418
+>>>              - const: realtek,rtd1296
+>>>
+>>> +      # RTD1319 SoC based boards
+>>> +      - items:
+>>> +          - enum:
+>>> +              - realtek,pymparticle # Realtek PymParticle EVB
+>>
+>> The board seems labelled "PYM_PARTICLES".
+>>
+>> While Wikipedia has nothing on that, I found this explanation:
+>> https://marvel.fandom.com/wiki/Pym_Particles
+>>
+>> So, are you sure it's PymParticle and not "Pym Particle" with space or "Pym
+>> Particles" with space and plural S? The S would affect also the .dts filename.
+>>
+> I should change the string to "Pym Particles".
 
-On Wed, Apr 15, 2020 at 08:41:17AM +0000, Robin Gong wrote:
-> Ping....
-> On 2020/03/11 16:35 Robin Gong <yibin.gong@nxp.com> wrote:
-> > There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO transf=
-er to
+Okay, in that case I suggest rtd1319-pymparticles.dts for consistency. 
+Unless you want to change rtd1395-lionskin.dts to rtd1395-lion-skin.dts.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+>> For the compatible string the question is pymparticle or pym-particle.
+>>
+> The compatible string is "pym-particles".
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
+Works for me. (always assuming we both imply the "realtek," prefix)
 
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
+If you send a v4, please double-check the comments in patch 2/2.
 
------BEGIN PGP SIGNATURE-----
+>> By comparison, LION-SKIN was named lion-skin in the compatible and spelled
+>> Lion Skin in textual form. If you believe that should be fixed, now would be the
+>> time to revisit those patches that didn't make v5.7.
+>>
+> I'll check those relevant patches.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6W0Z8ACgkQJNaLcl1U
-h9Cl5Af/RsVCkwJ2F2y85wo6iV4ieGbzZRxbI7skDohZNDOFRyf1i8kEXUex8Pyb
-OHjSzFguwzTlhgg6PMkp8R929OiFE3Bu8vupFdNdaw2fKZTFNoHInLjcqOtuDwSW
-N4+v2rbYrlGybSYpMvl8tDz3tu/eQl1cOmdSg/UWDUpStyCrzsAMcaKJA5kEJavD
-NoAHcE2LKjVeo34XmpGWOI8xiAgGqDLm27zQ2JGt6nmZxR33BS3HDfz0Fc5kCnut
-XVx7ggmvMMXvERR4naP/m/c9EkZ470SjZnwYtO71L9ncM62YJdHDogRS8t0ZWn3B
-sNTl4T+hhMymPnKqvdtRch+txbGv0A==
-=lwLW
------END PGP SIGNATURE-----
+Thanks,
+Andreas
 
---gKMricLos+KVdGMg--
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
