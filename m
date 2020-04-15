@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D24A1AA143
+	by mail.lfdr.de (Postfix) with ESMTP id B78201AA144
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369837AbgDOMgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369778AbgDOMep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:34:45 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0056E206D5;
-        Wed, 15 Apr 2020 12:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586954084;
-        bh=U2YmseTlANKK+dbiJT/Rk72V3K1e4CYlnbGh0jjwpqM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=LK+ZCXJJXUKNwPGZh9RVn7FZyGdobbDn8uw2ITPIBJPuUrffuMUixz+GSojt3JRAh
-         4zwqnxIH++WDh3kU1JI4/A5sIAHBWBAp3LPdJrNWxcSeXmvHSWQaL7StRXV6vLlIzB
-         vFM9KjvI+wl5SQSeyiY9VB+PYStOYzVB5rfsRqBU=
-Date:   Wed, 15 Apr 2020 13:34:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     alsa-devel@alsa-project.org, broonie@kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Mark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com,
-        perex@perex.cz, Shengju Zhang <zhangshengju@cmss.chinamobile.com>,
-        timur@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
-Subject: Applied "ASoC: fsl_micfil: Omit superfluous error message in fsl_micfil_probe()" to the asoc tree
-In-Reply-To:  <20200415044513.17492-1-tangbin@cmss.chinamobile.com>
-Message-Id:  <applied-20200415044513.17492-1-tangbin@cmss.chinamobile.com>
-X-Patchwork-Hint: ignore
+        id S369845AbgDOMgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S369793AbgDOMe6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:34:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DB8C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:34:57 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOhFj-0001s4-DF; Wed, 15 Apr 2020 14:34:51 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOhFi-00082N-He; Wed, 15 Apr 2020 14:34:50 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>
+Subject: [PATCH v1] net: phy: tja11xx: add support for master-slave configuration
+Date:   Wed, 15 Apr 2020 14:34:47 +0200
+Message-Id: <20200415123447.29769-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.0.rc2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch
+The TJA11xx PHYs have a vendor specific Master/Slave configuration bit,
+which is not compatible with IEEE 803.2-2018 spec for 100Base-T1
+devices. So, provide a custom config_ange call back to solve this
+problem.
 
-   ASoC: fsl_micfil: Omit superfluous error message in fsl_micfil_probe()
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 83b35f4586e235bfb785a7947b555ad8f3d96887 Mon Sep 17 00:00:00 2001
-From: Tang Bin <tangbin@cmss.chinamobile.com>
-Date: Wed, 15 Apr 2020 12:45:13 +0800
-Subject: [PATCH] ASoC: fsl_micfil: Omit superfluous error message in
- fsl_micfil_probe()
-
-In the function fsl_micfil_probe(), when get irq failed, the function
-platform_get_irq() logs an error message, so remove redundant message here.
-
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Link: https://lore.kernel.org/r/20200415044513.17492-1-tangbin@cmss.chinamobile.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- sound/soc/fsl/fsl_micfil.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/phy/nxp-tja11xx.c | 39 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index f7f2d29f1bfe..e73bd6570a08 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -702,10 +702,8 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	for (i = 0; i < MICFIL_IRQ_LINES; i++) {
- 		micfil->irq[i] = platform_get_irq(pdev, i);
- 		dev_err(&pdev->dev, "GET IRQ: %d\n", micfil->irq[i]);
--		if (micfil->irq[i] < 0) {
--			dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-+		if (micfil->irq[i] < 0)
- 			return micfil->irq[i];
--		}
+diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
+index 2bde9386baf1f..0042ee453cbd4 100644
+--- a/drivers/net/phy/nxp-tja11xx.c
++++ b/drivers/net/phy/nxp-tja11xx.c
+@@ -30,6 +30,7 @@
+ #define MII_ECTRL_WAKE_REQUEST		BIT(0)
+ 
+ #define MII_CFG1			18
++#define MII_CFG1_MASTER_SLAVE		BIT(15)
+ #define MII_CFG1_AUTO_OP		BIT(14)
+ #define MII_CFG1_SLEEP_CONFIRM		BIT(6)
+ #define MII_CFG1_LED_MODE_MASK		GENMASK(5, 4)
+@@ -177,6 +178,31 @@ static int tja11xx_soft_reset(struct phy_device *phydev)
+ 	return genphy_soft_reset(phydev);
+ }
+ 
++static int tja11xx_config_aneg(struct phy_device *phydev)
++{
++	u16 ctl = 0;
++	int ret;
++
++	switch (phydev->master_slave) {
++	case PORT_MODE_MASTER:
++		ctl |= MII_CFG1_MASTER_SLAVE;
++		break;
++	case PORT_MODE_SLAVE:
++		break;
++	case PORT_MODE_UNKNOWN:
++		return 0;
++	default:
++		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
++		return -ENOTSUPP;
++	}
++
++	ret = phy_modify_changed(phydev, MII_CFG1, MII_CFG1_MASTER_SLAVE, ctl);
++	if (ret < 0)
++		return ret;
++
++	return __genphy_config_aneg(phydev, ret);
++}
++
+ static int tja11xx_config_init(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -245,6 +271,15 @@ static int tja11xx_read_status(struct phy_device *phydev)
+ 
+ 		if (!(ret & MII_COMMSTAT_LINK_UP))
+ 			phydev->link = 0;
++
++		ret = phy_read(phydev, MII_CFG1);
++		if (ret < 0)
++			return ret;
++
++		if (ret & MII_CFG1_MASTER_SLAVE)
++			phydev->master_slave = PORT_MODE_MASTER;
++		else
++			phydev->master_slave = PORT_MODE_SLAVE;
  	}
  
- 	if (of_property_read_bool(np, "fsl,shared-interrupt"))
+ 	return 0;
+@@ -514,6 +549,7 @@ static struct phy_driver tja11xx_driver[] = {
+ 		.features       = PHY_BASIC_T1_FEATURES,
+ 		.probe		= tja11xx_probe,
+ 		.soft_reset	= tja11xx_soft_reset,
++		.config_aneg	= tja11xx_config_aneg,
+ 		.config_init	= tja11xx_config_init,
+ 		.read_status	= tja11xx_read_status,
+ 		.suspend	= genphy_suspend,
+@@ -529,6 +565,7 @@ static struct phy_driver tja11xx_driver[] = {
+ 		.features       = PHY_BASIC_T1_FEATURES,
+ 		.probe		= tja11xx_probe,
+ 		.soft_reset	= tja11xx_soft_reset,
++		.config_aneg	= tja11xx_config_aneg,
+ 		.config_init	= tja11xx_config_init,
+ 		.read_status	= tja11xx_read_status,
+ 		.suspend	= genphy_suspend,
+@@ -543,6 +580,7 @@ static struct phy_driver tja11xx_driver[] = {
+ 		.features       = PHY_BASIC_T1_FEATURES,
+ 		.probe		= tja1102_p0_probe,
+ 		.soft_reset	= tja11xx_soft_reset,
++		.config_aneg	= tja11xx_config_aneg,
+ 		.config_init	= tja11xx_config_init,
+ 		.read_status	= tja11xx_read_status,
+ 		.match_phy_device = tja1102_p0_match_phy_device,
+@@ -561,6 +599,7 @@ static struct phy_driver tja11xx_driver[] = {
+ 		.features       = PHY_BASIC_T1_FEATURES,
+ 		/* currently no probe for Port 1 is need */
+ 		.soft_reset	= tja11xx_soft_reset,
++		.config_aneg	= tja11xx_config_aneg,
+ 		.config_init	= tja11xx_config_init,
+ 		.read_status	= tja11xx_read_status,
+ 		.match_phy_device = tja1102_p1_match_phy_device,
 -- 
-2.20.1
+2.26.0.rc2
 
