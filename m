@@ -2,93 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0281A9667
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1925C1A968A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894528AbgDOI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:28:01 -0400
-Received: from sauhun.de ([88.99.104.3]:49304 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894461AbgDOI1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:27:14 -0400
-Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
-        by pokefinder.org (Postfix) with ESMTPSA id 956F72C1F58;
-        Wed, 15 Apr 2020 10:27:12 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 10:27:12 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-i3c@lists.infradead.org,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/6] i2c: of: reserve unknown and ancillary
- addresses
-Message-ID: <20200415082712.GD1141@ninjato>
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+        id S1728878AbgDOIaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:30:30 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33062 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2408046AbgDOIaQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:30:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586939414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bLmrOkcXJQ/8f3TsPjBB59Qp6PFUF6WHach7rOTidPU=;
+        b=Yb7p1K7sVA3olaCuHiBBjK9yqILcoVdKBSzQpmJF0kxrIzL6C2Mt/pQE1wdX4bML6D9hNY
+        G3y5HkTMxQs3vdnCBV6/wkBL2Z63GMx+P1UdlLMy9rrM7ejSgqNg9i8cr4HtgFYl/j3P/6
+        i3SeRFqf+ifkLFnwcXaQBl2OzzMFbzc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-t2O1iRReO8yDzyEE8oEDug-1; Wed, 15 Apr 2020 04:30:10 -0400
+X-MC-Unique: t2O1iRReO8yDzyEE8oEDug-1
+Received: by mail-wr1-f70.google.com with SMTP id s11so5338132wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:30:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bLmrOkcXJQ/8f3TsPjBB59Qp6PFUF6WHach7rOTidPU=;
+        b=CYE6Dx/BI891NtrLAfvtdi6gbEz7vzmtU3lO3nM8A3Va3ZEt9/RQc1HuUNnh61tjjo
+         yq6fYbWO2oPBlLCGoYyfPFg0TI9/LF4/yrjb8sP8Xxr0zBkmqThGAxTCp1r75izaF5A1
+         PAVkllbD3Xgxz1kvuqmUl6H9mpmFvsvVxqOT/oZNHwO2GLiu+NdnxV3S1rM+HBAfcaoN
+         mVAIvMTt5wGsYXx7KQLrjrZprAy5hSsgJktwjUK6vtaoaNFAHdy4mgf3W390EKGxwnG0
+         Bv15HVImmckmsITnrS7qiB2DBZBoXSH8q++BFZfIFnr18C52jtr988G6ny6oymwLv4Sp
+         qd7g==
+X-Gm-Message-State: AGi0PuY8Wj2YeMJrFlm86zdggJjuVDJmfsuLHMOgg2bByoMwq/9IYGEn
+        OZJ4hMLZ2w/IqCv3TaZAwSZdfDLhK3Sy/LooG+hEvRxnzwrZCFeJxTYwkk4GDgfvWYS323GMc0r
+        zOiUiOY3Qqbu1PRGggEA72e6x
+X-Received: by 2002:a1c:b445:: with SMTP id d66mr4126790wmf.187.1586939409338;
+        Wed, 15 Apr 2020 01:30:09 -0700 (PDT)
+X-Google-Smtp-Source: APiQypI1/GFDfyQOLK5J6+00PCnZPj8fmTN9rFZPV07c4zGKdQlKsQOx+NrwNSeq7rAzMZDiU7ufeQ==
+X-Received: by 2002:a1c:b445:: with SMTP id d66mr4126760wmf.187.1586939409106;
+        Wed, 15 Apr 2020 01:30:09 -0700 (PDT)
+Received: from localhost.localdomain ([194.230.155.238])
+        by smtp.gmail.com with ESMTPSA id g25sm8724053wmh.24.2020.04.15.01.30.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 01:30:08 -0700 (PDT)
+Subject: Re: [PATCH v2] kvm_host: unify VM_STAT and VCPU_STAT definitions in a
+ single place
+To:     =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        kvm@vger.kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-s390@vger.kernel.org
+References: <20200414155625.20559-1-eesposit@redhat.com>
+ <b479e7ff-4534-5ced-e19b-2a2914905a8b@amsat.org>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Message-ID: <992ede27-3eae-f2da-ad38-1d3498853ad2@redhat.com>
+Date:   Wed, 15 Apr 2020 10:30:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
-Content-Disposition: inline
-In-Reply-To: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b479e7ff-4534-5ced-e19b-2a2914905a8b@amsat.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---DiL7RhKs8rK9YGuF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
+On 4/15/20 8:36 AM, Philippe Mathieu-Daudé wrote:
+> On 4/14/20 5:56 PM, Emanuele Giuseppe Esposito wrote:
+>> The macros VM_STAT and VCPU_STAT are redundantly implemented in multiple
+>> files, each used by a different architecure to initialize the debugfs
+>> entries for statistics. Since they all have the same purpose, they can be
+>> unified in a single common definition in include/linux/kvm_host.h
+>>
+>> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+>> ---
+>>   arch/arm64/kvm/guest.c    |  23 ++---
+>>   arch/mips/kvm/mips.c      |  61 ++++++------
+>>   arch/powerpc/kvm/book3s.c |  61 ++++++------
+>>   arch/powerpc/kvm/booke.c  |  41 ++++----
+>>   arch/s390/kvm/kvm-s390.c  | 203 +++++++++++++++++++-------------------
+>>   arch/x86/kvm/x86.c        |  80 +++++++--------
+>>   include/linux/kvm_host.h  |   5 +
+>>   7 files changed, 231 insertions(+), 243 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+>> index 23ebe51410f0..8417b200bec9 100644
+>> --- a/arch/arm64/kvm/guest.c
+>> +++ b/arch/arm64/kvm/guest.c
+>> @@ -29,20 +29,17 @@
+>>   
+>>   #include "trace.h"
+>>   
+>> -#define VM_STAT(x) { #x, offsetof(struct kvm, stat.x), KVM_STAT_VM }
+>> -#define VCPU_STAT(x) { #x, offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU }
+>> -
+>>   struct kvm_stats_debugfs_item debugfs_entries[] = {
+>> -	VCPU_STAT(halt_successful_poll),
+>> -	VCPU_STAT(halt_attempted_poll),
+>> -	VCPU_STAT(halt_poll_invalid),
+>> -	VCPU_STAT(halt_wakeup),
+>> -	VCPU_STAT(hvc_exit_stat),
+>> -	VCPU_STAT(wfe_exit_stat),
+>> -	VCPU_STAT(wfi_exit_stat),
+>> -	VCPU_STAT(mmio_exit_user),
+>> -	VCPU_STAT(mmio_exit_kernel),
+>> -	VCPU_STAT(exits),
+>> +	VCPU_STAT("halt_successful_poll", halt_successful_poll),
+>> +	VCPU_STAT("halt_attempted_poll", halt_attempted_poll),
+>> +	VCPU_STAT("halt_poll_invalid", halt_poll_invalid),
+>> +	VCPU_STAT("halt_wakeup", halt_wakeup),
+>> +	VCPU_STAT("hvc_exit_stat", hvc_exit_stat),
+>> +	VCPU_STAT("wfe_exit_stat", wfe_exit_stat),
+>> +	VCPU_STAT("wfi_exit_stat", wfi_exit_stat),
+>> +	VCPU_STAT("mmio_exit_user", mmio_exit_user),
+>> +	VCPU_STAT("mmio_exit_kernel", mmio_exit_kernel),
+>> +	VCPU_STAT("exits", exits),
+>>   	{ NULL }
+>>   };
+> 
+> Patch easily reviewed with --word-diff.
+> 
+> [...]
+>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+>> index 6d58beb65454..2e6ead872957 100644
+>> --- a/include/linux/kvm_host.h
+>> +++ b/include/linux/kvm_host.h
+>> @@ -1130,6 +1130,11 @@ struct kvm_stats_debugfs_item {
+>>   #define KVM_DBGFS_GET_MODE(dbgfs_item)                                         \
+>>   	((dbgfs_item)->mode ? (dbgfs_item)->mode : 0644)
+>>   
+>> +#define VM_STAT(n, x, ...) 													   \
+>> +	{ n, offsetof(struct kvm, stat.x), KVM_STAT_VM, ## __VA_ARGS__ }
+>> +#define VCPU_STAT(n, x, ...)												   \
+> 
+> Not sure while you use so many whitespaces here... (maybe Paolo can
+> strip some when applying?).
 
-Status update on this series:
+I honestly am not sure why it added few more spaces than I wanted, but 
+the idea was to follow the KVM_DBGFS_GET_MODE macro above and put the 
+backslash at the end of the line (80th char).
 
-> TODO: make sure there are no concurrency issues in patch 6 when handling
-> the struct i2c_client.
+> 
+> Otherwise it looks nicer that v1, thanks.
+> 
+> Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+> 
+>> +	{ n, offsetof(struct kvm_vcpu, stat.x), KVM_STAT_VCPU, ## __VA_ARGS__ }
+>> +
+>>   extern struct kvm_stats_debugfs_item debugfs_entries[];
+>>   extern struct dentry *kvm_debugfs_dir;
+>>   
+>>
+> 
 
-This turns out to be annoying. How to make sure that we don't modify the
-i2c_client while the adapter it is sitting on just gets removed. AFAICS
-we need a new locking scheme just for that and I am not convinced this
-is the way forward.
-
-Also, there is still this small room for regressing when there are DTs
-having multiple addresses specified in the DT and the drivers use
-i2c_new_dummy_client on these addresses. I have verified that no in-tree
-users of i2c_new_dummy (and friends) do work on extra addresses but
-still I'd like to completely avoid this potential regression.
-
-One solution to both problems would be to unregister the reserved device
-when its address is requested. I am working on this prototype currently.
-However, I am not sure yet if one issue might make this approach messy:
-re-registering the reserved device when the probe of the requested
-address fails.
-
-We will see...
-
-
---DiL7RhKs8rK9YGuF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6WxWAACgkQFA3kzBSg
-Kbae9w//RJrz6RPLZSRlLMCbftnMujapFw1Mb4d6vzU283/gdeAkzuz/C38XWPA8
-xcUJsFWpHCDYOhaXdav0Jf7UL5KssTT2XdrdWneLKmn/QN/8NdeOkiROzTq2pavX
-lcQhC9V9tjGe09MfRlpyg6mZDti/09vxJ6QZbOVpHyJg5chqht1NgwjYtAVCwsby
-Fd3ucuyN5r1rPwyRXuVVnXQ0D/itOsacyLzpAfA3BQNlLPWe71fsytlCrlPX31Ys
-+yh7z+0BAprWcPNNXLVrOG87+Agi7p426lpV94D5BsoEbSbdMC97vLShzooOVFBS
-BXhziJ66I1btW/yaXBYO9RWcm0bPH/yN0NTFE9X3H7OqTcVh9TFin33oGR/PEZF0
-gkvDnFLOfCUWLO/697U8x+Km0bN/rsOcdapGkjZaeSxZF/QQ3vWGo4S3AibS9GPA
-scR//jSVYL+iphxlOa08YRqSfPd2L32vDirk4iTsKTt45850jzGcilFkrEKx4uUm
-UTp5VmQkIoVj0CO+E7ByjkM+5yG2o9CTNZHY5X5kLsaiETjGCD0yH4SNrADpiY4o
-F13eHJvBFVGtjR969TuiT4tpAzRh+xKAuJNfC3Z8yRyT/uKSS+RAajfc2SCKoWxC
-6iSF2T57Tclts7MFdaBCeYN5f16uSvyQR5UTSFezGHb1qd642wI=
-=blKZ
------END PGP SIGNATURE-----
-
---DiL7RhKs8rK9YGuF--
