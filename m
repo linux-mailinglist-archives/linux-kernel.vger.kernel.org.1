@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F881AA95D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22F61AA970
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636400AbgDOOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:05:37 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:47046 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633951AbgDOOF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:05:29 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65e97148777f-6d7eb; Wed, 15 Apr 2020 22:04:56 +0800 (CST)
-X-RM-TRANSID: 2ee65e97148777f-6d7eb
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.3.208.246])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75e97148659f-b8795;
-        Wed, 15 Apr 2020 22:04:56 +0800 (CST)
-X-RM-TRANSID: 2ee75e97148659f-b8795
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     wsa@the-dreams.de, o.rempel@pengutronix.de,
-        u.kleine-koenig@pengutronix.de, ardb@kernel.org
-Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] i2c: drivers: Avoid unnecessary check in efm32_i2c_probe()
-Date:   Wed, 15 Apr 2020 22:06:40 +0800
-Message-Id: <20200415140640.19948-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S2636439AbgDOOHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:07:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40414 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2636412AbgDOOGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:06:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 97A3CAA7C;
+        Wed, 15 Apr 2020 14:06:43 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 85D601E1250; Wed, 15 Apr 2020 16:06:42 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 16:06:42 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        andres@anarazel.de, willy@infradead.org, dhowells@redhat.com,
+        hch@infradead.org, jack@suse.cz, akpm@linux-foundation.org,
+        david@fromorbit.com
+Subject: Re: [PATCH v5 2/2] buffer: record blockdev write errors in
+ super_block that it backs
+Message-ID: <20200415140642.GK6126@quack2.suse.cz>
+References: <20200415121300.228017-1-jlayton@kernel.org>
+ <20200415121300.228017-3-jlayton@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415121300.228017-3-jlayton@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function efm32_i2c_probe() is only called with an
-openfirmware platform device.Therefore there is no need
-to check that it has an openfirmware node.
+On Wed 15-04-20 08:13:00, Jeff Layton wrote:
+> From: Jeff Layton <jlayton@redhat.com>
+> 
+> When syncing out a block device (a'la __sync_blockdev), any error
+> encountered will only be recorded in the bd_inode's mapping. When the
+> blockdev contains a filesystem however, we'd like to also record the
+> error in the super_block that's stored there.
+> 
+> Make mark_buffer_write_io_error also record the error in the
+> corresponding super_block when a writeback error occurs and the block
+> device contains a mounted superblock.
+> 
+> Since superblocks are RCU freed, hold the rcu_read_lock to ensure
+> that the superblock doesn't go away while we're marking it.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/buffer.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index f73276d746bb..2a4a5cc20418 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -1154,12 +1154,19 @@ EXPORT_SYMBOL(mark_buffer_dirty);
+>  
+>  void mark_buffer_write_io_error(struct buffer_head *bh)
+>  {
+> +	struct super_block *sb;
+> +
+>  	set_buffer_write_io_error(bh);
+>  	/* FIXME: do we need to set this in both places? */
+>  	if (bh->b_page && bh->b_page->mapping)
+>  		mapping_set_error(bh->b_page->mapping, -EIO);
+>  	if (bh->b_assoc_map)
+>  		mapping_set_error(bh->b_assoc_map, -EIO);
+> +	rcu_read_lock();
+> +	sb = bh->b_bdev->bd_super;
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
----
- drivers/i2c/busses/i2c-efm32.c | 3 ---
- 1 file changed, 3 deletions(-)
+You still need READ_ONCE() here. Otherwise the dereference below can still
+result in refetch and NULL ptr deref.
 
-diff --git a/drivers/i2c/busses/i2c-efm32.c b/drivers/i2c/busses/i2c-efm32.c
-index 4de31fae7..4786ef6b2 100644
---- a/drivers/i2c/busses/i2c-efm32.c
-+++ b/drivers/i2c/busses/i2c-efm32.c
-@@ -312,9 +312,6 @@ static int efm32_i2c_probe(struct platform_device *pdev)
- 	int ret;
- 	u32 clkdiv;
- 
--	if (!np)
--		return -EINVAL;
--
- 	ddata = devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
- 	if (!ddata)
- 		return -ENOMEM;
+								Honza
+
+> +	if (sb)
+> +		errseq_set(&sb->s_wb_err, -EIO);
+> +	rcu_read_unlock();
+>  }
+>  EXPORT_SYMBOL(mark_buffer_write_io_error);
+>  
+> -- 
+> 2.25.2
+> 
 -- 
-2.20.1.windows.1
-
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
