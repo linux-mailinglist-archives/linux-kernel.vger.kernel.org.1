@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E8F1AADD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735E81AADE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415624AbgDOQVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1415581AbgDOQUs (ORCPT
+        id S1415670AbgDOQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:21:51 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:54676 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1415627AbgDOQVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:20:48 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D9FC061A0F;
-        Wed, 15 Apr 2020 09:20:47 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id u13so599720wrp.3;
-        Wed, 15 Apr 2020 09:20:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6QvXfJZlpggMK4ANi6m9pBKzrWALkcbq78l8N8OifPg=;
-        b=EP84ogsh9NDfuDeE3+br9QlLD4Ex+blgDu0bl4JdBBHijrvMwx5Ayx/lPq1UAL5HkP
-         2iSzrh/x+r7yzQ1U7l/AKcTZ43apbQd3njUyoO2GRcPEGUig69BWCbdqxCx3bs2Qxvnr
-         lG4EE1ojjT+tMWb7o76l9kk1lkJbfiNaJQVzZKTFO/HYFOOoqXpaTA2SJGW6FVL3z0EG
-         4puC9NsOetsqDZ24YZArV7JkLS5GtldAWsfVkMyTLcv2/nOy+roSyHFSR8k13eLjP6ru
-         AB756opL2neDY1SHhJ3ByHiVjyUJnldUPor22kbx3Vqmv0a49eHK2hx1+3hhDUsgLBM9
-         hmsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=6QvXfJZlpggMK4ANi6m9pBKzrWALkcbq78l8N8OifPg=;
-        b=dpbiHl15dkm2CQFCCpvEqXFEBhVnf14tB5qjuFLDSDMgkKyluCmUZnQ6UaPOmRbyb1
-         9HLzFo4kecUdvlUMvcO0YnqZtenXtZ3joglfsUbQKUUV7Ttp5/iVuRJ90UM02oCslXfA
-         Yf3Dyu30Kjn15JgNVzb6d47hRDSqzVUIiMtTAc6EMRIaEd3EsYpCq3vNPm/qr16IQmu/
-         RrJ2dVeRGjJZY9CbQs2aPa4z2n5RjdoqiRSEc5dHX7btgn4LV++gntKkg3ZExp3BE/Af
-         WwkPRWdYfXMfr2RYYVbvSpEeY3+CXbU5m50FmRZfiszffySiHTAcL3mBlXF68nlknQJf
-         M/vQ==
-X-Gm-Message-State: AGi0Puaxl3L9gCzMZxC5MvzRUjzXqzMZ30ueyp7/ojMOUqAlPFWwybws
-        EPo3yMywfIfirirP1AgMM0U=
-X-Google-Smtp-Source: APiQypKL0zfT975PKTD7SEXe+SHz+UWGx2gUY//ZiH52Ft9oqq66VmUYnhmuvVWOGYGTFrF1iwr8rQ==
-X-Received: by 2002:adf:cd8c:: with SMTP id q12mr31592637wrj.419.1586967646072;
-        Wed, 15 Apr 2020 09:20:46 -0700 (PDT)
-Received: from localhost.localdomain (p5B3F6CCC.dip0.t-ipconnect.de. [91.63.108.204])
-        by smtp.gmail.com with ESMTPSA id 17sm102526wmo.2.2020.04.15.09.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 09:20:45 -0700 (PDT)
-From:   Saravanan Sekar <sravanhome@gmail.com>
-To:     lee.jones@linaro.org, andy.shevchenko@gmail.com,
-        robh+dt@kernel.org, jic23@kernel.org, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, sre@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
-        Saravanan Sekar <sravanhome@gmail.com>
-Subject: [PATCH v9 6/6] MAINTAINERS: Add entry for mp2629 Battery Charger driver
-Date:   Wed, 15 Apr 2020 18:20:30 +0200
-Message-Id: <20200415162030.16414-7-sravanhome@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200415162030.16414-1-sravanhome@gmail.com>
-References: <20200415162030.16414-1-sravanhome@gmail.com>
+        Wed, 15 Apr 2020 12:21:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586967679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sd5eA/N/NI5n7N98BdtAvkb6ngdNDSTXR+h4Z3gbW68=;
+        b=YqTW1P0IX0qpvyGRB3LfG9zr8LX3emUM/hRlcLqP2n0JiUGaoW4h1bXcV6QRXR8CYRs03z
+        5rHVtr2SQEMcvo87AFLA8K7YnLMHQwoHD7X8ySRNIrOKaRuoEXl0XXFRJtuVk+5Emls5e8
+        rKEWMMxoQbAeVsgwl5kOTG8NIibAxho=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-wrQvUDtbM8mVEqqfRLVCsg-1; Wed, 15 Apr 2020 12:21:15 -0400
+X-MC-Unique: wrQvUDtbM8mVEqqfRLVCsg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90C09107B267;
+        Wed, 15 Apr 2020 16:21:12 +0000 (UTC)
+Received: from gondolin (ovpn-113-55.ams2.redhat.com [10.36.113.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 017ACA63D6;
+        Wed, 15 Apr 2020 16:21:02 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 18:20:37 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        Philippe =?UTF-8?B?TWF0aGlldS1EYXVkw6k=?= <f4bug@amsat.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH v2] kvm_host: unify VM_STAT and VCPU_STAT definitions in
+ a single place
+Message-ID: <20200415182037.521a92b2.cohuck@redhat.com>
+In-Reply-To: <20200414155625.20559-1-eesposit@redhat.com>
+References: <20200414155625.20559-1-eesposit@redhat.com>
+Organization: Red Hat GmbH
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for Monolithic Power Systems mp2629 Charger driver.
+On Tue, 14 Apr 2020 17:56:25 +0200
+Emanuele Giuseppe Esposito <eesposit@redhat.com> wrote:
 
-Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
----
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+> The macros VM_STAT and VCPU_STAT are redundantly implemented in multiple
+> files, each used by a different architecure to initialize the debugfs
+> entries for statistics. Since they all have the same purpose, they can be
+> unified in a single common definition in include/linux/kvm_host.h
+> 
+> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+> ---
+>  arch/arm64/kvm/guest.c    |  23 ++---
+>  arch/mips/kvm/mips.c      |  61 ++++++------
+>  arch/powerpc/kvm/book3s.c |  61 ++++++------
+>  arch/powerpc/kvm/booke.c  |  41 ++++----
+>  arch/s390/kvm/kvm-s390.c  | 203 +++++++++++++++++++-------------------
+>  arch/x86/kvm/x86.c        |  80 +++++++--------
+>  include/linux/kvm_host.h  |   5 +
+>  7 files changed, 231 insertions(+), 243 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 32a95d162f06..0f82d5a7a614 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11358,10 +11358,15 @@ F:	drivers/tty/mxser.*
- MONOLITHIC POWER SYSTEM PMIC DRIVER
- M:	Saravanan Sekar <sravanhome@gmail.com>
- S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/mps,mp2629.yaml
- F:	Documentation/devicetree/bindings/regulator/mps,mp*.yaml
-+F:	drivers/iio/adc/mp2629_adc.c
-+F:	drivers/mfd/mp2629.c
-+F:	drivers/power/supply/mp2629_charger.c
- F:	drivers/regulator/mp5416.c
- F:	drivers/regulator/mpq7920.c
- F:	drivers/regulator/mpq7920.h
-+F:	include/linux/mfd/mp2629.h
- 
- MR800 AVERMEDIA USB FM RADIO DRIVER
- M:	Alexey Klimov <klimov.linux@gmail.com>
--- 
-2.17.1
+Adds a bit of churn, but the end result does look nicer. Looks sane,
+but did not review in detail.
+
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 
