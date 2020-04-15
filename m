@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AFD1AB08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC9B1AB0AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437483AbgDOSVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        id S1416761AbgDOSZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441440AbgDOSUo (ORCPT
+        by vger.kernel.org with ESMTP id S1416693AbgDOSXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:20:44 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFB8C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:20:43 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id k9so14304064oia.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:20:43 -0700 (PDT)
+        Wed, 15 Apr 2020 14:23:33 -0400
+Received: from mail-oo1-xc41.google.com (mail-yw1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF0EC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:23:33 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id b17so82573ooa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ojVHvjTSZ0OhtB2Ea6baXllCpS6m57iP2kTa4q+hlag=;
-        b=XXY+v/sMPlfoxgCHIaWR34ZLwP2DivNeNq+kmxmOeMgAn/zIOAfnHrUDB54NCoCUv6
-         +QXoE5yjOMXYNv1vX/KaSQDRbO/LT9wYp6KE7IlaFBizS+jhg8oieCfnkKHnQBhF4bcw
-         guN3gv5kivmb+/iw8COFefgISvdTdvsMaCs2bsuJO5SIWwC3scS5dfiLxu3ljY4rc1Eg
-         Udo2rMYDZEW4H1OLd+dw/60uP5K/DiC6HJaaML54ZNdjXY/WlZffhMHYSmYAMRIWy2hY
-         OtrGtAXZPyekZVO3jp0GAcnk8KrgyIhW032XTdmQvtCFnZU3RbLrn9CrGm5atSPFJHKp
-         LToA==
+        bh=N/364UOQV/F9OhYoUwCrLEZcG1FusHWS5bcvrl8jz2w=;
+        b=qHK0VzOeMeIvWuDEg9DQg3oOZt+awXi4JnTR3FkSp4lyaHjbHcD88TAqCzyg6xrVRB
+         8sf7+NG2SbK9iPYxmqKBn5PSTFASpoKEOmWWw0JFr8vidNprFyZkL/r6DOaxnx0iE1Fp
+         fg3az2zIXslQ3beoYX1vk5E6lUsOId7CkSFy0UHWr/IxFNsdLzbZjzzt+D7AlUKlaCei
+         NOQdA5ycXHdB1AuZYdL2SiFwPN5Zdi1MnDgyV3wumYGPqwSETLbezsMZqpnsxOfcpNmJ
+         o8BhT15ghclPxAbsrG34l8vgJ2HzV9y56WBnFbYBSnCA+wwEte8wEwTjCTl3OFHE4CKG
+         n0dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ojVHvjTSZ0OhtB2Ea6baXllCpS6m57iP2kTa4q+hlag=;
-        b=DQYMe7z3CHffPUvb7NaWsM+YmnaFClQarSTEMYE8VbNVHmhy6MfoFxhkElIE5fG6nT
-         +/nklX6Hq+ablpbAIyi8NjKbgvmC0mRsJtC6VQeG8eP5uBfkn++VtzeVpmGsFpBZx31F
-         WHzN2lTRpmJlAtaqpNK2ge4peLLrsEMVDlN2oXXESiDVdry9HNzMUKLlHB18TvIHhHDx
-         vZti8RXsOm/W5WinnOUM/T4maXr+4yBKmCkvUSPz3DIZCtfPrK7/liWS8jErfjjbV1LZ
-         sdQg0zMAiwujeftziWE89mX092UU9m1bz1ZebpSczz2j+FK6M5xPRJjx0HL1lfBxa06V
-         3Lpw==
-X-Gm-Message-State: AGi0PubtYca3B2/KRkhZh39cxgkKz4uYoE+EdwvGP8sAKYVNZMPtl7B5
-        7quXNvxf3aG3VaJX5zZwVWTmgntmRhWWEkzfenTK9Q==
-X-Google-Smtp-Source: APiQypInj0TMrPwyDUQ/C5zzUj3niWiwzqacXSJKc996Yy8ybqLupH5nGy5yp5Ew42jSvs3skEaLFaO5H5KBIr+e4tE=
-X-Received: by 2002:a54:481a:: with SMTP id j26mr400251oij.172.1586974842961;
- Wed, 15 Apr 2020 11:20:42 -0700 (PDT)
+        bh=N/364UOQV/F9OhYoUwCrLEZcG1FusHWS5bcvrl8jz2w=;
+        b=WipQ9wFOF2mwXm6e5i8aQZgrOXKOe2skMKUPBwKhYv+y7NedJwOwx1vFDoCj00Rmax
+         x0uFAEooVFnurpKVdUzDtUzLvUq3VfrXbT1fafmMErajAZMbMXkBdW30WWz6WN0MC3sN
+         PBigNsrwA+pZ1NORccjrFQXyYdVdjI7h28WMHyOKYQMgfop/to3/FnujnacubcWgxwh/
+         CIp+SxQwc+GstMDca7bJ1yRTk36gfTqCsN66daUcGrlqApmxwcn8EzRmKk0yHbttFaLk
+         h3gz9PyIZGjLjdAUcI93LRgPWl3WPSXWAfLljuuJbPMoFs0zcx31JL/HZQBX4j07+4N1
+         W6pQ==
+X-Gm-Message-State: AGi0PuY2b0EwMrlpXkxsMCtTNzIJaRWYP0YtvPjwnifNKdK/pTC30f28
+        694wrUo/+KlK5CTh8wtZb/kS718WeZESHWP7Wj4oIg==
+X-Google-Smtp-Source: APiQypL40RhF6vlHXSbiQX7ID3/5K6fuLLYdzVlTCNywKin+vKrOPqEX+sTqWif0e5PqnxV6i8UV+TU6VE70Paun67U=
+X-Received: by 2002:a4a:615d:: with SMTP id u29mr2702657ooe.15.1586975012444;
+ Wed, 15 Apr 2020 11:23:32 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200415150550.28156-1-nsaenzjulienne@suse.de> <20200415150550.28156-2-nsaenzjulienne@suse.de>
 In-Reply-To: <20200415150550.28156-2-nsaenzjulienne@suse.de>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 15 Apr 2020 11:20:07 -0700
-Message-ID: <CAGETcx9CMQWsTbez1sSY3qfAepafFZLDj_2+hdCbOMAGX22Few@mail.gmail.com>
+Date:   Wed, 15 Apr 2020 11:22:56 -0700
+Message-ID: <CAGETcx_+i9=+a4OEY-rySY4vNDg1jt4160zAMPR7U-UG38Ysww@mail.gmail.com>
 Subject: Re: [PATCH 1/4] of: property: Fix create device links for all
  child-supplier dependencies
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
@@ -64,10 +64,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Actually a few more nits about the commit text.
+
 On Wed, Apr 15, 2020 at 8:06 AM Nicolas Saenz Julienne
 <nsaenzjulienne@suse.de> wrote:
 >
 > Upon adding a new platform device we scan its properties and its
+
+This code runs for all devices created from a DT node. Not just
+platform devices. So fix this paragraph appropriately?
+
+Upon adding a new device from a DT node, we scan... ?
+
+-Saravana
+
 > children's properties in order to create a consumer/supplier
 > relationship between the device and the property supplier.
 >
@@ -96,10 +106,7 @@ On Wed, Apr 15, 2020 at 8:06 AM Nicolas Saenz Julienne
 > +       for_each_available_child_of_node(con_np, child)
 >                 if (of_link_to_suppliers(dev, child) && !ret)
 >                         ret = -EAGAIN;
-
-Thanks. Good catch. I have plenty of disabled devices in my test
-platform. But I guess I never ran into this scenario.
-
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-
--Saravana
+>
+> --
+> 2.26.0
+>
