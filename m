@@ -2,117 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BEA1AB149
+	by mail.lfdr.de (Postfix) with ESMTP id 2386F1AB148
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503377AbgDOTLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2503644AbgDOTLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 15 Apr 2020 15:11:18 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:49263 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416846AbgDOSmf (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1416851AbgDOSpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:42:35 -0400
-Received: from mail-qk1-f177.google.com ([209.85.222.177]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mcpz0-1ipBG73Ht4-00ZvLZ; Wed, 15 Apr 2020 20:42:33 +0200
-Received: by mail-qk1-f177.google.com with SMTP id j4so18440163qkc.11;
-        Wed, 15 Apr 2020 11:42:33 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYYGv5YSLiGK59bdjApYzeoeRCEyBYw9gvO0T3PRSve31WOUrj+
-        tEAsp2ywfNclTKmOWoIWZzshMmJOm44VgNhd/ac=
-X-Google-Smtp-Source: APiQypIZI3O2p1q4q+8s5Y9SNBauG7Cht4mJENn5T9Wnb7I1L7mfg4xYofW01eLwovwdOixd1cZYkDTm+fpmobGPva8=
-X-Received: by 2002:a37:9d08:: with SMTP id g8mr20477861qke.138.1586976152547;
- Wed, 15 Apr 2020 11:42:32 -0700 (PDT)
+        Wed, 15 Apr 2020 14:45:53 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0095DC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:45:52 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l25so18524292qkk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PBQchXV5h+GZBKvpNdyH5xHjxEMUXqW14Qdp3U1Zwvc=;
+        b=ZZ+QkkHQTKXaxC1zVQQ/q2prKNkCzlHQabzEGSspciFAhzhlpUCTKgjhDQ6pOYiBfh
+         51t2+Gv6VtlAUaVxJo5ggnMII7sRvKSwKbUSot03CmpO+mHUrmC9f4HNo4rmDByEUH+g
+         VZZZUtgfWDK5ODUYpfCym8yp/CWQWcErBKkAE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PBQchXV5h+GZBKvpNdyH5xHjxEMUXqW14Qdp3U1Zwvc=;
+        b=OG/nor7xtoP9+Ws9A9NYYOwUiVqgC7Qxe6qQCOCuY9Ts7Wo5NFbFP5lOILEJMjhAFo
+         FOZjuL+hnpMoH8mNuBpTtsJ27Ze7upS2UZvm4/NjqQVFI83VzUsWBEV91EfLgTBoee6N
+         4/I55QBOd4zv82BkdmZe2vvYdsyuUCuabrLgLi4Fy3e+svjjUFK6xMBeBhd4o/z1z26P
+         MmlB/rR+b1/Tr7lI2vmV2KZ8y2+Js14QyhdPKkezW1OgAAKBH4/rDAd6KnnXIPzUui18
+         T4kATiB4kiFgaWrgOfMexy/18EzmRwDsdFGPQVyRgJCBTak9MLUuMq0niodKUkUCijzc
+         ysOQ==
+X-Gm-Message-State: AGi0PubSYpufgiFRpkroF+je8U4oz9raN0edDMGVMz6OP3PjjDSJsGEI
+        S951kdwMruYO/CWXlW7abRlIPw==
+X-Google-Smtp-Source: APiQypKIGgPLSnD/hI0ZniHM0EIt5UECe27dLHztwyrc5P2U+rUjJibDWwAjqlDUrk55s9PeRu8flg==
+X-Received: by 2002:a37:5a02:: with SMTP id o2mr27246247qkb.380.1586976352184;
+        Wed, 15 Apr 2020 11:45:52 -0700 (PDT)
+Received: from bacon.ohporter.com ([2605:a000:1234:47c6:a553:c33f:1562:b0b1])
+        by smtp.gmail.com with ESMTPSA id p31sm11105853qtf.11.2020.04.15.11.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 11:45:51 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 14:45:48 -0400
+From:   Matt Porter <mporter@konsulko.com>
+To:     Daniel Baluta <daniel.baluta@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yibin.gong@nxp.com
+Subject: Re: [PATCH] arm64: dts: imx8mm: fix dma peripheral type for SAI nodes
+Message-ID: <20200415184548.GA29919@bacon.ohporter.com>
+References: <20200331203551.20914-1-mporter@konsulko.com>
+ <CAEnQRZCqeJkRPEUYL3k8seuNusLZ6QpT-X-A7E20AMHSYcmaUA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200415165218.20251-1-will@kernel.org> <20200415165218.20251-6-will@kernel.org>
- <20200415172813.GA2272@lakrids.cambridge.arm.com>
-In-Reply-To: <20200415172813.GA2272@lakrids.cambridge.arm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 15 Apr 2020 20:42:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0x10bCQMC=iGm+fU2G1Vc=Zo-4yjaX4Jwso6rgazVzYw@mail.gmail.com>
-Message-ID: <CAK8P3a0x10bCQMC=iGm+fU2G1Vc=Zo-4yjaX4Jwso6rgazVzYw@mail.gmail.com>
-Subject: Re: [PATCH v3 05/12] arm64: csum: Disable KASAN for do_csum()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:GMxvKbBCgEZ5iGutzOR80DSYRJEKh6VL1hO5QbXAsGjD4zhju1R
- 4z9TjSVzTCyvePIDAsjoAVrzjaAFj4T1FaOJFxjd4iE9LkK08Y2aQXyWvz2eUulAnq0oK3m
- h+jx6sIblT4TP43YbXhEizAtx76JeWXQZukB/XzdwT84UsF8MA/OO4P6eyxqm53ipuCCnHD
- UVnOhesPmDQadmV84co3A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UeZFsemGmeo=:p2LIvRBVIpHQjqasZi7c9P
- IBi8C2nVn+/40xY+0TQTdutYzAx/iIl7v/eg1GeSzckEkcyRJ1RaEM6poWkm2vGjolI/Prxsa
- eFFCkgz7oe4kGQpnPd3X+wRMqk/SMdXZclpByCU7J0hEXM8fkw2WvXTwkKH5ijQg8baR9ajbB
- JHuerCn8ZO7BkkFTep7ZE0Sya7wqlPiH0NCDIvVs0JG2kqGQhvJy9VgBg1/lp6z8ujykTe5hp
- f4V6rR9uoY6+gylsqYCDwWLHB9ENdprK0bPFJg2y6DUC+7G44VIcanl2NWMMkWVPYEtGgrsxD
- G0D/pi88WLv6HFBaLPFV1WOU67yHU6pNeJ01Dxv+ghAIrozpfYGNETIBQq4YiARZY8U0donmM
- Wsv5G5SmVyLVEmkaUlUYxPyUgjC/42pNYFmKtXeRZp6vKBNszmYUQb8dS40YE4YZlJtxO1X/Z
- fI+SD5NBwNu12TJPf2VooiHOQu2IO4a82iw8lWuAtUO9xaS9hxBhGaSCRY0yzeEvNmcsYFnui
- iqNgW1VbQVA8VNmsEqqITtuvTRhjd1QkRb3K/lx4g7NyqGl+JZUHMddYox53Rg7urNYhrDwl/
- E202a7zMCCcY0/77Iimc05AAeCpKX91biROdtP5pyj2darwK+hkA7bZHVljCYdzcbDXnTYxqz
- BmibnQ6j0RecRfwugTWjVWlwANmJzBjWQVAwgNCWZAjfEJLYaRI1+11KfYpLWvrhafYBYy85H
- zH6NgcTugO6t9xYzeoRcwOtK+oTNg0eyU9BoL8CjQjXtjci34zZzSLmKexN4LH/aLESBs9E2r
- 22ib2A6e5HpK/CVNPXsT08jbq8gebRqHPZfVcwnoPoMF8UXf1U=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEnQRZCqeJkRPEUYL3k8seuNusLZ6QpT-X-A7E20AMHSYcmaUA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 7:28 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Hi Will,
->
-> On Wed, Apr 15, 2020 at 05:52:11PM +0100, Will Deacon wrote:
-> > do_csum() over-reads the source buffer and therefore abuses
-> > READ_ONCE_NOCHECK() to avoid tripping up KASAN. In preparation for
-> > READ_ONCE_NOCHECK() becoming a macro, and therefore losing its
-> > '__no_sanitize_address' annotation, just annotate do_csum() explicitly
-> > and fall back to normal loads.
->
-> I'm confused by this. The whole point of READ_ONCE_NOCHECK() is that it
-> isn't checked by KASAN, so if that semantic is removed it has no reason
-> to exist.
->
-> Changing that will break the unwind/stacktrace code across multiple
-> architectures. IIRC they use READ_ONCE_NOCHECK() for two reasons:
->
-> 1. Races with concurrent modification, as might happen when a thread's
->    stack is corrupted. Allowing the unwinder to bail out after a sanity
->    check means the resulting report is more useful than a KASAN splat in
->    the unwinder. I made the arm64 unwinder robust to this case.
->
-> 2. I believe that the frame record itself /might/ be poisoned by KASAN,
->    since it's not meant to be an accessible object at the C langauge
->    level. I could be wrong about this, and would have to check.
+On Wed, Apr 15, 2020 at 09:04:43PM +0300, Daniel Baluta wrote:
+> On Tue, Mar 31, 2020 at 11:36 PM Matt Porter <mporter@konsulko.com> wrote:
+> >
+> > The peripheral type specified in the dma phandle for each SAI node
+> > is incorrect. Change it to specify the SAI peripheral.
+> >
+> > Signed-off-by: Matt Porter <mporter@konsulko.com>
+> 
+> Hi Matt,
+> 
+> Why do you think this is incorrect?  AFAIK script number 2 works fine
+> for SAI. Can you add
+> more details on what bug are you encountering?
+> 
+> Adding Robin the owner of SDMA.
 
-I thought the main reason was deadlocks when a READ_ONCE()
-is called inside of code that is part of the KASAN handling. If
-READ_ONCE() ends up recursively calling itself, the kernel
-tends to crash once it overflows its stack.
+Hi Daniel,
 
-> I would like to keep the unwinding robust in the first case, even if the
-> second case doesn't apply, and I'd prefer to not mark the entirety of
-> the unwinding code as unchecked as that's sufficiently large an subtle
-> that it could have nasty bugs.
->
-> Is there any way we keep something like READ_ONCE_NOCHECK() around even
-> if we have to give it reduced functionality relative to READ_ONCE()?
->
-> I'm not enirely sure why READ_ONCE_NOCHECK() had to go, so if there's a
-> particular pain point I'm happy to take a look.
+Thanks for the response. I was experiencing timeouts that were traced
+back to dma incompletions. Changing the script at the time fixed that
+issue. Now, given your response I went back and checked this again and
+verified that script 2 does work for me now. I did change firmware to
+the latest v4.4 from something quite old so now I'm suspecting I had
+bad firmware loaded up. Does that sound plausible? In any case, I can
+confirm this is not needed.
 
-As I understood, only this particular instance was removed, not all of them.
-
-         Arnd
+-Matt
