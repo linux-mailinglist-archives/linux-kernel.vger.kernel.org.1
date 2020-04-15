@@ -2,109 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9041AA26E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF33C1AA282
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370647AbgDOMyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:54:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897211AbgDOMyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:54:38 -0400
-Received: from pobox.suse.cz (prg-ext-pat.suse.com [213.151.95.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A43EA206D5;
-        Wed, 15 Apr 2020 12:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586955278;
-        bh=vkQZmf+zD+ArKC+EwWvdATC5JyOKWkdALl4rkDZGb2o=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=IiCKWJvZJ+CWEJub7UXbp6ayjiB1HAgLK3ioO6igV41b2KjhzPC389Qox0Z6Lro13
-         kMOfTzAWO/6kCzNZ2FNgsTFPrP8eFMRKu4aOWEXUItDHpH0c9hWJOlRuIpqVDQZ6a5
-         vwBhDtM+zIj4yr7fI0vfkBfeZztpU0tEthsFzseE=
-Date:   Wed, 15 Apr 2020 14:54:34 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Xiaojian Cao <xiaojian.cao@cn.alps.com>
-cc:     Artem Borisov <dedsa2002@gmail.com>,
-        Masaki Ota <masaki.ota@alpsalpine.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tetsuya Nomura <tetsuya.nomura@alpsalpine.com>,
-        "vadim@cirque.com" <vadim@cirque.com>,
-        "pod.alcht@cn.alps.com" <pod.alcht@cn.alps.com>
-Subject: RE: [PATCH 2/2] HID: alps: Refactor axis resolution logic
-In-Reply-To: <OSAPR01MB30571BF938FF882F7FB22853C8DB0@OSAPR01MB3057.jpnprd01.prod.outlook.com>
-Message-ID: <nycvar.YFH.7.76.2004151447330.19713@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2004100019450.19713@cbobk.fhfr.pm> <20200409230009.22551-1-dedsa2002@gmail.com> <TYAPR01MB3871E974EFE06EBF40074470ECDE0@TYAPR01MB3871.jpnprd01.prod.outlook.com> <OSAPR01MB3057C2FB967974B98B224610C8DE0@OSAPR01MB3057.jpnprd01.prod.outlook.com>
- <TYAPR01MB387100BC93864B0A93598BFBECDE0@TYAPR01MB3871.jpnprd01.prod.outlook.com> <OSAPR01MB3057C914C96A8DCC47925502C8DE0@OSAPR01MB3057.jpnprd01.prod.outlook.com> <CAMr=fxLXT2fMdhmnfj3ZH2Ptc50nvMVU0nAvW-3fw-wAKb9rYQ@mail.gmail.com>
- <OSAPR01MB305753C5B0DD35DE7001436DC8DB0@OSAPR01MB3057.jpnprd01.prod.outlook.com> <CAMr=fxKfJBWb45PuA-1t=-ZysyUVZZmXJH=D2bSacoh2akJ0Zw@mail.gmail.com> <OSAPR01MB30571BF938FF882F7FB22853C8DB0@OSAPR01MB3057.jpnprd01.prod.outlook.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S2505557AbgDOM4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2441352AbgDOM4U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:56:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA19C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:56:20 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOhaN-0005JG-O7; Wed, 15 Apr 2020 14:56:11 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOhaM-0004gK-PK; Wed, 15 Apr 2020 14:56:10 +0200
+Date:   Wed, 15 Apr 2020 14:56:10 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH v1] net: phy: tja11xx: add support for master-slave
+ configuration
+Message-ID: <20200415125610.mvvh3w6wtmeyhoxm@pengutronix.de>
+References: <20200415123447.29769-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7x4bdxuiyzqo4jrq"
+Content-Disposition: inline
+In-Reply-To: <20200415123447.29769-1-o.rempel@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:35:06 up 152 days,  3:53, 170 users,  load average: 0.07, 0.04,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020, Xiaojian Cao wrote:
 
-> Thanks for your checking, my feedbacks are as below:
->
-> 1.It is about the coding style that we should not use HWID in the string 
-> "HID_DEVICE_ID_ALPS_1657", there are a large number of HWIDs using this 
-> touchpad. We should use the device type information in this string, such 
-> as "U1_UNICORN_LEGACY".
+--7x4bdxuiyzqo4jrq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok, thanks for the feedback. Based on it, I am queuing the patch below.
+This is the followup patch to the:
+ethtool: provide UAPI for PHY master/slave configuration.
 
-HID_DEVICE_ID_ALPS_1657 PID is too specific, as there are many other
-ALPS hardware IDs using this particular touchpad.
+On Wed, Apr 15, 2020 at 02:34:47PM +0200, Oleksij Rempel wrote:
+> The TJA11xx PHYs have a vendor specific Master/Slave configuration bit,
+> which is not compatible with IEEE 803.2-2018 spec for 100Base-T1
+> devices. So, provide a custom config_ange call back to solve this
+> problem.
+>=20
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  drivers/net/phy/nxp-tja11xx.c | 39 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>=20
+> diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
+> index 2bde9386baf1f..0042ee453cbd4 100644
+> --- a/drivers/net/phy/nxp-tja11xx.c
+> +++ b/drivers/net/phy/nxp-tja11xx.c
+> @@ -30,6 +30,7 @@
+>  #define MII_ECTRL_WAKE_REQUEST		BIT(0)
+> =20
+>  #define MII_CFG1			18
+> +#define MII_CFG1_MASTER_SLAVE		BIT(15)
+>  #define MII_CFG1_AUTO_OP		BIT(14)
+>  #define MII_CFG1_SLEEP_CONFIRM		BIT(6)
+>  #define MII_CFG1_LED_MODE_MASK		GENMASK(5, 4)
+> @@ -177,6 +178,31 @@ static int tja11xx_soft_reset(struct phy_device *phy=
+dev)
+>  	return genphy_soft_reset(phydev);
+>  }
+> =20
+> +static int tja11xx_config_aneg(struct phy_device *phydev)
+> +{
+> +	u16 ctl =3D 0;
+> +	int ret;
+> +
+> +	switch (phydev->master_slave) {
+> +	case PORT_MODE_MASTER:
+> +		ctl |=3D MII_CFG1_MASTER_SLAVE;
+> +		break;
+> +	case PORT_MODE_SLAVE:
+> +		break;
+> +	case PORT_MODE_UNKNOWN:
+> +		return 0;
+> +	default:
+> +		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
+> +		return -ENOTSUPP;
+> +	}
+> +
+> +	ret =3D phy_modify_changed(phydev, MII_CFG1, MII_CFG1_MASTER_SLAVE, ctl=
+);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return __genphy_config_aneg(phydev, ret);
+> +}
+> +
+>  static int tja11xx_config_init(struct phy_device *phydev)
+>  {
+>  	int ret;
+> @@ -245,6 +271,15 @@ static int tja11xx_read_status(struct phy_device *ph=
+ydev)
+> =20
+>  		if (!(ret & MII_COMMSTAT_LINK_UP))
+>  			phydev->link =3D 0;
+> +
+> +		ret =3D phy_read(phydev, MII_CFG1);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		if (ret & MII_CFG1_MASTER_SLAVE)
+> +			phydev->master_slave =3D PORT_MODE_MASTER;
+> +		else
+> +			phydev->master_slave =3D PORT_MODE_SLAVE;
+>  	}
+> =20
+>  	return 0;
+> @@ -514,6 +549,7 @@ static struct phy_driver tja11xx_driver[] =3D {
+>  		.features       =3D PHY_BASIC_T1_FEATURES,
+>  		.probe		=3D tja11xx_probe,
+>  		.soft_reset	=3D tja11xx_soft_reset,
+> +		.config_aneg	=3D tja11xx_config_aneg,
+>  		.config_init	=3D tja11xx_config_init,
+>  		.read_status	=3D tja11xx_read_status,
+>  		.suspend	=3D genphy_suspend,
+> @@ -529,6 +565,7 @@ static struct phy_driver tja11xx_driver[] =3D {
+>  		.features       =3D PHY_BASIC_T1_FEATURES,
+>  		.probe		=3D tja11xx_probe,
+>  		.soft_reset	=3D tja11xx_soft_reset,
+> +		.config_aneg	=3D tja11xx_config_aneg,
+>  		.config_init	=3D tja11xx_config_init,
+>  		.read_status	=3D tja11xx_read_status,
+>  		.suspend	=3D genphy_suspend,
+> @@ -543,6 +580,7 @@ static struct phy_driver tja11xx_driver[] =3D {
+>  		.features       =3D PHY_BASIC_T1_FEATURES,
+>  		.probe		=3D tja1102_p0_probe,
+>  		.soft_reset	=3D tja11xx_soft_reset,
+> +		.config_aneg	=3D tja11xx_config_aneg,
+>  		.config_init	=3D tja11xx_config_init,
+>  		.read_status	=3D tja11xx_read_status,
+>  		.match_phy_device =3D tja1102_p0_match_phy_device,
+> @@ -561,6 +599,7 @@ static struct phy_driver tja11xx_driver[] =3D {
+>  		.features       =3D PHY_BASIC_T1_FEATURES,
+>  		/* currently no probe for Port 1 is need */
+>  		.soft_reset	=3D tja11xx_soft_reset,
+> +		.config_aneg	=3D tja11xx_config_aneg,
+>  		.config_init	=3D tja11xx_config_init,
+>  		.read_status	=3D tja11xx_read_status,
+>  		.match_phy_device =3D tja1102_p1_match_phy_device,
+> --=20
+> 2.26.0.rc2
+>=20
+>=20
 
-Rename the identifier to HID_DEVICE_ID_ALPS_U1_UNICORN_LEGACY in order
-to describe reality better.
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
-Fixes: 640e403b1fd24 ("HID: alps: Add AUI1657 device ID")
-Reported-by: Xiaojian Cao <xiaojian.cao@cn.alps.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
----
- drivers/hid/hid-alps.c | 2 +-
- drivers/hid/hid-ids.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--7x4bdxuiyzqo4jrq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index c2a2bd528890..b2ad319a74b9 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -802,7 +802,7 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		break;
- 	case HID_DEVICE_ID_ALPS_U1_DUAL:
- 	case HID_DEVICE_ID_ALPS_U1:
--	case HID_DEVICE_ID_ALPS_1657:
-+	case HID_DEVICE_ID_ALPS_U1_UNICORN_LEGACY:
- 		data->dev_type = U1;
- 		break;
- 	default:
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index e3e2fa6733fb..6eb25b9e8575 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -79,9 +79,9 @@
- #define HID_DEVICE_ID_ALPS_U1_DUAL_PTP	0x121F
- #define HID_DEVICE_ID_ALPS_U1_DUAL_3BTN_PTP	0x1220
- #define HID_DEVICE_ID_ALPS_U1		0x1215
-+#define HID_DEVICE_ID_ALPS_U1_UNICORN_LEGACY         0x121E
- #define HID_DEVICE_ID_ALPS_T4_BTNLESS	0x120C
- #define HID_DEVICE_ID_ALPS_1222		0x1222
--#define HID_DEVICE_ID_ALPS_1657         0x121E
- 
- #define USB_VENDOR_ID_AMI		0x046b
- #define USB_DEVICE_ID_AMI_VIRT_KEYBOARD_AND_MOUSE	0xff10
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6XBGYACgkQ4omh9DUa
+UbNzUA//UwFEBtzEZ+9QtuKnPlYbe4AVhh8p3NmgLDK/R14V3Qz/igkgEEjrS+Dt
+p5pLDegx/zBc1xeTy7XFDkRlB7tEb680VcOE/rlnfYSzZTe5GNVRabXcmrX49U60
+QtHCgw7Eox5VX9jfVY0ppyFN0g1DsxWVhSVYyx0i4+D9fky/h2zT1fiqW+LDfCbc
+dbDAppPRtLhB9gCRYFd+VfQTsXjt0qB8p83vWi1MesL1rQOgFjcPllPN2E26LlQJ
+MXrN5SbgVxL4TDgo7qksJoD+o+qk9UA9RKH+bGr1uvbGEl/8YnACJWtvHJbpqZ6K
+K1ChEx3e3hgEw3lsVUVjv0INAp2WWw7o8w5DaX41MJl3CWfxuYYegDz9Qu1L32PX
+zQZfqAgQg/H19K8O3PhnCfl09kpqUfqWdwiibp7MT89y+khwkyCYUjRVTlROrWyp
+OLdTTiDmlBqjA6e+NS1EVqJTfRk44Vf1JyMkAzNI03nDDiYSTa8p8o7rm2d2W4kB
+YBFwxM7xNFpoTkA6QNkwN+SdxInujnQfhfkzMRcE6FenGovvoONz/DY8NAra6iMQ
+xMC7KzYrNUEY065PTx6t6+QdHpBQ5h1KurS2cf8Z6ZZFbvR7wgwIVFy5VhcTzXZK
+7iG3FffqOyeNKLAr/Scmu8Uw0nZ/Dgb93Sv9EXJcxZa9Av8Gkks=
+=zqwc
+-----END PGP SIGNATURE-----
 
--- 
-Jiri Kosina
-SUSE Labs
-
+--7x4bdxuiyzqo4jrq--
