@@ -2,278 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0EA1A9F35
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216E11A9F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441207AbgDOMHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:07:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59302 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368081AbgDOMAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:00:20 -0400
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1jOgiF-0001JT-II
-        for linux-kernel@vger.kernel.org; Wed, 15 Apr 2020 12:00:15 +0000
-Received: by mail-wr1-f70.google.com with SMTP id s11so5576624wru.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:00:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=paWID5GD2CyHtrfzE8kDJuv1xktaMYYpgt4XAytthsQ=;
-        b=nuxAhJvVN3X9yYIE+M9D7JNv0V8Gv4c63f7uYvyeEWoaggC2lnsAH1+tRROa4JqlP5
-         g3ePbox54I1VW5FiYM8u7cWq3vjFfsXbqx6h3ncgtDxGc8UKMw6G+b03IstaK79BOq3/
-         /EJTFkZT/Etz3yw0d2KhdD5gJ7Xo46Mzcb3ciM5I/TLECZpwnnezL2idSO5lQLnbHKBI
-         zL8QeeA8g7gRhjVYIqDW+QRRDErRuZ7QxRq7x7s3scaZmvd37D18OnjcU5r5W3my11cV
-         G+aV+EBMdnq5DRq4hS4768C/ecTG63y2iB4BkrCo79Z79o9/GPT01x0HUNeE4nidHZWQ
-         6Uww==
-X-Gm-Message-State: AGi0PuZeQhHAXrep4NKf7ub+pVx/QHPXA7IAoZQzYckRJV+iP52IrPoA
-        bPm1tA+KXJ6qFItBC9h2si9IJYmhTAJb/0rGdcDGspFtbIrJOAzjk3gm4gDe/wDt8OZE9693kZ4
-        7a//3P1fF1AbwZA/wmcUufQzGuIv9UoV53lY3fq3I7A==
-X-Received: by 2002:a7b:cb86:: with SMTP id m6mr4645559wmi.64.1586952014943;
-        Wed, 15 Apr 2020 05:00:14 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI+GtDSfKHIATCf0SYiqXqrxk4H7vO6NBFCxqPV0D+73FYw8IcG1dmtruTj9oEfRm0BzkKZww==
-X-Received: by 2002:a7b:cb86:: with SMTP id m6mr4645529wmi.64.1586952014538;
-        Wed, 15 Apr 2020 05:00:14 -0700 (PDT)
-Received: from localhost (host123-127-dynamic.36-79-r.retail.telecomitalia.it. [79.36.127.123])
-        by smtp.gmail.com with ESMTPSA id q10sm19362170wrv.95.2020.04.15.05.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 05:00:13 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 14:00:11 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Anchal Agarwal <anchalag@amazon.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: swap: use fixed-size readahead during swapoff
-Message-ID: <20200415120011.GI810380@xps-13>
-References: <20200413111810.GA801367@xps-13>
- <87a73f7d71.fsf@yhuang-dev.intel.com>
- <20200413133150.GA810380@xps-13>
- <87wo6i6efn.fsf@yhuang-dev.intel.com>
- <20200414130520.GF810380@xps-13>
- <87v9m1zd83.fsf@yhuang-dev.intel.com>
- <20200415073239.GG810380@xps-13>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415073239.GG810380@xps-13>
+        id S2441231AbgDOMHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S368114AbgDOMAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:00:50 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8186120737;
+        Wed, 15 Apr 2020 12:00:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586952049;
+        bh=T8pZkTaDHImqwJ86Evn/kitbk35NPo627KNyM6vX0gI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mptKzifq+PHSnyWRuMEP8eVpvVICk394IDrONGAn8Ee8ZDXY7EYoee35akOJnVBIe
+         L0tfKKifvRBouewAIAOEkSQZ9pcAr0SiptUCu8LW5oWckKpL9TEDX7HPANyuJXCDhk
+         SpJjyRX0HwmT3r2q3L6liRw0TooblHJcDvjPqmDw=
+Date:   Wed, 15 Apr 2020 13:00:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
+        kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sgtl5000: Fix VAG power-on handling" to the asoc tree
+In-Reply-To:  <20200414181140.145825-1-sebastian.reichel@collabora.com>
+Message-Id:  <applied-20200414181140.145825-1-sebastian.reichel@collabora.com>
+X-Patchwork-Hint: ignore
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 09:32:47AM +0200, Andrea Righi wrote:
-> On Wed, Apr 15, 2020 at 10:37:00AM +0800, Huang, Ying wrote:
-> > Andrea Righi <andrea.righi@canonical.com> writes:
-> > 
-> > > On Tue, Apr 14, 2020 at 09:31:24AM +0800, Huang, Ying wrote:
-> > >> Andrea Righi <andrea.righi@canonical.com> writes:
-> > >> 
-> > >> > On Mon, Apr 13, 2020 at 09:00:34PM +0800, Huang, Ying wrote:
-> > >> >> Andrea Righi <andrea.righi@canonical.com> writes:
-> > >> >> 
-> > >> >> [snip]
-> > >> >> 
-> > >> >> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > >> >> > index ebed37bbf7a3..c71abc8df304 100644
-> > >> >> > --- a/mm/swap_state.c
-> > >> >> > +++ b/mm/swap_state.c
-> > >> >> > @@ -20,6 +20,7 @@
-> > >> >> >  #include <linux/migrate.h>
-> > >> >> >  #include <linux/vmalloc.h>
-> > >> >> >  #include <linux/swap_slots.h>
-> > >> >> > +#include <linux/oom.h>
-> > >> >> >  #include <linux/huge_mm.h>
-> > >> >> >  
-> > >> >> >  #include <asm/pgtable.h>
-> > >> >> > @@ -507,6 +508,14 @@ static unsigned long swapin_nr_pages(unsigned long offset)
-> > >> >> >  	max_pages = 1 << READ_ONCE(page_cluster);
-> > >> >> >  	if (max_pages <= 1)
-> > >> >> >  		return 1;
-> > >> >> > +	/*
-> > >> >> > +	 * If current task is using too much memory or swapoff is running
-> > >> >> > +	 * simply use the max readahead size. Since we likely want to load a
-> > >> >> > +	 * lot of pages back into memory, using a fixed-size max readhaead can
-> > >> >> > +	 * give better performance in this case.
-> > >> >> > +	 */
-> > >> >> > +	if (oom_task_origin(current))
-> > >> >> > +		return max_pages;
-> > >> >> >  
-> > >> >> >  	hits = atomic_xchg(&swapin_readahead_hits, 0);
-> > >> >> >  	pages = __swapin_nr_pages(prev_offset, offset, hits, max_pages,
-> > >> >> 
-> > >> >> Thinks this again.  If my understanding were correct, the accessing
-> > >> >> pattern during swapoff is sequential, why swap readahead doesn't work?
-> > >> >> If so, can you root cause that firstly?
-> > >> >
-> > >> > Theoretically if the pattern is sequential the current heuristic should
-> > >> > already select a big readahead size, but apparently it's not doing that.
-> > >> >
-> > >> > I'll repeat my tests tracing the readahead size during swapoff to see
-> > >> > exactly what's going on here.
-> > >> 
-> > >> I haven't verify it.  It may be helpful to call lookup_swap_cache()
-> > >> before swapin_readahead() in unuse_pte_range().  The theory behind it is
-> > >> to update the swap readahead statistics via lookup_swap_cache().
-> > >
-> > > I did more tests trying to collect some useful information.
-> > >
-> > > In particular I've been focusing at tracing the distribution of the
-> > > values returned by swapin_nr_pages() in different scenarios.
-> > >
-> > > To do so I made swapin_nr_pages() trace-able and I used the following
-> > > bcc command to measure the distrubution of the returned values:
-> > >
-> > >  # argdist-bpfcc -c -C 'r::swapin_nr_pages(unsigned long offset):unsigned long:$retval'
-> > >
-> > > I've collected this metric in the following scenarios:
-> > >   - 5.6 vanilla
-> > >   - 5.6 + lookup_swap_cache() before swapin_readahead() in
-> > >     unuse_pte_range()
-> > >   - 5.6 + atomic_inc(&swapin_readahead_hits) before swapin_readahead()
-> > >     in unuse_pte_range()
-> > >   - 5.6 + swapin_readahead_hits=last_readahead_pages (in the atomic way)
-> > >     before swapin_readahead() in unuse_pte_range()
-> > >
-> > > Each kernel has been tested both with swappiness=0 and swappiness=60.
-> > > Results are pretty much identical changing the swappiness, so I'm just
-> > > reporting the default case here (w/ swappiness=60).
-> > >
-> > > Result
-> > > ======
-> > >
-> > >  = swapoff performance (elapsed time) =
-> > >
-> > >  vanilla                 22.09s
-> > >  lookup_swap_cache()     23.87s
-> > >  hits++                  16.10s
-> > >  hits=last_ra_pages       8.81s
-> > >
-> > >  = swapin_nr_pages() $retval distribution =
-> > >
-> > > 5.6 vanilla:
-> > > r::swapin_nr_pages(unsigned long offset):unsigned long:$retval
-> > > 	COUNT      EVENT
-> > > 	36948      $retval = 8
-> > > 	44151      $retval = 4
-> > > 	49290      $retval = 1
-> > > 	527771     $retval = 2
-> > >
-> > > 5.6 lookup_swap_cache() before swapin_readahead():
-> > > r::swapin_nr_pages(unsigned long offset):unsigned long:$retval
-> > > 	COUNT      EVENT
-> > > 	13093      $retval = 1
-> > > 	56703      $retval = 8
-> > > 	123067     $retval = 2
-> > > 	366118     $retval = 4
-> > >
-> > > 5.6 atomic_inc(&swapin_readahead_hits) before swapin_readahead():
-> > > r::swapin_nr_pages(unsigned long offset):unsigned long:$retval
-> > > 	COUNT      EVENT
-> > > 	2589       $retval = 1
-> > > 	8016       $retval = 2
-> > > 	40021      $retval = 8
-> > > 	566038     $retval = 4
-> > >
-> > > 5.6 swapin_readahead_hits=last_readahead_pages before swapin_readahead():
-> > > r::swapin_nr_pages(unsigned long offset):unsigned long:$retval
-> > > 	COUNT      EVENT
-> > > 	785        $retval = 2
-> > > 	1072       $retval = 1
-> > > 	21844      $retval = 4
-> > > 	644168     $retval = 8
-> > >
-> > > In the vanilla case, the readahead heuristic seems to choose 2 pages
-> > > most of the time. This is because we are not properly considering the
-> > > hits (hits are always 0 in the swapoff code path) and, as you correctly
-> > > pointed out, we can fix this by calling lookup_swap_cache() in
-> > > unuse_pte_range() before calling swapin_readahead().
-> > >
-> > > With this change the distribution of the readahead size moves more
-> > > toward 4 pages, but we still have some 2s. That looks good, however it
-> > > doesn't seem to speed up swapoff very much... maybe because calling
-> > > lookup_swap_cache() introduces a small overhead? (still need to
-> > > investigate about this theory).
-> > >
-> > > In the next test I've tried to always increment hits by 1 before calling
-> > > swapin_readahead() in unuse_pte_range(). This is basically cheating,
-> > > because I'm faking the hit ratio, forcing the heuristic to use a larger
-> > > readahead size; in fact, the readahead size moves even more toward 4
-> > > pages and swapoff performance are a little better now.
-> > >
-> > > Pushing even more the "cheating" I can pretend that the previous
-> > > readahead was all hits (swapin_readahead_hits=last_readahead_pages), so
-> > > I'm forcing the heuristic to move toward the max size and keep using it.
-> > > The result here is pretty much identical to my fixed-size patch, because
-> > > swapin_nr_pages() returns the max readahead size pretty much all the
-> > > time during swapoff (8 pages or, more in general, vm.page-cluster).
-> > >
-> > > Personally I don't like very much forcing the heuristic in this way,
-> > > it'd be nice if it would just work by accounting the proper hit ratio
-> > > (so just by adding lookup_swap_cache() as you correctly suggested), but
-> > > this solution doesn't seem to improve performance in reality. For this
-> > > reason I still think we should consider the swapoff scenario like a
-> > > special one and somehow bypass the readahead heuristic and always return
-> > > the max readahead size.
-> > >
-> > > Looking at the hits of the previous step in the swapoff case just
-> > > doesn't work, because we may have some misses, but they will become hits
-> > > very soon, since we are reading all the swapped out pages back into
-> > > memory. This is why using the max readahead size gives better
-> > > swapoff performance.
-> > >
-> > > What do you think?
-> > 
-> > >From your description, it appears that you are using cluster readahead
-> > instead of vma readahead.  Can you verify this via,
-> > 
-> > # cat /sys/kernel/mm/swap/vma_ra_enabled
-> 
-> # cat /sys/kernel/mm/swap/vma_ra_enabled
-> true
-> 
-> However, it's still using the cluster readahead because I'm using a
-> swap file and nr_rotate_swap=1, so, according to the following, it's
-> never using the vma readahead:
-> 
->  static inline bool swap_use_vma_readahead(void)
->  {
->          return READ_ONCE(enable_vma_readahead) && !atomic_read(&nr_rotate_swap);
->  }
-> 
-> I'll investigate more on this, I think there's no reason to prevent the
-> usage of vma readahead if the underlying device is non-rotational.
+The patch
 
-Few more details about this.
+   ASoC: sgtl5000: Fix VAG power-on handling
 
-Even if I have vma_ra_enabled (in /sys/kernel/mm/swap/vma_ra_enabled) it
-looks like my virtio_blk device is considered rotational by default:
+has been applied to the asoc tree at
 
-$ cat /sys/block/vda/queue/rotational
-1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Therefore the vma readahead is not used. If I change this to
-"rotational" then the vma readahead is used; this is confirmed by the
-fact that swapin_nr_pages isn't called anymore:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-r::swapin_nr_pages(unsigned long offset):unsigned long:$retval
-	COUNT      EVENT
-	13         $retval = 1
-	18         $retval = 2
-	23         $retval = 4
-	29         $retval = 8
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-swapoff time: 16.44s
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-In terms of swapoff performance vma readahead works better than the
-vanilla cluster readahead (~21s), but the "improved" cluster readahead
-(with lookup_swap_cache() in unuse_pte_range()) still gives slightly
-better results (~12s).
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
--Andrea
+Thanks,
+Mark
+
+From aa7812737f2877e192d57626cbe8825cc7cf6de9 Mon Sep 17 00:00:00 2001
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+Date: Tue, 14 Apr 2020 20:11:40 +0200
+Subject: [PATCH] ASoC: sgtl5000: Fix VAG power-on handling
+
+As mentioned slightly out of patch context in the code, there
+is no reset routine for the chip. On boards where the chip is
+supplied by a fixed regulator, it might not even be resetted
+during (e.g. watchdog) reboot and can be in any state.
+
+If the device is probed with VAG enabled, the driver's probe
+routine will generate a loud pop sound when ANA_POWER is
+being programmed. Avoid this by properly disabling just the
+VAG bit and waiting the required power down time.
+
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Reviewed-by: Fabio Estevam <festivem@gmail.com>
+Link: https://lore.kernel.org/r/20200414181140.145825-1-sebastian.reichel@collabora.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/sgtl5000.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/sgtl5000.h |  1 +
+ 2 files changed, 35 insertions(+)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index d5130193b4a2..e8a8bf7b4ffe 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1653,6 +1653,40 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 		dev_err(&client->dev,
+ 			"Error %d initializing CHIP_CLK_CTRL\n", ret);
+ 
++	/* Mute everything to avoid pop from the following power-up */
++	ret = regmap_write(sgtl5000->regmap, SGTL5000_CHIP_ANA_CTRL,
++			   SGTL5000_CHIP_ANA_CTRL_DEFAULT);
++	if (ret) {
++		dev_err(&client->dev,
++			"Error %d muting outputs via CHIP_ANA_CTRL\n", ret);
++		goto disable_clk;
++	}
++
++	/*
++	 * If VAG is powered-on (e.g. from previous boot), it would be disabled
++	 * by the write to ANA_POWER in later steps of the probe code. This
++	 * may create a loud pop even with all outputs muted. The proper way
++	 * to circumvent this is disabling the bit first and waiting the proper
++	 * cool-down time.
++	 */
++	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ANA_POWER, &value);
++	if (ret) {
++		dev_err(&client->dev, "Failed to read ANA_POWER: %d\n", ret);
++		goto disable_clk;
++	}
++	if (value & SGTL5000_VAG_POWERUP) {
++		ret = regmap_update_bits(sgtl5000->regmap,
++					 SGTL5000_CHIP_ANA_POWER,
++					 SGTL5000_VAG_POWERUP,
++					 0);
++		if (ret) {
++			dev_err(&client->dev, "Error %d disabling VAG\n", ret);
++			goto disable_clk;
++		}
++
++		msleep(SGTL5000_VAG_POWERDOWN_DELAY);
++	}
++
+ 	/* Follow section 2.2.1.1 of AN3663 */
+ 	ana_pwr = SGTL5000_ANA_POWER_DEFAULT;
+ 	if (sgtl5000->num_supplies <= VDDD) {
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index a4bf4bca95bf..56ec5863f250 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -233,6 +233,7 @@
+ /*
+  * SGTL5000_CHIP_ANA_CTRL
+  */
++#define SGTL5000_CHIP_ANA_CTRL_DEFAULT		0x0133
+ #define SGTL5000_LINE_OUT_MUTE			0x0100
+ #define SGTL5000_HP_SEL_MASK			0x0040
+ #define SGTL5000_HP_SEL_SHIFT			6
+-- 
+2.20.1
+
