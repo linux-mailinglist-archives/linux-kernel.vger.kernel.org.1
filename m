@@ -2,177 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5851A924B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7641A926E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393254AbgDOFQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 01:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393245AbgDOFQU (ORCPT
+        id S2405070AbgDOFY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 01:24:57 -0400
+Received: from h1.fbrelay.privateemail.com ([131.153.2.42]:45201 "EHLO
+        h1.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389364AbgDOFYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 01:16:20 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB81C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:16:19 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id b13so2223411oti.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UETgjLgGy1I8D/vK9hQsvwfCTgzWUx9NFafEAQacD6E=;
-        b=F7vBBsb6EuShtNKrJqxknW9giKiJqe3/N8z/mYG48/aDXLbHF654CqZdbRpMn/wTGk
-         ejJd/XN9ME8sUsM+DYAMJSN6J6gxmdghDCpc08SJOmBnSltQS/zl4hn7obWjD9lPN+x2
-         cP4A0M5fBhyeKwlhk7aGqZejoaNgOX+6yHk6jpmCCUjRFI/OmbY0paA1ytezd6cvDw0F
-         ukkGdEX2xV2p649BOCB92WZAKdRP8FxBnzzD16p/dLzZSf3tby53qr79TCn95taktjUM
-         xj65E5akugViYZHtL83yL6vTDgQtLtz0xP6SW54QMximpjR33+0LPxCDniRUx35cfXz9
-         WIwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UETgjLgGy1I8D/vK9hQsvwfCTgzWUx9NFafEAQacD6E=;
-        b=CEPxnkto39LB8SFdSW5siH2Dm1Dmu55JIGRs+eDmRicwrYW2UWqLdwQHjqs0eKN1wp
-         UrpkWdLeNuUx19flty1g4GeWKUiKa7H+8+GGwOsPSA8DkrMbRKire6wgqyYstrBUFP6z
-         GfAzTNgHd3x9QbJ2rBP3yb7fMCoFzQew+wZHEKvAfKAzrXAQ6G27xHIWAVXK+Dp09N/l
-         FJgK8znnjNDtAitlgMqb4v4gB3x6wOetf9+UOm/ydylHgBMt+uJiRxU6KL0IpbOzkcuf
-         UTz4Iv5EIwirzhn0Q5RlW7dTej0rjsIuKTq8yBmszlSIeHZObDN91D22zTTWK/BDjRA1
-         mKdA==
-X-Gm-Message-State: AGi0PubXDC6VVGExOIGa1KHa1jTfAwVTh3WQx11kCbL8PF3CIYI/uFc0
-        M2gt0I36E5vrHRVrt5a3pYQxbCMpmIfLzvN0MsKTNA==
-X-Google-Smtp-Source: APiQypIty2GFH7AT8Ct4yPfxkBQyl5Hh92NEBt4okHCUEtJD5zk9q94TPKfT/jPH6jgTg/aMTeFvV2K62fwQy8Poqnk=
-X-Received: by 2002:a05:6830:22dc:: with SMTP id q28mr239826otc.221.1586927778029;
- Tue, 14 Apr 2020 22:16:18 -0700 (PDT)
+        Wed, 15 Apr 2020 01:24:45 -0400
+X-Greylist: delayed 467 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Apr 2020 01:24:44 EDT
+Received: from MTA-06-3.privateemail.com (mta-06.privateemail.com [68.65.122.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id E865680684
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:16:56 -0400 (EDT)
+Received: from MTA-06.privateemail.com (localhost [127.0.0.1])
+        by MTA-06.privateemail.com (Postfix) with ESMTP id 0DD256003F;
+        Wed, 15 Apr 2020 01:16:55 -0400 (EDT)
+Received: from APP-05 (unknown [10.20.147.155])
+        by MTA-06.privateemail.com (Postfix) with ESMTPA id DFD0F6003D;
+        Wed, 15 Apr 2020 05:16:54 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 00:16:54 -0500 (CDT)
+From:   Christopher M Riedl <cmr@informatik.wtf>
+Reply-To: Christopher M Riedl <cmr@informatik.wtf>
+To:     Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Message-ID: <581069710.188209.1586927814880@privateemail.com>
+In-Reply-To: <c88b13ede49744d81fdab32e037a7ae10f0b241f.1585233657.git.christophe.leroy@c-s.fr>
+References: <c88b13ede49744d81fdab32e037a7ae10f0b241f.1585233657.git.christophe.leroy@c-s.fr>
+Subject: Re: [RFC PATCH] powerpc/lib: Fixing use a temporary mm for code
+ patching
 MIME-Version: 1.0
-References: <20200414134629.54567-1-orjan.eide@arm.com> <20200414141849.55654-1-orjan.eide@arm.com>
- <20200414142810.GA958163@kroah.com> <20200414161114.GA1949@e123356-lin.trondheim.arm.com>
-In-Reply-To: <20200414161114.GA1949@e123356-lin.trondheim.arm.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 14 Apr 2020 22:16:06 -0700
-Message-ID: <CALAqxLVM1i+Cj29h+kGfurEN9gEMwnD-9n9H1o0B4wRukmJRQw@mail.gmail.com>
-Subject: Re: [PATCH] staging: android: ion: Skip sync if not mapped
-To:     =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, nd <nd@arm.com>,
-        Anders Pedersen <anders.pedersen@arm.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Darren Hart (VMware)" <dvhart@infradead.org>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.2-Rev24
+X-Originating-Client: open-xchange-appsuite
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 9:11 AM =C3=98rjan Eide <orjan.eide@arm.com> wrote:
->
-> On Tue, Apr 14, 2020 at 04:28:10PM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Apr 14, 2020 at 04:18:47PM +0200, =EF=BF=BDrjan Eide wrote:
-> > > Only sync the sg-list of an Ion dma-buf attachment when the attachmen=
-t
-> > > is actually mapped on the device.
-> > >
-> > > dma-bufs may be synced at any time. It can be reached from user space
-> > > via DMA_BUF_IOCTL_SYNC, so there are no guarantees from callers on wh=
-en
-> > > syncs may be attempted, and dma_buf_end_cpu_access() and
-> > > dma_buf_begin_cpu_access() may not be paired.
-> > >
-> > > Since the sg_list's dma_address isn't set up until the buffer is used
-> > > on the device, and dma_map_sg() is called on it, the dma_address will=
- be
-> > > NULL if sync is attempted on the dma-buf before it's mapped on a devi=
-ce.
-> > >
-> > > Before v5.0 (commit 55897af63091 ("dma-direct: merge swiotlb_dma_ops
-> > > into the dma_direct code")) this was a problem as the dma-api (at lea=
-st
-> > > the swiotlb_dma_ops on arm64) would use the potentially invalid
-> > > dma_address. How that failed depended on how the device handled physi=
-cal
-> > > address 0. If 0 was a valid address to physical ram, that page would =
-get
-> > > flushed a lot, while the actual pages in the buffer would not get syn=
-ced
-> > > correctly. While if 0 is an invalid physical address it may cause a
-> > > fault and trigger a crash.
-> > >
-> > > In v5.0 this was incidentally fixed by commit 55897af63091 ("dma-dire=
-ct:
-> > > merge swiotlb_dma_ops into the dma_direct code"), as this moved the
-> > > dma-api to use the page pointer in the sg_list, and (for Ion buffers =
-at
-> > > least) this will always be valid if the sg_list exists at all.
-> > >
-> > > But, this issue is re-introduced in v5.3 with
-> > > commit 449fa54d6815 ("dma-direct: correct the physical addr in
-> > > dma_direct_sync_sg_for_cpu/device") moves the dma-api back to the old
-> > > behaviour and picks the dma_address that may be invalid.
-> > >
-> > > dma-buf core doesn't ensure that the buffer is mapped on the device, =
-and
-> > > thus have a valid sg_list, before calling the exporter's
-> > > begin_cpu_access.
-> > >
-> > > Signed-off-by: =EF=BF=BDrjan Eide <orjan.eide@arm.com>
-> > > ---
-> > >  drivers/staging/android/ion/ion.c | 12 ++++++++++++
-> > >  1 file changed, 12 insertions(+)
-> > >
-> > > Resubmit without disclaimer, sorry about that.
-> > >
-> > > This seems to be part of a bigger issue where dma-buf exporters assum=
-e
-> > > that their dma-buf begin_cpu_access and end_cpu_access callbacks have=
- a
-> > > certain guaranteed behavior, which isn't ensured by dma-buf core.
-> > >
-> > > This patch fixes this in ion only, but it also needs to be fixed for
-> > > other exporters, either handled like this in each exporter, or in
-> > > dma-buf core before calling into the exporters.
-> > >
-> > > diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/andr=
-oid/ion/ion.c
-> > > index 38b51eace4f9..7b752ba0cb6d 100644
-> > > --- a/drivers/staging/android/ion/ion.c
-> > > +++ b/drivers/staging/android/ion/ion.c
-> >
-> > Now that we have the dma-buff stuff in the tree, do we even need the
-> > ion code in the kernel anymore?  Can't we delete it now?
->
-> It looks like the new dma-heaps have the same issue as ion. The
-> heap-helpers also do dma_sync_sg_for_device() unconditionally on
-> end_cpu_access which may happen before dma_map_sg(), leading to use of
-> the 0 dma_address in the sg list of a, yet unmapped, attachment.
+> On March 26, 2020 9:42 AM Christophe Leroy <christophe.leroy@c-s.fr> wrote:
+> 
+>  
+> This patch fixes the RFC series identified below.
+> It fixes three points:
+> - Failure with CONFIG_PPC_KUAP
+> - Failure to write do to lack of DIRTY bit set on the 8xx
+> - Inadequaly complex WARN post verification
+> 
+> However, it has an impact on the CPU load. Here is the time
+> needed on an 8xx to run the ftrace selftests without and
+> with this series:
+> - Without CONFIG_STRICT_KERNEL_RWX		==> 38 seconds
+> - With CONFIG_STRICT_KERNEL_RWX			==> 40 seconds
+> - With CONFIG_STRICT_KERNEL_RWX + this series	==> 43 seconds
+> 
+> Link: https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=166003
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> ---
+>  arch/powerpc/lib/code-patching.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
+> index f156132e8975..4ccff427592e 100644
+> --- a/arch/powerpc/lib/code-patching.c
+> +++ b/arch/powerpc/lib/code-patching.c
+> @@ -97,6 +97,7 @@ static int map_patch(const void *addr, struct patch_mapping *patch_mapping)
+>  	}
+>  
+>  	pte = mk_pte(page, pgprot);
+> +	pte = pte_mkdirty(pte);
+>  	set_pte_at(patching_mm, patching_addr, ptep, pte);
+>  
+>  	init_temp_mm(&patch_mapping->temp_mm, patching_mm);
+> @@ -168,7 +169,9 @@ static int do_patch_instruction(unsigned int *addr, unsigned int instr)
+>  			(offset_in_page((unsigned long)addr) /
+>  				sizeof(unsigned int));
+>  
+> +	allow_write_to_user(patch_addr, sizeof(instr));
+>  	__patch_instruction(addr, instr, patch_addr);
+> +	prevent_write_to_user(patch_addr, sizeof(instr));
+> 
 
-Yea, the dma-buf heaps code came from the ION logic, so it likely has
-the same faults.
+On radix we can map the page with PAGE_KERNEL protection which ends up
+setting EAA[0] in the radix PTE. This means the KUAP (AMR) protection is
+ignored (ISA v3.0b Fig. 35) since we are accessing the page from MSR[PR]=0.
 
-> It could be fixed in dma-heaps just like this patch does for ion. Is
-> patch a valid way to fix this problem? Or, should this rather be handled
-> in dma-buf core by tracking the mapped state of attachments there?
-
-In the short-term, I'd definitely prefer to have a fix to dmabuf heaps
-rather then ION, but I also agree that long term it probably shouldn't
-just be up to the dma-buf exporter (as there are other dmabuf
-exporters that may have it wrong too), and that we need to address
-some DMA API expectations/limitations to better handle multiple device
-pipelines. (I actually gave a talk last fall on some of the issues I
-see around it: https://youtu.be/UsEVoWD_o0c )
-
-thanks
--john
+Can we employ a similar approach on the 8xx? I would prefer *not* to wrap
+the __patch_instruction() with the allow_/prevent_write_to_user() KUAP things
+because this is a temporary kernel mapping which really isn't userspace in
+the usual sense.
+ 
+>  	err = unmap_patch(&patch_mapping);
+>  	if (err)
+> @@ -179,7 +182,7 @@ static int do_patch_instruction(unsigned int *addr, unsigned int instr)
+>  	 * think we just wrote.
+>  	 * XXX: BUG_ON() instead?
+>  	 */
+> -	WARN_ON(memcmp(addr, &instr, sizeof(instr)));
+> +	WARN_ON(*addr != instr);
+>  
+>  out:
+>  	local_irq_restore(flags);
+> -- 
+> 2.25.0
