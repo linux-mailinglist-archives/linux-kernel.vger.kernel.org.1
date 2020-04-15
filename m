@@ -2,97 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB531AB02C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A711AB033
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411553AbgDOR5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416558AbgDOR4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:56:19 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49D7D2166E;
-        Wed, 15 Apr 2020 17:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586973378;
-        bh=bLyVjyBmJbKAL3Fm3qC3ps5MjTLMjQ1npgysr5LECXk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cq4Ksm0zwVGQX5DiGjXvx3qgi1igzSH5czEdg2A/Ooh3k5f/+n6s93v6nZR/BSzOf
-         SdILea+FRADo1FcVRO8+V9jixW0oPKfxfMzApWeq5F8kk4svuPemXecqcoURfONude
-         8seBbgFjEXOCxEkZML2Xjo1obUOK+r7EGqUiWXro=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH tip/core/rcu 6/6] rcutorture: Add test of holding scheduler locks across rcu_read_unlock()
-Date:   Wed, 15 Apr 2020 10:56:14 -0700
-Message-Id: <20200415175614.10837-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200415175543.GA10416@paulmck-ThinkPad-P72>
-References: <20200415175543.GA10416@paulmck-ThinkPad-P72>
+        id S2411602AbgDOR6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2411585AbgDOR6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:58:37 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BBEC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:58:35 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b11so990825wrs.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eFD9x/dSIEUfzCFoJjNZCqEIi04lcE4fTMcXRLYjFdQ=;
+        b=jDEpO4Og/WRkRTpK1nmwq1px2vFNMlBEtptiPkL96YTLJ050YqOkFOPf9usax5ANAh
+         xV6KeqcFaQNlqslIEYoTxVae8J0WndPH2ei++qxgBOp4kQ8ToTUfu0uJl4CnPUkWYr6V
+         zAKaiuJjM/9pHxrWdtsaRMYUTQJp+VrXTedMgIjG6Vc8OEZH9LOm3UAitO9HK6d1BaKb
+         gmtVZ6oyd2SH10s3IPcBygZDd21frfRvOL0g0CS4Y1tuoGQsWRB8Vm6OfM1vk1pSpPni
+         VQbWex0Hj/oiGB1J+/LLGJaGmIWYBL+n1zRL1DcwbjIgfARa52/tnDZSkMmu6nhYX8vr
+         RtuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eFD9x/dSIEUfzCFoJjNZCqEIi04lcE4fTMcXRLYjFdQ=;
+        b=M7d8eemzOWDWks7ftMnXy80WICLvAj2nLLHnfLlwEh/ZJWbeY5TIVEdbUAItPN38H/
+         VlIEm/Ev7xJmzwGKjh0W9iGgeJRMXl1XGv6CyCQ7XJh6qXznpM2F6tu8ruz0Uk8VUx+o
+         3XNIVaMBlhWrbzSyd/Uolw5NZ3q1NbC7XGJvU7KJh6Ep5p+SnA+Ji13NcZmtqvzUfE6i
+         EbB1owN7CGehcvMVyEEIPFRjGVCHKU61ONkSaBT4M4mLkFwkxKyKQWqwqQXuDE4DOXST
+         96nEi7Acvd9wDaVnDf+TqbdcagrIPb5Xyxv8+/WRYyuBoMxejA2e5pHPOBDUQ7LTFCS/
+         uqGg==
+X-Gm-Message-State: AGi0PuYo44cIoTKrdVOJ6vekv0+bW/fcwanedzyt8gNl9diqeTUyhhxc
+        Fg+1ox2a6HxVutiM2XQYtHCZHg==
+X-Google-Smtp-Source: APiQypJRVMbsZUt1VUZjyJjcdO/01wBJZiCKW205scfSnwvwm9kAMmQF1elImRzaPco/pydl8EAUQw==
+X-Received: by 2002:adf:fa03:: with SMTP id m3mr18227322wrr.68.1586973514021;
+        Wed, 15 Apr 2020 10:58:34 -0700 (PDT)
+Received: from google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id v16sm354492wml.30.2020.04.15.10.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 10:58:32 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 19:58:25 +0200
+From:   Marco Elver <elver@google.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     brendanhiggins@google.com, frowand.list@gmail.com,
+        gregkh@linuxfoundation.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v8 kunit-next 1/4] kunit: add debugfs
+ /sys/kernel/debug/kunit/<suite>/results display
+Message-ID: <20200415175825.GA79987@google.com>
+References: <1585232710-322-1-git-send-email-alan.maguire@oracle.com>
+ <1585232710-322-2-git-send-email-alan.maguire@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1585232710-322-2-git-send-email-alan.maguire@oracle.com>
+User-Agent: Mutt/1.13.2 (2019-12-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hello,
 
-Now that it should be safe to hold scheduler locks across
-rcu_read_unlock(), even in cases where the corresponding RCU read-side
-critical section might have been preempted and boosted, the commit adds
-a test of this capability to rcutorture.  This has been tested on current
-mainline (which can deadlock in this situation), and lockdep duly reported
-the expected deadlock.  On -rcu, lockdep is silent, thus far, anyway.
+On Thu, 26 Mar 2020, Alan Maguire wrote:
 
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcutorture.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+> add debugfs support for displaying kunit test suite results; this is
+> especially useful for module-loaded tests to allow disentangling of
+> test result display from other dmesg events.  debugfs support is
+> provided if CONFIG_KUNIT_DEBUGFS=y.
+> 
+> As well as printk()ing messages, we append them to a per-test log.
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Frank Rowand <frank.rowand@sony.com>
+> ---
+>  include/kunit/test.h   |  54 +++++++++++++++---
+>  lib/kunit/Kconfig      |   8 +++
+>  lib/kunit/Makefile     |   4 ++
+>  lib/kunit/debugfs.c    | 116 ++++++++++++++++++++++++++++++++++++++
+>  lib/kunit/debugfs.h    |  30 ++++++++++
+>  lib/kunit/kunit-test.c |   4 +-
+>  lib/kunit/test.c       | 147 ++++++++++++++++++++++++++++++++++++++-----------
+>  7 files changed, 322 insertions(+), 41 deletions(-)
+>  create mode 100644 lib/kunit/debugfs.c
+>  create mode 100644 lib/kunit/debugfs.h
+> 
+[...]
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 9242f93..a3fa21f 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+[...]
+> -static void kunit_print_ok_not_ok(bool should_indent,
+> +static void kunit_print_ok_not_ok(void *test_or_suite,
+> +				  bool is_test,
+>  				  bool is_ok,
+>  				  size_t test_number,
+>  				  const char *description)
+>  {
+> -	const char *indent, *ok_not_ok;
+> -
+> -	if (should_indent)
+> -		indent = "\t";
+> -	else
+> -		indent = "";
+> +	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
+> +	struct kunit *test = is_test ? test_or_suite : NULL;
+>  
+> -	if (is_ok)
+> -		ok_not_ok = "ok";
+> +	/*
+> +	 * We do not log the test suite results as doing so would
+> +	 * mean debugfs display would consist of the test suite
+> +	 * description and status prior to individual test results.
+> +	 * Hence directly printk the suite status, and we will
+> +	 * separately seq_printf() the suite status for the debugfs
+> +	 * representation.
+> +	 */
+> +	if (suite)
+> +		pr_info("%s %zd - %s",
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 5453bd5..b348cf8 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1147,6 +1147,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 				  struct torture_random_state *trsp,
- 				  struct rt_read_seg *rtrsp)
- {
-+	unsigned long flags;
- 	int idxnew = -1;
- 	int idxold = *readstate;
- 	int statesnew = ~*readstate & newstate;
-@@ -1181,8 +1182,15 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_SCHED)
- 		rcu_read_unlock_sched();
--	if (statesold & RCUTORTURE_RDR_RCU)
-+	if (statesold & RCUTORTURE_RDR_RCU) {
-+		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
-+
-+		if (lockit)
-+			raw_spin_lock_irqsave(&current->pi_lock, flags);
- 		cur_ops->readunlock(idxold >> RCUTORTURE_RDR_SHIFT);
-+		if (lockit)
-+			raw_spin_unlock_irqrestore(&current->pi_lock, flags);
-+	}
- 
- 	/* Delay if neither beginning nor end and there was a change. */
- 	if ((statesnew || statesold) && *readstate && newstate)
--- 
-2.9.5
+I think this is missing '\n' -- is this intentional?
 
+With v5.7-rc1, when I run a test via module, the final "ok" is only
+printed once another message is printed to the kernel log (which can
+take a while).
+
+Thanks,
+-- Marco
+
+> +			kunit_status_to_string(is_ok),
+> +			test_number, description);
+>  	else
+> -		ok_not_ok = "not ok";
+> -
+> -	pr_info("%s%s %zd - %s\n", indent, ok_not_ok, test_number, description);
+> +		kunit_log(KERN_INFO, test, "\t%s %zd - %s",
+> +			  kunit_status_to_string(is_ok),
+> +			  test_number, description);
+>  }
+[...]
