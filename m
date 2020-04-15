@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC6F1AAB12
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1232E1AAB17
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371135AbgDOO4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:56:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57046 "EHLO mga07.intel.com"
+        id S371175AbgDOO4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:56:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42692 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S371082AbgDOOzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:55:47 -0400
-IronPort-SDR: h+BuQwEpK5baNWeggaqlnSKMgZi+JTbcQjfO9KstNc9BPanuBF084AjqaMeU9ErlJ8YHfdoJyQ
- 8uk/n+ea5AxA==
+        id S371095AbgDOOzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:55:52 -0400
+IronPort-SDR: 3xL3wAuJ140/u/8yEDyljI74ygBkNAxXAJl41mQLg2DvRpz0JmNtNevcc4lXL9xsLqkwmtG86n
+ HXLM4QOoxUaA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 07:55:46 -0700
-IronPort-SDR: YMknequTHuJ5gH68ECaixFGpOMMezScX1cOg6clpO32nbcExs4hTQ4Xg3yuSJmGIjUAvkSYi3S
- ouYhENvLTylA==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 07:55:46 -0700
+IronPort-SDR: nzBlDhgxLA/Vu41w8tUzhGXWrxA3Og/z70ebDgo7iz/xKPtB3kUMt5eQYwDOi7R1LzXF6yRba0
+ na6mea+rQMPg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="454934621"
+   d="scan'208";a="245709874"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 07:55:43 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 07:55:44 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 58DB8C4E; Wed, 15 Apr 2020 17:55:40 +0300 (EEST)
+        id 61499CA1; Wed, 15 Apr 2020 17:55:40 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH v4 6/9] x86/quirks: Add a DMI quirk for Microsoft Surface 3
-Date:   Wed, 15 Apr 2020 17:55:21 +0300
-Message-Id: <20200415145524.31745-7-andriy.shevchenko@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 7/9] platform/x86: surface3_wmi: Switch DMI table match to a test of variable
+Date:   Wed, 15 Apr 2020 17:55:22 +0300
+Message-Id: <20200415145524.31745-8-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
 References: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
@@ -50,66 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a DMI quirk for Microsoft Surface 3 which will be utilized by few drivers.
+Since we have a common x86 quirk that provides an exported variable,
+use it instead of local DMI table match.
 
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Jie Yang <yang.jie@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/x86/kernel/quirks.c                  | 10 ++++++++++
- include/linux/platform_data/x86/machine.h |  5 +++++
- 2 files changed, 15 insertions(+)
+ drivers/platform/x86/surface3-wmi.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/kernel/quirks.c b/arch/x86/kernel/quirks.c
-index a97055599bb7..b4a3aa9c3f48 100644
---- a/arch/x86/kernel/quirks.c
-+++ b/arch/x86/kernel/quirks.c
-@@ -658,6 +658,9 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x2083, quirk_intel_purley_xeon_ras
- bool x86_apple_machine;
- EXPORT_SYMBOL(x86_apple_machine);
+diff --git a/drivers/platform/x86/surface3-wmi.c b/drivers/platform/x86/surface3-wmi.c
+index 130b6f52a600..5eeedc4ddb8a 100644
+--- a/drivers/platform/x86/surface3-wmi.c
++++ b/drivers/platform/x86/surface3-wmi.c
+@@ -11,9 +11,9 @@
+ #include <linux/slab.h>
  
-+bool x86_microsoft_surface_3_machine;
-+EXPORT_SYMBOL(x86_microsoft_surface_3_machine);
-+
- static const struct dmi_system_id x86_machine_table[] __initconst = {
- 	{
- 		.ident = "x86 Apple Macintosh",
-@@ -673,6 +676,13 @@ static const struct dmi_system_id x86_machine_table[] __initconst = {
- 		},
- 		.driver_data = &x86_apple_machine,
- 	},
-+	{
-+		.ident = "Microsoft Surface 3",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
-+		},
-+		.driver_data = &x86_microsoft_surface_3_machine,
-+	},
- 	{}
- };
+ #include <linux/acpi.h>
+-#include <linux/dmi.h>
+ #include <linux/input.h>
+ #include <linux/mutex.h>
++#include <linux/platform_data/x86/machine.h>
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
  
-diff --git a/include/linux/platform_data/x86/machine.h b/include/linux/platform_data/x86/machine.h
-index b1e7a560a046..9bdf5a06b490 100644
---- a/include/linux/platform_data/x86/machine.h
-+++ b/include/linux/platform_data/x86/machine.h
-@@ -8,8 +8,13 @@
-  * x86_apple_machine - whether the machine is an x86 Apple Macintosh
-  */
- extern bool x86_apple_machine;
-+/**
-+ * x86_microsoft_surface_3_machine - whether the machine is Microsoft Surface 3
-+ */
-+extern bool x86_microsoft_surface_3_machine;
- #else
- #define x86_apple_machine			false
-+#define x86_microsoft_surface_3_machine		false
- #endif
+@@ -29,18 +29,6 @@ MODULE_LICENSE("GPL");
  
- #endif	/* PLATFORM_DATA_X86_MACHINE_H */
+ MODULE_ALIAS("wmi:" SURFACE3_LID_GUID);
+ 
+-static const struct dmi_system_id surface3_dmi_table[] = {
+-#if defined(CONFIG_X86)
+-	{
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
+-		},
+-	},
+-#endif
+-	{ }
+-};
+-
+ struct surface3_wmi {
+ 	struct acpi_device *touchscreen_adev;
+ 	struct acpi_device *pnp0c0d_adev;
+@@ -201,7 +189,7 @@ static int __init s3_wmi_probe(struct platform_device *pdev)
+ {
+ 	int error;
+ 
+-	if (!dmi_check_system(surface3_dmi_table))
++	if (!x86_microsoft_surface_3_machine)
+ 		return -ENODEV;
+ 
+ 	memset(&s3_wmi, 0, sizeof(s3_wmi));
 -- 
 2.25.1
 
