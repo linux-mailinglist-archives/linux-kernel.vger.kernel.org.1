@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF621A926F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5AD1A9284
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407356AbgDOF1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 01:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
+        id S2393312AbgDOF37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 01:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389364AbgDOF1O (ORCPT
+        by vger.kernel.org with ESMTP id S2393297AbgDOF3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 01:27:14 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C05C061A0C;
-        Tue, 14 Apr 2020 22:27:13 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b62so16018960qkf.6;
-        Tue, 14 Apr 2020 22:27:13 -0700 (PDT)
+        Wed, 15 Apr 2020 01:29:52 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49367C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:29:52 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d24so838808pll.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:29:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ct0hBuohHuHlRfoGecOViSQANLKNyL7v3AAbn8mtpmI=;
-        b=bi9PW74S2tR6/OEmNB3G6K5L+UoHkLnJybBMMNSv1RBtGZEM6EOe8FC7uyksNsYrGE
-         ytL62J4Efm00kGtcTP/YRdgQD1P3sI7xkHRzsbNwNobA19+SpaKpxc+K8yf+roTmOKXo
-         Tj9iM3DZsJQglNjLKO8q/TFauvei+8QVy12+mWTYA1h3RVgyVpFQ7jaq3XsB+zihYIPv
-         b9J87QCNy5OddX6h6qY74gMOxgjMS/m3snoIMoNzA25FconMtwYsKkBeCm8MQGWx19Q9
-         VouscXGisUU8EsyHuT5Dx1meDV6TUnrrI8+dZXaj0CH7iE1TSAgnXLJ/A6dWoB5XJVWA
-         bHZQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/bCc4iQ4ygRBodRsuGfneSy5bdVh5uMBWmu99paXEno=;
+        b=Owej7V6OMCrpnkVdNDH45+VRMCzggv9PZDNxoxyfd0vzd/FWpLRMmiMKhdL5Kp939E
+         WJKBDOXAp7ALWNeF4i2q83sKdAGlbG4m1Tv4PYkc68w/0C25nki2cbdVT2BOuBwA7i52
+         daknjaEWNAB5lmzrP3E3QkFnDMB4SEPP2jH5U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ct0hBuohHuHlRfoGecOViSQANLKNyL7v3AAbn8mtpmI=;
-        b=FW7HeEs4XS60uQsAVQrfvHZ1aU42S6m4demD5D7r6XB3DT31NlkidWR3OnuP0sXSPc
-         cEFiYC/8SQs/cDU90B4SdKJSbo4VeRTM40rpY2rRFy9LmpTR3DyxxIuT+qisjqY7rfpf
-         k2YBiF2WR0b8r2L779sEevIyDnL9eotKPNLE1rJ4dy5GwRw9QKRwmLDoOD4CmV/N8tRp
-         KqkUUHwhXkcWwCXOjW8gHHZbk9c7SsdHYrm43NahLxNG23rUKtO+7445GRj6xIBj0iqx
-         V1JcZZuGT+xchfQAv5a1dG88ncNrIGQkgaLNw9631CIWYUOwDbgBeqPk9b9oX1kcsitD
-         m3wg==
-X-Gm-Message-State: AGi0Pua/8dIYKNQyzU6iaSK3SJgQkB/8QlBxvj8LVRpxHJm9ssgFUvP+
-        2ppD2YWUwU98rY5lR7uMQK/n7tkRCDV2RTgrjurFEaB0pR0=
-X-Google-Smtp-Source: APiQypKssePFI6UhQtg8SF7PbNhoguf9oD2a6cXt10K44wIbpgtLtWPSB9ygg60X1uxamG9sttyTJ7xnQTqaNq+RebA=
-X-Received: by 2002:a37:84c7:: with SMTP id g190mr24227289qkd.335.1586928432947;
- Tue, 14 Apr 2020 22:27:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/bCc4iQ4ygRBodRsuGfneSy5bdVh5uMBWmu99paXEno=;
+        b=PjRX3+Jpb8P5xFUed85VC4CiFOWVMwOZkBqdS5gGMqycef5ihbZyyvzPdRxROJqQ7t
+         j42PV8khhumXdspG2kTjp5JBCrO6tTcw7sPGXZn3EZV0obVpRocQIcx1Zq7J2wZzUWrw
+         HRFqZAokG+YRFfOENurDscwEICt5QYqzK3seSNWCSopEKbBsVn0LP57f8Ez/ckmfWgAT
+         l//yIEd4fh+b+u1wpcQrw7THKslRfckYO+R47YNx3g5SgWVuXNvzDElNXSLQ/5U8L22F
+         pwFtH/fdOVDgBRuOeg6gmSkFnJhdgupAU339Ovx4EFu4dPCkWK/uC1XgFQO/0/scGSwv
+         sAvA==
+X-Gm-Message-State: AGi0PuZEx9pFjpEtWLVc9gkF7wst0JljWKLl/OUROvyaM4aMM/tU5tkB
+        obGZ7jA0eZMnXTJ5pQP69mRboiReIjA=
+X-Google-Smtp-Source: APiQypL7Cjvm4TwUw1nrSMgkAQIjoA8Z4kY+4SsYt6oJZBxQT+GKCsxwrPd/Qqcj45W6PPh8eIytyw==
+X-Received: by 2002:a17:90a:a602:: with SMTP id c2mr4149088pjq.135.1586928591174;
+        Tue, 14 Apr 2020 22:29:51 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id p1sm13314213pjr.40.2020.04.14.22.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 22:29:50 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v4 0/3] platform/chrome: typec: Add port partner registration
+Date:   Tue, 14 Apr 2020 22:29:40 -0700
+Message-Id: <20200415052943.93009-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 MIME-Version: 1.0
-References: <20200415012320.236065-1-jcargill@google.com> <20200415023726.GD12547@linux.intel.com>
- <20200415025105.GE12547@linux.intel.com>
-In-Reply-To: <20200415025105.GE12547@linux.intel.com>
-From:   Eric Northup <digitaleric@gmail.com>
-Date:   Tue, 14 Apr 2020 22:27:01 -0700
-Message-ID: <CAPC9edWgcrC+mc1pQSYmJjPs17VZ-Af1LJ+s6PaeY=9fPA89NQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] KVM: pass through CPUID(0x80000006)
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jon Cargille <jcargill@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Northup <digitaleric@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 7:51 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Tue, Apr 14, 2020 at 07:37:26PM -0700, Sean Christopherson wrote:
-> > On Tue, Apr 14, 2020 at 06:23:20PM -0700, Jon Cargille wrote:
-> > > From: Eric Northup <digitaleric@gmail.com>
-> > >
-> > > Return L2 cache and TLB information to guests.
-> > > They could have been set before, but the defaults that KVM returns will be
-> > > necessary for usermode that doesn't supply their own CPUID tables.
-> >
-> > I don't follow the changelog.  The code makes sense, but I don't understand
-> > the justification.  This only affects KVM_GET_SUPPORTED_CPUID, i.e. what's
-> > advertised to userspace, it doesn't directly change CPUID emulation in any
-> > way.  The "They could have been set before" blurb is especially confusing.
-> >
-> > I assume you want to say something like:
-> >
-> >   Return the host's L2 cache and TLB information for CPUID.0x80000006
-> >   instead of zeroing out the entry as part of KVM_GET_SUPPORTED_CPUID.
-> >   This allows a userspace VMM to feed KVM_GET_SUPPORTED_CPUID's output
-> >   directly into KVM_SET_CPUID2 (without breaking the guest).
+The following series adds port-partner registration when
+connects/disconnects are detected. In order to do that, we also register
+a listener for the cros-usbpd-notifier, which will inform the driver of
+EC PD events. While we are here, separate out the Type C port data
+objects into a separate struct.
 
-This is a much better commit message, thanks.
+v3: https://lkml.org/lkml/2020/4/9/868
+v2: https://lkml.org/lkml/2020/4/9/861
+v1: https://lkml.org/lkml/2020/4/6/1155
 
-> >
-> > > Signed-off-by: Eric Northup <digitaleric@google.com>
-> > > Signed-off-by: Eric Northup <digitaleric@gmail.com>
-> > > Signed-off-by: Jon Cargille <jcargill@google.com>
-> > > Signed-off-by: Jim Mattson <jmattson@google.com>
-> >
-> > Jim's tag is unnecessary, unless he was a middleman between Eric and Jon,
-> > in which case Jim's tag should also come between Eric's and Jon's.
-> >
-> > Only one of Eric's signoffs is needed (the one that matches the From: tag,
-> > i.e. is the official author).  I'm guessing Google would prefer the author
-> > to be the @google.com address.
->
-> Ah, Eric's @google.com mail bounced.  Maybe do:
->
->   Signed-off-by: Eric Northup (Google) <digitaleric@gmail.com>
->
-> to clarify the work was done for Google without having a double signoff
-> and/or a dead email.
+Changes in v4:
+- Modified typec_register_partner() error check.
 
-That works for me. Thanks for upstreaming these patches Jon!
+Prashant Malani (3):
+  platform/chrome: typec: Use notifier for updates
+  platform/chrome: typec: Add struct for port data
+  platform/chrome: typec: Register port partner
+
+ drivers/platform/chrome/Kconfig         |   1 +
+ drivers/platform/chrome/cros_ec_typec.c | 119 ++++++++++++++++++++----
+ 2 files changed, 103 insertions(+), 17 deletions(-)
+
+-- 
+2.26.0.110.g2183baf09c-goog
+
