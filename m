@@ -2,165 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958841AB155
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0DA1AB158
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437567AbgDOTNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416866AbgDOStu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:49:50 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DDAE216FD;
-        Wed, 15 Apr 2020 18:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586976589;
-        bh=+77x5whDjRYIYIEKhtra1cHGuZpcH2tP4qOEZzeVFjk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x3TNoJls4hPhoOA4VxCdJLgSEqj8lkqqE9plTnfW0oxubJrkZBcZC5Dx8+QLa59Zm
-         LzpD/qAWSQCOMjBgmJHwaUiqekedwXymBtBui2/SO45AM/RYoos31z6ji09wNjADOR
-         hTqbxoYfFdym3SDvSzR0PX0BCyLpa9sITAuGQY/U=
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH lkmm tip/core/rcu 10/10] Documentation/litmus-tests/atomic: Add a test for smp_mb__after_atomic()
-Date:   Wed, 15 Apr 2020 11:49:45 -0700
-Message-Id: <20200415184945.16487-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200415183343.GA12265@paulmck-ThinkPad-P72>
-References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+        id S2437690AbgDOTNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1416873AbgDOSwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:52:36 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF50AC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:52:34 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id r25so4549409oij.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HgEoSFcUV1M/U5BJXOCbG1aWzhtQRjBhec3N1YxGLos=;
+        b=YpKdtU5+G5xdjFrN2oWUZKfYKJmRiTbTja7HdZ0DJLwb8VMJQlOTMlImR15gB/ZCVs
+         dkQXl9glCmv6KBLGknTowh86MUzIeVOqHmsE9D5sVjllDc611/fa5RFwIKVoqWJMtf9F
+         E48a4op9FB5NrhmF9IOZ7ZegKjczyKmMtGO0xhKXrVOc49+2mLv9VobHd285exEO4W+L
+         E4SbXGoU+msFaoUljhEy3j7qX6adyRG72GHo4qYsAkGeXj/CRIdjS+GZ6ficbZiiy3Nl
+         2E/d19RuHqA5LvDG94i/Aa58vm0ctSHrSTgrbxs40jSXdOBYK7uAflVglp5n8gC4RqHW
+         9thg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HgEoSFcUV1M/U5BJXOCbG1aWzhtQRjBhec3N1YxGLos=;
+        b=njH3+pZclGBVSs5Q7blKXU7tlulkfQN2KDWuO8Fwao6c5ES47ogia5E0m3kP0/4hW4
+         M+wHoJZ6J3oBlHlsLv2xm5Y8hxABlBVAa9voo7YXD5xsxVBFnloajjypoMJTy7asqYQe
+         oMO+xy3U6ODsQr4teQwlaTFbj5I7uWAR0jdkAzt4mi7/1TpuY61sQzFjS4lqKooxOTqs
+         DLVK6IBg/dbQhKMz4NMX+v3wh87Zk0ggqUkusotD2NX1f1aYUCmKc9EKw6ooH9k6t1SN
+         rnmAS0+j0gIIR8iyJwjtv/UfVkdL/vV/qv/W9vqikENjjfjAQZPUeZkqMGorvF3FIloU
+         //DQ==
+X-Gm-Message-State: AGi0PuaB9vyx9UCDrcn8oKSQ+2otD4cUwNNYhAINbZpk6/JOy61f3O9y
+        nTjEY7XY7Hst6PewsmOoqbEPfOCo4HxXMZUxtOw=
+X-Google-Smtp-Source: APiQypLKD51rssA/9iLGwpuMRSWyKatV2Hi5naKCQkdp8lntBt44rX87YsdJvxh5WolKAHkSn646s6uoN2dkxFTEDQs=
+X-Received: by 2002:a05:6808:992:: with SMTP id a18mr526776oic.142.1586976754133;
+ Wed, 15 Apr 2020 11:52:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <0000000000007523a60576e80a47@google.com> <0000000000008a279405955ffd35@google.com>
+In-Reply-To: <0000000000008a279405955ffd35@google.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 15 Apr 2020 11:52:22 -0700
+Message-ID: <CAM_iQpXw8UfR9=fAspibACedOpb6SCJiL5c3=07Rmr=FpxZg-w@mail.gmail.com>
+Subject: Re: BUG: MAX_LOCKDEP_CHAINS too low!
+To:     syzbot <syzbot+aaa6fa4949cc5d9b7b25@syzkaller.appspotmail.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will.deacon@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
-
-We already use a litmus test in atomic_t.txt to describe atomic RMW +
-smp_mb__after_atomic() is stronger than acquire (both the read and the
-write parts are ordered). So make it a litmus test in atomic-tests
-directory, so that people can access the litmus easily.
-
-Additionally, change the processor numbers "P1, P2" to "P0, P1" in
-atomic_t.txt for the consistency with the processor numbers in the
-litmus test, which herd can handle.
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Acked-by: Andrea Parri <parri.andrea@gmail.com>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/atomic_t.txt                         | 10 +++----
- ...b__after_atomic-is-stronger-than-acquire.litmus | 32 ++++++++++++++++++++++
- Documentation/litmus-tests/atomic/README           |  5 ++++
- 3 files changed, 42 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/litmus-tests/atomic/Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
-
-diff --git a/Documentation/atomic_t.txt b/Documentation/atomic_t.txt
-index 67d1d99f..0f1fded 100644
---- a/Documentation/atomic_t.txt
-+++ b/Documentation/atomic_t.txt
-@@ -233,19 +233,19 @@ as well. Similarly, something like:
- is an ACQUIRE pattern (though very much not typical), but again the barrier is
- strictly stronger than ACQUIRE. As illustrated:
- 
--  C strong-acquire
-+  C Atomic-RMW+mb__after_atomic-is-stronger-than-acquire
- 
-   {
-   }
- 
--  P1(int *x, atomic_t *y)
-+  P0(int *x, atomic_t *y)
-   {
-     r0 = READ_ONCE(*x);
-     smp_rmb();
-     r1 = atomic_read(y);
-   }
- 
--  P2(int *x, atomic_t *y)
-+  P1(int *x, atomic_t *y)
-   {
-     atomic_inc(y);
-     smp_mb__after_atomic();
-@@ -253,14 +253,14 @@ strictly stronger than ACQUIRE. As illustrated:
-   }
- 
-   exists
--  (r0=1 /\ r1=0)
-+  (0:r0=1 /\ 0:r1=0)
- 
- This should not happen; but a hypothetical atomic_inc_acquire() --
- (void)atomic_fetch_inc_acquire() for instance -- would allow the outcome,
- because it would not order the W part of the RMW against the following
- WRITE_ONCE.  Thus:
- 
--  P1			P2
-+  P0			P1
- 
- 			t = LL.acq *y (0)
- 			t++;
-diff --git a/Documentation/litmus-tests/atomic/Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus b/Documentation/litmus-tests/atomic/Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
-new file mode 100644
-index 0000000..9a8e31a
---- /dev/null
-+++ b/Documentation/litmus-tests/atomic/Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
-@@ -0,0 +1,32 @@
-+C Atomic-RMW+mb__after_atomic-is-stronger-than-acquire
-+
-+(*
-+ * Result: Never
-+ *
-+ * Test that an atomic RMW followed by a smp_mb__after_atomic() is
-+ * stronger than a normal acquire: both the read and write parts of
-+ * the RMW are ordered before the subsequential memory accesses.
-+ *)
-+
-+{
-+}
-+
-+P0(int *x, atomic_t *y)
-+{
-+	int r0;
-+	int r1;
-+
-+	r0 = READ_ONCE(*x);
-+	smp_rmb();
-+	r1 = atomic_read(y);
-+}
-+
-+P1(int *x, atomic_t *y)
-+{
-+	atomic_inc(y);
-+	smp_mb__after_atomic();
-+	WRITE_ONCE(*x, 1);
-+}
-+
-+exists
-+(0:r0=1 /\ 0:r1=0)
-diff --git a/Documentation/litmus-tests/atomic/README b/Documentation/litmus-tests/atomic/README
-index a1b7241..714cf93 100644
---- a/Documentation/litmus-tests/atomic/README
-+++ b/Documentation/litmus-tests/atomic/README
-@@ -7,5 +7,10 @@ tools/memory-model/README.
- LITMUS TESTS
- ============
- 
-+Atomic-RMW+mb__after_atomic-is-stronger-than-acquire
-+	Test that an atomic RMW followed by a smp_mb__after_atomic() is
-+	stronger than a normal acquire: both the read and write parts of
-+	the RMW are ordered before the subsequential memory accesses.
-+
- Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
- 	Test that atomic_set() cannot break the atomicity of atomic RMWs.
--- 
-2.9.5
-
+#syz test: https://github.com/congwang/linux.git lockdep
