@@ -2,133 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0890E1AAF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5881AAF27
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416453AbgDORMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:12:36 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:56942 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416415AbgDORMQ (ORCPT
+        id S2410695AbgDORKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:10:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53974 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406230AbgDORKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:12:16 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jOla5-0004e6-JQ; Wed, 15 Apr 2020 11:12:09 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jOla3-0001gx-82; Wed, 15 Apr 2020 11:12:09 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net
-References: <20200415113445.11881-1-sashal@kernel.org>
-        <20200415113445.11881-68-sashal@kernel.org>
-Date:   Wed, 15 Apr 2020 12:09:08 -0500
-In-Reply-To: <20200415113445.11881-68-sashal@kernel.org> (Sasha Levin's
-        message of "Wed, 15 Apr 2020 07:33:43 -0400")
-Message-ID: <87h7xkisln.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 15 Apr 2020 13:10:22 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03FH31Nu070056;
+        Wed, 15 Apr 2020 13:10:17 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30dnmutvcb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 13:10:17 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03FH36iB070295;
+        Wed, 15 Apr 2020 13:10:16 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30dnmutvby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 13:10:16 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03FH7uBv019345;
+        Wed, 15 Apr 2020 17:10:15 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04wdc.us.ibm.com with ESMTP id 30b5h6ueq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 17:10:15 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03FHACnI61473156
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Apr 2020 17:10:12 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C225BE05F;
+        Wed, 15 Apr 2020 17:10:12 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C7DCBE051;
+        Wed, 15 Apr 2020 17:10:11 +0000 (GMT)
+Received: from cpe-172-100-172-46.stny.res.rr.com (unknown [9.85.131.104])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Apr 2020 17:10:10 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Subject: Re: [PATCH v7 03/15] s390/zcrypt: driver callback to indicate
+ resource in use
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pmorel@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
+References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
+ <20200407192015.19887-4-akrowiak@linux.ibm.com>
+ <20200414145851.562867ae.cohuck@redhat.com>
+Message-ID: <35d8c3cb-78bb-8f84-41d8-c6e59d201ba0@linux.ibm.com>
+Date:   Wed, 15 Apr 2020 13:10:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jOla3-0001gx-82;;;mid=<87h7xkisln.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+wxNH2X5oEIwUT5tCdku1C684p3kocAA0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3063]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Sasha Levin <sashal@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1971 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 9 (0.5%), b_tie_ro: 8 (0.4%), parse: 0.81 (0.0%),
-        extract_message_metadata: 25 (1.3%), get_uri_detail_list: 2.2 (0.1%),
-        tests_pri_-1000: 46 (2.3%), tests_pri_-950: 1.24 (0.1%),
-        tests_pri_-900: 1.02 (0.1%), tests_pri_-90: 78 (4.0%), check_bayes: 76
-        (3.8%), b_tokenize: 8 (0.4%), b_tok_get_all: 7 (0.4%), b_comp_prob:
-        2.4 (0.1%), b_tok_touch_all: 54 (2.8%), b_finish: 0.86 (0.0%),
-        tests_pri_0: 295 (15.0%), check_dkim_signature: 0.49 (0.0%),
-        check_dkim_adsp: 2.4 (0.1%), poll_dns_idle: 1497 (76.0%),
-        tests_pri_10: 2.1 (0.1%), tests_pri_500: 1509 (76.6%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH AUTOSEL 5.6 068/129] slcan: Don't transmit uninitialized stack data in padding
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <20200414145851.562867ae.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-15_06:2020-04-14,2020-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 suspectscore=3 bulkscore=0 malwarescore=0
+ phishscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004150124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-How does this differ from Greg's backports of this patches?
 
-Sasha Levin <sashal@kernel.org> writes:
+On 4/14/20 8:58 AM, Cornelia Huck wrote:
+> On Tue,  7 Apr 2020 15:20:03 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> Introduces a new driver callback to prevent a root user from unbinding
+>> an AP queue from its device driver if the queue is in use. The intent of
+>> this callback is to provide a driver with the means to prevent a root user
+>> from inadvertently taking a queue away from a guest and giving it to the
+>> host while the guest is still using it. The callback will
+>> be invoked whenever a change to the AP bus's sysfs apmask or aqmask
+>> attributes would result in one or more AP queues being removed from its
+>> driver. If the callback responds in the affirmative for any driver
+>> queried, the change to the apmask or aqmask will be rejected with a device
+>> in use error.
+>>
+>> For this patch, only non-default drivers will be queried. Currently,
+>> there is only one non-default driver, the vfio_ap device driver. The
+>> vfio_ap device driver manages AP queues passed through to one or more
+>> guests and we don't want to unexpectedly take AP resources away from
+>> guests which are most likely independently administered.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/ap_bus.c | 144 +++++++++++++++++++++++++++++++++--
+>>   drivers/s390/crypto/ap_bus.h |   4 +
+>>   2 files changed, 142 insertions(+), 6 deletions(-)
+> (...)
+>
+>> @@ -1196,12 +1202,75 @@ static ssize_t apmask_show(struct bus_type *bus, char *buf)
+>>   	return rc;
+>>   }
+>>   
+>> +int __verify_card_reservations(struct device_driver *drv, void *data)
+>> +{
+>> +	int rc = 0;
+>> +	struct ap_driver *ap_drv = to_ap_drv(drv);
+>> +	unsigned long *newapm = (unsigned long *)data;
+>> +
+>> +	/*
+>> +	 * If the reserved bits do not identify cards reserved for use by the
+>> +	 * non-default driver, there is no need to verify the driver is using
+>> +	 * the queues.
+> I had to read that one several times... what about
+> "No need to verify whether the driver is using the queues if it is the
+> default driver."
+>
+> ?
 
-> From: Richard Palethorpe <rpalethorpe@suse.com>
+Sure, that's better.
+
 >
-> [ Upstream commit b9258a2cece4ec1f020715fe3554bc2e360f6264 ]
+>> +	 */
+>> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
+>> +		return 0;
+>> +
+>> +	/* The non-default driver's module must be loaded */
+>> +	if (!try_module_get(drv->owner))
+>> +		return 0;
+> Is that really needed? I would have thought that the driver core's
+> klist usage would make sure that the callback would not be invoked for
+> drivers that are not registered anymore. Or am I missing a window?
 >
-> struct can_frame contains some padding which is not explicitly zeroed in
-> slc_bump. This uninitialized data will then be transmitted if the stack
-> initialization hardening feature is not enabled (CONFIG_INIT_STACK_ALL).
+>> +
+>> +	if (ap_drv->in_use)
+>> +		if (ap_drv->in_use(newapm, ap_perms.aqm))
+> Can we log the offending apm somewhere, preferably with additional info
+> that allows the admin to figure out why an error was returned?
+
+One of the things on my TODO list is to add logging to the vfio_ap
+module which will track all significant activity within the device
+driver. I plan to do that with a patch or set of patches specifically
+put together for that purpose. Having said that, the best place to
+log this would be in the in_use callback in the vfio_ap device driver
+(see next patch) where the APQNs that are in use can be identified.
+For now, I will log a message to the dmesg log indicating which
+APQNs are in use by the matrix mdev.
+
 >
-> This commit just zeroes the whole struct including the padding.
+>> +			rc = -EADDRINUSE;
+>> +
+>> +	module_put(drv->owner);
+>> +
+>> +	return rc;
+>> +}
+> (Same comments for the other changes further along in this patch.)
 >
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Fixes: a1044e36e457 ("can: add slcan driver for serial/USB-serial CAN adapters")
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: security@kernel.org
-> Cc: wg@grandegger.com
-> Cc: mkl@pengutronix.de
-> Cc: davem@davemloft.net
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/net/can/slcan.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-> index a3664281a33fc..4dfa459ef5c73 100644
-> --- a/drivers/net/can/slcan.c
-> +++ b/drivers/net/can/slcan.c
-> @@ -148,7 +148,7 @@ static void slc_bump(struct slcan *sl)
->  	u32 tmpid;
->  	char *cmd = sl->rbuff;
->  
-> -	cf.can_id = 0;
-> +	memset(&cf, 0, sizeof(cf));
->  
->  	switch (*cmd) {
->  	case 'r':
-> @@ -187,8 +187,6 @@ static void slc_bump(struct slcan *sl)
->  	else
->  		return;
->  
-> -	*(u64 *) (&cf.data) = 0; /* clear payload */
-> -
->  	/* RTR frames may have a dlc > 0 but they never have any data bytes */
->  	if (!(cf.can_id & CAN_RTR_FLAG)) {
->  		for (i = 0; i < cf.can_dlc; i++) {
+
