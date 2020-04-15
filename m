@@ -2,125 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8E61A9864
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A5A1A9868
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408390AbgDOJUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:20:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54967 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895317AbgDOJTw (ORCPT
+        id S2895350AbgDOJUc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Apr 2020 05:20:32 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38102 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895325AbgDOJUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:19:52 -0400
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1jOeD0-0006T8-PL
-        for linux-kernel@vger.kernel.org; Wed, 15 Apr 2020 09:19:50 +0000
-Received: by mail-wr1-f72.google.com with SMTP id m5so7141812wru.15
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:19:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hJDx2/Ye85WrB55AQggZQs08fhv4a4xuGB8LKsw6eUc=;
-        b=n1Vu0549MAm2KAXygRpbubp0/gO4yLioSSvg4qyYEXphX4egWn0YSDTJ3OxaURICsn
-         7ZBEs6vu0tKH83Wgl2+AI7skmuWS4VMU/8Ozn//QPhtDYXYExrzQRHH3yL4yxNOPu22y
-         Sm5VqpmP2+SrIlAvi144/JFcrPF5POWujX/i85HWozRugWj7gJSqjFPmHTv6FozZoQU1
-         0LG2zs6EWXBDlPKAmilvEOiU6SHVJY2kwiahefpYyExvJ1/Gx80yYpfo4D7CD2v9eE0B
-         q5pOPGfU94y5a6stjAV7SiGq5/uYljHlFuhfs668XzIeHQcFTMfSZMiUJaAkyuliHtXt
-         Iklg==
-X-Gm-Message-State: AGi0PuZrLMY6M3mq5+zq3cGIUaC4aubUZ+i0IElbvacmzQGdqVqqf3N/
-        bzWX3Vr9hsYPJm4LhMnBracUGF0UuhRqyfTrLoi1Zpyimru/yNNjF40wP9XTXbNpKDvOWcv7Gj7
-        Vxh/qT5OeOxnQNMMd1t4OhlBwKH38L6EpOr/4HZX4QQ==
-X-Received: by 2002:a5d:53c4:: with SMTP id a4mr26991560wrw.47.1586942390435;
-        Wed, 15 Apr 2020 02:19:50 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK7iUWDzwMIf51BDDe6l9FVw8BQAkj/x+gwYLCQ0szj/ZD5wHQVdUC1pshF2WFlzkQLQaq12Q==
-X-Received: by 2002:a5d:53c4:: with SMTP id a4mr26991543wrw.47.1586942390161;
-        Wed, 15 Apr 2020 02:19:50 -0700 (PDT)
-Received: from localhost (host123-127-dynamic.36-79-r.retail.telecomitalia.it. [79.36.127.123])
-        by smtp.gmail.com with ESMTPSA id j124sm21831962wmb.25.2020.04.15.02.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 02:19:49 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 11:19:48 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Anchal Agarwal <anchalag@amazon.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: swap: use fixed-size readahead during swapoff
-Message-ID: <20200415091948.GH810380@xps-13>
-References: <20200413111810.GA801367@xps-13>
- <87a73f7d71.fsf@yhuang-dev.intel.com>
- <20200413133150.GA810380@xps-13>
- <87wo6i6efn.fsf@yhuang-dev.intel.com>
- <20200414130520.GF810380@xps-13>
- <87v9m1zd83.fsf@yhuang-dev.intel.com>
- <20200415073239.GG810380@xps-13>
- <87imi1yz07.fsf@yhuang-dev.intel.com>
+        Wed, 15 Apr 2020 05:20:01 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03F93JlN034841
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:20:01 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30dnutpk3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:20:01 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 15 Apr 2020 09:20:00 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.47.46) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 15 Apr 2020 09:19:53 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020041509195289-258098 ;
+          Wed, 15 Apr 2020 09:19:52 +0000 
+In-Reply-To: <1586939949-69856-1-git-send-email-xiyuyang19@fudan.edu.cn>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Xiyu Yang" <xiyuyang19@fudan.edu.cn>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        kjlu@umn.edu, "Xin Tan" <tanxin.ctf@gmail.com>
+Date:   Wed, 15 Apr 2020 09:19:52 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87imi1yz07.fsf@yhuang-dev.intel.com>
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <1586939949-69856-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP64 March 05, 2020 at 12:58
+X-KeepSent: 71AC5E77:84B4E5A4-0025854B:003341FF;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 39343
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20041509-3017-0000-0000-0000029572CC
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000163
+X-IBM-SpamModules-Versions: BY=3.00012915; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000293; SDB=6.01362717; UDB=6.00727583; IPR=6.01145084;
+ MB=3.00031710; MTD=3.00000008; XFM=3.00000015; UTC=2020-04-15 09:19:58
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-04-15 06:42:08 - 6.00011244
+x-cbparentid: 20041509-3018-0000-0000-0000DD917875
+Message-Id: <OF71AC5E77.84B4E5A4-ON0025854B.003341FF-0025854B.00334209@notes.na.collabserv.com>
+Subject: Re:  [PATCH] RDMA/siw: Fix potential siw_mem refcnt leak in nr_add_node
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-15_01:2020-04-14,2020-04-15 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 03:44:08PM +0800, Huang, Ying wrote:
-> Andrea Righi <andrea.righi@canonical.com> writes:
+-----linux-rdma-owner@vger.kernel.org wrote: -----
+
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
+><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>,
+>linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+>From: "Xiyu Yang" 
+>Sent by: linux-rdma-owner@vger.kernel.org
+>Date: 04/15/2020 10:46AM
+>Cc: yuanxzhang@fudan.edu.cn, kjlu@umn.edu, "Xiyu Yang"
+><xiyuyang19@fudan.edu.cn>, "Xin Tan" <tanxin.ctf@gmail.com>
+>Subject: [EXTERNAL] [PATCH] RDMA/siw: Fix potential siw_mem refcnt
+>leak in nr_add_node
+>
+>siw_fastreg_mr() invokes siw_mem_id2obj(), which returns a local
+>reference of the siw_mem object to "mem" with increased refcnt.
+>When siw_fastreg_mr() returns, "mem" becomes invalid, so the refcount
+>should be decreased to keep refcount balanced.
+>
+>The issue happens in one error path of siw_fastreg_mr(). When
+>"base_mr"
+>equals to NULL but "mem" is not NULL, the function forgets to
+>decrease
+>the refcnt increased by siw_mem_id2obj() and causes a refcnt leak.
+>
+>Fix this issue by calling siw_mem_put() on this error path when mem
+>is
+>not NULL.
+>
+>Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+>Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+>---
+> drivers/infiniband/sw/siw/siw_qp_tx.c | 2 ++
+> 1 file changed, 2 insertions(+)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>index ae92c8080967..86044a44b83b 100644
+>--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>@@ -926,6 +926,8 @@ static int siw_fastreg_mr(struct ib_pd *pd,
+>struct siw_sqe *sqe)
+> 	siw_dbg_pd(pd, "STag 0x%08x\n", sqe->rkey);
 > 
-> >  mm/swapfile.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 9fd47e6f7a86..cb9eb517178d 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -1944,7 +1944,9 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
-> >  		vmf.pmd = pmd;
-> >  		last_ra = atomic_read(&last_readahead_pages);
-> >  		atomic_set(&swapin_readahead_hits, last_ra);
-> 
-> You need to remove the above 2 lines firstly.
+> 	if (unlikely(!mem || !base_mr)) {
+>+		if (mem)
+>+			siw_mem_put(mem);
+> 		pr_warn("siw: fastreg: STag 0x%08x unknown\n", sqe->rkey);
+> 		return -EINVAL;
+> 	}
+>-- 
 
-Meh... too much enthusiasm, and I definitely need more coffee this
-morning. Here's the right patch applied:
+I agree - thanks for the fix!
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 5871a2aa86a5..8b38441b66fa 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1940,7 +1940,9 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 		vmf.vma = vma;
- 		vmf.address = addr;
- 		vmf.pmd = pmd;
--		page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, &vmf);
-+		page = lookup_swap_cache(entry, vma, addr);
-+		if (!page)
-+			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, &vmf);
- 		if (!page) {
- 			if (*swap_map == 0 || *swap_map == SWAP_MAP_BAD)
- 				goto try_next;
 
-And following the right results:
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
 
-r::swapin_nr_pages(unsigned long offset):unsigned long:$retval
-	COUNT      EVENT
-	1618       $retval = 1
-	4960       $retval = 2
-	41315      $retval = 4
-	103521     $retval = 8
-
-swapoff time: 12.19s
-
-So, not as good as the fixed-size readahead, but it's definitely an
-improvement, considering that the swapoff time is ~22s without this
-patch applied.
-
-I think this change can be a simple and reasonable compromise.
-
-Thanks again and sorry for the noise,
--Andrea
