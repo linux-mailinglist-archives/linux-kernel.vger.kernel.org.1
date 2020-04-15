@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC391A9F70
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BA01A9F8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368602AbgDOMLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:11:55 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:41649 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441259AbgDOMIU (ORCPT
+        id S368671AbgDOMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:14:21 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57638 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S368585AbgDOMLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:08:20 -0400
-X-Originating-IP: 2.224.242.101
-Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4300420009;
-        Wed, 15 Apr 2020 12:08:10 +0000 (UTC)
-Date:   Wed, 15 Apr 2020 14:11:14 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Luis Oliveira <lolivei@synopsys.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Michael Rodin <mrodin@de.adit-jv.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        Todor Tomov <todor.tomov@linaro.org>,
-        Suresh Udipi <sudipi@jp.adit-jv.com>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.org>
-Subject: Re: [PATCH 1/4] media: ov5647: Add set_fmt and get_fmt calls.
-Message-ID: <20200415121114.2bfe6lqjy57p2xlb@uno.localdomain>
-References: <cover.1586759968.git.roman.kovalivskyi@globallogic.com>
- <8a4c0d157d26251c9916b32866e6a4a91c023ef9.1586759968.git.roman.kovalivskyi@globallogic.com>
+        Wed, 15 Apr 2020 08:11:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586952703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3g8pOUWTOZg7Xu60Mt7A1x/Ov3i7r+YKQXs6UW5HczM=;
+        b=TX9vN7M8wNoXIs7b+mTp3O3Z9lnzjwOo1Xiwi3SZaKfKRIsjpaVzCOd9YxUDg0fU6W+cJz
+        MQLhQNH6pdXyEoDJeWQXgNKU8VHWuh/HhzgKBjjnxQgzpyPc/zgHv00rfCVksQNlAgeTWa
+        FvdOAyg02kAzRpNnQswwPBo9xJKqnko=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-4jfSZbonPua50qWsx4nm7Q-1; Wed, 15 Apr 2020 08:11:39 -0400
+X-MC-Unique: 4jfSZbonPua50qWsx4nm7Q-1
+Received: by mail-wm1-f69.google.com with SMTP id t62so5684568wma.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:11:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3g8pOUWTOZg7Xu60Mt7A1x/Ov3i7r+YKQXs6UW5HczM=;
+        b=bHryk+4XbDWnmFGOmttAHJFbGPC7TtoX3IDDHj/T0pFAb9kY60Bw0hQq/IYWyZklGF
+         +5X4f1J0Oed7a14cPx48hYkQdTjvC0iWQRZsWkMB83JYgqJEGrsDCKLeM+KOJRCpvA/i
+         WZhMJA8hOltrR3gjfw7PE/+/MWS6hcyh7yB9N9yG/eU4yphdiIs7vsVUUhEQhSRj1dOz
+         bEzaszcbenWBoqeB0unves4k7o0SRVfLv3Li8f+S6oHuHFmAzTSbSZLJu/UtfPtA4iKe
+         gs8lGBBL87Yv/UoBC/K1VaeXs8BeGULYAEpdAd4/F+K2EwAFp1bEyoHD19qIRw+0oBEY
+         BWnQ==
+X-Gm-Message-State: AGi0PuYGNmKqC0CUBtwrd41q8syhURKKScq6ov65Pqlw1xpK72BMWHnY
+        /ECWutKDixardeILZHwQaqpzOvG/O1cpykJfbf1kzWlZpm8bDJdRGkyRLlk3FzVX1p+dvChvW/e
+        Pky/gKNkZlAaRqi1eM+SfQhOj
+X-Received: by 2002:a5d:688f:: with SMTP id h15mr29234455wru.352.1586952698403;
+        Wed, 15 Apr 2020 05:11:38 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKdWpo7ENEPbDqHP93vSXvdpZwuSMQZ1BbP1xfwyNZcod/63Icpez1n6CuR5oR+nIQbYmcMPw==
+X-Received: by 2002:a5d:688f:: with SMTP id h15mr29234435wru.352.1586952698180;
+        Wed, 15 Apr 2020 05:11:38 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9066:4f2:9fbd:f90e? ([2001:b07:6468:f312:9066:4f2:9fbd:f90e])
+        by smtp.gmail.com with ESMTPSA id q8sm22064722wmg.22.2020.04.15.05.11.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 05:11:37 -0700 (PDT)
+Subject: Re: [PATCH 3/4] kvm: Replace vcpu->swait with rcuwait
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     tglx@linutronix.de, bigeasy@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, torvalds@linux-foundation.org,
+        will@kernel.org, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paul Mackerras <paulus@ozlabs.org>,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20200324044453.15733-1-dave@stgolabs.net>
+ <20200324044453.15733-4-dave@stgolabs.net>
+ <a6b23828-aa50-bea0-1d2d-03e2871239d4@redhat.com>
+ <20200414211243.7vehybdrvbzmbduu@linux-p48b>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b2f87633-8eef-4f84-5e65-a80523ca34f8@redhat.com>
+Date:   Wed, 15 Apr 2020 14:11:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8a4c0d157d26251c9916b32866e6a4a91c023ef9.1586759968.git.roman.kovalivskyi@globallogic.com>
+In-Reply-To: <20200414211243.7vehybdrvbzmbduu@linux-p48b>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Roman,
+On 14/04/20 23:12, Davidlohr Bueso wrote:
+> On Wed, 25 Mar 2020, Paolo Bonzini wrote:
+> 
+>> On 24/03/20 05:44, Davidlohr Bueso wrote:
+>>> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+>>> index 71244bf87c3a..e049fcb3dffb 100644
+>>> --- a/arch/mips/kvm/mips.c
+>>> +++ b/arch/mips/kvm/mips.c
+>>> @@ -290,8 +290,7 @@ static enum hrtimer_restart
+>>> kvm_mips_comparecount_wakeup(struct hrtimer *timer)
+>>>     kvm_mips_callbacks->queue_timer_int(vcpu);
+>>>
+>>>     vcpu->arch.wait = 0;
+>>> -    if (swq_has_sleeper(&vcpu->wq))
+>>> -        swake_up_one(&vcpu->wq);
+>>> +    rcuwait_wake_up(&vcpu->wait)
+>>
+>> This is missing a semicolon.  (KVM MIPS is known not to compile and will
+>> be changed to "depends on BROKEN" in 5.7).
+> 
+> Do you want me to send another version with this fix or do you prefer
+> fixing it when/if picked up?
 
-On Mon, Apr 13, 2020 at 12:17:44PM +0300, Roman Kovalivskyi wrote:
-> From: Dave Stevenson <dave.stevenson@raspberrypi.org>
->
-> There's no way to query the subdevice for the supported
-> resolutions. Add set_fmt and get_fmt implementations. Since there's
-> only one format supported set_fmt does nothing and get returns single
-> format.
->
-> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
-> Signed-off-by: Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+It's up to the TIP tree people, but sending a fixed version is probably
+the best way to get their attention. :)
 
-Looks good to me
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+I can also queue it myself (for 5.7 even) if I get an Acked-by from
+Peter though.
 
-Thanks
-  j
+Paolo
 
-> ---
->  drivers/media/i2c/ov5647.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/drivers/media/i2c/ov5647.c b/drivers/media/i2c/ov5647.c
-> index e7d2e5b4ad4b..3e587eb0a30e 100644
-> --- a/drivers/media/i2c/ov5647.c
-> +++ b/drivers/media/i2c/ov5647.c
-> @@ -463,8 +463,30 @@ static int ov5647_enum_mbus_code(struct v4l2_subdev *sd,
->  	return 0;
->  }
->
-> +static int ov5647_set_get_fmt(struct v4l2_subdev *sd,
-> +			      struct v4l2_subdev_pad_config *cfg,
-> +			      struct v4l2_subdev_format *format)
-> +{
-> +	struct v4l2_mbus_framefmt *fmt = &format->format;
-> +
-> +	if (format->pad != 0)
-> +		return -EINVAL;
-> +
-> +	/* Only one format is supported, so return that */
-> +	memset(fmt, 0, sizeof(*fmt));
-> +	fmt->code = MEDIA_BUS_FMT_SBGGR8_1X8;
-> +	fmt->colorspace = V4L2_COLORSPACE_SRGB;
-> +	fmt->field = V4L2_FIELD_NONE;
-> +	fmt->width = 640;
-> +	fmt->height = 480;
-> +
-> +	return 0;
-> +}
-> +
->  static const struct v4l2_subdev_pad_ops ov5647_subdev_pad_ops = {
->  	.enum_mbus_code = ov5647_enum_mbus_code,
-> +	.set_fmt =	  ov5647_set_get_fmt,
-> +	.get_fmt =	  ov5647_set_get_fmt,
->  };
->
->  static const struct v4l2_subdev_ops ov5647_subdev_ops = {
-> --
-> 2.17.1
->
