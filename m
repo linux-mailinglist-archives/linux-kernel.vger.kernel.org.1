@@ -2,122 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166C31A98ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864601A98E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895563AbgDOJam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:30:42 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:53675 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895540AbgDOJa0 (ORCPT
+        id S2895538AbgDOJaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2895527AbgDOJaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:30:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1586943039; x=1618479039;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=i73cQScyOXtQNhKCgBM0j0yco6YrKjuowVHgFUDbKic=;
-  b=quQE8DEdtKYqKh2hGJV9pSCjWQADn6iNaXN/QfaIE7KYyNeJP3l3/RRd
-   cq/Jq3V1/BIVUrRJmD5ENB8Y5rooGnIKf6QJTxp3LuqC7wxB6hv/S1QVb
-   itRZAYS0opwUlb/hyQMH+ZTfyOG0mYcU1cEgOmiYfr96TSTbb7xMdO1+D
-   7Gsq7ASbrSA8xccrYO/7qoBZSU9cEu7eCckJbUOofn0OmPAvRAm8qmWH8
-   yjWDfADzwSQoeXIFCdB39ZVOHb2w6VKjfcgJE2Jttf0HFoGFjbAR+fjL8
-   mMFKV9GOmetYP/siHAXEjmx24kbZLP7NPNSsitxjLtkJbJO1OH33Pet3Y
-   A==;
-IronPort-SDR: eeRVIlNT7jgc5Ig8ZYnISAlMPD4ZQ9FY6eT5A/Kzo4C9xFYVNPO8mZYw1nU47bM/qi+jwjMgqs
- Jkm1w5xc0QIFmrCNltcXPYA1jgBzuZYSlkKBRReE8ZdNZ0iV7Wk8chgJsOyb+xsT27de56gsa+
- IxTUXDmASKQqo2yApvWnC9SUrNct71/VF3SHLxocRdXHNX3Hklq9nbrE//cCq9i6yRm43xOAQG
- +46gYBKDjsjJbq3IBnWH4hKnqld35SXuN+1u3lOGCEjDN44tbz4VHCpqYlpXgSXmvDpjq+vlCG
- 5j4=
-X-IronPort-AV: E=Sophos;i="5.72,386,1580745600"; 
-   d="scan'208";a="237794024"
-Received: from mail-sn1nam02lp2050.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.36.50])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Apr 2020 17:30:36 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYzXWSdNM8Lt6zEhh6x8il7DwIbzfOs/ApjPtGwx+tSr7wGKYtlBPoXHdzXMG7d0/aFqPb2Uz20U1P2ixPrnwbSbVgZxB3HpOt81gNvmOIJEqBfpElLvLVoHx7HREHuxEtQ31Ms14+X3mVRcaA1UZ/iIz/jclfo8s2DzByGruMfix42ey7skmC4m51oYbLU+vGV1KRxLjpfr9C9daOwgj5KQTAHhLU16rNc6AhXMQlgMAAunPsYM4mbN3oXQ0PG6pWcN2r+Vzp9G4YJ9BEcwQH70wwRvgWj/xx2KQCUFiv5jMNUqC32Q+VJzuSjPxH3f+BIXpO138bBaxFRsC/hUbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i73cQScyOXtQNhKCgBM0j0yco6YrKjuowVHgFUDbKic=;
- b=G7naXZ3zL10OBDewhQWaBOKRtj8ZeZyC2iD2W64nrHRPQQO5xYGeH6q2W1ABaZVrjWt+wUD6a9teFXc6UKFqcWvyNHAJIf4gcuYen9yDten24ZMB1SCKZwlDNwGO/JJjt9r1d5Ff8HFk/KfP86iZrld06ki4pFB+adrlG/G1WoEQfeV+t6A2+Hz2Gg5TVQUEg0+CS31cpCV/Qdi1pUONiDto5Y39N7aC269R6NyrMXQq+X2awd5YWqHZN5doLMI2b3qOztYqskjdKImZPp7tyNjRCQ2+wkO/GFwIGDBlOmJYre55qLHC529WehfK2N3OtZvditWvv1g1AMCAAp8b1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Wed, 15 Apr 2020 05:30:18 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35A2C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:30:17 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t14so5039305wrw.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:30:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i73cQScyOXtQNhKCgBM0j0yco6YrKjuowVHgFUDbKic=;
- b=GDUPzBkG6XEq3T7jskycK6rXY/CFtZb4ekXvp9QhqVyenQRG0uSPnw9vT7w//uDi3pha9a2ll32mHD8S6+Fgnsl9JLBu+UDtsczdvujff0fLIng1vmCzTUkbHuBjB9JNFGTV/xVS7RLcSdQG1KcvyJ8SPc+xQ0FXHtpECRVXJpg=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3632.namprd04.prod.outlook.com
- (2603:10b6:803:46::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Wed, 15 Apr
- 2020 09:30:21 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
- 09:30:21 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 06/25] mm: Use readahead_control to pass arguments
-Thread-Topic: [PATCH v11 06/25] mm: Use readahead_control to pass arguments
-Thread-Index: AQHWEm3c6YkRzif5rUSh6nBZ9gJdcA==
-Date:   Wed, 15 Apr 2020 09:30:21 +0000
-Message-ID: <SN4PR0401MB359806A3638DBDD9A20DDFA49BDB0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200414150233.24495-1-willy@infradead.org>
- <20200414150233.24495-7-willy@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 42318151-4e49-45ff-ce57-08d7e11f9e5d
-x-ms-traffictypediagnostic: SN4PR0401MB3632:
-x-microsoft-antispam-prvs: <SN4PR0401MB363240B9E9E1F4E5A00E26469BDB0@SN4PR0401MB3632.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 0374433C81
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(33656002)(19618925003)(9686003)(81156014)(55016002)(8676002)(8936002)(478600001)(4270600006)(71200400001)(52536014)(2906002)(558084003)(86362001)(4326008)(66476007)(7696005)(66446008)(26005)(64756008)(76116006)(316002)(66556008)(54906003)(7416002)(66946007)(5660300002)(110136005)(6506007)(91956017)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3E10msHK2KLvXhznHQ9YJSWeEyPFo8ruTznCKt9trFhmCR2ubEYYVZQ5b/qZ60py5RQMtoBOOTichvWC82eTA779GWZfMYR+n0jwC9j2a1xIBnbe09XNSwRwrMwDvIevghhMnptKQqtFqaSmu/jq0r3dODtE8PoxNftmxV+jYAdqDRMjjjwZD4jPnKAcUZW78ropg/d0uN3EWCOImEWOI9nDXWGT+cMBQGduft9DTkhoIsFGr3OSrQbdP2Sox4bWEi6wL770iXty0EB4N1Cl9XWJvJ4wffLmvT4l0Sdec7k1g3JcoF18QD7hlAR6OZOxQfuIC0aY2D1/5DFciZV3gWw9lfzVsMXD1TlNLfkcoOY6D7X/ZCzJsjwfXXhxtPqMN6+gV2hUmY1c57tvqS1cdVq0hDa6pgqY1eIXnoLUz+KcDUJQfezMtja38Q4FVPCE
-x-ms-exchange-antispam-messagedata: mZpW+p+O8zplPaT/JT9mfTC0+kdX2Wm8ycHn3eyabru/ZJeiJGpXDT3S4AcOKIMjTHIna/2LeOItwYoZX63oqxV5WyxCc6oguXWZpQ4vFer6Rl9IkMhWp3vcp/+/RWaZOM9Ce+pvoAKqUGq6yA2o3g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=OBdwBYebBJuoimbTaQN5QWpwweg/EKkjkWJ4yfY8dv8=;
+        b=reeYQ8WnjncSc2T7Jajbw6ovboRJQxLghh5cijCOXyREaR7Dl+S8j8D2XG5mStUhwl
+         mVaew31PHI9qkmosAPw9GSGyLyVe5zlsjJcDZbr2vAxywVnS2SzWx3Uw8e6jEuwJHU1S
+         iovJsQeMZQzBbgYX7Ak1PVka6TVJl0082uVSrQOu3EXpRLsnNLNh2+LkgyIK6Qq6qylD
+         inE+/o9g1hR6fynzjHgA+07E+Z+6ltXE+i3BF6w7+/XFpA60n0zNBMiVB7MNGlepPvYQ
+         Q7pAST5/u+Eea4/A9OZEen4ukNfsQHOesmlMaqlowLF/1zDMwgQ8VPrh9/fzd0xNJdB+
+         LzDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OBdwBYebBJuoimbTaQN5QWpwweg/EKkjkWJ4yfY8dv8=;
+        b=jmUW3YSsjlX9++TkJ5crMQt9lYUbmEBhsEtHQDnlVTbXNblFTMa3ZewB9BHDHFMhpB
+         6G1JbYcKSsSx4hpX6jSG6tB8RPZPC/R8uWHmPpUbS3RtifGdBCUXWHZ1NI+IjDpDN1lX
+         5RHkuWErDECGykf3eFBE9dUp421Lx8RE91KRF360hFp7I7E/DWdlUiABLbCF88OVPXdk
+         aNi8nOQIxMoagHxx5oygMEi8TNDOIt9Byf21dC/ugc9WLEKKPsQyP/lGP4Twzept1wqa
+         hJv7HNlQYdfKIFoQF7SzVjoanQJf7XaqZUezmXBSafQEzo5xL7aVGfpu52CmAdXt/tTs
+         +Qsg==
+X-Gm-Message-State: AGi0PuZhRGE+5aOhtLj92wyL+SWSJJprnA7h0fqXXmsf+AG7yjAQgRW4
+        dtVVnQmVcRpKIEujY86oPLZByA==
+X-Google-Smtp-Source: APiQypJzG0axis5t2o+sttyC3y5d8wml7TaIbWStXxtN12O7zTtqqsicoGy8Ok1q7cM6FamBaWXPaw==
+X-Received: by 2002:a5d:6607:: with SMTP id n7mr5205782wru.150.1586943016404;
+        Wed, 15 Apr 2020 02:30:16 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id h13sm11465797wrs.22.2020.04.15.02.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 02:30:15 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 10:31:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dilip Kota <eswara.kota@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kishon@ti.com, robh@kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
+        qi-ming.wu@intel.com, yixin.zhu@intel.com
+Subject: Re: [PATCH v5 1/4] mfd: syscon: Add fwnode_to_regmap
+Message-ID: <20200415093116.GH2167633@dell>
+References: <cover.1585103753.git.eswara.kota@linux.intel.com>
+ <9953bb25281397553cb87b09d641c968d8432dd9.1585103753.git.eswara.kota@linux.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42318151-4e49-45ff-ce57-08d7e11f9e5d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2020 09:30:21.2508
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0pP1zzxdZl0sYzuj3YYPXddr7XLPy9tBvfWuDosAZ5ZaDo5bilbGlM3XKFZhSyUvGW08IS3GnI9W4G7ina2KBTvZbjegH1JZwCwK60YvWoc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3632
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9953bb25281397553cb87b09d641c968d8432dd9.1585103753.git.eswara.kota@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Wed, 25 Mar 2020, Dilip Kota wrote:
+
+> Traverse regmap handle entry from firmware node handle.
+> 
+> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+> ---
+> Changes on v5:
+>   No changes
+> 
+> Changes on v4:
+>   No changes
+> 
+>  drivers/mfd/syscon.c       | 8 ++++++++
+>  include/linux/mfd/syscon.h | 6 ++++++
+>  2 files changed, 14 insertions(+)
+
+I think you'll find it very difficult to have a patch merged if you do
+not send it to any Maintainers of the associated subsystem(s).
+
+Did you use `scripts/get_maintainer.pl` at all?
+
+> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+> index e22197c832e8..08064ffc5394 100644
+> --- a/drivers/mfd/syscon.c
+> +++ b/drivers/mfd/syscon.c
+> @@ -178,6 +178,14 @@ struct regmap *device_node_to_regmap(struct device_node *np)
+>  }
+>  EXPORT_SYMBOL_GPL(device_node_to_regmap);
+>  
+> +struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode)
+> +{
+> +	struct device_node *np = to_of_node(fwnode);
+> +
+> +	return device_node_get_regmap(np, false);
+> +}
+> +EXPORT_SYMBOL_GPL(fwnode_to_regmap);
+> +
+>  struct regmap *syscon_node_to_regmap(struct device_node *np)
+>  {
+>  	if (!of_device_is_compatible(np, "syscon"))
+> diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
+> index 112dc66262cc..a024dd88bdd4 100644
+> --- a/include/linux/mfd/syscon.h
+> +++ b/include/linux/mfd/syscon.h
+> @@ -18,6 +18,7 @@ struct device_node;
+>  
+>  #ifdef CONFIG_MFD_SYSCON
+>  extern struct regmap *device_node_to_regmap(struct device_node *np);
+> +extern struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode);
+>  extern struct regmap *syscon_node_to_regmap(struct device_node *np);
+>  extern struct regmap *syscon_regmap_lookup_by_compatible(const char *s);
+>  extern struct regmap *syscon_regmap_lookup_by_phandle(
+> @@ -29,6 +30,11 @@ static inline struct regmap *device_node_to_regmap(struct device_node *np)
+>  	return ERR_PTR(-ENOTSUPP);
+>  }
+>  
+> +static inline struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode)
+> +{
+> +	return ERR_PTR(-ENOTSUPP);
+> +}
+> +
+>  static inline struct regmap *syscon_node_to_regmap(struct device_node *np)
+>  {
+>  	return ERR_PTR(-ENOTSUPP);
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
