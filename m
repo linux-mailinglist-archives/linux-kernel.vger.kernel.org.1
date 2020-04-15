@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E2C1A998C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B451A99A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896023AbgDOJwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
+        id S2408435AbgDOJxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895896AbgDOJt5 (ORCPT
+        by vger.kernel.org with ESMTP id S2895885AbgDOJtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:49:57 -0400
+        Wed, 15 Apr 2020 05:49:53 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BEBC03C1A7;
-        Wed, 15 Apr 2020 02:49:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E82EC061A0E;
+        Wed, 15 Apr 2020 02:49:53 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOefz-0005rZ-QZ; Wed, 15 Apr 2020 11:49:48 +0200
+        id 1jOeg1-0005sp-BK; Wed, 15 Apr 2020 11:49:49 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 674831C0450;
-        Wed, 15 Apr 2020 11:49:47 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 09:49:47 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CE5841C0081;
+        Wed, 15 Apr 2020 11:49:48 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 09:49:48 -0000
 From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Add mce=print_all option
+Subject: [tip: ras/core] x86/mce: Add a struct mce.kflags field
 Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200214222720.13168-7-tony.luck@intel.com>
-References: <20200214222720.13168-7-tony.luck@intel.com>
+In-Reply-To: <20200214222720.13168-4-tony.luck@intel.com>
+References: <20200214222720.13168-4-tony.luck@intel.com>
 MIME-Version: 1.0
-Message-ID: <158694418705.28353.5090927003309338068.tip-bot2@tip-bot2>
+Message-ID: <158694418849.28353.16699731019695420884.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,82 +49,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the ras/core branch of tip:
 
-Commit-ID:     43505646941bee217b91d064756975aa1ab6ee3b
-Gitweb:        https://git.kernel.org/tip/43505646941bee217b91d064756975aa1ab6ee3b
+Commit-ID:     1de08dccd383482a3e88845d3554094d338f5ff9
+Gitweb:        https://git.kernel.org/tip/1de08dccd383482a3e88845d3554094d338f5ff9
 Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Fri, 14 Feb 2020 14:27:19 -08:00
+AuthorDate:    Fri, 14 Feb 2020 14:27:16 -08:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 14 Apr 2020 16:00:30 +02:00
+CommitterDate: Tue, 14 Apr 2020 15:58:43 +02:00
 
-x86/mce: Add mce=print_all option
+x86/mce: Add a struct mce.kflags field
 
-Sometimes, when logs are getting lost, it's nice to just
-have everything dumped to the serial console.
+There can be many different subsystems register on the mce handler
+chain. Add a new bitmask field and define values so that handlers can
+indicate whether they took any action to log or otherwise handle an
+error.
+
+The default handler at the end of the chain can use this information to
+decide whether to print to the console log.
+
+Boris suggested a generic name and leaving plenty of spare bits for
+possible future use.
+
+ [ bp: Move flag bits to the internal mce.h header and use BIT_ULL(). ]
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Tested-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20200214222720.13168-7-tony.luck@intel.com
+Link: https://lkml.kernel.org/r/20200214222720.13168-4-tony.luck@intel.com
 ---
- arch/x86/kernel/cpu/mce/core.c     | 7 ++++++-
- arch/x86/kernel/cpu/mce/internal.h | 1 +
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/mce.h      | 8 ++++++++
+ arch/x86/include/uapi/asm/mce.h | 1 +
+ 2 files changed, 9 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index fc879b6..4efe6c1 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -591,7 +591,7 @@ static int mce_default_notifier(struct notifier_block *nb, unsigned long val,
- 	if (!m)
- 		return NOTIFY_DONE;
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 689ac6e..5f04a24 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -129,6 +129,14 @@
  
--	if (!m->kflags)
-+	if (mca_cfg.print_all || !m->kflags)
- 		__print_mce(m);
+ #define XEC(x, mask)			(((x) >> 16) & mask)
  
- 	return NOTIFY_DONE;
-@@ -1962,6 +1962,7 @@ void mce_disable_bank(int bank)
-  * mce=no_cmci Disables CMCI
-  * mce=no_lmce Disables LMCE
-  * mce=dont_log_ce Clears corrected events silently, no log created for CEs.
-+ * mce=print_all Print all machine check logs to console
-  * mce=ignore_ce Disables polling and CMCI, corrected events are not cleared.
-  * mce=TOLERANCELEVEL[,monarchtimeout] (number, see above)
-  *	monarchtimeout is how long to wait for other CPUs on machine
-@@ -1990,6 +1991,8 @@ static int __init mcheck_enable(char *str)
- 		cfg->lmce_disabled = 1;
- 	else if (!strcmp(str, "dont_log_ce"))
- 		cfg->dont_log_ce = true;
-+	else if (!strcmp(str, "print_all"))
-+		cfg->print_all = true;
- 	else if (!strcmp(str, "ignore_ce"))
- 		cfg->ignore_ce = true;
- 	else if (!strcmp(str, "bootlog") || !strcmp(str, "nobootlog"))
-@@ -2256,6 +2259,7 @@ static ssize_t store_int_with_restart(struct device *s,
- static DEVICE_INT_ATTR(tolerant, 0644, mca_cfg.tolerant);
- static DEVICE_INT_ATTR(monarch_timeout, 0644, mca_cfg.monarch_timeout);
- static DEVICE_BOOL_ATTR(dont_log_ce, 0644, mca_cfg.dont_log_ce);
-+static DEVICE_BOOL_ATTR(print_all, 0644, mca_cfg.print_all);
++/* mce.kflags flag bits for logging etc. */
++#define	MCE_HANDLED_CEC		BIT_ULL(0)
++#define	MCE_HANDLED_UC		BIT_ULL(1)
++#define	MCE_HANDLED_EXTLOG	BIT_ULL(2)
++#define	MCE_HANDLED_NFIT	BIT_ULL(3)
++#define	MCE_HANDLED_EDAC	BIT_ULL(4)
++#define	MCE_HANDLED_MCELOG	BIT_ULL(5)
++
+ /*
+  * This structure contains all data related to the MCE log.  Also
+  * carries a signature to make it easier to find from external
+diff --git a/arch/x86/include/uapi/asm/mce.h b/arch/x86/include/uapi/asm/mce.h
+index 955c2a2..5b59d80 100644
+--- a/arch/x86/include/uapi/asm/mce.h
++++ b/arch/x86/include/uapi/asm/mce.h
+@@ -35,6 +35,7 @@ struct mce {
+ 	__u64 ipid;		/* MCA_IPID MSR: only valid on SMCA systems */
+ 	__u64 ppin;		/* Protected Processor Inventory Number */
+ 	__u32 microcode;	/* Microcode revision */
++	__u64 kflags;		/* Internal kernel use. See below */
+ };
  
- static struct dev_ext_attribute dev_attr_check_interval = {
- 	__ATTR(check_interval, 0644, device_show_int, store_int_with_restart),
-@@ -2280,6 +2284,7 @@ static struct device_attribute *mce_device_attrs[] = {
- #endif
- 	&dev_attr_monarch_timeout.attr,
- 	&dev_attr_dont_log_ce.attr,
-+	&dev_attr_print_all.attr,
- 	&dev_attr_ignore_ce.attr,
- 	&dev_attr_cmci_disabled.attr,
- 	NULL
-diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index 74a0182..55f5c7b 100644
---- a/arch/x86/kernel/cpu/mce/internal.h
-+++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -119,6 +119,7 @@ struct mca_config {
- 	bool dont_log_ce;
- 	bool cmci_disabled;
- 	bool ignore_ce;
-+	bool print_all;
- 
- 	__u64 lmce_disabled		: 1,
- 	      disabled			: 1,
+ #define MCE_GET_RECORD_LEN   _IOR('M', 1, int)
