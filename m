@@ -2,118 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702221A93E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A58A1A93EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441107AbgDOHOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 03:14:50 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:44066 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390559AbgDOHOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 03:14:48 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 64D6920523;
-        Wed, 15 Apr 2020 09:14:45 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Fxox8BtjGctA; Wed, 15 Apr 2020 09:14:44 +0200 (CEST)
-Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2441130AbgDOHQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 03:16:48 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:57913 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731776AbgDOHQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 03:16:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586935004; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=r0ASbx76zEYcIvIxWCRR1An50JcQx/PpRvNppB/eEmM=; b=I5FyN30YogrJAiTnfMT3qigGEEgZVx5V2OH5GLhO4tLBbFnfKo2weuJNBLyBvwuDiqSj0xFh
+ 2G5HfKiXgoQlqNWoXiVOnOCWSOCeCv/zXrn7O1kfOiXCqxhLZlJp39w0AGD7SghpkWZZJ0SN
+ lx8GmZ20dc/BewEUAxsTYELObyw=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e96b4db.7fabf31fd730-smtp-out-n04;
+ Wed, 15 Apr 2020 07:16:43 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5B5E0C43636; Wed, 15 Apr 2020 07:16:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id EA7212009B;
-        Wed, 15 Apr 2020 09:14:44 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 15 Apr 2020 09:14:44 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 15 Apr
- 2020 09:14:44 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id B2B4D31801EC; Wed, 15 Apr 2020 09:14:43 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 09:14:43 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Yuehaibing <yuehaibing@huawei.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] xfrm: policy: Remove obsolete WARN while xfrm
- policy inserting
-Message-ID: <20200415071443.GV13121@gauss3.secunet.de>
-References: <20200327123443.12408-1-yuehaibing@huawei.com>
- <20200328112302.GA13121@gauss3.secunet.de>
- <1d3596fb-c7e3-16c9-f48f-fe58e9a2569a@huawei.com>
- <20200406090327.GF13121@gauss3.secunet.de>
- <ff4b3d2c-e6b3-33d6-141b-b093db084a18@huawei.com>
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2B3C5C433CB;
+        Wed, 15 Apr 2020 07:16:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2B3C5C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        ohad@wizery.com, evgreen@chromium.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 1/2] remoteproc: qcom_q6v5_mss: map/unmap mpss segments before/after use
+Date:   Wed, 15 Apr 2020 12:46:18 +0530
+Message-Id: <20200415071619.6052-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff4b3d2c-e6b3-33d6-141b-b093db084a18@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 04:19:37PM +0800, Yuehaibing wrote:
-> 
-> 
-> On 2020/4/6 17:03, Steffen Klassert wrote:
-> > On Mon, Mar 30, 2020 at 10:05:32PM +0800, Yuehaibing wrote:
-> >> On 2020/3/28 19:23, Steffen Klassert wrote:
-> >>> On Fri, Mar 27, 2020 at 08:34:43PM +0800, YueHaibing wrote:
-> >>>> Since commit 7cb8a93968e3 ("xfrm: Allow inserting policies with matching
-> >>>> mark and different priorities"), we allow duplicate policies with
-> >>>> different priority, this WARN is not needed any more.
-> >>>
-> >>> Can you please describe a bit more detailed why this warning
-> >>> can't trigger anymore?
-> >>
-> >> No, this warning is triggered while detect a duplicate entry in the policy list
-> >>
-> >> regardless of the priority. If we insert policy like this:
-> >>
-> >> policy A (mark.v = 3475289, mark.m = 0, priority = 1)	//A is inserted
-> >> policy B (mark.v = 0, mark.m = 0, priority = 0) 	//B is inserted
-> >> policy C (mark.v = 3475289, mark.m = 0, priority = 0)	//C is inserted and B is deleted
-> > 
-> > The codepath that replaces a policy by another should just trigger
-> > on policy updates (XFRM_MSG_UPDPOLICY). Is that the case in your
-> > test?
-> 
-> Yes, this is triggered by XFRM_MSG_UPDPOLICY
-> 
-> > 
-> > It should not be possible to add policy C with XFRM_MSG_NEWPOLICY
-> > as long as you have policy B inserted.
-> > 
-> > The update replaces an old policy by a new one, the lookup keys of
-> > the old policy must match the lookup keys of the new one. But policy
-> > B has not the same lookup keys as C, the mark is different. So B should
-> > not be replaced with C.
-> 
-> 1436 static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
-> 1437                                    struct xfrm_policy *pol)
-> 1438 {
-> 1439         u32 mark = policy->mark.v & policy->mark.m;
-> 1440
-> 1441         if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
-> 1442                 return true;
-> 1443
-> 1444         if ((mark & pol->mark.m) == pol->mark.v &&    //policy is C, pol is B, so mark is 0, pol->mark.m is 0, pol->mark.v is 0
-> 1445             policy->priority == pol->priority)	   //priority is same zero, so return true, B is replaced with C
-> 1446                 return true;
-> 1447
-> 1448         return false;
-> 1449 }
-> 
-> Should xfrm_policy_mark_match be fixed？
+The application processor accessing the mpss region when the Q6 modem is
+running will lead to an XPU violation. Fix this by un-mapping the mpss
+segments post copy during mpss authentication and coredumps.
 
-Yes, xfrm_policy_mark_match should only replace if the found
-policy has the same lookup keys.
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+---
+
+V2:
+ * use ioremap_wc/iounmap instead of the devm_ variants
+ * with mpss_region no longer relevant leave rproc_da_to_va unused
+
+ drivers/remoteproc/qcom_q6v5_mss.c | 31 +++++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+index ce49c3236ff7c..b781fc8de3597 100644
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -1156,7 +1156,13 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+ 			goto release_firmware;
+ 		}
+ 
+-		ptr = qproc->mpss_region + offset;
++		ptr = ioremap_wc(qproc->mpss_phys + offset, phdr->p_memsz);
++		if (!ptr) {
++			dev_err(qproc->dev,
++				"unable to map memory region: %pa+%zx-%x\n",
++				&qproc->mpss_phys, offset, phdr->p_memsz);
++			goto release_firmware;
++		}
+ 
+ 		if (phdr->p_filesz && phdr->p_offset < fw->size) {
+ 			/* Firmware is large enough to be non-split */
+@@ -1165,6 +1171,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+ 					"failed to load segment %d from truncated file %s\n",
+ 					i, fw_name);
+ 				ret = -EINVAL;
++				iounmap(ptr);
+ 				goto release_firmware;
+ 			}
+ 
+@@ -1175,6 +1182,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+ 			ret = request_firmware(&seg_fw, fw_name, qproc->dev);
+ 			if (ret) {
+ 				dev_err(qproc->dev, "failed to load %s\n", fw_name);
++				iounmap(ptr);
+ 				goto release_firmware;
+ 			}
+ 
+@@ -1187,6 +1195,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+ 			memset(ptr + phdr->p_filesz, 0,
+ 			       phdr->p_memsz - phdr->p_filesz);
+ 		}
++		iounmap(ptr);
+ 		size += phdr->p_memsz;
+ 
+ 		code_length = readl(qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
+@@ -1236,7 +1245,8 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
+ 	int ret = 0;
+ 	struct q6v5 *qproc = rproc->priv;
+ 	unsigned long mask = BIT((unsigned long)segment->priv);
+-	void *ptr = rproc_da_to_va(rproc, segment->da, segment->size);
++	int offset = segment->da - qproc->mpss_reloc;
++	void *ptr = NULL;
+ 
+ 	/* Unlock mba before copying segments */
+ 	if (!qproc->dump_mba_loaded) {
+@@ -1250,10 +1260,15 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
+ 		}
+ 	}
+ 
+-	if (!ptr || ret)
+-		memset(dest, 0xff, segment->size);
+-	else
++	if (!ret)
++		ptr = ioremap_wc(qproc->mpss_phys + offset, segment->size);
++
++	if (ptr) {
+ 		memcpy(dest, ptr, segment->size);
++		iounmap(ptr);
++	} else {
++		memset(dest, 0xff, segment->size);
++	}
+ 
+ 	qproc->dump_segment_mask |= mask;
+ 
+@@ -1595,12 +1610,6 @@ static int q6v5_alloc_memory_region(struct q6v5 *qproc)
+ 
+ 	qproc->mpss_phys = qproc->mpss_reloc = r.start;
+ 	qproc->mpss_size = resource_size(&r);
+-	qproc->mpss_region = devm_ioremap_wc(qproc->dev, qproc->mpss_phys, qproc->mpss_size);
+-	if (!qproc->mpss_region) {
+-		dev_err(qproc->dev, "unable to map memory region: %pa+%zx\n",
+-			&r.start, qproc->mpss_size);
+-		return -EBUSY;
+-	}
+ 
+ 	return 0;
+ }
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
