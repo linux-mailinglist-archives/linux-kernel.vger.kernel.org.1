@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C1D1AB323
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549C71AB319
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442293AbgDOVJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 17:09:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:64180 "EHLO mga03.intel.com"
+        id S2392406AbgDOVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 17:07:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:64181 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442228AbgDOVFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 17:05:35 -0400
-IronPort-SDR: WlL8J0k03OaBIolOfp+CZtNZMDbrpCC81vqutJ7XjrbRtdqeSno0t9pQNBu31LzsQFvDNk8pFu
- ydER298UGeDQ==
+        id S2442230AbgDOVFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 17:05:51 -0400
+IronPort-SDR: nq9YjgNK/4XFOHxF3yVKJdmaTrLXAYoJt/MX7BaNqLJYhok4WtOkdAAFR8qI6YZvav1Zz11LP3
+ UkT2+O+mh8GQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 14:05:18 -0700
-IronPort-SDR: Y40uVd+P74lLUKeRusKoiPA8XYqHaH2O5MnWgeowvptaQZp656CMoN5LsabEpfLzz/rBr21F9T
- 8ipIh+tzLoOg==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 14:05:22 -0700
+IronPort-SDR: /3wxs7lSvnXTFU9E5rikRIDFkaKDkt4Hnpv2Ff3lR79C5AaUyVoPDX00qghzx41lUm1OUmVhOd
+ hwoexv/S/Jvg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="455035560"
+   d="scan'208";a="455035573"
 Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.209.116.191])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 14:05:15 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 14:05:19 -0700
 From:   Kristen Carlson Accardi <kristen@linux.intel.com>
 To:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>, x86@kernel.org
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
 Cc:     arjan@linux.intel.com, linux-kernel@vger.kernel.org,
         kernel-hardening@lists.openwall.com, rick.p.edgecomb@intel.com,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH 4/9] x86: Makefile: Add build and config option for CONFIG_FG_KASLR
-Date:   Wed, 15 Apr 2020 14:04:46 -0700
-Message-Id: <20200415210452.27436-5-kristen@linux.intel.com>
+        linux-arch@vger.kernel.org
+Subject: [PATCH 5/9] x86: make sure _etext includes function sections
+Date:   Wed, 15 Apr 2020 14:04:47 -0700
+Message-Id: <20200415210452.27436-6-kristen@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415210452.27436-1-kristen@linux.intel.com>
 References: <20200415210452.27436-1-kristen@linux.intel.com>
@@ -45,54 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow user to select CONFIG_FG_KASLR if dependencies are met. Change
-the make file to build with -ffunction-sections if CONFIG_FG_KASLR
+We will be using -ffunction-sections to place each function in
+it's own text section so it can be randomized at load time. The
+linker considers these .text.* sections "orphaned sections", and
+will place them after the first similar section (.text). However,
+we need to move _etext so that it is after both .text and .text.*
+We also need to calculate text size to include .text AND .text.*
 
 Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 ---
- Makefile         |  4 ++++
- arch/x86/Kconfig | 13 +++++++++++++
- 2 files changed, 17 insertions(+)
+ arch/x86/kernel/vmlinux.lds.S     | 18 +++++++++++++++++-
+ include/asm-generic/vmlinux.lds.h |  2 +-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 70def4907036..337b72787200 100644
---- a/Makefile
-+++ b/Makefile
-@@ -866,6 +866,10 @@ ifdef CONFIG_LIVEPATCH
- KBUILD_CFLAGS += $(call cc-option, -flive-patching=inline-clone)
- endif
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 1bf7e312361f..044f7528a2f0 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -147,8 +147,24 @@ SECTIONS
+ #endif
+ 	} :text =0xcccc
  
-+ifdef CONFIG_FG_KASLR
-+KBUILD_CFLAGS += -ffunction-sections
-+endif
+-	/* End of text section, which should occupy whole number of pages */
++#ifdef CONFIG_FG_KASLR
++	/*
++	 * -ffunction-sections creates .text.* sections, which are considered
++	 * "orphan sections" and added after the first similar section (.text).
++	 * Adding this ALIGN statement causes the address of _etext
++	 * to be below that of all the .text.* orphaned sections
++	 */
++	. = ALIGN(PAGE_SIZE);
++#endif
+ 	_etext = .;
 +
- # arch Makefile may override CC so keep this after arch Makefile is included
- NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
++	/*
++	 * the size of the .text section is used to calculate the address
++	 * range for orc lookups. If we just use SIZEOF(.text), we will
++	 * miss all the .text.* sections. Calculate the size using _etext
++	 * and _stext and save the value for later.
++	 */
++	text_size = _etext - _stext;
+ 	. = ALIGN(PAGE_SIZE);
  
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1d6104ea8af0..6aaece89f712 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2182,6 +2182,19 @@ config RANDOMIZE_BASE
- 
- 	  If unsure, say Y.
- 
-+config FG_KASLR
-+	bool "Function Granular Kernel Address Space Layout Randomization"
-+	depends on $(cc-option, -ffunction-sections)
-+	depends on RANDOMIZE_BASE && X86_64
-+	help
-+	  This option improves the randomness of the kernel text
-+	  over basic Kernel Address Space Layout Randomization (KASLR)
-+	  by reordering the kernel text at boot time. This feature
-+	  uses information generated at compile time to re-layout the
-+	  kernel text section at boot time at function level granularity.
-+
-+	  If unsure, say N.
-+
- # Relocation on x86 needs some additional build support
- config X86_NEED_RELOCS
- 	def_bool y
+ 	X86_ALIGN_RODATA_BEGIN
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 71e387a5fe90..f5baee74854c 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -813,7 +813,7 @@
+ 	. = ALIGN(4);							\
+ 	.orc_lookup : AT(ADDR(.orc_lookup) - LOAD_OFFSET) {		\
+ 		orc_lookup = .;						\
+-		. += (((SIZEOF(.text) + LOOKUP_BLOCK_SIZE - 1) /	\
++		. += (((text_size + LOOKUP_BLOCK_SIZE - 1) /	\
+ 			LOOKUP_BLOCK_SIZE) + 1) * 4;			\
+ 		orc_lookup_end = .;					\
+ 	}
 -- 
 2.20.1
 
