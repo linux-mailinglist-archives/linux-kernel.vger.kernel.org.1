@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABEE1A922E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404EE1A9241
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393212AbgDOFBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 01:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35196 "EHLO
+        id S2393231AbgDOFE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 01:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393189AbgDOFBL (ORCPT
+        with ESMTP id S2389851AbgDOFEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 01:01:11 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7A3C0610D6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:01:09 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id s3so1075361qvk.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:01:09 -0700 (PDT)
+        Wed, 15 Apr 2020 01:04:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7E0C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:04:24 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id z9so6191184pjd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:04:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ef3HLI/XX5ogd42JRuoGnEbb/Ln3ZxgvuLj5jaeUWkI=;
-        b=Tcxzc6xC3iVTZShTUf3CIv3N8B5ZyCbru12fLV5+tpVooL5/Bo3MM2R4w1+y/qKNnw
-         9lu0zJBRs+VK1Bc14YzwiZC+K/efs95VT8GzxaoJoz3t2WhfDZxWX+BgsMNU20r8wRPv
-         WS98QN/V8NZIzymtO0juNqdA9Tg6/2OTyjU7Zm1KL9ejebzf7wo1d0uOEsRrlg17M8fg
-         qYmffi6H6MwGLJe4epZjwPPvjWIdIXS0xtejpuhYYUqQSrz2GfoywvJh6tC6sCJVyKe7
-         xzOQhWdIv/o82YQJCk9DtMPUw2B8iLWuNwugd4l1OepDEbLixuOHRPHRALsrInJO+Rsn
-         o1og==
+        bh=gsvhzAYTICdpnZMJaCTeJO6AmyzT9TU4Pb3xpqq5oiM=;
+        b=PxULmgnqNny6YFWfOOUOVtVrHM9RjGJGFlDy2Xftlow9qvdiStdegCV5pmbe9/OBsm
+         FY8LhhybDngKpozgzCwPmhRpeH8AsXmDy0iBWKnxif9GErLA/0fN4KK6jLOyNqEty1Bt
+         P4JHnD4wn0Let8iytBk+JGgQiHlP0StMJi2gxac8J4wipqNNh+l22rMK3Ebhk8h99rKA
+         wC5qzTTJLeRabr7k9C2MuUwhsb+ntMbkoRa+HZfOp1X4l54jeJPFhxsaZzyax32WpWgk
+         JPn4kEgZZaYLs6qvYIGGeJf8nAPoGFOW8oUd65EcYsN1AUpcDmS/9SL7/wREVOVWzblB
+         IfXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ef3HLI/XX5ogd42JRuoGnEbb/Ln3ZxgvuLj5jaeUWkI=;
-        b=r33mv1tef9uKGPgdhUGPGNP36tk4w+eAwRQ+0VklgV4hsxxb3emYvKR5LOg73mh9wG
-         R/rie7as/w2sLhRg2HY8edb3QJ654TpNW/85yuNa2OnvdJ9dTng5rlmQkqyBAgz2xYzt
-         rq0w6Zku7a7u1nqtJFeFFPWc7H1F9pSnJvHDwIt70RKr5flzw6jEDBc6V6SJFYFIdyVB
-         4yplUMSWJRW0ocuiKA/fLQfclQEjOKK+a9EeP4pa2Mfw1iDis5Pbd1LE78+LIh2NHM7i
-         4E3hPtBoxPoIxy/3ptJMvElayOwsMx9jAQFt4zVQonT6SMZcbfIfkt3S4hx6oWHLDmve
-         cYnA==
-X-Gm-Message-State: AGi0PuYhE+aYdnSt8mYPNZwci7wkiJSf9rKEAVTu/DiqIqL7pztdp+3q
-        zPJ3Q6bf4ZEcFejPbjz9l3XXSw==
-X-Google-Smtp-Source: APiQypJRjg+PyUSZjrIkjpxdMfgyPb9bMEWnffTFRMxoE1aQMUITXzNurR0P/0BN6q0H0W5xTyhSBA==
-X-Received: by 2002:a0c:e88d:: with SMTP id b13mr3243342qvo.245.1586926868219;
-        Tue, 14 Apr 2020 22:01:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::e623])
-        by smtp.gmail.com with ESMTPSA id 10sm6168833qtp.4.2020.04.14.22.01.07
+        bh=gsvhzAYTICdpnZMJaCTeJO6AmyzT9TU4Pb3xpqq5oiM=;
+        b=jbtsqTC5W2o4PU9FyMU5wJJNZqGGreW0fdVSjMdj4sxCeblcI0hQZ/khYg4bgyXofC
+         EKB1AhSMVY6HIlgQYApkq5H5K6sg48PrtAypFzh3Q2gy4PYIa4GeOkOQ5vwT5SCFMJRQ
+         5Wcbb1QTO0EM0RqNyUsVU2E/EaOS4uWIF0vJByH0Qi+w364objFJRbi3O3LfIe3l6hOF
+         fAeSD5IRa7Dh5B50g8ziDjh4vteZXwiCgCeTVHzg2Nr3fU6pEZR5S6qw6DO0zkjXULa4
+         o0ak/F3MTNYfLCQhcB8aB8UFGOZ4XMwjWolbVBmfP8sg+by43+9pdgOcS5cc7b6BEANB
+         L1rQ==
+X-Gm-Message-State: AGi0PuadjtdYi7aNiD4DKrsfT1io2DgxleBt7vk9h75T52MtG1Ztmmxj
+        +fSo8ymRR4GBNx3k1s03O7Eg9w==
+X-Google-Smtp-Source: APiQypLHT3hqd2R5xgQm+zhqokQokSCVxtF2OYRc67SBIEoGnMYtLF8ewhBgG/9b8oC8YYprDgLO0A==
+X-Received: by 2002:a17:90a:f0d4:: with SMTP id fa20mr4267514pjb.108.1586927063249;
+        Tue, 14 Apr 2020 22:04:23 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id n21sm11312923pgd.93.2020.04.14.22.04.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 22:01:07 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 01:01:06 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-crypto@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
-Message-ID: <20200415050106.GA154671@cmpxchg.org>
-References: <20200413211550.8307-1-longman@redhat.com>
- <20200413211550.8307-2-longman@redhat.com>
+        Tue, 14 Apr 2020 22:04:22 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 22:04:20 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the qcom tree
+Message-ID: <20200415050420.GA987656@yoga>
+References: <20200415102534.6d22a377@canb.auug.org.au>
+ <158692631073.105027.12648118734810371009@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413211550.8307-2-longman@redhat.com>
+In-Reply-To: <158692631073.105027.12648118734810371009@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 05:15:49PM -0400, Waiman Long wrote:
-> As said by Linus:
-> 
->   A symmetric naming is only helpful if it implies symmetries in use.
->   Otherwise it's actively misleading.
+On Tue 14 Apr 21:51 PDT 2020, Stephen Boyd wrote:
 
-As the btrfs example proves - people can be tempted by this false
-symmetry to pair kzalloc with kzfree, which isn't what we wanted.
+> Quoting Stephen Rothwell (2020-04-14 17:25:34)
+> > Hi all,
+> > 
+> > After merging the qcom tree, today's linux-next build (x86_64
+> > allmodconfig) produced this warning:
+> > 
+> > drivers/soc/qcom/cmd-db.c: In function 'cmd_db_debugfs_dump':
+> > drivers/soc/qcom/cmd-db.c:281:30: warning: field width specifier '*' expects argument of type 'int', but argument 4 has type 'long unsigned int' [-Wformat=]
+> >   281 |    seq_printf(seq, "0x%08x: %*pEp", le32_to_cpu(ent->addr),
+> >       |                             ~^~
+> >       |                              |
+> >       |                              int
+> >   282 |        sizeof(ent->id), ent->id);
+> >       |        ~~~~~~~~~~~~~~~        
+> >       |        |
+> >       |        long unsigned int
+> > 
+> > Introduced by commit
+> > 
+> >   d6815c5c43d4 ("soc: qcom: cmd-db: Add debugfs dumping file")
+> 
+> Thanks. I didn't notice this warning. Looks like we need to cast
+> sizeof() to int? Bjorn do you want another patch or does this get
+> squashed in?
+> 
 
->   In "kzalloc()", the z is meaningful and an important part of what the
->   caller wants.
-> 
->   In "kzfree()", the z is actively detrimental, because maybe in the
->   future we really _might_ want to use that "memfill(0xdeadbeef)" or
->   something. The "zero" part of the interface isn't even _relevant_.
-> 
-> The main reason that kzfree() exists is to clear sensitive information
-> that should not be leaked to other future users of the same memory
-> objects.
-> 
-> Rename kzfree() to kfree_sensitive() to follow the example of the
-> recently added kvfree_sensitive() and make the intention of the API
-> more explicit. In addition, memzero_explicit() is used to clear the
-> memory to make sure that it won't get optimized away by the compiler.
-> 
-> The renaming is done by using the command sequence:
-> 
->   git grep -w --name-only kzfree |\
->   xargs sed -i 's/\bkzfree\b/kfree_sensitive/'
-> 
-> followed by some editing of the kfree_sensitive() kerneldoc and the
-> use of memzero_explicit() instead of memset().
-> 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+It's in the middle of the patch stack, so I would prefer an additional
+patch.
 
-Looks good to me. Thanks for fixing this very old mistake.
+Regards,
+Bjorn
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---8<----
+> diff --git a/drivers/soc/qcom/cmd-db.c b/drivers/soc/qcom/cmd-db.c
+> index 6c308f92a13c..6b5c440c9dc3 100644
+> --- a/drivers/soc/qcom/cmd-db.c
+> +++ b/drivers/soc/qcom/cmd-db.c
+> @@ -280,7 +280,7 @@ static int cmd_db_debugfs_dump(struct seq_file *seq, void *p)
+>  		ent = rsc_to_entry_header(rsc);
+>  		for (j = 0; j < le16_to_cpu(rsc->cnt); j++, ent++) {
+>  			seq_printf(seq, "0x%08x: %*pEp", le32_to_cpu(ent->addr),
+> -				   sizeof(ent->id), ent->id);
+> +				   (int)sizeof(ent->id), ent->id);
+>  
+>  			len = le16_to_cpu(ent->len);
+>  			if (len) {
