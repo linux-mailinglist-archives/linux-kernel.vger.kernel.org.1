@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FF21AB14A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7D11AB156
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504326AbgDOTLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:11:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416856AbgDOStT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:49:19 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40D7E206D9;
-        Wed, 15 Apr 2020 18:49:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586976559;
-        bh=S98H4OZ9/YsrWEVe/IIENSlY26f1OB+qSia2vPJuvjs=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=ebTlzzEHyQYHpHkf75D1edXDhmOSOJVix5WtArVMqhdhdIknQ0v6FmtwqBlJnifWF
-         DFCbsxtelq9w+iVA+2oQQLvzY5JJHKS6k6EfpFWrj6AoULYAsujuS7Ej3rJVPlETQt
-         MvYAkhH83mqQK7g2NM9uZWA3vzT7b/HoZNZF0EzM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0A2D93522AD1; Wed, 15 Apr 2020 11:49:19 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 11:49:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com
-Subject: [PATCH memory-model 0/10] LKMM updates for v5.8
-Message-ID: <20200415184918.GA16301@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S2441665AbgDOTNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1416867AbgDOSuQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:50:16 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E332BC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:50:14 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id d17so1170697wrg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=acZ0FR3Ieh7QKceyUMnt7yQIXSOW4wSevSsBNkvC3yY=;
+        b=OcGp2P7aJP3bMCEg8pIVH8PXXpdNafa/GJJnSsMtIre5Zx/sQLaHdd/YDq4WnT5UQA
+         5pwA3RNANZlGapXagIIipaVuptZfympHucJW00kQOhTTM/EfxkIAvFsmhn/dBPWfYAPt
+         gp4Q6slzNzbOWtLTGMZY7mJdTrNVua8+KKfzChDL2JRbqG5FGDJQVGILLwvlP97szInC
+         ikjzF76An4mNYrbbq33d63Zh0aFhMXaV1m/Tw18tYaJYFQIMVFWzjCtmioj2TB+8elfs
+         47JYSkQhNW8T4DOk0cOIXZ607w/I/yt6E99hkMvllsXavtk/ozMFO7lkUekxJO6lIu4D
+         KuVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=acZ0FR3Ieh7QKceyUMnt7yQIXSOW4wSevSsBNkvC3yY=;
+        b=UiL3Z2LhF5NmPI6r0aBJPZINYWU0ME1QMJcCfQwyVzGSAYrZ5fzTcj4ofHRTuBu59c
+         kRmkt+rr8SL1TUeRypQ/e2d+LZh07b3ANqIMkPKUzCR6fXGpExOmEUjKjCXoXTT7r+U8
+         ueQHa6Y7dGpuyfQuXB/leU38D7ry5ISNd6FpYz5mOixY0kOcW/NxKW9gYXRTW97riroz
+         qqcRV/QbJjESybR+sC6VK02BgoQywnS9GaOVgupFHDSGeH8jWhgqM4lA/UlpXXxlmikS
+         cAwkovbha8v+OH7LfGmKKf7uGEBfnX4VX4oVmDIpLW6KyatP01xnt70vYnjIFtgMZmLY
+         BaqA==
+X-Gm-Message-State: AGi0PuZSW/+EmHlNKLhQyvU2veJkyfSUYqhMQvW2ziZTpcwKuyuyqzZe
+        YpbcmiezRyo9LQu0mt1FolmJSIspbA==
+X-Google-Smtp-Source: APiQypKdTZhSOVjVZwstgDXNkZTCcnf/4giguNoRyBNh+AZzAJe9kqU6nTqImQRQuLgld/qeEI585Q==
+X-Received: by 2002:adf:f34f:: with SMTP id e15mr25631800wrp.275.1586976613385;
+        Wed, 15 Apr 2020 11:50:13 -0700 (PDT)
+Received: from ninjahost.lan (79-73-33-244.dynamic.dsl.as9105.com. [79.73.33.244])
+        by smtp.gmail.com with ESMTPSA id w7sm24757618wrr.60.2020.04.15.11.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 11:50:12 -0700 (PDT)
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     boqun.feng@gmail.com
+Subject: [PATCH 0/1] Fix context imbalance warning
+Date:   Wed, 15 Apr 2020 19:49:36 +0100
+Message-Id: <20200415184937.32373-1-jbi.octave@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi,
 
-This series contains LKMM updates:
+This patch adds an annotations to clear_tasks_mm_cpumask(),
+the function registers a  warning of context imbalance when built with Sparse tool.
+The adds fix the warning.
 
-1.	Add recent references.
+I also tested it and I think it is working fine.
 
-2.	Fix "conflict" definition, courtesy of Marco Elver.
+I will appreciate any comment if possible.
 
-3.	Move MP+onceassign+derefonce to new litmus-tests/rcu/, courtesy
-	of Joel Fernandes.
+Jules Irenge (1):
+  cpu: Add annotation inside clear_tasks_mm_cpumask()
 
-4.	Add litmus test for RCU GP guarantee where updater frees object,
-	courtesy of Joel Fernandes.
+ kernel/cpu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-5.	Add litmus test for RCU GP guarantee where reader stores, courtesy
-	of Joel Fernandes.
+-- 
+2.24.1
 
-6.	Update maintainers for new Documentaion/litmus-tests/, courtesy of
-	Joel Fernandes.
-
-7.	Add an exception for limitations on _unless() family, courtesy of
-	Boqun Feng.
-
-8.	Introduce an atomic directory in Documentation, courtesy of Boqun
-	Feng.
-
-9.	Add a test for atomic_set(), courtesy of Boqun Feng.
-
-10.	Add a test for smp_mb__after_atomic(), courtesy of Boqun Feng.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/atomic_t.txt                                                                    |   24 +-
- Documentation/litmus-tests/README                                                             |   14 +
- Documentation/litmus-tests/atomic/Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus |   32 +++
- Documentation/litmus-tests/atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus             |   24 ++
- Documentation/litmus-tests/atomic/README                                                      |   16 +
- Documentation/litmus-tests/rcu/RCU+sync+free.litmus                                           |   42 +++++
- Documentation/litmus-tests/rcu/RCU+sync+read.litmus                                           |   37 ++++
- MAINTAINERS                                                                                   |    2 
- tools/memory-model/Documentation/explanation.txt                                              |   83 +++++-----
- tools/memory-model/Documentation/references.txt                                               |   21 ++
- tools/memory-model/README                                                                     |   10 -
- tools/memory-model/litmus-tests/README                                                        |    3 
- 12 files changed, 250 insertions(+), 58 deletions(-)
