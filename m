@@ -2,90 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73431AAEFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3193E1AAF01
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410580AbgDORAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:00:06 -0400
-Received: from mga02.intel.com ([134.134.136.20]:49709 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728755AbgDORAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:00:02 -0400
-IronPort-SDR: 1Fw8VJjsP4yX0PKZVR8VJEJ6N+UBQbVhC2Sjg1PNkToRaCFBzAVVK00F3hWw2zEKGGfWfkmgV4
- qOW8VodAhMYQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:59:59 -0700
-IronPort-SDR: WTJJO6LeACN+mktwEZNgLHesc6i3gOBVsV+8y3ibNLMoskZ/2JKT/XtqTDBWMfL3X9hABISSOb
- UNK5AuNfFKog==
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="453993581"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.254.190.90])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:59:56 -0700
-Message-ID: <12612c48b9d00d10350d5e07587d90ae3759101f.camel@linux.intel.com>
-Subject: Re: [PATCH] tools/power/x86/intel-speed-select: Fix CLX-N package
- information output
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Prarit Bhargava <prarit@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Date:   Wed, 15 Apr 2020 09:59:53 -0700
-In-Reply-To: <20200415161043.GU185537@smile.fi.intel.com>
-References: <20200402180732.24684-1-prarit@redhat.com>
-         <20200415161043.GU185537@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
+        id S2410606AbgDORBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728755AbgDORAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:00:52 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C136FC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:00:52 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id nu11so106639pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0zz7rP3DWvUJ/VdB/uYLN17A7qtq95b2KZVxc0CNxN8=;
+        b=nMScmT1YfkHnp5d9ktcd27MszVIt1dzN6BZYoV9+sCpGotbOhmNHMTymZ/mgfEzo2/
+         XQFEjXL/GcQz3TOQgZwOJMDQoP0vJrYGaQg6Dy9WRYnzJXT529pfOdBeFcnv5eO59T8j
+         Uo1C6C+kEOvLzXqU9/EmZjhlh3ApbvGerYBKI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0zz7rP3DWvUJ/VdB/uYLN17A7qtq95b2KZVxc0CNxN8=;
+        b=S2pMXz6Nn+SzbSTYukdB0e3svCXmnRrnaBRP39mqnsr35Tjd+50Vcbml5dTDd6KJMl
+         smjIbagmF5q3HWius6Ne97PDRFekVLK06bs4LkKd3FtDVj8lzxbaNJe/At2EgZCa/NQI
+         uyRNcBPh95bFC/rJ1iZYTjomAEQ/Ija8yw/F5pdHYc7DRSx5lRZsxO+o7gZ5QmJWjTca
+         5ociv6lXLv1p0z8XsSYXuxODqyZpEFwAq/q0mtxuiy4dW0nYkx+HseiHjB6SKysDVlV+
+         0wbnEz7xruj+xS4zAx95Yc6OT59Zh/zp03lgpKgJjpGU15rwAfZCKsoGtucUN2yte49P
+         BzVA==
+X-Gm-Message-State: AGi0PubLyPd7OoEN+wNihom8iGTV+Idnu0aFZNZfeBEvVkcu0oBzNdQl
+        q/nc61UrSg1EC/R5ayL422/mNQ==
+X-Google-Smtp-Source: APiQypK1ORgUTaF7VYeYwPYtOrt7RLRDn4vD2dSwdFXifV0CT+TvS60cSUMWkcYK9mJmXcjE8bGlKg==
+X-Received: by 2002:a17:902:322:: with SMTP id 31mr5876290pld.103.1586970049865;
+        Wed, 15 Apr 2020 10:00:49 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id i187sm14203509pfg.33.2020.04.15.10.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 10:00:49 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     mkshah@codeaurora.org, mka@chromium.org, joe@perches.com,
+        swboyd@chromium.org, evgreen@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] soc: qcom: rpmh-rsc: Factor "tcs_reg_addr" and "tcs_cmd_addr" calculation
+Date:   Wed, 15 Apr 2020 10:00:27 -0700
+Message-Id: <20200415095953.v3.1.Ic70288f256ff0be65cac6a600367212dfe39f6c9@changeid>
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-15 at 19:10 +0300, Andy Shevchenko wrote:
-> On Thu, Apr 02, 2020 at 02:07:32PM -0400, Prarit Bhargava wrote:
-> > On CLX-N the perf-profile output is missing the package, die, and
-> > cpu
-> > output.  On CLX-N the pkg_dev struct will never be evaluated by the
-> > core
-> > code so pkg_dev.processed is always 0 and the package, die, and cpu
-> > information is never output.
-> > 
-> > Set the pkg_dev.processed flag to 1 for CLX-N processors.
-> 
-Sorry Prarit. It took long to respond. The patch is fine. I am applying
-to my tree.
+We can make some of the register access functions more readable by
+factoring out the calculations a little bit.
 
--Srinivas
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-> I will accept this with PR from Srinivas whenever he sends one to
-> public mailing list.
-> 
-> > Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-> > Cc: andriy.shevchenko@linux.intel.com
-> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Cc: platform-driver-x86@vger.kernel.org
-> > ---
-> >  tools/power/x86/intel-speed-select/isst-config.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/tools/power/x86/intel-speed-select/isst-config.c
-> > b/tools/power/x86/intel-speed-select/isst-config.c
-> > index d1ac57be0cbd..2e64b9b6eb2e 100644
-> > --- a/tools/power/x86/intel-speed-select/isst-config.c
-> > +++ b/tools/power/x86/intel-speed-select/isst-config.c
-> > @@ -1169,6 +1169,7 @@ static void dump_clx_n_config_for_cpu(int
-> > cpu, void *arg1, void *arg2,
-> >  
-> >  		ctdp_level = &clx_n_pkg_dev.ctdp_level[0];
-> >  		pbf_info = &ctdp_level->pbf_info;
-> > +		clx_n_pkg_dev.processed = 1;
-> >  		isst_ctdp_display_information(cpu, outf, tdp_level,
-> > &clx_n_pkg_dev);
-> >  		free_cpu_set(ctdp_level->core_cpumask);
-> >  		free_cpu_set(pbf_info->core_cpumask);
-> > -- 
-> > 2.18.2
-> > 
+Changes in v3: None
+Changes in v2:
+- Make drv parameter const.
+
+ drivers/soc/qcom/rpmh-rsc.c | 41 +++++++++++++++++++++++--------------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+index a9e15699f55f..ce39d8399312 100644
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -137,36 +137,47 @@
+  *  +---------------------------------------------------+
+  */
+ 
+-static u32 read_tcs_cmd(struct rsc_drv *drv, int reg, int tcs_id, int cmd_id)
++static inline void __iomem *
++tcs_reg_addr(const struct rsc_drv *drv, int reg, int tcs_id)
+ {
+-	return readl_relaxed(drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg +
+-			     RSC_DRV_CMD_OFFSET * cmd_id);
++	return drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg;
+ }
+ 
+-static u32 read_tcs_reg(struct rsc_drv *drv, int reg, int tcs_id)
++static inline void __iomem *
++tcs_cmd_addr(const struct rsc_drv *drv, int reg, int tcs_id, int cmd_id)
+ {
+-	return readl_relaxed(drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg);
++	return tcs_reg_addr(drv, reg, tcs_id) + RSC_DRV_CMD_OFFSET * cmd_id;
+ }
+ 
+-static void write_tcs_cmd(struct rsc_drv *drv, int reg, int tcs_id, int cmd_id,
+-			  u32 data)
++static u32 read_tcs_cmd(const struct rsc_drv *drv, int reg, int tcs_id,
++			int cmd_id)
++{
++	return readl_relaxed(tcs_cmd_addr(drv, reg, tcs_id, cmd_id));
++}
++
++static u32 read_tcs_reg(const struct rsc_drv *drv, int reg, int tcs_id)
+ {
+-	writel_relaxed(data, drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg +
+-		       RSC_DRV_CMD_OFFSET * cmd_id);
++	return readl_relaxed(tcs_reg_addr(drv, reg, tcs_id));
+ }
+ 
+-static void write_tcs_reg(struct rsc_drv *drv, int reg, int tcs_id, u32 data)
++static void write_tcs_cmd(const struct rsc_drv *drv, int reg, int tcs_id,
++			  int cmd_id, u32 data)
++{
++	writel_relaxed(data, tcs_cmd_addr(drv, reg, tcs_id, cmd_id));
++}
++
++static void write_tcs_reg(const struct rsc_drv *drv, int reg, int tcs_id,
++			  u32 data)
+ {
+-	writel_relaxed(data, drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg);
++	writel_relaxed(data, tcs_reg_addr(drv, reg, tcs_id));
+ }
+ 
+-static void write_tcs_reg_sync(struct rsc_drv *drv, int reg, int tcs_id,
++static void write_tcs_reg_sync(const struct rsc_drv *drv, int reg, int tcs_id,
+ 			       u32 data)
+ {
+-	writel(data, drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg);
++	writel(data, tcs_reg_addr(drv, reg, tcs_id));
+ 	for (;;) {
+-		if (data == readl(drv->tcs_base + reg +
+-				  RSC_DRV_TCS_OFFSET * tcs_id))
++		if (data == readl(tcs_reg_addr(drv, reg, tcs_id)))
+ 			break;
+ 		udelay(1);
+ 	}
+-- 
+2.26.0.110.g2183baf09c-goog
 
