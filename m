@@ -2,77 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8696C1A9633
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5077D1A9772
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635854AbgDOIWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:22:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40588 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2635838AbgDOIWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:22:20 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4E800ADEF80EC8DF914A;
-        Wed, 15 Apr 2020 16:22:18 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
- 16:22:07 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <yanaijie@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <gustavo@embeddedor.com>, <yamada.masahiro@socionext.com>,
-        <miguel.ojeda.sandonis@gmail.com>
-CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] lib: zstd: remove FSE_sizeof_CTable()
-Date:   Wed, 15 Apr 2020 16:48:34 +0800
-Message-ID: <20200415084834.5573-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S2895068AbgDOIs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2895041AbgDOIss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:48:48 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49C4C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:48:47 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b11so6721223wrs.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bingham-xyz.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EV5cZQCkbQanB0lPQS10XkYLf15qJlxPNzHeKA7zsLw=;
+        b=WEm8jhqdU1woAxVuZBEqvWaqlQkGFqXgT0EEeizN/GYrDU8HzSam3p5Bh0bKFdPIUV
+         3E3T9OEkaeu2Lq6dG5A2NxKCHa/dRd7m6cYtQC6DU+grEEb9y1YcSXKqCwHA6VuVeb5a
+         xOk7Lf6NIj7aQF6KYpKp1Juxn/bCnifH//THfrr0HVIiTaEfVGaupdRS554jdY3C/FRa
+         94KD8mtj5A5WJlxMl36ainFivi0yCJ8l7ZdwWNHKx0nvq9sgBaa+oFU0IhZmYktEhu++
+         k05ptqfH8j3mLQbrbM1h/2CieyAjHdYIME2g9eQyH4fJ++zhwNb/Htd5j8YT/n8DZ5AW
+         0JzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=EV5cZQCkbQanB0lPQS10XkYLf15qJlxPNzHeKA7zsLw=;
+        b=meUnnqtTJFosiUhku/vpZAal++bw0zhZI9Tx6HYPN2Y16183WeaJoG1iTpOgRXJaq3
+         6sTKAbX4R+77pwtB5pimrCHI3fcvRfqkGbbzbFJD2jvqcsska04QDihM1rxsXEzsIv1l
+         wk2CtTpQafklX9bIIaIn4j1wJ1VvYEgo7Ojp7fm3IhknJltj9cHAqbx06oP9cepQF+mk
+         k6R4hvayc3MKsCvMPn9cH2dtPeyeC3UdcOqebUAWKpHZAfOsyBq2lCo+qUsfgRQV1yZR
+         wV3qZOb5Zra47iKOjPsHXkuEgDb422yb0dRBszRGZxchdW7q/tJ4qT64077CgOomUhY1
+         Tbqg==
+X-Gm-Message-State: AGi0PuYyaTMPsX24pVcAo3sS0YIgbqHsLx8cUadoutWArutz6Aqb68Qh
+        3GCepcMoUqwEWQRpB+kuXLYQuA==
+X-Google-Smtp-Source: APiQypJ1QuWXon39j7rg9O4EUM0G25LnqKPwxKa/minvpBY5w+Ttpn13mJtxU3cCUWEm65PHXRdisg==
+X-Received: by 2002:a5d:6645:: with SMTP id f5mr29429303wrw.280.1586940526517;
+        Wed, 15 Apr 2020 01:48:46 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net. [86.31.129.233])
+        by smtp.gmail.com with ESMTPSA id i25sm21874124wml.43.2020.04.15.01.48.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Apr 2020 01:48:45 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 2/6] i2c: allow DT nodes without 'compatible'
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+ <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
+From:   Kieran Bingham <kieran@ksquared.org.uk>
+Openpgp: preference=signencrypt
+Autocrypt: addr=kieran@bingham.xyz; keydata=
+ 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
+ QglrIkyNWSZm4Hhw98VxYDwOwmYhoXmAFg==
+Message-ID: <74aa4084-588f-1b6f-2256-44588c48edf6@bingham.xyz>
+Date:   Wed, 15 Apr 2020 09:48:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No users of FSE_sizeof_CTable() now, so remove it.
-This fixes a sparse warning:
+Hi Wolfram,
 
-lib/zstd/fse_compress.c:477:8: warning: symbol 'FSE_sizeof_CTable' was
-not declared. Should it be static?
+On 18/03/2020 15:00, Wolfram Sang wrote:
+> Sometimes, we have unknown devices in a system and still want to block
+> their address. For that, we allow DT nodes with only a 'reg' property.
+> These devices will be bound to the "dummy" driver but with the name
+> "reserved". That way, we can distinguish them and even hand them over to
+> the "dummy" driver later when they are really requested using
+> i2c_new_ancillary_device().
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- lib/zstd/fse_compress.c | 14 --------------
- 1 file changed, 14 deletions(-)
+Oh how I long to be able to give these 'identifiable names' within the
+system, but that will probably mess up all the driver matching and
+binding, so would be quite tricky perhaps.
 
-diff --git a/lib/zstd/fse_compress.c b/lib/zstd/fse_compress.c
-index ef3d1741d532..0c059bef379c 100644
---- a/lib/zstd/fse_compress.c
-+++ b/lib/zstd/fse_compress.c
-@@ -466,20 +466,6 @@ size_t FSE_count_wksp(unsigned *count, unsigned *maxSymbolValuePtr, const void *
- /*-**************************************************************
- *  FSE Compression Code
- ****************************************************************/
--/*! FSE_sizeof_CTable() :
--	FSE_CTable is a variable size structure which contains :
--	`U16 tableLog;`
--	`U16 maxSymbolValue;`
--	`U16 nextStateNumber[1 << tableLog];`                         // This size is variable
--	`FSE_symbolCompressionTransform symbolTT[maxSymbolValue+1];`  // This size is variable
--Allocation is manual (C standard does not support variable-size structures).
--*/
--size_t FSE_sizeof_CTable(unsigned maxSymbolValue, unsigned tableLog)
--{
--	if (tableLog > FSE_MAX_TABLELOG)
--		return ERROR(tableLog_tooLarge);
--	return FSE_CTABLE_SIZE_U32(tableLog, maxSymbolValue) * sizeof(U32);
--}
- 
- /* provides the minimum logSize to safely represent a distribution */
- static unsigned FSE_minTableLog(size_t srcSize, unsigned maxSymbolValue)
--- 
-2.21.1
+But I like the ability to distinguish the two different types.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-ocores.txt | 2 --
+>  Documentation/devicetree/bindings/i2c/i2c.txt        | 4 +++-
+>  drivers/i2c/i2c-core-base.c                          | 1 +
+>  drivers/i2c/i2c-core-of.c                            | 8 +++-----
+>  drivers/i2c/i2c-core.h                               | 1 +
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-ocores.txt b/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
+> index 6b25a80ae8d3..fc8ea27934b3 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
+> @@ -50,7 +50,6 @@ Examples:
+>  		reg-io-width = <1>;	/* 8 bit read/write */
+>  
+>  		dummy@60 {
+> -			compatible = "dummy";
+>  			reg = <0x60>;
+>  		};
+>  	};
+> @@ -68,7 +67,6 @@ or
+>  		reg-io-width = <1>;	/* 8 bit read/write */
+>  
+>  		dummy@60 {
+> -			compatible = "dummy";
+>  			reg = <0x60>;
+>  		};
+>  	};
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c.txt b/Documentation/devicetree/bindings/i2c/i2c.txt
+> index 9a53df4243c6..989b315e09dc 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c.txt
+> @@ -21,7 +21,9 @@ flags can be attached to the address. I2C_TEN_BIT_ADDRESS is used to mark a 10
+>  bit address. It is needed to avoid the ambiguity between e.g. a 7 bit address
+>  of 0x50 and a 10 bit address of 0x050 which, in theory, can be on the same bus.
+>  Another flag is I2C_OWN_SLAVE_ADDRESS to mark addresses on which we listen to
+> -be devices ourselves.
+> +be devices ourselves. The 'reg' property of a child is required. The
+> +'compatible' property is not. Empty 'compatible' child entries can be used to
+> +describe unknown devices or addresses which shall be blocked for other reasons.
+>  
+>  Optional properties
+>  -------------------
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 3d7b8a00a7d9..84464e439df5 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -854,6 +854,7 @@ EXPORT_SYMBOL_GPL(i2c_unregister_device);
+>  
+>  static const struct i2c_device_id dummy_id[] = {
+>  	{ I2C_DUMMY_DRV_NAME, 0 },
+> +	{ I2C_RESERVED_DRV_NAME, 0 },
+>  	{ },
+>  };
+>  
+> diff --git a/drivers/i2c/i2c-core-of.c b/drivers/i2c/i2c-core-of.c
+> index 6787c1f71483..d8d111ad6c85 100644
+> --- a/drivers/i2c/i2c-core-of.c
+> +++ b/drivers/i2c/i2c-core-of.c
+> @@ -27,17 +27,15 @@ int of_i2c_get_board_info(struct device *dev, struct device_node *node,
+>  
+>  	memset(info, 0, sizeof(*info));
+>  
+> -	if (of_modalias_node(node, info->type, sizeof(info->type)) < 0) {
+> -		dev_err(dev, "of_i2c: modalias failure on %pOF\n", node);
+> -		return -EINVAL;
+> -	}
+> -
+>  	ret = of_property_read_u32(node, "reg", &addr);
+>  	if (ret) {
+>  		dev_err(dev, "of_i2c: invalid reg on %pOF\n", node);
+>  		return ret;
+>  	}
+>  
+> +	if (of_modalias_node(node, info->type, sizeof(info->type)) < 0)
+> +		strlcpy(info->type, I2C_RESERVED_DRV_NAME, sizeof(I2C_RESERVED_DRV_NAME));
+> +
+>  	if (addr & I2C_TEN_BIT_ADDRESS) {
+>  		addr &= ~I2C_TEN_BIT_ADDRESS;
+>  		info->flags |= I2C_CLIENT_TEN;
+> diff --git a/drivers/i2c/i2c-core.h b/drivers/i2c/i2c-core.h
+> index fb89fabf84d3..77b3a925ed95 100644
+> --- a/drivers/i2c/i2c-core.h
+> +++ b/drivers/i2c/i2c-core.h
+> @@ -23,6 +23,7 @@ int i2c_dev_irq_from_resources(const struct resource *resources,
+>  			       unsigned int num_resources);
+>  
+>  #define I2C_DUMMY_DRV_NAME "dummy"
+> +#define I2C_RESERVED_DRV_NAME "reserved"
+>  
+>  /*
+>   * We only allow atomic transfers for very late communication, e.g. to send
+> 
 
