@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCBE1AB0C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCABB1AB123
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416806AbgDOScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:32:18 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15570 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416781AbgDOScN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:32:13 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9752bf0001>; Wed, 15 Apr 2020 11:30:23 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 15 Apr 2020 11:32:13 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 11:32:13 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
- 2020 18:32:13 +0000
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
- DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Wed, 15 Apr 2020 18:32:12 +0000
-Subject: Re: [PATCH] mm/memblock: Fix a typo in comment "implict"->"implicit"
-To:     Ethon Paul <ethp@qq.com>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20200411070701.16097-1-ethp@qq.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <3a15563b-de6c-7808-3c3c-f2ff12dc46de@nvidia.com>
-Date:   Wed, 15 Apr 2020 11:32:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1731243AbgDOTGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:06:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1416781AbgDOSdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:33:44 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A6DF20771;
+        Wed, 15 Apr 2020 18:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586975624;
+        bh=WtjKxO5VEr0mf7bV2OUqDFxSVxzx7tYfmxjZmdpf1ZI=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=2bKf75KC94YT83PyuPmY7GgR+gC5o3S7kIL0b0afa3jibkcC0pjBSfvhXiJtJAUJs
+         9hO1rrpxJs0MjNbegjfOiMlS3i+aVDVreLmtOUhLO8cc1Nccqs1AHeDn7vn62Hn8QI
+         8wjFmySZAkQZvK91tXj96eXzmbOMHWi9Fq+uPnv8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DE0FA3522AD1; Wed, 15 Apr 2020 11:33:43 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 11:33:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
+        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com
+Subject: [PATCH kcsan 0/15] KCSAN updates for v5.8
+Message-ID: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20200411070701.16097-1-ethp@qq.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586975423; bh=7LwprBHLDzZhAWgs54pXObtERSf8bwUFR+a+iu/GM4w=;
-        h=X-PGP-Universal:Subject:To:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=XKCpi1B1mI62T/RI03mgDa3J6jblKt/0hwmpHZyuC8NgFMeQfw6fpQm5qlUMLc83y
-         umLoxipSaNI6MMdwUSBuSSSLZ7sJdRq4HzZAwA2hFahun3ALiF2LYmvY6s0ubxyvRd
-         GcDcnFSbjEAZZNGNGwkFi1czvkwBxQ4u9DakLtELLr5mJKOeq0jRyUOjshr5YeI8o2
-         wzeEHYehbXQ2ex7kbhpD6Gl5Kbi+3DhE6cTLe0jeEefYiykX4LZJSPTF1ZFGvVRHI6
-         FlRecxFm7EJk+6gMZ3WIgCDMwCPCWHDmLWSyTR1p25zTI3cl92IKfC8erfxPliyvTf
-         1Bm/3oJNGJvqw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-On 4/11/20 12:07 AM, Ethon Paul wrote:
-> There is a typo in commet, fix it.
-> 
-> Signed-off-by: Ethon Paul <ethp@qq.com>
+This series contains KCSAN updates.  Unless otherwise noted, these are
+all courtesy of Marco Elver.
 
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+1.	Add option to allow watcher interruptions.
 
-> ---
->   mm/memblock.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 4d06bbaded0f..4cae23d2373a 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -78,7 +78,7 @@
->    * * memblock_alloc*() - these functions return the **virtual** address
->    *   of the allocated memory.
->    *
-> - * Note, that both API variants use implict assumptions about allowed
-> + * Note, that both API variants use implicit assumptions about allowed
->    * memory ranges and the fallback methods. Consult the documentation
->    * of memblock_alloc_internal() and memblock_alloc_range_nid()
->    * functions for more elaborate description.
-> 
+2.	Add option for verbose reporting.
+
+3.	Add current->state to implicitly atomic accesses.
+
+4.	Fix a typo in a comment, courtesy of Qiujun Huang.
+
+5.	Update Documentation/dev-tools/kcsan.rst.
+
+6.	Update API documentation in kcsan-checks.h.
+
+7.	Introduce report access_info and other_info.
+
+8.	Avoid blocking producers in prepare_report().
+
+9.	Add support for scoped accesses.
+
+10.	objtool, kcsan: Add explicit check functions to uaccess whitelist.
+
+11.	Introduce scoped ASSERT_EXCLUSIVE macros.
+
+12.	Move kcsan_{disable,enable}_current() to kcsan-checks.h.
+
+13.	Change data_race() to no longer require marking racing accesses.
+
+14.	Fix function matching in report.
+
+15.	Make reporting aware of KCSAN tests.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/dev-tools/kcsan.rst |  230 ++++++++++------
+ include/linux/compiler.h          |    4 
+ include/linux/kcsan-checks.h      |  244 ++++++++++++++---
+ include/linux/kcsan.h             |   19 -
+ init/init_task.c                  |    1 
+ kernel/kcsan/atomic.h             |   21 -
+ kernel/kcsan/core.c               |  182 ++++++++----
+ kernel/kcsan/debugfs.c            |   43 ++-
+ kernel/kcsan/kcsan.h              |    8 
+ kernel/kcsan/report.c             |  543 +++++++++++++++++++++++---------------
+ lib/Kconfig.kcsan                 |   24 +
+ tools/objtool/check.c             |    2 
+ 12 files changed, 887 insertions(+), 434 deletions(-)
