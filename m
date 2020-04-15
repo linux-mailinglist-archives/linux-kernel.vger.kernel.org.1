@@ -2,168 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881B21AAE36
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30CC1AAE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415964AbgDOQ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:28:08 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47706 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415915AbgDOQ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:27:34 -0400
-IronPort-SDR: uW+unV75qdgb2U3L5czKZHvzFBcd+OVz2xdv1KqZvh/+6GDzdW8MNMCQSEhJZcPlI6TZAlltid
- WwtLZa9AIqqQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:27:32 -0700
-IronPort-SDR: 5eJIAnbaBUkT7vmvZkQM8f4n6QiHLKkUwZB9EHJFNVj+7PpXC3EXfK7UzRjNtMHYpKIkPPTApK
- LtRhGUpSvepA==
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="256907570"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:27:25 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id C6B5D20606; Wed, 15 Apr 2020 19:27:22 +0300 (EEST)
-Date:   Wed, 15 Apr 2020 19:27:22 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH v5 2/5] media: i2c: ov5645: Drop reading clock-frequency
- dt-property
-Message-ID: <20200415162722.GG27762@paasikivi.fi.intel.com>
-References: <1586191361-16598-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1586191361-16598-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200406165108.GA7646@kekkonen.localdomain>
- <20200406173234.GD16885@pendragon.ideasonboard.com>
- <20200407062241.GA8883@kekkonen.localdomain>
- <20200407122106.GD4751@pendragon.ideasonboard.com>
- <20200407151401.GA5206@paasikivi.fi.intel.com>
- <20200414205552.GN19819@pendragon.ideasonboard.com>
+        id S1416021AbgDOQ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1415915AbgDOQ2M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:28:12 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16755C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:28:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id q19so4342660ljp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YVnJHMzMX4zea+T2RwyrRODXUlwOsF2FdlsCZVHk+oo=;
+        b=kgYC/NzubYiLAa6kaXJ4bjDzEtBuG4wQ+FjtTCgn9wj25YfXSiFb/4XypzMVgiuvnB
+         v6FwIp8E0EtRxWKEWEjFCgdimullb21rQl/7OFdqhwvDwYA1RwWXtH1tJa1W0k38dqxp
+         VYFKX8SXqzlIlCJouxs7cvVdrx80p6dQdVvAOMlN52FrkxxSAY9wJ8v2BvWgVuhXGCvh
+         +dNtiAA8Olr/D02x3XYacqD3kAiOB7sCEWRHq0VUiqLf37SLmaixRE/g3Z6L4yo5P42r
+         DBUnhBLHOJ5zyVGo3L9RKpNtwUcGlBAoPNbxL9HIYb+GA9q32gKFgP1CkorAJnEe8oPp
+         WMQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YVnJHMzMX4zea+T2RwyrRODXUlwOsF2FdlsCZVHk+oo=;
+        b=pN+u+Qd1J/J/72Ab/Q0spwcZbHxgpUqX9crj2JxXZXBDDFrhJ+WMNjfOumzzSwp8JN
+         v7edoodKmCfCTYoCpUrnkIEClgmw19jRm2/D71PswWFFh5gut1H1Ar1NA+6+1o6sO5Kj
+         EcEusSSqU7ZkipLtxqazLKH03QJEhsE/cjTrmXEWC9rn20hJCJTrnIkHLWh6RYIPiyGC
+         3qTHNvZwXAEAhkEzmnoE/iVFNsx04auOtvADRBOr/hp31pn6tlAXKe2Bx296qaZfU5OG
+         JcRbb5MpCPBDCNd71bM9WHO2qruiEil5T7LEnUA/N7PVEAOQXjrJsv8PX0DX7kWiqdAl
+         0bHw==
+X-Gm-Message-State: AGi0PualGhQPB/Qr+PHIpn4GM8fkbhh4ad5PkkWEgiKvRqwtzafUHXC4
+        gsFUxuCIU52+ZcopUUptN1XoSlky
+X-Google-Smtp-Source: APiQypKl/fUg0WTlkFu5qkcnzx/jvwxvDUVKWbkC0unYzPiM/9O/T7aeBG8UEwFm1a4e3kN0cGfOJA==
+X-Received: by 2002:a05:651c:102f:: with SMTP id w15mr3601309ljm.5.1586968090308;
+        Wed, 15 Apr 2020 09:28:10 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id s10sm12089253ljp.87.2020.04.15.09.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 09:28:09 -0700 (PDT)
+Subject: Re: [PATCH] regulator: use consumer->supply_name in
+ debugfs/regulator_summary
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <731a4b299c6ae0ee9d8995157600a3477f21a36c.1585959068.git.mirq-linux@rere.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <606b7ddd-0c9b-2ba1-f873-8507377fdc4e@gmail.com>
+Date:   Wed, 15 Apr 2020 19:28:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414205552.GN19819@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <731a4b299c6ae0ee9d8995157600a3477f21a36c.1585959068.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On Tue, Apr 14, 2020 at 11:55:52PM +0300, Laurent Pinchart wrote:
-> Hi Sakari,
+04.04.2020 03:11, Michał Mirosław пишет:
+> Make it easier to identify regulator consumers when consumer device
+> uses more than one supply.
 > 
-> On Tue, Apr 07, 2020 at 06:14:01PM +0300, Sakari Ailus wrote:
-> > On Tue, Apr 07, 2020 at 03:21:06PM +0300, Laurent Pinchart wrote:
-> > > On Tue, Apr 07, 2020 at 09:22:41AM +0300, Sakari Ailus wrote:
-> > >> On Mon, Apr 06, 2020 at 08:32:34PM +0300, Laurent Pinchart wrote:
-> > >>> On Mon, Apr 06, 2020 at 07:51:08PM +0300, Sakari Ailus wrote:
-> > >>>> On Mon, Apr 06, 2020 at 05:42:38PM +0100, Lad Prabhakar wrote:
-> > >>>>> Modes in the driver are based on xvclk frequency fixed to 24MHz, but where
-> > >>>>> as the OV5645 sensor can support the xvclk frequency ranging from 6MHz to
-> > >>>>> 24MHz. So instead making clock-frequency as dt-property just let the
-> > >>>>> driver enforce the required clock frequency.
-> > >>>> 
-> > >>>> Even if some current systems where the driver is used are using 24 MHz
-> > >>>> clock, that doesn't mean there wouldn't be systems using another frequency
-> > >>>> that the driver does not support right now.
-> > >>>> 
-> > >>>> The driver really should not set the frequency unless it gets it from DT,
-> > >>>> but I think the preferred means is to use assigned-clock-rates instead, and
-> > >>>> not to involve the driver with setting the frequency.
-> > >>>> 
-> > >>>> Otherwise we'll make it impossible to support other frequencies, at least
-> > >>>> without more or less random defaults.
-> > >>> 
-> > >>> We're running in circles here.
-> > >>> 
-> > >>> As the driver only supports 24MHz at the moment, the frequency should be
-> > >>> set by the driver, as it's a driver limitation. We can then work on
-> > >>> supporting additional frequencies, which will require DT to provide a
-> > >>> list of supported frequencies for the system, but that can be done on
-> > >>> top.
-> > >> 
-> > >> I guess it would be possible to use different external clock frequencies on
-> > >> a sensor in a given system but that seems to be a bit far fetched, to the
-> > >> extent I've never seen anyone doing that in practice.
-> > >> 
-> > >> Originally, the driver set the frequency based on the clock-frequency
-> > >> property. If we're removing that but use a fixed frequency instead, then
-> > >> how is that going to work going forward when someone adds support for other
-> > >> frequencies in the driver and has a system requiring that, while there are
-> > >> some other platforms relying on the driver setting a particular frequency?
-> > > 
-> > > The standard property for this is link-frequencies, not clock-frequency.
-> > > Deprecating clock-frequency now paves the way to use the standard
-> > > property later when/if someone implements support for additional
-> > > frequencies.
-> > 
-> > The external clock frequency and link frequency are different indeed, but
-> > they are related. The link frequency has been selected in a way that it is
-> > possible to generate that exact frequency using the chosen external clock
-> > frequency. If you change the external clock frequency, chances are good
-> > there is no PLL configuration to generate that link frequency.
+> Before:
 > 
-> But aren't we supposed to pick the clock frequency based on the link
-> frequency specified in DT ?
-
-No. In a general case there is no reliable way to come up with an external
-clock frequency based on another, different if related, frequency.
-
+>   regulator                      ena use open bypass voltage current min     max
+>  -----------------------------------------------------------------------------------
+>   regulator-dummy                  1   0    2      0     0mV     0mA 0mV     0mV
+>      1-0010                                                          0mV     0mV
+>      1-0010                                                          0mV     0mV
 > 
-> In any case, this policy needs to be carefully documented.
-
-I thought after ten or so years this would be already an established
-practice. :-)
-
-I agree it should be documented. We don't seem to have specific
-documentation for camera sensor drivers at the moment. I can submit a
-patch...
-
+> After:
 > 
-> > >> Although, if you're saying that this driver only needs to work with DT that
-> > >> comes with the kernel and you don't care about DT binary compatibility,
-> > >> this would be fine.
-> > > 
-> > > I believe this series to not break backward compatibility, as the driver
-> > > only works with a 24MHz clock, so I expect all DTs to specify that.
-> > 
-> > What you're still doing here is defining the DT bindings based on the
-> > current driver implementation, not the device properties.
+>   regulator                      ena use open bypass voltage current min     max
+>  -----------------------------------------------------------------------------------
+>   regulator-dummy                  1   0    2      0     0mV     0mA 0mV     0mV
+>      1-0010-vccio                                                    0mV     0mV
+>      1-0010-vcc33                                                    0mV     0mV
 > 
-> Quite the contrary, the device doesn't require any particular input
-> clock frequency, so we're removing that from DT :-) Specifying the clock
-> frequency in DT is in my opinion a manual workaround for not computing
-> it at runtime based on the desired link frequency, while the link
-> frequency is a property of the system as it specifies the range of link
-> frequencies that are safe to use from an EMC point of view.
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> ---
+>  drivers/regulator/core.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+> index c340505150b6..ad143004c32b 100644
+> --- a/drivers/regulator/core.c
+> +++ b/drivers/regulator/core.c
+> @@ -5496,6 +5496,7 @@ static void regulator_summary_show_subtree(struct seq_file *s,
+>  		seq_printf(s, "%*s%-*s ",
+>  			   (level + 1) * 3 + 1, "",
+>  			   30 - (level + 1) * 3,
+> +			   consumer->supply_name ? consumer->supply_name :
+>  			   consumer->dev ? dev_name(consumer->dev) : "deviceless");
+>  
+>  		switch (rdev->desc->type) {
+> 
 
-The external clock frequency is significantly lower than the link frequency
-(usually), but it still comes out of the SoC (or a PMIC chip). The clock
-signal track on PCB as well as wiring may also be rather long, depending on
-where the camera sensor is --- quite possibly tens of centimetres.
-Therefore I wouldn't categorically rule out possible EMC issues with that
-one either.
+Hello Michał,
 
-The bottom line is: use a known-good, safe frequency.
+This is a very nice improvement, I like it!
 
--- 
-Regards,
-
-Sakari Ailus
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
