@@ -2,77 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13601A9BF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CC01A9BF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896836AbgDOLQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:16:08 -0400
-Received: from sauhun.de ([88.99.104.3]:52850 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896802AbgDOLM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:12:57 -0400
-Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
-        by pokefinder.org (Postfix) with ESMTPSA id C08EA2C1FF1;
-        Wed, 15 Apr 2020 13:12:55 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 13:12:55 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Aishwarya R <aishwaryarj100@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Richard Fontana <rfontana@redhat.com>,
-        linux-i2c@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: powermac: Simplify reading the "reg" and
- "i2c-address" property
-Message-ID: <20200415111255.GP1141@ninjato>
-References: <20200408100354.17782-1-aishwaryarj100@gmail.com>
+        id S2896846AbgDOLQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896819AbgDOLN4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:13:56 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267ECC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:13:41 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o81so11338998wmo.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wvwCnQfvn/D3yTYVIatgF0Dj2nXBoxZoBca6sT2p9Rc=;
+        b=bGcv33xMQLgfNtUOfjjcX4of7mEIfkiQSif2zJ1xLMHNR6H3M6UkD8UjGS34zeJ5yr
+         HYge7lRmvFENxlm0cAq8O9U3eVhyv9V389VRaPQX7cIwZ/yqbQgnOa7pFmd8FBaLbt0o
+         4cg25hwscMQ1x9A9NldicpDAPR581llnFRQcc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=wvwCnQfvn/D3yTYVIatgF0Dj2nXBoxZoBca6sT2p9Rc=;
+        b=HOZ695hPwplucldTGnZs5wAB5iXE4YVmF5XbwlAfywDJitXbEib6qFssx6jQN0acGZ
+         scwCWsBYU2Ye3l8Q7IeJuZiUZIzi2N0ShhXE0uZ+hWg0VjEVnWv4cyAPG6wCuU+cSYft
+         7HZ7a2inu3EdGtVYgpdZwAawUKuPzNEk2b5H5BPk9keSbcwrTwGfwIGsU7jE94dpB7Vw
+         bRmSzMWlSqIVSQ0vy62JCfKHefMrxQ8KA7GhGQjoY1BTx8Caab91gDPf0AbwMl6Cn9kl
+         x2xTx1nakqqVVTllUdSVO6KyepGonvppi4fye2qpMUs7lV9BWQqqT9SkTk2UiWRzXV7G
+         9BPA==
+X-Gm-Message-State: AGi0PuYn8JOI/D8g4l0JE1wqwGiIGk223Xl6uwubNQ+dM10BCEEYu8jc
+        /vM0yH9SaDLtueKi523QAvPtAw==
+X-Google-Smtp-Source: APiQypIahM+ZakKuCkW965ou0SjQzZmB10A4snEMgfEWVjOZaVHi9N4z5Cta4w/rqP+0WOLL49ymiw==
+X-Received: by 2002:a1c:4b0a:: with SMTP id y10mr4593858wma.24.1586949218840;
+        Wed, 15 Apr 2020 04:13:38 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q17sm14212238wmj.45.2020.04.15.04.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 04:13:37 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 13:13:36 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Yussuf Khalil <dev@pp3345.net>, Daniel Vetter <daniel@ffwll.ch>,
+        Simon Ser <contact@emersion.fr>,
+        David Airlie <airlied@linux.ie>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 5/5] drm/i915: Replace "Broadcast RGB" with "RGB
+ quantization range" property
+Message-ID: <20200415111336.GZ3456981@phenom.ffwll.local>
+Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
+        Yussuf Khalil <dev@pp3345.net>, Simon Ser <contact@emersion.fr>,
+        David Airlie <airlied@linux.ie>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20200413214024.46500-1-dev@pp3345.net>
+ <20200413214024.46500-6-dev@pp3345.net>
+ <daCvJk4O6rHOwEometGSPENJupb6adPr583_dLEetvftUQPbK4198VDijHGzM9uTm9bP3TEyGCZvxKe5PSvqWBg5xhXkL_7EiAQlmEPKWQI=@emersion.fr>
+ <87ftd6mi3e.fsf@intel.com>
+ <87d08amhy5.fsf@intel.com>
+ <20200414123404.GT3456981@phenom.ffwll.local>
+ <2cfe44c96818515939050ad19e9c248e50519be2.camel@pp3345.net>
+ <87r1wp5hkq.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mejza3ZMMA5Za1mX"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200408100354.17782-1-aishwaryarj100@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87r1wp5hkq.fsf@intel.com>
+X-Operating-System: Linux phenom 5.3.0-3-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 10:33:25AM +0300, Jani Nikula wrote:
+> On Tue, 14 Apr 2020, Yussuf Khalil <dev@pp3345.net> wrote:
+> > On Tue, 2020-04-14 at 14:34 +0200, Daniel Vetter wrote:
+> >> On Tue, Apr 14, 2020 at 02:21:06PM +0300, Jani Nikula wrote:
+> >> > On Tue, 14 Apr 2020, Jani Nikula <jani.nikula@linux.intel.com>
+> >> > wrote:
+> >> > > On Mon, 13 Apr 2020, Simon Ser <contact@emersion.fr> wrote:
+> >> > > > On Monday, April 13, 2020 11:40 PM, Yussuf Khalil <
+> >> > > > dev@pp3345.net> wrote:
+> >> > > > 
+> >> > > > > DRM now has a globally available "RGB quantization range"
+> >> > > > > connector
+> >> > > > > property. i915's "Broadcast RGB" that fulfils the same
+> >> > > > > purpose is now
+> >> > > > > considered deprecated, so drop it in favor of the DRM
+> >> > > > > property.
+> >> > > > 
+> >> > > > For a UAPI point-of-view, I'm not sure this is fine. Some user-
+> >> > > > space
+> >> > > > might depend on this property, dropping it would break such
+> >> > > > user-space.
+> >> > > 
+> >> > > Agreed.
+> >> > > 
+> >> > > > Can we make this property deprecated but still keep it for
+> >> > > > backwards
+> >> > > > compatibility?
+> >> > > 
+> >> > > Would be nice to make the i915 specific property an "alias" for
+> >> > > the new
+> >> > > property, however I'm not sure how you'd make that happen.
+> >> > > Otherwise
+> >> > > juggling between the two properties is going to be a nightmare.
+> >> > 
+> >> > Ah, the obvious easy choice is to use the property and enum names
+> >> > already being used by i915 and gma500, and you have no problem.
+> >> > Perhaps
+> >> > they're not the names you'd like, but then looking at the total
+> >> > lack of
+> >> > consistency across property naming makes them fit right in. ;)
+> >> 
+> >> Yeah if we don't have contradictory usage across drivers when
+> >> modernizing
+> >> these properties, then let's just stick with the names already there.
+> >> It's
+> >> not pretty, but works better since more userspace/internet howtos
+> >> know how
+> >> to use this stuff.
+> >> -Daniel
+> >
+> > Note that i915's "Broadcast RGB" isn't the same as gma500's: i915 has an
+> > "Automatic" option, whereas gma500 does not.
+> 
+> Adding "Automatic" option that just defaults to "Full" in gma500 does
+> not break existing userspace, but allows for extending it to do more
+> clever things later.
 
---mejza3ZMMA5Za1mX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+gma500 could keep it's own property, without the "Automatic" value. We've
+done tricks like this for other properties too.
 
-On Wed, Apr 08, 2020 at 03:33:53PM +0530, Aishwarya R wrote:
-> Use of_property_read_u32 to read the "reg" and "i2c-address" property
-> instead of using of_get_property to check the return values.
->=20
-> Signed-off-by: Aishwarya R <aishwaryarj100@gmail.com>
+> > Also, radeon has a property called
+> > "output_csc" that fulfills a similar purpose. Looking at the code, though, it
+> > seems that radeon does not adhere to the standard correctly (or I am missing
+> > something).
+> >
+> > An alternative would be to leave the existing driver-specific properties and
+> > change them to be pseudo-aliases for the "RGB quantization range" property.
+> > This can be done by letting the drivers read from and write to the new property
+> > when user-space tries to read or modify the driver's property. This way we could
+> > retain full backwards compatibility for all drivers equally.
+> >
+> > What do you think?
+> 
+> I'm obviously biased and predisposed to avoid adding extra complexity to
+> i915 when it's not necessary. We'd have *two* connector properties for
+> the same thing until the end of time, even if one is an alias for the
+> other.
 
-This is quite a fragile driver. Have you tested it on HW?
+Yeah just pick one, and implement the others as aliases. Drivers can do
+the aliases in their atomic_get/set_property functions pretty easily,
+atomic properties aren't stored anywhere else than decoded (which was done
+partially to make stuff like this work).
 
-
---mejza3ZMMA5Za1mX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6W7DcACgkQFA3kzBSg
-KbbKcg/+LuL3CQDRqRDK5QM2XE52jwFinJ8KZNx2KhKdg3UvWQMcWqt+V0ZvVy0F
-NTo355uvwsvO9dtuemowZmBP6QgS6SPBWktIpn7FX73l5CCx4YT9J/LsHYnJOoCR
-2xm3Ai02XtRv3cB6E9jCKXqLz1gxKdmQVDmVcjODqiqDjzppgXuQhsEDeTb6/jpK
-6Blt2slVkB2GYEakAuV5+4lLXdAFb7Gl1+VIGxnBYz0H5eGdzU/i3TC5Zbr3FFWT
-tjaFJmnQIPQc9kjw2vXy/UZagb3KQ+9nJe1/55iF9VyaA8u7wpS8dPBwXLuKuqX9
-PrHffSmjd7MIVvMXEVq/lh3z3cxk4eFKz8uCh+XYBPFVDpTfyupZoa2mxZHqPk4E
-WxpRhoSRY7rG/GyO8dGaMfQdYL+9mX+tDI8is3U4gfUPXqaaTRogZ/85T0Y7rZIN
-xs2IO8SC/e8TAQqQ1SbH4oErJk4QjyK9n+YprFiirsm28U8D0FD7/Kiy8nFny/17
-4j8DB2xTwtyZyVg8OjPojUm00XEPGZEUFdsYgxUW5nesk+lZkDvlVAWgUg0v9rWO
-BjM+OWhc3ShIar6Wp2W8Zog18i5ds4wTYNqMPjI8VUv9muuYxMOUdZGD/oUKcylf
-rMBsGgX0hoTe6KVyd+MP9ER4nhckHKMgemOKQJuF14sFRUi8Ri4=
-=XD4D
------END PGP SIGNATURE-----
-
---mejza3ZMMA5Za1mX--
+Coming up a new property name just so that everyone suffers equally feels
+silly.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
