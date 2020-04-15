@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5786B1A8FC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47071A8FE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392419AbgDOAgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 20:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733064AbgDOAgb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:36:31 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13EEC061A0C;
-        Tue, 14 Apr 2020 17:36:30 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m2so1756828otr.1;
-        Tue, 14 Apr 2020 17:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GJPdBQ4FDc6YikEOC/twgPI9vNJC4RIs/TAMf7prmrI=;
-        b=QdI2+Rh/tNTPpxT3MoOzKtrWD18b26sgK819IABsXs/QT/+7ARTw0AZxv1/SigGMeI
-         jxnKYfO7sPYmlLGSYCRGS5wXmnINxcIH0Ka9fUtuxKh0KTKtEItmneQMeMAzdM5c221L
-         9BrzyuchS8snTXt6z4hmSuo4W/BhMkKBJzFsrElJaK4p/zg6vTgisckGXwLeVIhDBliP
-         p5rsDgs/mwhMzxEDr3VVLxlXy6LVy1uiSG73D/8gZchV084SHJUPJwpoIRgkD5UGi+we
-         mS8dS3dS7vMBkpcorhDINjcoiKrdp+nuEjwdpEWD/d3ZRcHMgzmGJkm53jw4cDa7xsOt
-         Ngeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GJPdBQ4FDc6YikEOC/twgPI9vNJC4RIs/TAMf7prmrI=;
-        b=WtPAMrUP7/Io+Xp4ocsR97old0NOQojf91UVHeUDwe5Hl6oaxlTTglh90NB0VjHTKG
-         gIpg81NjDxn1xjrlIGazsNNfEhA5wJ8Mai1CveiSoyMTaMfmkogNae/b8FACjebopl0k
-         IJwOSY3VE2u6fMxhYTTnMvmhFYMxIhdzDHU7Gh6vYFEFuMu1brlBZ+2fshSYl0pqV+UH
-         LiH7qiSJZ7GpQSdMTC3z6NPiHqNOJPWthH1J3vYMJDbWCxSfPOxhgfqGTAXm7+AbA0g5
-         k710RDrWLqUwFb2WhFkUsD5TbEXhE1vk1kSlGmMFY1R6sgyTfEksmWvWfDrN74VTOtBv
-         l75w==
-X-Gm-Message-State: AGi0PuYhAAWkLHN7TcPnZ/6L4fcFDDb3WCE0lKyT6DitFmhmlvLTRKzc
-        yOcl8BaPGwbBHPK1SSbmzwbuP6GN
-X-Google-Smtp-Source: APiQypI5Wg0ppQ1y1UVxCZvNwrc4lMa7JViLu4cdHmB7S9QHqVya21da7RZ1lNLn9nxqSpSyz7K39g==
-X-Received: by 2002:a05:6830:104c:: with SMTP id b12mr19040290otp.121.1586910990213;
-        Tue, 14 Apr 2020 17:36:30 -0700 (PDT)
-Received: from [192.168.1.120] (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id y132sm6053933oiy.8.2020.04.14.17.36.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 17:36:29 -0700 (PDT)
-Subject: Re: linux-next: Fixes tag needs some work in the
- wireless-drivers-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Wireless <linux-wireless@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200415080827.30c2c9c1@canb.auug.org.au>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <5b17fefe-f99d-2e4c-ded2-93fd3554687c@lwfinger.net>
-Date:   Tue, 14 Apr 2020 19:36:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200415080827.30c2c9c1@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2634707AbgDOAs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 20:48:56 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:34042 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388115AbgDOAsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 20:48:32 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 32AA71A0616;
+        Wed, 15 Apr 2020 02:48:21 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 44B661A0613;
+        Wed, 15 Apr 2020 02:48:16 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1107240293;
+        Wed, 15 Apr 2020 08:48:10 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/2] dt-bindings: watchdog: Convert i.MX to json-schema
+Date:   Wed, 15 Apr 2020 08:40:10 +0800
+Message-Id: <1586911211-1141-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/20 5:08 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->    ec4d3e3a0545 ("b43legacy: Fix case where channel status is corrupted")
-> 
-> Fixes tag
-> 
->    Fixes: 75388acd0cd8 ("add mac80211-based driver for legacy BCM43xx devices")
-> 
-> has these problem(s):
-> 
->    - Subject does not match target commit subject
->      Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
-> 
+Convert the i.MX watchdog binding to DT schema format using json-schema.
 
-Stephan,
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+No change.
+---
+ .../devicetree/bindings/watchdog/fsl-imx-wdt.txt   | 24 ----------
+ .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml  | 56 ++++++++++++++++++++++
+ 2 files changed, 56 insertions(+), 24 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.txt
+ create mode 100644 Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
 
-I do not understand what you want here. The subject describes what was fixed. 
-The error has been in the driver since it was merged. The Fixes: line is a 
-description of the commit that introduced the driver file with the error.
-
-Larry
+diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.txt b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.txt
+deleted file mode 100644
+index adc6b76..0000000
+--- a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-* Freescale i.MX Watchdog Timer (WDT) Controller
+-
+-Required properties:
+-- compatible : Should be "fsl,<soc>-wdt"
+-- reg : Should contain WDT registers location and length
+-- interrupts : Should contain WDT interrupt
+-
+-Optional properties:
+-- big-endian: If present the watchdog device's registers are implemented
+-  in big endian mode, otherwise in native mode(same with CPU), for more
+-  detail please see: Documentation/devicetree/bindings/regmap/regmap.txt.
+-- fsl,ext-reset-output: If present the watchdog device is configured to
+-  assert its external reset (WDOG_B) instead of issuing a software reset.
+-- timeout-sec : Contains the watchdog timeout in seconds
+-
+-Examples:
+-
+-wdt@73f98000 {
+-	compatible = "fsl,imx51-wdt", "fsl,imx21-wdt";
+-	reg = <0x73f98000 0x4000>;
+-	interrupts = <58>;
+-	big-endian;
+-	timeout-sec = <20>;
+-};
+diff --git a/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+new file mode 100644
+index 0000000..674d902
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/fsl-imx-wdt.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/fsl-imx-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX Watchdog Timer (WDT) Controller
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++allOf:
++  - $ref: "watchdog.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx21-wdt
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    description: |
++      Watchdog's clock source.
++    maxItems: 1
++
++  fsl,ext-reset-output:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      If present, the watchdog device is configured to assert its
++      external reset (WDOG_B) instead of issuing a software reset.
++
++required:
++  - compatible
++  - interrupts
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++
++    wdog1: watchdog@20bc000 {
++        compatible = "fsl,imx21-wdt";
++        reg = <0x020bc000 0x4000>;
++        interrupts = <0 80 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clks IMX6QDL_CLK_IPG>;
++    };
++
++...
+-- 
+2.7.4
 
