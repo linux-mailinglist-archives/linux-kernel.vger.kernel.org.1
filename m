@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967C51A9797
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD651A9795
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895178AbgDOIxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895164AbgDOIwr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:52:47 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535E7C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:52:47 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id 21so1045333uae.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GffN4wdV1b8/+GP7bB7msfOG3SsTk4D9FpQBELdB7UQ=;
-        b=Ut9RWSaOq1yupMZbWU33o+RQiJm1VcNInX3xL0Qg2Yu12twvk6t/92Wf0Py1JaXBW7
-         seiwUhSnzZDeqIFK/o6vdQ1KzM/lWT9y7RRQNWbGx64yLdbrPQxDTAnsOWWnqXGKMOLL
-         GxFZhp0BptUY2s68S0lWCLTgEsrSz3e0BRd8KcU7xFSdUMqzK1yrr+JlURONDWZBNJZq
-         w1+L9MVjy0l/BwMUarAgZKemDe7WXlv7abAiHz9Kl9N7XQ5JE8Hcjk59ti4cK4THNy9D
-         HnotyGjdAwHUGgJi+IjmHnkpf/cHvijf63dA3kf0GXIeof5uub5vU+szxsj3JT1mQVlA
-         65jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GffN4wdV1b8/+GP7bB7msfOG3SsTk4D9FpQBELdB7UQ=;
-        b=j9qGZaRj7CP2UumH6y8gonllVaxfSRddt5v961sjEXZXz+mvVU/Mrz+XctB8JLE2PS
-         gnAWW9tlwgxOZyNNb6Jq6hMAd0TAiwdqgks3HzL2in5Zv8nOWUeNs9//C3sVeoSAYQpD
-         4FYXOuuvtEx7kSmGqOX2zX+Pn/eKZCzFJvPHlzi1S3KIFEqcjZX5TMj9EvAwqOKUbvUS
-         7/UT/ehPox9lYIKkomuPc6cZYq9YjNEIXiU0/lnT3otjHUQuNPeKHqkLKylogVKAEeRN
-         s2MW0hDqEEHB0EofOrz3fJUOW+shwdNzuziB4NVyaAzUKVzBJqIwm++wyv1WErAn1PMu
-         zGWQ==
-X-Gm-Message-State: AGi0PuZQPAFlzcBqzZhhPxB5wAgeZeb9UW7tSuuqP+VIdigySqLmCeS0
-        crffeMOxc4CxwOfgHvQi8ghfFFqQBbEfPlYGXLliRw==
-X-Google-Smtp-Source: APiQypIR6ai89vFmGqUSNQjlgJoCsLY70k1gj1lY6weiIV/qNYMav0X7PqbmVlV4sZKnwV/apxkl2A0RgEkql85Izu8=
-X-Received: by 2002:a9f:20c6:: with SMTP id 64mr3823674uaa.100.1586940766283;
- Wed, 15 Apr 2020 01:52:46 -0700 (PDT)
+        id S2895169AbgDOIww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:52:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47854 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505548AbgDOIwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:52:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 58DA8AFB1;
+        Wed, 15 Apr 2020 08:52:16 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2D9361E1250; Wed, 15 Apr 2020 10:52:16 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 10:52:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V8 08/11] fs: Define I_DONTCACNE in VFS layer
+Message-ID: <20200415085216.GE501@quack2.suse.cz>
+References: <20200415064523.2244712-1-ira.weiny@intel.com>
+ <20200415064523.2244712-9-ira.weiny@intel.com>
 MIME-Version: 1.0
-References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 15 Apr 2020 10:52:10 +0200
-Message-ID: <CAPDyKFrWZN2pwdaJ3ctMP9Mb3W6d5Di5jt4F9u1AmqxSKFzboQ@mail.gmail.com>
-Subject: Re: [PATCH 0/7] SDHCI clock handling fixes and cleanups
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415064523.2244712-9-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Apr 2020 at 13:54, Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmq=
-m.pl> wrote:
->
-> This patch set combines a few of code improvements for SDHCI clock handli=
-ng.
-> Besides small fixes, most value comes from simplifying the code, so it's
-> easier to understand.
->
-> Micha=C5=82 Miros=C5=82aw (7):
->   mmc: sdhci: fix base clock usage in preset value
->   mmc: sdhci: fix programmable clock config from preset value
->   mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
->   mmc: sdhci: move SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
->   mmc: sdhci: simplify clock frequency calculation
->   mmc: sdhci: squash v2/v3+ clock calculation differences
->   mmc: sdhci: respect non-zero div quirk in programmable clock mode
->
->  drivers/mmc/host/sdhci-of-arasan.c |   7 +-
->  drivers/mmc/host/sdhci.c           | 126 +++++++++++++----------------
->  drivers/mmc/host/sdhci.h           |   4 +-
->  3 files changed, 64 insertions(+), 73 deletions(-)
->
-> --
-> 2.20.1
->
+There's a typo in the subject - I_DONTCACNE.
 
-Adrian, whenever you get the time, I would like to get your feedback
-on these, especially on patch1->patch3 as those may be targeted for
-fixes.
+On Tue 14-04-20 23:45:20, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> DAX effective mode changes (setting of S_DAX) require inode eviction.
+> 
+> Define a flag which can be set to inform the VFS layer that inodes
+> should not be cached.  This will expedite the eviction of those nodes
+> requiring reload.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  include/linux/fs.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index a818ced22961..e2db71d150c3 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+>   *
+>   * I_CREATING		New object's inode in the middle of setting up.
+>   *
+> + * I_DONTCACHE		Do not cache the inode
+> + *
 
-Kind regards
-Uffe
+Maybe, I'd be more specific here and write: "Evict inode as soon as it is
+not used anymore"?
+
+Otherwise the patch looks good to me so feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+Also it would be good to CC Al Viro on this one (and the dentry flag) I
+guess.
+
+								Honza
+
+>   * Q: What is the difference between I_WILL_FREE and I_FREEING?
+>   */
+>  #define I_DIRTY_SYNC		(1 << 0)
+> @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+>  #define I_WB_SWITCH		(1 << 13)
+>  #define I_OVL_INUSE		(1 << 14)
+>  #define I_CREATING		(1 << 15)
+> +#define I_DONTCACHE		(1 << 16)
+>  
+>  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+>  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
+> @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
+>  extern int generic_delete_inode(struct inode *inode);
+>  static inline int generic_drop_inode(struct inode *inode)
+>  {
+> -	return !inode->i_nlink || inode_unhashed(inode);
+> +	return !inode->i_nlink || inode_unhashed(inode) ||
+> +		(inode->i_state & I_DONTCACHE);
+>  }
+>  
+>  extern struct inode *ilookup5_nowait(struct super_block *sb,
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
