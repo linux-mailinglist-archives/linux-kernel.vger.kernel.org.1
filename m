@@ -2,72 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7DE1A959E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F4A1A95CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635467AbgDOIEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:04:53 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47156 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2635409AbgDOIDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:03:33 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 09F3D2007B6;
-        Wed, 15 Apr 2020 10:03:14 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F190C2007A0;
-        Wed, 15 Apr 2020 10:03:13 +0200 (CEST)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 59AFD202B0;
-        Wed, 15 Apr 2020 10:03:13 +0200 (CEST)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Lee Jones <lee.jones@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Anson Huang <anson.huang@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH v3 13/13] arm64: dts: imx8mp: Add audiomix reset controller node
-Date:   Wed, 15 Apr 2020 11:02:53 +0300
-Message-Id: <1586937773-5836-14-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com>
-References: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2635586AbgDOIIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:08:00 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:44943 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404453AbgDOIFS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:05:18 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1jOd2o-0006dC-VQ; Wed, 15 Apr 2020 10:05:15 +0200
+Subject: Re: [PATCH v2] nvmem: core: don't consider subnodes not matching
+ binding
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     devicetree@vger.kernel.org, Christian Eggers <CEggers@arri.de>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+References: <20200323152850.32657-1-a.fatoum@pengutronix.de>
+ <d59007d1-f4e3-f550-cecd-64b788a534bc@linaro.org>
+ <bb0dcf33-f67d-7078-9341-08282d8da217@pengutronix.de>
+Message-ID: <4e861088-c17d-0eca-6efa-c50b55fdecd1@pengutronix.de>
+Date:   Wed, 15 Apr 2020 10:05:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <bb0dcf33-f67d-7078-9341-08282d8da217@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the audiomix reset controller as part of the audiomix MFD.
+On 4/6/20 4:20 PM, Ahmad Fatoum wrote:
+> Hello,
+> 
+> On 4/6/20 2:33 PM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 23/03/2020 15:28, Ahmad Fatoum wrote:
+>>> The nvmem cell binding applies to objects which match "^.*@[0-9a-f]+$",
+>>> but so far the driver has matched all objects and failed if they didn't
+>>> have the expected properties.
+>>>
+>>> The driver's behavior in this regard precludes future extension of
+>>> EEPROMs by child nodes other than nvmem and clashes with the barebox
+>>> bootloader binding that extends the fixed-partitions MTD binding to
+>>> EEPROMs as it tries to interpret the "fixed-partitions"-compatible
+>>> partitions node as a nvmem cell.
+>>>
+>>> Solve this issue by skipping all subnodes that don't contain an @.
+>>>
+>>> This still allows for cell names like `partitions@0,0', but this
+>> NACK.. thats nasty hack!
+>> Its standard practice as per device tree specs to have nodes name as "node-name@unit-address"
+>>
+>> Ref: https://github.com/devicetree-org/devicetree-specification/releases/download/v0.3/devicetree-specification-v0.3.pdf
+> 
+> I didn't say otherwise. I just argued if we verify there's a @ symbol in the
+> node name, before considering whether it is a NVMEM cell, we will skip fixed-partitions
+> while adhering to the NVMEM cell binding.
+> 
+>>> is much less likely to cause future collisions.
+>>
+>> There have been discussions on this topic in the past at:
+>>
+>> https://patchwork.ozlabs.org/patch/890741/
+>>
+>> We need to come up with a better solution!
+> 
+> Thanks for the link, I didn't find it when I searched whether this has
+> come up before.
+> 
+> As you probably noticed, your suggested approach there wouldn't work for me though,
+> because this time it can't be worked around in the MTD driver.
+> If the suggestion here is not palatable, how do you think about (in
+> my preferred order):
+> 
+> - If the cell has a compatible node, it must be "nvmem-cell".
+>   Otherwise, a cell with a compatible node is skipped.
+> 
+> - Adding a nvmem cell container with a compatible and making support for
+>   the old binding configurable
+> 
+> - Skipping cells that are malformed and lack a reg = < > property _without_
+>   error
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+gentle ping. I can prepare another patch if you indicate which approach
+you'd prefer.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 03ace7f..882c91ff 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -670,6 +670,11 @@
- 						      "audio_ahb",
- 						      "audio_axi_div";
- 				};
-+
-+				audiomix_reset: reset-controller {
-+					compatible = "fsl,imx8mp-audiomix-reset";
-+					#reset-cells = <1>;
-+				};
- 			};
- 		};
- 
+> 
+> Cheers
+> Ahmad
+> 
+>>
+>> --srini
+>>
+>>>
+>>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>>> ---
+>>> v1 -> v2:
+>>>    use ->full_name instead of ->name as to not break existing correct
+>>>    cells (Christian)
+>>> ---
+>>>   drivers/nvmem/core.c | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+>>> index ef326f243f36..f051051fb1a8 100644
+>>> --- a/drivers/nvmem/core.c
+>>> +++ b/drivers/nvmem/core.c
+>>> @@ -278,6 +278,8 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+>>>       parent = dev->of_node;
+>>>         for_each_child_of_node(parent, child) {
+>>> +        if (!strchr(kbasename(child->full_name), '@'))
+>>> +            continue;
+>>>           addr = of_get_property(child, "reg", &len);
+>>>           if (!addr || (len < 2 * sizeof(u32))) {
+>>>               dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
+>>>
+>>
+> 
+
 -- 
-2.7.4
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
