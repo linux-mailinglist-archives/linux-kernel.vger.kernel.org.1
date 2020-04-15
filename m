@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D65A1A98D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFC71A98C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895517AbgDOJ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        id S2895473AbgDOJZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895494AbgDOJ04 (ORCPT
+        by vger.kernel.org with ESMTP id S2895464AbgDOJZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:26:56 -0400
-Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B167EC061A0C;
-        Wed, 15 Apr 2020 02:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586942812;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=QSUY1yUiWe9X6ZGNIO1eH3insGRwBB0CwHRK6fHg7uQ=;
-        b=qlAD48FijIaBoAx9ezb9opMkPMPwJpEBYm7kVCbfB14p09Yq5qj0+PrIOI7a5QHsgS
-        A6f7DumiHE8MZ4Bo5cP5+BCuQgzTgomwBDVFdtGkDE5Cas7onZSDZ85F05pGoTMlAxyr
-        o1LOgQmVrSwLM4o0aG4m39+j+V2AbyNlWeebGdnWol/VOo2Xw3gDGvmqBE03mzYFR4Yz
-        9+vSGEkqV1JQuahiBJ/M3qTRyW4OT9CgiNG5DWNJKMWUWl/KL4Ab3LCzpg3nngAb6skv
-        eBcjdzHVUAChMfWwzgBgWVFfWTgedno9mf8idJn84ToAR47waXQBwCu0Zd+LNHYRY+O7
-        XlGQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PtwDConyM="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
-        with ESMTPSA id 6028a2w3F9Qa0oW
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 15 Apr 2020 11:26:36 +0200 (CEST)
-Subject: Re: [PATCH v6 08/12] arm: dts: s5pv210: Add G3D node
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <b6ffa74a-acef-f329-0d9e-981483499e16@cogentembedded.com>
-Date:   Wed, 15 Apr 2020 11:26:35 +0200
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Philipp Rossak <embed3d@gmail.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        openpvrsgx-devgroup@letux.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Jonathan Bakker <xc-racer2@live.ca>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B1E898A7-73BB-4C20-98D2-2D32F0DC170F@goldelico.com>
-References: <cover.1586939718.git.hns@goldelico.com> <b6733f80546bf3e6b3799f716b9c8e0f407de03d.1586939718.git.hns@goldelico.com> <b6ffa74a-acef-f329-0d9e-981483499e16@cogentembedded.com>
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Jonathan Bakker <xc-racer2@live.ca>
-X-Mailer: Apple Mail (2.3124)
+        Wed, 15 Apr 2020 05:25:40 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7762AC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:25:39 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h9so18242339wrc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ZWggYGy5+ypMqGqv3DNlvkeDC7Fwyk09CE6tJxrl9As=;
+        b=yAETmibb8HvejiyM/sXx1gWJMBhdkYj+FhYy7xp+PelrTRoY6cWOI7vlWmSSyf3/r8
+         Zs7zbY4OY0HkPENvC3MebqmtVYDArhkyX/g7FTCwfijd4SiDs1/6sbl1jq4MKLPElHnk
+         9VKATFRT9sOJo4mRUK+WBMHugVTceCqQPi1zlKDZVNOSqDSOz+6uTukiwId07cKmWcgp
+         XJxImHct6GIxxb7WyVTTlC6x3xy/LL9RImgVJnr1bV1Gk95SPry4pp++J2dF0JiCW1/i
+         U/8iG7CmRO3gVZGqdupqmJQRzcbF2FVeyYIXOSA2bifkKrKSkYX5BoXstYm34gXq/2wL
+         tN5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZWggYGy5+ypMqGqv3DNlvkeDC7Fwyk09CE6tJxrl9As=;
+        b=V+Wb0w7Nn8hRtFduu+3alUHhYQM4jurdRe2rp/AA+wakjHd9pDWrK63RAlG2iSAEhQ
+         4YNVKdBU4QM4oZJAzL1Vim+lKjzqpiH66WuXcH1zI1Yo6pkBAaof2LW8QaWwAfdp7lGp
+         hCqp7aB0xexdxyrQjLCt7ujGt7rL4djjdIUOz4CiBN6+jd2tWS1M90Gs+x5SebLGDINz
+         6//2OwP1a3l5SJJr8kPQCSLEQWDW4QnyFUytFPcvhM2nJZ7mC59JMSlRxKRPP/1PsvXn
+         pq7WQ5ZJQq0/TJYldFjd7kcEyF9Apyxiw0yR6K/r1N0plYn0QhoRq0dMrXwGrVqf+ZFI
+         C/7Q==
+X-Gm-Message-State: AGi0PuZ3bDWMhq55TJU7yztM7gm20hJS6gsNXd6KpwA5XFtA2MjPEd3G
+        fzNDkmLrAleJTFv33lfpgaWj8g==
+X-Google-Smtp-Source: APiQypIF43NYr8JHA746c2oer4jXDUVqBd6KdFR7FEBIeVOo3DZguLN98tLGGC6iP9SMBCFc+YgdsA==
+X-Received: by 2002:a5d:658e:: with SMTP id q14mr29224669wru.92.1586942738248;
+        Wed, 15 Apr 2020 02:25:38 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id h16sm24769457wrw.36.2020.04.15.02.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 02:25:37 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 10:26:38 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Guru Das Srinagesh <gurus@codeaurora.org>,
+        linux-pwm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v11 10/12] backlight: pwm_bl: Use 64-bit division function
+Message-ID: <20200415092638.GG2167633@dell>
+References: <cover.1584667964.git.gurus@codeaurora.org>
+ <17fc1dcf8b9b392d1e37dc7e3e67409e3c502840.1584667964.git.gurus@codeaurora.org>
+ <20200320133123.GD5477@dell>
+ <20200324110710.GL5477@dell>
+ <20200324125735.2mjuvbxt5bpon2ft@pengutronix.de>
+ <20200324130410.dwlg767ku6kwequv@holly.lan>
+ <20200324142441.GD442973@dell>
+ <20200324144307.kxhqzyjj4evrouqa@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200324144307.kxhqzyjj4evrouqa@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergei and Jonathan,
+On Tue, 24 Mar 2020, Uwe Kleine-König wrote:
 
-> Am 15.04.2020 um 11:15 schrieb Sergei Shtylyov =
-<sergei.shtylyov@cogentembedded.com>:
->=20
-> Hello!
->=20
-> On 15.04.2020 11:35, H. Nikolaus Schaller wrote:
->=20
->> From: Jonathan Bakker <xc-racer2@live.ca>
->> to add support for SGX540 GPU.
->> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->>  arch/arm/boot/dts/s5pv210.dtsi | 15 +++++++++++++++
->>  1 file changed, 15 insertions(+)
->> diff --git a/arch/arm/boot/dts/s5pv210.dtsi =
-b/arch/arm/boot/dts/s5pv210.dtsi
->> index 2ad642f51fd9..e7fc709c0cca 100644
->> --- a/arch/arm/boot/dts/s5pv210.dtsi
->> +++ b/arch/arm/boot/dts/s5pv210.dtsi
->> @@ -512,6 +512,21 @@ vic3: interrupt-controller@f2300000 {
->>  			#interrupt-cells =3D <1>;
->>  		};
->>  +		g3d: g3d@f3000000 {
->=20
->   Should be named generically, "gpu@f3000000", according to the DT =
-spec 0.2, section 2.2.2. It's either "gpu" or "display" TTBOMK...
+> On Tue, Mar 24, 2020 at 02:24:41PM +0000, Lee Jones wrote:
+> > On Tue, 24 Mar 2020, Daniel Thompson wrote:
+> > 
+> > > On Tue, Mar 24, 2020 at 01:57:35PM +0100, Uwe Kleine-König wrote:
+> > > > Hello Lee,
+> > > > 
+> > > > On Tue, Mar 24, 2020 at 11:07:10AM +0000, Lee Jones wrote:
+> > > > > On Fri, 20 Mar 2020, Lee Jones wrote:
+> > > > > 
+> > > > > > On Thu, 19 Mar 2020, Guru Das Srinagesh wrote:
+> > > > > > 
+> > > > > > > Since the PWM framework is switching struct pwm_state.period's datatype
+> > > > > > > to u64, prepare for this transition by using div_u64 to handle a 64-bit
+> > > > > > > dividend instead of a straight division operation.
+> > > > > > > 
+> > > > > > > Cc: Lee Jones <lee.jones@linaro.org>
+> > > > > > > Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> > > > > > > Cc: Jingoo Han <jingoohan1@gmail.com>
+> > > > > > > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> > > > > > > Cc: linux-pwm@vger.kernel.org
+> > > > > > > Cc: dri-devel@lists.freedesktop.org
+> > > > > > > Cc: linux-fbdev@vger.kernel.org
+> > > > > > > 
+> > > > > > > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > > > > > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > > > > > > ---
+> > > > > > >  drivers/video/backlight/pwm_bl.c | 3 ++-
+> > > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > > 
+> > > > > > Can this patch be taken on its own?
+> > > > > 
+> > > > > Hellooooo ...
+> > > > 
+> > > > Conceptually it can. As the last patch depends on this one (and the
+> > > > others) some coordination might be beneficial. But that's up to Thierry
+> > > > to decide how (and if) he want this series to be applied.
+> > > 
+> > > ... and on the backlight side we definitely need to know about the "if"
+> > > otherwise there's no point in taking it.
+> > 
+> > Right.
+> > 
+> > I'm happy to wait for Thierry.  Although this isn't the only set he's
+> > currently blocking.  Is he okay?  On holiday perhaps?
+> 
+> The newest commit by him in next is from last week. My guess is he
+> just didn't come around yet to care for the PWM duties.
 
-Yes, you are right and we have named it such for all other
-devices in this series. I just missed that.
+Looks like we missed the last release.
 
-Jonathan, if you are ok, I'll fix that.
+Let's hope we don't miss the next one also.
 
->=20
-> [...]
->=20
-> MBR, Sergei
-
-BR and thanks,
-Nikolaus
-
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
