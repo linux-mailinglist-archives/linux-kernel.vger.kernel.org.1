@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F85C1AA419
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8556E1AA40C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370757AbgDONRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:17:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:35931 "EHLO mga12.intel.com"
+        id S370709AbgDONQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:16:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:45576 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S370723AbgDONQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:16:57 -0400
-IronPort-SDR: BwP8BQtRXZBOsdFpgZ7pL+msVfAGtgutK66soFYjcSXi8JLMnCtqsCUt/rBHjM1FtoQYspesKs
- TRMqa/IDO7+A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 06:16:57 -0700
-IronPort-SDR: dxJsauTrNCBbEh9iRMOkRDojitIw6xUBlogGlmKuMR3+VcdA0n00UBJN1nw/Nb9K5gm6QZoErM
- DBtUmoVA3EHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="400309880"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
-  by orsmga004.jf.intel.com with ESMTP; 15 Apr 2020 06:16:54 -0700
-Subject: Re: [PATCH 4/7] mmc: sdhci: move SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
- frequency limit
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Kevin Liu <kliu5@marvell.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
- <637b9bea4c28a0eeacf754d2930596b8e6673808.1585827904.git.mirq-linux@rere.qmqm.pl>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <2b111407-0f35-3c5e-f7f0-4a05a281dce2@intel.com>
-Date:   Wed, 15 Apr 2020 16:16:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S2505190AbgDONQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:16:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 016531063;
+        Wed, 15 Apr 2020 06:16:18 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D75C3F6C4;
+        Wed, 15 Apr 2020 06:16:15 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 14:16:12 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     peng.fan@nxp.com, devicetree@vger.kernel.org, f.fainelli@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        viresh.kumar@linaro.org, Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH V5 2/2] firmware: arm_scmi: add smc/hvc transport
+Message-ID: <20200415131612.GC31928@bogus>
+References: <1583673879-20714-3-git-send-email-peng.fan@nxp.com>
+ <5e96e916.1c69fb81.14365.050b@mx.google.com>
 MIME-Version: 1.0
-In-Reply-To: <637b9bea4c28a0eeacf754d2930596b8e6673808.1585827904.git.mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e96e916.1c69fb81.14365.050b@mx.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/04/20 2:54 pm, Michał Mirosław wrote:
-> Move clock frequency limit for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN where
-> it belongs.
+On Wed, Apr 15, 2020 at 12:58:58PM +0200, Etienne Carriere wrote:
+> Hello Peng,
+>
+> I  have 2 comments on this change. The main is about using
+> arm_smccc_1_1_invoke(). Below some details and I added comments
+> inside you patch. The second of on SMC return value, see my
+> comment in your patch below.
+>
+> About arm_smccc_1_1_invoke(), this functon currently relies on PSCI
+> driver to define a conduit method but SCMI agent driver does not
+> mandate CONFIG_PSCI to be enable.
+>
 
-Did you consider getting rid of SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN and
-handling it in sdhci-of-arasan instead?
+Yes this was discussed and it is done so deliberately. I have added the
+build dependency when I merged the patch. There's no dependency on
+CONFIG_PSCI.
 
-> 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> ---
->  drivers/mmc/host/sdhci-of-arasan.c | 7 ++++---
->  drivers/mmc/host/sdhci.c           | 3 +--
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-> index d4905c106c06..5e3b9131a631 100644
-> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> @@ -339,7 +339,6 @@ static const struct sdhci_pltfm_data sdhci_arasan_pdata = {
->  	.ops = &sdhci_arasan_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
->  			SDHCI_QUIRK2_STOP_WITH_TC,
->  };
->  
-> @@ -410,8 +409,7 @@ static const struct sdhci_ops sdhci_arasan_cqe_ops = {
->  static const struct sdhci_pltfm_data sdhci_arasan_cqe_pdata = {
->  	.ops = &sdhci_arasan_cqe_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-> -	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
->  };
->  
->  static struct sdhci_arasan_of_data sdhci_arasan_rk3399_data = {
-> @@ -1155,6 +1153,9 @@ static int sdhci_arasan_add_host(struct sdhci_arasan_data *sdhci_arasan)
->  	bool dma64;
->  	int ret;
->  
-> +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
-> +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
-> +
->  	if (!sdhci_arasan->has_cqe)
->  		return sdhci_add_host(host);
->  
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index a043bf5e3565..ed88ac4e4cf3 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1809,8 +1809,7 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->  			/* Version 3.00 divisors must be a multiple of 2. */
->  			if (host->max_clk <= clock) {
->  				div = 1;
-> -				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> -					&& host->max_clk <= 25000000)
-> +				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
->  					div = 2;
->  			} else {
->  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
-> 
+> Could you add an optional "method" property for "arm,scmi-smc" for platforms
+> willing to not rely on PSCI Linux driver? If no property "method" is
+> defined in the FDT, invocation relies on arm_smccc_1_1_invoke().
+>
 
+Nope, we don't want mixture here. Why is the system not using PSCI/SMCCC ?
+
+> "method" naming mimics what is done in the OP-TEE driver (drivers/tee/optee/).
+> Here is a proposal for the documenting property "method" in
+> Documentation/arm,scmi.txt:
+>
+> - method : "smc" or "hvc"
+>             Optional property defining the conduit method for to be used
+> 	    for invoking the SCMI server in secure world.
+> 	    "smc" states instruction SMC #0 is used whereas "hvc" states
+> 	    instruction HVC #0 is used.
+>
+>
+
+It was rejected, you can try your luck with OPTEE :)
+We will just use the system conduit here with SCMI for SMC/HVC transport.
+Details in previous version of the patch.
+
+[...]
+
+> > +struct scmi_smc {
+> > +	struct scmi_chan_info *cinfo;
+> > +	struct scmi_shared_mem __iomem *shmem;
+> > +	u32 func_id;
+> > +};
+>
+> Add here a field for the secure world invocation function handler:
+>
+> 	scmi_arm_smccc_invoke_fn *invoke_fn;
+>
+
+As stated not needed if we use  arm_smccc_1_1_invoke()
+
+[...]
+
+>
+> The SCMI server is likely not to return a errno compliant value.
+>
+> SMCCC specification states that unsupported function IDs should return signed
+> extended -1. I suggest to change the return above with:
+>
+> 	return res.a0 == ~0 ? -EINVAL : 0;
+>
+
+I need to check that.
+
+--
+Regards,
+Sudeep
