@@ -2,166 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42BD1AAF5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060D21AAF68
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410810AbgDORUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:20:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406325AbgDORTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:19:54 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2C9A21582;
-        Wed, 15 Apr 2020 17:19:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586971193;
-        bh=IyE3J/aTncSnyBZoBTczzrzsDLGlsCLLRR03z4J6/vo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+IUYiHk0oQMGWvA/pp771ct6T/H8yTvm8u3NRf7e311xflhb3NujVALTBRSwAgmL
-         trb20dupx0l5hAbWl+wSNDdetOo7CA8JwPoo5x4ydpYAa0xUzNwFfNJrWrYgxSJyPp
-         NBZg1GD9kKcx6o3jaeCA+HpLbCKOsDOAqDkv5bUs=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH tip/core/rcu 4/4] rcu: Add rcu_gp_might_be_stalled()
-Date:   Wed, 15 Apr 2020 10:19:50 -0700
-Message-Id: <20200415171950.9424-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200415171924.GA9270@paulmck-ThinkPad-P72>
-References: <20200415171924.GA9270@paulmck-ThinkPad-P72>
+        id S2410871AbgDORVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:21:40 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:16887 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410844AbgDORV3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:21:29 -0400
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 03FHKijl024678;
+        Thu, 16 Apr 2020 02:20:44 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 03FHKijl024678
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1586971245;
+        bh=TGORWEVV9JU/a8b7dPxPrCBb0+qo0qmf1iyasgy2yYM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fmvusO6ZeNrZor8/By+628dDxGrOMFdo1ogCH4r8MTOI3jUCrZ7zGhUqaYJTXw4BP
+         Z+YTt07uUCQLMVGq50OKCfn/n+NR7tvK8YEZtappPGHnfY5e01oa4idtWmIZogw+0V
+         /tuTwTT7bqFPxyVJWT6SRPsqjGyO+snZP11NfN8eSPJ8RL/8g/K8iltTDtsn0YsgKI
+         ImFVn+koPmZfvrCat+Th+M5ri12+crKktE5TEtJnPTtGM4tTp38HH4vwdb3DNQBymz
+         p6C7e5MCmHS0ihk5uDkIMIJV5h8bH7qfs6CoCmxqPgjhnWjlSZug1+j4/a/16fcYHP
+         wbeQfXri7ZhNA==
+X-Nifty-SrcIP: [209.85.217.42]
+Received: by mail-vs1-f42.google.com with SMTP id g184so386593vsc.0;
+        Wed, 15 Apr 2020 10:20:44 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZuEDeD9+9tiE1ELC+ZmX3jhFDJmmL6TeZuwTk+6BTd6x/Xcxib
+        lrvOTeJyoz6eaoviSofKviu/OCioV0ib39R1Lzk=
+X-Google-Smtp-Source: APiQypI/bnEQDxUgaDyhDXxMhi5qAMztdNfkzonR1JQLp3foqu0/1E/k9cBdOx843NkNSdPctvkZyEkGUIawy7SJw6k=
+X-Received: by 2002:a05:6102:2007:: with SMTP id p7mr5485487vsr.181.1586971243575;
+ Wed, 15 Apr 2020 10:20:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200415165218.20251-1-will@kernel.org> <20200415165218.20251-2-will@kernel.org>
+In-Reply-To: <20200415165218.20251-2-will@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 16 Apr 2020 02:20:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATMDkey2ckTfuCysVPVUAbZa5C8oBBqWtE1ura+rnCbKg@mail.gmail.com>
+Message-ID: <CAK7LNATMDkey2ckTfuCysVPVUAbZa5C8oBBqWtE1ura+rnCbKg@mail.gmail.com>
+Subject: Re: [PATCH v3 01/12] compiler/gcc: Emit build-time warning for GCC
+ prior to version 4.8
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Apr 16, 2020 at 1:52 AM Will Deacon <will@kernel.org> wrote:
+>
+> Prior to version 4.8, GCC may miscompile READ_ONCE() by erroneously
+> discarding the 'volatile' qualifier:
+>
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145
+>
+> We've been working around this using some nasty hacks which make
+> READ_ONCE() both horribly complicated and also prevent us from enforcing
+> that it is only used on scalar types. Since GCC 4.8 is pretty old for
+> kernel builds now, emit a warning if we detect it during the build.
 
-This commit adds rcu_gp_might_be_stalled(), which returns true if there
-is some reason to believe that the RCU grace period is stalled.  The use
-case is where an RCU free-memory path needs to allocate memory in order
-to free it, a situation that should be avoided where possible.
 
-But where it is necessary, there is always the alternative of using
-synchronize_rcu() to wait for a grace period in order to avoid the
-allocation.  And if the grace period is stalled, allocating memory to
-asynchronously wait for it is a bad idea of epic proportions: Far better
-to let others use the memory, because these others might actually be
-able to free that memory before the grace period ends.
+This patch is unneeded since you will remove GCC 4.8 support
+in 11/12.
 
-Thus, rcu_gp_might_be_stalled() can be used to help decide whether
-allocating memory on an RCU free path is a semi-reasonable course
-of action.
+Please move 11/12 to the head of this series,
+and remove all noise changes.
 
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/rcutiny.h |  1 +
- include/linux/rcutree.h |  1 +
- kernel/rcu/tree_stall.h | 40 ++++++++++++++++++++++++++++++++++++----
- 3 files changed, 38 insertions(+), 4 deletions(-)
+Thanks.
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 045c28b..dbf5ac4 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -87,6 +87,7 @@ static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
- static inline bool rcu_is_watching(void) { return true; }
- static inline void rcu_momentary_dyntick_idle(void) { }
- static inline void kfree_rcu_scheduler_running(void) { }
-+static inline bool rcu_gp_might_be_stalled(void) { return false; }
- 
- /* Avoid RCU read-side critical sections leaking across. */
- static inline void rcu_all_qs(void) { barrier(); }
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 45f3f66..fbc2627 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -39,6 +39,7 @@ void rcu_barrier(void);
- bool rcu_eqs_special_set(int cpu);
- void rcu_momentary_dyntick_idle(void);
- void kfree_rcu_scheduler_running(void);
-+bool rcu_gp_might_be_stalled(void);
- unsigned long get_state_synchronize_rcu(void);
- void cond_synchronize_rcu(unsigned long oldstate);
- 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 119ed6a..4dede00 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -15,10 +15,12 @@
- int sysctl_panic_on_rcu_stall __read_mostly;
- 
- #ifdef CONFIG_PROVE_RCU
--#define RCU_STALL_DELAY_DELTA	       (5 * HZ)
-+#define RCU_STALL_DELAY_DELTA		(5 * HZ)
- #else
--#define RCU_STALL_DELAY_DELTA	       0
-+#define RCU_STALL_DELAY_DELTA		0
- #endif
-+#define RCU_STALL_MIGHT_DIV		8
-+#define RCU_STALL_MIGHT_MIN		(2 * HZ)
- 
- /* Limit-check stall timeouts specified at boottime and runtime. */
- int rcu_jiffies_till_stall_check(void)
-@@ -40,6 +42,36 @@ int rcu_jiffies_till_stall_check(void)
- }
- EXPORT_SYMBOL_GPL(rcu_jiffies_till_stall_check);
- 
-+/**
-+ * rcu_gp_might_be_stalled - Is it likely that the grace period is stalled?
-+ *
-+ * Returns @true if the current grace period is sufficiently old that
-+ * it is reasonable to assume that it might be stalled.  This can be
-+ * useful when deciding whether to allocate memory to enable RCU-mediated
-+ * freeing on the one hand or just invoking synchronize_rcu() on the other.
-+ * The latter is preferable when the grace period is stalled.
-+ *
-+ * Note that sampling of the .gp_start and .gp_seq fields must be done
-+ * carefully to avoid false positives at the beginnings and ends of
-+ * grace periods.
-+ */
-+bool rcu_gp_might_be_stalled(void)
-+{
-+	unsigned long d = rcu_jiffies_till_stall_check() / RCU_STALL_MIGHT_DIV;
-+	unsigned long j = jiffies;
-+
-+	if (d < RCU_STALL_MIGHT_MIN)
-+		d = RCU_STALL_MIGHT_MIN;
-+	smp_mb(); // jiffies before .gp_seq to avoid false positives.
-+	if (!rcu_gp_in_progress())
-+		return false;
-+	// Long delays at this point avoids false positive, but a delay
-+	// of ULONG_MAX/4 jiffies voids your no-false-positive warranty.
-+	smp_mb(); // .gp_seq before second .gp_start
-+	// And ditto here.
-+	return !time_before(j, READ_ONCE(rcu_state.gp_start) + d);
-+}
-+
- /* Don't do RCU CPU stall warnings during long sysrq printouts. */
- void rcu_sysrq_start(void)
- {
-@@ -104,8 +136,8 @@ static void record_gp_stall_check_time(void)
- 
- 	WRITE_ONCE(rcu_state.gp_start, j);
- 	j1 = rcu_jiffies_till_stall_check();
--	/* Record ->gp_start before ->jiffies_stall. */
--	smp_store_release(&rcu_state.jiffies_stall, j + j1); /* ^^^ */
-+	smp_mb(); // ->gp_start before ->jiffies_stall and caller's ->gp_seq.
-+	WRITE_ONCE(rcu_state.jiffies_stall, j + j1);
- 	rcu_state.jiffies_resched = j + j1 / 2;
- 	rcu_state.n_force_qs_gpstart = READ_ONCE(rcu_state.n_force_qs);
- }
+
+
+
+
+
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  init/Kconfig            | 4 ++--
+>  scripts/Kconfig.include | 9 +++++++++
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 9e22ee8fbd75..816b8b4a5e9e 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -9,11 +9,11 @@ config DEFCONFIG_LIST
+>         default "arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)"
+>
+>  config CC_IS_GCC
+> -       def_bool $(success,$(CC) --version | head -n 1 | grep -q gcc)
+> +       def_bool $(cc-is-gcc)
+>
+>  config GCC_VERSION
+>         int
+> -       default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
+> +       default $(gcc-version) if CC_IS_GCC
+>         default 0
+>
+>  config LD_VERSION
+> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> index c264da2b9b30..5261e9d6b50b 100644
+> --- a/scripts/Kconfig.include
+> +++ b/scripts/Kconfig.include
+> @@ -54,3 +54,12 @@ $(error-if,$(success, $(LD) -v | grep -q gold), gold linker '$(LD)' not supporte
+>  cc-option-bit = $(if-success,$(CC) -Werror $(1) -E -x c /dev/null -o /dev/null,$(1))
+>  m32-flag := $(cc-option-bit,-m32)
+>  m64-flag := $(cc-option-bit,-m64)
+> +
+> +# gcc version including patch level
+> +gcc-version := $(shell,$(srctree)/scripts/gcc-version.sh $(CC))
+> +
+> +# Return y if the compiler is GCC, n otherwise
+> +cc-is-gcc := $(success,$(CC) --version | head -n 1 | grep -q gcc)
+> +
+> +# Warn if the compiler is GCC prior to 4.8
+> +$(warning-if,$(if-success,[ $(gcc-version) -lt 40800 ],$(cc-is-gcc),n),"Your compiler is old and may miscompile the kernel due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145 - please upgrade it.")
+> --
+> 2.26.0.110.g2183baf09c-goog
+>
+
+
 -- 
-2.9.5
-
+Best Regards
+Masahiro Yamada
