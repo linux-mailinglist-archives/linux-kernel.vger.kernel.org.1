@@ -2,60 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ECF1AA088
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781AA1AA0A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369353AbgDOM2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:28:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:44224 "EHLO foss.arm.com"
+        id S369416AbgDOM3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:29:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369306AbgDOM2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:28:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1FAA1063;
-        Wed, 15 Apr 2020 05:28:00 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10F593F68F;
-        Wed, 15 Apr 2020 05:27:58 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 13:27:31 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>
-Subject: Re: [PATCH v2 3/6] arm64/vdso: Add time napespace page
-Message-ID: <20200415122731.GA27539@C02TD0UTHF1T.local>
-References: <20200225073731.465270-1-avagin@gmail.com>
- <20200225073731.465270-4-avagin@gmail.com>
- <20200414172014.GA6705@C02TD0UTHF1T.local>
- <CANaxB-yBeSmYdZL6gbe-agDAaEVcYHrxUCojQ4xaWpsWinQsyA@mail.gmail.com>
- <20200415100539.GA27339@C02TD0UTHF1T.local>
- <a0179a69-fc1b-9e81-f3f2-72f6c639f40e@arm.com>
+        id S2409111AbgDOM3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:29:32 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E55AF2074F;
+        Wed, 15 Apr 2020 12:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586953771;
+        bh=gHxluNrZU2tTOHcwpOtq2n46qQQhnsi8V7TZgKMK1Ec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gq2BveZDD/Gb/fhWrNYUmp9bkKiMRoVR76H1UymoeIJDTW1qzZMFZ4KqJGQiYlRI4
+         3LemfZ0UNyfbRFuW4qThg5ia3zMNOvmcfBva2pDMq/CazF1sPRXR9Usvu0d2D0D1Dx
+         frs/d28k4Qrk6T3zmCS1b5T9p+dqmMeKPL4aXXJs=
+Date:   Wed, 15 Apr 2020 13:29:26 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
+        kernel-team@android.com
+Subject: Re: [PATCH 7/8] arm64: cpufeature: Relax checks for AArch32 support
+ at EL[0-2]
+Message-ID: <20200415122926.GA17095@willie-the-truck>
+References: <20200414213114.2378-1-will@kernel.org>
+ <20200414213114.2378-8-will@kernel.org>
+ <714f124c-7eb7-b750-e98c-63da64ddae75@arm.com>
+ <20200415105843.GE12621@willie-the-truck>
+ <d1f538ec-e956-c136-d0f8-54e7351a28a9@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a0179a69-fc1b-9e81-f3f2-72f6c639f40e@arm.com>
+In-Reply-To: <d1f538ec-e956-c136-d0f8-54e7351a28a9@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 11:16:00AM +0100, Vincenzo Frascino wrote:
-> Hi Mark,
+On Wed, Apr 15, 2020 at 12:37:31PM +0100, Suzuki K Poulose wrote:
+> On 04/15/2020 11:58 AM, Will Deacon wrote:
+> > On Wed, Apr 15, 2020 at 11:50:58AM +0100, Suzuki K Poulose wrote:
+> > > On 04/14/2020 10:31 PM, Will Deacon wrote:
+> > > > We don't need to be quite as strict about mismatched AArch32 support,
+> > > > which is good because the friendly hardware folks have been busy
+> > > > mismatching this to their hearts' content.
+> > > > 
+> > > >     * We don't care about EL2 or EL3 (there are silly comments concerning
+> > > >       the latter, so remove those)
+> > > > 
+> > > >     * EL1 support is gated by the ARM64_HAS_32BIT_EL1 capability and handled
+> > > >       gracefully when a mismatch occurs
+> > > > 
+> > > >     * EL1 support is gated by the ARM64_HAS_32BIT_EL0 capability and handled
+> > > 
+> > > s/EL1/EL0
+> > > 
+> > > >       gracefully when a mismatch occurs
+> > > > 
+> > > > Relax the AArch32 checks to FTR_NONSTRICT.
+> > > 
+> > > Agreed. We should do something similar for the features exposed by the
+> > > ELF_HWCAP, of course in a separate series.
+> > 
+> > Hmm, I didn't think we needed to touch the HWCAPs, as they're derived from
+> > the sanitised feature register values. What am I missing?
 > 
-> On 4/15/20 11:05 AM, Mark Rutland wrote:
-> > It's a shame we're not using OPTIMIZER_HIDE_VAR() for that, as it can
-> > generate slightly better code and is easier to read than bare asm.
-> 
-> We are not because I was not aware when I wrote this code that such a macro
-> existed :)
-> 
-> But you are right it clearly makes the code more readable. To make up for it, I
-> am happy to make the effort to introduce it for both the cases and replace the
-> assembler once this patch series gets merged.
+> sorry, that was cryptic. I was suggesting to relax the ftr fields to
+> NONSTRICT for the fields covered by ELF HWCAPs (and other CPU hwcaps).
 
-Sounds good to me!
+Ah, gotcha. Given that the HWCAPs usually describe EL0 features, I say we
+can punt this down the road until people give us hardware with mismatched
+AArch32 at EL0.
 
-Mark.
+Will
