@@ -2,123 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4499B1AB2D3
+	by mail.lfdr.de (Postfix) with ESMTP id BA9E21AB2D4
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442098AbgDOUj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:39:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5824 "EHLO mga11.intel.com"
+        id S2442106AbgDOUlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 16:41:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438376AbgDOUj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:39:26 -0400
-IronPort-SDR: YXdlE5sGDTE2nXHPYp4kFm1d1ULAFC95iW/NGpKO3KD8QEyQse0Epkx0/tVgBFWUMZY0e+c20+
- 1BMw/cYLxkGg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 13:39:25 -0700
-IronPort-SDR: SCt4dNj4WEUs8M1Y/+OmMuJVAREuUDMSfkTCsNZ/iC/VnmW7zYxANvKOU14AxwPNRx9l6aKLI2
- fIpf58+6za0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="245783322"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 13:39:25 -0700
-Date:   Wed, 15 Apr 2020 13:39:25 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-5-ira.weiny@intel.com>
- <20200415120846.GG6126@quack2.suse.cz>
+        id S2438081AbgDOUlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 16:41:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7845720787;
+        Wed, 15 Apr 2020 20:41:18 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 16:41:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     paulmck@kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>, Stephen Boyd <sboyd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: On trace_*_rcuidle functions in modules
+Message-ID: <20200415164116.40564f2c@gandalf.local.home>
+In-Reply-To: <CALAqxLU26PVFPSza5GceSF6gTVdzo_2D3G0dBp0KZXvAWFUktA@mail.gmail.com>
+References: <CALAqxLV4rM74wuzuZ+BkUi+keccxkAxv30N4vrFO7CVQ5vnT1A@mail.gmail.com>
+        <20200415085348.5511a5fe@gandalf.local.home>
+        <CALAqxLV1A6sOC1GWpFYXeBoDff0+AJgoOYK7NktcTdvX3kvAeg@mail.gmail.com>
+        <20200415161424.584d07d3@gandalf.local.home>
+        <CALAqxLU26PVFPSza5GceSF6gTVdzo_2D3G0dBp0KZXvAWFUktA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415120846.GG6126@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:08:46PM +0200, Jan Kara wrote:
-> On Mon 13-04-20 21:00:26, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
-> > 
-> > Set the flag to be user visible and changeable.  Set the flag to be
-> > inherited.  Allow applications to change the flag at any time.
-> > 
-> > Finally, on regular files, flag the inode to not be cached to facilitate
-> > changing S_DAX on the next creation of the inode.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  fs/ext4/ext4.h  | 13 +++++++++----
-> >  fs/ext4/ioctl.c | 21 ++++++++++++++++++++-
-> >  2 files changed, 29 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 61b37a052052..434021fcec88 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -415,13 +415,16 @@ struct flex_groups {
-> >  #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
-> >  #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
-> >  #define EXT4_EOFBLOCKS_FL		0x00400000 /* Blocks allocated beyond EOF */
-> > +
-> > +#define EXT4_DAX_FL			0x00800000 /* Inode is DAX */
-> > +
+On Wed, 15 Apr 2020 13:17:53 -0700
+John Stultz <john.stultz@linaro.org> wrote:
+
+> > Hmm, isn't module code itself synchronized via RCU. Then having module code
+> > being called without RCU "watching" could be dangerous?  
 > 
-> You seem to be using somewhat older kernel... EXT4_EOFBLOCKS_FL doesn't
-> exist anymore (but still it's good to leave it reserved for some time so
-> the value you've chosen is OK).
+> I'm not sure I'm following you here. Could you explain more?
 
-I'm on top of 5.6 released.  Did this get removed for 5.7?  I've heard there are
-some boot issues with 5.7-rc1 so I'm holding out for rc2.
+So how does this code get registered to be called as a module? And if it is
+registered, I'm guessing it needs to be unregistered too. How would that be
+synchronized? Usually, calling synchronize_rcu() is done after
+unregistering, but if that code is called without RCU watching, it is
+possible synchronize_rcu() can finish before that code is released.
 
-> 
-> > @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
-> >  	return error;
-> >  }
-> >  
-> > +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
-> > +{
-> > +	struct ext4_inode_info *ei = EXT4_I(inode);
-> > +
-> > +	if (S_ISDIR(inode->i_mode))
-> > +		return;
-> > +
-> > +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
-> > +		inode->i_state |= I_DONTCACHE;
-> > +}
-> > +
-> 
-> You probably want to use the function you've introduced in the XFS series
-> here...
-
-you mean:
-
-flag_inode_dontcache()
-???
-
-Yes that is done.  I sent this prior to v8 (where that was added) of the other
-series...
-
-Ira
-
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+-- Steve
