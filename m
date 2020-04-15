@@ -2,96 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BEA1A96A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A7B1A9699
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894609AbgDOIes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:34:48 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.73]:43640 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2408071AbgDOIeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:34:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=OdG4JenZYuQ6SubtD8jAKOkRVrIevOaSd9jsn2zjJrw=; b=M
-        kExDy6LJS0gvKwy6z3k4oYyr9K/y9RITg0sWY43l/+MuwuQZ9qbq+Km088wIscOw
-        kvNjgtWMkSbRJZpCf+o3nmCJxYrRxuK7fSspXLesjdbPFELovEQltkQLiENkKErv
-        dEyDD/lqGqoaS7TPBr8DULO4RetQj+FbtzGSXjEL8o=
-Received: from localhost.localdomain (unknown [120.229.255.108])
-        by app2 (Coremail) with SMTP id XQUFCgCnr4P9xpZeiEtZAA--.61S3;
-        Wed, 15 Apr 2020 16:34:08 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Marek Lindner <mareklindner@neomailbox.ch>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Antonio Quartulli <a@unstable.cc>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] batman-adv: Fix refcnt leak in batadv_show_throughput_override
-Date:   Wed, 15 Apr 2020 16:31:50 +0800
-Message-Id: <1586939510-69461-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgCnr4P9xpZeiEtZAA--.61S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw43KF45Cw17Cr43WFy7trb_yoW8GrWfpr
-        Wjkr13Kr4vgw1DGwn0y3s8Wa4rAF43XFyUGF4rZ3WrArs5J3sayrySyFyjkr1UAFyrKw12
-        qF4avF98AFyDCFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUOlksUUUUU
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S2404926AbgDOIdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:33:23 -0400
+Received: from mga07.intel.com ([134.134.136.100]:37587 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404826AbgDOIdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:33:18 -0400
+IronPort-SDR: 1kOnq579RXSftQpPoMKApuCuejCcqO3KHHhcD7K2kN9GdcRf9L8FDEdPhoJA26YdlWWcPuNDMC
+ f0IY5+a3ITyQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 01:33:18 -0700
+IronPort-SDR: rJxOfdeheUuNeZhAZkyWqxJVPLRtHUTot9g+3TqTgSQXegFQCcN3DIouRWMxDDkHyXbcwRdj0r
+ XejIKQlV1O1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="363613501"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.208]) ([10.254.210.208])
+  by fmsmga001.fm.intel.com with ESMTP; 15 Apr 2020 01:33:15 -0700
+Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/7] iommu/vt-d: Refactor parameters for
+ qi_submit_sync()
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
+ <20200415052542.30421-2-baolu.lu@linux.intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D8204B4@SHSMSX104.ccr.corp.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <0221ba27-d997-3a7f-adfc-6caef920ed39@linux.intel.com>
+Date:   Wed, 15 Apr 2020 16:33:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D8204B4@SHSMSX104.ccr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-batadv_show_throughput_override() invokes batadv_hardif_get_by_netdev(),
-which gets a batadv_hard_iface object from net_dev with increased refcnt
-and its reference is assigned to a local pointer 'hard_iface'.
+On 2020/4/15 16:02, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Wednesday, April 15, 2020 1:26 PM
+>>
+>> Current qi_submit_sync() supports single invalidation descriptor
+>> per submission and appends wait descriptor after each submission
+>> to poll hardware completion. This patch adjusts the parameters
+>> of this function so that multiple descriptors per submission can
+>> be supported.
+>>
+>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/dmar.c                | 24 ++++++++++++++----------
+>>   drivers/iommu/intel-pasid.c         |  4 ++--
+>>   drivers/iommu/intel-svm.c           |  6 +++---
+>>   drivers/iommu/intel_irq_remapping.c |  2 +-
+>>   include/linux/intel-iommu.h         |  8 +++++++-
+>>   5 files changed, 27 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/iommu/dmar.c b/drivers/iommu/dmar.c
+>> index d9dc787feef7..bb42177e2369 100644
+>> --- a/drivers/iommu/dmar.c
+>> +++ b/drivers/iommu/dmar.c
+>> @@ -1225,10 +1225,14 @@ static int qi_check_fault(struct intel_iommu
+>> *iommu, int index)
+>>   }
+>>
+>>   /*
+>> - * Submit the queued invalidation descriptor to the remapping
+>> - * hardware unit and wait for its completion.
+>> + * Function to submit invalidation descriptors of all types to the queued
+>> + * invalidation interface(QI). Multiple descriptors can be submitted at a
+>> + * time, a wait descriptor will be appended to each submission to ensure
+>> + * hardware has completed the invalidation before return. Wait descriptors
+>> + * can be part of the submission but it will not be polled for completion.
+>>    */
+>> -int qi_submit_sync(struct qi_desc *desc, struct intel_iommu *iommu)
+>> +int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>> +		   unsigned int count, unsigned long options)
+> 
+> Adding parameter w/o actually using them is not typical way of splitting
+> patches. Better squash this with 2/7 together.
 
-When batadv_show_throughput_override() returns, "hard_iface" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+My original thought was to make it easier for code review. No particular
+preference. Both are okay to me. :-)
 
-The issue happens in the normal path of
-batadv_show_throughput_override(), which forgets to decrease the refcnt
-increased by batadv_hardif_get_by_netdev() before the function returns,
-causing a refcnt leak.
+Best regards,
+baolu
 
-Fix this issue by calling batadv_hardif_put() before the
-batadv_show_throughput_override() returns in the normal path.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- net/batman-adv/sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/batman-adv/sysfs.c b/net/batman-adv/sysfs.c
-index 97736696d042..0f962dcd239e 100644
---- a/net/batman-adv/sysfs.c
-+++ b/net/batman-adv/sysfs.c
-@@ -1190,6 +1190,7 @@ static ssize_t batadv_show_throughput_override(struct kobject *kobj,
- 
- 	tp_override = atomic_read(&hard_iface->bat_v.throughput_override);
- 
-+	batadv_hardif_put(hard_iface);
- 	return sprintf(buff, "%u.%u MBit\n", tp_override / 10,
- 		       tp_override % 10);
- }
--- 
-2.7.4
-
+> 
+>>   {
+>>   	int rc;
+>>   	struct q_inval *qi = iommu->qi;
+>> @@ -1318,7 +1322,7 @@ void qi_global_iec(struct intel_iommu *iommu)
+>>   	desc.qw3 = 0;
+>>
+>>   	/* should never fail */
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   void qi_flush_context(struct intel_iommu *iommu, u16 did, u16 sid, u8 fm,
+>> @@ -1332,7 +1336,7 @@ void qi_flush_context(struct intel_iommu *iommu,
+>> u16 did, u16 sid, u8 fm,
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   void qi_flush_iotlb(struct intel_iommu *iommu, u16 did, u64 addr,
+>> @@ -1356,7 +1360,7 @@ void qi_flush_iotlb(struct intel_iommu *iommu,
+>> u16 did, u64 addr,
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 pfsid,
+>> @@ -1378,7 +1382,7 @@ void qi_flush_dev_iotlb(struct intel_iommu
+>> *iommu, u16 sid, u16 pfsid,
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   /* PASID-based IOTLB invalidation */
+>> @@ -1419,7 +1423,7 @@ void qi_flush_piotlb(struct intel_iommu *iommu,
+>> u16 did, u32 pasid, u64 addr,
+>>   				QI_EIOTLB_AM(mask);
+>>   	}
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   /* PASID-based device IOTLB Invalidate */
+>> @@ -1448,7 +1452,7 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu
+>> *iommu, u16 sid, u16 pfsid,
+>>   	if (size_order)
+>>   		desc.qw1 |= QI_DEV_EIOTLB_SIZE;
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did,
+>> @@ -1458,7 +1462,7 @@ void qi_flush_pasid_cache(struct intel_iommu
+>> *iommu, u16 did,
+>>
+>>   	desc.qw0 = QI_PC_PASID(pasid) | QI_PC_DID(did) |
+>>   			QI_PC_GRAN(granu) | QI_PC_TYPE;
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   /*
+>> diff --git a/drivers/iommu/intel-pasid.c b/drivers/iommu/intel-pasid.c
+>> index 48cc9ca5f3dc..7969e3dac2ad 100644
+>> --- a/drivers/iommu/intel-pasid.c
+>> +++ b/drivers/iommu/intel-pasid.c
+>> @@ -498,7 +498,7 @@ pasid_cache_invalidation_with_pasid(struct
+>> intel_iommu *iommu,
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   static void
+>> @@ -512,7 +512,7 @@ iotlb_invalidation_with_pasid(struct intel_iommu
+>> *iommu, u16 did, u32 pasid)
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>>
+>> -	qi_submit_sync(&desc, iommu);
+>> +	qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   static void
+>> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
+>> index e9f4e979a71f..83dc4319f661 100644
+>> --- a/drivers/iommu/intel-svm.c
+>> +++ b/drivers/iommu/intel-svm.c
+>> @@ -138,7 +138,7 @@ static void intel_flush_svm_range_dev (struct
+>> intel_svm *svm, struct intel_svm_d
+>>   	}
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>> -	qi_submit_sync(&desc, svm->iommu);
+>> +	qi_submit_sync(svm->iommu, &desc, 1, 0);
+>>
+>>   	if (sdev->dev_iotlb) {
+>>   		desc.qw0 = QI_DEV_EIOTLB_PASID(svm->pasid) |
+>> @@ -162,7 +162,7 @@ static void intel_flush_svm_range_dev (struct
+>> intel_svm *svm, struct intel_svm_d
+>>   		}
+>>   		desc.qw2 = 0;
+>>   		desc.qw3 = 0;
+>> -		qi_submit_sync(&desc, svm->iommu);
+>> +		qi_submit_sync(svm->iommu, &desc, 1, 0);
+>>   	}
+>>   }
+>>
+>> @@ -850,7 +850,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   				       sizeof(req->priv_data));
+>>   			resp.qw2 = 0;
+>>   			resp.qw3 = 0;
+>> -			qi_submit_sync(&resp, iommu);
+>> +			qi_submit_sync(iommu, &resp, 1, 0);
+>>   		}
+>>   		head = (head + sizeof(*req)) & PRQ_RING_MASK;
+>>   	}
+>> diff --git a/drivers/iommu/intel_irq_remapping.c
+>> b/drivers/iommu/intel_irq_remapping.c
+>> index 81e43c1df7ec..a042f123b091 100644
+>> --- a/drivers/iommu/intel_irq_remapping.c
+>> +++ b/drivers/iommu/intel_irq_remapping.c
+>> @@ -151,7 +151,7 @@ static int qi_flush_iec(struct intel_iommu *iommu, int
+>> index, int mask)
+>>   	desc.qw2 = 0;
+>>   	desc.qw3 = 0;
+>>
+>> -	return qi_submit_sync(&desc, iommu);
+>> +	return qi_submit_sync(iommu, &desc, 1, 0);
+>>   }
+>>
+>>   static int modify_irte(struct irq_2_iommu *irq_iommu,
+>> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+>> index cfe720f10112..ee2d5cdd8339 100644
+>> --- a/include/linux/intel-iommu.h
+>> +++ b/include/linux/intel-iommu.h
+>> @@ -710,7 +710,13 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu
+>> *iommu, u16 sid, u16 pfsid,
+>>   void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did, u64 granu,
+>>   			  int pasid);
+>>
+>> -extern int qi_submit_sync(struct qi_desc *desc, struct intel_iommu *iommu);
+>> +int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>> +		   unsigned int count, unsigned long options);
+>> +/*
+>> + * Options used in qi_submit_sync:
+>> + * QI_OPT_WAIT_DRAIN - Wait for PRQ drain completion, spec 6.5.2.8.
+>> + */
+>> +#define QI_OPT_WAIT_DRAIN		BIT(0)
+> 
+> no one uses this flag in this patch
+> 
+>>
+>>   extern int dmar_ir_support(void);
+>>
+>> --
+>> 2.17.1
+> 
+> Thanks
+> Kevin
+> 
