@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850D51A9C54
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4981A9C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404173AbgDOLc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390657AbgDOLcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:32:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF565C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IJiQ+eOHsfyCYt3l0kllphhznQD2NCgBQ/HSamSBJWY=; b=Hvd2px1ghMgtRjoeyAfhjQ4Pgg
-        wF35jYsZarX+C95QKpbHD2KQpRe+JDpJIuuu7Sgw6wyCMWobQVpi8CgvB4XND6weM357HTLruYWJA
-        yq/rBe56qZQDyyxhVR2SB0NPKPTuUDZ4FWaYVuB6DSv98kdM9tpI3tJnljUuR8JvSfZIRKKxOL7qy
-        f+9Wy1/y8jaYpNmju0yyfO9ZBY0RtnVtWz1cqM+vi+br0lCAt3eHoUiLcYstMed0HkSFqBJ8kqeOi
-        GagxHZAMETWaDiG7TvDzCmQOr8P77GRvHU4p4JFXmAVvjmK4+iAIolj4oGQQmQYIH9jtOuK6XwnpQ
-        DzqviHUA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOgHN-000539-M3; Wed, 15 Apr 2020 11:32:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0CA7F30066E;
-        Wed, 15 Apr 2020 13:32:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C2365203A8983; Wed, 15 Apr 2020 13:32:26 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 13:32:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: Re: [RFC] autonuma: Support to scan page table asynchronously
-Message-ID: <20200415113226.GE20730@hirez.programming.kicks-ass.net>
-References: <20200414081951.297676-1-ying.huang@intel.com>
- <20200414120646.GN3818@techsingularity.net>
+        id S2897020AbgDOLfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408860AbgDOLer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:34:47 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7506520737;
+        Wed, 15 Apr 2020 11:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586950487;
+        bh=ic5MMHZntN33IMBrTIWsQVmdcrIefTFAyiQjjyVZ7jg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cM6GbIxiSTcsD0vtJWc6VQBGC1DcfVTWzf3Qa0GEW8FCzZ9eTdxmSCrXomBAs4b7T
+         NO50eLOJ00/T1d6lkQT7b3FjbVJ+EOKFllVyw+8Cshc1XFAFPX/OB6JC2jr5R5+2ws
+         ylGqOYTFy3mVNXuz+Vgt8X+rk/Hzqkh8pXC1yMMY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     xinhui pan <xinhui.pan@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH AUTOSEL 5.6 001/129] drm/ttm: flush the fence on the bo after we individualize the reservation object
+Date:   Wed, 15 Apr 2020 07:32:36 -0400
+Message-Id: <20200415113445.11881-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414120646.GN3818@techsingularity.net>
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:06:46PM +0100, Mel Gorman wrote:
-> While it's just an opinion, my preference would be to focus on reducing
-> the cost and amount of scanning done -- particularly for threads.
+From: xinhui pan <xinhui.pan@amd.com>
 
-This; I really don't believe in those back-charging things, esp. since
-not having cgroups or having multiple applications in a single cgroup is
-a valid setup.
+[ Upstream commit 1bbcf69e42fe7fd49b6f4339c970729d0e343753 ]
 
-Another way to reduce latency spikes is to decrease both
-sysctl_numa_balancing_scan_delay and sysctl_numa_balancing_scan_size.
-Then you do more smaller scans. By scanning more often you reduce the
-contrast, by reducing the size you lower the max latency.
+As we move the ttm_bo_individualize_resv() upwards, we need flush the
+copied fence too. Otherwise the driver keeps waiting for fence.
 
-And this is all assuming you actually want numa balancing for this
-process.
+run&Kill kfdtest, then perf top.
+
+  25.53%  [ttm]                     [k] ttm_bo_delayed_delete
+  24.29%  [kernel]                  [k] dma_resv_test_signaled_rcu
+  19.72%  [kernel]                  [k] ww_mutex_lock
+
+Fix: 378e2d5b("drm/ttm: fix ttm_bo_cleanup_refs_or_queue once more")
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/series/72339/
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/ttm/ttm_bo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 5df596fb0280c..fe420ca454e0a 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -498,8 +498,10 @@ static void ttm_bo_cleanup_refs_or_queue(struct ttm_buffer_object *bo)
+ 
+ 		dma_resv_unlock(bo->base.resv);
+ 	}
+-	if (bo->base.resv != &bo->base._resv)
++	if (bo->base.resv != &bo->base._resv) {
++		ttm_bo_flush_all_fences(bo);
+ 		dma_resv_unlock(&bo->base._resv);
++	}
+ 
+ error:
+ 	kref_get(&bo->list_kref);
+-- 
+2.20.1
+
