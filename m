@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B671A9F46
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B79A1A9F6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441269AbgDOMI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:08:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36694 "EHLO mx2.suse.de"
+        id S2898060AbgDOMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:11:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:43860 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409739AbgDOMCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:02:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 20792AED8;
-        Wed, 15 Apr 2020 12:02:41 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 146861E1250; Wed, 15 Apr 2020 14:02:41 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 14:02:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 3/8] fs/ext4: Disallow encryption if inode is DAX
-Message-ID: <20200415120241.GF6126@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-4-ira.weiny@intel.com>
+        id S2441247AbgDOMH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:07:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3931C1063;
+        Wed, 15 Apr 2020 05:07:56 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1C653F68F;
+        Wed, 15 Apr 2020 05:07:54 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 13:07:52 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Fangrui Song <maskray@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Jian Cai <jiancai@google.com>
+Subject: Re: [PATCH v2] arm64: Delete the space separator in __emit_inst
+Message-ID: <20200415120752.GD6526@gaia>
+References: <20200414163255.66437-1-maskray@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200414040030.1802884-4-ira.weiny@intel.com>
+In-Reply-To: <20200414163255.66437-1-maskray@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-04-20 21:00:25, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Tue, Apr 14, 2020 at 09:32:55AM -0700, Fangrui Song wrote:
+> In assembly, many instances of __emit_inst(x) expand to a directive. In
+> a few places __emit_inst(x) is used as an assembler macro argument. For
+> example, in arch/arm64/kvm/hyp/entry.S
 > 
-> Encryption and DAX are incompatible.  Changing the DAX mode due to a
-> change in Encryption mode is wrong without a corresponding
-> address_space_operations update.
+>   ALTERNATIVE(nop, SET_PSTATE_PAN(1), ARM64_HAS_PAN, CONFIG_ARM64_PAN)
 > 
-> Make the 2 options mutually exclusive by returning an error if DAX was
-> set first.
+> expands to the following by the C preprocessor:
 > 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  fs/ext4/super.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
+>   alternative_insn nop, .inst (0xd500401f | ((0) << 16 | (4) << 5) | ((!!1) << 8)), 4, 1
 > 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0c7c4adb664e..b14863058115 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1325,7 +1325,7 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
->  	if (inode->i_ino == EXT4_ROOT_INO)
->  		return -EPERM;
->  
-> -	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
-> +	if (WARN_ON_ONCE(IS_DAX(inode)))
+> Both comma and space are separators, with an exception that content
+> inside a pair of parentheses/quotes is not split, so the clang
+> integrated assembler splits the arguments to:
+> 
+>    nop, .inst, (0xd500401f | ((0) << 16 | (4) << 5) | ((!!1) << 8)), 4, 1
+> 
+> GNU as preprocesses the input with do_scrub_chars(). Its arm64 backend
+> (along with many other non-x86 backends) sees:
+> 
+>   alternative_insn nop,.inst(0xd500401f|((0)<<16|(4)<<5)|((!!1)<<8)),4,1
+>   # .inst(...) is parsed as one argument
+> 
+> while its x86 backend sees:
+> 
+>   alternative_insn nop,.inst (0xd500401f|((0)<<16|(4)<<5)|((!!1)<<8)),4,1
+>   # The extra space before '(' makes the whole .inst (...) parsed as two arguments
+> 
+> The non-x86 backend's behavior is considered unintentional
+> (https://sourceware.org/bugzilla/show_bug.cgi?id=25750).
+> So drop the space separator inside `.inst (...)` to make the clang
+> integrated assembler work.
+> 
+> Suggested-by: Ilie Halip <ilie.halip@gmail.com>
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/939
 
-Also here I don't think WARN_ON_ONCE() is warranted once we allow per-inode
-setting of DAX. It will then become a regular error condition...
+Queued for 5.7. Thanks.
 
-								Honza
-
->  		return -EINVAL;
->  
->  	res = ext4_convert_inline_data(inode);
-> @@ -1349,10 +1349,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
->  			ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
->  			ext4_clear_inode_state(inode,
->  					EXT4_STATE_MAY_INLINE_DATA);
-> -			/*
-> -			 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> -			 * S_DAX may be disabled
-> -			 */
->  			ext4_set_inode_flags(inode);
->  		}
->  		return res;
-> @@ -1376,10 +1372,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
->  				    ctx, len, 0);
->  	if (!res) {
->  		ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> -		/*
-> -		 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> -		 * S_DAX may be disabled
-> -		 */
->  		ext4_set_inode_flags(inode);
->  		res = ext4_mark_inode_dirty(handle, inode);
->  		if (res)
-> -- 
-> 2.25.1
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Catalin
