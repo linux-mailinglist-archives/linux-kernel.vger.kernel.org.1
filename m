@@ -2,87 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C49D1AAFCD
+	by mail.lfdr.de (Postfix) with ESMTP id 2E46D1AAFCC
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411283AbgDORcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:32:45 -0400
-Received: from mga07.intel.com ([134.134.136.100]:2222 "EHLO mga07.intel.com"
+        id S2411276AbgDORci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411254AbgDORcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2411221AbgDORcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 13:32:23 -0400
-IronPort-SDR: wvHLy714rTSlYcNhNlv+aRA5aHOerVTU7dJQbUch7nE3n99YpLYvKoOKz7fK7tI78g8g28zIiP
- jFDC2ytqc2FQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 10:32:21 -0700
-IronPort-SDR: UPm9YQA1HstvxIqgWlU3zNpxyUt+ZwupuVkwia5v26qAtu66LLTG2cj0kvhRT5lV/Dwn4+r2AP
- c2pza6vfIk6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="363732914"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Apr 2020 10:32:21 -0700
-Date:   Wed, 15 Apr 2020 10:32:21 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jon Cargille <jcargill@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Northup <digitaleric@gmail.com>,
-        Eric Northup <digitaleric@google.com>
-Subject: Re: [PATCH 1/1] KVM: pass through CPUID(0x80000006)
-Message-ID: <20200415173221.GC30627@linux.intel.com>
-References: <20200415012320.236065-1-jcargill@google.com>
- <20200415023726.GD12547@linux.intel.com>
- <20200415025105.GE12547@linux.intel.com>
- <CANxmayh4P5hhbJPxAnA2nvbzZC9EwFPeVCxDrkHzu8h6Y7JPPQ@mail.gmail.com>
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B916120784;
+        Wed, 15 Apr 2020 17:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586971942;
+        bh=ZahoOvyOJcz1kFNY6YQVGLuycCJ0tnOyCUQXs09WDtg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SXCCgBYf+vKvTrZv6ilOYFIQM6B39QsXb5IQL4aVV80MDAgsZopmIArjyB7niCakS
+         7aozcbMCmFKjJFMy3pJWKBwCNrvdTRiUIJd50Q0AHJ8MDsYljT6+Acl8I1+U2g2I+t
+         J2YfBrXloDDVhd2RQtEYSHCyIgwrMbypafcifsLk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 853D63522AD1; Wed, 15 Apr 2020 10:32:22 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 10:32:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 0/19] Miscellaneous fixes for v5.8
+Message-ID: <20200415173222.GA17661@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
+ <20200415102123.0f87e15747aac6733233dd52@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANxmayh4P5hhbJPxAnA2nvbzZC9EwFPeVCxDrkHzu8h6Y7JPPQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200415102123.0f87e15747aac6733233dd52@linux-foundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 10:22:16AM -0700, Jon Cargille wrote:
-> > I assume you want to say something like:
+On Wed, Apr 15, 2020 at 10:21:23AM -0700, Andrew Morton wrote:
+> On Wed, 15 Apr 2020 10:10:17 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> That's a much better commit message--thank you, Sean!
+> > Subject: [PATCH tip/core/rcu 0/19] Miscellaneous fixes for v5.8
 > 
-> > Jim's tag is unnecessary, unless he was a middleman between Eric and Jon,
-> 
-> I appreciate the feedback; I was trying to capture that Jim "was in the
-> patch's delivery path." (per submitting-patches.rst), but it sounds like that
-> is intended for a more explicit middle-man relationship than I had
-> understood.
+> I was hoping we could get at least the data_race() implementation
+> into 5.7-rc1 - I'm sitting on a pile of patches which use it.  Oh well,
+> next time.
 
-Yep, exactly.
+I could put the stubs somewhere more visible, if that would help.
+Me, I ran out of patience, so you are a better man than am I!  ;-)
 
-> Jim reviewed it internally before sending, which sounds like it should be
-> expressed as an "Acked-by" instead; is that accurate?
-
-Or Reviewed-by.  The proper (and easiest) way to handle this is to use
-whatever tag Jim (or any other reviewer) provides, e.g. submitting-patches
-states, under 12) When to use Acked-by:, Cc:, and Co-developed-by:, states:
-
-  If a person has had the opportunity to comment on a patch, but has not
-  provided such comments, you may optionally add a ``Cc:`` tag to the patch.
-  This is the only tag which might be added without an explicit action by the
-  person it names
-
-I.e. all *-by tags are only supposed to be used with explicit permission
-from the named person.  This doesn't mean the person has to literally write
-Reviewed-by or whatever (though that's usually the case), but it does mean
-you should confirm it's ok to add a tag, e.g. if someone replies "LGTM" and
-you want to interpret that as a Reviewed-by or Acked-by, explicitly ask if
-it's ok to add the tag.
+							Thanx, Paul
