@@ -2,135 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829891AB36D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1A81AB373
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730190AbgDOVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 17:34:32 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50601 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728803AbgDOVeJ (ORCPT
+        id S1728803AbgDOVmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 17:42:22 -0400
+Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:33520 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727857AbgDOVmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 17:34:09 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id c7301ba4d472f152; Wed, 15 Apr 2020 23:34:02 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Mikityanskiy <maxtram95@gmail.com>,
-        "5 . 3+" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] platform/x86: intel_int0002_vgpio: Only bind to the INT0002 dev when using s2idle
-Date:   Wed, 15 Apr 2020 23:34:02 +0200
-Message-ID: <15138701.54mejVaKjr@kreacher>
-In-Reply-To: <a9c4b315-2784-fe59-1236-3e3bf391fd4c@redhat.com>
-References: <20200414131953.131533-1-hdegoede@redhat.com> <4380034.KJPSqyn9gG@kreacher> <a9c4b315-2784-fe59-1236-3e3bf391fd4c@redhat.com>
+        Wed, 15 Apr 2020 17:42:15 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 84C59181D3025;
+        Wed, 15 Apr 2020 21:42:12 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:4321:5007:6119:6742:7514:7901:8957:9586:10004:10400:10471:11232:11658:11914:12043:12048:12297:12679:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21451:21627:21809:30054:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: paint15_875805ccbe953
+X-Filterd-Recvd-Size: 2157
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 15 Apr 2020 21:42:09 +0000 (UTC)
+Message-ID: <1288d0e231eb61566fefc8a9c0510fc123528da2.camel@perches.com>
+Subject: Re: [PATCH lkmm tip/core/rcu 06/10] MAINTAINERS: Update maintainers
+ for new Documentaion/litmus-tests/
+From:   Joe Perches <joe@perches.com>
+To:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Date:   Wed, 15 Apr 2020 14:39:59 -0700
+In-Reply-To: <20200415184945.16487-6-paulmck@kernel.org>
+References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+         <20200415184945.16487-6-paulmck@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, April 15, 2020 11:48:20 AM CEST Hans de Goede wrote:
-> Hi,
-> 
-> On 4/15/20 11:45 AM, Rafael J. Wysocki wrote:
-> > On Tuesday, April 14, 2020 3:19:53 PM CEST Hans de Goede wrote:
-> >> Commit 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement
-> >> irq_set_wake on Bay Trail") stopped passing irq_set_wake requests on to
-> >> the parents IRQ because this was breaking suspend (causing immediate
-> >> wakeups) on an Asus E202SA.
-> >>
-> >> This workaround for this issue is mostly fine, on most Cherry Trail
-> >> devices where we need the INT0002 device for wakeups by e.g. USB kbds,
-> >> the parent IRQ is shared with the ACPI SCI and that is marked as wakeup
-> >> anyways.
-> >>
-> >> But not on all devices, specifically on a Medion Akoya E1239T there is
-> >> no SCI at all, and because the irq_set_wake request is not passed on to
-> >> the parent IRQ, wake up by the builtin USB kbd does not work here.
-> >>
-> >> So the workaround for the Asus E202SA immediate wake problem is causing
-> >> problems elsewhere; and in hindsight it is not the correct fix,
-> >> the Asus E202SA uses Airmont CPU cores, but this does not mean it is a
-> >> Cherry Trail based device, Brasswell uses Airmont CPU cores too and this
-> >> actually is a Braswell device.
-> >>
-> >> Most (all?) Braswell devices use classic S3 mode suspend rather then
-> >> s2idle suspend and in this case directly dealing with PME events as
-> >> the INT0002 driver does likely is not the best idea, so that this is
-> >> causing issues is not surprising.
-> >>
-> >> Replace the workaround of not passing irq_set_wake requests on to the
-> >> parents IRQ, by not binding to the INT0002 device when s2idle is not used.
-> >> This fixes USB kbd wakeups not working on some Cherry Trail devices,
-> >> while still avoiding mucking with the wakeup flags on the Asus E202SA
-> >> (and other Brasswell devices).
-> >>
-> >> Cc: Maxim Mikityanskiy <maxtram95@gmail.com>
-> >> Cc: 5.3+ <stable@vger.kernel.org> # 5.3+
-> >> Fixes: 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement irq_set_wake on Bay Trail")
-> >> Tested-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-> >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> >> ---
-> >> Changes in v2:
-> >> - Rebase on top of 5.7-rc1
-> >> ---
-> >>   drivers/platform/x86/intel_int0002_vgpio.c | 18 +++++-------------
-> >>   1 file changed, 5 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platform/x86/intel_int0002_vgpio.c
-> >> index 289c6655d425..30806046b664 100644
-> >> --- a/drivers/platform/x86/intel_int0002_vgpio.c
-> >> +++ b/drivers/platform/x86/intel_int0002_vgpio.c
-> >> @@ -143,21 +143,9 @@ static struct irq_chip int0002_byt_irqchip = {
-> >>   	.irq_set_wake		= int0002_irq_set_wake,
-> >>   };
-> >>   
-> >> -static struct irq_chip int0002_cht_irqchip = {
-> >> -	.name			= DRV_NAME,
-> >> -	.irq_ack		= int0002_irq_ack,
-> >> -	.irq_mask		= int0002_irq_mask,
-> >> -	.irq_unmask		= int0002_irq_unmask,
-> >> -	/*
-> >> -	 * No set_wake, on CHT the IRQ is typically shared with the ACPI SCI
-> >> -	 * and we don't want to mess with the ACPI SCI irq settings.
-> >> -	 */
-> >> -	.flags			= IRQCHIP_SKIP_SET_WAKE,
-> >> -};
-> >> -
-> >>   static const struct x86_cpu_id int0002_cpu_ids[] = {
-> >>   	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,	&int0002_byt_irqchip),
-> >> -	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	&int0002_cht_irqchip),
-> >> +	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	&int0002_byt_irqchip),
-> >>   	{}
-> >>   };
-> >>   
-> >> @@ -181,6 +169,10 @@ static int int0002_probe(struct platform_device *pdev)
-> >>   	if (!cpu_id)
-> >>   		return -ENODEV;
-> >>   
-> >> +	/* We only need to directly deal with PMEs when using s2idle */
-> >> +	if (!pm_suspend_default_s2idle())
-> >> +		return -ENODEV;
-> >> +
-> > 
-> > What if the system supports s2idle which is not the default suspend option
-> > and then it is selected by user space (overriding the default)?
-> 
-> This driver only binds (the cpuid check still visible above) on Bay Trail
-> and Cherry Trail/Brasswell systems. AFAIK those never support both modes,
-> the laptop variants of these SoCs always use S3 and the tablet versions
-> always use s2idle.
+On Wed, 2020-04-15 at 11:49 -0700, paulmck@kernel.org wrote:
+> Also add me as Reviewer for LKMM. Previously a patch to do this was
+> Acked but somewhere along the line got lost. Add myself in this patch.
+[]
+> diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -9806,6 +9806,7 @@ M:	Luc Maranget <luc.maranget@inria.fr>
+>  M:	"Paul E. McKenney" <paulmck@kernel.org>
+>  R:	Akira Yokosawa <akiyks@gmail.com>
+>  R:	Daniel Lustig <dlustig@nvidia.com>
+> +R:	Joel Fernandes <joel@joelfernandes.org>
+>  L:	linux-kernel@vger.kernel.org
+>  L:	linux-arch@vger.kernel.org
+>  S:	Supported
+> @@ -9816,6 +9817,7 @@ F:	Documentation/core-api/atomic_ops.rst
+>  F:	Documentation/core-api/refcount-vs-atomic.rst
+>  F:	Documentation/memory-barriers.txt
+>  F:	tools/memory-model/
+> +F:	Documentation/litmus-tests/
 
-But this means that at least the laptop variants can use s2idle if users choose
-that option.  Switching over from S3 to s2idle and back needs to be supported.
+trivia:
 
-Cheers!
+Alphabetic ordering of F: entries please.
+This should be between core-api and memory-barriers.
 
-
+>  LIS3LV02D ACCELEROMETER DRIVER
+>  M:	Eric Piel <eric.piel@tremplin-utc.net>
 
