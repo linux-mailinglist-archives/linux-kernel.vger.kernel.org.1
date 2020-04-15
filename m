@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806651A96A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CE91A96B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408096AbgDOIfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        id S2408124AbgDOIgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725859AbgDOIfN (ORCPT
+        by vger.kernel.org with ESMTP id S2894634AbgDOIgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:35:13 -0400
-X-Greylist: delayed 1631 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Apr 2020 01:35:13 PDT
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1CDC061A0C;
-        Wed, 15 Apr 2020 01:35:13 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 757872D1;
-        Wed, 15 Apr 2020 10:35:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586939712;
-        bh=rbh9fDJeGinm28yTtw/ldq3r46Kaxtu02L5LD4eqf0w=;
-        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
-        b=h0LSZW1gDFztRj1QogbWoO595f3fNGjGMf//QtE7Nbz7MLRlB0uCSbGZlAiZy14jd
-         qa09cc7B/nW+lixcv8OniFCgJJp7P95d+KSl4RLFT55X8DmH3C1m8H0IrQ5Bjp/q0z
-         nqFu5AmQ24MVN7dfhmeg7fzLHsSzLImptFrcFbaA=
-Subject: Re: [RFC PATCH v2 0/6] i2c: of: reserve unknown and ancillary
- addresses
-To:     Wolfram Sang <wsa@the-dreams.de>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-i3c@lists.infradead.org,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
- <20200415082712.GD1141@ninjato>
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <f214be03-4617-40ed-40f2-019e4fd24cd4@ideasonboard.com>
-Date:   Wed, 15 Apr 2020 09:35:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        Wed, 15 Apr 2020 04:36:00 -0400
+Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D963C061A0C;
+        Wed, 15 Apr 2020 01:35:59 -0700 (PDT)
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7O2CKN9ej"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+        with ESMTPSA id 6028a2w3F8ZM0Ij
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 15 Apr 2020 10:35:22 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Philipp Rossak <embed3d@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        openpvrsgx-devgroup@letux.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH v6 02/12] ARM: DTS: am33xx: add sgx gpu child node
+Date:   Wed, 15 Apr 2020 10:35:09 +0200
+Message-Id: <0d1fea5a12cd59e1ebbbd7522a5dd0c7b74821cf.1586939718.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1586939718.git.hns@goldelico.com>
+References: <cover.1586939718.git.hns@goldelico.com>
 MIME-Version: 1.0
-In-Reply-To: <20200415082712.GD1141@ninjato>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/2020 09:27, Wolfram Sang wrote:
-> 
-> Status update on this series:
-> 
->> TODO: make sure there are no concurrency issues in patch 6 when handling
->> the struct i2c_client.
-> 
-> This turns out to be annoying. How to make sure that we don't modify the
-> i2c_client while the adapter it is sitting on just gets removed. AFAICS
-> we need a new locking scheme just for that and I am not convinced this
-> is the way forward.
-> 
-> Also, there is still this small room for regressing when there are DTs
-> having multiple addresses specified in the DT and the drivers use
-> i2c_new_dummy_client on these addresses. I have verified that no in-tree
-> users of i2c_new_dummy (and friends) do work on extra addresses but
-> still I'd like to completely avoid this potential regression.
-> 
-> One solution to both problems would be to unregister the reserved device
-> when its address is requested. I am working on this prototype currently.
-> However, I am not sure yet if one issue might make this approach messy:
-> re-registering the reserved device when the probe of the requested
-> address fails.
+and add interrupt.
 
-If we 'unregister' the existing device, could we then register a new
-'well named' device more appropriate to the driver, so it doesn't
-continue to show up as 'reserved' in the system, but rather a more
-appropriate name to the driver that registered it?
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # BeagleBone Black
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/arm/boot/dts/am33xx.dtsi | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-> We will see...
-> 
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index a35f5052d76f..155424d87156 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -564,7 +564,7 @@ aes: aes@0 {
+ 			};
+ 		};
+ 
+-		target-module@56000000 {
++		sgx_module: target-module@56000000 {
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x5600fe00 0x4>,
+ 			      <0x5600fe10 0x4>;
+@@ -583,10 +583,11 @@ target-module@56000000 {
+ 			#size-cells = <1>;
+ 			ranges = <0 0x56000000 0x1000000>;
+ 
+-			/*
+-			 * Closed source PowerVR driver, no child device
+-			 * binding or driver in mainline
+-			 */
++			gpu: gpu@0 {
++				compatible = "ti,am3352-sgx530-125", "img,sgx530-125", "img,sgx530";
++				reg = <0x00 0x1000000>;	/* 16 MB */
++				interrupts = <37>;
++			};
+ 		};
+ 	};
+ };
+-- 
+2.25.1
 
-Looking forward to it :-)
-
---
-Kieran
