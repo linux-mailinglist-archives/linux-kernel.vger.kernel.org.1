@@ -2,415 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92891A9893
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6261A9874
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895432AbgDOJXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895415AbgDOJXR (ORCPT
+        id S2408419AbgDOJVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:21:19 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:39380 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729004AbgDOJVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:23:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41273C03C1A8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:23:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x18so13948478wrq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CApeDRpcs9y+uCevURcB1yZFuinPxngxdJkSfuMz9fI=;
-        b=NKrIbRq+Wjezmr4hGGzkZpN7sVNcX9hTOeTpauatjwswGyGUwAucUfTAcxCJEY7R4+
-         4UDL3a84Z/nVeY6XG7YFk5EoywqreuFus1NBx9+FCmFBYhySzc1fBNxLK83LZx3496kn
-         6sX3xXbD+rIFWqkd7lFfblpfgQYXR+DjNb0lVVHfsOq5rfb0yPVAqD7vDUuFrnkhA6CT
-         1MlcL9QyKapIokjGT+lcxUB3OpMd91/1kOEe786QoMCuwL+lRMiFA7F09fVCHkRA9ecr
-         eAweQmxTWpnEP6yoBBj9fwyhjxnh3NKMzN3+CWXbR5fYwxeK2BBznIigWk4Xf92eIEal
-         N3qA==
+        Wed, 15 Apr 2020 05:21:15 -0400
+Received: by mail-oi1-f196.google.com with SMTP id 8so2690966oiy.6;
+        Wed, 15 Apr 2020 02:21:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CApeDRpcs9y+uCevURcB1yZFuinPxngxdJkSfuMz9fI=;
-        b=X3y1joHY//EnIx+vWpsqpaKWpKBrlhXyIaC60GcfJBPid5rF+hX9a+a7PM4/ZhgHCq
-         k4mTkb4pd46DSrmpMbLT9wV3w9kWipZByCf+ZtmDhcrUX0R/Ic8vSkPTJ1dHV+nN3Cu+
-         F5HqmX+xMOlfZQUwyuWlKf7YXTIoF15QtyEvB+wRUTJGB7eO13utqmlJtesKLpw8PWqe
-         9rKirhOfqWmuV4GyHlr2kX9pVQRdcQY40aepIHygMv5LwENXDCAiRfPOxZp8YHGQQGra
-         0txRSJLJ9c9aAi1U89F4ZycvAaGPjzUFADJNBzdnKXpp0UcFxdYLVU8OduXj4lDluqOM
-         mt+w==
-X-Gm-Message-State: AGi0PuYGLF/M7X1O8OK3ySs/LXVQfC9vOGAajlI9e4lxsYgPD0jmTirY
-        8blQMBxdHSnRTiszoCHR+lWc
-X-Google-Smtp-Source: APiQypKcLuWvxFyyKt6DFypvvMYHNC8RQewVp4BQXCKk/0ksMREsq+z9FQ9ZdPdI1/arknLfPX98DQ==
-X-Received: by 2002:adf:ff82:: with SMTP id j2mr16670188wrr.96.1586942595693;
-        Wed, 15 Apr 2020 02:23:15 -0700 (PDT)
-Received: from dkxps.fkb.profitbricks.net (dslb-002-204-231-072.002.204.pools.vodafone-ip.de. [2.204.231.72])
-        by smtp.gmail.com with ESMTPSA id v7sm22534615wmg.3.2020.04.15.02.23.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 02:23:15 -0700 (PDT)
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v12 24/25] block/rnbd: a bit of documentation
-Date:   Wed, 15 Apr 2020 11:20:44 +0200
-Message-Id: <20200415092045.4729-25-danil.kipnis@cloud.ionos.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
-References: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ENUjVHSFzJbsMq60w+xL843S4EzRyzEe3gtRyR28J9s=;
+        b=lyoKpCPaVHACix6JaO4Oj96be5CpdX+pSwk8Pco4B+UUCHz41NRkZ1VeIDKomy4dw5
+         aUMvKoktzzO2lmQgnTh/JKj5s4cmqN7dNAVZDIKGKcRZm0UDI0OTSvgv8zWY+9stPX2Z
+         TzvAtt7PT2g4HD3ahgma6nTtqR1MA0eUlqCkv7mfMEo4rEcaEQ4ROni6bGEEatEKx8pR
+         wtZxgqrGwJyrglhsy9tnXlLFqKIKPXC5wPvB8YnyRSClmXCd6quS+n8459iwLDsuxe6v
+         RfKcCNLDVHoDBumJbi3lBk5fNJWzOOsN8ta8BMZSQ/WaxmaTCUxjxEJXD6FWdUZjv8sb
+         VUQQ==
+X-Gm-Message-State: AGi0PuavEjvdoDffbbg1WtBv44JbaNLi8vZJTGZlMCLUU6Iku8ea3D1b
+        Rueo+3tNoUHsH1V5Bs72dYyYaP9LoM0Xi94rh9Q=
+X-Google-Smtp-Source: APiQypLTWr8XuYskhr44dR0bI+qedO3/+PH/UcHAaHnsqCHF0mVUYZiL79OBbyo/DWML3sV06die2E6qJn30gsERLA0=
+X-Received: by 2002:a05:6808:81:: with SMTP id s1mr553605oic.68.1586942474204;
+ Wed, 15 Apr 2020 02:21:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200414204240.186377-1-brendanhiggins@google.com>
+ <20200415061154.GA2496263@kroah.com> <20200415084653.GM2828150@kuha.fi.intel.com>
+In-Reply-To: <20200415084653.GM2828150@kuha.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 15 Apr 2020 11:21:03 +0200
+Message-ID: <CAJZ5v0hNemTDVa_S-FfVMbrKjM-RWYoHh88asnUvTNxZinY2cw@mail.gmail.com>
+Subject: Re: [PATCH v1] kobject: make sure parent is not released before children
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Shuah Khan <shuah@kernel.org>, anders.roxell@linaro.org,
+        lkft-triage@lists.linaro.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+On Wed, Apr 15, 2020 at 10:47 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> Hi Greg,
+>
+> On Wed, Apr 15, 2020 at 08:11:54AM +0200, Greg KH wrote:
+> > > diff --git a/lib/kobject.c b/lib/kobject.c
+> > > index 83198cb37d8d..5921e2470b46 100644
+> > > --- a/lib/kobject.c
+> > > +++ b/lib/kobject.c
+> > > @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
+> > >   */
+> > >  static void kobject_cleanup(struct kobject *kobj)
+> > >  {
+> > > +   struct kobject *parent = kobj->parent;
+> > >     struct kobj_type *t = get_ktype(kobj);
+> > >     const char *name = kobj->name;
+> > >
+> > > @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
+> > >             kobject_uevent(kobj, KOBJ_REMOVE);
+> > >     }
+> > >
+> > > +   /* make sure the parent is not released before the (last) child */
+> > > +   kobject_get(parent);
+> > > +
+> > >     /* remove from sysfs if the caller did not do it */
+> > >     if (kobj->state_in_sysfs) {
+> > >             pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+> > > @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
+> > >             t->release(kobj);
+> > >     }
+> > >
+> > > +   kobject_put(parent);
+> > > +
+> >
+> > No, please don't do this.
+> >
+> > A child device should have always incremented the parent already if it
+> > was correctly registered.  We have had this patch been proposed multiple
+> > times over the years, and every time it was, we said no and went and
+> > fixed the real issue which was with the user of the interface.
+>
+> The parent ref count is incremented by the child, that is not the
+> problem. The problem is that when that child is released, if it's the
+> last child of the parent, and there are no other users for the parent,
+> then the parent is actually released _before_ the child. And that
+> happens in the above function kobject_cleanup().
 
-README with description of major sysfs entries, sysfs documentation
-are moved to ABI dir as Bart suggested.
+In fact, it happens in kobject_del() invoked by kobject_cleanup() AFAICS.
 
-Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
----
- Documentation/ABI/testing/sysfs-block-rnbd    |  46 ++++++++
- .../ABI/testing/sysfs-class-rnbd-client       | 111 ++++++++++++++++++
- .../ABI/testing/sysfs-class-rnbd-server       |  50 ++++++++
- drivers/block/rnbd/README                     |  92 +++++++++++++++
- 4 files changed, 299 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-block-rnbd
- create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-client
- create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-server
- create mode 100644 drivers/block/rnbd/README
+So it appears incorrect to use kobject_del() as is in the latter.
 
-diff --git a/Documentation/ABI/testing/sysfs-block-rnbd b/Documentation/ABI/testing/sysfs-block-rnbd
-new file mode 100644
-index 000000000000..8f070b47f361
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-block-rnbd
-@@ -0,0 +1,46 @@
-+What:		/sys/block/rnbd<N>/rnbd/unmap_device
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	To unmap a volume, "normal" or "force" has to be written to:
-+		/sys/block/rnbd<N>/rnbd/unmap_device
-+
-+		When "normal" is used, the operation will fail with EBUSY if any process
-+		is using the device.  When "force" is used, the device is also unmapped
-+		when device is in use.  All I/Os that are in progress will fail.
-+
-+		Example:
-+
-+		# echo "normal" > /sys/block/rnbd0/rnbd/unmap_device
-+
-+What:		/sys/block/rnbd<N>/rnbd/state
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	The file contains the current state of the block device. The state file
-+		returns "open" when the device is successfully mapped from the server
-+		and accepting I/O requests. When the connection to the server gets
-+		disconnected in case of an error (e.g. link failure), the state file
-+		returns "closed" and all I/O requests submitted to it will fail with -EIO.
-+
-+What:		/sys/block/rnbd<N>/rnbd/session
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	RNBD uses RTRS session to transport the data between client and
-+		server.  The entry "session" contains the name of the session, that
-+		was used to establish the RTRS session.  It's the same name that
-+		was passed as server parameter to the map_device entry.
-+
-+What:		/sys/block/rnbd<N>/rnbd/mapping_path
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the path that was passed as "device_path" to the map_device
-+		operation.
-+
-+What:		/sys/block/rnbd<N>/rnbd/access_mode
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the device access mode: ro, rw or migration.
-diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-client b/Documentation/ABI/testing/sysfs-class-rnbd-client
-new file mode 100644
-index 000000000000..c084f203b41e
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-rnbd-client
-@@ -0,0 +1,111 @@
-+What:		/sys/class/rnbd-client
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Provide information about RNBD-client.
-+		All sysfs files that are not read-only provide the usage information on read:
-+
-+		Example:
-+		# cat /sys/class/rnbd-client/ctl/map_device
-+
-+		> Usage: echo "sessname=<name of the rtrs session> path=<[srcaddr,]dstaddr>
-+		> [path=<[srcaddr,]dstaddr>] device_path=<full path on remote side>
-+		> [access_mode=<ro|rw|migration>] > map_device
-+		>
-+		> addr ::= [ ip:<ipv4> | ip:<ipv6> | gid:<gid> ]
-+
-+What:		/sys/class/rnbd-client/ctl/map_device
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Expected format is the following:
-+
-+		sessname=<name of the rtrs session>
-+		path=<[srcaddr,]dstaddr> [path=<[srcaddr,]dstaddr> ...]
-+		device_path=<full path on remote side>
-+		[access_mode=<ro|rw|migration>]
-+
-+		Where:
-+
-+		sessname: accepts a string not bigger than 256 chars, which identifies
-+		a given session on the client and on the server.
-+		I.e. "clt_hostname-srv_hostname" could be a natural choice.
-+
-+		path:     describes a connection between the client and the server by
-+		specifying destination and, when required, the source address.
-+		The addresses are to be provided in the following format:
-+
-+		ip:<IPv6>
-+		ip:<IPv4>
-+		gid:<GID>
-+
-+		for example:
-+
-+		path=ip:10.0.0.66
-+		The single addr is treated as the destination.
-+		The connection will be established to this server from any client IP address.
-+
-+		path=ip:10.0.0.66,ip:10.0.1.66
-+		First addr is the source address and the second is the destination.
-+
-+		If multiple "path=" options are specified multiple connection
-+		will be established and data will be sent according to
-+		the selected multipath policy (see RTRS mp_policy sysfs entry description).
-+
-+		device_path: Path to the block device on the server side. Path is specified
-+		relative to the directory on server side configured in the
-+		'dev_search_path' module parameter of the rnbd_server.
-+		The rnbd_server prepends the <device_path> received from client
-+		with <dev_search_path> and tries to open the
-+		<dev_search_path>/<device_path> block device.  On success,
-+		a /dev/rnbd<N> device file, a /sys/block/rnbd_client/rnbd<N>/
-+		directory and an entry in /sys/class/rnbd-client/ctl/devices
-+		will be created.
-+
-+		If 'dev_search_path' contains '%SESSNAME%', then each session can
-+		have different devices namespace, e.g. server was configured with
-+		the following parameter "dev_search_path=/run/rnbd-devs/%SESSNAME%",
-+		client has this string "sessname=blya device_path=sda", then server
-+		will try to open: /run/rnbd-devs/blya/sda.
-+
-+		access_mode: the access_mode parameter specifies if the device is to be
-+		mapped as "ro" read-only or "rw" read-write. The server allows
-+		a device to be exported in rw mode only once. The "migration"
-+		access mode has to be specified if a second mapping in read-write
-+		mode is desired.
-+
-+		By default "rw" is used.
-+
-+		Exit Codes:
-+
-+		If the device is already mapped it will fail with EEXIST. If the input
-+		has an invalid format it will return EINVAL. If the device path cannot
-+		be found on the server, it will fail with ENOENT.
-+
-+		Finding device file after mapping
-+		---------------------------------
-+
-+		After mapping, the device file can be found by:
-+		o  The symlink /sys/class/rnbd-client/ctl/devices/<device_id>
-+		points to /sys/block/<dev-name>. The last part of the symlink destination
-+		is the same as the device name.  By extracting the last part of the
-+		path the path to the device /dev/<dev-name> can be build.
-+
-+		o /dev/block/$(cat /sys/class/rnbd-client/ctl/devices/<device_id>/dev)
-+
-+		How to find the <device_id> of the device is described on the next
-+		section.
-+
-+What:		/sys/class/rnbd-client/ctl/devices/
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	For each device mapped on the client a new symbolic link is created as
-+		/sys/class/rnbd-client/ctl/devices/<device_id>, which points
-+		to the block device created by rnbd (/sys/block/rnbd<N>/).
-+		The <device_id> of each device is created as follows:
-+
-+		- If the 'device_path' provided during mapping contains slashes ("/"),
-+		they are replaced by exclamation mark ("!") and used as as the
-+		<device_id>. Otherwise, the <device_id> will be the same as the
-+		"device_path" provided.
-diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-server b/Documentation/ABI/testing/sysfs-class-rnbd-server
-new file mode 100644
-index 000000000000..ba60a90c0e45
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-rnbd-server
-@@ -0,0 +1,50 @@
-+What:		/sys/class/rnbd-server
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	provide information about RNBD-server.
-+
-+What:		/sys/class/rnbd-server/ctl/
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	When a client maps a device, a directory entry with the name of the
-+		block device is created under /sys/class/rnbd-server/ctl/devices/.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/block_dev
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Is a symlink to the sysfs entry of the exported device.
-+
-+		Example:
-+		block_dev -> ../../../../class/block/ram0
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	For each client a particular device is exported to, following directory will be
-+		created:
-+
-+		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/
-+
-+		When the device is unmapped by that client, the directory will be removed.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/read_only
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains '1' if device is mapped read-only, otherwise '0'.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/mapping_path
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the relative device path provided by the user during mapping.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/access_mode
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the device access mode: ro, rw or migration.
-diff --git a/drivers/block/rnbd/README b/drivers/block/rnbd/README
-new file mode 100644
-index 000000000000..1773c0aa0bd4
---- /dev/null
-+++ b/drivers/block/rnbd/README
-@@ -0,0 +1,92 @@
-+********************************
-+RDMA Network Block Device (RNBD)
-+********************************
-+
-+Introduction
-+------------
-+
-+RNBD (RDMA Network Block Device) is a pair of kernel modules
-+(client and server) that allow for remote access of a block device on
-+the server over RTRS protocol using the RDMA (InfiniBand, RoCE, iWARP)
-+transport. After being mapped, the remote block devices can be accessed
-+on the client side as local block devices.
-+
-+I/O is transferred between client and server by the RTRS transport
-+modules. The administration of RNBD and RTRS modules is done via
-+sysfs entries.
-+
-+Requirements
-+------------
-+
-+  RTRS kernel modules
-+
-+Quick Start
-+-----------
-+
-+Server side:
-+  # modprobe rnbd_server
-+
-+Client side:
-+  # modprobe rnbd_client
-+  # echo "sessname=blya path=ip:10.50.100.66 device_path=/dev/ram0" > \
-+            /sys/devices/virtual/rnbd-client/ctl/map_device
-+
-+  Where "sessname=" is a session name, a string to identify the session
-+  on client and on server sides; "path=" is a destination IP address or
-+  a pair of a source and a destination IPs, separated by comma.  Multiple
-+  "path=" options can be specified in order to use multipath  (see RTRS
-+  description for details); "device_path=" is the block device to be
-+  mapped from the server side. After the session to the server machine is
-+  established, the mapped device will appear on the client side under
-+  /dev/rnbd<N>.
-+
-+
-+RNBD-Server Module Parameters
-+=============================
-+
-+dev_search_path
-+---------------
-+
-+When a device is mapped from the client, the server generates the path
-+to the block device on the server side by concatenating dev_search_path
-+and the "device_path" that was specified in the map_device operation.
-+
-+The default dev_search_path is: "/".
-+
-+dev_search_path option can also contain %SESSNAME% in order to provide
-+different device namespaces for different sessions.  See "device_path"
-+option for details.
-+
-+============================
-+Protocol (rnbd/rnbd-proto.h)
-+============================
-+
-+1. Before mapping first device from a given server, client sends an
-+RNBD_MSG_SESS_INFO to the server. Server responds with
-+RNBD_MSG_SESS_INFO_RSP. Currently the messages only contain the protocol
-+version for backward compatibility.
-+
-+2. Client requests to open a device by sending RNBD_MSG_OPEN message. This
-+contains the path to the device and access mode (read-only or writable).
-+Server responds to the message with RNBD_MSG_OPEN_RSP. This contains
-+a 32 bit device id to be used for  IOs and device "geometry" related
-+information: side, max_hw_sectors, etc.
-+
-+3. Client attaches RNBD_MSG_IO to each IO message send to a device. This
-+message contains device id, provided by server in his rnbd_msg_open_rsp,
-+sector to be accessed, read-write flags and bi_size.
-+
-+4. Client closes a device by sending RNBD_MSG_CLOSE which contains only the
-+device id provided by the server.
-+
-+=========================================
-+Contributors List(in alphabetical order)
-+=========================================
-+Danil Kipnis <danil.kipnis@profitbricks.com>
-+Fabian Holler <mail@fholler.de>
-+Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-+Jack Wang <jinpu.wang@profitbricks.com>
-+Kleber Souza <kleber.souza@profitbricks.com>
-+Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
-+Milind Dumbare <Milind.dumbare@gmail.com>
-+Roman Penyaev <roman.penyaev@profitbricks.com>
--- 
-2.20.1
+> We can work around the problem by taking a reference to the parent
+> separately, but we have to do that everywhere separately (which I
+> guess is exactly what has been done so far). That workaroud still does
+> not really fix the core problem. The core problem is still that
+> lib/kboject.c is allowing the parent kobject to be released before the
+> child kobject, and that quite simply should not be allowed to happen.
+>
+> I don't have a problem if you want to have a better solution for this,
+> but the solution really can't anymore be that we are always expected
+> to separately increment the parent's ref count with every type of
+> kobject.
 
+An alternative might be to define something like __kobject_del() doing
+everything that kobject_del() does *without* the
+kobject_put(kobj->parent).
+
+Then, kobject_del() could be defined as something like (pseudocode):
+
+kobject_del(kobj)
+{
+    kobject *perent = kobj->parent;
+
+    __kobject_del(kobj);
+    kobject_put(parent);
+}
+
+and kobject_cleanup() could call __kobject_del() instead of
+kobject_del() and then do the last kobject_put(parent) when it is done
+with the child.
+
+Would that work?
