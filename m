@@ -2,61 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB8B1AB23F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4441AB246
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634733AbgDOUCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:02:48 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:48229 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436756AbgDOUCj (ORCPT
+        id S2636873AbgDOUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 16:06:40 -0400
+Received: from mail.kmu-office.ch ([178.209.48.109]:49818 "EHLO
+        mail.kmu-office.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406385AbgDOUGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:02:39 -0400
-X-Originating-IP: 86.202.105.35
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D7FF0C0007;
-        Wed, 15 Apr 2020 20:02:35 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: 88pm860x: remove useless range check
-Date:   Wed, 15 Apr 2020 22:02:26 +0200
-Message-Id: <20200415200226.157361-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.25.2
+        Wed, 15 Apr 2020 16:06:35 -0400
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id A3EE95C07A7;
+        Wed, 15 Apr 2020 22:06:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1586981187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=18e6r5y/jgXADhhgiX3R6vif1YdVTFwaHH058p3heBc=;
+        b=kzCXjBTXYRcKiwbTlcwjtNog8tdHIMY90JOBql07rNRqIMwQCIZoGNCieVInoqLmPhYZwm
+        4k8P+IzP+CWSyghxueLPF6FHo9o0Wq/NYnUnX48Qv68wgwdblpR+IsAkpJeT0Xz2uQE46I
+        lghJiyJ2GG3Sm5jm1slWnNgNuLwtqOg=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 15 Apr 2020 22:06:27 +0200
+From:   Stefan Agner <stefan@agner.ch>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jian Cai <caij2003@gmail.com>, Manoj Gupta <manojgupta@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] ARM: replace the sole use of a symbol with its definition
+In-Reply-To: <CAKwvOdk3YG5TFD71E-9vPqssFZW1U3umCR+AWLLp8RZK2zHGsw@mail.gmail.com>
+References: <20200407190558.196865-1-caij2003@gmail.com>
+ <CAKwvOdk3YG5TFD71E-9vPqssFZW1U3umCR+AWLLp8RZK2zHGsw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.1
+Message-ID: <a6964b6f784266838070f434110661f3@agner.ch>
+X-Sender: stefan@agner.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because the core is now checking the RTC range, it is unnecessary to check
-it again in .set_time/
+On 2020-04-13 20:29, Nick Desaulniers wrote:
+> On Tue, Apr 7, 2020 at 12:09 PM Jian Cai <caij2003@gmail.com> wrote:
+>>
+>> ALT_UP_B macro sets symbol up_b_offset via .equ to an expression
+>> involving another symbol. The macro gets expanded twice when
+>> arch/arm/kernel/sleep.S is assembled, creating a scenario where
+>> up_b_offset is set to another expression involving symbols while its
+>> current value is based on symbols. LLVM integrated assembler does not
+>> allow such cases, and based on the documentation of binutils, "Values
+>> that are based on expressions involving other symbols are allowed, but
+>> some targets may restrict this to only being done once per assembly", so
+>> it may be better to avoid such cases as it is not clearly stated which
+>> targets should support or disallow them. The fix in this case is simple,
+>> as up_b_offset has only one use, so we can replace the use with the
+>> definition and get rid of up_b_offset.
+>>
+>> Signed-off-by: Jian Cai <caij2003@gmail.com>
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-88pm860x.c | 6 ------
- 1 file changed, 6 deletions(-)
+Thanks for tackling this!
 
-diff --git a/drivers/rtc/rtc-88pm860x.c b/drivers/rtc/rtc-88pm860x.c
-index cc9b14ef90f1..c90457d001e9 100644
---- a/drivers/rtc/rtc-88pm860x.c
-+++ b/drivers/rtc/rtc-88pm860x.c
-@@ -106,12 +106,6 @@ static int pm860x_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 	unsigned char buf[4];
- 	unsigned long ticks, base, data;
- 
--	if (tm->tm_year > 206) {
--		dev_dbg(info->dev, "Set time %d out of range. "
--			"Please set time between 1970 to 2106.\n",
--			1900 + tm->tm_year);
--		return -EINVAL;
--	}
- 	ticks = rtc_tm_to_time64(tm);
- 
- 	/* load 32-bit read-only counter */
--- 
-2.25.2
+> 
+> Probably didn't need the extra parens, but it's fine (unless another
+> reviewer would like a v2).  Maybe Stefan has some thoughts?
 
+Since this is a processor macro I actually prefer to have parentheses
+here. All use sites of ALT_UP_B pass just a label, but still, just to be
+on the safe side.
+
+I was wondering why equ has been used in first place. I don't see an
+advantage other than having a symbol which can be checked. But given
+that this code is stable and don't really need debugging at this point,
+I am fine replacing this to make it work for clang.
+
+
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
+> Please add Link tags if these correspond to issues in our link
+> tracker, they help us track when and where patches land.
+> Link: https://github.com/ClangBuiltLinux/linux/issues/920
+
+Agreed, please add the link. You can add this when submitting.
+
+With that:
+Reviewed-by: Stefan Agner <stefan@agner.ch>
+
+--
+Stefan
+
+> 
+>> ---
+>>  arch/arm/include/asm/assembler.h | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
+>> index 99929122dad7..adee13126c62 100644
+>> --- a/arch/arm/include/asm/assembler.h
+>> +++ b/arch/arm/include/asm/assembler.h
+>> @@ -269,10 +269,9 @@
+>>         .endif                                                  ;\
+>>         .popsection
+>>  #define ALT_UP_B(label)                                        \
+>> -       .equ    up_b_offset, label - 9998b                      ;\
+>>         .pushsection ".alt.smp.init", "a"                       ;\
+>>         .long   9998b                                           ;\
+>> -       W(b)    . + up_b_offset                                 ;\
+>> +       W(b)    . + (label - 9998b)                                     ;\
+>>         .popsection
+>>  #else
+>>  #define ALT_SMP(instr...)
+>> --
+>> 2.26.0.292.g33ef6b2f38-goog
+>>
