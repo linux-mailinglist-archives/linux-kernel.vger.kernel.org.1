@@ -2,129 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B731AA424
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EC91AA404
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370776AbgDONS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506263AbgDONRr (ORCPT
+        id S2506221AbgDONQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:16:21 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:50823 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506191AbgDONOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:17:47 -0400
-Received: from mo6-p03-ob.smtp.rzone.de (mo6-p03-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5303::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB773C061A0C;
-        Wed, 15 Apr 2020 06:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586956665;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=ggeVHX1ECoHuxb0UgkenFd/4IT/OkoIPA4CW4OSiH4U=;
-        b=tSk0cJVb5H6mQx63QImPqo27RrhaPv2mCMy/yhh3brjy8By+psy+Q0bbn3JXTtkz4X
-        q4tfGCwNiaca/V/WUG837rYs+lHilJIWpBxoPA+FK+fjl6ETB8/UqiALsVMUaM6MAGDV
-        bngvkgzNa6QOlwnd1/iLmIkh2Y0rgsSqYlJIFpMlWPmxUu/4PJfI4mUZ9CAVpb+fjqkI
-        I2u5BiZPGWJfZus5K6ekldodYXIYrcSDWARM+hIeQAxG3Zvk1dXxL0Mt5gt0u+5nFtVu
-        u/KYQCpSXmJz2uCmyZWaq8zaRh02wg8OXjtpoCE1MVlsrap/37j6djKWd5M0b7CeD7zO
-        cK/A==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PtwDConyM="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
-        with ESMTPSA id 6028a2w3FDHP26i
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 15 Apr 2020 15:17:25 +0200 (CEST)
-Subject: Re: [PATCH v6 01/12] dt-bindings: add img, pvrsgx.yaml for Imagination GPUs
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
-Date:   Wed, 15 Apr 2020 15:17:25 +0200
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Airlie <airlied@linux.ie>,
-        James Hogan <jhogan@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-samsung-soc@vger.kernel.org, letux-kernel@openphoenux.org,
-        Paul Burton <paulburton@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, Chen-Yu Tsai <wens@csie.org>,
-        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Philipp Rossak <embed3d@gmail.com>,
-        openpvrsgx-devgroup@letux.org, linux-kernel@vger.kernel.org,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@pyra-handheld.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <535CAEBE-F43E-4BFC-B989-612C81F0D7EF@goldelico.com>
-References: <cover.1586939718.git.hns@goldelico.com> <06fb6569259bb9183d0a0d0fe70ec4f3033b8aab.1586939718.git.hns@goldelico.com> <20200415101251.o3wi5t6xvf56xmhq@gilmour.lan> <72919514-0657-4B71-902F-3E775E528F64@goldelico.com> <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-X-Mailer: Apple Mail (2.3124)
+        Wed, 15 Apr 2020 09:14:48 -0400
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 64C4324000C;
+        Wed, 15 Apr 2020 13:14:34 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 15:17:39 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Luis Oliveira <lolivei@synopsys.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Michael Rodin <mrodin@de.adit-jv.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Todor Tomov <todor.tomov@linaro.org>,
+        Suresh Udipi <sudipi@jp.adit-jv.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.org>
+Subject: Re: [PATCH 3/4] media: ov5647: Add support for non-continuous clock
+ mode
+Message-ID: <20200415131739.pfc2g5siakpagsim@uno.localdomain>
+References: <cover.1586759968.git.roman.kovalivskyi@globallogic.com>
+ <c3189c80ac27d67e814509d44a864f8164971efb.1586759968.git.roman.kovalivskyi@globallogic.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c3189c80ac27d67e814509d44a864f8164971efb.1586759968.git.roman.kovalivskyi@globallogic.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+Hi Roman,
 
-> Am 15.04.2020 um 14:54 schrieb Neil Armstrong <narmstrong@baylibre.com>:
-> 
-> Hi,
-> 
-> On 15/04/2020 14:43, H. Nikolaus Schaller wrote:
->> 
->>> Am 15.04.2020 um 12:12 schrieb Maxime Ripard <maxime@cerno.tech>:
->>> 
->>> Hi,
->>> 
->>> On Wed, Apr 15, 2020 at 10:35:08AM +0200, H. Nikolaus Schaller wrote:
->>>> The Imagination PVR/SGX GPU is part of several SoC from
->>>> multiple vendors, e.g. TI OMAP, Ingenic JZ4780, Intel Poulsbo,
->>>> Allwinner A83 and others.
->>>> 
->>>> With this binding, we describe how the SGX processor is
->>>> interfaced to the SoC (registers, interrupt etc.).
->>>> 
->>>> In most cases, Clock, Reset and power management is handled
->>>> by a parent node or elsewhere (e.g. code in the driver).
->>> 
->>> Wouldn't the "code in the driver" still require the clock / reset /
->>> power domain to be set in the DT?
->> 
->> Well, some SoC seem to use existing clocks and have no reset.
->> Or, although not recommended, they may have the io-address range
->> hard-coded.
-> 
-> The possible clocks and resets should be added, even if optional.
-> 
-> Please look at the arm utgard, midgard and bifrost bindings.
+On Mon, Apr 13, 2020 at 12:17:46PM +0300, Roman Kovalivskyi wrote:
+> From: Dave Stevenson <dave.stevenson@raspberrypi.org>
+>
+> The driver was only supporting continuous clock mode
+> although this was not stated anywhere.
+> Non-continuous clock saves a small amount of power and
+> on some SoCs is easier to interface with.
 
-Interesting to compare to. Maybe we should also add the
-$nodename: pattern: '^gpu@[a-f0-9]+$'
+As per the previous patch, you should update bindings reporting this
+property is now optionally supported
 
-But the sgx binding is difficult to grasp here. Some SoC like the
-omap series have their own ti,sysc based target modules and the
-gpu nodes is a child of it lacking any clock and reset references
-for purpose.
+>
+> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
+> Signed-off-by: Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+> ---
+>  drivers/media/i2c/ov5647.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov5647.c b/drivers/media/i2c/ov5647.c
+> index c39e3d20e3ef..8a1a515388e0 100644
+> --- a/drivers/media/i2c/ov5647.c
+> +++ b/drivers/media/i2c/ov5647.c
+> @@ -44,6 +44,7 @@
+>  #define PWDN_ACTIVE_DELAY_MS	20
+>
+>  #define MIPI_CTRL00_CLOCK_LANE_GATE		BIT(5)
+> +#define MIPI_CTRL00_LINE_SYNC_ENABLE		BIT(4)
+>  #define MIPI_CTRL00_BUS_IDLE			BIT(2)
+>  #define MIPI_CTRL00_CLOCK_LANE_DISABLE		BIT(0)
+>
+> @@ -95,6 +96,7 @@ struct ov5647 {
+>  	int				power_count;
+>  	struct clk			*xclk;
+>  	struct gpio_desc		*pwdn;
+> +	unsigned int			flags;
+>  };
+>
+>  static inline struct ov5647 *to_state(struct v4l2_subdev *sd)
+> @@ -269,9 +271,15 @@ static int ov5647_set_virtual_channel(struct v4l2_subdev *sd, int channel)
+>
+>  static int ov5647_stream_on(struct v4l2_subdev *sd)
+>  {
+> +	struct ov5647 *ov5647 = to_state(sd);
+> +	u8 val = MIPI_CTRL00_BUS_IDLE;
+>  	int ret;
+>
+> -	ret = ov5647_write(sd, OV5647_REG_MIPI_CTRL00, MIPI_CTRL00_BUS_IDLE);
+> +	if (ov5647->flags & V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK)
+> +		val |= MIPI_CTRL00_CLOCK_LANE_GATE |
+> +		       MIPI_CTRL00_LINE_SYNC_ENABLE;
+> +
+> +	ret = ov5647_write(sd, OV5647_REG_MIPI_CTRL00, val);
+>  	if (ret < 0)
+>  		return ret;
+>
+> @@ -568,7 +576,7 @@ static const struct v4l2_subdev_internal_ops ov5647_subdev_internal_ops = {
+>  	.open = ov5647_open,
+>  };
+>
+> -static int ov5647_parse_dt(struct device_node *np)
+> +static int ov5647_parse_dt(struct device_node *np, struct ov5647 *sensor)
 
-The jz4780 and some other need a clocks definition, but no reset.
-Having a reset seems to be an option for the SoC designer and
-not mandated by img. So is it part of the pvrsgx bindings or the
-SoC?
+nit: I would provide the driver structure first
 
-Well we could add clocks and resets as optional but that would
-allow to wrongly define omap.
+>  {
+>  	struct v4l2_fwnode_endpoint bus_cfg = { .bus_type = 0 };
+>  	struct device_node *ep;
+> @@ -581,6 +589,9 @@ static int ov5647_parse_dt(struct device_node *np)
+>
+>  	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep), &bus_cfg);
+>
+> +	if (!ret)
+> +		sensor->flags = bus_cfg.bus.mipi_csi2.flags;
+> +
 
-Or delegate them to a parent "simple-pm-bus" node.
+There is a huge space for improvements here, this function didn't do
+anything before this.
 
-I have to study that material more to understand what you seem
-to expect.
+I would:
+        check the v4l2_fwnode_endpoint_parse() return value, and
+        put(np) and fail loudly
 
-BR and thanks,
-Nikolaus Schaller
+        make sure the detected bus type is CSI-2
 
+        cache the flags as you're doing here. As you're only
+        interested in clock continuous you could store only that
+        information in your driver structure.
 
+>  	of_node_put(ep);
+>  	return ret;
+>  }
+> @@ -599,7 +610,7 @@ static int ov5647_probe(struct i2c_client *client)
+>  		return -ENOMEM;
+>
+>  	if (IS_ENABLED(CONFIG_OF) && np) {
+> -		ret = ov5647_parse_dt(np);
+> +		ret = ov5647_parse_dt(np, sensor);
+>  		if (ret) {
+>  			dev_err(dev, "DT parsing error: %d\n", ret);
+>  			return ret;
+> --
+> 2.17.1
+>
