@@ -2,86 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2C81AA38E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3D71A9CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506099AbgDONLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:11:38 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:20516 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2897063AbgDOLfj (ORCPT
+        id S2897320AbgDOLkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897074AbgDOLfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:35:39 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03FBW8SN016220;
-        Wed, 15 Apr 2020 13:35:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=STMicroelectronics;
- bh=xwnv8U88f9gKci+4R9gluFy4x+fECpay1QPWcflQP9g=;
- b=1a6J3nynIHUs1ZBzTWuJaxYH4jNMp3BBhK17usGCKTozaL9ffKuxXU3NnHI3yV4ftL92
- mUQ3c0K60Y/1B5c5Aw+jOsV3cYnjNz2jekg253yeaXkRAquScKAT8NaCw/KJEnaJfBH8
- 7Mhaon5u4CZ1iu7zjqwVUHVNVKonEp7bsvRsWwJdOo9HV5E4ioVxswrMG4/w3VaYeWJx
- mTUQbXbcrBLEVNBSXsVzmrj2asfCnrgh21Do4WePhZYLMkhH3arPyJsulQzX3JKur0wl
- AzjJIVogGD6M6WOBUGCHzyIXhFee9d5c/8D3qvZORE8OFsTb9ZMi6paQUpZvbnB/+FxL lg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30dn94bh6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Apr 2020 13:35:24 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B759110002A;
-        Wed, 15 Apr 2020 13:35:23 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A9F772B0FA8;
-        Wed, 15 Apr 2020 13:35:23 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 15 Apr
- 2020 13:35:23 +0200
-Date:   Wed, 15 Apr 2020 13:35:22 +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     Wolfram Sang <wsa@the-dreams.de>
-CC:     <pierre-yves.mordret@st.com>, <alexandre.torgue@st.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
-Subject: Re: [PATCH] i2c: i2c-stm32f7: improve nack debug message
-Message-ID: <20200415113522.GB16949@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        pierre-yves.mordret@st.com, alexandre.torgue@st.com,
-        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com
-References: <1584642115-15378-1-git-send-email-alain.volmat@st.com>
- <20200415110101.GM1141@ninjato>
+        Wed, 15 Apr 2020 07:35:43 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654D2C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:35:42 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u15so3298475ljd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KBpalj9lT5kvxcjd5x3o+owJyJdduvaY1jMLu6w9DYI=;
+        b=nHw/ApgLmxZUw2uFNTIAg/ctnJ7fmQ28uOV3gnu5UtZgIkXAbP43vB4FqdI4Q4eHiy
+         2VvlqpmAjlL2m4089uAWAE9xB5Ij13OPiCOtrf4qvHEmXCD8KwnyKwA0EWo8HZChlWN+
+         JP5Lx0ENlM/A4M96Hqzs+VVLySNgd7BTG9tGk1/+1/8BNdJAK0Qro1X93sr+kCJZx9YI
+         SsvZM5+XuXR4L5fiXPNooZkqV2DvAJbk2cInkjEV6Tg5dAhu5lnQsxh/ygiRSfyx5XSN
+         dx3OxqOfJ4SnxBViMHsrwgFydTWVJwl4ADXgcN5Of6iXY0A1K6+HLBQBGetTQbzJ6n/0
+         Di6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KBpalj9lT5kvxcjd5x3o+owJyJdduvaY1jMLu6w9DYI=;
+        b=pzftTqVoiowN7Kc3iI+aWxL1+1NskamANTATVAzmzi587OiKsThNUaQMlLIVQ0Bw2/
+         YsGY7iYItDHJOhoyTLjU7j8UMb8J5CCzDACjkKjEorIJ538YOvY6mK6X600X+dBvM94p
+         3ODPlDoy+fae8BSfsnhLn78m9aDyG0VgVvt6g3xwdwBm+S4gLXzf1gr3+W0XLSfzW2Z2
+         UXFuAz07az78qp0TUMTWR9ccidBxXYiCM8PmCYznP72C6gz1rsJMXcfQP+awJ7xwumJl
+         5wQbNRwlAcsvz1qB4AYYY9aSChuzGjheq5Rkt6NDTVAeAejYZJHFXtQsQoqINvAOoCx/
+         h5rA==
+X-Gm-Message-State: AGi0PubvUOPi5Ml9ppDxxaowAqW7Yjhq2UbrB2UcCNaLYOQbvD2Z+MwX
+        t/dZ1PkRuwH3n0lr8Or53Ao4LKUWsDWQ7ximK8bRxQ==
+X-Google-Smtp-Source: APiQypJk41kgiRI94BIMANGlD8TkJQffUXgc/CbpBaQcp5YFitlmaZ4ssDBWSOD5V3uSRs0pfIVRVVkAG2pELd1X3B0=
+X-Received: by 2002:a2e:b8c1:: with SMTP id s1mr3169915ljp.0.1586950540057;
+ Wed, 15 Apr 2020 04:35:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200415110101.GM1141@ninjato>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-15_03:2020-04-14,2020-04-15 signatures=0
+References: <1586254255-28713-1-git-send-email-sumit.garg@linaro.org>
+ <CABPxzY+hL=jD6Zy=netP3oqNXg69gDL2g0KiPe40eaXXgZBnxw@mail.gmail.com> <CAFA6WYMZAq6X5m++h33ySCa6jOQCq_tHL=8mUi-kPMcn4FH=jA@mail.gmail.com>
+In-Reply-To: <CAFA6WYMZAq6X5m++h33ySCa6jOQCq_tHL=8mUi-kPMcn4FH=jA@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 15 Apr 2020 17:05:28 +0530
+Message-ID: <CAFA6WYOW9ne0iffwC1dc48a_aSaYkkxQzyHQXTV2Wkob9KOXQg@mail.gmail.com>
+Subject: Re: [PATCH v2] mac80211: fix race in ieee80211_register_hw()
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        Krishna Chaitanya <chaitanya.mgit@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        Kalle Valo <kvalo@codeaurora.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
+        <matthias.schoepfer@ithinx.io>,
+        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
+        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 01:01:01PM +0200, Wolfram Sang wrote:
-> On Thu, Mar 19, 2020 at 07:21:55PM +0100, Alain Volmat wrote:
-> > From: Fabrice Gasnier <fabrice.gasnier@st.com>
-> > 
-> > Add information on slave addr in the nack debug message.
-> > 
-> > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-> > Signed-off-by: Alain Volmat <alain.volmat@st.com>
-> 
-> Applied to for-next, thanks! (I'd drop the __func__, though; doesn't
-> add information, does it?)
+On Thu, 9 Apr 2020 at 10:12, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Hi Johannes,
+>
+> On Wed, 8 Apr 2020 at 00:55, Krishna Chaitanya <chaitanya.mgit@gmail.com> wrote:
+> >
+> > On Tue, Apr 7, 2020 at 3:41 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > A race condition leading to a kernel crash is observed during invocation
+> > > of ieee80211_register_hw() on a dragonboard410c device having wcn36xx
+> > > driver built as a loadable module along with a wifi manager in user-space
+> > > waiting for a wifi device (wlanX) to be active.
+> > >
+> > > Sequence diagram for a particular kernel crash scenario:
+> > >
+> > >     user-space  ieee80211_register_hw()  ieee80211_tasklet_handler()
+> > >     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> > >        |                    |                 |
+> > >        |<---phy0----wiphy_register()          |
+> > >        |-----iwd if_add---->|                 |
+> > just a nitpick, a better one would be (iwd: if_add + ap_start) since
+> > we need to have 'iwctl ap start'
+> > to trigger the interrupts.
+> > >        |                    |<---IRQ----(RX packet)
+> > >        |              Kernel crash            |
+> > >        |              due to unallocated      |
+> > >        |              workqueue.              |
+> > >        |                    |                 |
+> > >        |       alloc_ordered_workqueue()      |
+> > >        |                    |                 |
+> > >        |              Misc wiphy init.        |
+> > >        |                    |                 |
+> > >        |            ieee80211_if_add()        |
+> > >        |                    |                 |
+> > >
+> > > As evident from above sequence diagram, this race condition isn't specific
+> > > to a particular wifi driver but rather the initialization sequence in
+> > > ieee80211_register_hw() needs to be fixed. So re-order the initialization
+> > > sequence and the updated sequence diagram would look like:
+> > >
+> > >     user-space  ieee80211_register_hw()  ieee80211_tasklet_handler()
+> > >     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> > >        |                    |                 |
+> > >        |       alloc_ordered_workqueue()      |
+> > >        |                    |                 |
+> > >        |              Misc wiphy init.        |
+> > >        |                    |                 |
+> > >        |<---phy0----wiphy_register()          |
+> > >        |-----iwd if_add---->|                 |
+> > same as above.
+> > >        |                    |<---IRQ----(RX packet)
+> > >        |                    |                 |
+> > >        |            ieee80211_if_add()        |
+> > >        |                    |                 |
+> > >
+> > > Cc: <stable@vger.kernel.org>
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > ---
+> > >
+>
+> In case we don't have any further comments, could you fix this nitpick
+> from Chaitanya while applying or would you like me to respin and send
+> v3?
 
-In fact similar message is displayed in 2 places. One in case of master mode
-isr and the other one in case of slave isr. This message is adding slave
-address to the master mode isr. It only makes it more clear on first sight
-but indeed displaying the slave address obviously means this is master mode.
+A gentle ping. Is this patch a good candidate for 5.7-rc2?
+
+-Sumit
+
+>
+> -Sumit
+>
+> > > Changes in v2:
+> > > - Move rtnl_unlock() just after ieee80211_init_rate_ctrl_alg().
+> > > - Update sequence diagrams in commit message for more clarification.
+> > >
+> > >  net/mac80211/main.c | 22 +++++++++++++---------
+> > >  1 file changed, 13 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/net/mac80211/main.c b/net/mac80211/main.c
+> > > index 4c2b5ba..d497129 100644
+> > > --- a/net/mac80211/main.c
+> > > +++ b/net/mac80211/main.c
+> > > @@ -1051,7 +1051,7 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >                 local->hw.wiphy->signal_type = CFG80211_SIGNAL_TYPE_UNSPEC;
+> > >                 if (hw->max_signal <= 0) {
+> > >                         result = -EINVAL;
+> > > -                       goto fail_wiphy_register;
+> > > +                       goto fail_workqueue;
+> > >                 }
+> > >         }
+> > >
+> > > @@ -1113,7 +1113,7 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >
+> > >         result = ieee80211_init_cipher_suites(local);
+> > >         if (result < 0)
+> > > -               goto fail_wiphy_register;
+> > > +               goto fail_workqueue;
+> > >
+> > >         if (!local->ops->remain_on_channel)
+> > >                 local->hw.wiphy->max_remain_on_channel_duration = 5000;
+> > > @@ -1139,10 +1139,6 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >
+> > >         local->hw.wiphy->max_num_csa_counters = IEEE80211_MAX_CSA_COUNTERS_NUM;
+> > >
+> > > -       result = wiphy_register(local->hw.wiphy);
+> > > -       if (result < 0)
+> > > -               goto fail_wiphy_register;
+> > > -
+> > >         /*
+> > >          * We use the number of queues for feature tests (QoS, HT) internally
+> > >          * so restrict them appropriately.
+> > > @@ -1207,6 +1203,8 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >                 goto fail_rate;
+> > >         }
+> > >
+> > > +       rtnl_unlock();
+> > > +
+> > >         if (local->rate_ctrl) {
+> > >                 clear_bit(IEEE80211_HW_SUPPORTS_VHT_EXT_NSS_BW, hw->flags);
+> > >                 if (local->rate_ctrl->ops->capa & RATE_CTRL_CAPA_VHT_EXT_NSS_BW)
+> > > @@ -1254,6 +1252,12 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >                 local->sband_allocated |= BIT(band);
+> > >         }
+> > >
+> > > +       result = wiphy_register(local->hw.wiphy);
+> > > +       if (result < 0)
+> > > +               goto fail_wiphy_register;
+> > > +
+> > > +       rtnl_lock();
+> > > +
+> > >         /* add one default STA interface if supported */
+> > >         if (local->hw.wiphy->interface_modes & BIT(NL80211_IFTYPE_STATION) &&
+> > >             !ieee80211_hw_check(hw, NO_AUTO_VIF)) {
+> > > @@ -1293,6 +1297,8 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >  #if defined(CONFIG_INET) || defined(CONFIG_IPV6)
+> > >   fail_ifa:
+> > >  #endif
+> > > +       wiphy_unregister(local->hw.wiphy);
+> > > + fail_wiphy_register:
+> > >         rtnl_lock();
+> > >         rate_control_deinitialize(local);
+> > >         ieee80211_remove_interfaces(local);
+> > > @@ -1302,8 +1308,6 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+> > >         ieee80211_led_exit(local);
+> > >         destroy_workqueue(local->workqueue);
+> > >   fail_workqueue:
+> > > -       wiphy_unregister(local->hw.wiphy);
+> > > - fail_wiphy_register:
+> > >         if (local->wiphy_ciphers_allocated)
+> > >                 kfree(local->hw.wiphy->cipher_suites);
+> > >         kfree(local->int_scan_req);
+> > > @@ -1353,8 +1357,8 @@ void ieee80211_unregister_hw(struct ieee80211_hw *hw)
+> > >         skb_queue_purge(&local->skb_queue_unreliable);
+> > >         skb_queue_purge(&local->skb_queue_tdls_chsw);
+> > >
+> > > -       destroy_workqueue(local->workqueue);
+> > >         wiphy_unregister(local->hw.wiphy);
+> > > +       destroy_workqueue(local->workqueue);
+> > >         ieee80211_led_exit(local);
+> > >         kfree(local->int_scan_req);
+> > >  }
+> > > --
+> > > 2.7.4
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > Regards,
+> > Chaitanya T K.
