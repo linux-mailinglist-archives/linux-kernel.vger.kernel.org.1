@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0243A1AB07B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73981AB0A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441406AbgDOSUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
+        id S2441522AbgDOSYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:24:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436625AbgDOSTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:19:44 -0400
+        id S2440946AbgDOSTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:19:45 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6FC820787;
-        Wed, 15 Apr 2020 18:19:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3463A20857;
+        Wed, 15 Apr 2020 18:19:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586974784;
-        bh=kCdqRFRnqQGwm3UJqLKfxqSt2M7ow+SLUnbqAULlRe0=;
+        bh=MnG7X3Z3L8WWSG5rSF6zVPyPXwQAJF2uKfX9XAPeCAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=etuvI54MC6WtQBQnRK6c/ipkOgCh1B/Jl//4uu+YdHEin7GLGRlE2aBuEH6CsAMEN
-         4BSC8LRhs4fCc3Zrlk6EUFuRKraiuhaIVJ03uPhC+t1wbOjji8iSsDpOS2Mmn7fY9Z
-         EZHch9CSeS/+bjxjtLm+bh2tm8jiG92J/MyEja2g=
+        b=mC8HWIz0Hr8MRSUHNBvYcZolM01nXO0agSBZbqBc+g7Yz2bKOvqk0moT0dOF7lm8D
+         6kYs682AQy4Z1Dm3X8jTu7GmJUkZkLCcCpzCoLaAqrOB8eqm8NVq4mQwkf5mZtCd4Y
+         sIROS/tqSF9vW3P9EDKfvPEdmYvK4fOo63h45J10=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,15 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 02/38] rcu-tasks: Use context-switch hook for PREEMPT=y kernels
-Date:   Wed, 15 Apr 2020 11:19:05 -0700
-Message-Id: <20200415181941.11653-2-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Subject: [PATCH v4 tip/core/rcu 03/38] sched/core: Add function to sample state of locked-down task
+Date:   Wed, 15 Apr 2020 11:19:06 -0700
+Message-Id: <20200415181941.11653-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415181856.GA11037@paulmck-ThinkPad-P72>
 References: <20200415181856.GA11037@paulmck-ThinkPad-P72>
@@ -45,29 +50,136 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, the PREEMPT=y version of rcu_note_context_switch() does not
-invoke rcu_tasks_qs(), and we need it to in order to keep RCU Tasks
-Trace's IPIs down to a dull roar.  This commit therefore enables this
-hook.
+A running task's state can be sampled in a consistent manner (for example,
+for diagnostic purposes) simply by invoking smp_call_function_single()
+on its CPU, which may be obtained using task_cpu(), then having the
+IPI handler verify that the desired task is in fact still running.
+However, if the task is not running, this sampling can in theory be done
+immediately and directly.  In practice, the task might start running at
+any time, including during the sampling period.  Gaining a consistent
+sample of a not-running task therefore requires that something be done
+to lock down the target task's state.
 
+This commit therefore adds a try_invoke_on_locked_down_task() function
+that invokes a specified function if the specified task can be locked
+down, returning true if successful and if the specified function returns
+true.  Otherwise this function simply returns false.  Given that the
+function passed to try_invoke_on_nonrunning_task() might be invoked with
+a runqueue lock held, that function had better be quite lightweight.
+
+The function is passed the target task's task_struct pointer and the
+argument passed to try_invoke_on_locked_down_task(), allowing easy access
+to task state and to a location for further variables to be passed in
+and out.
+
+Note that the specified function will be called even if the specified
+task is currently running.  The function can use ->on_rq and task_curr()
+to quickly and easily determine the task's state, and can return false
+if this state is not to the function's liking.  The caller of the
+try_invoke_on_locked_down_task() would then see the false return value,
+and could take appropriate action, for example, trying again later or
+sending an IPI if matters are more urgent.
+
+It is expected that use cases such as the RCU CPU stall warning code will
+simply return false if the task is currently running.  However, there are
+use cases involving nohz_full CPUs where the specified function might
+instead fall back to an alternative sampling scheme that relies on heavier
+synchronization (such as memory barriers) in the target task.
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+[ paulmck: Apply feedback from Peter Zijlstra and Steven Rostedt. ]
+[ paulmck: Invoke if running to handle feedback from Mathieu Desnoyers. ]
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/wait.h |  2 ++
+ kernel/sched/core.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 088e84e..4f34c32 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -331,6 +331,8 @@ void rcu_note_context_switch(bool preempt)
- 	rcu_qs();
- 	if (rdp->exp_deferred_qs)
- 		rcu_report_exp_rdp(rdp);
-+	if (!preempt)
-+		rcu_tasks_qs(current);
- 	trace_rcu_utilization(TPS("End context switch"));
+diff --git a/include/linux/wait.h b/include/linux/wait.h
+index feeb6be..898c890 100644
+--- a/include/linux/wait.h
++++ b/include/linux/wait.h
+@@ -1149,4 +1149,6 @@ int autoremove_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, i
+ 		(wait)->flags = 0;						\
+ 	} while (0)
+ 
++bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg);
++
+ #endif /* _LINUX_WAIT_H */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3a61a3b..5ca567a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2566,6 +2566,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	 *
+ 	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+ 	 * __schedule().  See the comment for smp_mb__after_spinlock().
++	 *
++	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
+ 	 */
+ 	smp_rmb();
+ 	if (p->on_rq && ttwu_remote(p, wake_flags))
+@@ -2640,6 +2642,52 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  }
- EXPORT_SYMBOL_GPL(rcu_note_context_switch);
+ 
+ /**
++ * try_invoke_on_locked_down_task - Invoke a function on task in fixed state
++ * @p: Process for which the function is to be invoked.
++ * @func: Function to invoke.
++ * @arg: Argument to function.
++ *
++ * If the specified task can be quickly locked into a definite state
++ * (either sleeping or on a given runqueue), arrange to keep it in that
++ * state while invoking @func(@arg).  This function can use ->on_rq and
++ * task_curr() to work out what the state is, if required.  Given that
++ * @func can be invoked with a runqueue lock held, it had better be quite
++ * lightweight.
++ *
++ * Returns:
++ *	@false if the task slipped out from under the locks.
++ *	@true if the task was locked onto a runqueue or is sleeping.
++ *		However, @func can override this by returning @false.
++ */
++bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg)
++{
++	bool ret = false;
++	struct rq_flags rf;
++	struct rq *rq;
++
++	lockdep_assert_irqs_enabled();
++	raw_spin_lock_irq(&p->pi_lock);
++	if (p->on_rq) {
++		rq = __task_rq_lock(p, &rf);
++		if (task_rq(p) == rq)
++			ret = func(p, arg);
++		rq_unlock(rq, &rf);
++	} else {
++		switch (p->state) {
++		case TASK_RUNNING:
++		case TASK_WAKING:
++			break;
++		default:
++			smp_rmb(); // See smp_rmb() comment in try_to_wake_up().
++			if (!p->on_rq)
++				ret = func(p, arg);
++		}
++	}
++	raw_spin_unlock_irq(&p->pi_lock);
++	return ret;
++}
++
++/**
+  * wake_up_process - Wake up a specific process
+  * @p: The process to be woken up.
+  *
 -- 
 2.9.5
 
