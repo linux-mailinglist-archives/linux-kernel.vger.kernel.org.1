@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B45C1A9286
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DD51A928D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgDOFaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 01:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        id S2393339AbgDOFhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 01:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728378AbgDOFaO (ORCPT
+        by vger.kernel.org with ESMTP id S2390387AbgDOFhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 01:30:14 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2502CC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:30:14 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a13so1035835pfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:30:14 -0700 (PDT)
+        Wed, 15 Apr 2020 01:37:32 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AD6C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:37:32 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id r4so1003944pgg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:37:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IoL3T1qTxwe3puC/PKTMHXlhXR8Dk+HUJk8SlLAfRZg=;
-        b=ZWKzb6FrTFVEE4Q2Wz7uP9GCEEcYq1/cJx2Yv+857QaUjXHv08Tz8fH8sWyOkU0aOC
-         N7KnYFwDdhB7Tj6wYo2Uv4fr4pN2EWP4kRJscbfgkN3rm4Zd+38Y6oHCvoxVw0rqPxFi
-         QRvzHEIg2dN4QOYewtz4wwEG+NoBaLv+mNuyY=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1DpqNkdYjp7AgN19jz89WzdaX519p2fuqV9ZKi1SZTY=;
+        b=ao7NeAXe4q3XDw6YGwRybqHsHu2QW4/Y8cg7FlC7rb8QxWa00kb6DCprkSDhE1dPTX
+         3WCb03iGwMABjglJG7//2Q2BSLwUluLqq1ibb5bnwbRGMkiSCXGKasXQuT736bSLoPco
+         Xm3R+uZIwkR34Jz7FQH5r3AyCrNe9hKNd8oX8d99Lbibv8n2WjuWWxwNa1diYbVzWJ1H
+         BrJtNb+rz+BjUJ6WtjZheapF4FAane+hwxCknlW0HBwQAVhWtlB55OIizjlmAoCMnaPh
+         t+sjFgucKAUGyIMBAoTucJF6wFQ7wmklLkLFvzMg3b/XTc/2HFEUdKXlfRuUJEs8fMvA
+         tQnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IoL3T1qTxwe3puC/PKTMHXlhXR8Dk+HUJk8SlLAfRZg=;
-        b=JS5KTXwmDIaiN10HN3B5EiIDwTIWJw3Vwbu42+b0i6pGJNh/VkTlSoDezO+NsyQjxE
-         6AO7yIF9M48F0gtCGuILYXFOsOFCHECV9yqNjPfurF5/oKgLkBGo35Di628DueQ73quz
-         Vb+2kQHRWXMpAPSmSj9Y/yrRGg9I1vD2MGamyla+RAIqPYd0SVorV3oXmFf5uXvKcDJd
-         N7kz4wCZbPLMbWawjALrLpFyXYOTLKDe5gRkWcVUi8yqB179yHqGtPM9ZggaEzQI0rAY
-         gdWsfPzEPPoj3ERvOg4FaSezrbDcYT5B+5khCqDwtrWFoMyBp7WQu2wiydClCcIl+ZLW
-         utfw==
-X-Gm-Message-State: AGi0PubxzQcZBZeedjVKL3SS5LiinKVtgDR/MWmntlUvfi6kUy/0DyQy
-        1O2vHk2OadNmEOopwjKk10x/a66SlJQ=
-X-Google-Smtp-Source: APiQypIWNMLCDs6hWKQCO1SqSwIvIHAywvgF9/9cBLdpNtiswKbRPN6u8wdu9QuaSRASrj4fbjvxdQ==
-X-Received: by 2002:a63:602:: with SMTP id 2mr25241243pgg.383.1586928613394;
-        Tue, 14 Apr 2020 22:30:13 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id p1sm13314213pjr.40.2020.04.14.22.30.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1DpqNkdYjp7AgN19jz89WzdaX519p2fuqV9ZKi1SZTY=;
+        b=kItcm9vjsANTnqhspYRiGQNKb2+Cj9scaFAWLzv7c7pLCldMSQMlbvc2DISGZROedT
+         oBMSEs25QaxHWGwE7KXro3BYAN4U3bZTLdzXQ52xFNsf5sQsXoPQ+6Vj42vZ2PeKd826
+         E5VT8AmrE6APnDeVsMG/h06OMPFoG1J7+LlPbitkOOVhjeA/cwBNfOOJb3vPwHpWw+JI
+         bUWh+AxFS5K8GH1hT32iOKZ0HuA2UROizpZmtP85Oev0NFuzJoXmM+n4c6qebxUzjXQB
+         qT5Gfj2MkWiKieQBd0upw6ojoXM3RHA9adMrseR934iY/Ea31kf/rGNm6IpNrhBcHA6z
+         jr0Q==
+X-Gm-Message-State: AGi0PuZJJgnvNeG584kA6rm+0p5vjRuXDHyOjNU7pF7Jxuo0Rxwixueo
+        0A84Xlvo4Z0jrrjYy/OxUBAzVg==
+X-Google-Smtp-Source: APiQypIMWPJtUkcJE17271ZDMIVp+P6naL6E573ldPQmsDBDbUKcgvvfTthqRoPrNcYScClx78nA4g==
+X-Received: by 2002:a63:513:: with SMTP id 19mr26340845pgf.48.1586929051430;
+        Tue, 14 Apr 2020 22:37:31 -0700 (PDT)
+Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id 18sm12839178pfv.118.2020.04.14.22.37.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 22:30:12 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com,
-        Prashant Malani <pmalani@chromium.org>,
-        Jon Flatley <jflat@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v4 3/3] platform/chrome: typec: Register port partner
-Date:   Tue, 14 Apr 2020 22:29:43 -0700
-Message-Id: <20200415052943.93009-4-pmalani@chromium.org>
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-In-Reply-To: <20200415052943.93009-1-pmalani@chromium.org>
-References: <20200415052943.93009-1-pmalani@chromium.org>
+        Tue, 14 Apr 2020 22:37:30 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH] regulator: qcom-rpmh: Fix typos in pm8150 and pm8150l
+Date:   Tue, 14 Apr 2020 22:37:08 -0700
+Message-Id: <20200415053708.717623-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,106 +64,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register (and unregister) the port partner when a connect (and
-disconnect) is detected.
+Fix typos in pm8150 l13/l16/l17 and pm8150l ldo8 supplies.
 
-Co-developed-by: Jon Flatley <jflat@chromium.org>
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Fixes: 06369bcc15a1 ("regulator: qcom-rpmh: Add support for SM8150")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
+ drivers/regulator/qcom-rpmh-regulator.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Changes in v4:
-- Changed IS_ERR_OR_NULL() check to IS_ERR().
-
-Changes in v3:
-- No changes.
-
-Changes in v2:
-- Fixed error pointer return value.
-
- drivers/platform/chrome/cros_ec_typec.c | 48 +++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 56ded09a60ff..eda57db26f8d 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -22,6 +22,9 @@ struct cros_typec_port {
- 	struct typec_port *port;
- 	/* Initial capabilities for the port. */
- 	struct typec_capability caps;
-+	struct typec_partner *partner;
-+	/* Port partner PD identity info. */
-+	struct usb_pd_identity p_identity;
+diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+index c86ad40015ce..c88cfa8952d6 100644
+--- a/drivers/regulator/qcom-rpmh-regulator.c
++++ b/drivers/regulator/qcom-rpmh-regulator.c
+@@ -832,11 +832,11 @@ static const struct rpmh_vreg_init_data pm8150_vreg_data[] = {
+ 	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_pldo,      "vdd-l2-l10"),
+ 	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_nldo,      "vdd-l1-l8-l11"),
+ 	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
+-	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,      "vdd-l13-l6-l17"),
++	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,      "vdd-l13-l16-l17"),
+ 	RPMH_VREG("ldo14",  "ldo%s14", &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
+ 	RPMH_VREG("ldo15",  "ldo%s15", &pmic5_pldo_lv,   "vdd-l7-l12-l14-l15"),
+-	RPMH_VREG("ldo16",  "ldo%s16", &pmic5_pldo,      "vdd-l13-l6-l17"),
+-	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo,      "vdd-l13-l6-l17"),
++	RPMH_VREG("ldo16",  "ldo%s16", &pmic5_pldo,      "vdd-l13-l16-l17"),
++	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo,      "vdd-l13-l16-l17"),
+ 	RPMH_VREG("ldo18",  "ldo%s18", &pmic5_nldo,      "vdd-l3-l4-l5-l18"),
+ 	{},
  };
- 
- /* Platform-specific data for the Chrome OS EC Type C controller. */
-@@ -190,6 +193,30 @@ static int cros_typec_ec_command(struct cros_typec_data *typec,
- 	return ret;
- }
- 
-+static int cros_typec_add_partner(struct cros_typec_data *typec, int port_num,
-+				  bool pd_en)
-+{
-+	struct cros_typec_port *port = typec->ports[port_num];
-+	struct typec_partner_desc p_desc = {
-+		.usb_pd = pd_en,
-+	};
-+	int ret = 0;
-+
-+	/*
-+	 * Fill an initial PD identity, which will then be updated with info
-+	 * from the EC.
-+	 */
-+	p_desc.identity = &port->p_identity;
-+
-+	port->partner = typec_register_partner(port->port, &p_desc);
-+	if (IS_ERR(port->partner)) {
-+		ret = PTR_ERR(port->partner);
-+		port->partner = NULL;
-+	}
-+
-+	return ret;
-+}
-+
- static void cros_typec_set_port_params_v0(struct cros_typec_data *typec,
- 		int port_num, struct ec_response_usb_pd_control *resp)
- {
-@@ -212,6 +239,8 @@ static void cros_typec_set_port_params_v1(struct cros_typec_data *typec,
- {
- 	struct typec_port *port = typec->ports[port_num]->port;
- 	enum typec_orientation polarity;
-+	bool pd_en;
-+	int ret;
- 
- 	if (!(resp->enabled & PD_CTRL_RESP_ENABLED_CONNECTED))
- 		polarity = TYPEC_ORIENTATION_NONE;
-@@ -226,6 +255,25 @@ static void cros_typec_set_port_params_v1(struct cros_typec_data *typec,
- 			TYPEC_SOURCE : TYPEC_SINK);
- 	typec_set_vconn_role(port, resp->role & PD_CTRL_RESP_ROLE_VCONN ?
- 			TYPEC_SOURCE : TYPEC_SINK);
-+
-+	/* Register/remove partners when a connect/disconnect occurs. */
-+	if (resp->enabled & PD_CTRL_RESP_ENABLED_CONNECTED) {
-+		if (typec->ports[port_num]->partner)
-+			return;
-+
-+		pd_en = resp->enabled & PD_CTRL_RESP_ENABLED_PD_CAPABLE;
-+		ret = cros_typec_add_partner(typec, port_num, pd_en);
-+		if (!ret)
-+			dev_warn(typec->dev,
-+				 "Failed to register partner on port: %d\n",
-+				 port_num);
-+	} else {
-+		if (!typec->ports[port_num]->partner)
-+			return;
-+
-+		typec_unregister_partner(typec->ports[port_num]->partner);
-+		typec->ports[port_num]->partner = NULL;
-+	}
- }
- 
- static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
+@@ -857,7 +857,7 @@ static const struct rpmh_vreg_init_data pm8150l_vreg_data[] = {
+ 	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l4-l5-l6"),
+ 	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l4-l5-l6"),
+ 	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo,      "vdd-l7-l11"),
+-	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_pldo_lv,   "vdd-l1-l8-l11"),
++	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_pldo_lv,   "vdd-l1-l8"),
+ 	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_pldo,      "vdd-l9-l10"),
+ 	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_pldo,      "vdd-l9-l10"),
+ 	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_pldo,      "vdd-l7-l11"),
 -- 
-2.26.0.110.g2183baf09c-goog
+2.24.0
 
