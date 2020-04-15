@@ -2,141 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFC71A98C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313F01A98D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895473AbgDOJZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895464AbgDOJZk (ORCPT
+        id S2895509AbgDOJ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:26:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7830 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895484AbgDOJ0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:25:40 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7762AC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:25:39 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id h9so18242339wrc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZWggYGy5+ypMqGqv3DNlvkeDC7Fwyk09CE6tJxrl9As=;
-        b=yAETmibb8HvejiyM/sXx1gWJMBhdkYj+FhYy7xp+PelrTRoY6cWOI7vlWmSSyf3/r8
-         Zs7zbY4OY0HkPENvC3MebqmtVYDArhkyX/g7FTCwfijd4SiDs1/6sbl1jq4MKLPElHnk
-         9VKATFRT9sOJo4mRUK+WBMHugVTceCqQPi1zlKDZVNOSqDSOz+6uTukiwId07cKmWcgp
-         XJxImHct6GIxxb7WyVTTlC6x3xy/LL9RImgVJnr1bV1Gk95SPry4pp++J2dF0JiCW1/i
-         U/8iG7CmRO3gVZGqdupqmJQRzcbF2FVeyYIXOSA2bifkKrKSkYX5BoXstYm34gXq/2wL
-         tN5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZWggYGy5+ypMqGqv3DNlvkeDC7Fwyk09CE6tJxrl9As=;
-        b=V+Wb0w7Nn8hRtFduu+3alUHhYQM4jurdRe2rp/AA+wakjHd9pDWrK63RAlG2iSAEhQ
-         4YNVKdBU4QM4oZJAzL1Vim+lKjzqpiH66WuXcH1zI1Yo6pkBAaof2LW8QaWwAfdp7lGp
-         hCqp7aB0xexdxyrQjLCt7ujGt7rL4djjdIUOz4CiBN6+jd2tWS1M90Gs+x5SebLGDINz
-         6//2OwP1a3l5SJJr8kPQCSLEQWDW4QnyFUytFPcvhM2nJZ7mC59JMSlRxKRPP/1PsvXn
-         pq7WQ5ZJQq0/TJYldFjd7kcEyF9Apyxiw0yR6K/r1N0plYn0QhoRq0dMrXwGrVqf+ZFI
-         C/7Q==
-X-Gm-Message-State: AGi0PuZ3bDWMhq55TJU7yztM7gm20hJS6gsNXd6KpwA5XFtA2MjPEd3G
-        fzNDkmLrAleJTFv33lfpgaWj8g==
-X-Google-Smtp-Source: APiQypIF43NYr8JHA746c2oer4jXDUVqBd6KdFR7FEBIeVOo3DZguLN98tLGGC6iP9SMBCFc+YgdsA==
-X-Received: by 2002:a5d:658e:: with SMTP id q14mr29224669wru.92.1586942738248;
-        Wed, 15 Apr 2020 02:25:38 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id h16sm24769457wrw.36.2020.04.15.02.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 02:25:37 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 10:26:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        linux-pwm@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-kernel@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v11 10/12] backlight: pwm_bl: Use 64-bit division function
-Message-ID: <20200415092638.GG2167633@dell>
-References: <cover.1584667964.git.gurus@codeaurora.org>
- <17fc1dcf8b9b392d1e37dc7e3e67409e3c502840.1584667964.git.gurus@codeaurora.org>
- <20200320133123.GD5477@dell>
- <20200324110710.GL5477@dell>
- <20200324125735.2mjuvbxt5bpon2ft@pengutronix.de>
- <20200324130410.dwlg767ku6kwequv@holly.lan>
- <20200324142441.GD442973@dell>
- <20200324144307.kxhqzyjj4evrouqa@pengutronix.de>
+        Wed, 15 Apr 2020 05:26:53 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03F94e4T000539
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:26:52 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30dnmgefpa-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 05:26:52 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
+        Wed, 15 Apr 2020 10:26:09 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 15 Apr 2020 10:26:05 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03F9QiTZ20185188
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Apr 2020 09:26:44 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5C9CD42049;
+        Wed, 15 Apr 2020 09:26:44 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2FD742042;
+        Wed, 15 Apr 2020 09:26:43 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.12.13])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Apr 2020 09:26:43 +0000 (GMT)
+Date:   Wed, 15 Apr 2020 11:26:39 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-next@vger.kernel.org, akpm@linux-foundation.org,
+        jack@suse.cz, kirill@shutemov.name, borntraeger@de.ibm.com,
+        david@redhat.com, aarcange@redhat.com, linux-mm@kvack.org,
+        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH v4 2/2] mm/gup/writeback: add callbacks for inaccessible
+ pages
+In-Reply-To: <93dc9885-adb4-8b9d-a62a-e40301053551@intel.com>
+References: <20200306132537.783769-1-imbrenda@linux.ibm.com>
+        <20200306132537.783769-3-imbrenda@linux.ibm.com>
+        <11dc928d-60b4-f04f-1ebf-f4cffb337a6c@intel.com>
+        <20200414180300.52640444@p-imbrenda>
+        <93dc9885-adb4-8b9d-a62a-e40301053551@intel.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200324144307.kxhqzyjj4evrouqa@pengutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20041509-0020-0000-0000-000003C82C68
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041509-0021-0000-0000-000022210D3B
+Message-Id: <20200415112639.525e25bc@p-imbrenda>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-15_01:2020-04-14,2020-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 adultscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015 mlxscore=0
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004150066
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Mar 2020, Uwe Kleine-König wrote:
+On Tue, 14 Apr 2020 11:50:16 -0700
+Dave Hansen <dave.hansen@intel.com> wrote:
 
-> On Tue, Mar 24, 2020 at 02:24:41PM +0000, Lee Jones wrote:
-> > On Tue, 24 Mar 2020, Daniel Thompson wrote:
+> On 4/14/20 9:03 AM, Claudio Imbrenda wrote:
+> > On Mon, 13 Apr 2020 13:22:24 -0700
+> > Dave Hansen <dave.hansen@intel.com> wrote:
+> >   
+> >> On 3/6/20 5:25 AM, Claudio Imbrenda wrote:  
+> >>> On s390x the function is not supposed to fail, so it is ok to use
+> >>> a WARN_ON on failure. If we ever need some more finegrained
+> >>> handling we can tackle this when we know the details.    
+> >>
+> >> Could you explain a bit why the function can't fail?  
 > > 
-> > > On Tue, Mar 24, 2020 at 01:57:35PM +0100, Uwe Kleine-König wrote:
-> > > > Hello Lee,
-> > > > 
-> > > > On Tue, Mar 24, 2020 at 11:07:10AM +0000, Lee Jones wrote:
-> > > > > On Fri, 20 Mar 2020, Lee Jones wrote:
-> > > > > 
-> > > > > > On Thu, 19 Mar 2020, Guru Das Srinagesh wrote:
-> > > > > > 
-> > > > > > > Since the PWM framework is switching struct pwm_state.period's datatype
-> > > > > > > to u64, prepare for this transition by using div_u64 to handle a 64-bit
-> > > > > > > dividend instead of a straight division operation.
-> > > > > > > 
-> > > > > > > Cc: Lee Jones <lee.jones@linaro.org>
-> > > > > > > Cc: Daniel Thompson <daniel.thompson@linaro.org>
-> > > > > > > Cc: Jingoo Han <jingoohan1@gmail.com>
-> > > > > > > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> > > > > > > Cc: linux-pwm@vger.kernel.org
-> > > > > > > Cc: dri-devel@lists.freedesktop.org
-> > > > > > > Cc: linux-fbdev@vger.kernel.org
-> > > > > > > 
-> > > > > > > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> > > > > > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-> > > > > > > ---
-> > > > > > >  drivers/video/backlight/pwm_bl.c | 3 ++-
-> > > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > Can this patch be taken on its own?
-> > > > > 
-> > > > > Hellooooo ...
-> > > > 
-> > > > Conceptually it can. As the last patch depends on this one (and the
-> > > > others) some coordination might be beneficial. But that's up to Thierry
-> > > > to decide how (and if) he want this series to be applied.
-> > > 
-> > > ... and on the backlight side we definitely need to know about the "if"
-> > > otherwise there's no point in taking it.
+> > the concept of "making accessible" is only to make sure that
+> > accessing the page will not trigger faults or I/O or DMA errors. in
+> > general it does not mean freely accessing the content of the page
+> > in cleartext. 
 > > 
-> > Right.
-> > 
-> > I'm happy to wait for Thierry.  Although this isn't the only set he's
-> > currently blocking.  Is he okay?  On holiday perhaps?
+> > on s390x, protected guest pages can be shared. the guest has to
+> > actively share its pages, and in that case those pages are both
+> > part of the protected VM and freely accessible by the host.  
 > 
-> The newest commit by him in next is from last week. My guess is he
-> just didn't come around yet to care for the PWM duties.
+> Oh, that's interesting.
+> 
+> It sounds like there are three separate concepts:
+> 1. Protection
+> 2. Sharing
+> 3. Accessibility
+> 
+> Protected pages may be shared and the request of the guest.
+> Shared pages' plaintext can be accessed by the host.  For unshared
+> pages, the host can only see ciphertext.
+> 
+> I wonder if Documentation/virt/kvm/s390-pv.rst can be beefed up with
+> some of this information.  It seems a bit sparse on this topic.
 
-Looks like we missed the last release.
+that is definitely something that can be fixed.
 
-Let's hope we don't miss the next one also.
+I will improve the documentation and make sure it properly explains
+all the details of how protected VMs work on s390x.
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> As it stands, if I were modifying generic code, I don't think I'd have
+> even a chance of getting an arch_make_page_accessible() in the right
+> spot.
+> 
+> > in our case "making the page accessible" means:  
+> ...
+> >  - if the page was not shared, first encrypt it and then make it
+> >    accessible to the host (both operations performed securely and
+> >    atomically by the hardware)  
+> 
+> What happens to the guest's view of the page when this happens?  Does
+> it keep seeing plaintext?
+> 
+> > then the page can be swapped out, or used for direct I/O (obviously
+> > if you do I/O on a page that was not shared, you cannot expect good
+> > things to happen, since you basically corrupt the memory of the
+> > guest).  
+> 
+> So why even allow access to the encrypted contents if the host can't
+> do anything useful with it?  Is there some reason for going to the
+> trouble of encrypting it and exposing it to the host?
+
+you should not overwrite it, but you can/should write it out verbatim,
+e.g. for swap
+
+> > on s390x performing I/O directly on protected pages results in (in
+> > practice) unrecoverable I/O errors, so we want to avoid it at all
+> > costs.  
+> 
+> This is understandable, but we usually steer I/O operations in places
+> like the DMA API, not in the core VM.
+> 
+> We *have* the concept of pages to which I/O can't be done.  There are
+> plenty of crippled devices where we have to bounce data into a low
+> buffer before it can go where we really want it to.  I think the AMD
+> SEV patches do this, for instance.
+> 
+> > accessing protected pages from the CPU triggers an exception that
+> > can be handled (and we do handle it, in fact)
+> > 
+> > now imagine a buggy or malicious qemu process crashing the whole
+> > machine just because it did I/O to/from a protected page. we
+> > clearly don't want that.  
+> 
+> Is DMA disallowed to *all* protected pages?  Even pages which the
+> guest has explicitly shared with the host?
+> 
+> 
+> >>> @@ -2807,6 +2807,13 @@ int __test_set_page_writeback(struct page
+> >>> *page, bool keep_write) inc_zone_page_state(page,
+> >>> NR_ZONE_WRITE_PENDING); }
+> >>>  	unlock_page_memcg(page);
+> >>> +	access_ret = arch_make_page_accessible(page);
+> >>> +	/*
+> >>> +	 * If writeback has been triggered on a page that cannot
+> >>> be made
+> >>> +	 * accessible, it is too late to recover here.
+> >>> +	 */
+> >>> +	VM_BUG_ON_PAGE(access_ret != 0, page);
+> >>> +
+> >>>  	return ret;
+> >>>  
+> >>>  }    
+> >>
+> >> This seems like a really odd place to do this.  Writeback is
+> >> specific to block I/O.  I would have thought there were other
+> >> kinds of devices that matter, not just block devices.  
+> > 
+> > well, yes and no. for writeback (block I/O and swap) this is the
+> > right place. at this point we know that the page is present and
+> > nobody else has started doing I/O yet, and I/O will happen
+> > soon-ish. so we make the page accessible. there is no turning back
+> > here, unlike pinning. we are not allowed to fail, we can't   
+> 
+> This description sounds really incomplete to me.
+> 
+> Not all swap involved device I/O.  For instance, zswap doesn't involve
+> any devices.  Would zswap need this hook?
+
+please feel free to write to me privately if you have any further
+questions or doubts :)
+
+
+best regards,
+
+Claudio Imbrenda
+
