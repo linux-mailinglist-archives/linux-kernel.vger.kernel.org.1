@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213441AA433
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439E31AA43A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506291AbgDONUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:20:09 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:38448 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505331AbgDONTT (ORCPT
+        id S370701AbgDONUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2506285AbgDONTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:19:19 -0400
-Received: by mail-pl1-f195.google.com with SMTP id w3so1240441plz.5;
-        Wed, 15 Apr 2020 06:19:18 -0700 (PDT)
+        Wed, 15 Apr 2020 09:19:44 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EDCC061A0C;
+        Wed, 15 Apr 2020 06:19:43 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b11so7742306wrs.6;
+        Wed, 15 Apr 2020 06:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=lfpK/xOIlDnyJhSEQBBYKy273A0qYIk6KaRxAULUFas=;
+        b=Xy0NAs50nauKNzelhrgCoZ1oAYS0by3FW/Xaw2GPXjjbxeHr7P51WtKfCf1iVTlDao
+         1cOOPmWg97iJ76qPu3Zf8K1JeiI+rzszWGk02qVHLNvlaAePVcN0Z1ZL+XQNVE5e9274
+         GYzX7MjCAThNITca93dboFwAqeKUQEJNeSp75p0d8awYnOijpfDLDm0N9I+yyxD6oci7
+         AUyJfwQuq1AqKugkFVaK5DG/Twamt2jjtWUBC/Q78V6LlzCa56wRZOhfgAQvg26w7Zfk
+         Ki+dfNNizSoeEwHuWdzLPllpRX8OzyQKILZp1EwCutUgg3ED3sqXDlxRzrDrAzQvSFX9
+         Bp/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7IvG2bEA5VCaC2qgBtVR/FZ0IDKm4MJccJ5LrCzVHtM=;
-        b=bJfSjuAWcr0o2SqPwRDSD4f/zznNmACFO7AMUI288bLG8n9CXbJX08ZTNHFh23VG2O
-         20yQgmkDfy5gDldJ5n2S+q0nIgZAmKR4zgaASFNJLhTtlIjFqMg9Vy4MJIfOe04AAfEm
-         MH8TMR7ck4zX/EnQAkx3MIP8kn2Ttj8Uxmg4f14we34pVFB1cUzH3r91f/wHQtNKVjNU
-         tmIweebitxfeQLTlZ3ruZSBrNByGTrr5/vSP/q7Q2t4/z/10VKTF7/K/XS68x+u9iplE
-         Gr9rbTw6MB/GThAFPvNTazNyWpcZ+c4ndDs/y+MLrs9lrryAAY5ZsnPCrIoAbVnwgYv2
-         Ro1g==
-X-Gm-Message-State: AGi0Pub9OgKPwbfjASurdBU86f0xTagjdIbL1gdmMAPMt6YI/oOf10DR
-        /tvk8jp7Bb1ANkGD7Dt64Mk=
-X-Google-Smtp-Source: APiQypKt0dyTdKtn4rGriYEeFWzmB80X5z3lTmEXBrfOHZD1nC8rYnZFAuTFIJUuQI3bysuLAnuDnA==
-X-Received: by 2002:a17:902:8485:: with SMTP id c5mr5057637plo.242.1586956757999;
-        Wed, 15 Apr 2020 06:19:17 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id n9sm3466685pjt.29.2020.04.15.06.19.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 06:19:16 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id CFE5D40277; Wed, 15 Apr 2020 13:19:15 +0000 (UTC)
-Date:   Wed, 15 Apr 2020 13:19:15 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alan Jenkins <alan.christopher.jenkins@gmail.com>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH 4/5] mm/swapfile: refcount block and queue before using
- blkcg_schedule_throttle()
-Message-ID: <20200415131915.GV11244@42.do-not-panic.com>
-References: <20200414041902.16769-1-mcgrof@kernel.org>
- <20200414041902.16769-5-mcgrof@kernel.org>
- <20200414154447.GC25765@infradead.org>
- <20200415054234.GQ11244@42.do-not-panic.com>
- <20200415072712.GB21099@infradead.org>
- <20200415073443.GA21036@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=lfpK/xOIlDnyJhSEQBBYKy273A0qYIk6KaRxAULUFas=;
+        b=bBHeMvd4p6pfzZqUQ5yM8GBAZuuS/BtWb31bb32ABhqN6PUzGkDYSa0oWCCDPohrxD
+         BwZ1Fdv3wskLVDfKER+qhlsWGKPFDAZUjbuOAoIUlMzgRfxb/qLPkYAH/uTq3KgwuWkK
+         k/xowWap+PdKC3DTaJ3/oTkV5KOor9wXYFVibyiWuKGmEjsBeEdFevzUvO59ikxLVHEq
+         p3ELX/MQHAWVpJZIdgpw/GoCP3kyv6+ntp3CcjWwlV4djrWj+XGwRGEBsEygVLceArz4
+         Kzl/Gw1n3H6tTPVTUcUz/9nKQ0GJ23TT0aCpa9Vzoi2u5TAyn2w+s8Mq2vhaRy17Q68a
+         4oRA==
+X-Gm-Message-State: AGi0PuZ3MSLAa2hREzCktIdd/tShzn5rlfWHKSID5unkgZN9H13bkmxR
+        ztMB5Vo1dADsOcE7JxYNc9q81JybyWGRIAqsypM=
+X-Google-Smtp-Source: APiQypIW8Pb7KI2m47zG2TSNaiw4mMtQU1+5Wz2hxAJY83V2FfpcUzk0ZWhEopuJDFTjiX0vj3fcibyWGzm0sC1HtaI=
+X-Received: by 2002:adf:ef51:: with SMTP id c17mr28624905wrp.130.1586956782339;
+ Wed, 15 Apr 2020 06:19:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415073443.GA21036@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1586254255-28713-1-git-send-email-sumit.garg@linaro.org>
+ <CABPxzY+hL=jD6Zy=netP3oqNXg69gDL2g0KiPe40eaXXgZBnxw@mail.gmail.com>
+ <CAFA6WYMZAq6X5m++h33ySCa6jOQCq_tHL=8mUi-kPMcn4FH=jA@mail.gmail.com> <CAFA6WYOW9ne0iffwC1dc48a_aSaYkkxQzyHQXTV2Wkob9KOXQg@mail.gmail.com>
+In-Reply-To: <CAFA6WYOW9ne0iffwC1dc48a_aSaYkkxQzyHQXTV2Wkob9KOXQg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 15 Apr 2020 15:19:30 +0200
+Message-ID: <CA+icZUUDm=WPjmwh5ikp8t+xt7dqTgghCeB8F0+czaUh-sHXxA@mail.gmail.com>
+Subject: Re: [PATCH v2] mac80211: fix race in ieee80211_register_hw()
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Krishna Chaitanya <chaitanya.mgit@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        Kalle Valo <kvalo@codeaurora.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
+        <matthias.schoepfer@ithinx.io>,
+        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
+        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 12:34:43AM -0700, Christoph Hellwig wrote:
-> On Wed, Apr 15, 2020 at 12:27:12AM -0700, Christoph Hellwig wrote:
-> > On Wed, Apr 15, 2020 at 05:42:34AM +0000, Luis Chamberlain wrote:
-> > > > I don't understand the atomic part of the comment.  How does
-> > > > bdgrab/bdput help us there?
-> > > 
-> > > The commit log above did a better job at explaining this in terms of our
-> > > goal to use the request_queue and how this use would prevent the risk of
-> > > releasing the request_queue, which could sleep.
-> > 
-> > So bdput eventually does and iput, but what leads to an out of context
-> > offload?
-> > 
-> > But anyway, isn't the original problem better solved by simply not
-> > releasing the queue from atomic context to start with?  There isn't
-> > really any good reason we keep holding the spinlock once we have a
-> > reference on the queue, so something like this (not even compile tested)
-> > should do the work:
-> 
-> Actually - mem_cgroup_throttle_swaprate already checks for a non-NULL
-> current->throttle_queue above, so we should never even call
-> blk_put_queue here.  Was this found by code inspection, or was there
-> a real report?
+On Wed, Apr 15, 2020 at 3:10 PM Sumit Garg <sumit.garg@linaro.org> wrote:
 
-No but report, this code path came up as a possible use of
-blk_put_queue() which already exists in atomic context. So yes, it
-already uses blk_put_queue(), but how are we *sure* its not going to be
-the last one? Because if it is that mean the release will happen in
-atomic context, defeating the goal of the last patch in this series.
+[.. ]
 
-Using bdgrab() however ensures that during the lifecycle of this path,
-blk_put_queue() won't be the last if used after, but instead we are
-sure it will be upon disk release.
+> > In case we don't have any further comments, could you fix this nitpick
+> > from Chaitanya while applying or would you like me to respin and send
+> > v3?
+>
+> A gentle ping. Is this patch a good candidate for 5.7-rc2?
+>
 
-In fact, with bdgrab() isn't the blk_get_queue() on
-blkcg_schedule_throttle() no longer needed?
+Hi Sumit,
 
-> In the latter case we need to figure out what protects >throttle_queue,
-> as the way blkcg_schedule_throttle first put the reference and only then
-> assign a value to it already looks like it introduces a tiny race
-> window.
-> 
-> Otherwise just open coding the applicable part of blkcg_schedule_throttle
-> in mem_cgroup_throttle_swaprate seems easiest:
-> 
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 5871a2aa86a5..e16051ef074c 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3761,15 +3761,20 @@ void mem_cgroup_throttle_swaprate(struct mem_cgroup *memcg, int node,
->  	 */
->  	if (current->throttle_queue)
->  		return;
-> +	if (unlikely(current->flags & PF_KTHREAD))
-> +		return;
->  
->  	spin_lock(&swap_avail_lock);
->  	plist_for_each_entry_safe(si, next, &swap_avail_heads[node],
->  				  avail_lists[node]) {
-> -		if (si->bdev) {
-> -			blkcg_schedule_throttle(bdev_get_queue(si->bdev),
-> -						true);
-> -			break;
-> +		if (!si->bdev)
-> +			continue;
-> +		if (blk_get_queue(dev_get_queue(si->bdev))) {
-> +			current->throttle_queue = dev_get_queue(si->bdev);
-> +			current->use_memdelay = true;
-> +			set_notify_resume(current);
->  		}
-> +		break;
->  	}
->  	spin_unlock(&swap_avail_lock);
->  }
+it's in [1] (see [2]) with slightly mods by Johannes but not in Linus tree.
 
-Sorry, its not clear to me  who calls the respective blk_put_queue()
-here?
+Johannes requested a pull-request means will be merged in a next step
+in net.git and then hopefully land in Linus tree after Dave M.
+requested a pull-request.
 
-  Luis
+Thanks for your patch.
+
+Regards,
+- Sedat -
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/tag/?h=mac80211-for-net-2020-04-15
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/commit/?h=mac80211-for-net-2020-04-15&id=52e04b4ce5d03775b6a78f3ed1097480faacc9fd
