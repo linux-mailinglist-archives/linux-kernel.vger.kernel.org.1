@@ -2,86 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E0C1AACAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438F51AAC74
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415104AbgDOQAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:00:10 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:17848 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1415060AbgDOP7o (ORCPT
+        id S2410024AbgDOP55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2410018AbgDOP5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:59:44 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03FFX9IH020652;
-        Wed, 15 Apr 2020 17:59:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=HlleByQ0ZQm+05TayeH9E0d5N1iu4zV7eIq5O83VKV0=;
- b=XUf6koA5SbJNHWNZvY2R6ve0Y5y3/e5Qo6lCEyEAQHtuQasYkeLCMIOi3m9x2AWTVpvM
- pV7U2UP2eK74qktlTu85+m5OMu5DEEeM5iynz0iC5nRFvdl68NSb0euJIwiK11f0XiOi
- Wd5mAfW7GhwrAkLDnC4arr3PLbjtDBctj5ZzqDCdkhRbpxeQOxucWZr3Zv0heZKyukwZ
- vbEATjR28zaf5N1qk9y5L49gKqhuTHXejfWQ/7nK81Q9TBXaznw1Fx779MxXxrpaQdg0
- ClgLHab2qvDIxcxbEt6C93UPV7T2f0ESGdyTlWZN4GyBAB/a2hbucZDK0UX1iIqakpPy Kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30dn6svyp9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Apr 2020 17:59:27 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6353B100034;
-        Wed, 15 Apr 2020 17:59:27 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 54A582B213E;
-        Wed, 15 Apr 2020 17:59:27 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 15 Apr 2020 17:59:26
- +0200
-From:   Christophe Kerello <christophe.kerello@st.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <lee.jones@linaro.org>, <robh+dt@kernel.org>,
-        <mark.rutland@arm.com>, <tony@atomide.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <marex@denx.de>,
-        Christophe Kerello <christophe.kerello@st.com>
-Subject: [PATCH v2 12/12] mtd: rawnand: stm32_fmc2: add new MP1 compatible string
-Date:   Wed, 15 Apr 2020 17:57:36 +0200
-Message-ID: <1586966256-29548-13-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
-References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-15_05:2020-04-14,2020-04-15 signatures=0
+        Wed, 15 Apr 2020 11:57:52 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60164C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:57:52 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id l25so17756112qkk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WoLXatgZ0kPKvWwgaZUiwyS4MRwDs1N6m2LhcTxFUGQ=;
+        b=SQrNtYzdaavZZqu7QRnrqy3xpHZx5glGFPc1HQx7XouRdlG+N2ZwzS9JS5rVzBfwik
+         rA39ye37SXHeFN61uBMzsBF2h9bkN/b+0u4D7YmPd5GyTL/jEkkZM3Mi1VJD9ir+mmm9
+         LDIyOSH5DwP55jcpzdaBPfQbLGjRVO+4JZh+f2VWmBqM972bvvHDrRHZSXnVm2kMH3iL
+         8caMOfSX6LaXQvJj6t/z63vQqHgYcAOl139tHv+WqFjOe1Fq6ajli9HMLIO6y7C73mAT
+         nrXQVipqt61rZK/quil7c1IXOJ/G277L9NsFK1USg3MiyXZ1Coo1xThqO5nwD5q6QhWq
+         efOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WoLXatgZ0kPKvWwgaZUiwyS4MRwDs1N6m2LhcTxFUGQ=;
+        b=m2X0iWGnIPui4TKZ0dtc2J6Ww92octlG3dp6hbxBIZg4Kq8OfE1sIIIC6WsYgQk0O9
+         jU1KPVSnF4+f0i+mJnQrp+LEFJsDhWd/iuy/edNhxYdKcpYEwFUR7Fedt/mZIYJZAhzH
+         9BhZksmiF27q8Z0cUkBWRiAvy5G3k+zERfmxezsmk6c3nbtHaUHWWPKgn4jbBI26l0lg
+         DVLFWB9s6rvlnCoK+D6nmHxmtb81O5WW7uge5uErke9N/ie0LM4SchRzlMP49RwrQoOw
+         I1mnASIA5vnY5k3KenGQfu4aqGAoI1gNWCHLVdAkarG864zVUXnXY+d8GkYT/ZF83+Aq
+         3PCA==
+X-Gm-Message-State: AGi0Pubrz8m0sXKLHvr8J8Lqvf/M1tfkpeA0fC96y/Zi9/+nn0DXYTiQ
+        XEq9daugaLL+G0bhbESSg24TUw==
+X-Google-Smtp-Source: APiQypJ6oq8MV9YqaOT9f+ss8UoMahcS/0OQWdCdTdAjBjZMpRAFErRQM3Nm2bXq+GnilmSjKgcwxg==
+X-Received: by 2002:a37:7605:: with SMTP id r5mr24570359qkc.345.1586966271450;
+        Wed, 15 Apr 2020 08:57:51 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id i4sm12943212qkh.27.2020.04.15.08.57.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Apr 2020 08:57:50 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: Linux-next POWER9 NULL pointer NIP since 1st Apr.
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <06A2EA93-B730-4DB1-819F-D27E7032F0B3@lca.pw>
+Date:   Wed, 15 Apr 2020 11:57:50 -0400
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <161662E3-5D9C-4C15-919C-CFEFE4CC35CB@lca.pw>
+References: <15AC5B0E-A221-4B8C-9039-FA96B8EF7C88@lca.pw>
+ <87eeszlb6u.fsf@mpe.ellerman.id.au>
+ <0675B22E-8F32-432C-9378-FDE159DD1729@lca.pw>
+ <20200407093054.3eb23e45@gandalf.local.home>
+ <EA9F9A54-87BC-477A-BE8A-7D53F80C5223@lca.pw>
+ <20200409101413.35d9c72d@gandalf.local.home>
+ <06A2EA93-B730-4DB1-819F-D27E7032F0B3@lca.pw>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds "st,stm32mp1-fmc2-nand" compatible string.
 
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
----
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 4f931e2..f82c7dd 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -1938,6 +1938,7 @@ static SIMPLE_DEV_PM_OPS(stm32_fmc2_nfc_pm_ops, stm32_fmc2_nfc_suspend,
- 
- static const struct of_device_id stm32_fmc2_nfc_match[] = {
- 	{.compatible = "st,stm32mp15-fmc2"},
-+	{.compatible = "st,stm32mp1-fmc2-nand"},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, stm32_fmc2_nfc_match);
--- 
-1.9.1
+> On Apr 10, 2020, at 3:20 PM, Qian Cai <cai@lca.pw> wrote:
+>=20
+>=20
+>=20
+>> On Apr 9, 2020, at 10:14 AM, Steven Rostedt <rostedt@goodmis.org> =
+wrote:
+>>=20
+>> On Thu, 9 Apr 2020 06:06:35 -0400
+>> Qian Cai <cai@lca.pw> wrote:
+>>=20
+>>>>> I=E2=80=99ll go to bisect some more but it is going to take a =
+while.
+>>>>>=20
+>>>>> $ git log --oneline 4c205c84e249..8e99cf91b99b
+>>>>> 8e99cf91b99b tracing: Do not allocate buffer in =
+trace_find_next_entry() in atomic
+>>>>> 2ab2a0924b99 tracing: Add documentation on set_ftrace_notrace_pid =
+and set_event_notrace_pid
+>>>>> ebed9628f5c2 selftests/ftrace: Add test to test new =
+set_event_notrace_pid file
+>>>>> ed8839e072b8 selftests/ftrace: Add test to test new =
+set_ftrace_notrace_pid file
+>>>>> 276836260301 tracing: Create set_event_notrace_pid to not trace =
+tasks =20
+>>>>=20
+>>>>> b3b1e6ededa4 ftrace: Create set_ftrace_notrace_pid to not trace =
+tasks
+>>>>> 717e3f5ebc82 ftrace: Make function trace pid filtering a bit more =
+exact =20
+>>>>=20
+>>>> If it is affecting function tracing, it is probably one of the =
+above two
+>>>> commits. =20
+>>>=20
+>>> OK, it was narrowed down to one of those messed with mcount here,
+>>=20
+>> Thing is, nothing here touches mcount.
+>=20
+> Yes, you are right. I went back to test the commit just before the =
+5.7-trace merge request,
+> I did reproduce there. The thing is that this bastard could take more =
+6-hour to happen,
+> so my previous attempt did not wait long enough. Back to the square =
+one=E2=80=A6
+
+OK, I starts to test all commits up to 12 hours. The progess on far is,
+
+BAD: v5.6-rc1
+GOOD: v5.5
+GOOD: 153b5c566d30 Merge tag 'microblaze-v5.6-rc1' of =
+git://git.monstr.eu/linux-2.6-microblaze
+
+The next step I=E2=80=99ll be testing,
+
+71c3a888cbca Merge tag 'powerpc-5.6-1' of =
+git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux
+
+IF that is BAD, the merge request is the culprit. I can see a few =
+commits are more related that others.
+
+5290ae2b8e5f powerpc/64: Use {SAVE,REST}_NVGPRS macros
+ed0bc98f8cbe powerpc/64s: Reimplement power4_idle code in C
+
+Does it ring any bell yet?
+
 
