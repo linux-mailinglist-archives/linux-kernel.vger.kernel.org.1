@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B501A963D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFC11A977C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894390AbgDOIXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:23:42 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59730 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2635882AbgDOIXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:23:36 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E105FAA5669E20D52871;
-        Wed, 15 Apr 2020 16:23:34 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
- 16:23:26 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <lorenzo.pieralisi@arm.com>, <amurray@thegoodpenguin.co.uk>,
-        <bhelgaas@google.com>, <p.zabel@pengutronix.de>,
-        <gustavo.pimentel@synopsys.com>, <yanaijie@huawei.com>,
-        <andriy.shevchenko@intel.com>, <eswara.kota@linux.intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] PCI: dwc: intel: make intel_pcie_cpu_addr() static
-Date:   Wed, 15 Apr 2020 16:49:53 +0800
-Message-ID: <20200415084953.6533-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S2895102AbgDOIup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:50:45 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:58597 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895077AbgDOIuQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:50:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586940616; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=auWezVjogQxMcK0gEJGFK4CBiymKmdxiKLZPjLM9pjI=;
+ b=NtCyGn98fz9kuo3DWqcwLYmUMmUeCCyENhSuBpiQAWqvcYXrr9rZRu0NCSRsfRlcCkOT0lnd
+ lGSB2B3l3FwjmNtUrrdFaNvloyX2YIfT02ICZq4YsSxVDBGew7+3j4WjvJJqYzq4ZYTl3q9E
+ pSGbMPcE+cDGBrZHvSBXBaqk4M0=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e96cabc.7f3eed1643b0-smtp-out-n01;
+ Wed, 15 Apr 2020 08:50:04 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62E45C433F2; Wed, 15 Apr 2020 08:50:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6AD8FC433CB;
+        Wed, 15 Apr 2020 08:50:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6AD8FC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ipw2x00: make ipw_setup_deferred_work() void
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200414120251.35869-1-yanaijie@huawei.com>
+References: <20200414120251.35869-1-yanaijie@huawei.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <stas.yakovlev@gmail.com>, <davem@davemloft.net>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jason Yan <yanaijie@huawei.com>
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
+Message-Id: <20200415085003.62E45C433F2@smtp.codeaurora.org>
+Date:   Wed, 15 Apr 2020 08:50:03 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Jason Yan <yanaijie@huawei.com> wrote:
 
-drivers/pci/controller/dwc/pcie-intel-gw.c:456:5: warning: symbol
-'intel_pcie_cpu_addr' was not declared. Should it be static?
+> This function actually needs no return value. So remove the unneeded
+> variable 'ret' and make it void.
+> 
+> This also fixes the following coccicheck warning:
+> 
+> drivers/net/wireless/intel/ipw2x00/ipw2200.c:10648:5-8: Unneeded
+> variable: "ret". Return "0" on line 10684
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/pci/controller/dwc/pcie-intel-gw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch applied to wireless-drivers-next.git, thanks.
 
-diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
-index fc2a12212dec..2d8dbb318087 100644
---- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-+++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-@@ -453,7 +453,7 @@ static int intel_pcie_msi_init(struct pcie_port *pp)
- 	return 0;
- }
- 
--u64 intel_pcie_cpu_addr(struct dw_pcie *pcie, u64 cpu_addr)
-+static u64 intel_pcie_cpu_addr(struct dw_pcie *pcie, u64 cpu_addr)
- {
- 	return cpu_addr + BUS_IATU_OFFSET;
- }
+5a652b49b41b ipw2x00: make ipw_setup_deferred_work() void
+
 -- 
-2.21.1
+https://patchwork.kernel.org/patch/11487287/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
