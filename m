@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFC11A977C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C6E1A9640
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895102AbgDOIup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:50:45 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:58597 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895077AbgDOIuQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:50:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586940616; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=auWezVjogQxMcK0gEJGFK4CBiymKmdxiKLZPjLM9pjI=;
- b=NtCyGn98fz9kuo3DWqcwLYmUMmUeCCyENhSuBpiQAWqvcYXrr9rZRu0NCSRsfRlcCkOT0lnd
- lGSB2B3l3FwjmNtUrrdFaNvloyX2YIfT02ICZq4YsSxVDBGew7+3j4WjvJJqYzq4ZYTl3q9E
- pSGbMPcE+cDGBrZHvSBXBaqk4M0=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e96cabc.7f3eed1643b0-smtp-out-n01;
- Wed, 15 Apr 2020 08:50:04 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62E45C433F2; Wed, 15 Apr 2020 08:50:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6AD8FC433CB;
-        Wed, 15 Apr 2020 08:50:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6AD8FC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2894414AbgDOIYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:24:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2377 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2894407AbgDOIXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:23:53 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9DA2429C6DCD93E4EFC6;
+        Wed, 15 Apr 2020 16:23:49 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
+ 16:23:38 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <bp@alien8.de>, <mchehab@kernel.org>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <rrichter@marvell.com>,
+        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] EDAC: remove defined but not used 'bridge_str'
+Date:   Wed, 15 Apr 2020 16:50:06 +0800
+Message-ID: <20200415085006.6732-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ipw2x00: make ipw_setup_deferred_work() void
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200414120251.35869-1-yanaijie@huawei.com>
-References: <20200414120251.35869-1-yanaijie@huawei.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <stas.yakovlev@gmail.com>, <davem@davemloft.net>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jason Yan <yanaijie@huawei.com>
-User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
-Message-Id: <20200415085003.62E45C433F2@smtp.codeaurora.org>
-Date:   Wed, 15 Apr 2020 08:50:03 +0000 (UTC)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason Yan <yanaijie@huawei.com> wrote:
+Fix the following gcc warning:
 
-> This function actually needs no return value. So remove the unneeded
-> variable 'ret' and make it void.
-> 
-> This also fixes the following coccicheck warning:
-> 
-> drivers/net/wireless/intel/ipw2x00/ipw2200.c:10648:5-8: Unneeded
-> variable: "ret". Return "0" on line 10684
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+drivers/edac/amd8131_edac.c:47:21: warning: ‘bridge_str’ defined but not
+used [-Wunused-const-variable=]
+ static char * const bridge_str[] = {
+                     ^~~~~~~~~~
 
-Patch applied to wireless-drivers-next.git, thanks.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/edac/amd8131_edac.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-5a652b49b41b ipw2x00: make ipw_setup_deferred_work() void
-
+diff --git a/drivers/edac/amd8131_edac.c b/drivers/edac/amd8131_edac.c
+index 93c82bc17493..169353710982 100644
+--- a/drivers/edac/amd8131_edac.c
++++ b/drivers/edac/amd8131_edac.c
+@@ -44,14 +44,6 @@ static void edac_pci_write_dword(struct pci_dev *dev, int reg, u32 val32)
+ 			" PCI Access Write Error at 0x%x\n", reg);
+ }
+ 
+-static char * const bridge_str[] = {
+-	[NORTH_A] = "NORTH A",
+-	[NORTH_B] = "NORTH B",
+-	[SOUTH_A] = "SOUTH A",
+-	[SOUTH_B] = "SOUTH B",
+-	[NO_BRIDGE] = "NO BRIDGE",
+-};
+-
+ /* Support up to two AMD8131 chipsets on a platform */
+ static struct amd8131_dev_info amd8131_devices[] = {
+ 	{
 -- 
-https://patchwork.kernel.org/patch/11487287/
+2.21.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
