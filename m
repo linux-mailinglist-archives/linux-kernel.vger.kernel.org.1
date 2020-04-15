@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C48F1AB15E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820F21AB160
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441711AbgDOTOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:14:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416884AbgDOSzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:55:54 -0400
-Received: from home.goodmis.org (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0196020732;
-        Wed, 15 Apr 2020 18:55:52 +0000 (UTC)
-Date:   Wed, 15 Apr 2020 14:55:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S2441730AbgDOTOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1416889AbgDOS7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:59:55 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1457C061A0C;
+        Wed, 15 Apr 2020 11:59:54 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id r24so4937660ljd.4;
+        Wed, 15 Apr 2020 11:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+lgH9QEXgssaM2l+t80P4gQY7lGRB9KmgdYKNpUDs6o=;
+        b=RMiUNy2eQfnY3aZ1nGyJOaQD/7k7Bhwn1NGMoOyEJsKa4Dymv7l733xXw82+YXBxa5
+         HD6yD4dS4Z+0jafFk8nqJ1iSsMlCuurc1SHknGc8LLoMAG0DUHCD+HT5VkT/fxYJR8FB
+         VYNOk1TiBTmJgkaMKCIsKYrqvW5Ji3Ylf7ChsI4Fkwur0oMWK50q9lTSGkDh7cD+LIku
+         EmX9Br2zCpDM1EJoYRUcSSJ4RUDIYOzz4GSedf981nT6k1uKWu3szryS3s0QMsFLTi/v
+         +e2K6gHcbglGR83H5vK0u7yOLotn+3eQVvPc3OSteP/AlFXOqV9pIftX5yYP2T05AcHJ
+         UXMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+lgH9QEXgssaM2l+t80P4gQY7lGRB9KmgdYKNpUDs6o=;
+        b=Y+LHiMUxc1H7ciybuDnfp1BEWspq6Rr92Ci7jt+8rU8B3zhTmrrQn9d1STP3Vm7GUO
+         0jbQlI04ns344t5OLgLqkrO6zTIZDoTRpR5RmzCHOM+D1H9E0GoyRZtOn2zbwvbbbV91
+         U2ZlJ+Vv1HGFk+RLRUY4eK6GKt6x48qpsFegFzpO3CYvN38hXRv+pThPwXIXnUJH0CJL
+         hyIwG++edGDajOvdjcJYg4Txmy0w1hLCTpkRMjTYxdWbTsxbcPYIl7xeFkd3Qs1K8JUc
+         oHBZ/IW1j8Wt3CUWyxzmGpMqHEHjADozvKuITUIBz91hjHN4W+MvXEWZmR24KZ+2xA3S
+         cifA==
+X-Gm-Message-State: AGi0PuZCUqpYpzO691ufQ+UxaJyxSSN9SHt+J7xLpl7XZXS7aceepuuw
+        kNuNV6CfuuytA9T2cRf+VZVUDTnk8/Q=
+X-Google-Smtp-Source: APiQypKqiBElG3N9BOEElUArPJ2omb4ABpniF0/8hznTgBZEpfd2Ezm81K98PyMO3KRWjDby9/KL2Q==
+X-Received: by 2002:a2e:870f:: with SMTP id m15mr4201151lji.16.1586977193345;
+        Wed, 15 Apr 2020 11:59:53 -0700 (PDT)
+Received: from luk-pc.lan (host-46-186-7-151.dynamic.mm.pl. [46.186.7.151])
+        by smtp.googlemail.com with ESMTPSA id z9sm17026303lfd.9.2020.04.15.11.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 11:59:52 -0700 (PDT)
+From:   LuK1337 <priv.luk@gmail.com>
+Cc:     LuK1337 <priv.luk@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Allison Randal <allison@lohutok.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: linux-next: Tree for Apr 10 (lib/test_printf.ko)
-Message-ID: <20200415185545.GA1632@home.goodmis.org>
-References: <20200410132706.170811b7@canb.auug.org.au>
- <27c212c4-b522-561d-411c-e74dc0ff0b74@infradead.org>
- <CAHk-=wjhsM-n_NzSh=cSdpThX+62-x3EmyKjhMqGHFYEyG0nPg@mail.gmail.com>
- <2b0f5d2e-3fe5-10c9-2a9a-9a0b341a52d5@infradead.org>
- <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
- <bfbcaa67-9656-3a80-fc66-c937297c8be0@infradead.org>
- <CAHk-=whpvCqcCYvy=_v_F6NTtBSeQbXZ0iLr_smV2NJLT+XACw@mail.gmail.com>
- <CA+G9fYu47hpXjYtAr32p9yJ97KZqTry+ioAY1S2TqtiKztCYRg@mail.gmail.com>
- <f90fc906-395b-79be-8f44-3807586766f7@infradead.org>
- <CAFd5g46ZaEVoMb2hO94A41Z=YH6ntTdXstZUhHu67mwOKY+QsA@mail.gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Richard Fontana <rfontana@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: xpad - Update xboxone fw2015 init packet
+Date:   Wed, 15 Apr 2020 20:59:40 +0200
+Message-Id: <20200415185941.388910-1-priv.luk@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFd5g46ZaEVoMb2hO94A41Z=YH6ntTdXstZUhHu67mwOKY+QsA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 12:26:29PM -0700, Brendan Higgins wrote:
-> On Sat, Apr 11, 2020 at 11:22 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > On 4/11/20 10:36 PM, Naresh Kamboju wrote:
-> > > FYI,
-> > >
-> > > Is this problem related to,
-> > >
-> > > Regression reported on Linux next 5.6.0-rc4-next-20200305 on x86_64,
-> > > i386, arm and arm64. The steps to reproduce is running kselftests lib
-> > > printf.sh test case.
-> > > Which is doing modprobe operations.
-> > >
-> > > BUG: kernel NULL pointer dereference, address: 00 - ida_free+0x76/0x140
-> > >
-> > > https://lore.kernel.org/linux-kselftest/CAFd5g46Bwd8HS9-xjHLh_rB59Nfw8iAnM6aFe0QPcveewDUT6g@mail.gmail.com/T/
-> > >
-> >
-> > Looks similar. Lots of fwnode, software_node, ida stuff there.
-> 
-> Sorry for the late reply, I was out.
-> 
-> Yeah, I am pretty sure it is the same. Heikki proposed a fix that I am
-> going to try.
+Appending { 0x05, 0x20, 0x02, 0x0f, 0x06 } to
+xboxone_fw2015_init fixes an issue where the
+controller is somewhat stuck in bluetooth
+mode until you plug it into Windows PC.
 
-My test suite just tripped over this bug. Is this the patch that you think
-fixes it?
+Signed-off-by: LuK1337 <priv.luk@gmail.com>
+---
+ drivers/input/joystick/xpad.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://lore.kernel.org/linux-kselftest/20200414081513.GD2828150@kuha.fi.intel.com
-
-I'll add it to see if I can continue my testing.
-
--- Steve
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index 6b40a1c68f9f..894fa81f717a 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -455,7 +455,8 @@ struct xboxone_init_packet {
+  * or later firmware installed (or present from the factory).
+  */
+ static const u8 xboxone_fw2015_init[] = {
+-	0x05, 0x20, 0x00, 0x01, 0x00
++	0x05, 0x20, 0x00, 0x01, 0x00,
++	0x05, 0x20, 0x02, 0x0f, 0x06
+ };
+ 
+ /*
+-- 
+2.26.0
 
