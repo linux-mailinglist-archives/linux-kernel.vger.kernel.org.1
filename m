@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766E51AAF3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EFD1AAF2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416461AbgDORMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:12:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42438 "EHLO mail.kernel.org"
+        id S2410747AbgDORLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:11:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410717AbgDORK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2410714AbgDORK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 13:10:59 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7AF221D7B;
-        Wed, 15 Apr 2020 17:10:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33DC121D7D;
+        Wed, 15 Apr 2020 17:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586970658;
-        bh=KYD8+W5IgD2AkDof0MwUojG9ZeSTMNtc3XO6QSao+aQ=;
+        bh=DQWTvjwnLmiCUalD0XDh/DYIC8pSGj8yRWhtzs+grG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ru+f9t05X4n9+3mdyIXkqozhH+Tm1/f1qN9rnA8gIUCGCMoSTEukkKbgwWZs7nk6c
-         Tp48kioSedWjOSopHRfuBZBhlhltJvUkQz+Gi5HYk9kmmLD6c/+vXeag8MXgGVcaiq
-         cSRpZGoJT194BBuYjisb8sgzqDp5dFFDjbYvBSwc=
+        b=YdszHhMt3nNLyzjKCYkrwkUc+iB93Ncr2T/qpHjl0w497k0w12iNnJL+rajNCZ5TR
+         At7G1e3d1sVuNA1iG/qnYwArW92SmtZolgy9wgDpsXIfPaCDMd/YTnaky4+PUHu92Z
+         Ei353dYQI5tkBmwboNXXu5mQUDfMJ/O2N9E5Mg4s=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/19] srcu: Add data_race() to ->srcu_lock_count and ->srcu_unlock_count arrays
-Date:   Wed, 15 Apr 2020 10:10:41 -0700
-Message-Id: <20200415171054.9013-6-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/19] rcu: Add WRITE_ONCE() to rcu_node ->boost_tasks
+Date:   Wed, 15 Apr 2020 10:10:42 -0700
+Message-Id: <20200415171054.9013-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -45,45 +45,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The srcu_data structure's ->srcu_lock_count and ->srcu_unlock_count arrays
-are read and written locklessly, so this commit adds the data_race()
-to the diagnostic-print loads from these arrays in order mark them as
-known and approved data-racy accesses.
+The rcu_node structure's ->boost_tasks field is read locklessly, so this
+commit adds the WRITE_ONCE() to an update in order to provide proper
+documentation and READ_ONCE()/WRITE_ONCE() pairing.
 
-This data race was reported by KCSAN. Not appropriate for backporting due
-to failure being unlikely and due to this being used only by rcutorture.
+This data race was reported by KCSAN.  Not appropriate for backporting
+due to failure being unlikely.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/rcu/tree_plugin.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index ba2b751..6d3ef70 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1281,8 +1281,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 		struct srcu_data *sdp;
- 
- 		sdp = per_cpu_ptr(ssp->sda, cpu);
--		u0 = sdp->srcu_unlock_count[!idx];
--		u1 = sdp->srcu_unlock_count[idx];
-+		u0 = data_race(sdp->srcu_unlock_count[!idx]);
-+		u1 = data_race(sdp->srcu_unlock_count[idx]);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index ed6bb46..664d0aa 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -505,7 +505,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 			/* Snapshot ->boost_mtx ownership w/rnp->lock held. */
+ 			drop_boost_mutex = rt_mutex_owner(&rnp->boost_mtx) == t;
+ 			if (&t->rcu_node_entry == rnp->boost_tasks)
+-				rnp->boost_tasks = np;
++				WRITE_ONCE(rnp->boost_tasks, np);
+ 		}
  
  		/*
- 		 * Make sure that a lock is always counted if the corresponding
-@@ -1290,8 +1290,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 		 */
- 		smp_rmb();
- 
--		l0 = sdp->srcu_lock_count[!idx];
--		l1 = sdp->srcu_lock_count[idx];
-+		l0 = data_race(sdp->srcu_lock_count[!idx]);
-+		l1 = data_race(sdp->srcu_lock_count[idx]);
- 
- 		c0 = l0 - u0;
- 		c1 = l1 - u1;
+@@ -1082,7 +1082,7 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+ 	     rnp->qsmask == 0 &&
+ 	     (ULONG_CMP_GE(jiffies, rnp->boost_time) || rcu_state.cbovld))) {
+ 		if (rnp->exp_tasks == NULL)
+-			rnp->boost_tasks = rnp->gp_tasks;
++			WRITE_ONCE(rnp->boost_tasks, rnp->gp_tasks);
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		rcu_wake_cond(rnp->boost_kthread_task,
+ 			      READ_ONCE(rnp->boost_kthread_status));
 -- 
 2.9.5
 
