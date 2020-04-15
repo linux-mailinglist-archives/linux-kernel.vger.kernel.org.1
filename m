@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08961A99F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2CC1A9A11
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896178AbgDOKHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:07:50 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:33840 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2896154AbgDOKHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:07:32 -0400
-Received: from [88.147.20.223] (port=52218 helo=[192.168.77.62])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jOex2-009Eu1-UU; Wed, 15 Apr 2020 12:07:24 +0200
-Subject: Re: [RFC PATCH v2 6/6] i2c: core: hand over reserved devices when
- requesting ancillary addresses
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
- <20200318150059.21714-7-wsa+renesas@sang-engineering.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <610bbd01-e245-3320-c315-7a5c945a700d@lucaceresoli.net>
-Date:   Wed, 15 Apr 2020 12:07:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200318150059.21714-7-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        id S2896253AbgDOKKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:10:49 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27969 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896221AbgDOKKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 06:10:18 -0400
+IronPort-SDR: 7Uewr7cbYjd3+VfwGxh2UPNtlKM9Th2Mv8OMRO/vxxSe6dgNw/suE8ILHROXRKs+KP6KQ7qgU5
+ AoTzBNAGg1jg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 03:10:16 -0700
+IronPort-SDR: aId59wJtQvTdJVURjpuzjsl1e0DTZ33paKQgcXPpmz6CSWPmo9nLWko1C0YtQI/B5nMddxu6ib
+ qYokxNtlvjKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="253482866"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga003.jf.intel.com with ESMTP; 15 Apr 2020 03:10:14 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, bhu@redhat.com, Xu Yilun <yilun.xu@intel.com>
+Subject: [PATCH v4 0/7] Add interrupt support to FPGA DFL drivers
+Date:   Wed, 15 Apr 2020 18:07:28 +0800
+Message-Id: <1586945255-30823-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset add interrupt support to FPGA DFL drivers.
 
-On 18/03/20 16:00, Wolfram Sang wrote:
-> With i2c_new_ancillary_address, we can check if the intended driver is
-> requesting a reserved address. Update the function to do these checks.
-> If the check passes, the "reserved" device will become a regular "dummy"
-> device.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  drivers/i2c/i2c-core-base.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 84464e439df5..81fb320de28d 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -974,7 +974,9 @@ struct i2c_client *i2c_new_ancillary_device(struct i2c_client *client,
->  						const char *name,
->  						u16 default_addr)
->  {
-> -	struct device_node *np = client->dev.of_node;
-> +	struct device_node *reserved_np, *np = client->dev.of_node;
-> +	struct device *reserved_dev, *adapter_dev = &client->adapter->dev;
-> +	struct i2c_client *reserved_client = NULL;
->  	u32 addr = default_addr;
->  	int i;
->  
-> @@ -984,7 +986,25 @@ struct i2c_client *i2c_new_ancillary_device(struct i2c_client *client,
->  			of_property_read_u32_index(np, "reg", i, &addr);
->  	}
->  
-> -	dev_dbg(&client->adapter->dev, "Address for %s : 0x%x\n", name, addr);
-> +	dev_info(adapter_dev, "Address for %s : 0x%x\n", name, addr);
+With these patches, DFL driver will parse and assign interrupt resources
+for enumerated feature devices and their sub features.
 
-Here if we have two identical chips on the same bus, they probably will
-both add an ancillary device with the same name. Then a message like:
+This patchset also introduces a set of APIs for user to monitor DFL
+interrupts. Three sub features (DFL FME error, DFL AFU error and user
+interrupt) drivers now support these APIs.
 
-  i2c i2c-0: ds90ub954-q1: Address for rxport0: 0x40
+Patch #1: DFL framework change. Accept interrupt info input from DFL bus
+          driver, and add interrupt parsing and assignment for feature
+          sub devices.
+Patch #2: DFL pci driver change, add interrupt info on DFL enumeration.
+Patch #3: DFL framework change. Add helper functions for feature sub
+          device drivers to handle interrupt and notify users.
+Patch #4: Add interrupt support for AFU error reporting sub feature.
+Patch #5: Add interrupt support for FME global error reporting sub
+          feature.
+Patch #6: Add interrupt support for a new sub feature, to handle user
+          interrupts implemented in AFU.
+Patch #7: Documentation for DFL interrupt handling.
 
-won't tell which ds90ub954-q1 device is using that address. I'd rather
-disambiguate using something like:
+Main changes from v1:
+ - Early validating irq table for each feature in parse_feature_irq()
+   in Patch #1.
+ - Changes IOCTL interfaces. use DFL_FPGA_FME/PORT_XXX_GET_IRQ_NUM
+   instead of DFL_FPGA_FME/PORT_XXX_GET_INFO, delete flag field for
+   DFL_FPGA_FME/PORT_XXX_SET_IRQ param
 
-  dev_info(adapter_dev, "%s: Address for %s: 0x%x\n",
-           dev_name(&client->dev), name, addr);
+Main changes from v2:
+ - put parse_feature_irqs() inside create_feature_instance().
+ - refines code for dfl_fpga_set_irq_triggers, delete local variable j.
+ - put_user() instead of copy_to_user() for DFL_FPGA_XXX_GET_IRQ_NUM IOCTL
 
-Sure, this issue did exist before this patch, but since the line is
-being promoted from dbg to info (which is OK), it's probably a good idea
-to improve the content, perhaps in a separate patch.
+Main changes from v3:
+ - rebased to 5.7-rc1.
+ - fail the dfl enumeration when irq parsing error happens.
+ - Add 2 helper functions in dfl.c to handle generic irq ioctls in feature
+   drivers.
 
-Except for that, I tested the patch and it's working fine.
+Xu Yilun (7):
+  fpga: dfl: parse interrupt info for feature devices on enumeration
+  fpga: dfl: pci: add irq info for feature devices enumeration
+  fpga: dfl: introduce interrupt trigger setting API
+  fpga: dfl: afu: add interrupt support for port error reporting
+  fpga: dfl: fme: add interrupt support for global error reporting
+  fpga: dfl: afu: add AFU interrupt support
+  Documentation: fpga: dfl: add descriptions for interrupt related
+    interfaces.
+
+ Documentation/fpga/dfl.rst    |  19 +++
+ drivers/fpga/dfl-afu-error.c  |  22 +++
+ drivers/fpga/dfl-afu-main.c   |  36 +++++
+ drivers/fpga/dfl-fme-error.c  |  23 ++++
+ drivers/fpga/dfl-fme-main.c   |   6 +
+ drivers/fpga/dfl-pci.c        |  80 +++++++++--
+ drivers/fpga/dfl.c            | 311 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/fpga/dfl.h            |  57 ++++++++
+ include/uapi/linux/fpga-dfl.h |  82 +++++++++++
+ 9 files changed, 627 insertions(+), 9 deletions(-)
 
 -- 
-Luca
+2.7.4
+
