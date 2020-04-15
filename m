@@ -2,115 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383461A98C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005E81A98C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895458AbgDOJYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895392AbgDOJYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:24:19 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46324C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:24:19 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x25so16560554wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=25hsR70J4xkR7QjWib9TX4C/RIJl6X5HgsLKdDMfcIM=;
-        b=MZISFk0+SGdYrIGleUjYyNyFlKlBZtpvcsFKyJMVxKBrgMGYtPYkcBrS4bRdkEp/7t
-         IW0OdNkkEzJjOHq32c8nyyFfVBOA0CWrvJjsIloNh7+9VO5CUroLlbNB3EdfC+VubzHW
-         RKiPdet4ElIC56WiuMenvtixe2coFc0mPjdD569+2OT9S+0GbYhuHmAMDdAJ2/wquaHH
-         afuwBSmcYlb9MymeQAxl6jMcXisGmnphb0nXiXzgHpPoKvx7ynmkS1jh5aDHDA3xUcag
-         t1mwgvkRTAPwn/Ml63NOIpJfKAurHTPzOMenfettsfMf8meyF+86UE6hMxa9KMhNgPe7
-         /dqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=25hsR70J4xkR7QjWib9TX4C/RIJl6X5HgsLKdDMfcIM=;
-        b=YiAZF7zPxAH9hlDXKURqJY+OQaMAB3Crje/X9iuy9mTw/hU1BTLfcEmnnnvWsXkxhj
-         wRLCIQQl9ZQ4xwCmTjNh3SBjlDgJynl55qlf2KUpL4V04ILl0vj1hm9ZRc+yIcu6RWqP
-         +9chlSsx22B6pKTBNvr6KOrPbpe54prcbe+59Pl1GLN69iUyheY81l8r+VroPG5uV4gR
-         LvbG8BYgFfEYVsGlJB3liNXcsK5uFfufje1xmVjALTWaQGaj30f/BEzk08eOmwrbAOqt
-         x+W6Q4i+oF4kMLN8XMQHi19uedLUOyMTTD07OdETgcFe65S8U19z0/EnazWtxpvXHcwc
-         dQIQ==
-X-Gm-Message-State: AGi0PubHHC9v/za6JEZCKVKl/58ATBWnbvRO/8VvLF4PX0SejfUp8rkm
-        QRlqh2uZEYlWK3tcvc62yUG7RA==
-X-Google-Smtp-Source: APiQypI1L9Xj03pMeY/s2kTnKETE0bYjImrIZAgEBCHLd+qOzGsuktY5U9KyEtfeFWAbhU8Q4g0UeA==
-X-Received: by 2002:a7b:c10d:: with SMTP id w13mr4131241wmi.78.1586942657950;
-        Wed, 15 Apr 2020 02:24:17 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id e1sm12258399wrc.12.2020.04.15.02.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 02:24:17 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 10:25:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Harish Jenny K N <harish_kandiga@mentor.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Alexander Graf <graf@amazon.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v6 3/8] mfd: sm501: Use GPIO_LOOKUP_IDX() helper macro
-Message-ID: <20200415092517.GF2167633@dell>
-References: <20200324135328.5796-1-geert+renesas@glider.be>
- <20200324135653.6676-1-geert+renesas@glider.be>
- <20200324135653.6676-3-geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200324135653.6676-3-geert+renesas@glider.be>
+        id S2895482AbgDOJ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:26:06 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:36187 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2895464AbgDOJ0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:26:02 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 492H5z5J9xz9tyhP;
+        Wed, 15 Apr 2020 11:25:59 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=caooqgVO; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id kBycoh46IrJf; Wed, 15 Apr 2020 11:25:59 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 492H5z4D9qz9tyhL;
+        Wed, 15 Apr 2020 11:25:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1586942759; bh=jCpxvczM71sn8Azp6qeNjlE7psKDaCPGFaX6QgvzGx0=;
+        h=From:Subject:To:Cc:Date:From;
+        b=caooqgVOJ+rDrRs50lcWq5fpgCJLKuTOUfebOPgPE5wImF41Jk7+OxoxHud1hS/QB
+         b0zKfR1QPqn2gCrE07LNRkh2Dwq+qkFU2x94X/wAN1wmScffTBolqvQF8LVvxreenn
+         wwOvScoLI3yGu30zy85H+OZAB2ZNSCJlu1o4xWvo=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8B4B78B933;
+        Wed, 15 Apr 2020 11:26:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ASgRXOUP5tVO; Wed, 15 Apr 2020 11:26:00 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3B32C8B92E;
+        Wed, 15 Apr 2020 11:26:00 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id C6E7E65788; Wed, 15 Apr 2020 09:25:59 +0000 (UTC)
+Message-Id: <c9abd91e9bb0b3dd6e3470015e92b98bc2483780.1586942304.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [PATCH v2] powerpc/uaccess: Implement unsafe_put_user() using 'asm
+ goto'
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        segher@kernel.crashing.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 15 Apr 2020 09:25:59 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Mar 2020, Geert Uytterhoeven wrote:
+unsafe_put_user() is designed to take benefit of 'asm goto'.
 
-> i801_add_mux() fills in the GPIO lookup table by manually populating an
-> array of gpiod_lookup structures.  Use the existing GPIO_LOOKUP_IDX()
-> helper macro instead, to relax a dependency on the gpiod_lookup
-> structure's member names.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> ---
-> While this patch is a dependency for "[PATCH v6 4/8] gpiolib: Add
-> support for GPIO lookup by line name", it can be applied independently.
-> But an Acked-by would be nice, too.
-> 
-> Cover letter and full series at
-> https://lore.kernel.org/r/20200324135328.5796-1-geert+renesas@glider.be/
-> 
-> v6:
->   - New.
-> ---
->  drivers/mfd/sm501.c | 24 ++++++++----------------
->  1 file changed, 8 insertions(+), 16 deletions(-)
+Instead of using the standard __put_user() approach and branch
+based on the returned error, use 'asm goto' and make the
+exception code branch directly to the error label. There is
+no code anymore in the fixup section.
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+This change significantly simplifies functions using
+unsafe_put_user()
 
+Small exemple of the benefit with the following code:
+
+struct test {
+	u32 item1;
+	u16 item2;
+	u8 item3;
+	u64 item4;
+};
+
+int set_test_to_user(struct test __user *test, u32 item1, u16 item2, u8 item3, u64 item4)
+{
+	unsafe_put_user(item1, &test->item1, failed);
+	unsafe_put_user(item2, &test->item2, failed);
+	unsafe_put_user(item3, &test->item3, failed);
+	unsafe_put_user(item4, &test->item4, failed);
+	return 0;
+failed:
+	return -EFAULT;
+}
+
+Before the patch:
+
+00000be8 <set_test_to_user>:
+ be8:	39 20 00 00 	li      r9,0
+ bec:	90 83 00 00 	stw     r4,0(r3)
+ bf0:	2f 89 00 00 	cmpwi   cr7,r9,0
+ bf4:	40 9e 00 38 	bne     cr7,c2c <set_test_to_user+0x44>
+ bf8:	b0 a3 00 04 	sth     r5,4(r3)
+ bfc:	2f 89 00 00 	cmpwi   cr7,r9,0
+ c00:	40 9e 00 2c 	bne     cr7,c2c <set_test_to_user+0x44>
+ c04:	98 c3 00 06 	stb     r6,6(r3)
+ c08:	2f 89 00 00 	cmpwi   cr7,r9,0
+ c0c:	40 9e 00 20 	bne     cr7,c2c <set_test_to_user+0x44>
+ c10:	90 e3 00 08 	stw     r7,8(r3)
+ c14:	91 03 00 0c 	stw     r8,12(r3)
+ c18:	21 29 00 00 	subfic  r9,r9,0
+ c1c:	7d 29 49 10 	subfe   r9,r9,r9
+ c20:	38 60 ff f2 	li      r3,-14
+ c24:	7d 23 18 38 	and     r3,r9,r3
+ c28:	4e 80 00 20 	blr
+ c2c:	38 60 ff f2 	li      r3,-14
+ c30:	4e 80 00 20 	blr
+
+00000000 <.fixup>:
+	...
+  b8:	39 20 ff f2 	li      r9,-14
+  bc:	48 00 00 00 	b       bc <.fixup+0xbc>
+			bc: R_PPC_REL24	.text+0xbf0
+  c0:	39 20 ff f2 	li      r9,-14
+  c4:	48 00 00 00 	b       c4 <.fixup+0xc4>
+			c4: R_PPC_REL24	.text+0xbfc
+  c8:	39 20 ff f2 	li      r9,-14
+  cc:	48 00 00 00 	b       cc <.fixup+0xcc>
+			cc: R_PPC_REL24	.text+0xc08
+  d0:	39 20 ff f2 	li      r9,-14
+  d4:	48 00 00 00 	b       d4 <.fixup+0xd4>
+			d4: R_PPC_REL24	.text+0xc18
+
+00000000 <__ex_table>:
+	...
+			a0: R_PPC_REL32	.text+0xbec
+			a4: R_PPC_REL32	.fixup+0xb8
+			a8: R_PPC_REL32	.text+0xbf8
+			ac: R_PPC_REL32	.fixup+0xc0
+			b0: R_PPC_REL32	.text+0xc04
+			b4: R_PPC_REL32	.fixup+0xc8
+			b8: R_PPC_REL32	.text+0xc10
+			bc: R_PPC_REL32	.fixup+0xd0
+			c0: R_PPC_REL32	.text+0xc14
+			c4: R_PPC_REL32	.fixup+0xd0
+
+After the patch:
+
+00000be8 <set_test_to_user>:
+ be8:	90 83 00 00 	stw     r4,0(r3)
+ bec:	b0 a3 00 04 	sth     r5,4(r3)
+ bf0:	98 c3 00 06 	stb     r6,6(r3)
+ bf4:	90 e3 00 08 	stw     r7,8(r3)
+ bf8:	91 03 00 0c 	stw     r8,12(r3)
+ bfc:	38 60 00 00 	li      r3,0
+ c00:	4e 80 00 20 	blr
+ c04:	38 60 ff f2 	li      r3,-14
+ c08:	4e 80 00 20 	blr
+
+00000000 <__ex_table>:
+	...
+			a0: R_PPC_REL32	.text+0xbe8
+			a4: R_PPC_REL32	.text+0xc04
+			a8: R_PPC_REL32	.text+0xbec
+			ac: R_PPC_REL32	.text+0xc04
+			b0: R_PPC_REL32	.text+0xbf0
+			b4: R_PPC_REL32	.text+0xc04
+			b8: R_PPC_REL32	.text+0xbf4
+			bc: R_PPC_REL32	.text+0xc04
+			c0: R_PPC_REL32	.text+0xbf8
+			c4: R_PPC_REL32	.text+0xc04
+
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+---
+v2:
+- Grouped most __goto() macros together
+- Removed stuff in .fixup section, referencing the error label
+directly from the extable
+- Using more flexible addressing in asm.
+---
+ arch/powerpc/include/asm/uaccess.h | 61 +++++++++++++++++++++++++-----
+ 1 file changed, 52 insertions(+), 9 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index dee71e9c7618..5d323e4f2ce1 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -93,12 +93,12 @@ static inline int __access_ok(unsigned long addr, unsigned long size,
+ #define __get_user(x, ptr) \
+ 	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), true)
+ #define __put_user(x, ptr) \
+-	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), true)
++	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
++#define __put_user_goto(x, ptr, label) \
++	__put_user_nocheck_goto((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), label)
+ 
+ #define __get_user_allowed(x, ptr) \
+ 	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
+-#define __put_user_allowed(x, ptr) \
+-	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), false)
+ 
+ #define __get_user_inatomic(x, ptr) \
+ 	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
+@@ -162,17 +162,14 @@ do {								\
+ 	prevent_write_to_user(ptr, size);			\
+ } while (0)
+ 
+-#define __put_user_nocheck(x, ptr, size, do_allow)			\
++#define __put_user_nocheck(x, ptr, size)			\
+ ({								\
+ 	long __pu_err;						\
+ 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
+ 	if (!is_kernel_addr((unsigned long)__pu_addr))		\
+ 		might_fault();					\
+ 	__chk_user_ptr(ptr);					\
+-	if (do_allow)								\
+-		__put_user_size((x), __pu_addr, (size), __pu_err);		\
+-	else									\
+-		__put_user_size_allowed((x), __pu_addr, (size), __pu_err);	\
++	__put_user_size((x), __pu_addr, (size), __pu_err);		\
+ 	__pu_err;						\
+ })
+ 
+@@ -196,6 +193,52 @@ do {								\
+ })
+ 
+ 
++#define __put_user_asm_goto(x, addr, label, op)			\
++	asm volatile goto(					\
++		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
++		EX_TABLE(1b, %l2)				\
++		:						\
++		: "r" (x), "m" (*addr)				\
++		:						\
++		: label)
++
++#ifdef __powerpc64__
++#define __put_user_asm2_goto(x, ptr, label)			\
++	__put_user_asm_goto(x, ptr, label, "std")
++#else /* __powerpc64__ */
++#define __put_user_asm2_goto(x, addr, label)			\
++	asm volatile goto(					\
++		"1:	stw%U1%X1 %0, %1\n"			\
++		"2:	stw%U1%X1 %L0, %L1\n"			\
++		EX_TABLE(1b, %l2)				\
++		EX_TABLE(2b, %l2)				\
++		:						\
++		: "r" (x), "m" (*addr)				\
++		:						\
++		: label)
++#endif /* __powerpc64__ */
++
++#define __put_user_size_goto(x, ptr, size, label)		\
++do {								\
++	switch (size) {						\
++	case 1: __put_user_asm_goto(x, ptr, label, "stb"); break;	\
++	case 2: __put_user_asm_goto(x, ptr, label, "sth"); break;	\
++	case 4: __put_user_asm_goto(x, ptr, label, "stw"); break;	\
++	case 8: __put_user_asm2_goto(x, ptr, label); break;	\
++	default: __put_user_bad();				\
++	}							\
++} while (0)
++
++#define __put_user_nocheck_goto(x, ptr, size, label)		\
++do {								\
++	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
++	if (!is_kernel_addr((unsigned long)__pu_addr))		\
++		might_fault();					\
++	__chk_user_ptr(ptr);					\
++	__put_user_size_goto((x), __pu_addr, (size), label);	\
++} while (0)
++
++
+ extern long __get_user_bad(void);
+ 
+ /*
+@@ -470,7 +513,7 @@ static __must_check inline bool user_access_begin(const void __user *ptr, size_t
+ 
+ #define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
+ #define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
+-#define unsafe_put_user(x, p, e) unsafe_op_wrap(__put_user_allowed(x, p), e)
++#define unsafe_put_user(x, p, e) __put_user_goto(x, p, e)
+ #define unsafe_copy_to_user(d, s, l, e) \
+ 	unsafe_op_wrap(raw_copy_to_user_allowed(d, s, l), e)
+ 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.0
+
