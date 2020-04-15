@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBE21A8FD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0251A8FDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634646AbgDOApd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 20:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S2634697AbgDOAsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 20:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2634606AbgDOAoJ (ORCPT
+        by vger.kernel.org with ESMTP id S2634608AbgDOAoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:44:09 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DC3C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:08 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id 18so1386986pfu.22
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:08 -0700 (PDT)
+        Tue, 14 Apr 2020 20:44:12 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628E8C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:11 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id h16so1332455pgb.16
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Ad1osA7PXp9TaJziz5RfxCmgCGDDxR2XQUquw95G3RM=;
-        b=VWarSvlp+scq0rhdkrZI9ThmO16dKdGS3hD3dQ0o99du+Bt6HRuwpoZk6OJvNIsiTq
-         6TAOthei3FwJ8wgdk/Gr0tLlHe0+kthwZP9pNPCgQme5sv0rw01DdqBEiDzdI8I3F6rm
-         dPrRQUCsLxmnbTSahs0+bAYEdkowfA8dJXP492H7egotom+NbXcYh7KnKicjsn9zwuR9
-         Qz2gC1ISYDJ776NxEECfK2iog5SO+KtOgSpOGbT/ApkP24/Pbt4t/V8epVgTuTt5BCEA
-         XOKclDXDRd8yR4kzUXpWc/UENkcoxMz9pqF5yvp9bKhFxJk3wx1N3gclcN9pOABX5qZ2
-         +jFg==
+        bh=UjNERNq8Aq8bZu5IIILXtpvcau9meFsW7FMuBohne+g=;
+        b=i1bpkItyD1E346kP/89xta90B+TuHGZiUbt/x3MIvq+bvW15lb05O4/lQkdPiJ9NGQ
+         93sLq3bZ0gCmmBs2NzvanaM5+i/dlvyVeSpkp5CAVl26E/vZDbirlDxpFHnFoGt0asff
+         De+h6ZaWm9zwZliT9jPHTLXv7N8vr/JVd3LV7PLjsPYaE5eCL7pyvWG7c/boM6S6SiQ8
+         DL83Mwca9qPVHPySOD3QPy0y9xpjNuXuzHvASgjvTwBAnYeenWMlqJp7UjOd4mpJU6bD
+         EkyJRDjvpgKhXJbcQIC6wQknfksS4JPa7DaDbZInnGYHQ5aD/8fgByYqhQqtygZa3D/6
+         Fi5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Ad1osA7PXp9TaJziz5RfxCmgCGDDxR2XQUquw95G3RM=;
-        b=X8p+SZxhSdGFueXaDZ/cx2H1ljRNatOX1RVzvha31r2ZmowCGxBxR7FAUoTenoEEbe
-         L81pBqrXbkWPRXM6CCGEfRCSXD/wMUhCUmhf0Rafp3ZxY1Gvv6JrQ6/Y31qAijTHgyJZ
-         34odI7UJxAWQlmVPpBA3kebXGbFp46qkT5S9M2q+BssHcUMVguM/sbK+eNUA2pslxvFC
-         2f7/5I/4Q6gWV3Y+MPr90VShqQ0vZEP7eO9c9EcwrhuhCpSRpTcwprInt0+Kggc6X+St
-         qKw8yA9nfrBK3o1cKw1ypJazmFMKHcYghob+QYdvJUBucNaRSfVdv7FNBjpWLM/eA1Pd
-         Bxhw==
-X-Gm-Message-State: AGi0PuamETvNw8IhoOwde3Cb9X3o+N1RT90jdlRdRG/lA5csfx4vKzFy
-        YB+utQovbaCAZ9xAFNhVkuzzPTf73dM=
-X-Google-Smtp-Source: APiQypJqGWzbv/IHIQQD+XaFi8o4HCrVN04+rqrNa9XLspAWlJs+rQikkwClVR7yHo+ZXfHFtSStaZPnY4g=
-X-Received: by 2002:a17:90a:3268:: with SMTP id k95mr2933353pjb.185.1586911448288;
- Tue, 14 Apr 2020 17:44:08 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 17:43:48 -0700
+        bh=UjNERNq8Aq8bZu5IIILXtpvcau9meFsW7FMuBohne+g=;
+        b=W1Za0uKJZZDKAzTOr+B+a2VsCbqA0FO04uhWQnXZ8o4eOxBlXwNkBFrYhazBt+paCp
+         MFgMDNQnhkGh3KrTBzH4UzfVMDw+xKGeAnSYoINT2UmNBxwfdzYSumds+KCl957WvrYa
+         FPgNHr48j44YEawIzNUhr01QGs787dhta9rrMR7PZqU/oMHo1/TxkrksWMqtQKLjMgwC
+         xI20iCQx41lwFjvYulYO5jdKe/el/l0BZDL7+iYfdviFPl7fvLU7t6SabJEXed8TK4yG
+         FUWvVHs9SL4K5rXkEu7QuqfzEAs2vcqpq+EP0ynXMXlz5bHXZh35Drq5vO+HzmQC1nU2
+         hr5g==
+X-Gm-Message-State: AGi0Pua9rFuQZqGhP0HMZoqB0dt58K7WuJVowy+G3b0IkROiUsO7aaNm
+        xV4wEcndwEkiryiaHWW5a7W8pM8c9eM=
+X-Google-Smtp-Source: APiQypJbfrDGo32N0kQWg0rjiAGglPFM6uGFD1dgxEVO66T2nAcht+qTohafqDdYOoPPr9VCwJjI0Buz46A=
+X-Received: by 2002:a63:4625:: with SMTP id t37mr23188575pga.83.1586911450839;
+ Tue, 14 Apr 2020 17:44:10 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 17:43:49 -0700
 In-Reply-To: <20200415004353.130248-1-walken@google.com>
-Message-Id: <20200415004353.130248-6-walken@google.com>
+Message-Id: <20200415004353.130248-7-walken@google.com>
 Mime-Version: 1.0
 References: <20200415004353.130248-1-walken@google.com>
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH v4 05/10] mmap locking API: convert mmap_sem call sites missed
- by coccinelle
+Subject: [PATCH v4 06/10] mmap locking API: convert nested write lock sites
 From:   Michel Lespinasse <walken@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm <linux-mm@kvack.org>
@@ -74,152 +73,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the last few remaining mmap_sem rwsem calls to use the new
-mmap locking API. These were missed by coccinelle for some reason
-(I think coccinelle does not support some of the preprocessor
-constructs in these files ?)
+Add API for nested write locks and convert the few call sites doing that.
 
 Signed-off-by: Michel Lespinasse <walken@google.com>
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 ---
- arch/mips/mm/fault.c           | 10 +++++-----
- arch/x86/kvm/mmu/paging_tmpl.h |  8 ++++----
- drivers/android/binder_alloc.c |  4 ++--
- fs/proc/base.c                 |  6 +++---
- 4 files changed, 14 insertions(+), 14 deletions(-)
+ arch/um/include/asm/mmu_context.h | 3 ++-
+ include/linux/mmap_lock.h         | 5 +++++
+ kernel/fork.c                     | 2 +-
+ 3 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
-index f8d62cd83b36..9ef2dd39111e 100644
---- a/arch/mips/mm/fault.c
-+++ b/arch/mips/mm/fault.c
-@@ -97,7 +97,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
- retry:
--	down_read(&mm->mmap_sem);
-+	mmap_read_lock(mm);
- 	vma = find_vma(mm, address);
- 	if (!vma)
- 		goto bad_area;
-@@ -190,7 +190,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 		}
- 	}
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 62262c5c7785..07e1cb53a89f 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -8,6 +8,7 @@
  
--	up_read(&mm->mmap_sem);
-+	mmap_read_unlock(mm);
- 	return;
+ #include <linux/sched.h>
+ #include <linux/mm_types.h>
++#include <linux/mmap_lock.h>
  
- /*
-@@ -198,7 +198,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
-  * Fix it, but check if it's kernel or user first..
-  */
- bad_area:
--	up_read(&mm->mmap_sem);
-+	mmap_read_unlock(mm);
+ #include <asm/mmu.h>
  
- bad_area_nosemaphore:
- 	/* User mode accesses just cause a SIGSEGV */
-@@ -250,14 +250,14 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 	 * We ran out of memory, call the OOM killer, and return the userspace
- 	 * (which will retry the fault, or kill us if we got oom-killed).
+@@ -47,7 +48,7 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+ 	 * when the new ->mm is used for the first time.
  	 */
--	up_read(&mm->mmap_sem);
-+	mmap_read_unlock(mm);
- 	if (!user_mode(regs))
- 		goto no_context;
- 	pagefault_out_of_memory();
- 	return;
+ 	__switch_mm(&new->context.id);
+-	down_write_nested(&new->mmap_sem, 1);
++	mmap_write_lock_nested(new, 1);
+ 	uml_setup_stubs(new);
+ 	mmap_write_unlock(new);
+ }
+diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+index 8b5a3cd56118..9d34b0690403 100644
+--- a/include/linux/mmap_lock.h
++++ b/include/linux/mmap_lock.h
+@@ -11,6 +11,11 @@ static inline void mmap_write_lock(struct mm_struct *mm)
+ 	down_write(&mm->mmap_sem);
+ }
  
- do_sigbus:
--	up_read(&mm->mmap_sem);
-+	mmap_read_unlock(mm);
++static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
++{
++	down_write_nested(&mm->mmap_sem, subclass);
++}
++
+ static inline int mmap_write_lock_killable(struct mm_struct *mm)
+ {
+ 	return down_write_killable(&mm->mmap_sem);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 9a2511a6714f..bdb5ec3574eb 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -499,7 +499,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	/*
+ 	 * Not linked in yet - no deadlock potential:
+ 	 */
+-	down_write_nested(&mm->mmap_sem, SINGLE_DEPTH_NESTING);
++	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
  
- 	/* Kernel mode? Handle exceptions or die */
- 	if (!user_mode(regs))
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 9bdf9b7d9a96..40e5bb67cc09 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -165,22 +165,22 @@ static int FNAME(cmpxchg_gpte)(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
- 		unsigned long pfn;
- 		unsigned long paddr;
- 
--		down_read(&current->mm->mmap_sem);
-+		mmap_read_lock(current->mm);
- 		vma = find_vma_intersection(current->mm, vaddr, vaddr + PAGE_SIZE);
- 		if (!vma || !(vma->vm_flags & VM_PFNMAP)) {
--			up_read(&current->mm->mmap_sem);
-+			mmap_read_unlock(current->mm);
- 			return -EFAULT;
- 		}
- 		pfn = ((vaddr - vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff;
- 		paddr = pfn << PAGE_SHIFT;
- 		table = memremap(paddr, PAGE_SIZE, MEMREMAP_WB);
- 		if (!table) {
--			up_read(&current->mm->mmap_sem);
-+			mmap_read_unlock(current->mm);
- 			return -EFAULT;
- 		}
- 		ret = CMPXCHG(&table[index], orig_pte, new_pte);
- 		memunmap(table);
--		up_read(&current->mm->mmap_sem);
-+		mmap_read_unlock(current->mm);
- 	}
- 
- 	return (ret != orig_pte);
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 5e063739a3a8..cbdc43ed0f9f 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -932,7 +932,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
- 	mm = alloc->vma_vm_mm;
- 	if (!mmget_not_zero(mm))
- 		goto err_mmget;
--	if (!down_read_trylock(&mm->mmap_sem))
-+	if (!mmap_read_trylock(mm))
- 		goto err_down_read_mmap_sem_failed;
- 	vma = binder_alloc_get_vma(alloc);
- 
-@@ -946,7 +946,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
- 
- 		trace_binder_unmap_user_end(alloc, index);
- 	}
--	up_read(&mm->mmap_sem);
-+	mmap_read_unlock(mm);
- 	mmput(mm);
- 
- 	trace_binder_unmap_kernel_start(alloc, index);
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index f0a566ccf193..6e321d1f2c03 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2302,7 +2302,7 @@ proc_map_files_readdir(struct file *file, struct dir_context *ctx)
- 	if (!mm)
- 		goto out_put_task;
- 
--	ret = down_read_killable(&mm->mmap_sem);
-+	ret = mmap_read_lock_killable(mm);
- 	if (ret) {
- 		mmput(mm);
- 		goto out_put_task;
-@@ -2329,7 +2329,7 @@ proc_map_files_readdir(struct file *file, struct dir_context *ctx)
- 		p = genradix_ptr_alloc(&fa, nr_files++, GFP_KERNEL);
- 		if (!p) {
- 			ret = -ENOMEM;
--			up_read(&mm->mmap_sem);
-+			mmap_read_unlock(mm);
- 			mmput(mm);
- 			goto out_put_task;
- 		}
-@@ -2338,7 +2338,7 @@ proc_map_files_readdir(struct file *file, struct dir_context *ctx)
- 		p->end = vma->vm_end;
- 		p->mode = vma->vm_file->f_mode;
- 	}
--	up_read(&mm->mmap_sem);
-+	mmap_read_unlock(mm);
- 	mmput(mm);
- 
- 	for (i = 0; i < nr_files; i++) {
+ 	/* No ordering required: file already has been exposed. */
+ 	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
 -- 
 2.26.0.110.g2183baf09c-goog
 
