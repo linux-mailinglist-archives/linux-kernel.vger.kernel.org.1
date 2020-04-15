@@ -2,136 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2547C1A9A2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7171A9AD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896314AbgDOKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2896235AbgDOKL3 (ORCPT
+        id S2408798AbgDOKhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408664AbgDOKcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:11:29 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB029C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:11:28 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f13so18398617wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=30de/AlaqjlX2SQ6sRQq6eEEGq+Ce5SXtlCKnRfiafQ=;
-        b=jRHh+oFAJV8Tgx5k7HU8HwVLEOIdROElftVnkovMBaV0dYnaGaI26lfUn/Rltxvqw1
-         IrTzQFim4nimJ6tDEDZFwMfbSKq0gIawHT6Z6IvUOEYIaj7Ay81Vnz4gwWNIpTPjOtPk
-         czVljyjYsxvuFUPAWIuDeVPGa2fIFL+SRSUw2CtkR6aGqnoBU5+Qsx1LEJgmZvJOQ70E
-         zB/NPJpD6Ck87Rr2cygLCbpbiM/lRvmB7n5OYtiaKQt/ASJZUrdqqC8Asb6E+y/jCICV
-         /JkQlg4fC4uF+OoaWM1Lya1oXpqG867D9dg2LD0bcXQyKXy02xyt0S8eL7whlZ3rc1Mr
-         KvZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=30de/AlaqjlX2SQ6sRQq6eEEGq+Ce5SXtlCKnRfiafQ=;
-        b=iBd0azRfD63D7g4Q69uiO4yMHbaWwijr1UGpdN0JpucH6empii5+Z7f56C1Xcm2sRN
-         6yRpORMJOccIfbpHo38yYkmMSBAdG0OTLYWIFtb2RJ2jq1Y19Pk4C+5kdZCTI6craFdR
-         1/4wpg/R7spvdzyTK1fzk1LzgQSY4v2KfHjf2Lf9NG9+KOy5rp4AVNK37veBRvW95uLl
-         qkzpVKMIa/ZbHWVz+Sz0+N/TTCdUasLmrVFKK7KNJh5DGIpunTpD2ER/odr7/4hKAaF1
-         hsz1DoDUreM4A0yo1H/yK4uC07y9yh+XbovAFAH8UMeLtWmdzjIxuflPYmFsYL6jvDpZ
-         WPoA==
-X-Gm-Message-State: AGi0PuaG7iBEHg+ILRy3Ah2tuaqXvwT6v739mFrC1e5j69JZiHue1ok2
-        rOHQXT/8X4pLTRyZy/3H4vpS/g==
-X-Google-Smtp-Source: APiQypITjl8sl8rPg8i/DwZP4DdcaJAmWeApCTCpntNLn88ytBpJQ3R0bUll0FQH9UWGZ2HxNOUElA==
-X-Received: by 2002:adf:9d4a:: with SMTP id o10mr26328854wre.99.1586945487115;
-        Wed, 15 Apr 2020 03:11:27 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id x132sm17945135wmg.33.2020.04.15.03.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 03:11:26 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 11:11:22 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
- boost value
-Message-ID: <20200415101122.GA14447@google.com>
-References: <20200403123020.13897-1-qais.yousef@arm.com>
+        Wed, 15 Apr 2020 06:32:08 -0400
+Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF79CC061A41;
+        Wed, 15 Apr 2020 03:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586946726;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=KhTFfcOaj7+qWGEevJKA0xLp9ZlvwHL5xiETOukUSWE=;
+        b=hKhjwFXJM/SAJ8hb6sdveQRDGSSJzAOXeBL1d5d5SKwCAvCXM+6kVMI06XLySRKf+o
+        LVhZiv0yteoJy96R9BOAgj91EN6jA2cjyFPunU/lCj0ICV+IlIhjElnMBLgTGr1dUOIj
+        wa3fVOSOy2oS5Ff8H/+jEK70V2jKYviz8E/4ZJSKiePbwzG4/Mp9NBLlAcqN0TW51Y8B
+        ZxePBT2gb5Bc2aRiqWS3Cv2i4WeVLWe4w7YFVyPec4H4qZ1d5pv2uD3g2vjVA8EeNnEK
+        tXT2s7h6wxlvwENjCeWePhex+t1/F1PXCRv9xq+NLQDYPztNLNrejtMsixpcKRatOkB4
+        ls+Q==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZIvSaiyU="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+        with ESMTPSA id 404ef0w3FAJt128
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 15 Apr 2020 12:19:55 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Nicolai Stange <nstange@suse.de>,
+        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Roman Drahtmueller <draht@schaltsekun.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH v30 04/12] LRNG - add switchable DRNG support
+Date:   Wed, 15 Apr 2020 12:11:38 +0200
+Message-ID: <6655942.8Xx1TYOAxx@positron.chronox.de>
+In-Reply-To: <11836144.hkEK2qVKZC@positron.chronox.de>
+References: <11836144.hkEK2qVKZC@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403123020.13897-1-qais.yousef@arm.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+The DRNG switch support allows replacing the DRNG mechanism of the
+LRNG. The switching support rests on the interface definition of
+include/linux/lrng.h. A new DRNG is implemented by filling in the
+interface defined in this header file.
 
-On Friday 03 Apr 2020 at 13:30:19 (+0100), Qais Yousef wrote:
-<snip>
-> +	/*
-> +	 * The new value will be applied to all RT tasks the next time they
-> +	 * wakeup, assuming the task is using the system default and not a user
-> +	 * specified value. In the latter we shall leave the value as the user
-> +	 * requested.
-> +	 */
->  	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
->  	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE) {
->  		result = -EINVAL;
->  		goto undo;
->  	}
->  
-> +	if (sysctl_sched_rt_default_uclamp_util_min > SCHED_CAPACITY_SCALE) {
-> +		result = -EINVAL;
-> +		goto undo;
-> +	}
+In addition to the DRNG, the extension also has to provide a hash
+implementation that is used to hash the entropy pool for random number
+extraction.
 
-Hmm, checking:
+Note: It is permissible to implement a DRNG whose operations may sleep.
+However, the hash function must not sleep.
 
-	if (sysctl_sched_rt_default_uclamp_util_min > sysctl_sched_uclamp_util_min)
+The switchable DRNG support allows replacing the DRNG at runtime.
+However, only one DRNG extension is allowed to be loaded at any given
+time. Before replacing it with another DRNG implementation, the possibly
+existing DRNG extension must be unloaded.
 
-would probably make sense too, but then that would make writing in
-sysctl_sched_uclamp_util_min cumbersome for sysadmins as they'd need to
-lower the rt default first. Is that the reason for checking against
-SCHED_CAPACITY_SCALE? That might deserve a comment or something.
+The switchable DRNG extension activates the new DRNG during load time.
+It is expected, however, that such a DRNG switch would be done only once
+by an administrator to load the intended DRNG implementation.
 
-<snip>
-> @@ -1241,9 +1293,13 @@ static void uclamp_fork(struct task_struct *p)
->  	for_each_clamp_id(clamp_id) {
->  		unsigned int clamp_value = uclamp_none(clamp_id);
->  
-> -		/* By default, RT tasks always get 100% boost */
-> +		/*
-> +		 * By default, RT tasks always get 100% boost, which the admins
-> +		 * are allowed to change via
-> +		 * sysctl_sched_rt_default_uclamp_util_min knob.
-> +		 */
->  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
-> -			clamp_value = uclamp_none(UCLAMP_MAX);
-> +			clamp_value = sysctl_sched_rt_default_uclamp_util_min;
->  
->  		uclamp_se_set(&p->uclamp_req[clamp_id], clamp_value, false);
->  	}
+It is permissible to compile DRNG extensions either as kernel modules or
+statically. The initialization of the DRNG extension should be performed
+with a late_initcall to ensure the extension is available when user
+space starts but after all other initialization completed.
+The initialization is performed by registering the function call data
+structure with the lrng_set_drng_cb function. In order to unload the
+DRNG extension, lrng_set_drng_cb must be invoked with the NULL
+parameter.
 
-And that, as per 20200414161320.251897-1-qperret@google.com, should not
-be there :)
+The DRNG extension should always provide a security strength that is at
+least as strong as LRNG_DRNG_SECURITY_STRENGTH_BITS.
 
-Otherwise the patch pretty looks good to me!
+CC: "Eric W. Biederman" <ebiederm@xmission.com>
+CC: "Alexander E. Patrakov" <patrakov@gmail.com>
+CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
+CC: "Theodore Y. Ts'o" <tytso@mit.edu>
+CC: Willy Tarreau <w@1wt.eu>
+CC: Matthew Garrett <mjg59@srcf.ucam.org>
+CC: Vito Caputo <vcaputo@pengaru.com>
+CC: Andreas Dilger <adilger.kernel@dilger.ca>
+CC: Jan Kara <jack@suse.cz>
+CC: Ray Strode <rstrode@redhat.com>
+CC: William Jon McCann <mccann@jhu.edu>
+CC: zhangjs <zachary@baishancloud.com>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Florian Weimer <fweimer@redhat.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>
+CC: Nicolai Stange <nstange@suse.de>
+Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
+Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
+Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Neil Horman <nhorman@redhat.com>
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+=2D--
+ drivers/char/lrng/Kconfig       |   7 ++
+ drivers/char/lrng/Makefile      |   1 +
+ drivers/char/lrng/lrng_switch.c | 182 ++++++++++++++++++++++++++++++++
+ 3 files changed, 190 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_switch.c
 
-Thanks,
-Quentin
+diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
+index 56f13efd3592..cb701bb0b8b6 100644
+=2D-- a/drivers/char/lrng/Kconfig
++++ b/drivers/char/lrng/Kconfig
+@@ -64,4 +64,11 @@ config LRNG_POOL_SIZE
+ 	default 7 if LRNG_POOL_SIZE_65536
+ 	default 8 if LRNG_POOL_SIZE_131072
+=20
++menuconfig LRNG_DRNG_SWITCH
++	bool "Support DRNG runtime switching"
++	help
++	  The Linux RNG per default uses a ChaCha20 DRNG that is
++	  accessible via the external interfaces. With this configuration
++	  option other DRNGs can be selected and loaded at runtime.
++
+ endif # LRNG
+diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
+index e69c176f0161..31cfe87c999e 100644
+=2D-- a/drivers/char/lrng/Makefile
++++ b/drivers/char/lrng/Makefile
+@@ -10,3 +10,4 @@ obj-y				+=3D lrng_pool.o lrng_aux.o \
+=20
+ obj-$(CONFIG_NUMA)		+=3D lrng_numa.o
+ obj-$(CONFIG_SYSCTL)		+=3D lrng_proc.o
++obj-$(CONFIG_LRNG_DRNG_SWITCH)	+=3D lrng_switch.o
+diff --git a/drivers/char/lrng/lrng_switch.c b/drivers/char/lrng/lrng_switc=
+h.c
+new file mode 100644
+index 000000000000..7101bda9d7aa
+=2D-- /dev/null
++++ b/drivers/char/lrng/lrng_switch.c
+@@ -0,0 +1,182 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++/*
++ * LRNG DRNG switching support
++ *
++ * Copyright (C) 2016 - 2020, Stephan Mueller <smueller@chronox.de>
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/lrng.h>
++
++#include "lrng_internal.h"
++
++static int lrng_drng_switch(struct lrng_drng *drng_store,
++			    const struct lrng_crypto_cb *cb, int node)
++{
++	const struct lrng_crypto_cb *old_cb;
++	unsigned long flags =3D 0;
++	int ret;
++	u8 seed[LRNG_DRNG_SECURITY_STRENGTH_BYTES];
++	void *new_drng =3D cb->lrng_drng_alloc(LRNG_DRNG_SECURITY_STRENGTH_BYTES);
++	void *old_drng, *new_hash, *old_hash;
++	bool sl =3D false, reset_drng =3D !lrng_get_available();
++
++	if (IS_ERR(new_drng)) {
++		pr_warn("could not allocate new DRNG for NUMA node %d (%ld)\n",
++			node, PTR_ERR(new_drng));
++		return PTR_ERR(new_drng);
++	}
++
++	new_hash =3D cb->lrng_hash_alloc(seed, sizeof(seed));
++	if (IS_ERR(new_hash)) {
++		pr_warn("could not allocate new LRNG pool hash (%ld)\n",
++			PTR_ERR(new_hash));
++		cb->lrng_drng_dealloc(new_drng);
++		return PTR_ERR(new_hash);
++	}
++
++	lrng_drng_lock(drng_store, &flags);
++
++	/*
++	 * Pull from existing DRNG to seed new DRNG regardless of seed status
++	 * of old DRNG -- the entropy state for the DRNG is left unchanged which
++	 * implies that als the new DRNG is reseeded when deemed necessary. This
++	 * seeding of the new DRNG shall only ensure that the new DRNG has the
++	 * same entropy as the old DRNG.
++	 */
++	ret =3D drng_store->crypto_cb->lrng_drng_generate_helper(
++				drng_store->drng, seed, sizeof(seed));
++	lrng_drng_unlock(drng_store, &flags);
++
++	if (ret < 0) {
++		reset_drng =3D true;
++		pr_warn("getting random data from DRNG failed for NUMA node %d (%d)\n",
++			node, ret);
++	} else {
++		/* seed new DRNG with data */
++		ret =3D cb->lrng_drng_seed_helper(new_drng, seed, ret);
++		if (ret < 0) {
++			reset_drng =3D true;
++			pr_warn("seeding of new DRNG failed for NUMA node %d (%d)\n",
++				node, ret);
++		} else {
++			pr_debug("seeded new DRNG of NUMA node %d instance from old DRNG instan=
+ce\n",
++				 node);
++		}
++	}
++
++	mutex_lock(&drng_store->lock);
++	/*
++	 * If we switch the DRNG from the initial ChaCha20 DRNG to something
++	 * else, there is a lock transition from spin lock to mutex (see
++	 * lrng_drng_is_atomic and how the lock is taken in lrng_drng_lock).
++	 * Thus, we need to take both locks during the transition phase.
++	 */
++	if (lrng_drng_is_atomic(drng_store)) {
++		spin_lock_irqsave(&drng_store->spin_lock, flags);
++		sl =3D true;
++	}
++
++	if (reset_drng)
++		lrng_drng_reset(drng_store);
++
++	old_drng =3D drng_store->drng;
++	old_cb =3D drng_store->crypto_cb;
++	drng_store->drng =3D new_drng;
++	drng_store->crypto_cb =3D cb;
++
++	old_hash =3D drng_store->hash;
++	drng_store->hash =3D new_hash;
++	pr_info("Entropy pool read-hash allocated for DRNG for NUMA node %d\n",
++		node);
++
++	if (sl)
++		spin_unlock_irqrestore(&drng_store->spin_lock, flags);
++	mutex_unlock(&drng_store->lock);
++
++	/* ChaCha20 serves as atomic instance left untouched. */
++	if (old_drng !=3D &chacha20) {
++		old_cb->lrng_drng_dealloc(old_drng);
++		old_cb->lrng_hash_dealloc(old_hash);
++	}
++
++	pr_info("DRNG of NUMA node %d switched\n", node);
++
++	return 0;
++}
++
++/*
++ * Switch the existing DRNG instances with new using the new crypto callba=
+cks.
++ * The caller must hold the lrng_crypto_cb_update lock.
++ */
++static int lrng_drngs_switch(const struct lrng_crypto_cb *cb)
++{
++	struct lrng_drng **lrng_drng =3D lrng_drng_instances();
++	struct lrng_drng *lrng_drng_init =3D lrng_drng_init_instance();
++	int ret =3D 0;
++
++	/* Update DRNG */
++	if (lrng_drng) {
++		u32 node;
++
++		for_each_online_node(node) {
++			if (lrng_drng[node])
++				ret =3D lrng_drng_switch(lrng_drng[node], cb,
++						       node);
++		}
++	} else {
++		ret =3D lrng_drng_switch(lrng_drng_init, cb, 0);
++	}
++
++	if (!ret)
++		lrng_set_available();
++
++	return 0;
++}
++
++/**
++ * lrng_set_drng_cb - Register new cryptographic callback functions for DR=
+NG
++ * The registering implies that all old DRNG states are replaced with new
++ * DRNG states.
++ *
++ * @cb: Callback functions to be registered -- if NULL, use the default
++ *	callbacks pointing to the ChaCha20 DRNG.
++ *
++ * Return:
++ * * 0 on success
++ * * < 0 on error
++ */
++int lrng_set_drng_cb(const struct lrng_crypto_cb *cb)
++{
++	struct lrng_drng *lrng_drng_init =3D lrng_drng_init_instance();
++	int ret;
++
++	if (!cb)
++		cb =3D &lrng_cc20_crypto_cb;
++
++	mutex_lock(&lrng_crypto_cb_update);
++
++	/*
++	 * If a callback other than the default is set, allow it only to be
++	 * set back to the default callback. This ensures that multiple
++	 * different callbacks can be registered at the same time. If a
++	 * callback different from the current callback and the default
++	 * callback shall be set, the current callback must be deregistered
++	 * (e.g. the kernel module providing it must be unloaded) and the new
++	 * implementation can be registered.
++	 */
++	if ((cb !=3D &lrng_cc20_crypto_cb) &&
++	    (lrng_drng_init->crypto_cb !=3D &lrng_cc20_crypto_cb)) {
++		pr_warn("disallow setting new cipher callbacks, unload the old callbacks=
+ first!\n");
++		ret =3D -EINVAL;
++		goto out;
++	}
++
++	ret =3D lrng_drngs_switch(cb);
++
++out:
++	mutex_unlock(&lrng_crypto_cb_update);
++	return ret;
++}
++EXPORT_SYMBOL(lrng_set_drng_cb);
+=2D-=20
+2.25.2
+
+
+
+
