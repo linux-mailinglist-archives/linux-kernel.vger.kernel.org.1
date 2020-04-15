@@ -2,281 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EA51AABEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804961AABD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636937AbgDOPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:31:26 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:15290 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2636891AbgDOPbV (ORCPT
+        id S2636886AbgDOPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2636868AbgDOPZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:31:21 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id D314C4E1AAF;
-        Wed, 15 Apr 2020 23:25:42 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        oss@buserror.net, christophe.leroy@c-s.fr,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v2,5/5] drivers: uio: new driver for fsl_85xx_cache_sram
-Date:   Wed, 15 Apr 2020 08:24:42 -0700
-Message-Id: <20200415152442.122873-6-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200415152442.122873-1-wenhu.wang@vivo.com>
-References: <20200415124929.GA3265842@kroah.com>
- <20200415152442.122873-1-wenhu.wang@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVLSElCQkJCQklITEtNSllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NAg6Mjo4Ezg*HghCESkJGQ8a
-        Gk8KCkpVSlVKTkNNQk1PSE9ISU9NVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUNOS083Bg++
-X-HM-Tid: 0a717e72294f9376kuwsd314c4e1aaf
+        Wed, 15 Apr 2020 11:25:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFDDC061A0C;
+        Wed, 15 Apr 2020 08:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=daO92Tw6mjzwnZTWWONfVVOWvOshJIiguRIHq2MkEXQ=; b=LgduLYE1WQCRvj65hfnqVRbukl
+        d1nSnLh+yFv+To4VmD2YoCLw8NB5ksC0uTTLLIau0Aft2pIpliUcXbBJUuCuEd8n4sYXLUDby0qX3
+        8YFnLRbJZiw+UyCPUXyqHhlUbdS9dh1Vd45uIsNJcCnb2Bfy94ra3rS5TqWcRx6Mz+5mrfJn5uwBk
+        /RTxUaeM6gNL1fIp42j755QfgL3k49KEavXKfhz5ANp4u051hjnSjjdHHDV3FYWdi3J34HC30JQmo
+        RBq0L/n+iM7TtcjM9pQ6TSOsHKmCWyfEXYART8LncTYxX6wrnYQw4/IR3/m4uPLF/Dgnp1haHFIF+
+        gl3hmvjQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOjuw-0006aD-Ab; Wed, 15 Apr 2020 15:25:35 +0000
+Subject: Re: [PATCH 2/2] soc: mediatek: Add mtk-mmdvfs driver
+To:     Anthony Huang <anthony.huang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+References: <1586949506-22990-1-git-send-email-anthony.huang@mediatek.com>
+ <1586949506-22990-3-git-send-email-anthony.huang@mediatek.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1296cbb7-c470-4169-8499-89f723308f85@infradead.org>
+Date:   Wed, 15 Apr 2020 08:25:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <1586949506-22990-3-git-send-email-anthony.huang@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A driver for freescale 85xx platforms to access the Cache-Sram form
-user level. This is extremely helpful for some user-space applications
-that require high performance memory accesses.
+Hi--
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Scott Wood <oss@buserror.net>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
----
-Changes since v1:
- * Addressed comments of Greg K-H
- * Moved kfree(info->name) into uio_info_free_internal()
----
- drivers/uio/Kconfig                   |   8 ++
- drivers/uio/Makefile                  |   1 +
- drivers/uio/uio_fsl_85xx_cache_sram.c | 182 ++++++++++++++++++++++++++
- 3 files changed, 191 insertions(+)
- create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
 
-diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
-index 202ee81cfc2b..afd38ec13de0 100644
---- a/drivers/uio/Kconfig
-+++ b/drivers/uio/Kconfig
-@@ -105,6 +105,14 @@ config UIO_NETX
- 	  To compile this driver as a module, choose M here; the module
- 	  will be called uio_netx.
- 
-+config UIO_FSL_85XX_CACHE_SRAM
-+	tristate "Freescale 85xx Cache-Sram driver"
-+	depends on FSL_85XX_CACHE_SRAM
-+	help
-+	  Generic driver for accessing the Cache-Sram form user level. This
-+	  is extremely helpful for some user-space applications that require
-+	  high performance memory accesses.
-+
- config UIO_FSL_ELBC_GPCM
- 	tristate "eLBC/GPCM driver"
- 	depends on FSL_LBC
-diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
-index c285dd2a4539..be2056cffc21 100644
---- a/drivers/uio/Makefile
-+++ b/drivers/uio/Makefile
-@@ -10,4 +10,5 @@ obj-$(CONFIG_UIO_NETX)	+= uio_netx.o
- obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
- obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
- obj-$(CONFIG_UIO_FSL_ELBC_GPCM)	+= uio_fsl_elbc_gpcm.o
-+obj-$(CONFIG_UIO_FSL_85XX_CACHE_SRAM)	+= uio_fsl_85xx_cache_sram.o
- obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
-diff --git a/drivers/uio/uio_fsl_85xx_cache_sram.c b/drivers/uio/uio_fsl_85xx_cache_sram.c
-new file mode 100644
-index 000000000000..fb6903fdaddb
---- /dev/null
-+++ b/drivers/uio/uio_fsl_85xx_cache_sram.c
-@@ -0,0 +1,182 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-+ * Copyright (C) 2020 Wang Wenhu <wenhu.wang@vivo.com>
-+ * All rights reserved.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/uio_driver.h>
-+#include <linux/stringify.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <asm/fsl_85xx_cache_sram.h>
-+
-+#define DRIVER_NAME	"uio_fsl_85xx_cache_sram"
-+#define UIO_NAME	"uio_cache_sram"
-+
-+static const struct of_device_id uio_mpc85xx_l2ctlr_of_match[] = {
-+	{	.compatible = "uio,fsl,p2020-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p2010-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1020-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1011-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1013-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1022-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,mpc8548-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,mpc8544-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,mpc8572-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,mpc8536-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1021-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1012-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1025-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1016-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1024-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1015-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,p1010-l2-cache-controller",	},
-+	{	.compatible = "uio,fsl,bsc9131-l2-cache-controller",	},
-+	{},
-+};
-+
-+static void uio_info_free_internal(struct uio_info *info)
-+{
-+	struct uio_mem *uiomem = &info->mem[0];
-+
-+	while (uiomem < &info->mem[MAX_UIO_MAPS]) {
-+		if (uiomem->size) {
-+			mpc85xx_cache_sram_free(uiomem->internal_addr);
-+			kfree(uiomem->name);
-+		}
-+		uiomem++;
-+	}
-+
-+	kfree(info->name);
-+}
-+
-+static int uio_fsl_85xx_cache_sram_probe(struct platform_device *pdev)
-+{
-+	struct device_node *parent = pdev->dev.of_node;
-+	struct device_node *node = NULL;
-+	struct uio_info *info;
-+	struct uio_mem *uiomem;
-+	const char *dt_name;
-+	u32 mem_size;
-+	u32 align;
-+	void *virt;
-+	phys_addr_t phys;
-+	int ret = -ENODEV;
-+
-+	/* alloc uio_info for one device */
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info) {
-+		ret = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	/* get optional uio name */
-+	if (of_property_read_string(parent, "uio_name", &dt_name))
-+		dt_name = UIO_NAME;
-+
-+	info->name = kstrdup(dt_name, GFP_KERNEL);
-+	if (!info->name) {
-+		ret = -ENOMEM;
-+		goto err_info_free;
-+	}
-+
-+	uiomem = &info->mem[0];
-+	for_each_child_of_node(parent, node) {
-+		ret = of_property_read_u32(node, "cache-mem-size", &mem_size);
-+		if (ret) {
-+			ret = -EINVAL;
-+			goto err_info_free_internel;
-+		}
-+
-+		if (mem_size == 0) {
-+			dev_err(&pdev->dev, "cache-mem-size should not be 0\n");
-+			ret = -EINVAL;
-+			goto err_info_free_internel;
-+		}
-+
-+		align = 2;
-+		while (align < mem_size)
-+			align *= 2;
-+		virt = mpc85xx_cache_sram_alloc(mem_size, &phys, align);
-+		if (!virt) {
-+			/* mpc85xx_cache_sram_alloc to define the cause */
-+			ret = -EINVAL;
-+			goto err_info_free_internel;
-+		}
-+
-+		uiomem->memtype = UIO_MEM_PHYS;
-+		uiomem->addr = phys;
-+		uiomem->size = mem_size;
-+		uiomem->name = kstrdup(node->name, GFP_KERNEL);;
-+		uiomem->internal_addr = virt;
-+		++uiomem;
-+
-+		if (uiomem >= &info->mem[MAX_UIO_MAPS]) {
-+			dev_warn(&pdev->dev, "more than %d uio-maps for device.\n",
-+				 MAX_UIO_MAPS);
-+			break;
-+		}
-+	}
-+
-+	while (uiomem < &info->mem[MAX_UIO_MAPS]) {
-+		uiomem->size = 0;
-+		++uiomem;
-+	}
-+
-+	if (info->mem[0].size == 0) {
-+		dev_err(&pdev->dev, "error no valid uio-map configured\n");
-+		ret = -EINVAL;
-+		goto err_info_free_internel;
-+	}
-+
-+	info->version = "0.1.0";
-+
-+	/* register uio device */
-+	if (uio_register_device(&pdev->dev, info)) {
-+		dev_err(&pdev->dev, "uio registration failed\n");
-+		ret = -ENODEV;
-+		goto err_info_free_internel;
-+	}
-+
-+	platform_set_drvdata(pdev, info);
-+
-+	return 0;
-+err_info_free_internel:
-+	uio_info_free_internal(info);
-+err_info_free:
-+	kfree(info);
-+err_out:
-+	return ret;
-+}
-+
-+static int uio_fsl_85xx_cache_sram_remove(struct platform_device *pdev)
-+{
-+	struct uio_info *info = platform_get_drvdata(pdev);
-+
-+	uio_unregister_device(info);
-+
-+	uio_info_free_internal(info);
-+
-+	kfree(info);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver uio_fsl_85xx_cache_sram = {
-+	.probe = uio_fsl_85xx_cache_sram_probe,
-+	.remove = uio_fsl_85xx_cache_sram_remove,
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table	= uio_mpc85xx_l2ctlr_of_match,
-+	},
-+};
-+
-+module_platform_driver(uio_fsl_85xx_cache_sram);
-+
-+MODULE_AUTHOR("Wang Wenhu <wenhu.wang@vivo.com>");
-+MODULE_DESCRIPTION("Freescale MPC85xx Cache-Sram UIO Platform Driver");
-+MODULE_ALIAS("platform:" DRIVER_NAME);
-+MODULE_LICENSE("GPL v2");
+On 4/15/20 4:18 AM, Anthony Huang wrote:
+> Mediatek MMDVFS driver is used to set clk for Mediatek multimedia
+> hardwares. The MMDVFS registers a regulator callback and multimedia
+
+  hardware.
+
+> hardwares set voltage by regulator API and then this callback will be
+
+  hardware
+
+> triggered. The MMDVFS will get current opp level from opp table according
+> to the voltage, and then the MMDVFS sets all the clock MUXs to the clock
+> sources according to the opp level.
+> 
+> On some platforms, both clock MUX and frequency hopping need to be used
+> together. The MMDVFS supports these two clock setting methods and the
+> execution sequence of them can be configured in DTS.
+> 
+> Signed-off-by: Anthony Huang <anthony.huang@mediatek.com>
+> ---
+>  drivers/soc/mediatek/Kconfig      |    9 ++
+>  drivers/soc/mediatek/Makefile     |    1 +
+>  drivers/soc/mediatek/mtk-mmdvfs.c |  312 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 322 insertions(+)
+>  create mode 100644 drivers/soc/mediatek/mtk-mmdvfs.c
+> 
+> diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
+> index 2114b56..e92762b 100644
+> --- a/drivers/soc/mediatek/Kconfig
+> +++ b/drivers/soc/mediatek/Kconfig
+> @@ -44,4 +44,13 @@ config MTK_SCPSYS
+>  	  Say yes here to add support for the MediaTek SCPSYS power domain
+>  	  driver.
+>  
+> +config MTK_MMDVFS
+> +	tristate "MediaTek MMDVFS Support"
+> +	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	help
+> +	  Say yes here to add support for the MediaTek Multimedia DVFS (MMDVFS)
+> +	  driver. The MMDVFS is used to set clk for Mediatek multimedia hardwares
+
+	                                                                hardware,
+
+> +	  , such as display, camera, mdp and video codec. Say no if your device
+
+	  ^drop that comma.
+
+> +	  does not need to do DVFS for Multimedia hardwares.
+
+	                                          hardware.
+
+> +
+>  endmenu
+
+
+thanks.
 -- 
-2.17.1
+~Randy
 
