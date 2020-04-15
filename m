@@ -2,125 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AF81AAC0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911E11AAC11
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407933AbgDOPkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404324AbgDOPkR (ORCPT
+        id S1414811AbgDOPk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:40:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47729 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2404421AbgDOPkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:40:17 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3F9C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:40:14 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0BCE62D1;
-        Wed, 15 Apr 2020 17:40:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586965212;
-        bh=BMc0UjmXRz760BpBGzK5lNlt1pjOrdG2fEpiQi+Os7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DugdLxZ0613/Mqc867UaJNpk6wWeA0CQsZ724aCSEee3RBW/KTvwQQvEoceJfh3kD
-         Pf03mlM5P2F9pm4qSnEe0O6UNoWwtxReFDUrB3OLxL3J0CFM//NOwhdHa/OZ+lLzzC
-         eHPU91lFZH+Q+Ui1TUTfkHFi8lZxOyS+YrHwBvuk=
-Date:   Wed, 15 Apr 2020 18:39:59 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     tomi.valkeinen@ti.com, airlied@linux.ie, daniel@ffwll.ch,
-        sebastian.reichel@collabora.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] drm/omap: venc: remove unused variable
- 'venc_config_pal_bdghi'
-Message-ID: <20200415153959.GI4758@pendragon.ideasonboard.com>
-References: <20200415132105.43636-1-yuehaibing@huawei.com>
+        Wed, 15 Apr 2020 11:40:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586965240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Js7wQzdOKkPlgCjhnOEg3WvsuBEMgF2C/E1tFezZmA=;
+        b=bwGiLkceqiU2qA8Z07RdEkXwR0wBwurooExB8SvrAOeipccUK04yAOONtxiWk5WFYjSu/6
+        cNMWZsvctMkjiC0iUq0xBOIiPl5O+ipOQgPRS88TsISPgtlogDafQ8BMoEmFtD5LoFsGCU
+        XAaGKi1os13lv1qFyAHjXaLN5hhptU4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-IO6mE9HzO8mv73bGi2lO4w-1; Wed, 15 Apr 2020 11:40:34 -0400
+X-MC-Unique: IO6mE9HzO8mv73bGi2lO4w-1
+Received: by mail-wr1-f70.google.com with SMTP id y1so113117wrp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:40:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2Js7wQzdOKkPlgCjhnOEg3WvsuBEMgF2C/E1tFezZmA=;
+        b=rRE7p+UwmPWvmxRZSpG/I7Og6HBTKlamOSLyaTb3/UZMj5UqBQlS5kU1HdCTrBn9qA
+         +2kDTpLn24m5UbodsfeoeI8ju8BK7xR5PnBta3hTHaJN5V7wqJZvcydY3ix4VpSNfALH
+         H0NP6R35MszGK/mGdwaxbtlLUGYQcZwCQ2rpSW1Vn1M58CVc72dYYyRQJRxZFrq/S/zF
+         UH1hg6p8ptzni3fT9l2uN623Zh8PvKd2IR8rh0aR+8qklOWfKnp5oGITu5EHoFRFHsVO
+         w3I5PkmY7aj/VDkvid6rpmrRQFemkGr6kXcJ/X//O3g0LrX6dlNf6gBZXEF5IaYUcdhT
+         NUaQ==
+X-Gm-Message-State: AGi0PuZl/OMgtAxEjArcxqwd4HJoarEaMi2XIimRd2CVZZv5olwav4gE
+        OzVFwXgr7Uchtva3+J2y0STfhvWKEIW39fVtfgPi+lbt0LVTlGH4dh1DUV8QIvRq1WnyN1Hw1+d
+        PvtYeBZsdJ191lhG8HFAOd+hl
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr5605324wmi.187.1586965233492;
+        Wed, 15 Apr 2020 08:40:33 -0700 (PDT)
+X-Google-Smtp-Source: APiQypK+AV2U2fE1j6CX0FhuIqEHhjGsXeckD+Y/3wkDcnfm/n4CR9DC7ChnPzHlPkClT4ZgVUnhQg==
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr5605287wmi.187.1586965233184;
+        Wed, 15 Apr 2020 08:40:33 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9066:4f2:9fbd:f90e? ([2001:b07:6468:f312:9066:4f2:9fbd:f90e])
+        by smtp.gmail.com with ESMTPSA id k3sm23153779wmf.16.2020.04.15.08.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 08:40:32 -0700 (PDT)
+Subject: Re: [PATCH 00/10] KVM: selftests: Add KVM_SET_MEMORY_REGION tests
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Wainer dos Santos Moschetta <wainersm@redhat.com>
+References: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c03fdbd5-2e52-4c58-ae00-2d3309cf7133@redhat.com>
+Date:   Wed, 15 Apr 2020 17:40:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200415132105.43636-1-yuehaibing@huawei.com>
+In-Reply-To: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
-
-Thank you for the patch.
-
-On Wed, Apr 15, 2020 at 09:21:05PM +0800, YueHaibing wrote:
-> drivers/gpu/drm/omapdrm/dss/venc.c:211:33:
->  warning: 'venc_config_pal_bdghi' defined but not used [-Wunused-const-variable=]
->  static const struct venc_config venc_config_pal_bdghi = {
->                                  ^~~~~~~~~~~~~~~~~~~~~
+On 11/04/20 01:16, Sean Christopherson wrote:
+> This is v2-ish of my series to add a "delete" testcase[1], and v5.1 of
+> Wainer's series to add a "max" testcase[2].
 > 
-> It is never used, remove it.
-
-Tomi, is this the right fix, or should we work on making use of this
-structure ?
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/gpu/drm/omapdrm/dss/venc.c | 43 ------------------------------
->  1 file changed, 43 deletions(-)
+> I've only tested on x86_64.  I fudged compile testing on !x86_64 by
+> inverting the ifdefs, e.g. to squish unused var warnings, but by no means
+> is the code actually tested on other architectures.
 > 
-> diff --git a/drivers/gpu/drm/omapdrm/dss/venc.c b/drivers/gpu/drm/omapdrm/dss/venc.c
-> index 766553bb2f87..9701843ccf09 100644
-> --- a/drivers/gpu/drm/omapdrm/dss/venc.c
-> +++ b/drivers/gpu/drm/omapdrm/dss/venc.c
-> @@ -208,49 +208,6 @@ static const struct venc_config venc_config_ntsc_trm = {
->  	.gen_ctrl				= 0x00F90000,
->  };
->  
-> -static const struct venc_config venc_config_pal_bdghi = {
-> -	.f_control				= 0,
-> -	.vidout_ctrl				= 0,
-> -	.sync_ctrl				= 0,
-> -	.hfltr_ctrl				= 0,
-> -	.x_color				= 0,
-> -	.line21					= 0,
-> -	.ln_sel					= 21,
-> -	.htrigger_vtrigger			= 0,
-> -	.tvdetgp_int_start_stop_x		= 0x00140001,
-> -	.tvdetgp_int_start_stop_y		= 0x00010001,
-> -	.gen_ctrl				= 0x00FB0000,
-> -
-> -	.llen					= 864-1,
-> -	.flens					= 625-1,
-> -	.cc_carr_wss_carr			= 0x2F7625ED,
-> -	.c_phase				= 0xDF,
-> -	.gain_u					= 0x111,
-> -	.gain_v					= 0x181,
-> -	.gain_y					= 0x140,
-> -	.black_level				= 0x3e,
-> -	.blank_level				= 0x3e,
-> -	.m_control				= 0<<2 | 1<<1,
-> -	.bstamp_wss_data			= 0x42,
-> -	.s_carr					= 0x2a098acb,
-> -	.l21__wc_ctl				= 0<<13 | 0x16<<8 | 0<<0,
-> -	.savid__eavid				= 0x06A70108,
-> -	.flen__fal				= 23<<16 | 624<<0,
-> -	.lal__phase_reset			= 2<<17 | 310<<0,
-> -	.hs_int_start_stop_x			= 0x00920358,
-> -	.hs_ext_start_stop_x			= 0x000F035F,
-> -	.vs_int_start_x				= 0x1a7<<16,
-> -	.vs_int_stop_x__vs_int_start_y		= 0x000601A7,
-> -	.vs_int_stop_y__vs_ext_start_x		= 0x01AF0036,
-> -	.vs_ext_stop_x__vs_ext_start_y		= 0x27101af,
-> -	.vs_ext_stop_y				= 0x05,
-> -	.avid_start_stop_x			= 0x03530082,
-> -	.avid_start_stop_y			= 0x0270002E,
-> -	.fid_int_start_x__fid_int_start_y	= 0x0005008A,
-> -	.fid_int_offset_y__fid_ext_start_x	= 0x002E0138,
-> -	.fid_ext_start_y__fid_ext_offset_y	= 0x01380005,
-> -};
-> -
->  enum venc_videomode {
->  	VENC_MODE_UNKNOWN,
->  	VENC_MODE_PAL,
+> I kept Andrew's review for the "max" test.  Other than the 1MB->2MB
+> change (see below), it was basically a straight copy-paste of code.
+> 
+> v1->v2 of delete:
+>   - Drop patch to expose primary memslot. [Peter]
+>   - Add explicit synchronization to MOVE and DELETE tests. [Peter]
+>   - Use list.h instead of open coding linked lists. [Peter]
+>   - Clean up the code and separate the testcases into separate functions.
+>   - Expand GUEST_ASSERT() to allow passing a value back to the host for
+>     printing.
+>   - Move to common KVM, with ifdefs to hide the x86_64-only stuff (which
+>     is a lot at this point).
+>   - Do KVM_SET_NR_MMU_PAGES in the "zero" testcase to get less obscure
+>     behavior for KVM_RUN. [Christian]
+> 
+> v5.1 of max:
+>   - Fix a whitespace issue in vm_get_fd(). [checkpatch]
+>   - Move the code to set_memory_region_test.  The only _intended_
+>     functional change is to create 2MB regions instead of 1MB regions.
+>     The only motivation for doing so was to reuse an existing define in
+>     set_memory_region_test.
+> 
+> [1] https://lkml.kernel.org/r/20200320205546.2396-1-sean.j.christopherson@intel.com
+> [2] https://lkml.kernel.org/r/20200409220905.26573-1-wainersm@redhat.com
+> 
+> Sean Christopherson (8):
+>   KVM: selftests: Take vcpu pointer instead of id in vm_vcpu_rm()
+>   KVM: selftests: Use kernel's list instead of homebrewed replacement
+>   KVM: selftests: Add util to delete memory region
+>   KVM: selftests: Add GUEST_ASSERT variants to pass values to host
+>   KVM: sefltests: Add explicit synchronization to move mem region test
+>   KVM: selftests: Add "delete" testcase to set_memory_region_test
+>   KVM: selftests: Add "zero" testcase to set_memory_region_test
+>   KVM: selftests: Make set_memory_region_test common to all
+>     architectures
+> 
+> Wainer dos Santos Moschetta (2):
+>   selftests: kvm: Add vm_get_fd() in kvm_util
+>   selftests: kvm: Add testcase for creating max number of memslots
+> 
+>  tools/testing/selftests/kvm/.gitignore        |   2 +-
+>  tools/testing/selftests/kvm/Makefile          |   4 +-
+>  .../testing/selftests/kvm/include/kvm_util.h  |  28 +-
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 154 +++----
+>  .../selftests/kvm/lib/kvm_util_internal.h     |   8 +-
+>  .../selftests/kvm/lib/s390x/processor.c       |   5 +-
+>  .../selftests/kvm/set_memory_region_test.c    | 403 ++++++++++++++++++
+>  .../kvm/x86_64/set_memory_region_test.c       | 141 ------
+>  8 files changed, 520 insertions(+), 225 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/set_memory_region_test.c
+>  delete mode 100644 tools/testing/selftests/kvm/x86_64/set_memory_region_test.c
+> 
 
--- 
-Regards,
+Queued, thanks -- while keeping the zero region test x86-only.
 
-Laurent Pinchart
+Paolo
+
