@@ -2,165 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8419A1AABED
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D691AABF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636928AbgDOPa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
+        id S1414713AbgDOPeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2636915AbgDOPaI (ORCPT
+        by vger.kernel.org with ESMTP id S2636948AbgDOPeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:30:08 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD5CC061A0C;
-        Wed, 15 Apr 2020 08:30:07 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h6so2999010lfc.0;
-        Wed, 15 Apr 2020 08:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DPb8+Nlpt6o6yna8tbp3FRUHgnKxP8jckYKTvBj50iI=;
-        b=ApJldMkkCVVKxU6kq1SAxFv5PDRfiNyfKpgmK2Vd0uJdBj+w8iIYutz4KrSB2/Cq45
-         OE5JHyvfvfFKhfQajnrIP36sjB47tMiNXafcn/5YtAdaLpZ4Vu9a8eXCVHx1ESZ4ju9P
-         DT7ftWHICKujchkQaa6az3Sompeb8MWtUSaY65+NfLy+zPgC8+LtKyTVggVf7nC9idbC
-         IB0g0u5QY5ktrF4cRmeTtsumj463JYVTwZj7GrEjoBJT6il3z38oEjrgP8ctZxmAKAF9
-         MWobJP+tDedOmalmze7ZNCMET/GmLE1dxyXIurzf6B1qAxVQ2gUlWRkecbMZf5oIZICX
-         gs6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DPb8+Nlpt6o6yna8tbp3FRUHgnKxP8jckYKTvBj50iI=;
-        b=YKQPvr47bcNuxtqf+WRSrvdysHY3K2ziPBYqUtIo++xuGqba1Ce63CTT3J7Ggz2OVd
-         C+7CnXykoftgmMt9mzsSbg0juqYi6W8MMZyKq6dtMWjhITNLv48r8AtXanFq1mH6RMrC
-         0klLHxezpon8y/+ycp3pcqjioxdqkFV7qDCvXDOcuzJUg9gLtC/dSuXxKIs2JaqH6BnW
-         N/Sr4/z5ZyEmRsCR29l8Qv1uO3RdSTfpmFHua4EdZsv39RK+GJ0R5fkkmpUJR1ZhVsfZ
-         KaE5PQfffkiURenmRDTuEkEhKSWkDKZwg89KXUbHGVC4oV8xFLtat0b0WWpCl1QLNr88
-         l8gw==
-X-Gm-Message-State: AGi0PuZgFzx7+VAA/i4AOTNhCu+KPCyGTPWh3RyECMuHLUWezsbyDgOG
-        U+nodaMpJ1SsKtz72BJCA/lZGoF2
-X-Google-Smtp-Source: APiQypLpFlA7IaDBDoJ9pTmc16n06mw9a2eJURsaHUuckGt8BSsHfTaDsETXroXxN4JjYGwHqKgpwg==
-X-Received: by 2002:ac2:4c39:: with SMTP id u25mr3472297lfq.54.1586964605024;
-        Wed, 15 Apr 2020 08:30:05 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id k18sm16579906lfg.81.2020.04.15.08.30.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 08:30:03 -0700 (PDT)
-Subject: Re: [PATCH 4/9] dt-bindings: power: supply: Add device-tree binding
- for Summit SMB3xx
-To:     Rob Herring <robh@kernel.org>, David Heidelberg <david@ixit.cz>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     Jonghwa Lee <jonghwa3.lee@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Myungjoo Ham <myungjoo.ham@samsung.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Vinay Simha BN <simhavcs@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        ramakrishna.pallala@intel.com,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-References: <20200329161552.215075-1-david@ixit.cz>
- <20200329162128.218584-5-david@ixit.cz> <20200410164905.GA719@bogus>
- <8c4ab1ce-1947-ab38-3f8c-9055406428e4@gmail.com>
- <CAL_JsqJgZaQux04vdkShX4vkmOK5T-H6tOXt7Da19jgG0P76-Q@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <687db60d-fea9-f157-d4ce-907189bb3cc7@gmail.com>
-Date:   Wed, 15 Apr 2020 18:30:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJgZaQux04vdkShX4vkmOK5T-H6tOXt7Da19jgG0P76-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 15 Apr 2020 11:34:19 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E98C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:34:18 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:914e:4085:6cfb:e960])
+        by michel.telenet-ops.be with bizsmtp
+        id T3aB2200D3Hq6Dg063aBPZ; Wed, 15 Apr 2020 17:34:15 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jOk3H-0004tg-5J; Wed, 15 Apr 2020 17:34:11 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jOk3H-0007qP-2Q; Wed, 15 Apr 2020 17:34:11 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Miao <eric.miao@nvidia.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v5] ARM: boot: Obtain start of physical memory from DTB
+Date:   Wed, 15 Apr 2020 17:34:09 +0200
+Message-Id: <20200415153409.30112-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.04.2020 17:27, Rob Herring пишет:
-> On Fri, Apr 10, 2020 at 2:02 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 10.04.2020 19:49, Rob Herring пишет:
->> ...
->>>> +  summit,max-chg-curr:
->>>> +    description: Maximum current for charging (in uA)
->>>> +    allOf:
->>>> +      - $ref: /schemas/types.yaml#/definitions/uint32
->>>> +
->>>> +  summit,max-chg-volt:
->>>> +    description: Maximum voltage for charging (in uV)
->>>> +    allOf:
->>>> +      - $ref: /schemas/types.yaml#/definitions/uint32
->>>> +    minimum: 3500000
->>>> +    maximum: 4500000
->>>> +
->>>> +  summit,pre-chg-curr:
->>>> +    description: Pre-charging current for charging (in uA)
->>>> +    allOf:
->>>> +      - $ref: /schemas/types.yaml#/definitions/uint32
->>>> +
->>>> +  summit,term-curr:
->>>> +    description: Charging cycle termination current (in uA)
->>>> +    allOf:
->>>> +      - $ref: /schemas/types.yaml#/definitions/uint32
->> ...
->>> These are all properties of the battery attached and we have standard
->>> properties for some/all of these.
->>
->> Looks like only four properties seem to be matching the properties of
->> the battery.txt binding.
->>
->> Are you suggesting that these matching properties should be renamed
->> after the properties in battery.txt?
-> 
-> Yes, and that there should be a battery node.
+Currently, the start address of physical memory is obtained by masking
+the program counter with a fixed mask of 0xf8000000.  This mask value
+was chosen as a balance between the requirements of different platforms.
+However, this does require that the start address of physical memory is
+a multiple of 128 MiB, precluding booting Linux on platforms where this
+requirement is not fulfilled.
 
-Usually, it's a battery that has a phandle to the power-supply. Isn't it?
+Fix this limitation by obtaining the start address from the DTB instead,
+if available (either explicitly passed, or appended to the kernel).
+Fall back to the traditional method when needed.
 
-> Possibly you should add
-> new properties battery.txt. It's curious that different properties are
-> needed.
+This allows to boot Linux on r7s9210/rza2mevb using the 64 MiB of SDRAM
+on the RZA2MEVB sub board, which is located at 0x0C000000 (CS3 space),
+i.e. not at a multiple of 128 MiB.
 
-I guess it should be possible to make all these properties generic.
+Suggested-by: Nicolas Pitre <nico@fluxnic.net>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+---
+v5:
+  - Add Tested-by, Reviewed-by,
+  - Round up start of memory to satisfy 16 MiB alignment rule,
 
-Sebastian, will you be okay if we will add all the required properties
-to the power_supply_core?
+v4:
+  - Fix stack location after commit 184bf653a7a452c1 ("ARM:
+    decompressor: factor out routine to obtain the inflated image
+    size"),
 
-> Ultimately, for a given battery technology I would expect
-> there's a fixed set of properties needed to describe how to charge
-> them.
+v3:
+  - Add Reviewed-by,
+  - Fix ATAGs with appended DTB,
+  - Add Tested-by,
 
-Please notice that the charger doesn't "only charge" the battery,
-usually it also supplies power to the whole device.
+v2:
+  - Use "cmp r0, #-1", instead of "cmn r0, #1",
+  - Add missing stack setup,
+  - Support appended DTB.
+---
+ arch/arm/boot/compressed/Makefile            |  6 ++-
+ arch/arm/boot/compressed/fdt_get_mem_start.c | 57 ++++++++++++++++++++
+ arch/arm/boot/compressed/head.S              | 54 ++++++++++++++++++-
+ 3 files changed, 115 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/boot/compressed/fdt_get_mem_start.c
 
-For example, when battery is fully-charged and charger is connected to
-the power source (USB or mains), then battery may not draw any current
-at all.
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 9c11e7490292f0e0..82e4cee97cb5d905 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -86,12 +86,15 @@ libfdt_objs	:= $(addsuffix .o, $(basename $(libfdt)))
+ $(addprefix $(obj)/,$(libfdt) $(libfdt_hdrs)): $(obj)/%: $(srctree)/scripts/dtc/libfdt/%
+ 	$(call cmd,shipped)
+ 
+-$(addprefix $(obj)/,$(libfdt_objs) atags_to_fdt.o): \
++$(addprefix $(obj)/,$(libfdt_objs) atags_to_fdt.o fdt_get_mem_start.o): \
+ 	$(addprefix $(obj)/,$(libfdt_hdrs))
+ 
+ ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+ OBJS	+= $(libfdt_objs) atags_to_fdt.o
+ endif
++ifeq ($(CONFIG_USE_OF),y)
++OBJS	+= $(libfdt_objs) fdt_get_mem_start.o
++endif
+ 
+ targets       := vmlinux vmlinux.lds piggy_data piggy.o \
+ 		 lib1funcs.o ashldi3.o bswapsdi2.o \
+@@ -115,6 +118,7 @@ CFLAGS_fdt.o := $(nossp-flags-y)
+ CFLAGS_fdt_ro.o := $(nossp-flags-y)
+ CFLAGS_fdt_rw.o := $(nossp-flags-y)
+ CFLAGS_fdt_wip.o := $(nossp-flags-y)
++CFLAGS_fdt_get_mem_start.o := $(nossp-flags-y)
+ 
+ ccflags-y := -fpic $(call cc-option,-mno-single-pic-base,) -fno-builtin \
+ 	     -I$(obj) $(DISABLE_ARM_SSP_PER_TASK_PLUGIN)
+diff --git a/arch/arm/boot/compressed/fdt_get_mem_start.c b/arch/arm/boot/compressed/fdt_get_mem_start.c
+new file mode 100644
+index 0000000000000000..e29caa4cbfecb36a
+--- /dev/null
++++ b/arch/arm/boot/compressed/fdt_get_mem_start.c
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/kernel.h>
++#include <linux/sizes.h>
++
++#include <libfdt.h>
++
++static const void *getprop(const void *fdt, const char *node_path,
++			   const char *property)
++{
++	int offset = fdt_path_offset(fdt, node_path);
++
++	if (offset == -FDT_ERR_NOTFOUND)
++		return NULL;
++
++	return fdt_getprop(fdt, offset, property, NULL);
++}
++
++static uint32_t get_addr_size(const void *fdt)
++{
++	const __be32 *addr_len = getprop(fdt, "/", "#address-cells");
++
++	if (!addr_len) {
++		/* default */
++		return 1;
++	}
++
++	return fdt32_to_cpu(*addr_len);
++}
++
++/*
++ * Get the start of physical memory
++ */
++
++unsigned long fdt_get_mem_start(const void *fdt)
++{
++	uint32_t addr_size, mem_start;
++	const __be32 *memory;
++
++	if (!fdt)
++		return -1;
++
++	if (*(__be32 *)fdt != cpu_to_fdt32(FDT_MAGIC))
++		return -1;
++
++	/* Find the first memory node */
++	memory = getprop(fdt, "/memory", "reg");
++	if (!memory)
++		return -1;
++
++	/* There may be multiple cells on LPAE platforms */
++	addr_size = get_addr_size(fdt);
++
++	mem_start = fdt32_to_cpu(memory[addr_size - 1]);
++	/* Must be a multiple of 16 MiB for phys/virt patching */
++	return round_up(mem_start, SZ_16M);
++}
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index cabdd8f4a2482e2b..2d2a42865b3974da 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -254,8 +254,58 @@ not_angel:
+ 		.text
+ 
+ #ifdef CONFIG_AUTO_ZRELADDR
++#ifdef CONFIG_USE_OF
+ 		/*
+-		 * Find the start of physical memory.  As we are executing
++		 * Find the start of physical memory.
++		 * Try the DTB first, if available.
++		 */
++		adr	r0, LC0
++		ldr	r1, [r0]	@ get absolute LC0
++		ldr	sp, [r0, #24]	@ get stack location
++		sub	r1, r0, r1	@ compute relocation offset
++		add	sp, sp, r1	@ apply relocation
++
++#ifdef CONFIG_ARM_APPENDED_DTB
++		/*
++		 * Look for an appended DTB. If found, use it and
++		 * move stack away from it.
++		 */
++		ldr	r6, [r0, #12]	@ get &_edata
++		add	r6, r6, r1	@ relocate it
++		ldmia	r6, {r0, r5}	@ get DTB signature and size
++#ifndef __ARMEB__
++		ldr	r1, =0xedfe0dd0	@ sig is 0xd00dfeed big endian
++		/* convert DTB size to little endian */
++		eor	r2, r5, r5, ror #16
++		bic	r2, r2, #0x00ff0000
++		mov	r5, r5, ror #8
++		eor	r5, r5, r2, lsr #8
++#else
++		ldr	r1, =0xd00dfeed
++#endif
++		cmp	r0, r1		@ do we have a DTB there?
++		bne	1f
++
++		/* preserve 64-bit alignment */
++		add	r5, r5, #7
++		bic	r5, r5, #7
++		add	sp, sp, r5	@ if so, move stack above DTB
++		mov	r0, r6		@ and extract memory start from DTB
++		b	2f
++
++1:
++#endif /* CONFIG_ARM_APPENDED_DTB */
++
++		mov	r0, r8
++2:
++		bl	fdt_get_mem_start
++		mov	r4, r0
++		cmp	r0, #-1
++		bne	1f
++#endif /* CONFIG_USE_OF */
++
++		/*
++		 * Fall back to the traditional method.  As we are executing
+ 		 * without the MMU on, we are in the physical address space.
+ 		 * We just need to get rid of any offset by aligning the
+ 		 * address.
+@@ -273,6 +323,8 @@ not_angel:
+ 		 */
+ 		mov	r4, pc
+ 		and	r4, r4, #0xf8000000
++
++1:
+ 		/* Determine final kernel image address. */
+ 		add	r4, r4, #TEXT_OFFSET
+ #else
+-- 
+2.17.1
 
-> Perhaps some of these properties can just be derived from other
-> properties and folks are just picking what a specific charger wants.
-
-Could be so, but I don't know for sure.
-
-Even if some properties could be derived from the others, it won't hurt
-if we will specify everything explicitly in the device-tree.
-
-> Unfortunately, we have just a mess of stuff made up for each charger
-> out there. I don't have the time nor the experience in this area to do
-> much more than say do better.
-
-I don't think it's a mess in the kernel. For example, it's common that
-embedded controllers are exposed to the system as "just a battery",
-while in fact it's a combined charger + battery controller and the
-charger parameters just couldn't be changed by SW.
-
-In a case of the Nexus 7 devices, the battery controller and charger
-controller are two separate entities in the system. The battery
-controller (bq27541) only monitors status of the battery (charge level,
-temperature and etc).
