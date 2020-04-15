@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439AC1A970F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329A01A96F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894784AbgDOIk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:40:28 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:53756 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2894748AbgDOIj5 (ORCPT
+        id S2894754AbgDOIj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2894739AbgDOIjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:39:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586939997; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=yt5GAkeWutdoRiLVjNmQh1PYnCw5y+LdfOz0sU6qfrQ=;
- b=Scc+xIMk/h5k2a8P8oshCwqGjqP29USVjqX4UPze9fItGT3R0PEObbn0UrhRHe3L3PLWRu1G
- p4zZK+EarhZycAnLKrc/HLVy7cfBxCy5ufO6Td3JubyXrs8Zr08bwjzAv8vuKO9oc8ku4wds
- d1rGfeB59/D3Oe7PYz0Tdu261Mk=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e96c84b.7fc81aaa5810-smtp-out-n01;
- Wed, 15 Apr 2020 08:39:39 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 97264C4478C; Wed, 15 Apr 2020 08:39:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33D41C433F2;
-        Wed, 15 Apr 2020 08:39:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 33D41C433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Wed, 15 Apr 2020 04:39:46 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68CCC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:39:45 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id f52so2600796otf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=q+AfTDBHslX7UhU4lQHabYcAXDc8JzDcItnNln2x5dk=;
+        b=nfAjODxMNS8TZqSz7NKbsCBy03EBqPJdZXAkqw5i8Fh2b+a2INJTN3N4MvMfZwvkQl
+         EIJKzd8SHeQnx6bsfSuGIr2NsP2gQteejPraJwGYXTXYftdCMvI3A9/OANulh6o803c3
+         QGcn1NQrKsJ+3d+FVV03JvkrfC/g9S46t8QAo/zqLeBpwaPWZKP5EQA0As6/imCMV0LK
+         X80FjCFDwE62kS3OTQoCvigeYpm5QRvHH7Pphljyy0Qz54EH02RgBPVjx79TzK68tJkq
+         1716sZcyEhjhaddVcgxnN5di9zhHXD4KEryfD7mdpDLQ/G73+hhotIr1W9K32Nk0NAqz
+         20Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=q+AfTDBHslX7UhU4lQHabYcAXDc8JzDcItnNln2x5dk=;
+        b=kUf+kLajR88oGejFiOhhqHNO2r+7Aw9MGIH5V2LALcet3z/2sse3hI2GPOcHGjitow
+         QUCR7z+LFkOMOs0JsSZajyy8hTWbdZRBug/ahC+c6H7+CQ9jFpoaWSbfvK1V0WUkRoQC
+         lxIkS+lYaZX3AjX9zo7U8icjjbxzpuSOooCMjVx5p5Tbx+RMGpX1/Nxw6q/0ETTtDnyb
+         tkALZ20Qhg3NI4BQef0ldjhAoLnFaM4VfaY+N56+mtp8M11/Pq86QIVvZK/IUDqzxHgn
+         xSxMzGdY6zCdoxWdDWGKBQ4Bni8JeIFLF2zp66hqGRNbZu2fGO4R3vauSAqoVkwQSIms
+         Yzjg==
+X-Gm-Message-State: AGi0PuZc5/Rekqwfc8IbrUzj0neCrPJY9FcYXVNqzz4Km666ohn23kAn
+        RdDnIG6e+wuM3pChioEuTCQFAdZ0SudwND/CZwQ=
+X-Google-Smtp-Source: APiQypKY7CBdAFHDl1AbTvWyoZsqxLfkqYYGDaxKFm/QTAhA3h9hjCYz3k7lKt5Y3kxNZ0iqzMrf1Ebx1VrrYeDJdDQ=
+X-Received: by 2002:a9d:7082:: with SMTP id l2mr6437433otj.361.1586939985355;
+ Wed, 15 Apr 2020 01:39:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] libertas: make lbs_init_mesh() void
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200410090942.27239-1-yanaijie@huawei.com>
-References: <20200410090942.27239-1-yanaijie@huawei.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <davem@davemloft.net>, <colin.king@canonical.com>,
-        <yanaijie@huawei.com>, <dan.carpenter@oracle.com>,
-        <lkundrak@v3.sk>, <libertas-dev@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
-Message-Id: <20200415083939.97264C4478C@smtp.codeaurora.org>
-Date:   Wed, 15 Apr 2020 08:39:39 +0000 (UTC)
+Received: by 2002:aca:b8c4:0:0:0:0:0 with HTTP; Wed, 15 Apr 2020 01:39:43
+ -0700 (PDT)
+Reply-To: iinfo2596@gmail.com
+From:   "Mr. H.A.Scholze" <remmyy117@gmail.com>
+Date:   Wed, 15 Apr 2020 09:39:43 +0100
+Message-ID: <CAF-F6zAejajjJixSSXzJmuPA9hfLTb+wkhJUo3q_BfxzoppnNw@mail.gmail.com>
+Subject: Regards
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason Yan <yanaijie@huawei.com> wrote:
+Sir
+We have 180M USD for investment
+Let me know IF YOU ARE READY TO INVEST THE FUND IN A
+GOOD BUSINESS IN YOUR COUNTRY.
 
-> Fix the following coccicheck warning:
-> 
-> drivers/net/wireless/marvell/libertas/mesh.c:833:5-8: Unneeded variable:
-> "ret". Return "0" on line 874
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
+LET ME KNOW YOUR TERMS.
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-2fd5fdca6a3a libertas: make lbs_init_mesh() void
-
--- 
-https://patchwork.kernel.org/patch/11483039/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Regards
+Mr. H.A.Scholze
