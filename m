@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5621A9BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9DE1A9BB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393924AbgDOLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:03:29 -0400
-Received: from sauhun.de ([88.99.104.3]:52524 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896701AbgDOLBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:01:54 -0400
-Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
-        by pokefinder.org (Postfix) with ESMTPSA id DB0512C1FF1;
-        Wed, 15 Apr 2020 13:01:45 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 13:01:45 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Alain Volmat <alain.volmat@st.com>
-Cc:     pierre-yves.mordret@st.com, alexandre.torgue@st.com,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com
-Subject: Re: [PATCH] i2c: stm32: don't print an error on probe deferral
-Message-ID: <20200415110145.GN1141@ninjato>
-References: <1584642136-15418-1-git-send-email-alain.volmat@st.com>
+        id S2896730AbgDOLFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:05:24 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:56524 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2408845AbgDOLEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:04:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:References:MIME-Version:Content-Type:
+        Content-Disposition:In-Reply-To; bh=EQJkaChu07Wb5zNeSc4Q2eAuqN9B
+        /MkelX8i1XndZjM=; b=jMjJteDBHiV26NRygYKv2+f1aO25a/Jmf6v70ZNRfyIS
+        RM7fBjQAWWEGsDc9XBZsKpD4JAncQ9ifL5l0Lh/GjMIox6KkO3MYIXTPAPKCb2BU
+        +9pQXiV0CcNDjI7YTfJtW1Inm0s2X79JIiKsMWvE+O34ugmSLtsi8HoPB2zhQv4=
+Received: from localhost (unknown [61.129.42.58])
+        by app2 (Coremail) with SMTP id XQUFCgC3mV4D6pZe0LRaAA--.5091S2;
+        Wed, 15 Apr 2020 19:03:31 +0800 (CST)
+Date:   Wed, 15 Apr 2020 19:03:30 +0800
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Sven Eckelmann <sven@narfation.org>
+Cc:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH] batman-adv: Fix refcnt leak in
+ batadv_show_throughput_override
+Message-ID: <20200415110330.GA71449@sherlly>
+References: <1586939510-69461-1-git-send-email-xiyuyang19@fudan.edu.cn>
+ <28340414.QPzbqP6r4N@bentobox>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ggdAeHltlv4tpqCr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1584642136-15418-1-git-send-email-alain.volmat@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <28340414.QPzbqP6r4N@bentobox>
+X-CM-TRANSID: XQUFCgC3mV4D6pZe0LRaAA--.5091S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrurW7Xw1UGr17tw4UZF47urg_yoW3KFbE9F
+        s3urykKa4vkF4UA398WFWrJF43GayrXr17Jw10vry3JF95ur15uF93CFn7GF1FyFZ2q3Z8
+        ArnrZ3s8Jwna9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb-8YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28I
+        cVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx
+        0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402
+        YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_Gw4l42xK82IYc2Ij64vIr41l4I8I3I0E4I
+        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
+        Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+        1UYxBIdaVFxhVjvjDU0xZFpf9x07jzbyZUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 11:04:02AM +0200, Sven Eckelmann wrote:
+> On Wednesday, 15 April 2020 10:31:50 CEST Xiyu Yang wrote:
+> [...]
+> > Fix this issue by calling batadv_hardif_put() before the
+> [...]
+> 
+> Thanks, fixes for batadv_store_throughput_override [1] and 
+> batadv_show_throughput_override [2] were applied. I've also added the missing 
+> Fixes: line to both patches.
+> 
+> May I ask whether you are still a user of the deprecated sysfs interface or 
+> did you find this in an automated fashion?
+> 
+> Thanks,
+> 	Sven
+> 
+> [1] https://git.open-mesh.org/linux-merge.git/commit/cd339d8b14cd895d8333d94d832b05f67f00eefc
+> [2] https://git.open-mesh.org/linux-merge.git/commit/3d3e548f74fe51aee9a3c9e297518a2655dbc642
 
---ggdAeHltlv4tpqCr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for your confirmation! We are looking for some automated ways to find this kind of bug.
 
->  	if (IS_ERR(dma->chan_tx)) {
-> -		dev_dbg(dev, "can't request DMA tx channel\n");
->  		ret =3D PTR_ERR(dma->chan_tx);
-> +		if (ret !=3D -EPROBE_DEFER)
-> +			dev_dbg(dev, "can't request DMA tx channel\n");
-
-dev_dbg for tx...
-
->  		goto fail_al;
->  	}
-> =20
-> @@ -44,8 +45,10 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct dev=
-ice *dev,
->  	/* Request and configure I2C RX dma channel */
->  	dma->chan_rx =3D dma_request_chan(dev, "rx");
->  	if (IS_ERR(dma->chan_rx)) {
-> -		dev_err(dev, "can't request DMA rx channel\n");
->  		ret =3D PTR_ERR(dma->chan_rx);
-> +		if (ret !=3D -EPROBE_DEFER)
-> +			dev_err(dev, "can't request DMA rx channel\n");
-
-=2E.. and dev_err for rx? Intentional?
-
-
---ggdAeHltlv4tpqCr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6W6ZkACgkQFA3kzBSg
-KbaJ5g//Z4m5gD84GPP6vg6sSjL/LyJ6CZd/w08+hP95Uk1K82LELeWPmlaK1ibg
-vSJRO8GeZLYFOYY8LgLc7rzQkHpkvB9xN2TW1wzZlAycvsjBvQtg5Ka1hHfASRuW
-vR90ZA8G9eV5x8mpjEzNLEshHh4vkQlQjzgoO80v/r9ssHKHLDCwn0LAVr0hUEtR
-ewHUTG8UwBsUguxGbnOwmiSdICGw/F46P2i+9LHLgp/2r6QYnjA7f31dWZ8hTOsR
-HExpW9MoEmA9Kz4WeiNrSof/YXKh8I2z1ONzyeRDk+0IuBpHdF9MmY/Lb3wuQB2t
-k9Vx4MF+2uBYS8R/Tv2ivxjxFmh74Zo2tCMXAj1P/AXhXlMtABXTCWNnmREyz4pe
-lgskBVxJtwgybB+2r9RjWBE1uysnlG6GEJe82JP+yhPZfA8huDIGSG63+t5KVE5Y
-LpcWFfEtXiPio2dvsOYCif4kHaCM0eARpY+83NwAokleUbIsovR2jDvvX3IJMtRt
-SZWbMsW99eClAhSfLpxxA24OpgJoXRyhrhKqLPPil9/NucxWNgU1SbRqdmaA4LK2
-inY4gaMa7Nixi1+4efMZYKl+Jqm6z2ayVhjZqONCu57lpoHFx9/wzQtLoOihyBT/
-kObtfYnDh30/N8/6Btj9vpb5pA3NBMLuOKacj9sKZXdA5ipEGNQ=
-=mwAo
------END PGP SIGNATURE-----
-
---ggdAeHltlv4tpqCr--
