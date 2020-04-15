@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F791A90B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E24C1A90B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392798AbgDOCA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 22:00:58 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64542 "EHLO mga02.intel.com"
+        id S2392811AbgDOCBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 22:01:14 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40220 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387760AbgDOCAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 22:00:46 -0400
-IronPort-SDR: clOTkbemX1IaxzjmCi1uac1jWPUiBWHiailZbJRdR1smc251L8l5lQv/WES5OcbZz3kQKtVyVH
- arBfXrlqhW6A==
+        id S2392788AbgDOCAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 22:00:52 -0400
+IronPort-SDR: 9WKeqVfCSrihFy4XdDeQ5sQmYjXG5QWZH0AouFbi+5tVqHsfWxtfKhstRME6JjFoNJf+aQyxr8
+ g+pCCzCG/urw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 19:00:45 -0700
-IronPort-SDR: Tx8PJNFmUzvEquBShf/PI79kt+02VE5KL50JNGnT68NgT8Rdo0Hf1SMTl25iNPUSaS1jwYKsd/
- iNUq0i0arDEQ==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 19:00:48 -0700
+IronPort-SDR: zZ8vrEaZclCP0L5py9OpKKwAnMrShtG4nIynK2Y/WefupqRpBBUXD2ANPqdkg1KK4Jcf98zcQx
+ WC88kk1099Iw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,385,1580803200"; 
-   d="scan'208";a="256711026"
+   d="scan'208";a="453759743"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 14 Apr 2020 19:00:44 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 14 Apr 2020 19:00:46 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jOXM3-000Aip-Gz; Wed, 15 Apr 2020 10:00:43 +0800
-Date:   Wed, 15 Apr 2020 10:00:24 +0800
+        id 1jOXM6-000B2X-7S; Wed, 15 Apr 2020 10:00:46 +0800
+Date:   Wed, 15 Apr 2020 10:00:28 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu-tasks.2020.04.14a] BUILD SUCCESS
- 6df20c1a933b7b95c8c451072527aa419d4a2637
-Message-ID: <5e966ab8.ADeCrTcaNElC7KQv%lkp@intel.com>
+Subject: [rcu:fixes.2020.04.13d] BUILD SUCCESS
+ d2d0c46f70060e6404b374803b84e85eee3eadca
+Message-ID: <5e966abc.X7TtyedRYJUTBdd3%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu-tasks.2020.04.14a
-branch HEAD: 6df20c1a933b7b95c8c451072527aa419d4a2637  rcu: Don't acquire lock in NMI handler in rcu_nmi_enter_common()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  fixes.2020.04.13d
+branch HEAD: d2d0c46f70060e6404b374803b84e85eee3eadca  rcu: Convert rcu_nohz_full_cpu() ULONG_CMP_LT() to time_before()
 
 elapsed time: 483m
 
-configs tested: 187
+configs tested: 176
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -71,9 +71,6 @@ arm64                               defconfig
 sparc                            allyesconfig
 um                                  defconfig
 xtensa                       common_defconfig
-mips                      fuloong2e_defconfig
-riscv                               defconfig
-s390                             alldefconfig
 mips                              allnoconfig
 mips                      malta_kvm_defconfig
 i386                              allnoconfig
@@ -97,13 +94,13 @@ alpha                               defconfig
 csky                                defconfig
 nds32                             allnoconfig
 nds32                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
 h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
+h8300                     edosk2674_defconfig
 m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
 m68k                           sun3_defconfig
+m68k                          multi_defconfig
 arc                              allyesconfig
 arc                                 defconfig
 microblaze                      mmu_defconfig
@@ -116,6 +113,7 @@ mips                           32r2_defconfig
 mips                         64r6el_defconfig
 mips                             allmodconfig
 mips                             allyesconfig
+mips                      fuloong2e_defconfig
 parisc                            allnoconfig
 parisc                generic-64bit_defconfig
 parisc                generic-32bit_defconfig
@@ -137,11 +135,6 @@ mips                 randconfig-a001-20200415
 nds32                randconfig-a001-20200415
 parisc               randconfig-a001-20200415
 riscv                randconfig-a001-20200415
-c6x                  randconfig-a001-20200415
-h8300                randconfig-a001-20200415
-microblaze           randconfig-a001-20200415
-nios2                randconfig-a001-20200415
-sparc64              randconfig-a001-20200415
 c6x                  randconfig-a001-20200414
 h8300                randconfig-a001-20200414
 microblaze           randconfig-a001-20200414
@@ -193,12 +186,6 @@ x86_64               randconfig-g003-20200415
 i386                 randconfig-g001-20200415
 i386                 randconfig-g002-20200415
 i386                 randconfig-g003-20200415
-x86_64               randconfig-h001-20200415
-x86_64               randconfig-h002-20200415
-x86_64               randconfig-h003-20200415
-i386                 randconfig-h001-20200415
-i386                 randconfig-h002-20200415
-i386                 randconfig-h003-20200415
 x86_64               randconfig-h001-20200414
 x86_64               randconfig-h002-20200414
 x86_64               randconfig-h003-20200414
@@ -214,8 +201,10 @@ sparc                randconfig-a001-20200415
 riscv                            allmodconfig
 riscv                             allnoconfig
 riscv                            allyesconfig
+riscv                               defconfig
 riscv                    nommu_virt_defconfig
 riscv                          rv32_defconfig
+s390                             alldefconfig
 s390                             allmodconfig
 s390                              allnoconfig
 s390                             allyesconfig
