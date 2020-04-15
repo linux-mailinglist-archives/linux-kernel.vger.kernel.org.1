@@ -2,137 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4652D1AAA45
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77ACC1AAA56
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636704AbgDOOjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:39:22 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42785 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634473AbgDOOh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:37:58 -0400
-Received: by mail-wr1-f67.google.com with SMTP id j2so76318wrs.9;
-        Wed, 15 Apr 2020 07:37:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JFQ6OPmr3bYT6YpSGJ9844rrkbuCT3rhKovZKEMdYh0=;
-        b=qiyQlCkYPCtZHfLm/XKHhyDVdnPhtNbb9u63GDkyLnVXVN+nM4VKCjMwJUz/HEOTvB
-         y3TGzt93sSujI093P5rQPzgCD50TClpTTLqeZQbODnMPas+p5PyMgNfbB5A2131KZ4X1
-         bImA9UUvW5tIf0JoeVq63aAyT8t4vj2Z56t0+zY3p4G4L2IBykwG+WWcoBzkNPpcHsiH
-         Kv4wWsMv6TMoEVpHGvCPpSncMQYEcGbbh6V6HaAM8DcUJxnBmHXAEfon2AD8bfZmQtLi
-         otGje7/IAzHXp0i04LuhZNNLA1WJZGuIBvSuceMprYTAFxwqFORCUgQ8eKlNRjaU6Rfg
-         Eg+Q==
-X-Gm-Message-State: AGi0PuZH7DHRAm5/KX8nu1z+mUTZ8wURAqgotg/b4fBOUVYL2Vb65PWs
-        fdTIO/6q1bWvz9ihhYdW0xk=
-X-Google-Smtp-Source: APiQypJMJJT5Xdg+uQJVYoi7gV4Bgvt7rTcXwzNbFzINw6ITI4fwZ4N2Aq2ucU2Xm7enL/b+GekA1A==
-X-Received: by 2002:a5d:4106:: with SMTP id l6mr1527916wrp.111.1586961474756;
-        Wed, 15 Apr 2020 07:37:54 -0700 (PDT)
-Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
-        by smtp.gmail.com with ESMTPSA id u16sm23302758wro.23.2020.04.15.07.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 07:37:54 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 15:37:52 +0100
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH][next] drivers: hv: remove redundant assignment to
- pointer primary_channel
-Message-ID: <20200415143752.cm3xbesiuksfdbzm@debian>
-References: <20200414152343.243166-1-colin.king@canonical.com>
- <87d08axb7k.fsf@vitty.brq.redhat.com>
- <606c442c-1923-77d4-c350-e06878172c44@canonical.com>
- <87wo6hvxkz.fsf@vitty.brq.redhat.com>
+        id S370847AbgDOOkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:40:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2636694AbgDOOi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:38:56 -0400
+Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0355208FE;
+        Wed, 15 Apr 2020 14:38:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586961535;
+        bh=ZAn4fVnJ4h8lZBxjSOeAHVxgiPImQxaKF8vbfwxbuBU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tY9DqELbHXMpCmMz7SI/RXBBslV4N4wsou2WI3/3UnO+r12JlS/Hw5tBYAhh8CBYa
+         VOJeIo9y1326Vwm+Ljt/F8EfjAgXoiV380QX1+aANgr5WJWJ4Ky2OORGjt0IW4Qa6b
+         sWpxqqs2ekudjFMLk89UTtCnUiJrPxx8b/tKGReg=
+Date:   Wed, 15 Apr 2020 16:38:51 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     rishi gupta <gupt21@gmail.com>
+Cc:     linux-doc@vger.kernel.org, corbet@lwn.net,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Correct place to put the new doc for "How to use this driver"
+Message-ID: <20200415163851.2e5f96f8@coco.lan>
+In-Reply-To: <CALUj-gsRgkEyRe3vubEeWx8ENwEyE+Fzv4bKKDZ+iq3urRG0BA@mail.gmail.com>
+References: <CALUj-gsRgkEyRe3vubEeWx8ENwEyE+Fzv4bKKDZ+iq3urRG0BA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wo6hvxkz.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 12:43:08PM +0200, Vitaly Kuznetsov wrote:
-> Colin Ian King <colin.king@canonical.com> writes:
-> 
-> > On 14/04/2020 17:51, Vitaly Kuznetsov wrote:
-> >> Colin King <colin.king@canonical.com> writes:
-> >> 
-> >>> From: Colin Ian King <colin.king@canonical.com>
-> >>>
-> >>> The pointer primary_channel is being assigned with a value that is never,
-> >>> The assignment is redundant and can be removed.
-> >>>
-> >>> Addresses-Coverity: ("Unused value")
-> >>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >>> ---
-> >>>  drivers/hv/channel_mgmt.c | 2 --
-> >>>  1 file changed, 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-> >>> index ffd7fffa5f83..f7bbb8dc4b0f 100644
-> >>> --- a/drivers/hv/channel_mgmt.c
-> >>> +++ b/drivers/hv/channel_mgmt.c
-> >>> @@ -425,8 +425,6 @@ void hv_process_channel_removal(struct vmbus_channel *channel)
-> >>>  
-> >>>  	if (channel->primary_channel == NULL) {
-> >>>  		list_del(&channel->listentry);
-> >>> -
-> >>> -		primary_channel = channel;
-> >>>  	} else {
-> >>>  		primary_channel = channel->primary_channel;
-> >>>  		spin_lock_irqsave(&primary_channel->lock, flags);
-> >> 
-> >> If I'm looking at the right source (5.7-rc1) it *is* beeing used:
-> >> 
-> >> 	if (channel->primary_channel == NULL) {
-> >> 		list_del(&channel->listentry);
-> >> 
-> >> 		primary_channel = channel;
-> >> 	} else {
-> >> 		primary_channel = channel->primary_channel;
-> >> 		spin_lock_irqsave(&primary_channel->lock, flags);
-> >> 		list_del(&channel->sc_list);
-> >> 		spin_unlock_irqrestore(&primary_channel->lock, flags);
-> >> 	}
-> >> 
-> >> 	/*
-> >> 	 * We need to free the bit for init_vp_index() to work in the case
-> >> 	 * of sub-channel, when we reload drivers like hv_netvsc.
-> >> 	 */
-> >> 	if (channel->affinity_policy == HV_LOCALIZED)
-> >> 		cpumask_clear_cpu(channel->target_cpu,
-> >> 				  &primary_channel->alloced_cpus_in_node);
-> >>                                    ^^^^^ HERE ^^^^^
-> >> 
-> >
-> > I was basing my change on linux-next that has removed a hunk of code:
-> >
-> > commit bcefa400900739310e8ef0cb34cbe029c404455c
-> > Author: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > Date:   Mon Apr 6 02:15:11 2020 +0200
-> >
-> >     Drivers: hv: vmbus: Remove the unused HV_LOCALIZED channel affinity
-> > logic
-> >
-> 
-> Ah, please add the right 'Fixes:' tag then.
+Em Wed, 15 Apr 2020 09:25:02 +0530
+rishi gupta <gupt21@gmail.com> escreveu:
 
-I don't think the Fixes tag is particularly useful in this instance.
-Andrea's commit is not yet in Linus' tree. If I rebase hyper-next over
-the next 2.5 months the tag is going to have a stale commit hash in it.
+> Hi Team,
+> 
+> I need to add a documentation file to let users know "how to use this driver".
+> Specifically this one (tty-ttyvs.rst): https://lkml.org/lkml/2020/2/15/153
+> 
+> (1) I am unable to find any directory where it will fit. This driver
+> belongs to Virtual TTY device category.
+> Any suggestions where to put it?
 
-Wei.
+Docs focused on driver usage belongs to the admin-guide.
 
 > 
-> -- 
-> Vitaly
+> (2) After putting it is it mandatory to link it to
+> Documentation/index.rst as suggested here
+> https://www.kernel.org/doc/html/latest/doc-guide/index.html
+
+You should actually add it to Documentation/admin-guide/index.rst.
+
 > 
+> Regards,
+> Rishi
+
+
+
+Thanks,
+Mauro
