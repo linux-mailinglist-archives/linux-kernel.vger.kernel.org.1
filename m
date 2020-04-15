@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C15B1A97AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FFA1A97B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408209AbgDOI4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:56:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50008 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405268AbgDOI4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:56:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DD294AF92;
-        Wed, 15 Apr 2020 08:56:35 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] support setting sysctl parameters from kernel
- command line
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <20200414113222.16959-1-vbabka@suse.cz>
- <20200415122359.939364e2c54c389c6b3f6457@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <3fc1303a-cb57-b96e-ce77-7ff6407ab538@suse.cz>
-Date:   Wed, 15 Apr 2020 10:56:35 +0200
+        id S2408217AbgDOI6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2408198AbgDOI55 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:57:57 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8FCC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:57:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h26so6737846wrb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5Am7t3fQtXB7+UGkMARmYYRwQ6nurFzvBqolqTPwJoU=;
+        b=dSDSnc+F/fN0cdKLJf/+kR9r8g0CPgBhHy5/dGeDnEKUPjDVeBmitlUtvpovYN8AeT
+         17gXZ7c2H9RjKlNBlg4eM1P2BvZ4qjDRq1e4ro41DFBaHH8e32Laf/tooFpPdmTj0b8C
+         9g6W3e5ErY0yJ03tl8nckyB2t38jOGNf4sMtgyAq+860/6U+gW7FMZ0Iw7LEOICvCkrY
+         nYc7jl1msAM8lOxB6HcsppghnVjStqQ8YAxSEvCq/ioO0xFN+tOSrGIFnCWtkEWZ6DxP
+         YU4AnpjvleboFVCypRNZf/4+STEVaFAvXDTBXyetTQQTClK8JytP8xfmxHb/gbAnc5Qu
+         hp6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5Am7t3fQtXB7+UGkMARmYYRwQ6nurFzvBqolqTPwJoU=;
+        b=rEckDU2SOXRn1e0kxP4rwI2jepAcG+1ySHRuk3g+oSKJwzrWow/dFMud3QzgM9mlp8
+         gf0c7C4JxdYfkHdL5eb+L8nfGOOhA40Z4vHIEffW6lgtgNG7+RTQzZ1+nTU6yzDwN1bz
+         MZaJ4ggPXymc418Y6hnwFPlnox4zs1N6MdBwYtsjws+Wla2zURH8mL46uoHkSS3MTvp+
+         srHt27G6Z1vhKpnnEzWAWSkUsQ+OUvc88P4x+lQySY8RMYSAdhvKXfa1Pn73PEfKWqi2
+         kBXsFwAywcqo7Ze0D9ICS1MKbEXIjb/mCw8kUPRu2zIRCACeMgV3AHrSqBWCrPGcUSVB
+         ebfg==
+X-Gm-Message-State: AGi0Puby7S4TSNRleQsnTXWy/g3HmObuLNytf6Py2kn+r8w0ZaxQV8SZ
+        iVBk+p9CEHKiZJDrNJv8JKs4ZSRXN8g=
+X-Google-Smtp-Source: APiQypL1/voYE4ae3tvbe+pTrP5MKfMNWZDplh7HA3hUnSh7oqZK7SVyH8Fnmg2b3wzZhpnjhLW4UQ==
+X-Received: by 2002:adf:e5c8:: with SMTP id a8mr13579334wrn.56.1586941075360;
+        Wed, 15 Apr 2020 01:57:55 -0700 (PDT)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
+        by smtp.googlemail.com with ESMTPSA id 17sm18812097wmo.2.2020.04.15.01.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 01:57:54 -0700 (PDT)
+Subject: Re: [PATCH] clocksource: atmel-st: remove useless 'status'
+To:     Jason Yan <yanaijie@huawei.com>, tglx@linutronix.de,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200414120238.35704-1-yanaijie@huawei.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <634a96af-7078-9e77-45ef-610f9beedd4c@linaro.org>
+Date:   Wed, 15 Apr 2020 10:57:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200415122359.939364e2c54c389c6b3f6457@kernel.org>
+In-Reply-To: <20200414120238.35704-1-yanaijie@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/20 5:23 AM, Masami Hiramatsu wrote:
-> Hi Vlastimil,
+On 14/04/2020 14:02, Jason Yan wrote:
+> Fix the following coccicheck warning:
 > 
-> On Tue, 14 Apr 2020 13:32:19 +0200
-> Vlastimil Babka <vbabka@suse.cz> wrote:
+> drivers/clocksource/timer-atmel-st.c:142:6-12: Unneeded variable:
+> "status". Return "0" on line 166
 > 
->> This series adds support for something that seems like many people always
->> wanted but nobody added it yet, so here's the ability to set sysctl parameters
->> via kernel command line options in the form of sysctl.vm.something=1
-> 
-> Sounds good. And would you consider to use the bootconfig instead of (or
-> in addition to) the kernel command line, because it is too short to describe
-> the sysctl options?
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
 
-"Instead of" - no, as that would defeat the scenario of "I just want to set this
-one sysctl in grub  (possibly interactively) and not update initrd for that". If
-constructing bootconfig is of similar effort of loading sysctl.conf from initrd,
-then I see little benefit?
+Applied, thanks
 
-"in addition to" - sure! but I hoped that's what already happens as it seemed to
-me that options from bootconfig are appended to the command line that's then
-parsed by everyone else, no? But I'll try it to be sure.
 
-> With the bootconfig, you can describe the sysctl parameters in an
-> independent file as same as /etc/sysctl.conf. It is easy to convert
-> form sysctl.conf to bootconfig because bootconfig format is simply
-> enhanced structured sysctl.conf :). What we just need is;
-> 
-> (echo "sysctl {"; cat "/etc/sysctl.conf"; echo "}") >> sysctl.bconf
-> bootconfig -a sysctl.bconf /boot/initrd.img
-> 
-> Even with only your patch, since bootconfig can pass the options which
-> start with "kernel." prefix to kernel command line, so;
-> 
-> (echo "kernel.sysctl {"; cat "/etc/sysctl.conf"; echo "}") >> sysctl.bconf
-> bootconfig -a sysctl.bconf /boot/initrd.img
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Hmm I hope I figure out if the way virtme creates initrd on the fly supports
-hooking a bootconfig addition :)
-
-> should work. 
-> 
-> Thank you,
-> 
-> 
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
