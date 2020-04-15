@@ -2,142 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034FC1AA440
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35FD1AA43D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506240AbgDONVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:21:51 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34844 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2506299AbgDONUR (ORCPT
+        id S2506320AbgDONUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:20:53 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:56183 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506307AbgDONUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:20:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586956811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHcpnN3zus8PcCwIyoMYplMbcGQehFR7QqBvWEqVsuE=;
-        b=QWWKA1MYCpZa9GKAZBwXbNrcw/xrvTP34zZNDbmy0KsDaUm75iU8CHT7wuyPW3MRsu5uDu
-        6kydBLjzlfqT6yO3xf+AhQnjN4MoLUZxPVRgQXiZm2Qv1Vm+yq78Mht3kVNEwgoHBSTHtQ
-        4NU3UFPzigV9x7MmfY9PaUWH50BRXWg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-MOWm1LDHPSOBTSFyjSLRNg-1; Wed, 15 Apr 2020 09:20:09 -0400
-X-MC-Unique: MOWm1LDHPSOBTSFyjSLRNg-1
-Received: by mail-wm1-f70.google.com with SMTP id y1so5757816wmj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 06:20:09 -0700 (PDT)
+        Wed, 15 Apr 2020 09:20:22 -0400
+Received: by mail-pj1-f66.google.com with SMTP id a32so6757488pje.5;
+        Wed, 15 Apr 2020 06:20:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DHcpnN3zus8PcCwIyoMYplMbcGQehFR7QqBvWEqVsuE=;
-        b=OgGFSvg4sAasHZ/mUbTg8ysDAkgZ3gQbs0Yq/oIRDA//xpyjr64ti9FwtqRPFXUq3r
-         q6r412QZ3g4qdopQXL3dFMARczjvW07ob9WR8o/CQLvfVHFf/3ypRXRvGFwRRQ9aJWct
-         QPB/ePmst0q5utURSvKA0ncOwET4WE5D4FcqJ1RowgZt6ukMuB6ZKFH5cw4SiQqIEBGF
-         iFMbDr9EGnGAMmogUF8lEinOv2SfpQh3I8Yqhw4WqOPZ+ohbJf2xlck90FR/Qu1EjXKz
-         UNZOqUSgxPHUtbS9+AmHyZZ0Pwdb7nTXcUWfmvdeG4T8EyDe+qsWDUeqAkf4P1cD+Y/a
-         o4EA==
-X-Gm-Message-State: AGi0PuaJrVL+Iuu0YrXeRb0XxOzL9rzcUwJh46HIxoaTo6fgqSC8FLqZ
-        mxwwKAMjzax4cKLCp9fMlMY92rGkVMIbx4K3vEonAVJlqEQaKOZMCYEx9FBGPAQ7KHMZJPXZFCv
-        nk+O+FWRc483XZyNoYnMAHSxf
-X-Received: by 2002:a5d:474b:: with SMTP id o11mr27656759wrs.4.1586956808434;
-        Wed, 15 Apr 2020 06:20:08 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKSn9T6dmuCbbOinp1v8qsospGnxh8RPjaMA1dNhivu9LaFbSUyTIifqKD5tn1BMgnkckWn2w==
-X-Received: by 2002:a5d:474b:: with SMTP id o11mr27656722wrs.4.1586956808058;
-        Wed, 15 Apr 2020 06:20:08 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.194.179])
-        by smtp.gmail.com with ESMTPSA id u30sm2973752wru.13.2020.04.15.06.20.06
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RJpmPPEbW5DFD5EOE4e1MFnGEEY0tGlTM0SU0H+OaOw=;
+        b=kwd3IsEe9y/QMKAsTq1Wc0vZoVM0KpCPxPTibciD4XEiexhNx/nHVOggAAkHFCc4pI
+         Y9LrTG3WaHJWcbTV20e4t0WEKzbSOJQIzT8M+LV1309ZtiE1u0jIOzv8vTvRfKMooA0B
+         JpUia6/+S3tAmUyWMaobP+htZGCKgTnKUprm02v6Htnscgiu0vcTdzyGT0ecYLeKY0JE
+         oTgswhKaWqZJkeVoUqjn/TqjkXq4yqGrKh+4/AaldoW6GRV5pyFFFU8u6Y9XDeFr/bSn
+         u7R+183U0M5ojGK4QPlPlU9P27gpQc9tmob+q+sxvg8WSfDu1n1kI9P2Mt2aqYRUtGEf
+         phtQ==
+X-Gm-Message-State: AGi0PuYBihfwD0tnL1IbAGDYaE3bepcPVcJ1VVFYgE3kxs2XPSdYUiMH
+        nqC4tncEKXV4hDmfFJshcpA=
+X-Google-Smtp-Source: APiQypJUeYCz7pZivMHyL551WxNhmqBNbGwfbuuxjlm8hRiqy/s1ws3J2v8JSkBdw41jCGt/Xs+WVw==
+X-Received: by 2002:a17:902:6b07:: with SMTP id o7mr4705177plk.141.1586956821686;
+        Wed, 15 Apr 2020 06:20:21 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id x3sm13521951pfq.95.2020.04.15.06.20.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 06:20:07 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 15:20:04 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] sched/deadline: Make DL capacity-aware
-Message-ID: <20200415132004.GF9767@localhost.localdomain>
-References: <20200408095012.3819-1-dietmar.eggemann@arm.com>
- <20200408095012.3819-4-dietmar.eggemann@arm.com>
- <20200410125253.GE14300@localhost.localdomain>
- <f0e74500-77d7-a42c-410e-bc5d4d2ecdfb@arm.com>
+        Wed, 15 Apr 2020 06:20:20 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id EF32940277; Wed, 15 Apr 2020 13:20:19 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 13:20:19 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 5/5] block: revert back to synchronous request_queue
+ removal
+Message-ID: <20200415132019.GW11244@42.do-not-panic.com>
+References: <20200414041902.16769-1-mcgrof@kernel.org>
+ <20200414041902.16769-6-mcgrof@kernel.org>
+ <20200414154725.GD25765@infradead.org>
+ <20200414205852.GP11244@42.do-not-panic.com>
+ <20200415064644.GA28112@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0e74500-77d7-a42c-410e-bc5d4d2ecdfb@arm.com>
+In-Reply-To: <20200415064644.GA28112@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/20 11:39, Dietmar Eggemann wrote:
-> On 10.04.20 14:52, Juri Lelli wrote:
-> > Hi,
+On Tue, Apr 14, 2020 at 11:46:44PM -0700, Christoph Hellwig wrote:
+> On Tue, Apr 14, 2020 at 08:58:52PM +0000, Luis Chamberlain wrote:
+> > > I think this needs a WARN_ON thrown in to enforece the calling context.
 > > 
-> > On 08/04/20 11:50, Dietmar Eggemann wrote:
-> >> From: Luca Abeni <luca.abeni@santannapisa.it>
+> > I considered adding a might_sleep() but upon review with Bart, he noted
+> > that this function already has a mutex_lock(), and if you look under the
+> > hood of mutex_lock(), it has a might_sleep() at the very top. The
+> > warning then is implicit.
 > 
-> [...]
-> 
-> >> @@ -1623,10 +1624,19 @@ select_task_rq_dl(struct task_struct *p, int cpu, int sd_flag, int flags)
-> >>  	 * other hand, if it has a shorter deadline, we
-> >>  	 * try to make it stay here, it might be important.
-> >>  	 */
-> >> -	if (unlikely(dl_task(curr)) &&
-> >> -	    (curr->nr_cpus_allowed < 2 ||
-> >> -	     !dl_entity_preempt(&p->dl, &curr->dl)) &&
-> >> -	    (p->nr_cpus_allowed > 1)) {
-> >> +	select_rq = unlikely(dl_task(curr)) &&
-> >> +		    (curr->nr_cpus_allowed < 2 ||
-> >> +		     !dl_entity_preempt(&p->dl, &curr->dl)) &&
-> >> +		    p->nr_cpus_allowed > 1;
-> >> +
-> >> +	/*
-> >> +	 * We take into account the capacity of the CPU to
-> >> +	 * ensure it fits the requirement of the task.
-> >> +	 */
-> >> +	if (static_branch_unlikely(&sched_asym_cpucapacity))
-> >> +		select_rq |= !dl_task_fits_capacity(p, cpu);
-> > 
-> > I'm thinking that, while dl_task_fits_capacity() works well when
-> > selecting idle cpus, in this case we should consider the fact that curr
-> > might be deadline as well and already consuming some of the rq capacity.
-> > 
-> > Do you think we should try to take that into account, maybe using
-> > dl_rq->this_bw ?
-> 
-> So you're saying that cpudl_find(..., later_mask) could return 1 (w/
-> best_cpu (cp->elements[0].cpu) in later_mask).
-> 
-> And that this best_cpu could be a non-fitting CPU for p.
-> 
-> This could happen if cp->free_cpus is empty (no idle CPUs) so we take
-> cpudl_find()'s else path and in case p's deadline < cp->elements[0]
-> deadline.
-> 
-> We could condition the 'return 1' on best_cpu fitting p.
-> 
-> But should we do this for cpudl_find(..., NULL) calls from
-> check_preempt_equal_dl() as well or will this break GEDF?
+> It might just be a personal preference, but I think the documentation
+> value of a WARN_ON_ONCE or might_sleep with a comment at the top of
+> the function is much higher than a blurb in a long kerneldoc text and
+> a later mutex_lock.
 
-So, even by not returning best_cpu, as above, if it doesn't fit p's bw
-requirement, I think we would be breaking GEDF, which however doesn't
-take asym capacities into account. OTOH, if we let p migrate to a cpu
-that can't suit it, it will still be missing its deadlines (plus it
-would be causing deadline misses on the task that was running on
-best_cpu).
+Well I'm a fan of making this explicit, so sure will just sprinkle a
+might_sleep(), even though we have a mutex_lock().
 
-check_preempt_equal_dl() worries me less, as it is there to service
-corner cases (hopefully not so frequent).
-
+  Luis
