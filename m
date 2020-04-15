@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781AA1AA0A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1FC1AA0AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369416AbgDOM3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
+        id S2409928AbgDOMaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:30:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52318 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409111AbgDOM3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:29:32 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E55AF2074F;
-        Wed, 15 Apr 2020 12:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586953771;
-        bh=gHxluNrZU2tTOHcwpOtq2n46qQQhnsi8V7TZgKMK1Ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gq2BveZDD/Gb/fhWrNYUmp9bkKiMRoVR76H1UymoeIJDTW1qzZMFZ4KqJGQiYlRI4
-         3LemfZ0UNyfbRFuW4qThg5ia3zMNOvmcfBva2pDMq/CazF1sPRXR9Usvu0d2D0D1Dx
-         frs/d28k4Qrk6T3zmCS1b5T9p+dqmMeKPL4aXXJs=
-Date:   Wed, 15 Apr 2020 13:29:26 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 7/8] arm64: cpufeature: Relax checks for AArch32 support
- at EL[0-2]
-Message-ID: <20200415122926.GA17095@willie-the-truck>
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-8-will@kernel.org>
- <714f124c-7eb7-b750-e98c-63da64ddae75@arm.com>
- <20200415105843.GE12621@willie-the-truck>
- <d1f538ec-e956-c136-d0f8-54e7351a28a9@arm.com>
+        id S369427AbgDOM3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:29:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7F854AC11;
+        Wed, 15 Apr 2020 12:29:42 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 14:29:40 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 13/33] iommu: Export bus_iommu_probe() and make is
+ safe for re-probing
+Message-ID: <20200415122940.GB21899@suse.de>
+References: <20200414131542.25608-1-joro@8bytes.org>
+ <20200414131542.25608-14-joro@8bytes.org>
+ <1853992c-47a6-3724-812c-a52558c13732@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d1f538ec-e956-c136-d0f8-54e7351a28a9@arm.com>
+In-Reply-To: <1853992c-47a6-3724-812c-a52558c13732@linux.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 12:37:31PM +0100, Suzuki K Poulose wrote:
-> On 04/15/2020 11:58 AM, Will Deacon wrote:
-> > On Wed, Apr 15, 2020 at 11:50:58AM +0100, Suzuki K Poulose wrote:
-> > > On 04/14/2020 10:31 PM, Will Deacon wrote:
-> > > > We don't need to be quite as strict about mismatched AArch32 support,
-> > > > which is good because the friendly hardware folks have been busy
-> > > > mismatching this to their hearts' content.
-> > > > 
-> > > >     * We don't care about EL2 or EL3 (there are silly comments concerning
-> > > >       the latter, so remove those)
-> > > > 
-> > > >     * EL1 support is gated by the ARM64_HAS_32BIT_EL1 capability and handled
-> > > >       gracefully when a mismatch occurs
-> > > > 
-> > > >     * EL1 support is gated by the ARM64_HAS_32BIT_EL0 capability and handled
-> > > 
-> > > s/EL1/EL0
-> > > 
-> > > >       gracefully when a mismatch occurs
-> > > > 
-> > > > Relax the AArch32 checks to FTR_NONSTRICT.
-> > > 
-> > > Agreed. We should do something similar for the features exposed by the
-> > > ELF_HWCAP, of course in a separate series.
-> > 
-> > Hmm, I didn't think we needed to touch the HWCAPs, as they're derived from
-> > the sanitised feature register values. What am I missing?
+Hi Baolu,
+
+On Wed, Apr 15, 2020 at 02:10:03PM +0800, Lu Baolu wrote:
+> On 2020/4/14 21:15, Joerg Roedel wrote:
+> > > +	/* Device is probed already if in a group */
+> > +	if (iommu_group_get(dev) != NULL)
 > 
-> sorry, that was cryptic. I was suggesting to relax the ftr fields to
-> NONSTRICT for the fields covered by ELF HWCAPs (and other CPU hwcaps).
+> Same as
+> 	if (iommu_group_get(dev))
+> ?
+> 
+> By the way, do we need to put the group if device has already been
+> probed?
 
-Ah, gotcha. Given that the HWCAPs usually describe EL0 features, I say we
-can punt this down the road until people give us hardware with mismatched
-AArch32 at EL0.
+Right, fixed both, thank you.
 
-Will
+
+Regards,
+
+	Joerg
