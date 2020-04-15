@@ -2,111 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6E51AA982
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091101AA991
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636470AbgDOOMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:12:22 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:34045 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633864AbgDOOLl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:11:41 -0400
-Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MW9zm-1jmSvh2yJ0-00XeCD; Wed, 15 Apr 2020 16:10:43 +0200
-Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
-        by mail.cetitecgmbh.com (Postfix) with ESMTP id 13B9E650EE0;
-        Wed, 15 Apr 2020 14:10:43 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at cetitec.com
-Received: from mail.cetitecgmbh.com ([127.0.0.1])
-        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iaMgQKlB-XP9; Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
-Received: from pfwsexchange.corp.cetitec.com (unknown [10.10.1.99])
-        by mail.cetitecgmbh.com (Postfix) with ESMTPS id BABD964C0D9;
-        Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
-Received: from pflmmbl.corp.cetitec.com (10.8.5.60) by
- PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 15 Apr 2020 16:10:42 +0200
-From:   Matthias Blankertz <matthias.blankertz@cetitec.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
-Date:   Wed, 15 Apr 2020 16:10:17 +0200
-Message-ID: <20200415141017.384017-3-matthias.blankertz@cetitec.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
-References: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
+        id S2636488AbgDOOND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:13:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2636464AbgDOOMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:12:13 -0400
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77B722078B;
+        Wed, 15 Apr 2020 14:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586959932;
+        bh=g9zc9gWFrZts6nCro79E4zNLwGrqjr25+7GmsmkzvQs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZdESDpha5XBMMH2NumasO7B5X8dXw9HFSztHTSiLifxEnAtw7voFnYGdpI6EuoHdU
+         /ExqpEmsqp0/LnjQX+zOXaD6GTUv5AQ5l84baZvQtB4517udMY6ZG9NdsAZfO/Opr3
+         DN9/nwsr2l7i0O6illGKVq5zZAke9OzzviJ626A8=
+Received: by mail-qt1-f178.google.com with SMTP id x2so13298084qtr.0;
+        Wed, 15 Apr 2020 07:12:12 -0700 (PDT)
+X-Gm-Message-State: AGi0PuagO850FeY1scw2rjKb/80hAINyNkQzSXYbA7vSp8oIqAtX4fkq
+        04+/o0Tmt1IH7xGdoChOGMlis7ngC7L0MLWCJw==
+X-Google-Smtp-Source: APiQypKpcfRLgsq5L44xqX/Nd5yT1RL98k+9haGwOML5QU4TMV8UysP823kpICcUXqUoiZVvAG/C9S9NizqCtatbW/E=
+X-Received: by 2002:ac8:6695:: with SMTP id d21mr21432863qtp.110.1586959931603;
+ Wed, 15 Apr 2020 07:12:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.8.5.60]
-X-ClientProxiedBy: PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) To
- PFWSEXCHANGE.corp.cetitec.com (10.10.1.99)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A290D7F536B647460
-X-Provags-ID: V03:K1:0bkCn+Y0mevlv5VttZgpahUL4dKGYZZLQ4y1vvto+7mMavfUh+o
- 8JGMv4vZZjzQNhUrBFQ1NJ5bqdFYSn9yLfj6IZYnF4K8i4qGsq0671JsWt8ZgMT0qAUxb4z
- iUw86CuhTpzSWPug0kC7Q0uEs8W+bPnw8jGw4WrtSfdEmcfiMleogPsFKNQ4hDl/yXLkkxr
- 6BjIqXo2hOtKSu7et7mCQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hIseBVQO+QY=:5enC21lnRILGCyitLuxCKO
- nrxFYTneYV5nnsqfjD3XwMp6PxensbaQmXS+TRUj+DDZx1mNUZq79Y1fvHyoKSbP2m19FnEHP
- 6zXUVDRsQqEGYacWsUfhH23Q7c0NvdrOqXt8rxaw2abJyCuk0lPAC/47lXBeUUoM9zjKs25FJ
- upZM8ldpICdQ016k6mxBhkMfhRUZTWvo8bLbLJOHaHDzatN+07BmMG9y51JUNZjuJGJINfO09
- Ma7hFf7tICJGVnGmuRJ2XjCku60J5xTvMrLJKALi2ibsdi5FQxSoWTJJf9Jm/QRCllWdOpWsg
- gWqGHgQ7+yLhbUBbwy9XK/RjsHd//91Y4hF25AYDqGt3P3CfdJBmO38Nf7Yz5HQLEyfmwUvCP
- NDNgRDPMKN8yLkusWQ8X1V3Y1VaUUJyYMB4a1FbVwgHf9j69k2DeFqwQmsrJGNlcLOJZOJGVz
- CX10xmcGqciw2n4Bne85zsNnbSS7cHXsywZMswGEfjtvEK4JI5Y2XNk1VVkPfxRQozW1eTLwD
- HT9w9yKiaKY45UMgLyeMACxRV/TXSLS4I1kKFUNeKpXGtREm9er+DyI1WXnPHQQVB84EBS4tI
- iGjqCsI8tzkhhx8OCi2HF1vuMz7BM9bwqiedyDgVH2lAPCpP+yFrwPFU4AK5PWkyJrTakQCYD
- LUVwmgahT4MguqYCGOu8QRxrob8UB3E+VFsY4uIGtet+W7FQTZ7lJpp41fvQxTUMgHuY1z6b8
- WhP3lng9zG6PIK2bvE37kDlTc+Y24oBDyKCYMTW5vb8obo4IYUvw7amdYKqaVO9a76pHDO15J
- v8xKATPopjrCRDaQo+CsP3Fwla3O5cdcA3WeikuDxsg1qD4oWww7aKv/KLuEVnhG2Bn6bCuI1
- 1Ncz9Tm+FGLjw5Ke8AMg==
+References: <cover.1585726761.git.shengjiu.wang@nxp.com> <68208297b49e85adfddf843bc205d154790a49de.1585726761.git.shengjiu.wang@nxp.com>
+ <20200414154643.GA29098@bogus> <CAA+D8AP2CiRT7qkNa7yBDH0Dbd=i1eyqL4g4zobRmR-vEx4VBQ@mail.gmail.com>
+In-Reply-To: <CAA+D8AP2CiRT7qkNa7yBDH0Dbd=i1eyqL4g4zobRmR-vEx4VBQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 15 Apr 2020 09:11:58 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+Uk1zPT=JyZczH5WRWP617Mqhaur+LwbKKYDBGBhd-cQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+Uk1zPT=JyZczH5WRWP617Mqhaur+LwbKKYDBGBhd-cQ@mail.gmail.com>
+Subject: Re: [PATCH v6 6/7] ASoC: dt-bindings: fsl_easrc: Add document for EASRC
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HDMI?_SEL register maps up to four stereo SSI data lanes onto the
-sdata[0..3] inputs of the HDMI output block. The upper half of the
-register contains four blocks of 4 bits, with the most significant
-controlling the sdata3 line and the least significant the sdata0 line.
+On Tue, Apr 14, 2020 at 9:56 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> Hi Rob
+>
+> On Tue, Apr 14, 2020 at 11:49 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Wed, Apr 01, 2020 at 04:45:39PM +0800, Shengjiu Wang wrote:
+> > > EASRC (Enhanced Asynchronous Sample Rate Converter) is a new
+> > > IP module found on i.MX8MN.
+> > >
+> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/sound/fsl,easrc.yaml  | 101 ++++++++++++++++++
+> > >  1 file changed, 101 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> > > new file mode 100644
+> > > index 000000000000..14ea60084420
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> > > @@ -0,0 +1,101 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/sound/fsl,easrc.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: NXP Asynchronous Sample Rate Converter (ASRC) Controller
+> > > +
+> > > +maintainers:
+> > > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > +
+> > > +properties:
+> > > +  $nodename:
+> > > +    pattern: "^easrc@.*"
+> > > +
+> > > +  compatible:
+> > > +    const: fsl,imx8mn-easrc
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 1
+> > > +
+> > > +  clocks:
+> > > +    items:
+> > > +      - description: Peripheral clock
+> > > +
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: mem
+> > > +
+> > > +  dmas:
+> > > +    maxItems: 8
+> > > +
+> > > +  dma-names:
+> > > +    items:
+> > > +      - const: ctx0_rx
+> > > +      - const: ctx0_tx
+> > > +      - const: ctx1_rx
+> > > +      - const: ctx1_tx
+> > > +      - const: ctx2_rx
+> > > +      - const: ctx2_tx
+> > > +      - const: ctx3_rx
+> > > +      - const: ctx3_tx
+> > > +
+> > > +  firmware-name:
+> > > +    allOf:
+> > > +      - $ref: /schemas/types.yaml#/definitions/string
+> > > +      - const: imx/easrc/easrc-imx8mn.bin
+> > > +    description: The coefficient table for the filters
+> > > +
+> > > +  fsl,asrc-rate:
+> >
+> > fsl,asrc-rate-hz
+>
+> Can we keep "fsl,asrc-rate", because I want this property
+> align with the one in fsl,asrc.txt.  These two asrc modules
+> can share same property name.
 
-The shift calculation has an off-by-one error, causing the parent SSI to
-be mapped to sdata3, the first multi-SSI child to sdata0 and so forth.
-As the parent SSI transmits the stereo L/R channels, and the HDMI core
-expects it on the sdata0 line, this causes no audio to be output when
-playing stereo audio on a multichannel capable HDMI out, and
-multichannel audio has permutated channels.
+Oh, yes.
 
-Fix the shift calculation to map the parent SSI to sdata0, the first
-child to sdata1 etc.
+So with the example fixed:
 
-Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
----
- sound/soc/sh/rcar/ssiu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index f35d88211887..9c7c3e7539c9 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -221,7 +221,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 			i;
- 
- 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
--			shift	= (i * 4) + 16;
-+			shift	= (i * 4) + 20;
- 			val	= (val & ~(0xF << shift)) |
- 				rsnd_mod_id(pos) << shift;
- 		}
--- 
-2.26.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
