@@ -2,110 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8556E1AA40C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B731AA424
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370709AbgDONQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:16:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:45576 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505190AbgDONQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:16:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 016531063;
-        Wed, 15 Apr 2020 06:16:18 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D75C3F6C4;
-        Wed, 15 Apr 2020 06:16:15 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 14:16:12 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     peng.fan@nxp.com, devicetree@vger.kernel.org, f.fainelli@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        viresh.kumar@linaro.org, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH V5 2/2] firmware: arm_scmi: add smc/hvc transport
-Message-ID: <20200415131612.GC31928@bogus>
-References: <1583673879-20714-3-git-send-email-peng.fan@nxp.com>
- <5e96e916.1c69fb81.14365.050b@mx.google.com>
-MIME-Version: 1.0
+        id S370776AbgDONS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2506263AbgDONRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:17:47 -0400
+Received: from mo6-p03-ob.smtp.rzone.de (mo6-p03-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5303::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB773C061A0C;
+        Wed, 15 Apr 2020 06:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586956665;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=ggeVHX1ECoHuxb0UgkenFd/4IT/OkoIPA4CW4OSiH4U=;
+        b=tSk0cJVb5H6mQx63QImPqo27RrhaPv2mCMy/yhh3brjy8By+psy+Q0bbn3JXTtkz4X
+        q4tfGCwNiaca/V/WUG837rYs+lHilJIWpBxoPA+FK+fjl6ETB8/UqiALsVMUaM6MAGDV
+        bngvkgzNa6QOlwnd1/iLmIkh2Y0rgsSqYlJIFpMlWPmxUu/4PJfI4mUZ9CAVpb+fjqkI
+        I2u5BiZPGWJfZus5K6ekldodYXIYrcSDWARM+hIeQAxG3Zvk1dXxL0Mt5gt0u+5nFtVu
+        u/KYQCpSXmJz2uCmyZWaq8zaRh02wg8OXjtpoCE1MVlsrap/37j6djKWd5M0b7CeD7zO
+        cK/A==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PtwDConyM="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+        with ESMTPSA id 6028a2w3FDHP26i
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 15 Apr 2020 15:17:25 +0200 (CEST)
+Subject: Re: [PATCH v6 01/12] dt-bindings: add img, pvrsgx.yaml for Imagination GPUs
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e96e916.1c69fb81.14365.050b@mx.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
+Date:   Wed, 15 Apr 2020 15:17:25 +0200
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        James Hogan <jhogan@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-samsung-soc@vger.kernel.org, letux-kernel@openphoenux.org,
+        Paul Burton <paulburton@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, Chen-Yu Tsai <wens@csie.org>,
+        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        openpvrsgx-devgroup@letux.org, linux-kernel@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@pyra-handheld.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <535CAEBE-F43E-4BFC-B989-612C81F0D7EF@goldelico.com>
+References: <cover.1586939718.git.hns@goldelico.com> <06fb6569259bb9183d0a0d0fe70ec4f3033b8aab.1586939718.git.hns@goldelico.com> <20200415101251.o3wi5t6xvf56xmhq@gilmour.lan> <72919514-0657-4B71-902F-3E775E528F64@goldelico.com> <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 12:58:58PM +0200, Etienne Carriere wrote:
-> Hello Peng,
->
-> I  have 2 comments on this change. The main is about using
-> arm_smccc_1_1_invoke(). Below some details and I added comments
-> inside you patch. The second of on SMC return value, see my
-> comment in your patch below.
->
-> About arm_smccc_1_1_invoke(), this functon currently relies on PSCI
-> driver to define a conduit method but SCMI agent driver does not
-> mandate CONFIG_PSCI to be enable.
->
+Hi Neil,
 
-Yes this was discussed and it is done so deliberately. I have added the
-build dependency when I merged the patch. There's no dependency on
-CONFIG_PSCI.
+> Am 15.04.2020 um 14:54 schrieb Neil Armstrong <narmstrong@baylibre.com>:
+> 
+> Hi,
+> 
+> On 15/04/2020 14:43, H. Nikolaus Schaller wrote:
+>> 
+>>> Am 15.04.2020 um 12:12 schrieb Maxime Ripard <maxime@cerno.tech>:
+>>> 
+>>> Hi,
+>>> 
+>>> On Wed, Apr 15, 2020 at 10:35:08AM +0200, H. Nikolaus Schaller wrote:
+>>>> The Imagination PVR/SGX GPU is part of several SoC from
+>>>> multiple vendors, e.g. TI OMAP, Ingenic JZ4780, Intel Poulsbo,
+>>>> Allwinner A83 and others.
+>>>> 
+>>>> With this binding, we describe how the SGX processor is
+>>>> interfaced to the SoC (registers, interrupt etc.).
+>>>> 
+>>>> In most cases, Clock, Reset and power management is handled
+>>>> by a parent node or elsewhere (e.g. code in the driver).
+>>> 
+>>> Wouldn't the "code in the driver" still require the clock / reset /
+>>> power domain to be set in the DT?
+>> 
+>> Well, some SoC seem to use existing clocks and have no reset.
+>> Or, although not recommended, they may have the io-address range
+>> hard-coded.
+> 
+> The possible clocks and resets should be added, even if optional.
+> 
+> Please look at the arm utgard, midgard and bifrost bindings.
 
-> Could you add an optional "method" property for "arm,scmi-smc" for platforms
-> willing to not rely on PSCI Linux driver? If no property "method" is
-> defined in the FDT, invocation relies on arm_smccc_1_1_invoke().
->
+Interesting to compare to. Maybe we should also add the
+$nodename: pattern: '^gpu@[a-f0-9]+$'
 
-Nope, we don't want mixture here. Why is the system not using PSCI/SMCCC ?
+But the sgx binding is difficult to grasp here. Some SoC like the
+omap series have their own ti,sysc based target modules and the
+gpu nodes is a child of it lacking any clock and reset references
+for purpose.
 
-> "method" naming mimics what is done in the OP-TEE driver (drivers/tee/optee/).
-> Here is a proposal for the documenting property "method" in
-> Documentation/arm,scmi.txt:
->
-> - method : "smc" or "hvc"
->             Optional property defining the conduit method for to be used
-> 	    for invoking the SCMI server in secure world.
-> 	    "smc" states instruction SMC #0 is used whereas "hvc" states
-> 	    instruction HVC #0 is used.
->
->
+The jz4780 and some other need a clocks definition, but no reset.
+Having a reset seems to be an option for the SoC designer and
+not mandated by img. So is it part of the pvrsgx bindings or the
+SoC?
 
-It was rejected, you can try your luck with OPTEE :)
-We will just use the system conduit here with SCMI for SMC/HVC transport.
-Details in previous version of the patch.
+Well we could add clocks and resets as optional but that would
+allow to wrongly define omap.
 
-[...]
+Or delegate them to a parent "simple-pm-bus" node.
 
-> > +struct scmi_smc {
-> > +	struct scmi_chan_info *cinfo;
-> > +	struct scmi_shared_mem __iomem *shmem;
-> > +	u32 func_id;
-> > +};
->
-> Add here a field for the secure world invocation function handler:
->
-> 	scmi_arm_smccc_invoke_fn *invoke_fn;
->
+I have to study that material more to understand what you seem
+to expect.
 
-As stated not needed if we use  arm_smccc_1_1_invoke()
+BR and thanks,
+Nikolaus Schaller
 
-[...]
 
->
-> The SCMI server is likely not to return a errno compliant value.
->
-> SMCCC specification states that unsupported function IDs should return signed
-> extended -1. I suggest to change the return above with:
->
-> 	return res.a0 == ~0 ? -EINVAL : 0;
->
-
-I need to check that.
-
---
-Regards,
-Sudeep
