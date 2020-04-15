@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DE41A8F81
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF091A8F85
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392201AbgDOAF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 20:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        id S2392237AbgDOAGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 20:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634549AbgDOAE6 (ORCPT
+        with ESMTP id S2634552AbgDOAFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:04:58 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84E6C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:04:58 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ng8so6013977pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:04:58 -0700 (PDT)
+        Tue, 14 Apr 2020 20:05:00 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B01AC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:00 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b72so707910pfb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=fvE20WzTia3PlpbcEfRbKcopfOLGLyEeBU9i4s4lrX4=;
-        b=SSTyKD1ZOcNsQoBj+fiA3e0/x8UzcDU00xsOMVkGKWgsBra4CzHIlgIpM5Hf25JcYJ
-         N/qXZzifsJVIT2txZ9eB32J1T3uYDtrmSa7fz4crymKibZkbe0E2hCMVOlwzxmPgRiUm
-         LU/vvhYbR2uIblGEzuL3M44aCBywquALEEsELpTkuvTv7uZOS6UOMDJF3Fnhr5efNrlm
-         RiLELA5A/NPj8qAoCj6PlduoIOOS0GVg7B7ZmDJd/pJpRt8OUidDJmSBYQufZSb+92AA
-         cRPmvY2iBXxsWQhoScJYIX7VSN8VQWSxtgiZDslI/SNlCdpLKFbOqxEVLFhy3hvlZ8kN
-         o0dg==
+        bh=uKdGdqF/+GNBYDZWM+26jf4oQ2Rr7fsIm1TWA6uIlOA=;
+        b=WulsqM//lOs3T2IowcDd43dAEvBgL4u222+/xORDx+a8LvPRVm9cY3NQfEqWuqqkRE
+         fddXnxLsqPjFuz+CPoWBTB8apYtNoHXOQr1BMMmRpLV7dNnC3oqa9jAKPo4I75G9fmxX
+         vxIvzftwroSPfYRM3wdT2E9nLqgIiLSp0XqVxu/DRz7vgc9i7nNMvX4hZTJUfN/+MQZz
+         xmgPx5BX1IhgddUd+tTNj4GfKchRjGq2Gt9BlPgSbAinptlRGRVjGLnuJRX6JfZuYjkF
+         BHPYE2cp2yWj3CPx4BwmlSXUVx78saZsmeirZ+/ojUj2pYZHiQ23RBo1UqOGX/T7WQLX
+         FrXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=fvE20WzTia3PlpbcEfRbKcopfOLGLyEeBU9i4s4lrX4=;
-        b=CLFqqwlu7tfY6aZe72pi2nO6ZxMj6oXuFOMwaak3t+qRjsbtWpZoXMNZivqzJFMhQO
-         SEm2Fz7f/BhdMt+lpcni3DwGu0EApNyBIPi+0KnEUxNgYYZd8BFTojnZwyLmp6TCQ0W3
-         3N8AYzX+lExqgOrUQ13Eqx/IlX1+8KGTv9NElNwMI02zJXjctskRp5C22Ejb+4bJE3O5
-         qV0JvOOGbYY1NvbKIXQMvPN8WxcfrHcsoimHwuBd+3nByh6PE/V6g3HkRG5lw+gKGL/Q
-         DvRK1HLHhFR6lBncUd0h2nKo/Eb3Nvgg/ypxhxi4LNkSj7WDSiqlTuOSVQ6uI6S71a9c
-         in6A==
-X-Gm-Message-State: AGi0PubZHm4mUe3QHaSJ3AM4Qv0pcdAbBa7YIrOEDTHjDSi7cIgZSBvT
-        GUwSiUyIqJBvkXaox85mR6guCmbqOpg=
-X-Google-Smtp-Source: APiQypJ1PjAne6YwQhhUJSqljY5Gj4XVzm20bbfXP82ChUmZFArF2ZBb8adfZczpdeKQBgF/ZDKuvQ==
-X-Received: by 2002:a17:902:a603:: with SMTP id u3mr2401722plq.105.1586909098036;
-        Tue, 14 Apr 2020 17:04:58 -0700 (PDT)
+        bh=uKdGdqF/+GNBYDZWM+26jf4oQ2Rr7fsIm1TWA6uIlOA=;
+        b=PRC/iq7m9/0sdcNBxGy3cVa2lFzyDAtlZL1uaope8Higxru6yIeUwKuv8PZ4izgRaS
+         dFrXUMxrTsLszeVNnaN1NwMdwcslCXz+oQ1qMlTyN2zPFRdGqm7mNNZXnmZAY77A77eO
+         CdyEqPDCCNF2QK2ytMCPrvolqEGGPUmQ2+xLISXceC169vCdnJguwW6B8WpX+KWaQ4w+
+         4LmBrbC2RobovNqQNVzzhnKlVbNedX8IP9L10t00haqTz4l+QOBhHKkvakTw9oHNM5Nj
+         3aNpbfrHS6ECi7FrOW6Jg/Nr1Y+G3bZxBvZp4bdiJFBKg7X78VywWi/7uN/1FdqS1pBk
+         e9Mg==
+X-Gm-Message-State: AGi0Pub/41pVlLXilQxh0Mfhycr/yRwd4Erx/7f1dEGBJi8n0r5bKrXd
+        cRnfBArSJ8VahFXXnAAsPnh/znAzCVE=
+X-Google-Smtp-Source: APiQypIj29iY072qqzgGUgL65ji+DU+sBEh3m0c+CHuHnlHrGiB7UdLUrPRezwGWOyVMchjIpB4MhQ==
+X-Received: by 2002:a65:44cb:: with SMTP id g11mr16665800pgs.436.1586909099611;
+        Tue, 14 Apr 2020 17:04:59 -0700 (PDT)
 Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id 11sm11848427pfz.91.2020.04.14.17.04.57
+        by smtp.gmail.com with ESMTPSA id q131sm7247530pfq.115.2020.04.14.17.04.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 17:04:57 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 17:04:56 -0700 (PDT)
+        Tue, 14 Apr 2020 17:04:59 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 17:04:58 -0700 (PDT)
 From:   David Rientjes <rientjes@google.com>
 X-X-Sender: rientjes@chino.kir.corp.google.com
 To:     Christoph Hellwig <hch@lst.de>,
@@ -59,9 +59,10 @@ cc:     Brijesh Singh <brijesh.singh@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org
-Subject: [patch 3/7] dma-pool: dynamically expanding atomic pools
+Subject: [patch 4/7] dma-direct: atomic allocations must come from atomic
+ coherent pools
 In-Reply-To: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
-Message-ID: <alpine.DEB.2.22.394.2004141703350.68516@chino.kir.corp.google.com>
+Message-ID: <alpine.DEB.2.22.394.2004141703510.68516@chino.kir.corp.google.com>
 References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
@@ -71,215 +72,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an atomic pool becomes fully depleted because it is now relied upon
-for all non-blocking allocations through the DMA API, allow background
-expansion of each pool by a kworker.
+When a device requires unencrypted memory and the context does not allow
+blocking, memory must be returned from the atomic coherent pools.
 
-When an atomic pool has less than the default size of memory left, kick
-off a kworker to dynamically expand the pool in the background.  The pool
-is doubled in size, up to MAX_ORDER-1.  If memory cannot be allocated at
-the requested order, smaller allocation(s) are attempted.
+This avoids the remap when CONFIG_DMA_DIRECT_REMAP is not enabled and the
+config only requires CONFIG_DMA_COHERENT_POOL.  This will be used for
+CONFIG_AMD_MEM_ENCRYPT in a subsequent patch.
 
-This allows the default size to be kept quite low when one or more of the
-atomic pools is not used.
-
-Allocations for lowmem should also use GFP_KERNEL for the benefits of
-reclaim, so use GFP_KERNEL | GFP_DMA and GFP_KERNEL | GFP_DMA32 for
-lowmem allocations.
-
-This also allows __dma_atomic_pool_init() to return a pointer to the pool
-to make initialization cleaner.
-
-Also switch over some node ids to the more appropriate NUMA_NO_NODE.
+Keep all memory in these pools unencrypted.  When set_memory_decrypted()
+fails, this prohibits the memory from being added.  If adding memory to
+the genpool fails, and set_memory_encrypted() subsequently fails, there
+is no alternative other than leaking the memory.
 
 Signed-off-by: David Rientjes <rientjes@google.com>
 ---
- kernel/dma/pool.c | 122 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 84 insertions(+), 38 deletions(-)
+ kernel/dma/direct.c | 46 ++++++++++++++++++++++++++++++++++++++-------
+ kernel/dma/pool.c   | 27 +++++++++++++++++++++++---
+ 2 files changed, 63 insertions(+), 10 deletions(-)
 
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index a834ee22f8ff..07ecc5c4d134 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -76,6 +76,39 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
+ 			min_not_zero(dev->coherent_dma_mask, dev->bus_dma_limit);
+ }
+ 
++/*
++ * Decrypting memory is allowed to block, so if this device requires
++ * unencrypted memory it must come from atomic pools.
++ */
++static inline bool dma_should_alloc_from_pool(struct device *dev, gfp_t gfp,
++					      unsigned long attrs)
++{
++	if (!IS_ENABLED(CONFIG_DMA_COHERENT_POOL))
++		return false;
++	if (gfpflags_allow_blocking(gfp))
++		return false;
++	if (force_dma_unencrypted(dev))
++		return true;
++	if (!IS_ENABLED(CONFIG_DMA_DIRECT_REMAP))
++		return false;
++	if (dma_alloc_need_uncached(dev, attrs))
++		return true;
++	return false;
++}
++
++static inline bool dma_should_free_from_pool(struct device *dev,
++					     unsigned long attrs)
++{
++	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL))
++		return true;
++	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
++	    !force_dma_unencrypted(dev))
++		return false;
++	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP))
++		return true;
++	return false;
++}
++
+ struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
+ 		gfp_t gfp, unsigned long attrs)
+ {
+@@ -125,9 +158,7 @@ void *dma_direct_alloc_pages(struct device *dev, size_t size,
+ 	struct page *page;
+ 	void *ret;
+ 
+-	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+-	    dma_alloc_need_uncached(dev, attrs) &&
+-	    !gfpflags_allow_blocking(gfp)) {
++	if (dma_should_alloc_from_pool(dev, gfp, attrs)) {
+ 		ret = dma_alloc_from_pool(dev, PAGE_ALIGN(size), &page, gfp);
+ 		if (!ret)
+ 			return NULL;
+@@ -204,6 +235,11 @@ void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
+ {
+ 	unsigned int page_order = get_order(size);
+ 
++	/* If cpu_addr is not from an atomic pool, dma_free_from_pool() fails */
++	if (dma_should_free_from_pool(dev, attrs) &&
++	    dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
++		return;
++
+ 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+ 	    !force_dma_unencrypted(dev)) {
+ 		/* cpu_addr is a struct page cookie, not a kernel address */
+@@ -211,10 +247,6 @@ void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
+ 		return;
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+-	    dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
+-		return;
+-
+ 	if (force_dma_unencrypted(dev))
+ 		set_memory_encrypted((unsigned long)cpu_addr, 1 << page_order);
+ 
 diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 5c98ab991b16..9e2da17ed17b 100644
+index 9e2da17ed17b..cf052314d9e4 100644
 --- a/kernel/dma/pool.c
 +++ b/kernel/dma/pool.c
-@@ -9,13 +9,17 @@
+@@ -7,6 +7,7 @@
+ #include <linux/dma-contiguous.h>
+ #include <linux/init.h>
  #include <linux/genalloc.h>
++#include <linux/set_memory.h>
  #include <linux/slab.h>
  #include <linux/vmalloc.h>
-+#include <linux/workqueue.h>
- 
- static struct gen_pool *atomic_pool_dma __ro_after_init;
- static struct gen_pool *atomic_pool_dma32 __ro_after_init;
- static struct gen_pool *atomic_pool_kernel __ro_after_init;
- 
- #define DEFAULT_DMA_COHERENT_POOL_SIZE  SZ_256K
--static size_t atomic_pool_size __initdata = DEFAULT_DMA_COHERENT_POOL_SIZE;
-+static size_t atomic_pool_size = DEFAULT_DMA_COHERENT_POOL_SIZE;
-+
-+/* Dynamic background expansion when the atomic pool is near capacity */
-+static struct work_struct atomic_pool_work;
- 
- static int __init early_coherent_pool(char *p)
- {
-@@ -24,76 +28,116 @@ static int __init early_coherent_pool(char *p)
- }
- early_param("coherent_pool", early_coherent_pool);
- 
--static int __init __dma_atomic_pool_init(struct gen_pool **pool,
--					 size_t pool_size, gfp_t gfp)
-+static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
-+			      gfp_t gfp)
- {
--	const unsigned int order = get_order(pool_size);
--	const unsigned long nr_pages = pool_size >> PAGE_SHIFT;
-+	unsigned int order;
- 	struct page *page;
- 	void *addr;
--	int ret;
-+	int ret = -ENOMEM;
-+
-+	/* Cannot allocate larger than MAX_ORDER-1 */
-+	order = min(get_order(pool_size), MAX_ORDER-1);
-+
-+	do {
-+		pool_size = 1 << (PAGE_SHIFT + order);
- 
--	if (dev_get_cma_area(NULL))
--		page = dma_alloc_from_contiguous(NULL, nr_pages, order, false);
--	else
--		page = alloc_pages(gfp, order);
-+		if (dev_get_cma_area(NULL))
-+			page = dma_alloc_from_contiguous(NULL, 1 << order,
-+							 order, false);
-+		else
-+			page = alloc_pages(gfp, order);
-+	} while (!page && order-- > 0);
- 	if (!page)
- 		goto out;
+ #include <linux/workqueue.h>
+@@ -53,22 +54,42 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
  
  	arch_dma_prep_coherent(page, pool_size);
  
--	*pool = gen_pool_create(PAGE_SHIFT, -1);
--	if (!*pool)
--		goto free_page;
--
++#ifdef CONFIG_DMA_DIRECT_REMAP
  	addr = dma_common_contiguous_remap(page, pool_size,
  					   pgprot_dmacoherent(PAGE_KERNEL),
  					   __builtin_return_address(0));
  	if (!addr)
--		goto destroy_genpool;
-+		goto free_page;
- 
--	ret = gen_pool_add_virt(*pool, (unsigned long)addr, page_to_phys(page),
--				pool_size, -1);
-+	ret = gen_pool_add_virt(pool, (unsigned long)addr, page_to_phys(page),
-+				pool_size, NUMA_NO_NODE);
+ 		goto free_page;
+-
++#else
++	addr = page_to_virt(page);
++#endif
++	/*
++	 * Memory in the atomic DMA pools must be unencrypted, the pools do not
++	 * shrink so no re-encryption occurs in dma_direct_free_pages().
++	 */
++	ret = set_memory_decrypted((unsigned long)page_to_virt(page),
++				   1 << order);
++	if (ret)
++		goto remove_mapping;
+ 	ret = gen_pool_add_virt(pool, (unsigned long)addr, page_to_phys(page),
+ 				pool_size, NUMA_NO_NODE);
  	if (ret)
- 		goto remove_mapping;
--	gen_pool_set_algo(*pool, gen_pool_first_fit_order_align, NULL);
+-		goto remove_mapping;
++		goto encrypt_mapping;
  
--	pr_info("DMA: preallocated %zu KiB %pGg pool for atomic allocations\n",
--		pool_size >> 10, &gfp);
  	return 0;
  
++encrypt_mapping:
++	ret = set_memory_encrypted((unsigned long)page_to_virt(page),
++				   1 << order);
++	if (WARN_ON_ONCE(ret)) {
++		/* Decrypt succeeded but encrypt failed, purposely leak */
++		goto out;
++	}
  remove_mapping:
++#ifdef CONFIG_DMA_DIRECT_REMAP
  	dma_common_free_remap(addr, pool_size);
--destroy_genpool:
--	gen_pool_destroy(*pool);
--	*pool = NULL;
- free_page:
--	if (!dma_release_from_contiguous(NULL, page, nr_pages))
-+	if (!dma_release_from_contiguous(NULL, page, 1 << order))
+-free_page:
++#endif
++free_page: __maybe_unused
+ 	if (!dma_release_from_contiguous(NULL, page, 1 << order))
  		__free_pages(page, order);
  out:
--	pr_err("DMA: failed to allocate %zu KiB %pGg pool for atomic allocation\n",
--	       pool_size >> 10, &gfp);
--	return -ENOMEM;
-+	return ret;
-+}
-+
-+static void atomic_pool_resize(struct gen_pool *pool, gfp_t gfp)
-+{
-+	if (pool && gen_pool_avail(pool) < atomic_pool_size)
-+		atomic_pool_expand(pool, gen_pool_size(pool), gfp);
-+}
-+
-+static void atomic_pool_work_fn(struct work_struct *work)
-+{
-+	if (IS_ENABLED(CONFIG_ZONE_DMA))
-+		atomic_pool_resize(atomic_pool_dma,
-+				   GFP_KERNEL | GFP_DMA);
-+	if (IS_ENABLED(CONFIG_ZONE_DMA32))
-+		atomic_pool_resize(atomic_pool_dma32,
-+				   GFP_KERNEL | GFP_DMA32);
-+	atomic_pool_resize(atomic_pool_kernel, GFP_KERNEL);
-+}
-+
-+static __init struct gen_pool *__dma_atomic_pool_init(size_t pool_size,
-+						      gfp_t gfp)
-+{
-+	struct gen_pool *pool;
-+	int ret;
-+
-+	pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
-+	if (!pool)
-+		return NULL;
-+
-+	gen_pool_set_algo(pool, gen_pool_first_fit_order_align, NULL);
-+
-+	ret = atomic_pool_expand(pool, pool_size, gfp);
-+	if (ret) {
-+		gen_pool_destroy(pool);
-+		pr_err("DMA: failed to allocate %zu KiB %pGg pool for atomic allocation\n",
-+		       pool_size >> 10, &gfp);
-+		return NULL;
-+	}
-+
-+	pr_info("DMA: preallocated %zu KiB %pGg pool for atomic allocations\n",
-+		gen_pool_size(pool) >> 10, &gfp);
-+	return pool;
- }
- 
- static int __init dma_atomic_pool_init(void)
- {
- 	int ret = 0;
--	int err;
- 
--	ret = __dma_atomic_pool_init(&atomic_pool_kernel, atomic_pool_size,
--				     GFP_KERNEL);
-+	INIT_WORK(&atomic_pool_work, atomic_pool_work_fn);
-+
-+	atomic_pool_kernel = __dma_atomic_pool_init(atomic_pool_size,
-+						    GFP_KERNEL);
-+	if (!atomic_pool_kernel)
-+		ret = -ENOMEM;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA)) {
--		err = __dma_atomic_pool_init(&atomic_pool_dma,
--					     atomic_pool_size, GFP_DMA);
--		if (!ret && err)
--			ret = err;
-+		atomic_pool_dma = __dma_atomic_pool_init(atomic_pool_size,
-+						GFP_KERNEL | GFP_DMA);
-+		if (!atomic_pool_dma)
-+			ret = -ENOMEM;
- 	}
- 	if (IS_ENABLED(CONFIG_ZONE_DMA32)) {
--		err = __dma_atomic_pool_init(&atomic_pool_dma32,
--					     atomic_pool_size, GFP_DMA32);
--		if (!ret && err)
--			ret = err;
-+		atomic_pool_dma32 = __dma_atomic_pool_init(atomic_pool_size,
-+						GFP_KERNEL | GFP_DMA32);
-+		if (!atomic_pool_dma32)
-+			ret = -ENOMEM;
- 	}
- 	return ret;
- }
-@@ -142,6 +186,8 @@ void *dma_alloc_from_pool(struct device *dev, size_t size,
- 		ptr = (void *)val;
- 		memset(ptr, 0, size);
- 	}
-+	if (gen_pool_avail(pool) < atomic_pool_size)
-+		schedule_work(&atomic_pool_work);
- 
- 	return ptr;
- }
