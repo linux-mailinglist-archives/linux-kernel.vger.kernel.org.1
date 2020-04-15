@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C2B1AA322
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03C51AA350
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505874AbgDONEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505845AbgDONES (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:04:18 -0400
-Received: from mo6-p03-ob.smtp.rzone.de (mo6-p03-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5303::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3063C061A0C;
-        Wed, 15 Apr 2020 06:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586955856;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=CdHAABA4O4WBpGafReQS38iVaIL+NYE+i3qxsiPxeAo=;
-        b=F+hKm3C3XOqEnTBDZBXnjx3O3HH1Va/Qp8roEBX1UbgZttATFHbN4Z6n8DeoxdWTID
-        LJW0Tz+xqOF5eiUenpEg39HyhB4YVGuKG7nPH45zfd6e5co8uV9GDaIUvxSqHnV7Lmlh
-        cqmyt+YYneMN4Z/MXySw4m6Z8JTipneBQhEUNqz/lDMoys2y7p4jo4kQ+G1LeM4UCk7g
-        J0bv6y19KvyWs0lg2w9Mm8jSTCVwDIufJQuC/bxYXJ9b7awJva1WNigZ2mPoa065vCYb
-        7MFcCXXaquEqHUM44jLoxQ0oTVu3cvh0WGOeJKKuifCM/taOOuJFEufUSGelk+cpm6V8
-        06oQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PtwDConyM="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
-        with ESMTPSA id 6028a2w3FD47231
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 15 Apr 2020 15:04:07 +0200 (CEST)
-Subject: Re: [PATCH v6 00/12] ARM/MIPS: DTS: add child nodes describing the PVRSGX GPU present in some OMAP SoC and JZ4780 (and many more)
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20200415130233.rgn7xrtwqicptke2@gilmour.lan>
-Date:   Wed, 15 Apr 2020 15:04:07 +0200
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        OpenPVRSGX Linux Driver Group <openpvrsgx-devgroup@letux.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        linux-mips@vger.kernel.org,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <C589D06E-435E-4316-AD0A-8498325039E3@goldelico.com>
-References: <cover.1586939718.git.hns@goldelico.com> <20200415101008.zxzxca2vlfsefpdv@gilmour.lan> <2E3401F1-A106-4396-8FE6-51CAB72926A4@goldelico.com> <20200415130233.rgn7xrtwqicptke2@gilmour.lan>
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Philipp Rossak <embed3d@gmail.com>
-X-Mailer: Apple Mail (2.3124)
+        id S2505980AbgDONHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:07:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:12616 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503911AbgDONGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:06:55 -0400
+IronPort-SDR: U5qlzJyLxtMK43nMYAjQ/ZWsmVyQdhXr0JepVrLFKt/fpihuyLy4+bAszaJ5q3Cn4rdbRrRzbX
+ 5jWPPi9bg6nA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 06:06:53 -0700
+IronPort-SDR: X0FV4juNS/j6mhVgSKyGzTWkLMQfq/EdlDRtnBYd9XoCMXDaq1clfbOdrKq8BA0ui9WyQaW9cV
+ LSg0XpREzEWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="400307602"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by orsmga004.jf.intel.com with ESMTP; 15 Apr 2020 06:06:51 -0700
+Subject: Re: [PATCH 3/7] mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <eb105eedaa387ced14bb687e38d3aa33d4fcf70a.1585827904.git.mirq-linux@rere.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <67dc68ce-d8ec-4486-f4f9-3fb2580d2675@intel.com>
+Date:   Wed, 15 Apr 2020 16:06:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <eb105eedaa387ced14bb687e38d3aa33d4fcf70a.1585827904.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/04/20 2:54 pm, Michał Mirosław wrote:
+> Fix returned clock rate for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN case.
 
-> Am 15.04.2020 um 15:02 schrieb Maxime Ripard <maxime@cerno.tech>:
+Does this change anything, because it looks the same to me?
+
 > 
-> On Wed, Apr 15, 2020 at 02:41:52PM +0200, H. Nikolaus Schaller wrote:
->>>> The kernel modules built from this project have successfully
->>>> demonstrated to work with the DTS definitions from this patch set on
->>>> AM335x BeagleBone Black, DM3730 and OMAP5 Pyra and Droid 4. They
->>>> partially work on OMAP3530 and PandaBoard ES but that is likely a
->>>> problem in the kernel driver or the (non-free) user-space libraries
->>>> and binaries.
->>>> 
->>>> Wotk for JZ4780 (CI20 board) is in progress and there is potential
->>>> to extend this work to e.g. BananaPi-M3 (A83) and some Intel Poulsbo
->>>> and CedarView devices.
->>> 
->>> If it's not been tested on any Allwinner board yet, I'll leave it
->>> aside until it's been properly shown to work.
->> 
->> Phillip has tested something on a83.
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Cc: stable@kernel.vger.org
+> Fixes: d1955c3a9a1d ("mmc: sdhci: add quirk SDHCI_QUIRK_CLOCK_DIV_ZERO_BROKEN")
+> ---
+>  drivers/mmc/host/sdhci.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> I'm a bit skeptical on that one since it doesn't even list the
-> interrupts connected to the GPU that the binding mandates.
-
-I think he left it out for a future update.
-But best he comments himself.
-
-BR and thanks,
-Nikolaus
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index b2dc4f1cfa5c..a043bf5e3565 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1807,9 +1807,12 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>  
+>  		if (!host->clk_mul || switch_base_clk) {
+>  			/* Version 3.00 divisors must be a multiple of 2. */
+> -			if (host->max_clk <= clock)
+> +			if (host->max_clk <= clock) {
+>  				div = 1;
+> -			else {
+> +				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+> +					&& host->max_clk <= 25000000)
+> +					div = 2;
+> +			} else {
+>  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
+>  				     div += 2) {
+>  					if ((host->max_clk / div) <= clock)
+> @@ -1818,9 +1821,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>  			}
+>  			real_div = div;
+>  			div >>= 1;
+> -			if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+> -				&& !div && host->max_clk <= 25000000)
+> -				div = 1;
+>  		}
+>  	} else {
+>  		/* Version 2.00 divisors must be a power of 2. */
+> 
 
