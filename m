@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95CC1A9449
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD8D1A9504
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404644AbgDOHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 03:31:13 -0400
-Received: from m17617.mail.qiye.163.com ([59.111.176.17]:34948 "EHLO
-        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408029AbgDOH2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 03:28:30 -0400
-Received: from wangqing-virtual-machine.localdomain (unknown [157.0.31.122])
-        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id 9A0CF261E55;
-        Wed, 15 Apr 2020 15:28:21 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH] Bitmap: Optimized division operation to shift operation
-Date:   Wed, 15 Apr 2020 15:27:40 +0800
-Message-Id: <1586935667-4792-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VLTE1LS0tJSkhNSUhLTllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQw6Vgw5Azg4NAkQCCk2CAkq
-        T04KCS5VSlVKTkNNQkhOTEtKQkxNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZSk5M
-        VUtVSEpVSklJWVdZCAFZQUhJSkM3Bg++
-X-HM-Tid: 0a717cbd216b9375kuws9a0cf261e55
+        id S2635279AbgDOHpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 03:45:24 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2374 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2635166AbgDOHo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 03:44:57 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 2FA05A3C4D514F23AA5D;
+        Wed, 15 Apr 2020 15:29:14 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.173.222.27) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 15 Apr 2020 15:29:08 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>,
+        "Marc Zyngier" <maz@kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        "James Morse" <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH RFC] KVM: arm64: Sidestep stage2_unmap_vm() on vcpu reset when S2FWB is supported
+Date:   Wed, 15 Apr 2020 15:28:35 +0800
+Message-ID: <20200415072835.1164-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.173.222.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some processors, the / operate will call the compiler`s div lib,
-which is low efficient. Bitmap is performance sensitive, We can
-replace the / operation with shift.
+stage2_unmap_vm() was introduced to unmap user RAM region in the stage2
+page table to make the caches coherent. E.g., a guest reboot with stage1
+MMU disabled will access memory using non-cacheable attributes. If the
+RAM and caches are not coherent at this stage, some evicted dirty cache
+line may go and corrupt guest data in RAM.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+Since ARMv8.4, S2FWB feature is mandatory and KVM will take advantage
+of it to configure the stage2 page table and the attributes of memory
+access. So we ensure that guests always access memory using cacheable
+attributes and thus, the caches always be coherent.
+
+So on CPUs that support S2FWB, we can safely reset the vcpu without a
+heavy stage2 unmapping.
+
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Christoffer Dall <christoffer.dall@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 ---
- include/linux/bitmap.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 99058eb..85ff982 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -337,7 +337,7 @@ static inline int bitmap_equal(const unsigned long *src1,
- 		return !((*src1 ^ *src2) & BITMAP_LAST_WORD_MASK(nbits));
- 	if (__builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
- 	    IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
--		return !memcmp(src1, src2, nbits / 8);
-+		return !memcmp(src1, src2, nbits >> 3);
- 	return __bitmap_equal(src1, src2, nbits);
- }
+If this is correct, there should be a great performance improvement on
+a guest reboot (or reset) on systems support S2FWB. But I'm afraid that
+I've missed some points here, so please comment!
+
+The commit 957db105c997 ("arm/arm64: KVM: Introduce stage2_unmap_vm")
+was merged about six years ago and I failed to track its histroy and
+intention. Instead of a whole stage2 unmapping, something like
+stage2_flush_vm() looks enough to me. But again, I'm unsure...
+
+Thanks for having a look!
+
+ virt/kvm/arm/arm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
+index 48d0ec44ad77..e6378162cdef 100644
+--- a/virt/kvm/arm/arm.c
++++ b/virt/kvm/arm/arm.c
+@@ -983,8 +983,11 @@ static int kvm_arch_vcpu_ioctl_vcpu_init(struct kvm_vcpu *vcpu,
+ 	/*
+ 	 * Ensure a rebooted VM will fault in RAM pages and detect if the
+ 	 * guest MMU is turned off and flush the caches as needed.
++	 *
++	 * S2FWB enforces all memory accesses to RAM being cacheable, we
++	 * ensure that the cache is always coherent.
+ 	 */
+-	if (vcpu->arch.has_run_once)
++	if (vcpu->arch.has_run_once && !cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
+ 		stage2_unmap_vm(vcpu->kvm);
  
-@@ -411,7 +411,7 @@ static __always_inline void bitmap_set(unsigned long *map, unsigned int start,
- 		 IS_ALIGNED(start, BITMAP_MEM_ALIGNMENT) &&
- 		 __builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
- 		 IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
--		memset((char *)map + start / 8, 0xff, nbits / 8);
-+		memset((char *)map + (start >> 3), 0xff, nbits >> 3);
- 	else
- 		__bitmap_set(map, start, nbits);
- }
-@@ -425,7 +425,7 @@ static __always_inline void bitmap_clear(unsigned long *map, unsigned int start,
- 		 IS_ALIGNED(start, BITMAP_MEM_ALIGNMENT) &&
- 		 __builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
- 		 IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
--		memset((char *)map + start / 8, 0, nbits / 8);
-+		memset((char *)map + (start >> 3), 0, nbits >> 3);
- 	else
- 		__bitmap_clear(map, start, nbits);
- }
+ 	vcpu_reset_hcr(vcpu);
 -- 
-2.7.4
+2.19.1
+
 
