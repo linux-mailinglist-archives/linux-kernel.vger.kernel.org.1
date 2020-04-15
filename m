@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7D11AB156
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D7B1AB14C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441665AbgDOTNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1416867AbgDOSuQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:50:16 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E332BC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:50:14 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id d17so1170697wrg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=acZ0FR3Ieh7QKceyUMnt7yQIXSOW4wSevSsBNkvC3yY=;
-        b=OcGp2P7aJP3bMCEg8pIVH8PXXpdNafa/GJJnSsMtIre5Zx/sQLaHdd/YDq4WnT5UQA
-         5pwA3RNANZlGapXagIIipaVuptZfympHucJW00kQOhTTM/EfxkIAvFsmhn/dBPWfYAPt
-         gp4Q6slzNzbOWtLTGMZY7mJdTrNVua8+KKfzChDL2JRbqG5FGDJQVGILLwvlP97szInC
-         ikjzF76An4mNYrbbq33d63Zh0aFhMXaV1m/Tw18tYaJYFQIMVFWzjCtmioj2TB+8elfs
-         47JYSkQhNW8T4DOk0cOIXZ607w/I/yt6E99hkMvllsXavtk/ozMFO7lkUekxJO6lIu4D
-         KuVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=acZ0FR3Ieh7QKceyUMnt7yQIXSOW4wSevSsBNkvC3yY=;
-        b=UiL3Z2LhF5NmPI6r0aBJPZINYWU0ME1QMJcCfQwyVzGSAYrZ5fzTcj4ofHRTuBu59c
-         kRmkt+rr8SL1TUeRypQ/e2d+LZh07b3ANqIMkPKUzCR6fXGpExOmEUjKjCXoXTT7r+U8
-         ueQHa6Y7dGpuyfQuXB/leU38D7ry5ISNd6FpYz5mOixY0kOcW/NxKW9gYXRTW97riroz
-         qqcRV/QbJjESybR+sC6VK02BgoQywnS9GaOVgupFHDSGeH8jWhgqM4lA/UlpXXxlmikS
-         cAwkovbha8v+OH7LfGmKKf7uGEBfnX4VX4oVmDIpLW6KyatP01xnt70vYnjIFtgMZmLY
-         BaqA==
-X-Gm-Message-State: AGi0PuZSW/+EmHlNKLhQyvU2veJkyfSUYqhMQvW2ziZTpcwKuyuyqzZe
-        YpbcmiezRyo9LQu0mt1FolmJSIspbA==
-X-Google-Smtp-Source: APiQypKdTZhSOVjVZwstgDXNkZTCcnf/4giguNoRyBNh+AZzAJe9kqU6nTqImQRQuLgld/qeEI585Q==
-X-Received: by 2002:adf:f34f:: with SMTP id e15mr25631800wrp.275.1586976613385;
-        Wed, 15 Apr 2020 11:50:13 -0700 (PDT)
-Received: from ninjahost.lan (79-73-33-244.dynamic.dsl.as9105.com. [79.73.33.244])
-        by smtp.gmail.com with ESMTPSA id w7sm24757618wrr.60.2020.04.15.11.50.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 11:50:12 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     boqun.feng@gmail.com
-Subject: [PATCH 0/1] Fix context imbalance warning
-Date:   Wed, 15 Apr 2020 19:49:36 +0100
-Message-Id: <20200415184937.32373-1-jbi.octave@gmail.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2411861AbgDOTL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:11:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1416857AbgDOStr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:49:47 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCA5B206A2;
+        Wed, 15 Apr 2020 18:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586976587;
+        bh=CbY2F3LfZp/8PhR4hXRU/7Ytt7h8LlhQM+094/Tri6g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bTffqt2BSqXzPdiCYN36Djm6IX9xVHL481VkweXzkJRnvUSF4JTMZJf8Xy9er7sFF
+         Ag1bI40vCwBRlH9hbVygYLORO2n5nxGrfpKWhhNyECN6Myq4oC1fj2O4PzIzDUvqoa
+         jUNGiBbicXY+FnJPNmf+2X80Gm+6qlmeDj6cgbMA=
+From:   paulmck@kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH lkmm tip/core/rcu 01/10] tools/memory-model: Add recent references
+Date:   Wed, 15 Apr 2020 11:49:36 -0700
+Message-Id: <20200415184945.16487-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This patch adds an annotations to clear_tasks_mm_cpumask(),
-the function registers a  warning of context imbalance when built with Sparse tool.
-The adds fix the warning.
+This commit updates the list of LKMM-related publications in
+Documentation/references.txt.
 
-I also tested it and I think it is working fine.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Andrea Parri <parri.andrea@gmail.com>
+---
+ tools/memory-model/Documentation/references.txt | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-I will appreciate any comment if possible.
-
-Jules Irenge (1):
-  cpu: Add annotation inside clear_tasks_mm_cpumask()
-
- kernel/cpu.c | 1 +
- 1 file changed, 1 insertion(+)
-
+diff --git a/tools/memory-model/Documentation/references.txt b/tools/memory-model/Documentation/references.txt
+index b177f3e..ecbbaa5 100644
+--- a/tools/memory-model/Documentation/references.txt
++++ b/tools/memory-model/Documentation/references.txt
+@@ -73,6 +73,18 @@ o	Christopher Pulte, Shaked Flur, Will Deacon, Jon French,
+ Linux-kernel memory model
+ =========================
+ 
++o	Jade Alglave, Will Deacon, Boqun Feng, David Howells, Daniel
++	Lustig, Luc Maranget, Paul E. McKenney, Andrea Parri, Nicholas
++	Piggin, Alan Stern, Akira Yokosawa, and Peter Zijlstra.
++	2019. "Calibrating your fear of big bad optimizing compilers"
++	Linux Weekly News.  https://lwn.net/Articles/799218/
++
++o	Jade Alglave, Will Deacon, Boqun Feng, David Howells, Daniel
++	Lustig, Luc Maranget, Paul E. McKenney, Andrea Parri, Nicholas
++	Piggin, Alan Stern, Akira Yokosawa, and Peter Zijlstra.
++	2019. "Who's afraid of a big bad optimizing compiler?"
++	Linux Weekly News.  https://lwn.net/Articles/793253/
++
+ o	Jade Alglave, Luc Maranget, Paul E. McKenney, Andrea Parri, and
+ 	Alan Stern.  2018. "Frightening small children and disconcerting
+ 	grown-ups: Concurrency in the Linux kernel". In Proceedings of
+@@ -88,6 +100,11 @@ o	Jade Alglave, Luc Maranget, Paul E. McKenney, Andrea Parri, and
+ 	Alan Stern.  2017.  "A formal kernel memory-ordering model (part 2)"
+ 	Linux Weekly News.  https://lwn.net/Articles/720550/
+ 
++o	Jade Alglave, Luc Maranget, Paul E. McKenney, Andrea Parri, and
++	Alan Stern.  2017-2019.  "A Formal Model of Linux-Kernel Memory
++	Ordering" (backup material for the LWN articles)
++	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/LWNLinuxMM/
++
+ 
+ Memory-model tooling
+ ====================
+@@ -110,5 +127,5 @@ Memory-model comparisons
+ ========================
+ 
+ o	Paul E. McKenney, Ulrich Weigand, Andrea Parri, and Boqun
+-	Feng. 2016. "Linux-Kernel Memory Model". (6 June 2016).
+-	http://open-std.org/JTC1/SC22/WG21/docs/papers/2016/p0124r2.html.
++	Feng. 2018. "Linux-Kernel Memory Model". (27 September 2018).
++	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0124r6.html.
 -- 
-2.24.1
+2.9.5
 
