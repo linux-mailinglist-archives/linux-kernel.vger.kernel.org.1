@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D1F1A92F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE551A92F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393486AbgDOGKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 02:10:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:20146 "EHLO mga06.intel.com"
+        id S2393494AbgDOGMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 02:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731298AbgDOGKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 02:10:21 -0400
-IronPort-SDR: dSuo3T3idle2qp5g+E3kGD33taojMR5EGDQKBaIbqVU7adnzVZJrO+9LVCrq+NBX8DHqhmJUnm
- iP7yDhogvvhQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 23:10:10 -0700
-IronPort-SDR: Xrzeker15iDL0GxYgNylnyNCcgOHg/5LrDmSleRIXI69KwIrj67IOyQN42jm1/hyg4yAT+vZ4w
- my6GtVMJbzjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,385,1580803200"; 
-   d="scan'208";a="363586963"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.208]) ([10.254.210.208])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2020 23:10:04 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 13/33] iommu: Export bus_iommu_probe() and make is safe
- for re-probing
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20200414131542.25608-1-joro@8bytes.org>
- <20200414131542.25608-14-joro@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <1853992c-47a6-3724-812c-a52558c13732@linux.intel.com>
-Date:   Wed, 15 Apr 2020 14:10:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1731298AbgDOGL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 02:11:58 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97C0820737;
+        Wed, 15 Apr 2020 06:11:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586931118;
+        bh=6pe4+qaI7ju1Sn4wwK8IEsC+9CafQ0CfM86Yc2BJYys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NMwl6bwrm7LYbjWQghiA1uHB2jlaKSVoPOoQ5oMcUlOV3jsvnLpwtWLt7yWEsFnKt
+         LTT8/5ozJsp3O1QR6xEK9mUKJWHses15cO0jAi8TPYH1/mGVbDjSyIhxRm44YufI2S
+         5fif3j2wUzVFn1B99967fEl3zbIQwCsIArdtX3jk=
+Date:   Wed, 15 Apr 2020 08:11:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        naresh.kamboju@linaro.org, sakari.ailus@linux.intel.com,
+        andy.shevchenko@gmail.com, hdegoede@redhat.com,
+        rafael.j.wysocki@intel.com, linux-kselftest@vger.kernel.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, shuah@kernel.org,
+        anders.roxell@linaro.org, lkft-triage@lists.linaro.org,
+        linux@rasmusvillemoes.dk,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1] kobject: make sure parent is not released before
+ children
+Message-ID: <20200415061154.GA2496263@kroah.com>
+References: <20200414204240.186377-1-brendanhiggins@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200414131542.25608-14-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414204240.186377-1-brendanhiggins@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/14 21:15, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On Tue, Apr 14, 2020 at 01:42:40PM -0700, Brendan Higgins wrote:
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 > 
-> Add a check to the bus_iommu_probe() call-path to make sure it ignores
-> devices which have already been successfully probed. Then export the
-> bus_iommu_probe() function so it can be used by IOMMU drivers.
+> Previously, kobjects were released before the associated kobj_types;
+> this can cause a kobject deallocation to fail when the kobject has
+> children; an example of this is in software_node_unregister_nodes(); it
+> calls release on the parent before children meaning that children can be
+> released after the parent, which may be needed for removal.
+
+The simple solution for this is "don't do this" :)
+
+> So, take a reference to the parent before we delete a node to ensure
+> that the parent is not released before the children.
 > 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+> Link: https://lore.kernel.org/linux-kselftest/CAFd5g44s5NQvT8TG_x4rwbqoa7zWzkV0TX+ETZoQdOB7OwXCPQ@mail.gmail.com/T/#m71f37f3985f2abd7209c8ca8e0fa4edc45e171d6
+> Co-developed-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 > ---
->   drivers/iommu/iommu.c | 6 +++++-
->   include/linux/iommu.h | 1 +
->   2 files changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 834a45da0ed0..a2ff95424044 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -1615,6 +1615,10 @@ static int probe_iommu_group(struct device *dev, void *data)
->   	if (!dev_iommu_get(dev))
->   		return -ENOMEM;
->   
-> +	/* Device is probed already if in a group */
-> +	if (iommu_group_get(dev) != NULL)
+> This patch is based on the diff written by Heikki linked above.
+> 
+> Heikki, can you either reply with a Signed-off-by? Otherwise, I can
+> resend with me as the author and I will list you as the Co-developed-by.
+> 
+> Sorry for all the CCs: I just want to make sure everyone who was a party
+> to the original bug sees this.
+> 
+> ---
+>  lib/kobject.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/lib/kobject.c b/lib/kobject.c
+> index 83198cb37d8d..5921e2470b46 100644
+> --- a/lib/kobject.c
+> +++ b/lib/kobject.c
+> @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
+>   */
+>  static void kobject_cleanup(struct kobject *kobj)
+>  {
+> +	struct kobject *parent = kobj->parent;
+>  	struct kobj_type *t = get_ktype(kobj);
+>  	const char *name = kobj->name;
+>  
+> @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
+>  		kobject_uevent(kobj, KOBJ_REMOVE);
+>  	}
+>  
+> +	/* make sure the parent is not released before the (last) child */
+> +	kobject_get(parent);
+> +
+>  	/* remove from sysfs if the caller did not do it */
+>  	if (kobj->state_in_sysfs) {
+>  		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+> @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
+>  		t->release(kobj);
+>  	}
+>  
+> +	kobject_put(parent);
+> +
 
-Same as
-	if (iommu_group_get(dev))
-?
+No, please don't do this.
 
-By the way, do we need to put the group if device has already been
-probed?
+A child device should have always incremented the parent already if it
+was correctly registered.  We have had this patch been proposed multiple
+times over the years, and every time it was, we said no and went and
+fixed the real issue which was with the user of the interface.
 
-Best regards,
-baolu
+So, what code is causing this to happen?  What parent firmware device is
+being removed that the code didn't walk the tree properly and remove the
+children first?
+
+thanks,
+
+greg k-h
