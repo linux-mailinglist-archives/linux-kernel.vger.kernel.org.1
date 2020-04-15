@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B091AB18E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF6E1AB1AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406224AbgDOT1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:27:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:51634 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404592AbgDOT0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:26:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A2A3C14;
-        Wed, 15 Apr 2020 12:26:47 -0700 (PDT)
-Received: from [192.168.1.123] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDBA73F73D;
-        Wed, 15 Apr 2020 12:26:44 -0700 (PDT)
-Subject: Re: [PATCH v3 05/12] arm64: csum: Disable KASAN for do_csum()
-To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, kernel-team@android.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20200415165218.20251-1-will@kernel.org>
- <20200415165218.20251-6-will@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <4d31aca5-56dd-2ca5-d1b8-f754ad184b04@arm.com>
-Date:   Wed, 15 Apr 2020 20:26:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200415165218.20251-6-will@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+        id S2436710AbgDOT3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:29:33 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:35672 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411889AbgDOT3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:29:10 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jOngW-00079u-N9; Wed, 15 Apr 2020 14:26:56 -0500
+Message-ID: <ef9f59f98f6bcf81891de87fd9cd0b5973bbd468.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
+Date:   Wed, 15 Apr 2020 14:26:55 -0500
+In-Reply-To: <20200415152442.122873-6-wenhu.wang@vivo.com>
+References: <20200415124929.GA3265842@kroah.com>
+         <20200415152442.122873-1-wenhu.wang@vivo.com>
+         <20200415152442.122873-6-wenhu.wang@vivo.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: wenhu.wang@vivo.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, christophe.leroy@c-s.fr, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, mpe@ellerman.id.au
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH v2,5/5] drivers: uio: new driver for fsl_85xx_cache_sram
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-15 5:52 pm, Will Deacon wrote:
-> do_csum() over-reads the source buffer and therefore abuses
-> READ_ONCE_NOCHECK() to avoid tripping up KASAN. In preparation for
-> READ_ONCE_NOCHECK() becoming a macro, and therefore losing its
-> '__no_sanitize_address' annotation, just annotate do_csum() explicitly
-> and fall back to normal loads.
+On Wed, 2020-04-15 at 08:24 -0700, Wang Wenhu wrote:
+> +static const struct of_device_id uio_mpc85xx_l2ctlr_of_match[] = {
+> +	{	.compatible = "uio,fsl,p2020-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p2010-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1020-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1011-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1013-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1022-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,mpc8548-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,mpc8544-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,mpc8572-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,mpc8536-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1021-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1012-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1025-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1016-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1024-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1015-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,p1010-l2-cache-controller",	},
+> +	{	.compatible = "uio,fsl,bsc9131-l2-cache-controller",	},
+> +	{},
+> +};
 
-FWIW with most compilers I played with, the read-once-ness *was* also 
-important to ensure the uint128_t accesses compose to nice efficient 
-LDPs rather than being split into a motley mess of individual LDRs.
+NACK
 
-The buffer loads that aren't the first or potentially the last didn't 
-strictly need to be nocheck, however since the whole range gets 
-explicitly checked up-front they may as well avoid further unnecessary 
-KASAN penalty, plus it made things look nice and consistent :)
+The device tree describes the hardware, not what driver you want to bind the
+hardware to, or how you want to allocate the resources.  And even if defining
+nodes for sram allocation were the right way to go, why do you have a separate
+compatible for each chip when you're just describing software configuration?
 
-Robin.
+Instead, have module parameters that take the sizes and alignments you'd like
+to allocate and expose to userspace.  Better still would be some sort of
+dynamic allocation (e.g. open a fd, ioctl to set the requested size/alignment,
+if it succeeds you can mmap it, and when the fd is closed the region is
+freed).
 
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->   arch/arm64/lib/csum.c | 20 ++++++++++++--------
->   1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/lib/csum.c b/arch/arm64/lib/csum.c
-> index 60eccae2abad..78b87a64ca0a 100644
-> --- a/arch/arm64/lib/csum.c
-> +++ b/arch/arm64/lib/csum.c
-> @@ -14,7 +14,11 @@ static u64 accumulate(u64 sum, u64 data)
->   	return tmp + (tmp >> 64);
->   }
->   
-> -unsigned int do_csum(const unsigned char *buff, int len)
-> +/*
-> + * We over-read the buffer and this makes KASAN unhappy. Instead, disable
-> + * instrumentation and call kasan explicitly.
-> + */
-> +unsigned int __no_sanitize_address do_csum(const unsigned char *buff, int len)
->   {
->   	unsigned int offset, shift, sum;
->   	const u64 *ptr;
-> @@ -42,7 +46,7 @@ unsigned int do_csum(const unsigned char *buff, int len)
->   	 * odd/even alignment, and means we can ignore it until the very end.
->   	 */
->   	shift = offset * 8;
-> -	data = READ_ONCE_NOCHECK(*ptr++);
-> +	data = *ptr++;
->   #ifdef __LITTLE_ENDIAN
->   	data = (data >> shift) << shift;
->   #else
-> @@ -58,10 +62,10 @@ unsigned int do_csum(const unsigned char *buff, int len)
->   	while (unlikely(len > 64)) {
->   		__uint128_t tmp1, tmp2, tmp3, tmp4;
->   
-> -		tmp1 = READ_ONCE_NOCHECK(*(__uint128_t *)ptr);
-> -		tmp2 = READ_ONCE_NOCHECK(*(__uint128_t *)(ptr + 2));
-> -		tmp3 = READ_ONCE_NOCHECK(*(__uint128_t *)(ptr + 4));
-> -		tmp4 = READ_ONCE_NOCHECK(*(__uint128_t *)(ptr + 6));
-> +		tmp1 = *(__uint128_t *)ptr;
-> +		tmp2 = *(__uint128_t *)(ptr + 2);
-> +		tmp3 = *(__uint128_t *)(ptr + 4);
-> +		tmp4 = *(__uint128_t *)(ptr + 6);
->   
->   		len -= 64;
->   		ptr += 8;
-> @@ -85,7 +89,7 @@ unsigned int do_csum(const unsigned char *buff, int len)
->   		__uint128_t tmp;
->   
->   		sum64 = accumulate(sum64, data);
-> -		tmp = READ_ONCE_NOCHECK(*(__uint128_t *)ptr);
-> +		tmp = *(__uint128_t *)ptr;
->   
->   		len -= 16;
->   		ptr += 2;
-> @@ -100,7 +104,7 @@ unsigned int do_csum(const unsigned char *buff, int len)
->   	}
->   	if (len > 0) {
->   		sum64 = accumulate(sum64, data);
-> -		data = READ_ONCE_NOCHECK(*ptr);
-> +		data = *ptr;
->   		len -= 8;
->   	}
->   	/*
-> 
+-Scott
+
+
