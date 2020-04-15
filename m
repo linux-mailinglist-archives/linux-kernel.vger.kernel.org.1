@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848201A9984
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361901A998E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896002AbgDOJvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S2896028AbgDOJwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895898AbgDOJt6 (ORCPT
+        by vger.kernel.org with ESMTP id S2895897AbgDOJt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:49:58 -0400
+        Wed, 15 Apr 2020 05:49:57 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9784FC061A0F;
-        Wed, 15 Apr 2020 02:49:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A187EC061A0E;
+        Wed, 15 Apr 2020 02:49:57 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOeg8-0005uC-KL; Wed, 15 Apr 2020 11:49:56 +0200
+        id 1jOeg7-0005ug-Gb; Wed, 15 Apr 2020 11:49:55 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 325F51C03A9;
-        Wed, 15 Apr 2020 11:49:51 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 09:49:50 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 188D51C0450;
+        Wed, 15 Apr 2020 11:49:52 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 09:49:51 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce/amd: Cleanup threshold device remove path
+Subject: [tip: ras/core] x86/mce/amd: Sanitize thresholding device creation
+ hotplug path
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200403161943.1458-7-bp@alien8.de>
-References: <20200403161943.1458-7-bp@alien8.de>
+In-Reply-To: <20200403161943.1458-5-bp@alien8.de>
+References: <20200403161943.1458-5-bp@alien8.de>
 MIME-Version: 1.0
-Message-ID: <158694419081.28353.17469261837051002623.tip-bot2@tip-bot2>
+Message-ID: <158694419173.28353.4360802211784932006.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,170 +50,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the ras/core branch of tip:
 
-Commit-ID:     f26d2580a7ddc84aa9e51e47fdbb5ad63dbee5a7
-Gitweb:        https://git.kernel.org/tip/f26d2580a7ddc84aa9e51e47fdbb5ad63dbee5a7
+Commit-ID:     6e7a41c63abcfee28734c4c8872dae8d642329b6
+Gitweb:        https://git.kernel.org/tip/6e7a41c63abcfee28734c4c8872dae8d642329b6
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 31 Mar 2020 10:53:18 +02:00
+AuthorDate:    Mon, 30 Mar 2020 16:21:54 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 14 Apr 2020 15:49:51 +02:00
+CommitterDate: Tue, 14 Apr 2020 15:48:30 +02:00
 
-x86/mce/amd: Cleanup threshold device remove path
+x86/mce/amd: Sanitize thresholding device creation hotplug path
 
-Pass in the bank pointer directly to the cleaning up functions,
-obviating the need for per-CPU accesses. Make the clean up path
-interrupt-safe by cleaning the bank pointer first so that the rest of
-the teardown happens safe from the thresholding interrupt.
+Drop the stupid threshold_init_device() initcall iterating over all
+online CPUs in favor of properly setting up everything on the CPU
+hotplug path, when each CPU's callback is invoked.
 
-No functional changes.
-
- [ bp: Write commit message and reverse bank->shared test to save an
-   indentation level in threshold_remove_bank(). ]
+ [ bp: Write commit message. ]
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200403161943.1458-7-bp@alien8.de
+Link: https://lkml.kernel.org/r/20200403161943.1458-5-bp@alien8.de
 ---
- arch/x86/include/asm/amd_nb.h |  1 +-
- arch/x86/kernel/cpu/mce/amd.c | 79 +++++++++++++++-------------------
- 2 files changed, 38 insertions(+), 42 deletions(-)
+ arch/x86/kernel/cpu/mce/amd.c  | 57 +++++++++------------------------
+ arch/x86/kernel/cpu/mce/core.c | 11 ++++++-
+ 2 files changed, 27 insertions(+), 41 deletions(-)
 
-diff --git a/arch/x86/include/asm/amd_nb.h b/arch/x86/include/asm/amd_nb.h
-index c7df20e..455066a 100644
---- a/arch/x86/include/asm/amd_nb.h
-+++ b/arch/x86/include/asm/amd_nb.h
-@@ -57,6 +57,7 @@ struct threshold_bank {
- 
- 	/* initialized to the number of CPUs on the node sharing this bank */
- 	refcount_t		cpus;
-+	unsigned int		shared;
- };
- 
- struct amd_northbridge {
 diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-index a33d9a1..16e7aea 100644
+index 5639421..d3c416b 100644
 --- a/arch/x86/kernel/cpu/mce/amd.c
 +++ b/arch/x86/kernel/cpu/mce/amd.c
-@@ -1362,6 +1362,7 @@ static int threshold_create_bank(struct threshold_bank **bp, unsigned int cpu,
- 	}
- 
- 	if (is_shared_bank(bank)) {
-+		b->shared = 1;
- 		refcount_set(&b->cpus, 1);
- 
- 		/* nb is already initialized, see above */
-@@ -1391,21 +1392,16 @@ static void threshold_block_release(struct kobject *kobj)
- 	kfree(to_block(kobj));
- }
- 
--static void deallocate_threshold_block(unsigned int cpu, unsigned int bank)
-+static void deallocate_threshold_blocks(struct threshold_bank *bank)
- {
--	struct threshold_block *pos = NULL;
--	struct threshold_block *tmp = NULL;
--	struct threshold_bank *head = per_cpu(threshold_banks, cpu)[bank];
--
--	if (!head)
--		return;
-+	struct threshold_block *pos, *tmp;
- 
--	list_for_each_entry_safe(pos, tmp, &head->blocks->miscj, miscj) {
-+	list_for_each_entry_safe(pos, tmp, &bank->blocks->miscj, miscj) {
- 		list_del(&pos->miscj);
- 		kobject_put(&pos->kobj);
- 	}
- 
--	kobject_put(&head->blocks->kobj);
-+	kobject_put(&bank->blocks->kobj);
- }
- 
- static void __threshold_remove_blocks(struct threshold_bank *b)
-@@ -1419,57 +1415,56 @@ static void __threshold_remove_blocks(struct threshold_bank *b)
- 		kobject_del(&pos->kobj);
- }
- 
--static void threshold_remove_bank(unsigned int cpu, int bank)
-+static void threshold_remove_bank(struct threshold_bank *bank)
- {
- 	struct amd_northbridge *nb;
--	struct threshold_bank *b;
- 
--	b = per_cpu(threshold_banks, cpu)[bank];
--	if (!b)
--		return;
-+	if (!bank->blocks)
-+		goto out_free;
- 
--	if (!b->blocks)
--		goto free_out;
-+	if (!bank->shared)
-+		goto out_dealloc;
- 
--	if (is_shared_bank(bank)) {
--		if (!refcount_dec_and_test(&b->cpus)) {
--			__threshold_remove_blocks(b);
--			per_cpu(threshold_banks, cpu)[bank] = NULL;
--			return;
--		} else {
--			/*
--			 * the last CPU on this node using the shared bank is
--			 * going away, remove that bank now.
--			 */
--			nb = node_to_amd_nb(amd_get_nb_id(cpu));
--			nb->bank4 = NULL;
--		}
-+	if (!refcount_dec_and_test(&bank->cpus)) {
-+		__threshold_remove_blocks(bank);
-+		return;
-+	} else {
-+		/*
-+		 * The last CPU on this node using the shared bank is going
-+		 * away, remove that bank now.
-+		 */
-+		nb = node_to_amd_nb(amd_get_nb_id(smp_processor_id()));
-+		nb->bank4 = NULL;
- 	}
- 
--	deallocate_threshold_block(cpu, bank);
-+out_dealloc:
-+	deallocate_threshold_blocks(bank);
- 
--free_out:
--	kobject_del(b->kobj);
--	kobject_put(b->kobj);
--	kfree(b);
--	per_cpu(threshold_banks, cpu)[bank] = NULL;
-+out_free:
-+	kobject_put(bank->kobj);
-+	kfree(bank);
- }
- 
- int mce_threshold_remove_device(unsigned int cpu)
- {
- 	struct threshold_bank **bp = this_cpu_read(threshold_banks);
--	unsigned int bank;
-+	unsigned int bank, numbanks = this_cpu_read(mce_num_banks);
- 
- 	if (!bp)
- 		return 0;
- 
--	for (bank = 0; bank < per_cpu(mce_num_banks, cpu); ++bank) {
--		if (!(per_cpu(bank_map, cpu) & (1 << bank)))
--			continue;
--		threshold_remove_bank(cpu, bank);
--	}
--	/* Clear the pointer before freeing the memory */
-+	/*
-+	 * Clear the pointer before cleaning up, so that the interrupt won't
-+	 * touch anything of this.
-+	 */
- 	this_cpu_write(threshold_banks, NULL);
-+
-+	for (bank = 0; bank < numbanks; bank++) {
-+		if (bp[bank]) {
-+			threshold_remove_bank(bp[bank]);
-+			bp[bank] = NULL;
-+		}
-+	}
- 	kfree(bp);
+@@ -1474,12 +1474,22 @@ int mce_threshold_remove_device(unsigned int cpu)
  	return 0;
  }
+ 
+-/* create dir/files for all valid threshold banks */
++/**
++ * mce_threshold_create_device - Create the per-CPU MCE threshold device
++ * @cpu:	The plugged in CPU
++ *
++ * Create directories and files for all valid threshold banks.
++ *
++ * This is invoked from the CPU hotplug callback which was installed in
++ * mcheck_init_device(). The invocation happens in context of the hotplug
++ * thread running on @cpu.  The callback is invoked on all CPUs which are
++ * online when the callback is installed or during a real hotplug event.
++ */
+ int mce_threshold_create_device(unsigned int cpu)
+ {
+ 	unsigned int bank;
+ 	struct threshold_bank **bp;
+-	int err = 0;
++	int err;
+ 
+ 	if (!mce_flags.amd_threshold)
+ 		return 0;
+@@ -1500,49 +1510,14 @@ int mce_threshold_create_device(unsigned int cpu)
+ 			continue;
+ 		err = threshold_create_bank(cpu, bank);
+ 		if (err)
+-			goto err;
+-	}
+-	return err;
+-err:
+-	mce_threshold_remove_device(cpu);
+-	return err;
+-}
+-
+-static __init int threshold_init_device(void)
+-{
+-	unsigned lcpu = 0;
+-
+-	/* to hit CPUs online before the notifier is up */
+-	for_each_online_cpu(lcpu) {
+-		int err = mce_threshold_create_device(lcpu);
+-
+-		if (err)
+-			return err;
++			goto out_err;
+ 	}
+ 
+ 	if (thresholding_irq_en)
+ 		mce_threshold_vector = amd_threshold_interrupt;
+ 
+ 	return 0;
++out_err:
++	mce_threshold_remove_device(cpu);
++	return err;
+ }
+-/*
+- * there are 3 funcs which need to be _initcalled in a logic sequence:
+- * 1. xen_late_init_mcelog
+- * 2. mcheck_init_device
+- * 3. threshold_init_device
+- *
+- * xen_late_init_mcelog must register xen_mce_chrdev_device before
+- * native mce_chrdev_device registration if running under xen platform;
+- *
+- * mcheck_init_device should be inited before threshold_init_device to
+- * initialize mce_device, otherwise a NULL ptr dereference will cause panic.
+- *
+- * so we use following _initcalls
+- * 1. device_initcall(xen_late_init_mcelog);
+- * 2. device_initcall_sync(mcheck_init_device);
+- * 3. late_initcall(threshold_init_device);
+- *
+- * when running under xen, the initcall order is 1,2,3;
+- * on baremetal, we skip 1 and we do only 2 and 3.
+- */
+-late_initcall(threshold_init_device);
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 43ca91e..a6009ef 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -2481,6 +2481,13 @@ static __init void mce_init_banks(void)
+ 	}
+ }
+ 
++/*
++ * When running on XEN, this initcall is ordered against the XEN mcelog
++ * initcall:
++ *
++ *   device_initcall(xen_late_init_mcelog);
++ *   device_initcall_sync(mcheck_init_device);
++ */
+ static __init int mcheck_init_device(void)
+ {
+ 	int err;
+@@ -2512,6 +2519,10 @@ static __init int mcheck_init_device(void)
+ 	if (err)
+ 		goto err_out_mem;
+ 
++	/*
++	 * Invokes mce_cpu_online() on all CPUs which are online when
++	 * the state is installed.
++	 */
+ 	err = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/mce:online",
+ 				mce_cpu_online, mce_cpu_pre_down);
+ 	if (err < 0)
