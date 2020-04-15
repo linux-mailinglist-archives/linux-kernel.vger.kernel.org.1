@@ -2,152 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDA21AB030
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D9A1AB026
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411583AbgDOR6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441096AbgDORz7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:55:59 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B830C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:55:58 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q22so4743504ljg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wnna/6OnfA+ZY6dFpwQADy6VF1hPNJpTLuPWcjrS+9o=;
-        b=lT/jtIdHqRmRii6Mhp0kxfUeDNI5rGqofv9QErcLovXn4eP3jZocb3Bpl2WPwsG8BE
-         KS3mM5EpSs+Uu+Tf56iJssZM4HvTeyjXO2moUDIzsOf3sraCA477lBpkK08LxtZKFHuR
-         M6ScyxD+ddeekgfX79R9iCS71aGqv658euPY0EYzrWu4mk1S98xVzeYIyffvlQ1RCd39
-         NEcluG9VClepTW+ECpxn/bGQQUo0oE2EWe9hncZ2MkRMOR/fVeT+5thwm9CPeJ+mIV2w
-         XfcJFIzjYpuM0ZVVd+xatRdOe8sG3Vj/ANuev2T5NAzhy0SJwiNCNHeEHiRKGctan+R+
-         DFgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wnna/6OnfA+ZY6dFpwQADy6VF1hPNJpTLuPWcjrS+9o=;
-        b=GoU6/a2izE84aslTAUCBlBL2hqwy8cOWCZGf/artHOtHI9t0MpdjXavYyPgxS7d46e
-         kH6LIC9DOhOJRDHW8EmnbKvI28dMffg0iprB1LJXKZ+dB+p10MePSkyX0K0QGwMZ02B8
-         Q4jirCQrMy+hQHIWII9KSusv/qN9vvSQeJzk+auVNkplZgkno8FfeMsykJqB1ohFBmz1
-         Nd4WrmvsTFRb2gpKE+Zs1B2rtkYyvJXWoF2WDuydQXF/MnLm7ILni5pZusfv/5lu60x1
-         aX9oWStuzmaNfRUB+QzNm5/tQKVJGFX8pZN+a3m8U83nJaMSX6hrtVznsX0CBfwrBGay
-         Yrng==
-X-Gm-Message-State: AGi0Pubrkz/dNpVZJ7ixTwEl0Nd5tEwjnbby/8Y+4+m4LLgQMOLRK1Wh
-        K/xMhL5aB19673AU2dW7cv+x9B5N3IYWnSwAGopZjQ==
-X-Google-Smtp-Source: APiQypIAX9TwClluLsNWlpVGtTbHrq5zHPu1eJSAJi8mSv7889eeJU3EbUg3C4LKaPOzQf5ye9c0nsPcuwjNkmygnO4=
-X-Received: by 2002:a2e:6c05:: with SMTP id h5mr3968173ljc.217.1586973356820;
- Wed, 15 Apr 2020 10:55:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <1583886030-11339-1-git-send-email-skomatineni@nvidia.com>
-In-Reply-To: <1583886030-11339-1-git-send-email-skomatineni@nvidia.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 15 Apr 2020 23:25:45 +0530
-Message-ID: <CA+G9fYvreAv5HmZg0O4VvLvf_PYSvzD1rp08XONNQGExctgQ0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] sdhci: tegra: Implement Tegra specific set_timeout callback
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, baolin.wang@linaro.org,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, bradleybolen@gmail.com,
-        thierry.reding@gmail.com, Jon Hunter <jonathanh@nvidia.com>,
-        anrao@nvidia.com, linux-tegra <linux-tegra@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2404725AbgDOR5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1416562AbgDOR4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:56:17 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80B592084D;
+        Wed, 15 Apr 2020 17:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586973376;
+        bh=1R7gXM8eRxN4PT3jYnhPCVqSze7aESde1MRtGmvXYuc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Vk3ibdNqjpc4+xBWezbd9gGnG57y0EVDjOuOSLajFOG0a8UaE2DMdhMGKEjVKNMbn
+         4BLS/Mf0eJPg4wYAWm62ANZZolr7BaAKFNkhouvtyJr0rWpSorSpWWvkmZKOujPpzQ
+         /mTN6bbmMIuP4mS78Yf/Y8wlTu9Q6pcUTvv1+Crs=
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 1/6] rcu: Add KCSAN stubs to update.c
+Date:   Wed, 15 Apr 2020 10:56:09 -0700
+Message-Id: <20200415175614.10837-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200415175543.GA10416@paulmck-ThinkPad-P72>
+References: <20200415175543.GA10416@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Mar 2020 at 06:41, Sowjanya Komatineni
-<skomatineni@nvidia.com> wrote:
->
-> Tegra host supports HW busy detection and timeouts based on the
-> count programmed in SDHCI_TIMEOUT_CONTROL register and max busy
-> timeout it supports is 11s in finite busy wait mode.
->
-> Some operations like SLEEP_AWAKE, ERASE and flush cache through
-> SWITCH commands take longer than 11s and Tegra host supports
-> infinite HW busy wait mode where HW waits forever till the card
-> is busy without HW timeout.
->
-> This patch implements Tegra specific set_timeout sdhci_ops to allow
-> switching between finite and infinite HW busy detection wait modes
-> based on the device command expected operation time.
->
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  drivers/mmc/host/sdhci-tegra.c | 31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
-> index a25c3a4..fa8f6a4 100644
-> --- a/drivers/mmc/host/sdhci-tegra.c
-> +++ b/drivers/mmc/host/sdhci-tegra.c
-> @@ -45,6 +45,7 @@
->  #define SDHCI_TEGRA_CAP_OVERRIDES_DQS_TRIM_SHIFT       8
->
->  #define SDHCI_TEGRA_VENDOR_MISC_CTRL                   0x120
-> +#define SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT            BIT(0)
->  #define SDHCI_MISC_CTRL_ENABLE_SDR104                  0x8
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
->  #define SDHCI_MISC_CTRL_ENABLE_SDR50                   0x10
->  #define SDHCI_MISC_CTRL_ENABLE_SDHCI_SPEC_300          0x20
-> @@ -1227,6 +1228,34 @@ static u32 sdhci_tegra_cqhci_irq(struct sdhci_host *host, u32 intmask)
->         return 0;
->  }
->
-> +static void tegra_sdhci_set_timeout(struct sdhci_host *host,
-> +                                   struct mmc_command *cmd)
-> +{
-> +       u32 val;
-> +
-> +       /*
-> +        * HW busy detection timeout is based on programmed data timeout
-> +        * counter and maximum supported timeout is 11s which may not be
-> +        * enough for long operations like cache flush, sleep awake, erase.
-> +        *
-> +        * ERASE_TIMEOUT_LIMIT bit of VENDOR_MISC_CTRL register allows
-> +        * host controller to wait for busy state until the card is busy
-> +        * without HW timeout.
-> +        *
-> +        * So, use infinite busy wait mode for operations that may take
-> +        * more than maximum HW busy timeout of 11s otherwise use finite
-> +        * busy wait mode.
-> +        */
-> +       val = sdhci_readl(host, SDHCI_TEGRA_VENDOR_MISC_CTRL);
-> +       if (cmd && cmd->busy_timeout >= 11 * HZ)
-> +               val |= SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT;
-> +       else
-> +               val &= ~SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT;
-> +       sdhci_writel(host, val, SDHCI_TEGRA_VENDOR_MISC_CTRL);
-> +
-> +       __sdhci_set_timeout(host, cmd);
+This commit adds stubs for KCSAN's data_race(), ASSERT_EXCLUSIVE_WRITER(),
+and ASSERT_EXCLUSIVE_ACCESS() macros to allow code using these macros
+to move ahead.
 
-kernel build on arm and arm64 architecture failed on stable-rc 4.19
-(arm), 5.4 (arm64) and 5.5 (arm64)
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/update.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-drivers/mmc/host/sdhci-tegra.c: In function 'tegra_sdhci_set_timeout':
-drivers/mmc/host/sdhci-tegra.c:1256:2: error: implicit declaration of
-function '__sdhci_set_timeout'; did you mean
-'tegra_sdhci_set_timeout'? [-Werror=implicit-function-declaration]
-  __sdhci_set_timeout(host, cmd);
-  ^~~~~~~~~~~~~~~~~~~
-  tegra_sdhci_set_timeout
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 28a8bdc..74a698a 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -51,6 +51,19 @@
+ #endif
+ #define MODULE_PARAM_PREFIX "rcupdate."
+ 
++#ifndef data_race
++#define data_race(expr)							\
++	({								\
++		expr;							\
++	})
++#endif
++#ifndef ASSERT_EXCLUSIVE_WRITER
++#define ASSERT_EXCLUSIVE_WRITER(var) do { } while (0)
++#endif
++#ifndef ASSERT_EXCLUSIVE_ACCESS
++#define ASSERT_EXCLUSIVE_ACCESS(var) do { } while (0)
++#endif
++
+ #ifndef CONFIG_TINY_RCU
+ module_param(rcu_expedited, int, 0);
+ module_param(rcu_normal, int, 0);
+-- 
+2.9.5
 
-Full build log,
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.5/DISTRO=lkft,MACHINE=am57xx-evm,label=docker-lkft/83/consoleText
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.4/DISTRO=lkft,MACHINE=juno,label=docker-lkft/158/consoleText
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-4.19/DISTRO=lkft,MACHINE=am57xx-evm,label=docker-lkft/511/consoleText
-
-- Naresh
