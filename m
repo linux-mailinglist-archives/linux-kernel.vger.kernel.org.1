@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488081AB188
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8821AB1B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404385AbgDOTVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
+        id S2437850AbgDOT37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506493AbgDOTVQ (ORCPT
+        by vger.kernel.org with ESMTP id S2406962AbgDOT3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:21:16 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB262C061A0C;
-        Wed, 15 Apr 2020 12:21:14 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id m8so5034270lji.1;
-        Wed, 15 Apr 2020 12:21:14 -0700 (PDT)
+        Wed, 15 Apr 2020 15:29:46 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC04C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:22:49 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mn19so293307pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ceph2IeaEjNXlv8kF7Vc08ScVo4hOK+Niuv5P5aPoWQ=;
-        b=k6JVHoQX7gCVPi30Hb3X3dztd4RHj2MHZ80uLjW0UjXHwFwJDR6nA4BkWMhyCwYhY3
-         rPK1ckm1Lmi3UWFumP8T5PIEdgBjtHpS5sNVyXC8IPEyGUDfcZPIzgE6f2vzQFw6ESa+
-         7nYmDloEa1YOGmP2AHBSipFCv5ozM1q+eStBAV9klnEVvQac1F2H4evs2RAQFk/uMDcz
-         hIoemCK0TdCyZUQw2vlaYIv2btU/5oqMFiJQf7RWjb8S0M/6Nyispwjh8SmazvQuqycq
-         rlR/5tb51y4NgeBLTuk9imqsAKkglUELU3hpGJyXj26GsJD473ufr/a3/Uffj8OajxYZ
-         GEJw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=2G6Ppm6S3yDtcLs073bFFvyTtzzj8G77IKge+inQALY=;
+        b=Ac2G13fDGKHLvowWSXOVwAwAw5x1iFQyzhRdx7GF5kVg4aB5Phh8tEMuxboIKJqxHm
+         B5cvqQA4u5O+sddhg4tyP6Eofl69zfR+4bNTUr6t0qV2CfbazBQeEYMJA2t+u0S5Bso0
+         IEUFbEa+B8Cbv8q/pgnFhY5N8s2OfrG8ktMH4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ceph2IeaEjNXlv8kF7Vc08ScVo4hOK+Niuv5P5aPoWQ=;
-        b=PXzDT7IRUkb53Bo38fVCNKpu/jODfnRHlfVC0NXNkxOXuBlJ78EXKwnxw7RDnMq75C
-         4GVSqAxKjH30f8bBLC07wm+Fsfc7cxRgBtF1m0BWZTJmo2mJfU8lotSFnvWLedfSl6El
-         O0FJ2QWlM7WGrx3I8eJ6pGrvt3F805CAjLT8FX767zfWLy0QJgLJwp7KFS/w0rEFXtwZ
-         bhmISVle1V35t4R9QTMu+pqtaLbvNqw/4Kb647wfazV5i6nT6rdw3mNoBIr4OhhzE00z
-         ePT9G4m/2JVa7H+OKLeA0+Hj2jUC6p4NOmZN6IN8yp5Hq9lF20OCghy+bbtBD+Z9ByKa
-         mB9g==
-X-Gm-Message-State: AGi0PuYlpfxaEC4UZoN+vmCiIwp5bBCvCppxx8Srf5KcSxm62FZ7qRVA
-        d4mP9Nnt7AGpIThNpR9N683LKVM3
-X-Google-Smtp-Source: APiQypJKa94Wc+Qyg+6OmleCPlfwn8YZOss69+KxzmFGWV8nb0nU3agrGVoCgfA5KA61fUHD0u/l0g==
-X-Received: by 2002:a05:651c:1064:: with SMTP id y4mr4178286ljm.49.1586978473089;
-        Wed, 15 Apr 2020 12:21:13 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id l7sm14099870lfg.79.2020.04.15.12.21.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 12:21:12 -0700 (PDT)
-Subject: Re: [RFC PATCH v7 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com,
-        sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1586919463-30542-1-git-send-email-skomatineni@nvidia.com>
- <1586919463-30542-7-git-send-email-skomatineni@nvidia.com>
- <4118112f-f865-5460-6319-d71271fd78d1@gmail.com>
- <a69a8b34-beea-3ad0-e08e-f7df8b9e7047@nvidia.com>
- <6afa951e-d904-f3c0-053f-82a02fb18979@nvidia.com>
- <b1c78827-13ea-0c94-a575-97b5afc0ede1@nvidia.com>
- <5954a7e1-910e-7f48-56d3-e671b56ead74@nvidia.com>
- <d6a9e07c-474a-a076-8313-32f5f4ca8d64@nvidia.com>
- <786949a9-8507-7723-f29b-b91a216bfd28@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f831408b-bbf4-3047-20e3-5bebfa9fc1ad@gmail.com>
-Date:   Wed, 15 Apr 2020 22:21:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=2G6Ppm6S3yDtcLs073bFFvyTtzzj8G77IKge+inQALY=;
+        b=q4cp+p2EGHm2WHgtBVthDFHZxyu0r+egWj6UT8RLpbw9fSeSg4xPenGGkEbINfRPvx
+         NLs5W6RROPxv9dUhQlZQXgOkzaSBg3KCSUjxrj9OzaUMtTbNTGbJYKheQPixq81GxtaN
+         1QuwJeavsCFTikYZnUTpbqAfAwoVhhu8G+YpgvMXn/Fv2Zw99s1tsQIZwbx9C/MZ2+0w
+         n9PNj3XWu0njnIbhxks3l0JHIkupRfdsrPBG15h8IgTuBK6i8Q0iOV9nMOm4VDWFhbix
+         6lcm5WE1VvArSxmsZB5/X8D1xZCeUp+O4HN2AASL82tHeeeWnsMMZQE/q2KzqDQfCU14
+         SVQg==
+X-Gm-Message-State: AGi0Puai+kGqy0iGwDS8NF93eSQgmrciGpiDpJnV5uhxdL1qeVB0etRs
+        nuAO9RGHhVSRDOymXPytSnJRnw==
+X-Google-Smtp-Source: APiQypLELTVr4j+fjkSgAB7n6Lhqk9TCQuapKh/6qd7zA4qgNHTPFw7PmI+jfp5rV5dcZFXg8gHcig==
+X-Received: by 2002:a17:90a:df83:: with SMTP id p3mr891984pjv.66.1586978568434;
+        Wed, 15 Apr 2020 12:22:48 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id x70sm14127677pfc.21.2020.04.15.12.22.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 12:22:47 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <786949a9-8507-7723-f29b-b91a216bfd28@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200415141754.GB3820@codeaurora.org>
+References: <20200309185704.2491-1-swboyd@chromium.org> <20200414215015.GA3820@codeaurora.org> <158693222998.105027.13298557609451842017@swboyd.mtv.corp.google.com> <20200415141754.GB3820@codeaurora.org>
+Subject: Re: [PATCH] soc: qcom: cmd-db: Add debugfs dumping file
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Maulik Shah <mkshah@codeaurora.org>
+To:     Lina Iyer <ilina@codeaurora.org>
+Date:   Wed, 15 Apr 2020 12:22:46 -0700
+Message-ID: <158697856675.105027.14667274133002675067@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.04.2020 21:53, Sowjanya Komatineni пишет:
-...
->>>>>>> Have you tried to test this driver under KASAN? I suspect that
->>>>>>> you just
->>>>>>> masked the problem, instead of fixing it.
-> Tested with kmemleak scan and did not see any memory leaks
+Quoting Lina Iyer (2020-04-15 07:17:54)
+> On Tue, Apr 14 2020 at 00:30 -0600, Stephen Boyd wrote:
+> >Quoting Lina Iyer (2020-04-14 14:50:15)
+> >> On Mon, Mar 09 2020 at 12:57 -0600, Stephen Boyd wrote:
+> >> >+              seq_puts(seq, "-------------------------\n");
+> >> >+
+> >> >+              ent =3D rsc_to_entry_header(rsc);
+> >> >+              for (j =3D 0; j < le16_to_cpu(rsc->cnt); j++, ent++) {
+> >> >+                      seq_printf(seq, "0x%08x: %*pEp", le32_to_cpu(e=
+nt->addr),
+> >> 0x%05x is what we would have for a resource address.
+> >
+> >Sorry I totally missed this because the mail wasn't trimmed at all and
+> >it was really hard to find the one line that wasn't quoted!
+> >
+> Sorry, my bad. Somehow didn't notice the quoting has changed.
+>=20
+> >5 vs. 8 sounds OK to me. Send a patch? Or I can do it if you prefer.
+> Apart from the nit, I think the patch looks good. Feel free to add -
+>=20
+> Reviewed-by: Lina Iyer <ilina@codeaurora.org>
+> Tested-by: Lina Iyer <ilina@codeaurora.org>
 
-You should get use-after-free and not memleak.
+Cool thanks. I'll send a patch given that Bjorn has already picked it
+into the qcom tree.
