@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B1E1AB126
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE451AB124
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391886AbgDOTGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:06:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
+        id S2390830AbgDOTGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416810AbgDOSeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1416811AbgDOSeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 14:34:14 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E4C721582;
+        by mail.kernel.org (Postfix) with ESMTPSA id A0D7F2166E;
         Wed, 15 Apr 2020 18:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586975653;
-        bh=3Phrl6h9EMqosgd86ALvQ5xyMkh1Z+jVeGNvPLKYzeM=;
+        bh=7nxr8v/IXu5xyZFvpoMi7aAlhE4Gd0YV5C/fKVUFZAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iNrFmMYvuABbgjdagVciCYjyWffXa2P1Gs/AZQD7YFRbS1LKWTitIfusbzY5yGJ4d
-         BvYkZw/UKkA1vOBBfc9pDJjLHi4MNBpSxGID3GOqJUxjq9DvrvMjotrF4PvlMcK8c1
-         6d6C6JFtc9NloFeOKfUsfYdvjCcmm8NPjPX6JRKo=
+        b=EdjBUZSODrGYtqR3YnPj8Oze09lRB2yTI/AG6zLHSJM43igXck2sLVFG3T+rMLU0s
+         ctykKF709Zz4QgKnioKgQX9u40+CI7JBchNgMXBf37vCM5QNyp7luObMO99zM4h0qQ
+         jPZ1mP1djo1sr+CfaFIBDz2ggEj2aoAuvJEUYJvU=
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 02/15] kcsan: Add option for verbose reporting
-Date:   Wed, 15 Apr 2020 11:33:58 -0700
-Message-Id: <20200415183411.12368-2-paulmck@kernel.org>
+Subject: [PATCH v4 tip/core/rcu 03/15] kcsan: Add current->state to implicitly atomic accesses
+Date:   Wed, 15 Apr 2020 11:33:59 -0700
+Message-Id: <20200415183411.12368-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415183343.GA12265@paulmck-ThinkPad-P72>
 References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
@@ -42,228 +42,174 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marco Elver <elver@google.com>
 
-Adds CONFIG_KCSAN_VERBOSE to optionally enable more verbose reports.
-Currently information about the reporting task's held locks and IRQ
-trace events are shown, if they are enabled.
+Add volatile current->state to list of implicitly atomic accesses. This
+is in preparation to eventually enable KCSAN on kernel/sched (which
+currently still has KCSAN_SANITIZE := n).
+
+Since accesses that match the special check in atomic.h are rare, it
+makes more sense to move this check to the slow-path, avoiding the
+additional compare in the fast-path. With the microbenchmark, a speedup
+of ~6% is measured.
 
 Signed-off-by: Marco Elver <elver@google.com>
-Suggested-by: Qian Cai <cai@lca.pw>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/kcsan/core.c   |   4 +-
- kernel/kcsan/kcsan.h  |   3 ++
- kernel/kcsan/report.c | 103 +++++++++++++++++++++++++++++++++++++++++++++++++-
- lib/Kconfig.kcsan     |  13 +++++++
- 4 files changed, 120 insertions(+), 3 deletions(-)
+ kernel/kcsan/atomic.h  | 21 +++++++--------------
+ kernel/kcsan/core.c    | 22 +++++++++++++++-------
+ kernel/kcsan/debugfs.c | 27 ++++++++++++++++++---------
+ 3 files changed, 40 insertions(+), 30 deletions(-)
 
+diff --git a/kernel/kcsan/atomic.h b/kernel/kcsan/atomic.h
+index a9c1930..be9e625 100644
+--- a/kernel/kcsan/atomic.h
++++ b/kernel/kcsan/atomic.h
+@@ -4,24 +4,17 @@
+ #define _KERNEL_KCSAN_ATOMIC_H
+ 
+ #include <linux/jiffies.h>
++#include <linux/sched.h>
+ 
+ /*
+- * Helper that returns true if access to @ptr should be considered an atomic
+- * access, even though it is not explicitly atomic.
+- *
+- * List all volatile globals that have been observed in races, to suppress
+- * data race reports between accesses to these variables.
+- *
+- * For now, we assume that volatile accesses of globals are as strong as atomic
+- * accesses (READ_ONCE, WRITE_ONCE cast to volatile). The situation is still not
+- * entirely clear, as on some architectures (Alpha) READ_ONCE/WRITE_ONCE do more
+- * than cast to volatile. Eventually, we hope to be able to remove this
+- * function.
++ * Special rules for certain memory where concurrent conflicting accesses are
++ * common, however, the current convention is to not mark them; returns true if
++ * access to @ptr should be considered atomic. Called from slow-path.
+  */
+-static __always_inline bool kcsan_is_atomic(const volatile void *ptr)
++static bool kcsan_is_atomic_special(const volatile void *ptr)
+ {
+-	/* only jiffies for now */
+-	return ptr == &jiffies;
++	/* volatile globals that have been observed in data races. */
++	return ptr == &jiffies || ptr == &current->state;
+ }
+ 
+ #endif /* _KERNEL_KCSAN_ATOMIC_H */
 diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index e7387fe..065615d 100644
+index 065615d..eb30ecd 100644
 --- a/kernel/kcsan/core.c
 +++ b/kernel/kcsan/core.c
-@@ -18,8 +18,8 @@
- #include "kcsan.h"
- 
- static bool kcsan_early_enable = IS_ENABLED(CONFIG_KCSAN_EARLY_ENABLE);
--static unsigned int kcsan_udelay_task = CONFIG_KCSAN_UDELAY_TASK;
--static unsigned int kcsan_udelay_interrupt = CONFIG_KCSAN_UDELAY_INTERRUPT;
-+unsigned int kcsan_udelay_task = CONFIG_KCSAN_UDELAY_TASK;
-+unsigned int kcsan_udelay_interrupt = CONFIG_KCSAN_UDELAY_INTERRUPT;
- static long kcsan_skip_watch = CONFIG_KCSAN_SKIP_WATCH;
- static bool kcsan_interrupt_watcher = IS_ENABLED(CONFIG_KCSAN_INTERRUPT_WATCHER);
- 
-diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
-index 892de51..e282f8b 100644
---- a/kernel/kcsan/kcsan.h
-+++ b/kernel/kcsan/kcsan.h
-@@ -13,6 +13,9 @@
- /* The number of adjacent watchpoints to check. */
- #define KCSAN_CHECK_ADJACENT 1
- 
-+extern unsigned int kcsan_udelay_task;
-+extern unsigned int kcsan_udelay_interrupt;
-+
- /*
-  * Globally enable and disable KCSAN.
-  */
-diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index 11c791b..18f9d3b 100644
---- a/kernel/kcsan/report.c
-+++ b/kernel/kcsan/report.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/debug_locks.h>
-+#include <linux/delay.h>
- #include <linux/jiffies.h>
- #include <linux/kernel.h>
- #include <linux/lockdep.h>
-@@ -31,7 +33,26 @@ static struct {
- 	int			cpu_id;
- 	unsigned long		stack_entries[NUM_STACK_ENTRIES];
- 	int			num_stack_entries;
--} other_info = { .ptr = NULL };
-+
-+	/*
-+	 * Optionally pass @current. Typically we do not need to pass @current
-+	 * via @other_info since just @task_pid is sufficient. Passing @current
-+	 * has additional overhead.
-+	 *
-+	 * To safely pass @current, we must either use get_task_struct/
-+	 * put_task_struct, or stall the thread that populated @other_info.
-+	 *
-+	 * We cannot rely on get_task_struct/put_task_struct in case
-+	 * release_report() races with a task being released, and would have to
-+	 * free it in release_report(). This may result in deadlock if we want
-+	 * to use KCSAN on the allocators.
-+	 *
-+	 * Since we also want to reliably print held locks for
-+	 * CONFIG_KCSAN_VERBOSE, the current implementation stalls the thread
-+	 * that populated @other_info until it has been consumed.
-+	 */
-+	struct task_struct	*task;
-+} other_info;
- 
- /*
-  * Information about reported races; used to rate limit reporting.
-@@ -245,6 +266,16 @@ static int sym_strcmp(void *addr1, void *addr2)
- 	return strncmp(buf1, buf2, sizeof(buf1));
+@@ -188,12 +188,13 @@ static __always_inline struct kcsan_ctx *get_ctx(void)
+ 	return in_task() ? &current->kcsan_ctx : raw_cpu_ptr(&kcsan_cpu_ctx);
  }
  
-+static void print_verbose_info(struct task_struct *task)
-+{
-+	if (!task)
-+		return;
-+
-+	pr_err("\n");
-+	debug_show_held_locks(task);
-+	print_irqtrace_events(task);
-+}
-+
- /*
-  * Returns true if a report was generated, false otherwise.
-  */
-@@ -319,6 +350,9 @@ static bool print_report(const volatile void *ptr, size_t size, int access_type,
- 				  other_info.num_stack_entries - other_skipnr,
- 				  0);
++/* Rules for generic atomic accesses. Called from fast-path. */
+ static __always_inline bool
+ is_atomic(const volatile void *ptr, size_t size, int type)
+ {
+ 	struct kcsan_ctx *ctx;
  
-+		if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
-+			print_verbose_info(other_info.task);
-+
- 		pr_err("\n");
- 		pr_err("%s to 0x%px of %zu bytes by %s on cpu %i:\n",
- 		       get_access_type(access_type), ptr, size,
-@@ -340,6 +374,9 @@ static bool print_report(const volatile void *ptr, size_t size, int access_type,
- 	stack_trace_print(stack_entries + skipnr, num_stack_entries - skipnr,
- 			  0);
+-	if ((type & KCSAN_ACCESS_ATOMIC) != 0)
++	if (type & KCSAN_ACCESS_ATOMIC)
+ 		return true;
  
-+	if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
-+		print_verbose_info(current);
-+
- 	/* Print report footer. */
- 	pr_err("\n");
- 	pr_err("Reported by Kernel Concurrency Sanitizer on:\n");
-@@ -358,6 +395,67 @@ static void release_report(unsigned long *flags, enum kcsan_report_type type)
- }
+ 	/*
+@@ -201,16 +202,16 @@ is_atomic(const volatile void *ptr, size_t size, int type)
+ 	 * as atomic. This allows using them also in atomic regions, such as
+ 	 * seqlocks, without implicitly changing their semantics.
+ 	 */
+-	if ((type & KCSAN_ACCESS_ASSERT) != 0)
++	if (type & KCSAN_ACCESS_ASSERT)
+ 		return false;
  
- /*
-+ * Sets @other_info.task and awaits consumption of @other_info.
-+ *
-+ * Precondition: report_lock is held.
-+ * Postcondition: report_lock is held.
-+ */
-+static void
-+set_other_info_task_blocking(unsigned long *flags, const volatile void *ptr)
-+{
-+	/*
-+	 * We may be instrumenting a code-path where current->state is already
-+	 * something other than TASK_RUNNING.
-+	 */
-+	const bool is_running = current->state == TASK_RUNNING;
-+	/*
-+	 * To avoid deadlock in case we are in an interrupt here and this is a
-+	 * race with a task on the same CPU (KCSAN_INTERRUPT_WATCHER), provide a
-+	 * timeout to ensure this works in all contexts.
-+	 *
-+	 * Await approximately the worst case delay of the reporting thread (if
-+	 * we are not interrupted).
-+	 */
-+	int timeout = max(kcsan_udelay_task, kcsan_udelay_interrupt);
-+
-+	other_info.task = current;
-+	do {
-+		if (is_running) {
-+			/*
-+			 * Let lockdep know the real task is sleeping, to print
-+			 * the held locks (recall we turned lockdep off, so
-+			 * locking/unlocking @report_lock won't be recorded).
-+			 */
-+			set_current_state(TASK_UNINTERRUPTIBLE);
-+		}
-+		spin_unlock_irqrestore(&report_lock, *flags);
-+		/*
-+		 * We cannot call schedule() since we also cannot reliably
-+		 * determine if sleeping here is permitted -- see in_atomic().
-+		 */
-+
-+		udelay(1);
-+		spin_lock_irqsave(&report_lock, *flags);
-+		if (timeout-- < 0) {
-+			/*
-+			 * Abort. Reset other_info.task to NULL, since it
-+			 * appears the other thread is still going to consume
-+			 * it. It will result in no verbose info printed for
-+			 * this task.
-+			 */
-+			other_info.task = NULL;
-+			break;
-+		}
-+		/*
-+		 * If @ptr nor @current matches, then our information has been
-+		 * consumed and we may continue. If not, retry.
-+		 */
-+	} while (other_info.ptr == ptr && other_info.task == current);
-+	if (is_running)
-+		set_current_state(TASK_RUNNING);
-+}
-+
-+/*
-  * Depending on the report type either sets other_info and returns false, or
-  * acquires the matching other_info and returns true. If other_info is not
-  * required for the report type, simply acquires report_lock and returns true.
-@@ -388,6 +486,9 @@ static bool prepare_report(unsigned long *flags, const volatile void *ptr,
- 		other_info.cpu_id		= cpu_id;
- 		other_info.num_stack_entries	= stack_trace_save(other_info.stack_entries, NUM_STACK_ENTRIES, 1);
+ 	if (IS_ENABLED(CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) &&
+-	    (type & KCSAN_ACCESS_WRITE) != 0 && size <= sizeof(long) &&
++	    (type & KCSAN_ACCESS_WRITE) && size <= sizeof(long) &&
+ 	    IS_ALIGNED((unsigned long)ptr, size))
+ 		return true; /* Assume aligned writes up to word size are atomic. */
  
-+		if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
-+			set_other_info_task_blocking(flags, ptr);
-+
- 		spin_unlock_irqrestore(&report_lock, *flags);
- 
+ 	ctx = get_ctx();
+-	if (unlikely(ctx->atomic_next > 0)) {
++	if (ctx->atomic_next > 0) {
  		/*
-diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index 081ed2e..0f1447f 100644
---- a/lib/Kconfig.kcsan
-+++ b/lib/Kconfig.kcsan
-@@ -20,6 +20,19 @@ menuconfig KCSAN
+ 		 * Because we do not have separate contexts for nested
+ 		 * interrupts, in case atomic_next is set, we simply assume that
+@@ -224,10 +225,8 @@ is_atomic(const volatile void *ptr, size_t size, int type)
+ 			--ctx->atomic_next; /* in task, or outer interrupt */
+ 		return true;
+ 	}
+-	if (unlikely(ctx->atomic_nest_count > 0 || ctx->in_flat_atomic))
+-		return true;
  
- if KCSAN
+-	return kcsan_is_atomic(ptr);
++	return ctx->atomic_nest_count > 0 || ctx->in_flat_atomic;
+ }
  
-+config KCSAN_VERBOSE
-+	bool "Show verbose reports with more information about system state"
-+	depends on PROVE_LOCKING
-+	help
-+	  If enabled, reports show more information about the system state that
-+	  may help better analyze and debug races. This includes held locks and
-+	  IRQ trace events.
+ static __always_inline bool
+@@ -367,6 +366,15 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	if (!kcsan_is_enabled())
+ 		goto out;
+ 
++	/*
++	 * Special atomic rules: unlikely to be true, so we check them here in
++	 * the slow-path, and not in the fast-path in is_atomic(). Call after
++	 * kcsan_is_enabled(), as we may access memory that is not yet
++	 * initialized during early boot.
++	 */
++	if (!is_assert && kcsan_is_atomic_special(ptr))
++		goto out;
 +
-+	  While this option should generally be benign, we call into more
-+	  external functions on report generation; if a race report is
-+	  generated from any one of them, system stability may suffer due to
-+	  deadlocks or recursion.  If in doubt, say N.
-+
- config KCSAN_DEBUG
- 	bool "Debugging of KCSAN internals"
+ 	if (!check_encodable((unsigned long)ptr, size)) {
+ 		kcsan_counter_inc(KCSAN_COUNTER_UNENCODABLE_ACCESSES);
+ 		goto out;
+diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+index 2ff1961..72ee188 100644
+--- a/kernel/kcsan/debugfs.c
++++ b/kernel/kcsan/debugfs.c
+@@ -74,25 +74,34 @@ void kcsan_counter_dec(enum kcsan_counter_id id)
+  */
+ static noinline void microbenchmark(unsigned long iters)
+ {
++	const struct kcsan_ctx ctx_save = current->kcsan_ctx;
++	const bool was_enabled = READ_ONCE(kcsan_enabled);
+ 	cycles_t cycles;
  
++	/* We may have been called from an atomic region; reset context. */
++	memset(&current->kcsan_ctx, 0, sizeof(current->kcsan_ctx));
++	/*
++	 * Disable to benchmark fast-path for all accesses, and (expected
++	 * negligible) call into slow-path, but never set up watchpoints.
++	 */
++	WRITE_ONCE(kcsan_enabled, false);
++
+ 	pr_info("KCSAN: %s begin | iters: %lu\n", __func__, iters);
+ 
+ 	cycles = get_cycles();
+ 	while (iters--) {
+-		/*
+-		 * We can run this benchmark from multiple tasks; this address
+-		 * calculation increases likelyhood of some accesses
+-		 * overlapping. Make the access type an atomic read, to never
+-		 * set up watchpoints and test the fast-path only.
+-		 */
+-		unsigned long addr =
+-			iters % (CONFIG_KCSAN_NUM_WATCHPOINTS * PAGE_SIZE);
+-		__kcsan_check_access((void *)addr, sizeof(long), KCSAN_ACCESS_ATOMIC);
++		unsigned long addr = iters & ((PAGE_SIZE << 8) - 1);
++		int type = !(iters & 0x7f) ? KCSAN_ACCESS_ATOMIC :
++				(!(iters & 0xf) ? KCSAN_ACCESS_WRITE : 0);
++		__kcsan_check_access((void *)addr, sizeof(long), type);
+ 	}
+ 	cycles = get_cycles() - cycles;
+ 
+ 	pr_info("KCSAN: %s end   | cycles: %llu\n", __func__, cycles);
++
++	WRITE_ONCE(kcsan_enabled, was_enabled);
++	/* restore context */
++	current->kcsan_ctx = ctx_save;
+ }
+ 
+ /*
 -- 
 2.9.5
 
