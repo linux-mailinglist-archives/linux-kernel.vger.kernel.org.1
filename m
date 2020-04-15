@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8E81A9BB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C589E1A9BB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896742AbgDOLGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
+        id S2896717AbgDOLEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408836AbgDOLDI (ORCPT
+        with ESMTP id S2408843AbgDOLDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:03:08 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBDBC061A10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:03:06 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a25so18603702wrd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:03:06 -0700 (PDT)
+        Wed, 15 Apr 2020 07:03:43 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2376C061A41
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:03:42 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d77so16889292wmd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=63+Kapds64fF8VnH8kQ6DVrjXzlI9XalKF9fI3VjpmQ=;
-        b=dqWbXVjdQwjBJE5+Q3mHBZLR/g7DBUYdxPAhik4lttLfusKXdE3xujCQIyupg7KdMP
-         dsIMIE4q+Y2QWiBRiCvMHGnmtt67QMsXzGA61zJTcRh9B4zDJMTkhTsIpuqYd8xu8Ic1
-         oFOhzdxHgH4SVcC4CpHuLpKTwG04jAS3jmdZhu6+59ccN/3+93tDntZr84WxtSh/eXr2
-         AjloNumg87+LMov24pYo37U8ZbVEVk/hESCzRniMAP9EAQvjfcFGZO1Q4on5Bqc5As9z
-         te8spmsxZspjB1Vv2c1wDR5vpRY5J7EfcxjTyZD7x4k0XQjPYb52aY2cX5yyixhgVm97
-         gFSw==
+        bh=0+mvRsViHtX7K9QeV8vxa3vsUkNlZfKOjncMUliYwFY=;
+        b=xBGqeqRbPXVWiiUbxgEhXzqhm8+4utoknFiMQ2GeDoSoaq957UF0r5Ozhe/ePFxylV
+         grOY7YQfUk2VucGAYiFwQCYWegigxHFgD+PUetMbxEgta+wz4wP0G35R0++BYc1bbvsn
+         hG7GWkJn884XbfqytX4RFrFw5VSp/Ekt1aYTGKOzPqkeMR7Km73j1Gpb1gvcYG0QnqX1
+         mhlUBbYGEwQGSs4bRkTeacdvsq1UBtgangAcQSnvQdJNbdyUkA4RsHnYBhyrr+6VMCqq
+         4MoCPuQZclf/dkJJDRe9T3K3KS5EEjo7EbqK1YwZEEGkbnhaN344JYz9yKgl7BhKnGTW
+         rrIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=63+Kapds64fF8VnH8kQ6DVrjXzlI9XalKF9fI3VjpmQ=;
-        b=D2WrlprRMRC+t7pM4IxQNAJi+2KvCwaiZX/poDDQ/7NPz50q6VWn23CshnrM7WaLYv
-         LGgVQYOoUliYWvXZGFFZ1+9i/DHp0uTt3LfacewOvYz8VErKgrENFgq9z8liWdkDODPB
-         uhSkAdeprGrJNqXf3x6PPQ69wxX+fanK5NzOxJsKE4b7qtZv5gcvadW/0FEtm+p1dSq+
-         209pyS1UYrY/Goz46aRHAYIb1NNUxHnm6x1Jd+Z3aizsQtoMGlHMG3t7UTonjHz+F0XS
-         NiXpylOWV+Us+4e7Hfmu2UsF0JbVgd7n4oNUlIjNA0fp+xzNON7WGbYKG4kaG7DB7+rm
-         8jrg==
-X-Gm-Message-State: AGi0Pua++G8LprO3ZwPSGKS9bOmbd/5pw7iPGzVMuGzLbbiRt1uFj5yE
-        JdsuOa5AzCgc4Mj1ibMYPW0VJQ==
-X-Google-Smtp-Source: APiQypLdt898OWc/sug/xv0mEQBtfTQQ07gc4gV91+6KybjmQja5SFIZ+jv8Lm+nIZQPUI/bU+3R+w==
-X-Received: by 2002:adf:8149:: with SMTP id 67mr29872018wrm.60.1586948585205;
-        Wed, 15 Apr 2020 04:03:05 -0700 (PDT)
+        bh=0+mvRsViHtX7K9QeV8vxa3vsUkNlZfKOjncMUliYwFY=;
+        b=e6v2mLT4xbN480uQuclmKHfn038I3gDHvTVBd+xOzS0w3MLTXF5h3IIUJfHRd44+HT
+         CkF6x5NW++bVLdop031gNIzqM+GagBriCs+8FC2I8s/zfv8iSevrAF9+//ZQ/SMXwJ9K
+         3meH+ECEnEErpfpkGN45Q90z2Ia5Zif+WvhqGSqgpPOhIpCHYv5r4TMyawnOdk9yj92i
+         gSZPn8ov9Gp2mfTOSWPV95vHoMs6hnh4qmH5ejCCoAoS+sLJbwQ0666qMp0ZO2NubgjQ
+         eJqvny8cU1xnqh2vCbMnA9PzeuGSaAEaqhR5eseQ9tIVbsu8Ox4XAT+kV0utEV+UZJht
+         vVWg==
+X-Gm-Message-State: AGi0PuYjBSf1TkATjcddlH1Kvvk/dK6u7x+0MukJYNl7i0xY5DdtDjDN
+        fG1r6di7XBnPSUcye5RCnNyYnA==
+X-Google-Smtp-Source: APiQypKYzMGWG+zMXscvJ4uCuaA8QuvLPgqp0ZkOm8oeOQzmEuU0a08KKg1p2ijuDQzlljeF//y0+A==
+X-Received: by 2002:a1c:4c10:: with SMTP id z16mr4716740wmf.77.1586948621597;
+        Wed, 15 Apr 2020 04:03:41 -0700 (PDT)
 Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id q17sm14179579wmj.45.2020.04.15.04.03.04
+        by smtp.gmail.com with ESMTPSA id u30sm2531311wru.13.2020.04.15.04.03.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 04:03:04 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 12:04:05 +0100
+        Wed, 15 Apr 2020 04:03:41 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 12:04:42 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: rohm-bdXXX - switch to use i2c probe_new
-Message-ID: <20200415110405.GJ2167633@dell>
-References: <20200326064852.GA23265@localhost.localdomain>
- <20200415095052.GI2167633@dell>
- <a4b45b01e78c37e23cc4e464ec07d2364e02e379.camel@fi.rohmeurope.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] mfd: htc-i2cpld: convert to use
+ i2c_new_client_device()
+Message-ID: <20200415110442.GK2167633@dell>
+References: <20200326211009.13411-1-wsa+renesas@sang-engineering.com>
+ <20200326211009.13411-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a4b45b01e78c37e23cc4e464ec07d2364e02e379.camel@fi.rohmeurope.com>
+In-Reply-To: <20200326211009.13411-2-wsa+renesas@sang-engineering.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020, Vaittinen, Matti wrote:
+On Thu, 26 Mar 2020, Wolfram Sang wrote:
 
-> Hello Lee,
+> Move away from the deprecated API and return the shiny new ERRPTR where
+> useful.
 > 
-> On Wed, 2020-04-15 at 10:50 +0100, Lee Jones wrote:
-> > On Thu, 26 Mar 2020, Matti Vaittinen wrote:
-> > 
-> > > ROHM BD70528 and BD718x7 drivers do not utilize the I2C id.
-> > > Do the trivial conversion and make them to use probe_new
-> > > instead of probe.
-> > 
-> > Not sure I understand the purpose of the patch.
-> > 
-> > The only reason to switch to probe_new is to aid the removal of the
-> > compulsory I2C tables.  However, neither of these drivers have them.
-> 
-> Maybe I have misunderstood the probe_new. My understanding was that the
-> probe_new is what should become the standard - Eg. eventually all I2C
-> drivers would use probe which is not getting the ID tables as argument
-> - and the old probe could be removed. Thus I thought conversion of
-> probe to probe_new would be required in order to get rid of the old
-> probe. I think I got this understanding when I submitted driver for
-> BD71828 - and I think it was you who suggested me to switch to
-> probe_new as 'id' was unused. But if please just drop this patch if
-> this change is not needed!
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/mfd/htc-i2cpld.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Some I2C drivers do make use of 'id' though.  So the standard probe
-will probably never go away.  I wrote probe_new for drivers that
-wished to omit the I2C table.  A better use of your time would be to
-go through the original probe users and figure out which I2C tables
-can be removed.
+Applied, thanks.
 
 -- 
 Lee Jones [李琼斯]
