@@ -2,219 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347B41A9711
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040FA1A96FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894798AbgDOIkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2894742AbgDOIkI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:40:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51B3C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:40:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t14so4848636wrw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=UrgT7wSdMoxC/RrnuBGfx9Flpwdpyrd8OIIl88CP38Q=;
-        b=r+q6VWwWplsZyK8nW0yyEAwuekMEL6XsOjfiaudV9Ea1rUGFjnQM3kg5GIjJtU4SeD
-         rch9TIZsUmjifqDjK+WvJ37DANa7M52BZOts/wUDVxfpCEYTWpl8Nqom3I+0tdE9+xm7
-         vfVJ7PMNELFSeQiU1VPmyCQkWHIYtolSqvN1AJTDf5byAc22M6Q4hKut57yG8i8NIr/f
-         mgudi1Y/M52KtlhijfVi94wcy5BRnuLs+dMo9ev0xBrLBJk8QopP50GEK0xQe5YWdtBD
-         yPshwm5izTWC8RiZYy8F/+TczADEo+UFhSh3hktyMgVgEGfZ+4j990MEpXpRicvC77bM
-         KeLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=UrgT7wSdMoxC/RrnuBGfx9Flpwdpyrd8OIIl88CP38Q=;
-        b=ApMtPHLRH/9FExYopMgVbAzjR4BhSoVvYc1Dffh+P3LMIrJ23N1Wdgl/c8ORq+hkHq
-         5IXAnygaAfTp1jsBJMpblJF38sqOkgPhQQgp0dBpZA07gnqVq82J0nuwl8gr6S+cSEWH
-         vJnEXTvJz1t7QZsOZxUoBopy2Ge6fYoOw8JrCNA1yNv6Wi23jI7WpjBT/2os6Zfz4Bl6
-         ni6OdgSJlB+1OYOH+olTB/VgaiKoJ1XR0lwnrzdAS4ozYMix+5dT37W0sceVs0zu1Ucf
-         i6VEyh20kcYI/JOBNPOc9tjymI71/ISYlZbwk+rnMcJLPPZFtwue7bD6F21LLi2FIG+x
-         Beeg==
-X-Gm-Message-State: AGi0PuY4bJ9YO9dhJm1xyTs+id7Ce3W+PzqhwfyLGQaOnhQGeaODEXCE
-        Ta2O+lGaFaTwj9Gzz8I6UEtustoAioGkyA==
-X-Google-Smtp-Source: APiQypIktIBbOp0xkrRc8oV2zDeo5f6+XenMI8zyCwnGFas2If0f7LjCiy6hAmEZJ5vS57BM/+4grg==
-X-Received: by 2002:a5d:4283:: with SMTP id k3mr19357148wrq.238.1586940006141;
-        Wed, 15 Apr 2020 01:40:06 -0700 (PDT)
-Received: from [173.194.76.108] ([149.199.62.129])
-        by smtp.gmail.com with ESMTPSA id j68sm23094011wrj.32.2020.04.15.01.39.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 01:40:04 -0700 (PDT)
-Subject: Re: [PATCH] arm64: zynqmp: Fix GIC compatible property
-To:     Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, git@xilinx.com
-Cc:     Durga Challa <vnsl.durga.challa@xilinx.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Nava kishore Manne <nava.manne@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <a50412fbb520954e4602f274f19a7ffbd1154ead.1582621224.git.michal.simek@xilinx.com>
-From:   Michal Simek <monstr@monstr.eu>
-Autocrypt: addr=monstr@monstr.eu; keydata=
- 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
- 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
-Message-ID: <f943a6ba-2040-4b78-8c90-cb6ee1d13c38@monstr.eu>
-Date:   Wed, 15 Apr 2020 10:39:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2894774AbgDOIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:40:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38172 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2894750AbgDOIj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:39:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id EC966ADBE;
+        Wed, 15 Apr 2020 08:39:54 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A34E01E0E47; Wed, 15 Apr 2020 10:39:54 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 10:39:54 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Rong Chen <rong.a.chen@intel.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkp@lists.01.org
+Subject: Re: [LKP] Re: [ext4] b1b4705d54: filebench.sum_bytes_mb/s -20.2%
+ regression
+Message-ID: <20200415083954.GD501@quack2.suse.cz>
+References: <20191224005915.GW2760@shao2-debian>
+ <20200107134106.GD25547@quack2.suse.cz>
+ <20200107165708.GA3619@mit.edu>
+ <20200107172824.GK25547@quack2.suse.cz>
+ <fde1ad11-c9b0-4393-a123-3f7625c819fa@intel.com>
+ <7ec6b078-7b09-fb87-8ad2-a328e96c5bf9@linux.intel.com>
+ <49a59199-53af-206f-d07c-5c8c45f498b3@linux.intel.com>
+ <20200325143102.GJ28951@quack2.suse.cz>
+ <309baa89-9f69-0545-946e-4b3624f83e60@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <a50412fbb520954e4602f274f19a7ffbd1154ead.1582621224.git.michal.simek@xilinx.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="8qCppseVFnBYesUMXQf2YqqxPjyp7Gte2"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <309baa89-9f69-0545-946e-4b3624f83e60@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8qCppseVFnBYesUMXQf2YqqxPjyp7Gte2
-Content-Type: multipart/mixed; boundary="h2oqIBgbjxjxvvrpHQfFPOMWLsTp5ZpTk";
- protected-headers="v1"
-From: Michal Simek <monstr@monstr.eu>
-To: Michal Simek <michal.simek@xilinx.com>,
- linux-arm-kernel@lists.infradead.org, git@xilinx.com
-Cc: Durga Challa <vnsl.durga.challa@xilinx.com>,
- Manish Narani <manish.narani@xilinx.com>, Mark Rutland
- <mark.rutland@arm.com>, Michael Tretter <m.tretter@pengutronix.de>,
- Nava kishore Manne <nava.manne@xilinx.com>,
- Rajan Vaja <rajan.vaja@xilinx.com>, Rob Herring <robh+dt@kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <f943a6ba-2040-4b78-8c90-cb6ee1d13c38@monstr.eu>
-Subject: Re: [PATCH] arm64: zynqmp: Fix GIC compatible property
-References: <a50412fbb520954e4602f274f19a7ffbd1154ead.1582621224.git.michal.simek@xilinx.com>
-In-Reply-To: <a50412fbb520954e4602f274f19a7ffbd1154ead.1582621224.git.michal.simek@xilinx.com>
+On Wed 15-04-20 15:55:09, Xing Zhengjun wrote:
+> 
+> 
+> On 3/25/2020 10:31 PM, Jan Kara wrote:
+> > On Wed 25-03-20 13:50:09, Xing Zhengjun wrote:
+> > > ping...
+> > > The issue still exists in v5.6-rc7.
+> > 
+> > So I have tried again to reproduce this so that I can look into the
+> > regression. When observing what is actually happening in the system I have
+> > to say that this workfile (or actually its implementation in filebench) is
+> > pretty dubious. The problem is that filebench first creates the files by
+> > writing them through ordinary write(2). Then it immediately starts reading
+> > the files with direct IO read. So what happens is that by the time direct
+> > IO read is running, the system is still writing back the create files and
+> > depending on how read vs writes get scheduled, you get different results.
+> > Also direct IO read will first flush the range it is going to read from the
+> > page cache so to some extent this is actually parallel small ranged
+> > fsync(2) benchmark. Finally differences in how we achieve integrity of
+> > direct IO reads with dirty page cache are going to impact this benchmark.
+> > 
+> 
+> Sounds reasonable!  Thanks for the clarification!
+> 
+> > So overall can now see why this commit makes a difference but the workload
+> > is IMHO largely irrelevant. What would make sense is to run filebench once,
+> > then unmount & mount the fs to force files to disk and clear page cache and
+> > then run it again. Filebench will reuse the files in this case and then
+> > parallel direct IO readers without page cache are a sensible workload. But
+> > I didn't see any difference in that (even with rotating disk) on my
+> > machines.
+> > 
+> We do a test per your suggestion, run "filebench" once during setup stage,
+> then do a "sync",  after that run "filebench" again, from the attached test
+> result "compare", "filebench.sum_bytes_mb/s" regression is disappeared.
 
---h2oqIBgbjxjxvvrpHQfFPOMWLsTp5ZpTk
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Cool. Thanks for improving the testcase! I'd just note that if you only do
+sync(2) between the setup and benchmark phase, you'll still have files
+cached in the page cache and so direct IO will go through the slow path
+when it has to evict pages from the page cache. The standard (and optimized
+for) situation for direct IO is that there is no page cache for the files
+direct IO is performed to. That's why I suggested remounting the
+filesystem, not just calling sync(2)...
 
-On 25. 02. 20 10:00, Michal Simek wrote:
-> dtbs_check is showing warning around GIC compatible property as
-> interrupt-controller@f9010000: compatible: ['arm,gic-400', 'arm,cortex-=
-a15-gic']
-> is not valid under any of the given schemas
->=20
-> Similar change has been done also by commit 5400cdc1410b
-> ("ARM: dts: sunxi: Fix GIC compatible")
->=20
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
->=20
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/d=
-ts/xilinx/zynqmp.dtsi
-> index 1ebb540624de..cde6025b7e24 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> @@ -233,7 +233,7 @@ amba_apu: amba-apu@0 {
->  		ranges =3D <0 0 0 0 0xffffffff>;
-> =20
->  		gic: interrupt-controller@f9010000 {
-> -			compatible =3D "arm,gic-400", "arm,cortex-a15-gic";
-> +			compatible =3D "arm,gic-400";
->  			#interrupt-cells =3D <3>;
->  			reg =3D <0x0 0xf9010000 0x10000>,
->  			      <0x0 0xf9020000 0x20000>,
->=20
+								Honza
 
-Applied.
-M
+> =========================================================================================
+> tbox_group/testcase/rootfs/kconfig/compiler/debug-setup/disk/fs/test/cpufreq_governor/ucode:
+>   lkp-hsw-d01/filebench/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/test2/1HDD/ext4/fivestreamreaddirect.f/performance/0x27
+> 
+> commit: 
+>   b1b4705d54abedfd69dcdf42779c521aa1e0fbd3
+>   09edf4d381957b144440bac18a4769c53063b943
+>   v5.5
+>   v5.7-rc1
+> 
+> b1b4705d54abedfd 09edf4d381957b144440bac18a4                        v5.5                    v5.7-rc1 
+> ---------------- --------------------------- --------------------------- --------------------------- 
+>          %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+>              \          |                \          |                \          |                \  
+>      59.40            +0.0%      59.40            -0.8%      58.93            -1.0%      58.80        filebench.sum_bytes_mb/s
+>       3570            +0.0%       3570            -0.8%       3541            -1.0%       3533        filebench.sum_operations
+>      59.50            +0.0%      59.50            -0.8%      59.02            -1.0%      58.89        filebench.sum_operations/s
+>      59.33            +0.0%      59.33            +0.0%      59.33            -0.6%      59.00        filebench.sum_reads/s
+>      83.98            -1.5%      82.75            +0.8%      84.62            +1.0%      84.84        filebench.sum_time_ms/op
 
---=20
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
-
-
---h2oqIBgbjxjxvvrpHQfFPOMWLsTp5ZpTk--
-
---8qCppseVFnBYesUMXQf2YqqxPjyp7Gte2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQQbPNTMvXmYlBPRwx7KSWXLKUoMIQUCXpbIWAAKCRDKSWXLKUoM
-IcayAJ9i7JMNA/SZA/EidydkgHNtboFuUQCffXbVgvIAnJMaani0OuBFqEZ/M4s=
-=0Pe7
------END PGP SIGNATURE-----
-
---8qCppseVFnBYesUMXQf2YqqxPjyp7Gte2--
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
