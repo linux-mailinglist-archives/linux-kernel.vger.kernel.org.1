@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8821AB1B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CA51AB18C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437850AbgDOT37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2406962AbgDOT3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:29:46 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC04C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:22:49 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mn19so293307pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=2G6Ppm6S3yDtcLs073bFFvyTtzzj8G77IKge+inQALY=;
-        b=Ac2G13fDGKHLvowWSXOVwAwAw5x1iFQyzhRdx7GF5kVg4aB5Phh8tEMuxboIKJqxHm
-         B5cvqQA4u5O+sddhg4tyP6Eofl69zfR+4bNTUr6t0qV2CfbazBQeEYMJA2t+u0S5Bso0
-         IEUFbEa+B8Cbv8q/pgnFhY5N8s2OfrG8ktMH4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=2G6Ppm6S3yDtcLs073bFFvyTtzzj8G77IKge+inQALY=;
-        b=q4cp+p2EGHm2WHgtBVthDFHZxyu0r+egWj6UT8RLpbw9fSeSg4xPenGGkEbINfRPvx
-         NLs5W6RROPxv9dUhQlZQXgOkzaSBg3KCSUjxrj9OzaUMtTbNTGbJYKheQPixq81GxtaN
-         1QuwJeavsCFTikYZnUTpbqAfAwoVhhu8G+YpgvMXn/Fv2Zw99s1tsQIZwbx9C/MZ2+0w
-         n9PNj3XWu0njnIbhxks3l0JHIkupRfdsrPBG15h8IgTuBK6i8Q0iOV9nMOm4VDWFhbix
-         6lcm5WE1VvArSxmsZB5/X8D1xZCeUp+O4HN2AASL82tHeeeWnsMMZQE/q2KzqDQfCU14
-         SVQg==
-X-Gm-Message-State: AGi0Puai+kGqy0iGwDS8NF93eSQgmrciGpiDpJnV5uhxdL1qeVB0etRs
-        nuAO9RGHhVSRDOymXPytSnJRnw==
-X-Google-Smtp-Source: APiQypLELTVr4j+fjkSgAB7n6Lhqk9TCQuapKh/6qd7zA4qgNHTPFw7PmI+jfp5rV5dcZFXg8gHcig==
-X-Received: by 2002:a17:90a:df83:: with SMTP id p3mr891984pjv.66.1586978568434;
-        Wed, 15 Apr 2020 12:22:48 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id x70sm14127677pfc.21.2020.04.15.12.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 12:22:47 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S2406050AbgDOT1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404698AbgDOT0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:26:12 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63B9E206F9;
+        Wed, 15 Apr 2020 19:26:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586978771;
+        bh=oqLAfq+Hp/zz6ak0aKamBmeD135V20iu+B5yYO8QeUM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1EzpWjXb3zRhEGkA/LyA3y/dbXwlh47cdSpkBZ4OUTtw/66hxC6m+PuabdQvdrux/
+         m3klm5mP1g73V8pR9wacfGbP2xR0F7pnjGZi5zWF6hIcZiPaAx1WvZ0IcB49szbbjo
+         jaVxz1lEqV9prGa5AI5gRYskMy8IVOsp8WLpFD2Y=
+Date:   Wed, 15 Apr 2020 20:26:05 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@android.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v3 05/12] arm64: csum: Disable KASAN for do_csum()
+Message-ID: <20200415192605.GA21804@willie-the-truck>
+References: <20200415165218.20251-1-will@kernel.org>
+ <20200415165218.20251-6-will@kernel.org>
+ <20200415172813.GA2272@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200415141754.GB3820@codeaurora.org>
-References: <20200309185704.2491-1-swboyd@chromium.org> <20200414215015.GA3820@codeaurora.org> <158693222998.105027.13298557609451842017@swboyd.mtv.corp.google.com> <20200415141754.GB3820@codeaurora.org>
-Subject: Re: [PATCH] soc: qcom: cmd-db: Add debugfs dumping file
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Lina Iyer <ilina@codeaurora.org>
-Date:   Wed, 15 Apr 2020 12:22:46 -0700
-Message-ID: <158697856675.105027.14667274133002675067@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415172813.GA2272@lakrids.cambridge.arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Lina Iyer (2020-04-15 07:17:54)
-> On Tue, Apr 14 2020 at 00:30 -0600, Stephen Boyd wrote:
-> >Quoting Lina Iyer (2020-04-14 14:50:15)
-> >> On Mon, Mar 09 2020 at 12:57 -0600, Stephen Boyd wrote:
-> >> >+              seq_puts(seq, "-------------------------\n");
-> >> >+
-> >> >+              ent =3D rsc_to_entry_header(rsc);
-> >> >+              for (j =3D 0; j < le16_to_cpu(rsc->cnt); j++, ent++) {
-> >> >+                      seq_printf(seq, "0x%08x: %*pEp", le32_to_cpu(e=
-nt->addr),
-> >> 0x%05x is what we would have for a resource address.
-> >
-> >Sorry I totally missed this because the mail wasn't trimmed at all and
-> >it was really hard to find the one line that wasn't quoted!
-> >
-> Sorry, my bad. Somehow didn't notice the quoting has changed.
->=20
-> >5 vs. 8 sounds OK to me. Send a patch? Or I can do it if you prefer.
-> Apart from the nit, I think the patch looks good. Feel free to add -
->=20
-> Reviewed-by: Lina Iyer <ilina@codeaurora.org>
-> Tested-by: Lina Iyer <ilina@codeaurora.org>
+On Wed, Apr 15, 2020 at 06:28:14PM +0100, Mark Rutland wrote:
+> On Wed, Apr 15, 2020 at 05:52:11PM +0100, Will Deacon wrote:
+> > do_csum() over-reads the source buffer and therefore abuses
+> > READ_ONCE_NOCHECK() to avoid tripping up KASAN. In preparation for
+> > READ_ONCE_NOCHECK() becoming a macro, and therefore losing its
+> > '__no_sanitize_address' annotation, just annotate do_csum() explicitly
+> > and fall back to normal loads.
+> 
+> I'm confused by this. The whole point of READ_ONCE_NOCHECK() is that it
+> isn't checked by KASAN, so if that semantic is removed it has no reason
+> to exist.
 
-Cool thanks. I'll send a patch given that Bjorn has already picked it
-into the qcom tree.
+Oh, I thought it was there to be used by things like KASAN itself and
+because READ_ONCE() was implemented using a static function, then that
+function had to be marked as __no_sanitize_address when used in these
+cases. Now that it's just a macro, that's not necessary so it's just
+the same as normal READ_ONCE().
+
+Do we have a "nocheck" version where we don't require the READ_ONCE()
+semantics? I think abusing a relaxed concurrency primitive for this is
+not the right thing to do, particularly when the __no_sanitize_address
+annotation is available. I fact, it's almost an argument in favour
+of removing READ_ONCE_NOCHECK() so that people use the annotation instead!
+
+> Changing that will break the unwind/stacktrace code across multiple
+> architectures. IIRC they use READ_ONCE_NOCHECK() for two reasons:
+> 
+> 1. Races with concurrent modification, as might happen when a thread's
+>    stack is corrupted. Allowing the unwinder to bail out after a sanity
+>    check means the resulting report is more useful than a KASAN splat in
+>    the unwinder. I made the arm64 unwinder robust to this case.
+> 
+> 2. I believe that the frame record itself /might/ be poisoned by KASAN,
+>    since it's not meant to be an accessible object at the C langauge
+>    level. I could be wrong about this, and would have to check.
+
+Ok.
+
+> I would like to keep the unwinding robust in the first case, even if the
+> second case doesn't apply, and I'd prefer to not mark the entirety of
+> the unwinding code as unchecked as that's sufficiently large an subtle
+> that it could have nasty bugs.
+
+Hmm, maybe. I don't really see what's wrong with annotating the unwinding
+code, though. You can still tell kasan about the accesses you're making,
+like we do in the checksumming code here, and it's not hard to move the
+frame-pointer chasing code into a separate function.
+
+> Is there any way we keep something like READ_ONCE_NOCHECK() around even
+> if we have to give it reduced functionality relative to READ_ONCE()?
+> 
+> I'm not enirely sure why READ_ONCE_NOCHECK() had to go, so if there's a
+> particular pain point I'm happy to take a look.
+
+I got rid if it because I thought it wasn't required now that it's
+implemented entirely as a macro. I'd be reluctant to bring it back if
+there isn't a non-ONCE version of the helper.
+
+Will
