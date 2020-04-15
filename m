@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C51F1AA23A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B4E1AA25D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370517AbgDOMwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:52:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34220 "EHLO mx2.suse.de"
+        id S2898260AbgDOMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:54:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S370492AbgDOMvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:51:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 27143AC11;
-        Wed, 15 Apr 2020 12:51:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DE49C1E1250; Wed, 15 Apr 2020 14:51:47 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 14:51:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 5/8] fs/ext4: Make DAX mount option a tri-state
-Message-ID: <20200415125147.GH6126@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-6-ira.weiny@intel.com>
+        id S2898252AbgDOMxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:53:51 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6408E20737;
+        Wed, 15 Apr 2020 12:53:50 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 08:53:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     paulmck@kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>, Stephen Boyd <sboyd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: On trace_*_rcuidle functions in modules
+Message-ID: <20200415085348.5511a5fe@gandalf.local.home>
+In-Reply-To: <CALAqxLV4rM74wuzuZ+BkUi+keccxkAxv30N4vrFO7CVQ5vnT1A@mail.gmail.com>
+References: <CALAqxLV4rM74wuzuZ+BkUi+keccxkAxv30N4vrFO7CVQ5vnT1A@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414040030.1802884-6-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-04-20 21:00:27, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+[ +Peter +Thomas ]
+
+On Tue, 14 Apr 2020 19:20:01 -0700
+John Stultz <john.stultz@linaro.org> wrote:
+
+> Hey folks,
+>   So recently I was looking at converting some drivers to be loadable
+> modules instead of built-in only, and one of my patches just landed in
+> -next and started getting build error reports.
 > 
-> We add 'always', 'never', and 'inode' (default).  '-o dax' continue to
-> operate the same.
+> It ends up, recently in the merge window, the driver I was converting
+> to module switched a trace_*() function to trace_*_rcuidle() to fix a
+> bug.  Now when building as a module, if tracing is configured on, it
+> can't seem to find the trace_*_rcuidle() symbol.
+
+Which modules need this.
+
+Currently, Thomas and Peter are working on removing trace events from
+places that don't have RCU enabled, or at least cleaning up the context
+switches from user to kernel to interrupt.
+
+-- Steve
+
+
 > 
-> Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT_NODAX and set
-> it and EXT4_MOUNT_DAX appropriately.
+> This is because, as you are aware, we don't declare trace_*_rcuidle
+> functions in modules - and haven't for quite some time:
+>   https://lore.kernel.org/lkml/20120905062306.GA14756@leaf/
 > 
-> We also force EXT4_MOUNT_NODAX if !CONFIG_FS_DAX.
+> I wanted to better understand the background rationale for that patch,
+> to understand if not exporting the rcu_idle_exit and rcu_idle_enter,
+> calls was because they weren't used or if it was a more intentional
+> decision to avoid allowing modules to use them.
 > 
-> https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> Would it be reasonable to revisit that patch? Or is there some
+> recommended alternative solution?
 > 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> thanks
+> -john
 
-...
-
-> @@ -2303,6 +2325,13 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
->  	if (DUMMY_ENCRYPTION_ENABLED(sbi))
->  		SEQ_OPTS_PUTS("test_dummy_encryption");
->  
-> +	if (test_opt2(sb, NODAX))
-> +		SEQ_OPTS_PUTS("dax=never");
-> +	else if (test_opt(sb, DAX))
-> +		SEQ_OPTS_PUTS("dax=always");
-> +	else
-> +		SEQ_OPTS_PUTS("dax=inode");
-> +
-
-We try to show only mount options that were explicitely set by the user, or
-that are different from defaults - e.g., see how 'data=' mount option
-printing is handled.
-
->  	ext4_show_quota_options(seq, sb);
->  	return 0;
->  }
-> @@ -5424,6 +5453,12 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->  		sbi->s_mount_opt ^= EXT4_MOUNT_DAX;
->  	}
->  
-> +	if ((sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_NODAX) {
-> +		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
-> +			"non-dax flag with busy inodes while remounting");
-> +		sbi->s_mount_opt2 ^= EXT4_MOUNT2_NODAX;
-> +	}
-> +
->  	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
->  		ext4_abort(sb, "Abort forced by user");
-
-I'd just merge this with the check whether EXT4_MOUNT_DAX changed.
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
