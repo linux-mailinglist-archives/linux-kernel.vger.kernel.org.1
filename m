@@ -2,159 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAA61A977A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACB51A9648
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895094AbgDOIua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:50:30 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:39244 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895079AbgDOIuS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:50:18 -0400
-Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 79A4E2D1;
-        Wed, 15 Apr 2020 10:50:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586940616;
-        bh=gou09fnjFJvhR1x9fvB0QuYMTNpfnFWwyMLgGzqgFXc=;
-        h=Subject:From:To:Cc:References:Reply-To:Date:In-Reply-To:From;
-        b=mciyrlifwnsfZbPwmMECsp60Sa5GaH5OEbXqLC3v7CwL3kuwpWl5iLGhLhSPZPkGu
-         8LTMN31DTnFJSHR3aPAjRJRoRap9fhmjaYqBr7gszmO+WsJTZoeax/RW3rwll5hgPe
-         33v+ipaQY6FkcyNH4WXrrqE9fW3o5Iu2Mstd/LyM=
-Subject: Re: [RFC PATCH v2 4/6] i2c: of: error message unification
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
- <20200318150059.21714-5-wsa+renesas@sang-engineering.com>
- <7014c94a-bb89-b282-52ee-49b42ab5aac1@bingham.xyz>
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Organization: Ideas on Board
-Message-ID: <4a63e7f5-8a0c-a9f1-640b-2f33c0076160@ideasonboard.com>
-Date:   Wed, 15 Apr 2020 09:50:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S2894452AbgDOIYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:24:30 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60500 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2894396AbgDOIYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:24:17 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6B37E7132864A788BC61;
+        Wed, 15 Apr 2020 16:24:15 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
+ 16:24:06 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <QLogic-Storage-Upstream@cavium.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] scsi: qedi: make qedi_ll2_buf_size static
+Date:   Wed, 15 Apr 2020 16:50:29 +0800
+Message-ID: <20200415085029.7170-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <7014c94a-bb89-b282-52ee-49b42ab5aac1@bingham.xyz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+Fix the following sparse warning:
 
-On 15/04/2020 09:17, Kieran Bingham wrote:
-> Hi Wolfram,
-> 
-> On 18/03/2020 15:00, Wolfram Sang wrote:
->> - don't prefix the device if %pOF is provided. That information is
->>   enough.
->> - move the prefix to pr_fmt
->> - change prefix from "of_i2c" to "i2c_of" because the code was moved
->>   out of the of-domain long ago
->> - drop error string for callers of of_i2c_register_device because it
->>   already reports enough (thanks to Tang Bin for the report!)
->>
->> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
->> ---
->>  drivers/i2c/i2c-core-of.c | 18 +++++++-----------
->>  1 file changed, 7 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/i2c/i2c-core-of.c b/drivers/i2c/i2c-core-of.c
->> index 710704cd583e..f2d09ea0d336 100644
->> --- a/drivers/i2c/i2c-core-of.c
->> +++ b/drivers/i2c/i2c-core-of.c
->> @@ -8,6 +8,8 @@
->>   * Copyright (C) 2013, 2018 Wolfram Sang <wsa@the-dreams.de>
->>   */
->>  
->> +#define pr_fmt(fmt) "i2c_of: " fmt
->> +
->>  #include <dt-bindings/i2c/i2c.h>
->>  #include <linux/device.h>
->>  #include <linux/err.h>
->> @@ -28,7 +30,7 @@ int of_i2c_get_board_info(struct device_node *node, struct i2c_board_info *info)
+drivers/scsi/qedi/qedi_main.c:44:6: warning: symbol 'qedi_ll2_buf_size'
+was not declared. Should it be static?
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/scsi/qedi/qedi_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Perhaps not directly needed by this patch but,
-
-at some point will you rename of_i2c_* to i2c_of_* ?
-
-
->>  
->>  	ret = of_property_read_u32(node, "reg", &addr);
->>  	if (ret) {
->> -		pr_err("of_i2c: invalid reg on %pOF\n", node);
->> +		pr_err("invalid reg on %pOF\n", node);
->>  		return ret;
->>  	}
->>  
->> @@ -66,7 +68,7 @@ static struct i2c_client *of_i2c_register_device(struct i2c_adapter *adap,
->>  	struct i2c_board_info info;
->>  	int ret;
->>  
->> -	dev_dbg(&adap->dev, "of_i2c: register %pOF\n", node);
->> +	pr_debug("register %pOF\n", node);
->>  
->>  	ret = of_i2c_get_board_info(node, &info);
->>  	if (ret)
->> @@ -74,7 +76,7 @@ static struct i2c_client *of_i2c_register_device(struct i2c_adapter *adap,
->>  
->>  	client = i2c_new_client_device(adap, &info);
->>  	if (IS_ERR(client))
->> -		dev_err(&adap->dev, "of_i2c: Failure registering %pOF\n", node);
->> +		pr_err("failure registering %pOF (%ld)\n", node, PTR_ERR(client));
->>  
->>  	return client;
->>  }
->> @@ -88,7 +90,7 @@ void of_i2c_register_devices(struct i2c_adapter *adap)
->>  	if (!adap->dev.of_node)
->>  		return;
->>  
->> -	dev_dbg(&adap->dev, "of_i2c: walking child nodes\n");
->> +	dev_dbg(&adap->dev, "walking child nodes\n");
->>  
->>  	bus = of_get_child_by_name(adap->dev.of_node, "i2c-bus");
->>  	if (!bus)
->> @@ -99,12 +101,8 @@ void of_i2c_register_devices(struct i2c_adapter *adap)
->>  			continue;
->>  
->>  		client = of_i2c_register_device(adap, node);
->> -		if (IS_ERR(client)) {
->> -			dev_err(&adap->dev,
->> -				 "Failed to create I2C device for %pOF\n",
->> -				 node);
->> +		if (IS_ERR(client))
->>  			of_node_clear_flag(node, OF_POPULATED);
->> -		}
->>  	}
->>  
->>  	of_node_put(bus);
->> @@ -243,8 +241,6 @@ static int of_i2c_notify(struct notifier_block *nb, unsigned long action,
->>  
->>  		client = of_i2c_register_device(adap, rd->dn);
->>  		if (IS_ERR(client)) {
->> -			dev_err(&adap->dev, "failed to create client for '%pOF'\n",
->> -				 rd->dn);
->>  			put_device(&adap->dev);
->>  			of_node_clear_flag(rd->dn, OF_POPULATED);
->>  			return notifier_from_errno(PTR_ERR(client));
->>
-> 
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index b9a5c842a76e..4dd965860c98 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -45,7 +45,7 @@ module_param(qedi_io_tracing, uint, 0644);
+ MODULE_PARM_DESC(qedi_io_tracing,
+ 		 " Enable logging of SCSI requests/completions into trace buffer. (default off).");
+ 
+-uint qedi_ll2_buf_size = 0x400;
++static uint qedi_ll2_buf_size = 0x400;
+ module_param(qedi_ll2_buf_size, uint, 0644);
+ MODULE_PARM_DESC(qedi_ll2_buf_size,
+ 		 "parameter to set ping packet size, default - 0x400, Jumbo packets - 0x2400.");
+-- 
+2.21.1
 
