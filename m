@@ -2,298 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7301AB074
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712AF1AB077
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898312AbgDOSSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:18:03 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:38152 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2898302AbgDOSR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:17:58 -0400
-Received: from mailhost.synopsys.com (badc-mailhost2.synopsys.com [10.192.0.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S2898328AbgDOSTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436573AbgDOSS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:18:58 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 695E3405B8;
-        Wed, 15 Apr 2020 18:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1586974677; bh=HAIcv8O6Q3lklP0dimg/6MNI7AWYs8UgO/lAc98n61s=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=UQcRhJGWlCCJb0j1OGqNA7mYiqj53uszJ4w/dVRm8FFYmvFDtkna1uwpEsKiF+rO5
-         wxrEsFuvYMgXMmk1mVinI7GL6qJVsMRIquqZOfhieLd6f5k6+QqUQj7Glq4ES9K4PB
-         VzdkbHU4QBpa9M2+vMn1E/RmaUlGHo1OV5c7aaflrCq1b0zJTBx6aP+crnsmPGDtcd
-         quf2YQ5OcKJxVnNUzSO52lf6AuDlkz9cpEN5u2fee5W6x2gEKXiWTiV4hak7Ip2xvS
-         MLA6+t6Qy9wtyurz4t7zVBLivalKCBeecA9VepRtxdnVvS1ogo5jHNb1R1KkXMve2z
-         GXyEpwKqz0Phg==
-Received: from US01WEHTC3.internal.synopsys.com (us01wehtc3.internal.synopsys.com [10.15.84.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 32937A0067;
-        Wed, 15 Apr 2020 18:17:47 +0000 (UTC)
-Received: from us01hybrid1.internal.synopsys.com (10.200.27.51) by
- US01WEHTC3.internal.synopsys.com (10.15.84.232) with Microsoft SMTP Server
- (TLS) id 14.3.408.0; Wed, 15 Apr 2020 11:17:40 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.202.3.67) by
- mrs.synopsys.com (10.200.27.51) with Microsoft SMTP Server (TLS) id
- 14.3.408.0; Wed, 15 Apr 2020 11:17:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RZudCpe0JVKmf5XxTtbkb9PZNXTBrk0XQXBmB32SqstPzZrR+15JV/S9KIwIn/sTl9O0CK5btrbH6rVCqCVbR51ktmZN9gaxpRLbA1a36B1EpwxWF5hlVOETfOkEJUIOA9FkYj1WwOaGngPaLBpqWSoGBwBRUb8svpHQeqSHZdt2Bf6dKmSe/0uOOimz0IrxaSg+/I2qpnjZ8h0LaFu6KQipjR6jXhRfRsvMO/qY+UE0bnySGnoXo/C0A436gyfsyd/0ec0Rn9EmcJ8qrXKbTbYyyo5uZchf9vcryCCZFa50w/2F2mXWFRnh5jLmP9flD+RZ06ge15gOQ2Xnucm6og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAIcv8O6Q3lklP0dimg/6MNI7AWYs8UgO/lAc98n61s=;
- b=RDW53KmtB9rZFKoPaL3MxtVIEBWWUZdMk8n1K65tzoYI5/EZb4AL/n0G8s0FusiORj9YmZQS6sYCSqAvAtGOm0w++8IwZsb1zMAJeKiuFrgKLL6OAWwXG5Hjqx1jRVtilER7qAwXfTv4DECk5RHHr/0+w/W6/+kd98TXsYSvBAjKF0oTTPNONFWm7lsMfnCjUEpVhPYkdpwXMnQsnBXMYwUedTx2xoKM0dDIynddnvP90LoPI8F67AS/WXPXywchFxyWkKEhCOzRk9rvFVcX81pdsqs0dVxIg1sAs4f2A5fT1uoSYz41gnVKFzksGfHxgfLKBj0UnBEHNByixGLJbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAIcv8O6Q3lklP0dimg/6MNI7AWYs8UgO/lAc98n61s=;
- b=HSaVEeowAHD+YjmIRAMVc1HhGeqlCo47GkGtePeOmQtkYuWWYsM9i45HfcCW2oT3O2cerAoYYyM80SgGatRiZV62abaX9iDwcCcBGyeRaq9BG48p6C6kzsVCAfEFkD7BW10npYI8E/lWLfUVCPQNhP+2mYpoxkWTb3H19cXethM=
-Received: from DM5PR12MB1276.namprd12.prod.outlook.com (2603:10b6:3:79::18) by
- DM5PR12MB1276.namprd12.prod.outlook.com (2603:10b6:3:79::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2900.26; Wed, 15 Apr 2020 18:17:38 +0000
-Received: from DM5PR12MB1276.namprd12.prod.outlook.com
- ([fe80::cd06:6b04:8f2c:157e]) by DM5PR12MB1276.namprd12.prod.outlook.com
- ([fe80::cd06:6b04:8f2c:157e%10]) with mapi id 15.20.2900.028; Wed, 15 Apr
- 2020 18:17:37 +0000
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Alan Mikhak <alan.mikhak@sifive.com>
-CC:     "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: RE: [PATCH RFC] dmaengine: dw-edma: Decouple dw-edma-core.c from
- struct pci_dev
-Thread-Topic: [PATCH RFC] dmaengine: dw-edma: Decouple dw-edma-core.c from
- struct pci_dev
-Thread-Index: AQHWEsrRt1OuNWp8Y0WOATK/ErlmDqh6DhYAgABhvACAAALi8A==
-Date:   Wed, 15 Apr 2020 18:17:37 +0000
-Message-ID: <DM5PR12MB1276E09460BD4DB7E70EAF91DADB0@DM5PR12MB1276.namprd12.prod.outlook.com>
-References: <1586916464-27727-1-git-send-email-alan.mikhak@sifive.com>
- <DM5PR12MB1276CB8FA4457D4CDCE3137EDADB0@DM5PR12MB1276.namprd12.prod.outlook.com>
- <CABEDWGwYmO52g6cqvQdWb6HXWEHaMA1rcf96aUqv0f32tJZT-g@mail.gmail.com>
-In-Reply-To: <CABEDWGwYmO52g6cqvQdWb6HXWEHaMA1rcf96aUqv0f32tJZT-g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jWjNWemRHRjJiMXhoY0hCa1lYUmhYSEp2WVcxcGJtZGNNRGxrT0RRNVlq?=
- =?utf-8?B?WXRNekprTXkwMFlUUXdMVGcxWldVdE5tSTROR0poTWpsbE16VmlYRzF6WjNO?=
- =?utf-8?B?Y2JYTm5MVFl3WVRrME5tTTRMVGRtTkRVdE1URmxZUzA1T0dFM0xXWTRPVFJq?=
- =?utf-8?B?TWpjek9EQTBNbHhoYldVdGRHVnpkRncyTUdFNU5EWmpPUzAzWmpRMUxURXha?=
- =?utf-8?B?V0V0T1RoaE55MW1PRGswWXpJM016Z3dOREppYjJSNUxuUjRkQ0lnYzNvOUlq?=
- =?utf-8?B?UTFNRGNpSUhROUlqRXpNak14TkRRNE1qVTFOekUwTlRNMU1pSWdhRDBpU25a?=
- =?utf-8?B?aWEySnNPREpKT0RkeWFqbGplRmh3VDNvNVVFTmxZbU4zUFNJZ2FXUTlJaUln?=
- =?utf-8?B?WW13OUlqQWlJR0p2UFNJeElpQmphVDBpWTBGQlFVRkZVa2hWTVZKVFVsVkdU?=
- =?utf-8?B?a05uVlVGQlFsRktRVUZCU1ZWWVZXcFZhRkJYUVZGbk5XWnRXSEppVkhreVEw?=
- =?utf-8?B?UnNLMXBsZEhSUVRGbFBRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVaEJRVUZCUTJ0RFFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVWQlFWRkJRa0ZCUVVGRmJVMWxhM2RCUVVGQlFVRkJRVUZCUVVGQlFVRktO?=
- =?utf-8?B?RUZCUVVKdFFVZHJRV0puUW1oQlJ6UkJXWGRDYkVGR09FRmpRVUp6UVVkRlFX?=
- =?utf-8?B?Sm5RblZCUjJ0QlltZENia0ZHT0VGa2QwSm9RVWhSUVZwUlFubEJSekJCV1ZG?=
- =?utf-8?B?Q2VVRkhjMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?blFVRkJRVUZCYm1kQlFVRkhXVUZpZDBJeFFVYzBRVnBCUW5sQlNHdEJXSGRD?=
- =?utf-8?B?ZDBGSFJVRmpaMEl3UVVjMFFWcFJRbmxCU0UxQldIZENia0ZIV1VGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkRRVUZCUVVGQlEyVkJRVUZCV21kQ2RrRklWVUZpWjBKclFV?=
- =?utf-8?B?aEpRV1ZSUW1aQlNFRkJXVkZDZVVGSVVVRmlaMEpzUVVoSlFXTjNRbVpCU0Ux?=
- =?utf-8?B?QldWRkNkRUZJVFVGa1VVSjFRVWRqUVZoM1FtcEJSemhCWW1kQ2JVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUpCUVVGQlFVRkJRVUZCU1VGQlFVRkJRVW8wUVVGQlFtMUJSemhC?=
- =?utf-8?B?WkZGQ2RVRkhVVUZqWjBJMVFVWTRRV05CUW1oQlNFbEJaRUZDZFVGSFZVRmpa?=
- =?utf-8?B?MEo2UVVZNFFXTjNRbWhCUnpCQlkzZENNVUZITkVGYWQwSm1RVWhKUVZwUlFu?=
- =?utf-8?B?cEJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGRlFVRkJRVUZCUVVGQlFXZEJRVUZCUVVGdVow?=
- =?utf-8?B?RkJRVWRaUVdKM1FqRkJSelJCV2tGQ2VVRklhMEZZZDBKM1FVZEZRV05uUWpC?=
- =?utf-8?B?QlJ6UkJXbEZDZVVGSVRVRllkMEo2UVVjd1FXRlJRbXBCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJVVUZCUVVGQlFVRkJRVU5C?=
- =?utf-8?B?UVVGQlFVRkRaVUZCUVVGYVowSjJRVWhWUVdKblFtdEJTRWxCWlZGQ1prRklR?=
- =?utf-8?B?VUZaVVVKNVFVaFJRV0puUW14QlNFbEJZM2RDWmtGSVRVRmtRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUWtGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGSlFVRkJRVUZCU2pSQlFVRkNiVUZIT0VGa1VVSjFRVWRSUVdO?=
- =?utf-8?B?blFqVkJSamhCWTBGQ2FFRklTVUZrUVVKMVFVZFZRV05uUW5wQlJqaEJaRUZD?=
- =?utf-8?B?ZWtGSE1FRlpkMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVVkJRVUZCUVVGQlFVRkJaMEZCUVVGQlFXNW5RVUZCUjFsQlluZENN?=
- =?utf-8?B?VUZITkVGYVFVSjVRVWhyUVZoM1FuZEJSMFZCWTJkQ01FRkhORUZhVVVKNVFV?=
- =?utf-8?B?aE5RVmgzUWpGQlJ6QkJXWGRCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZSUVVGQlFVRkJRVUZCUTBGQlFVRkJRVU5sUVVG?=
- =?utf-8?B?QlFWcDNRakJCU0UxQldIZENkMEZJU1VGaWQwSnJRVWhWUVZsM1FqQkJSamhC?=
- =?utf-8?B?WkVGQ2VVRkhSVUZoVVVKMVFVZHJRV0puUW01QlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQ1FVRkJRVUZCUVVGQlFVbEJR?=
- =?utf-8?B?VUZCUVVGS05FRkJRVUo2UVVkRlFXSkJRbXhCU0UxQldIZENhRUZIVFVGWmQw?=
- =?utf-8?B?SjJRVWhWUVdKblFqQkJSamhCWTBGQ2MwRkhSVUZpWjBGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZuUVVGQlFVRkJibWRCUVVGSVRVRlpVVUp6UVVkVlFXTjNRbVpC?=
- =?utf-8?B?U0VWQlpGRkNka0ZJVVVGYVVVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVZGQlFVRkJRVUZCUVVGRFFVRkJRVUZCUTJWQlFVRkJZM2RDZFVGSVFV?=
- =?utf-8?B?RmpkMEptUVVkM1FXRlJRbXBCUjFWQlltZENla0ZIVlVGWWQwSXdRVWRWUVdO?=
- =?utf-8?B?blFuUkJSamhCVFZGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVSkJRVUZCUVVGQlFVRkJTVUZCUVVGQlFVbzBRVUZC?=
- =?utf-8?B?UW5wQlJ6UkJZMEZDZWtGR09FRmlRVUp3UVVkTlFWcFJRblZCU0UxQldsRkNa?=
- =?utf-8?B?a0ZJVVVGYVVVSjVRVWN3UVZoM1FucEJTRkZCWkZGQ2EwRkhWVUZpWjBJd1FV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdkQlFV?=
- =?utf-8?B?RkJRVUZ1WjBGQlFVaFpRVnAzUW1aQlIzTkJXbEZDTlVGSVkwRmlkMEo1UVVk?=
- =?utf-8?B?UlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJRVUZC?=
- =?utf-8?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=gustavo@synopsys.com; 
-x-originating-ip: [198.182.37.200]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fc114c3f-efc3-4b77-8021-08d7e1694740
-x-ms-traffictypediagnostic: DM5PR12MB1276:
-x-microsoft-antispam-prvs: <DM5PR12MB127676DB5DC2F49914D46B97DADB0@DM5PR12MB1276.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0374433C81
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1276.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(396003)(346002)(376002)(136003)(39860400002)(366004)(66446008)(64756008)(66946007)(8676002)(8936002)(54906003)(66556008)(81156014)(9686003)(52536014)(86362001)(66476007)(7696005)(55016002)(478600001)(186003)(6506007)(6916009)(71200400001)(76116006)(5660300002)(4326008)(2906002)(26005)(33656002)(316002);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: synopsys.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: D+rtel+8mOpKD+HHBGRFBqLab7W0c/NuNgBUUfPaMS9qeNWGALhZpVHKjO9iezsHEnNvHoP9vxmwZoI5M6mkNgtHa6iLuIBUcAwtI23VNWRW4Q3uLNlGXe0yPKFwTkB6j5IqFP1YhGCSq2KfxPBGUWFlIaAw2TMMPhXdrD51rZFZh4TLJ0JpgC1sSXVw1vfAt5jALGZMMnMsW/LO8GaiimBKF9LqCkRIYyp+vLdxKGjlFzSVE3TENnqHnmT02y1h6PI1Pqf3w//Tfw9H5OqVUubDvs13fgiRQKdlEjaXIJwxUVnSh/naD70YobckQgycfBHrd2bLLs6VIINrbwWrpHGmEYMUUIQuvYd8n0h0mykV8v0ehD5C1G1tLGNdKReSYfz4RR7R4PPkHjTEyk+ILQE7b3vM9pmafghLYGa9TQkamjC3BEhLVFab2D+3JCTV
-x-ms-exchange-antispam-messagedata: 3aeMZUBlD0vwBmi3QIAROQHxXRif9PlwRLMzbFsGYSzkx6DJYRyn+Mz0EX3wLRLfJQKp84hcIoj1PqOt8w9N7FDBWX0RnpcvPw9JL/uM0RD9IMMr1jatmN7exa5p4PHYAFNyITwmSEX5y1IJjREzfw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        by mail.kernel.org (Postfix) with ESMTPSA id DD60B2076D;
+        Wed, 15 Apr 2020 18:18:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586974736;
+        bh=rI7AX8rsb9mXZ1Wzm69REtFbe0HjVRp0TOpmkxBoWlw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=T8vg5fbTTSzfFjv7DQYG1DJnbsJDZowl6yZwUq42YOUI7CZn2GXWaFoiUVCfMxNLM
+         FzHwuzYYoJMzKNXZdyocHRH1HyiBmOv342yMAIDfr3RyYaDKAQMcIkaJbVzNuaW7y1
+         MrcPDUkRTKAZqJ2sL3l1eoHdVpZarmS7/Vd6vg64=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A2BBF3522AD1; Wed, 15 Apr 2020 11:18:56 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 11:18:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH v4 tip/core/rcu 0/38] Prototype RCU usable from idle,
+ exception, offline
+Message-ID: <20200415181856.GA11037@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200312181618.GA21271@paulmck-ThinkPad-P72>
+ <20200319001024.GA28798@paulmck-ThinkPad-P72>
+ <20200327222346.GA12082@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc114c3f-efc3-4b77-8021-08d7e1694740
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2020 18:17:37.6870
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OS5UOtP2x193xXO3pBJU+f+9XqxE9P2Ko5+YWq6cakad7E6n5wLDViSoK5GOCrezjS4oXDX37FhaucdEw7/5mw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1276
-X-OriginatorOrg: synopsys.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxhbiwNCg0KPiA+IEkgbGlrZSB5b3VyIGFwcHJvYWNoLCBpdCBzZXBhcmF0ZXMgdGhlIFBD
-SWUgZ2x1ZSBsb2dpYyBmcm9tIHRoZSBlRE1BDQo+ID4gaXRzZWxmLg0KPiA+IEkgd291bGQgc3Vn
-Z2VzdCB0aGF0IHBjaXRlc3Qgd291bGQgaGF2ZSBtdWx0aXBsZSBvcHRpb25zIHRoYXQgY291bGQg
-YmUNCj4gPiB0cmlnZ2VyZWQsIGZvciBpbnN0YW5jZToNCj4gPiAgMSAtIEV4ZWN1dGUgRW5kcG9p
-bnQgRE1BIChyZWFkL3dyaXRlKSByZW1vdGVseSB3aXRoIExpbmtlZCBMaXN0IGZlYXR1cmUNCj4g
-PiAoZnJvbSB0aGUgUm9vdCBDb21wbGV4IHNpZGUpDQo+ID4gIDIgLSBFeGVjdXRlIEVuZHBvaW50
-IERNQSAocmVhZC93cml0ZSkgcmVtb3RlbHkgd2l0aG91dCBMaW5rZWQgTGlzdA0KPiA+IGZlYXR1
-cmUgKGZyb20gdGhlIFJvb3QgQ29tcGxleCBzaWRlKQ0KPiA+ICAzIC0gRXhlY3V0ZSBFbmRwb2lu
-dCBETUEgKHJlYWQvd3JpdGUpIGxvY2FsbHkgd2l0aCBMaW5rZWQgTGlzdCBmZWF0dXJlDQo+ID4g
-IDQgLSBFeGVjdXRlIEVuZHBvaW50IERNQSAocmVhZC93cml0ZSkgbG9jYWxseSB3aXRob3V0IExp
-bmtlZCBMaXN0DQo+ID4gZmVhdHVyZQ0KPiA+DQo+IA0KPiBJIGhhdmUgYWxsIG9mIHRoZSBhYm92
-ZSBmb3VyIHVzZSBjYXNlcyBpbiBtaW5kIGFzIHdlbGwuIEF0IHRoZSBtb21lbnQsDQo+IG9ubHkg
-IzQgaXMgcG9zc2libGUgd2l0aCBwY2l0ZXN0Lg0KPiANCj4gVXNlIGNhc2UgIzMgd291bGQgbmVl
-ZCBhIG5ldyBjb21tYW5kIGxpbmUgb3B0aW9uIGZvciBwY2l0ZXN0IHN1Y2ggYXMgLUwNCj4gdG8g
-bGV0IGl0cyB1c2VyIHNwZWNpZnkgbGlua2VkIGxpc3Qgb3BlcmF0aW9ud2hlbiB1c2VkIHdpdGgg
-ZG1hIGluDQo+IGNvbmp1bmN0aW9uIHdpdGggdGhlIGV4aXN0aW5nIC1EIG9wdGlvbi4NCj4gDQo+
-IFVzZSBjYXNlcyAjMSBhbmQgIzIgd291bGQgbmVlZCBhbm90aGVyIG5ldyBjb21tYW5kIGxpbmUg
-b3B0aW9uIHN1Y2ggYXMgLVINCj4gdG8gc3BlY2lmeSByZW1vdGVseSBpbml0aWF0ZWQgZG1hIG9w
-ZXJhdGlvbiBpbiBjb25qdW5jdGlvbiB3aXRoIC1EIG9wdGlvbi4NCj4gDQo+IE5ldyBjb2RlIGlu
-IHBjaS1lcGYtdGVzdCBhbmQgcGNpX2VuZHBvaW50X3Rlc3QgZHJpdmVycyB3b3VsZCBiZSBuZWVk
-ZWQNCj4gdG8gc3VwcG9ydCB1c2UgY2FzZXMgIzEsICMyLCBhbmQgIzMuIEhvd2V2ZXIsIHVzZSBj
-YXNlICM0IHNob3VsZCBiZQ0KPiBwb3NzaWJsZSB3aXRob3V0IG1vZGlmaWNhdGlvbiB0byBwY2kt
-ZXBmLXRlc3Qgb3IgcGNpX2VuZHBvaW50X3Rlc3QgYXMgbG9uZw0KPiBhcyB0aGUgZG1hZW5naW5l
-IGNoYW5uZWxzIGJlY29tZSBhdmFpbGFibGUgb24gdGhlIGVuZHBvaW50IHNpZGUuDQoNCkkgd291
-bGQgc3VnZ2VzdCBzb21ldGhpbmcgbGlrZSB0aGlzOg0KDQotTCBvcHRpb24sIGxvY2FsIERNQSB0
-cmlnZ2VyaW5nDQotUiBvcHRpb24sIHJlbW90ZSBETUEgdHJpZ2dlcmluZw0KLVcgPG4+IG9wdGlv
-biwgdG8gc2VsZWN0IHRoZSBETUEgd3JpdGUgY2hhbm5lbCBuID0+ICgwIC4uLiA3KSB0byBiZSAN
-CnVzZWQNCi1SIDxuPiBvcHRpb24sIHRvIHNlbGVjdCB0aGUgRE1BIHJlYWQgY2hhbm5lbCBuID0+
-ICgwIC4uLiA3KSB0byBiZSANCnVzZWQNCi1LIG9wdGlvbiwgdG8gdXNlIG9yIG5vdCB0aGUgbGlu
-a2VkIGxpc3QgZmVhdHVyZSAoSyBwcmVzZW5jZSBlbmFibGVzIA0KdGhlIExMIHVzZSkNCi1UIDxu
-PiBvcHRpb24sIHRvIHNlbGVjdCB3aGljaCB0eXBlIG9mIERNQSB0cmFuc2ZlciB0byBiZSB1c2Vk
-ID0+IChuID0gMCANCi0gc2NhdHRlci1nYXRoZXIgbW9kZSwgMSAtIGN5Y2xpYyBtb2RlKQ0KLU4g
-PG4+IG9wdGlvbiwgdG8gZGVmaW5lIHRoZSBudW1iZXIgb2YgY3ljbGljIHRyYW5zZmVycyB0byBw
-ZXJmb3JtIGluIA0KdG90YWwNCi1DIDxuPiBvcHRpb24sIHRvIGRlZmluZSB0aGUgc2l6ZSBvZiBl
-YWNoIGNodW5rIHRvIGJlIHVzZWQNCi10IDx0aW1lPiBvcHRpb24sIHRvIGRlZmluZSBhIHRpbWVv
-dXQgZm9yIHRoZSBETUEgb3BlcmF0aW9uIA0KDQpBbHNvLCB0aGUgdXNlIG9mIHRoaXMgb3B0aW9u
-cyAoZXNwZWNpYWxseSB3aGVuIHVzaW5nIHRoZSByZW1vdGUgRE1BIA0Kb3B0aW9uKSBzaG91bGQg
-YmUgY2hlY2tlZCB0aHJvdWdoIHRoZSBwY2lfZXBjX2dldF9mZWF0dXJlcygpLCB3aGljaCBtZWFu
-cyANCnByb2JhYmx5IHdlIG5lZWQgdG8gcGFzcyB0aGUgRVAgZmVhdHVyZXMgY2FwYWJpbGl0aWVz
-IHRvIHRoZSANCnBjaV9lbmRwb2ludF90ZXN0IERyaXZlciwgcGVyaGFwcyB1c2luZyBzb21lIHNl
-dHMgb2YgcmVnaXN0ZXJzIG9uIGxvY2F0ZWQgDQpvbiBCQVIwIG9yIG90aGVyLg0KDQo+IEF0IHRo
-ZSBtb21lbnQsIHBjaS1lcGYtdGVzdCBncmFicyB0aGUgZmlyc3QgYXZhaWxhYmxlIGRtYSBjaGFu
-bmVsIG9uIHRoZQ0KPiBlbmRwb2ludCBzaWRlIGFuZCB1c2VzIGl0IGZvciBlaXRoZXIgcmVhZCwg
-d3JpdGUsIG9yIGNvcHkgb3BlcmF0aW9uLiBpdCBpcyBub3QNCj4gcG9zc2libGUgYXQgdGhlIG1v
-bWVudCB0byBzcGVjaWZ5IHdoaWNoIGRtYSBjaGFubmVsIHRvIHVzZSBvbiB0aGUgcGNpdGVzdA0K
-PiBjb21tYW5kIGxpbmUuIFRoaXMgbWF5IGJlIHBvc3NpYmxlIGJ5IG1vZGlmeWluZyB0aGUgY29t
-bWFuZCBsaW5lIG9wdGlvbg0KPiAtRCB0byBhbHNvIHNwZWNpZnkgdGhlIG5hbWUgb2Ygb25lIG9y
-IG1vcmUgZG1hIGNoYW5uZWxzLg0KDQpJJ20gYXNzdW1pbmcgdGhhdCBiZWhhdmlvciBpcyBkdWUg
-dG8geW91ciBjb2RlLCByaWdodD8gSSdtIG5vdCBzZWVuIHRoYXQgDQpiZWhhdmlvciBvbiB0aGUg
-S2VybmVsIHRyZWUuDQpDaGVjayBteSBwcmV2aW91cyBzdWdnZXN0aW9uLCBpdCBzaG91bGQgYmUg
-c29tZXRoaW5nIHNpbWlsYXIgdG8gd2hhdCBpcyANCmJlZW4gZG9uZSB3aGlsZSB5b3Ugc2VsZWN0
-IHRoZSBNU0kvTVNJLVggaW50ZXJydXB0IHRvIHRyaWdnZXIuDQoNCj4gQWxzbywgcGNpLWVwZi10
-ZXN0IGdyYWJzIHRoZSBkbWEgY2hhbm5lbCBhdCBiaW5kIHRpbWUgYW5kIGhvbGRzIG9uIHRvIGl0
-DQo+IHVudGlsIHVubG9hZGVkLiBUaGlzIGRlbmllcyB0aGUgdXNlIG9mIHRoZSBkbWEgY2hhbm5l
-bCB0byBvdGhlcnMgb24gdGhlDQo+IGVuZHBvaW50IHNpZGUuIEhvd2V2ZXIsIGl0IHNlZW1zIHBv
-c3NpYmxlIHRvIGdyYWIgYW5kIHJlbGVhc2UgdGhlIGRtYQ0KPiBjaGFubmVsIG9ubHkgZm9yIHRo
-ZSBkdXJhdGlvbiBvZiBlYWNoIHJlYWQsIHdyaXRlLCBvciBjb3B5IHRlc3QuIFRoZXNlIGFyZQ0K
-PiBpbXByb3ZlbWVudHMgdGhhdCBjYW4gY29tZSBvdmVyIHRpbWUuIEl0IGlzIGdyZWF0IHRoYXQg
-cGNpLWVwZi10ZXN0IHdhcw0KPiByZWNlbnRseSB1cGRhdGVkIHRvIGluY2x1ZGUgc3VwcG9ydCBm
-b3IgZG1hIG9wZXJhdGlvbnMgd2hpY2ggbWFrZXMgc3VjaA0KPiBpbXByb3ZlbWVudHMgcG9zc2li
-bGUuDQoNCkNoZWNrIG15IHByZXZpb3VzIHN1Z2dlc3Rpb24uIEkgdGhpbmsgYnkgaGF2aW5nIGEg
-dGltZW91dCBmb3IgdGhlIERNQSANCm9wZXJhdGlvbiB3ZSBjYW4gcHJvdmlkZSBhIHdheSB0byBy
-ZWxlYXNlIHRoZSBkbWEgY2hhbm5lbC4NCk9yIHdlIGNvdWxkIHByb3ZpZGUgc29tZSBraW5kIG9m
-IGhlYXJ0IGJlYXQsIG9uY2UgYWdhaW4gdGhyb3VnaCBzb21lIA0KcmVnaXN0ZXIgaW4gYSBCQVIu
-DQoNCj4gPiBSZWxhdGl2ZSB0byB0aGUgaW1wbGVtZW50YXRpb24gb2YgdGhlIG9wdGlvbnMgMyBh
-bmQgNCwgSSB3b25kZXIgaWYgdGhlDQo+ID4gbGlua2VkIGxpc3QgbWVtb3J5IHNwYWNlIGFuZCBz
-aXplIGNvdWxkIGJlIHNldCB0aHJvdWdoIHRoZSBEVCBvciBieSB0aGUNCj4gPiBjb25maWdmcyBh
-dmFpbGFibGUgb24gdGhlIHBjaS1lcGYtdGVzdCBkcml2ZXIuDQo+ID4NCj4gDQo+IEFsdGhvdWdo
-IHRoZXNlIG9wdGlvbnMgY291bGQgYmUgc2V0IHRocm91Z2ggRFQgb3IgYnkgY29uZmlnZnMsIGFu
-b3RoZXINCj4gb3B0aW9uIGlzIHRvIGVuYWJsZSB0aGUgdXNlciBvZiBwY2l0ZXN0IHRvIHNwZWNp
-Znkgc3VjaCBwYXJhbWV0ZXJzIG9uDQo+IHRoZSBjb21tYW5kIGxpbmUgd2hlbiBpbnZva2luZyBl
-YWNoIHRlc3QgZnJvbSB0aGUgaG9zdCBzaWRlLg0KDQpUaGF0IHdvdWxkIGJlIGFuIGVhc3kgYW5k
-IHF1aWNrIHNvbHV0aW9uLCBidXQgc28gZmFyIGFzIEkga25vdyB0aGVyZSBpcyBhIA0KbW92ZW1l
-bnQgaW4gdGhlIEtlcm5lbCB0byBhdm9pZCBhbnkgY29uZmlndXJhdGlvbiB0aHJvdWdoIG1vZHVs
-ZSANCnBhcmFtZXRlcnMuIFNvIEknbSBhZnJhaWQgdGhhdCB5b3UgaGF2ZSB0byBjaG9vc2UgYnkg
-RFQgb3IgY29uZmlnZnMgDQpzdHJhdGVneS4gS2lzaG9uIGNhbiBoZWxwIHlvdSBvbiB0aGlzIG1h
-dHRlciwgYnkgdGVsbGluZyB5b3Ugd2hhdCBoZSANCnByZWZlcnMuDQoNClJlZ2FyZHMsDQpHdXN0
-YXZvDQoNCg0K
+Hello!
+
+This series provides a non-RFC posting for two variants of Tasks RCU, a
+rude variant inspired by Steven Rostedt's use of schedule_on_each_cpu(),
+and a tracing variant requested by the BPF folks to be used (for example)
+to protect BPF programs that unconditionally access userspace memory,
+and thus might occasionally take a page fault, resulting in a voluntary
+context switch.
+
+The rude variant uses context switches and offline as its quiescent
+states, so that preempt-disabled regions of code executing on online
+CPUs form the tasks rude RCU readers.
+
+The tracing variant has explicit read-side markers to permit finite grace
+periods even given in-kernel loops in PREEMPT=n builds.  These markers
+are rcu_read_lock_trace() and rcu_read_unlock_trace(), so that any code
+not under rcu_read_lock_trace() is a quiescent state.  This variant
+also protects marked code in the idle loop, on exception entry/exit
+paths, and on the various CPU-hotplug online/offline code paths, thus
+having protection properties similar to SRCU.  However, unlike SRCU,
+this variant avoids expensive instructions in the read-side primitives,
+thus having read-side overhead similar to that of preemptible RCU.
+This difference is important for some BPF programs, according to
+benchmarking from Alexei Starovoitov:
+
+https://lore.kernel.org/lkml/20200310014043.4dbagqbr2wsbuarm@ast-mbp/
+
+There are of course downsides.  The grace-period code can send IPIs to
+CPUs, even when those CPUs are in the idle loop or in nohz_full userspace.
+However, this version enlists the aid of the context-switch hooks,
+which eliminates the need for IPIs in context-switch-heavy workloads.
+It also prohibits sending of IPIs early in the grace period based on a
+new rcupdate.rcu_task_ipi_delay kernel boot parameter, which provides
+additional opportunity for the hooks to do their job.  Finally, a new
+TASKS_TRACE_RCU_READ_MB Kconfig option avoids sending IPIs to tasks
+executing userspace or in the idle loop, at the expense of higher overhead
+readers during kernel entry/exit code and in the idle loop.
+
+It is also necessary to scan the full tasklist, much as for Tasks RCU.
+There is a single callback queue guarded by a single lock, again, much
+as for Tasks RCU.  If needed, these downsides can be at least partially
+remedied.
+
+Perhaps most important, this variant of RCU does not affect the vanilla
+flavors, rcu_preempt and rcu_sched.  The fact that RCU Tasks Trace
+readers can operate from idle, offline, and exception entry/exit in no
+way allows rcu_preempt and rcu_sched readers to also do so.
+
+The RCU tasks trace mechanism is based off of RCU tasks rather than
+SRCU because the latter is more complex and also because the latter
+uses a CPU-by-CPU approach to tracking quiescent states instead of the
+task-by-task approach that is needed.  It is in theory possible to mash
+RCU tasks trace into the Tree SRCU implementation, but there will need
+to be extremely good reasons for doing so.  The vanilla RCU mechanism
+could in theory be used in CONFIG_PREEMPT=y kernels, but fails utterly
+in CONFIG_PREEMPT=n kernels.  Tasks RCU does not work because page
+faults can result in a voluntary context switch, which prevents it from
+protecting a BPF program that page faults.  The new "rude" variant only
+protected preempt-disable regions of code, thus also failing to protect
+BPF programs that page fault.
+
+This effort benefited greatly from off-list discussions of BPF
+requirements with Alexei Starovoitov and Andrii Nakryiko, as well as from
+numerous on-list discussions, at least some of which are captured in the
+"Link:" tags on the patches themselves.
+
+The patches in this series are as follows, with asterisks indicating
+significant change from v3:
+
+1*.	Add comments marking transitions between RCU watching and not.
+
+2*.	rcu-tasks: Use context-switch hook for PREEMPT=y kernels.
+
+3.	sched/core: Add function to sample state of locked-down task.
+
+4.	Add per-task state to RCU CPU stall warnings.
+
+5.	rcu-tasks: Move Tasks RCU to its own file.
+
+6.	rcu-tasks: Create struct to hold state information.
+
+7.	Reinstate synchronize_rcu_mult().
+
+8.	Add a test for synchronize_rcu_mult().
+
+9.	rcu-tasks: Refactor RCU-tasks to allow variants to be added.
+
+10.	rcu-tasks: Add an RCU-tasks rude variant.
+
+11.	Add torture tests for RCU Tasks Rude.
+
+12.	rcu-tasks: Use unique names for RCU-Tasks kthreads and messages.
+
+13.	rcu-tasks: Further refactor RCU-tasks to allow adding more variants.
+
+14.	rcu-tasks: Code movement to allow more Tasks RCU variants.
+
+15.	rcu-tasks: Add an RCU Tasks Trace to simplify protection of
+	tracing hooks.
+
+16.	Add torture tests for RCU Tasks Trace.
+
+17.	rcu-tasks: Add stall warnings for RCU Tasks Trace.
+
+18.	rcu-tasks: Move #ifdef into tasks.h.
+
+19.	rcu-tasks: Add RCU tasks to rcutorture writer stall output.
+
+20.	rcu-tasks: Make rcutorture writer stall output include GP state.
+
+21.	rcu-tasks: Make RCU Tasks Trace make use of RCU scheduler hooks.
+
+22.	rcu-tasks: Add a grace-period start time for throttling and debug.
+
+23.	rcu-tasks: Provide boot parameter to delay IPIs until late in
+	grace period.
+
+24.	rcu-tasks: Split ->trc_reader_need_end.
+
+25.	rcu-tasks: Add grace-period and IPI counts to statistics.
+
+26.	rcu-tasks: Add Kconfig option to mediate smp_mb() vs. IPI.
+
+27.	rcu-tasks: Avoid IPIing userspace/idle tasks if kernel is so built.
+
+28.	rcu-tasks: Allow rcu_read_unlock_trace() under scheduler locks.
+
+29.	rcu-tasks: Disable CPU hotplug across RCU tasks trace scans.
+
+30.	rcu-tasks: Handle the running-offline idle-task special case.
+
+31.	rcu-tasks: Make RCU tasks trace also wait for idle tasks.
+
+32.	rcu-tasks: Add rcu_dynticks_zero_in_eqs() effectiveness statistics.
+
+33.	rcu-tasks: Add count for idle tasks on offline CPUs.
+
+34.	Add TRACE02 scenario enabling RCU Tasks Trace IPIs.
+
+35.	rcu-tasks: Add IPI failure count to statistics.
+
+36*.	rcu-tasks: Allow standalone use of TASKS_{TRACE_,}RCU.
+
+37*.	Use synchronize_rcu_tasks_rude() instead of ftrace_sync().
+
+38*.	Don't acquire lock in NMI handler in rcu_nmi_enter_common().
+
+This code has passed serious rcutorture testing.  It should therefore
+be ready for production use (famous last words!).
+
+Changes since v3:
+
+o	Fix #ifdef issues preventing standalone use of RCU tasks rude.
+
+o	Apply RCU tasks rude to ftrace.
+
+o	Added commit enabling the RCU-tasks context-switch hook for
+	PREEMPT=y kernels.
+
+o	Prevent rcu_nmi_enter_common() from acquiring locks within NMI
+	handlers.  (Added due to inter-commit dependencies.)
+
+o	Comment the transitions between RCU watching and not.  (Also added
+	due ot inter-commit dependencies.)
+
+Changes since v2:
+
+o	Leveraged idle entry/exit hooks to reduce IPIing of idle and
+	userspace tasks.
+
+o	Switch to read-side memory barriers during idle and userspace
+	execution in kernels built for real-time or battery-powered use,
+	mediated by a new TASKS_TRACE_RCU_READ_MB Kconfig option.  Also
+	add an rcutorture test scenario for this option.
+
+o	Adjust rcutorture to better test the IPI path.  (Seeing zero IPIs
+	might be satisfying to me personally, but it is a lousy test
+	strategy!)
+
+o	Added more information to stall warnings and rcutorture
+	end-of-test printout.
+
+o	Make rcu_read_unlock_trace() usable when invoked with
+	scheduler locks held.
+
+o	Make rcu_read_unlock_trace() usable in interrupt and NMI
+	handlers.
+
+o	Fix handling of idle tasks, including those "running" on
+	offline CPUs.
+
+o	Fixed a number of other bugs found during testing and responded
+	to review feedback.
+
+Changes since v1:
+
+o	Updated this cover letter to provide more detail, including
+	on roads not taken.
+
+o	Updated commit logs based on feedback from v1.
+
+o	Updated the function providing a consistent view of the
+	specified non-running task's state to invoke the specified
+	function even if the task is currently running.  This will
+	be necessary to safely eliminate IPIs for long-term idle and
+	userspace execution.  The function may also now return false
+	to transmit a failure indication to the caller, for example,
+	if the function cannot handle being invoked on a running CPU.
+	The function is now passed the relevant task_struct pointer as
+	well as the specified argument.
+
+	Changes were of course made to use the new API.
+
+o	Leveraged context-switch hooks to avoid unnecessary IPIs.
+
+o	Held off IPIs for the first half second (by default) of each
+	grace period to give the context-switch hooks a better chance
+	to do their job.
+
+o	Lots of testing.
+
+o	Fixed a number of bugs and responded to v2 feedback.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt             |    7 
+ include/linux/rcupdate.h                                    |   53 
+ include/linux/rcupdate_trace.h                              |   98 
+ include/linux/rcupdate_wait.h                               |   19 
+ include/linux/rcutiny.h                                     |    2 
+ include/linux/sched.h                                       |   12 
+ include/linux/wait.h                                        |    2 
+ init/init_task.c                                            |    5 
+ kernel/fork.c                                               |    5 
+ kernel/rcu/Kconfig                                          |   50 
+ kernel/rcu/Kconfig.debug                                    |    4 
+ kernel/rcu/rcu.h                                            |    5 
+ kernel/rcu/rcutorture.c                                     |   84 
+ kernel/rcu/tasks.h                                          | 2143 +++++++++---
+ kernel/rcu/tree.c                                           |   55 
+ kernel/rcu/tree.h                                           |    2 
+ kernel/rcu/tree_plugin.h                                    |   26 
+ kernel/rcu/tree_stall.h                                     |   40 
+ kernel/rcu/update.c                                         |  375 --
+ kernel/sched/core.c                                         |   48 
+ kernel/trace/Kconfig                                        |    1 
+ kernel/trace/ftrace.c                                       |   17 
+ tools/testing/selftests/rcutorture/configs/rcu/CFLIST       |    3 
+ tools/testing/selftests/rcutorture/configs/rcu/RUDE01       |   10 
+ tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot  |    1 
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE01      |   11 
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot |    1 
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02      |   11 
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot |    1 
+ 29 files changed, 2193 insertions(+), 898 deletions(-)
