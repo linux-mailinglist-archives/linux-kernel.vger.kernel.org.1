@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87811AA37C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447701AA390
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506057AbgDONKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:10:48 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53546 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504283AbgDONKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:10:25 -0400
-IronPort-SDR: gyTnjBNA8R3y/5mXi+2yUY6KqEQd4Is6AKxaYOV4aD3eJNYfSkJn49FSwbLK79F6pj//Yhpp5K
- kM9wPlNdeIfw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 06:10:24 -0700
-IronPort-SDR: R9aPDQqhW8bE+iyrhzMOLQ7KiXjLXMmRzQ6TZWEOdXM6PK+eecqc29weeKbLgq+fxMfoHPFBEb
- H5SehbGu+kIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
-   d="scan'208";a="363666025"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 Apr 2020 06:10:19 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Apr 2020 16:10:18 +0300
-Date:   Wed, 15 Apr 2020 16:10:18 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Shuah Khan <shuah@kernel.org>, anders.roxell@linaro.org,
-        lkft-triage@lists.linaro.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v1] kobject: make sure parent is not released before
- children
-Message-ID: <20200415131018.GO2828150@kuha.fi.intel.com>
-References: <20200414204240.186377-1-brendanhiggins@google.com>
- <20200415061154.GA2496263@kroah.com>
- <20200415084653.GM2828150@kuha.fi.intel.com>
- <CAJZ5v0hNemTDVa_S-FfVMbrKjM-RWYoHh88asnUvTNxZinY2cw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hNemTDVa_S-FfVMbrKjM-RWYoHh88asnUvTNxZinY2cw@mail.gmail.com>
+        id S1730026AbgDONL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2506078AbgDONLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:11:07 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3513FC061A0C;
+        Wed, 15 Apr 2020 06:11:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id z6so19016931wml.2;
+        Wed, 15 Apr 2020 06:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1YK31f6d9R7ZKz1959zNs117rXGUB2qZVpteQ8Nm8rE=;
+        b=opvfaQb0ZITpiBld1k4u5Ru6l4CFHpZ7v8Dsm3tWBEB7BZxs190+jPFTPIwCl50rrx
+         NPPMdBa7gnGMXIrhYoOpvsYB8NX67Xjf92Y6es4h/dRkErBjLDBbjqxCGRmV/GjT9ahb
+         4il8jDWH3Wn9uiNiMzxAq8Po0YDsM5JA8B9WcZtp/qDYTMGaTLOYqN0SgUkn/Z7PVcSw
+         hsdfygbK/xTy52wU0y6n7Cqi0wAyu61S/3Nq5uFCyTH1DprmeApdnBrS4oXhcfva95OX
+         RpmoHTicjgAFZXs141O7f9i2gCRF2ctZwxqoP5d51mzkRirXjLJR34W41a7FfOC68577
+         PSXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1YK31f6d9R7ZKz1959zNs117rXGUB2qZVpteQ8Nm8rE=;
+        b=pNWyBTJDoC/NpRuaCrVicAp+NdfEXevTySiPoSmHtvOUym1V8u0XF05+d0ujMjxZ0Q
+         W5y8DgAF7kOpp4LxpdzaqcphCyMwaGE+2tjIfyzN94blgZyz9CEiedgI4A8k0l6qKxht
+         32WBlGRzZwBk60tGM00CUDx6IwDY4YEkZOWuBMtr/AnpAVhB12V/h5XZaWQ0I7dsKBrK
+         y9r2nfW5dibk38ToJqgWk3C1Tpbf1whuBKIN41mNJNIIhUgKYK0/nqb5ez9J1LMXv8VS
+         6eGJzoUkeZhqMKof2ntMJsZt8oP13bgiLmiXYcQiVN715STTxp51bYrIXUt1JZXHA296
+         mwnw==
+X-Gm-Message-State: AGi0PubSVHhSXySvUScZ5VoVD/KqyIaUm3+M+Y7QU57W5IXxjugYopW8
+        5lrWGeHMrGQtB311d34djgU=
+X-Google-Smtp-Source: APiQypKb/YVsijkXt1W8jtMK4h3qXbl3iX+wO+27T2T3+keWoO4EtLb2fRtUtD+xSMEElkqoUaNBbQ==
+X-Received: by 2002:a1c:b70a:: with SMTP id h10mr5272755wmf.172.1586956264930;
+        Wed, 15 Apr 2020 06:11:04 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id c20sm24022450wmd.36.2020.04.15.06.11.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Apr 2020 06:11:04 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: remove bus-width from mmc nodes in rk3308-roc-cc.dts
+Date:   Wed, 15 Apr 2020 15:10:57 +0200
+Message-Id: <20200415131057.2366-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 11:21:03AM +0200, Rafael J. Wysocki wrote:
-> On Wed, Apr 15, 2020 at 10:47 AM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> >
-> > Hi Greg,
-> >
-> > On Wed, Apr 15, 2020 at 08:11:54AM +0200, Greg KH wrote:
-> > > > diff --git a/lib/kobject.c b/lib/kobject.c
-> > > > index 83198cb37d8d..5921e2470b46 100644
-> > > > --- a/lib/kobject.c
-> > > > +++ b/lib/kobject.c
-> > > > @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
-> > > >   */
-> > > >  static void kobject_cleanup(struct kobject *kobj)
-> > > >  {
-> > > > +   struct kobject *parent = kobj->parent;
-> > > >     struct kobj_type *t = get_ktype(kobj);
-> > > >     const char *name = kobj->name;
-> > > >
-> > > > @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
-> > > >             kobject_uevent(kobj, KOBJ_REMOVE);
-> > > >     }
-> > > >
-> > > > +   /* make sure the parent is not released before the (last) child */
-> > > > +   kobject_get(parent);
-> > > > +
-> > > >     /* remove from sysfs if the caller did not do it */
-> > > >     if (kobj->state_in_sysfs) {
-> > > >             pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
-> > > > @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
-> > > >             t->release(kobj);
-> > > >     }
-> > > >
-> > > > +   kobject_put(parent);
-> > > > +
-> > >
-> > > No, please don't do this.
-> > >
-> > > A child device should have always incremented the parent already if it
-> > > was correctly registered.  We have had this patch been proposed multiple
-> > > times over the years, and every time it was, we said no and went and
-> > > fixed the real issue which was with the user of the interface.
-> >
-> > The parent ref count is incremented by the child, that is not the
-> > problem. The problem is that when that child is released, if it's the
-> > last child of the parent, and there are no other users for the parent,
-> > then the parent is actually released _before_ the child. And that
-> > happens in the above function kobject_cleanup().
-> 
-> In fact, it happens in kobject_del() invoked by kobject_cleanup() AFAICS.
-> 
-> So it appears incorrect to use kobject_del() as is in the latter.
-> 
-> > We can work around the problem by taking a reference to the parent
-> > separately, but we have to do that everywhere separately (which I
-> > guess is exactly what has been done so far). That workaroud still does
-> > not really fix the core problem. The core problem is still that
-> > lib/kboject.c is allowing the parent kobject to be released before the
-> > child kobject, and that quite simply should not be allowed to happen.
-> >
-> > I don't have a problem if you want to have a better solution for this,
-> > but the solution really can't anymore be that we are always expected
-> > to separately increment the parent's ref count with every type of
-> > kobject.
-> 
-> An alternative might be to define something like __kobject_del() doing
-> everything that kobject_del() does *without* the
-> kobject_put(kobj->parent).
-> 
-> Then, kobject_del() could be defined as something like (pseudocode):
-> 
-> kobject_del(kobj)
-> {
->     kobject *perent = kobj->parent;
-> 
->     __kobject_del(kobj);
->     kobject_put(parent);
-> }
-> 
-> and kobject_cleanup() could call __kobject_del() instead of
-> kobject_del() and then do the last kobject_put(parent) when it is done
-> with the child.
-> 
-> Would that work?
+The 'bus-width' property for mmc nodes is defined both in
+'rk3308.dtsi' and 'rk3308-roc-cc.dts'.
+'bus-width' and pinctrl containing the bus-pins
+should be in the same file, so remove all entries
+from mmc nodes in 'rk3308-roc-cc.dts'.
 
-I think so. Greg, what do you think?
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts | 2 --
+ 1 file changed, 2 deletions(-)
 
-thanks,
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
+index aa256350b..8011e9b12 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
+@@ -123,7 +123,6 @@
+ };
+ 
+ &emmc {
+-	bus-width = <8>;
+ 	cap-mmc-highspeed;
+ 	disable-wp;
+ 	mmc-hs200-1_8v;
+@@ -171,7 +170,6 @@
+ };
+ 
+ &sdmmc {
+-	bus-width = <4>;
+ 	cap-mmc-highspeed;
+ 	cap-sd-highspeed;
+ 	card-detect-delay = <300>;
 -- 
-heikki
+2.11.0
+
