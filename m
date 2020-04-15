@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0251A8FDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F4F1A8FDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634697AbgDOAsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 20:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
+        id S2634678AbgDOArH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 20:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2634608AbgDOAoM (ORCPT
+        by vger.kernel.org with ESMTP id S2634609AbgDOAoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:44:12 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628E8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:11 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id h16so1332455pgb.16
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:11 -0700 (PDT)
+        Tue, 14 Apr 2020 20:44:13 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8923C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:13 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id i26so1398155pfk.20
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:44:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=UjNERNq8Aq8bZu5IIILXtpvcau9meFsW7FMuBohne+g=;
-        b=i1bpkItyD1E346kP/89xta90B+TuHGZiUbt/x3MIvq+bvW15lb05O4/lQkdPiJ9NGQ
-         93sLq3bZ0gCmmBs2NzvanaM5+i/dlvyVeSpkp5CAVl26E/vZDbirlDxpFHnFoGt0asff
-         De+h6ZaWm9zwZliT9jPHTLXv7N8vr/JVd3LV7PLjsPYaE5eCL7pyvWG7c/boM6S6SiQ8
-         DL83Mwca9qPVHPySOD3QPy0y9xpjNuXuzHvASgjvTwBAnYeenWMlqJp7UjOd4mpJU6bD
-         EkyJRDjvpgKhXJbcQIC6wQknfksS4JPa7DaDbZInnGYHQ5aD/8fgByYqhQqtygZa3D/6
-         Fi5g==
+        bh=W/v3+M/LWfOzs3/FZNGrbIM1gxpJLCv1N1Vd1+pldaA=;
+        b=j2mj8y6mS6PkrzUFtRlLk6MSDpFJnBFHJMwSaTTAd3UOVKRe9MVLx0m54Z1gRUuyl0
+         ixVszlruHE07ytSByL8p5M6+AvxWxNI14AdIkkHGqccSniAyFLzqwnPfP3QEhIbrlf0Y
+         4kkTm5CeFhbBGoO2TRwi4Te5P0AQAxPg8EybmZsg+8D7AikDPHY9KDtORGy+4EI4PKkG
+         RLGbepFP9xj0tTA4cGy2vpV8MqIIX6ezqX0p5paF/6e/0PTh0LxmAPCAxr3Ds3TUP+ab
+         oez2T8VF8eln54Yog2Ec6E9nE5rGjrP0e4S4NDMXDrRmHtQOB0YJRSF3MSe6IwqzFgPU
+         zIGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=UjNERNq8Aq8bZu5IIILXtpvcau9meFsW7FMuBohne+g=;
-        b=W1Za0uKJZZDKAzTOr+B+a2VsCbqA0FO04uhWQnXZ8o4eOxBlXwNkBFrYhazBt+paCp
-         MFgMDNQnhkGh3KrTBzH4UzfVMDw+xKGeAnSYoINT2UmNBxwfdzYSumds+KCl957WvrYa
-         FPgNHr48j44YEawIzNUhr01QGs787dhta9rrMR7PZqU/oMHo1/TxkrksWMqtQKLjMgwC
-         xI20iCQx41lwFjvYulYO5jdKe/el/l0BZDL7+iYfdviFPl7fvLU7t6SabJEXed8TK4yG
-         FUWvVHs9SL4K5rXkEu7QuqfzEAs2vcqpq+EP0ynXMXlz5bHXZh35Drq5vO+HzmQC1nU2
-         hr5g==
-X-Gm-Message-State: AGi0Pua9rFuQZqGhP0HMZoqB0dt58K7WuJVowy+G3b0IkROiUsO7aaNm
-        xV4wEcndwEkiryiaHWW5a7W8pM8c9eM=
-X-Google-Smtp-Source: APiQypJbfrDGo32N0kQWg0rjiAGglPFM6uGFD1dgxEVO66T2nAcht+qTohafqDdYOoPPr9VCwJjI0Buz46A=
-X-Received: by 2002:a63:4625:: with SMTP id t37mr23188575pga.83.1586911450839;
- Tue, 14 Apr 2020 17:44:10 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 17:43:49 -0700
+        bh=W/v3+M/LWfOzs3/FZNGrbIM1gxpJLCv1N1Vd1+pldaA=;
+        b=VVBrZc+p8lX4cz1q2bAjDCkvz/Lb79v+pgxf7fyf8VPjAif5yroq+Sbmml0j2CpIBZ
+         culvZ4NZjIbOKyZpGKmFdUez4zXkLy3uXrsaHdWYrK+4zFK8wY6fG8nSW2UJGJ8Cb08l
+         7h8Bnd2Xx5yHS3rZv11LIGarwtWROSwzrI91PnFuXaDph3eezWGeQAvGpnOt65k1i5h9
+         ao5UxjE5xkb3vNAnPO2lTxTuWc2otv2b69+Ixog4E+UI3fqKx1URKhyNaUOBDlEPcWj3
+         7yRHITVT81p4iosDTy5KPGokfbyRkDunax1ffkx64CwbVPOUPZfh+zD/DJzI8T1PqImp
+         hW5A==
+X-Gm-Message-State: AGi0PuY7TZVLMv6l5SSZ9zNOLb142AvrTFjkKRPQYkS14RzOuDNU3TXd
+        48Y/03LmE9XSEZzOjai2jHDPLg/5QqU=
+X-Google-Smtp-Source: APiQypJAv6NRWZVPw+zLkQyYQ4PLNAZh/M8C8AdziwMW8P44l6wCvQkIrjiBt5eRFbVPbPRbtYA7nKmqq8k=
+X-Received: by 2002:a17:90a:bb8d:: with SMTP id v13mr3232376pjr.150.1586911453265;
+ Tue, 14 Apr 2020 17:44:13 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 17:43:50 -0700
 In-Reply-To: <20200415004353.130248-1-walken@google.com>
-Message-Id: <20200415004353.130248-7-walken@google.com>
+Message-Id: <20200415004353.130248-8-walken@google.com>
 Mime-Version: 1.0
 References: <20200415004353.130248-1-walken@google.com>
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH v4 06/10] mmap locking API: convert nested write lock sites
+Subject: [PATCH v4 07/10] mmap locking API: add mmap_read_trylock_non_owner()
 From:   Michel Lespinasse <walken@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm <linux-mm@kvack.org>
@@ -73,65 +73,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add API for nested write locks and convert the few call sites doing that.
+Add a couple APIs used by kernel/bpf/stackmap.c only:
+- mmap_read_trylock_non_owner()
+- mmap_read_unlock_non_owner() (may be called from a work queue).
+
+It's still not ideal that bpf/stackmap subverts the lock ownership
+in this way. Thanks to Peter Zijlstra for suggesting this API as the
+least-ugly way of addressing this in the short term.
 
 Signed-off-by: Michel Lespinasse <walken@google.com>
 ---
- arch/um/include/asm/mmu_context.h | 3 ++-
- include/linux/mmap_lock.h         | 5 +++++
- kernel/fork.c                     | 2 +-
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ include/linux/mmap_lock.h | 14 ++++++++++++++
+ kernel/bpf/stackmap.c     | 17 +++++------------
+ 2 files changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 62262c5c7785..07e1cb53a89f 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -8,6 +8,7 @@
- 
- #include <linux/sched.h>
- #include <linux/mm_types.h>
-+#include <linux/mmap_lock.h>
- 
- #include <asm/mmu.h>
- 
-@@ -47,7 +48,7 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
- 	 * when the new ->mm is used for the first time.
- 	 */
- 	__switch_mm(&new->context.id);
--	down_write_nested(&new->mmap_sem, 1);
-+	mmap_write_lock_nested(new, 1);
- 	uml_setup_stubs(new);
- 	mmap_write_unlock(new);
- }
 diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 8b5a3cd56118..9d34b0690403 100644
+index 9d34b0690403..1050257361aa 100644
 --- a/include/linux/mmap_lock.h
 +++ b/include/linux/mmap_lock.h
-@@ -11,6 +11,11 @@ static inline void mmap_write_lock(struct mm_struct *mm)
- 	down_write(&mm->mmap_sem);
+@@ -56,4 +56,18 @@ static inline void mmap_read_unlock(struct mm_struct *mm)
+ 	up_read(&mm->mmap_sem);
  }
  
-+static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
++static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
 +{
-+	down_write_nested(&mm->mmap_sem, subclass);
++	if (down_read_trylock(&mm->mmap_sem)) {
++		rwsem_release(&mm->mmap_sem.dep_map, _RET_IP_);
++		return true;
++	}
++	return false;
 +}
 +
- static inline int mmap_write_lock_killable(struct mm_struct *mm)
- {
- 	return down_write_killable(&mm->mmap_sem);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 9a2511a6714f..bdb5ec3574eb 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -499,7 +499,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	/*
- 	 * Not linked in yet - no deadlock potential:
- 	 */
--	down_write_nested(&mm->mmap_sem, SINGLE_DEPTH_NESTING);
-+	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
++static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
++{
++	up_read_non_owner(&mm->mmap_sem);
++}
++
+ #endif /* _LINUX_MMAP_LOCK_H */
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 11d41f0c7005..998968659892 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -33,7 +33,7 @@ struct bpf_stack_map {
+ /* irq_work to run up_read() for build_id lookup in nmi context */
+ struct stack_map_irq_work {
+ 	struct irq_work irq_work;
+-	struct rw_semaphore *sem;
++	struct mm_struct *mm;
+ };
  
- 	/* No ordering required: file already has been exposed. */
- 	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
+ static void do_up_read(struct irq_work *entry)
+@@ -44,8 +44,7 @@ static void do_up_read(struct irq_work *entry)
+ 		return;
+ 
+ 	work = container_of(entry, struct stack_map_irq_work, irq_work);
+-	up_read_non_owner(work->sem);
+-	work->sem = NULL;
++	mmap_read_unlock_non_owner(work->mm);
+ }
+ 
+ static DEFINE_PER_CPU(struct stack_map_irq_work, up_read_work);
+@@ -317,7 +316,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 	 * with build_id.
+ 	 */
+ 	if (!user || !current || !current->mm || irq_work_busy ||
+-	    mmap_read_trylock(current->mm) == 0) {
++	    !mmap_read_trylock_non_owner(current->mm)) {
+ 		/* cannot access current->mm, fall back to ips */
+ 		for (i = 0; i < trace_nr; i++) {
+ 			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+@@ -342,16 +341,10 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 	}
+ 
+ 	if (!work) {
+-		mmap_read_unlock(current->mm);
++		mmap_read_unlock_non_owner(current->mm);
+ 	} else {
+-		work->sem = &current->mm->mmap_sem;
++		work->mm = current->mm;
+ 		irq_work_queue(&work->irq_work);
+-		/*
+-		 * The irq_work will release the mmap_sem with
+-		 * up_read_non_owner(). The rwsem_release() is called
+-		 * here to release the lock from lockdep's perspective.
+-		 */
+-		rwsem_release(&current->mm->mmap_sem.dep_map, _RET_IP_);
+ 	}
+ }
+ 
 -- 
 2.26.0.110.g2183baf09c-goog
 
