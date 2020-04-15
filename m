@@ -2,40 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE1B1AB31F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43161AB325
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442269AbgDOVIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 17:08:25 -0400
-Received: from mga03.intel.com ([134.134.136.65]:64181 "EHLO mga03.intel.com"
+        id S2442310AbgDOVKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 17:10:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:52490 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442242AbgDOVGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 17:06:00 -0400
-IronPort-SDR: qvys6GKRLvYsrDhWLB5SMBFTGumEQD4zNtmFu/+wteOnOXvIZrjoZ/9a/Ere2FGW27bChaHRFP
- VIJeRMq6J4Cw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 14:05:40 -0700
-IronPort-SDR: 5NmaIRolpxwZ7///i8EhtVYQNaOyMjZP7JSXEUZoz/Lyy4pJxaGbfCCQFe9qXmggsANzKLJMBN
- 6Bu3/2RDxV1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="455035629"
-Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.209.116.191])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 14:05:37 -0700
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, Jessica Yu <jeyu@kernel.org>
-Cc:     arjan@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecomb@intel.com
-Subject: [PATCH 9/9] module: Reorder functions
-Date:   Wed, 15 Apr 2020 14:04:51 -0700
-Message-Id: <20200415210452.27436-10-kristen@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415210452.27436-1-kristen@linux.intel.com>
-References: <20200415210452.27436-1-kristen@linux.intel.com>
+        id S2442220AbgDOVFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 17:05:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D443C14;
+        Wed, 15 Apr 2020 14:05:24 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 80F423F6C4;
+        Wed, 15 Apr 2020 14:05:23 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v3 0/9] sched: Streamline select_task_rq() & select_task_rq_fair()
+Date:   Wed, 15 Apr 2020 22:05:03 +0100
+Message-Id: <20200415210512.805-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -43,123 +33,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a module has functions split out into separate text sections
-(i.e. compiled with the -ffunction-sections flag), reorder the
-functions to provide some code diversification to modules.
+I've been staring at select_task_rq_fair() for some time now, and have come
+to "hate" the usage of the sd_flag parameter. It is used as both an
+indicator of the wakeup type (ttwu/fork/exec) and as a domain walk search
+target. CFS is the only class doing this, the other classes just need the
+wakeup type but get passed a domain flag instead.
 
-Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- kernel/module.c | 82 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+This series gets rid of select_task_rq()'s sd_flag parameter and also tries
+to optimize select_task_rq_fair().
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 646f1e2330d2..e432ec5f6df4 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -53,6 +53,8 @@
- #include <linux/bsearch.h>
- #include <linux/dynamic_debug.h>
- #include <linux/audit.h>
-+#include <linux/random.h>
-+#include <asm/setup.h>
- #include <uapi/linux/module.h>
- #include "module-internal.h"
- 
-@@ -2370,6 +2372,83 @@ static long get_offset(struct module *mod, unsigned int *size,
- 	return ret;
- }
- 
-+/*
-+ * shuffle_text_list()
-+ * Use a Fisher Yates algorithm to shuffle a list of text sections.
-+ */
-+static void shuffle_text_list(Elf_Shdr **list, int size)
-+{
-+	int i;
-+	unsigned int j;
-+	Elf_Shdr *temp;
-+
-+	for (i = size - 1; i > 0; i--) {
-+		/*
-+		 * pick a random index from 0 to i
-+		 */
-+		get_random_bytes(&j, sizeof(j));
-+		j = j % (i + 1);
-+
-+		temp = list[i];
-+		list[i] = list[j];
-+		list[j] = temp;
-+	}
-+}
-+
-+/*
-+ * randomize_text()
-+ * Look through the core section looking for executable code sections.
-+ * Store sections in an array and then shuffle the sections
-+ * to reorder the functions.
-+ */
-+static void randomize_text(struct module *mod, struct load_info *info)
-+{
-+	int i;
-+	int num_text_sections = 0;
-+	Elf_Shdr **text_list;
-+	int size = 0;
-+	int max_sections = info->hdr->e_shnum;
-+	unsigned int sec = find_sec(info, ".text");
-+
-+	if (sec == 0)
-+		return;
-+
-+	text_list = kmalloc_array(max_sections, sizeof(*text_list), GFP_KERNEL);
-+	if (text_list == NULL)
-+		return;
-+
-+	for (i = 0; i < max_sections; i++) {
-+		Elf_Shdr *shdr = &info->sechdrs[i];
-+		const char *sname = info->secstrings + shdr->sh_name;
-+
-+		if (!(shdr->sh_flags & SHF_ALLOC) ||
-+		    !(shdr->sh_flags & SHF_EXECINSTR) ||
-+		    strstarts(sname, ".init"))
-+			continue;
-+
-+		text_list[num_text_sections] = shdr;
-+		num_text_sections++;
-+	}
-+
-+	shuffle_text_list(text_list, num_text_sections);
-+
-+	for (i = 0; i < num_text_sections; i++) {
-+		Elf_Shdr *shdr = text_list[i];
-+
-+		/*
-+		 * get_offset has a section index for it's last
-+		 * argument, that is only used by arch_mod_section_prepend(),
-+		 * which is only defined by parisc. Since this this type
-+		 * of randomization isn't supported on parisc, we can
-+		 * safely pass in zero as the last argument, as it is
-+		 * ignored.
-+		 */
-+		shdr->sh_entsize = get_offset(mod, &size, shdr, 0);
-+	}
-+
-+	kfree(text_list);
-+}
-+
- /* Lay out the SHF_ALLOC sections in a way not dissimilar to how ld
-    might -- code, read-only data, read-write data, small data.  Tally
-    sizes, and place the offsets into sh_entsize fields: high bit means it
-@@ -2460,6 +2539,9 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 			break;
- 		}
- 	}
-+
-+	if (IS_ENABLED(CONFIG_FG_KASLR) && kaslr_enabled())
-+		randomize_text(mod, info);
- }
- 
- static void set_license(struct module *mod, const char *license)
--- 
-2.20.1
+This is based on top of v5.7-rc1.
+
+Patches
+=======
+
+o Patch 1 is a simple dead parameter cleanup
+o Patches 2-4 get rid of SD_LOAD_BALANCE
+o Patches 5-6 involve getting rid of the sd_flag parameter for
+  select_task_rq(). 
+o Patch 7 is an extra cleanup in the select_task_rq_fair() region.
+o Patches 8-9 split the want_affine vs !want_affine paths of
+  select_task_rq_fair(), which unearths a small optimization. Sort of a
+  single patch split in two for the sake of review.
+
+Testing
+=======
+
+Testing was done against a slightly older tip/sched/core at:
+25ac227a25ac ("sched/fair: Remove wake_cap()")
+
+I got annoyed by the variance in my 500 iteration runs, so I scripted
+something to run batches of 5k iterations. It looks pretty stable from one
+batch to another. I also stared at some boxplots to convince myself I
+wasn't needlessly making things worse - you too can stare at them here [1].
+
+Note: the 'X%' stats are the percentiles, so 50% is the 50th percentile.
+
+Juno r0
+-------
+
+2+4 big.LITTLE. SD levels are {MC, DIE}.
+
+Hackbench
+~~~~~~~~~
+
+15000 iterations of
+  $ hackbench
+(lower is better):
+
+|       |   -PATCH |   +PATCH |  DELTA |
+|-------+----------+----------+--------|
+| mean  | 0.622235 | 0.618834 | -0.55% |
+| std   | 0.018121 | 0.017579 | -2.99% |
+| min   | 0.571000 | 0.573000 | +0.35% |
+| 50%   | 0.620000 | 0.617000 | -0.48% |
+| 75%   | 0.633000 | 0.629000 | -0.63% |
+| 99%   | 0.674000 | 0.669000 | -0.74% |
+| max   | 0.818000 | 0.756000 | -7.58% |
+
+The boxplot shows a single outlier to the very left for both commits, which
+are the minimums reported above. Other than that, +PATCH has somewhat lower
+outliers on the righthand side: worst cases are a tad better.
+
+Sysbench
+~~~~~~~~
+
+15000 iterations of
+  $ sysbench --max-time=5 --max-requests=-1 --test=threads --num-threads=6 run
+(higher is better):
+
+|       |       -PATCH |       +PATCH |   DELTA |
+|-------+--------------+--------------+---------|
+| mean  | 15318.954000 | 15628.416933 |  +2.02% |
+| std   |   235.466202 |   205.162730 | -12.87% |
+| min   | 13025.000000 | 13554.000000 |  +4.06% |
+| 50%   | 15366.000000 | 15681.000000 |  +2.05% |
+| 75%   | 15497.000000 | 15765.000000 |  +1.73% |
+| 99%   | 15651.000000 | 15893.000000 |  +1.55% |
+| max   | 15716.000000 | 15972.000000 |  +1.63% |
+
+That's overall a tad better.
+
+Dual-socket Xeon E5
+-------------------
+
+Each socket is 10 cores w/ SMT2 - 40 CPUs total. SD levels are
+{SMT, MC, NUMA}.
+
+Hackbench
+~~~~~~~~~
+
+25000 iterations of
+  $ hackbench -l 1000
+(lower is better):
+
+|       |       -PATCH |       +PATCH |  DELTA |
+|-------+--------------+--------------+--------|
+| mean  |     0.946312 |     0.944685 | -0.17% |
+| std   |     0.006419 |     0.006447 | +0.44% |
+| min   |     0.906000 |     0.897000 | -0.99% |
+| 50%   |     0.947000 |     0.945000 | -0.21% |
+| 75%   |     0.950000 |     0.949000 | -0.11% |
+| 99%   |     0.959000 |     0.958000 | -0.10% |
+| max   |     0.988000 |     0.967000 | -2.13% |
+
+The boxplot shows that the min improvement is some sort of fluke - it's a
+single point standing out on the left. The mean *is* slightly lowered,
+which most likely comes from +PATCH having less high-value outliers.
+
+I looked into some statistical tests, but my samples distribution isn't a
+normal distribution (which is a requirement for most of them). This
+actually can't happen by construction according to [2], since hackbench
+outputs the maximum of a set of random of variables. We could instead use
+the average of all sender/receiver pairs, or even the invidual time taken
+per each pair; that being said, I don't think each value produced by a pair
+could be seen as independent variables, given that there'll be more > 1
+task per CPU.
+
+Wilcoxon's test [3] gives me a p-value of ~1e-182, so there *is* a
+significant difference between the two datasets, but it does not say if the
+difference is in the mean, variance, or any other parameter of the
+distribution.
+
+Sysbench
+~~~~~~~~~
+
+25000 iterations of
+  $ sysbench --max-time=5 --max-requests=-1 --test=threads --num-threads=40 run
+(higher is better):
+
+|       |       -PATCH |       +PATCH |   DELTA |
+|-------+--------------+--------------+---------|
+| mean  | 23937.937560 | 24280.668640 |  +1.43% |
+| std   |   547.139948 |   484.963639 | -11.36% |
+| min   | 21526.000000 | 21917.000000 |  +1.82% |
+| 50%   | 24032.000000 | 24374.000000 |  +1.42% |
+| 75%   | 24355.000000 | 24638.000000 |  +1.16% |
+| 99%   | 24869.010000 | 25084.000000 |  +0.86% |
+| max   | 25410.000000 | 25623.000000 |  +0.84% |
+
+As with the Juno, that's overall a tad better.
+
+Takeaway
+--------
+
+The TL;DR for those fancy stats seems to be: it's hard to say much about
+hackbench, and sysbench likes it a bit. The important thing for me is to
+not introduce regressions with my stupid change, and AFAICT it is the case.
+
+Links
+=====
+
+[1]: https://htmlpreview.github.io/?https://gist.githubusercontent.com/valschneider/433b3772d1776c52214dd05be2ab2f03/raw/316fbd9f774fa381c60731511c881a3360111563/streamline_v2_bplots.html
+[2]: https://en.wikipedia.org/wiki/Fisher%E2%80%93Tippett%E2%80%93Gnedenko_theorem
+[3]: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html#scipy.stats.wilcoxon
+
+Revisions
+=========
+
+v2 -> v3
+--------
+o Rebased on top of v5.7-rc1 (didn't re-run performance tests)
+o Collected Reviewed-by (Dietmar)
+o Updated changelog of 3/9 (Dietmar)
+
+v1 -> v2
+--------
+o Removed the 'RFC' tag
+o Made the sd_flags syctl read-only
+o Removed the SD_LOAD_BALANCE flag
+o Cleaned up ugly changes thanks to the above
+
+Valentin Schneider (9):
+  sched/fair: find_idlest_group(): Remove unused sd_flag parameter
+  sched/debug: Make sd->flags sysctl read-only
+  sched: Remove checks against SD_LOAD_BALANCE
+  sched/topology: Kill SD_LOAD_BALANCE
+  sched: Add WF_TTWU, WF_EXEC wakeup flags
+  sched: Kill select_task_rq()'s sd_flag parameter
+  sched/fair: Dissociate wakeup decisions from SD flag value
+  sched/fair: Split select_task_rq_fair want_affine logic
+  sched/topology: Define and use shortcut pointers for wakeup sd_flag
+    scan
+
+ include/linux/sched/topology.h | 29 +++++++------
+ kernel/sched/core.c            | 10 ++---
+ kernel/sched/deadline.c        |  4 +-
+ kernel/sched/debug.c           |  2 +-
+ kernel/sched/fair.c            | 75 +++++++++++++++++++---------------
+ kernel/sched/idle.c            |  2 +-
+ kernel/sched/rt.c              |  4 +-
+ kernel/sched/sched.h           | 13 ++++--
+ kernel/sched/stop_task.c       |  2 +-
+ kernel/sched/topology.c        | 43 +++++++++----------
+ 10 files changed, 98 insertions(+), 86 deletions(-)
+
+--
+2.24.0
 
