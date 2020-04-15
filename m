@@ -2,304 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796E31AAFDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D03B1AAFE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411364AbgDOReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411315AbgDORd0 (ORCPT
+        id S2411409AbgDORfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:35:11 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:62220 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2411346AbgDOReC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:33:26 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B21FC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:33:25 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g12so566756wmh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rkck/HArmjgepuHn4NJVu+OJYGwshBlSqBTd3E9eO9s=;
-        b=aXAmvMC38ItFa/I/ODNZFZ8Nrx7rhomjxXCK4J5+GBQd1yCzGiDpI4dIGYKTYh2tJN
-         VgaKRL1AocDuGGpa+VM0K6CIIoL7tYRLv7yvbYFf+kfSv+MtKPOJkdAv3gmwpi8cCspn
-         A/2EOdtw7HqI2BzdJb3cX7WC5xqxOjIvuzdDc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Rkck/HArmjgepuHn4NJVu+OJYGwshBlSqBTd3E9eO9s=;
-        b=lYrEPuUVJYW9pDavv1gpBEBxPXp3vI7og+g6i8497pX/tKVlMwLWGU2fWVtGY+Gx09
-         uI2luNdZrbcvD3h1ol3l/GKjqYGz0/sH1zhaa8AhTHJJFMTIeroghSPQGdYGKZRPmXeD
-         GnClezJKE6wi2r3NW9/9xDXVtIgL1jjUi63fM/rUIcejl3zRh60F/+hQmj5pRafWAdIZ
-         157rU8Vz5xI2PTdraIQtdW3mhFUmf1ExVXpIFFXr7AaqHA+qHqka91+BYbaW/pIYRvxD
-         zNsECmPQz+VHry4brj9RbPjy56K2rSlu32XpUT19Vq1hz1xcABIfsX95DHy325ZrZiGG
-         gXVg==
-X-Gm-Message-State: AGi0PuaCnfMQVXEnT+HisbMSvd58sbu6IP4HalITxwfn2pa3XLBXDWCw
-        iL6hE3xNW5rYfEUlajUMFgsafA==
-X-Google-Smtp-Source: APiQypIdl3rsjfv/Is2Bm6qZeSmQZagNruwgJ+J30Wx3YvhKi8ugAsblhQ2s/uQ8MCyGKbgMoJvuIQ==
-X-Received: by 2002:a1c:1f96:: with SMTP id f144mr297157wmf.114.1586972003719;
-        Wed, 15 Apr 2020 10:33:23 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z8sm3996060wrr.40.2020.04.15.10.33.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 10:33:23 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 19:33:20 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v3 1/2] DRM: ARC: add HDMI 2.0 TX encoder support
-Message-ID: <20200415173320.GG3456981@phenom.ffwll.local>
-Mail-Followup-To: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        dri-devel@lists.freedesktop.org,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>
-References: <20200414232929.22788-1-Eugeniy.Paltsev@synopsys.com>
- <20200414232929.22788-2-Eugeniy.Paltsev@synopsys.com>
+        Wed, 15 Apr 2020 13:34:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586972042; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=CCqk7JpvsFChy4Ee1MmUL0h8jw+HCmWT+Rb1fKKzvFE=; b=JblkkjYGlLsbfCPNNzv1QDGxHOfsIoUqFMMpVu83z0ux3DYOj2y3VzhEOzX059iKFUtzFI5O
+ UXodk5xok8hg2+a2U5DxlGE+otPOC86KM6ECjv7GUC0e/WUcLXdmPjR3I7a/Pm2F0eDD5v8T
+ aDuuObv/Df1VRQ+FaKOtc5LlsCk=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e974579.7f7ecd54ec38-smtp-out-n01;
+ Wed, 15 Apr 2020 17:33:45 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0D5E0C433BA; Wed, 15 Apr 2020 17:33:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [183.83.66.17])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10D9EC433BA;
+        Wed, 15 Apr 2020 17:33:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10D9EC433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     <ath10k@lists.infradead.org>
+Cc:     <linux-wireless@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1585134100-5944-1-git-send-email-pillair@codeaurora.org> <1585134100-5944-4-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1585134100-5944-4-git-send-email-pillair@codeaurora.org>
+Subject: RE: [PATCH v2 3/3] ath10k: Add support for targets without trustzone
+Date:   Wed, 15 Apr 2020 23:03:35 +0530
+Message-ID: <001401d6134c$01b5c420$05214c60$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414232929.22788-2-Eugeniy.Paltsev@synopsys.com>
-X-Operating-System: Linux phenom 5.3.0-3-amd64 
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQI6fc28eknFIs45cOq24ZTPq1i0fwKMRWarp50564A=
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:29:28AM +0300, Eugeniy Paltsev wrote:
-> The Synopsys ARC SoCs (like HSDK4xD) include on-chip DesignWare HDMI
-> encoders. Support them with a platform driver to provide platform glue
-> data to the dw-hdmi driver.
+Hi Kalle,
+
+I have sent out v3 for this patchset after correcting the firmware structure
+name which was added in ath10k snoc structure
+
+Thanks,
+Rakesh Pillai.
+
+> -----Original Message-----
+> From: Rakesh Pillai <pillair@codeaurora.org>
+> Sent: Wednesday, March 25, 2020 4:32 PM
+> To: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Rakesh Pillai <pillair@codeaurora.org>
+> Subject: [PATCH v2 3/3] ath10k: Add support for targets without trustzone
 > 
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> Add the support to attach and map iommu
+> domain for targets which do not have the
+> support of TrustZone.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > ---
->  MAINTAINERS                       |   6 ++
->  drivers/gpu/drm/Makefile          |   2 +-
->  drivers/gpu/drm/arc/Kconfig       |   7 ++
->  drivers/gpu/drm/arc/Makefile      |   1 +
->  drivers/gpu/drm/arc/arc-dw-hdmi.c | 116 ++++++++++++++++++++++++++++++
->  5 files changed, 131 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpu/drm/arc/arc-dw-hdmi.c
+>  drivers/net/wireless/ath/ath10k/snoc.c | 118
+> ++++++++++++++++++++++++++++++++-
+>  drivers/net/wireless/ath/ath10k/snoc.h |   7 ++
+>  2 files changed, 124 insertions(+), 1 deletion(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a6fbdf354d34..2aaed1190370 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1258,6 +1258,12 @@ S:	Supported
->  F:	drivers/gpu/drm/arc/
->  F:	Documentation/devicetree/bindings/display/snps,arcpgu.txt
->  
-> +ARC DW HDMI DRIVER
-> +M:	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-> +S:	Supported
-> +F:	drivers/gpu/drm/arc/arc-dw-hdmi.c
-> +F:	Documentation/devicetree/bindings/display/bridge/snps,arc-dw-hdmi.yaml
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c
+> b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 3633ea5..7a7e79b 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/property.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/of_address.h>
+> +#include <linux/iommu.h>
+> 
+>  #include "ce.h"
+>  #include "coredump.h"
+> @@ -1499,6 +1500,111 @@ static int ath10k_setup_msa_resources(struct
+> ath10k *ar, u32 msa_size)
+>  	return 0;
+>  }
+> 
+> +static int ath10k_fw_init(struct ath10k *ar)
+> +{
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> +	struct device *host_dev = &ar_snoc->dev->dev;
+> +	struct platform_device_info info;
+> +	struct iommu_domain *iommu_dom;
+> +	struct platform_device *pdev;
+> +	struct device_node *node;
+> +	int ret;
 > +
->  ARCNET NETWORK LAYER
->  M:	Michael Grzeschik <m.grzeschik@pengutronix.de>
->  L:	netdev@vger.kernel.org
-> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> index 6493088a0fdd..5b0bcf7f45cd 100644
-> --- a/drivers/gpu/drm/Makefile
-> +++ b/drivers/gpu/drm/Makefile
-> @@ -109,7 +109,7 @@ obj-y			+= panel/
->  obj-y			+= bridge/
->  obj-$(CONFIG_DRM_FSL_DCU) += fsl-dcu/
->  obj-$(CONFIG_DRM_ETNAVIV) += etnaviv/
-> -obj-$(CONFIG_DRM_ARCPGU)+= arc/
-> +obj-y			+= arc/
->  obj-y			+= hisilicon/
->  obj-$(CONFIG_DRM_ZTE)	+= zte/
->  obj-$(CONFIG_DRM_MXSFB)	+= mxsfb/
-> diff --git a/drivers/gpu/drm/arc/Kconfig b/drivers/gpu/drm/arc/Kconfig
-> index e8f3d63e0b91..baec9d2a4fba 100644
-> --- a/drivers/gpu/drm/arc/Kconfig
-> +++ b/drivers/gpu/drm/arc/Kconfig
-> @@ -8,3 +8,10 @@ config DRM_ARCPGU
->  	  Choose this option if you have an ARC PGU controller.
->  
->  	  If M is selected the module will be called arcpgu.
-> +
-> +config DRM_ARC_DW_HDMI
-> +	tristate "ARC DW HDMI"
-> +	depends on DRM && OF
-> +	select DRM_DW_HDMI
-> +	help
-> +	  Synopsys DW HDMI driver for various ARC development boards
-> diff --git a/drivers/gpu/drm/arc/Makefile b/drivers/gpu/drm/arc/Makefile
-> index c7028b7427b3..7a156d8c2c3c 100644
-> --- a/drivers/gpu/drm/arc/Makefile
-> +++ b/drivers/gpu/drm/arc/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  arcpgu-y := arcpgu_crtc.o arcpgu_hdmi.o arcpgu_sim.o arcpgu_drv.o
->  obj-$(CONFIG_DRM_ARCPGU) += arcpgu.o
-> +obj-$(CONFIG_DRM_ARC_DW_HDMI) += arc-dw-hdmi.o
-> diff --git a/drivers/gpu/drm/arc/arc-dw-hdmi.c b/drivers/gpu/drm/arc/arc-dw-hdmi.c
-> new file mode 100644
-> index 000000000000..46a6ee09b302
-> --- /dev/null
-> +++ b/drivers/gpu/drm/arc/arc-dw-hdmi.c
-> @@ -0,0 +1,116 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +//
-> +// Synopsys DW HDMI driver for various ARC development boards
-> +//
-> +// Copyright (C) 2020 Synopsys
-> +// Author: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-> +
-> +#include <linux/component.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <drm/bridge/dw_hdmi.h>
-> +#include <drm/drm_crtc_helper.h>
-> +#include <drm/drm_edid.h>
-> +#include <drm/drm_encoder_slave.h>
-> +#include <drm/drm_of.h>
-> +
-> +static const struct dw_hdmi_mpll_config snps_hdmi_mpll_cfg[] = {
-> +	{
-> +		27000000, {
-> +			{ 0x00B3, 0x0000 },
-> +			{ 0x00B3, 0x0000 },
-> +			{ 0x00B3, 0x0000 }
-> +		},
-> +	}, {
-> +		74250000, {
-> +			{ 0x0072, 0x0001},
-> +			{ 0x0072, 0x0001},
-> +			{ 0x0072, 0x0001}
-> +		},
-> +	}, {
-> +		148500000, {
-> +			{ 0x0051, 0x0002},
-> +			{ 0x0051, 0x0002},
-> +			{ 0x0051, 0x0002}
-> +		},
-> +	}, {
-> +		~0UL, {
-> +			{ 0x00B3, 0x0000 },
-> +			{ 0x00B3, 0x0000 },
-> +			{ 0x00B3, 0x0000 },
-> +		},
+> +	node = of_get_child_by_name(host_dev->of_node, "wifi-
+> firmware");
+> +	if (!node) {
+> +		ar_snoc->use_tz = true;
+> +		return 0;
 > +	}
-> +};
 > +
-> +static const struct dw_hdmi_curr_ctrl snps_hdmi_cur_ctr[] = {
-> +	/* pixelclk    bpp8    bpp10   bpp12 */
-> +	{ 27000000,  { 0x0000, 0x0000, 0x0000 }, },
-> +	{ 74250000,  { 0x0008, 0x0008, 0x0008 }, },
-> +	{ 148500000, { 0x001b, 0x001b, 0x001b }, },
-> +	{ ~0UL,      { 0x0000, 0x0000, 0x0000 }, }
-> +};
+> +	memset(&info, 0, sizeof(info));
+> +	info.fwnode = &node->fwnode;
+> +	info.parent = host_dev;
+> +	info.name = node->name;
+> +	info.dma_mask = DMA_BIT_MASK(32);
 > +
+> +	pdev = platform_device_register_full(&info);
+> +	if (IS_ERR(pdev)) {
+> +		of_node_put(node);
+> +		return PTR_ERR(pdev);
+> +	}
 > +
-> +static const struct dw_hdmi_phy_config snps_hdmi_phy_config[] = {
-> +	/* pixelclk   symbol  term    vlev */
-> +	{ 27000000,   0x8009, 0x0004, 0x0232},
-> +	{ 74250000,   0x8009, 0x0004, 0x0232},
-> +	{ 148500000,  0x8009, 0x0004, 0x0232},
-> +	{ ~0UL,       0x8009, 0x0004, 0x0232}
-> +};
+> +	pdev->dev.of_node = node;
 > +
-> +static struct dw_hdmi_plat_data snps_dw_hdmi_drv_data = {
-> +	.mpll_cfg   = snps_hdmi_mpll_cfg,
-> +	.cur_ctr    = snps_hdmi_cur_ctr,
-> +	.phy_config = snps_hdmi_phy_config,
-> +};
+> +	ret = of_dma_configure(&pdev->dev, node, true);
+> +	if (ret) {
+> +		ath10k_err(ar, "dma configure fail: %d\n", ret);
+> +		goto err_unregister;
+> +	}
 > +
-> +static const struct of_device_id snps_dw_hdmi_dt_ids[] = {
-> +	{ .compatible = "snps,arc-dw-hdmi-hsdk", .data = &snps_dw_hdmi_drv_data },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, snps_dw_hdmi_dt_ids);
+> +	ar_snoc->fw.dev = &pdev->dev;
 > +
-> +static int snps_dw_hdmi_probe(struct platform_device *pdev)
+> +	iommu_dom = iommu_domain_alloc(&platform_bus_type);
+> +	if (!iommu_dom) {
+> +		ath10k_err(ar, "failed to allocate iommu domain\n");
+> +		ret = -ENOMEM;
+> +		goto err_unregister;
+> +	}
+> +
+> +	ret = iommu_attach_device(iommu_dom, ar_snoc->fw.dev);
+> +	if (ret) {
+> +		ath10k_err(ar, "could not attach device: %d\n", ret);
+> +		goto err_iommu_free;
+> +	}
+> +
+> +	ar_snoc->fw.iommu_domain = iommu_dom;
+> +	ar_snoc->fw.fw_start_addr = ar->msa.paddr;
+> +
+> +	ret = iommu_map(iommu_dom, ar_snoc->fw.fw_start_addr,
+> +			ar->msa.paddr, ar->msa.mem_size,
+> +			IOMMU_READ | IOMMU_WRITE);
+> +	if (ret) {
+> +		ath10k_err(ar, "failed to map firmware region: %d\n", ret);
+> +		goto err_iommu_detach;
+> +	}
+> +
+> +	of_node_put(node);
+> +
+> +	return 0;
+> +
+> +err_iommu_detach:
+> +	iommu_detach_device(iommu_dom, ar_snoc->fw.dev);
+> +
+> +err_iommu_free:
+> +	iommu_domain_free(iommu_dom);
+> +
+> +err_unregister:
+> +	platform_device_unregister(pdev);
+> +	of_node_put(node);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ath10k_fw_deinit(struct ath10k *ar)
 > +{
-> +	const struct dw_hdmi_plat_data *plat_data;
-> +	const struct of_device_id *match;
-> +	struct dw_hdmi *hdmi;
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> +	const size_t mapped_size = ar_snoc->fw.mapped_mem_size;
+> +	struct iommu_domain *iommu;
+> +	size_t unmapped_size;
 > +
-> +	if (!pdev->dev.of_node)
-> +		return -ENODEV;
+> +	if (ar_snoc->use_tz)
+> +		return 0;
 > +
-> +	match = of_match_node(snps_dw_hdmi_dt_ids, pdev->dev.of_node);
-> +	plat_data = match->data;
+> +	iommu = ar_snoc->fw.iommu_domain;
 > +
-> +	hdmi = dw_hdmi_probe(pdev, plat_data);
-
-So this is kinda not how bridge drivers are supposed to be done nowadays,
-direct calling into the driver was the old way, and dw-hdmi still works
-like that. Modern way is roughly
-- bridge drivers bind automatically to any bridge they support
-- bridge drivers publish a bridge with drm_bridge_add()
-- the driver using the bridge fishes out with dt magic using
-  of_drm_find_bridge() or another of the related of_ functions
-
-I know a bit late, just spotted this because you brought your series here
-up in my arc cleanup series, but can you pls look into adjusting
-accordingly?
-
-I shouldn't take more than moving this binding here into the dw-hdmi
-driver, and switching arc itself over to the of_drm_find_bridge() call.
-That way we could slowly work to transform old bridge drivers like dw-hdmi
-to the new way, instead of adding more cases that will never get
-converted.
-
-Other upside is that arc stays a neat&tiny driver :-)
-
-Thanks, Daniel
-
-> +	if (IS_ERR(hdmi))
-> +		return PTR_ERR(hdmi);
+> +	unmapped_size = iommu_unmap(iommu, ar_snoc-
+> >fw.fw_start_addr,
+> +				    mapped_size);
+> +	if (unmapped_size != mapped_size)
+> +		ath10k_err(ar, "failed to unmap firmware: %zu\n",
+> +			   unmapped_size);
 > +
-> +	platform_set_drvdata(pdev, hdmi);
+> +	iommu_detach_device(iommu, ar_snoc->fw.dev);
+> +	iommu_domain_free(iommu);
+> +
+> +	platform_device_unregister(to_platform_device(ar_snoc->fw.dev));
 > +
 > +	return 0;
 > +}
 > +
-> +static int snps_dw_hdmi_remove(struct platform_device *pdev)
-> +{
-> +	struct dw_hdmi *hdmi = platform_get_drvdata(pdev);
-> +
-> +	dw_hdmi_remove(hdmi);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver snps_dw_hdmi_platform_driver = {
-> +	.probe  = snps_dw_hdmi_probe,
-> +	.remove = snps_dw_hdmi_remove,
-> +	.driver = {
-> +		.name = KBUILD_MODNAME,
-> +		.of_match_table = snps_dw_hdmi_dt_ids,
-> +	},
-> +};
-> +module_platform_driver(snps_dw_hdmi_platform_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("ARC specific DW-HDMI driver extension");
-> +MODULE_AUTHOR("Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>");
-> -- 
-> 2.21.1
+>  static const struct of_device_id ath10k_snoc_dt_match[] = {
+>  	{ .compatible = "qcom,wcn3990-wifi",
+>  	 .data = &drv_priv,
+> @@ -1607,16 +1713,25 @@ static int ath10k_snoc_probe(struct
+> platform_device *pdev)
+>  		goto err_power_off;
+>  	}
 > 
+> +	ret = ath10k_fw_init(ar);
+> +	if (ret) {
+> +		ath10k_err(ar, "failed to initialize firmware: %d\n", ret);
+> +		goto err_power_off;
+> +	}
+> +
+>  	ret = ath10k_qmi_init(ar, msa_size);
+>  	if (ret) {
+>  		ath10k_warn(ar, "failed to register wlfw qmi client: %d\n",
+> ret);
+> -		goto err_power_off;
+> +		goto err_fw_deinit;
+>  	}
+> 
+>  	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+> 
+>  	return 0;
+> 
+> +err_fw_deinit:
+> +	ath10k_fw_deinit(ar);
+> +
+>  err_power_off:
+>  	ath10k_hw_power_off(ar);
+> 
+> @@ -1648,6 +1763,7 @@ static int ath10k_snoc_remove(struct
+> platform_device *pdev)
+> 
+>  	ath10k_core_unregister(ar);
+>  	ath10k_hw_power_off(ar);
+> +	ath10k_fw_deinit(ar);
+>  	ath10k_snoc_free_irq(ar);
+>  	ath10k_snoc_release_resource(ar);
+>  	ath10k_qmi_deinit(ar);
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.h
+> b/drivers/net/wireless/ath/ath10k/snoc.h
+> index c05df45..18e19fb 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.h
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.h
+> @@ -55,6 +55,13 @@ struct regulator_bulk_data;
+>  struct ath10k_snoc {
+>  	struct platform_device *dev;
+>  	struct ath10k *ar;
+> +	unsigned int use_tz;
+> +	struct video_firmware {
+> +		struct device *dev;
+> +		dma_addr_t fw_start_addr;
+> +		struct iommu_domain *iommu_domain;
+> +		size_t mapped_mem_size;
+> +	} fw;
+>  	void __iomem *mem;
+>  	dma_addr_t mem_pa;
+>  	struct ath10k_snoc_target_info target_info;
+> --
+> 2.7.4
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
