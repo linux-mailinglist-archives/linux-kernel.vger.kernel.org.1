@@ -2,115 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B9D1A97BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F5E1A981B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408230AbgDOJCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:02:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53082 "EHLO mx2.suse.de"
+        id S2635914AbgDOJM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:12:29 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57775 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405260AbgDOJB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:01:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 60116AF92;
-        Wed, 15 Apr 2020 09:01:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6A4291E1250; Wed, 15 Apr 2020 11:01:53 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 11:01:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V8 09/11] fs: Introduce DCACHE_DONTCACHE
-Message-ID: <20200415090153.GF501@quack2.suse.cz>
-References: <20200415064523.2244712-1-ira.weiny@intel.com>
- <20200415064523.2244712-10-ira.weiny@intel.com>
+        id S2408371AbgDOJMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:12:21 -0400
+IronPort-SDR: +tnYFqayJ9FGNcp77jB0GuCcQO6yFDfGY4ZXyM817O+9AQtDKrjmZqPeIqWE4Xw7Ts8RikZJUr
+ 4hRiZR/EuZfw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 02:12:20 -0700
+IronPort-SDR: 6DZfSWbji33ZBRzjz6OV60+zabtDaKUmsqS6CmrO5jvPhgTksdHX4hTo959D8/TW+pnYu1H5Jz
+ UD9fHbnsn6Hg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="245644372"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 02:12:14 -0700
+Date:   Wed, 15 Apr 2020 05:02:36 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Erik Skultety <eskultet@redhat.com>
+Cc:     "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
+        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eauger@redhat.com" <eauger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Yang, Ziye" <ziye.yang@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
+        "aik@ozlabs.ru" <aik@ozlabs.ru>,
+        "felipe@nutanix.com" <felipe@nutanix.com>,
+        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>,
+        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
+        "dinechin@redhat.com" <dinechin@redhat.com>,
+        "Liu, Changpeng" <changpeng.liu@intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
+        "He, Shaopeng" <shaopeng.he@intel.com>
+Subject: Re: [PATCH v5 3/4] vfio/mdev: add migration_version attribute for
+ mdev (under mdev device node)
+Message-ID: <20200415090236.GK10586@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200413055201.27053-1-yan.y.zhao@intel.com>
+ <20200413055504.27311-1-yan.y.zhao@intel.com>
+ <20200415074258.GK269314@sturgeon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200415064523.2244712-10-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200415074258.GK269314@sturgeon>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-04-20 23:45:21, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Wed, Apr 15, 2020 at 03:42:58PM +0800, Erik Skultety wrote:
+> On Mon, Apr 13, 2020 at 01:55:04AM -0400, Yan Zhao wrote:
+> > migration_version attribute is used to check migration compatibility
+> > between two mdev devices of the same mdev type.
+> > The key is that it's rw and its data is opaque to userspace.
+> >
+> > Userspace reads migration_version of mdev device at source side and
+> > writes the value to migration_version attribute of mdev device at target
+> > side. It judges migration compatibility according to whether the read
+> > and write operations succeed or fail.
+> >
+> > Currently, it is able to read/write migration_version attribute under two
+> > places:
+> >
+> > (1) under mdev_type node
+> > userspace is able to know whether two mdev devices are compatible before
+> > a mdev device is created.
+> >
+> > userspace also needs to check whether the two mdev devices are of the same
+> > mdev type before checking the migration_version attribute. It also needs
+> > to check device creation parameters if aggregation is supported in future.
+> >
+> > (2) under mdev device node
+> > userspace is able to know whether two mdev devices are compatible after
+> > they are all created. But it does not need to check mdev type and device
+> > creation parameter for aggregation as device vendor driver would have
+> > incorporated those information into the migration_version attribute.
+> >
+> >              __    userspace
+> >               /\              \
+> >              /                 \write
+> >             / read              \
+> >    ________/__________       ___\|/_____________
+> >   | migration_version |     | migration_version |-->check migration
+> >   ---------------------     ---------------------   compatibility
+> >     mdev device A               mdev device B
+> >
+> > This patch is for mdev documentation about the second place (under
+> > mdev device node)
+> >
+> > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > Cc: Erik Skultety <eskultet@redhat.com>
+> > Cc: "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+> > Cc: Cornelia Huck <cohuck@redhat.com>
+> > Cc: "Tian, Kevin" <kevin.tian@intel.com>
+> > Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+> > Cc: "Wang, Zhi A" <zhi.a.wang@intel.com>
+> > Cc: Neo Jia <cjia@nvidia.com>
+> > Cc: Kirti Wankhede <kwankhede@nvidia.com>
+> > Cc: Daniel P. Berrangé <berrange@redhat.com>
+> > Cc: Christophe de Dinechin <dinechin@redhat.com>
+> >
+> > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> > ---
+> >  .../driver-api/vfio-mediated-device.rst       | 70 +++++++++++++++++++
+> >  1 file changed, 70 insertions(+)
+> >
+> > diff --git a/Documentation/driver-api/vfio-mediated-device.rst b/Documentation/driver-api/vfio-mediated-device.rst
+> > index 2d1f3c0f3c8f..efbadfd51b7e 100644
+> > --- a/Documentation/driver-api/vfio-mediated-device.rst
+> > +++ b/Documentation/driver-api/vfio-mediated-device.rst
+> > @@ -383,6 +383,7 @@ Directories and Files Under the sysfs for Each mdev Device
+> >           |--- remove
+> >           |--- mdev_type {link to its type}
+> >           |--- vendor-specific-attributes [optional]
+> > +         |--- migration_verion [optional]
+> >
+> >  * remove (write only)
+> >
+> > @@ -394,6 +395,75 @@ Example::
+> >
+> >  	# echo 1 > /sys/bus/mdev/devices/$mdev_UUID/remove
+> >
+> > +* migration_version (rw, optional)
 > 
-> DCACHE_DONTCACHE indicates a dentry should not be cached on final
-> dput().
+> Hmm, ^this is not consistent with how patch 1/5 reports this information, but
+> looking at the existing docs we're not doing very well in terms of consistency
+> there either.
 > 
-> Also add a helper function which will flag I_DONTCACHE as well ad
-> DCACHE_DONTCACHE on all dentries point to a specified inode.
+> I suggest we go with "(read-write)" in both patch 1/5 and here and then start
+> the paragraph with "This is an optional attribute."
+>
+ok. got it.
 
-I think this sentence needs more work :). Like: Also add a helper function
-which will mark the inode with I_DONTCACHE flag and also mark all dentries
-pointing to a specified inode as DCACHE_DONTCACHE.
-
+> > +  It is used to check migration compatibility between two mdev devices.
+> > +  Absence of this attribute means the mdev device does not support migration.
+> > +
+> > +  This attribute provides a way to check migration compatibility between two
+> > +  mdev devices from userspace after device created. The intended usage is
 > 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> after the target device has been created.
 > 
-> ---
-> Changes from V7:
-> 	new patch
-> ---
->  fs/dcache.c            |  4 ++++
->  fs/inode.c             | 15 +++++++++++++++
->  include/linux/dcache.h |  2 ++
->  include/linux/fs.h     |  1 +
->  4 files changed, 22 insertions(+)
+> side note: maybe add something like "(see the migration_version attribute of
+> the device node if the target device already exists)" in the same section in
+> patch 1/5.
 
-...
+ok. good idea.
+> 
+> > +  for userspace to read the migration_version attribute from one mdev device and
+> > +  then writing that value to the migration_version attribute of the other mdev
+> > +  device. The second mdev device indicates compatibility via the return code of
+> > +  the write operation. This makes compatibility between mdev devices completely
+> > +  vendor-defined and opaque to userspace. Userspace should do nothing more
+> > +  than use the migration_version attribute to confirm source to target
+> > +  compatibility.
+> 
+> ...
+> 
+> > +
+> > +  Reading/Writing Attribute Data:
+> > +  read(2) will fail if a mdev device does not support migration and otherwise
+> > +        succeed and return migration_version string of the mdev device.
+> > +
+> > +        This migration_version string is vendor defined and opaque to the
+> > +        userspace. Vendor is free to include whatever they feel is relevant.
+> > +        e.g. <pciid of parent device>-<software version>.
+> > +
+> > +        Restrictions on this migration_version string:
+> > +            1. It should only contain ascii characters
+> > +            2. MAX Length is PATH_MAX (4096)
+> > +
+> > +  write(2) expects migration_version string of source mdev device, and will
+> > +         succeed if it is determined to be compatible and otherwise fail with
+> > +         vendor specific errno.
+> > +
+> > +  Errno:
+> > +  -An errno on read(2) indicates the mdev devicedoes not support migration;
+> 
+> s/devicedoes/device does/
+> 
+sorry for such kind of errors.
 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 93d9252a00ab..b8b1917a324e 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1526,6 +1526,21 @@ int generic_delete_inode(struct inode *inode)
->  }
->  EXPORT_SYMBOL(generic_delete_inode);
->  
-> +void flag_inode_dontcache(struct inode *inode)
+> > +  -An errno on write(2) indicates the mdev devices are incompatible or the
+> > +   target doesn't support migration.
+> > +  Vendor driver is free to define specific errno and is suggested to
+> > +  print detailed error in syslog for diagnose purpose.
+> > +
+> > +  Userspace should treat ANY of below conditions as two mdev devices not
+> > +  compatible:
+> > +  (1) any one of the two mdev devices does not have a migration_version
+> > +  attribute
+> > +  (2) error when reading from migration_version attribute of one mdev device
+> > +  (3) error when writing migration_version string of one mdev device to
+> > +  migration_version attribute of the other mdev device
+> > +
+> > +  Userspace should regard two mdev devices compatible when ALL of below
+> > +  conditions are met:
+> > +  (1) success when reading from migration_version attribute of one mdev device.
+> > +  (2) success when writing migration_version string of one mdev device to
+> > +  migration_version attribute of the other mdev device.
+> > +
+> > +  Example Usage:
+> > +  (1) Retrieve the mdev source migration_version:
+> > +
+> > +  # cat /sys/bus/mdev/devices/$mdev_UUID1/migration_version
+> > +
+> > +  If reading the source migration_version generates an error, migration is not
+> > +  possible.
+> > +
+> > +  (2) Test source migration_version at target:
+> > +
+> > +  Given a migration_version as outlined above, its compatibility to an
+> > +  instantiated device of the same mdev type can be tested as:
+> > +  # echo $VERSION > /sys/bus/mdev/devices/$mdev_UUID2/migration_version
+> > +
+> > +  If this write fails, the source and target migration versions are not
+> > +  compatible or the target does not support migration.
+> > +
+> > +
+> >  Mediated device Hot plug
+> >  ------------------------
+> 
+> Overall, the same comments as in 1/5 apply text-wise.
+> 
 
-mark_inode_dontcache?
+got it. will align it with the first patch.
 
-> +{
-> +	struct dentry *dent;
+Thanks
+Yan
 
-This is really nitpicking but dentry variables are usually called 'de' or
-'dentry' :)
-
-> +
-> +	rcu_read_lock();
-
-I don't think this list is safe to traverse under RCU. E.g.
-dentry_unlink_inode() does hlist_del_init(&dentry->d_u.d_alias). Usually,
-we traverse this list under inode->i_lock protection AFAICS.
-
-								Honza
-
-> +	hlist_for_each_entry(dent, &inode->i_dentry, d_u.d_alias) {
-> +		spin_lock(&dent->d_lock);
-> +		dent->d_flags |= DCACHE_DONTCACHE;
-> +		spin_unlock(&dent->d_lock);
-> +	}
-> +	rcu_read_unlock();
-> +	inode->i_state |= I_DONTCACHE;
-> +}
-> +EXPORT_SYMBOL(flag_inode_dontcache);
-> +
->  /*
->   * Called when we're dropping the last reference
->   * to an inode.
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Regards,
+> --
+> Erik Skultety
+> 
