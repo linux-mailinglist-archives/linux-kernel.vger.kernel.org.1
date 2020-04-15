@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF2B1AB168
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683671AB171
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505118AbgDOTPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:15:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:15254 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441746AbgDOTOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:14:54 -0400
-IronPort-SDR: uNPov8B7QUKj5K6qUWagJEFWgCfzzN2VwPe3mG+Yj7kkwtHjqFPA09MxLMuqL8Ghn3jsre/6Do
- TRsIVMabYTQA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:14:52 -0700
-IronPort-SDR: 7PTC/XR0QNy6eWAG1dmEGZdP686/BpC1G/stOZBy1TC/E3yJp34kdFRlNT/1KE0DEUGhlHDlGi
- aPIm544g1tvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="455008505"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 12:14:52 -0700
-Date:   Wed, 15 Apr 2020 12:14:52 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/8] fs/ext4: Disallow verity if inode is DAX
-Message-ID: <20200415191451.GA2305801@iweiny-DESK2.sc.intel.com>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-3-ira.weiny@intel.com>
- <20200415120002.GE6126@quack2.suse.cz>
+        id S2441784AbgDOTR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437909AbgDOTQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:16:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF48C061A0C;
+        Wed, 15 Apr 2020 12:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=XpaPanv1P8dxEy8FWJJXMKpNO3YbUQ5peJRz4Dbpbbc=; b=gGS2zUUaAdPJoqNmMnnZpkxb+X
+        I9saZqG+BFe4uyf5jhZSM8T2w3EnlsbJ3GsmHI7HB2SnFNoF8Bo6rr1ZI/nmitRPBDcaqG3UPUmrs
+        yRGIaQxS9ZO08/AQUIJ6gKkITOnVM+9igfKuHn8Igyq4fqTQtY4XpmobWOLmdP2+LhYwZM57yZDu7
+        4vET80BOlTyFSU1f61QE0LdtAb5GXW4Vcz1hvcBUG+W2UV+oVON0S+wZ/haFuokER+rmafEIzyTzH
+        /TRBTuIkIeiCVMOqoB9Qzkk9oErSbZP6rQKyHvobv/S/zdzgjwPS7k3DmU/LTOXAaPieKd7xHCmOa
+        KAmQiAKA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOnWl-0000Eo-4n; Wed, 15 Apr 2020 19:16:51 +0000
+Subject: Re: linux-next: Tree for Apr 10 (lib/test_printf.ko)
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20200410132706.170811b7@canb.auug.org.au>
+ <27c212c4-b522-561d-411c-e74dc0ff0b74@infradead.org>
+ <CAHk-=wjhsM-n_NzSh=cSdpThX+62-x3EmyKjhMqGHFYEyG0nPg@mail.gmail.com>
+ <2b0f5d2e-3fe5-10c9-2a9a-9a0b341a52d5@infradead.org>
+ <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
+ <bfbcaa67-9656-3a80-fc66-c937297c8be0@infradead.org>
+ <CAHk-=whpvCqcCYvy=_v_F6NTtBSeQbXZ0iLr_smV2NJLT+XACw@mail.gmail.com>
+ <CA+G9fYu47hpXjYtAr32p9yJ97KZqTry+ioAY1S2TqtiKztCYRg@mail.gmail.com>
+ <f90fc906-395b-79be-8f44-3807586766f7@infradead.org>
+ <CAFd5g46ZaEVoMb2hO94A41Z=YH6ntTdXstZUhHu67mwOKY+QsA@mail.gmail.com>
+ <20200415185545.GA1632@home.goodmis.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <26e0f0dd-4ea2-14e7-fae5-81a5a1451272@infradead.org>
+Date:   Wed, 15 Apr 2020 12:16:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415120002.GE6126@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200415185545.GA1632@home.goodmis.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:00:02PM +0200, Jan Kara wrote:
-> On Mon 13-04-20 21:00:24, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Verity and DAX are incompatible.  Changing the DAX mode due to a verity
-> > flag change is wrong without a corresponding address_space_operations
-> > update.
-> > 
-> > Make the 2 options mutually exclusive by returning an error if DAX was
-> > set first.
-> > 
-> > (Setting DAX is already disabled if Verity is set first.)
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  fs/ext4/verity.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-> > index dc5ec724d889..ce3f9a198d3b 100644
-> > --- a/fs/ext4/verity.c
-> > +++ b/fs/ext4/verity.c
-> > @@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
-> >  	handle_t *handle;
-> >  	int err;
-> >  
-> > +	if (WARN_ON_ONCE(IS_DAX(inode)))
-> > +		return -EINVAL;
-> > +
+On 4/15/20 11:55 AM, Steven Rostedt wrote:
+> On Tue, Apr 14, 2020 at 12:26:29PM -0700, Brendan Higgins wrote:
+>> On Sat, Apr 11, 2020 at 11:22 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>
+>>> On 4/11/20 10:36 PM, Naresh Kamboju wrote:
+>>>> FYI,
+>>>>
+>>>> Is this problem related to,
+>>>>
+>>>> Regression reported on Linux next 5.6.0-rc4-next-20200305 on x86_64,
+>>>> i386, arm and arm64. The steps to reproduce is running kselftests lib
+>>>> printf.sh test case.
+>>>> Which is doing modprobe operations.
+>>>>
+>>>> BUG: kernel NULL pointer dereference, address: 00 - ida_free+0x76/0x140
+>>>>
+>>>> https://lore.kernel.org/linux-kselftest/CAFd5g46Bwd8HS9-xjHLh_rB59Nfw8iAnM6aFe0QPcveewDUT6g@mail.gmail.com/T/
+>>>>
+>>>
+>>> Looks similar. Lots of fwnode, software_node, ida stuff there.
+>>
+>> Sorry for the late reply, I was out.
+>>
+>> Yeah, I am pretty sure it is the same. Heikki proposed a fix that I am
+>> going to try.
 > 
-> Hum, one question, is there a reason for WARN_ON_ONCE()? If I understand
-> correctly, user could normally trigger this, couldn't he?
-
-Ok.  I did not think this through but I did think about this.  I was following
-the code from the encryption side which issues a warning and was thinking that
-would be a good way to alert the user they are doing something wrong...
-
-I think you are right about both of them but we also need to put something in
-the verity, dax, and ...  (I can't find a file in Documentation which talks
-about encryption right off) documentation files....  For verity something like.
-
-<quote>
-Verity and DAX
---------------
-
-Verity and DAX are not compatible and attempts to set both of these flags on a
-file will fail.
-</quote>
-
-And the same thing in the DAX doc?
-
-And where would be appropriate for the encrypt doc?
-
-Ira
-
+> My test suite just tripped over this bug. Is this the patch that you think
+> fixes it?
 > 
-> 								Honza
-> 
-> >  	if (ext4_verity_in_progress(inode))
-> >  		return -EBUSY;
-> >  
-> > -- 
-> > 2.25.1
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> https://lore.kernel.org/linux-kselftest/20200414081513.GD2828150@kuha.fi.intel.com
+
+Yes, it is, but GregKH and Rafael Wysocki don't seem to like that patch
+and are suggesting some changes in lib/kobject.c (only pseudocode,
+no patch yet).
+
+> I'll add it to see if I can continue my testing.
+
+See the thread
+[PATCH v1] kobject: make sure parent is not released before children
+
+Here is Rafael's suggestion:
+https://lore.kernel.org/linux-kselftest/CAJZ5v0hNemTDVa_S-FfVMbrKjM-RWYoHh88asnUvTNxZinY2cw@mail.gmail.com/
+
+-- 
+~Randy
+
