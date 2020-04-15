@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03611A9BFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076531A9C0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896850AbgDOLSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896766AbgDOLRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:17:39 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 487BB2074F;
-        Wed, 15 Apr 2020 11:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586949459;
-        bh=q259KxH2q7pbnJdEn1Xf2TZf8jBmlCkBNfRyEI2QXTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=liaeeLXbvho627HRyhpbE6uPk7cy6JLb+l1ATY8xSiWqR3MpTDoRbkFzck83ds1U6
-         8VOFumLNGtVr2//XZ+crpQImqeN8TTEEZkWtg+vZF39fGL7BZgXwxEtssBzBiaDNKR
-         7I21Nzck1MyCBCxr44CrkHtWfp4bQgE5Y6Efsyhg=
-Received: by pali.im (Postfix)
-        id 0D7C4589; Wed, 15 Apr 2020 13:17:37 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 13:17:36 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: tegra: Fix reporting GPIO error value
-Message-ID: <20200415111736.czeh7a3iqmmasow6@pali>
-References: <20200414102512.27506-1-pali@kernel.org>
- <20200414113104.GA27984@qmqm.qmqm.pl>
+        id S2896887AbgDOLVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:21:11 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52519 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2896766AbgDOLTM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:19:12 -0400
+X-UUID: c3b887139ce249bc88c868d1af68274f-20200415
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=VxaaBmnZiciOML8KK3Xnbo/VtfQpkB4jCNcyrHqsQOc=;
+        b=WWo1FeKNnFH9I+I63Gk9uExc09/f9ECYeUvXSA02B903bEMD3mqIDQ9+dp4h8O3nKPSmaeqVd4veC1jZRrIbrd6tcJNwWJoA0mRgMao7vf6c4Nx7/ejM0iHRfp9sxIKopMnnG4UO73j1KFK9iGX/go5w5oymnTV76gh8fkkfdAc=;
+X-UUID: c3b887139ce249bc88c868d1af68274f-20200415
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <anthony.huang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1474518894; Wed, 15 Apr 2020 19:19:04 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 15 Apr 2020 19:18:56 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 15 Apr 2020 19:18:56 +0800
+From:   Anthony Huang <anthony.huang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+Subject: Add Mediatek MMDVFS driver
+Date:   Wed, 15 Apr 2020 19:18:24 +0800
+Message-ID: <1586949506-22990-1-git-send-email-anthony.huang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200414113104.GA27984@qmqm.qmqm.pl>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 2FC43E88FC5EC31261F318F81DD4C58D1769D04964F53E9E647465ED3ADE254F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 14 April 2020 13:31:04 Michał Mirosław wrote:
-> On Tue, Apr 14, 2020 at 12:25:12PM +0200, Pali Rohár wrote:
-> > Error code is stored in rp->reset_gpio and not in err variable.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > ---
-> >  drivers/pci/controller/pci-tegra.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-> > index 0e03cef72840..378d5a8773c7 100644
-> > --- a/drivers/pci/controller/pci-tegra.c
-> > +++ b/drivers/pci/controller/pci-tegra.c
-> > @@ -2314,8 +2314,8 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
-> >  			if (PTR_ERR(rp->reset_gpio) == -ENOENT) {
-> >  				rp->reset_gpio = NULL;
-> >  			} else {
-> > -				dev_err(dev, "failed to get reset GPIO: %d\n",
-> > -					err);
-> > +				dev_err(dev, "failed to get reset GPIO: %ld\n",
-> > +					PTR_ERR(rp->reset_gpio));
-> >  				return PTR_ERR(rp->reset_gpio);
-> >  			}
-> >  		}
-> 
-> You can use %pe directly on the pointer for added benefit of translation
-> of the error to a name.
+aGlzIHBhdGNoc2V0IGFkZHMgdGhlIE1lZGlhdGVrIE1NRFZGUyhNdWx0aW1lZGlhIER5bmFtaWMg
+Vm9sdGFnZSBhbmQNCkZyZXF1ZW5jeSBTY2FsaW5nKSBkcml2ZXIuIFRoZSBtdWx0aW1lZGlhIEhX
+cywgc3VjaCBhcyBkaXNwbGF5LCBjYW1lcmEsDQpzaGFyZSB0aGUgc2FtZSBwb3dlciBzdXBwbGll
+ciwgYW5kIG9uIHNvbWUgcGxhdGZvcm1zLCB0aGV5IHNoYXJlIHRoZQ0Kc2FtZSBjbG9jayBNVVgu
+IElmIGVhY2ggSFcgbmVlZHMgZGlmZmVyZW50IGNsb2NrIGZyZXF1ZW5jeSBhdCB0aGUgc2FtZQ0K
+dGltZSwgdGhlIGNsb2NrIE1VWCBtdXN0IGJlIHNldCB0byB0aGUgY2xvY2sgc291cmNlIHdoaWNo
+IGNhbiBtZWV0IHRoZQ0KaGlnaGVzdCByZXF1aXJlZCBjbG9jayBmcmVxdWVuY3kuDQoNCkZvbGxv
+d2luZyBpbXBsZW1lbnRhdGlvbiBpcyB1c2VkIHRvIGFjaGlldmUgdGhlIGdvYWwuIFRoZXJlIGFy
+ZSBPUFAgdGFibGVzDQpmb3IgYWxsIHRoZSBjbG9jayBNVVhzIGZvciBNTSBIV3MgZGVmaW5lZCBp
+biBEVFMsIGFudCB0aGVzZSBPUFAgdGFibGVzIGhhdmUNCnRoZSBzYW1lIG51bWJlciBvZiBsZXZl
+bHMuIFRoZSBNTURWRlMgcmVnaXN0ZXJzIHRoZSByZWd1bGF0b3IgY2FsbGJhY2sgYW5kDQp0aGUg
+TU0gSFdzIGNhbiBnZXQgYXZhaWxhYmxlIGNsb2NrIGZyZXF1ZW5jaWVzIGZyb20gT1BQIHRhYmxl
+cyBhbmQgc2V0DQpjb3JyZXNwb25kaW5nIHZvbHRhZ2UgYnkgcmVndWxvciBBUEkuIFRoZSBNTURW
+RlMncyBjYWxsYmFjayB3aWxsIGJlDQp0cmlnZ2VyZWQgaWYgdGhlIHZvbHRhZ2UgaXMgY2hhbmdl
+ZCBhbmQgdGhpcyB2b2x0YWdlIHJlcHJlc2VudHMgdGhlIGhpZ2hlc3QNCnJlcXVpcmVkIE9QUCBs
+ZXZlbC4gVGhlIE1NRFZGUyBoYXMgYSBtYXBwaW5nIHRhYmxlOiB3aGljaCBjbG9jayBzb3VyY2UN
+CnNob3VsZCBiZSBzZXQgdG8gZWFjaCBjbG9jayBNVVggZm9yIGV2ZXJ5IE9QUCBsZXZlbC4gU28g
+YWxsIHRoZSBjbG9jayBNVVhzDQp3aWxsIGJlIHNldCB0byB0aGUgY2xvY2sgc291cmNlcyBhY2Nv
+cmRpbmcgdG8gdGhlIGN1cnJlbnQgT1BQIGxldmVsIGluIHRoZQ0KTU1EVkZTJ3MgcmVndWxhdG9y
+IGNhbGxiYWNrLg0KDQoNCg0KQW50aG9ueSBIdWFuZyAoMik6DQogIGR0LWJpbmRpbmdzOiBzb2M6
+IG1lZGlhdGVrOiBBZGQgZG9jdW1lbnQgZm9yIG1tZHZmcyBkcml2ZXINCiAgc29jOiBtZWRpYXRl
+azogQWRkIG10ay1tbWR2ZnMgZHJpdmVyDQoNCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2Mv
+bWVkaWF0ZWsvbW1kdmZzLnlhbWwgICB8ICAxOTggKysrKysrKysrKysrKw0KIGRyaXZlcnMvc29j
+L21lZGlhdGVrL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgIHwgICAgOSArDQogZHJpdmVy
+cy9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsNCiBk
+cml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbW1kdmZzLmMgICAgICAgICAgICAgICAgICB8ICAzMTIg
+KysrKysrKysrKysrKysrKysrKysNCiA0IGZpbGVzIGNoYW5nZWQsIDUyMCBpbnNlcnRpb25zKCsp
+DQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b2MvbWVkaWF0ZWsvbW1kdmZzLnlhbWwNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zb2Mv
+bWVkaWF0ZWsvbXRrLW1tZHZmcy5jDQoNCi0tIA0KMS43LjkuNQ==
 
-Well, I do not know what is the current preferred style of error
-messages. On lot of places I see just numeric error numbers.
-
-I did not wanted to change behavior of driver, I just fixed code to
-report correct error value.
-
-I do not have this hardware, so I cannot test this change. I just
-spotted this problem when I was looking at other PCI controller drivers
-how they issue PERST# signal to endpoint cards.
