@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5871A9285
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A42F1A9287
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 07:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393318AbgDOFaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 01:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39676 "EHLO
+        id S1727916AbgDOFaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 01:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728378AbgDOFaH (ORCPT
+        by vger.kernel.org with ESMTP id S2393314AbgDOFaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 01:30:07 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF51BC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:30:06 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id r20so1021775pfh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:30:06 -0700 (PDT)
+        Wed, 15 Apr 2020 01:30:11 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E4EC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:30:10 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g6so983721pgs.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 22:30:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=v5F1ivu8bKWWnJrjjiXuZBTfPE0k8evszytlqKDOfgs=;
-        b=lFCbZn13J68GyyPyZp1UixYLR3DcI9OCF2gWoiToMR5IxjBif/rsDZInc9SvchcnJH
-         4bhqQisKzxF4y0fkzYnM+CwiRVTDIjN6vgwAr6btW87w2SH2M/PkLw+KOa9PUSVH5Eye
-         TQehZOr9g21UPJI9N4/0atF1HjpcjpK9+EUB4=
+        bh=JhR9qB5vYsXWd+GMt9NiyCi67fEhYiJB7BmODnlGv3o=;
+        b=AEeBOadMc6D3UpyH+FWMrvA5IqM/V9vw9yA6hrVP6WHVSsAwLntWS3NzhBwQ0ASEd1
+         4NG23Ww3UP61WwTbRYznVeXE9n8SCFJxRZ9ZDkrt5PLY8TrDFpehjjYUpWRegvw9GG+D
+         HDVZENCfN8QhPdyHxzAwc8u5iX8ANyWk7iD8c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=v5F1ivu8bKWWnJrjjiXuZBTfPE0k8evszytlqKDOfgs=;
-        b=JBQf+7/r6XarNsdg+Zs6aJIOssC9LpkcMhLPp3RQHdde4hP2fPv3DAw0mKfqVkSNus
-         mCP7F/NIrIT+QhaWCQFMSbMYRgKx0/cCKuDrlV9ioDDIo8gBmVwmPRx4QsTCU816v3NE
-         f5LHZIWAXivWrCY3uih/h20in/dh+FqhgZtYTGz/4IpHkP/eZVRrsPBqp9aI5ueiT+Tb
-         VV/Pwb3RXkCd99OQYcIkfPeAr9QCWgDT6vpRxaZgYKmt0E1ayO91/G2nypjBktY/F4dZ
-         IM6qC6OiJ6iqwKNxM9KKZQJRczRN/CG+eBsLpA9eHb6RDnKvdbL3DbLpVr9fYzYwLUgJ
-         skKw==
-X-Gm-Message-State: AGi0PubCvLXq6lOv8NRm8MpDIH9HljYRntFjBUFMrOg4A/6Qsq9veBfk
-        T+V/2s2cPjiyLQfb34EnXBIWCm/eh9k=
-X-Google-Smtp-Source: APiQypINZnx4esKN7vvm7YJOWpPTftaGyUrAaor6f9v8pF5S6hsDY03Gmh72NA54PzXlgJeTE3B0Tg==
-X-Received: by 2002:aa7:94b5:: with SMTP id a21mr25884533pfl.290.1586928606067;
-        Tue, 14 Apr 2020 22:30:06 -0700 (PDT)
+        bh=JhR9qB5vYsXWd+GMt9NiyCi67fEhYiJB7BmODnlGv3o=;
+        b=tEtSySFyyGeDH0PlMqUbjruEcgMB0EB66cmMMA4UKOLeBW1XrfkQZ4PnSD3TzNoK9u
+         kBLfzTvkzrfE3rlPwFpx2p+3dd/b+XsrZWSEGrX4ueZawOIxjafuRAY98yZG4u1sok8U
+         L+iOqzR4I9v0xAjq/M7qee0r8v1iS2Ub9CXTzflkbtNtUqZ98vbctQ55yBq0Xs+E7l1W
+         0IybCDcAdHpHtTIsHSs0zZyTuIt7nrfcfskHym7Qi4YdHR3dm6+vBs1r/aSYQVGv3ybM
+         1tbDOtSdBqcHE0f772k0j5NBmj0IvVovJIzRYg4NL9waaSk45vD7EY1gEygXq1it3A6P
+         pHYQ==
+X-Gm-Message-State: AGi0PubwkNKhWsIKNpL2hea7wMpO4LYn0Y7wm+jrxlZqPfu0I28CnOvJ
+        VMtbFHOHqur9Waq/Kr8qEkWf22EN3uI=
+X-Google-Smtp-Source: APiQypKmon/pB2DdBaQT+NeJggG7JLM+xNHSV7BowSUwM+4oZe4/FZ4YIkBh9QcMMnzXxtarAlQfSg==
+X-Received: by 2002:a63:8c4b:: with SMTP id q11mr25701069pgn.131.1586928610135;
+        Tue, 14 Apr 2020 22:30:10 -0700 (PDT)
 Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id p1sm13314213pjr.40.2020.04.14.22.30.05
+        by smtp.gmail.com with ESMTPSA id p1sm13314213pjr.40.2020.04.14.22.30.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 22:30:05 -0700 (PDT)
+        Tue, 14 Apr 2020 22:30:09 -0700 (PDT)
 From:   Prashant Malani <pmalani@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     heikki.krogerus@linux.intel.com,
@@ -52,9 +52,9 @@ Cc:     heikki.krogerus@linux.intel.com,
         Benson Leung <bleung@chromium.org>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v4 1/3] platform/chrome: typec: Use notifier for updates
-Date:   Tue, 14 Apr 2020 22:29:41 -0700
-Message-Id: <20200415052943.93009-2-pmalani@chromium.org>
+Subject: [PATCH v4 2/3] platform/chrome: typec: Add struct for port data
+Date:   Tue, 14 Apr 2020 22:29:42 -0700
+Message-Id: <20200415052943.93009-3-pmalani@chromium.org>
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 In-Reply-To: <20200415052943.93009-1-pmalani@chromium.org>
 References: <20200415052943.93009-1-pmalani@chromium.org>
@@ -65,8 +65,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register a listener for the cros-usbpd-notifier, and update port state
-when a notification comes in.
+Add a separate struct for storing port data, including Type C connector
+class struct pointers and caps.
 
 Signed-off-by: Prashant Malani <pmalani@chromium.org>
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
@@ -76,84 +76,139 @@ Changes in v4:
 - No changes.
 
 Changes in v3:
-- Fixed ordering issue in Kconfig dependency.
+- No changes.
 
 Changes in v2:
-- Added Kconfig dependency to CROS_USBPD_NOTIFY.
-- Fixed spacing error.
-- Removed superfluous devm_warn() call.
+- Removed unrequired devm_kfree() call.
 
- drivers/platform/chrome/Kconfig         |  1 +
- drivers/platform/chrome/cros_ec_typec.c | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ drivers/platform/chrome/cros_ec_typec.c | 48 ++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/platform/chrome/Kconfig b/drivers/platform/chrome/Kconfig
-index 03ea5129ed0c..a484ab2c91ff 100644
---- a/drivers/platform/chrome/Kconfig
-+++ b/drivers/platform/chrome/Kconfig
-@@ -217,6 +217,7 @@ config CROS_EC_SYSFS
- config CROS_EC_TYPEC
- 	tristate "ChromeOS EC Type-C Connector Control"
- 	depends on MFD_CROS_EC_DEV && TYPEC
-+	depends on CROS_USBPD_NOTIFY
- 	default MFD_CROS_EC_DEV
- 	help
- 	  If you say Y here, you get support for accessing Type C connector
 diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 874269c07073..d444dd7422a2 100644
+index d444dd7422a2..56ded09a60ff 100644
 --- a/drivers/platform/chrome/cros_ec_typec.c
 +++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -11,6 +11,7 @@
- #include <linux/of.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
-+#include <linux/platform_data/cros_usbpd_notify.h>
- #include <linux/platform_device.h>
- #include <linux/usb/typec.h>
+@@ -17,6 +17,13 @@
  
-@@ -26,6 +27,7 @@ struct cros_typec_data {
- 	struct typec_port *ports[EC_USB_PD_MAX_PORTS];
- 	/* Initial capabilities for each port. */
- 	struct typec_capability *caps[EC_USB_PD_MAX_PORTS];
-+	struct notifier_block nb;
+ #define DRV_NAME "cros-ec-typec"
+ 
++/* Per port data. */
++struct cros_typec_port {
++	struct typec_port *port;
++	/* Initial capabilities for the port. */
++	struct typec_capability caps;
++};
++
+ /* Platform-specific data for the Chrome OS EC Type C controller. */
+ struct cros_typec_data {
+ 	struct device *dev;
+@@ -24,9 +31,7 @@ struct cros_typec_data {
+ 	int num_ports;
+ 	unsigned int cmd_ver;
+ 	/* Array of ports, indexed by port number. */
+-	struct typec_port *ports[EC_USB_PD_MAX_PORTS];
+-	/* Initial capabilities for each port. */
+-	struct typec_capability *caps[EC_USB_PD_MAX_PORTS];
++	struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+ 	struct notifier_block nb;
  };
  
- static int cros_typec_parse_port_props(struct typec_capability *cap,
-@@ -272,6 +274,22 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+@@ -76,14 +81,25 @@ static int cros_typec_parse_port_props(struct typec_capability *cap,
  	return 0;
  }
  
-+static int cros_ec_typec_event(struct notifier_block *nb,
-+			       unsigned long host_event, void *_notify)
++static void cros_unregister_ports(struct cros_typec_data *typec)
 +{
-+	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
-+						     nb);
-+	int ret, i;
++	int i;
 +
 +	for (i = 0; i < typec->num_ports; i++) {
-+		ret = cros_typec_port_update(typec, i);
-+		if (ret < 0)
-+			dev_warn(typec->dev, "Update failed for port: %d\n", i);
++		if (!typec->ports[i])
++			continue;
++		typec_unregister_port(typec->ports[i]->port);
 +	}
-+
-+	return NOTIFY_OK;
 +}
 +
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id cros_typec_acpi_id[] = {
- 	{ "GOOG0014", 0 },
-@@ -332,6 +350,11 @@ static int cros_typec_probe(struct platform_device *pdev)
- 			goto unregister_ports;
- 	}
+ static int cros_typec_init_ports(struct cros_typec_data *typec)
+ {
+ 	struct device *dev = typec->dev;
+ 	struct typec_capability *cap;
+ 	struct fwnode_handle *fwnode;
++	struct cros_typec_port *cros_port;
+ 	const char *port_prop;
+ 	int ret;
+-	int i;
+ 	int nports;
+ 	u32 port_num = 0;
  
-+	typec->nb.notifier_call = cros_ec_typec_event;
-+	ret = cros_usbpd_register_notify(&typec->nb);
-+	if (ret < 0)
-+		goto unregister_ports;
-+
+@@ -115,22 +131,23 @@ static int cros_typec_init_ports(struct cros_typec_data *typec)
+ 
+ 		dev_dbg(dev, "Registering port %d\n", port_num);
+ 
+-		cap = devm_kzalloc(dev, sizeof(*cap), GFP_KERNEL);
+-		if (!cap) {
++		cros_port = devm_kzalloc(dev, sizeof(*cros_port), GFP_KERNEL);
++		if (!cros_port) {
+ 			ret = -ENOMEM;
+ 			goto unregister_ports;
+ 		}
+ 
+-		typec->caps[port_num] = cap;
++		typec->ports[port_num] = cros_port;
++		cap = &cros_port->caps;
+ 
+ 		ret = cros_typec_parse_port_props(cap, fwnode, dev);
+ 		if (ret < 0)
+ 			goto unregister_ports;
+ 
+-		typec->ports[port_num] = typec_register_port(dev, cap);
+-		if (IS_ERR(typec->ports[port_num])) {
++		cros_port->port = typec_register_port(dev, cap);
++		if (IS_ERR(cros_port->port)) {
+ 			dev_err(dev, "Failed to register port %d\n", port_num);
+-			ret = PTR_ERR(typec->ports[port_num]);
++			ret = PTR_ERR(cros_port->port);
+ 			goto unregister_ports;
+ 		}
+ 	}
+@@ -138,8 +155,7 @@ static int cros_typec_init_ports(struct cros_typec_data *typec)
  	return 0;
  
  unregister_ports:
+-	for (i = 0; i < typec->num_ports; i++)
+-		typec_unregister_port(typec->ports[i]);
++	cros_unregister_ports(typec);
+ 	return ret;
+ }
+ 
+@@ -177,7 +193,7 @@ static int cros_typec_ec_command(struct cros_typec_data *typec,
+ static void cros_typec_set_port_params_v0(struct cros_typec_data *typec,
+ 		int port_num, struct ec_response_usb_pd_control *resp)
+ {
+-	struct typec_port *port = typec->ports[port_num];
++	struct typec_port *port = typec->ports[port_num]->port;
+ 	enum typec_orientation polarity;
+ 
+ 	if (!resp->enabled)
+@@ -194,7 +210,7 @@ static void cros_typec_set_port_params_v0(struct cros_typec_data *typec,
+ static void cros_typec_set_port_params_v1(struct cros_typec_data *typec,
+ 		int port_num, struct ec_response_usb_pd_control_v1 *resp)
+ {
+-	struct typec_port *port = typec->ports[port_num];
++	struct typec_port *port = typec->ports[port_num]->port;
+ 	enum typec_orientation polarity;
+ 
+ 	if (!(resp->enabled & PD_CTRL_RESP_ENABLED_CONNECTED))
+@@ -358,9 +374,7 @@ static int cros_typec_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ unregister_ports:
+-	for (i = 0; i < typec->num_ports; i++)
+-		if (typec->ports[i])
+-			typec_unregister_port(typec->ports[i]);
++	cros_unregister_ports(typec);
+ 	return ret;
+ }
+ 
 -- 
 2.26.0.110.g2183baf09c-goog
 
