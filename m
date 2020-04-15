@@ -2,201 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3F01AB2C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D551AB2CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371346AbgDOUfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:35:18 -0400
-Received: from mga17.intel.com ([192.55.52.151]:20838 "EHLO mga17.intel.com"
+        id S2442077AbgDOUgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 16:36:02 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47253 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S371307AbgDOUfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:35:01 -0400
-IronPort-SDR: tcXwW5i9eNYTmJmcktL1Znqr9YECHLqKfCS3KEBfEr93Y6mQ/mxMIT5fBS0kZ/G1ykrwzSC5N/
- dR/IKkYvH5qQ==
+        id S2442057AbgDOUfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 16:35:47 -0400
+IronPort-SDR: v2jzf+uZCIhhwil2OtdLqgKtlqGdIXa/vgh3xh4fWHLxA6IwhKdoPHqVXd/EsfJgErqcLvmFq1
+ ZWAgLrv9GNlQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 13:34:59 -0700
-IronPort-SDR: V7EtECM9YPxHzjS4I9/cKGA3WMpz3PdrRPW4TlSVxrx41uizRRFmJxhjdHIMANKawU74Ywf7u2
- u5zgOa9Dzbpw==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 13:35:45 -0700
+IronPort-SDR: /55+O5N/UbItG3G97jMjCRmgjrO6760jL2891MlOgBl73B9Ign+1Bxjt8KEJp/URH6OJVIh6Ra
+ cVUrFMAToMQw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="288657654"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:34:58 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] KVM: VMX: Cache vmcs.EXIT_INTR_INFO using arch avail_reg flags
-Date:   Wed, 15 Apr 2020 13:34:54 -0700
-Message-Id: <20200415203454.8296-6-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200415203454.8296-1-sean.j.christopherson@intel.com>
-References: <20200415203454.8296-1-sean.j.christopherson@intel.com>
+   d="scan'208";a="454056534"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Apr 2020 13:35:44 -0700
+Date:   Wed, 15 Apr 2020 13:35:44 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 3/8] fs/ext4: Disallow encryption if inode is DAX
+Message-ID: <20200415203544.GC2309605@iweiny-DESK2.sc.intel.com>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-4-ira.weiny@intel.com>
+ <20200415120241.GF6126@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415120241.GF6126@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new "extended register" type, EXIT_INFO_2 (to pair with the
-nomenclature in .get_exit_info()), and use it to cache VMX's
-vmcs.EXIT_INTR_INFO.  Drop a comment in vmx_recover_nmi_blocking() that
-is obsoleted by the generic caching mechanism.
+On Wed, Apr 15, 2020 at 02:02:41PM +0200, Jan Kara wrote:
+> On Mon 13-04-20 21:00:25, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Encryption and DAX are incompatible.  Changing the DAX mode due to a
+> > change in Encryption mode is wrong without a corresponding
+> > address_space_operations update.
+> > 
+> > Make the 2 options mutually exclusive by returning an error if DAX was
+> > set first.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  fs/ext4/super.c | 10 +---------
+> >  1 file changed, 1 insertion(+), 9 deletions(-)
+> > 
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 0c7c4adb664e..b14863058115 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -1325,7 +1325,7 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+> >  	if (inode->i_ino == EXT4_ROOT_INO)
+> >  		return -EPERM;
+> >  
+> > -	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
+> > +	if (WARN_ON_ONCE(IS_DAX(inode)))
+> 
+> Also here I don't think WARN_ON_ONCE() is warranted once we allow per-inode
+> setting of DAX. It will then become a regular error condition...
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/vmx/nested.c       |  4 ++--
- arch/x86/kvm/vmx/nested.h       |  2 +-
- arch/x86/kvm/vmx/vmx.c          | 20 ++++++++------------
- arch/x86/kvm/vmx/vmx.h          | 14 +++++++++++++-
- 5 files changed, 25 insertions(+), 16 deletions(-)
+Removed.
+Ira
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index faec08d49e98..fc4b959e2bce 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -171,6 +171,7 @@ enum kvm_reg {
- 	VCPU_EXREG_RFLAGS,
- 	VCPU_EXREG_SEGMENTS,
- 	VCPU_EXREG_EXIT_INFO_1,
-+	VCPU_EXREG_EXIT_INFO_2,
- };
- 
- enum {
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 8e2d86c6140e..1b9e3ffaeadb 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5418,7 +5418,7 @@ static int handle_vmfunc(struct kvm_vcpu *vcpu)
- 
- fail:
- 	nested_vmx_vmexit(vcpu, vmx->exit_reason,
--			  vmcs_read32(VM_EXIT_INTR_INFO),
-+			  vmx_get_intr_info(vcpu),
- 			  vmx_get_exit_qual(vcpu));
- 	return 1;
- }
-@@ -5648,7 +5648,7 @@ static bool nested_vmx_exit_handled_mtf(struct vmcs12 *vmcs12)
-  */
- bool nested_vmx_exit_reflected(struct kvm_vcpu *vcpu, u32 exit_reason)
- {
--	u32 intr_info = vmcs_read32(VM_EXIT_INTR_INFO);
-+	u32 intr_info = vmx_get_intr_info(vcpu);
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
- 
-diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-index d81a349e7d45..04224e9c45c5 100644
---- a/arch/x86/kvm/vmx/nested.h
-+++ b/arch/x86/kvm/vmx/nested.h
-@@ -86,7 +86,7 @@ static inline bool nested_ept_ad_enabled(struct kvm_vcpu *vcpu)
- static inline int nested_vmx_reflect_vmexit(struct kvm_vcpu *vcpu,
- 					    u32 exit_reason)
- {
--	u32 exit_intr_info = vmcs_read32(VM_EXIT_INTR_INFO);
-+	u32 exit_intr_info = vmx_get_intr_info(vcpu);
- 
- 	/*
- 	 * At this point, the exit interruption info in exit_intr_info
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 106761fde58c..9405639b11d1 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5635,7 +5635,7 @@ static const int kvm_vmx_max_exit_handlers =
- static void vmx_get_exit_info(struct kvm_vcpu *vcpu, u64 *info1, u64 *info2)
- {
- 	*info1 = vmx_get_exit_qual(vcpu);
--	*info2 = vmcs_read32(VM_EXIT_INTR_INFO);
-+	*info2 = vmx_get_intr_info(vcpu);
- }
- 
- static void vmx_destroy_pml_buffer(struct vcpu_vmx *vmx)
-@@ -6298,16 +6298,16 @@ static void vmx_apicv_post_state_restore(struct kvm_vcpu *vcpu)
- 
- static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
- {
--	vmx->exit_intr_info = vmcs_read32(VM_EXIT_INTR_INFO);
-+	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
- 
- 	/* if exit due to PF check for async PF */
--	if (is_page_fault(vmx->exit_intr_info)) {
-+	if (is_page_fault(intr_info)) {
- 		vmx->vcpu.arch.apf.host_apf_reason = kvm_read_and_reset_pf_reason();
- 	/* Handle machine checks before interrupts are enabled */
--	} else if (is_machine_check(vmx->exit_intr_info)) {
-+	} else if (is_machine_check(intr_info)) {
- 		kvm_machine_check();
- 	/* We need to handle NMIs before interrupts are enabled */
--	} else if (is_nmi(vmx->exit_intr_info)) {
-+	} else if (is_nmi(intr_info)) {
- 		kvm_before_interrupt(&vmx->vcpu);
- 		asm("int $2");
- 		kvm_after_interrupt(&vmx->vcpu);
-@@ -6322,9 +6322,8 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
- 	unsigned long tmp;
- #endif
- 	gate_desc *desc;
--	u32 intr_info;
-+	u32 intr_info = vmx_get_intr_info(vcpu);
- 
--	intr_info = vmcs_read32(VM_EXIT_INTR_INFO);
- 	if (WARN_ONCE(!is_external_intr(intr_info),
- 	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
- 		return;
-@@ -6405,11 +6404,8 @@ static void vmx_recover_nmi_blocking(struct vcpu_vmx *vmx)
- 	if (enable_vnmi) {
- 		if (vmx->loaded_vmcs->nmi_known_unmasked)
- 			return;
--		/*
--		 * Can't use vmx->exit_intr_info since we're not sure what
--		 * the exit reason is.
--		 */
--		exit_intr_info = vmcs_read32(VM_EXIT_INTR_INFO);
-+
-+		exit_intr_info = vmx_get_intr_info(&vmx->vcpu);
- 		unblock_nmi = (exit_intr_info & INTR_INFO_UNBLOCK_NMI) != 0;
- 		vector = exit_intr_info & INTR_INFO_VECTOR_MASK;
- 		/*
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index a13eafec67fc..edfb739e5907 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -451,7 +451,8 @@ static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
- 				  | (1 << VCPU_EXREG_PDPTR)
- 				  | (1 << VCPU_EXREG_SEGMENTS)
- 				  | (1 << VCPU_EXREG_CR3)
--				  | (1 << VCPU_EXREG_EXIT_INFO_1));
-+				  | (1 << VCPU_EXREG_EXIT_INFO_1)
-+				  | (1 << VCPU_EXREG_EXIT_INFO_2));
- 	vcpu->arch.regs_dirty = 0;
- }
- 
-@@ -506,6 +507,17 @@ static inline unsigned long vmx_get_exit_qual(struct kvm_vcpu *vcpu)
- 	return vmx->exit_qualification;
- }
- 
-+static inline u32 vmx_get_intr_info(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_vmx *vmx = to_vmx(vcpu);
-+
-+	if (!kvm_register_is_available(vcpu, VCPU_EXREG_EXIT_INFO_2)) {
-+		kvm_register_mark_available(vcpu, VCPU_EXREG_EXIT_INFO_2);
-+		vmx->exit_intr_info = vmcs_read32(VM_EXIT_INTR_INFO);
-+	}
-+	return vmx->exit_intr_info;
-+}
-+
- struct vmcs *alloc_vmcs_cpu(bool shadow, int cpu, gfp_t flags);
- void free_vmcs(struct vmcs *vmcs);
- int alloc_loaded_vmcs(struct loaded_vmcs *loaded_vmcs);
--- 
-2.26.0
-
+> 
+> 								Honza
+> 
+> >  		return -EINVAL;
+> >  
+> >  	res = ext4_convert_inline_data(inode);
+> > @@ -1349,10 +1349,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+> >  			ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
+> >  			ext4_clear_inode_state(inode,
+> >  					EXT4_STATE_MAY_INLINE_DATA);
+> > -			/*
+> > -			 * Update inode->i_flags - S_ENCRYPTED will be enabled,
+> > -			 * S_DAX may be disabled
+> > -			 */
+> >  			ext4_set_inode_flags(inode);
+> >  		}
+> >  		return res;
+> > @@ -1376,10 +1372,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
+> >  				    ctx, len, 0);
+> >  	if (!res) {
+> >  		ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
+> > -		/*
+> > -		 * Update inode->i_flags - S_ENCRYPTED will be enabled,
+> > -		 * S_DAX may be disabled
+> > -		 */
+> >  		ext4_set_inode_flags(inode);
+> >  		res = ext4_mark_inode_dirty(handle, inode);
+> >  		if (res)
+> > -- 
+> > 2.25.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
