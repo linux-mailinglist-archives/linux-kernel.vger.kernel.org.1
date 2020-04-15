@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9655B1AAAC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1F01AAAD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371001AbgDOOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:46:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42113 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2636826AbgDOOqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:46:24 -0400
-IronPort-SDR: jOvm0gSr9FkuZuW2D8Xo3mgDAlGa+bu7bw+c5TgNjfERXtjDBbU6IrqXdi278ZhowiGzm2wpoI
- 9OGHYugs9Eew==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 07:46:23 -0700
-IronPort-SDR: WvJ3PfNSp0d4D/Q+EZpiBrFV5G6/LgKF3nwB5ZW685xLF8l3b3NYIHz591kAaouOVGf4R0uFYi
- x8W7L0gDFqvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="332518010"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2020 07:46:20 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1jOjJ1-000oBP-4O; Wed, 15 Apr 2020 17:46:23 +0300
-Date:   Wed, 15 Apr 2020 17:46:23 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
-        dan.j.williams@intel.com, peterz@infradead.org
-Subject: Re: [PATCH v6 2/2] lib: make a test module with set/clear bit
-Message-ID: <20200415144623.GJ185537@smile.fi.intel.com>
-References: <20200310221747.2848474-1-jesse.brandeburg@intel.com>
- <20200310221747.2848474-2-jesse.brandeburg@intel.com>
+        id S2636852AbgDOOsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2392410AbgDOOrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:47:48 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BD6C061A0C;
+        Wed, 15 Apr 2020 07:47:47 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id b62so17453548qkf.6;
+        Wed, 15 Apr 2020 07:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZ4iMxtLmyt1fidTbl+NFGEvP3aHTCvbYm4rWcaVlyA=;
+        b=Yt4KqbBYzrcQoQQlbdCqsuee3b+HaiUsutQD8Qbx5syhE1/i1Cw+VMzbLyCKcYaRYi
+         WAa0/Tvi6yhSrD3vkuaptsmzvS5iqXwB8vfcW40nQ8iC7S6SHHv6vSE/1fblaHpM7xPd
+         INyYDeTWPradXrWH0Te8CMeemJUNXr1N6tnq7e7HIaeDgeTLK0uYENrtc6B181jOAytd
+         kENWGTYOc074TwDs0ADlLkl7NssWed71MbxwMz5AIQpugB4nBUdrlFmViwh/4LDbffo7
+         j2sYfHlFC4fGGkxGRMrmkcXPAUWvDANSAxFpooShlv547O6GeNpnSRrpzBY7T1nDdaiP
+         qQew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZ4iMxtLmyt1fidTbl+NFGEvP3aHTCvbYm4rWcaVlyA=;
+        b=QR+kqWnUg6Iu1UgZNwSXDYrSvleYfh5Q9tpoY3SPRijHw+5ISY31N9lGNnsb6Es5p7
+         wTnrx59a6k9bi6074raDnHPopx3NYoutDzG4RNrKGnVD3An4kA/MyJDtHndMQyBsQU/I
+         imyiKX8RudygS2bkcYcS1WtKx3652GxWdaGhtImkWzWwLO3XduXwJ8kkmjSOuk01vzYG
+         hHYC/K7ylLUImK6AQW9UYkt5szTfKiW+h9Li7XtM5zVrYoVn4NO/fpkADuUv/O3FlZhK
+         r1TUL9SY1gUmxWu7xZPo575L4jia3no9TLdWuFXXn91uIda0fL9mIFRiNsetp0rwXOdl
+         iKpw==
+X-Gm-Message-State: AGi0PuYMyJqRu0xkA7vGQ9G+w8sxByzaj3nsSK6p7aI7z0TjuGfc7SsC
+        OvQcrUBAIrsYeQ0ptNzJ02z5qM9P2OoCdR1FY5WUfUdX
+X-Google-Smtp-Source: APiQypJUfL/gNlmbIS5arKSbG7lka+aMpwLuCQIZtSnNdCJg0n76Xjm5HPKezGAW0zBKEBD4gJjv8CJLffCHkEBpaoM=
+X-Received: by 2002:a37:a7cd:: with SMTP id q196mr2235781qke.160.1586962066994;
+ Wed, 15 Apr 2020 07:47:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310221747.2848474-2-jesse.brandeburg@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CALUj-gsRgkEyRe3vubEeWx8ENwEyE+Fzv4bKKDZ+iq3urRG0BA@mail.gmail.com>
+ <20200415163851.2e5f96f8@coco.lan>
+In-Reply-To: <20200415163851.2e5f96f8@coco.lan>
+From:   rishi gupta <gupt21@gmail.com>
+Date:   Wed, 15 Apr 2020 20:17:35 +0530
+Message-ID: <CALUj-gvYeXFv8TwypuyPygypW-izmgTcRY1mOGHyMGb-RGt2tw@mail.gmail.com>
+Subject: Re: Correct place to put the new doc for "How to use this driver"
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-doc@vger.kernel.org, corbet@lwn.net,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 03:17:47PM -0700, Jesse Brandeburg wrote:
-> Test some bit clears/sets to make sure assembly doesn't change, and
-> that the set_bit and clear_bit functions work and don't cause sparse
-> warnings.
-> 
-> Instruct Kbuild to build this file with extra warning level -Wextra,
-> to catch new issues, and also doesn't hurt to build with C=1.
-> 
-> This was used to test changes to arch/x86/include/asm/bitops.h.
-> 
-> In particular, sparse (C=1) was very concerned when the last bit
-> before a natural boundary, like 7, or 31, was being tested, as this
-> causes sign extension (0xffffff7f) for instance when clearing bit 7.
-> 
-> Recommended usage:
-> make defconfig
-> scripts/config -m CONFIG_TEST_BITOPS
-> make modules_prepare
-> make C=1 W=1 lib/test_bitops.ko
-> objdump -S -d lib/test_bitops.ko
-> insmod lib/test_bitops.ko
-> rmmod lib/test_bitops.ko
-> <check dmesg>, there should be no compiler/sparse warnings and no
-> error messages in log.
+Thanks Mauro. I will put doc in admin-guide folder.
 
-Seems this didn't make the kernel. Perhaps you need to send it to Andrew Morton.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On Wed, Apr 15, 2020 at 8:08 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Wed, 15 Apr 2020 09:25:02 +0530
+> rishi gupta <gupt21@gmail.com> escreveu:
+>
+> > Hi Team,
+> >
+> > I need to add a documentation file to let users know "how to use this driver".
+> > Specifically this one (tty-ttyvs.rst): https://lkml.org/lkml/2020/2/15/153
+> >
+> > (1) I am unable to find any directory where it will fit. This driver
+> > belongs to Virtual TTY device category.
+> > Any suggestions where to put it?
+>
+> Docs focused on driver usage belongs to the admin-guide.
+>
+> >
+> > (2) After putting it is it mandatory to link it to
+> > Documentation/index.rst as suggested here
+> > https://www.kernel.org/doc/html/latest/doc-guide/index.html
+>
+> You should actually add it to Documentation/admin-guide/index.rst.
+>
+> >
+> > Regards,
+> > Rishi
+>
+>
+>
+> Thanks,
+> Mauro
