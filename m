@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D26D1AB157
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA90E1AB14E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441673AbgDOTNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1416868AbgDOSuW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:50:22 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12520C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:50:20 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d77so836255wmd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:50:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HxG0r7hAOihPQolhiAxiSpbfJApEZjUojCdyDxEKaME=;
-        b=WhOW0LP0WSkxBIxmIudr/kHzIGLgmxz4wfb1q2QmUH1rHOcIi1ByObTmVdUVydbvIX
-         sbj1Ilay83nb8NWkB0KHCAAITGOThoT6pTS1JS3BGOOONMu5KOI0klloxRsZK3U4B1k8
-         u03ho6QlmEranl40DzWLacHt3b06UwzuQ0nef5K/HrIrcyVcRw/E37eAIgwXg/nsPKZ3
-         12AuvCeyh3QMIuXfs+ivUK0WvMIo1gzB1gA4l7ujyTtgsDppAcu54tGMSol/O75UeAmY
-         0uuHuNkgxXJUCQKWjRtYZ52KiH+iKm6Z/UyDdgO0/imK82/UxcxxNYpwYeC/msJ1Ls1D
-         CCQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HxG0r7hAOihPQolhiAxiSpbfJApEZjUojCdyDxEKaME=;
-        b=CU3ri2vuEui5Nzg1GrtfeLnBQR+eZuU7GxxBeQQZY7O3pkUoF7N47sXtkjEDU8KTbM
-         rZchhTjBzM/4/uwAO0ZcZk2aOTMqNiA41ZebvQTXx8OmGsM4Pi1W4TeQZGaz2cQnHWUf
-         1P3guIX+r8QDdTd3Xo6BTJvHg6Mm8T6idfX1wdZkhY+B/gvbnZbr8ukF9TZiIzRSsQ8O
-         YM/FWOfbWpic5/nTnEaWxk01C4aAoSiT4RTLKWNFkI13ogekvfgl43NX2hrW9cFvKyt/
-         wpFB/XzldMulXSXSW9lj9WEcpW5lL8IaYEz2TmnMHPwfkQ3kyRN8NtAtEHFNK7r5CYnz
-         WDyg==
-X-Gm-Message-State: AGi0PuaUXuT55+y/Y1aZ4Vyzk40yjPz/9MBnrrkmBEyUUYNwwEAwZD+B
-        dRd68Ph5gUt90y/pxaqcSq3bAy+QuqhW
-X-Google-Smtp-Source: APiQypJV8x2h4LVXyK95Cuo6S9zkHKN7YGpqDtNLNkYj27uheKPDHGd0nP+GdMRbkbEW0FDHExr6AQ==
-X-Received: by 2002:a1c:9ecb:: with SMTP id h194mr671829wme.49.1586976615589;
-        Wed, 15 Apr 2020 11:50:15 -0700 (PDT)
-Received: from ninjahost.lan (79-73-33-244.dynamic.dsl.as9105.com. [79.73.33.244])
-        by smtp.gmail.com with ESMTPSA id w7sm24757618wrr.60.2020.04.15.11.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 11:50:15 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     boqun.feng@gmail.com, Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Qian Cai <cai@lca.pw>,
-        Eiichi Tsukata <devel@etsukata.com>,
-        Pavankumar Kondeti <pkondeti@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Tyler Hicks <tyhicks@canonical.com>
-Subject: [PATCH 1/1] cpu: Add annotation inside clear_tasks_mm_cpumask()
-Date:   Wed, 15 Apr 2020 19:49:37 +0100
-Message-Id: <20200415184937.32373-2-jbi.octave@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200415184937.32373-1-jbi.octave@gmail.com>
-References: <20200415184937.32373-1-jbi.octave@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2504064AbgDOTLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1416859AbgDOSts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:49:48 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79726208E4;
+        Wed, 15 Apr 2020 18:49:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586976587;
+        bh=uX+VB0420gMf/ohkw7XASVivlF4bxxbUvzMx8QiMIUU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=b7/ydYqmtdfmNr2OCd/urTfAO/yqTT1YNf2L0mdtXhWZGqKaprWVAm0IVl/k/EQXG
+         qoQ0dqIug+srZthzrbQpP8YMb9jnFGZXJacSjSghjmplBMmAmmuXK9Yle/Ky1Hm1na
+         uouBQTRgIr/guXESYGIypPmXdfxDwPoQ/dHNMIXc=
+From:   paulmck@kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH lkmm tip/core/rcu 03/10] Documentation: LKMM: Move MP+onceassign+derefonce to new litmus-tests/rcu/
+Date:   Wed, 15 Apr 2020 11:49:38 -0700
+Message-Id: <20200415184945.16487-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse reports a warning
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-warning: context imbalance in clear_tasks_mm_cpumask() - different lock contexts for basic block
+Move MP+onceassign+derefonce to the new Documentation/litmus-tests/rcu/
+directory.
 
-The root cause is the missing annotation inside clear_tasks_mm_cpumask()
+More RCU-related litmus tests would be added here.
 
-Add the missing __acquire(&t->alloc_lock) annotation.
-
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+Acked-by: Andrea Parri <parri.andrea@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/cpu.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/litmus-tests/README                                | 9 +++++++++
+ .../litmus-tests/rcu}/MP+onceassign+derefonce.litmus             | 0
+ tools/memory-model/litmus-tests/README                           | 3 ---
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/litmus-tests/README
+ rename {tools/memory-model/litmus-tests => Documentation/litmus-tests/rcu}/MP+onceassign+derefonce.litmus (100%)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 9c706af713fb..d8c452a8dd09 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -834,6 +834,7 @@ void clear_tasks_mm_cpumask(int cpu)
- 		t = find_lock_task_mm(p);
- 		if (!t)
- 			continue;
-+		__acquire(&t->alloc_lock);
- 		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
- 		task_unlock(t);
- 	}
+diff --git a/Documentation/litmus-tests/README b/Documentation/litmus-tests/README
+new file mode 100644
+index 0000000..84208bc
+--- /dev/null
++++ b/Documentation/litmus-tests/README
+@@ -0,0 +1,9 @@
++============
++LITMUS TESTS
++============
++
++RCU (/rcu directory)
++--------------------
++MP+onceassign+derefonce.litmus
++    Demonstrates that rcu_assign_pointer() and rcu_dereference() to
++    ensure that an RCU reader will not see pre-initialization garbage.
+diff --git a/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus b/Documentation/litmus-tests/rcu/MP+onceassign+derefonce.litmus
+similarity index 100%
+rename from tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
+rename to Documentation/litmus-tests/rcu/MP+onceassign+derefonce.litmus
+diff --git a/tools/memory-model/litmus-tests/README b/tools/memory-model/litmus-tests/README
+index 681f906..79e1b1e 100644
+--- a/tools/memory-model/litmus-tests/README
++++ b/tools/memory-model/litmus-tests/README
+@@ -63,9 +63,6 @@ LB+poonceonces.litmus
+ 	As above, but with store-release replaced with WRITE_ONCE()
+ 	and load-acquire replaced with READ_ONCE().
+ 
+-MP+onceassign+derefonce.litmus
+-	As below, but with rcu_assign_pointer() and an rcu_dereference().
+-
+ MP+polockmbonce+poacquiresilsil.litmus
+ 	Protect the access with a lock and an smp_mb__after_spinlock()
+ 	in one process, and use an acquire load followed by a pair of
 -- 
-2.24.1
+2.9.5
 
