@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EEE1A99D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782041A99BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896101AbgDOKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:01:58 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55613 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895955AbgDOKBu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:01:50 -0400
-Received: by mail-wm1-f66.google.com with SMTP id e26so16700737wmk.5;
-        Wed, 15 Apr 2020 03:01:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ik9SzoJG23HyWV3EJZBDw9KnoLZv3eWb0eYaCp2cs4I=;
-        b=YGaPNOVt6IA3KnoXCM3zXS55D4HzzWJBbGHn9eorupAT6wY0Z0lpwUNM/e2N1lGGrm
-         D1nwmd2a2tMgDrHQg9QFdJy3KZ4HoABciG3wtw16qnLBHKuW4VoRUMZJ/ok9+BFd6LFY
-         QTtHs76ObpZxxSMcHu8CMbOtAPngw8DUsj1gCM+Nya2uGQWUNmb3HcZ4UepBnsVJIh41
-         ov2AYhOK2jVQQAF8PuoW4aXnUhi6Akqbyuc2nkDCAZ4P8vxZ+0DfrFwpQDIk4vyyxGV1
-         XoUfyc4XJ3PcjesRpLi3NZBWmOT0S9nAE/8Mk6a8tJD7Zn/hcNLp9SH7hcN4i0oTHOAM
-         gQ7A==
-X-Gm-Message-State: AGi0PuaWciEnYj21oRvokxyY43G66LLAn5bOIWuKdxjY8k2B88iBNO1Y
-        iyeIJw/Vq+7w7yLD9yv6nKI=
-X-Google-Smtp-Source: APiQypKJVaGGm0WlX/P9D+5uZGAAwOwvoL0TgNtVED/ZyGRV1UePRP4N+INs4Ka7TCh9PUHB/SON9w==
-X-Received: by 2002:a1c:3d83:: with SMTP id k125mr4767806wma.177.1586944909281;
-        Wed, 15 Apr 2020 03:01:49 -0700 (PDT)
-Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
-        by smtp.gmail.com with ESMTPSA id 1sm21770489wmi.0.2020.04.15.03.01.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 03:01:48 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 12:01:46 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v2 0/3] support setting sysctl parameters from kernel
- command line
-Message-ID: <20200415100146.GC4629@dhcp22.suse.cz>
-References: <20200414113222.16959-1-vbabka@suse.cz>
- <20200415122359.939364e2c54c389c6b3f6457@kernel.org>
- <3fc1303a-cb57-b96e-ce77-7ff6407ab538@suse.cz>
+        id S2408491AbgDOJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:57:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:41138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405824AbgDOJ5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:57:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3D291063;
+        Wed, 15 Apr 2020 02:57:46 -0700 (PDT)
+Received: from [10.37.12.1] (unknown [10.37.12.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 760B13F68F;
+        Wed, 15 Apr 2020 02:57:44 -0700 (PDT)
+Subject: Re: [PATCH 1/8] arm64: cpufeature: Relax check for IESB support
+To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu
+Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
+        kernel-team@android.com
+References: <20200414213114.2378-1-will@kernel.org>
+ <20200414213114.2378-2-will@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <ef6f287a-9233-6d5a-b0b8-f5fabe5ac2fc@arm.com>
+Date:   Wed, 15 Apr 2020 11:02:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3fc1303a-cb57-b96e-ce77-7ff6407ab538@suse.cz>
+In-Reply-To: <20200414213114.2378-2-will@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15-04-20 10:56:35, Vlastimil Babka wrote:
-> On 4/15/20 5:23 AM, Masami Hiramatsu wrote:
-> > Hi Vlastimil,
-> > 
-> > On Tue, 14 Apr 2020 13:32:19 +0200
-> > Vlastimil Babka <vbabka@suse.cz> wrote:
-> > 
-> >> This series adds support for something that seems like many people always
-> >> wanted but nobody added it yet, so here's the ability to set sysctl parameters
-> >> via kernel command line options in the form of sysctl.vm.something=1
-> > 
-> > Sounds good. And would you consider to use the bootconfig instead of (or
-> > in addition to) the kernel command line, because it is too short to describe
-> > the sysctl options?
+Hi Will
+
+On 04/14/2020 10:31 PM, Will Deacon wrote:
+> From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 > 
-> "Instead of" - no, as that would defeat the scenario of "I just want to set this
-> one sysctl in grub  (possibly interactively) and not update initrd for that". If
-> constructing bootconfig is of similar effort of loading sysctl.conf from initrd,
-> then I see little benefit?
+> We don't care if IESB is supported or not as we always set
+> SCTLR_ELx.IESB and, if it works, that's really great.
 > 
-> "in addition to" - sure! but I hoped that's what already happens as it seemed to
-> me that options from bootconfig are appended to the command line that's then
-> parsed by everyone else, no? But I'll try it to be sure.
+> Relax the ID_AA64MMFR2.IESB cpufeature check so that we don't warn and
+> taint if it's mismatched.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> [will: rewrote commit message]
+> Signed-off-by: Will Deacon <will@kernel.org>
 
-Completely agreed!
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Btw. patches look sensible to me so feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+>   arch/arm64/kernel/cpufeature.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 9fac745aa7bb..63df28e6a425 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -247,7 +247,7 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr2[] = {
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_FWB_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_AT_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_LVA_SHIFT, 4, 0),
+> -	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_IESB_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_IESB_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_LSM_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_UAO_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_CNP_SHIFT, 4, 0),
+> 
 
--- 
-Michal Hocko
-SUSE Labs
