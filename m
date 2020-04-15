@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F90A1A9794
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967C51A9797
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895158AbgDOIwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
+        id S2895178AbgDOIxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505552AbgDOIwT (ORCPT
+        by vger.kernel.org with ESMTP id S2895164AbgDOIwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:52:19 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42646C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:52:18 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id i27so2633495ota.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:52:18 -0700 (PDT)
+        Wed, 15 Apr 2020 04:52:47 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535E7C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:52:47 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id 21so1045333uae.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZCUHiYYMH/G4Vj/Sqwd6OPeDpXyCtDoKrnuuyZW76nM=;
-        b=R+fcctcpUVM7bgjtt7NExQLE64KZbCPh591b4Nqle1ymrs0xUAs9xAbfm+y3RIteHq
-         LZxzhYavPfqV/e56OMNc9fNpAdNOssa0Vb8X/Bw6xr8synPXvDFNV45/vPdjIJcBEQmH
-         l2mazh36QyecmW4hnuCSM5+VX0lRsNTYPmTGNuojb/6qa9ihAt/B2DCHdCxFk2+KSAra
-         7P3OBmp6OUvC0jtT53z0pD2OD5MIZwXz0qmVMwhRnon+Q4lvKVEy89DaxcChUQJhu5Q6
-         8epUAaEKHdykKA1+Hru1q0GxZUHAtW5+Q1+pqR+Zju9M/NWp/k9cGQGaT1D3UZuQkIlh
-         nUQA==
+         :cc:content-transfer-encoding;
+        bh=GffN4wdV1b8/+GP7bB7msfOG3SsTk4D9FpQBELdB7UQ=;
+        b=Ut9RWSaOq1yupMZbWU33o+RQiJm1VcNInX3xL0Qg2Yu12twvk6t/92Wf0Py1JaXBW7
+         seiwUhSnzZDeqIFK/o6vdQ1KzM/lWT9y7RRQNWbGx64yLdbrPQxDTAnsOWWnqXGKMOLL
+         GxFZhp0BptUY2s68S0lWCLTgEsrSz3e0BRd8KcU7xFSdUMqzK1yrr+JlURONDWZBNJZq
+         w1+L9MVjy0l/BwMUarAgZKemDe7WXlv7abAiHz9Kl9N7XQ5JE8Hcjk59ti4cK4THNy9D
+         HnotyGjdAwHUGgJi+IjmHnkpf/cHvijf63dA3kf0GXIeof5uub5vU+szxsj3JT1mQVlA
+         65jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZCUHiYYMH/G4Vj/Sqwd6OPeDpXyCtDoKrnuuyZW76nM=;
-        b=cyLL4lIL220w+O3cYbOmj8wzj8bEZveWFYJGaMTtdNIuaTaekcWUEpb6rzyZrp+Ru+
-         hywZjEktz+rK+2GWqxDtTKdJmdh2SzbVeSpkTthexyv1uRolXK8BSJktBiMJFdObiuPN
-         Iplt3DkgagnlN48YX3yq2sjTLVGDfNsHWBPRF/9fjAaQvhNAdqCDIIUEW/Gp84OngiBu
-         dO7M15haMUpyGm2A1jglTmQkJEI37iCYABJSuBl6nEP/D0X7huLhJZhjSs+fsid79lYu
-         KhS5/AXYYayth3QPkKvQOZOIJBDcTKYtJEi2dWmEMFMkW5+fgSK8w0VlHoP1W7Jrh6Iw
-         0oYQ==
-X-Gm-Message-State: AGi0PuaFP6JuWEy+9osx2qIiXaghGvkDpoGzTGwgNY8fjfi1HEA0S0It
-        4ry3HK+LXCwWLvGBdJEZcfN2jXu2Dq+x28Ey+K6GQQ==
-X-Google-Smtp-Source: APiQypKBgMlXolVF7p7MsOedbvV4RyaNeLUsZBlgYqPA/1aeIk6fU5CCiWfO/6W9C+vbRqDTHLyMDAXwBdIuvXdXvZM=
-X-Received: by 2002:a9d:6041:: with SMTP id v1mr11709860otj.66.1586940737597;
- Wed, 15 Apr 2020 01:52:17 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GffN4wdV1b8/+GP7bB7msfOG3SsTk4D9FpQBELdB7UQ=;
+        b=j9qGZaRj7CP2UumH6y8gonllVaxfSRddt5v961sjEXZXz+mvVU/Mrz+XctB8JLE2PS
+         gnAWW9tlwgxOZyNNb6Jq6hMAd0TAiwdqgks3HzL2in5Zv8nOWUeNs9//C3sVeoSAYQpD
+         4FYXOuuvtEx7kSmGqOX2zX+Pn/eKZCzFJvPHlzi1S3KIFEqcjZX5TMj9EvAwqOKUbvUS
+         7/UT/ehPox9lYIKkomuPc6cZYq9YjNEIXiU0/lnT3otjHUQuNPeKHqkLKylogVKAEeRN
+         s2MW0hDqEEHB0EofOrz3fJUOW+shwdNzuziB4NVyaAzUKVzBJqIwm++wyv1WErAn1PMu
+         zGWQ==
+X-Gm-Message-State: AGi0PuZQPAFlzcBqzZhhPxB5wAgeZeb9UW7tSuuqP+VIdigySqLmCeS0
+        crffeMOxc4CxwOfgHvQi8ghfFFqQBbEfPlYGXLliRw==
+X-Google-Smtp-Source: APiQypIR6ai89vFmGqUSNQjlgJoCsLY70k1gj1lY6weiIV/qNYMav0X7PqbmVlV4sZKnwV/apxkl2A0RgEkql85Izu8=
+X-Received: by 2002:a9f:20c6:: with SMTP id 64mr3823674uaa.100.1586940766283;
+ Wed, 15 Apr 2020 01:52:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200414181012.114905-1-robert.marko@sartura.hr>
- <20200414181012.114905-2-robert.marko@sartura.hr> <08c288da-6f5c-7f04-81bc-4c7cb311af3e@gmail.com>
-In-Reply-To: <08c288da-6f5c-7f04-81bc-4c7cb311af3e@gmail.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 15 Apr 2020 10:52:06 +0200
-Message-ID: <CA+HBbNEke7e=+_zoiv67V5_pZqes+3P7pR6VkTz24=CQySLtRw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: add Qualcomm IPQ4019 MDIO bindings
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        robh+dt@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 15 Apr 2020 10:52:10 +0200
+Message-ID: <CAPDyKFrWZN2pwdaJ3ctMP9Mb3W6d5Di5jt4F9u1AmqxSKFzboQ@mail.gmail.com>
+Subject: Re: [PATCH 0/7] SDHCI clock handling fixes and cleanups
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 11:11 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+On Thu, 2 Apr 2020 at 13:54, Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmq=
+m.pl> wrote:
 >
+> This patch set combines a few of code improvements for SDHCI clock handli=
+ng.
+> Besides small fixes, most value comes from simplifying the code, so it's
+> easier to understand.
 >
+> Micha=C5=82 Miros=C5=82aw (7):
+>   mmc: sdhci: fix base clock usage in preset value
+>   mmc: sdhci: fix programmable clock config from preset value
+>   mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
+>   mmc: sdhci: move SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
+>   mmc: sdhci: simplify clock frequency calculation
+>   mmc: sdhci: squash v2/v3+ clock calculation differences
+>   mmc: sdhci: respect non-zero div quirk in programmable clock mode
 >
-> On 4/14/2020 11:10 AM, Robert Marko wrote:
-> > This patch adds the binding document for the IPQ40xx MDIO driver.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> > ---
+>  drivers/mmc/host/sdhci-of-arasan.c |   7 +-
+>  drivers/mmc/host/sdhci.c           | 126 +++++++++++++----------------
+>  drivers/mmc/host/sdhci.h           |   4 +-
+>  3 files changed, 64 insertions(+), 73 deletions(-)
 >
-> [snip]
->
-> > +examples:
-> > +  - |
-> > +    mdio@90000 {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      compatible = "qcom,ipq40xx-mdio";
-> > +      reg = <0x90000 0x64>;
-> > +      status = "disabled";
->
-> I believe the preference is to not put status properties in examples.
-> Other than that:
-Will be changed in v3.
-Thanks
->
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 > --
-> Florian
+> 2.20.1
+>
+
+Adrian, whenever you get the time, I would like to get your feedback
+on these, especially on patch1->patch3 as those may be targeted for
+fixes.
+
+Kind regards
+Uffe
