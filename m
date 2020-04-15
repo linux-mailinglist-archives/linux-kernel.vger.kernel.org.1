@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AD61AAFD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63191AAFD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411316AbgDORd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
+        id S2411196AbgDORdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411123AbgDORbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2411121AbgDORbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 13:31:07 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4590C208E4;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9840D20784;
         Wed, 15 Apr 2020 17:31:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586971864;
-        bh=PtPeyyrjGI0Spnjq6FpZex+gD9Q2RIckssLhCuXcW4w=;
+        bh=T7FxZ8VnQOBCafeNxp213vIGSqauNPjYZLVRJ/8AAMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vT817X3TzcpI0T+VqOO20tu/0aFoxEbUSdKW2vf0hzvkvyh48OTO7oUpmq7BK1Joz
-         sFsjgykqSv/BkIHaR/DTdvvXwjfp9IsRxYQ9C6rbeisffD//rZwMDHBNmZv6MT8IjC
-         wrED5n7D2hEF2l/vwcMENEbZBo6TEzQ+Akn5cbjc=
+        b=YMXIwifzhGVaEty5gGE+cZrSq8CFyZbXR9s2LwMQ3rXXM7Y1cEHiJiqyJb8JmZXpn
+         d6HnprPvQh8wyKceE9EyMd96r1T7wvkaOREOyiJJUAebp2e2BnBJOe+vNonN69llzq
+         gtV1c6pr7oXBBv3iZWOB/CE6IESqIIKPrtBrx2uE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 08/18] rcu: Allow rcutorture to starve grace-period kthread
-Date:   Wed, 15 Apr 2020 10:30:50 -0700
-Message-Id: <20200415173100.9927-8-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Marco Elver <elver@google.com>
+Subject: [PATCH tip/core/rcu 09/18] torture: Add --kcsan argument to top-level kvm.sh script
+Date:   Wed, 15 Apr 2020 10:30:51 -0700
+Message-Id: <20200415173100.9927-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415173037.GA9768@paulmck-ThinkPad-P72>
 References: <20200415173037.GA9768@paulmck-ThinkPad-P72>
@@ -45,159 +46,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit provides an rcutorture.stall_gp_kthread module parameter
-to allow rcutorture to starve the grace-period kthread.  This allows
-testing the code that detects such starvation.
+Although the existing --kconfig argument can be used to run KCSAN for
+an rcutorture test, it is not as straightforward as one might like:
 
+	--kconfig "CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y \
+		   CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n \
+		   CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n \
+		   CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 \
+		   CONFIG_KCSAN_VERBOSE=y CONFIG_KCSAN_INTERRUPT_WATCHER=y"
+
+This commit therefore adds a "--kcsan" argument that emulates the above
+--kconfig command.  Note that if you specify a Kconfig option using
+-kconfig that conflicts with one that --kcsan adds, you get whatever
+the script and the build system decide to give you.
+
+Cc: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
- kernel/rcu/rcu.h                                |  2 ++
- kernel/rcu/rcutorture.c                         | 18 ++++++++++++++---
- kernel/rcu/tree.c                               | 27 +++++++++++++++++++++++++
- 4 files changed, 51 insertions(+), 3 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index ad12b39..be94358a 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4221,6 +4221,13 @@
- 	rcutorture.stall_cpu_irqsoff= [KNL]
- 			Disable interrupts while stalling if set.
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 2315e2e..34b368d 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -31,6 +31,7 @@ TORTURE_DEFCONFIG=defconfig
+ TORTURE_BOOT_IMAGE=""
+ TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
+ TORTURE_KCONFIG_ARG=""
++TORTURE_KCONFIG_KCSAN_ARG=""
+ TORTURE_KMAKE_ARG=""
+ TORTURE_QEMU_MEM=512
+ TORTURE_SHUTDOWN_GRACE=180
+@@ -133,6 +134,9 @@ do
+ 		TORTURE_KCONFIG_ARG="$2"
+ 		shift
+ 		;;
++	--kcsan)
++		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_VERBOSE=y CONFIG_KCSAN_INTERRUPT_WATCHER=y"; export TORTURE_KCONFIG_KCSAN_ARG
++		;;
+ 	--kmake-arg)
+ 		checkarg --kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
+ 		TORTURE_KMAKE_ARG="$2"
+@@ -201,6 +205,9 @@ else
+ 	exit 1
+ fi
  
-+	rcutorture.stall_gp_kthread= [KNL]
-+			Duration (s) of forced sleep within RCU
-+			grace-period kthread to test RCU CPU stall
-+			warnings, zero to disable.  If both stall_cpu
-+			and stall_gp_kthread are specified, the
-+			kthread is starved first, then the CPU.
++TORTURE_KCONFIG_ARG="${TORTURE_KCONFIG_ARG} ${TORTURE_KCONFIG_KCSAN_ARG}"
++TORTURE_KCONFIG_ARG="`echo ${TORTURE_KCONFIG_ARG} | sed -e 's/^ *//' -e 's/ *$//'`"
 +
- 	rcutorture.stat_interval= [KNL]
- 			Time (s) between statistics printk()s.
+ CONFIGFRAG=${KVM}/configs/${TORTURE_SUITE}; export CONFIGFRAG
  
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 00ddc92..cdbc5f9 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -454,6 +454,7 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
- 			       unsigned long secs,
- 			       unsigned long c_old,
- 			       unsigned long c);
-+void rcu_gp_set_torture_wait(int duration);
- #else
- static inline void rcutorture_get_gp_data(enum rcutorture_type test_type,
- 					  int *flags, unsigned long *gp_seq)
-@@ -471,6 +472,7 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
- #define do_trace_rcu_torture_read(rcutorturename, rhp, secs, c_old, c) \
- 	do { } while (0)
- #endif
-+static inline void rcu_gp_set_torture_wait(int duration) { }
- #endif
- 
- #if IS_ENABLED(CONFIG_RCU_TORTURE_TEST) || IS_MODULE(CONFIG_RCU_TORTURE_TEST)
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 60dc368..3d47dca 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -115,6 +115,8 @@ torture_param(int, stall_cpu_holdoff, 10,
- 	     "Time to wait before starting stall (s).");
- torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
- torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
-+torture_param(int, stall_gp_kthread, 0,
-+	      "Grace-period kthread stall duration (s).");
- torture_param(int, stat_interval, 60,
- 	     "Number of seconds between stats printk()s");
- torture_param(int, stutter, 5, "Number of seconds to run/halt test");
-@@ -1623,7 +1625,17 @@ static int rcu_torture_stall(void *args)
- 		schedule_timeout_interruptible(stall_cpu_holdoff * HZ);
- 		VERBOSE_TOROUT_STRING("rcu_torture_stall end holdoff");
- 	}
--	if (!kthread_should_stop()) {
-+	if (!kthread_should_stop() && stall_gp_kthread > 0) {
-+		VERBOSE_TOROUT_STRING("rcu_torture_stall begin GP stall");
-+		rcu_gp_set_torture_wait(stall_gp_kthread * HZ);
-+		for (idx = 0; idx < stall_gp_kthread + 2; idx++) {
-+			if (kthread_should_stop())
-+				break;
-+			schedule_timeout_uninterruptible(HZ);
-+		}
-+	}
-+	if (!kthread_should_stop() && stall_cpu > 0) {
-+		VERBOSE_TOROUT_STRING("rcu_torture_stall begin CPU stall");
- 		stop_at = ktime_get_seconds() + stall_cpu;
- 		/* RCU CPU stall is expected behavior in following code. */
- 		idx = cur_ops->readlock();
-@@ -1642,8 +1654,8 @@ static int rcu_torture_stall(void *args)
- 		else if (!stall_cpu_block)
- 			preempt_enable();
- 		cur_ops->readunlock(idx);
--		pr_alert("rcu_torture_stall end.\n");
- 	}
-+	pr_alert("rcu_torture_stall end.\n");
- 	torture_shutdown_absorb("rcu_torture_stall");
- 	while (!kthread_should_stop())
- 		schedule_timeout_interruptible(10 * HZ);
-@@ -1653,7 +1665,7 @@ static int rcu_torture_stall(void *args)
- /* Spawn CPU-stall kthread, if stall_cpu specified. */
- static int __init rcu_torture_stall_init(void)
- {
--	if (stall_cpu <= 0)
-+	if (stall_cpu <= 0 && stall_gp_kthread <= 0)
- 		return 0;
- 	return torture_create_kthread(rcu_torture_stall, NULL, stall_task);
- }
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f13130a..c5e0e66 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1486,6 +1486,31 @@ static void rcu_gp_slow(int delay)
- 		schedule_timeout_uninterruptible(delay);
- }
- 
-+static unsigned long sleep_duration;
-+
-+/* Allow rcutorture to stall the grace-period kthread. */
-+void rcu_gp_set_torture_wait(int duration)
-+{
-+	if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST) && duration > 0)
-+		WRITE_ONCE(sleep_duration, duration);
-+}
-+EXPORT_SYMBOL_GPL(rcu_gp_set_torture_wait);
-+
-+/* Actually implement the aforementioned wait. */
-+static void rcu_gp_torture_wait(void)
-+{
-+	unsigned long duration;
-+
-+	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST))
-+		return;
-+	duration = xchg(&sleep_duration, 0UL);
-+	if (duration > 0) {
-+		pr_alert("%s: Waiting %lu jiffies\n", __func__, duration);
-+		schedule_timeout_uninterruptible(duration);
-+		pr_alert("%s: Wait complete\n", __func__);
-+	}
-+}
-+
- /*
-  * Initialize a new grace period.  Return false if no grace period required.
-  */
-@@ -1686,6 +1711,7 @@ static void rcu_gp_fqs_loop(void)
- 		rcu_state.gp_state = RCU_GP_WAIT_FQS;
- 		ret = swait_event_idle_timeout_exclusive(
- 				rcu_state.gp_wq, rcu_gp_fqs_check_wake(&gf), j);
-+		rcu_gp_torture_wait();
- 		rcu_state.gp_state = RCU_GP_DOING_FQS;
- 		/* Locking provides needed memory barriers. */
- 		/* If grace period done, leave loop. */
-@@ -1834,6 +1860,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
- 			swait_event_idle_exclusive(rcu_state.gp_wq,
- 					 READ_ONCE(rcu_state.gp_flags) &
- 					 RCU_GP_FLAG_INIT);
-+			rcu_gp_torture_wait();
- 			rcu_state.gp_state = RCU_GP_DONE_GPS;
- 			/* Locking provides needed memory barrier. */
- 			if (rcu_gp_init())
+ defaultconfigs="`tr '\012' ' ' < $CONFIGFRAG/CFLIST`"
+@@ -310,6 +317,7 @@ TORTURE_BUILDONLY="$TORTURE_BUILDONLY"; export TORTURE_BUILDONLY
+ TORTURE_DEFCONFIG="$TORTURE_DEFCONFIG"; export TORTURE_DEFCONFIG
+ TORTURE_INITRD="$TORTURE_INITRD"; export TORTURE_INITRD
+ TORTURE_KCONFIG_ARG="$TORTURE_KCONFIG_ARG"; export TORTURE_KCONFIG_ARG
++TORTURE_KCONFIG_KCSAN_ARG="$TORTURE_KCONFIG_KCSAN_ARG"; export TORTURE_KCONFIG_KCSAN_ARG
+ TORTURE_KMAKE_ARG="$TORTURE_KMAKE_ARG"; export TORTURE_KMAKE_ARG
+ TORTURE_QEMU_CMD="$TORTURE_QEMU_CMD"; export TORTURE_QEMU_CMD
+ TORTURE_QEMU_INTERACTIVE="$TORTURE_QEMU_INTERACTIVE"; export TORTURE_QEMU_INTERACTIVE
 -- 
 2.9.5
 
