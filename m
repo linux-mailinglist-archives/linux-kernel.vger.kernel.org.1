@@ -2,202 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E991A9B0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089201A9B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408533AbgDOKla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:41:30 -0400
-Received: from mx.sdf.org ([205.166.94.20]:55862 "EHLO mx.sdf.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406608AbgDOKlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:41:08 -0400
-Received: from sdf.org (IDENT:lkml@faeroes.freeshell.org [205.166.94.9])
-        by mx.sdf.org (8.15.2/8.14.5) with ESMTPS id 03FAewKx008805
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits) verified NO);
-        Wed, 15 Apr 2020 10:40:58 GMT
-Received: (from lkml@localhost)
-        by sdf.org (8.15.2/8.12.8/Submit) id 03FAevoY025706;
-        Wed, 15 Apr 2020 10:40:57 GMT
-Date:   Wed, 15 Apr 2020 10:40:57 +0000
-From:   George Spelvin <lkml@SDF.ORG>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org,
-        lkml@sdf.org
-Subject: Additional get_random_* ideas
-Message-ID: <20200415104057.GA13003@SDF.ORG>
+        id S2896530AbgDOKn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:43:59 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:47951 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393905AbgDOKmT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 06:42:19 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 3D93F70F;
+        Wed, 15 Apr 2020 06:42:18 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 15 Apr 2020 06:42:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=8nobbbBWAxyXQWQe0I5jF6E/4q/
+        4W6mxWyIL2Uc0dJE=; b=JKNAqqA+eRPskHhMT4TH/3lDSSwjpXHPNRuVLrD1I6B
+        8l/dGgTLZnq2x8C00rBLt97pPg8xr3SgrUiqesEaIzOnhGR7NUunTZirYfJeT+th
+        h4GMef2YODCg1jGKvtY1WwZHv6gmof+QUcsCd6/SeJWpYT+EXa88EfiWkBtJ1A/H
+        BllfkbUXtpuc+pDHSJgW/xyLm5MvorfCIlJQ0lW211Hr3mTXAO/1qvYKHt6A1Q5K
+        h74t5hRxbzb3OZ/KS4rgN8eSlgC6gEh/8bjRUJYb0tVMvGfqUiZH2ISfSWOuKOvm
+        PdOxOhczG1oq0iJHOFdgOhpbfJ+F/w3wh4fqwnx/QAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=8nobbb
+        BWAxyXQWQe0I5jF6E/4q/4W6mxWyIL2Uc0dJE=; b=A4NWb2LsuGTz8Jviu1UBOB
+        PB5Qe6KEPK+Q2ZxDRS+YmEFtjGcJcEvOizc8z0AEYXnjjxddvPQ02XPf/yuowbiQ
+        cX1J+VllHRvIWIU9/a4DJbHB8q9FjIosXCO6+zT5ED2EBXTby/lYgr9lQZeGu/IS
+        bkdnhVjY6vmeQxLYQs6/xphVty957CGVp9ls57Pah9qoMnLrxKGVePLuVlA380cu
+        DAruUpScb6aojVXc1b4oH78sfcIBpNlS3Wt6kfhJ5DpYo1Yx0Gij5TOYBRMBaSyC
+        gXBN5YPPTcvG0reQArV8Pg0iEoDSw9nG80gdC6nMPVe1n0WOEGYSIOJXoEw4lbng
+        ==
+X-ME-Sender: <xms:CeWWXhSplqMtI749YojQI9v4s0F-z-NUwNpmHIm5V2e4aaBEcgRZhg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfeefgddvtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
+    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:CeWWXiV9sMYMwosMp1M0fLxTEkciNWcriYPDjup40VgVYTOesUnSsw>
+    <xmx:CeWWXjzfuATpI_bbUppQ7Of3v02C9fACB26TggUAg4Rm72zxYKtG0g>
+    <xmx:CeWWXm_L44loqCiyb3iDnAryx3R28xWuM2H7Fu42hvELfoDXuTJo7Q>
+    <xmx:CeWWXu01SvC8AZM7O8wUUKY4e6i0Wdlr1SuyzIRVBVmLDRiHBR7LUw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D0128328005A;
+        Wed, 15 Apr 2020 06:42:16 -0400 (EDT)
+Date:   Wed, 15 Apr 2020 12:42:14 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     Chen-Yu Tsai <wens@csie.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/sun4i: hdmi ddc clk: Fix size of m divider
+Message-ID: <20200415104214.ndkkxfnufkxgu53r@gilmour.lan>
+References: <20200413095457.1176754-1-jernej.skrabec@siol.net>
+ <CAGb2v65qetxxVX1yoCjyduM4zRTyF3YKX1g9CuaHZkF_Z+AKQg@mail.gmail.com>
+ <CAGb2v66LxhqTBeA_Br=kUrTq83hocEcAzYYC6nXpASvkkjn+1g@mail.gmail.com>
+ <1742537.tdWV9SEqCh@jernej-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline; filename=m
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iikhbqdgypmjrod7"
+Content-Disposition: inline
+In-Reply-To: <1742537.tdWV9SEqCh@jernej-laptop>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've done a bunch of hacking on get_random_uXX, and I recently
-thought of another possible way to reduce its cost.  I'd like to
-ask for some second opinions on whether it's worth pursuing.
 
-It takes around 1716 cycles to perform a chacha_block_generic()
-operation (without SSE) on my machine.  That's 3.35 cycles per bit,
-so reducing the number of bits consumed per output is worth something.
+--iikhbqdgypmjrod7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's not too difficult to extend my technique for merging the u32 and
-u64 batch pools into one that can return an arbitrary number of bits.  
-This has a secondary benefit of merging a lot of duplicate code in 
-get_random_u32() and get_random_u64().
+On Mon, Apr 13, 2020 at 06:09:08PM +0200, Jernej =C5=A0krabec wrote:
+> Dne ponedeljek, 13. april 2020 ob 16:12:39 CEST je Chen-Yu Tsai napisal(a=
+):
+> > On Mon, Apr 13, 2020 at 6:11 PM Chen-Yu Tsai <wens@csie.org> wrote:
+> > > On Mon, Apr 13, 2020 at 5:55 PM Jernej Skrabec <jernej.skrabec@siol.n=
+et>
+> wrote:
+> > > > m divider in DDC clock register is 4 bits wide. Fix that.
+> > > >
+> > > > Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
+> > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > >
+> > > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> >
+> > Cc stable?
+>
+> I don't think it's necessary:
+> 1. It doesn't change much (anything?) for me when reading EDID. I don't t=
+hink
+> it's super important to have precise DDC clock in order to properly read =
+EDID.
+> 2. No matter if it has "Cc stable" tag or not, it will be eventually pick=
+ed
+> for stable due to fixes tag.
+>
+> This was only small observation when I was researching EDID readout issue=
+ on
+> A20 board, but sadly, I wasn't able to figure out why reading it sometimes
+> fails. I noticed similar issue on SoCs with DE2 (most prominently on Oran=
+gePi
+> PC2 - H5), but there was easy workaround - I just disabled video driver i=
+n U-
+> Boot. However, if A20 display driver gets disabled in U-Boot, it totally
+> breaks video output on my TV when Linux boots (no output). I guess there =
+is
+> more fundamental problem with clocks than just field size. I think we sho=
+uld
+> add more constraints in clock driver, like preset some clock parents and =
+not
+> allow to change parents when setting rate, but carefully, so simplefb doe=
+sn't
+> break. Such constraints should also solve problems with dual head setups.
 
-There are a few direct applications for this (several places in the 
-infiniband code want 24 bits), and get_random_max() can ask for an
-appropriate number of bits.
+I disagree here. Doing all sorts of special case just doesn't scale,
+and we'll never have the special cases sorted out on all the boards
+(and it's a nightmare to maintain).
 
-I've worked out the math for the most efficient way to generate random 
-numbers in an arbitrary range.  E.g. to generate a number uniformly 
-distributed mod 5, we can generate 3 random bits and retry with 
-probability 3/8 (expected # of bits = 3 * 8/5 = 4.8), or 4 random bits and 
-retry with probability 1/16 (expected # of bits 4 * 16/15 = 4.266).  
-Generating 7 random bits and retrying with probability 3/128 is not worth 
-it (expected # of bits 7 * 128/125 = 7.168), but increasing the cost per 
-attempt to account for other overhead might change that.
+Especially since it's basically putting a blanket over the actual
+issue and looking the other way. If there's something wrong with how
+we deal with (re)parenting, we should fix that. It impacts more than
+just DRM, and all the SoCs.
 
-(Of course, this level of fine-tuning is only practical when the range
-is a compile-time constant.  I have yet to figure out how much
-is worth doing with non-constant ranges,)
+Maxime
 
-I've also worked out that Lemire's multiplicative method can ignore extra 
-low-order bits in the input random number.  If we want to use 12 bits to 
-generate a random number mod K, use 32 bits to generate a random number 
-mod K << (32 - 12), then shift the result right 32 - 12 = 20 bits.  The 
-final output depends only on the high 12 bits of the random input.
+--iikhbqdgypmjrod7
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Anyway, the core function looks like this.  Any opinions on whether this
-is worth pursuing?
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXpblBgAKCRDj7w1vZxhR
+xYNeAQDkWOAE17PUs/+j0UPsIutwMt3fGauL7qUSC2cDBKT12AD/Yf2YkVdEbh8n
+WD9IZaABcs8BR2mw6ne6+GE6MOR0Dgw=
+=+u0/
+-----END PGP SIGNATURE-----
 
-#define CHACHA_BIT_SIZE (CHACHA_BLOCK_SIZE * 8)
-#define LONG_AT(base,offset) *(unsigned long *)((void *)(base) + (offset))
-/*
- * Return an unsigned long, with the most significant nbits holding
- * batched entropy.  The lsbits must be ignored, and must NOT be leaked.
- *
- * (This odd convention turns out to be convenient for both
- * get_random_bits() and get_random_max().  It's unfortunately
- * not convenient for get_random_u32().)
- *
- * This uses an XOR trick to read from an arbitrary bit position in the
- * batch buffer.  A fresh random bit is defined as one uncorrelated with
- * anything except the (carefully-guarded) ChaCha key.  Once a fresh
- * bit is output, it becomes stale, and we assume an attacker knows
- * it completely.
- *
- * If *either* X or Y are fresh random bits, then X^Y is a fresh random
- * bit.  If *both* X and Y are fresh random bits, then after disclosing
- * X^Y, one of X and Y is stale, but not both.
- *
- * If X is fresh, then X^Y is fresh, X is now stale, and Y is unchanged.
- * If X is stale, then X^Y is fresh, and Y is now stale.
- *
- * Now apply this 64x across two words.  The first word (X) is consumed
- * msbit-first, so consists of 1..64 stale msbits. followed by 0..63
- * fresh lsbits.  The second word Y is all fresh.
- *
- * To get n bits, we XOR that word with the following (all-fresh) word,
- * and rotate the result left by the number of stale bits in X, so that
- * the fresh bits in X start at bit 63.  To the right of the fresh bits
- * in X are the stale msbits, XORed with the fresh msbits of Y.
- *
- * The result is 64 fresh bits, but the accounting assumes the lsbits past
- * the requested number will not be exposed, so remain fresh.
- *
- * The one exception occurs if X is the last word in the batch buffer,
- * and the number of bits required is not enough to warrant refilling.
- * In that case, Y is the stale word past the end of the buffer
- * (containing the ChaCha sequence number), but the returnd msbits are
- * all fresh because they've been XORed with the fresh lsbits of X.
- */
-unsigned long __get_random_bits(unsigned nbits)
-{
-	unsigned long flags, ret;
-	unsigned pos;	/* Bit offset in entropy array */
-	size_t offset;	/* Byte offset */
-	struct batched_entropy *batch;
-	static void *previous;
-
-	WARN_ON(nbits > BITS_PER_LONG);
-
-	warn_unseeded_randomness(&previous);
-
-	local_irq_save(flags);	/* Disables preemption */
-	batch = this_cpu_ptr(&batched_entropy);
-	pos = batch->position;
-	if (unlikely(batch->crng_init != crng_init)) {
-		batch->seqno = raw_smp_processor_id() + 1;
-		batch->crng_init = crng_init;
-		pos = CHACHA_BIT_SIZE - 1;
-	}
-	/* Convert to byte offset and round down to previous word */
-	offset = pos / 8 & -sizeof(ret);
-	/* First word, 0..63 lsbits fresh */
-	ret = LONG_AT(batch->entropy8, offset);
-	offset += sizeof(ret);
-	pos += nbits;
-	batch->position = pos & (CHACHA_BIT_SIZE - 1);
-	/* GCC optimizes assuming <=10% taken, true if avg nbits <= 51 */
-	if (unlikely(pos >= CHACHA_BIT_SIZE)) {
-		batch_refill(batch);
-		offset = 0;
-	}
-	/* Second word, all-fresh (with one exception described above) */
-	ret ^= LONG_AT(batch->entropy8, offset);
-	local_irq_restore(flags);
-
-	/* Rotate to msbits */
-	pos &= BITS_PER_LONG - 1;
-	return ret << pos | ret >> (BITS_PER_LONG - pos);
-}
-EXPORT_SYMBOL(__get_random_bits);
-
-/**
- * get_random_bits() - Return some strong random bits
- * @nbits:	The number of bits to return (1 <= @nbits <= %BITS_PER_LONG)
- *
- * This is cryptographically secure, but significantly faster than
- * get_random_bytes() because it generates output in laarge batches and
- * divides it up as required.
- *
- * This requires omitting backtracking protection.  For most applications
- * of secure random numbers, this is ...FIXME: Keep writing...
- *
- * Context: Any context except NMI as long as crng_ready() is true.
- *          Does not sleep.
- * Return: A random value between 0 and 1ul << @nbits - 1.
- *         The valus is cryptographically secure, but not backtrack-
- *         resistant; if you need a value to remain secret after
- *	   memxero_explicit(), use get_random_bytes().
- */
-unsigned long get_random_bits(unsigned nbits)
-{
-	return __get_random_bits(nbits) >> (BITS_PER_LONG - nbits);
-}
-EXPORT_SYMBOL(get_random_bits);
-
-u32 get_random_u32(void)
-{
-	return __get_random_bits(32) >> (BITS_PER_LONG - 32);
-}
-EXPORT_SYMBOL(get_random_u32);
-
-u64 get_random_u64(void)
-{
-#if BITS_PER_LONG == 64
-	return __get_random_bits(64);
-#elif BITS_PER_LONG == 32
-	/*
-	 * This is inefficient, but get_random_u64() is rarely used
-	 * on 32-bit machines.
-	 */
-	return (u64)__get_random_bits(32) << 32 | __get_random_bits(32);
-#endif
-}
-EXPORT_SYMBOL(get_random_u64);
-
+--iikhbqdgypmjrod7--
