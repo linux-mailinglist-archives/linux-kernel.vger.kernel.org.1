@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECED1AA1F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092681A9EA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370277AbgDOMsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S370242AbgDOMrJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:47:09 -0400
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC4BC061A0C;
-        Wed, 15 Apr 2020 05:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586954825;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=6/o2eUBt4iN9I0U74c2I8jHNfikxj7yqfISGp3x31ZE=;
-        b=lNs6HWucThpy3Ne1/nN6kfg7hfbpHhjXSde+1bdtjW3wQqRp1cvazGDuvc3fhe2NzZ
-        iLP4AMbcSbM074ClW6SKnXojI9Sg1fuOqNEcfx1L/JAoiPzK9a1KrJWwNcVBDzo8vtFs
-        cNFiftqcZuFF0kq2tE0oF2HXXRtN8M/I0zM3/pr7MHFQAX3pOoui7zrIGv6WfKJnTo1e
-        pVwJjGNEQ/MbNyeydyj2yzKCv6FJPmN/fQR/LR1qQBJ7Kg5nqhLURx9qT9K18rU1uHbl
-        H1raH6FCY2ZuQduRe07zuOEZdR1dwGYmFebMlJuTXeh4sjvhf7vKrNU4lHaIkNHw3vtX
-        Lbzw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qOxWRk4dCz3b9m9rH79DVZTKLB3vWvm2T1hRBz6in0C9d6y"
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2001:16b8:26b3:fd00:4058:8a66:740e:2249]
-        by smtp.strato.de (RZmta 46.4.0 AUTH)
-        with ESMTPSA id 6028a2w3FCkp1ws
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 15 Apr 2020 14:46:51 +0200 (CEST)
-Subject: Re: [PATCH v6 07/12] ARM: DTS: omap5: add sgx gpu child node
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAJKOXPdEkWniffmGZmf=S6E5UxWTdVGXnycqTFftXwo_45rz3w@mail.gmail.com>
-Date:   Wed, 15 Apr 2020 13:46:06 +0200
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Philipp Rossak <embed3d@gmail.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-omap@vger.kernel.org, openpvrsgx-devgroup@letux.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EFA7F2F0-96EA-45D9-B8C8-00DC8C72344D@goldelico.com>
-References: <cover.1586939718.git.hns@goldelico.com> <004611c9660943759b635a87484932869927cf74.1586939718.git.hns@goldelico.com> <CAJKOXPdEkWniffmGZmf=S6E5UxWTdVGXnycqTFftXwo_45rz3w@mail.gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-X-Mailer: Apple Mail (2.3124)
+        id S368021AbgDOL6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897483AbgDOLqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:46:51 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEBF1206A2;
+        Wed, 15 Apr 2020 11:46:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586951211;
+        bh=J+5NNN+ZKJmcrZjlqrrTDsqXcJDLt2+GNu/YQmcBwdw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=di8Wz00qXLipp1GTzwzFaXYF5mDpoT39jXe/G9c+xtFMxm4s15iFC0UtauNkQSC8D
+         iPsbQ2RxCzuUWojnPW+toi83eEn6jyjrWOBJtwZwlK1hv3N6hqvsvXqKgYHnLqNfeM
+         QX6N3zNjr7yK8ACcQHfWugPNaRRti2SUH0uP7uLU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Daniel Santos <daniel.santos@pobox.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ian Abbott <abbotti@mev.co.uk>, Joe Perches <joe@perches.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-sparse@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 23/40] compiler.h: fix error in BUILD_BUG_ON() reporting
+Date:   Wed, 15 Apr 2020 07:46:06 -0400
+Message-Id: <20200415114623.14972-23-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200415114623.14972-1-sashal@kernel.org>
+References: <20200415114623.14972-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+From: Vegard Nossum <vegard.nossum@oracle.com>
 
-> Am 15.04.2020 um 13:38 schrieb Krzysztof Kozlowski <krzk@kernel.org>:
->=20
-> On Wed, 15 Apr 2020 at 10:36, H. Nikolaus Schaller <hns@goldelico.com> =
-wrote:
->>=20
->> and add interrupt.
->>=20
->> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # Pyra-Handheld.
->=20
-> Don't add your own Tested-by tags. These are implied by authorship,
-> otherwise all patches people make should have such tag.
+[ Upstream commit af9c5d2e3b355854ff0e4acfbfbfadcd5198a349 ]
 
-Ok I see. AFAIR it originates in several phases of editing to report on =
-which device it was tested.
+compiletime_assert() uses __LINE__ to create a unique function name.  This
+means that if you have more than one BUILD_BUG_ON() in the same source
+line (which can happen if they appear e.g.  in a macro), then the error
+message from the compiler might output the wrong condition.
 
-Is there a canonical way of writing "tested-on: ${HARDWARE}"?
+For this source file:
 
-E.g. would this be ok?
+	#include <linux/build_bug.h>
 
-Signed-off: H. Nikolaus Schaller <hns@goldelico.com> # tested on =
-Pyra-Handheld
+	#define macro() \
+		BUILD_BUG_ON(1); \
+		BUILD_BUG_ON(0);
 
-BR and thanks,
-Nikolaus Schaller
+	void foo()
+	{
+		macro();
+	}
+
+gcc would output:
+
+./include/linux/compiler.h:350:38: error: call to `__compiletime_assert_9' declared with attribute error: BUILD_BUG_ON failed: 0
+  _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+
+However, it was not the BUILD_BUG_ON(0) that failed, so it should say 1
+instead of 0. With this patch, we use __COUNTER__ instead of __LINE__, so
+each BUILD_BUG_ON() gets a different function name and the correct
+condition is printed:
+
+./include/linux/compiler.h:350:38: error: call to `__compiletime_assert_0' declared with attribute error: BUILD_BUG_ON failed: 1
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Daniel Santos <daniel.santos@pobox.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Ian Abbott <abbotti@mev.co.uk>
+Cc: Joe Perches <joe@perches.com>
+Link: http://lkml.kernel.org/r/20200331112637.25047-1-vegard.nossum@oracle.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/compiler.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index bb22908c79e83..75112aa8064e8 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -345,7 +345,7 @@ static inline void *offset_to_ptr(const int *off)
+  * compiler has support to do so.
+  */
+ #define compiletime_assert(condition, msg) \
+-	_compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
++	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+ 
+ #define compiletime_assert_atomic_type(t)				\
+ 	compiletime_assert(__native_word(t),				\
+-- 
+2.20.1
 
