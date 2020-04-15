@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0634E1AB1BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBB41AB1B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441801AbgDOTa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436598AbgDOT3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:29:19 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB40C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:29:18 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d17so429293pgo.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bm4kU2ZKp3QMbAy5SoYEcpKZV6RD0npZxWuwzSCGnUs=;
-        b=KqdhYQ0zbtL9yXg2Bxk2e3AR19MJWNUGM564TCk0GdOiHPJqNwDW5BEC1kr3BJWybs
-         gUogR76cvvkgK3pwZp/3ANsg9SJxFBFtpZbE9NvrthZf+5TWO38Nht+VaBh+ZuaGBp2I
-         aXk6UIz0PzTSyTO6hk9isRYNGiW1X2Mh2ih6g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bm4kU2ZKp3QMbAy5SoYEcpKZV6RD0npZxWuwzSCGnUs=;
-        b=gcoPOq79tBizpJPbVeOoCHm0BzkibBKZdq2WtkXlogYlKJN92gl9SWbfM/IJ4Emge4
-         j0jYSI6dHQ4A98Q4gWD+AxYDAs0omOh6+hZ175q8J9J0SlVV3NNT1DKmAGno0Hn4X9s+
-         lD+URtCZSlGtdKEey7r+mFWgCKCTOPe/MWnux7GPNRvwync2RI7CD3V+FuFVrZcCA8ta
-         P6OmeDUgRGoJ5iOqLuym9CdCYneSVrjt4cnnpojwRW0SPG2y2TBJUQMvEwwIluHxJrNl
-         ue2v1NhqaykR1QRd1RJoBn3P9bLgXdrpmQ+lTkMr8I/ehSmWVOAfzHst9X/qS3Optwda
-         6Fxg==
-X-Gm-Message-State: AGi0PuYz7FA0tG6JyeNWzb2v7A7W5pqfMXFTbUWGgjQM3LFhZdYvXF9X
-        tkjR5vuXrjho7zobXUnpDzKHWw==
-X-Google-Smtp-Source: APiQypJGqAGAcvgr0pgn18GcTFOquOdj4pDUmUBSR2qUPyjJwzMmoxHbt7rZBewVPibsTGM+ZmMj4w==
-X-Received: by 2002:a63:1118:: with SMTP id g24mr28220456pgl.259.1586978958145;
-        Wed, 15 Apr 2020 12:29:18 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id x4sm14566641pfa.191.2020.04.15.12.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 12:29:17 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Lina Iyer <ilina@codeaurora.org>
-Subject: [PATCH] soc: qcom: cmd-db: Use 5 digits for printing address
-Date:   Wed, 15 Apr 2020 12:29:16 -0700
-Message-Id: <20200415192916.78339-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+        id S2441789AbgDOTaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:30:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437842AbgDOT37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:29:59 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF1C520774;
+        Wed, 15 Apr 2020 19:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586978998;
+        bh=HcxMWDYswwSk16CJXI7QG7JgXa8lgyRgaEpGjU1zGT0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=18LdT+B4dO4XKOdbgBT1rE8jARtHpNmRaiCUmOgAu7rk7jVGCFxtr+tTfUMqwFGMb
+         ZwOKmWfXgpuNviXjE3qZRnMwSGRgYlnHg58T1M11d7ZNU+5XtsnBJ2aZm+ICz2SDNL
+         E2mRQsg8FYQQ6dpMXrqfeg6ciZ+MBeHYlRos5IFY=
+Date:   Wed, 15 Apr 2020 22:29:52 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
+Message-ID: <20200415192952.GA1309273@unreal>
+References: <20200321003108.22941-1-rcampbell@nvidia.com>
+ <20200415144125.GU11945@mellanox.com>
+ <6d7adb28-96a0-5dc5-e85e-68fca2db403a@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6d7adb28-96a0-5dc5-e85e-68fca2db403a@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The top few bits aren't relevant to pad out because they're always zero.
-Let's just print 5 digits instead of 8 so that it's a little shorter and
-more readable.
+On Wed, Apr 15, 2020 at 10:28:23AM -0700, Ralph Campbell wrote:
+>
+> On 4/15/20 7:41 AM, Jason Gunthorpe wrote:
+> > On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
+> > > This series adds basic self tests for HMM and are intended for Jason
+> > > Gunthorpe's rdma tree which has a number of HMM patches applied.
+> >
+> > Here are some hunks I noticed while testing this:
+> >
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -2201,7 +2201,8 @@ config TEST_MEMINIT
+> >   config TEST_HMM
+> >   	tristate "Test HMM (Heterogeneous Memory Management)"
+> > -	depends on DEVICE_PRIVATE
+> > +	depends on TRANSPARENT_HUGEPAGE
+> > +	select DEVICE_PRIVATE
+> >   	select HMM_MIRROR
+> >   	select MMU_NOTIFIER
+> >   	help
+> >
+> > It fails testing if TRANSPARENT_HUGEPAGE is not on
+> >
+> > @@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
+> >   	spin_lock_init(&mdevice->lock);
+> >   	cdev_init(&mdevice->cdevice, &dmirror_fops);
+> > +	mdevice->cdevice.owner = THIS_MODULE;
+> >   	ret = cdev_add(&mdevice->cdevice, dev, 1);
+> >   	if (ret)
+> >   		return ret;
+> >
+> > The use of cdev without a struct device is super weird, but it still
+> > needs this
+> >
+> > diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
+> > index 461e4a99a362cf..0647b525a62564 100755
+> > --- a/tools/testing/selftests/vm/test_hmm.sh
+> > +++ b/tools/testing/selftests/vm/test_hmm.sh
+> > @@ -59,7 +59,7 @@ run_smoke()
+> >   	echo "Running smoke test. Note, this test provides basic coverage."
+> >   	load_driver
+> > -	./hmm-tests
+> > +	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
+> >   	unload_driver
+> >   }
+> >
+> > Make it runnably reliably
+> >
+> > Jason
+>
+> Thanks for the fixes. I'll apply these and send a v9.
+> I will also add missing calls to release_mem_region() to free the reserved device private
+> addresses.
 
-Suggested-by: Lina Iyer <ilina@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/soc/qcom/cmd-db.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you decide to ignore my request to avoid addition of special header
+file to UAPI, at least don't copy and install that file without some
+special CONFIG option (TEST_HMM ???) requested by the users. It also
+will be good to get Acked-by on this change from HMM people.
 
-diff --git a/drivers/soc/qcom/cmd-db.c b/drivers/soc/qcom/cmd-db.c
-index 57382b64f1da..4f8b739c6485 100644
---- a/drivers/soc/qcom/cmd-db.c
-+++ b/drivers/soc/qcom/cmd-db.c
-@@ -278,7 +278,7 @@ static int cmd_db_debugfs_dump(struct seq_file *seq, void *p)
- 
- 		ent = rsc_to_entry_header(rsc);
- 		for (j = 0; j < le16_to_cpu(rsc->cnt); j++, ent++) {
--			seq_printf(seq, "0x%08x: %*pEp", le32_to_cpu(ent->addr),
-+			seq_printf(seq, "0x%05x: %*pEp", le32_to_cpu(ent->addr),
- 				   (int)sizeof(ent->id), ent->id);
- 
- 			len = le16_to_cpu(ent->len);
+However, I still think that include/uapi/linux/test_hmm.h opens
+pandora box of having UAPI files without real promise to keep it
+backward compatible.
 
-base-commit: d6815c5c43d4f9d18e557d27fd27ae8d9cfd450c
-prerequisite-patch-id: fc235b174200bb1b24876628a89a841d1c2e4aad
--- 
-Sent by a computer, using git, on the internet
+Thanks
 
+>
