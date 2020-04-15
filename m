@@ -2,125 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5641E1AB166
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825381AB16F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441762AbgDOTO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:14:59 -0400
-Received: from mga07.intel.com ([134.134.136.100]:7249 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729217AbgDOTGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:06:41 -0400
-IronPort-SDR: xt3XW0fWep1rD6mjqPO/2YD4Ovi/Y/ROI4zFaxJiswPpA0ovkCwOKxV6XnqL5R71aRst+P2xJ5
- S2ROecCjVpSg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:06:39 -0700
-IronPort-SDR: d+T2qO8aKraJTjw39BMYEhZJYVjCzf/wZeAyxgSrlcd44nehQH7Esi0Qt6S1z0gemxAvc5Uf4Q
- jOGPpcXvEjVg==
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="245764600"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.254.108.43]) ([10.254.108.43])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:06:37 -0700
-Subject: Re: [RFC PATCH v2 0/2] x86/resctrl: Start abstraction for a second
- arch
-To:     James Morse <james.morse@arm.com>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "Moger, Babu" <Babu.Moger@amd.com>,
-        "Luck, Tony" <tony.luck@intel.com>
-References: <fa703609-4eed-7266-c389-a5dbba14d2ce@intel.com>
- <e3e4b142-d6e2-4fa8-be57-e829fc6e48f7@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <e4d770b6-edea-868c-75df-3074d40c3dbb@intel.com>
-Date:   Wed, 15 Apr 2020 12:06:34 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2441777AbgDOTQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:16:57 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:40171 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440357AbgDOTHg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:07:36 -0400
+Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M9nlN-1jJ0U50zTR-005qez; Wed, 15 Apr 2020 21:07:32 +0200
+Received: by mail-qv1-f52.google.com with SMTP id v38so694771qvf.6;
+        Wed, 15 Apr 2020 12:07:31 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYqovIjqXz2qd1he3wjA1+p9EOIVHRC83vREbjlypu5Eij56d+6
+        aukOuawtA0X3gF5w3edRrX0Hr6K5E3UxaRccKh8=
+X-Google-Smtp-Source: APiQypJX6+zh0Hk9cZgHIA/HI7dJ0HZA699mCplxjoSE0/kbYbrN5LgCPWe0a2KpM5wIklHmQkE+zGG0ajKUcBeJ1kM=
+X-Received: by 2002:a0c:9e2f:: with SMTP id p47mr6000391qve.211.1586977650774;
+ Wed, 15 Apr 2020 12:07:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e3e4b142-d6e2-4fa8-be57-e829fc6e48f7@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200408202711.1198966-1-arnd@arndb.de> <20200408202711.1198966-6-arnd@arndb.de>
+ <20200414201739.GJ19819@pendragon.ideasonboard.com> <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
+ <20200414205158.GM19819@pendragon.ideasonboard.com> <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
+ <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com> <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
+In-Reply-To: <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 15 Apr 2020 21:07:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0CoPUTSJp6ddDnmabo59iE73pugGSYayoeB5N57az9_w@mail.gmail.com>
+Message-ID: <CAK8P3a0CoPUTSJp6ddDnmabo59iE73pugGSYayoeB5N57az9_w@mail.gmail.com>
+Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:4b8EYsOhlpxPK7pigxEr6ENytFkJTUlOn65DgSqaoGVE4mhFOVD
+ QcxKAXWkIC/EjC2fjH2zFctAHyK6mjXQANuW5qhqhnOrB39r8JJVSe68xBi7ZSFf2mjAGxs
+ VV9iaKU3flgC991QNdyH9+oukWipUW9v1tTl5jlCwT9gVLYyC/THngPjyw40G8b8DKccp41
+ EebvW/ikBPYtAFWcBr6DQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s1iU6JwyX0k=:qF3wmkBt4XF94HD66/LOjx
+ QQaUujg7RD8vwUT7IA4urdkYEgskCcbP4QA7rFWrrMbi8eKCfOezI/5sFlLCN5MXk10ru0rll
+ GkGCENRfsLJbRHh/e4Wr2JzDuotT4oNh0K4KaiNl7aEi4rLRnSoET5mH20dC1zL0vpjtMNBfh
+ /Q4ks7R/2rW+lgPXQnE2xO8L6uEqEiU+Xs1QqmhSBQTLsm0WGie40UfcmfYUII8FiWRsVR0xq
+ kFA905uOMsrS6oJtJINFvcdEq6flmEFPaMMgG2xY7FT/CwxdYzCuU23LKWdw1SDwCg1KW4/sR
+ SGSirwbzqoHKqhvoJ82BpZYql/nQ2kIqzF/0L1e6ghinNBQA0z5Rbq5m1sAUim6bODATFlAO2
+ a0ol9rIZ6lihW9det7W0z5ZptW42n1EZlcNgvMyFnMGHtrzAv5iyLtltrQyYbFITEZpoPAm0Z
+ Zk7v4JwxtEZB+Os2TJztAcEpPpQig7/6m45cqhvTRNodywOKzAqkew5B6MsTQXnaApA06i0Ov
+ A8A6o2AypYt2VK0Nm/PZSeIrtX9y2yN0TEn5+BVk4+VKW2Qfro6gvtWWzo1jVjSltcF48WM55
+ Tn/X8udAui6asxFoxR6D1WOADi7hCI0rCZK1Cd7N8J+9KLFSoT8u0kbIJT8p79CYpAsZCWnn4
+ 2a+3NlqlITmkuSoIG+6kmlf61ktRhkr7S8Rca0bKhovGraT4PmQI9oKzSb3IJ+Z5UBNX7bCF2
+ VEwbPF6SvmUq3yOeYOu/WvuBUYTIqU7xL2JRi/aEytq3iOyBTA9m0pZt42g4tFKwMp148zBj0
+ +I7nj2DBc+euzSDrJvK0rBWrq6cA96QuD7Iv98+JEVNqHeJqnU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Wed, Apr 15, 2020 at 5:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Wed, Apr 15, 2020 at 4:13 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Apr 15, 2020 at 3:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> > > > Doesn't "imply" mean it gets selected by default but can be manually
+> > > > disabled ?
+> > >
+> > > That may be what it means now (I still don't understand how it's defined
+> > > as of v5.7-rc1), but traditionally it was more like a 'select if all
+> > > dependencies are met'.
+> >
+> > That's still what it is supposed to mean right now ;-)
+> > Except that now it should correctly handle the modular case, too.
+>
+> Then there is a bug. If I run 'make menuconfig' now on a mainline kernel
+> and enable CONFIG_DRM_RCAR_DU, I can set
+> DRM_RCAR_CMM and DRM_RCAR_LVDS to 'y', 'n' or 'm' regardless
+> of whether CONFIG_DRM_RCAR_DU is 'm' or 'y'. The 'implies'
+> statement seems to be ignored entirely, except as reverse 'default'
+> setting.
 
-Thank you very much for your thorough response. I do have a lot to
-digest from it but would like to at least respond promptly to a question
-you included ...
+Here is another version that should do what we want and is only
+half-ugly. I can send that as a proper patch if it passes my testing
+and nobody hates it too much.
 
-On 4/15/2020 5:59 AM, James Morse wrote:
-> On 14/04/2020 19:56, Reinette Chatre wrote:
->> On 12/31/1969 4:00 PM, James Morse wrote:
+       Arnd
 
-...
+diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+index 0919f1f159a4..d2fcec807dfa 100644
+--- a/drivers/gpu/drm/rcar-du/Kconfig
++++ b/drivers/gpu/drm/rcar-du/Kconfig
+@@ -4,8 +4,6 @@ config DRM_RCAR_DU
+        depends on DRM && OF
+        depends on ARM || ARM64
+        depends on ARCH_RENESAS || COMPILE_TEST
+-       imply DRM_RCAR_CMM
+-       imply DRM_RCAR_LVDS
+        select DRM_KMS_HELPER
+        select DRM_KMS_CMA_HELPER
+        select DRM_GEM_CMA_HELPER
+@@ -14,13 +12,17 @@ config DRM_RCAR_DU
+          Choose this option if you have an R-Car chipset.
+          If M is selected the module will be called rcar-du-drm.
 
->> * Apart from actual interface changes, highlighting planned behavior
->> changes and motivation for them would also be helpful … for example
->> force enabling of CDP on all cache levels is a red flag to me.
-> 
-> Interesting. This is the change that makes the CDP on/off global, instead of per cache.
+-config DRM_RCAR_CMM
+-       tristate "R-Car DU Color Management Module (CMM) Support"
+-       depends on DRM && OF
++config DRM_RCAR_USE_CMM
++       bool "R-Car DU Color Management Module (CMM) Support"
+        depends on DRM_RCAR_DU
++       default DRM_RCAR_DU
+        help
+          Enable support for R-Car Color Management Module (CMM).
 
-This is the one I referred to and a significant change.
++config DRM_RCAR_CMM
++       def_tristate DRM_RCAR_DU
++       depends on DRM_RCAR_USE_CMM
++
+ config DRM_RCAR_DW_HDMI
+        tristate "R-Car DU Gen3 HDMI Encoder Support"
+        depends on DRM && OF
+@@ -28,15 +30,20 @@ config DRM_RCAR_DW_HDMI
+        help
+          Enable support for R-Car Gen3 internal HDMI encoder.
 
-> Its still controlled by user-space. (so nothing is forced).
+-config DRM_RCAR_LVDS
+-       tristate "R-Car DU LVDS Encoder Support"
+-       depends on DRM && DRM_BRIDGE && OF
++config DRM_RCAR_USE_LVDS
++       bool "R-Car DU LVDS Encoder Support"
++       depends on DRM_BRIDGE && OF
++       default DRM_RCAR_DU
+        select DRM_PANEL
+        select OF_FLATTREE
+        select OF_OVERLAY
+        help
+          Enable support for the R-Car Display Unit embedded LVDS encoders.
 
-Right, controlled with the mount option but the behavior is being
-changed to apply to both L2 and L3, even if user requests just one of
-the two.
-
-Please note that in the documentation it is currently explicitly stated
-that: "L2 and L3 CDP are controlled separately"
-
-> Do you have systems that support CAT at L3 and L2, but only CDP at L3, not L2?
-> (I was under the impression the L2 stuff was all Atom, and the L3+MBM was all Xeon).
-
-Things are not as clear cut unfortunately. There is a new Atom system
-that has a server uncore, thus inheriting some RDT features that have
-previously only been seen on servers. L2 CAT/CDP is also moving to
-servers in future server products.
-
-You can find more details about RDT features in upcoming systems in
-Chapter 9 of
-https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
-
-> 
-> MPAM's equivalent to CDP is just part of the CPU interface. Its always on.
-> To support 'CDP on L2 but not L3', (neither of which exist), we'd need to have extra code:
-> "was I asked to pretend CDP is enabled on this cache".
-> 
-> As CDP affects the way you allocate closid, (that odd/even thing), which is global, it
-
-The odd/even is just for the CDP enabled resource, not global. It is
-thus possible for, for example, the L3, L2CODE, and L2DATA resources to
-be enabled. The odd/even is configured by the multiplier cbm_idx_mult
-set in the resource configuration and used in cbm_idx(). Perhaps you
-mean the CLOSID is global? By enabling these together it would reduce
-the number of CLOSIDs that could be used by L3 in this example.
-
-> makes sense that this is either on or off. (doing this let me support CDP without the arch
-> code doing anything special!)
-> 
-> Existence of hardware that does this would obviously change this.
-> 
-
-Yes, there are systems that support L2 CAT/CDP and L3 CAT/CDP. CDP is
-controlled separately on the different cache levels.
-
->> It seems to me that MPAM may need more than what is currently available
->> from resctrl
-> 
-> Ultimately yes, but the aim here isn't to support all of MPAM.
-> Its just to support what maps nicely. We can then discuss what to do next.
-
-Thank you for stating this. This is significant and was not clear to me
-initially.
-
-Reinette
++config DRM_RCAR_LVDS
++       def_tristate DRM_RCAR_DU
++       depends on DRM_RCAR_USE_LVDS
++
+ config DRM_RCAR_VSP
+        bool "R-Car DU VSP Compositor Support" if ARM
+        default y if ARM64
