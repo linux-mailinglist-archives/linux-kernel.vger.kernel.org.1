@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC7E1A9921
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0C01A992E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895727AbgDOJju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:39:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:40752 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895721AbgDOJjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:39:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1F8E1063;
-        Wed, 15 Apr 2020 02:39:39 -0700 (PDT)
-Received: from [192.168.1.19] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 365CF3F68F;
-        Wed, 15 Apr 2020 02:39:37 -0700 (PDT)
-Subject: Re: [PATCH 3/4] sched/deadline: Make DL capacity-aware
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
-References: <20200408095012.3819-1-dietmar.eggemann@arm.com>
- <20200408095012.3819-4-dietmar.eggemann@arm.com>
- <20200410125253.GE14300@localhost.localdomain>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <f0e74500-77d7-a42c-410e-bc5d4d2ecdfb@arm.com>
-Date:   Wed, 15 Apr 2020 11:39:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2895764AbgDOJop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:44:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60804 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2895744AbgDOJok (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 05:44:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586943876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bKa8snlnDryG0vgt7Fg/rdv6w9fg6r4FpdXiLIxnEdE=;
+        b=cEwnuLfIVICCCloM/nkjOx2cvpv9pItx8yQEk7qZGIS06k5uJfkbfcZwO4rKtfWn+cyxCh
+        RLsrR9A65ny3Zd16rY+ew4aQXa6iXmQ4DP7XEzZf/Vc5zwjWXG1wWwr2NM+905Nqixle4i
+        LB75cl6uqWjw4LIcdUMRcYBGHGqamnk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-olUJzS60OsClk0RUhQWf4A-1; Wed, 15 Apr 2020 05:44:34 -0400
+X-MC-Unique: olUJzS60OsClk0RUhQWf4A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 216EB800D5C;
+        Wed, 15 Apr 2020 09:44:33 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-114-61.ams2.redhat.com [10.36.114.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E8D72B479;
+        Wed, 15 Apr 2020 09:44:30 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        keyrings@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: What's a good default TTL for DNS keys in the kernel
+References: <3865908.1586874010@warthog.procyon.org.uk>
+Date:   Wed, 15 Apr 2020 11:44:29 +0200
+In-Reply-To: <3865908.1586874010@warthog.procyon.org.uk> (David Howells's
+        message of "Tue, 14 Apr 2020 15:20:10 +0100")
+Message-ID: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20200410125253.GE14300@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.04.20 14:52, Juri Lelli wrote:
-> Hi,
-> 
-> On 08/04/20 11:50, Dietmar Eggemann wrote:
->> From: Luca Abeni <luca.abeni@santannapisa.it>
+* David Howells:
 
-[...]
+> Since key.dns_resolver isn't given a TTL for the address information obta=
+ined
+> for getaddrinfo(), no expiry is set on dns_resolver keys in the kernel for
+> NFS, CIFS or Ceph.  AFS gets one if it looks up a cell SRV or AFSDB record
+> because that is looked up in the DNS directly, but it doesn't look up A or
+> AAAA records, so doesn't get an expiry for the addresses themselves.
+>
+> I've previously asked the libc folks if there's a way to get this informa=
+tion
+> exposed in struct addrinfo, but I don't think that ended up going anywher=
+e -
+> and, in any case, would take a few years to work through the system.
+>
+> For the moment, I think I should put a default on any dns_resolver keys a=
+nd
+> have it applied either by the kernel (configurable with a /proc/sys/ sett=
+ing)
+> or by the key.dnf_resolver program (configurable with an /etc file).
+>
+> Any suggestion as to the preferred default TTL?  10 minutes?
 
->> @@ -1623,10 +1624,19 @@ select_task_rq_dl(struct task_struct *p, int cpu, int sd_flag, int flags)
->>  	 * other hand, if it has a shorter deadline, we
->>  	 * try to make it stay here, it might be important.
->>  	 */
->> -	if (unlikely(dl_task(curr)) &&
->> -	    (curr->nr_cpus_allowed < 2 ||
->> -	     !dl_entity_preempt(&p->dl, &curr->dl)) &&
->> -	    (p->nr_cpus_allowed > 1)) {
->> +	select_rq = unlikely(dl_task(curr)) &&
->> +		    (curr->nr_cpus_allowed < 2 ||
->> +		     !dl_entity_preempt(&p->dl, &curr->dl)) &&
->> +		    p->nr_cpus_allowed > 1;
->> +
->> +	/*
->> +	 * We take into account the capacity of the CPU to
->> +	 * ensure it fits the requirement of the task.
->> +	 */
->> +	if (static_branch_unlikely(&sched_asym_cpucapacity))
->> +		select_rq |= !dl_task_fits_capacity(p, cpu);
-> 
-> I'm thinking that, while dl_task_fits_capacity() works well when
-> selecting idle cpus, in this case we should consider the fact that curr
-> might be deadline as well and already consuming some of the rq capacity.
-> 
-> Do you think we should try to take that into account, maybe using
-> dl_rq->this_bw ?
+You can get the real TTL if you do a DNS resolution on the name and
+match the addresses against what you get out of the NSS functions.  If
+they match, you can use the TTL from DNS.  Hackish, but it does give you
+*some* TTL value.
 
-So you're saying that cpudl_find(..., later_mask) could return 1 (w/
-best_cpu (cp->elements[0].cpu) in later_mask).
+The question remains what the expected impact of TTL expiry is.  Will
+the kernel just perform a new DNS query if it needs one?  Or would you
+expect that (say) the NFS client rechecks the addresses after TTL expiry
+and if they change, reconnect to a new NFS server?
 
-And that this best_cpu could be a non-fitting CPU for p.
+If a TTL expiration does not trigger anything, than it seems purely an
+optimization to avoid kernel =E2=86=92 userspace callbacks.  I think you ca=
+n do
+with a very short TTL in this case, on the order of seconds (or no
+caching at all).
 
-This could happen if cp->free_cpus is empty (no idle CPUs) so we take
-cpudl_find()'s else path and in case p's deadline < cp->elements[0]
-deadline.
+Negative caching is also worthy of consideration and can be considerably
+more tricky.
 
-We could condition the 'return 1' on best_cpu fitting p.
+Thanks,
+Florian
 
-But should we do this for cpudl_find(..., NULL) calls from
-check_preempt_equal_dl() as well or will this break GEDF?
