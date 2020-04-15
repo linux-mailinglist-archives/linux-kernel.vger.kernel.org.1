@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996471AA003
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49C51AA06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369114AbgDOMWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40780 "EHLO mail.kernel.org"
+        id S2409878AbgDOM1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:27:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61376 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369099AbgDOMVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:21:52 -0400
-Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A52E6206F9;
-        Wed, 15 Apr 2020 12:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586953311;
-        bh=NmutImGHJVt0bKoK4LeZCIkUpQBYzciAGLQ7TLAkGaU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tNtE7vP9LAUju3LtYOyPIr9UvRPulibjevCYdz67uRMQ8pQj/N1CIpyQ+9SflaBx5
-         JiZpMQ8qglMMnbK/JnrukbdHJez326rHvucOKvsrqvkFgBMNsXjiw3z9V6u369hCmj
-         eGVFxWySDOHTKjx2XKZjxSGkkOGyYSoiDdeA7abc=
-Date:   Wed, 15 Apr 2020 14:21:47 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: media/master bisection: v4l2-compliance-vivid.device-presence
- on qemu_x86_64
-Message-ID: <20200415142147.1ed3487e@coco.lan>
-In-Reply-To: <a99d49d9-656d-6c5c-4953-6e7c56c0beba@collabora.com>
-References: <5e960bf5.1c69fb81.8a349.6851@mx.google.com>
-        <24564393-f229-6e29-7883-9605ed0d48b4@collabora.com>
-        <20200414233347.2a844b85@coco.lan>
-        <86feeb83-37ac-cbd6-b792-b81d17d559c9@collabora.com>
-        <2f32345d-a818-8ec4-afd6-2b9cd9dcdf4a@collabora.com>
-        <a99d49d9-656d-6c5c-4953-6e7c56c0beba@collabora.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2409850AbgDOM0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:26:48 -0400
+IronPort-SDR: 5bJ7U6SeDIVyBLtowxZF96Jj/UpGs+hzm04CObueHbTO2OtLQIK6oBdykosymwkS1qw5vzJG+9
+ J3FdRoTu4Kcg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 05:26:45 -0700
+IronPort-SDR: h9oBrlVuMfihHlm+c7RReoucOSid7EY9BIvBcCULrmmStw1b50KZcCYstK6IciHld7GaviMPoZ
+ ZVX8WeOr083g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="400298276"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by orsmga004.jf.intel.com with ESMTP; 15 Apr 2020 05:26:42 -0700
+Subject: Re: [PATCH 1/7] mmc: sdhci: fix base clock usage in preset value
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <23c3fe72b0ff0eabdbf3a45023a76da1b18a7e90.1585827904.git.mirq-linux@rere.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <218dd61b-48cc-a161-240f-b3823e8f48cb@intel.com>
+Date:   Wed, 15 Apr 2020 15:25:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <23c3fe72b0ff0eabdbf3a45023a76da1b18a7e90.1585827904.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 15 Apr 2020 10:36:04 +0100
-Guillaume Tucker <guillaume.tucker@collabora.com> escreveu:
+On 2/04/20 2:54 pm, Michał Mirosław wrote:
+> Fixed commit added an unnecessary read of CLOCK_CONTROL. The value read
+> is overwritten for programmable clock preset, but is carried over for
+> divided clock preset. This can confuse sdhci_enable_clk() if the register
+> has enable bits set for some reason at time time of clock calculation.
+> value to be ORed with enable flags. Remove the read.
 
-> On 15/04/2020 10:28, Guillaume Tucker wrote:
-> > On 14/04/2020 22:43, Guillaume Tucker wrote:  
-> >> On 14/04/2020 22:33, Mauro Carvalho Chehab wrote:  
-> >>> Em Tue, 14 Apr 2020 22:23:52 +0100
-> >>> Guillaume Tucker <guillaume.tucker@collabora.com> escreveu:
-> >>>  
-> >>>> Please see the bisection report below about absence of the vivid
-> >>>> driver, which caused v4l2-compliance to fail to run.
-> >>>>
-> >>>> Presumably we need to update the configuration fragment used by
-> >>>> kernelci.org to enable platform drivers.  Until now we've been
-> >>>> using this:
-> >>>>
-> >>>>     CONFIG_MEDIA_SUPPORT=y
-> >>>>     CONFIG_MEDIA_CAMERA_SUPPORT=y
-> >>>>     CONFIG_VIDEO_DEV=y
-> >>>>     CONFIG_VIDEO_V4L2=y
-> >>>>     CONFIG_V4L_TEST_DRIVERS=y
-> >>>>     CONFIG_VIDEO_VIVID=y
-> >>>>     CONFIG_VIDEO_VIVID_MAX_DEVS=64
-> >>>>
-> >>>> Do we simply need to add this one in v5.7 onwards?
-> >>>>
-> >>>>     CONFIG_MEDIA_PLATFORM_SUPPORT=y  
-> >>>
-> >>> No, this shouldn't be needed.
-> >>>
-> >>> Helen sent us a patch that should likely fix it:
-> >>>
-> >>> 	https://git.linuxtv.org/media_tree.git/commit/?id=860b511766a3d95308a942ac09a34e4d1839e706
-> >>>
-> >>> Could you please check if this solves the issue?  
-> >>
-> >> I see, thanks.  This revision is being built and tested at the
-> >> moment, I'll check the results when they land in my inbox.  
-> > 
-> > Helen's patch was needed, but there were still a couple of
-> > issues.  First we need to enable this extra option now in the
-> > config fragment:
-> > 
-> >     CONFIG_MEDIA_TEST_SUPPORT=y
+The read is not needed, but drivers usually manage the enable bits,
+especially disabling the clock before changing the frequency.  What driver
+is it?
 
-Yes.
-
-Another option would be to do:
-
-	# MEDIA_SUPPORT_FILTER is not set
-
-With this option (enabled by default if EMBEDDED or EXPERT),
-all CONFIG_MEDIA_*_SUPPORT will be selected[1].
-
-[1] except for CONFIG_MEDIA_CEC_SUPPORT. This doesn't
-    depend on MEDIA_SUPPORT anymore.
-
-> > 
-> > as test_drivers/Kconfig starts with "if MEDIA_TEST_SUPPORT".  
 > 
-> Actually, this "if" seems redundant now in test_drivers/Kconfig
-> with my patch to include the file conditionally...  Please let me
-> know if we should also drop it and I'll send a v2, or if this
-> should be fixed in a different way.
+> Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> ---
+>  drivers/mmc/host/sdhci.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 3f716466fcfd..9aa3af5826df 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1765,7 +1765,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>  		if (host->preset_enabled) {
+>  			u16 pre_val;
+>  
+> -			clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+>  			pre_val = sdhci_get_preset_value(host);
+>  			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
+>  			if (host->clk_mul &&
+> 
 
-Just one "if MEDIA_TEST_SUPPORT" at the main media/Kconfig
-should be enough.
-
-Feel free to send a v2.
-
-Thanks,
-Mauro
