@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98811AAF02
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147B51AAF05
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410614AbgDORBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:01:23 -0400
-Received: from mga17.intel.com ([192.55.52.151]:5570 "EHLO mga17.intel.com"
+        id S2410638AbgDORBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:01:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27185 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404589AbgDORBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:01:15 -0400
-IronPort-SDR: hL9iSJdvt2brm9MEAWLu872F62g0sCqpZcYAwOhLx8h02oAs62sIXc96MBqZD6V7lt+0/e7GzU
- HTumCzVSoX1g==
+        id S2404661AbgDORBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:01:35 -0400
+IronPort-SDR: UKjsSZI5q4UFv4Qy+y7CP6qRsxl1PGM109O3mSJCvw7eivdZtA3vLJ6Fr6rD/d7AUAn1mCAZVw
+ eEnkiSXVNGXQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 10:01:14 -0700
-IronPort-SDR: BGAF5aQNkaPmHIzRYbKoAZLAKJIndFLlcc3vgwR8KVtlF0MP52J+9Y4zFe63g68eE5CsiWLGBz
- P0cwd6o8xbFw==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 10:01:16 -0700
+IronPort-SDR: bWaPx+c2YDs/BI2HkoZrq0M+rAvcoOjq6faoZYJBhVVSWkkJKErxVoVCe+PQRX3pE57DwJJYQh
+ kOAzMJaWVwLA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="277679302"
+   d="scan'208";a="427499246"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2020 10:01:12 -0700
+  by orsmga005.jf.intel.com with ESMTP; 15 Apr 2020 10:01:14 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 20A3A19C; Wed, 15 Apr 2020 20:01:11 +0300 (EEST)
+        id 28EBC49F; Wed, 15 Apr 2020 20:01:13 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -33,10 +33,11 @@ To:     Petr Mladek <pmladek@suse.com>,
         linux-kernel@vger.kernel.org,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 2/3] ARM: bcm2835: Switch to use %ptT
-Date:   Wed, 15 Apr 2020 20:00:45 +0300
-Message-Id: <20200415170046.33374-3-andriy.shevchenko@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Subject: [PATCH v3 3/3] [media] usb: pulse8-cec: Switch to use %ptT
+Date:   Wed, 15 Apr 2020 20:00:46 +0300
+Message-Id: <20200415170046.33374-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
 References: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
@@ -51,34 +52,35 @@ Use %ptT instead of open coded variant to print content of
 time64_t type in human readable format.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 ---
- drivers/firmware/raspberrypi.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/media/usb/pulse8-cec/pulse8-cec.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-index da26a584dca0..a3e85186f8e6 100644
---- a/drivers/firmware/raspberrypi.c
-+++ b/drivers/firmware/raspberrypi.c
-@@ -182,16 +182,10 @@ rpi_firmware_print_firmware_revision(struct rpi_firmware *fw)
- 					RPI_FIRMWARE_GET_FIRMWARE_REVISION,
- 					&packet, sizeof(packet));
+diff --git a/drivers/media/usb/pulse8-cec/pulse8-cec.c b/drivers/media/usb/pulse8-cec/pulse8-cec.c
+index 0655aa9ecf28..beae6aa12638 100644
+--- a/drivers/media/usb/pulse8-cec/pulse8-cec.c
++++ b/drivers/media/usb/pulse8-cec/pulse8-cec.c
+@@ -661,7 +661,6 @@ static int pulse8_setup(struct pulse8 *pulse8, struct serio *serio,
+ 	u8 *data = pulse8->data + 1;
+ 	u8 cmd[2];
+ 	int err;
+-	struct tm tm;
+ 	time64_t date;
  
--	if (ret == 0) {
--		struct tm tm;
--
--		time64_to_tm(packet, 0, &tm);
-+	if (ret)
-+		return;
+ 	pulse8->vers = 0;
+@@ -682,10 +681,7 @@ static int pulse8_setup(struct pulse8 *pulse8, struct serio *serio,
+ 	if (err)
+ 		return err;
+ 	date = (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
+-	time64_to_tm(date, 0, &tm);
+-	dev_info(pulse8->dev, "Firmware build date %04ld.%02d.%02d %02d:%02d:%02d\n",
+-		 tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+-		 tm.tm_hour, tm.tm_min, tm.tm_sec);
++	dev_info(pulse8->dev, "Firmware build date %ptT\n", &date);
  
--		dev_info(fw->cl.dev,
--			 "Attached to firmware from %04ld-%02d-%02d %02d:%02d\n",
--			 tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
--			 tm.tm_hour, tm.tm_min);
--	}
-+	dev_info(fw->cl.dev, "Attached to firmware from %ptT\n", &packet);
- }
- 
- static void
+ 	dev_dbg(pulse8->dev, "Persistent config:\n");
+ 	cmd[0] = MSGCODE_GET_AUTO_ENABLED;
 -- 
 2.25.1
 
