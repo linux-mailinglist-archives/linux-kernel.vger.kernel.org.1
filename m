@@ -2,70 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8780C1A9401
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399A41A941A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441147AbgDOHSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 03:18:24 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:51741 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441127AbgDOHSQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 03:18:16 -0400
-Received: by mail-io1-f71.google.com with SMTP id s1so17883525iow.18
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 00:18:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3h9JszLwxYA8lzbUai4JEEnXKsMOVtNZYhhNOTVF4Rk=;
-        b=V2Mfz9buNa/6C90HfZNrwMjDqvKWIVaUmQZKcEFjUFd/PkaenSPlyfBTzEo4nNOSSY
-         cyK25If5vkGuzjq9ZljUjRrpS0ZooDmI0A74EGRxXufPpQGomlIiRYoH0zuc4yw4wQ7F
-         q6C2oEopvvahbRzvq846sTOZT3w/2/ErW0q/D7lsyfMBrELO1etpx2tUcgix2i3C1eiv
-         9f3ATICS9b/35op5gbWMtce8P6GfpS1/rrSWshiwH5beu41KofijYw5knZtNAvpVV5kB
-         eXUGbUNrdo5cmcoZSBUJqkAPdyUWmTZEeQ03JDKgmjd3+cBNwRbHe23c+BA+ov7Tka53
-         As1w==
-X-Gm-Message-State: AGi0PuaK9rJ9A1GjpjFTpjo74D5kdBo9ERdK2Wv4GfsCSlmXsSsFcU87
-        1UohnmcIuy8kUIoc8MvpFUgz2dTVtCaSynJcG965Q1uSuFDb
-X-Google-Smtp-Source: APiQypK4oHgKRBPSRZbfHb0ojV4cp3+N7+fxUpS0UNJQym85wvH9Sio5kmhZU9yGnEMEq747/dIHtHAtveh6YO2oOrxk8MyL2508
+        id S2635107AbgDOHUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 03:20:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60518 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441149AbgDOHUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 03:20:19 -0400
+IronPort-SDR: PaqZ+AhgjoUOcGbCRQoi83QTU4wBFrb6vn7ucmDOHh4+mEW/e2QutXMHLyEq3d0RtZxtoBDSVZ
+ pstsBaGYkw5A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 00:20:17 -0700
+IronPort-SDR: filQrUmefFZnsuI2X6HjURYn2GJAKFaqJdDUHDl1jbs6NDIyk22jUx+7DXjhQrFwuoD9Str+50
+ oTIdIdhXOLog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
+   d="scan'208";a="244032687"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Apr 2020 00:20:14 -0700
+Subject: Re: [PATCH 1/2] mmc: sdhci: move SDHCI_CAPABILITIES_1 to a more
+ suitable place
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        masahiroy@kernel.org
+References: <20200408072105.422-1-yamada.masahiro@socionext.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <af02a837-c5a9-4d0a-34a4-534e155ac968@intel.com>
+Date:   Wed, 15 Apr 2020 10:19:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:13d4:: with SMTP id o20mr24774819iov.104.1586935095497;
- Wed, 15 Apr 2020 00:18:15 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 00:18:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a616b905a34f1e93@google.com>
-Subject: WARNING: stack going in the wrong direction? ip=do_nanosleep
-From:   syzbot <syzbot+29b62ed085a5a0c6dfb6@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200408072105.422-1-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 8/04/20 10:21 am, Masahiro Yamada wrote:
+> In the SDHCI specification, the Capabilities Register (Offset 0x40h)
+> is the 64-bit width register, but in Linux, it is represented as two
+> registers, SDHCI_CAPABILITIES and SDHCI_CAPABILITIES_1 so that drivers
+> can use 32-bit register accessors.
+> 
+> The upper 32-bit field is associated with SDHCI_CAPABILITIES_1.
+> 
+> Move the definition of SDHCI_CAPABILITIES_1 to the correct place.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-syzbot found the following crash on:
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-HEAD commit:    11ecafc6 Add linux-next specific files for 20200411
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1534bdb3e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=602913252b851ac7
-dashboard link: https://syzkaller.appspot.com/bug?extid=29b62ed085a5a0c6dfb6
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> ---
+> 
+>  drivers/mmc/host/sdhci.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index 79dffbb731d3..b786b68e0302 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -220,6 +220,7 @@
+>  #define  SDHCI_CAN_64BIT_V4	0x08000000
+>  #define  SDHCI_CAN_64BIT	0x10000000
+>  
+> +#define SDHCI_CAPABILITIES_1	0x44
+>  #define  SDHCI_SUPPORT_SDR50	0x00000001
+>  #define  SDHCI_SUPPORT_SDR104	0x00000002
+>  #define  SDHCI_SUPPORT_DDR50	0x00000004
+> @@ -236,8 +237,6 @@
+>  #define  SDHCI_CAN_DO_ADMA3	0x08000000
+>  #define  SDHCI_SUPPORT_HS400	0x80000000 /* Non-standard */
+>  
+> -#define SDHCI_CAPABILITIES_1	0x44
+> -
+>  #define SDHCI_MAX_CURRENT		0x48
+>  #define  SDHCI_MAX_CURRENT_LIMIT	0xFF
+>  #define  SDHCI_MAX_CURRENT_330_MASK	0x0000FF
+> 
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+29b62ed085a5a0c6dfb6@syzkaller.appspotmail.com
-
-WARNING: stack going in the wrong direction? ip=do_nanosleep+0x15f/0x640
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
