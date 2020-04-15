@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC161A97AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6C41A97B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405243AbgDOI4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:56:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404988AbgDOI4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:56:00 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S2408190AbgDOI5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2405268AbgDOI5I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:57:08 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CBAC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 01:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Z18reNrEyKf1NJjD06HCmDGv5FbGXihQe6KKOmGQo/8=; b=pWNb6KFcsYvhPeAtMzL5R6dC4I
+        3wiihazVHIuDUhC1XjYwc2/uTrREiYD1Sfn31kF1RN0LsOC7kGY+ociNXGEJqKw6AUCC5DHw66HI0
+        bfI+wqBZf/SW/b55o4UuLKqkkElh5iu51rSsKnmcNR5aATmPpvMXWb7x4zvWKev+c8bpdcnzLdfzl
+        ublnKKEpvOKq2iP6c5b7pCCm87PIJmR0mAc1gGUPlTFsacHElIALdEqMGBfeTBNrQASOx4Gi9PYJO
+        s2CMwwP9i1bQWSfg+NVd8T6FOc1hqYzF2mRSDrBfffPQcCGkAgj6B294QDPWkZbXImaGHKHDTFgod
+        2o11meag==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOdqX-0004qd-W9; Wed, 15 Apr 2020 08:56:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 900C520737;
-        Wed, 15 Apr 2020 08:55:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586940959;
-        bh=lL08kyfy+9y5wE4bT7FrtRAP9e6Jx76z4bGDZo1tk4s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zPVuO2lg9Bf7O4AyeHVkBbTdBcjJ0l9TTPg+WqJ1AqZYtX9Ksbab4hxQBuS6PhOcz
-         nG946f+z2ldlNfsBvYalLoWeuksyMjcQaVfN7Vrfos3ZdMA9haxjGQx7k25dNYi8JR
-         3SG+qQmED0JCKXDh2wrsKH9jJipvG+N1lrNGpk3o=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jOdpt-003Rlm-Ss; Wed, 15 Apr 2020 09:55:58 +0100
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 253A8305EEC;
+        Wed, 15 Apr 2020 10:56:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 101EE20B07BFE; Wed, 15 Apr 2020 10:56:35 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 10:56:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH] Bitmap: Optimized division operation to shift operation
+Message-ID: <20200415085634.GA17091@hirez.programming.kicks-ass.net>
+References: <1586935667-4792-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Apr 2020 09:55:57 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>, kernel-team@android.com
-Subject: Re: [PATCH 3/8] arm64: cpufeature: Add CPU capability for AArch32 EL1
- support
-In-Reply-To: <20200414213114.2378-4-will@kernel.org>
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-4-will@kernel.org>
-Message-ID: <1b76993491176577567a0960a435dac0@kernel.org>
-X-Sender: maz@kernel.org
-User-Agent: Roundcube Webmail/1.3.10
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, suzuki.poulose@arm.com, mark.rutland@arm.com, anshuman.khandual@arm.com, catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org, dianders@chromium.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586935667-4792-1-git-send-email-wangqing@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
-
-On 2020-04-14 22:31, Will Deacon wrote:
-> Although we emit a "SANITY CHECK" warning and taint the kernel if we
-> detect a CPU mismatch for AArch32 support at EL1, we still online the
-> CPU with disastrous consequences for any running 32-bit VMs.
+On Wed, Apr 15, 2020 at 03:27:40PM +0800, Wang Qing wrote:
+> On some processors, the / operate will call the compiler`s div lib,
+> which is low efficient. Bitmap is performance sensitive, We can
+> replace the / operation with shift.
 > 
-> Introduce a capability for AArch32 support at EL1 so that late onlining
-> of incompatible CPUs is forbidden.
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  include/linux/bitmap.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Signed-off-by: Will Deacon <will@kernel.org>
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 99058eb..85ff982 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -337,7 +337,7 @@ static inline int bitmap_equal(const unsigned long *src1,
+>  		return !((*src1 ^ *src2) & BITMAP_LAST_WORD_MASK(nbits));
+>  	if (__builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
+>  	    IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
+> -		return !memcmp(src1, src2, nbits / 8);
+> +		return !memcmp(src1, src2, nbits >> 3);
+>  	return __bitmap_equal(src1, src2, nbits);
+>  }
 
-Definitely an improvement over the current situation, as the direct read
-of ID_AA64PFR0 was always a bit dodgy. Given that I'm pretty sure these 
-new
-braindead SoCs are going to run an older version of the kernel, should 
-we
-Cc stable for this?
-
-Otherwise:
-
-Acked-by: Marc Zyngier <maz@kernel.org>
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+If your compiler gets this wrong, set it on fire and scatter its remains.
