@@ -2,81 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A611AB175
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FF21AB167
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506455AbgDOTRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:17:48 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18924 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438103AbgDOTHb (ORCPT
+        id S2504779AbgDOTPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2441597AbgDOTJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:07:31 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9759d70000>; Wed, 15 Apr 2020 12:00:39 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 15 Apr 2020 12:02:28 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 12:02:28 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
- 2020 19:02:28 +0000
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
- 2020 19:02:28 +0000
-Subject: Re: [PATCH] mm/filemap: Fix a typo in comment
- "unneccssary"->"unnecessary"
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Ethon Paul <ethp@qq.com>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20200411065141.15936-1-ethp@qq.com>
- <9677805f-5194-b6e8-8949-6ff0cbeb504e@nvidia.com>
- <20200415183743.GE5820@bombadil.infradead.org>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <c85bd99a-f921-d294-b454-3c5d8e0f4221@nvidia.com>
-Date:   Wed, 15 Apr 2020 12:02:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Wed, 15 Apr 2020 15:09:46 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A8EC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:02:41 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id l14so4927370ljj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=PAL4FT8oI0mRZyF3YfLl8XwS0XvdpC5f2FhsnqKXQQ4=;
+        b=GSqy2qK9ju2LPM8Q8WZSWDGak8bYygVT0fC/+xYkRBU8FR41raa0/9NdjN4NtbABLs
+         nkUhwBBBputEWOf6wDfR8p7bgjYOoTEH+VVO0mf44Xp2Tt/mYkTtmDPEx/QX7YAQMywF
+         V+ktG+8DRhYB4b+7AC5/0vpih7661me0Do1Vk/XJDycKxyYey6D9xuRkIQPS3Tiz1cKD
+         d45kVCmQ40qJnCgsNgIQP+2FW2+dhl/n+GO4EJV7E55XK+mitMnkyGV0YT7QNVLLDLMg
+         55eReRmR8eQUO3f7OcRFJ8lGLUCORi+WE4IolpIdsYyqZTH+a1iUrsNAObCyeKicfy2D
+         Z8rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=PAL4FT8oI0mRZyF3YfLl8XwS0XvdpC5f2FhsnqKXQQ4=;
+        b=XX2/cdoNtuGRlo9g2rk66eJGKEDo+yGCpWGcTX7MvhPBbHwSMia/T8u9ozTfItxrwT
+         iv4CGHnM+9aOhIpd0T9RbXBva0dzbfC/dA3FogemxxjTAgi/ttEIdadQILlFf6rnXPHg
+         4uon25kCpTcHp8OgeGgr49AnrbFfhufg7TKlUbIA8226+bgg69IueC3P+ziIhyc9KKlI
+         w1k2qYDdJjuln4UF4dJu4+SDzQzOv/Cx7hzGeAKvTseQPpshSTvfBiCkMhIoCIUECHhy
+         GqEBPCfJhxj8j7RbEFmVk8hNu9/tr4ZrnXklkUDi9mpzAdX9sCuNkP0lIUX6uv2VDB2c
+         rMJQ==
+X-Gm-Message-State: AGi0PuZLUT/42o6/zpVN+xhbHi4u9FCcE8URsU4VEuseGadtSaqKtlpY
+        r71XqGFMGPz+EJcAQzJgiN4lujR+580GKrRy23tkDw==
+X-Google-Smtp-Source: APiQypLumLCXkKPV4iM2+8piZqvGIxHqHDB8sAtt+cxtBV34gvyU5kEIQvKGwzcEjcI1gDpFBh1ntrKOLCbpxb8QW94=
+X-Received: by 2002:a2e:a548:: with SMTP id e8mr4133522ljn.151.1586977360244;
+ Wed, 15 Apr 2020 12:02:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200415183743.GE5820@bombadil.infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586977239; bh=KyoYk8q6/O85eMdsE3qMRX+wPYPXu0EM5khVV9wjUpQ=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=mCQ5dkGbx8+HeqaAlzgJrkFZcsYUWLSPaAPrtsL/FYvl4+truvBdG/Fpef3XbeiEY
-         wIJWGkputVBX8s+e1SQWYr9Hc9b71W1pqIMRf3opy3vWStB5zNwjxRP64S8WknHzw1
-         IbFiWQiY6No+N7EGhsq1VuiYIpCLR2lSTKhjVt48L1s6t+/EI8P5VD3DJG84hoVGo8
-         cyiNlijZwKUd7/F5ZFrSNsu/+EEXwpI79579cGAefWumrXtWpZmIhVsij0iq4qA42G
-         Uji+o3g2tZe+fP0gwIeAK3+JYTi2P4bo/Xt2zGZFPFxO8LPqpEsIruvZU/DWMywe94
-         NtHQ0GW6xTsrg==
+References: <1586971629-30196-1-git-send-email-alan.mikhak@sifive.com>
+In-Reply-To: <1586971629-30196-1-git-send-email-alan.mikhak@sifive.com>
+From:   Alan Mikhak <alan.mikhak@sifive.com>
+Date:   Wed, 15 Apr 2020 12:02:29 -0700
+Message-ID: <CABEDWGza3WXzFJ5cP_v9yKT+F=iYzDyuxf-N=0_v=5wrbdz2AA@mail.gmail.com>
+Subject: Re: [PATCH v2] dmaengine: dw-edma: Decouple dw-edma-core.c from
+ struct pci_dev
+To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        dan.j.williams@intel.com, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 10:27 AM Alan Mikhak <alan.mikhak@sifive.com> wrote:
+>
+> From: Alan Mikhak <alan.mikhak@sifive.com>
+>
+> Decouple dw-edma-core.c from struct pci_dev as a step toward integration
+> of dw-edma with pci-epf-test so the latter can initiate dma operations
+> locally from the endpoint side. A barrier to such integration is the
+> dependency of dw_edma_probe() and other functions in dw-edma-core.c on
+> struct pci_dev.
+>
+> The Synopsys DesignWare dw-edma driver was designed to run on host side
+> of PCIe link to initiate DMA operations remotely using eDMA channels of
+> PCIe controller on the endpoint side. This can be inferred from seeing
+> that dw-edma uses struct pci_dev and accesses hardware registers of dma
+> channels across the bus using BAR0 and BAR2.
+>
+> The ops field of struct dw_edma in dw-edma-core.h is currenty undefined:
+>
+> const struct dw_edma_core_ops   *ops;
+>
+> However, the kernel builds without failure even when dw-edma driver is
+> enabled. Instead of removing the currently undefined and usued ops field,
+> define struct dw_edma_core_ops and use the ops field to decouple
+> dw-edma-core.c from struct pci_dev.
+>
+> Signed-off-by: Alan Mikhak <alan.mikhak@sifive.com>
 
-On 4/15/20 11:37 AM, Matthew Wilcox wrote:
-> On Wed, Apr 15, 2020 at 11:36:34AM -0700, Ralph Campbell wrote:
->>
->> On 4/10/20 11:51 PM, Ethon Paul wrote:
->>> There is a typo in comment, fix it.
->>>
->>> Signed-off-by: Ethon Paul <ethp@qq.com>
->>
->> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-> 
-> NAK.  See earlier response.
+Adding the ACK from RFC patch
 
-Oops. Sorry about that.
-I was looking at 5.7.0-rc1 and forgot about your pending change that makes this
-unnecessary. :-)
+Acked-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> ---
+>  drivers/dma/dw-edma/dw-edma-core.c | 29 ++++++++++++++++++++---------
+>  drivers/dma/dw-edma/dw-edma-core.h |  4 ++++
+>  drivers/dma/dw-edma/dw-edma-pcie.c | 10 ++++++++++
+>  3 files changed, 34 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
+> index ff392c01bad1..db401eb11322 100644
+> --- a/drivers/dma/dw-edma/dw-edma-core.c
+> +++ b/drivers/dma/dw-edma/dw-edma-core.c
+> @@ -14,7 +14,7 @@
+>  #include <linux/err.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/dma/edma.h>
+> -#include <linux/pci.h>
+> +#include <linux/dma-mapping.h>
+>
+>  #include "dw-edma-core.h"
+>  #include "dw-edma-v0-core.h"
+> @@ -781,7 +781,7 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+>
+>         if (dw->nr_irqs == 1) {
+>                 /* Common IRQ shared among all channels */
+> -               err = request_irq(pci_irq_vector(to_pci_dev(dev), 0),
+> +               err = request_irq(dw->ops->irq_vector(dev, 0),
+>                                   dw_edma_interrupt_common,
+>                                   IRQF_SHARED, dw->name, &dw->irq[0]);
+>                 if (err) {
+> @@ -789,7 +789,7 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+>                         return err;
+>                 }
+>
+> -               get_cached_msi_msg(pci_irq_vector(to_pci_dev(dev), 0),
+> +               get_cached_msi_msg(dw->ops->irq_vector(dev, 0),
+>                                    &dw->irq[0].msi);
+>         } else {
+>                 /* Distribute IRQs equally among all channels */
+> @@ -804,7 +804,7 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+>                 dw_edma_add_irq_mask(&rd_mask, *rd_alloc, dw->rd_ch_cnt);
+>
+>                 for (i = 0; i < (*wr_alloc + *rd_alloc); i++) {
+> -                       err = request_irq(pci_irq_vector(to_pci_dev(dev), i),
+> +                       err = request_irq(dw->ops->irq_vector(dev, i),
+>                                           i < *wr_alloc ?
+>                                                 dw_edma_interrupt_write :
+>                                                 dw_edma_interrupt_read,
+> @@ -815,7 +815,7 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+>                                 return err;
+>                         }
+>
+> -                       get_cached_msi_msg(pci_irq_vector(to_pci_dev(dev), i),
+> +                       get_cached_msi_msg(dw->ops->irq_vector(dev, i),
+>                                            &dw->irq[i].msi);
+>                 }
+>
+> @@ -827,12 +827,23 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+>
+>  int dw_edma_probe(struct dw_edma_chip *chip)
+>  {
+> -       struct device *dev = chip->dev;
+> -       struct dw_edma *dw = chip->dw;
+> +       struct device *dev;
+> +       struct dw_edma *dw;
+>         u32 wr_alloc = 0;
+>         u32 rd_alloc = 0;
+>         int i, err;
+>
+> +       if (!chip)
+> +               return -EINVAL;
+> +
+> +       dev = chip->dev;
+> +       if (!dev)
+> +               return -EINVAL;
+> +
+> +       dw = chip->dw;
+> +       if (!dw || !dw->irq || !dw->ops || !dw->ops->irq_vector)
+> +               return -EINVAL;
+> +
+>         raw_spin_lock_init(&dw->lock);
+>
+>         /* Find out how many write channels are supported by hardware */
+> @@ -884,7 +895,7 @@ int dw_edma_probe(struct dw_edma_chip *chip)
+>
+>  err_irq_free:
+>         for (i = (dw->nr_irqs - 1); i >= 0; i--)
+> -               free_irq(pci_irq_vector(to_pci_dev(dev), i), &dw->irq[i]);
+> +               free_irq(dw->ops->irq_vector(dev, i), &dw->irq[i]);
+>
+>         dw->nr_irqs = 0;
+>
+> @@ -904,7 +915,7 @@ int dw_edma_remove(struct dw_edma_chip *chip)
+>
+>         /* Free irqs */
+>         for (i = (dw->nr_irqs - 1); i >= 0; i--)
+> -               free_irq(pci_irq_vector(to_pci_dev(dev), i), &dw->irq[i]);
+> +               free_irq(dw->ops->irq_vector(dev, i), &dw->irq[i]);
+>
+>         /* Power management */
+>         pm_runtime_disable(dev);
+> diff --git a/drivers/dma/dw-edma/dw-edma-core.h b/drivers/dma/dw-edma/dw-edma-core.h
+> index 4e5f9f6e901b..31fc50d31792 100644
+> --- a/drivers/dma/dw-edma/dw-edma-core.h
+> +++ b/drivers/dma/dw-edma/dw-edma-core.h
+> @@ -103,6 +103,10 @@ struct dw_edma_irq {
+>         struct dw_edma                  *dw;
+>  };
+>
+> +struct dw_edma_core_ops {
+> +       int     (*irq_vector)(struct device *dev, unsigned int nr);
+> +};
+> +
+>  struct dw_edma {
+>         char                            name[20];
+>
+> diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+> index dc85f55e1bb8..1eafc602e17e 100644
+> --- a/drivers/dma/dw-edma/dw-edma-pcie.c
+> +++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+> @@ -54,6 +54,15 @@ static const struct dw_edma_pcie_data snps_edda_data = {
+>         .irqs                           = 1,
+>  };
+>
+> +static int dw_edma_pcie_irq_vector(struct device *dev, unsigned int nr)
+> +{
+> +       return pci_irq_vector(to_pci_dev(dev), nr);
+> +}
+> +
+> +static const struct dw_edma_core_ops dw_edma_pcie_core_ops = {
+> +       .irq_vector = dw_edma_pcie_irq_vector,
+> +};
+> +
+>  static int dw_edma_pcie_probe(struct pci_dev *pdev,
+>                               const struct pci_device_id *pid)
+>  {
+> @@ -151,6 +160,7 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+>         dw->version = pdata->version;
+>         dw->mode = pdata->mode;
+>         dw->nr_irqs = nr_irqs;
+> +       dw->ops = &dw_edma_pcie_core_ops;
+>
+>         /* Debug info */
+>         pci_dbg(pdev, "Version:\t%u\n", dw->version);
+> --
+> 2.7.4
+>
