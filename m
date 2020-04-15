@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1BC1AABF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735481AABFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414724AbgDOPee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731298AbgDOPe3 (ORCPT
+        id S1414763AbgDOPga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:36:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:46889 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1414755AbgDOPg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:34:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA20C061A0C;
-        Wed, 15 Apr 2020 08:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=k93jWTHKWpFEN4F9SAvfEChcPWYMd81tShHsmAijNZM=; b=nDe1C43qgxEOthZ67P6sU4NyQv
-        zE92U1Iyh0Rp3KjlFj5uRvTGHFP9dO/SsV4ELkffAtS7uHTfK4LXyyNBrdDAeSjPgUCPahiDm7wKn
-        WjfthkaM/NbPOS04qn47WarfifXSDfKorWU4Ze1oE0qPrHn5Mm9dbgc/1PJgoxZTxHDNZRu7oKnED
-        mthpJ086zvdIrp9FzDSJoQYOAfswJgQ9WEJXWPXXCxFlRB7NGRE/FdVevvVqMlf+WSoMu7hqmw2cN
-        K84Vewnr1SqfXYr1kV28cHEqNCstQwQCjvpIOLfOGEyWotcBHuyCtbj/wSXtXox/qbZKzwUw88LQG
-        rKvA8fGg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOk3X-0002Tz-VE; Wed, 15 Apr 2020 15:34:28 +0000
-Subject: Re: linux-next: Tree for Apr 14 (mm/shmem.c)
-To:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20200414123900.4f97a83f@canb.auug.org.au>
- <200c608a-8159-18ce-b44e-cad2022e23e2@infradead.org>
- <20200414182430.c5af29ddb1735f5fd0083983@linux-foundation.org>
- <alpine.LSU.2.11.2004142339170.10035@eggly.anvils>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c1ea321f-b0f3-5ec3-3af8-8bf545a6462c@infradead.org>
-Date:   Wed, 15 Apr 2020 08:34:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 15 Apr 2020 11:36:27 -0400
+Received: from mail-qt1-f171.google.com ([209.85.160.171]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N1Oo7-1jHTtb3PEx-012mIa for <linux-kernel@vger.kernel.org>; Wed, 15 Apr
+ 2020 17:36:25 +0200
+Received: by mail-qt1-f171.google.com with SMTP id x2so13577351qtr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:36:24 -0700 (PDT)
+X-Gm-Message-State: AGi0PubUrgJH+B8roOSSeQunEy5YpBii1s+9myXJUP7BXtnedS6CoUGY
+        0Avzwjg3fjxhCNsI9jQcFEAEWZzS7G9nwwBZExA=
+X-Google-Smtp-Source: APiQypJIUuuzcLdHHn2E9oSQH9GkrGPhjt4IZpFRZmL1irhVR/KZ+X1MWvLnL+BAuL5y8kjP6g+U6bLsXmnJCMwOAAc=
+X-Received: by 2002:aed:20e3:: with SMTP id 90mr21209126qtb.142.1586964983698;
+ Wed, 15 Apr 2020 08:36:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2004142339170.10035@eggly.anvils>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1586757922.git.baolin.wang7@gmail.com> <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
+In-Reply-To: <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 15 Apr 2020 17:36:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com>
+Message-ID: <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] soc: sprd: Add Spreadtrum special bits
+ updating support
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:MQnvqLOoWwqTuhAeHc2QB61aLz/NzXqAPWq5pVuRAUy5+fSKJ5S
+ MsMTXCs9DWVAOXPA5xj4V2z9QP33FytL6zYK271HtnLtnH1bNnya0vvKcLtQqUen9olsIYU
+ iRLi2MyvRkPDt5Dcd96anlK4/wOZtkUmeB0ui00TuP5EazC1Pn/Llb1PF10PNYj5fixl5id
+ pg/X+n594Il2zKK9gwNVw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fbRXHR7l6S4=:4cKBIH25KCcvxXWvp7z+xD
+ hYFi2KNrLLdqRiELpGfhaF9qQyK8G524b1MasvKsYpSUf0GLEMdzVjj6AOSF0FLJ9ZPQZYqr7
+ LkN5xr4TcB9szTQE3AweCXIypobUvYPE/GVgTaCV40LUUmhwfZaq/go3wqPDkiehE3R+VaoSY
+ /HESg9O7k05nP0ifcTLjVwj5EoFjI8BiCEuzf+BeBuoUo2EvUbpP1bWtbksxSlPNa/9tswqa/
+ Ia3nRPyGm7bzt+BBj+9P9VEqfk4VKYwvNhEWYx60BicIRGKVHPhPHc5GrwvZC5UgiiRMI8wdB
+ XlsoqKK1r2o9lYH9GeopBv0UKg6u4ib9HBKosDgEVXp/Mp9M9U1q0VmB+8GJfgC2di/cPxcEf
+ pO8RL1TgElmr+J775t0i5SZwb128oZqKDSQkt0LvSMP23YaUK1g0z3aYlF1YfM56ZHqLi41Ld
+ QRoqfLnhDsoONpTNFvH0PeL8rh+qFt5nuFM4PkJtINBoUHfqHGwIVVM5KJPhLcoOKomZwwhXY
+ 9ZODzLNeUWfYzr/dUKsL57uKooaXWLEyiSoWBD7ZiLOhjTPrmGUBW8WtmZK+mHK1dv6ak6fe2
+ fjT8y7B4I6UT/Mx7yD1CXvnxtU01257KjyEJguzhkLflH7tIyJAa6HNNZp6AdrXncZuuB7nsI
+ 7Ygbza32FAVZVhsycPpF/O/bo8o0bZR0FR2EMxfC5yrdhfC8b7sLGzBfi/Jz6FqNIWq43UK07
+ egJ3si3gpE2kS8eJ9n6jJHygPyYFKSkkOAQiFC9DEbhFrooaTIX3xWjxyC47rLeexY2CWboc9
+ 9O/YVWE1RgziX9xkLpBD/M/Gqdvlm0OCeiKKd2P8bCqMTZ13CE=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/20 11:54 PM, Hugh Dickins wrote:
-> On Tue, 14 Apr 2020, Andrew Morton wrote:
->> On Tue, 14 Apr 2020 07:18:01 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
->>> On 4/13/20 7:39 PM, Stephen Rothwell wrote:
->>>> Hi all,
->>>>
->>>> Changes since 20200413:
->>>>
->>>> New tree: mhi
->>>>
->>>> My fixes tree contains:
->>>>
->>>>   6b038bdcd3d1 sh: mm: Fix build error
->>>>
->>>> Non-merge commits (relative to Linus' tree): 1154
->>>>  1160 files changed, 31764 insertions(+), 13498 deletions(-)
->>>>
->>>> ----------------------------------------------------------------------------
->>>
->>> on x86_64:
->>> # CONFIG_TRANSPARENT_HUGEPAGE is not set
->>
->> Thanks.  hm, this took a long time to be discovered.
->>
->>> In file included from ../include/linux/export.h:43:0,
->>>                  from ../include/linux/linkage.h:7,
->>>                  from ../include/linux/fs.h:5,
->>>                  from ../mm/shmem.c:24:
->>> ../mm/shmem.c: In function ‘shmem_undo_range’:
-> ...
->>> ../mm/shmem.c:961:26: note: in expansion of macro ‘HPAGE_PMD_NR’
->>>           round_up(start, HPAGE_PMD_NR))
->>>                           ^~~~~~~~~~~~
->>
->> That's
->> 					if (index <
->> 					    round_up(start, HPAGE_PMD_NR))
->> 						start = index + 1;
->>
->> from Hugh's 71725ed10c40696 ("mm: huge tmpfs: try to split_huge_page()
->> when punching hole").
-> 
-> Sorry about that.  Yes, odd that it should only hit now: the false
-> PageTransCompound in shmem_punch_compound() has always been good
-> enough to handle it for me, but maybe Randy is trying a less able
-> compiler, or maybe unrelated changes in linux-next have just made
-> it harder for the compiler to see the optimization.
-> 
-> I hope the patch below fixes it?
-> 
-> [PATCH] mm/shmem: fix build without THP
-> 
-> Some optimizers don't notice that shmem_punch_compound() is always true
-> (PageTransCompound() being false) without CONFIG_TRANSPARENT_HUGEPAGE=y:
-> use IS_ENABLED to help them to avoid the BUILD_BUG inside HPAGE_PMD_NR.
-> 
-> Fixes: 71725ed10c40 ("mm: huge tmpfs: try to split_huge_page() when punching hole")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+On Mon, Apr 13, 2020 at 8:14 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+>
+> The spreadtrum platform uses a special set/clear method to update
+> registers' bits, which can remove the race of updating the global
+> registers between the multiple subsystems. Thus we can register
+> a physical regmap bus into syscon core to support this.
+>
+> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 
-Works for me, using gcc 7.5.0.
+I'd hope to avoid complicating the syscon driver further for this.
+Have you tried to use something other than syscon here to
+provide the regmap?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> +#define SPRD_REG_SET_OFFSET    0x1000
+> +#define SPRD_REG_CLR_OFFSET    0x2000
+> +
+> +/*
+> + * The Spreadtrum platform defines a special set/clear method to update
+> + * registers' bits, which means it can write values to the register's SET
+> + * address (offset is 0x1000) to set bits, and write values to the register's
+> + * CLEAR address (offset is 0x2000) to clear bits.
+> + *
+> + * This set/clear method can help to remove the race of accessing the global
+> + * registers between the multiple subsystems instead of using hardware
+> + * spinlocks.
+> + */
+> +static int sprd_syscon_update_bits(void *context, unsigned int reg,
+> +                                  unsigned int mask, unsigned int val)
+> +{
+> +       void __iomem *base = context;
+> +       unsigned int set, clr;
+> +
+> +       set = val & mask;
+> +       clr = ~set & mask;
+> +
+> +       if (set)
+> +               writel(set, base + reg + SPRD_REG_SET_OFFSET);
+> +
+> +       if (clr)
+> +               writel(clr, base + reg + SPRD_REG_CLR_OFFSET);
+> +
+> +       return 0;
+> +}
 
-Thanks.
+Regarding the implementation: Doesn't this introduce a new race
+between setting and clearing bits if you do both at the same time?
 
-> ---
-> 
->  mm/shmem.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- 5.7-rc1/mm/shmem.c	2020-04-11 12:58:26.415524805 -0700
-> +++ linux/mm/shmem.c	2020-04-14 23:20:25.517656174 -0700
-> @@ -952,7 +952,7 @@ static void shmem_undo_range(struct inod
->  				VM_BUG_ON_PAGE(PageWriteback(page), page);
->  				if (shmem_punch_compound(page, start, end))
->  					truncate_inode_page(mapping, page);
-> -				else {
-> +				else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
->  					/* Wipe the page and don't get stuck */
->  					clear_highpage(page);
->  					flush_dcache_page(page);
-> 
+This may not be a problem if you never do.
 
+> +static int sprd_syscon_init(void)
+> +{
+> +       syscon_register_phys_regmap_bus(&sprd_syscon_regmap);
+> +
+> +       return 0;
+> +}
+> +core_initcall_sync(sprd_syscon_init);
 
--- 
-~Randy
+I don't think this part can be done at all: If you load the module on a
+generic kernel running on a random other platform, it will break as
+there is no check at all to ensure the platform is compatible.
+
+The same thing happens on a platform that may have multiple
+syscon nodes, when not all of them use the same register layout.
+
+The only sane way that I can see would be to do it based on
+properties of the syscon node itself.
+
+        Arnd
