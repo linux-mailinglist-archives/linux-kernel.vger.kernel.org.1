@@ -2,99 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546FF1AB1DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9115D1AB1E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634268AbgDOTd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
+        id S2411919AbgDOTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2411907AbgDOTdq (ORCPT
+        by vger.kernel.org with ESMTP id S2634549AbgDOTei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:33:46 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342D8C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:33:46 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a32so276304pje.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:33:46 -0700 (PDT)
+        Wed, 15 Apr 2020 15:34:38 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3CCC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:34:38 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id z13so4508976ilp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:to:date:message-id:user-agent;
-        bh=DhwjFm7NO3lz1+xSJxAVKegOT+4cvg/+tKLXup9pu8M=;
-        b=JKgYDj3WnLm+i4KmF9cDrLbRzosg5ADIuIHwrxYrWTY6uyO3OXbBu62c3g6lMSDH/U
-         rqb3PfYkTY/ItPGP391y30npnhYiKm5O73DiJ7aqpbMIVUT9xdzvK/cFzvf3p2BKQiVk
-         jBtrWWfOOI3WXd9BWspvi3RgIm2SaOqHw7Gz8=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p4wJ8PCRsH9dLwOsuZUafOwTir/wwe6pyfgswo3kFgU=;
+        b=PwIi8YWvIKc4jePjFvM5awvxAr6DD9/VWlipVrwhDCX5pidDChl8xMFFxeSJTyArOs
+         94XKH+Wvr2cR9uKljFtsuOe/PnY88JdD/fyo1gJaZ54rbBMHm1LQ4F7RXv+xyjtPNRET
+         sYpzOA+OqP69pgZdRlRKXJ8gBXKFTk4mP5cJdu9B1QWt+ILXJm/fT+o4G5QhxY5LCrgG
+         GadwMAVMRxRVPvX1B65fEfZrRDGZ4v0l/7viQPabD+XpHtl9pmJONthzuYSGeq6lG7do
+         ziMUlgKsGgkHuGc2f5ObfvSxpYxe4LLmKG8wXt0CZ538tC/ZoGnEvgzLewyPS8zem6Wt
+         rmbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:to:date:message-id:user-agent;
-        bh=DhwjFm7NO3lz1+xSJxAVKegOT+4cvg/+tKLXup9pu8M=;
-        b=WsPbx54mr2YzYBlstPFr3GOJeiVzdlOzdW4kMQbVI3eDuwiVHxCxwxjXLego21VXo3
-         WLMRvYKbiDyrCELsxcVRzhzL3u6Qh9sWQqrDnu1DqEn78tZt9Dv8iWX8+9lpbGULV6Bx
-         wDFcvBjImCgUV+Oloc/Ryg3SACflERGFJxVpQfinUeFeQu90qMMOYvBYfM6k21Cl8r0z
-         L6VGSAnX+zS53jlkpS1j79KrWFuYGE0TS84Bq6MkBPxkedTmRgDuU07/mARt9BM2ZYef
-         jzw5B1Mtt8sUB5y2suvc0DFEOtTaPIWjZaE+NkyyCedQs1+ZcTNXK1YRr+tFLvX+3LKB
-         EyXw==
-X-Gm-Message-State: AGi0PubnXtfkO7P/gwpJv0++8cwHATmfx8OdzUbMV7mLtlfwIeOWPFhZ
-        XsydFnNrAMBpeNrBUlzUPffxO289ayc=
-X-Google-Smtp-Source: APiQypLF9I1HGpqBY5XoRsgbjZngLXUL4G8bMPpAW97Xf9cwgyxResxh8RcnSlTgxVSFyiABXXuyKg==
-X-Received: by 2002:a17:902:8d89:: with SMTP id v9mr6512515plo.83.1586979225103;
-        Wed, 15 Apr 2020 12:33:45 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id t12sm9098856pgm.37.2020.04.15.12.33.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 12:33:44 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p4wJ8PCRsH9dLwOsuZUafOwTir/wwe6pyfgswo3kFgU=;
+        b=ubE4tqB6z6XblEEsT1jbU/QIl/gWhBDJhGQVzcKuQbIf29nDBO404cxeqWSGZbVMAT
+         0VFLF6Z0rNCRxKN5ffrDYlgfVKQxHQ6Qp/v30pVB+SgrYJWRsgftbs2vDxKgQVEofb8Y
+         Nstxnrj9TJLV8VCHTbrqH4PwCsi7MjDqKwnQ1rsyfubWMUbeSttsj///Z3Q0oeTx6lLP
+         Pq+rbyc/OASEymPa6EmwUdf1STfL/jT914WNs9x5WwZX0fqUMJOMcypkcLYlq9dp3y3T
+         xuPnOP6Non+9zzWQQ6KKpiQbVE/+tIKSNgbRyXp1Le/Ot5VjtxXg5oztCAllH9tNwnnW
+         7E1w==
+X-Gm-Message-State: AGi0Pubij2R/+6eHd+qEdUbqPuOiBf8vdIc3tpJXD8SRWMS7sw6KeNVo
+        g7sv8FcI0kcAFI+IHgkmWWE60bFskB73U/HcDdS/9WCL
+X-Google-Smtp-Source: APiQypIvBqwo1b067evgJIMqsswMjNt/4NZSHBs2ekLDZj0cJSiZamL9K6jkm9NuKddJO5WDCXu7Aed2LUzevNnpxRc=
+X-Received: by 2002:a92:9a0a:: with SMTP id t10mr7402579ili.50.1586979277430;
+ Wed, 15 Apr 2020 12:34:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1cdc4409-2113-cfe5-7eb2-6b1a6671e262@infradead.org>
-References: <1cdc4409-2113-cfe5-7eb2-6b1a6671e262@infradead.org>
-Subject: Re: uvcvideo: shift exponent -7 is negative
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-uvc-devel@lists.sourceforge.net,
-        Fritz Koenig <frkoenig@google.com>
-Date:   Wed, 15 Apr 2020 12:33:43 -0700
-Message-ID: <158697922381.105027.9312351935387255622@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <20200413193401.27234-1-mathieu.poirier@linaro.org>
+ <20200413193401.27234-3-mathieu.poirier@linaro.org> <bd8cc8d5-94c1-5767-d089-535731fc1055@linaro.org>
+ <20200414005506.GG20625@builder.lan> <20200414194441.GA25931@xps15> <20200414231601.GI892431@yoga>
+In-Reply-To: <20200414231601.GI892431@yoga>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Wed, 15 Apr 2020 13:34:25 -0600
+Message-ID: <CANLsYkx2cV4QMPTvWxUhXDvSbNmrSR33L6pNzA=x9ZscpQk=6Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] remoteproc: Split firmware name allocation from rproc_alloc()
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Alex Elder <elder@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Suman Anna <s-anna@ti.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Randy Dunlap (2020-03-29 15:43:28)
-> This is kernel version 5.6-rc6.
->=20
-> UBSAN detected a bad shift value:
->=20
-> [  511.693411] UBSAN: Undefined behaviour in ../drivers/media/usb/uvc/uvc=
-_ctrl.c:781:13
-> [  511.694043] shift exponent -7 is negative
+On Tue, 14 Apr 2020 at 17:16, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 14 Apr 12:44 PDT 2020, Mathieu Poirier wrote:
+>
+> > Hey Bjorn,
+> >
+> > On Mon, Apr 13, 2020 at 05:55:06PM -0700, Bjorn Andersson wrote:
+> > > On Mon 13 Apr 13:56 PDT 2020, Alex Elder wrote:
+> > >
+> > > > On 4/13/20 2:33 PM, Mathieu Poirier wrote:
+> > > > > Make the firmware name allocation a function on its own in order to
+> > > > > introduce more flexibility to function rproc_alloc().
+> > > > >
+> > > > > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > >
+> > > > I didn't look at the larger context (MCU series); I'm only looking
+> > > > at this (and the others in this series) in isolation.  I like
+> > > > that you're encapsulating this stuff into functions but doing so
+> > > > doesn't really add any flexibility.
+> > > >
+> > > > Two small suggestions for you to consider but they're truly
+> > > > more about style so it's entirely up to you.  Outside of that
+> > > > this looks straightforward to me, and the result of the series
+> > > > is an improvement.
+> > > >
+> > > > I'll let you comment on my suggestions before offering my
+> > > > "reviewed-by" indication.
+> > > >
+> > > >                                   -Alex
+> > > >
+> > > > > ---
+> > > > >  drivers/remoteproc/remoteproc_core.c | 66 ++++++++++++++++------------
+> > > > >  1 file changed, 39 insertions(+), 27 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > > > > index 80056513ae71..4dee63f319ba 100644
+> > > > > --- a/drivers/remoteproc/remoteproc_core.c
+> > > > > +++ b/drivers/remoteproc/remoteproc_core.c
+> > > > > @@ -1979,6 +1979,33 @@ static const struct device_type rproc_type = {
+> > > > >         .release        = rproc_type_release,
+> > > > >  };
+> > > > >
+> > > > > +static int rproc_alloc_firmware(struct rproc *rproc,
+> > > > > +                               const char *name, const char *firmware)
+> > > > > +{
+> > > > > +       char *p, *template = "rproc-%s-fw";
+> > > > > +       int name_len;
+> > > >
+> > > > Not a big deal (and maybe it's not consistent with other nearby
+> > > > style) but template and name_len could be defined inside the
+> > > > "if (!firmware)" block.
+> > > >
+> > >
+> > > I prefer variables declared in the beginning of the function, so I'm
+> > > happy with this.
+> > >
+> > > > > +       if (!firmware) {
+> > > > > +               /*
+> > > > > +                * If the caller didn't pass in a firmware name then
+> > > > > +                * construct a default name.
+> > > > > +                */
+> > > > > +               name_len = strlen(name) + strlen(template) - 2 + 1;
+> > > > > +               p = kmalloc(name_len, GFP_KERNEL);
+> > > >
+> > > >
+> > > > I don't know if it would be an improvement, but you could
+> > > > check for a null p value below for both cases.  I.e.:
+> > > >
+> > > >           if (p)
+> > > >                   snprintf(p, ...);
+> > > >
+> > >
+> > > Moving the common NULL check and return out seems nice, but given that
+> > > we then have to have this positive conditional I think the end result is
+> > > more complex.
+> > >
+> > > That said, if we're not just doing a verbatim copy from rproc_alloc() I
+> > > think we should make this function:
+> > >
+> > >     if (!firmware)
+> > >             p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
+> > >     else
+> > >             p = kstrdup_const(firmware, GFP_KERNEL);
+> >
+> > If you really want to use kstrdup_const() the return value has to be casted to a
+> > "char *".  Variable 'p' can't be declared const "char *" because rproc->firmware is not
+> > a "const".  Simply put somewhere the "const" will need to be dropped or casted out.
+> >
+>
+> The firmware parameter to rproc_alloc() is const char * and there's a
+> couple of places where a really const string is passed, so by using
+> kstrdup_const() we don't end up duplicating const data on the heap.
+>
+> And afaict we can make both p and rproc->firmware const char * to allow
+> this, or am I missing something?
 
-I saw a similar problem. This patch fixed it for me but I'm not sure if
-it's correct. The negative shift is done on the mask but we're going to
-break out of the loop in that case so it isn't going to be used. Maybe
-the loop should be a do while instead and then the mask can be
-calculated at the start?
+I wasn't sure you were willing to go as far as making rproc->firmware
+a const char *.  In that case it is quite easy...
 
----8<----
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_c=
-trl.c
-index e399b9fad757..ea6eb68329f3 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -778,7 +778,8 @@ static s32 uvc_get_le_value(struct uvc_control_mapping =
-*mapping,
- 		value |=3D offset > 0 ? (byte >> offset) : (byte << (-offset));
- 		bits -=3D 8 - (offset > 0 ? offset : 0);
- 		offset -=3D 8;
--		mask =3D (1 << bits) - 1;
-+		if (bits > 0)
-+			mask =3D (1 << bits) - 1;
- 	}
-=20
- 	/* Sign-extend the value if needed. */
+>
+> Regards,
+> Bjorn
