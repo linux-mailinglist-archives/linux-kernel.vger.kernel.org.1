@@ -2,66 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92081AA38F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F85C1AA419
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506112AbgDONLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:11:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:45328 "EHLO foss.arm.com"
+        id S370757AbgDONRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:17:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:35931 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506076AbgDONLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:11:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CA731063;
-        Wed, 15 Apr 2020 06:11:04 -0700 (PDT)
-Received: from [10.37.12.1] (unknown [10.37.12.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21F3B3F6C4;
-        Wed, 15 Apr 2020 06:11:01 -0700 (PDT)
-Subject: Re: [PATCH 3/8] arm64: cpufeature: Add CPU capability for AArch32 EL1
- support
-To:     will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
-        kernel-team@android.com
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-4-will@kernel.org>
- <a83a19eb-9051-0a43-0bac-353f67d93d79@arm.com>
- <20200415101444.GC12621@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <7978a5a9-463e-5e96-7ea9-d8472b7b051c@arm.com>
-Date:   Wed, 15 Apr 2020 14:15:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S370723AbgDONQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:16:57 -0400
+IronPort-SDR: BwP8BQtRXZBOsdFpgZ7pL+msVfAGtgutK66soFYjcSXi8JLMnCtqsCUt/rBHjM1FtoQYspesKs
+ TRMqa/IDO7+A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 06:16:57 -0700
+IronPort-SDR: dxJsauTrNCBbEh9iRMOkRDojitIw6xUBlogGlmKuMR3+VcdA0n00UBJN1nw/Nb9K5gm6QZoErM
+ DBtUmoVA3EHw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
+   d="scan'208";a="400309880"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by orsmga004.jf.intel.com with ESMTP; 15 Apr 2020 06:16:54 -0700
+Subject: Re: [PATCH 4/7] mmc: sdhci: move SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
+ frequency limit
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Kevin Liu <kliu5@marvell.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <637b9bea4c28a0eeacf754d2930596b8e6673808.1585827904.git.mirq-linux@rere.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <2b111407-0f35-3c5e-f7f0-4a05a281dce2@intel.com>
+Date:   Wed, 15 Apr 2020 16:16:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200415101444.GC12621@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <637b9bea4c28a0eeacf754d2930596b8e6673808.1585827904.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/15/2020 11:14 AM, Will Deacon wrote:
-> On Wed, Apr 15, 2020 at 11:13:54AM +0100, Suzuki K Poulose wrote:
->> On 04/14/2020 10:31 PM, Will Deacon wrote:
->>> Although we emit a "SANITY CHECK" warning and taint the kernel if we
->>> detect a CPU mismatch for AArch32 support at EL1, we still online the
->>> CPU with disastrous consequences for any running 32-bit VMs.
->>>
->>> Introduce a capability for AArch32 support at EL1 so that late onlining
->>> of incompatible CPUs is forbidden.
->>>
->>> Signed-off-by: Will Deacon <will@kernel.org>
->>
->> One of the other important missing sanity check for KVM is the VMID width
->> check. I will code something up.
+On 2/04/20 2:54 pm, Michał Mirosław wrote:
+> Move clock frequency limit for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN where
+> it belongs.
+
+Did you consider getting rid of SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN and
+handling it in sdhci-of-arasan instead?
+
 > 
-> Cheers! Do we handle things like the IPA size already?
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 7 ++++---
+>  drivers/mmc/host/sdhci.c           | 3 +--
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index d4905c106c06..5e3b9131a631 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -339,7 +339,6 @@ static const struct sdhci_pltfm_data sdhci_arasan_pdata = {
+>  	.ops = &sdhci_arasan_ops,
+>  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
+>  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
+>  			SDHCI_QUIRK2_STOP_WITH_TC,
+>  };
+>  
+> @@ -410,8 +409,7 @@ static const struct sdhci_ops sdhci_arasan_cqe_ops = {
+>  static const struct sdhci_pltfm_data sdhci_arasan_cqe_pdata = {
+>  	.ops = &sdhci_arasan_cqe_ops,
+>  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
+> -	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
+> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+>  };
+>  
+>  static struct sdhci_arasan_of_data sdhci_arasan_rk3399_data = {
+> @@ -1155,6 +1153,9 @@ static int sdhci_arasan_add_host(struct sdhci_arasan_data *sdhci_arasan)
+>  	bool dma64;
+>  	int ret;
+>  
+> +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
+> +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
+> +
+>  	if (!sdhci_arasan->has_cqe)
+>  		return sdhci_add_host(host);
+>  
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index a043bf5e3565..ed88ac4e4cf3 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1809,8 +1809,7 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>  			/* Version 3.00 divisors must be a multiple of 2. */
+>  			if (host->max_clk <= clock) {
+>  				div = 1;
+> -				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+> -					&& host->max_clk <= 25000000)
+> +				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+>  					div = 2;
+>  			} else {
+>  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
+> 
 
-Good point. No, we don't. I will include this too.
-
-Cheers
-Suzuki
