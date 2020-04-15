@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E041AB247
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 22:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734BD1AB230
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436833AbgDOUIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 16:08:13 -0400
-Received: from mga03.intel.com ([134.134.136.65]:61120 "EHLO mga03.intel.com"
+        id S2437231AbgDOT6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:58:30 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61251 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406385AbgDOUII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:08:08 -0400
-IronPort-SDR: a9i+qvlKS2MUcti8hBTD6QfEBVEOkn5e6uRprad2Vfo2HJdEKrZ2844mak7tBTNGAjytcKux2z
- N0LlRmQJAhNQ==
+        id S2406322AbgDOT63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:58:29 -0400
+IronPort-SDR: p8a6T785DvUd9plRKDfqX0yT8DCABhbt8yTwQXme4lbTmJpt6t9QRsF7Agq3fbSxklU8ul7Ae7
+ lJyKNyg+B6pw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 13:08:04 -0700
-IronPort-SDR: bVXKlqUIpUAJd05C0gQ+TdCfPVcVuwnGhkAQOqeNR7sWe5U3Sa6vbVfPRqNjjF4dxX0JOc08Fa
- V85kyjbEHc2g==
-X-ExtLoop1: 1
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:58:27 -0700
+IronPort-SDR: yg9WPGwZLVgnXTFOAcwWaX/efMtQ+0NL7uYyxiBr7rGkAcc1kbJTFi3jlVOd5P91xhD/fdU1ZB
+ HAe9W15L2M5g==
 X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="253630268"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.160])
-  by orsmga003.jf.intel.com with ESMTP; 15 Apr 2020 13:08:01 -0700
-Message-ID: <c044d6001cf4ad25a8d13ba64c1d891721c16abd.camel@intel.com>
-Subject: Re: [PATCH v3 3/3] x86/delay: Introduce TPAUSE delay
-From:   km <kyung.min.park@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Luck, Tony" <tony.luck@intel.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>
-Date:   Wed, 15 Apr 2020 12:57:16 -0700
-In-Reply-To: <20200414180545.GE2483@worktop.programming.kicks-ass.net>
-References: <1586561395-50914-1-git-send-email-kyung.min.park@intel.com>
-         <1586561395-50914-4-git-send-email-kyung.min.park@intel.com>
-         <20200414103106.GK20713@hirez.programming.kicks-ass.net>
-         <3908561D78D1C84285E8C5FCA982C28F7F5E3E80@ORSMSX115.amr.corp.intel.com>
-         <20200414180545.GE2483@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="332601244"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:58:27 -0700
+Date:   Wed, 15 Apr 2020 12:58:26 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     x86 <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/mce: Drop bogus comment about mce.kflags
+Message-ID: <20200415195826.GA13681@agluck-desk2.amr.corp.intel.com>
+References: <20200214222720.13168-4-tony.luck@intel.com>
+ <158694418849.28353.16699731019695420884.tip-bot2@tip-bot2>
+ <3908561D78D1C84285E8C5FCA982C28F7F5E6485@ORSMSX115.amr.corp.intel.com>
+ <20200415183620.GJ31362@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415183620.GJ31362@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+The bit definitions for kflags are for internal use only. A
+late edit moved them from uapi/asm/mce.h to the internal
+x86 <asm/mce.h>, but the comment saying "See below" was
+accidentally left here.
 
-On Tue, 2020-04-14 at 20:05 +0200, Peter Zijlstra wrote:
-> On Tue, Apr 14, 2020 at 06:00:21PM +0000, Luck, Tony wrote:
-> > > > +static inline void __tpause(u32 ecx, u32 edx, u32 eax)
-> > > > +{
-> > > > +	/* "tpause %ecx, %edx, %eax;" */
-> > > > +	asm volatile(".byte 0x66, 0x0f, 0xae, 0xf1\t\n"
-> > > > +		     :
-> > > > +		     : "c"(ecx), "d"(edx), "a"(eax));
-> > > > +}
-> > > 
-> > > Can we please get a comment stating from what binutils version
-> > > this
-> > > opcode has a mnemonic? That way, when we raise the minimum
-> > > binutils
-> > > version we can easily grep and find such things.
-> > 
-> > Or maybe use arch/x86/Kconfig.assembler to set up a
-> > CONFIG_AS_TPAUSE?
-> > 
-> > Then the code can read something like (syntax may need fixing)
-> > 
-> > #ifdef CONFIG_AS_TPAUSE
-> > 		asm volatile("tpause %ecx\n", : : "c"(ecx), "d"(edx),
-> > "a"(eax));
-> > #else
-> > 		asm volatile(".byte hex gibberish ...
-> > #endif
-> 
-> Then we still need a comment to know when we can kill that...
+Delete "See below". Just labelling this field as internal
+kernel use is sufficient.
 
-Thanks. I'll update in next patch.
+Fixes: 1de08dccd383 ("x86/mce: Add a struct mce.kflags field")
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/include/uapi/asm/mce.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/uapi/asm/mce.h b/arch/x86/include/uapi/asm/mce.h
+index 5b59d80f1d4e..db9adc081c5a 100644
+--- a/arch/x86/include/uapi/asm/mce.h
++++ b/arch/x86/include/uapi/asm/mce.h
+@@ -35,7 +35,7 @@ struct mce {
+ 	__u64 ipid;		/* MCA_IPID MSR: only valid on SMCA systems */
+ 	__u64 ppin;		/* Protected Processor Inventory Number */
+ 	__u32 microcode;	/* Microcode revision */
+-	__u64 kflags;		/* Internal kernel use. See below */
++	__u64 kflags;		/* Internal kernel use */
+ };
+ 
+ #define MCE_GET_RECORD_LEN   _IOR('M', 1, int)
+-- 
+2.21.1
 
