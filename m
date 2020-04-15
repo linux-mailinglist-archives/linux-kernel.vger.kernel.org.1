@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91DD1AB1BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330C01AB19A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441797AbgDOTaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:30:14 -0400
-Received: from baldur.buserror.net ([165.227.176.147]:35686 "EHLO
-        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441787AbgDOTaI (ORCPT
+        id S2406430AbgDOT1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404592AbgDOT1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:30:08 -0400
-Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
-        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <oss@buserror.net>)
-        id 1jOnhQ-0007A4-KH; Wed, 15 Apr 2020 14:27:52 -0500
-Message-ID: <f2a1f91f92c0fe4bce46c28222dea355d96e2090.camel@buserror.net>
-From:   Scott Wood <oss@buserror.net>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
-Date:   Wed, 15 Apr 2020 14:27:51 -0500
-In-Reply-To: <37b6b890-e537-7424-6b26-04565681f40a@c-s.fr>
-References: <20200415124929.GA3265842@kroah.com>
-         <20200415152442.122873-1-wenhu.wang@vivo.com>
-         <20200415152442.122873-6-wenhu.wang@vivo.com>
-         <37b6b890-e537-7424-6b26-04565681f40a@c-s.fr>
-Organization: Red Hat
+        Wed, 15 Apr 2020 15:27:30 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A7FC061A0F;
+        Wed, 15 Apr 2020 12:27:30 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v9so4958783ljk.12;
+        Wed, 15 Apr 2020 12:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=47rQ3+FA2D3LJs/1g842b1siYUlXkXN6VqdcwjogJq4=;
+        b=Wo1kcmGuq3Ni6b11dpMKa6BWqZWI7iFPQlOO6XuZ3kg2OCLqLnmtNfu/sPcqyQWleQ
+         4kwKK+VMgYzFYdxJ4QOKV1lSoP5aiyMIxTt1Z4+BHUQSigz2EvLFOQ236TFdusZts2ds
+         q5Lvj/WIu4fTVBFN9XqTbFE7NFuT0ZH8UFj+g2N4AqQpg7WE2r2PubGJJgFxnTUFSmID
+         WXmSW3k0PfGfoHcO8D2QISDIfsCoPmKaCbNaWwQf4vfqmqkPHofAM85BoL8eQcsSqdAc
+         npOQPuniuxgTHrChKAuUdhvgl3qrCt1b6ukw5j2mIEa3myXxAd7/+N7aeHKUn7xr2pI3
+         1BvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=47rQ3+FA2D3LJs/1g842b1siYUlXkXN6VqdcwjogJq4=;
+        b=XmY56cq8oIEkirdIyvGRnrYMwabfdcGYRWh5IiDB0w7EvCiel8pHV/02OVAE2IHSs4
+         Gq4drUeBmI3LSBw/Uni+qHbWSVMAMFRFrsWdVR4AC64l2lp3p4ABZK5NKYKSvV6gMMS1
+         CLtXl9Bm8s/awL9iL/IRedTWMwtKkojMIUcb0/5hKuySenewKJopaol20nfe3kyNtari
+         ijSAe/nsaOTf/vsyPe47lLg1UhRthW9rmWstr+YS8WYsM5JSA7qm4b990pLQkFvRqMHJ
+         ma3L+plt4dC2c/HqbwTtlsg/ilIsGzUYgPM06ETAD+rPhpDEmcztkacd3KM02CcSNnQP
+         KQ3w==
+X-Gm-Message-State: AGi0PuYjFp/OIvhpnnwov5T9MuL5srvJcvKJ7jEOEkUJZB0nTd3kOfU1
+        Ng+AhoEDa/kHoCOni0JJySYgY1uv8X4lfbkK/tU=
+X-Google-Smtp-Source: APiQypJfKLCHWzDvZAs+sC93xTgAqt8ibneXwnMKrWfuDDNeT8PGQvOG6N7qZNWFRwp0sNft7o5NTBLjkEGHEpe+nNI=
+X-Received: by 2002:a2e:9b4a:: with SMTP id o10mr4114274ljj.117.1586978848666;
+ Wed, 15 Apr 2020 12:27:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200415185941.13956-1-mporter@konsulko.com>
+In-Reply-To: <20200415185941.13956-1-mporter@konsulko.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 15 Apr 2020 16:27:52 -0300
+Message-ID: <CAOMZO5Ct+cpdvfTEvk1PtQpScJM4iyoMFyChbtGromvuAV291w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm: specify #sound-dai-cells for SAI nodes
+To:     Matt Porter <mporter@konsulko.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
-X-SA-Exim-Rcpt-To: christophe.leroy@c-s.fr, wenhu.wang@vivo.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, mpe@ellerman.id.au
-X-SA-Exim-Mail-From: oss@buserror.net
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
-X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
-        *      this recipient and sender
-Subject: Re: [PATCH v2,5/5] drivers: uio: new driver for fsl_85xx_cache_sram
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-15 at 18:52 +0200, Christophe Leroy wrote:
-> 
-> Le 15/04/2020 à 17:24, Wang Wenhu a écrit :
-> > +
-> > +		if (uiomem >= &info->mem[MAX_UIO_MAPS]) {
-> 
-> I'd prefer
-> 		if (uiomem - info->mem >= MAX_UIO_MAPS) {
-> 
-> > +			dev_warn(&pdev->dev, "more than %d uio-maps for
-> > device.\n",
-> > +				 MAX_UIO_MAPS);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	while (uiomem < &info->mem[MAX_UIO_MAPS]) {
-> 
-> I'd prefer
-> 
-> 	while (uiomem - info->mem < MAX_UIO_MAPS) {
-> 
+Hi Matt,
 
-I wouldn't.  You're turning a simple comparison into a division and a
-comparison (if the compiler doesn't optimize it back into the original form),
-and making it less clear in the process.
+On Wed, Apr 15, 2020 at 4:00 PM Matt Porter <mporter@konsulko.com> wrote:
+>
+> Add #sound-dai-cells properties to SAI nodes.
+>
+> Signed-off-by: Matt Porter <mporter@konsulko.com>
 
-Of course, working with array indices to begin with instead of incrementing a
-pointer would be more idiomatic.
-
-> > +		uiomem->size = 0;
-> > +		++uiomem;
-> > +	}
-> > +
-> > +	if (info->mem[0].size == 0) {
-> 
-> Is there any point in doing all the clearing loop above if it's to bail 
-> out here ?
-> 
-> Wouldn't it be cleaner to do the test above the clearing loop, by just 
-> checking whether uiomem is still equal to info->mem ?
-
-There's no point doing the clearing at all, since the array was allocated with
-kzalloc().
-
-> > +		dev_err(&pdev->dev, "error no valid uio-map configured\n");
-> > +		ret = -EINVAL;
-> > +		goto err_info_free_internel;
-> > +	}
-> > +
-> > +	info->version = "0.1.0";
-> 
-> Could you define some DRIVER_VERSION in the top of the file next to 
-> DRIVER_NAME instead of hard coding in the middle on a function ?
-
-That's what v1 had, and Greg KH said to remove it.  I'm guessing that he
-thought it was the common-but-pointless practice of having the driver print a
-version number that never gets updated, rather than something the UIO API
-(unfortunately, compared to a feature query interface) expects.  That said,
-I'm not sure what the value is of making it a macro since it should only be
-used once, that use is self documenting, it isn't tunable, etc.  Though if
-this isn't a macro, UIO_NAME also shouldn't be (and if it is made a macro
-again, it should be UIO_VERSION, not DRIVER_VERSION).
-
-Does this really need a three-part version scheme?  What's wrong with a
-version of "1", to be changed to "2" in the hopefully-unlikely event that the
-userspace API changes?  Assuming UIO is used for this at all, which doesn't
-seem like a great fit to me.
-
--Scott
-
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
