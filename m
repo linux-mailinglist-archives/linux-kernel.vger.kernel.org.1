@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982F91AAFAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2F11AAFA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411063AbgDOR2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
+        id S2411040AbgDOR15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410994AbgDOR1i (ORCPT
+        with ESMTP id S2411015AbgDOR1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:27:38 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB89FC061A0E;
-        Wed, 15 Apr 2020 10:27:37 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id D077C2A1D5E
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 25A4E4800FB; Wed, 15 Apr 2020 19:27:34 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv2 3/3] drm/panel: simple: Add support for AUO G121EAN01.4 panel
-Date:   Wed, 15 Apr 2020 19:27:25 +0200
-Message-Id: <20200415172725.84257-4-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200415172725.84257-1-sebastian.reichel@collabora.com>
-References: <20200415172725.84257-1-sebastian.reichel@collabora.com>
+        Wed, 15 Apr 2020 13:27:43 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC722C061A10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:27:42 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id j20so6024760edj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 10:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PQn/ANk0pwHlFuEamxgp0PrtqC/xvAZ3EDlh2VOe0m0=;
+        b=yd+J2FgA/lmkvwZA0iSAyzd7KBbCuB/XPFMuZjRayE9JGURa/42PqYHqh7VHqG6yED
+         /nIczfFJbvdoQAofGTftRvfbs5J6uDzfmUI7zWxFs+8D4fq0K2r/F4vzakBSi+Gwk7Bx
+         X0xvX3stfs4GjV5EQpXvDPsua3QTuXUI9TSVNKzn1db2Q+eV16gw9MpJQd57dpb6Sr/D
+         1E623YfOYHf9Av67Mp04BaCkBoZRhDoZNiVRCSubUb/X8dM1J+YRK975cPajYodiP5EX
+         jhAtPq7673DF9HC3HsRN0ErLQCEH1HelkhzITVfbeLqLsX5cmWmt1bDXCJmLiAloPWcj
+         YC5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PQn/ANk0pwHlFuEamxgp0PrtqC/xvAZ3EDlh2VOe0m0=;
+        b=JzEaA/c96EznGrQoUsUS2UEknMJNXAvhPHl4sMT1GvOJyQlQoKYoHcZG45GLAsC94P
+         +ykPqSTnEZbuugU4LQKxtBUP3jnRyA0aiWS/2lvhcYfOFevc3yHbV5MHhHpWPpXSfwDh
+         ZZNr6fBlX/16vDDE4xVF5CqdtsPlIx6fdG84zEdJL/9XBEMtCDqzEEjDgAUImGPnoYw9
+         EG57CoqDj8e3k97QWoeucjshf4YX4IactMpNg2ObGgHAC6GOdRuAXYV2bhKkobP3Qfyv
+         kr2+ILbvhSxq2zlTsNaonIYRmsQMF98OE7ecvlo58zaReSP0HvdC4/QRjb7UO4e7BX7h
+         /aLw==
+X-Gm-Message-State: AGi0PubWhKFU2QkMsNEh7jFZaa4dPmByVBgcWVZwKt4SZV5L64tuZna2
+        y5XL+N3AZ34ipbn7/mKhJETjL6FkoROzM/+cfr/G/w==
+X-Google-Smtp-Source: APiQypJQto6RgiMwvrOJoJJZzQ2YMTpz2NolWBUDftzJdaKnsDAKa/cP6mTGhuplHbMRPC1NtLSayFuBX50THyRB8Ng=
+X-Received: by 2002:a17:906:1e42:: with SMTP id i2mr5854049ejj.317.1586971661463;
+ Wed, 15 Apr 2020 10:27:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200414040030.1802884-1-ira.weiny@intel.com> <20200414040030.1802884-4-ira.weiny@intel.com>
+ <20200415160307.GJ90651@mit.edu>
+In-Reply-To: <20200415160307.GJ90651@mit.edu>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 15 Apr 2020 10:27:30 -0700
+Message-ID: <CAPcyv4jmBRsexpW2=SxqatbMK_u2aZcGnjeF+76=XwrCHfPoXA@mail.gmail.com>
+Subject: Re: [PATCH RFC 3/8] fs/ext4: Disallow encryption if inode is DAX
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add timings for the AUO G121EAN01.4 panel.
+On Wed, Apr 15, 2020 at 9:03 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, Apr 13, 2020 at 09:00:25PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> >
+> > Encryption and DAX are incompatible.  Changing the DAX mode due to a
+> > change in Encryption mode is wrong without a corresponding
+> > address_space_operations update.
+> >
+> > Make the 2 options mutually exclusive by returning an error if DAX was
+> > set first.
+> >
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+>
+> The encryption flag is inherited from the containing directory, and
+> directories can't have the DAX flag set, so anything we do in
+> ext4_set_context() will be safety belt / sanity checking in nature.
+>
+> But we *do* need to figure out what we do with mount -o dax=always
+> when the file system might have encrypted files.  My previous comments
+> about the verity flag and dax flag applies here.
+>
+> Also note that encrypted files are read/write so we must never allow
+> the combination of ENCRPYT_FL and DAX_FL.  So that may be something
+> where we should teach __ext4_iget() to check for this, and declare the
+> file system as corrupted if it sees this combination.  (For VERITY_FL
+> && DAX_FL that is a combo that we might want to support in the future,
+> so that's probably a case where arguably, we should just ignore the
+> DAX_FL for now.)
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../bindings/display/panel/panel-simple.yaml  |  2 ++
- drivers/gpu/drm/panel/panel-simple.c          | 28 +++++++++++++++++++
- 2 files changed, 30 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index b3f1f4c83da6..db05bfc0fa6a 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -55,6 +55,8 @@ properties:
-       - auo,g101evn010
-         # AU Optronics Corporation 10.4" (800x600) color TFT LCD panel
-       - auo,g104sn02
-+        # AU Optronics Corporation 12.1" (1280x800) TFT LCD panel
-+      - auo,g121ean01
-         # AU Optronics Corporation 13.3" FHD (1920x1080) TFT LCD panel
-       - auo,g133han01
-         # AU Optronics Corporation 15.6" (1366x768) TFT LCD panel
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index a80dced09b16..e1979952691e 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -873,6 +873,31 @@ static const struct panel_desc auo_g104sn02 = {
- 	},
- };
- 
-+static const struct drm_display_mode auo_g121ean01_mode = {
-+	.clock = 66700,
-+	.hdisplay = 1280,
-+	.hsync_start = 1280 + 58,
-+	.hsync_end = 1280 + 58 + 8,
-+	.htotal = 1280 + 58 + 8 + 70,
-+	.vdisplay = 800,
-+	.vsync_start = 800 + 6,
-+	.vsync_end = 800 + 6 + 4,
-+	.vtotal = 800 + 6 + 4 + 10,
-+	.vrefresh = 60,
-+};
-+
-+static const struct panel_desc auo_g121ean01 = {
-+	.modes = &auo_g121ean01_mode,
-+	.num_modes = 1,
-+	.bpc = 8,
-+	.size = {
-+		.width = 261,
-+		.height = 163,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
-+};
-+
- static const struct display_timing auo_g133han01_timings = {
- 	.pixelclock = { 134000000, 141200000, 149000000 },
- 	.hactive = { 1920, 1920, 1920 },
-@@ -3546,6 +3571,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "auo,g104sn02",
- 		.data = &auo_g104sn02,
-+	}, {
-+		.compatible = "auo,g121ean01",
-+		.data = &auo_g121ean01,
- 	}, {
- 		.compatible = "auo,g133han01",
- 		.data = &auo_g133han01,
--- 
-2.25.1
-
+We also have a pending consideration for what MKTME (inline memory
+encryption with programmable hardware keys) means for file-encryption
++ dax. Certainly kernel based software encryption is incompatible with
+dax, but one of the hallway track discussions I wanted to have at LSF
+is whether fscrypt is the right interface for managing inline memory
+encryption. For now, disallowing ENCRPYT_FL + DAX_FL seems ok if
+ENCRPYT_FL always means software encryption, but this is something to
+circle back to once we get MKTME implemented for volume encryption and
+start to look at finer grained (per-directory key) encryption.
