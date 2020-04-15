@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111A11A957D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9413E1A95CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635429AbgDOID4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:03:56 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:39830 "EHLO inva020.nxp.com"
+        id S2635584AbgDOIIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:08:10 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:46918 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408048AbgDOID1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2408049AbgDOID1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 04:03:27 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5B6AB1A07A7;
-        Wed, 15 Apr 2020 10:03:09 +0200 (CEST)
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 073522007C1;
+        Wed, 15 Apr 2020 10:03:10 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4ED131A07A3;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EE2DB2007BB;
         Wed, 15 Apr 2020 10:03:09 +0200 (CEST)
 Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id B4AA0202B0;
-        Wed, 15 Apr 2020 10:03:08 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 603DF202B0;
+        Wed, 15 Apr 2020 10:03:09 +0200 (CEST)
 From:   Abel Vesa <abel.vesa@nxp.com>
 To:     Lee Jones <lee.jones@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
         Peng Fan <peng.fan@nxp.com>,
@@ -33,9 +33,9 @@ Cc:     NXP Linux Team <linux-imx@nxp.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH v3 06/13] clk: imx: pll14xx: Add the device as argument when registering
-Date:   Wed, 15 Apr 2020 11:02:46 +0300
-Message-Id: <1586937773-5836-7-git-send-email-abel.vesa@nxp.com>
+Subject: [PATCH v3 07/13] clk: imx: Add helpers for passing the device as argument
+Date:   Wed, 15 Apr 2020 11:02:47 +0300
+Message-Id: <1586937773-5836-8-git-send-email-abel.vesa@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com>
 References: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com>
@@ -45,75 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to allow runtime PM, the device needs to be passed on
-to the register function. Audiomix clock controller, used on
-i.MX8MP and future platforms, registers a pll14xx and has runtime
-PM support.
+All the imx clocks that need to be registered by the audiomix need to
+pass on the device so that the runtime PM support could work properly.
 
 Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/clk/imx/clk-pll14xx.c |  8 ++++----
- drivers/clk/imx/clk.h         | 13 ++++++++++---
- 2 files changed, 14 insertions(+), 7 deletions(-)
+ drivers/clk/imx/clk.h | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index a83bbbe..f9eb189 100644
---- a/drivers/clk/imx/clk-pll14xx.c
-+++ b/drivers/clk/imx/clk-pll14xx.c
-@@ -378,9 +378,9 @@ static const struct clk_ops clk_pll1443x_ops = {
- 	.set_rate	= clk_pll1443x_set_rate,
- };
- 
--struct clk_hw *imx_clk_hw_pll14xx(const char *name, const char *parent_name,
--				  void __iomem *base,
--				  const struct imx_pll14xx_clk *pll_clk)
-+struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
-+				const char *parent_name, void __iomem *base,
-+				const struct imx_pll14xx_clk *pll_clk)
- {
- 	struct clk_pll14xx *pll;
- 	struct clk_hw *hw;
-@@ -426,7 +426,7 @@ struct clk_hw *imx_clk_hw_pll14xx(const char *name, const char *parent_name,
- 
- 	hw = &pll->hw;
- 
--	ret = clk_hw_register(NULL, hw);
-+	ret = clk_hw_register(dev, hw);
- 	if (ret) {
- 		pr_err("%s: failed to register pll %s %d\n",
- 			__func__, name, ret);
 diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
-index 01ff1db..fcd9952a 100644
+index fcd9952a..b91b1b1 100644
 --- a/drivers/clk/imx/clk.h
 +++ b/drivers/clk/imx/clk.h
-@@ -133,9 +133,9 @@ struct clk *imx_clk_pll14xx(const char *name, const char *parent_name,
- #define imx_clk_pll14xx(name, parent_name, base, pll_clk) \
- 	to_clk(imx_clk_hw_pll14xx(name, parent_name, base, pll_clk))
- 
--struct clk_hw *imx_clk_hw_pll14xx(const char *name, const char *parent_name,
--				  void __iomem *base,
--				  const struct imx_pll14xx_clk *pll_clk);
-+struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
-+				const char *parent_name, void __iomem *base,
-+				const struct imx_pll14xx_clk *pll_clk);
- 
- struct clk_hw *imx_clk_hw_pllv1(enum imx_pllv1_type type, const char *name,
- 		const char *parent, void __iomem *base);
-@@ -242,6 +242,13 @@ static inline struct clk *to_clk(struct clk_hw *hw)
- 	return hw->clk;
+@@ -319,6 +319,13 @@ static inline struct clk_hw *imx_clk_hw_gate(const char *name, const char *paren
+ 				    shift, 0, &imx_ccm_lock);
  }
  
-+static inline struct clk_hw *imx_clk_hw_pll14xx(const char *name, const char *parent_name,
-+				  void __iomem *base,
-+				  const struct imx_pll14xx_clk *pll_clk)
++static inline struct clk_hw *imx_dev_clk_hw_gate(struct device *dev, const char *name,
++						const char *parent, void __iomem *reg, u8 shift)
 +{
-+	return imx_dev_clk_hw_pll14xx(NULL, name, parent_name, base, pll_clk);
++	return clk_hw_register_gate(dev, name, parent, CLK_SET_RATE_PARENT, reg,
++				    shift, 0, &imx_ccm_lock);
 +}
 +
- static inline struct clk_hw *imx_clk_hw_fixed(const char *name, int rate)
+ static inline struct clk_hw *imx_clk_hw_gate_dis(const char *name, const char *parent,
+ 		void __iomem *reg, u8 shift)
  {
- 	return clk_hw_register_fixed_rate(NULL, name, NULL, 0, rate);
+@@ -431,6 +438,15 @@ static inline struct clk_hw *imx_clk_hw_mux(const char *name, void __iomem *reg,
+ 			width, 0, &imx_ccm_lock);
+ }
+ 
++static inline struct clk_hw *imx_dev_clk_hw_mux(struct device *dev,
++			const char *name, void __iomem *reg, u8 shift,
++			u8 width, const char * const *parents, int num_parents)
++{
++	return clk_hw_register_mux(dev, name, parents, num_parents,
++			CLK_SET_RATE_NO_REPARENT | CLK_SET_PARENT_GATE,
++			reg, shift, width, 0, &imx_ccm_lock);
++}
++
+ static inline struct clk *imx_clk_mux2(const char *name, void __iomem *reg,
+ 			u8 shift, u8 width, const char * const *parents,
+ 			int num_parents)
+@@ -493,6 +509,19 @@ static inline struct clk_hw *imx_clk_hw_mux_flags(const char *name,
+ 				   reg, shift, width, 0, &imx_ccm_lock);
+ }
+ 
++static inline struct clk_hw *imx_dev_clk_hw_mux_flags(struct device *dev,
++						  const char *name,
++						  void __iomem *reg, u8 shift,
++						  u8 width,
++						  const char * const *parents,
++						  int num_parents,
++						  unsigned long flags)
++{
++	return clk_hw_register_mux(dev, name, parents, num_parents,
++				   flags | CLK_SET_RATE_NO_REPARENT,
++				   reg, shift, width, 0, &imx_ccm_lock);
++}
++
+ struct clk_hw *imx_clk_hw_cpu(const char *name, const char *parent_name,
+ 		struct clk *div, struct clk *mux, struct clk *pll,
+ 		struct clk *step);
 -- 
 2.7.4
 
