@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27BC1AA13D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D083E1AA150
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369809AbgDOMfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:35:31 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:57149 "EHLO
+        id S369888AbgDOMhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:37:10 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:57479 "EHLO
         m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S369749AbgDOMeY (ORCPT
+        with ESMTP id S369752AbgDOMe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:34:24 -0400
+        Wed, 15 Apr 2020 08:34:26 -0400
 Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 26B094E207B;
-        Wed, 15 Apr 2020 20:34:21 +0800 (CST)
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 494524E2032;
+        Wed, 15 Apr 2020 20:34:23 +0800 (CST)
 From:   Wang Wenhu <wenhu.wang@vivo.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         oss@buserror.net, christophe.leroy@c-s.fr,
         linuxppc-dev@lists.ozlabs.org
 Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 1/5] powerpc: 85xx: make FSL_85XX_CACHE_SRAM configurable
-Date:   Wed, 15 Apr 2020 05:33:42 -0700
-Message-Id: <20200415123346.116212-2-wenhu.wang@vivo.com>
+Subject: [PATCH 2/5] powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+Date:   Wed, 15 Apr 2020 05:33:43 -0700
+Message-Id: <20200415123346.116212-3-wenhu.wang@vivo.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200415123346.116212-1-wenhu.wang@vivo.com>
 References: <20200415123346.116212-1-wenhu.wang@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVMQk5LS0tLTE1JQkhCTllXWShZQU
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVLSE1LS0tLSkhITkpPT1lXWShZQU
         hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PQg6Nxw*PDg8Qwg6KU0TIzAQ
-        Dh8aCy9VSlVKTkNNQk5PS01KTkhIVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUlCSk83Bg++
-X-HM-Tid: 0a717dd5466a9376kuws26b094e207b
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBw6Azo4ODg2TwgrE0I*IzAW
+        ORlPFCtVSlVKTkNNQk5PS01ITUxIVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUhKTkI3Bg++
+X-HM-Tid: 0a717dd54ecd9376kuws494524e2032
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable FSL_85XX_CACHE_SRAM selection. On e500 platforms, the cache
-could be configured and used as a piece of SRAM which is hignly
-friendly for some user level application performances.
+Include linux/io.h into fsl_85xx_cache_sram.c to fix the
+implicit-declaration compile error when building Cache-Sram.
+
+arch/powerpc/sysdev/fsl_85xx_cache_sram.c: In function ‘instantiate_cache_sram’:
+arch/powerpc/sysdev/fsl_85xx_cache_sram.c:97:26: error: implicit declaration of function ‘ioremap_coherent’; did you mean ‘bitmap_complement’? [-Werror=implicit-function-declaration]
+  cache_sram->base_virt = ioremap_coherent(cache_sram->base_phys,
+                          ^~~~~~~~~~~~~~~~
+                          bitmap_complement
+arch/powerpc/sysdev/fsl_85xx_cache_sram.c:97:24: error: assignment makes pointer from integer without a cast [-Werror=int-conversion]
+  cache_sram->base_virt = ioremap_coherent(cache_sram->base_phys,
+                        ^
+arch/powerpc/sysdev/fsl_85xx_cache_sram.c:123:2: error: implicit declaration of function ‘iounmap’; did you mean ‘roundup’? [-Werror=implicit-function-declaration]
+  iounmap(cache_sram->base_virt);
+  ^~~~~~~
+  roundup
+cc1: all warnings being treated as errors
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Christophe Leroy <christophe.leroy@c-s.fr>
 Cc: Scott Wood <oss@buserror.net>
 Cc: Michael Ellerman <mpe@ellerman.id.au>
 Cc: linuxppc-dev@lists.ozlabs.org
+Fixes: 6db92cc9d07d ("powerpc/85xx: add cache-sram support")
 Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
 ---
- arch/powerpc/platforms/85xx/Kconfig    | 2 +-
- arch/powerpc/platforms/Kconfig.cputype | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ arch/powerpc/sysdev/fsl_85xx_cache_sram.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/85xx/Kconfig b/arch/powerpc/platforms/85xx/Kconfig
-index fa3d29dcb57e..6debb4f1b9cc 100644
---- a/arch/powerpc/platforms/85xx/Kconfig
-+++ b/arch/powerpc/platforms/85xx/Kconfig
-@@ -17,7 +17,7 @@ if FSL_SOC_BOOKE
- if PPC32
+diff --git a/arch/powerpc/sysdev/fsl_85xx_cache_sram.c b/arch/powerpc/sysdev/fsl_85xx_cache_sram.c
+index f6c665dac725..be3aef4229d7 100644
+--- a/arch/powerpc/sysdev/fsl_85xx_cache_sram.c
++++ b/arch/powerpc/sysdev/fsl_85xx_cache_sram.c
+@@ -17,6 +17,7 @@
+ #include <linux/of_platform.h>
+ #include <asm/pgtable.h>
+ #include <asm/fsl_85xx_cache_sram.h>
++#include <linux/io.h>
  
- config FSL_85XX_CACHE_SRAM
--	bool
-+	bool "Freescale 85xx Cache-Sram"
- 	select PPC_LIB_RHEAP
- 	help
- 	  When selected, this option enables cache-sram support
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 0c3c1902135c..1921e9a573e8 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- config PPC32
--	bool
-+	bool "32-bit kernel"
- 	default y if !PPC64
- 	select KASAN_VMALLOC if KASAN && MODULES
+ #include "fsl_85xx_cache_ctlr.h"
  
-@@ -15,6 +15,7 @@ config PPC_BOOK3S_32
- 	bool
- 
- menu "Processor support"
-+
- choice
- 	prompt "Processor Type"
- 	depends on PPC32
-@@ -211,9 +212,9 @@ config PPC_BOOK3E
- 	depends on PPC_BOOK3E_64
- 
- config E500
-+	bool "e500 Support"
- 	select FSL_EMB_PERFMON
- 	select PPC_FSL_BOOK3E
--	bool
- 
- config PPC_E500MC
- 	bool "e500mc Support"
 -- 
 2.17.1
 
