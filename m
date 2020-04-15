@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B79A1A9F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606541A9F78
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898060AbgDOMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:11:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:43860 "EHLO foss.arm.com"
+        id S2898095AbgDOMMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:12:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39518 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441247AbgDOMH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:07:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3931C1063;
-        Wed, 15 Apr 2020 05:07:56 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1C653F68F;
-        Wed, 15 Apr 2020 05:07:54 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 13:07:52 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Fangrui Song <maskray@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Ilie Halip <ilie.halip@gmail.com>,
-        Jian Cai <jiancai@google.com>
-Subject: Re: [PATCH v2] arm64: Delete the space separator in __emit_inst
-Message-ID: <20200415120752.GD6526@gaia>
-References: <20200414163255.66437-1-maskray@google.com>
+        id S2441289AbgDOMIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:08:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E6A2FABB2;
+        Wed, 15 Apr 2020 12:08:47 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9FD9B1E1250; Wed, 15 Apr 2020 14:08:46 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 14:08:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200415120846.GG6126@quack2.suse.cz>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-5-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200414163255.66437-1-maskray@google.com>
+In-Reply-To: <20200414040030.1802884-5-ira.weiny@intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 09:32:55AM -0700, Fangrui Song wrote:
-> In assembly, many instances of __emit_inst(x) expand to a directive. In
-> a few places __emit_inst(x) is used as an assembler macro argument. For
-> example, in arch/arm64/kvm/hyp/entry.S
+On Mon 13-04-20 21:00:26, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
->   ALTERNATIVE(nop, SET_PSTATE_PAN(1), ARM64_HAS_PAN, CONFIG_ARM64_PAN)
+> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
 > 
-> expands to the following by the C preprocessor:
+> Set the flag to be user visible and changeable.  Set the flag to be
+> inherited.  Allow applications to change the flag at any time.
 > 
->   alternative_insn nop, .inst (0xd500401f | ((0) << 16 | (4) << 5) | ((!!1) << 8)), 4, 1
+> Finally, on regular files, flag the inode to not be cached to facilitate
+> changing S_DAX on the next creation of the inode.
 > 
-> Both comma and space are separators, with an exception that content
-> inside a pair of parentheses/quotes is not split, so the clang
-> integrated assembler splits the arguments to:
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/ext4/ext4.h  | 13 +++++++++----
+>  fs/ext4/ioctl.c | 21 ++++++++++++++++++++-
+>  2 files changed, 29 insertions(+), 5 deletions(-)
 > 
->    nop, .inst, (0xd500401f | ((0) << 16 | (4) << 5) | ((!!1) << 8)), 4, 1
-> 
-> GNU as preprocesses the input with do_scrub_chars(). Its arm64 backend
-> (along with many other non-x86 backends) sees:
-> 
->   alternative_insn nop,.inst(0xd500401f|((0)<<16|(4)<<5)|((!!1)<<8)),4,1
->   # .inst(...) is parsed as one argument
-> 
-> while its x86 backend sees:
-> 
->   alternative_insn nop,.inst (0xd500401f|((0)<<16|(4)<<5)|((!!1)<<8)),4,1
->   # The extra space before '(' makes the whole .inst (...) parsed as two arguments
-> 
-> The non-x86 backend's behavior is considered unintentional
-> (https://sourceware.org/bugzilla/show_bug.cgi?id=25750).
-> So drop the space separator inside `.inst (...)` to make the clang
-> integrated assembler work.
-> 
-> Suggested-by: Ilie Halip <ilie.halip@gmail.com>
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/939
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 61b37a052052..434021fcec88 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -415,13 +415,16 @@ struct flex_groups {
+>  #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
+>  #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
+>  #define EXT4_EOFBLOCKS_FL		0x00400000 /* Blocks allocated beyond EOF */
+> +
+> +#define EXT4_DAX_FL			0x00800000 /* Inode is DAX */
+> +
 
-Queued for 5.7. Thanks.
+You seem to be using somewhat older kernel... EXT4_EOFBLOCKS_FL doesn't
+exist anymore (but still it's good to leave it reserved for some time so
+the value you've chosen is OK).
 
+> @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
+>  	return error;
+>  }
+>  
+> +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
+> +{
+> +	struct ext4_inode_info *ei = EXT4_I(inode);
+> +
+> +	if (S_ISDIR(inode->i_mode))
+> +		return;
+> +
+> +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
+> +		inode->i_state |= I_DONTCACHE;
+> +}
+> +
+
+You probably want to use the function you've introduced in the XFS series
+here...
+
+								Honza
 -- 
-Catalin
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
