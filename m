@@ -2,126 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFEF1AAB5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711411AAB69
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371214AbgDOPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:06:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60738 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394096AbgDOPGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:06:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BD32EAFBF;
-        Wed, 15 Apr 2020 15:06:19 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     saravanak@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] of: property: Avoid linking devices with circular dependencies
-Date:   Wed, 15 Apr 2020 17:05:49 +0200
-Message-Id: <20200415150550.28156-5-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200415150550.28156-1-nsaenzjulienne@suse.de>
-References: <20200415150550.28156-1-nsaenzjulienne@suse.de>
+        id S2393117AbgDOPHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730523AbgDOPH3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 11:07:29 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C63C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:07:29 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j16so13722234oih.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:07:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BJ/egVWRNDuUrA/1e/qFDXWs5Qc4J9+ABqHJ5tB4g3c=;
+        b=iWw1bOn3loZLesgeK5vvFlv/vbKF1B9cNeqqd8NzRsrGERu7XHxYHXWJ5Vj2aIKqQt
+         ALZSRzXYFGnpipKbpX9Mj6K4dlBHCsyPxQWdqycQN4uudHiPdiNQ0A4222J8g43ypldP
+         OoxNb0rt9UnzHvWxrcg9sL819b/jYP4eu3+0EmNCdVKPHvJcY9vtyTYzET+LtNy8PYxy
+         w5zNHoiUMDb8nwu0Ak6Y43R2eh/vABGjwHeVRBBsoy1i6JORJ6gx1bi4NriKKzTDSfEW
+         +T7kNtgF2mUJ+v+m5uG2JWiihzllu8oTQDSg0pj7Z+C/Og4Ys6uPJ1cmXJnz3/1755By
+         AQYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BJ/egVWRNDuUrA/1e/qFDXWs5Qc4J9+ABqHJ5tB4g3c=;
+        b=CeoKs+KZaSEUWUzg2skjPWgDovbTA/OxtR6jj9nN9dVGt3m4MhAYS/SC6246BjBy1k
+         EKbyqWj7guqvHR0PaWEuXEtZYEdMJH9YUIhPgDdDU59fOwPlYejF1nlvC19if6sqX4Iw
+         gJ3Sx4/pPjosrnmYDepyJJfkHXMViXMEMm9l6GHZ8LXelD5ArRLsJBB+nb4X2Sv4zy1E
+         AVHzeTiyCk6YZ01ZPnv4tCe2igZRAMHbANld7+c/viWZX9p/mf9ndtV6sor92/VcsxI7
+         pAtlYIVEH0bFH/i0xJrFX6xKmFkYpdukEB4wRaxjLWyr50tV19AoNNBJ/eFimIjzHlxg
+         KdEg==
+X-Gm-Message-State: AGi0PuYzoAG3r7+Y97JgtRmwipcQOvq0sHjtYHAxa+SQioCEydkP5a0Z
+        /ns7wavaAIwU21iouvKrrCR86c9z/g3b3FiYqZsvWQ==
+X-Google-Smtp-Source: APiQypLvNSLmbcj2GoOJKPRwQ0b4TevwhF9jPUtKlLczQuSmRgDhP5Yyzo2l8yt6eZwfR64jtzXnvSUgm75W51k8BEs=
+X-Received: by 2002:aca:4d86:: with SMTP id a128mr19561982oib.96.1586963248561;
+ Wed, 15 Apr 2020 08:07:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200414181012.114905-1-robert.marko@sartura.hr> <20200415093334.GC25745@shell.armlinux.org.uk>
+In-Reply-To: <20200415093334.GC25745@shell.armlinux.org.uk>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Wed, 15 Apr 2020 17:07:17 +0200
+Message-ID: <CA+HBbNEYkQKy-WjxB+QDasknH8gAChddcbtNX6xxE3a+GoNC2g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] net: phy: mdio: add IPQ40xx MDIO driver
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        robh+dt@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When creating a consumer/supplier relationship between devices it's
-essential to make sure they aren't supplying each other creating a
-circular dependency.
+I have sent a v3.
 
-Introduce a new function to check if such circular dependency exists
-between two device nodes and use it in of_link_to_phandle().
+I tried to incorporate all of your remarks there.
 
-Fixes: a3e1d1a7f5fc ("of: property: Add functional dependency link from DT bindings")
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
+Thanks
+Robert
 
-NOTE:
- I feel of_link_is_circular() is a little dense, and could benefit from
- some abstraction/refactoring. That said, I'd rather get some feedback,
- before spending time on it.
-
- drivers/of/property.c | 50 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 2c7978ef22be1..74a5190408c3b 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1171,6 +1171,44 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{}
- };
- 
-+/**
-+ * of_link_is_circular - Make sure potential link isn't circular
-+ *
-+ * @sup_np: Supplier device
-+ * @con_np: Consumer device
-+ *
-+ * This function checks if @sup_np's properties contain a reference to @con_np.
-+ *
-+ * Will return true if there's a circular dependency and false otherwise.
-+ */
-+static bool of_link_is_circular(struct device_node *sup_np,
-+				struct device_node *con_np)
-+{
-+	const struct supplier_bindings *s = of_supplier_bindings;
-+	struct device_node *tmp;
-+	bool matched = false;
-+	struct property *p;
-+	int i = 0;
-+
-+	for_each_property_of_node(sup_np, p) {
-+		while (!matched && s->parse_prop) {
-+			while ((tmp = s->parse_prop(sup_np, p->name, i))) {
-+				matched = true;
-+				i++;
-+
-+				if (tmp == con_np)
-+					return true;
-+			}
-+			i = 0;
-+			s++;
-+		}
-+		s = of_supplier_bindings;
-+		matched = false;
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * of_link_to_phandle - Add device link to supplier from supplier phandle
-  * @dev: consumer device
-@@ -1216,6 +1254,18 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
- 		return -ENODEV;
- 	}
- 
-+	/*
-+	 * It is possible for consumer device nodes to also supply the device
-+	 * node they are consuming from. Creating an unwarranted circular
-+	 * dependency.
-+	 */
-+	if (of_link_is_circular(sup_np, dev->of_node)) {
-+		dev_dbg(dev, "Not linking to %pOFP - Circular dependency\n",
-+			sup_np);
-+		of_node_put(sup_np);
-+		return -ENODEV;
-+	}
-+
- 	/*
- 	 * Don't allow linking a device node as a consumer of one of its
- 	 * descendant nodes. By definition, a child node can't be a functional
--- 
-2.26.0
-
+On Wed, Apr 15, 2020 at 11:33 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Tue, Apr 14, 2020 at 08:10:11PM +0200, Robert Marko wrote:
+> > diff --git a/drivers/net/phy/mdio-ipq40xx.c b/drivers/net/phy/mdio-ipq40xx.c
+> > new file mode 100644
+> > index 000000000000..d8c11c621f20
+> > --- /dev/null
+> > +++ b/drivers/net/phy/mdio-ipq40xx.c
+> > @@ -0,0 +1,176 @@
+> > +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> > +/* Copyright (c) 2015, The Linux Foundation. All rights reserved. */
+> > +/* Copyright (c) 2020 Sartura Ltd. */
+> > +
+> > +#include <linux/delay.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/io.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/of_mdio.h>
+> > +#include <linux/phy.h>
+> > +#include <linux/platform_device.h>
+> > +
+>
+> Looking at how these registers are used, they could be renamed:
+>
+> > +#define MDIO_CTRL_0_REG              0x40
+>
+> This seems to be unused.
+>
+> > +#define MDIO_CTRL_1_REG              0x44
+>
+> MDIO_ADDR_REG
+>
+> > +#define MDIO_CTRL_2_REG              0x48
+>
+> MDIO_DATA_WRITE_REG
+>
+> > +#define MDIO_CTRL_3_REG              0x4c
+>
+> MDIO_DATA_READ_REG
+>
+> > +#define MDIO_CTRL_4_REG              0x50
+> > +#define MDIO_CTRL_4_ACCESS_BUSY              BIT(16)
+> > +#define MDIO_CTRL_4_ACCESS_START             BIT(8)
+> > +#define MDIO_CTRL_4_ACCESS_CODE_READ         0
+> > +#define MDIO_CTRL_4_ACCESS_CODE_WRITE        1
+>
+> MDIO_CMD_* ?
+>
+> > +
+> > +#define IPQ40XX_MDIO_RETRY   1000
+> > +#define IPQ40XX_MDIO_DELAY   10
+> > +
+> > +struct ipq40xx_mdio_data {
+> > +     void __iomem    *membase;
+> > +};
+> > +
+> > +static int ipq40xx_mdio_wait_busy(struct mii_bus *bus)
+> > +{
+> > +     struct ipq40xx_mdio_data *priv = bus->priv;
+> > +     int i;
+> > +
+> > +     for (i = 0; i < IPQ40XX_MDIO_RETRY; i++) {
+> > +             unsigned int busy;
+> > +
+> > +             busy = readl(priv->membase + MDIO_CTRL_4_REG) &
+> > +                     MDIO_CTRL_4_ACCESS_BUSY;
+> > +             if (!busy)
+> > +                     return 0;
+> > +
+> > +             /* BUSY might take to be cleard by 15~20 times of loop */
+> > +             udelay(IPQ40XX_MDIO_DELAY);
+> > +     }
+> > +
+> > +     dev_err(bus->parent, "MDIO operation timed out\n");
+> > +
+> > +     return -ETIMEDOUT;
+> > +}
+> > +
+> > +static int ipq40xx_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
+> > +{
+> > +     struct ipq40xx_mdio_data *priv = bus->priv;
+> > +     int value = 0;
+> > +     unsigned int cmd = 0;
+>
+> No need to initialise either of these, and you can eliminate "value"
+> which will then satisfy davem's requirement for reverse-christmas-tree
+> ordering of variable declarations.
+>
+> > +
+> > +     /* Reject clause 45 */
+> > +     if (regnum & MII_ADDR_C45)
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     if (ipq40xx_mdio_wait_busy(bus))
+> > +             return -ETIMEDOUT;
+> > +
+> > +     /* issue the phy address and reg */
+> > +     writel((mii_id << 8) | regnum, priv->membase + MDIO_CTRL_1_REG);
+> > +
+> > +     cmd = MDIO_CTRL_4_ACCESS_START | MDIO_CTRL_4_ACCESS_CODE_READ;
+> > +
+> > +     /* issue read command */
+> > +     writel(cmd, priv->membase + MDIO_CTRL_4_REG);
+> > +
+> > +     /* Wait read complete */
+> > +     if (ipq40xx_mdio_wait_busy(bus))
+> > +             return -ETIMEDOUT;
+> > +
+> > +     /* Read data */
+> > +     value = readl(priv->membase + MDIO_CTRL_3_REG);
+> > +
+> > +     return value;
+> > +}
+> > +
+> > +static int ipq40xx_mdio_write(struct mii_bus *bus, int mii_id, int regnum,
+> > +                                                      u16 value)
+> > +{
+> > +     struct ipq40xx_mdio_data *priv = bus->priv;
+> > +     unsigned int cmd = 0;
+>
+> No need to initialise cmd.
+>
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
