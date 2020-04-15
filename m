@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7141AB110
+	by mail.lfdr.de (Postfix) with ESMTP id BD85A1AB111
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441576AbgDOTJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416825AbgDOSeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:34:17 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB9082168B;
-        Wed, 15 Apr 2020 18:34:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586975657;
-        bh=Q/1CpZp5I3+pF0005M7gm5zHGgmQB/RWvcwSdTlhNSI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BH0Q82AXll4u/GIXokIQHZBLDlNzt0yqRb+zkIHDCCtkN1j+bJ8zosPc5YTzJf0rW
-         HjJd4RFQyD+LMYvw/36XumzGBTBZIyvDA/FFsLOIdBVYMrn8hw5mPeNEkmqOzHd5rI
-         OZ2hd8UiE/4yO/VUlj+GoIiTJgSMcJ9zStiU1siE=
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
-        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 15/15] kcsan: Make reporting aware of KCSAN tests
-Date:   Wed, 15 Apr 2020 11:34:11 -0700
-Message-Id: <20200415183411.12368-15-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200415183343.GA12265@paulmck-ThinkPad-P72>
-References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+        id S2436722AbgDOTJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:09:30 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15686 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416827AbgDOSen (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:34:43 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9753550000>; Wed, 15 Apr 2020 11:32:53 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 15 Apr 2020 11:34:43 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 15 Apr 2020 11:34:43 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
+ 2020 18:34:42 +0000
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
+ DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Wed, 15 Apr 2020 18:34:42 +0000
+Subject: Re: [PATCH] mm/compaction: Fix a typo in comment
+ "pessemistic"->"pessimistic"
+To:     Ethon Paul <ethp@qq.com>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20200411070307.16021-1-ethp@qq.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <9e306efd-73e3-7ccd-f970-e2044200d2a2@nvidia.com>
+Date:   Wed, 15 Apr 2020 11:34:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200411070307.16021-1-ethp@qq.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586975573; bh=Vtu8bQjFKjMQLAGC8dbeG50/F5cJomR9NAcc1xjXS4s=;
+        h=X-PGP-Universal:Subject:To:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=qt6TN8I+U8mxhBhzkOJSdUtb2XTVsKUCkY3OckV/dvIkogluli7+F/nBxZZnu6+50
+         7UL6gQ8FYD091s3SGYHQFR/iqL8/DbqZKBveSkNxSeZdBFChMC2j/Nz255snfIsHJN
+         VoTk2ewMGDOx6xym9BRiYiBcbDR5/WL9o991YthkXGsB/yvOqVGdUmvmRdV16eycWP
+         gIKZCNewbFVax1MO04zbpuLyJ9tTK8RIamxbRR5at9p91m6+m+/2uRSe/LLtaARnzE
+         nKOwaaAJRvLGb/Y1nnkW8NIZyvttWWb6AIcqbbX5+Qt9NTABPwvkPtqXH9yIaYwlta
+         A5bNRAzpf9xaw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
 
-Reporting hides KCSAN runtime functions in the stack trace, with
-filtering done based on function names. Currently this included all
-functions (or modules) that would match "kcsan_". Make the filter aware
-of KCSAN tests, which contain "kcsan_test", and are no longer skipped in
-the report.
+On 4/11/20 12:03 AM, Ethon Paul wrote:
+> There is a typo in comment, fix it.
+> 
+> Signed-off-by: Ethon Paul <ethp@qq.com>
 
-This is in preparation for adding a KCSAN test module.
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/kcsan/report.c | 30 +++++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index cf41d63d..ac5f834 100644
---- a/kernel/kcsan/report.c
-+++ b/kernel/kcsan/report.c
-@@ -262,16 +262,32 @@ static const char *get_thread_desc(int task_id)
- static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries)
- {
- 	char buf[64];
--	int len;
--	int skip = 0;
-+	char *cur;
-+	int len, skip;
- 
--	for (; skip < num_entries; ++skip) {
-+	for (skip = 0; skip < num_entries; ++skip) {
- 		len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skip]);
--		if (!strnstr(buf, "csan_", len) &&
--		    !strnstr(buf, "tsan_", len) &&
--		    !strnstr(buf, "_once_size", len))
--			break;
-+
-+		/* Never show tsan_* or {read,write}_once_size. */
-+		if (strnstr(buf, "tsan_", len) ||
-+		    strnstr(buf, "_once_size", len))
-+			continue;
-+
-+		cur = strnstr(buf, "kcsan_", len);
-+		if (cur) {
-+			cur += sizeof("kcsan_") - 1;
-+			if (strncmp(cur, "test", sizeof("test") - 1))
-+				continue; /* KCSAN runtime function. */
-+			/* KCSAN related test. */
-+		}
-+
-+		/*
-+		 * No match for runtime functions -- @skip entries to skip to
-+		 * get to first frame of interest.
-+		 */
-+		break;
- 	}
-+
- 	return skip;
- }
- 
--- 
-2.9.5
-
+> ---
+>   mm/compaction.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 46f0fcc93081..17e41b43db4f 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1401,7 +1401,7 @@ fast_isolate_freepages(struct compact_control *cc)
+>   		if (scan_start) {
+>   			/*
+>   			 * Use the highest PFN found above min. If one was
+> -			 * not found, be pessemistic for direct compaction
+> +			 * not found, be pessimistic for direct compaction
+>   			 * and use the min mark.
+>   			 */
+>   			if (highest) {
+> 
