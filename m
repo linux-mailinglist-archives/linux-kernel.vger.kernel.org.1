@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632B61AB159
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152D91AB15F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441691AbgDOTOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1416875AbgDOSx0 (ORCPT
+        id S2441721AbgDOTOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:14:36 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:35596 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416885AbgDOS4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:53:26 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EBFC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:53:25 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id k9so14398933oia.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 11:53:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UkOE4fzYqNNS8DcHe5tiuu2r/QTt3uX1JrnwwjvsTZw=;
-        b=YmHRbXpc73KSxhoWUxR6W/AaqMIg//dGM5lPLTN9hjVunPcI/kFvIlklmpc9nwPczn
-         8Jsjcuzd37iOEzWZVX8kIh2tMJ5UFYZfcGi65RmxOd/T8ydV2MSu2g8wg8ECLxEhe56+
-         e901uGL4qVyaSZR3lNcPWT8z9ul0G9xdG41TsPF+lVq+5kH701sMvNYVXX6Z7L+6RycV
-         3VDhIARnp5mqG8t05Okzk3mhS15tZKy6NEas6GZEsGgiBeOtEGccHbptZ/MxrIjGEt7O
-         acIz4dTFfx38KhfD9yfB7QQr4puxyN7Z/C3n5GSOkEqC20B7DAMa3LKW1cLZxeSQD781
-         B9Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UkOE4fzYqNNS8DcHe5tiuu2r/QTt3uX1JrnwwjvsTZw=;
-        b=eG28gnOeJ06xl1HLB3AydOsVE7BVtCtOPBvtMRUBf1IoA0f5Ufs3zZNlN0XejnnDd4
-         FI21qO2DJFiPv8LOQ0SmFwJlvbS2IH8iQUIdyJYqXJrVgdESdF5Qn84SGssclef+36+Q
-         G2FMLRS41nutIpN/b7kIvcQL+Q+reBcHh5RdNnUfr3xLLfs0zuD9hr/kDNeh65X7yo8t
-         IXbcQ+hXmaWcl46199LGl0m/ho2zsEzHcKe5mggNyiJ/lbqb2Caye1kBemalrFdIm+Yy
-         1ZQVehyNNUjCl+aOi0kDMfo6X3YZiiwnveIvqwqWhqIBEnhCv5cFlMyVo4csVQ7SbNch
-         msPg==
-X-Gm-Message-State: AGi0PuYgsXOMxSmnZ6g1JghS6cIZMnAwytVIcC2rfJKqyZ9chGO0PuZj
-        SeNUqICZqMxaMp/Nr6g18Bd8lEnCTAnjCjjWx+BG4g==
-X-Google-Smtp-Source: APiQypKiCyts7MzkefeWjujl3cV78NyXFHt3/B3o4x2h5rbo4Zq9+NvNxI+RB7I5CfmK4X8tACMgZbIABjB/7I7y328=
-X-Received: by 2002:aca:682:: with SMTP id 124mr496722oig.69.1586976804536;
- Wed, 15 Apr 2020 11:53:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200415150550.28156-1-nsaenzjulienne@suse.de> <20200415150550.28156-5-nsaenzjulienne@suse.de>
-In-Reply-To: <20200415150550.28156-5-nsaenzjulienne@suse.de>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 15 Apr 2020 11:52:48 -0700
-Message-ID: <CAGETcx9ewwOq3TRWorDf26HQzfQSd0KbtUT9AcoNnKpBwfuu+g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] of: property: Avoid linking devices with circular dependencies
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Wed, 15 Apr 2020 14:56:04 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jOnAT-0006xw-Sc; Wed, 15 Apr 2020 13:53:50 -0500
+Message-ID: <36961f9d8c533d8b576043a2c6fc4859accfd9f1.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
+Date:   Wed, 15 Apr 2020 13:53:48 -0500
+In-Reply-To: <20200415152442.122873-2-wenhu.wang@vivo.com>
+References: <20200415124929.GA3265842@kroah.com>
+         <20200415152442.122873-1-wenhu.wang@vivo.com>
+         <20200415152442.122873-2-wenhu.wang@vivo.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: wenhu.wang@vivo.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, christophe.leroy@c-s.fr, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, mpe@ellerman.id.au
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH v2,1/5] powerpc: 85xx: make FSL_85XX_CACHE_SRAM
+ configurable
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 8:06 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> When creating a consumer/supplier relationship between devices it's
-> essential to make sure they aren't supplying each other creating a
-> circular dependency.
-
-Kinda correct. But fw_devlink is not just about optimizing probing.
-It's also about ensuring sync_state() callbacks work correctly when
-drivers are built as modules. And for that to work, circular
-"SYNC_STATE_ONLY" device links are allowed. I've explained it in a bit
-more detail here [1].
-
-> Introduce a new function to check if such circular dependency exists
-> between two device nodes and use it in of_link_to_phandle().
->
-> Fixes: a3e1d1a7f5fc ("of: property: Add functional dependency link from DT bindings")
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+On Wed, 2020-04-15 at 08:24 -0700, Wang Wenhu wrote:
+> Enable FSL_85XX_CACHE_SRAM selection. On e500 platforms, the cache
+> could be configured and used as a piece of SRAM which is hignly
+> friendly for some user level application performances.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> Cc: Scott Wood <oss@buserror.net>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
 > ---
->
-> NOTE:
->  I feel of_link_is_circular() is a little dense, and could benefit from
->  some abstraction/refactoring. That said, I'd rather get some feedback,
->  before spending time on it.
+> Changes since v1:
+>  * None
+> ---
+>  arch/powerpc/platforms/85xx/Kconfig    | 2 +-
+>  arch/powerpc/platforms/Kconfig.cputype | 5 +++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/85xx/Kconfig
+> b/arch/powerpc/platforms/85xx/Kconfig
+> index fa3d29dcb57e..6debb4f1b9cc 100644
+> --- a/arch/powerpc/platforms/85xx/Kconfig
+> +++ b/arch/powerpc/platforms/85xx/Kconfig
+> @@ -17,7 +17,7 @@ if FSL_SOC_BOOKE
+>  if PPC32
+>  
+>  config FSL_85XX_CACHE_SRAM
+> -	bool
+> +	bool "Freescale 85xx Cache-Sram"
+>  	select PPC_LIB_RHEAP
+>  	help
+>  	  When selected, this option enables cache-sram support
 
-Good call :)
+NACK
 
->  drivers/of/property.c | 50 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 2c7978ef22be1..74a5190408c3b 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1171,6 +1171,44 @@ static const struct supplier_bindings of_supplier_bindings[] = {
->         {}
->  };
->
-> +/**
-> + * of_link_is_circular - Make sure potential link isn't circular
-> + *
-> + * @sup_np: Supplier device
-> + * @con_np: Consumer device
-> + *
-> + * This function checks if @sup_np's properties contain a reference to @con_np.
-> + *
-> + * Will return true if there's a circular dependency and false otherwise.
-> + */
-> +static bool of_link_is_circular(struct device_node *sup_np,
-> +                               struct device_node *con_np)
-> +{
-> +       const struct supplier_bindings *s = of_supplier_bindings;
-> +       struct device_node *tmp;
-> +       bool matched = false;
-> +       struct property *p;
-> +       int i = 0;
-> +
-> +       for_each_property_of_node(sup_np, p) {
-> +               while (!matched && s->parse_prop) {
-> +                       while ((tmp = s->parse_prop(sup_np, p->name, i))) {
-> +                               matched = true;
-> +                               i++;
-> +
-> +                               if (tmp == con_np)
-> +                                       return true;
-> +                       }
-> +                       i = 0;
-> +                       s++;
-> +               }
-> +               s = of_supplier_bindings;
-> +               matched = false;
-> +       }
-> +
-> +       return false;
-> +}
+As discussed before, the driver that uses this API should "select" this
+symbol.
 
-This only catches circular links made out of 2 devices. If we really
-needed such a function that worked correctly to catch bigger
-"circles", you'd need to recurse and it'll get super wasteful and
-ugly.
+-Scott
 
-Thankfully, device_link_add() already checks for circular dependencies
-when we need it and it's much cheaper because the links are at a
-device level and not examined at a property level.
 
-Is this a real problem you are hitting with the Raspberry Pi 4's? If
-so can you give an example in its DT where you are hitting this?
-
-I'll have to NACK this patch for reasons mentioned above and in [1].
-However, I think I have a solution that should work for what I'm
-guessing is your real problem. But let me see the description of the
-real scenario before I claim to have a solution.
-
--Saravana
-
-[1] - https://lore.kernel.org/lkml/20191028220027.251605-1-saravanak@google.com/
