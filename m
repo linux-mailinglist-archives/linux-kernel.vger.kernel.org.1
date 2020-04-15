@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF1B1A9514
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269A41A952D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635331AbgDOHsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 03:48:52 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59110 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2635311AbgDOHst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 03:48:49 -0400
-Received: from zn.tnic (p200300EC2F095B00D1697A0DDC961078.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5b00:d169:7a0d:dc96:1078])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 422671EC0591;
-        Wed, 15 Apr 2020 09:48:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1586936927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6I3FIZce64bDLoDmq+PGpLnRSsjIWzLbWIT/VRIHmeE=;
-        b=aaFgGe6jWyv4YuhUEmn54xvS7cekKBpl1xOqbx8WG5AQUdvs5M4tZ+BWgpX56AQHD3zx00
-        88uB8Ur4sb4XGJIsrt8YBqQfopZqBEtOqGuhqJRPkE7+Aeg6PTqSpUTCVBZsDJkIrc/nj6
-        Rbfqu1uNhaWhU4tILvnpJNzieRDwqzc=
-Date:   Wed, 15 Apr 2020 09:48:42 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Matz <matz@suse.de>
-Cc:     Jakub Jelinek <jakub@redhat.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
-Message-ID: <20200415074842.GA31016@zn.tnic>
-References: <20200326223501.GK11398@zn.tnic>
- <20200328084858.421444-1-slyfox@gentoo.org>
- <20200413163540.GD3772@zn.tnic>
- <alpine.LSU.2.21.2004141343370.11688@wotan.suse.de>
+        id S2635365AbgDOHwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 03:52:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2375 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2635311AbgDOHwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 03:52:19 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9367E530937B7EC367CF;
+        Wed, 15 Apr 2020 15:52:13 +0800 (CST)
+Received: from [127.0.0.1] (10.173.223.60) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
+ 15:52:11 +0800
+Subject: Re: [PATCH -next] bpf: remove set but not used variable 'dst_known'
+To:     Song Liu <songliubraving@fb.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+References: <20200413113703.194287-1-maowenan@huawei.com>
+ <C75FACD4-8549-4AD1-BDE6-1F5B47095E4C@fb.com>
+ <2b2e0060-ef9b-5541-1108-e28464b47f0a@huawei.com>
+ <F68FB33A-1B98-45C1-8056-457EFA52F84F@fb.com>
+From:   maowenan <maowenan@huawei.com>
+Message-ID: <8855e82a-88d0-8d1e-e5e0-47e781f9653c@huawei.com>
+Date:   Wed, 15 Apr 2020 15:52:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2004141343370.11688@wotan.suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <F68FB33A-1B98-45C1-8056-457EFA52F84F@fb.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.173.223.60]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:50:29PM +0000, Michael Matz wrote:
-> So this part expects that the caller (!) of trace_hardirqs_on was compiled
-> with a frame pointer (in %ebp).
+On 2020/4/15 15:23, Song Liu wrote:
+> 
+> 
+>> On Apr 14, 2020, at 6:37 PM, maowenan <maowenan@huawei.com> wrote:
+>>
+>> On 2020/4/15 6:05, Song Liu wrote:
+>>>
+>>>
+>>>> On Apr 13, 2020, at 4:37 AM, Mao Wenan <maowenan@huawei.com> wrote:
+>>>>
+>>>> Fixes gcc '-Wunused-but-set-variable' warning:
+>>>>
+>>>> kernel/bpf/verifier.c:5603:18: warning: variable ‘dst_known’
+>>>> set but not used [-Wunused-but-set-variable]
+>>>>
+>>>> It is not used since commit f1174f77b50c ("bpf/verifier:
+>>>> rework value tracking")
+>>>
+>>> The fix makes sense. But I think f1174f77b50c introduced dst_known, 
+>>> so this statement is not accurate. 
+>>>
+>> thanks for review, yes, f1174f77b50c introduced dst_known, and below commit
+>> doesn't deference variable dst_known. So I send v2 later?
+>> 3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+> 
+> I don't think we need to back port this to stable. So it is OK not to 
+> include Fixes tag. We can just remove this statement in the commit log.
+> 
+> bpf-next is not open yet. Please send v2 when bpf-next is open. 
+> 
+> Thanks,
+> Song
+> 
+OK, I will do that.
 
-/me looks at the .s file...
-
-options passed comment at the top has -fno-omit-frame-pointer
-
-> Obviously that's not the case as you traced above. Is start_secondary
-> the immediate caller in the above case?
-
-Yes, start_secondary() is the function which is marked as
-__attribute__((optimize("-fno-stack-protector"))) and it does:
-
-# arch/x86/kernel/smpboot.c:264:        local_irq_enable();
-        call    trace_hardirqs_on       #
-
-(the local_irq_enable() is a macro which has the call to
-trace_hardirqs_on().
-
-> Look at it's disassembly.  If it doesn't have the usual push
-> %ebp/mov%esp,%ebp prologue it probably doesn't use a frame pointer.
-
-Here's the preamble:
-
-        .text
-        .p2align 4
-        .type   start_secondary, @function
-start_secondary:
-        pushl   %esi    #
-        pushl   %ebx    #
-        subl    $28, %esp       #,
-# arch/x86/kernel/smpboot.c:226:        cr4_init();
-        call    cr4_init        #
-	...
-
-Those two pushes on entry are for callee-saved regs, AFAICT, because it
-is going to use them later. But no frame setup.
-
-> In that case I would speculate that having a frame pointer
-> was (before the change above) only a side-effect of being
-> compiled with -fstack-protector, which got now disabled.
-
-Looks like it. And that's 32-bit. 64-bit variant of this looks more like it:
-
-        .text
-        .p2align 4
-        .type   start_secondary, @function
-start_secondary:
-        pushq   %rbp    #
-        subq    $8, %rsp        #,
-
-although it doesn't save %rsp on the stack. I think it leaves space on
-the stack for the canary but I'm not sure.
-
-> But I was under the impression that the upstream kernels build with
-> -fno-omit-frame-pointer, so that sounds unexpected.
-
-Yap, see above.
-
-> But I have no better explanation at the moment. If the above
-> speculation doesn't make you progress: preprocessed file and a note of
-> what the immediate caller of trace_hardirqs_on is in the above case,
-> please.
-
-Ok, I'll find you on IRC to talk details.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
