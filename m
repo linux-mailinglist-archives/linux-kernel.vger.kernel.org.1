@@ -2,105 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F1C1AB212
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3756C1AB223
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441900AbgDOTxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441891AbgDOTxF (ORCPT
+        id S2436691AbgDOTyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:54:46 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:22134 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406078AbgDOTyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:53:05 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D311FC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:53:04 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id w3so423971plz.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 12:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=wqYFqvgnJLp6jfCb/pT1ltjRniXVG7wFzSm2iZUIg6w=;
-        b=GoFcaSGnLowNKUY4YRjMhjiMRBGA/jdKAlUVUZTQPxoBsFvIFSTTlnUehLhjTt6XW/
-         pkYTbEE6cy80TR2qnidJEqejtnyMCFJlEJd5Ry68Rf8bPBDYeQI2nD1yeqTmG3b971Pj
-         BWwmiYOx0iPDY1vbwU8QfuFYq/OFuzuNQYDwU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=wqYFqvgnJLp6jfCb/pT1ltjRniXVG7wFzSm2iZUIg6w=;
-        b=f7WMBjVbQ/xURE0uSuvPLrqC3WvUO/Xa2C2LMgIkHQvsyDgV8bMN+VveZobJpEoRAQ
-         LfYl1Tx6r4bxM3u+/1SeZhGtyl1p/SOfEYRFmJyEsD/IxmwWpPw45U72Usqj/EzvL+Bd
-         g8fQF1qvjR9GSWwLmo2WgIcDgYVzFgDOfb7flAz4Yom6guEbroRCSPvEW6SJkPq/rEzi
-         8UubRvrLbumqU9zgfAMWf+zohE8ChY/G6qoEqeRmPUMW2KbXTytlvZ0Im3U8Yq6UC9N9
-         3jpq9sUqTZJM0OnxY8sd2ByMAeBaj6rEGzFUUa6gt7Vh+p0xdj6slvE1NBh6QPbWAQd6
-         fDaA==
-X-Gm-Message-State: AGi0PuZKTCzeCXMQbAK3ZRe73gavomiWzeV3oIXH36JDir+Qf8PeG+k8
-        mlo/m05crgy9ne9bNipDe+13uw==
-X-Google-Smtp-Source: APiQypKW2QCwYlYY+1tV4ZUdnxB7+EL5+2eKfXLs2OXbzTVeg9HjP9FGOirAs7OCA3jRywMzN3Tt7g==
-X-Received: by 2002:a17:90a:17ce:: with SMTP id q72mr892159pja.139.1586980384222;
-        Wed, 15 Apr 2020 12:53:04 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id x76sm14312883pfc.190.2020.04.15.12.53.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 12:53:03 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 15 Apr 2020 15:54:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1586980480; x=1618516480;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Hhsd5JtwPM12DYmkDLyIy4E1RXRHsLoMVadetZOBWkA=;
+  b=PMuRmvfYHNO+RITsw6TNQsObAwRNSoFctkwCitYukUtSRiwzkvobMJv8
+   J369MkZXlMuVGr2mTq6rxqJTPgwHjjfw18mW2CVyetTc8Q9zDWVqo3qPk
+   cidIYu3Fztozb1fJ1a8GBQR2v+PHPv4zJJFTVFsZF87l+xi+CVs34fhGI
+   fIWBg4dXEQAFydi/auRU7U54r5+ewlbWc14X1GYrMqAAs6CrlJRx9Ov6y
+   92GsQowoe7Vz5Wh3uWmX8cjzdw+xu0LZaYQu+KK9RyTUl7EuVTOVIOvVo
+   kCPNgkl75YUc5TnJRYOn1Mch5g9MNgJ9g5TZbTK+JWuIyPBHT9S5eAQ18
+   w==;
+IronPort-SDR: HskfMLuEx+gW50VLbJ+A5FzSC8/DAh+CCZNzhTgr5Fqos7Y6H4SeAqp6JazVt2kASw9ZT9pYf/
+ 5a80S2vnjBkThuHpoGezCEaY50LzrtvPWV/2f8+Q0oDfI35540wfOQcYKTZf+18ruvLlvv33/T
+ zcwSpFhV5kBTKbyuIC+zBQqbORrOa8VEhMqkb2BIHOiNIeldhYlky4pmqOmWRLUVFyoZAk3kI3
+ ZwSblBkfyBQOwOmxqeVbPKC6axRzIENe6cOgap+gQB7NdCLPokxkz4iSRI3BkmgE500zrUxW5z
+ maM=
+X-IronPort-AV: E=Sophos;i="5.72,388,1580745600"; 
+   d="scan'208";a="244077013"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2020 03:54:40 +0800
+IronPort-SDR: +8G22lKOTSnisZhBia4e6azOMqzIMditu1TTMSrqnkU+/vRV+D9j0O/iYJZZE6KmRCZEdjKB39
+ ceTGljag/zDFgNQC9gP3W76t95Z3UyRnExxm/ge32n644K2hjgG5rIZNzWcMm+Y4n1b1ORoJLn
+ 0uC8arGR6sPPd4MMqXWax1UHIi2W1Xi3iCOgrQDgBak+zgpUHzcypXj/4ROr5bD1+eb6F6j6+T
+ Fkt2Z1urYEyVdkOgVgwnO2x50TF/a6FJaiSxZKPOZTjKwOmmieXgvnuBVgPzhq4eYLi8hGnxgF
+ GaHCnrG+QDCQAjyeGwIIcNE7
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:45:08 -0700
+IronPort-SDR: 4zlsxO4RkiT45OqVEJZYxpJPZzqj8CHvYmVLBNY/LOdQ/H1G/eqCmGl6vWjLtcH/tZit8rvf9J
+ 3aFsTlvTIsX7uIXQdsIdo/fQ9/h1tfKL0xL/VLUA3vNjnRRrMxDZaBvmtRYEhOr+bcfj6+MCCz
+ vsLlTP/3jLqHirySbTVKexPEbPGYOsyPp/IxkyeNtxS4lYDy8Q2cZ04nxyld0tycqO98l7YVMa
+ 13g6swKV44qzSYs9xfv8RAswec9tgjPOMdSiHURxJubnXqxlvi0eVTjp9IaQ/mYo3U4DBwhFV/
+ Dt8=
+WDCIronportException: Internal
+Received: from 6hj08h2.ad.shared (HELO jedi-01.hgst.com) ([10.86.55.244])
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Apr 2020 12:54:40 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-efi@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>
+Subject: [v3 PATCH 0/5] Add UEFI support for RISC-V 
+Date:   Wed, 15 Apr 2020 12:54:17 -0700
+Message-Id: <20200415195422.19866-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200415084758.2.Ic98f6622c60a1aa547ed85781f2c3b9d3e56b734@changeid>
-References: <20200415084758.1.Ifcdc4ecb12742a27862744ee1e8753cb95a38a7f@changeid> <20200415084758.2.Ic98f6622c60a1aa547ed85781f2c3b9d3e56b734@changeid>
-Subject: Re: [PATCH 2/3] dt-bindings: drm/bridge: ti-sn65dsi86: Add hpd-gpios to the bindings
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     jonas@kwiboo.se, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, jeffrey.l.hugo@gmail.com,
-        jernej.skrabec@siol.net, linux-arm-msm@vger.kernel.org,
-        robdclark@chromium.org, dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
-        airlied@linux.ie, daniel@ffwll.ch, narmstrong@baylibre.com,
-        robh+dt@kernel.org, spanda@codeaurora.org
-Date:   Wed, 15 Apr 2020 12:53:02 -0700
-Message-ID: <158698038289.105027.2860892334897893887@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-04-15 08:48:40)
-> Allow people to specify to use a GPIO for hot-plug-detect.  Add an
-> example.
->=20
-> NOTE: The current patch adding support for hpd-gpios to the Linux
-> driver for hpd-gpios only adds enough support to the driver so that
-> the bridge can use one of its own GPIOs.  The bindings, however, are
-> written generically.
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->=20
->  .../bindings/display/bridge/ti,sn65dsi86.yaml          | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi8=
-6.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> index 8cacc6db33a9..554bfd003000 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> @@ -60,6 +60,10 @@ properties:
->      const: 1
->      description: See ../../pwm/pwm.yaml for description of the cell form=
-ats.
-> =20
-> +  hpd-gpios:
-> +    maxItems: 1
-> +    description: If present use the given GPIO for hot-plug-detect.
+This series adds UEFI support for RISC-V. Currently, only boot time
+services have been added. Runtime services will be added in a separate
+series. This series depends on some core EFI patches
+present in current in efi-next and following other patches.
 
-Shouldn't this go in the panel node? And the panel driver should get the
-gpio and poll it after powering up the panel? Presumably that's why we
-have the no-hpd property in the simple panel binding vs. putting it here
-in the bridge.
+U-Boot: Adds the boot hartid under chosen node.
+https://lists.denx.de/pipermail/u-boot/2020-April/405726.html
+
+Linux kernel: 5.7-rc1
+
+OpenSBI: master
+
+Patch 1 just moves arm-stub code to a generic code so that it can be used
+across different architecture.
+
+Patch 3 adds fixmap bindings so that CONFIG_EFI can be compiled and we do not
+have create separate config to enable boot time services. 
+As runtime services are not enabled at this time, full generic early ioremap
+support is also not added in this series.
+
+Patch 4 and 5 adds the PE/COFF header and EFI stub code support for RISC-V
+respectively.
+
+The patches can also be found in following git repo.
+
+https://github.com/atishp04/linux/tree/wip_uefi_riscv_v3
+
+The patches have been verified on Qemu using bootefi command in U-Boot.
+
+Changes from v2->v3:
+1. Rebased on top of latest efi patches.
+2. Improved handle_kernel_image().
+
+Changes from v1->v2:
+1. Rebased on 5.7-rc1.
+2. Fixed minor typos and removed redundant macros/comments.
+
+Changes from previous version:
+1. Renamed to the generic efi stub macro.
+2. Address all redundant comments.
+3. Supported EFI kernel image with normal booti command.
+4. Removed runtime service related macro defines.
+
+Atish Patra (5):
+efi: Move arm-stub to a common file
+include: pe.h: Add RISC-V related PE definition
+RISC-V: Define fixmap bindings for generic early ioremap support
+RISC-V: Add PE/COFF header for EFI stub
+RISC-V: Add EFI stub support.
+
+arch/arm/Kconfig                              |   2 +-
+arch/arm64/Kconfig                            |   2 +-
+arch/riscv/Kconfig                            |  21 ++++
+arch/riscv/Makefile                           |   1 +
+arch/riscv/configs/defconfig                  |   1 +
+arch/riscv/include/asm/Kbuild                 |   1 +
+arch/riscv/include/asm/efi.h                  |  44 +++++++
+arch/riscv/include/asm/fixmap.h               |  18 +++
+arch/riscv/include/asm/io.h                   |   1 +
+arch/riscv/include/asm/sections.h             |  13 ++
+arch/riscv/kernel/Makefile                    |   4 +
+arch/riscv/kernel/efi-header.S                |  99 ++++++++++++++++
+arch/riscv/kernel/head.S                      |  16 +++
+arch/riscv/kernel/image-vars.h                |  53 +++++++++
+arch/riscv/kernel/vmlinux.lds.S               |  20 +++-
+drivers/firmware/efi/Kconfig                  |   4 +-
+drivers/firmware/efi/libstub/Makefile         |  19 ++-
+.../efi/libstub/{arm-stub.c => efi-stub.c}    |   0
+drivers/firmware/efi/libstub/riscv-stub.c     | 111 ++++++++++++++++++
+include/linux/pe.h                            |   3 +
+20 files changed, 421 insertions(+), 12 deletions(-)
+create mode 100644 arch/riscv/include/asm/efi.h
+create mode 100644 arch/riscv/include/asm/sections.h
+create mode 100644 arch/riscv/kernel/efi-header.S
+create mode 100644 arch/riscv/kernel/image-vars.h
+rename drivers/firmware/efi/libstub/{arm-stub.c => efi-stub.c} (100%)
+create mode 100644 drivers/firmware/efi/libstub/riscv-stub.c
+
+--
+2.24.0
+
