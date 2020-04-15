@@ -2,87 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9981AADA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6321AAD9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415493AbgDOQQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:16:23 -0400
-Received: from mga07.intel.com ([134.134.136.100]:61797 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415167AbgDOQMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:12:15 -0400
-IronPort-SDR: A6B7A6n8zrP/rW8f/Fhs1fhhbQeWKUKnBXCDmA0CTVbDznYIAIOHEhjXJWyT0AuZszyRjpv0bX
- MAqopJjTR4/g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:10:42 -0700
-IronPort-SDR: yeFr25nu7wUsN0oZLW8B8a5+hflpUXCHjTPFobsrRNazhu++pVLS18x2KbdAmVasHFl6s3goVC
- pe1+wU4Uk04A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="363711578"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Apr 2020 09:10:40 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jOkcd-000p3z-Sn; Wed, 15 Apr 2020 19:10:43 +0300
-Date:   Wed, 15 Apr 2020 19:10:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Prarit Bhargava <prarit@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] tools/power/x86/intel-speed-select: Fix CLX-N package
- information output
-Message-ID: <20200415161043.GU185537@smile.fi.intel.com>
-References: <20200402180732.24684-1-prarit@redhat.com>
+        id S1415475AbgDOQP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:15:57 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22294 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1415204AbgDOQMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:12:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586967139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mv9YA2m75EYzFmUAbMrQPFP314ZNb88wltZTyC27b4E=;
+        b=cpcikAIF+WAZTycGsL1kPI3h2cB6IT0MFReH5pJj1pPEgUf4X3zfiqmwpTg9VOg6meDUXo
+        krsrV2zmjhzieTneBFeE3TQCx/d/ccaSziKQwKX+Q6dlLNulOKLIK7lVScSOft+33EiAs7
+        yRT26Idsu9MAypTS6AOvtqA79qkWxJk=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198--dwTOcnQPbKq4opoet4Ogw-1; Wed, 15 Apr 2020 12:12:14 -0400
+X-MC-Unique: -dwTOcnQPbKq4opoet4Ogw-1
+Received: by mail-qt1-f198.google.com with SMTP id n89so16246268qte.15
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:12:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Mv9YA2m75EYzFmUAbMrQPFP314ZNb88wltZTyC27b4E=;
+        b=CkkGp/ibc+r3duZHKIr7lLMa2v73dqBTbjt06Jkn6lTJvt6DoEkI3l0t01Gg/RnY2K
+         hPy6wfHtP1UxkdzvYMhcK2xt2F08Q/bXZ7YWuWz8DhpxFXMIbQSCzNquJf28iTr9gSDI
+         3goQC+Lc49S6A7egBIqw3AT99hzHLEakJpol5ryfQuCij9JoSBTGVtv0xPRczCVcPRx/
+         YlBmHqcojYJ7aZOfCY4fo19W/JWv/BdwHPy+fx3UBLFyPP9zIqeRX1eAPo/EBEuqwhrh
+         h7JiYDqmyASEgNtTeXyOJgINUZxN1Rk+nfiiC4XQ9HD2OO5x7WXDXgDiGaL0ODJVO0DG
+         srQw==
+X-Gm-Message-State: AGi0Puboaedq/H+dI8+iPsg4DTP3UegZCccWn2Lzwy93CUZKGKvdHT1y
+        TYivBEiydxF8fE0JnqSF/jAsOIVirdQAyUpcd4zB0+fk4RDLG7u+WqFNCn90EV5hu/aNbSn3lJb
+        Qg1yeX3Ol+ypSndRM9AC03EdB5aPIeyO9KrY7jBIb
+X-Received: by 2002:a37:9b0f:: with SMTP id d15mr15707293qke.62.1586967131510;
+        Wed, 15 Apr 2020 09:12:11 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLoETwcvu72/DFo++b6OpDCehy7qLAHOH0i0rvrjp7Z+YqxMfS+Eb/JmjOkhPMj+ZIQVxJAZa62zL5VHxYGGyU=
+X-Received: by 2002:a37:9b0f:: with SMTP id d15mr15707269qke.62.1586967131214;
+ Wed, 15 Apr 2020 09:12:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402180732.24684-1-prarit@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200415113445.11881-1-sashal@kernel.org> <20200415113445.11881-84-sashal@kernel.org>
+In-Reply-To: <20200415113445.11881-84-sashal@kernel.org>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Wed, 15 Apr 2020 18:11:10 +0200
+Message-ID: <CACO55ttpvfoyt1p_5Y-Q1=+5NruF5kMoug85jE9y+jG+FW=HGw@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.6 084/129] drm/nouveau: workaround runpm fail by
+ disabling PCI power management on certain intel bridges
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lyude Paul <lyude@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 02:07:32PM -0400, Prarit Bhargava wrote:
-> On CLX-N the perf-profile output is missing the package, die, and cpu
-> output.  On CLX-N the pkg_dev struct will never be evaluated by the core
-> code so pkg_dev.processed is always 0 and the package, die, and cpu
-> information is never output.
-> 
-> Set the pkg_dev.processed flag to 1 for CLX-N processors.
+in addition to that 028a12f5aa829 "drm/nouveau/gr/gp107,gp108:
+implement workaround for HW hanging during init" should probably get
+picked as well as it's fixing some runtime pm related issue on a
+handful of additional GPUs. I have a laptop myself which requires both
+of those patches.
 
-I will accept this with PR from Srinivas whenever he sends one to public mailing list.
+Applies to 5.5 and 5..4 as well.
 
-> Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-> Cc: andriy.shevchenko@linux.intel.com
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: platform-driver-x86@vger.kernel.org
+And both commits should probably get applied to older trees as well.
+but I didn't get to it yet to see if they apply and work as expected.
+
+
+On Wed, Apr 15, 2020 at 1:36 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Karol Herbst <kherbst@redhat.com>
+>
+> [ Upstream commit 434fdb51513bf3057ac144d152e6f2f2b509e857 ]
+>
+> Fixes the infamous 'runtime PM' bug many users are facing on Laptops with
+> Nvidia Pascal GPUs by skipping said PCI power state changes on the GPU.
+>
+> Depending on the used kernel there might be messages like those in demsg:
+>
+> "nouveau 0000:01:00.0: Refused to change power state, currently in D3"
+> "nouveau 0000:01:00.0: can't change power state from D3cold to D0 (config
+> space inaccessible)"
+> followed by backtraces of kernel crashes or timeouts within nouveau.
+>
+> It's still unkown why this issue exists, but this is a reliable workaroun=
+d
+> and solves a very annoying issue for user having to choose between a
+> crashing kernel or higher power consumption of their Laptops.
+>
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Mika Westerberg <mika.westerberg@intel.com>
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D205623
+> Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  tools/power/x86/intel-speed-select/isst-config.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/power/x86/intel-speed-select/isst-config.c b/tools/power/x86/intel-speed-select/isst-config.c
-> index d1ac57be0cbd..2e64b9b6eb2e 100644
-> --- a/tools/power/x86/intel-speed-select/isst-config.c
-> +++ b/tools/power/x86/intel-speed-select/isst-config.c
-> @@ -1169,6 +1169,7 @@ static void dump_clx_n_config_for_cpu(int cpu, void *arg1, void *arg2,
->  
->  		ctdp_level = &clx_n_pkg_dev.ctdp_level[0];
->  		pbf_info = &ctdp_level->pbf_info;
-> +		clx_n_pkg_dev.processed = 1;
->  		isst_ctdp_display_information(cpu, outf, tdp_level, &clx_n_pkg_dev);
->  		free_cpu_set(ctdp_level->core_cpumask);
->  		free_cpu_set(pbf_info->core_cpumask);
-> -- 
-> 2.18.2
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+>  drivers/gpu/drm/nouveau/nouveau_drm.c | 63 +++++++++++++++++++++++++++
+>  drivers/gpu/drm/nouveau/nouveau_drv.h |  2 +
+>  2 files changed, 65 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouv=
+eau/nouveau_drm.c
+> index b65ae817eabf5..2d4c899e1f8b9 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_drm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
+> @@ -618,6 +618,64 @@ nouveau_drm_device_fini(struct drm_device *dev)
+>         kfree(drm);
+>  }
+>
+> +/*
+> + * On some Intel PCIe bridge controllers doing a
+> + * D0 -> D3hot -> D3cold -> D0 sequence causes Nvidia GPUs to not reappe=
+ar.
+> + * Skipping the intermediate D3hot step seems to make it work again. Thi=
+s is
+> + * probably caused by not meeting the expectation the involved AML code =
+has
+> + * when the GPU is put into D3hot state before invoking it.
+> + *
+> + * This leads to various manifestations of this issue:
+> + *  - AML code execution to power on the GPU hits an infinite loop (as t=
+he
+> + *    code waits on device memory to change).
+> + *  - kernel crashes, as all PCI reads return -1, which most code isn't =
+able
+> + *    to handle well enough.
+> + *
+> + * In all cases dmesg will contain at least one line like this:
+> + * 'nouveau 0000:01:00.0: Refused to change power state, currently in D3=
+'
+> + * followed by a lot of nouveau timeouts.
+> + *
+> + * In the \_SB.PCI0.PEG0.PG00._OFF code deeper down writes bit 0x80 to t=
+he not
+> + * documented PCI config space register 0x248 of the Intel PCIe bridge
+> + * controller (0x1901) in order to change the state of the PCIe link bet=
+ween
+> + * the PCIe port and the GPU. There are alternative code paths using oth=
+er
+> + * registers, which seem to work fine (executed pre Windows 8):
+> + *  - 0xbc bit 0x20 (publicly available documentation claims 'reserved')
+> + *  - 0xb0 bit 0x10 (link disable)
+> + * Changing the conditions inside the firmware by poking into the releva=
+nt
+> + * addresses does resolve the issue, but it seemed to be ACPI private me=
+mory
+> + * and not any device accessible memory at all, so there is no portable =
+way of
+> + * changing the conditions.
+> + * On a XPS 9560 that means bits [0,3] on \CPEX need to be cleared.
+> + *
+> + * The only systems where this behavior can be seen are hybrid graphics =
+laptops
+> + * with a secondary Nvidia Maxwell, Pascal or Turing GPU. It's unclear w=
+hether
+> + * this issue only occurs in combination with listed Intel PCIe bridge
+> + * controllers and the mentioned GPUs or other devices as well.
+> + *
+> + * documentation on the PCIe bridge controller can be found in the
+> + * "7th Generation Intel=C2=AE Processor Families for H Platforms Datash=
+eet Volume 2"
+> + * Section "12 PCI Express* Controller (x16) Registers"
+> + */
+> +
+> +static void quirk_broken_nv_runpm(struct pci_dev *pdev)
+> +{
+> +       struct drm_device *dev =3D pci_get_drvdata(pdev);
+> +       struct nouveau_drm *drm =3D nouveau_drm(dev);
+> +       struct pci_dev *bridge =3D pci_upstream_bridge(pdev);
+> +
+> +       if (!bridge || bridge->vendor !=3D PCI_VENDOR_ID_INTEL)
+> +               return;
+> +
+> +       switch (bridge->device) {
+> +       case 0x1901:
+> +               drm->old_pm_cap =3D pdev->pm_cap;
+> +               pdev->pm_cap =3D 0;
+> +               NV_INFO(drm, "Disabling PCI power management to avoid bug=
+\n");
+> +               break;
+> +       }
+> +}
+> +
+>  static int nouveau_drm_probe(struct pci_dev *pdev,
+>                              const struct pci_device_id *pent)
+>  {
+> @@ -699,6 +757,7 @@ static int nouveau_drm_probe(struct pci_dev *pdev,
+>         if (ret)
+>                 goto fail_drm_dev_init;
+>
+> +       quirk_broken_nv_runpm(pdev);
+>         return 0;
+>
+>  fail_drm_dev_init:
+> @@ -734,7 +793,11 @@ static void
+>  nouveau_drm_remove(struct pci_dev *pdev)
+>  {
+>         struct drm_device *dev =3D pci_get_drvdata(pdev);
+> +       struct nouveau_drm *drm =3D nouveau_drm(dev);
+>
+> +       /* revert our workaround */
+> +       if (drm->old_pm_cap)
+> +               pdev->pm_cap =3D drm->old_pm_cap;
+>         nouveau_drm_device_remove(dev);
+>         pci_disable_device(pdev);
+>  }
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_drv.h b/drivers/gpu/drm/nouv=
+eau/nouveau_drv.h
+> index c2c332fbde979..2a6519737800c 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_drv.h
+> +++ b/drivers/gpu/drm/nouveau/nouveau_drv.h
+> @@ -140,6 +140,8 @@ struct nouveau_drm {
+>
+>         struct list_head clients;
+>
+> +       u8 old_pm_cap;
+> +
+>         struct {
+>                 struct agp_bridge_data *bridge;
+>                 u32 base;
+> --
+> 2.20.1
+>
 
