@@ -2,102 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E2C1AA3CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92081AA38F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506139AbgDONMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:12:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51644 "EHLO mail.kernel.org"
+        id S2506112AbgDONLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:11:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:45328 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504663AbgDONMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:12:01 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A38AC2076D;
-        Wed, 15 Apr 2020 13:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586956320;
-        bh=Zi/f9H0m1a1c3VA6JImQDC0eq32jZrjXYXX9wes3NTA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gw+Ghbx4l4gaDRyLA18tSmh+2JKbBXj/Mh+xDF0D8UMW6SuKr+4Nlfre6IaC8aO+I
-         S6B3crjk+bwTXrBb2TAk5KzT1w/i7eQzRT3PXFC+qIP+DcIaYIszDhFhkQzEd+XBGV
-         YLPzdGY8QhQXPgN9tauA8PCeqlOhnZxGePLaWc/Q=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6EE6D3522B45; Wed, 15 Apr 2020 06:12:00 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 06:12:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>, Stephen Boyd <sboyd@kernel.org>
-Subject: Re: On trace_*_rcuidle functions in modules
-Message-ID: <20200415131200.GW17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CALAqxLV4rM74wuzuZ+BkUi+keccxkAxv30N4vrFO7CVQ5vnT1A@mail.gmail.com>
- <20200415025748.GV17661@paulmck-ThinkPad-P72>
- <CALAqxLVsRboF+ABFttCj-kv6yNoAGLw9BaFkggSiGC+Me08gHQ@mail.gmail.com>
+        id S2506076AbgDONLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:11:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CA731063;
+        Wed, 15 Apr 2020 06:11:04 -0700 (PDT)
+Received: from [10.37.12.1] (unknown [10.37.12.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21F3B3F6C4;
+        Wed, 15 Apr 2020 06:11:01 -0700 (PDT)
+Subject: Re: [PATCH 3/8] arm64: cpufeature: Add CPU capability for AArch32 EL1
+ support
+To:     will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
+        kernel-team@android.com
+References: <20200414213114.2378-1-will@kernel.org>
+ <20200414213114.2378-4-will@kernel.org>
+ <a83a19eb-9051-0a43-0bac-353f67d93d79@arm.com>
+ <20200415101444.GC12621@willie-the-truck>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <7978a5a9-463e-5e96-7ea9-d8472b7b051c@arm.com>
+Date:   Wed, 15 Apr 2020 14:15:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALAqxLVsRboF+ABFttCj-kv6yNoAGLw9BaFkggSiGC+Me08gHQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200415101444.GC12621@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 08:47:18PM -0700, John Stultz wrote:
-> On Tue, Apr 14, 2020 at 7:57 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Apr 14, 2020 at 07:20:01PM -0700, John Stultz wrote:
-> > > Hey folks,
-> > >   So recently I was looking at converting some drivers to be loadable
-> > > modules instead of built-in only, and one of my patches just landed in
-> > > -next and started getting build error reports.
-> > >
-> > > It ends up, recently in the merge window, the driver I was converting
-> > > to module switched a trace_*() function to trace_*_rcuidle() to fix a
-> > > bug.  Now when building as a module, if tracing is configured on, it
-> > > can't seem to find the trace_*_rcuidle() symbol.
-> > >
-> > > This is because, as you are aware, we don't declare trace_*_rcuidle
-> > > functions in modules - and haven't for quite some time:
-> > >   https://lore.kernel.org/lkml/20120905062306.GA14756@leaf/
-> > >
-> > > I wanted to better understand the background rationale for that patch,
-> > > to understand if not exporting the rcu_idle_exit and rcu_idle_enter,
-> > > calls was because they weren't used or if it was a more intentional
-> > > decision to avoid allowing modules to use them.
-> > >
-> > > Would it be reasonable to revisit that patch? Or is there some
-> > > recommended alternative solution?
-> >
-> > I will defer to Steven and Josh on the rationale.  (Cowardly of me,
-> > I know!)
-> >
-> > What I do is to maintain a wrapper for tracepoints within a built-in
-> > portion of RCU, export the wrapper, and invoke the wrapper from the
-> > rcutorture module.  Maybe you can do something similar?
+On 04/15/2020 11:14 AM, Will Deacon wrote:
+> On Wed, Apr 15, 2020 at 11:13:54AM +0100, Suzuki K Poulose wrote:
+>> On 04/14/2020 10:31 PM, Will Deacon wrote:
+>>> Although we emit a "SANITY CHECK" warning and taint the kernel if we
+>>> detect a CPU mismatch for AArch32 support at EL1, we still online the
+>>> CPU with disastrous consequences for any running 32-bit VMs.
+>>>
+>>> Introduce a capability for AArch32 support at EL1 so that late onlining
+>>> of incompatible CPUs is forbidden.
+>>>
+>>> Signed-off-by: Will Deacon <will@kernel.org>
+>>
+>> One of the other important missing sanity check for KVM is the VMID width
+>> check. I will code something up.
 > 
-> That feels a little hackish, but I guess if there isn't a better option...
+> Cheers! Do we handle things like the IPA size already?
 
-It is just rcutorture, so I am not going to claim that I put a huge
-amount of energy into researching better options.  ;-)
+Good point. No, we don't. I will include this too.
 
-> > But why would a module be invoked from the idle loop?  Is the module
-> > supplying an idle driver or some such?
-> 
-> The driver (qcom rpmh driver) registers a cpu_pm notifier callback,
-> which gets called when entering idle.
-
-That would do it!  And yes, the idle-loop power-management code is in
-an interesting situation in that RCU is not watching it by default, but
-it does need to be debugged.  One straightforward approach would be for
-the PM code to tell RCU to watch on entry and exit, but I don't have a
-feel for how this would affect energy efficiency.
-
-							Thanx, Paul
+Cheers
+Suzuki
