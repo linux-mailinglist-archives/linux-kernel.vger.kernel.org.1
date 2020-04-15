@@ -2,81 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18731A906E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 03:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC511A9076
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 03:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392577AbgDOBaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 21:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2392569AbgDOBaC (ORCPT
+        id S2392588AbgDOBbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 21:31:03 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50072 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728332AbgDOBbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 21:30:02 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BC5C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 18:30:00 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e16so5783923pjp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 18:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=tw1ol9hIySF4SEjxnV31z4ZCVunCJuhUBUf/qto1qDk=;
-        b=laMZ5Nan8iiNRpSb5q9KzmAhNq0103cgg0P5iWhae9Qsi/x3SVW2rFTff9y7AW73lo
-         8F4fnFznO5VZOoCeCsX0mzLIUv89kNsfmOe9fYYqAub8BAo8aK4+XqBPPmYJOc9kBVPh
-         3qYGgpDN5IPje/dughVgunhVwLRxi5cPfgL4ff8qxCYQK2icVh3o0oKs6ZpmyKDmgXWY
-         ++NWG2mxot8LQD6vDjumovPtdoI88EPTBUCqMvZvDJ/VEzK/I6HiPd20caCi1hWE5/PI
-         Et69wH51qCxh34ySRwZ8ziSniRw9A/3r80jRSi8eHvjhRM0V0bdMKH9DWKVZLUwk9rrm
-         dytw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tw1ol9hIySF4SEjxnV31z4ZCVunCJuhUBUf/qto1qDk=;
-        b=FWf0hKg7acdUnvcgSySIBr3IY+kxeESFTKgCQqyQktRRSU+PHnivV3fJ21OkXlEwxP
-         mN216MEnlzN5kRuWYb1X5I3+Aqppc0q2e4QbULHzLuQathLhW6RISEYAfkFp88J19xZM
-         QIafGtYx6YtpLAoMUGhVwLIt8QwpJNlAbUiK9onav3OuZ+vQ/bPHy0EZfU/Zhnev3u5+
-         BR2LhDzXW7JeRfWWYYWSZxUHPzsWJLpKpsyV6QatIqPr19N5KByHfdNmB4f9zOUNggT3
-         z866yaWnFvi9KN2CF7OU1Y62unXwz9zjXgql3zb19aAbKoNifFnurNoEQSFJPTiQ2R34
-         t/xQ==
-X-Gm-Message-State: AGi0PuZYO99iILH2paDw27YwblcoGzC8QoG8VrFVlw4egG/YYEr1jquG
-        wetZV1GmCIZ5Tw2fkak5sE4zDdwO6CTkZQ==
-X-Google-Smtp-Source: APiQypKse0Vw4MTAK2eIDz+rkZLvUptgDnRhmyWoFDYLfNVx8BAvRbQCsJSge6k3bnsrPrr5WcPaSA==
-X-Received: by 2002:a17:902:8487:: with SMTP id c7mr2378462plo.251.1586914199821;
-        Tue, 14 Apr 2020 18:29:59 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id y9sm12551095pfo.135.2020.04.14.18.29.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 18:29:59 -0700 (PDT)
-Subject: Re: [PATCH 0/4] timeout and sequence fixes
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1586899625.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ddcd1626-83bd-3d25-32b9-d2308ba9b3ed@kernel.dk>
-Date:   Tue, 14 Apr 2020 19:29:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Apr 2020 21:31:00 -0400
+Received: from floko.floko.floko (unknown [IPv6:2804:431:e7cc:79a2:b6f7:4033:5775:cc3a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ACFE62A1BC8;
+        Wed, 15 Apr 2020 02:30:54 +0100 (BST)
+From:   Helen Koike <helen.koike@collabora.com>
+To:     linux-media@vger.kernel.org
+Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, hans.verkuil@cisco.com,
+        skhan@linuxfoundation.org, niklas.soderlund@ragnatech.se,
+        mchehab@kernel.org, Helen Koike <helen.koike@collabora.com>
+Subject: [PATCH v3 0/4] media: add v4l2_pipeline_stream_{enable,disable} helpers
+Date:   Tue, 14 Apr 2020 22:30:40 -0300
+Message-Id: <20200415013044.1778572-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1586899625.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/20 3:39 PM, Pavel Begunkov wrote:
-> [4/4] is dirty, but fixes the issue. And there is still "SQ vs CQ"
-> problem, solving which can effectively revert it, so I suggest to
-> postpone the last patch for a while. I'll rebase if it'd be necessary.
-> 
+Hi,
 
-Thanks, I've applied 1-3 for now. Looks good to me, and also tests out
-fine.
+Media drivers need to iterate through the pipeline and call .s_stream()
+callbacks in the subdevices.
+
+Instead of repeating code, add helpers for this.
+
+These helpers will go walk through the pipeline only visiting entities
+that participates in the stream, i.e. it follows links from sink to source
+(and not the opposite).
+
+Which means that in a topology like this https://bit.ly/3b2MxjI
+calling v4l2_pipeline_stream_enable() from rkisp1_mainpath won't call
+.s_stream(true) for rkisp1_resizer_selfpath.
+
+stream_count variable was added in v4l2_subdevice to handle nested calls
+to the helpers.
+This is useful when the driver allows streaming from more then one
+capture device sharing subdevices.
+
+This patch came from the error I was facing when multistreaming from
+rkisp1 driver, where stoping one capture would call s_stream(false) in
+the pipeline, causing a stall in the second capture device.
+
+Also, the vimc patch https://patchwork.kernel.org/patch/10948833/ won't
+be required with this patchset.
+
+This patchset was tested on rkisp1 and vimc drivers.
+
+Other cleanup might be possible (but I won't add in this patchset as I
+don't have the hw to test):
+	https://git.linuxtv.org/media_tree.git/tree/drivers/media/platform/qcom/camss/camss-video.c#n430
+	https://git.linuxtv.org/media_tree.git/tree/drivers/media/platform/omap3isp/isp.c#n697
+	https://git.linuxtv.org/media_tree.git/tree/drivers/media/platform/stm32/stm32-dcmi.c#n680
+	https://git.linuxtv.org/media_tree.git/tree/drivers/media/platform/xilinx/xilinx-dma.c#n97
+
+Changes in V3:
+====================
+Following up Niklas' comments in V2 https://patchwork.kernel.org/patch/11473681/#23270823
+
+* I removed the limitation in topologies with entities with multiple enabled
+links to its sink pads in the topology.
+Now it enables all subdevs in the pipeline that have an enabled link going
+from sink to source while walking from the video device, so it can be
+also useful for rcar-vin driver.
+
+To implement this, I added back in the series the patch from v1:
+    "media: mc-entity.c: add media_graph_walk_next_stream()"
+
+* "size" was renamed to "max_size" in function v4l2_pipeline_subdevs_get()
+to reflect the maximum number of elements that can fit in the subdevs array,
+with proper documentation.
+
+* v4l2_pipeline_subdevs_get() returns a negative number for error, instead
+of returning 0 and printing a warning.
+
+* I also add if defined(CONFIG_MEDIA_CONTROLLER) around helpers to avoid
+compiling errors.
+
+Overview of patches in V3:
+--------------------------
+
+Patch 1/4 adds a new iterator function to follow links from sink to
+source only.
+
+Path 2/4 adds the helpers in v4l2-common.c, allowing nested calls by
+adding stream_count in the subdevice struct.
+
+Patch 3/4 cleanup rkisp1 driver to use the helpers.
+
+Patch 4/4 cleanup vimc driver to use the helpers.
+
+Changes in V2:
+====================
+The first version was calling the s_stream() callbacks from sensor to
+capture.
+
+This was generating errors in the Scarlet Chromebook, when the sensor
+was being enabled before the ISP.
+
+It make sense to enable subdevices from capture to sensor instead (which
+is what most drivers do already).
+
+This v2 drops the changes from mc-entity.c, and re-implement helpers in
+v4l2-common.c
+
+Overview of patches in V2:
+--------------------------
+
+Path 1/3 adds the helpers in v4l2-common.c, allowing nested calls by
+adding stream_count in the subdevice struct.
+
+Patch 2/3 cleanup rkisp1 driver to use the helpers.
+
+Patch 3/3 cleanup vimc driver to use the helpers.
+
+Helen Koike (4):
+  media: mc-entity.c: add media_graph_walk_next_stream()
+  media: v4l2-common: add helper functions to call s_stream() callbacks
+  media: staging: rkisp1: use v4l2_pipeline_stream_{enable,disable}
+    helpers
+  media: vimc: use v4l2_pipeline_stream_{enable,disable} helpers
+
+ drivers/media/mc/mc-entity.c                  |  34 ++++-
+ .../media/test_drivers/vimc/vimc-capture.c    |  28 ++--
+ .../media/test_drivers/vimc/vimc-streamer.c   |  49 +------
+ drivers/media/v4l2-core/v4l2-common.c         | 125 ++++++++++++++++++
+ drivers/staging/media/rkisp1/rkisp1-capture.c |  76 +----------
+ include/media/media-entity.h                  |  15 +++
+ include/media/v4l2-common.h                   |  43 ++++++
+ include/media/v4l2-subdev.h                   |   2 +
+ 8 files changed, 242 insertions(+), 130 deletions(-)
 
 -- 
-Jens Axboe
+2.26.0
 
