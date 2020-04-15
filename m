@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6F61A9392
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91BE1A93B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635047AbgDOGrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 02:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S2393625AbgDOGxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 02:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634963AbgDOGr1 (ORCPT
+        with ESMTP id S1728702AbgDOGxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 02:47:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EECFC061A0C;
-        Tue, 14 Apr 2020 23:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2gmDYLi4/Kmt66vaVwEAhPniYnGKhZzhEZo2/uC5wIA=; b=K9+bRfkIbjPRAj6/hm1WXdcGYq
-        RKI3+ySEt4A6WXG3J1GKfCgXt06KUGaBEvkJIq+Ie1IZuw2l9X2O6i4sieH18zY4z3skuFesVclAN
-        BzDFLAlYhdBM4ie6U2u3ELSTPd/eCBvy+OjM7KO7k4qcRkz7xTxNN6JrW15dsWYFQSdozekpJTamE
-        y1JskYiFntJpdpNo7Vr8fxBfqhHY62ENK3TN1b/rFEAEXkNUniJITN6C4B88EMz0k45doOCEKueRC
-        XkVe8IHDFCyGId329J0iVUv8TlpM2rz884iyI4vRivowvIeJw6pDmZO55b9WOc1/ewo+lyxeh1CPb
-        DB4NnBhg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOboq-00041j-2i; Wed, 15 Apr 2020 06:46:44 +0000
-Date:   Tue, 14 Apr 2020 23:46:44 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH 5/5] block: revert back to synchronous request_queue
- removal
-Message-ID: <20200415064644.GA28112@infradead.org>
-References: <20200414041902.16769-1-mcgrof@kernel.org>
- <20200414041902.16769-6-mcgrof@kernel.org>
- <20200414154725.GD25765@infradead.org>
- <20200414205852.GP11244@42.do-not-panic.com>
+        Wed, 15 Apr 2020 02:53:35 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BF1C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 23:53:35 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jObv3-0005ZB-GO; Wed, 15 Apr 2020 08:53:09 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jObuz-00075V-Lb; Wed, 15 Apr 2020 08:53:05 +0200
+Date:   Wed, 15 Apr 2020 08:53:05 +0200
+From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Fontana <rfontana@redhat.com>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] iio: documentation ltc2632_chip_info add
+ num_channels
+Message-ID: <20200415065305.tltdx4w6pz3lexgx@pengutronix.de>
+References: <20200414235609.20125-1-chris.ruehl@gtsys.com.hk>
+ <20200414235609.20125-2-chris.ruehl@gtsys.com.hk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200414205852.GP11244@42.do-not-panic.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200414235609.20125-2-chris.ruehl@gtsys.com.hk>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 08:58:52PM +0000, Luis Chamberlain wrote:
-> > I think this needs a WARN_ON thrown in to enforece the calling context.
-> 
-> I considered adding a might_sleep() but upon review with Bart, he noted
-> that this function already has a mutex_lock(), and if you look under the
-> hood of mutex_lock(), it has a might_sleep() at the very top. The
-> warning then is implicit.
+On Wed, Apr 15, 2020 at 07:56:02AM +0800, Chris Ruehl wrote:
+> The documentation for ltc_2632_chip_info missed the desciption for the
+> num_channels. This privial patch add it.
 
-It might just be a personal preference, but I think the documentation
-value of a WARN_ON_ONCE or might_sleep with a comment at the top of
-the function is much higher than a blurb in a long kerneldoc text and
-a later mutex_lock.
+I don't know the work privial. Did you mean trivial? s/add/adds/
+
+Other than that:
+
+Fixes: 9f15a4a0adc9 ("iio: dac: ltc2632: add support for LTC2636 family")
+Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+
+Thanks
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
