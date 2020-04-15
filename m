@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9151AB326
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5111AB328
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 23:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442319AbgDOVKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 17:10:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:52514 "EHLO foss.arm.com"
+        id S2442334AbgDOVKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 17:10:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:52524 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442222AbgDOVFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2442223AbgDOVFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 17:05:31 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEA0E113E;
-        Wed, 15 Apr 2020 14:05:26 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6B5511FB;
+        Wed, 15 Apr 2020 14:05:27 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E99283F6C4;
-        Wed, 15 Apr 2020 14:05:25 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0E27E3F6C4;
+        Wed, 15 Apr 2020 14:05:26 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com
-Subject: [PATCH v3 2/9] sched/debug: Make sd->flags sysctl read-only
-Date:   Wed, 15 Apr 2020 22:05:05 +0100
-Message-Id: <20200415210512.805-3-valentin.schneider@arm.com>
+Subject: [PATCH v3 3/9] sched: Remove checks against SD_LOAD_BALANCE
+Date:   Wed, 15 Apr 2020 22:05:06 +0100
+Message-Id: <20200415210512.805-4-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20200415210512.805-1-valentin.schneider@arm.com>
 References: <20200415210512.805-1-valentin.schneider@arm.com>
@@ -34,39 +34,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Writing to the sysctl of a sched_domain->flags directly updates the value of
-the field, and goes nowhere near update_top_cache_domain(). This means that
-the cached domain pointers can end up containing stale data (e.g. the
-domain pointed to doesn't have the relevant flag set anymore).
+The SD_LOAD_BALANCE flag is set unconditionally for all domains in
+sd_init(). By making the sched_domain->flags syctl interface read-only, we
+have removed the last piece of code that could clear that flag - as such,
+it will now be always present. Rather than to keep carrying it along, we
+can work towards getting rid of it entirely.
 
-Explicit domain walks that check for flags will be affected by
-the write, but this won't be in sync with the cached pointers which will
-still point to the domains that were cached at the last sched_domain
-build.
+cpusets don't need it because they can make CPUs be attached to the NULL
+domain (e.g. cpuset with sched_load_balance=0), or to a partitioned
+root_domain, i.e. a sched_domain hierarchy that doesn't span the entire
+system (e.g. root cpuset with sched_load_balance=0 and sibling cpusets with
+sched_load_balance=1).
 
-In other words, writing to this interface is playing a dangerous game. It
-could be made to trigger an update of the cached sched_domain pointers when
-written to, but this does not seem to be worth the trouble. Make it
-read-only.
+isolcpus apply the same "trick": isolated CPUs are explicitly taken out of
+the sched_domain rebuild (using housekeeping_cpumask()), so they get the
+NULL domain treatment as well.
+
+Remove the checks against SD_LOAD_BALANCE.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c     | 14 ++------------
+ kernel/sched/topology.c | 28 +++++++++-------------------
+ 2 files changed, 11 insertions(+), 31 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index a562df57a86e..00796b0a2723 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -258,7 +258,7 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
- 	set_table_entry(&table[2], "busy_factor",	  &sd->busy_factor,	    sizeof(int),  0644, proc_dointvec_minmax);
- 	set_table_entry(&table[3], "imbalance_pct",	  &sd->imbalance_pct,	    sizeof(int),  0644, proc_dointvec_minmax);
- 	set_table_entry(&table[4], "cache_nice_tries",	  &sd->cache_nice_tries,    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0644, proc_dointvec_minmax);
-+	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0444, proc_dointvec_minmax);
- 	set_table_entry(&table[6], "max_newidle_lb_cost", &sd->max_newidle_lb_cost, sizeof(long), 0644, proc_doulongvec_minmax);
- 	set_table_entry(&table[7], "name",		  sd->name,	       CORENAME_MAX_SIZE, 0444, proc_dostring);
- 	/* &table[8] is terminator */
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 98321d8dde7e..3d34b4e4060f 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6645,9 +6645,6 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
+ 
+ 	rcu_read_lock();
+ 	for_each_domain(cpu, tmp) {
+-		if (!(tmp->flags & SD_LOAD_BALANCE))
+-			break;
+-
+ 		/*
+ 		 * If both 'cpu' and 'prev_cpu' are part of this domain,
+ 		 * cpu is a valid SD_WAKE_AFFINE target.
+@@ -9792,9 +9789,8 @@ static int active_load_balance_cpu_stop(void *data)
+ 	/* Search for an sd spanning us and the target CPU. */
+ 	rcu_read_lock();
+ 	for_each_domain(target_cpu, sd) {
+-		if ((sd->flags & SD_LOAD_BALANCE) &&
+-		    cpumask_test_cpu(busiest_cpu, sched_domain_span(sd)))
+-				break;
++		if (cpumask_test_cpu(busiest_cpu, sched_domain_span(sd)))
++			break;
+ 	}
+ 
+ 	if (likely(sd)) {
+@@ -9883,9 +9879,6 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+ 		}
+ 		max_cost += sd->max_newidle_lb_cost;
+ 
+-		if (!(sd->flags & SD_LOAD_BALANCE))
+-			continue;
+-
+ 		/*
+ 		 * Stop the load balance at this level. There is another
+ 		 * CPU in our sched group which is doing load balancing more
+@@ -10474,9 +10467,6 @@ int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 		int continue_balancing = 1;
+ 		u64 t0, domain_cost;
+ 
+-		if (!(sd->flags & SD_LOAD_BALANCE))
+-			continue;
+-
+ 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+ 			update_next_balance(sd, &next_balance);
+ 			break;
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 8344757bba6e..a9dc34a0ebc1 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -33,14 +33,6 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
+ 	cpumask_clear(groupmask);
+ 
+ 	printk(KERN_DEBUG "%*s domain-%d: ", level, "", level);
+-
+-	if (!(sd->flags & SD_LOAD_BALANCE)) {
+-		printk("does not load-balance\n");
+-		if (sd->parent)
+-			printk(KERN_ERR "ERROR: !SD_LOAD_BALANCE domain has parent");
+-		return -1;
+-	}
+-
+ 	printk(KERN_CONT "span=%*pbl level=%s\n",
+ 	       cpumask_pr_args(sched_domain_span(sd)), sd->name);
+ 
+@@ -151,8 +143,7 @@ static int sd_degenerate(struct sched_domain *sd)
+ 		return 1;
+ 
+ 	/* Following flags need at least 2 groups */
+-	if (sd->flags & (SD_LOAD_BALANCE |
+-			 SD_BALANCE_NEWIDLE |
++	if (sd->flags & (SD_BALANCE_NEWIDLE |
+ 			 SD_BALANCE_FORK |
+ 			 SD_BALANCE_EXEC |
+ 			 SD_SHARE_CPUCAPACITY |
+@@ -183,15 +174,14 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
+ 
+ 	/* Flags needing groups don't count if only 1 group in parent */
+ 	if (parent->groups == parent->groups->next) {
+-		pflags &= ~(SD_LOAD_BALANCE |
+-				SD_BALANCE_NEWIDLE |
+-				SD_BALANCE_FORK |
+-				SD_BALANCE_EXEC |
+-				SD_ASYM_CPUCAPACITY |
+-				SD_SHARE_CPUCAPACITY |
+-				SD_SHARE_PKG_RESOURCES |
+-				SD_PREFER_SIBLING |
+-				SD_SHARE_POWERDOMAIN);
++		pflags &= ~(SD_BALANCE_NEWIDLE |
++			    SD_BALANCE_FORK |
++			    SD_BALANCE_EXEC |
++			    SD_ASYM_CPUCAPACITY |
++			    SD_SHARE_CPUCAPACITY |
++			    SD_SHARE_PKG_RESOURCES |
++			    SD_PREFER_SIBLING |
++			    SD_SHARE_POWERDOMAIN);
+ 		if (nr_node_ids == 1)
+ 			pflags &= ~SD_SERIALIZE;
+ 	}
 -- 
 2.24.0
 
