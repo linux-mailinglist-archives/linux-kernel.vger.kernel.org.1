@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D041AAF2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B541AAF33
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410773AbgDORLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:11:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
+        id S1416385AbgDORLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:11:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410722AbgDORLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2410725AbgDORLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 13:11:01 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E604A21D92;
-        Wed, 15 Apr 2020 17:11:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D43221D94;
+        Wed, 15 Apr 2020 17:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586970661;
-        bh=lpFMDx1GHWoEhhhCxtAnj/ZvLR/eoqZCj41D8tbU86Q=;
+        bh=0Ap4gVR11GozJBhoxSUSEWm77eFrY/PRYCBpDri2wcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xnEloBK6wDRrC35S/xGj4klu/kQpmx47AIKoOrdvUmiR3m45cSxKP7TXsd4mpjyxz
-         jzGcPKa+MMC3Q7WYHqxL3ileCcIKUKrTAZ00eJ9AWaQWP8CTL9C0Ns/aw1npH1tRru
-         01SYKgm59MpjRMvuihVK1d4QpMKvb92ZdYfTAPKQ=
+        b=c9HPSGIEQ3dlaLV0kJgl9zhCUB6qfYvAsCl2d9jBgix/uM56/Jk3kqJseL/O3gWSA
+         efIbIf3R4mIvdajNRzyoFT9kOFdWYvfycgIId3A8ICV0HZaea7+e4p3f6EUanauim3
+         RviqLISy4LOAd+RD4JRghs7vNz16uhWfkguba99E=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,9 +33,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         Jules Irenge <jbi.octave@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 15/19] rcu: Replace assigned pointer ret value by corresponding boolean value
-Date:   Wed, 15 Apr 2020 10:10:50 -0700
-Message-Id: <20200415171054.9013-15-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/19] rcu: Replace 1 by true
+Date:   Wed, 15 Apr 2020 10:10:51 -0700
+Message-Id: <20200415171054.9013-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -46,43 +46,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jules Irenge <jbi.octave@gmail.com>
 
-Coccinelle reports warnings at rcu_read_lock_held_common()
+Coccinelle reports a warning at use_softirq declaration
 
 WARNING: Assignment of 0/1 to bool variable
 
-To fix this,
-the assigned  pointer ret values are replaced by corresponding boolean value.
-Given that ret is a pointer of bool type
+The root cause is
+use_softirq a variable of bool type is initialised with the integer 1
+Replacing 1 with value true solve the issue.
 
 Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/update.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 72461dd8..17f2356 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -98,15 +98,15 @@ module_param(rcu_normal_after_boot, int, 0);
- static bool rcu_read_lock_held_common(bool *ret)
- {
- 	if (!debug_lockdep_rcu_enabled()) {
--		*ret = 1;
-+		*ret = true;
- 		return true;
- 	}
- 	if (!rcu_is_watching()) {
--		*ret = 0;
-+		*ret = false;
- 		return true;
- 	}
- 	if (!rcu_lockdep_current_cpu_online()) {
--		*ret = 0;
-+		*ret = false;
- 		return true;
- 	}
- 	return false;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 09ccc29..97c0b47 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -113,7 +113,7 @@ static struct rcu_state rcu_state = {
+ static bool dump_tree;
+ module_param(dump_tree, bool, 0444);
+ /* By default, use RCU_SOFTIRQ instead of rcuc kthreads. */
+-static bool use_softirq = 1;
++static bool use_softirq = true;
+ module_param(use_softirq, bool, 0444);
+ /* Control rcu_node-tree auto-balancing at boot time. */
+ static bool rcu_fanout_exact;
 -- 
 2.9.5
 
