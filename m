@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFF41A9D82
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2C81AA38E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 15:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409092AbgDOLom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:44:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897229AbgDOLhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:37:20 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A4912166E;
-        Wed, 15 Apr 2020 11:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586950639;
-        bh=oK4kqRGGJPW2CAwiNXBLNogWEszRqkKuvhC/5JUXd5c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xGTfU2hsHjGY0QLhElESfBBCBKFddo0cDMAt0xK+hnYAexW7V5//RksXbTtwkag+b
-         3NMiA30K1lv/zOTTamZdwE9Zvm+peBK7lrI1/cc1BFWoUw4CMUPNKlbN+2vFdb/uUG
-         BkalmNauLxoZZNaBXQiQJvQvN7GMm9/8vDXcx2Jk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yicheng Li <yichengli@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 129/129] platform/chrome: cros_ec: Query EC protocol version if EC transitions between RO/RW
-Date:   Wed, 15 Apr 2020 07:34:44 -0400
-Message-Id: <20200415113445.11881-129-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415113445.11881-1-sashal@kernel.org>
-References: <20200415113445.11881-1-sashal@kernel.org>
+        id S2506099AbgDONLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:11:38 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:20516 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2897063AbgDOLfj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:35:39 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03FBW8SN016220;
+        Wed, 15 Apr 2020 13:35:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=STMicroelectronics;
+ bh=xwnv8U88f9gKci+4R9gluFy4x+fECpay1QPWcflQP9g=;
+ b=1a6J3nynIHUs1ZBzTWuJaxYH4jNMp3BBhK17usGCKTozaL9ffKuxXU3NnHI3yV4ftL92
+ mUQ3c0K60Y/1B5c5Aw+jOsV3cYnjNz2jekg253yeaXkRAquScKAT8NaCw/KJEnaJfBH8
+ 7Mhaon5u4CZ1iu7zjqwVUHVNVKonEp7bsvRsWwJdOo9HV5E4ioVxswrMG4/w3VaYeWJx
+ mTUQbXbcrBLEVNBSXsVzmrj2asfCnrgh21Do4WePhZYLMkhH3arPyJsulQzX3JKur0wl
+ AzjJIVogGD6M6WOBUGCHzyIXhFee9d5c/8D3qvZORE8OFsTb9ZMi6paQUpZvbnB/+FxL lg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30dn94bh6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 13:35:24 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B759110002A;
+        Wed, 15 Apr 2020 13:35:23 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A9F772B0FA8;
+        Wed, 15 Apr 2020 13:35:23 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 15 Apr
+ 2020 13:35:23 +0200
+Date:   Wed, 15 Apr 2020 13:35:22 +0200
+From:   Alain Volmat <alain.volmat@st.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <pierre-yves.mordret@st.com>, <alexandre.torgue@st.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
+Subject: Re: [PATCH] i2c: i2c-stm32f7: improve nack debug message
+Message-ID: <20200415113522.GB16949@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        pierre-yves.mordret@st.com, alexandre.torgue@st.com,
+        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com
+References: <1584642115-15378-1-git-send-email-alain.volmat@st.com>
+ <20200415110101.GM1141@ninjato>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200415110101.GM1141@ninjato>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-15_03:2020-04-14,2020-04-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicheng Li <yichengli@chromium.org>
+On Wed, Apr 15, 2020 at 01:01:01PM +0200, Wolfram Sang wrote:
+> On Thu, Mar 19, 2020 at 07:21:55PM +0100, Alain Volmat wrote:
+> > From: Fabrice Gasnier <fabrice.gasnier@st.com>
+> > 
+> > Add information on slave addr in the nack debug message.
+> > 
+> > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+> > Signed-off-by: Alain Volmat <alain.volmat@st.com>
+> 
+> Applied to for-next, thanks! (I'd drop the __func__, though; doesn't
+> add information, does it?)
 
-[ Upstream commit 42cd0ab476e2daffc23982c37822a78f9a53cdd5 ]
-
-RO and RW of EC may have different EC protocol version. If EC transitions
-between RO and RW, but AP does not reboot (this is true for fingerprint
-microcontroller / cros_fp, but not true for main ec / cros_ec), the AP
-still uses the protocol version queried before transition, which can
-cause problems. In the case of fingerprint microcontroller, this causes
-AP to send the wrong version of EC_CMD_GET_NEXT_EVENT to RO in the
-interrupt handler, which in turn prevents RO to clear the interrupt
-line to AP, in an infinite loop.
-
-Once an EC_HOST_EVENT_INTERFACE_READY is received, we know that there
-might have been a transition between RO and RW, so re-query the protocol.
-
-Signed-off-by: Yicheng Li <yichengli@chromium.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Gwendal Grignou <gwendal@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/platform/chrome/cros_ec.c           | 30 +++++++++++++++++++++
- include/linux/platform_data/cros_ec_proto.h |  4 +++
- 2 files changed, 34 insertions(+)
-
-diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
-index 6fc8f2c3ac517..7ee43b2e0654a 100644
---- a/drivers/platform/chrome/cros_ec.c
-+++ b/drivers/platform/chrome/cros_ec.c
-@@ -138,6 +138,24 @@ static int cros_ec_sleep_event(struct cros_ec_device *ec_dev, u8 sleep_event)
- 	return ret;
- }
- 
-+static int cros_ec_ready_event(struct notifier_block *nb,
-+			       unsigned long queued_during_suspend,
-+			       void *_notify)
-+{
-+	struct cros_ec_device *ec_dev = container_of(nb, struct cros_ec_device,
-+						     notifier_ready);
-+	u32 host_event = cros_ec_get_host_event(ec_dev);
-+
-+	if (host_event & EC_HOST_EVENT_MASK(EC_HOST_EVENT_INTERFACE_READY)) {
-+		mutex_lock(&ec_dev->lock);
-+		cros_ec_query_all(ec_dev);
-+		mutex_unlock(&ec_dev->lock);
-+		return NOTIFY_OK;
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
- /**
-  * cros_ec_register() - Register a new ChromeOS EC, using the provided info.
-  * @ec_dev: Device to register.
-@@ -237,6 +255,18 @@ int cros_ec_register(struct cros_ec_device *ec_dev)
- 		dev_dbg(ec_dev->dev, "Error %d clearing sleep event to ec",
- 			err);
- 
-+	if (ec_dev->mkbp_event_supported) {
-+		/*
-+		 * Register the notifier for EC_HOST_EVENT_INTERFACE_READY
-+		 * event.
-+		 */
-+		ec_dev->notifier_ready.notifier_call = cros_ec_ready_event;
-+		err = blocking_notifier_chain_register(&ec_dev->event_notifier,
-+						      &ec_dev->notifier_ready);
-+		if (err)
-+			return err;
-+	}
-+
- 	dev_info(dev, "Chrome EC device registered\n");
- 
- 	return 0;
-diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-index ba59147701918..3832433266762 100644
---- a/include/linux/platform_data/cros_ec_proto.h
-+++ b/include/linux/platform_data/cros_ec_proto.h
-@@ -125,6 +125,9 @@ struct cros_ec_command {
-  * @host_event_wake_mask: Mask of host events that cause wake from suspend.
-  * @last_event_time: exact time from the hard irq when we got notified of
-  *     a new event.
-+ * @notifier_ready: The notifier_block to let the kernel re-query EC
-+ *		    communication protocol when the EC sends
-+ *		    EC_HOST_EVENT_INTERFACE_READY.
-  * @ec: The platform_device used by the mfd driver to interface with the
-  *      main EC.
-  * @pd: The platform_device used by the mfd driver to interface with the
-@@ -166,6 +169,7 @@ struct cros_ec_device {
- 	u32 host_event_wake_mask;
- 	u32 last_resume_result;
- 	ktime_t last_event_time;
-+	struct notifier_block notifier_ready;
- 
- 	/* The platform devices used by the mfd driver */
- 	struct platform_device *ec;
--- 
-2.20.1
-
+In fact similar message is displayed in 2 places. One in case of master mode
+isr and the other one in case of slave isr. This message is adding slave
+address to the master mode isr. It only makes it more clear on first sight
+but indeed displaying the slave address obviously means this is master mode.
