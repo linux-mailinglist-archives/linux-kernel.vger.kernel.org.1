@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38501AAA83
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB4A1AAA84
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634558AbgDOOmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:42:21 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:38109 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2636734AbgDOOkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:40:19 -0400
-Received: by mail-oi1-f193.google.com with SMTP id x21so7423663oic.5;
-        Wed, 15 Apr 2020 07:40:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JuvzyUQda56xAYCtJ1sYbNZE0RbPskAoqaEeQtvOFTc=;
-        b=Lm1SGHp1ePyVnSm8uGOUhjUuQugLoiqDF3i3pc3v/io2tYwopAXfLGrUZpAlY+KPkR
-         uJSRRnxUet1jAUqMYd2vfUbYArisZNOKSznGMKJ3txzgbGXzZqUToUw6ba282wIivcuv
-         HwIJ9U2jw1MhSQeIBmqqNfoWdKRx7XWdkLRf6ah0T8QkZp2I7UkkzzvwK/BU2u9vBse/
-         IStit7d8gG5MUcXE8HZyvaa0TAqKkzeogmxEsN3x0yFWuP14Qo1MVL/yhZgTjdYG343X
-         fNJy/BerqUGIj3lb352rX7ynWqzoVCIgzFC17Y7egIBx59inYMcHfF/2TbpiB5YN5e5u
-         QNLw==
-X-Gm-Message-State: AGi0PubXUwENK1l3z3uniWGVQS2YRsCjPDgFPUNnK/u7iR9+we2e5I1m
-        AyW2SCeWcYW34WXs9UmsZA==
-X-Google-Smtp-Source: APiQypKQDJ7OUo2PH72nmsevzWtRJ1xyeW5rr9pORlJ4+DM6LMTt1YQKtYojzR45dQWjeWOKMSmnqA==
-X-Received: by 2002:aca:ecce:: with SMTP id k197mr15969614oih.127.1586961617711;
-        Wed, 15 Apr 2020 07:40:17 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y131sm6420487oie.39.2020.04.15.07.40.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 07:40:17 -0700 (PDT)
-Received: (nullmailer pid 11685 invoked by uid 1000);
-        Wed, 15 Apr 2020 14:40:16 -0000
-Date:   Wed, 15 Apr 2020 09:40:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, sboyd@kernel.org,
-        mturquette@baylibre.com, mark.rutland@arm.com
-Subject: Re: [PATCHv6 4/5] dt-bindings: documentation: add clock bindings
- information for Agilex
-Message-ID: <20200415144016.GA26244@bogus>
-References: <20200406160418.27476-1-dinguyen@kernel.org>
- <20200406160418.27476-5-dinguyen@kernel.org>
-MIME-Version: 1.0
+        id S2636740AbgDOOmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:42:38 -0400
+Received: from mail-eopbgr40085.outbound.protection.outlook.com ([40.107.4.85]:61607
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2636742AbgDOOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:41:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ex+0SpgjWvUGBYW12OhBAwYgg4VxvsW4IuQleWGEqsnxAc8qCrMDbbOy95AnxnKmf+nsGZ+SUkF8fHToI8eISpRoCmCDOox9Xw2AVQ01TecD28rMa3KaRggtS/10vdei26iqFUVDKK+JZO0GYDUgy5jnJQhrkA+9OZ0eUeN4hhqhd76kzKZb+IqQf33aeBTUSsY/+ogA6jSD0BK4v4cKtrGF8hxSxV0/XZsxdg1L3LnTcw/t708pmQI/+vGKRBPkwwpXTqlzfa7I+7OFG5sQ42Yk/MoBSc65dvN7cXyzR+iSzrx5nCdTcB//DATftr8RYyhYVOFd+HidpTOO5rGZIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UN5QnRcedVZTuVlK057N6B0N5v9K0C2AFFtlJG+C85E=;
+ b=OfkLgAw+wx29DLhHrSWcorAGJXIQx0/cgMtFYhBQsxJbb19uuVDjdwmZavM1VE9xQkBblL9OlBYNIbKevJ9PejXC7WlZSq3Yi7CRqBlqp6X1Y7JmXEgQx1kFdk25vLcUL2Ojjr9mjy5HYwRZBn7av2hupOoPNK9EF2NLcPwAlWBrvQ+PB8MTl1IPpmWprxJrgOUXPyDGVWkqYzUTpVDiJANaSdsbRU60ghF9vYB/qgTYnrTbP2/xJMThIEufd8bVoevCWa972ogjHG99/QsRtzkbq7/+eLumnybbPudbu9BscTSl5y1nPTmWA0AEl/7M1+fio0yO2cG9N/5TpNK3yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UN5QnRcedVZTuVlK057N6B0N5v9K0C2AFFtlJG+C85E=;
+ b=fxZIjOVQQIYcH1JUGv8SkKrnYgWbIqs9hxTJn3naT8eLml5sbOffS+9JD93TNzd783CO53jNbxgWnCB/wdQKMslCJjeRpw4598STmxJPufKwkpaIyvOb/73KsWbXfcIeUnvZ+OCB6Ssys6evsgXUucd0MnvXorQKDfawiJGAZsc=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB5533.eurprd05.prod.outlook.com (2603:10a6:803:96::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Wed, 15 Apr
+ 2020 14:41:29 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
+ 14:41:29 +0000
+Date:   Wed, 15 Apr 2020 11:41:25 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
+Message-ID: <20200415144125.GU11945@mellanox.com>
+References: <20200321003108.22941-1-rcampbell@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406160418.27476-5-dinguyen@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200321003108.22941-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR19CA0055.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR19CA0055.namprd19.prod.outlook.com (2603:10b6:208:19b::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.16 via Frontend Transport; Wed, 15 Apr 2020 14:41:27 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jOjED-0007Uk-5I; Wed, 15 Apr 2020 11:41:25 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 032dd051-1370-4d2c-6a22-08d7e14b1481
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5533:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB55339E3891DBF7E4FEFCE2D5CFDB0@VI1PR05MB5533.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Forefront-PRVS: 0374433C81
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(136003)(366004)(376002)(346002)(396003)(66476007)(1076003)(8936002)(52116002)(81156014)(8676002)(9746002)(4326008)(33656002)(5660300002)(66946007)(316002)(66556008)(9786002)(54906003)(86362001)(7416002)(2616005)(6916009)(36756003)(2906002)(186003)(478600001)(26005)(24400500001);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YpBxg11EYDmValOU/rCKBsdsr9b9/w/QMIGMupqMlQHq5mTeKy1W3J2Hnza62QrRutuO8PfpoWeXSEPo0shMg4i/PJS0nU1eqgsTYDFgXc3vtbPYKPr1UsetDtFSxUPkSQ+4pdhR+C11mFhjHxFz9Hy4YLgCkHmLMWx7JQi8r58XNiZypKH0sJN6n/v48LOqWFgM/EupckYozNGhpRygbFspvG/gKQ7YHilL6lJC+YIF/CH6alAsAATKike9ERQ5IydT19xdEYlkmMjWbIo7kgCBpVnTgaxwtHLRBbuETNOtDvqYDleDHrqKyvQa6xvLPh3UXFtGN/IqLDxh+a761ThbbyvRxeO+FBktJLcOloOZ8BK0QDDgHkA+pJNKQBpU+CJUIOu7enQ7IvPP3TlMKs8C31VrM7cEWAxulAe0x9LOEoNHmjHRXTIL1fS5eRtqYed8WGGsw9xQt8rzoH8VyOA+4zHddtNjhf9l8Z07nH77um2VOT7MEeSGQMfC+vaY
+X-MS-Exchange-AntiSpam-MessageData: cqSvC6QoY+WBbpkLrhNr0uopG/avHTbOW1kLmJYRva2rtt02/q6NB3iIwusTj9vBAJXuUua9peVN5j+vgUI7K2wZ+sGLXl/KtLzCUWCfjYi5R7cwPhg4liNfSJKxtmeFDgGHh+h0TTrX/DDMWKBdGg==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 032dd051-1370-4d2c-6a22-08d7e14b1481
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2020 14:41:28.9551
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3xZ/q+/oN3DXhbq42Y9j169NR7GypD8m+tEMpVLiXf4aKy1e7DqcEJNfbwDXwEWGYVlvpVl5EoftF3CBzK+NIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5533
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 11:04:17AM -0500, Dinh Nguyen wrote:
-> Document the Agilex clock bindings, and add the clock header file. The
-> clock header is an enumeration of all the different clocks on the Agilex
-> platform.
-> 
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
-> v6: fix build error by adding descriptions for clocks and reg in
->     properties
-> v5: update license to GPL-2.0-only
->     Add additionalProperties
->     Add clock input for clkmgr
-> v4: really fix build error(comment formatting was wrong)
-> v3: address comments from Stephen Boyd
->     fix build error(tab removed in line 37)
->     renamed to intel,agilex.yaml
-> v2: convert original document to YAML
-> ---
->  .../bindings/clock/intel,agilex.yaml          | 46 ++++++++++++
->  include/dt-bindings/clock/agilex-clock.h      | 70 +++++++++++++++++++
->  2 files changed, 116 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/intel,agilex.yaml
->  create mode 100644 include/dt-bindings/clock/agilex-clock.h
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/intel,agilex.yaml b/Documentation/devicetree/bindings/clock/intel,agilex.yaml
-> new file mode 100644
-> index 000000000000..83bca2661ec3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/intel,agilex.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
+On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
+> This series adds basic self tests for HMM and are intended for Jason
+> Gunthorpe's rdma tree which has a number of HMM patches applied.
 
-Dual license new bindings:
+Here are some hunks I noticed while testing this:
 
-(GPL-2.0-only OR BSD-2-Clause)
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2201,7 +2201,8 @@ config TEST_MEMINIT
+ 
+ config TEST_HMM
+ 	tristate "Test HMM (Heterogeneous Memory Management)"
+-	depends on DEVICE_PRIVATE
++	depends on TRANSPARENT_HUGEPAGE
++	select DEVICE_PRIVATE
+ 	select HMM_MIRROR
+ 	select MMU_NOTIFIER
+ 	help
 
-With that:
+It fails testing if TRANSPARENT_HUGEPAGE is not on
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+@@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
+ 	spin_lock_init(&mdevice->lock);
+ 
+ 	cdev_init(&mdevice->cdevice, &dmirror_fops);
++	mdevice->cdevice.owner = THIS_MODULE;
+ 	ret = cdev_add(&mdevice->cdevice, dev, 1);
+ 	if (ret)
+ 		return ret;
+
+The use of cdev without a struct device is super weird, but it still
+needs this
+
+diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
+index 461e4a99a362cf..0647b525a62564 100755
+--- a/tools/testing/selftests/vm/test_hmm.sh
++++ b/tools/testing/selftests/vm/test_hmm.sh
+@@ -59,7 +59,7 @@ run_smoke()
+ 	echo "Running smoke test. Note, this test provides basic coverage."
+ 
+ 	load_driver
+-	./hmm-tests
++	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
+ 	unload_driver
+ }
+
+Make it runnably reliably
+
+Jason
