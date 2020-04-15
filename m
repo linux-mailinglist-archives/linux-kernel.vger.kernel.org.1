@@ -2,88 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66AF1A99F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EEC1A99D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896187AbgDOKH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 06:07:59 -0400
-Received: from mga02.intel.com ([134.134.136.20]:26938 "EHLO mga02.intel.com"
+        id S2896119AbgDOKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:04:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:41230 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896168AbgDOKHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 06:07:42 -0400
-IronPort-SDR: ygNsGP78gNK4RB0HRw8sUDmSvzMEJKY0vwPEdzRcxA/3CTJzToExOkAJ+SnFADnGHC0lgMouee
- y/tHgHX9Nu2Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 03:07:42 -0700
-IronPort-SDR: EebCVhxBJNMGFCCIJUcJimG8dbFy8SUtdHsZNe9cSASoYoSg7Qs3kyDlU5J/tctuXl4/esOHUE
- NHVUWyDjuO5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
-   d="scan'208";a="253481850"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003.jf.intel.com with ESMTP; 15 Apr 2020 03:07:39 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1jOexK-000kMO-2q; Wed, 15 Apr 2020 13:07:42 +0300
-Date:   Wed, 15 Apr 2020 13:07:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     lorenzo.pieralisi@arm.com, amurray@thegoodpenguin.co.uk,
-        bhelgaas@google.com, p.zabel@pengutronix.de,
-        gustavo.pimentel@synopsys.com, eswara.kota@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] PCI: dwc: intel: make intel_pcie_cpu_addr() static
-Message-ID: <20200415100742.GR34613@smile.fi.intel.com>
-References: <20200415084953.6533-1-yanaijie@huawei.com>
+        id S2895955AbgDOKEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 06:04:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 416D71063;
+        Wed, 15 Apr 2020 03:04:25 -0700 (PDT)
+Received: from [10.37.12.1] (unknown [10.37.12.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6CDD3F68F;
+        Wed, 15 Apr 2020 03:04:22 -0700 (PDT)
+Subject: Re: [PATCH 2/8] arm64: cpufeature: Spell out register fields for
+ ID_ISAR4 and ID_PFR1
+To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu
+Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
+        kernel-team@android.com
+References: <20200414213114.2378-1-will@kernel.org>
+ <20200414213114.2378-3-will@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <632b7ace-a7db-a961-b9eb-c9c303376fcd@arm.com>
+Date:   Wed, 15 Apr 2020 11:09:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415084953.6533-1-yanaijie@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200414213114.2378-3-will@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 04:49:53PM +0800, Jason Yan wrote:
-> Fix the following sparse warning:
+On 04/14/2020 10:31 PM, Will Deacon wrote:
+> In preparation for runtime updates to the strictness of some AArch32
+> features, spell out the register fields for ID_ISAR4 and ID_PFR1 to make
+> things clearer to read. Note that this isn't functionally necessary, as
+> the feature arrays themselves are not modified dynamically and remain
+> 'const'.
 > 
-> drivers/pci/controller/dwc/pcie-intel-gw.c:456:5: warning: symbol
-> 'intel_pcie_cpu_addr' was not declared. Should it be static?
-
-Please, learn how to use get_maintainers.pl to avoid spamming people.
-Hint:
-	scripts/get_maintainer.pl --git --git-min-percent=67
-would give advantage, though it still requires a common sense to be applied.
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
 > ---
->  drivers/pci/controller/dwc/pcie-intel-gw.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> index fc2a12212dec..2d8dbb318087 100644
-> --- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-> +++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> @@ -453,7 +453,7 @@ static int intel_pcie_msi_init(struct pcie_port *pp)
->  	return 0;
->  }
->  
-> -u64 intel_pcie_cpu_addr(struct dw_pcie *pcie, u64 cpu_addr)
-> +static u64 intel_pcie_cpu_addr(struct dw_pcie *pcie, u64 cpu_addr)
->  {
->  	return cpu_addr + BUS_IATU_OFFSET;
->  }
-> -- 
-> 2.21.1
-> 
+>   arch/arm64/include/asm/sysreg.h | 17 +++++++++++++++++
+>   arch/arm64/kernel/cpufeature.c  | 28 ++++++++++++++++++++++++++--
+>   2 files changed, 43 insertions(+), 2 deletions(-)
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
