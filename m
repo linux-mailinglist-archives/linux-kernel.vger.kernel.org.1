@@ -2,149 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF1F1AABB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0606E1AABC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414678AbgDOPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:18:58 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47442 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1414655AbgDOPSt (ORCPT
+        id S2506424AbgDOPVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:21:06 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:37385 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730523AbgDOPVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:18:49 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03FFIJcS106389;
-        Wed, 15 Apr 2020 15:18:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=qS/LkJjaAYTu2JH9+UNdmlJWo6ur3h3lKhehibB0yNo=;
- b=v9dKG7owZ4RXlV8c2Nyq1hlWdpfkmg45nTYtsBXix+l8EaetAcnemybNgy3/7rI5W9jV
- GmNDVDJ98Fv5tMC+t3nEzmSJkgx273lWmlv+yMABCz7OoXgSH0S1MyQ3IS5mSETQEcmS
- gEqgkUyfQBOOH6Uiw3Spq8VOr71g4I28OZ5yLmEeR2n+x3NVPYiNb57tOY5rtdFZQNSn
- Otjj10YQ8cZeDhNPmwLt16+5ZfwR3JPMIf8j6k51vmUkfIhVSJrbQfFvB1w02PIoP3mB
- i602f4q0tVCCxKLCMKm2Zed9MIxZagKLcxIGnpoNZcujHTALECKt3bKdkRCueinCznRr Jw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 30dn95m1jg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Apr 2020 15:18:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03FFD4g3163258;
-        Wed, 15 Apr 2020 15:18:35 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30dyvf0578-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Apr 2020 15:18:35 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03FFIYr6030940;
-        Wed, 15 Apr 2020 15:18:34 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Apr 2020 08:18:34 -0700
-Date:   Wed, 15 Apr 2020 08:18:32 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V8 08/11] fs: Define I_DONTCACNE in VFS layer
-Message-ID: <20200415151832.GQ6742@magnolia>
-References: <20200415064523.2244712-1-ira.weiny@intel.com>
- <20200415064523.2244712-9-ira.weiny@intel.com>
- <20200415085216.GE501@quack2.suse.cz>
+        Wed, 15 Apr 2020 11:21:00 -0400
+Received: by mail-oi1-f196.google.com with SMTP id r25so3901211oij.4;
+        Wed, 15 Apr 2020 08:20:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1BfqGTsRG/XiRfj9IrPOvmGGbY0WhRE/e/njJVbckvY=;
+        b=nTTxldL/ABQjXu8h9JcdjFe58Tes9e7BP2Vw/Shhgv7pPg0G1/EI42/HTEPa5f5tee
+         /XunlSBdHshn5HxnHomNl2LLUrVeUyhoOHvKG+19apTaOD9CJSRd6Z3Kk1ixhXXBscVB
+         3cgOhyvUimx2daeRpB/DXgLXmB1CMCFCOP+Y/bonZzcTgzl6HEIk3+ZhfW+wIEjdCbM5
+         my4WN4M57EQQCEEGqO23WTnV02FPpjcEFN/kq5jNOvYT1zO3qS6+qb/l0kxZHIvkjzNf
+         ZyBxGaZGoipAyCeD5Z36hAvvG3ZKwNp01OnxBPh0PSyi3L9pWchb+XjK2UVNYleGv9dt
+         ZIjQ==
+X-Gm-Message-State: AGi0PuZ8CnMYxM2hYSZsfpH0yK/DcUG4mrij5fRTS20am2mzyBHpQbeF
+        qnt1cHplWjKhtbKob9cNtA==
+X-Google-Smtp-Source: APiQypJR6hUytgfto/sijH40XT6ONP45zrE8EFcxOW+Q+9Qc/j3M0QXAmAu6+xJRDcVihpLynYMw6w==
+X-Received: by 2002:aca:c145:: with SMTP id r66mr18690858oif.90.1586964058634;
+        Wed, 15 Apr 2020 08:20:58 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k132sm6477456oih.9.2020.04.15.08.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 08:20:57 -0700 (PDT)
+Received: (nullmailer pid 9564 invoked by uid 1000);
+        Wed, 15 Apr 2020 15:20:56 -0000
+Date:   Wed, 15 Apr 2020 10:20:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     amirmizi6@gmail.com
+Cc:     Eyal.Cohen@nuvoton.com, jarkko.sakkinen@linux.intel.com,
+        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
+        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
+        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
+Subject: Re: [PATCH v6 6/7] dt-bindings: tpm: Add YAML schema for TPM TIS I2C
+ options
+Message-ID: <20200415152056.GA30547@bogus>
+References: <20200407162044.168890-1-amirmizi6@gmail.com>
+ <20200407162044.168890-7-amirmizi6@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415085216.GE501@quack2.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004150113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=2
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004150114
+In-Reply-To: <20200407162044.168890-7-amirmizi6@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 10:52:16AM +0200, Jan Kara wrote:
-> There's a typo in the subject - I_DONTCACNE.
+On Tue, Apr 07, 2020 at 07:20:43PM +0300, amirmizi6@gmail.com wrote:
+> From: Amir Mizinski <amirmizi6@gmail.com>
 > 
-> On Tue 14-04-20 23:45:20, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > DAX effective mode changes (setting of S_DAX) require inode eviction.
-> > 
-> > Define a flag which can be set to inform the VFS layer that inodes
-> > should not be cached.  This will expedite the eviction of those nodes
-> > requiring reload.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  include/linux/fs.h | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index a818ced22961..e2db71d150c3 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> >   *
-> >   * I_CREATING		New object's inode in the middle of setting up.
-> >   *
-> > + * I_DONTCACHE		Do not cache the inode
-> > + *
+> Added a YAML schema to support tpm tis i2c realted dt-bindings for the I2c
+> PTP based physical layer.
 > 
-> Maybe, I'd be more specific here and write: "Evict inode as soon as it is
-> not used anymore"?
+> This patch adds the documentation for corresponding device tree bindings of
+> I2C based Physical TPM.
+> Refer to the 'I2C Interface Definition' section in
+> 'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
+> for specification.
+> 
+> Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
+> ---
+>  .../bindings/security/tpm/tpm-tis-i2c.yaml         | 47 ++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+> new file mode 100644
+> index 0000000..13d7c2c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+> @@ -0,0 +1,47 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: I2C PTP based TPM Device Tree Bindings
+> +
+> +maintainers:
+> +  - Amir Mizinski <amirmizi6@gmail.com>
+> +
+> +description:
+> +  Device Tree Bindings for I2C based Trusted Platform Module(TPM).
+> +
+> +properties:
+> +  compatible:
+> +    contains:
+> +      const: tcg,tpm-tis-i2c
 
-I had the same two comments about the V7 version of this patch...
+This is not sufficient. I assume you are testing on some specific TPM 
+chip.
 
---D
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupt:
+> +    maxItems: 1
+> +
+> +  crc-checksum:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      CRC checksum enable.
 
-> Otherwise the patch looks good to me so feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> Also it would be good to CC Al Viro on this one (and the dentry flag) I
-> guess.
-> 
-> 								Honza
-> 
-> >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> >   */
-> >  #define I_DIRTY_SYNC		(1 << 0)
-> > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> >  #define I_WB_SWITCH		(1 << 13)
-> >  #define I_OVL_INUSE		(1 << 14)
-> >  #define I_CREATING		(1 << 15)
-> > +#define I_DONTCACHE		(1 << 16)
-> >  
-> >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-> >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
-> > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
-> >  extern int generic_delete_inode(struct inode *inode);
-> >  static inline int generic_drop_inode(struct inode *inode)
-> >  {
-> > -	return !inode->i_nlink || inode_unhashed(inode);
-> > +	return !inode->i_nlink || inode_unhashed(inode) ||
-> > +		(inode->i_state & I_DONTCACHE);
-> >  }
-> >  
-> >  extern struct inode *ilookup5_nowait(struct super_block *sb,
-> > -- 
-> > 2.25.1
-> > 
+Why would you not want CRC? Some chips support and some don't? If so, 
+the compatible for the chip should imply that.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      tpm-tis-i2c@2e {
+
+tpm@2e
+
+> +        compatible = "tcg,tpm-tis-i2c";
+> +        reg = <0x2e>;
+> +        crc-checksum;
+> +      };
+> +    };
+> +...
 > -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> 2.7.4
+> 
