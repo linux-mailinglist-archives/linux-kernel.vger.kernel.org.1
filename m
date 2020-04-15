@@ -2,118 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA8B1A93B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 08:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7481A9429
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 09:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403841AbgDOGz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 02:55:27 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:35542 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393652AbgDOGzQ (ORCPT
+        id S2393662AbgDOHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 03:21:55 -0400
+Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:42668 "EHLO
+        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2635134AbgDOHVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 02:55:16 -0400
-Received: by mail-il1-f197.google.com with SMTP id r5so3006146ilq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 23:55:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ffkbImYYrsgJDwBLGUxZeSax9u6Dimg6eHOtdawCFEA=;
-        b=FFtFm8d5MHkDRVJQC15Qf+VwDtlEBP6wE4cZd3NjqthM9aQ0VOBP4hyMHYX7U0/H7C
-         uhQUR5XlNnVqhfEoc93undxWrOT9LaIRC1yHklOcuYEusDU/Wea814t1VnzN3rRPPNE1
-         aLqX5koVbfjW4E3GkI6KqH7pG/+bSpqArzwcFiDKfUBnYRJ/WYbtdFYMTgJnNE7NMqi1
-         bq0t+RRFH2mqy7D5z6MMMmNpvZzCIHRau7cI51VJHlJFj9eLbF1AByJkLxmOaJR70QuC
-         8D/aCz9JEQ5rFtBKA2m7S8JSdzblLYSTAiO+nV8odlugHWpk4mNkY/Z42pXomoNlY43k
-         IbRQ==
-X-Gm-Message-State: AGi0PuYgcRNCfSldko8e0jTxEaTWtCwiWiJQ+ffz0GoQRLdai+Y4XU8e
-        OjpEjqThE3Kzmpic35zFqxBU5Q+oS9BMEWIWUjZbMolFtXwA
-X-Google-Smtp-Source: APiQypL5O5Qrqc6gTDaxaEZXS7NaWGBqYkgJ/KH9Tnj9bcjR4061KB5xUQ54Rj9vQGod2JR4LK8zk4DcgF1jYYOI0XwkHbwWGA/n
+        Wed, 15 Apr 2020 03:21:39 -0400
+Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
+        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id 1E288176E9A
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 00:56:11 -0600 (MDT)
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTP
+        id ObxwjdXlNxgMWObxyjNfSB; Wed, 15 Apr 2020 00:56:11 -0600
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=Pc3ReBpd c=1 sm=1 tr=0
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=LfuyaZh/8e9VOkaVZk0aRw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
+ a=cl8xLZFz6L8A:10:nop_rcvd_month_year
+ a=oz0wMknONp8A:10:endurance_base64_authed_username_1 a=iGRvdBzYb-_JTU_o6kgA:9
+ a=QEXdDO2ut3YA:10:nop_charset_2
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id
+        :Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=ALV3zzlDkukeDYnEo1NPcnPQetl1UF6t3xq2o+loRlk=; b=QURp4N+8jazK9kQG9PESkXsDQA
+        b2enx04j9CT+C1fHKkwwUt4o9HLxj2BflmXiY83vnfk0vgcS0uAaKcLN1a26MNrfHR4NETXARaqi2
+        ih84tBHgLD2lwD4W6EaQOz10dv8CfN/t3qfsJmpmUXQ37xk01FyuaAn1jsc4QjpCFnDz0c9Yfwdtu
+        vMxFGZbpTYYCFBTJk6WAi9nfManbgxeLpUlq9sMxrvH5yx9Yt8ja5O5TyMy+tVAKwLRKchxjNK9BX
+        MNhdSdHjJUVK9qnhhxieVrtI0rsiTxyFbvjv5NZeLnqzrIDhnY0B01gvrie+VOavCxHHBow8M/WEE
+        EZykbnvA==;
+Received: from p5b3f6ccc.dip0.t-ipconnect.de ([91.63.108.204]:49262 helo=localhost.localdomain)
+        by md-in-79.webhostbox.net with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <saravanan@linumiz.com>)
+        id 1jObxv-0000eI-91; Wed, 15 Apr 2020 06:56:07 +0000
+From:   Saravanan Sekar <saravanan@linumiz.com>
+To:     robh+dt@kernel.org, jic23@kernel.org, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, broonie@kernel.org,
+        lgirdwood@gmail.com, saravanan@linumiz.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Subject: [PATCH 0/4] Add driver for wsen-itds accelerometer sensor
+Date:   Wed, 15 Apr 2020 08:55:31 +0200
+Message-Id: <20200415065535.7753-1-saravanan@linumiz.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:8b12:: with SMTP id i18mr3892649ild.182.1586933714126;
- Tue, 14 Apr 2020 23:55:14 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 23:55:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000500e6f05a34ecc01@google.com>
-Subject: WARNING in bpf_cgroup_link_release
-From:   syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 91.63.108.204
+X-Source-L: No
+X-Exim-ID: 1jObxv-0000eI-91
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: p5b3f6ccc.dip0.t-ipconnect.de (localhost.localdomain) [91.63.108.204]:49262
+X-Source-Auth: saravanan@linumiz.com
+X-Email-Count: 2
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The patch series add support for wurth elektronic wsen-itds 3-axis
+accelerometer. Driver supports the acceleration, temperature data reading and
+supports configuring of output data rate, operating mode and scale.
 
-syzbot found the following crash on:
+Thanks,
+Saravanan
 
-HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to __get_user_x..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a5dadc5c0b1d7055945
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Saravanan Sekar (4):
+  dt-bindings: Add an entry for Würth Elektronik, we
+  dt-bindings: iio: add document bindings for wsen-itds accel sensor
+  iio: accel: Add driver for wsen-itds accelerometer sensor
+  MAINTAINERS: Add entry for wsen-itds accelerometer sensor
 
-Unfortunately, I don't have any reproducer for this crash yet.
+ .../bindings/iio/accel/we,wsen-itds.yaml      |  53 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   6 +
+ drivers/iio/accel/Kconfig                     |  14 +
+ drivers/iio/accel/Makefile                    |   1 +
+ drivers/iio/accel/wsen-itds.c                 | 978 ++++++++++++++++++
+ 6 files changed, 1054 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/we,wsen-itds.yaml
+ create mode 100644 drivers/iio/accel/wsen-itds.c
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
+-- 
+2.17.1
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796 bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 25081 Comm: syz-executor.1 Not tainted 5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- __warn.cold+0x2f/0x35 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- fixup_bug arch/x86/kernel/traps.c:170 [inline]
- do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
-Code: cf ff 5b 5d 41 5c e9 df 2a e9 ff e8 da 2a e9 ff 48 c7 c7 20 f4 9d 89 e8 de a0 3a 06 5b 5d 41 5c e9 c5 2a e9 ff e8 c0 2a e9 ff <0f> 0b e9 57 fe ff ff e8 a4 3d 26 00 e9 2a fe ff ff e8 9a 3d 26 00
-RSP: 0018:ffffc900019a7dc0 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff88808c3eac00 RCX: ffffc9000415a000
-RDX: 0000000000040000 RSI: ffffffff8189bea0 RDI: 0000000000000005
-RBP: 00000000fffffff4 R08: ffff88809055e000 R09: ffffed1015cc70f4
-R10: ffffed1015cc70f3 R11: ffff8880ae63879b R12: ffff88808c3eac60
-R13: ffff88808c3eac10 R14: ffffc90000f32000 R15: ffffffff817f8e60
- bpf_link_free+0x80/0x140 kernel/bpf/syscall.c:2217
- bpf_link_put+0x15e/0x1b0 kernel/bpf/syscall.c:2243
- bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2251
- __fput+0x2e9/0x860 fs/file_table.c:280
- task_work_run+0xf4/0x1b0 kernel/task_work.c:123
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
- prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
- do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c889
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fddaf43fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 00007fddaf4406d4 RCX: 000000000045c889
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
-R13: 0000000000000078 R14: 00000000005043d2 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
