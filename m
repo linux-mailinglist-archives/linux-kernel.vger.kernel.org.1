@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807391AB091
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192381AB08D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441476AbgDOSVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37858 "EHLO mail.kernel.org"
+        id S2441474AbgDOSVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:21:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441394AbgDOSTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2441396AbgDOSTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 14:19:55 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ED3C21D80;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9287E21BE5;
         Wed, 15 Apr 2020 18:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586974794;
-        bh=0JX18i7A6Mkw9uwmznAG4kREwK5uHyCAvzVobItOgZY=;
+        bh=u9WDPJ9PVhLe00nroezkeAOMPAu5vRYHEOa3AE/9rBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EB52hffyDih4Gcv31etQ/cW8b9unrpy8mRe0vEH7hZQsrnBfGEWkPy7R12EgB7CMq
-         wt+MnXZ8Rn0FBEyen5/cUy8bq4KKpThRE4VXVzKHyAkfoDIv8WRxT0nJtAHZzVwk8M
-         jT3Y9b76ZXzb1/PT/Do3ObmG83cNwIqlHwn11ew0=
+        b=16G12vWV5otnRrHhYIEMlBGoo7Px1ovnQHIAR4q4+xpG8Jvpx4jsLCI0SbZOJbxtQ
+         te9zxr8S8zNkC7y6P2yt9u6Nj3SL4z1bIG0qOjhRF9LhNWJWsQ3fwvPnDwotmLfi5A
+         EBLUZUB1Q75Jap/4UEGMoCAijkdly4yOiCS0yYdw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 31/38] rcu-tasks: Make RCU tasks trace also wait for idle tasks
-Date:   Wed, 15 Apr 2020 11:19:34 -0700
-Message-Id: <20200415181941.11653-31-paulmck@kernel.org>
+Subject: [PATCH v4 tip/core/rcu 32/38] rcu-tasks: Add rcu_dynticks_zero_in_eqs() effectiveness statistics
+Date:   Wed, 15 Apr 2020 11:19:35 -0700
+Message-Id: <20200415181941.11653-32-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415181856.GA11037@paulmck-ThinkPad-P72>
 References: <20200415181856.GA11037@paulmck-ThinkPad-P72>
@@ -45,64 +45,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit scans the CPUs, adding each CPU's idle task to the list of
-tasks that need quiescent states.
+This commit adds counts of the number of calls and number of successful
+calls to rcu_dynticks_zero_in_eqs(), which are printed at the end
+of rcutorture runs and at stall time.  This allows evaluation of the
+effectiveness of rcu_dynticks_zero_in_eqs().
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ kernel/rcu/tasks.h | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 1888a49..6bd9bfe 100644
+index 6bd9bfe..b51f19a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -15,7 +15,7 @@ struct rcu_tasks;
- typedef void (*rcu_tasks_gp_func_t)(struct rcu_tasks *rtp);
- typedef void (*pregp_func_t)(void);
- typedef void (*pertask_func_t)(struct task_struct *t, struct list_head *hop);
--typedef void (*postscan_func_t)(void);
-+typedef void (*postscan_func_t)(struct list_head *hop);
- typedef void (*holdouts_func_t)(struct list_head *hop, bool ndrpt, bool *frptp);
- typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+@@ -725,6 +725,11 @@ DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
+ // Record outstanding IPIs to each CPU.  No point in sending two...
+ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
  
-@@ -331,7 +331,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 	rcu_read_unlock();
- 
- 	set_tasks_gp_state(rtp, RTGS_POST_SCAN_TASKLIST);
--	rtp->postscan_func();
-+	rtp->postscan_func(&holdouts);
- 
- 	/*
- 	 * Each pass through the following loop scans the list of holdout
-@@ -415,7 +415,7 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
- }
- 
- /* Processing between scanning taskslist and draining the holdout list. */
--void rcu_tasks_postscan(void)
-+void rcu_tasks_postscan(struct list_head *hop)
- {
- 	/*
- 	 * Wait for tasks that are in the process of exiting.  This
-@@ -932,9 +932,17 @@ static void rcu_tasks_trace_pertask(struct task_struct *t,
- 	trc_wait_for_one_reader(t, hop);
- }
- 
--/* Do intermediate processing between task and holdout scans. */
--static void rcu_tasks_trace_postscan(void)
-+/*
-+ * Do intermediate processing between task and holdout scans and
-+ * pick up the idle tasks.
-+ */
-+static void rcu_tasks_trace_postscan(struct list_head *hop)
- {
-+	int cpu;
++// The number of detections of task quiescent state relying on
++// heavyweight readers executing explicit memory barriers.
++unsigned long n_heavy_reader_attempts;
++unsigned long n_heavy_reader_updates;
 +
-+	for_each_possible_cpu(cpu)
-+		rcu_tasks_trace_pertask(idle_task(cpu), hop);
-+
- 	// Re-enable CPU hotplug now that the tasklist scan has completed.
- 	cpus_read_unlock();
+ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+ DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
+ 		 "RCU Tasks Trace");
+@@ -830,9 +835,11 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ 		// If heavyweight readers are enabled on the remote task,
+ 		// we can inspect its state despite its currently running.
+ 		// However, we cannot safely change its state.
++		n_heavy_reader_attempts++;
+ 		if (!ofl && // Check for "running" idle tasks on offline CPUs.
+ 		    !rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
+ 			return false; // No quiescent state, do it the hard way.
++		n_heavy_reader_updates++;
+ 		in_qs = true;
+ 	} else {
+ 		in_qs = likely(!t->trc_reader_nesting);
+@@ -1143,9 +1150,11 @@ core_initcall(rcu_spawn_tasks_trace_kthread);
+ 
+ static void show_rcu_tasks_trace_gp_kthread(void)
+ {
+-	char buf[32];
++	char buf[64];
+ 
+-	sprintf(buf, "N%d", atomic_read(&trc_n_readers_need_end));
++	sprintf(buf, "N%d h:%lu/%lu", atomic_read(&trc_n_readers_need_end),
++		data_race(n_heavy_reader_updates),
++		data_race(n_heavy_reader_attempts));
+ 	show_rcu_tasks_generic_gp_kthread(&rcu_tasks_trace, buf);
+ }
  
 -- 
 2.9.5
