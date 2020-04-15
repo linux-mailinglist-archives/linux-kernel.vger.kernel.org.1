@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963411A955E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2661A956D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393770AbgDOH7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 03:59:41 -0400
-Received: from sauhun.de ([88.99.104.3]:48470 "EHLO pokefinder.org"
+        id S2390631AbgDOIBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390630AbgDOH7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 03:59:18 -0400
-Received: from localhost (p54B33507.dip0.t-ipconnect.de [84.179.53.7])
-        by pokefinder.org (Postfix) with ESMTPSA id DD7442C1F58;
-        Wed, 15 Apr 2020 09:59:14 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 09:59:11 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-i3c@lists.infradead.org,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [RFC PATCH v2 2/6] i2c: allow DT nodes without 'compatible'
-Message-ID: <20200415075911.GA1141@ninjato>
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
- <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
- <11ca7487-ac07-f714-8573-20d1a0040212@lucaceresoli.net>
+        id S2390632AbgDOIBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:01:41 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 049C920771;
+        Wed, 15 Apr 2020 08:01:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586937701;
+        bh=9ywgSYygOB+/Z9gWyANO2qKl2bCr6RfkfGZP7sjsuTI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=goc1oNo7GGOHWZ/W3isuoJ865lkdjnq4UOaKhVyXXV/Xt6JAnvPBol9c4w/iTR6MQ
+         hrOd3wRy/dyxTh3k8w3u7s1MH4dKPUVYwI/OPr1jVMVTHjKK84jSQH4vb9aDlW2QZN
+         c7SoZsfA+pmy2+Poa1O/PFlBJo9nhaMDpo0JmsFQ=
+Received: by pali.im (Postfix)
+        id B30A7589; Wed, 15 Apr 2020 10:01:38 +0200 (CEST)
+Date:   Wed, 15 Apr 2020 10:01:38 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sungjong Seo <sj1557.seo@samsung.com>
+Subject: Re: [PATCH 0/4] Fixes for exfat driver
+Message-ID: <20200415080138.fvmviqavjtyqyi65@pali>
+References: <CGME20200317222604epcas1p1559308b0199c5320a9c77f5ad9f033a2@epcas1p1.samsung.com>
+ <20200317222555.29974-1-pali@kernel.org>
+ <000101d5fcb2$96ec6270$c4c52750$@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <11ca7487-ac07-f714-8573-20d1a0040212@lucaceresoli.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <000101d5fcb2$96ec6270$c4c52750$@samsung.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday 18 March 2020 08:20:04 Namjae Jeon wrote:
+> > This patch series contains small fixes for exfat driver. It removes
+> > conversion from UTF-16 to UTF-16 at two places where it is not needed and
+> > fixes discard support.
+> Looks good to me.
+> Acked-by: Namjae Jeon <namjae.jeon@samsung.com>
+> 
+> Hi Al,
+> 
+> Could you please push these patches into your #for-next ?
+> Thanks!
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Al, could you please take this patch series? Based on feedback current
+hashing code is good enough. And we do not want to have broken discard
+support in upcoming Linux kernel version.
 
-
-> As I said in the reply to v1, I think we should reserve addresses also
-> when there is a compatible string but no matching driver, but this is
-> another story and can be handled separately.
-
-Unless I misunderstand you, I think they do already. Note that
-only 'i2cdetect' shows a device as busy *IFF* there is a driver bound to
-it. The internal 'i2c_check_addr_busy' does not care about a driver
-being bound. You can check this by trying to use
-i2c_new_ancillary_device() with an address which is already described in
-DT but which driver is disabled.
-
-
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6WvssACgkQFA3kzBSg
-KbYQ8hAAruiFHx6/xDYq9vD1D8WLWFXqoxuwD4NbJPlRSuzJvimBjPE7ynrPH4Ga
-S96O5ehETCXYz2yXLQmo1cwCbnIRo8W9kl+H/knosYOOdBd5jFpKNd7Z3+R2ldHL
-jr7z0qYXDcN+ErsIKUL4jJpmcSQL26GrNSmUFbadRvcsGDTq19Qwc+mhNx90oDyh
-xxb3RZs1cZWdkc+PygDNWwbh0dvbMHL0LBl6smJxf0z4wyVEx3YWxB4Rzfb4wVo6
-HRr1Ubdz1sSGhxyJoZ1PZqQy7lrpg+vLNv+sYG5nrdPsX5KTXlKBXowdWHeSFlXv
-nZ2DtsHzwSzE2LaeY9HmlV9iZEFGD/21NQ+u5B5wxcV5EbPyPHeOLUXp2t+6gOLC
-TT5vjxshNUPKBYBC/XrPIPC8P08Ajp6+gzckYqLY2/E+Nzmv8akKSNq4+idrw+59
-+Gj89nHXXzqSPMDUJ3XfMgLTQcRVNW46H+f6Ix+xwj/JuV1uR0XWELnn/cfH+Q7V
-rAuCawvjljjh/h9KfcHAbzpfCSkxXR4dYdKQGD8YeVCrQFvC5IMrZ/cwqF6W0Jj1
-xJ5lngRYJsdqRc0Y2/rLpAae8UT54bzPbn4KFNCZ9LHx2Qx0dStIFhG+k927OlZe
-6cDCHUXGwC4ypb0pJdeSxD8Y3rRe7GbHfawZkLzzl8z3OjQ3K54=
-=LEQy
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+> > 
+> > Patches are also in my exfat branch:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=exfa
+> > t
+> > 
+> > Pali Rohár (4):
+> >   exfat: Simplify exfat_utf8_d_hash() for code points above U+FFFF
+> >   exfat: Simplify exfat_utf8_d_cmp() for code points above U+FFFF
+> >   exfat: Remove unused functions exfat_high_surrogate() and
+> >     exfat_low_surrogate()
+> >   exfat: Fix discard support
+> > 
+> >  fs/exfat/exfat_fs.h |  2 --
+> >  fs/exfat/namei.c    | 19 ++++---------------
+> >  fs/exfat/nls.c      | 13 -------------
+> >  fs/exfat/super.c    |  5 +++--
+> >  4 files changed, 7 insertions(+), 32 deletions(-)
+> > 
+> > --
+> > 2.20.1
+> 
+> 
+> 
