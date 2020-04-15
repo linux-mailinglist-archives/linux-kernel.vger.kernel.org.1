@@ -2,155 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE8F1AB47E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 01:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFC11AB46B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 01:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390802AbgDOX5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 19:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389935AbgDOX52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 19:57:28 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1DBC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 16:57:26 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b8so784356pfp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 16:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g+3cVFHINQK8034Q5fMosJmLqjR0x/8UAQMOjZSVJrM=;
-        b=hymJOGYOl8wyGrt54ea9ETuKrBuw+wFtIDoosE9VbbTh3G2do1iFapNRgpRzht7cF+
-         1h4tsTDnwoUY7vgAf0B6t9n+FyslLxRcQhLeXANSqSnY1BwHGWOO/CGr+ch7TrC7Y1be
-         poo1PAE0JVXRF1RDYuyH/o1HSC4r+3OiFuCMM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g+3cVFHINQK8034Q5fMosJmLqjR0x/8UAQMOjZSVJrM=;
-        b=lVlUu/2apbWMJRFZUQqgIgCG8K9kVSrww963019qHqvL2gqSpplOXKSSXO1vCok1t2
-         4tWmRhzEo46Y6w7tTLUEz21Arxkjb1Ueamm21Z8Dcr4dLccwgORJkA/A8kEBsKR8kXOp
-         TnKsW2FeLufhFtso9BQY7zGLqtkFIhz9kE04ZvEsebK7YBmsxeghI4M86Wa6K7kycn7t
-         NhS358mCuxvJkaAHktOBc1hkTjhIVLZIgCvlhRoWgJUcwXKr+0xtjyHlMwp6nvbOPX4E
-         r8m37tqxzMQDrV/ARrxvgLK9bdo4UW1ZFUNaySzsrOhLq3LPdQ3U4R4tL+lipgo8SoNT
-         xoaw==
-X-Gm-Message-State: AGi0PuYno5lhoDRgE28FOUhOJkYHVRiFFYr7xi8kBXeHP9Vyzh3FJKYj
-        lIooW95S9BCGJ5zummWWnv7xYyoFz3I=
-X-Google-Smtp-Source: APiQypKWVV1a5GTXBrMkuWqfChPLPkaFl4PHItUYIOhi4bCVaK+dhr2OHCRzP1xRP9ShWZghQVmikQ==
-X-Received: by 2002:a63:214a:: with SMTP id s10mr16293084pgm.98.1586995046059;
-        Wed, 15 Apr 2020 16:57:26 -0700 (PDT)
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com. [209.85.214.174])
-        by smtp.gmail.com with ESMTPSA id h27sm323934pgb.90.2020.04.15.16.57.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 16:57:25 -0700 (PDT)
-Received: by mail-pl1-f174.google.com with SMTP id g2so661405plo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 16:57:25 -0700 (PDT)
-X-Received: by 2002:a67:1e46:: with SMTP id e67mr7126201vse.106.1586994551498;
- Wed, 15 Apr 2020 16:49:11 -0700 (PDT)
+        id S2389933AbgDOXt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 19:49:59 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40522 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733274AbgDOXtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 19:49:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=KsfdEC8WsFMbxvp0Zy1Uk07H2XqVM3wcsM3uXIHuF0A=; b=D5y+wDHcAtzzBC8H0R38etpB+2
+        0XYqjPkwZCYH3jGIIxCZBn9KgDHlXuX/9TY3vfdA/i05diAEgQmpwAruyNRMj4yQVR0PgEHdGK8ng
+        C4Bxb+zy+mHsuREyIgehv7ZTiEErSJpa2ZIqQvZ99/ZgHCDi8xVJd1SyvMYgM1B99Lro=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jOrmy-002yRv-16; Thu, 16 Apr 2020 01:49:52 +0200
+Date:   Thu, 16 Apr 2020 01:49:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v3 2/3] dt-bindings: add Qualcomm IPQ4019 MDIO bindings
+Message-ID: <20200415234952.GI611399@lunn.ch>
+References: <20200415150244.2737206-1-robert.marko@sartura.hr>
+ <20200415150244.2737206-2-robert.marko@sartura.hr>
 MIME-Version: 1.0
-References: <20200415084758.1.Ifcdc4ecb12742a27862744ee1e8753cb95a38a7f@changeid>
- <20200415084758.2.Ic98f6622c60a1aa547ed85781f2c3b9d3e56b734@changeid>
- <158698038289.105027.2860892334897893887@swboyd.mtv.corp.google.com> <20200415203256.GP4758@pendragon.ideasonboard.com>
-In-Reply-To: <20200415203256.GP4758@pendragon.ideasonboard.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 15 Apr 2020 16:49:00 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U1U7y_U4+zySzA9e_uYE0ECdM1Bd-ew0OxG3ciqjRVSA@mail.gmail.com>
-Message-ID: <CAD=FV=U1U7y_U4+zySzA9e_uYE0ECdM1Bd-ew0OxG3ciqjRVSA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: drm/bridge: ti-sn65dsi86: Add hpd-gpios
- to the bindings
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Panda <spanda@codeaurora.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415150244.2737206-2-robert.marko@sartura.hr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Apr 15, 2020 at 05:02:46PM +0200, Robert Marko wrote:
+> This patch adds the binding document for the IPQ40xx MDIO driver.
+> 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
 
-On Wed, Apr 15, 2020 at 1:33 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> On Wed, Apr 15, 2020 at 12:53:02PM -0700, Stephen Boyd wrote:
-> > Quoting Douglas Anderson (2020-04-15 08:48:40)
-> > > Allow people to specify to use a GPIO for hot-plug-detect.  Add an
-> > > example.
-> > >
-> > > NOTE: The current patch adding support for hpd-gpios to the Linux
-> > > driver for hpd-gpios only adds enough support to the driver so that
-> > > the bridge can use one of its own GPIOs.  The bindings, however, are
-> > > written generically.
-> > >
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > >
-> > >  .../bindings/display/bridge/ti,sn65dsi86.yaml          | 10 +++++++++-
-> > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> > > index 8cacc6db33a9..554bfd003000 100644
-> > > --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> > > +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> > > @@ -60,6 +60,10 @@ properties:
-> > >      const: 1
-> > >      description: See ../../pwm/pwm.yaml for description of the cell formats.
-> > >
-> > > +  hpd-gpios:
-> > > +    maxItems: 1
-> > > +    description: If present use the given GPIO for hot-plug-detect.
-> >
-> > Shouldn't this go in the panel node? And the panel driver should get the
-> > gpio and poll it after powering up the panel? Presumably that's why we
-> > have the no-hpd property in the simple panel binding vs. putting it here
-> > in the bridge.
->
-> Same question really, I think this belongs to the panel (or connector)
-> node indeed.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Hrm.
+    Andrew
 
-To me "no-hpd" feels OK in the panel because the lack of a connection
-is somewhat symmetric.  Thus it's OK to say either "HPD isn't hooked
-up to the panel in this system" or "HPD isn't hooked up to the bridge
-in this system" and both express the same thing (AKA that there is no
-HPD connection between the bridge and the panel).  In the case of
-"no-hpd" it's more convenient to express it on the panel side because
-the panel driver is the one whose behavior has to change if HPD isn't
-hooked up.  The panel datasheet is the one that says how long of a
-delay we need if HPD isn't hooked up.
-
-...but when you're talking about where the bridge driver should look
-to find the HPD signal that it needs, that really feels like it should
-be described as part of the bridge.  Specifically imagine we were
-using our bridge for DP, not for eDP.  In that case simple-panel
-wouldn't be involved because we could get any type of display plugged
-in.  Thus it couldn't go in the panel node.  Here it feels clearer
-that hpd-gpio needs to be a property of the bridge driver.
-
-Looking at other usages of "hpd-gpio" in the kernel, it seems like the
-usage I'm proposing is also common.  Grepping for "hpd-gpios" shows
-numerous examples of "hpd-gpios" being defined at the display
-controller level and (effectively) I believe the bridge is at the
-equivalent level.
-
-
--Doug
