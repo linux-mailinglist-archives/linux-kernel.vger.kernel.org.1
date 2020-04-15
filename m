@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B571AAF2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F16F1AAF35
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410765AbgDORLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42482 "EHLO mail.kernel.org"
+        id S1416404AbgDORMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:12:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410718AbgDORLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2410719AbgDORLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 13:11:00 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3475221734;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8862221D82;
         Wed, 15 Apr 2020 17:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586970659;
-        bh=Zn8T0qXMV7YOFTrMGGq/sgMTy5x4U/tVlqKtgx6cd7c=;
+        bh=ULSCJ4AUZ34fFoHXztiykYhBJYb0OeWc+BVUnx4B4hM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zcbvyz2nruR/MdSV8jptuHaaAZVLahctHXjaFpbsUDQqrdC0CVOQcozcY8VCubuQQ
-         kOTM/+Ffnc20KqtdDoqB7IV8hCfFh2htQ/mkcKoLcfDBhSoPRyLCRMpH2iIajoEgjS
-         rdvkTV8q4w+LwQxe9zMk6ZJO7m+NVOd9QOYyPrwM=
+        b=K1uijSpQniBBEY5+f7gv3nDAlpMj3ck9xKzoqh0KYTKIqqcty5+rYa15Bj5+c4zHC
+         iqmNycF0EaKHnqn/ACNeFVur3uJyEBHC7VlmckB7HBHJuMX65C/F0CIID4GQ4LlMoI
+         pkIkNHLQOzIcHEAY7rJuCT5agj61IqglzBJ2Gtdk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/19] rcu: Expedite first two FQS scans under callback-overload conditions
-Date:   Wed, 15 Apr 2020 10:10:45 -0700
-Message-Id: <20200415171054.9013-10-paulmck@kernel.org>
+        Zhaolong Zhang <zhangzl2013@126.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/19] rcu: Fix the (t=0 jiffies) false positive
+Date:   Wed, 15 Apr 2020 10:10:46 -0700
+Message-Id: <20200415171054.9013-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -43,96 +44,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zhaolong Zhang <zhangzl2013@126.com>
 
-Even if some CPUs have excessive numbers of callbacks, RCU's grace-period
-kthread will still wait normally between successive force-quiescent-state
-scans.  The first two are the most important, as they are the ones that
-enlist aid from the scheduler when overloaded.  This commit therefore
-omits the wait before the first and the second force-quiescent-state
-scan under callback-overload conditions.
+It is possible that an over-long grace period will end while the RCU
+CPU stall warning message is printing.  In this case, the estimate of
+the offending grace period's duration can be erroneous due to refetching
+of rcu_state.gp_start, which will now be the time of the newly started
+grace period.  Computation of this duration clearly needs to use the
+start time for the old over-long grace period, not the fresh new one.
+This commit avoids such errors by causing both print_other_cpu_stall() and
+print_cpu_stall() to reuse the value previously fetched by their caller.
 
-This approach was inspired by a discussion with Jeff Roberson.
-
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 19 +++++++++++++++----
- kernel/rcu/tree.h |  1 +
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ kernel/rcu/tree_stall.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4fd3e0f..7c734b2 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1624,12 +1624,16 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
- {
- 	struct rcu_node *rnp = rcu_get_root();
- 
--	/* Someone like call_rcu() requested a force-quiescent-state scan. */
-+	// If under overload conditions, force an immediate FQS scan.
-+	if (*gfp & RCU_GP_FLAG_OVLD)
-+		return true;
-+
-+	// Someone like call_rcu() requested a force-quiescent-state scan.
- 	*gfp = READ_ONCE(rcu_state.gp_flags);
- 	if (*gfp & RCU_GP_FLAG_FQS)
- 		return true;
- 
--	/* The current grace period has completed. */
-+	// The current grace period has completed.
- 	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers_cgp(rnp))
- 		return true;
- 
-@@ -1667,13 +1671,15 @@ static void rcu_gp_fqs(bool first_time)
- static void rcu_gp_fqs_loop(void)
- {
- 	bool first_gp_fqs;
--	int gf;
-+	int gf = 0;
- 	unsigned long j;
- 	int ret;
- 	struct rcu_node *rnp = rcu_get_root();
- 
- 	first_gp_fqs = true;
- 	j = READ_ONCE(jiffies_till_first_fqs);
-+	if (rcu_state.cbovld)
-+		gf = RCU_GP_FLAG_OVLD;
- 	ret = 0;
- 	for (;;) {
- 		if (!ret) {
-@@ -1698,7 +1704,11 @@ static void rcu_gp_fqs_loop(void)
- 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsstart"));
- 			rcu_gp_fqs(first_gp_fqs);
--			first_gp_fqs = false;
-+			gf = 0;
-+			if (first_gp_fqs) {
-+				first_gp_fqs = false;
-+				gf = rcu_state.cbovld ? RCU_GP_FLAG_OVLD : 0;
-+			}
- 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsend"));
- 			cond_resched_tasks_rcu_qs();
-@@ -1718,6 +1728,7 @@ static void rcu_gp_fqs_loop(void)
- 				j = 1;
- 			else
- 				j = rcu_state.jiffies_force_qs - j;
-+			gf = 0;
- 		}
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index e7da111..3a7bc99 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -371,7 +371,7 @@ static void rcu_check_gp_kthread_starvation(void)
  	}
  }
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 9dc2ec0..44edd0a 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -359,6 +359,7 @@ struct rcu_state {
- /* Values for rcu_state structure's gp_flags field. */
- #define RCU_GP_FLAG_INIT 0x1	/* Need grace-period initialization. */
- #define RCU_GP_FLAG_FQS  0x2	/* Need grace-period quiescent-state forcing. */
-+#define RCU_GP_FLAG_OVLD 0x4	/* Experiencing callback overload. */
  
- /* Values for rcu_state structure's gp_state field. */
- #define RCU_GP_IDLE	 0	/* Initial state and no GP in progress. */
+-static void print_other_cpu_stall(unsigned long gp_seq)
++static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ {
+ 	int cpu;
+ 	unsigned long flags;
+@@ -408,7 +408,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
+ 	for_each_possible_cpu(cpu)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu)\n",
+-	       smp_processor_id(), (long)(jiffies - rcu_state.gp_start),
++	       smp_processor_id(), (long)(jiffies - gps),
+ 	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
+ 	if (ndetected) {
+ 		rcu_dump_cpu_stacks();
+@@ -442,7 +442,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
+ 	rcu_force_quiescent_state();  /* Kick them all. */
+ }
+ 
+-static void print_cpu_stall(void)
++static void print_cpu_stall(unsigned long gps)
+ {
+ 	int cpu;
+ 	unsigned long flags;
+@@ -467,7 +467,7 @@ static void print_cpu_stall(void)
+ 	for_each_possible_cpu(cpu)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_cont("\t(t=%lu jiffies g=%ld q=%lu)\n",
+-		jiffies - rcu_state.gp_start,
++		jiffies - gps,
+ 		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
+ 
+ 	rcu_check_gp_kthread_starvation();
+@@ -546,7 +546,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+ 
+ 		/* We haven't checked in, so go dump stack. */
+-		print_cpu_stall();
++		print_cpu_stall(gps);
+ 		if (rcu_cpu_stall_ftrace_dump)
+ 			rcu_ftrace_dump(DUMP_ALL);
+ 
+@@ -555,7 +555,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+ 
+ 		/* They had a few time units to dump stack, so complain. */
+-		print_other_cpu_stall(gs2);
++		print_other_cpu_stall(gs2, gps);
+ 		if (rcu_cpu_stall_ftrace_dump)
+ 			rcu_ftrace_dump(DUMP_ALL);
+ 	}
 -- 
 2.9.5
 
