@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782041A99BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1B31A99D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 12:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408491AbgDOJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:57:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:41138 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405824AbgDOJ5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:57:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3D291063;
-        Wed, 15 Apr 2020 02:57:46 -0700 (PDT)
-Received: from [10.37.12.1] (unknown [10.37.12.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 760B13F68F;
-        Wed, 15 Apr 2020 02:57:44 -0700 (PDT)
-Subject: Re: [PATCH 1/8] arm64: cpufeature: Relax check for IESB support
-To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu
-Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
-        kernel-team@android.com
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-2-will@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <ef6f287a-9233-6d5a-b0b8-f5fabe5ac2fc@arm.com>
-Date:   Wed, 15 Apr 2020 11:02:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S2896110AbgDOKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 06:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2895955AbgDOKDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 06:03:13 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43F3C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:03:13 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id x11so2808773otp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 03:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=jTk1agLaDxZtGZ+XckgjaYVQubhifTowqlR3ItzSNmg=;
+        b=MaTNNHmUiFEbkWXOEM60c/HPTTq4FmwvcUk3jeREklpBBZ7kwsNAXDyZ5XE9OUFIbZ
+         e8ly1NYV+EpXLpFf8BmkqVMWELWDvT1ZLgtGmEao3rdLoyIkA7ess5L0LWFbnLs2ejmE
+         2Lk4fQUSFRWhNBTMyEj64NdlBgGrwKZMX5FgSjaTGFBsQHmOr+jy3ftWov56lBG3nLQ8
+         Ijp9nJfdGMtlB+RgSjHGN2mwRv/ml5qxOhtt6YVBlLoG0B92MhXDL7miIzaJUdmRkXNK
+         jZMm1RDG+HeHcoyb53yoyZwmyaz4oYHmSGglqC6mYSPyWPXpi8kf5krZWkF+aSdnvVL3
+         sj9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=jTk1agLaDxZtGZ+XckgjaYVQubhifTowqlR3ItzSNmg=;
+        b=A2Lx+RFovP55Za7QUZAMzFuSeOCdtXmKdzqUOZ8OCYSTgY+MDS416r7gT9vpuf73Vi
+         WLOTxM/V69fyN7TcuUdbPrTtbHrwe9kCryixitT6sJVp06Pxu/qsen/11ks+E5Sd0ZSL
+         6rAkUjRiSFP5XRRCT7R3H/aBkPHQiS3YCsYM62E27hOaiGZb3GQnBZlknM9F8VBFACNJ
+         nooCJz6xioCQ9X+fckWi5FEm6lgOiz153Y4BeXDKS/nhpZfcBbUXAKoKTHdtWN93Mcy6
+         riSVpcVQIPE7H+mlZXp8LTUBqSb9zeC6yY+PcIKfvz0FfHfgKgP6z/Db+bSi9qfFTulp
+         4rXA==
+X-Gm-Message-State: AGi0PubOqJ/QQGVQ6x21k727wWOBeIi78i77PHklqm4OpPEm0jAxpNzy
+        9SH8babmVqmtVCSTDEQ7U536uw2X3TFvMldoDzo=
+X-Google-Smtp-Source: APiQypKRtLlbiIZwaBYy2tfPw79kiRtSl9pt3u1mBe4Zg6T2q1J7zwjZn+yksFPjW4Xhz+kT6gS0ebowemKchahnttQ=
+X-Received: by 2002:a9d:7082:: with SMTP id l2mr6635407otj.361.1586944992932;
+ Wed, 15 Apr 2020 03:03:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200414213114.2378-2-will@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:19ae:0:0:0:0:0 with HTTP; Wed, 15 Apr 2020 03:03:12
+ -0700 (PDT)
+Reply-To: Millersophia434@gmail.com
+From:   Sophia Miller <christosmichael444@gmail.com>
+Date:   Wed, 15 Apr 2020 10:03:12 +0000
+Message-ID: <CAFhQ08JK7ga7HwBCLaDBKdrRNiBmx-izKa2rtrZc=bwbyJoimg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will
-
-On 04/14/2020 10:31 PM, Will Deacon wrote:
-> From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> 
-> We don't care if IESB is supported or not as we always set
-> SCTLR_ELx.IESB and, if it works, that's really great.
-> 
-> Relax the ID_AA64MMFR2.IESB cpufeature check so that we don't warn and
-> taint if it's mismatched.
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> [will: rewrote commit message]
-> Signed-off-by: Will Deacon <will@kernel.org>
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-> ---
->   arch/arm64/kernel/cpufeature.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 9fac745aa7bb..63df28e6a425 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -247,7 +247,7 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr2[] = {
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_FWB_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_AT_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_LVA_SHIFT, 4, 0),
-> -	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_IESB_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_IESB_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_LSM_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_UAO_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR2_CNP_SHIFT, 4, 0),
-> 
-
+-- 
+I'm Sophia , i will like to know more about you , write me back when
+you receive my letter
