@@ -2,287 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C291AADE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E311AADE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415666AbgDOQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1415655AbgDOQV0 (ORCPT
+        id S1415677AbgDOQWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:22:04 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:53755 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1415627AbgDOQV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:21:26 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998C9C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 09:21:26 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1jOkmm-0005YD-EE; Wed, 15 Apr 2020 18:21:12 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1jOkmk-0004Qr-4c; Wed, 15 Apr 2020 18:21:10 +0200
-Date:   Wed, 15 Apr 2020 18:21:10 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v7 1/3] media: dt-bindings: ov8856: Document YAML bindings
-Message-ID: <20200415162110.bmorj4u4hkqohqjx@pengutronix.de>
-References: <20200408110816.2712841-1-robert.foss@linaro.org>
- <20200408110816.2712841-2-robert.foss@linaro.org>
- <20200415160729.GA4438@bogus>
+        Wed, 15 Apr 2020 12:21:57 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3E027580133;
+        Wed, 15 Apr 2020 12:21:55 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 15 Apr 2020 12:21:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=u9scvMZX0d04Kn3R0y+CYoy7IVW
+        oF9BUIBhBMZ7xTQ4=; b=MTTjB7zbrBmqyMSWXv7QRhsmX2Q1vGgqO+YM7nHlyCz
+        C1LNlyMorpxShEuJf2md4RxGK5nIGMKIcj6UroWHCoPMTZu2UZ1ZyWBcak71X57N
+        bkCkS/SzxYxu3YP7dvK+R7C4J5j9sDlloifFD2Uny8p2t05p2OeyYQuMmppF80qv
+        8UFAjNPuLiqCbBTrsY9wM/Oftztaw+6yI00noEzhHgbKDGIfLJI/fTLSQCkOLg0N
+        Po90TKLlEJpDqyWTPaq+V3LPX1g3IGW0DSwranqmS4w0rr2q1hm3UUsTUIFYTmj1
+        MPFdzeC65CKFW7CG3Z4SZ2PxMA3aOgLiGdShESqWBhA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=u9scvM
+        ZX0d04Kn3R0y+CYoy7IVWoF9BUIBhBMZ7xTQ4=; b=VW+8LawDZdtk7jKnlusa8f
+        0j0jUmRLsYCwbK6kqpfjHSPVbujw7FvpOjCiVzfg8PRdVY2igHyC0ffQ8Qs9CXI1
+        6MaPtRW2y/VN1k1eKp7tX/503/m4whChKErTvNnwmlCB0qxBCt28TKnKE8Q5LBCD
+        AJo4Zkfww+08FJ1kXQ6Tr1CdcxiWGRqCHfaLGfPy4HtRjpsW4a8y5cvzgZuNHYUM
+        ufmUGKTz/SbpHvcomPx07lVUa06GkJnL73PjwH5CbRzCgZQwpkucTecpCPop1SEz
+        X5ooxv+wfX+XCW7vHwMyz4i8+sgtAwql3AW++j2ZS1UpvvGggsD/54zLlNumMO/g
+        ==
+X-ME-Sender: <xms:oTSXXoIWnMvlqGVy8AaStKXEUhQPrkvTcQ86pmg8HWSqUs3uANtqTg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfeefgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
+    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:oTSXXsZWqwp5ohe7OpVmOzP-_EQI_bDpXSWr2pKmZzhJrg7nq6Qo7Q>
+    <xmx:oTSXXjvDHO9_QmqdCkTjvg2-Zj78oQPE0lPP4iy7yWuuzc3-0kQdkw>
+    <xmx:oTSXXpsrCdreATG0MCLBoDdeITl5U9d7Josa7Th3OY0r4Lnm0pgXKw>
+    <xmx:ozSXXtSsjCJYztWsp3i-3gOwsHTwJ-4VBerx14NJRu-GtrkbjDF6bw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D563D3280066;
+        Wed, 15 Apr 2020 12:21:52 -0400 (EDT)
+Date:   Wed, 15 Apr 2020 18:21:51 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        James Hogan <jhogan@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-samsung-soc@vger.kernel.org, letux-kernel@openphoenux.org,
+        Paul Burton <paulburton@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, Chen-Yu Tsai <wens@csie.org>,
+        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        openpvrsgx-devgroup@letux.org, linux-kernel@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@pyra-handheld.com
+Subject: Re: [PATCH v6 01/12] dt-bindings: add img, pvrsgx.yaml for
+ Imagination GPUs
+Message-ID: <20200415162151.rwym4ioqz27migfn@gilmour.lan>
+References: <cover.1586939718.git.hns@goldelico.com>
+ <06fb6569259bb9183d0a0d0fe70ec4f3033b8aab.1586939718.git.hns@goldelico.com>
+ <20200415101251.o3wi5t6xvf56xmhq@gilmour.lan>
+ <72919514-0657-4B71-902F-3E775E528F64@goldelico.com>
+ <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
+ <535CAEBE-F43E-4BFC-B989-612C81F0D7EF@goldelico.com>
+ <20200415142124.yzfh6mtqq7cdq22e@gilmour.lan>
+ <DC0A2DE2-3D77-46F8-8DE1-55050FDACC9B@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tfobgrwcfdirkzal"
 Content-Disposition: inline
-In-Reply-To: <20200415160729.GA4438@bogus>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 18:19:18 up 152 days,  7:37, 171 users,  load average: 1.12, 0.66,
- 0.33
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <DC0A2DE2-3D77-46F8-8DE1-55050FDACC9B@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-04-15 11:07, Rob Herring wrote:
-> On Wed, Apr 08, 2020 at 01:08:14PM +0200, Robert Foss wrote:
-> > From: Dongchun Zhu <dongchun.zhu@mediatek.com>
-> > 
-> > This patch adds documentation of device tree in YAML schema for the
-> > OV8856 CMOS image sensor.
-> > 
-> > Signed-off-by: Dongchun Zhu <dongchun.zhu@mediatek.com>
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > ---
-> > 
-> > - Changes since v6:
-> >   * Marco: remove qcom specifics from DT example
-> >    
-> > - Changes since v5:
-> >   * Add assigned-clocks and assigned-clock-rates
-> >   * robher: dt-schema errors
-> > 
-> > - Changes since v4:
-> >   * Fabio: Change reset-gpio to GPIO_ACTIVE_LOW, explain in description
-> >   * Add clock-lanes property to example
-> >   * robher: Fix syntax error in devicetree example
-> > 
-> > - Changes since v3:
-> >   * robher: Fix syntax error
-> >   * robher: Removed maxItems
-> >   * Fixes yaml 'make dt-binding-check' errors
-> > 
-> > - Changes since v2:
-> >   Fixes comments from from Andy, Tomasz, Sakari, Rob.
-> >   * Convert text documentation to YAML schema.
-> > 
-> > - Changes since v1:
-> >   Fixes comments from Sakari, Tomasz
-> >   * Add clock-frequency and link-frequencies in DT
-> > 
-> >  .../devicetree/bindings/media/i2c/ov8856.yaml | 143 ++++++++++++++++++
-> >  MAINTAINERS                                   |   1 +
-> >  2 files changed, 144 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > new file mode 100644
-> > index 000000000000..96bef5403d7e
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > @@ -0,0 +1,143 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright (c) 2019 MediaTek Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/ov8856.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Omnivision OV8856 CMOS Sensor Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Ben Kao <ben.kao@intel.com>
-> > +  - Dongchun Zhu <dongchun.zhu@mediatek.com>
-> > +
-> > +description: |-
-> > +  The Omnivision OV8856 is a high performance, 1/4-inch, 8 megapixel, CMOS
-> > +  image sensor that delivers 3264x2448 at 30fps. It provides full-frame,
-> > +  sub-sampled, and windowed 10-bit MIPI images in various formats via the
-> > +  Serial Camera Control Bus (SCCB) interface. This chip is programmable
-> > +  through I2C and two-wire SCCB. The sensor output is available via CSI-2
-> > +  serial data output (up to 4-lane).
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: ovti,ov8856
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  clock-names:
-> > +    description:
-> > +      Input clock for the sensor.
-> > +    items:
-> > +      - const: xvclk
-> > +
-> > +  assigned-clocks:
-> > +    description:
-> > +      Input clock for the sensor.
-> > +
-> > +  assigned-clock-rates:
-> > +    description:
-> > +      Frequency of the xvclk clock in Hertz.
-> 
-> These 2 should have a 'maxItems: 1'
 
-Don't know why those properties are needed here.. IMHO this shouldn't be
-part of the binding or at least it should be optional and not required.
-All we need is the clocks and the clock-names property.
+--tfobgrwcfdirkzal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > +  dovdd-supply:
-> > +    description:
-> > +      Definition of the regulator used as interface power supply.
-> > +
-> > +  avdd-supply:
-> > +    description:
-> > +      Definition of the regulator used as analog power supply.
-> > +
-> > +  dvdd-supply:
-> > +    description:
-> > +      Definition of the regulator used as digital power supply.
-> > +
-> > +  reset-gpios:
-> > +    description:
-> > +      The phandle and specifier for the GPIO that controls sensor reset.
-> > +      This corresponds to the hardware pin XSHUTDOWN which is physically
-> > +      active low.
-> > +
-> > +  port:
-> > +    type: object
-> > +    additionalProperties: false
-> > +    description:
-> > +      A node containing input and output port nodes with endpoint definitions
-> 
-> Only an output, right?
-> 
-> > +      as documented in
-> > +      Documentation/devicetree/bindings/media/video-interfaces.txt
-> > +
-> > +    properties:
-> > +      endpoint:
-> > +        type: object
-> > +
-> > +        properties:
-> > +          clock-lanes:
-> > +            maxItems: 1
-> > +
-> > +          data-lanes:
-> > +            maxItems: 1
-> > +
-> > +          remote-endpoint: true
-> > +
-> > +        required:
-> > +          - clock-lanes
-> > +          - data-lanes
-> > +          - remote-endpoint
-> > +
-> > +    required:
-> > +      - endpoint
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - assigned-clocks
-> > +  - assigned-clock-rates
-> > +  - dovdd-supply
-> > +  - avdd-supply
-> > +  - dvdd-supply
-> > +  - reset-gpios
-> > +  - port
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        ov8856: camera@10 {
-> > +            compatible = "ovti,ov8856";
-> > +            reg = <0x10>;
-> > +
-> > +            reset-gpios = <&pio 111 GPIO_ACTIVE_LOW>;
-> > +            pinctrl-names = "default";
-> > +            pinctrl-0 = <&clk_24m_cam>;
-> > +
-> > +            clocks = <&cam_osc>;
-> > +            clock-names = "xvclk";
-> > +            assigned-clocks = <&cam_osc>;
-> > +            assigned-clock-rates = <19200000>;
-> > +
-> > +            avdd-supply = <&mt6358_vcama2_reg>;
-> > +            dvdd-supply = <&mt6358_vcamd_reg>;
-> > +            dovdd-supply = <&mt6358_vcamio_reg>;
-> > +
-> > +            port {
-> > +                wcam_out: endpoint {
-> > +                    remote-endpoint = <&mipi_in_wcam>;
-> > +                    clock-lanes = <0>;
-> > +                    data-lanes = <1 2 3 4>;
-> > +                    link-frequencies = /bits/ 64 <360000000 180000000>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > +...
-> > \ No newline at end of file
-> 
-> ^^^
-> 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 534a8dc4f84a..3f35c6e9700a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -12465,6 +12465,7 @@ L:	linux-media@vger.kernel.org
-> >  T:	git git://linuxtv.org/media_tree.git
-> >  S:	Maintained
-> >  F:	drivers/media/i2c/ov8856.c
-> > +F:	Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> >  
-> >  OMNIVISION OV9650 SENSOR DRIVER
-> >  M:	Sakari Ailus <sakari.ailus@linux.intel.com>
-> > -- 
-> > 2.25.1
-> > 
-> 
+On Wed, Apr 15, 2020 at 05:09:45PM +0200, H. Nikolaus Schaller wrote:
+> Hi Maxime,
+>
+> > Am 15.04.2020 um 16:21 schrieb Maxime Ripard <maxime@cerno.tech>:
+> >
+> >>
+> >> Well we could add clocks and resets as optional but that would
+> >> allow to wrongly define omap.
+> >>
+> >> Or delegate them to a parent "simple-pm-bus" node.
+> >>
+> >> I have to study that material more to understand what you seem
+> >> to expect.
+> >
+> > The thing is, once that binding is in, it has to be backward
+> > compatible. So every thing that you leave out is something that you'll
+> > need to support in the driver eventually.
+>
+> >
+> > If you don't want it to be a complete nightmare, you'll want to figure
+> > out as much as possible on how the GPU is integrated and make a
+> > binding out of that.
+>
+> Hm. Yes. We know that there likely are clocks and maybe reset
+> but for some SoC this seems to be undocumented and the reset
+> line the VHDL of the sgx gpu provides may be permanently tied
+> to "inactive".
+>
+> So if clocks are optional and not provided, a driver simply can assume
+> they are enabled somewhere else and does not have to care about. If
+> they are specified, the driver can enable/disable them.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Except that at the hardware level, the clock is always going to be
+there. You can't control it, but it's there.
+
+> > If OMAP is too much of a pain, you can also make
+> > a separate binding for it, and a generic one for the rest of us.
+>
+> No, omap isn't any pain at all.
+>
+> The pain is that some other SoC are most easily defined by clocks in
+> the gpu node which the omap doesn't need to explicitly specify.
+>
+> I would expect a much bigger nightmare if we split this into two
+> bindings variants.
+>
+> > I'd say that it's pretty unlikely that the clocks, interrupts (and
+> > even regulators) are optional. It might be fixed on some SoCs, but
+> > that's up to the DT to express that using fixed clocks / regulators,
+> > not the GPU binding itself.
+>
+> omap already has these defined them not to be part of the GPU binding.
+> The reason seems to be that this needs special clock gating control
+> especially for idle states which is beyond simple clock-enable.
+>
+> This sysc target-module@56000000 node is already merged and therefore
+> we are only adding the gpu child node. Without defining clocks.
+>
+> For example:
+>
+> 		sgx_module: target-module@56000000 {
+> 			compatible = "ti,sysc-omap4", "ti,sysc";
+> 			reg = <0x5600fe00 0x4>,
+> 			      <0x5600fe10 0x4>;
+> 			reg-names = "rev", "sysc";
+> 			ti,sysc-midle = <SYSC_IDLE_FORCE>,
+> 					<SYSC_IDLE_NO>,
+> 					<SYSC_IDLE_SMART>;
+> 			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
+> 					<SYSC_IDLE_NO>,
+> 					<SYSC_IDLE_SMART>;
+> 			clocks = <&gpu_clkctrl OMAP5_GPU_CLKCTRL 0>;
+> 			clock-names = "fck";
+> 			#address-cells = <1>;
+> 			#size-cells = <1>;
+> 			ranges = <0 0x56000000 0x2000000>;
+>
+> 			gpu: gpu@0 {
+> 				compatible = "ti,omap5-sgx544-116", "img,sgx544-116", "img,sgx544";
+> 				reg = <0x0 0x10000>;
+> 				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+> 			};
+> 		};
+>
+> The jz4780 example will like this:
+>
+> 	gpu: gpu@13040000 {
+> 		compatible = "ingenic,jz4780-sgx540-130", "img,sgx540-130", "img,sgx540";
+> 		reg = <0x13040000 0x4000>;
+>
+> 		clocks = <&cgu JZ4780_CLK_GPU>;
+> 		clock-names = "gpu";
+>
+> 		interrupt-parent = <&intc>;
+> 		interrupts = <63>;
+> 	};
+>
+> So the question is which one is "generic for the rest of us"?
+
+I'd say the latter.
+
+> And how can we make a single binding for the sgx. Not one for each
+> special SoC variant that may exist.
+>
+> IMHO the best answer is to make clocks an optional property.
+> Or if we do not want to define them explicitly, we use
+> additionalProperties: true.
+
+If your clock is optional, then you define it but don't mandate
+it. Not documenting it will only result in a mess where everyone will
+put some clock into it, possibly with different semantics each and
+every time.
+
+> An alternative could be to use a simple-pm-bus like:
+>
+> 	sgx_module: sgx_module@13040000 {
+> 		compatible = "simple-pm-bus";
+>
+> 		clocks = <&cgu JZ4780_CLK_GPU>;
+> 		clock-names = "gpu";
+>
+> 		#address-cells = <1>;
+> 		#size-cells = <1>;
+> 		ranges = <0 0x13040000 0x10000>;
+>
+> 		gpu: gpu@0 {
+> 			compatible = "ingenic,jz4780-sgx540-130", "img,sgx540-130", "img,sgx540";
+> 			reg = <0x0 0x4000>;
+>
+> 			interrupt-parent = <&intc>;
+> 			interrupts = <63>;
+> 		};
+> 	};
+>
+> This gets rid of any clock, reset and pm definitions for the sgx bindings.
+> But how this is done is outside this sgx bindings.
+>
+> With such a scheme, the binding I propose here would be complete and fully
+> generic. We can even add additionalProperties: false.
+
+This has nothing to do with the binding being complete. And if you use
+a binding like this one, you'll be severely limited when you'll want
+to implement things like DVFS.
+
+Maxime
+
+--tfobgrwcfdirkzal
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXpc0nwAKCRDj7w1vZxhR
+xUDXAQCc7y/+vAoavZRmglq4lR2jquJFLRkH7PYZvWPuzBNdAAD/cb0ol1cdNUpA
+oCJwB2WILZ+2E78cCeIXmjyL7nqW6AA=
+=GQ1H
+-----END PGP SIGNATURE-----
+
+--tfobgrwcfdirkzal--
