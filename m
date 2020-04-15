@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F311A90CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB231A90C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392893AbgDOCNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 22:13:38 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:32848 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387984AbgDOCN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 22:13:29 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6234E7247FE3D8DBD1C0;
-        Wed, 15 Apr 2020 10:13:27 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 15 Apr 2020 10:13:21 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2] f2fs: fix to avoid page count leak
-Date:   Wed, 15 Apr 2020 10:13:13 +0800
-Message-ID: <20200415021313.95538-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.18.0.rc1
+        id S2392877AbgDOCMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 22:12:34 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:11703 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392857AbgDOCM2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 22:12:28 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75e966d7c257-5d4cd; Wed, 15 Apr 2020 10:12:12 +0800 (CST)
+X-RM-TRANSID: 2ee75e966d7c257-5d4cd
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [172.20.21.224] (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95e966d7bbb6-4fa4c;
+        Wed, 15 Apr 2020 10:12:12 +0800 (CST)
+X-RM-TRANSID: 2ee95e966d7bbb6-4fa4c
+Subject: Re: [PATCH 3/3] ipmi:bt-bmc: Fix error handling and status check
+To:     minyard@acm.org
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20200414141423.4968-1-tangbin@cmss.chinamobile.com>
+ <20200414201832.GJ3587@minyard.net>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <f5a848ae-d19f-5ab6-7c7d-2d0811fc174b@cmss.chinamobile.com>
+Date:   Wed, 15 Apr 2020 10:14:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200414201832.GJ3587@minyard.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In f2fs_read_data_pages(), once we add page into radix tree, we need to
-release reference count of that page, however when f2fs_read_multi_pages()
-fails, we didn't handle that case correctly, fix it.
+Hi Corey:
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2:
-- add Fixes tag
-- improve commit message a bit
- fs/f2fs/compress.c | 2 +-
- fs/f2fs/data.c     | 6 +++++-
- fs/f2fs/f2fs.h     | 1 +
- 3 files changed, 7 insertions(+), 2 deletions(-)
+On 2020/4/15 4:18, Corey Minyard wrote:
+> On Tue, Apr 14, 2020 at 10:14:24PM +0800, Tang Bin wrote:
+>> If the function platform_get_irq() failed, the negative
+>> value returned will not be detected here. So fix error
+>> handling in bt_bmc_config_irq(). And if devm_request_irq()
+>> failed, 'bt_bmc->irq' is assigned to zero maybe redundant,
+>> it may be more suitable for using the correct negative values
+>> to make the status check in the function bt_bmc_remove().
+> Comments inline..
+>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+>> ---
+>>   drivers/char/ipmi/bt-bmc.c | 12 +++++-------
+>>   1 file changed, 5 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
+>> index 1d4bf5c65..1740c6dc8 100644
+>> --- a/drivers/char/ipmi/bt-bmc.c
+>> +++ b/drivers/char/ipmi/bt-bmc.c
+>> @@ -399,16 +399,14 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
+>>   	struct device *dev = &pdev->dev;
+>>   	int rc;
+>>   
+>> -	bt_bmc->irq = platform_get_irq(pdev, 0);
+>> -	if (!bt_bmc->irq)
+>> -		return -ENODEV;
+>> +	bt_bmc->irq = platform_get_irq_optional(pdev, 0);
+>> +	if (bt_bmc->irq < 0)
+>> +		return bt_bmc->irq;
+>>   
+For us, this part of modification have reached a consensus.
+>>   	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
+>>   			      DEVICE_NAME, bt_bmc);
+>> -	if (rc < 0) {
+>> -		bt_bmc->irq = 0;
+>> +	if (rc < 0)
+>>   		return rc;
+> I don't think this part is correct.  You will want to set bt_bmc->irq to
+> rc here to match what is done elsewhere so it's the error if negative.
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 498e0c2ba6ea..dbe3fa359a29 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -79,7 +79,7 @@ static void f2fs_drop_rpages(struct compress_ctx *cc, int len, bool unlock)
- 	}
- }
- 
--static void f2fs_put_rpages(struct compress_ctx *cc)
-+void f2fs_put_rpages(struct compress_ctx *cc)
- {
- 	f2fs_drop_rpages(cc, cc->cluster_size, false);
- }
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 1139d8cf4b8d..22a31e2401cf 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2138,7 +2138,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
- 		} else if (!PageUptodate(page)) {
- 			continue;
- 		}
--		unlock_page(page);
-+		f2fs_put_page(page, 1);
- 		cc->rpages[i] = NULL;
- 		cc->nr_rpages--;
- 	}
-@@ -2303,6 +2303,8 @@ int f2fs_mpage_readpages(struct address_space *mapping,
- 							max_nr_pages,
- 							&last_block_in_bio,
- 							is_readahead, false);
-+				if (ret)
-+					f2fs_put_rpages(&cc);
- 				f2fs_destroy_compress_ctx(&cc);
- 				if (ret)
- 					goto set_error_page;
-@@ -2346,6 +2348,8 @@ int f2fs_mpage_readpages(struct address_space *mapping,
- 							max_nr_pages,
- 							&last_block_in_bio,
- 							is_readahead, false);
-+				if (ret)
-+					f2fs_put_rpages(&cc);
- 				f2fs_destroy_compress_ctx(&cc);
- 			}
- 		}
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index da5e9dd747fa..94d044feffd0 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3803,6 +3803,7 @@ static inline bool f2fs_post_read_required(struct inode *inode)
-  */
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- bool f2fs_is_compressed_page(struct page *page);
-+void f2fs_put_rpages(struct compress_ctx *cc);
- struct page *f2fs_compress_control_page(struct page *page);
- int f2fs_prepare_compress_overwrite(struct inode *inode,
- 			struct page **pagep, pgoff_t index, void **fsdata);
--- 
-2.18.0.rc1
+Nonono, I don't want to set bt_bmc->irq to rc, I think they are irrelevant.
+
+The logic of the previous code will continue to execute even if 
+platform_get_irq() failed,which will be brought devm_request_irq() 
+failed too. "bt_bmc->irq = 0" here is just for bt_bmc_remove() to 
+execute del_timer_sync(). Otherwise the function del_timer_sync() will 
+not execute if not set "bt_bmc->irq" to zero, because it's negative 
+actually.
+
+
+>
+> Also, I believe this function should no longer return an error.  It
+> should just set the irq to the error if one happens.  The driver needs
+> to continue to operate even if it can't get its interrupt.
+>
+> The rest of the changes are correct, I believe.
+>
+>
+>> -	}
+>>   
+>>   	/*
+>>   	 * Configure IRQs on the bmc clearing the H2B and HBUSY bits;
+>> @@ -499,7 +497,7 @@ static int bt_bmc_remove(struct platform_device *pdev)
+>>   	struct bt_bmc *bt_bmc = dev_get_drvdata(&pdev->dev);
+>>   
+>>   	misc_deregister(&bt_bmc->miscdev);
+>> -	if (!bt_bmc->irq)
+>> +	if (bt_bmc->irq < 0)
+>>   		del_timer_sync(&bt_bmc->poll_timer);
+>>   	return 0;
+>>   }
+
+But now, the logic is: if the platform_get_irq_optional() failed, it 
+returns immediately, the irq at this point is negative,the 
+bt_bmc_probe() continue to operate. But in the function bt_bmc_remove(), 
+we need status check in order to execute del_timer_sync(), so change 
+"!bt_bmc->irq" to "bt_bmc->irq < 0".
+
+So, when the judgment of "bt_bmc->irq" in the function bt_bmc_remove() 
+goes back to  the original negative value, the "bt_bmc->irq = 0" in the 
+line 410 become redundant. That's why I remove it.
+
+
+
+I am very glad to communicate and discuss with you these days.
+
+Thanks,
+
+Tang Bin
+
+
+>>
+>>
+>>
+
 
