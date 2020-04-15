@@ -2,117 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0125A1AAE1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0C71AAE22
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415864AbgDOQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:26:47 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49230 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1415801AbgDOQ0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:26:06 -0400
-Received: from dede-linux.corp.microsoft.com (unknown [131.107.147.242])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B1EE92074CC0;
-        Wed, 15 Apr 2020 09:25:58 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B1EE92074CC0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1586967958;
-        bh=FoQEwrrWn/d3Fno/jqMS38zWmUVRke4mJOAaLbjRrY8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iyJ4LtL05RR5RRuLClgYEE6/yEwxIoknDGK9+Zzw2E4c2Xb3kaxGDr/fd81Cydtfr
-         6DYL1plXSSvGQYnuUsKhbHl0+FwfUKrzGjrClNTKZ2pz3WFfvZCsXitn6YtN82jWD0
-         fVoSfI6fOVH29aaH5rpX0n2+2Z/IC+5j+q1eLAI8=
-From:   deven.desai@linux.microsoft.com
-To:     agk@redhat.com, axboe@kernel.dk, snitzer@redhat.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, jannh@google.com
-Cc:     tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
-        sashal@kernel.org, jaskarankhurana@linux.microsoft.com,
-        nramas@linux.microsoft.com, mdsakib@linux.microsoft.com,
-        linux-kernel@vger.kernel.org, corbet@lwn.net
-Subject: [RFC PATCH v3 12/12] cleanup: uapi/linux/audit.h
-Date:   Wed, 15 Apr 2020 09:25:50 -0700
-Message-Id: <20200415162550.2324-13-deven.desai@linux.microsoft.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200415162550.2324-1-deven.desai@linux.microsoft.com>
-References: <20200415162550.2324-1-deven.desai@linux.microsoft.com>
+        id S1415908AbgDOQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:27:19 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:36890 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1415816AbgDOQ0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:26:15 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 492SQr5dfPz9txkj;
+        Wed, 15 Apr 2020 18:26:12 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=RspggpQl; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id W4eXoLlMBR6F; Wed, 15 Apr 2020 18:26:12 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 492SQr3DxWz9txkg;
+        Wed, 15 Apr 2020 18:26:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1586967972; bh=CDE9knAbDkCSfIhlbkmzglEAEsv+GEW7TnUTyLjv8FM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=RspggpQlG76h8zqW5990ip3PhrX6jg5pW7BqBPgZ23iojyMiRBt0DG9M3B38bYgSA
+         X/EGftU40bLuy/oXeVHnA/UHymUulA5RVVgfxWc/spEhfn7uZ7Oe65jzgcJ4Vhn18Y
+         v4qn/h5K5PcYyChCBUeYbvncA1ivtEB306WkBDv8=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 653FF8BB75;
+        Wed, 15 Apr 2020 18:26:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id kpVezo4tl1UF; Wed, 15 Apr 2020 18:26:12 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D3E908BB3A;
+        Wed, 15 Apr 2020 18:26:11 +0200 (CEST)
+Subject: Re: [PATCH v2,1/5] powerpc: 85xx: make FSL_85XX_CACHE_SRAM
+ configurable
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, oss@buserror.net,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
+References: <20200415124929.GA3265842@kroah.com>
+ <20200415152442.122873-1-wenhu.wang@vivo.com>
+ <20200415152442.122873-2-wenhu.wang@vivo.com>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <4800a04c-e26e-9832-c91f-04b12660282b@c-s.fr>
+Date:   Wed, 15 Apr 2020 18:26:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200415152442.122873-2-wenhu.wang@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deven Bowers <deven.desai@linux.microsoft.com>
 
-Remove trailing whitespaces and align the integrity #defines in
-linux/uapi/audit.h
 
-Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
----
- include/uapi/linux/audit.h | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+Le 15/04/2020 à 17:24, Wang Wenhu a écrit :
+> Enable FSL_85XX_CACHE_SRAM selection. On e500 platforms, the cache
+> could be configured and used as a piece of SRAM which is hignly
+> friendly for some user level application performances.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> Cc: Scott Wood <oss@buserror.net>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> ---
+> Changes since v1:
+>   * None
+> ---
+>   arch/powerpc/platforms/85xx/Kconfig    | 2 +-
+>   arch/powerpc/platforms/Kconfig.cputype | 5 +++--
+>   2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/85xx/Kconfig b/arch/powerpc/platforms/85xx/Kconfig
+> index fa3d29dcb57e..6debb4f1b9cc 100644
+> --- a/arch/powerpc/platforms/85xx/Kconfig
+> +++ b/arch/powerpc/platforms/85xx/Kconfig
+> @@ -17,7 +17,7 @@ if FSL_SOC_BOOKE
+>   if PPC32
+>   
+>   config FSL_85XX_CACHE_SRAM
+> -	bool
+> +	bool "Freescale 85xx Cache-Sram"
+>   	select PPC_LIB_RHEAP
+>   	help
+>   	  When selected, this option enables cache-sram support
+> diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+> index 0c3c1902135c..1921e9a573e8 100644
+> --- a/arch/powerpc/platforms/Kconfig.cputype
+> +++ b/arch/powerpc/platforms/Kconfig.cputype
+> @@ -1,6 +1,6 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   config PPC32
+> -	bool
+> +	bool "32-bit kernel"
 
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index 4e0122a0ed0c..d642ade068b5 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -48,7 +48,7 @@
-  * 2500 - 2999 future user space (maybe integrity labels and related events)
-  *
-  * Messages from 1000-1199 are bi-directional. 1200-1299 & 2100 - 2999 are
-- * exclusively user space. 1300-2099 is kernel --> user space 
-+ * exclusively user space. 1300-2099 is kernel --> user space
-  * communication.
-  */
- #define AUDIT_GET		1000	/* Get status */
-@@ -78,7 +78,7 @@
- #define AUDIT_LAST_USER_MSG	1199
- #define AUDIT_FIRST_USER_MSG2	2100	/* More user space messages */
- #define AUDIT_LAST_USER_MSG2	2999
-- 
-+
- #define AUDIT_DAEMON_START      1200    /* Daemon startup record */
- #define AUDIT_DAEMON_END        1201    /* Daemon normal stop record */
- #define AUDIT_DAEMON_ABORT      1202    /* Daemon error stop record */
-@@ -139,20 +139,20 @@
- #define AUDIT_MAC_CALIPSO_ADD	1418	/* NetLabel: add CALIPSO DOI entry */
- #define AUDIT_MAC_CALIPSO_DEL	1419	/* NetLabel: del CALIPSO DOI entry */
- 
--#define AUDIT_FIRST_KERN_ANOM_MSG   1700
--#define AUDIT_LAST_KERN_ANOM_MSG    1799
--#define AUDIT_ANOM_PROMISCUOUS      1700 /* Device changed promiscuous mode */
--#define AUDIT_ANOM_ABEND            1701 /* Process ended abnormally */
--#define AUDIT_ANOM_LINK		    1702 /* Suspicious use of file links */
--#define AUDIT_ANOM_CREAT	    1703 /* Suspicious file creation */
--#define AUDIT_INTEGRITY_DATA	    1800 /* Data integrity verification */
--#define AUDIT_INTEGRITY_METADATA    1801 /* Metadata integrity verification */
--#define AUDIT_INTEGRITY_STATUS	    1802 /* Integrity enable status */
--#define AUDIT_INTEGRITY_HASH	    1803 /* Integrity HASH type */
--#define AUDIT_INTEGRITY_PCR	    1804 /* PCR invalidation msgs */
--#define AUDIT_INTEGRITY_RULE	    1805 /* policy rule */
--#define AUDIT_INTEGRITY_EVM_XATTR   1806 /* New EVM-covered xattr */
--#define AUDIT_INTEGRITY_POLICY_RULE 1807 /* IMA policy rules */
-+#define AUDIT_FIRST_KERN_ANOM_MSG	1700
-+#define AUDIT_LAST_KERN_ANOM_MSG	1799
-+#define AUDIT_ANOM_PROMISCUOUS		1700 /* Device changed promiscuous mode */
-+#define AUDIT_ANOM_ABEND		1701 /* Process ended abnormally */
-+#define AUDIT_ANOM_LINK			1702 /* Suspicious use of file links */
-+#define AUDIT_ANOM_CREAT		1703 /* Suspicious file creation */
-+#define AUDIT_INTEGRITY_DATA		1800 /* Data integrity verification */
-+#define AUDIT_INTEGRITY_METADATA	1801 /* Metadata integrity verification */
-+#define AUDIT_INTEGRITY_STATUS		1802 /* Integrity enable status */
-+#define AUDIT_INTEGRITY_HASH		1803 /* Integrity HASH type */
-+#define AUDIT_INTEGRITY_PCR		1804 /* PCR invalidation msgs */
-+#define AUDIT_INTEGRITY_RULE		1805 /* policy rule */
-+#define AUDIT_INTEGRITY_EVM_XATTR	1806 /* New EVM-covered xattr */
-+#define AUDIT_INTEGRITY_POLICY_RULE	1807 /* IMA policy rules */
- #define AUDIT_INTEGRITY_POLICY_LOAD	1808 /* IPE Policy Load */
- #define AUDIT_INTEGRITY_POLICY_ACTIVATE	1809 /* IPE Policy Activation */
- #define AUDIT_INTEGRITY_EVENT		1810 /* IPE Evaluation Event */
--- 
-2.26.0
+Why make that user selectable ?
 
+Either a kernel is 64-bit or it is 32-bit. So having PPC64 user 
+selectable is all we need.
+
+And what is the link between this change and the description in the log ?
+
+>   	default y if !PPC64
+>   	select KASAN_VMALLOC if KASAN && MODULES
+>   
+> @@ -15,6 +15,7 @@ config PPC_BOOK3S_32
+>   	bool
+>   
+>   menu "Processor support"
+> +
+
+Why adding this space ?
+
+>   choice
+>   	prompt "Processor Type"
+>   	depends on PPC32
+> @@ -211,9 +212,9 @@ config PPC_BOOK3E
+>   	depends on PPC_BOOK3E_64
+>   
+>   config E500
+> +	bool "e500 Support"
+>   	select FSL_EMB_PERFMON
+>   	select PPC_FSL_BOOK3E
+> -	bool
+
+Why make this user-selectable ? This is already selected by the 
+processors requiring it, ie 8500, e5500 and e6500.
+
+Is there any other case where we need E500 ?
+
+And again, what's the link between this change and the description in 
+the log ?
+
+
+>   
+>   config PPC_E500MC
+>   	bool "e500mc Support"
+> 
+
+Christophe
