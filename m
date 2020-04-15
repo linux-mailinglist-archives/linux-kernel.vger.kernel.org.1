@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395B31AAAB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9655B1AAAC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370931AbgDOOp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:45:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S371001AbgDOOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:46:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42113 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2636795AbgDOOpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:45:33 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46D72218AC;
-        Wed, 15 Apr 2020 14:45:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586961929;
-        bh=Tgx8bhgHklE3FDZN9i6EsAGZk7UfLJB3Oy+zSTpJTjQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qy38bo6tXyunOd7fssISCteEmQC1jwS+lxtVXlNgBuwUsCE1XBnGqltK8LvvfU38O
-         N2qgx9t7zxpsbTrfhqCb2N3TorkMRnTTDQBaX02kYlJNP+Rn28JogIJyaA5xT8Wmdw
-         hjai+vMqj0Mhhi6NEwCsGQmds4IRE5GmSuy6ng84=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jOjI7-006ka3-I8; Wed, 15 Apr 2020 16:45:27 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH v3 12/12] docs: dt: convert writing-bindings.txt to ReST
-Date:   Wed, 15 Apr 2020 16:45:26 +0200
-Message-Id: <f2fb27f86a12c16d4b20d9051dec405d4f29a2bb.1586961793.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586961793.git.mchehab+huawei@kernel.org>
-References: <cover.1586961793.git.mchehab+huawei@kernel.org>
+        id S2636826AbgDOOqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:46:24 -0400
+IronPort-SDR: jOvm0gSr9FkuZuW2D8Xo3mgDAlGa+bu7bw+c5TgNjfERXtjDBbU6IrqXdi278ZhowiGzm2wpoI
+ 9OGHYugs9Eew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 07:46:23 -0700
+IronPort-SDR: WvJ3PfNSp0d4D/Q+EZpiBrFV5G6/LgKF3nwB5ZW685xLF8l3b3NYIHz591kAaouOVGf4R0uFYi
+ x8W7L0gDFqvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
+   d="scan'208";a="332518010"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2020 07:46:20 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1jOjJ1-000oBP-4O; Wed, 15 Apr 2020 17:46:23 +0300
+Date:   Wed, 15 Apr 2020 17:46:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
+        dan.j.williams@intel.com, peterz@infradead.org
+Subject: Re: [PATCH v6 2/2] lib: make a test module with set/clear bit
+Message-ID: <20200415144623.GJ185537@smile.fi.intel.com>
+References: <20200310221747.2848474-1-jesse.brandeburg@intel.com>
+ <20200310221747.2848474-2-jesse.brandeburg@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200310221747.2848474-2-jesse.brandeburg@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Add a SPDX header;
-- Adjust document and section titles;
-- Mark literal blocks as such;
-- Add it to bindings/index.rst.
+On Tue, Mar 10, 2020 at 03:17:47PM -0700, Jesse Brandeburg wrote:
+> Test some bit clears/sets to make sure assembly doesn't change, and
+> that the set_bit and clear_bit functions work and don't cause sparse
+> warnings.
+> 
+> Instruct Kbuild to build this file with extra warning level -Wextra,
+> to catch new issues, and also doesn't hurt to build with C=1.
+> 
+> This was used to test changes to arch/x86/include/asm/bitops.h.
+> 
+> In particular, sparse (C=1) was very concerned when the last bit
+> before a natural boundary, like 7, or 31, was being tested, as this
+> causes sign extension (0xffffff7f) for instance when clearing bit 7.
+> 
+> Recommended usage:
+> make defconfig
+> scripts/config -m CONFIG_TEST_BITOPS
+> make modules_prepare
+> make C=1 W=1 lib/test_bitops.ko
+> objdump -S -d lib/test_bitops.ko
+> insmod lib/test_bitops.ko
+> rmmod lib/test_bitops.ko
+> <check dmesg>, there should be no compiler/sparse warnings and no
+> error messages in log.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/devicetree/bindings/index.rst                | 1 +
- .../{writing-bindings.txt => writing-bindings.rst}         | 7 +++++++
- 2 files changed, 8 insertions(+)
- rename Documentation/devicetree/bindings/{writing-bindings.txt => writing-bindings.rst} (92%)
+Seems this didn't make the kernel. Perhaps you need to send it to Andrew Morton.
 
-diff --git a/Documentation/devicetree/bindings/index.rst b/Documentation/devicetree/bindings/index.rst
-index 6b87875a049c..3837b17c234f 100644
---- a/Documentation/devicetree/bindings/index.rst
-+++ b/Documentation/devicetree/bindings/index.rst
-@@ -9,3 +9,4 @@ Device Tree
- 
-    ABI
-    submitting-patches
-+   writing-bindings
-diff --git a/Documentation/devicetree/bindings/writing-bindings.txt b/Documentation/devicetree/bindings/writing-bindings.rst
-similarity index 92%
-rename from Documentation/devicetree/bindings/writing-bindings.txt
-rename to Documentation/devicetree/bindings/writing-bindings.rst
-index ca024b9c7433..45ff426d0019 100644
---- a/Documentation/devicetree/bindings/writing-bindings.txt
-+++ b/Documentation/devicetree/bindings/writing-bindings.rst
-@@ -1,4 +1,8 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============================================================
- DOs and DON'Ts for designing and writing Devicetree bindings
-+============================================================
- 
- This is a list of common review feedback items focused on binding design. With
- every rule, there are exceptions and bindings have many gray areas.
-@@ -8,6 +12,7 @@ Documentation/devicetree/bindings/submitting-patches.rst
- 
- 
- Overall design
-+==============
- 
- - DO attempt to make bindings complete even if a driver doesn't support some
-   features. For example, if a device has an interrupt, then include the
-@@ -32,6 +37,7 @@ Overall design
- 
- 
- Properties
-+==========
- 
- - DO make 'compatible' properties specific. DON'T use wildcards in compatible
-   strings. DO use fallback compatibles when devices are the same as or a subset
-@@ -53,6 +59,7 @@ Properties
- 
- 
- Board/SoC .dts Files
-+====================
- 
- - DO put all MMIO devices under a bus node and not at the top-level.
- 
 -- 
-2.25.2
+With Best Regards,
+Andy Shevchenko
+
 
