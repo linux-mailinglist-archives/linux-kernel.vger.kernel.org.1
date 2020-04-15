@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184FD1A97FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F49A1A980A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408279AbgDOJIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:08:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22374 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2408269AbgDOJIA (ORCPT
+        id S2408341AbgDOJKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:10:51 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:20846 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408295AbgDOJKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:08:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586941679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lisOMIPYzGEOUKW/w9q538cTmyUuHd07/Sojgyr8MlQ=;
-        b=Jx2FDyTWiVDSj+TGOWOlb6Tpt+VTUEEy0yd9fpRMKl7rQKOY871ngDkQGOjhAC8N+d7SY0
-        Bs4Q8EQdCr8SzcYu4yqzOh5h22g90k72oCAFQQ0KvtupPEZo/SY0pBdzJTkbeMQmNX+mlb
-        qi4WIYZbc8j89wpMCMzWuylFT++B45o=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-rIEPXwd8Nc-T0FjIs46uOw-1; Wed, 15 Apr 2020 05:07:57 -0400
-X-MC-Unique: rIEPXwd8Nc-T0FjIs46uOw-1
-Received: by mail-wm1-f70.google.com with SMTP id h184so1896162wmf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:07:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=lisOMIPYzGEOUKW/w9q538cTmyUuHd07/Sojgyr8MlQ=;
-        b=ANaGpkGukQskXo2Dfqa6PT+49hcz5Qe526yTFpDEFNGgbN3WAGHN7COFSDYj/BBOsf
-         hK2jDpm2HJJG4eGSM2wrScYAhONti6y1RjR3HlmfqpkyUQMgMcLcRSXTb9Yo5iRFhNVq
-         jc9d8S8Qcs5LJrSp8lud9tfrlFQAOElD9T6WCMcMJYiuIn4syIKtooXfeOHPpnFJSHxy
-         /kj8aPS/lKI2ZkzCyvmzFpoySnynHmCXbkOUpdZxL3mxr3H6yi0kdHVZocfE8ilCSs3j
-         uxn0COZKJOmqx1uqa9oECIhMubBRjWAr7gKBIWiED98pbSG9elJAeiCrxF364BGNnZvp
-         N52Q==
-X-Gm-Message-State: AGi0PuaNdih1fPVJKRJ7+gOxfljp9POyddKY+g+WIdVlQO6PyOQhqgr9
-        NWdM1VobpQq45v0/HVbJBbnhx2K9GKlZkRCtib3dqrKQGO+T6x1UVEnWW2kb7GkCLIG5e4a4EL0
-        jlVNPDOay/bk9CZ1WXhfEQfzM
-X-Received: by 2002:a5d:6841:: with SMTP id o1mr27977386wrw.412.1586941676332;
-        Wed, 15 Apr 2020 02:07:56 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIXD/p9LNlXg20pn+U/yQCcvvORh177d5YZbgu7SsoqIprQYNJ2FhjSis/HsfEJeQMW+4tCHg==
-X-Received: by 2002:a5d:6841:: with SMTP id o1mr27977353wrw.412.1586941676047;
-        Wed, 15 Apr 2020 02:07:56 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id e5sm23214697wru.92.2020.04.15.02.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 02:07:55 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com
-Subject: Re: [PATCH] KVM: Optimize kvm_arch_vcpu_ioctl_run function
-In-Reply-To: <cc29ce22-4c70-87d1-d7aa-9d38438ba8a5@linux.alibaba.com>
-References: <20200413034523.110548-1-tianjia.zhang@linux.alibaba.com> <875ze2ywhy.fsf@vitty.brq.redhat.com> <cc29ce22-4c70-87d1-d7aa-9d38438ba8a5@linux.alibaba.com>
-Date:   Wed, 15 Apr 2020 11:07:53 +0200
-Message-ID: <87a73dxgk6.fsf@vitty.brq.redhat.com>
+        Wed, 15 Apr 2020 05:10:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1586941837; x=1618477837;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=Y9f6bonRVRKbfBFTJ6042ow30q4UtGVyrgUn9rmSGO9LTGCcRdC8WofV
+   pQOZ0H6yKe/aaNDD+BNgS90h8U1ZF8UbK66PJ1YmaX7PpCAiWx88ZWJnl
+   QHRNWmJ5CoyhnFoUSUTb4PkYCy3hkklpgaz5qH0naIctWKglj0052jDmA
+   eXwvMYLDFTfdHMKAXB4mEfZONSehBXM8Hg7rZob+jiKD1vtTJPtgo/TgW
+   Q8UNzf8aE09/ceAx/Oyusom2TJOisudFHP+nF2mQmrjjhv+0cRboyQOWS
+   chEmdSn4ypyKjl/hkTetEINDjAknJPjPPYwWVbH6joYvCe+G95iBabET2
+   w==;
+IronPort-SDR: 95i4dpGue9eNjoYk2K/9cbOToVeWBBtkiWiQhEHO7EFSD1h2NzcPaGUo/1aPiT4V91hLq1wdEu
+ JkZ8xqP4mXpXp5SOX/Xmby+I5FPE0PQGo64RvyPtXSLe1rR1eWQCBh/n5ZqGNkWddjcHlITDQ7
+ Em2CIJuLg2GWAh9K46RexHbC4bfKgJSCUp2DBrlqFOy3cuWpfNvQik3ltm4DEvJSBQVOAs3W28
+ tUMBtevXNEyg/7USRKfOrqenmsbSwLJ1Q0bmbVgbu7Aa3j23lF8D+9rCxEwKNKlpZ8g2eVSPTQ
+ c0A=
+X-IronPort-AV: E=Sophos;i="5.72,386,1580745600"; 
+   d="scan'208";a="244033359"
+Received: from mail-co1nam04lp2053.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.53])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Apr 2020 17:10:32 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D2Xs028JgTBHrlnEvgJ/p8UilVh5M2YVmknCeMUfx9kjOmVae40x9oNfqJVGD3+OJbuHLD3osu3GbQv5GvVEWg7Vj3i12IKHT3oHuILszhJ/V3PR4QjzAV1FPdU6UlImyL4GgSZKStp6C+pvdpbz9AJn9vW7U/47vWLgpfGExKhVbKJAmxKL2rfdAcCmLdDOqlp3h7SsPJvmi43IcG9aUXOkNXMBm45ntMBQg2r9kRXA5ikuFPZJj5S7g8sX4wZL6JgPKIfKlRb/3+DrPn7/JiAO0iikOUiNRIwTnNiPabyf9bNf01b151PTwLi5e/LI71mnB7Nxjp36ipEiTefvnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=i4yOOBoRmCsR/I7VlSR8v7lxEPPqjbgrQ8/cDyGRfMsnOKWxhrGtNBYhAXUytn56jl0PeYD8v1PkAFnyMb4R5rekL2rorkgKqG9L3kiJVV7d+h/gW51sXpSZ+KLPRvRC77wFPPpDO4uGs7e+Irro4zli3w+lxkeWrW6NjsRqAfsvs7ntp9SGYNsDpOkgnPpg+slNmTCtjW8QVtRIGYqTIYni1C/pdUyGSQOf2NCjn6viPb931MUWg2h9YKcx9ik0zKl31ZzDN1ffWc4YiRgHl80JRui8uSMmDH3Xyc+HGH0X5YXoGVn+9SujlNAiyVDZE8ytovBs6k8zCvIIPfjGhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=IB/SQjf9mKvmSURSWenwo2Y3VQ/sD/la2pZc4arPiO0zUuodi/0B2/hzs3r8SJ4FxLAJ+BWlug97gAuhSAN5808A54ZOkWmOLDo4798UwGho/fQBReZ9ouPIcovvEBddtkqaD5FXuN7I/5oV2FFffju3BfoSlkqZPrqGpgdNiTI=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3599.namprd04.prod.outlook.com
+ (2603:10b6:803:4e::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.28; Wed, 15 Apr
+ 2020 09:10:31 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
+ 09:10:31 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v11 01/25] mm: Move readahead prototypes from mm.h
+Thread-Topic: [PATCH v11 01/25] mm: Move readahead prototypes from mm.h
+Thread-Index: AQHWEm/+X7EfNJ2OKkyFI+rGvCts3g==
+Date:   Wed, 15 Apr 2020 09:10:31 +0000
+Message-ID: <SN4PR0401MB3598C4E727F07B81F75EA6719BDB0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200414150233.24495-1-willy@infradead.org>
+ <20200414150233.24495-2-willy@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 65f197ce-a436-4803-b0c4-08d7e11cd958
+x-ms-traffictypediagnostic: SN4PR0401MB3599:
+x-microsoft-antispam-prvs: <SN4PR0401MB35994BDEBB4BCA4B125C10749BDB0@SN4PR0401MB3599.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0374433C81
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(346002)(39860400002)(396003)(366004)(376002)(136003)(54906003)(52536014)(91956017)(4326008)(4270600006)(19618925003)(5660300002)(33656002)(110136005)(316002)(186003)(6506007)(71200400001)(76116006)(2906002)(86362001)(7416002)(7696005)(558084003)(9686003)(8936002)(66476007)(26005)(8676002)(66556008)(64756008)(55016002)(66446008)(81156014)(66946007)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eUZe0V7dpVRe38Qbak+OXZnXMUyn2jT1GpYBt1XC9V2HJ5Xyago/PL79j8PJ7619d2CH50W5/iS8pHaam7mIgNQNZRbvaicuoSDerHprEzxgP9eZJqtrq9NCCJfQs9YMXgGl6qtzBp4d7ksbQayumPPqBS6CDrh6YZs1sL8hb29So5FmZ3+SogifY4lT5oc4Lnpiluy0Kc4JsJSjE11g2BR6gOGvCVYGdoS0ma1fhbU0L9Gqp8MJxV4b9QkZINmG1LAisy4WG3FHHVRYneSdJLQmbKvqj2qWLu2IiPYOCWSZ7VOOw6UsRiltYIMccHb81ZRxHgAeqp91etm8J71vbObfkjaVsk7VG0W1VgwAasdDG4wu0CyiIFMukSnep8TMPWZ2CEg6zwLe/HFT06TK5J3vkUI0yfY6iCBO1bdyFsmebbUmDkmrO2pLCi/Q4mzl
+x-ms-exchange-antispam-messagedata: qMgzjpfOIFZuBsMKi59iqhZM4tReTMgOPKnS76raZ+3KcRbEKzSza4SbkVVNRsq7pQNw92YUmPtibdfvwNsFL6xcmfv8FsxlbXu+l+1sqzi8JXYMmslLPvDBbFkpr37lGmGMCfDrJoh7IfJfypgRvg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65f197ce-a436-4803-b0c4-08d7e11cd958
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2020 09:10:31.7107
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZbWFK7kHx7rw59FVwqO+RfmhITfV5Zu3Iza6p3zBcbXwLKKUzSNQZljS1V+A4nBx7sdlgjD7Vb6RJQ1i/Ys64htwy3/Mpy5928efB5Ofej0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3599
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tianjia Zhang <tianjia.zhang@linux.alibaba.com> writes:
-
-> On 2020/4/14 22:26, Vitaly Kuznetsov wrote:
->> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> writes:
->> 
->>> kvm_arch_vcpu_ioctl_run() is only called in the file kvm_main.c,
->>> where vcpu->run is the kvm_run parameter, so it has been replaced.
->>>
->>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->>> ---
->>>   arch/x86/kvm/x86.c | 8 ++++----
->>>   virt/kvm/arm/arm.c | 2 +-
->>>   2 files changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>> index 3bf2ecafd027..70e3f4abbd4d 100644
->>> --- a/arch/x86/kvm/x86.c
->>> +++ b/arch/x86/kvm/x86.c
->>> @@ -8726,18 +8726,18 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>>   		r = -EAGAIN;
->>>   		if (signal_pending(current)) {
->>>   			r = -EINTR;
->>> -			vcpu->run->exit_reason = KVM_EXIT_INTR;
->>> +			kvm_run->exit_reason = KVM_EXIT_INTR;
->> 
->> I have a more generic question: why do we need to pass 'kvm_run' to
->> kvm_arch_vcpu_ioctl_run() if it can be extracted from 'struct kvm_vcpu'?
->> The only call site looks like
->> 
->> virt/kvm/kvm_main.c:            r = kvm_arch_vcpu_ioctl_run(vcpu, vcpu->run);
->> 
->
-> In the earlier version, kvm_run is used to pass parameters with user 
-> mode and is not included in the vcpu structure, so it has been retained 
-> until now.
->
-
-In case this is no longer needed I'd suggest we drop 'kvm_run' parameter
-and extract it from 'struct kvm_vcpu' when needed. This looks like a
-natural add-on to your cleanup patch.
-
--- 
-Vitaly
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
