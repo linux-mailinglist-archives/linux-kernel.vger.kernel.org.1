@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F171AAB14
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F2B1AAB0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371157AbgDOO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:56:27 -0400
-Received: from mga09.intel.com ([134.134.136.24]:4840 "EHLO mga09.intel.com"
+        id S371101AbgDOOzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:55:54 -0400
+Received: from mga11.intel.com ([192.55.52.93]:46559 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S371091AbgDOOzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:55:50 -0400
-IronPort-SDR: 6mTMNhMAlygCdBHMhEod+SYQfuQvLSFZxyxfRt5UpMYyV0L9T3w1a2lKS+FWjPqPNmr+0gjkuX
- LL+RYvZMqq4g==
+        id S371076AbgDOOzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:55:44 -0400
+IronPort-SDR: sgkIa+bN6RBlI0We6qm8R3eQoARu8D8ZnUFH9iJ+Hgdtmk9VrIhb/sJ7UThcHQi+z4I0l3S3NV
+ e5kA/W1JiT6g==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 07:55:50 -0700
-IronPort-SDR: P9uqJvSuaH1B4MvCGefAbtGsGmqhMzd4lrXlT545hf8dhJM4QvQHtjUWRP5I2g/tl5mgi/yKLJ
- ar98JByFV/UQ==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 07:55:43 -0700
+IronPort-SDR: wPwkqQeLhVw38AdafLLi1V2EaLmpDlmcaqVOBg7cGjpbzZfs8hzyKIWVcpjrYw15mLG2dUE/AN
+ H3J0+k5YRfzA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
-   d="scan'208";a="244121182"
+   d="scan'208";a="332520439"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Apr 2020 07:55:45 -0700
+  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2020 07:55:41 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 38653638; Wed, 15 Apr 2020 17:55:40 +0300 (EEST)
+        id 4670E76D; Wed, 15 Apr 2020 17:55:40 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 3/9] x86/quirks: Introduce hpet_dev_print_force_hpet_address() helper
-Date:   Wed, 15 Apr 2020 17:55:18 +0300
-Message-Id: <20200415145524.31745-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 4/9] x86/quirks: Join string literals back
+Date:   Wed, 15 Apr 2020 17:55:19 +0300
+Message-Id: <20200415145524.31745-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
 References: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
@@ -45,120 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce hpet_dev_print_force_hpet_address() helper to unify printing
-forced HPET address. No functional change intended.
+There is no need to split string literals. Moreover, it would be simpler
+to grep for an actual code line, when debugging, by using almost any
+part of the string literal in question.
+
+No functional change intended.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/x86/kernel/quirks.c | 32 ++++++++++++++------------------
- 1 file changed, 14 insertions(+), 18 deletions(-)
+ arch/x86/kernel/quirks.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/quirks.c b/arch/x86/kernel/quirks.c
-index 7c054650b3a6..0313016f6756 100644
+index 0313016f6756..091d03cfbb1e 100644
 --- a/arch/x86/kernel/quirks.c
 +++ b/arch/x86/kernel/quirks.c
-@@ -68,6 +68,11 @@ static enum {
- 	ATI_FORCE_HPET_RESUME,
- } force_hpet_resume_type;
+@@ -36,8 +36,7 @@ static void quirk_intel_irqbalance(struct pci_dev *dev)
+ 	pci_bus_read_config_word(dev->bus, PCI_DEVFN(8, 0), 0x4c, &word);
  
-+static void hpet_dev_print_force_hpet_address(struct device *dev)
-+{
-+	dev_printk(KERN_DEBUG, dev, "Force enabled HPET at 0x%lx\n", force_hpet_address);
-+}
-+
- static void __iomem *rcba_base;
- 
- static void ich_force_hpet_resume(void)
-@@ -125,8 +130,7 @@ static void ich_force_enable_hpet(struct pci_dev *dev)
- 		/* HPET is enabled in HPTC. Just not reported by BIOS */
- 		val = val & 0x3;
- 		force_hpet_address = 0xFED00000 | (val << 12);
--		dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at "
--			"0x%lx\n", force_hpet_address);
-+		hpet_dev_print_force_hpet_address(&dev->dev);
- 		iounmap(rcba_base);
+ 	if (!(word & (1 << 13))) {
+-		dev_info(&dev->dev, "Intel E7520/7320/7525 detected; "
+-			"disabling irq balancing and affinity\n");
++		dev_info(&dev->dev, "Intel E7520/7320/7525 detected; disabling irq balancing and affinity\n");
+ 		noirqdebug_setup("");
+ #ifdef CONFIG_PROC_FS
+ 		no_irq_affinity = 1;
+@@ -110,16 +109,14 @@ static void ich_force_enable_hpet(struct pci_dev *dev)
+ 	pci_read_config_dword(dev, 0xF0, &rcba);
+ 	rcba &= 0xFFFFC000;
+ 	if (rcba == 0) {
+-		dev_printk(KERN_DEBUG, &dev->dev, "RCBA disabled; "
+-			"cannot force enable HPET\n");
++		dev_printk(KERN_DEBUG, &dev->dev, "RCBA disabled; cannot force enable HPET\n");
  		return;
  	}
-@@ -149,8 +153,7 @@ static void ich_force_enable_hpet(struct pci_dev *dev)
- 			"Failed to force enable HPET\n");
+ 
+ 	/* use bits 31:14, 16 kB aligned */
+ 	rcba_base = ioremap(rcba, 0x4000);
+ 	if (rcba_base == NULL) {
+-		dev_printk(KERN_DEBUG, &dev->dev, "ioremap failed; "
+-			"cannot force enable HPET\n");
++		dev_printk(KERN_DEBUG, &dev->dev, "ioremap failed; cannot force enable HPET\n");
+ 		return;
+ 	}
+ 
+@@ -149,8 +146,7 @@ static void ich_force_enable_hpet(struct pci_dev *dev)
+ 	if (err) {
+ 		force_hpet_address = 0;
+ 		iounmap(rcba_base);
+-		dev_printk(KERN_DEBUG, &dev->dev,
+-			"Failed to force enable HPET\n");
++		dev_printk(KERN_DEBUG, &dev->dev, "Failed to force enable HPET\n");
  	} else {
  		force_hpet_resume_type = ICH_FORCE_HPET_RESUME;
--		dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at "
--			"0x%lx\n", force_hpet_address);
-+		hpet_dev_print_force_hpet_address(&dev->dev);
- 	}
+ 		hpet_dev_print_force_hpet_address(&dev->dev);
+@@ -182,8 +178,7 @@ static struct pci_dev *cached_dev;
+ 
+ static void hpet_print_force_info(void)
+ {
+-	printk(KERN_INFO "HPET not enabled in BIOS. "
+-	       "You might try hpet=force boot option\n");
++	printk(KERN_INFO "HPET not enabled in BIOS. You might try hpet=force boot option\n");
  }
  
-@@ -223,8 +226,7 @@ static void old_ich_force_enable_hpet(struct pci_dev *dev)
- 	if (val & 0x4) {
- 		val &= 0x3;
- 		force_hpet_address = 0xFED00000 | (val << 12);
--		dev_printk(KERN_DEBUG, &dev->dev, "HPET at 0x%lx\n",
--			force_hpet_address);
-+		hpet_dev_print_force_hpet_address(&dev->dev);
- 		return;
- 	}
- 
-@@ -244,8 +246,7 @@ static void old_ich_force_enable_hpet(struct pci_dev *dev)
- 		/* HPET is enabled in HPTC. Just not reported by BIOS */
- 		val &= 0x3;
- 		force_hpet_address = 0xFED00000 | (val << 12);
--		dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at "
--			"0x%lx\n", force_hpet_address);
-+		hpet_dev_print_force_hpet_address(&dev->dev);
- 		cached_dev = dev;
- 		force_hpet_resume_type = OLD_ICH_FORCE_HPET_RESUME;
- 		return;
-@@ -316,8 +317,7 @@ static void vt8237_force_enable_hpet(struct pci_dev *dev)
- 	 */
- 	if (val & 0x80) {
- 		force_hpet_address = (val & ~0x3ff);
--		dev_printk(KERN_DEBUG, &dev->dev, "HPET at 0x%lx\n",
--			force_hpet_address);
-+		hpet_dev_print_force_hpet_address(&dev->dev);
- 		return;
- 	}
- 
-@@ -331,8 +331,7 @@ static void vt8237_force_enable_hpet(struct pci_dev *dev)
- 	pci_read_config_dword(dev, 0x68, &val);
- 	if (val & 0x80) {
- 		force_hpet_address = (val & ~0x3ff);
--		dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at "
--			"0x%lx\n", force_hpet_address);
-+		hpet_dev_print_force_hpet_address(&dev->dev);
- 		cached_dev = dev;
- 		force_hpet_resume_type = VT8237_FORCE_HPET_RESUME;
- 		return;
-@@ -412,8 +411,7 @@ static void ati_force_enable_hpet(struct pci_dev *dev)
- 
- 	force_hpet_address = val;
- 	force_hpet_resume_type = ATI_FORCE_HPET_RESUME;
--	dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at 0x%lx\n",
--		   force_hpet_address);
-+	hpet_dev_print_force_hpet_address(&dev->dev);
- 	cached_dev = dev;
- }
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATI, PCI_DEVICE_ID_ATI_IXP400_SMBUS,
-@@ -444,8 +442,7 @@ static void nvidia_force_enable_hpet(struct pci_dev *dev)
- 	pci_read_config_dword(dev, 0x44, &val);
- 	force_hpet_address = val & 0xfffffffe;
- 	force_hpet_resume_type = NVIDIA_FORCE_HPET_RESUME;
--	dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at 0x%lx\n",
--		force_hpet_address);
-+	hpet_dev_print_force_hpet_address(&dev->dev);
- 	cached_dev = dev;
- }
- 
-@@ -509,8 +506,7 @@ static void e6xx_force_enable_hpet(struct pci_dev *dev)
- 
- 	force_hpet_address = 0xFED00000;
- 	force_hpet_resume_type = NONE_FORCE_HPET_RESUME;
--	dev_printk(KERN_DEBUG, &dev->dev, "Force enabled HPET at "
--		"0x%lx\n", force_hpet_address);
-+	hpet_dev_print_force_hpet_address(&dev->dev);
- }
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_E6XX_CU,
- 			 e6xx_force_enable_hpet);
+ static void old_ich_force_hpet_resume(void)
 -- 
 2.25.1
 
