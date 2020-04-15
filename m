@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192381AB08D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6A71AB08B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 20:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441474AbgDOSVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 14:21:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37886 "EHLO mail.kernel.org"
+        id S2437350AbgDOSVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 14:21:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441396AbgDOSTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2441397AbgDOSTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Apr 2020 14:19:55 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9287E21BE5;
+        by mail.kernel.org (Postfix) with ESMTPSA id E534321D93;
         Wed, 15 Apr 2020 18:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586974794;
-        bh=u9WDPJ9PVhLe00nroezkeAOMPAu5vRYHEOa3AE/9rBc=;
+        s=default; t=1586974795;
+        bh=QIr3q6WJeHBwvcnpzSb8RI7xT1nOvA436IPTiIBNnsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16G12vWV5otnRrHhYIEMlBGoo7Px1ovnQHIAR4q4+xpG8Jvpx4jsLCI0SbZOJbxtQ
-         te9zxr8S8zNkC7y6P2yt9u6Nj3SL4z1bIG0qOjhRF9LhNWJWsQ3fwvPnDwotmLfi5A
-         EBLUZUB1Q75Jap/4UEGMoCAijkdly4yOiCS0yYdw=
+        b=GW2zFVczztjN4bJY29efVzzIVHx41bxIYv3It+siKOgBy6eWZGZsrfaxYP3digHN+
+         8K3X4+q+5D+5yJU9N4UYCon/17El19C4wUEbWvY12dLjMN/iPsmqtDRukSJkBnKYBE
+         /+v07pfADZKi63oUrq3w9VAzpGitfke/6cALb0VU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 32/38] rcu-tasks: Add rcu_dynticks_zero_in_eqs() effectiveness statistics
-Date:   Wed, 15 Apr 2020 11:19:35 -0700
-Message-Id: <20200415181941.11653-32-paulmck@kernel.org>
+Subject: [PATCH v4 tip/core/rcu 33/38] rcu-tasks: Add count for idle tasks on offline CPUs
+Date:   Wed, 15 Apr 2020 11:19:36 -0700
+Message-Id: <20200415181941.11653-33-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415181856.GA11037@paulmck-ThinkPad-P72>
 References: <20200415181856.GA11037@paulmck-ThinkPad-P72>
@@ -45,58 +45,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds counts of the number of calls and number of successful
-calls to rcu_dynticks_zero_in_eqs(), which are printed at the end
-of rcutorture runs and at stall time.  This allows evaluation of the
-effectiveness of rcu_dynticks_zero_in_eqs().
+This commit adds a counter for the number of times the quiescent state
+was an idle task associated with an offline CPU, and prints this count
+at the end of rcutorture runs and at stall time.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 6bd9bfe..b51f19a 100644
+index b51f19a..43cac4b 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -725,6 +725,11 @@ DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
- // Record outstanding IPIs to each CPU.  No point in sending two...
- static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
+@@ -729,6 +729,7 @@ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
+ // heavyweight readers executing explicit memory barriers.
+ unsigned long n_heavy_reader_attempts;
+ unsigned long n_heavy_reader_updates;
++unsigned long n_heavy_reader_ofl_updates;
  
-+// The number of detections of task quiescent state relying on
-+// heavyweight readers executing explicit memory barriers.
-+unsigned long n_heavy_reader_attempts;
-+unsigned long n_heavy_reader_updates;
-+
  void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
  DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
- 		 "RCU Tasks Trace");
-@@ -830,9 +835,11 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 		// If heavyweight readers are enabled on the remote task,
- 		// we can inspect its state despite its currently running.
- 		// However, we cannot safely change its state.
-+		n_heavy_reader_attempts++;
- 		if (!ofl && // Check for "running" idle tasks on offline CPUs.
+@@ -840,6 +841,8 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
  		    !rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
  			return false; // No quiescent state, do it the hard way.
-+		n_heavy_reader_updates++;
+ 		n_heavy_reader_updates++;
++		if (ofl)
++			n_heavy_reader_ofl_updates++;
  		in_qs = true;
  	} else {
  		in_qs = likely(!t->trc_reader_nesting);
-@@ -1143,9 +1150,11 @@ core_initcall(rcu_spawn_tasks_trace_kthread);
- 
- static void show_rcu_tasks_trace_gp_kthread(void)
+@@ -1152,7 +1155,8 @@ static void show_rcu_tasks_trace_gp_kthread(void)
  {
--	char buf[32];
-+	char buf[64];
+ 	char buf[64];
  
--	sprintf(buf, "N%d", atomic_read(&trc_n_readers_need_end));
-+	sprintf(buf, "N%d h:%lu/%lu", atomic_read(&trc_n_readers_need_end),
-+		data_race(n_heavy_reader_updates),
-+		data_race(n_heavy_reader_attempts));
+-	sprintf(buf, "N%d h:%lu/%lu", atomic_read(&trc_n_readers_need_end),
++	sprintf(buf, "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
++		data_race(n_heavy_reader_ofl_updates),
+ 		data_race(n_heavy_reader_updates),
+ 		data_race(n_heavy_reader_attempts));
  	show_rcu_tasks_generic_gp_kthread(&rcu_tasks_trace, buf);
- }
- 
 -- 
 2.9.5
 
