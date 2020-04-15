@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BAC1A9768
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8696C1A9633
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 10:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895027AbgDOIsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 04:48:33 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:57739 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895041AbgDOIs1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:48:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586940506; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=rC0Hx9+l6eblcHjkei+jpjuKRcfOwI4xV70WkS6PWIs=;
- b=mPtXqkN+IXipBUyq4qdyDwZd/LRJg8v4lyQ048d0e491Odio3YJPg3dH+3BvSEqa/JnxOMsq
- 0oN4TYAO7J7cHVvgz1oET82TMo+FD/cs/Ew7dq5Y2ir+kmg9HGd68Jr1n3V9xLehDeHeOzMj
- xILJOQ2Y+5IC7th28jKiwbxl8cU=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e96ca4c.7f70bc1980d8-smtp-out-n04;
- Wed, 15 Apr 2020 08:48:12 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2D0AAC433F2; Wed, 15 Apr 2020 08:48:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D58A7C433CB;
-        Wed, 15 Apr 2020 08:48:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D58A7C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2635854AbgDOIWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 04:22:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40588 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2635838AbgDOIWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 04:22:20 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 4E800ADEF80EC8DF914A;
+        Wed, 15 Apr 2020 16:22:18 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
+ 16:22:07 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <yanaijie@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <gustavo@embeddedor.com>, <yamada.masahiro@socionext.com>,
+        <miguel.ojeda.sandonis@gmail.com>
+CC:     Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] lib: zstd: remove FSE_sizeof_CTable()
+Date:   Wed, 15 Apr 2020 16:48:34 +0800
+Message-ID: <20200415084834.5573-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] brcmsmac: make brcms_c_stf_ss_update() void
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200413082126.22572-1-yanaijie@huawei.com>
-References: <20200413082126.22572-1-yanaijie@huawei.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
-        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
-        <wright.feng@cypress.com>, <davem@davemloft.net>,
-        <yanaijie@huawei.com>, <linux-wireless@vger.kernel.org>,
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
-Message-Id: <20200415084812.2D0AAC433F2@smtp.codeaurora.org>
-Date:   Wed, 15 Apr 2020 08:48:12 +0000 (UTC)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason Yan <yanaijie@huawei.com> wrote:
+No users of FSE_sizeof_CTable() now, so remove it.
+This fixes a sparse warning:
 
-> Fix the following coccicheck warning:
-> 
-> drivers/net/wireless/broadcom/brcm80211/brcmsmac/stf.c:309:5-13:
-> Unneeded variable: "ret_code". Return "0" on line 328
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+lib/zstd/fse_compress.c:477:8: warning: symbol 'FSE_sizeof_CTable' was
+not declared. Should it be static?
 
-Patch applied to wireless-drivers-next.git, thanks.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ lib/zstd/fse_compress.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-e871b8bfedda brcmsmac: make brcms_c_stf_ss_update() void
-
+diff --git a/lib/zstd/fse_compress.c b/lib/zstd/fse_compress.c
+index ef3d1741d532..0c059bef379c 100644
+--- a/lib/zstd/fse_compress.c
++++ b/lib/zstd/fse_compress.c
+@@ -466,20 +466,6 @@ size_t FSE_count_wksp(unsigned *count, unsigned *maxSymbolValuePtr, const void *
+ /*-**************************************************************
+ *  FSE Compression Code
+ ****************************************************************/
+-/*! FSE_sizeof_CTable() :
+-	FSE_CTable is a variable size structure which contains :
+-	`U16 tableLog;`
+-	`U16 maxSymbolValue;`
+-	`U16 nextStateNumber[1 << tableLog];`                         // This size is variable
+-	`FSE_symbolCompressionTransform symbolTT[maxSymbolValue+1];`  // This size is variable
+-Allocation is manual (C standard does not support variable-size structures).
+-*/
+-size_t FSE_sizeof_CTable(unsigned maxSymbolValue, unsigned tableLog)
+-{
+-	if (tableLog > FSE_MAX_TABLELOG)
+-		return ERROR(tableLog_tooLarge);
+-	return FSE_CTABLE_SIZE_U32(tableLog, maxSymbolValue) * sizeof(U32);
+-}
+ 
+ /* provides the minimum logSize to safely represent a distribution */
+ static unsigned FSE_minTableLog(size_t srcSize, unsigned maxSymbolValue)
 -- 
-https://patchwork.kernel.org/patch/11485249/
+2.21.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
