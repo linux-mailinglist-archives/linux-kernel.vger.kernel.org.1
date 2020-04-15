@@ -2,185 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138101AACC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC7C1AACCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415150AbgDOQBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
+        id S2410094AbgDOQC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1415130AbgDOQBR (ORCPT
+        by vger.kernel.org with ESMTP id S2410064AbgDOQCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:01:17 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AB1C061A0C;
-        Wed, 15 Apr 2020 09:01:16 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id r26so191026wmh.0;
-        Wed, 15 Apr 2020 09:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=zQEYCWsK2VTVhTYcIOH6YHb5daB8HSEQISlOJ5S/ctM=;
-        b=hh+ZM3VfQ/V83XzD//GKCPRGEdlxc5BXb/YYgewaAUGBo+/t38V8qZbVfjJkKR0uNP
-         Z36V/wdCdUozeucUKKPQ4ajpkXwd9b39/h2FkM47FhNTu9A1SByQCDEVMtmrVrGUaqt/
-         Mp8xrXCgqOfdRFZ4+M5Q82lcyynzolMqfDJ1FoC9/DiDJCGzZncayMykj1+LH1xLucZu
-         mRqPxn7EohqFPxtLEHLbeijK+7boHuIgbH3laQX5nsrM4CMtpcQzO0Zu5nOMPg0rJhxu
-         PssFdBgGpHV6wffIe8goL/8QwilACF0z8TnC/rDth/KOXQDoZSi7AU450C/Qy4C0GH3L
-         Kjwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=zQEYCWsK2VTVhTYcIOH6YHb5daB8HSEQISlOJ5S/ctM=;
-        b=U+HRowcrTVo72BKEg6dV40cdC5kdFfbKYQrvsPyMx9n45+8e96fhLSXHjS3ClV0V6A
-         WH7PyQkbEMeag1F5qSUhJLGZOdkGLsnR9n8ZUW09CbniNdlm+yrrB9Mt8BzFmFXlcBJ7
-         k3BPWRRNiZBeNe3si/C7Mg6XCHmOCPbRrp09q2EiNut57Ks8z1TXS4bSnpWwTnnh8cwI
-         ZhtVzs0a0l6tBgAS3vpEL/A20jYnOiJqCVR7IsVM5XZ2Qk6NwRAd5shWCi/xN0UsmNMh
-         MG+6wTkgbqf7Y2029J1qoBPaHQ97/OlCpVz2WilzkRR9JRPif05psPCbeBg50VESwy0Y
-         /r0g==
-X-Gm-Message-State: AGi0PuZFnFsFYGQuX2RDbnDUIH9d30eXjas9mTapwDg4bB2Cq/rvVSzZ
-        KIDdKrW4vX+ADoHB4IyAOaM=
-X-Google-Smtp-Source: APiQypKM6YMefRd6/LPjmQwg9BlaBWlr+762eFtEBIDXPoEVX6g3PQYHa4o9YcPz8OC1jtbOk1NIcQ==
-X-Received: by 2002:a1c:4b0a:: with SMTP id y10mr5749163wma.24.1586966473620;
-        Wed, 15 Apr 2020 09:01:13 -0700 (PDT)
-Received: from AnsuelXPS (host93-255-dynamic.47-79-r.retail.telecomitalia.it. [79.47.255.93])
-        by smtp.gmail.com with ESMTPSA id v10sm11768209wrq.45.2020.04.15.09.01.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 09:01:12 -0700 (PDT)
-From:   <ansuelsmth@gmail.com>
-To:     "'Rob Herring'" <robh@kernel.org>
-Cc:     "'Andy Gross'" <agross@kernel.org>,
-        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
-        "'Kishon Vijay Abraham I'" <kishon@ti.com>,
-        "'Mark Rutland'" <mark.rutland@arm.com>,
-        "'linux-arm-msm'" <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200403002608.946-1-ansuelsmth@gmail.com> <20200403002608.946-2-ansuelsmth@gmail.com> <20200414173838.GA29176@bogus> <00bb01d61321$05bf9b20$113ed160$@gmail.com> <CAL_JsqLyEy_++q5+JsUmg=gpgh=xkSP7XiQrDvje7tiUHzB8KQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqLyEy_++q5+JsUmg=gpgh=xkSP7XiQrDvje7tiUHzB8KQ@mail.gmail.com>
-Subject: R: [PATCH 2/2] devicetree: bindings: phy: Document dwc3 qcom phy
-Date:   Wed, 15 Apr 2020 18:01:10 +0200
-Message-ID: <00e301d6133f$15efc1f0$41cf45d0$@gmail.com>
+        Wed, 15 Apr 2020 12:02:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81DFC061A0C;
+        Wed, 15 Apr 2020 09:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+        From:Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=lInS3yd0u5ULGdaW04d0ps6JgPraHG4nqfTF9eszVgA=; b=SuO8JeDYYwWBCoAciAdoSEwK66
+        ylvG7tjsynS3i9KsQ91jqO2s2shMqz7d0FVR9Dxu/5x9QmOyb3pWzgjIi02NBrm1Oifjc5hHCZL5a
+        uqYtqeA+YEmLT48s8/SMpQ/2ZwXVgh8SRVrIufPBPuByC9T2nFSQC3FGdn9HA9SRmSV6i6M1FyhFu
+        AzFDM3BN+fCY1hyblne6dh3j/5c4QWxtVGDQ8GXllLTZXvzHpn7weeOrwpuQc4U4c79o2QST3YUK/
+        xxtmzsTi1IiHKGoXZakhm2jfH8I9xqmGga3lscOrQL0MNer1LZ04hSR5fJ12uTbgTww3Ip/PcLtoq
+        YHF2/KGw==;
+Received: from ip5f5ad4d8.dynamic.kabel-deutschland.de ([95.90.212.216] helo=coco.lan)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOkUB-0008Ss-7z; Wed, 15 Apr 2020 16:01:59 +0000
+Date:   Wed, 15 Apr 2020 18:01:54 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>
+Subject: Re: linux-next: Tree for Apr 15 (MEDIA Kconfig symbols)
+Message-ID: <20200415180154.4a340e3e@coco.lan>
+In-Reply-To: <8e4b7065-75c4-8bcf-8ad2-ed21463c494c@infradead.org>
+References: <20200415152240.2422e06c@canb.auug.org.au>
+        <8e4b7065-75c4-8bcf-8ad2-ed21463c494c@infradead.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: it
-Thread-Index: AQHTPQd2IBqR3z6CHNBmVjX+r+AcmAGqTdeSAYw2ek8CRq9kSAFT2oxuqEl6H+A=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Apr 15, 2020 at 7:26 AM <ansuelsmth@gmail.com> wrote:
-> >
-> > > On Fri, Apr 03, 2020 at 02:26:05AM +0200, Ansuel Smith wrote:
-> > > > Document dwc3 qcom phy hs and ss phy bindings needed to =
-correctly
-> > > > inizialize and use usb on ipq806x SoC
-> > > >
-> > > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > > > ---
-> > > >  .../bindings/phy/qcom,dwc3-hs-usb-phy.yaml    | 65
-> > > +++++++++++++++++++
-> > > >  .../bindings/phy/qcom,dwc3-ss-usb-phy.yaml    | 65
-> > > +++++++++++++++++++
-> > > >  2 files changed, 130 insertions(+)
-> > > >  create mode 100644
-> > > Documentation/devicetree/bindings/phy/qcom,dwc3-hs-usb-phy.yaml
-> > > >  create mode 100644
-> > > Documentation/devicetree/bindings/phy/qcom,dwc3-ss-usb-phy.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/phy/qcom,dwc3-hs-
-> usb-
-> > > phy.yaml b/Documentation/devicetree/bindings/phy/qcom,dwc3-hs-
-> usb-
-> > > phy.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..0bb59e3c2ab8
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/phy/qcom,dwc3-hs-usb-
-> > > phy.yaml
-> > > > @@ -0,0 +1,65 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/phy/qcom,dwc3-hs-usb-
-> phy.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Qualcomm DWC3 HS PHY CONTROLLER
-> > > > +
-> > > > +maintainers:
-> > > > +  - Ansuel Smith <ansuelsmth@gmail.com>
-> > > > +
-> > > > +description:
-> > > > +  DWC3 PHY nodes are defined to describe on-chip Synopsis =
-Physical
-> > > layer
-> > > > +  controllers. Each DWC3 PHY controller should have its own =
-node.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: qcom,dwc3-hs-usb-phy
-> > > > +
-> > > > +  "#phy-cells":
-> > > > +    const: 0
-> > > > +
-> > > > +  regmap:
-> > > > +    maxItems: 1
-> > > > +    description: phandle to usb3 dts definition
-> > > > +
-> > > > +  clocks:
-> > > > +    minItems: 1
-> > > > +    maxItems: 2
-> > > > +
-> > > > +  clock-names:
-> > > > +    minItems: 1
-> > > > +    maxItems: 2
-> > > > +    description: |
-> > > > +      - "ref" Is required
-> > > > +      - "xo"       Optional external reference clock
-> > > > +    items:
-> > > > +      - const: ref
-> > > > +      - const: xo
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - "#phy-cells"
-> > > > +  - regmap
-> > > > +  - clocks
-> > > > +  - clock-names
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-> > > > +
-> > > > +    hs_phy_0: hs_phy_0 {
-> > > > +      compatible =3D "qcom,dwc3-hs-usb-phy";
-> > > > +      regmap =3D <&usb3_0>;
-> > >
-> > > If the registers for the phy are part of 'qcom,dwc3' then make =
-this node
-> > > a child of it.
-> > >
-> >
-> > Making this node a child of qcom,dwc3 cause malfunction of the =
-driver.
->=20
-> Fix the driver then.
->=20
-> Rob
+HI Randy,
 
-Sorry if i bother you but I checked every other usb driver that also =
-needs
-phy node. I use regmap phandle here just for the fact that it's the
-same reg of dwc3. Others use directly the same reg and are outside their
-dwc3 usb node. I think I will follow this path and respin this.
-I really hope you are good with this.
+Em Wed, 15 Apr 2020 08:39:00 -0700
+Randy Dunlap <rdunlap@infradead.org> escreveu:
 
+> On 4/14/20 10:22 PM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20200414:
+> > 
+> > My fixes tree contains:
+> > 
+> >   6b038bdcd3d1 sh: mm: Fix build error
+> > 
+> > The qcom tree gained a build failure for which I reverted a commit.
+> > 
+> > The drm-misc tree gained conflicts against Linus' and the drm-intel trees.
+> > 
+> > The sound-asoc tree gained build failures so I used the version from
+> > next-20200414.
+> > 
+> > Non-merge commits (relative to Linus' tree): 1793
+> >  2505 files changed, 50786 insertions(+), 22669 deletions(-)
+> > 
+> > ----------------------------------------------------------------------------
+> > 
+> > I have created today's linux-next tree at
+> > git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> > (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+> > are tracking the linux-next tree using git, you should not use "git pull"
+> > to do so as that will try to merge the new linux-next release with the
+> > old one.  You should use "git fetch" and checkout or reset to the new
+> > master.
+> > 
+> > You can see which trees have been included by looking in the Next/Trees
+> > file in the source.  There are also quilt-import.log and merge.log
+> > files in the Next directory.  Between each merge, the tree was built
+> > with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+> > multi_v7_defconfig for arm and a native build of tools/perf. After
+> > the final fixups (if any), I do an x86_64 modules_install followed by
+> > builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+> > ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+> > and sparc64 defconfig and htmldocs. And finally, a simple boot test
+> > of the powerpc pseries_le_defconfig kernel in qemu (with and without
+> > kvm enabled).
+> > 
+> > Below is a summary of the state of the merge.
+> > 
+> > I am currently merging 317 trees (counting Linus' and 78 trees of bug
+> > fix patches pending for the current merge release).
+> > 
+> > Stats about the size of the tree over time can be seen at
+> > http://neuling.org/linux-next-size.html .
+> > 
+> > Status of my local build tests will be at
+> > http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+> > advice about cross compilers/configs that work, we are always open to add
+> > more builds.
+> > 
+> > Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+> > Gortmaker for triage and bug fixes.
+> >   
+> 
+> on i386 or x86_64:
+> 
+> WARNING: unmet direct dependencies detected for CEC_NOTIFIER
+>   Depends on [n]: MEDIA_SUPPORT [=n]
+>   Selected by [y]:
+>   - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+>   - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+> 
+> WARNING: unmet direct dependencies detected for CEC_CORE
+>   Depends on [n]: MEDIA_SUPPORT [=n]
+>   Selected by [y]:
+>   - DRM_I915 [=y] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y] && CEC_NOTIFIER [=y]
+>   - DRM_I2C_NXP_TDA998X [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y] && CEC_NOTIFIER [=y]
+>   - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+>   - DRM_DW_HDMI [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && CEC_NOTIFIER [=y]
+>   - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+> 
+> WARNING: unmet direct dependencies detected for CEC_NOTIFIER
+>   Depends on [n]: MEDIA_SUPPORT [=n]
+>   Selected by [y]:
+>   - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+>   - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+> 
+> WARNING: unmet direct dependencies detected for CEC_CORE
+>   Depends on [n]: MEDIA_SUPPORT [=n]
+>   Selected by [y]:
+>   - DRM_I915 [=y] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y] && CEC_NOTIFIER [=y]
+>   - DRM_I2C_NXP_TDA998X [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y] && CEC_NOTIFIER [=y]
+>   - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
+>   - DRM_DW_HDMI [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && CEC_NOTIFIER [=y]
+>   - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
 
+Those should be fixed upstream.  DVB_CORE should not depend on MEDIA_SUPPORT.
+The patch that changed it was reverted:
+
+	https://git.linuxtv.org/media_tree.git/commit/?id=9393d050c860a8f03f1e04d380653d23c7911c90
+
+Yet, as we did a major rework at Kconfig, I don't doubt that some random
+config may still cause issues there.
+
+Regards,
+Mauro
