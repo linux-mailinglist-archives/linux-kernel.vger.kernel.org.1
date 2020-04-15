@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23791AA947
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC5E1AA94C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370742AbgDON6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 09:58:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38180 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2633783AbgDON6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:58:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 08777AC19;
-        Wed, 15 Apr 2020 13:58:35 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8E38D1E1250; Wed, 15 Apr 2020 15:58:34 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 15:58:34 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 6/8] fs/ext4: Update ext4_should_use_dax()
-Message-ID: <20200415135834.GI6126@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-7-ira.weiny@intel.com>
+        id S2636389AbgDON7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 09:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2636377AbgDON7P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 09:59:15 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B713C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 06:59:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id z6so19240912wml.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 06:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=oNzqr4W0kmnZFd2IVVOD4F7CEhwCqXToSvFcmKkrVR0=;
+        b=NmifIXPzQQRWBjxGAW5BAhLCBHn9JlTW+ieIof45VkKm0Uub0UsPAjTLbfz8dPtPKF
+         UcKDyE9KTO8YsR8TGRuvuRUvEXasdkAMv9WC9oXt/zBFJOIXwmcu5yB1sj3pkTQD+BPB
+         wA1P7dCNNwBS1DgOGBajGerdrOnu2za0DABBdxFg0WkxkKwPFUtFW0t6whdfbX6vztMG
+         /w1v9TpyXe49zu3GDyb6FysLgVeCY3LkFXE31RWaWwg+Q0oIT2QoTg1Vm7NbOJXaFETM
+         qmdNyXuKW/CZoPX4gRvmcWl4nbVsCoj4V1u6gGE/jrjaHI5NYTNFt/nBqw3i5m8QYs04
+         W8NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=oNzqr4W0kmnZFd2IVVOD4F7CEhwCqXToSvFcmKkrVR0=;
+        b=pR3U6vBVkaVZhIW4UIES9JRtlm0vruDR7KVuOGnTo+1j0qqkcN5tzYxhBaLA1S36j/
+         lqAiTFfaYTg5tl1/Yn2V1hZ7zedA3dHy5+GSMEKk9wz4hbb/mgILjGAEPjxV5HJTUf/w
+         JbkJyzJtlLMQ+ByO0ULPAxUdk4N8NvTDUu3soBRb8GjNZdImHwPjnx6e2FZ7OD7vtJoR
+         2zUpRJxHsAuI/rvAs0GD2cxtuKZ+g3Mo78q669/SUyzfDSuAGYbktUH219F4pm7e+U3P
+         CQycj2sCmX0p3K555TlYVwnPccRY9DrZ/EAI6VRArla8Vypt4Nqd2/6B9Xa4wZJhjpQ5
+         qZFQ==
+X-Gm-Message-State: AGi0PuY6egWieCXR292w+LkFmFFN5zSCDN9VzND7ijnefz0Wg0bB45tF
+        BntzBiZUbhSAxR8rC28s2KVyEf3nMQjp2cpRG3E=
+X-Google-Smtp-Source: APiQypKIKAI4R7MZYat+lp68qYQ24g8WhU9ryf5v0iyzZHRHBMG3LozUhEXKcrW6Q5mF/yvpXM5RIDXu2de0ws5Mpx8=
+X-Received: by 2002:a7b:c927:: with SMTP id h7mr5303390wml.122.1586959147836;
+ Wed, 15 Apr 2020 06:59:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414040030.1802884-7-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200408205323.44490-1-natechancellor@gmail.com>
+ <CA+icZUUTEEZww3qT0jfFP0ZgUPXoF1_uOHMT4ZecrQxumE1Zmg@mail.gmail.com> <CA+icZUWq=_qjvAf40PqQAj3tQ0WAZ2QAR9hojTuYqZH_=RWd_w@mail.gmail.com>
+In-Reply-To: <CA+icZUWq=_qjvAf40PqQAj3tQ0WAZ2QAR9hojTuYqZH_=RWd_w@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 15 Apr 2020 15:58:56 +0200
+Message-ID: <CA+icZUV336Y5YJ3OUYzXGfMZGbPSCt9YBVBRhiOnRCNQzc2z-A@mail.gmail.com>
+Subject: Re: [PATCH] x86: mmiotrace: Use cpumask_available for cpumask_var_t variables
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-04-20 21:00:28, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Change the logic of ext4_should_use_dax() to support using the inode dax
-> flag OR the overriding tri-state mount option.
-> 
-> While we are at it change the function to ext4_enable_dax() as this
-> better reflects the ask.
+On Wed, Apr 8, 2020 at 11:36 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 
-I disagree with the renaming. ext4_enable_dax() suggests it enables
-something. It does not. I'd either leave ext4_should_use_dax() or maybe
-change it to ext4_should_enable_dax() if you really like the "enable" word
-:).
+[ ... ]
 
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  fs/ext4/inode.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index fa0ff78dc033..e9d582e516bc 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4383,9 +4383,11 @@ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
->  		!ext4_test_inode_state(inode, EXT4_STATE_XATTR));
->  }
->  
-> -static bool ext4_should_use_dax(struct inode *inode)
-> +static bool ext4_enable_dax(struct inode *inode)
->  {
-> -	if (!test_opt(inode->i_sb, DAX))
-> +	unsigned int flags = EXT4_I(inode)->i_flags;
-> +
-> +	if (test_opt2(inode->i_sb, NODAX))
->  		return false;
->  	if (!S_ISREG(inode->i_mode))
->  		return false;
-> @@ -4397,7 +4399,13 @@ static bool ext4_should_use_dax(struct inode *inode)
->  		return false;
->  	if (ext4_test_inode_flag(inode, EXT4_INODE_VERITY))
->  		return false;
-> -	return true;
-> +	if (!bdev_dax_supported(inode->i_sb->s_bdev,
-> +				inode->i_sb->s_blocksize))
-> +		return false;
-> +	if (test_opt(inode->i_sb, DAX))
-> +		return true;
-> +
-> +	return (flags & EXT4_DAX_FL) == EXT4_DAX_FL;
+> Feel free to add appropriate credits:
+>
+>    Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+>
 
-flags & EXT4_DAX_FL is enough here, isn't it?
+Re-tested with Linux v5.7-rc1 which shows this warning - with GCC v9.3
+and LLVM/Clang v10.0.0 (and snapshot/pre-release of v10.0.1) on
+Debian/testing AMD64.
 
-								Honza
-
->  }
->  
->  void ext4_set_inode_flags(struct inode *inode)
-> @@ -4415,7 +4423,7 @@ void ext4_set_inode_flags(struct inode *inode)
->  		new_fl |= S_NOATIME;
->  	if (flags & EXT4_DIRSYNC_FL)
->  		new_fl |= S_DIRSYNC;
-> -	if (ext4_should_use_dax(inode))
-> +	if (ext4_enable_dax(inode))
->  		new_fl |= S_DAX;
->  	if (flags & EXT4_ENCRYPT_FL)
->  		new_fl |= S_ENCRYPTED;
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+- Sedat -
