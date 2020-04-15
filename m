@@ -2,351 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCDB1AAA13
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DEA1AAA2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 16:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394150AbgDOOeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 10:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394098AbgDOOdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:33:13 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13F5F22200;
-        Wed, 15 Apr 2020 14:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586961172;
-        bh=tZEaf3VXusol79yiStwC6vmB24JiKcfIqq+xUsDyCP4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AVjnPctcaWeLc8zV/sotemxwD5+YQauN/fCC6/LP5ysIMqcsv5LnBu6lxD+ZfmsEr
-         D5lXM713ewZblvWqixpOG3xFVXatY72Y1sq4yN807jA9CBc4F6GZTmoPvRn4DPg36p
-         ODQ18XeJc0CrEMCmrgZMiIAeUd7KcXIvF/FYzE1U=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jOj5u-006kQP-99; Wed, 15 Apr 2020 16:32:50 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org
-Subject: [PATCH 34/34] docs: filesystems: convert xfs-self-describing-metadata.txt to ReST
-Date:   Wed, 15 Apr 2020 16:32:47 +0200
-Message-Id: <8d1a6c3feb1f3ce662c101276145ca5ae28cb0d0.1586960617.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586960617.git.mchehab+huawei@kernel.org>
-References: <cover.1586960617.git.mchehab+huawei@kernel.org>
+        id S2634435AbgDOOhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 10:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2394142AbgDOOeN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 10:34:13 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E55C061A10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 07:34:12 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g12so11534666wmh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 07:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nxelXILmKZchPwvimzsQBENiKfTkkLiVSXLT8HCWUfg=;
+        b=POod/Q0b08ZdV+ddPjR1JrfNwY27Dbz1s3Uw84CKlljOygYkgsJnl6F56k9XPO7ZKL
+         s1ULoVzWPEUCGPSWZarKN10UO8xNNQQGNPbd3fxmKEruKRDe1MPI0E8ZXrcHUtMNAvP5
+         5VaCQvB6o8KazHI/ePiNBMCebOd8aCVJCFrXLfg9Tk+9yBdrX9OgyoRuO1f3j1FIf70T
+         4JeLPh5w61dGRcY4eVGEsjbOBVxw0sppgq3GdwmYGEV/r0huvtbplLVyg5KLy2LJHHIO
+         zuXZ1qjJDZ/9QnkTgCmxNZH3K6UEFzboHHCSf6R3e66MspBZIv7Fs6s4hph3EQbH0TFs
+         yoag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nxelXILmKZchPwvimzsQBENiKfTkkLiVSXLT8HCWUfg=;
+        b=mlpweb0HbEKFGGAOJ92bpq8q2c34F15eDyQYtpvVJmVbOv9AG4KqeTUyACsCpBuz/B
+         pBueoyM192TDpHF414692hvFEk1t8LrZIf3H3IBEAvyFoRhdoD7o2Cs4mqzngt+X2k7J
+         l111Kq4Jh9VpAkBlregjQjqvMR+QtwgXjuMGdJSH/FDHkz1lZyjTzdQi3ozIQk4+NozD
+         9JEooDryt57LU8owmFa1LLpPlxFATxCyhgyOx0ql6B7XzvShFhFEyF9jV5FIUwTNv/U9
+         5lur7j9e9XZl+ZLtx1NVtgkRoFAL5YUwIPulK4RpBiME8JWiscVG0w0G9dTEYm8PZoIx
+         /imA==
+X-Gm-Message-State: AGi0PuYIgtIBpGtNb/slwJw7EfOU9X35SU2ShE6Ot2g2DJmqWovaKifp
+        HMAYdJMu70PAfWDiHD6Xxf4LSQ==
+X-Google-Smtp-Source: APiQypKZQ8ksOeYlrdeJ8Nk3paLuV0a49yGc7LShsaCdvQV8dGeC8wnlFfMzLeyhC3ntLG7xWn/s7w==
+X-Received: by 2002:a05:600c:214b:: with SMTP id v11mr5813776wml.151.1586961250280;
+        Wed, 15 Apr 2020 07:34:10 -0700 (PDT)
+Received: from [192.168.1.5] (212-5-158-142.ip.btc-net.bg. [212.5.158.142])
+        by smtp.googlemail.com with ESMTPSA id w11sm22389148wmi.32.2020.04.15.07.34.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 07:34:09 -0700 (PDT)
+Subject: Re: [PATCH v4 04/12] v4l: Add source event change for bit-depth
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>, dikshita@codeaurora.org
+References: <20200106154929.4331-1-stanimir.varbanov@linaro.org>
+ <20200106154929.4331-5-stanimir.varbanov@linaro.org>
+ <c3b02589-1d7a-a476-7d33-7e555fbe276d@xs4all.nl>
+ <ae233eb1-69fc-6723-0224-0c1fcf786156@linaro.org>
+ <fb27b5cc-0eef-a7b4-f45b-a3986b77c4c9@xs4all.nl>
+ <988e49aa-469d-17a1-ca25-982c63536e6e@linaro.org>
+ <814252fe-6fa9-595b-92b3-8ef8ef4c0187@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <8da8cb6c-4190-1670-46cf-a982481aecdf@linaro.org>
+Date:   Wed, 15 Apr 2020 17:34:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <814252fe-6fa9-595b-92b3-8ef8ef4c0187@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Add a SPDX header;
-- Adjust document and section titles;
-- Some whitespace fixes and new line breaks;
-- Mark literal blocks as such;
-- Add it to filesystems/index.rst.
+Hi Hans,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/filesystems/index.rst           |   1 +
- ...a.txt => xfs-self-describing-metadata.rst} | 182 +++++++++---------
- MAINTAINERS                                   |   2 +-
- 3 files changed, 94 insertions(+), 91 deletions(-)
- rename Documentation/filesystems/{xfs-self-describing-metadata.txt => xfs-self-describing-metadata.rst} (83%)
+On 1/15/20 5:03 PM, Hans Verkuil wrote:
+> On 1/10/20 11:54 AM, Stanimir Varbanov wrote:
+>> Hi Hans,
+>>
+>> On 1/9/20 10:57 AM, Hans Verkuil wrote:
+>>> On 1/9/20 8:41 AM, Stanimir Varbanov wrote:
+>>>> Hi Hans,
+>>>>
+>>>> On 1/8/20 6:09 PM, Hans Verkuil wrote:
+>>>>> On 1/6/20 4:49 PM, Stanimir Varbanov wrote:
+>>>>>> This event indicate that the source color bit-depth is changed
+>>>>>> during run-time. The client must get the new format and re-allocate
+>>>>>> buffers for it. This can usually happens with video decoder (encoders)
+>>>>>> when the bit-stream color bit-depth is changed from 8 to 10bits
+>>>>>> or vice versa.
+>>>>>>
+>>>>>> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+>>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>>>> ---
+>>>>>>  Documentation/media/uapi/v4l/vidioc-dqevent.rst | 8 +++++++-
+>>>>>>  Documentation/media/videodev2.h.rst.exceptions  | 1 +
+>>>>>>  include/uapi/linux/videodev2.h                  | 1 +
+>>>>>>  3 files changed, 9 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/Documentation/media/uapi/v4l/vidioc-dqevent.rst b/Documentation/media/uapi/v4l/vidioc-dqevent.rst
+>>>>>> index 42659a3d1705..fad853d440cf 100644
+>>>>>> --- a/Documentation/media/uapi/v4l/vidioc-dqevent.rst
+>>>>>> +++ b/Documentation/media/uapi/v4l/vidioc-dqevent.rst
+>>>>>> @@ -402,7 +402,13 @@ call.
+>>>>>>  	that many Video Capture devices are not able to recover from a temporary
+>>>>>>  	loss of signal and so restarting streaming I/O is required in order for
+>>>>>>  	the hardware to synchronize to the video signal.
+>>>>>> -
+>>>>>> +    * - ``V4L2_EVENT_SRC_CH_COLOR_DEPTH``
+>>>>>> +      - 0x0002
+>>>>>> +      - This event gets triggered when color bit-depth change is detected
+>>>>>> +	from a video decoder. Applications will have to query the new pixel
+>>>>>> +	format and re-negotiate the queue. In most cases the streaming must be
+>>>>>> +	stopped and restarted (:ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>`
+>>>>>> +	followed by :ref:`VIDIOC_STREAMON <VIDIOC_STREAMON>`).
+>>>>>
+>>>>> I think this is too specific for decoders. Something similar to the
+>>>>> CH_RESOLUTION description would be more appropriate:
+>>>>>
+>>>>>       - This event gets triggered when a color bit-depth change (but not a
+>>>>> 	resolution change!) is detected	at an input. This can come from an
+>>>>
+>>>> What you mean by "but not a resolution change" here? Resolution change
+>>>> and bit-depth change cannot occur on the same time, or something else.
+>>>
+>>> What I was trying to say is that a resolution change implies a possible bit-depth
+>>> change as well, whereas V4L2_EVENT_SRC_CH_COLOR_DEPTH is only set if there is
+>>> a bit-depth change but no resolution change.
+>>>
+>>> V4L2_EVENT_SRC_CH_RESOLUTION requires that userspace does a full resync to the
+>>> new format, CH_COLOR_DEPTH implies that only the bit depth changed.
+>>
+>> CH_COLOR_DEPTH implies format re-negotiation as well. In Venus case
+>> 8->10bit change will change the format of OPB buffers (now it is not
+>> possible because of lack of v4l modifiers) and DPB buffers becomes
+>> compressed raw buffers (to optimize bandwidth).
+>>
+>>>
+>>> Which actually makes me wonder: is there a difference between the two change flags
+>>> w.r.t. userspace behavior? If there is, then that should be carefully documented,
+>>> if there isn't, then is this new flag really needed?
+>>
+>> Looking into semantics of v4l events, CH_COLOR_DEPTH makes sense because
+>> it describes what actually changed (similar to CH_RESOLUTION). I would
+>> say that v4l2_event::type V4L2_EVENT_SOURCE_CHANGE implies format
+>> re-negotiation and v4l2_event::src_change just informs userland what
+>> exactly is changed.
+>>
+>> I'll postpone this patch until we have clear vision what will be the
+>> usage in user-space.
+>>
+> 
+> My main problem regarding semantics is what should be done if you disconnect
+> and reconnect an HDMI (for example) connector. You get a V4L2_EVENT_SOURCE_CHANGE
+> when the new signal is detected, but should it just set V4L2_EVENT_SRC_CH_RESOLUTION
+> (as it does today), or also V4L2_EVENT_SRC_CH_COLOR_DEPTH?
 
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 70c0e0b29e74..61d5be3f6f9a 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -122,4 +122,5 @@ Documentation for filesystem implementations.
-    virtiofs
-    vfat
-    xfs-delayed-logging-design
-+   xfs-self-describing-metadata
-    zonefs
-diff --git a/Documentation/filesystems/xfs-self-describing-metadata.txt b/Documentation/filesystems/xfs-self-describing-metadata.rst
-similarity index 83%
-rename from Documentation/filesystems/xfs-self-describing-metadata.txt
-rename to Documentation/filesystems/xfs-self-describing-metadata.rst
-index 8db0121d0980..51cdafe01ab1 100644
---- a/Documentation/filesystems/xfs-self-describing-metadata.txt
-+++ b/Documentation/filesystems/xfs-self-describing-metadata.rst
-@@ -1,8 +1,11 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============================
- XFS Self Describing Metadata
------------------------------
-+============================
- 
- Introduction
--------------
-+============
- 
- The largest scalability problem facing XFS is not one of algorithmic
- scalability, but of verification of the filesystem structure. Scalabilty of the
-@@ -34,7 +37,7 @@ required for basic forensic analysis of the filesystem structure.
- 
- 
- Self Describing Metadata
--------------------------
-+========================
- 
- One of the problems with the current metadata format is that apart from the
- magic number in the metadata block, we have no other way of identifying what it
-@@ -142,7 +145,7 @@ modification occurred between the corruption being written and when it was
- detected.
- 
- Runtime Validation
--------------------
-+==================
- 
- Validation of self-describing metadata takes place at runtime in two places:
- 
-@@ -183,18 +186,18 @@ error occurs during this process, the buffer is again marked with a EFSCORRUPTED
- error for the higher layers to catch.
- 
- Structures
------------
-+==========
- 
--A typical on-disk structure needs to contain the following information:
-+A typical on-disk structure needs to contain the following information::
- 
--struct xfs_ondisk_hdr {
--        __be32  magic;		/* magic number */
--        __be32  crc;		/* CRC, not logged */
--        uuid_t  uuid;		/* filesystem identifier */
--        __be64  owner;		/* parent object */
--        __be64  blkno;		/* location on disk */
--        __be64  lsn;		/* last modification in log, not logged */
--};
-+    struct xfs_ondisk_hdr {
-+	    __be32  magic;		/* magic number */
-+	    __be32  crc;		/* CRC, not logged */
-+	    uuid_t  uuid;		/* filesystem identifier */
-+	    __be64  owner;		/* parent object */
-+	    __be64  blkno;		/* location on disk */
-+	    __be64  lsn;		/* last modification in log, not logged */
-+    };
- 
- Depending on the metadata, this information may be part of a header structure
- separate to the metadata contents, or may be distributed through an existing
-@@ -214,24 +217,24 @@ level of information is generally provided. For example:
- 	  well. hence the additional metadata headers change the overall format
- 	  of the metadata.
- 
--A typical buffer read verifier is structured as follows:
-+A typical buffer read verifier is structured as follows::
- 
--#define XFS_FOO_CRC_OFF		offsetof(struct xfs_ondisk_hdr, crc)
-+    #define XFS_FOO_CRC_OFF		offsetof(struct xfs_ondisk_hdr, crc)
- 
--static void
--xfs_foo_read_verify(
--	struct xfs_buf	*bp)
--{
--       struct xfs_mount *mp = bp->b_mount;
-+    static void
-+    xfs_foo_read_verify(
-+	    struct xfs_buf	*bp)
-+    {
-+	struct xfs_mount *mp = bp->b_mount;
- 
--        if ((xfs_sb_version_hascrc(&mp->m_sb) &&
--             !xfs_verify_cksum(bp->b_addr, BBTOB(bp->b_length),
--					XFS_FOO_CRC_OFF)) ||
--            !xfs_foo_verify(bp)) {
--                XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
--                xfs_buf_ioerror(bp, EFSCORRUPTED);
--        }
--}
-+	    if ((xfs_sb_version_hascrc(&mp->m_sb) &&
-+		!xfs_verify_cksum(bp->b_addr, BBTOB(bp->b_length),
-+					    XFS_FOO_CRC_OFF)) ||
-+		!xfs_foo_verify(bp)) {
-+		    XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
-+		    xfs_buf_ioerror(bp, EFSCORRUPTED);
-+	    }
-+    }
- 
- The code ensures that the CRC is only checked if the filesystem has CRCs enabled
- by checking the superblock of the feature bit, and then if the CRC verifies OK
-@@ -239,83 +242,83 @@ by checking the superblock of the feature bit, and then if the CRC verifies OK
- 
- The verifier function will take a couple of different forms, depending on
- whether the magic number can be used to determine the format of the block. In
--the case it can't, the code is structured as follows:
-+the case it can't, the code is structured as follows::
- 
--static bool
--xfs_foo_verify(
--	struct xfs_buf		*bp)
--{
--        struct xfs_mount	*mp = bp->b_mount;
--        struct xfs_ondisk_hdr	*hdr = bp->b_addr;
-+    static bool
-+    xfs_foo_verify(
-+	    struct xfs_buf		*bp)
-+    {
-+	    struct xfs_mount	*mp = bp->b_mount;
-+	    struct xfs_ondisk_hdr	*hdr = bp->b_addr;
- 
--        if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
--                return false;
-+	    if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
-+		    return false;
- 
--        if (!xfs_sb_version_hascrc(&mp->m_sb)) {
--		if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
--			return false;
--		if (bp->b_bn != be64_to_cpu(hdr->blkno))
--			return false;
--		if (hdr->owner == 0)
--			return false;
--	}
-+	    if (!xfs_sb_version_hascrc(&mp->m_sb)) {
-+		    if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
-+			    return false;
-+		    if (bp->b_bn != be64_to_cpu(hdr->blkno))
-+			    return false;
-+		    if (hdr->owner == 0)
-+			    return false;
-+	    }
- 
--	/* object specific verification checks here */
-+	    /* object specific verification checks here */
- 
--        return true;
--}
-+	    return true;
-+    }
- 
- If there are different magic numbers for the different formats, the verifier
--will look like:
-+will look like::
- 
--static bool
--xfs_foo_verify(
--	struct xfs_buf		*bp)
--{
--        struct xfs_mount	*mp = bp->b_mount;
--        struct xfs_ondisk_hdr	*hdr = bp->b_addr;
-+    static bool
-+    xfs_foo_verify(
-+	    struct xfs_buf		*bp)
-+    {
-+	    struct xfs_mount	*mp = bp->b_mount;
-+	    struct xfs_ondisk_hdr	*hdr = bp->b_addr;
- 
--        if (hdr->magic == cpu_to_be32(XFS_FOO_CRC_MAGIC)) {
--		if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
--			return false;
--		if (bp->b_bn != be64_to_cpu(hdr->blkno))
--			return false;
--		if (hdr->owner == 0)
--			return false;
--	} else if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
--		return false;
-+	    if (hdr->magic == cpu_to_be32(XFS_FOO_CRC_MAGIC)) {
-+		    if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
-+			    return false;
-+		    if (bp->b_bn != be64_to_cpu(hdr->blkno))
-+			    return false;
-+		    if (hdr->owner == 0)
-+			    return false;
-+	    } else if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
-+		    return false;
- 
--	/* object specific verification checks here */
-+	    /* object specific verification checks here */
- 
--        return true;
--}
-+	    return true;
-+    }
- 
- Write verifiers are very similar to the read verifiers, they just do things in
--the opposite order to the read verifiers. A typical write verifier:
-+the opposite order to the read verifiers. A typical write verifier::
- 
--static void
--xfs_foo_write_verify(
--	struct xfs_buf	*bp)
--{
--	struct xfs_mount	*mp = bp->b_mount;
--	struct xfs_buf_log_item	*bip = bp->b_fspriv;
-+    static void
-+    xfs_foo_write_verify(
-+	    struct xfs_buf	*bp)
-+    {
-+	    struct xfs_mount	*mp = bp->b_mount;
-+	    struct xfs_buf_log_item	*bip = bp->b_fspriv;
- 
--	if (!xfs_foo_verify(bp)) {
--		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
--		xfs_buf_ioerror(bp, EFSCORRUPTED);
--		return;
--	}
-+	    if (!xfs_foo_verify(bp)) {
-+		    XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
-+		    xfs_buf_ioerror(bp, EFSCORRUPTED);
-+		    return;
-+	    }
- 
--	if (!xfs_sb_version_hascrc(&mp->m_sb))
--		return;
-+	    if (!xfs_sb_version_hascrc(&mp->m_sb))
-+		    return;
- 
- 
--	if (bip) {
--		struct xfs_ondisk_hdr	*hdr = bp->b_addr;
--		hdr->lsn = cpu_to_be64(bip->bli_item.li_lsn);
--	}
--	xfs_update_cksum(bp->b_addr, BBTOB(bp->b_length), XFS_FOO_CRC_OFF);
--}
-+	    if (bip) {
-+		    struct xfs_ondisk_hdr	*hdr = bp->b_addr;
-+		    hdr->lsn = cpu_to_be64(bip->bli_item.li_lsn);
-+	    }
-+	    xfs_update_cksum(bp->b_addr, BBTOB(bp->b_length), XFS_FOO_CRC_OFF);
-+    }
- 
- This will verify the internal structure of the metadata before we go any
- further, detecting corruptions that have occurred as the metadata has been
-@@ -324,7 +327,7 @@ update the LSN field (when it was last modified) and calculate the CRC on the
- metadata. Once this is done, we can issue the IO.
- 
- Inodes and Dquots
-------------------
-+=================
- 
- Inodes and dquots are special snowflakes. They have per-object CRC and
- self-identifiers, but they are packed so that there are multiple objects per
-@@ -347,4 +350,3 @@ XXX: inode unlinked list modification doesn't recalculate the inode CRC! None of
- the unlinked list modifications check or update CRCs, neither during unlink nor
- log recovery. So, it's gone unnoticed until now. This won't matter immediately -
- repair will probably complain about it - but it needs to be fixed.
--
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c52991586853..9f9454f12e06 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18552,7 +18552,7 @@ T:	git git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- F:	Documentation/ABI/testing/sysfs-fs-xfs
- F:	Documentation/admin-guide/xfs.rst
- F:	Documentation/filesystems/xfs-delayed-logging-design.rst
--F:	Documentation/filesystems/xfs-self-describing-metadata.txt
-+F:	Documentation/filesystems/xfs-self-describing-metadata.rst
- F:	fs/xfs/
- F:	include/uapi/linux/dqblk_xfs.h
- F:	include/uapi/linux/fsmap.h
+I think disconnect -> connect should imply that everything is changed
+i.e. source resolution, color depth and colorimetry. We cannot guess is
+it the same HDMI source or not.
+
+> 
+> In my view V4L2_EVENT_SRC_CH_COLOR_DEPTH only makes sense if the resolution
+> stays the same, but only the color depth changes.
+
+I can imagine a bitstream which changing resolution and color-depth at
+the same time. And I guess h264|265 doesn't denied this to happen.
+
+> 
+> BTW, one thing that will be added here as well in the future is a
+> V4L2_EVENT_SRC_CH_COLORIMETRY for when the colorspace etc. information changes,
+> but nothing else. In that case there is no need to renegotiate the format etc.,
+> it's just the interpretation of the video data that changes.
+
+In case of colorimetry, maybe the buffer format will not change but
+colorspace, quantization, ycbcr_encoding and transfer function will
+change. And this imply that the userspace have to streamoff -> gfmt ->
+do-some-action -> streamon ?
+
+I have to figure out what is for example Android is doing when the
+colorimentry is changed.
+If someone knows, please shed some light on that subject.
+
+> 
+> An alternative approach is to define a V4L2_EVENT_SRC_CH_ALL bit mask, OR-ing
+> all the V4L2_EVENT_SRC_CH_* defines, and change all drivers that use
+> V4L2_EVENT_SRC_CH_RESOLUTION at the moment to use V4L2_EVENT_SRC_CH_ALL instead,
+> and only drivers that detect that only one of these changes took place will
+> use a specific V4L2_EVENT_SRC_CH_ flag. This will be primarily codec drivers,
+> I believe.
+
+I can do that as an RFC.
+
+> 
+> There aren't that many of those, so this shouldn't be too difficult to do.
+> 
+> Perhaps this is the cleanest approach to this problem...
+> 
+> Regards,
+> 
+> 	Hans
+> 
+
 -- 
-2.25.2
-
+regards,
+Stan
