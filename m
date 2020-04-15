@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBB41AB1B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246121AB1E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441789AbgDOTaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437842AbgDOT37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:29:59 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF1C520774;
-        Wed, 15 Apr 2020 19:29:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586978998;
-        bh=HcxMWDYswwSk16CJXI7QG7JgXa8lgyRgaEpGjU1zGT0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=18LdT+B4dO4XKOdbgBT1rE8jARtHpNmRaiCUmOgAu7rk7jVGCFxtr+tTfUMqwFGMb
-         ZwOKmWfXgpuNviXjE3qZRnMwSGRgYlnHg58T1M11d7ZNU+5XtsnBJ2aZm+ICz2SDNL
-         E2mRQsg8FYQQ6dpMXrqfeg6ciZ+MBeHYlRos5IFY=
-Date:   Wed, 15 Apr 2020 22:29:52 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
-Message-ID: <20200415192952.GA1309273@unreal>
-References: <20200321003108.22941-1-rcampbell@nvidia.com>
- <20200415144125.GU11945@mellanox.com>
- <6d7adb28-96a0-5dc5-e85e-68fca2db403a@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d7adb28-96a0-5dc5-e85e-68fca2db403a@nvidia.com>
+        id S2411911AbgDOTer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:34:47 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:35726 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634460AbgDOTeS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:34:18 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jOnl5-0007BU-K5; Wed, 15 Apr 2020 14:31:41 -0500
+Message-ID: <f91c90fde203ed87dcf206e795ee55ed67b5f641.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Jason Yan <yanaijie@huawei.com>, mpe@ellerman.id.au,
+        linuxppc-dev@lists.ozlabs.org, diana.craciun@nxp.com,
+        christophe.leroy@c-s.fr, benh@kernel.crashing.org,
+        paulus@samba.org, npiggin@gmail.com, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com
+Cc:     linux-kernel@vger.kernel.org, zhaohongjiang@huawei.com,
+        dja@axtens.net
+Date:   Wed, 15 Apr 2020 14:31:38 -0500
+In-Reply-To: <20200330022023.3691-1-yanaijie@huawei.com>
+References: <20200330022023.3691-1-yanaijie@huawei.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: yanaijie@huawei.com, mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org, diana.craciun@nxp.com, christophe.leroy@c-s.fr, benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com, keescook@chromium.org, kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org, zhaohongjiang@huawei.com, dja@axtens.net
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH v5 0/6] implement KASLR for powerpc/fsl_booke/64
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 10:28:23AM -0700, Ralph Campbell wrote:
->
-> On 4/15/20 7:41 AM, Jason Gunthorpe wrote:
-> > On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
-> > > This series adds basic self tests for HMM and are intended for Jason
-> > > Gunthorpe's rdma tree which has a number of HMM patches applied.
-> >
-> > Here are some hunks I noticed while testing this:
-> >
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -2201,7 +2201,8 @@ config TEST_MEMINIT
-> >   config TEST_HMM
-> >   	tristate "Test HMM (Heterogeneous Memory Management)"
-> > -	depends on DEVICE_PRIVATE
-> > +	depends on TRANSPARENT_HUGEPAGE
-> > +	select DEVICE_PRIVATE
-> >   	select HMM_MIRROR
-> >   	select MMU_NOTIFIER
-> >   	help
-> >
-> > It fails testing if TRANSPARENT_HUGEPAGE is not on
-> >
-> > @@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
-> >   	spin_lock_init(&mdevice->lock);
-> >   	cdev_init(&mdevice->cdevice, &dmirror_fops);
-> > +	mdevice->cdevice.owner = THIS_MODULE;
-> >   	ret = cdev_add(&mdevice->cdevice, dev, 1);
-> >   	if (ret)
-> >   		return ret;
-> >
-> > The use of cdev without a struct device is super weird, but it still
-> > needs this
-> >
-> > diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-> > index 461e4a99a362cf..0647b525a62564 100755
-> > --- a/tools/testing/selftests/vm/test_hmm.sh
-> > +++ b/tools/testing/selftests/vm/test_hmm.sh
-> > @@ -59,7 +59,7 @@ run_smoke()
-> >   	echo "Running smoke test. Note, this test provides basic coverage."
-> >   	load_driver
-> > -	./hmm-tests
-> > +	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
-> >   	unload_driver
-> >   }
-> >
-> > Make it runnably reliably
-> >
-> > Jason
->
-> Thanks for the fixes. I'll apply these and send a v9.
-> I will also add missing calls to release_mem_region() to free the reserved device private
-> addresses.
+On Mon, 2020-03-30 at 10:20 +0800, Jason Yan wrote:
+> This is a try to implement KASLR for Freescale BookE64 which is based on
+> my earlier implementation for Freescale BookE32:
+> 
+https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=131718&state=*
+> 
+> The implementation for Freescale BookE64 is similar as BookE32. One
+> difference is that Freescale BookE64 set up a TLB mapping of 1G during
+> booting. Another difference is that ppc64 needs the kernel to be
+> 64K-aligned. So we can randomize the kernel in this 1G mapping and make
+> it 64K-aligned. This can save some code to creat another TLB map at
+> early boot. The disadvantage is that we only have about 1G/64K = 16384
+> slots to put the kernel in.
+> 
+>     KERNELBASE
+> 
+>           64K                     |--> kernel <--|
+>            |                      |              |
+>         +--+--+--+    +--+--+--+--+--+--+--+--+--+    +--+--+
+>         |  |  |  |....|  |  |  |  |  |  |  |  |  |....|  |  |
+>         +--+--+--+    +--+--+--+--+--+--+--+--+--+    +--+--+
+>         |                         |                        1G
+>         |----->   offset    <-----|
+> 
+>                               kernstart_virt_addr
+> 
+> I'm not sure if the slot numbers is enough or the design has any
+> defects. If you have some better ideas, I would be happy to hear that.
+> 
+> Thank you all.
+> 
+> v4->v5:
+>   Fix "-Werror=maybe-uninitialized" compile error.
+>   Fix typo "similar as" -> "similar to".
+> v3->v4:
+>   Do not define __kaslr_offset as a fixed symbol. Reference __run_at_load
+> and
+>     __kaslr_offset by symbol instead of magic offsets.
+>   Use IS_ENABLED(CONFIG_PPC32) instead of #ifdef CONFIG_PPC32.
+>   Change kaslr-booke32 to kaslr-booke in index.rst
+>   Switch some instructions to 64-bit.
+> v2->v3:
+>   Fix build error when KASLR is disabled.
+> v1->v2:
+>   Add __kaslr_offset for the secondary cpu boot up.
+> 
+> Jason Yan (6):
+>   powerpc/fsl_booke/kaslr: refactor kaslr_legal_offset() and
+>     kaslr_early_init()
+>   powerpc/fsl_booke/64: introduce reloc_kernel_entry() helper
+>   powerpc/fsl_booke/64: implement KASLR for fsl_booke64
+>   powerpc/fsl_booke/64: do not clear the BSS for the second pass
+>   powerpc/fsl_booke/64: clear the original kernel if randomized
+>   powerpc/fsl_booke/kaslr: rename kaslr-booke32.rst to kaslr-booke.rst
+>     and add 64bit part
+> 
+>  Documentation/powerpc/index.rst               |  2 +-
+>  .../{kaslr-booke32.rst => kaslr-booke.rst}    | 35 ++++++-
+>  arch/powerpc/Kconfig                          |  2 +-
+>  arch/powerpc/kernel/exceptions-64e.S          | 23 +++++
+>  arch/powerpc/kernel/head_64.S                 | 13 +++
+>  arch/powerpc/kernel/setup_64.c                |  3 +
+>  arch/powerpc/mm/mmu_decl.h                    | 23 +++--
+>  arch/powerpc/mm/nohash/kaslr_booke.c          | 91 +++++++++++++------
+>  8 files changed, 147 insertions(+), 45 deletions(-)
+>  rename Documentation/powerpc/{kaslr-booke32.rst => kaslr-booke.rst} (59%)
+> 
 
-If you decide to ignore my request to avoid addition of special header
-file to UAPI, at least don't copy and install that file without some
-special CONFIG option (TEST_HMM ???) requested by the users. It also
-will be good to get Acked-by on this change from HMM people.
+Acked-by: Scott Wood <oss@buserror.net>
 
-However, I still think that include/uapi/linux/test_hmm.h opens
-pandora box of having UAPI files without real promise to keep it
-backward compatible.
+-Scott
 
-Thanks
 
->
