@@ -2,233 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388A21AB177
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15EC1AB187
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 21:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506466AbgDOTSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 15:18:25 -0400
-Received: from mga07.intel.com ([134.134.136.100]:7923 "EHLO mga07.intel.com"
+        id S2404232AbgDOTVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 15:21:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:32108 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438103AbgDOTSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:18:04 -0400
-IronPort-SDR: a1P065WqdNqs/eX3NiZKAqqULT0LqoQt35JQxDTV/kBhZysAiO6ImUpvhqvmznwIytwbxaR7B+
- xhWJiJEHLSzg==
+        id S2506488AbgDOTVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:21:12 -0400
+IronPort-SDR: NPd6gfBajyvyHr7RyOBS3A6EK29v6qBNXabp9CQcdvxcamcfgSi5tDQ/cXRLF6pEnp/ZWjPhYh
+ oZSAHaHsyTdA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:18:03 -0700
-IronPort-SDR: SEHqItrkjZXOQP0jipLmEroMtPCrnvseS05ClLvhsLuO2XMAAd+N4nafCDISRgbQ9E0V6Qq+0P
- yQHvJHunYdgw==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:21:10 -0700
+IronPort-SDR: N///KnG0ylC98jG1+jptn3y3oYTzEBzWF1y1Rr80K1+fJ5GuXL1I722wgIOELCAeAVvNXRBJT8
+ KwGRnHjw3S4Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="455009326"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 12:18:02 -0700
-Date:   Wed, 15 Apr 2020 12:18:02 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: Re: [PATCH v8 4/4] kvm: vmx: virtualize split lock detection
-Message-ID: <20200415191802.GE30627@linux.intel.com>
-References: <20200414063129.133630-5-xiaoyao.li@intel.com>
- <871rooodad.fsf@nanos.tec.linutronix.de>
+   d="scan'208";a="455010042"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 12:21:10 -0700
+Date:   Wed, 15 Apr 2020 12:21:10 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/8] fs/ext4: Disallow verity if inode is DAX
+Message-ID: <20200415192110.GB2305801@iweiny-DESK2.sc.intel.com>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-3-ira.weiny@intel.com>
+ <20200415120002.GE6126@quack2.suse.cz>
+ <20200415155525.GI90651@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871rooodad.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200415155525.GI90651@mit.edu>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 07:43:22PM +0200, Thomas Gleixner wrote:
-> Xiaoyao Li <xiaoyao.li@intel.com> writes:
-> > +/*
-> > + * Note: for guest, feature split lock detection can only be enumerated through
-> > + * MSR_IA32_CORE_CAPABILITIES bit. The FMS enumeration is unsupported.
-> 
-> That comment is confusing at best.
-> 
-> > + */
-> > +static inline bool guest_cpu_has_feature_sld(struct kvm_vcpu *vcpu)
-> > +{
-> > +	return vcpu->arch.core_capabilities &
-> > +	       MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT;
-> > +}
-> > +
-> > +static inline bool guest_cpu_sld_on(struct vcpu_vmx *vmx)
-> > +{
-> > +	return vmx->msr_test_ctrl & MSR_TEST_CTRL_SPLIT_LOCK_DETECT;
-> > +}
-> > +
-> > +static inline void vmx_update_sld(struct kvm_vcpu *vcpu, bool on)
-> > +{
-> > +	/*
-> > +	 * Toggle SLD if the guest wants it enabled but its been disabled for
-> > +	 * the userspace VMM, and vice versa.  Note, TIF_SLD is true if SLD has
-> > +	 * been turned off.  Yes, it's a terrible name.
-> 
-> Instead of writing that useless blurb you could have written a patch
-> which changes TIF_SLD to TIF_SLD_OFF to make it clear.
-
-Hah, that's my comment, though I must admit I didn't fully intend for the
-editorial at the end to get submitted upstream.
-
-Anyways, I _did_ point out that TIF_SLD is a terrible name[1][2], and my
-feedback got ignored/overlooked.  I'd be more than happy to write a patch,
-I didn't do so because I assumed that people wanted TIF_SLD as the name for
-whatever reason.
-
-[1] https://lkml.kernel.org/r/20191122184457.GA31235@linux.intel.com
-[2] https://lkml.kernel.org/r/20200115225724.GA18268@linux.intel.com
-
-> > +	 */
-> > +	if (sld_state == sld_warn && guest_cpu_has_feature_sld(vcpu) &&
-> > +	    on == test_thread_flag(TIF_SLD)) {
-> > +		    sld_update_msr(on);
-> > +		    update_thread_flag(TIF_SLD, !on);
-> 
-> Of course you completely fail to explain why TIF_SLD needs to be fiddled
-> with.
-
-Ya, that comment should be something like:
-
-	* Toggle SLD if the guest wants it enabled but its been disabled for
-	* the userspace VMM, and vice versa, so that the flag and MSR state
-	* are consistent, i.e. its handling during task switches naturally does
-	* the right thing if KVM is preempted with guest state loaded.
-
-> > @@ -1188,6 +1217,10 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
-> >  #endif
-> >
-> > 	vmx_set_host_fs_gs(host_state, fs_sel, gs_sel, fs_base, gs_base);
-> > +
-> > +	vmx->host_sld_on = !test_thread_flag(TIF_SLD);
-> 
-> This inverted storage is non-intuitive. What's wrong with simply
-> reflecting the TIF_SLD state?
-
-So that the guest/host tracking use the same polairy, and IMO it makes
-the restoration code more intuitive, e.g.:
-
-	vmx_update_sld(&vmx->vcpu, vmx->host_sld_on);
-vs
-	vmx_update_sld(&vmx->vcpu, !vmx->host_tif_sld);
-
-I.e. the inversion needs to happen somewhere.
-
-> > +	vmx_update_sld(vcpu, guest_cpu_sld_on(vmx));
-> > +
-> >	vmx->guest_state_loaded = true;
-> > }
-> >
-> > @@ -1226,6 +1259,9 @@ static void vmx_prepare_switch_to_host(struct vcpu_vmx *vmx)
-> > 	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_host_kernel_gs_base);
-> >  #endif
-> > 	load_fixmap_gdt(raw_smp_processor_id());
-> > +
-> > +	vmx_update_sld(&vmx->vcpu, vmx->host_sld_on);
-> > +
-> 
-> vmx_prepare_switch_to_guest() is called via:
-> 
-> kvm_arch_vcpu_ioctl_run()
->   vcpu_run()
->     vcpu_enter_guest()
->       preempt_disable();
->       kvm_x86_ops.prepare_guest_switch(vcpu);
-> 
-> but vmx_prepare_switch_to_host() is invoked at the very end of:
-> 
-> kvm_arch_vcpu_ioctl_run()
->   .....
->   vcpu_run()
->   .....
->   vcpu_put()
->     vmx_vcpu_put()
->       vmx_prepare_switch_to_host();
-> 
-> That asymmetry does not make any sense without an explanation.
-
-Deferring the "switch to host" until the vCPU is put allows KVM to keep
-certain guest state loaded when staying in the vCPU run loop, e.g.
-MSR_KERNEL_GS_BASE can be exposed to the guest without having to save and
-restore it on every VM-Enter/VM-Exit.
-
-I agree that all of KVM's state save/load trickerly lacks documentation,
-I'll put that on my todo list.
- 
-> What's even worse is that vmx_prepare_switch_to_host() is invoked with
-> preemption enabled, so MSR state and TIF_SLD state can get out of sync
-> on preemption/migration.
-
-It shouldn't be (called with preempation enabled):
-
-void vcpu_put(struct kvm_vcpu *vcpu)
-{
-	preempt_disable();
-	kvm_arch_vcpu_put(vcpu); <-- leads to vmx_prepare_switch_to_host()
-	preempt_notifier_unregister(&vcpu->preempt_notifier);
-	__this_cpu_write(kvm_running_vcpu, NULL);
-	preempt_enable();
-}
-
-> > @@ -1946,9 +1992,15 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+On Wed, Apr 15, 2020 at 11:55:25AM -0400, Theodore Y. Ts'o wrote:
+> On Wed, Apr 15, 2020 at 02:00:02PM +0200, Jan Kara wrote:
+> > On Mon 13-04-20 21:00:24, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > Verity and DAX are incompatible.  Changing the DAX mode due to a verity
+> > > flag change is wrong without a corresponding address_space_operations
+> > > update.
+> > > 
+> > > Make the 2 options mutually exclusive by returning an error if DAX was
+> > > set first.
+> > > 
+> > > (Setting DAX is already disabled if Verity is set first.)
+> > > 
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > ---
+> > >  fs/ext4/verity.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+> > > index dc5ec724d889..ce3f9a198d3b 100644
+> > > --- a/fs/ext4/verity.c
+> > > +++ b/fs/ext4/verity.c
+> > > @@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
+> > >  	handle_t *handle;
+> > >  	int err;
+> > >  
+> > > +	if (WARN_ON_ONCE(IS_DAX(inode)))
+> > > +		return -EINVAL;
+> > > +
 > > 
-> > 	switch (msr_index) {
-> > 	case MSR_TEST_CTRL:
-> > -		if (data)
-> > +		if (data & ~vmx_msr_test_ctrl_valid_bits(vcpu))
-> > 			return 1;
-> > 
-> > +		vmx->msr_test_ctrl = data;
-> > +
-> > +		preempt_disable();
+> > Hum, one question, is there a reason for WARN_ON_ONCE()? If I understand
+> > correctly, user could normally trigger this, couldn't he?
 > 
-> This preempt_disable/enable() lacks explanation as well.
+> Tes, the WARN_ON_ONCE isn't appropriate here.  We should also disallow
+> setting the DAX flag if the inode has the verity flag set already.
 
-Is an explanation still needed if it's made clear (somewhere) that
-interacting with guest_state_loaded needs to be done with preemption
-disabled?
- 
-> > +		if (vmx->guest_state_loaded)
-> > +			vmx_update_sld(vcpu, guest_cpu_sld_on(vmx));
-> > +		preempt_enable();
+This is taken care of and is part of ext4_enable_dax() after this series.
+
 > 
-> How is updating msr_test_ctrl valid if this is invoked from the IOCTL,
-> i.e. host_initiated == true?
+> And if we need to decide what to if the file system is mounted with
+> "-o dax=always" and the verity file system feature is enabled.  We
+> could either (a) reject the mount with if the mount option is given
+> and the file system can have verity files, or (b) make "-o dax=always"
+> mean "-o dax=mostly_always" and treat verity files as not using dax
+> even when dax=always is selected.
 
-Not sure I understand the underlying question.  The host is always allowed
-to manipulate guest state, including MSRs.
+The later is implemented in this series...  Not the most explicit thing.  :-(
 
-I'm pretty sure guest_state_loaded should always be false if host_initiated
-is true, e.g. we could technically do a WARN on guest_state_loaded and
-host_initiated, but the ioctl() is obviously not a hot path and nothing
-will break if the assumption doesn't hold.
+> 
+> Also, in theory, we *could* support dax and verity files, but
+> verifying the crypto checksums of all of the pages when the file is
+> first accessed, and then marking that in a flag in the in-inode flag.
+> Or we could have a per-page flag stored somewhere that indicates that
+> the page has been verified, so that we can on-demand verify the
+> integrity of the page.  Given that verity files are read-only, the
+> main reason why someone might want to use dax && verity would be to
+> reduce page cache overhead of system files; if executing out of dax
+> pages doesn't have significant performance impacts, this might be
+> something which might be a nice-to-have.  I don't think we need to
+> worry about this for now; if there are use cases where mobile devices
+> want to use dax && verity, we can let them figure out how to make it
+> work.  I'm just pointing out that it's not really a completely insane
+> combination.
 
-> That said, I also hate the fact that you export both the low level MSR
-> function _and_ the state variable. Having all these details including the
-> TIF mangling in the VMX code is just wrong.
+Fair enough.  The main issue I need to correct here is to keep the 2 mutually
+exclusive.  Which AFAICT is not true today.  This makes it so even without the
+per-file enablement.
 
-I'm not a fan of exporting the low level state either, but IIRC trying to
-hide the low level details while achieving the same resulting functionality
-was even messier.
+Ira
 
-I don't see any way to avoid having KVM differentiate between sld_warn and
-sld_fatal.  Even if KVM is able to virtualize SLD in sld_fatal mode, e.g.
-by telling the guest it must not try to disable SLD, KVM would still need
-to know the kernel is sld_fatal so that it can forward that information to
-the guest.
-
-It'd be possible to avoid mucking with TIF or exporting the MSR helper, but
-that would require KVM to manually save/restore the MSR when KVM is
-preempted with guest state loaded.  That probably wouldn't actually affect
-performance for most use cases, but IMO it's not worth the extra headache
-just to avoid exporting a helper.
+> 
+> Cheers,
+> 
+> 						- Ted
