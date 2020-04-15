@@ -2,142 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB231A90C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220141A90CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 04:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392877AbgDOCMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 22:12:34 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:11703 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392857AbgDOCM2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 22:12:28 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75e966d7c257-5d4cd; Wed, 15 Apr 2020 10:12:12 +0800 (CST)
-X-RM-TRANSID: 2ee75e966d7c257-5d4cd
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95e966d7bbb6-4fa4c;
-        Wed, 15 Apr 2020 10:12:12 +0800 (CST)
-X-RM-TRANSID: 2ee95e966d7bbb6-4fa4c
-Subject: Re: [PATCH 3/3] ipmi:bt-bmc: Fix error handling and status check
-To:     minyard@acm.org
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20200414141423.4968-1-tangbin@cmss.chinamobile.com>
- <20200414201832.GJ3587@minyard.net>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <f5a848ae-d19f-5ab6-7c7d-2d0811fc174b@cmss.chinamobile.com>
-Date:   Wed, 15 Apr 2020 10:14:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2392905AbgDOCPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 22:15:37 -0400
+Received: from ozlabs.org ([203.11.71.1]:44089 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387984AbgDOCP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 22:15:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4925Y71G2Vz9sSM;
+        Wed, 15 Apr 2020 12:15:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1586916925;
+        bh=GwSJW9qwj3VQE9O/y6ASuL4ZsieXgmyfhkDAyg2RkAk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=l+uunWU9SSUUDyiYdZlKPCCnSDV2E5J3t+nlXpnsKaOqU8uR96eiu0o8lnu0j3acO
+         yTZdiqZK3rFr+JzyMjC7cyIIqiP1a2qfiS852NYOqullGpcd++DLU0i9zDoKSNJHqm
+         WQRBi+Zn5UZ5Is/BQtdKx5FTgu6xClM8g0V+Xbch/RXPCDjHxXLs5ncsfyWqxLAj/n
+         NbGbBkNcKNtLI1qtlOwyTkDKU43MPXl4FnZSo2UCwxz4b3P+6cSfdZM6HydKCfyOV7
+         YECSZWMuDvTSHmBMYdT66o7ZeYjXBv9CgMXM94uWekCc2L/gDPZ+BcMMgVIxO0YEqJ
+         4Nj5sWRbbEAjg==
+Date:   Wed, 15 Apr 2020 12:15:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: linux-next: build failures after merge of the sound-asoc tree
+Message-ID: <20200415121521.3e40b591@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20200414201832.GJ3587@minyard.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/uPk4X/ZD9LzKl7nBfW8dLg_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Corey:
+--Sig_/uPk4X/ZD9LzKl7nBfW8dLg_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2020/4/15 4:18, Corey Minyard wrote:
-> On Tue, Apr 14, 2020 at 10:14:24PM +0800, Tang Bin wrote:
->> If the function platform_get_irq() failed, the negative
->> value returned will not be detected here. So fix error
->> handling in bt_bmc_config_irq(). And if devm_request_irq()
->> failed, 'bt_bmc->irq' is assigned to zero maybe redundant,
->> it may be more suitable for using the correct negative values
->> to make the status check in the function bt_bmc_remove().
-> Comments inline..
->
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
->> ---
->>   drivers/char/ipmi/bt-bmc.c | 12 +++++-------
->>   1 file changed, 5 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
->> index 1d4bf5c65..1740c6dc8 100644
->> --- a/drivers/char/ipmi/bt-bmc.c
->> +++ b/drivers/char/ipmi/bt-bmc.c
->> @@ -399,16 +399,14 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
->>   	struct device *dev = &pdev->dev;
->>   	int rc;
->>   
->> -	bt_bmc->irq = platform_get_irq(pdev, 0);
->> -	if (!bt_bmc->irq)
->> -		return -ENODEV;
->> +	bt_bmc->irq = platform_get_irq_optional(pdev, 0);
->> +	if (bt_bmc->irq < 0)
->> +		return bt_bmc->irq;
->>   
-For us, this part of modification have reached a consensus.
->>   	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
->>   			      DEVICE_NAME, bt_bmc);
->> -	if (rc < 0) {
->> -		bt_bmc->irq = 0;
->> +	if (rc < 0)
->>   		return rc;
-> I don't think this part is correct.  You will want to set bt_bmc->irq to
-> rc here to match what is done elsewhere so it's the error if negative.
+Hi all,
 
-Nonono, I don't want to set bt_bmc->irq to rc, I think they are irrelevant.
+After merging the sound-asoc tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-The logic of the previous code will continue to execute even if 
-platform_get_irq() failed,which will be brought devm_request_irq() 
-failed too. "bt_bmc->irq = 0" here is just for bt_bmc_remove() to 
-execute del_timer_sync(). Otherwise the function del_timer_sync() will 
-not execute if not set "bt_bmc->irq" to zero, because it's negative 
-actually.
+sound/soc/intel/boards/skl_hda_dsp_generic.c: In function 'skl_set_hda_code=
+c_autosuspend_delay':
+sound/soc/intel/boards/skl_hda_dsp_generic.c:178:37: error: 'struct snd_soc=
+_pcm_runtime' has no member named 'codec_dai'
+  178 |  struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+      |                                     ^~
+drivers/soundwire/intel.c: In function 'sdw_stream_setup':
+drivers/soundwire/intel.c:672:39: error: 'struct snd_soc_pcm_runtime' has n=
+o member named 'codec_dais'
+  672 |   ret =3D snd_soc_dai_set_sdw_stream(rtd->codec_dais[i], sdw_stream,
+      |                                       ^~
+In file included from include/linux/device.h:15,
+                 from include/linux/acpi.h:15,
+                 from drivers/soundwire/intel.c:8:
+drivers/soundwire/intel.c:676:8: error: 'struct snd_soc_pcm_runtime' has no=
+ member named 'codec_dais'
+  676 |     rtd->codec_dais[i]->name);
+      |        ^~
+include/linux/dev_printk.h:104:32: note: in definition of macro 'dev_err'
+  104 |  _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
+      |                                ^~~~~~~~~~~
 
+Caused by commit
 
->
-> Also, I believe this function should no longer return an error.  It
-> should just set the irq to the error if one happens.  The driver needs
-> to continue to operate even if it can't get its interrupt.
->
-> The rest of the changes are correct, I believe.
->
->
->> -	}
->>   
->>   	/*
->>   	 * Configure IRQs on the bmc clearing the H2B and HBUSY bits;
->> @@ -499,7 +497,7 @@ static int bt_bmc_remove(struct platform_device *pdev)
->>   	struct bt_bmc *bt_bmc = dev_get_drvdata(&pdev->dev);
->>   
->>   	misc_deregister(&bt_bmc->miscdev);
->> -	if (!bt_bmc->irq)
->> +	if (bt_bmc->irq < 0)
->>   		del_timer_sync(&bt_bmc->poll_timer);
->>   	return 0;
->>   }
+  1729025b04b9 ("ASoC: soc-core: remove cpu_dai/codec_dai/cpu_dais/codec_da=
+is")
 
-But now, the logic is: if the platform_get_irq_optional() failed, it 
-returns immediately, the irq at this point is negative,the 
-bt_bmc_probe() continue to operate. But in the function bt_bmc_remove(), 
-we need status check in order to execute del_timer_sync(), so change 
-"!bt_bmc->irq" to "bt_bmc->irq < 0".
+interacting with commit
 
-So, when the judgment of "bt_bmc->irq" in the function bt_bmc_remove() 
-goes back to  the original negative value, the "bt_bmc->irq = 0" in the 
-line 410 become redundant. That's why I remove it.
+  3a24f135e6cc ("ASoC: intel/skl/hda - set autosuspend timeout for hda code=
+cs")
 
+(which should have been fixed up in commit
 
+  df3e71c42f05 ("Merge series "ASoC: Intel: machine drivers update for 5.8"=
+ from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>:")
 
-I am very glad to communicate and discuss with you these days.
+or before like other references)
 
-Thanks,
+and interacting with commit
 
-Tang Bin
+  5e7484d01928 ("soundwire: intel: add sdw_stream_setup helper for .startup=
+ callback")
 
+from Linus' tree.
 
->>
->>
->>
+I have used the sound-asoc tree from next-20200414 for today.
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/uPk4X/ZD9LzKl7nBfW8dLg_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6WbjkACgkQAVBC80lX
+0GxG/wf/R3uNPjiFOwxvKw9s6xEweBqSUlfUsSkZcnja/+3R6Nc6zjmQPdMOx61Y
+1FIA02wEWtuZCfVUdIMODOjPDjGXmhVj+OHS0NKKICmPy4HSx0Fgo3drFFO0mAI0
+7Z7+SaSXwn6/QkDl6wld9qLBWMLfJQlUeq39Ibkq446Ge8hZflYZcGfi+w5d55q8
+MTCKuYIOg0RCSqVj0mLOOA9rbSFcre9La7C49YsId3LBSugL5Ru+KtRFkdPyujGH
+KuE+w1RuPYvKehEEPd8fE4CuFf6c21RZJpXkNTTqqMHIL74uWKFWkSWev4KpKkwN
+G7XkFJB6weMeE9RKQipfT1HzvxZ6Ww==
+=3H2+
+-----END PGP SIGNATURE-----
+
+--Sig_/uPk4X/ZD9LzKl7nBfW8dLg_--
