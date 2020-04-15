@@ -2,60 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246CA1A919C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 05:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BCB1A91AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 05:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389751AbgDODj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 23:39:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24529 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733221AbgDODj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 23:39:56 -0400
-IronPort-SDR: DYSJawISL5ei+DtA3UbmNUP4Vrq+GLpv/p+ShcIwK/aBj/n1g3xcaMK4qAQ1vvjRpP2lgRgGFG
- mdJu44Dy77TQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2020 20:39:55 -0700
-IronPort-SDR: 7JCPDFuG5gkmHoJv5Pr8ofM1Ya93E2671SFEH1yk6PSuA+sedyOqii0YLtp15hDH5IU3V4ckqY
- yHUBabzjYESw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,385,1580803200"; 
-   d="scan'208";a="271607890"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga002.jf.intel.com with ESMTP; 14 Apr 2020 20:39:55 -0700
-Date:   Tue, 14 Apr 2020 20:40:40 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        x86@kernel.org, ebiederm@xmission.com, Babu.Moger@amd.com,
-        bshanks@codeweavers.com, wangkefeng.wang@huawei.com,
-        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] x86/umip: make umip_insns static
-Message-ID: <20200415034040.GA23851@ranerica-svr.sc.intel.com>
-References: <20200413082213.22934-1-yanaijie@huawei.com>
+        id S2390388AbgDODrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 23:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733225AbgDODrc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Apr 2020 23:47:32 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC42C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 20:47:30 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id x11so2058946otp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 20:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2wERzDe7tATVzriZTxnBR4nHZ60TDhiwZrL9xlX9mHs=;
+        b=HDhJ/nf4Up5M9CCU7JjmE304j+3W8NeaC6jtzDoPx6NEYqkP2DIslze8nxUDffVPJp
+         a2foi7GtIijOSXfGrwx9zau7WJ0tiHA3SUfodElxVTj3C3ZL0SB/rNnTo2I0AXsXHjGl
+         wCQo6KqHQl2+K9yelicZTRCQe/lKZwcehZX1NgVI9fsa19F4LVS2bA4WAhP9HF/91LN+
+         UscuIzifN5TQTICFsURIjThyK/y56+Dgg+dmBvC+f2m9QFkdXiZpI8ti7SqbGlv8MgRQ
+         ScEacQiI5/NGZcQLDqj0uL83mqgDVgmTxoK1YmhUnARTEEnA1LVmfvLZIXbJ+iIIuinL
+         lHhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2wERzDe7tATVzriZTxnBR4nHZ60TDhiwZrL9xlX9mHs=;
+        b=lWyOvxpfquFVYNIzv0jh3keB+Np/Ful2uWx3AYIVNUf2LoHIyhWFKjXwWNU4Fho+IX
+         mhd8x9/8IGbmVN1NY/4W+1GTb9NrJpQpa4KcGBauOFPssdSvOMtJik4bouEt5RTNVLN+
+         ZEwkpvJwZlsrUuuQnzrjrqgflNVZD4LBTnRTgmtXv2+FM1b2k2wd7v5/iHBb2iwyii9G
+         A2l3MeZoQXPfYLLt8ciYStx7eiZuqPlwIrKz4Cnl0DYwFzDlRO0pAlqnYT0UGVic76ra
+         3zh7bppf6tpMOyV9tio5SJakgwLM1iZCkSEGfSeaPb2hVZ3nCsBdMUe1GeYA3gJO9ugR
+         cHjQ==
+X-Gm-Message-State: AGi0PuYdeAQUCnKBk74vSLYNd1+PjwC7DIdVyOpk/Q2SE6dlcYY/aH2b
+        CG7YoMA4a6XQ6cpwMu+d9gL1ToTcqV6h9Ig90mvqRA==
+X-Google-Smtp-Source: APiQypLBqkH/k+r0Q+P5XNNT728lPCjEj5EOjBDRWHqwzMc/XrznT4MoI59oI4gyP6knbyxsIiRIqt59dcHKgpsAbFQ=
+X-Received: by 2002:a4a:df05:: with SMTP id i5mr21515417oou.9.1586922450019;
+ Tue, 14 Apr 2020 20:47:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413082213.22934-1-yanaijie@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CALAqxLV4rM74wuzuZ+BkUi+keccxkAxv30N4vrFO7CVQ5vnT1A@mail.gmail.com>
+ <20200415025748.GV17661@paulmck-ThinkPad-P72>
+In-Reply-To: <20200415025748.GV17661@paulmck-ThinkPad-P72>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 14 Apr 2020 20:47:18 -0700
+Message-ID: <CALAqxLVsRboF+ABFttCj-kv6yNoAGLw9BaFkggSiGC+Me08gHQ@mail.gmail.com>
+Subject: Re: On trace_*_rcuidle functions in modules
+To:     paulmck@kernel.org
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>, Stephen Boyd <sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 04:22:13PM +0800, Jason Yan wrote:
-> Fix the following sparse warning:
-> 
-> arch/x86/kernel/umip.c:84:12: warning: symbol 'umip_insns' was not
-> declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+On Tue, Apr 14, 2020 at 7:57 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Tue, Apr 14, 2020 at 07:20:01PM -0700, John Stultz wrote:
+> > Hey folks,
+> >   So recently I was looking at converting some drivers to be loadable
+> > modules instead of built-in only, and one of my patches just landed in
+> > -next and started getting build error reports.
+> >
+> > It ends up, recently in the merge window, the driver I was converting
+> > to module switched a trace_*() function to trace_*_rcuidle() to fix a
+> > bug.  Now when building as a module, if tracing is configured on, it
+> > can't seem to find the trace_*_rcuidle() symbol.
+> >
+> > This is because, as you are aware, we don't declare trace_*_rcuidle
+> > functions in modules - and haven't for quite some time:
+> >   https://lore.kernel.org/lkml/20120905062306.GA14756@leaf/
+> >
+> > I wanted to better understand the background rationale for that patch,
+> > to understand if not exporting the rcu_idle_exit and rcu_idle_enter,
+> > calls was because they weren't used or if it was a more intentional
+> > decision to avoid allowing modules to use them.
+> >
+> > Would it be reasonable to revisit that patch? Or is there some
+> > recommended alternative solution?
+>
+> I will defer to Steven and Josh on the rationale.  (Cowardly of me,
+> I know!)
+>
+> What I do is to maintain a wrapper for tracepoints within a built-in
+> portion of RCU, export the wrapper, and invoke the wrapper from the
+> rcutorture module.  Maybe you can do something similar?
 
-FWIW. This looks good to me.
+That feels a little hackish, but I guess if there isn't a better option...
 
-Acked-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> But why would a module be invoked from the idle loop?  Is the module
+> supplying an idle driver or some such?
 
-Thanks and BR,
-Ricardo
+The driver (qcom rpmh driver) registers a cpu_pm notifier callback,
+which gets called when entering idle.
+
+thanks
+-john
