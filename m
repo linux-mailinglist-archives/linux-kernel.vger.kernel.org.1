@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064801AAF30
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7E21AAF47
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 19:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410775AbgDORLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 13:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42796 "EHLO mail.kernel.org"
+        id S1416501AbgDORNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 13:13:33 -0400
+Received: from muru.com ([72.249.23.125]:49644 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410728AbgDORLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:11:03 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54D9621D91;
-        Wed, 15 Apr 2020 17:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586970662;
-        bh=rL1sdTIZ7lBkSO1ah125Dy4M0JqYkG/FMNf97VUr4BM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PeM4MmgUVVvlo+3JCSacIuehqy9nLyavfhctOG19/GC3JX7hRUE1akwS4VinvmRGA
-         pERvBbQ41Bmfd0mO2xdyt22aVx9v3O5zxIBd2NA61TILoUhSV0NDOiizrhZQGfrCIc
-         v70PO6CXbzY4ynBsLvaRMLZTwqOKQZp34Ei5xWIE=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/19] rcu: Convert rcu_nohz_full_cpu() ULONG_CMP_LT() to time_before()
-Date:   Wed, 15 Apr 2020 10:10:54 -0700
-Message-Id: <20200415171054.9013-19-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
-References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
+        id S1416483AbgDORNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:13:18 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 54633810E;
+        Wed, 15 Apr 2020 17:13:52 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 10:13:00 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        James Hogan <jhogan@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-samsung-soc@vger.kernel.org, letux-kernel@openphoenux.org,
+        Paul Burton <paulburton@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        openpvrsgx-devgroup@letux.org, linux-kernel@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@pyra-handheld.com
+Subject: Re: [PATCH v6 01/12] dt-bindings: add img, pvrsgx.yaml for
+ Imagination GPUs
+Message-ID: <20200415171300.GG37466@atomide.com>
+References: <cover.1586939718.git.hns@goldelico.com>
+ <06fb6569259bb9183d0a0d0fe70ec4f3033b8aab.1586939718.git.hns@goldelico.com>
+ <20200415101251.o3wi5t6xvf56xmhq@gilmour.lan>
+ <72919514-0657-4B71-902F-3E775E528F64@goldelico.com>
+ <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
+ <535CAEBE-F43E-4BFC-B989-612C81F0D7EF@goldelico.com>
+ <20200415142124.yzfh6mtqq7cdq22e@gilmour.lan>
+ <DC0A2DE2-3D77-46F8-8DE1-55050FDACC9B@goldelico.com>
+ <20200415162151.rwym4ioqz27migfn@gilmour.lan>
+ <45F411C0-150B-4FBA-A0E1-B863B3F36DF6@goldelico.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45F411C0-150B-4FBA-A0E1-B863B3F36DF6@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+* H. Nikolaus Schaller <hns@goldelico.com> [200415 16:43]:
+> If you agree I can add the clocks/clock-names property as an
+> optional property. This should solve omap and all others.
 
-This commit converts the ULONG_CMP_LT() in rcu_nohz_full_cpu() to
-time_before() to reflect the fact that it is comparing a timestamp to
-the jiffies counter.
+Yes the clock can be optional property no problem. If we have
+a clock, we just enable/disable it from the pvr_runtime_suspend()
+and pvr_runtime_resume() we alaready have in pvr-drv.c.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 5cd27c2..5771e32 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2537,7 +2537,7 @@ static bool rcu_nohz_full_cpu(void)
- #ifdef CONFIG_NO_HZ_FULL
- 	if (tick_nohz_full_cpu(smp_processor_id()) &&
- 	    (!rcu_gp_in_progress() ||
--	     ULONG_CMP_LT(jiffies, READ_ONCE(rcu_state.gp_start) + HZ)))
-+	     time_before(jiffies, READ_ONCE(rcu_state.gp_start) + HZ)))
- 		return true;
- #endif /* #ifdef CONFIG_NO_HZ_FULL */
- 	return false;
--- 
-2.9.5
-
+Tony
