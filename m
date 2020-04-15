@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2D51AAC0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4D11AAC0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414801AbgDOPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1414790AbgDOPjC (ORCPT
+        id S2409948AbgDOPka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:40:30 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11419 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404421AbgDOPkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:39:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B296C061A0C;
-        Wed, 15 Apr 2020 08:39:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=/ubeyqDgPuZ49K2H989M1CFTSs0zxkITk8SpnN2MOgM=; b=RM65YWgB2FrwDmHMpmXId244x1
-        +bzOybXirLT9VSw15df46nYqfo23glx7t705hV6w6ybWTee9LUfGQqDT1Tpv1XNO3IhWmzKPHXRjD
-        Ztj9DnbQslWR+wZEFVSDaIHekQz0oP8A4FzG8g2IagUWB4WXb0TlzJA9rDJiH6ver+xaamP/e2WfN
-        5ABDq7PaRc5O809U/PhzrwVSp27V90fMScdhrPNrvTHUydhBAM9CjX7Veg2SWK0jvLTjctsiq12oK
-        f6dsHm7B4VE0aDWgs6jYqRTupcobu8xIn2I4fI/oT7M3nUOsw0nOaQjZOCS6x4U3PwcSKZ6Fq4jIh
-        yl549SpQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOk7y-0005WR-6W; Wed, 15 Apr 2020 15:39:02 +0000
-Subject: Re: linux-next: Tree for Apr 15 (MEDIA Kconfig symbols)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20200415152240.2422e06c@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8e4b7065-75c4-8bcf-8ad2-ed21463c494c@infradead.org>
-Date:   Wed, 15 Apr 2020 08:39:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 15 Apr 2020 11:40:18 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e972aa70000>; Wed, 15 Apr 2020 08:39:19 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 15 Apr 2020 08:40:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 08:40:17 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
+ 2020 15:40:10 +0000
+Received: from [10.2.166.97] (172.20.13.39) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
+ 2020 15:40:08 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+CC:     <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv3, RESEND 1/8] khugepaged: Add self test
+Date:   Wed, 15 Apr 2020 11:39:53 -0400
+X-Mailer: MailMate (1.13.1r5682)
+Message-ID: <3DDA6828-36E9-4D1E-8F8A-4FA1D913DE89@nvidia.com>
+In-Reply-To: <20200413125220.663-2-kirill.shutemov@linux.intel.com>
+References: <20200413125220.663-1-kirill.shutemov@linux.intel.com>
+ <20200413125220.663-2-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200415152240.2422e06c@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_42EA8C53-5C07-4713-8AE9-48A2E3CB7B4A_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586965159; bh=kFaLyQy3HyGNKUYm9cHXzrk8jR79gRoU63gv86N+0f4=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=gxbn1VJ4X/sSGjq1LluwCN/cPxc77Y9MsZYSZ31MKV2CtAPdsO2JZkqbT0EzFPxlu
+         H7jjixV40GTeNmOCYtmpJ05IT8kGNqoYhIUDO+CuTehgiP6JUvOOdhmSCUKs0oDh6F
+         cGtawSXDtjX/mj5xCfQ4VSe/Zq65LiupjSqyn/XygYzyyimOB1CL1CSBaDKQvQ+626
+         VuCMwABp2Hts/DPUABCAZ55/SxnOCwHk1De4lsTrkb2k5wyu2hcD6ohlNMCAU9RwQ8
+         FbfLE2er6nN+rrbmWJIhx8zW3gDCj0yZU/KpXracYae9CPVSjE0AzvtPi84nZrVyib
+         +7CHmIU1pqVaw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/20 10:22 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20200414:
-> 
-> My fixes tree contains:
-> 
->   6b038bdcd3d1 sh: mm: Fix build error
-> 
-> The qcom tree gained a build failure for which I reverted a commit.
-> 
-> The drm-misc tree gained conflicts against Linus' and the drm-intel trees.
-> 
-> The sound-asoc tree gained build failures so I used the version from
-> next-20200414.
-> 
-> Non-merge commits (relative to Linus' tree): 1793
->  2505 files changed, 50786 insertions(+), 22669 deletions(-)
-> 
-> ----------------------------------------------------------------------------
-> 
-> I have created today's linux-next tree at
-> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-> are tracking the linux-next tree using git, you should not use "git pull"
-> to do so as that will try to merge the new linux-next release with the
-> old one.  You should use "git fetch" and checkout or reset to the new
-> master.
-> 
-> You can see which trees have been included by looking in the Next/Trees
-> file in the source.  There are also quilt-import.log and merge.log
-> files in the Next directory.  Between each merge, the tree was built
-> with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
-> multi_v7_defconfig for arm and a native build of tools/perf. After
-> the final fixups (if any), I do an x86_64 modules_install followed by
-> builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
-> ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
-> and sparc64 defconfig and htmldocs. And finally, a simple boot test
-> of the powerpc pseries_le_defconfig kernel in qemu (with and without
-> kvm enabled).
-> 
-> Below is a summary of the state of the merge.
-> 
-> I am currently merging 317 trees (counting Linus' and 78 trees of bug
-> fix patches pending for the current merge release).
-> 
-> Stats about the size of the tree over time can be seen at
-> http://neuling.org/linux-next-size.html .
-> 
-> Status of my local build tests will be at
-> http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-> advice about cross compilers/configs that work, we are always open to add
-> more builds.
-> 
-> Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-> Gortmaker for triage and bug fixes.
-> 
+--=_MailMate_42EA8C53-5C07-4713-8AE9-48A2E3CB7B4A_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-on i386 or x86_64:
+On 13 Apr 2020, at 8:52, Kirill A. Shutemov wrote:
 
-WARNING: unmet direct dependencies detected for CEC_NOTIFIER
-  Depends on [n]: MEDIA_SUPPORT [=n]
-  Selected by [y]:
-  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
-  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+> External email: Use caution opening links or attachments
+>
+>
+> The test checks if khugepaged is able to recover huge page where we
+> expect to do so. It only covers anon-THP for now.
+>
+> Currently the test shows few failures. They are going to be addressed b=
+y
+> the following patches.
+>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-WARNING: unmet direct dependencies detected for CEC_CORE
-  Depends on [n]: MEDIA_SUPPORT [=n]
-  Selected by [y]:
-  - DRM_I915 [=y] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y] && CEC_NOTIFIER [=y]
-  - DRM_I2C_NXP_TDA998X [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y] && CEC_NOTIFIER [=y]
-  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
-  - DRM_DW_HDMI [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && CEC_NOTIFIER [=y]
-  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Tested-by: Zi Yan <ziy@nvidia.com>
 
-WARNING: unmet direct dependencies detected for CEC_NOTIFIER
-  Depends on [n]: MEDIA_SUPPORT [=n]
-  Selected by [y]:
-  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
-  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+All tests passed with the whole series applied on v5.6 and Linus=E2=80=99=
+ tree (commit: 8632e9b5).
 
-WARNING: unmet direct dependencies detected for CEC_CORE
-  Depends on [n]: MEDIA_SUPPORT [=n]
-  Selected by [y]:
-  - DRM_I915 [=y] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y] && CEC_NOTIFIER [=y]
-  - DRM_I2C_NXP_TDA998X [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y] && CEC_NOTIFIER [=y]
-  - DRM_I2C_NXP_TDA9950 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_KMS_HELPER [=y] && I2C [=y]
-  - DRM_DW_HDMI [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && CEC_NOTIFIER [=y]
-  - DRM_DW_HDMI_CEC [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && DRM_DW_HDMI [=y]
+Thanks.
 
+=E2=80=94
+Best Regards,
+Yan Zi
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+--=_MailMate_42EA8C53-5C07-4713-8AE9-48A2E3CB7B4A_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl6XKskPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKtT0P/A2tZRfIr1ebKpp9pBs/1YPDLxF2cNTxVMTg
+fFM3uwYhfaooRFXhjXDZClaZWI3zAws7F/yON8rSdOx7ltFEQimQcFYa9OlfrSeO
+/6vSW/3fgpyuudBrtknEIlKYkmj/GgMgxMqLcXWURsdnSI+H1NJLT4bUDWzZTdY7
+Vx3cgFjVg6UcTVlVobKyp2thIwCk4hzXTWCNb38/dETCHOMwRTwIXAEi4HQrR/Ow
+xg476HoqcVmTihSZ+EIy/y19aY64iaNxCm9KrJw14U89jtkW0AbDFUwNiVGr7Hpd
+M2Fv7f12sTMxlLvwCxkhqfh/Xj8p3oa2wGqMRYwtxLchIddu9r5wARDEKIyVpgnJ
+c6FFRWBGfNYKaS1SiQTC5x1dcNJv/TyvRb2efXAXGBMJU6BI74sZJregN3UXz6iF
+whQojxRZ1ozOpAKhVhBD9gT0JhBwV9KH4m/3pbB/bQ+tE2c+OfOwVoBwi4Nt1BNP
+EA56bKtvqBUR0mQv1msfBt7YIp/Vpw0mAcdjDSFVt0YpSPLPwMMKiLFZtL5dCWvR
+6vlw1fcO9k8kSsj8xZLxVYPCUAugjeBUDLK1Sqhra1bvjFG23MOmz6O01WOL8ufr
+vuU0Lb6QMM5PhVlre8/+ZlxDiHheL23SeyvhojedP/aybvoZwdLhNuqwCgkbE7FL
+JjpSuuJO
+=Ew/y
+-----END PGP SIGNATURE-----
+
+--=_MailMate_42EA8C53-5C07-4713-8AE9-48A2E3CB7B4A_=--
