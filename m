@@ -2,286 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FF71A9F06
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900C11A9ECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368398AbgDOMGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409393AbgDOLrs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:47:48 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD99C061A0C;
-        Wed, 15 Apr 2020 04:47:47 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id i3so1379726pgk.1;
-        Wed, 15 Apr 2020 04:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GdlccVqvEfoDxvHoO56bT+qL7Fs8cbKZNv7I5qYxJpo=;
-        b=Zjri4U5bbnxcnCr9oo3j6Ct5z65XWfJc7E7Uuny4h9zIU3R6EO8QrHVUVP34ufXxge
-         fyCZ6jWtxHvL02WKA8exXr72Po2MxJf8OO3DZZSeRq4M7SmzjwRN7zuXJa/jN18kcCtJ
-         1B76ukYKpPj52LRP8wXL3GTBSyFU0SSwczl/MNxWCpC4G2FFHMpUoLAaTlsMsHGpCbNO
-         bGxwbMedW3nn21tO2G2eEu2ukP/ja+N4CEjF71cwbMtMw+XhCrnm2EnijQeUZIAjhJsj
-         eb60vIKZPD1fgcAX8UkKbxbu+Zdg8t+6YecK+oAjls3cOe0bBOVrEHfmi0dAhHKxJLT5
-         HfMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GdlccVqvEfoDxvHoO56bT+qL7Fs8cbKZNv7I5qYxJpo=;
-        b=pZiUyVSVCXnYOcnYNNtqlq4KcKWOtJgkAyE1E2wBzCyVr0HXb+TLpQUSPk/9Q39/OV
-         1sq7V7O7ZAvBB3sHQQLFfxZPgagskn02vJayft7qVfJmpHYkPZuOK9DJBc/iDS1U+NGi
-         FkNL8u90SZWurzYUpoKp3q2xNEM+SaTzcSO369uqZG3HWyF7+ywYZC1hGBVi86SuqjMD
-         4TuCEQkAI5qSKx4rlXTgTwri3fOYGlJ3wT4rAFcySi1QTRuJYd+O6KPCPG/KyL9K6y5O
-         APn61Xqq8DkXgb06lJAloqDiZZauDcxDvW1frRrrCmG8yjK2b085bn6VH2tQ4MRG9b1j
-         l8TQ==
-X-Gm-Message-State: AGi0Pub8aY5jiZYp7XeWlojc2TG/Ft0EZr24wqI4Ox1tz96cbReavSJc
-        j/SfPU5vh/bN5AJMp12KeKHJg9zLphrjgIBM2H8=
-X-Google-Smtp-Source: APiQypJDGbJc1gp4F746Bb3HTqtzQemI8dHZMHU/r0nsd//x3v3uGSUQtVoVXvLwQIZYjFUa1tLyRPTumSJ9YrrUNrg=
-X-Received: by 2002:aa7:8192:: with SMTP id g18mr27092058pfi.36.1586951267273;
- Wed, 15 Apr 2020 04:47:47 -0700 (PDT)
+        id S368150AbgDOMBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409419AbgDOLsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:48:06 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2475C2137B;
+        Wed, 15 Apr 2020 11:48:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586951286;
+        bh=QfbcyYDaBWmJRjjiORon6lz8/Yn4d3ZYAl2wpL+C0Is=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lXeCK76ZSBgxTknjGz1yGf2GW5zizX0q5R9fbZo1HtTqrTRn5/VpeYiI/9BdFhM+P
+         1pLV+tUG4yaydIvkS+mDPFOxaYKxE3Z5mm50IhTKhFGR7MDFVLukeY06rzEf0hFPCa
+         CDHLn2rOAMbK77rqcIlQSKvyTCSgepzHlggkOaK8=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 14/21] KVM: s390: vsie: Fix possible race when shadowing region 3 tables
+Date:   Wed, 15 Apr 2020 07:47:41 -0400
+Message-Id: <20200415114748.15713-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200415114748.15713-1-sashal@kernel.org>
+References: <20200415114748.15713-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20200414184930.5576-1-mani@kernel.org> <20200414184930.5576-3-mani@kernel.org>
-In-Reply-To: <20200414184930.5576-3-mani@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 15 Apr 2020 14:47:40 +0300
-Message-ID: <CAHp75Vd6Fd89_WgXN+hFrF5effQ88GX0j5PeFOr9RU0LdxYNfw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 2/3] iio: chemical: Add support for external
- Reset and Wakeup in CCS811
-To:     mani@kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, narcisaanamaria12@gmail.com,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 9:49 PM <mani@kernel.org> wrote:
->
-> From: Manivannan Sadhasivam <mani@kernel.org>
->
-> CCS811 VOC sensor exposes nRESET and nWAKE pins which can be connected
-> to GPIO pins of the host controller. These pins can be used to externally
-> release the device from reset and also to wake it up before any I2C
-> transaction. The initial driver support assumed that the nRESET pin is not
-> connected and the nWAKE pin is tied to ground.
->
-> This commit improves it by adding support for controlling those two pins
-> externally using a host controller. For the case of reset, if the hardware
-> reset is not available, the mechanism to do software reset is also added.
->
-> As a side effect of doing this, the IIO device allocation needs to be
-> slightly moved to top of probe to make use of priv data early.
->
+From: David Hildenbrand <david@redhat.com>
 
-LGTM,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+[ Upstream commit 1493e0f944f3c319d11e067c185c904d01c17ae5 ]
 
-> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
-> ---
->  drivers/iio/chemical/ccs811.c | 105 ++++++++++++++++++++++++++++++----
->  1 file changed, 94 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/iio/chemical/ccs811.c b/drivers/iio/chemical/ccs811.c
-> index 2ebdfc35bcda..1500e4b0dfbd 100644
-> --- a/drivers/iio/chemical/ccs811.c
-> +++ b/drivers/iio/chemical/ccs811.c
-> @@ -16,6 +16,7 @@
->   */
->
->  #include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/i2c.h>
->  #include <linux/iio/iio.h>
->  #include <linux/iio/buffer.h>
-> @@ -36,6 +37,7 @@
->  #define CCS811_ERR             0xE0
->  /* Used to transition from boot to application mode */
->  #define CCS811_APP_START       0xF4
-> +#define CCS811_SW_RESET                0xFF
->
->  /* Status register flags */
->  #define CCS811_STATUS_ERROR            BIT(0)
-> @@ -74,6 +76,7 @@ struct ccs811_data {
->         struct mutex lock; /* Protect readings */
->         struct ccs811_reading buffer;
->         struct iio_trigger *drdy_trig;
-> +       struct gpio_desc *wakeup_gpio;
->         bool drdy_trig_on;
->  };
->
-> @@ -166,10 +169,25 @@ static int ccs811_setup(struct i2c_client *client)
->                                          CCS811_MODE_IAQ_1SEC);
->  }
->
-> +static void ccs811_set_wakeup(struct ccs811_data *data, bool enable)
-> +{
-> +       if (!data->wakeup_gpio)
-> +               return;
-> +
-> +       gpiod_set_value(data->wakeup_gpio, enable);
-> +
-> +       if (enable)
-> +               usleep_range(50, 60);
-> +       else
-> +               usleep_range(20, 30);
-> +}
-> +
->  static int ccs811_get_measurement(struct ccs811_data *data)
->  {
->         int ret, tries = 11;
->
-> +       ccs811_set_wakeup(data, true);
-> +
->         /* Maximum waiting time: 1s, as measurements are made every second */
->         while (tries-- > 0) {
->                 ret = i2c_smbus_read_byte_data(data->client, CCS811_STATUS);
-> @@ -183,9 +201,12 @@ static int ccs811_get_measurement(struct ccs811_data *data)
->         if (!(ret & CCS811_STATUS_DATA_READY))
->                 return -EIO;
->
-> -       return i2c_smbus_read_i2c_block_data(data->client,
-> +       ret = i2c_smbus_read_i2c_block_data(data->client,
->                                             CCS811_ALG_RESULT_DATA, 8,
->                                             (char *)&data->buffer);
-> +       ccs811_set_wakeup(data, false);
-> +
-> +       return ret;
->  }
->
->  static int ccs811_read_raw(struct iio_dev *indio_dev,
-> @@ -336,6 +357,45 @@ static irqreturn_t ccs811_data_rdy_trigger_poll(int irq, void *private)
->         return IRQ_HANDLED;
->  }
->
-> +static int ccs811_reset(struct i2c_client *client)
-> +{
-> +       struct gpio_desc *reset_gpio;
-> +       int ret;
-> +
-> +       reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-> +                                            GPIOD_OUT_LOW);
-> +       if (IS_ERR(reset_gpio))
-> +               return PTR_ERR(reset_gpio);
-> +
-> +       /* Try to reset using nRESET pin if available else do SW reset */
-> +       if (reset_gpio) {
-> +               gpiod_set_value(reset_gpio, 1);
-> +               usleep_range(20, 30);
-> +               gpiod_set_value(reset_gpio, 0);
-> +       } else {
-> +               /*
-> +                * As per the datasheet, this sequence of values needs to be
-> +                * written to the SW_RESET register for triggering the soft
-> +                * reset in the device and placing it in boot mode.
-> +                */
-> +               static const u8 reset_seq[] = {
-> +                       0x11, 0xE5, 0x72, 0x8A,
-> +               };
-> +
-> +               ret = i2c_smbus_write_i2c_block_data(client, CCS811_SW_RESET,
-> +                                            sizeof(reset_seq), reset_seq);
-> +               if (ret < 0) {
-> +                       dev_err(&client->dev, "Failed to reset sensor\n");
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       /* tSTART delay required after reset */
-> +       usleep_range(1000, 2000);
-> +
-> +       return 0;
-> +}
-> +
->  static int ccs811_probe(struct i2c_client *client,
->                         const struct i2c_device_id *id)
->  {
-> @@ -348,36 +408,59 @@ static int ccs811_probe(struct i2c_client *client,
->                                      | I2C_FUNC_SMBUS_READ_I2C_BLOCK))
->                 return -EOPNOTSUPP;
->
-> +       indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-> +       if (!indio_dev)
-> +               return -ENOMEM;
-> +
-> +       data = iio_priv(indio_dev);
-> +       i2c_set_clientdata(client, indio_dev);
-> +       data->client = client;
-> +
-> +       data->wakeup_gpio = devm_gpiod_get_optional(&client->dev, "wakeup",
-> +                                                   GPIOD_OUT_HIGH);
-> +       if (IS_ERR(data->wakeup_gpio))
-> +               return PTR_ERR(data->wakeup_gpio);
-> +
-> +       ccs811_set_wakeup(data, true);
-> +
-> +       ret = ccs811_reset(client);
-> +       if (ret) {
-> +               ccs811_set_wakeup(data, false);
-> +               return ret;
-> +       }
-> +
->         /* Check hardware id (should be 0x81 for this family of devices) */
->         ret = i2c_smbus_read_byte_data(client, CCS811_HW_ID);
-> -       if (ret < 0)
-> +       if (ret < 0) {
-> +               ccs811_set_wakeup(data, false);
->                 return ret;
-> +       }
->
->         if (ret != CCS811_HW_ID_VALUE) {
->                 dev_err(&client->dev, "hardware id doesn't match CCS81x\n");
-> +               ccs811_set_wakeup(data, false);
->                 return -ENODEV;
->         }
->
->         ret = i2c_smbus_read_byte_data(client, CCS811_HW_VERSION);
-> -       if (ret < 0)
-> +       if (ret < 0) {
-> +               ccs811_set_wakeup(data, false);
->                 return ret;
-> +       }
->
->         if ((ret & CCS811_HW_VERSION_MASK) != CCS811_HW_VERSION_VALUE) {
->                 dev_err(&client->dev, "no CCS811 sensor\n");
-> +               ccs811_set_wakeup(data, false);
->                 return -ENODEV;
->         }
->
-> -       indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-> -       if (!indio_dev)
-> -               return -ENOMEM;
-> -
->         ret = ccs811_setup(client);
-> -       if (ret < 0)
-> +       if (ret < 0) {
-> +               ccs811_set_wakeup(data, false);
->                 return ret;
-> +       }
->
-> -       data = iio_priv(indio_dev);
-> -       i2c_set_clientdata(client, indio_dev);
-> -       data->client = client;
-> +       ccs811_set_wakeup(data, false);
->
->         mutex_init(&data->lock);
->
-> --
-> 2.17.1
->
+We have to properly retry again by returning -EINVAL immediately in case
+somebody else instantiated the table concurrently. We missed to add the
+goto in this function only. The code now matches the other, similar
+shadowing functions.
 
+We are overwriting an existing region 2 table entry. All allocated pages
+are added to the crst_list to be freed later, so they are not lost
+forever. However, when unshadowing the region 2 table, we wouldn't trigger
+unshadowing of the original shadowed region 3 table that we replaced. It
+would get unshadowed when the original region 3 table is modified. As it's
+not connected to the page table hierarchy anymore, it's not going to get
+used anymore. However, for a limited time, this page table will stick
+around, so it's in some sense a temporary memory leak.
 
+Identified by manual code inspection. I don't think this classifies as
+stable material.
+
+Fixes: 998f637cc4b9 ("s390/mm: avoid races on region/segment/page table shadowing")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200403153050.20569-4-david@redhat.com
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/s390/mm/gmap.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index b6c85b760305d..099db32ed104a 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -1680,6 +1680,7 @@ int gmap_shadow_r3t(struct gmap *sg, unsigned long saddr, unsigned long r3t,
+ 		goto out_free;
+ 	} else if (*table & _REGION_ENTRY_ORIGIN) {
+ 		rc = -EAGAIN;		/* Race with shadow */
++		goto out_free;
+ 	}
+ 	crst_table_init(s_r3t, _REGION3_ENTRY_EMPTY);
+ 	/* mark as invalid as long as the parent table is not protected */
 -- 
-With Best Regards,
-Andy Shevchenko
+2.20.1
+
