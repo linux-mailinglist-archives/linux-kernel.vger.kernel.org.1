@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606541A9F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC391A9F70
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 14:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898095AbgDOMMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 08:12:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441289AbgDOMIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:08:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E6A2FABB2;
-        Wed, 15 Apr 2020 12:08:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9FD9B1E1250; Wed, 15 Apr 2020 14:08:46 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 14:08:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200415120846.GG6126@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-5-ira.weiny@intel.com>
+        id S368602AbgDOMLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 08:11:55 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:41649 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441259AbgDOMIU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 08:08:20 -0400
+X-Originating-IP: 2.224.242.101
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4300420009;
+        Wed, 15 Apr 2020 12:08:10 +0000 (UTC)
+Date:   Wed, 15 Apr 2020 14:11:14 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Luis Oliveira <lolivei@synopsys.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Michael Rodin <mrodin@de.adit-jv.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Todor Tomov <todor.tomov@linaro.org>,
+        Suresh Udipi <sudipi@jp.adit-jv.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.org>
+Subject: Re: [PATCH 1/4] media: ov5647: Add set_fmt and get_fmt calls.
+Message-ID: <20200415121114.2bfe6lqjy57p2xlb@uno.localdomain>
+References: <cover.1586759968.git.roman.kovalivskyi@globallogic.com>
+ <8a4c0d157d26251c9916b32866e6a4a91c023ef9.1586759968.git.roman.kovalivskyi@globallogic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200414040030.1802884-5-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8a4c0d157d26251c9916b32866e6a4a91c023ef9.1586759968.git.roman.kovalivskyi@globallogic.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-04-20 21:00:26, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
-> 
-> Set the flag to be user visible and changeable.  Set the flag to be
-> inherited.  Allow applications to change the flag at any time.
-> 
-> Finally, on regular files, flag the inode to not be cached to facilitate
-> changing S_DAX on the next creation of the inode.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Hello Roman,
+
+On Mon, Apr 13, 2020 at 12:17:44PM +0300, Roman Kovalivskyi wrote:
+> From: Dave Stevenson <dave.stevenson@raspberrypi.org>
+>
+> There's no way to query the subdevice for the supported
+> resolutions. Add set_fmt and get_fmt implementations. Since there's
+> only one format supported set_fmt does nothing and get returns single
+> format.
+>
+> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
+> Signed-off-by: Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
+
+Looks good to me
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+
+Thanks
+  j
+
 > ---
->  fs/ext4/ext4.h  | 13 +++++++++----
->  fs/ext4/ioctl.c | 21 ++++++++++++++++++++-
->  2 files changed, 29 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 61b37a052052..434021fcec88 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -415,13 +415,16 @@ struct flex_groups {
->  #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
->  #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
->  #define EXT4_EOFBLOCKS_FL		0x00400000 /* Blocks allocated beyond EOF */
-> +
-> +#define EXT4_DAX_FL			0x00800000 /* Inode is DAX */
-> +
-
-You seem to be using somewhat older kernel... EXT4_EOFBLOCKS_FL doesn't
-exist anymore (but still it's good to leave it reserved for some time so
-the value you've chosen is OK).
-
-> @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
->  	return error;
+>  drivers/media/i2c/ov5647.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/drivers/media/i2c/ov5647.c b/drivers/media/i2c/ov5647.c
+> index e7d2e5b4ad4b..3e587eb0a30e 100644
+> --- a/drivers/media/i2c/ov5647.c
+> +++ b/drivers/media/i2c/ov5647.c
+> @@ -463,8 +463,30 @@ static int ov5647_enum_mbus_code(struct v4l2_subdev *sd,
+>  	return 0;
 >  }
->  
-> +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
+>
+> +static int ov5647_set_get_fmt(struct v4l2_subdev *sd,
+> +			      struct v4l2_subdev_pad_config *cfg,
+> +			      struct v4l2_subdev_format *format)
 > +{
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
+> +	struct v4l2_mbus_framefmt *fmt = &format->format;
 > +
-> +	if (S_ISDIR(inode->i_mode))
-> +		return;
+> +	if (format->pad != 0)
+> +		return -EINVAL;
 > +
-> +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
-> +		inode->i_state |= I_DONTCACHE;
+> +	/* Only one format is supported, so return that */
+> +	memset(fmt, 0, sizeof(*fmt));
+> +	fmt->code = MEDIA_BUS_FMT_SBGGR8_1X8;
+> +	fmt->colorspace = V4L2_COLORSPACE_SRGB;
+> +	fmt->field = V4L2_FIELD_NONE;
+> +	fmt->width = 640;
+> +	fmt->height = 480;
+> +
+> +	return 0;
 > +}
 > +
-
-You probably want to use the function you've introduced in the XFS series
-here...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  static const struct v4l2_subdev_pad_ops ov5647_subdev_pad_ops = {
+>  	.enum_mbus_code = ov5647_enum_mbus_code,
+> +	.set_fmt =	  ov5647_set_get_fmt,
+> +	.get_fmt =	  ov5647_set_get_fmt,
+>  };
+>
+>  static const struct v4l2_subdev_ops ov5647_subdev_ops = {
+> --
+> 2.17.1
+>
