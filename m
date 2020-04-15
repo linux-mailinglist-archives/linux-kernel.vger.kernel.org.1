@@ -2,113 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515171AAE1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881B21AAE36
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 18:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415893AbgDOQ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 12:27:06 -0400
-Received: from lists.nic.cz ([217.31.204.67]:41208 "EHLO mail.nic.cz"
+        id S1415964AbgDOQ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 12:28:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:47706 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415815AbgDOQ0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 12:26:15 -0400
-Received: from localhost (unknown [172.20.6.135])
-        by mail.nic.cz (Postfix) with ESMTPSA id CF1AC141613;
-        Wed, 15 Apr 2020 18:26:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1586967972; bh=OUmASI7k6fLdfyHcQ3klpVwKDiKIAMSXlml+xBJkTd8=;
-        h=Date:From:To;
-        b=CZz2qeZ4NSnc9TF0Qgb/Y/2SyC0PungwiOja4a1nvcLYkOl4QUImTHWIjWIV5xHP2
-         xYPOC5gI/s6dMfaAc3GKtB9SyYM70gHlsl7zz22PcKy7k+u8jWdcWhi7UBFf3Mospu
-         /HqhSV6O8aogx8SwkaF44LA6XTk3CrzTbSA/RF+o=
-Date:   Wed, 15 Apr 2020 18:26:11 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH pinctrl REGRESSION] Revert "pinctrl: mvebu: armada-37xx:
- use use platform api"
-Message-ID: <20200415182611.705c96b7@nic.cz>
-In-Reply-To: <20200415095307.dv4bwna32llnuy7e@pali>
-References: <20200324004413.14355-1-marek.behun@nic.cz>
-        <20200324122017.GR3819@lunn.ch>
-        <20200407115230.7dsepjfxwbk53x2v@pali>
-        <20200415095307.dv4bwna32llnuy7e@pali>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1415915AbgDOQ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 12:27:34 -0400
+IronPort-SDR: uW+unV75qdgb2U3L5czKZHvzFBcd+OVz2xdv1KqZvh/+6GDzdW8MNMCQSEhJZcPlI6TZAlltid
+ WwtLZa9AIqqQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:27:32 -0700
+IronPort-SDR: 5eJIAnbaBUkT7vmvZkQM8f4n6QiHLKkUwZB9EHJFNVj+7PpXC3EXfK7UzRjNtMHYpKIkPPTApK
+ LtRhGUpSvepA==
+X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; 
+   d="scan'208";a="256907570"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 09:27:25 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id C6B5D20606; Wed, 15 Apr 2020 19:27:22 +0300 (EEST)
+Date:   Wed, 15 Apr 2020 19:27:22 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: Re: [PATCH v5 2/5] media: i2c: ov5645: Drop reading clock-frequency
+ dt-property
+Message-ID: <20200415162722.GG27762@paasikivi.fi.intel.com>
+References: <1586191361-16598-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1586191361-16598-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200406165108.GA7646@kekkonen.localdomain>
+ <20200406173234.GD16885@pendragon.ideasonboard.com>
+ <20200407062241.GA8883@kekkonen.localdomain>
+ <20200407122106.GD4751@pendragon.ideasonboard.com>
+ <20200407151401.GA5206@paasikivi.fi.intel.com>
+ <20200414205552.GN19819@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.101.4 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414205552.GN19819@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 11:53:07 +0200
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
+Hi Laurent,
 
-> On Tuesday 07 April 2020 13:52:30 Pali Roh=C3=A1r wrote:
-> > On Tuesday 24 March 2020 13:20:17 Andrew Lunn wrote: =20
-> > > On Tue, Mar 24, 2020 at 01:44:13AM +0100, Marek Beh=C3=BAn wrote: =20
-> > > > This reverts commit 06e26b75f5e613b400116fdb7ff6206a681ab271.
-> > > >=20
-> > > > This commit caused a regression on Armada 37xx. The pinctrl driver =
-says
-> > > >   armada-37xx-pinctrl d0013800.pinctrl: invalid or no IRQ
-> > > >   armada-37xx-pinctrl d0018800.pinctrl: invalid or no IRQ
-> > > > and afterwards other drivers cannot use GPIOs by this driver as IRQ=
-s.
-> > > >=20
-> > > > Fixes: 06e26b75f5e6 ("pinctrl: mvebu: armada-37xx: use use platform=
-...")
-> > > > Signed-off-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
-> > > > Cc: Peng Fan <peng.fan@nxp.com>
-> > > > ---
-> > > >  drivers/pinctrl/mvebu/pinctrl-armada-37xx.c | 12 +++---------
-> > > >  1 file changed, 3 insertions(+), 9 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c b/drivers/=
-pinctrl/mvebu/pinctrl-armada-37xx.c
-> > > > index 32f12a388b3c..5f125bd6279d 100644
-> > > > --- a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> > > > +++ b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> > > > @@ -15,6 +15,7 @@
-> > > >  #include <linux/of.h>
-> > > >  #include <linux/of_address.h>
-> > > >  #include <linux/of_device.h>
-> > > > +#include <linux/of_irq.h>
-> > > >  #include <linux/pinctrl/pinconf-generic.h>
-> > > >  #include <linux/pinctrl/pinconf.h>
-> > > >  #include <linux/pinctrl/pinctrl.h>
-> > > > @@ -741,14 +742,7 @@ static int armada_37xx_irqchip_register(struct=
- platform_device *pdev,
-> > > >  		return ret;
-> > > >  	}
-> > > > =20
-> > > > -	nr_irq_parent =3D platform_irq_count(pdev); =20
-> > >=20
-> > > Hi Marek
-> > >=20
-> > > Could you determine the value of nr_irq_parent(). Is it -EPROBE_DEFER=
-? =20
-> >=20
-> > Hello Andrew! I have tested it with 5.6 kernel and return value in
-> > nr_irq_parent is in both cases zero. So it is not -EPROBE_DEFER. And
-> > return value of of_irq_count(np) is 12 for d0013800.pinctrl and 5 for
-> > d0018800.pinctrl. =20
->=20
-> Adding Jason, Gregory and Sebastian into the loop.
->=20
-> Could you please look at this problem? If there is no easy solution,
-> I would suggest to revert problematic commit as pinctrl in current state
-> is broken and unusable.
+On Tue, Apr 14, 2020 at 11:55:52PM +0300, Laurent Pinchart wrote:
+> Hi Sakari,
+> 
+> On Tue, Apr 07, 2020 at 06:14:01PM +0300, Sakari Ailus wrote:
+> > On Tue, Apr 07, 2020 at 03:21:06PM +0300, Laurent Pinchart wrote:
+> > > On Tue, Apr 07, 2020 at 09:22:41AM +0300, Sakari Ailus wrote:
+> > >> On Mon, Apr 06, 2020 at 08:32:34PM +0300, Laurent Pinchart wrote:
+> > >>> On Mon, Apr 06, 2020 at 07:51:08PM +0300, Sakari Ailus wrote:
+> > >>>> On Mon, Apr 06, 2020 at 05:42:38PM +0100, Lad Prabhakar wrote:
+> > >>>>> Modes in the driver are based on xvclk frequency fixed to 24MHz, but where
+> > >>>>> as the OV5645 sensor can support the xvclk frequency ranging from 6MHz to
+> > >>>>> 24MHz. So instead making clock-frequency as dt-property just let the
+> > >>>>> driver enforce the required clock frequency.
+> > >>>> 
+> > >>>> Even if some current systems where the driver is used are using 24 MHz
+> > >>>> clock, that doesn't mean there wouldn't be systems using another frequency
+> > >>>> that the driver does not support right now.
+> > >>>> 
+> > >>>> The driver really should not set the frequency unless it gets it from DT,
+> > >>>> but I think the preferred means is to use assigned-clock-rates instead, and
+> > >>>> not to involve the driver with setting the frequency.
+> > >>>> 
+> > >>>> Otherwise we'll make it impossible to support other frequencies, at least
+> > >>>> without more or less random defaults.
+> > >>> 
+> > >>> We're running in circles here.
+> > >>> 
+> > >>> As the driver only supports 24MHz at the moment, the frequency should be
+> > >>> set by the driver, as it's a driver limitation. We can then work on
+> > >>> supporting additional frequencies, which will require DT to provide a
+> > >>> list of supported frequencies for the system, but that can be done on
+> > >>> top.
+> > >> 
+> > >> I guess it would be possible to use different external clock frequencies on
+> > >> a sensor in a given system but that seems to be a bit far fetched, to the
+> > >> extent I've never seen anyone doing that in practice.
+> > >> 
+> > >> Originally, the driver set the frequency based on the clock-frequency
+> > >> property. If we're removing that but use a fixed frequency instead, then
+> > >> how is that going to work going forward when someone adds support for other
+> > >> frequencies in the driver and has a system requiring that, while there are
+> > >> some other platforms relying on the driver setting a particular frequency?
+> > > 
+> > > The standard property for this is link-frequencies, not clock-frequency.
+> > > Deprecating clock-frequency now paves the way to use the standard
+> > > property later when/if someone implements support for additional
+> > > frequencies.
+> > 
+> > The external clock frequency and link frequency are different indeed, but
+> > they are related. The link frequency has been selected in a way that it is
+> > possible to generate that exact frequency using the chosen external clock
+> > frequency. If you change the external clock frequency, chances are good
+> > there is no PLL configuration to generate that link frequency.
+> 
+> But aren't we supposed to pick the clock frequency based on the link
+> frequency specified in DT ?
 
-Pali, the commit is already reverted in upstream.
+No. In a general case there is no reliable way to come up with an external
+clock frequency based on another, different if related, frequency.
+
+> 
+> In any case, this policy needs to be carefully documented.
+
+I thought after ten or so years this would be already an established
+practice. :-)
+
+I agree it should be documented. We don't seem to have specific
+documentation for camera sensor drivers at the moment. I can submit a
+patch...
+
+> 
+> > >> Although, if you're saying that this driver only needs to work with DT that
+> > >> comes with the kernel and you don't care about DT binary compatibility,
+> > >> this would be fine.
+> > > 
+> > > I believe this series to not break backward compatibility, as the driver
+> > > only works with a 24MHz clock, so I expect all DTs to specify that.
+> > 
+> > What you're still doing here is defining the DT bindings based on the
+> > current driver implementation, not the device properties.
+> 
+> Quite the contrary, the device doesn't require any particular input
+> clock frequency, so we're removing that from DT :-) Specifying the clock
+> frequency in DT is in my opinion a manual workaround for not computing
+> it at runtime based on the desired link frequency, while the link
+> frequency is a property of the system as it specifies the range of link
+> frequencies that are safe to use from an EMC point of view.
+
+The external clock frequency is significantly lower than the link frequency
+(usually), but it still comes out of the SoC (or a PMIC chip). The clock
+signal track on PCB as well as wiring may also be rather long, depending on
+where the camera sensor is --- quite possibly tens of centimetres.
+Therefore I wouldn't categorically rule out possible EMC issues with that
+one either.
+
+The bottom line is: use a known-good, safe frequency.
+
+-- 
+Regards,
+
+Sakari Ailus
