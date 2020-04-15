@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5A81A8F84
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84471A8F83
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 02:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392228AbgDOAGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Apr 2020 20:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
+        id S2392220AbgDOAG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Apr 2020 20:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634556AbgDOAFD (ORCPT
+        with ESMTP id S2634559AbgDOAFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:05:03 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042DEC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:03 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id h11so567633plr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:02 -0700 (PDT)
+        Tue, 14 Apr 2020 20:05:06 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A81C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:04 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u9so189945pfm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Apr 2020 17:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=KR6uSQVGwCyM0LnuYfYFDEMfJVon1ni6IuCovgn4/s0=;
-        b=rqKtzwFZVZWUOiIrgJExufYVXu3Tq6MqN9fZu+ZH2YWZFYDd36z9cKaQb1z64mO7tH
-         MqHd3c/DVdGpEppY6hDK2NUcvYFc9GB0boflgmYFjwRnXpj7C88Raa2vtIKHZltPbaZY
-         Yq4XjmwAMnLhc5OAOpmyCEprZER5wgs9TG0NXMxxpAvZslYPLWReI9hEIrUglD3v33nE
-         uvdcK2H6ZpBcTwk6YibzffwOAU+UcafvBxlbh/n+dtdh5ojeU1wXawqu+7tuuraTSg2r
-         hAMC56p50b97myh5kSGVE5o5KJpXUH8ugjcM1X8zg5XSTobhilOhGVEwO0sF61kP7SMB
-         57ng==
+        bh=ZqTkeiwENaudq21J8vTW1kd2VtXPsvTLGQP3XXO1NHU=;
+        b=S+BkzuaFI/ql7zPm2jJufYxYG9LrRhNZMXcnwMDr7r8jFf1R3XOoh24P7ornVUb67I
+         YnoIPO/xfD8edhC3LLxFzpaTtlRpgEOytqa8xPXxxqKqorQUvfz0wf8ZHtB5uGv0ZYVz
+         qCBlHrTG4aJSE5yGfJsI37wsCiRMfGfxBRT2z9h5kbsqd+JhBFOC8+oF0kRc1t+emm+L
+         msn8bCFxkGC6BDW+UG46VXrTXMQb6xMS6pbTr3Ee0LU4xkK3pHGDVgEBxgmItKzP8slj
+         NK6YH0jTf2gwTzf64e5XUml8dQBx8sF1TInfy1UzMxRODBDmXLPg3IXznuV4qTtR0aKU
+         wt8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=KR6uSQVGwCyM0LnuYfYFDEMfJVon1ni6IuCovgn4/s0=;
-        b=IjhZKlYgBZh/GBkvoJpYNEXQvfF/XZWaVbuzd70CA1ytLybHQunDKuGW70zgOTxbWE
-         Y9+Xca/0+nfzBZ6fMwDMJAmanixdS7C7S+RHRZyDWzh6QVh9RVQlTTKh1CRoejIuJhqj
-         v3w10Y+rpkbq9m4JYzurxNssM7i3Q0VHi1QUgD+tsmmAMaBVTRZc+m3XWKdglUEP/ivD
-         sgQ/OXPHuI+yKPGSqdPEQ3GPI8RnrbUQBb8qC6FF0GMlIe6kX4qvh1Zr3XfxUvaZ1/Yh
-         EqQrED/g2LJEbthgXEg+DYg9Rz+MrFNFHoGqG7mHpZMQXCnH6jIKIVG/L9hwfcgO4VbY
-         UKHA==
-X-Gm-Message-State: AGi0PuZzFTzuAiRjA5/JhHUGWKUOH9R8wuXuTbL8C/QN0Ld8WFk51FHn
-        2+ntp8bfDO5YxL+stAwPXFHf2cxW+Io=
-X-Google-Smtp-Source: APiQypITsrLE30A4dNLnVHx0jF/AXyPl+UHgHDtx9Gu90EvJXODyZih95z0Ar2V67vHkb70mSHKTvg==
-X-Received: by 2002:a17:90a:22e9:: with SMTP id s96mr2911139pjc.46.1586909102385;
-        Tue, 14 Apr 2020 17:05:02 -0700 (PDT)
+        bh=ZqTkeiwENaudq21J8vTW1kd2VtXPsvTLGQP3XXO1NHU=;
+        b=HynWN8NaBqsWngf9MrLoJv3Dk3MKOP9yX2MDUdOxnsZDwbcv5qDPeWxq9yShQZhdrh
+         WOgnueO4eWEwuHm8z7u3f3xbTGlDkX3Gtv7l1xXdSdFKl27EFJROnt/uypEhMFPhNhrE
+         WaUqQ5oOQPGepqNE3rMI9ZcvAjbknCkXHDgTMf4DF34yETpNtstwYLOhHEaDEHCb0Rbo
+         hy9WLpM2uwtQ5VFZeeEu5Rn7ag43O0vZqugSTIBlG9vXboVrPjUl11vIluVuG9FP1PeG
+         gy77axquVshQ3qXF/JgUdOe7HFqWfB95FUDhon/9Nmw6p0MRDIxl+UbXk0I+QARrN0+8
+         XbbA==
+X-Gm-Message-State: AGi0PuYFzQFokzIOu3cqR0PSBxkKpBVN7WglPz8WFQmAAAC3MTZtOK8N
+        OWcdtn1aRuTXlfTHRq6PIvtRcg==
+X-Google-Smtp-Source: APiQypL9+7skSK7zQht9VcXx962nONsEqOmoABTSyGj/fSCQq8rGrYJUyLaBuqdKiaF9VGYSi3ZrQg==
+X-Received: by 2002:a63:ff49:: with SMTP id s9mr5626054pgk.46.1586909103760;
+        Tue, 14 Apr 2020 17:05:03 -0700 (PDT)
 Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id z7sm7286945pfz.216.2020.04.14.17.05.01
+        by smtp.gmail.com with ESMTPSA id d203sm6772412pfd.79.2020.04.14.17.05.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 17:05:01 -0700 (PDT)
+        Tue, 14 Apr 2020 17:05:03 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 17:05:02 -0700 (PDT)
 From:   David Rientjes <rientjes@google.com>
 X-X-Sender: rientjes@chino.kir.corp.google.com
 To:     Christoph Hellwig <hch@lst.de>,
@@ -59,10 +59,10 @@ cc:     Brijesh Singh <brijesh.singh@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org
-Subject: [patch 6/7] x86/mm: unencrypted non-blocking DMA allocations use
- coherent pools
+Subject: [patch 7/7] dma-pool: scale the default DMA coherent pool size with
+ memory capacity
 In-Reply-To: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
-Message-ID: <alpine.DEB.2.22.394.2004141704190.68516@chino.kir.corp.google.com>
+Message-ID: <alpine.DEB.2.22.394.2004141704330.68516@chino.kir.corp.google.com>
 References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
@@ -72,26 +72,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_AMD_MEM_ENCRYPT is enabled and a device requires unencrypted
-DMA, all non-blocking allocations must originate from the atomic DMA
-coherent pools.
+When AMD memory encryption is enabled, some devices may use more than
+256KB/sec from the atomic pools.  It would be more appropriate to scale
+the default size based on memory capacity unless the coherent_pool
+option is used on the kernel command line.
 
-Select CONFIG_DMA_COHERENT_POOL for CONFIG_AMD_MEM_ENCRYPT.
+This provides a slight optimization on initial expansion and is deemed
+appropriate due to the increased reliance on the atomic pools.  Note that
+the default size of 128KB per pool will normally be larger than the
+single coherent pool implementation since there are now up to three
+coherent pools (DMA, DMA32, and kernel).
+
+Note that even prior to this patch, coherent_pool= for sizes larger than
+1 << (PAGE_SHIFT + MAX_ORDER-1) can fail.  With new dynamic expansion
+support, this would be trivially extensible to allow even larger initial
+sizes.
 
 Signed-off-by: David Rientjes <rientjes@google.com>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/dma/pool.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1d6104ea8af0..2bf2222819d3 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1520,6 +1520,7 @@ config X86_CPA_STATISTICS
- config AMD_MEM_ENCRYPT
- 	bool "AMD Secure Memory Encryption (SME) support"
- 	depends on X86_64 && CPU_SUP_AMD
-+	select DMA_COHERENT_POOL
- 	select DYNAMIC_PHYSICAL_MASK
- 	select ARCH_USE_MEMREMAP_PROT
- 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 3e22022c933b..763b687569b0 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -22,8 +22,8 @@ static unsigned long pool_size_dma32;
+ static unsigned long pool_size_kernel;
+ #endif
+ 
+-#define DEFAULT_DMA_COHERENT_POOL_SIZE  SZ_256K
+-static size_t atomic_pool_size = DEFAULT_DMA_COHERENT_POOL_SIZE;
++/* Size can be defined by the coherent_pool command line */
++static size_t atomic_pool_size;
+ 
+ /* Dynamic background expansion when the atomic pool is near capacity */
+ static struct work_struct atomic_pool_work;
+@@ -181,6 +181,16 @@ static int __init dma_atomic_pool_init(void)
+ {
+ 	int ret = 0;
+ 
++	/*
++	 * If coherent_pool was not used on the command line, default the pool
++	 * sizes to 128KB per 1GB of memory, min 128KB, max MAX_ORDER-1.
++	 */
++	if (!atomic_pool_size) {
++		atomic_pool_size = max(totalram_pages() >> PAGE_SHIFT, 1UL) *
++					SZ_128K;
++		atomic_pool_size = min_t(size_t, atomic_pool_size,
++					 1 << (PAGE_SHIFT + MAX_ORDER-1));
++	}
+ 	INIT_WORK(&atomic_pool_work, atomic_pool_work_fn);
+ 
+ 	atomic_pool_kernel = __dma_atomic_pool_init(atomic_pool_size,
