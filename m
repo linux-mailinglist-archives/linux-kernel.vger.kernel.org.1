@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3451A9980
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4861A99A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 11:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895987AbgDOJvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 05:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
+        id S2408445AbgDOJxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 05:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895899AbgDOJt7 (ORCPT
+        by vger.kernel.org with ESMTP id S2895884AbgDOJtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:49:59 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBB5C061A10;
-        Wed, 15 Apr 2020 02:49:58 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOeg8-0005vX-Tx; Wed, 15 Apr 2020 11:49:57 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 958B11C0081;
-        Wed, 15 Apr 2020 11:49:53 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 09:49:53 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce/amd: Do proper cleanup on error paths
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200403161943.1458-2-bp@alien8.de>
-References: <20200403161943.1458-2-bp@alien8.de>
+        Wed, 15 Apr 2020 05:49:53 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DB3C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:49:52 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t14so5116442wrw.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 02:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GKKVZB6d9uj7AM5ifWQ/7HPxejyrFCZAcE0q5IaGck8=;
+        b=imaYsFi9xQ4gjZTtk5imLh3tRJzoLf466PZog1BfzYZPj5664XwHAWgcND95yHzApl
+         ME0lW41tBiJEH5SiUbsF7UpktYy+MQa40KnW30gQlWAHOMi2UL+1CaAVNNyJHQIAXDf4
+         XbToncIkamK0aX4JsZwRTQ7gwgF8LZEmq0smftrW4Ijv8frb2AxYeBWEmgD1sT4/02G8
+         6ZfrIhDZdUhW4bIQJYZpaiqGvYxM1oYK6H0buPPVXsC6LxKgRjsPHweVDg/QT8ND/66W
+         aaiinfLKK9jXuTWHOOT+zMf8SSNnSgAtQ0Jpw8c+FoH7V+ZioEMObTDdPcA7zw0kXoEn
+         6EhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GKKVZB6d9uj7AM5ifWQ/7HPxejyrFCZAcE0q5IaGck8=;
+        b=a00fW6k3o6s0vSCQL+wwFgrz54Pysby7GuEoimIZ7Rs2Ul5MzxQ9nmnJqH+ICmMDZG
+         2WKj4CDanPZ5/UaIy83UoT5HBWQnu/Vz3cvTaoFGMef1lXP6vOSgI/CWnj4eLhxy8oJw
+         5x8iB1LQn35yc17zGk2iuqJXBg1XOveKwn15ZO4CTNkLx3NRnIj66u9QSWNeX4qwm7MY
+         e3Ny+aoxVaLwBh74XhnlwI2qGQjSFnrmHFnZaMivUCIDRNPygX8aJKeXxCvHbBTSoilF
+         Ojy+Q/+pAbGdLTBVuHL1s0NUljKYDlZay9We2Z+6llS1BzjSdGaT6vochwvxhVrF1tLT
+         N0aA==
+X-Gm-Message-State: AGi0PubzIEj8s9th+CMr6VV1Y27SlUPa62vlHe4VcrBiQrPzoWykX2Dh
+        37vZ9/hK8jZMC2Pc7WX0hBjrpA==
+X-Google-Smtp-Source: APiQypJke9uVeGjVaPGK5i9IV5JUW01AEz700Dq1p4629GpCAn0jYGnmmg1HqIeXaWUn+LD8VbWGQA==
+X-Received: by 2002:a5d:4042:: with SMTP id w2mr19615908wrp.195.1586944191413;
+        Wed, 15 Apr 2020 02:49:51 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id w7sm23027209wrr.60.2020.04.15.02.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 02:49:50 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 10:50:52 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     mazziesaccount@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: rohm-bdXXX - switch to use i2c probe_new
+Message-ID: <20200415095052.GI2167633@dell>
+References: <20200326064852.GA23265@localhost.localdomain>
 MIME-Version: 1.0
-Message-ID: <158694419320.28353.3043235024253335642.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200326064852.GA23265@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+On Thu, 26 Mar 2020, Matti Vaittinen wrote:
 
-Commit-ID:     ada018b15ccecbdb95df46db7121516edb906bf6
-Gitweb:        https://git.kernel.org/tip/ada018b15ccecbdb95df46db7121516edb906bf6
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 14 Feb 2020 18:32:43 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 14 Apr 2020 15:31:17 +02:00
+> ROHM BD70528 and BD718x7 drivers do not utilize the I2C id.
+> Do the trivial conversion and make them to use probe_new
+> instead of probe.
 
-x86/mce/amd: Do proper cleanup on error paths
+Not sure I understand the purpose of the patch.
 
-Drop kobject reference counts properly on error in the banks and blocks
-allocation functions.
+The only reason to switch to probe_new is to aid the removal of the
+compulsory I2C tables.  However, neither of these drivers have them.
 
- [ bp: Write commit message. ]
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+>  drivers/mfd/rohm-bd70528.c | 5 ++---
+>  drivers/mfd/rohm-bd718x7.c | 5 ++---
+>  2 files changed, 4 insertions(+), 6 deletions(-)
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200403161943.1458-2-bp@alien8.de
----
- arch/x86/kernel/cpu/mce/amd.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-index 52de616..477cf77 100644
---- a/arch/x86/kernel/cpu/mce/amd.c
-+++ b/arch/x86/kernel/cpu/mce/amd.c
-@@ -1267,13 +1267,12 @@ recurse:
- 	if (b)
- 		kobject_uevent(&b->kobj, KOBJ_ADD);
- 
--	return err;
-+	return 0;
- 
- out_free:
- 	if (b) {
--		kobject_put(&b->kobj);
- 		list_del(&b->miscj);
--		kfree(b);
-+		kobject_put(&b->kobj);
- 	}
- 	return err;
- }
-@@ -1339,6 +1338,7 @@ static int threshold_create_bank(unsigned int cpu, unsigned int bank)
- 		goto out;
- 	}
- 
-+	/* Associate the bank with the per-CPU MCE device */
- 	b->kobj = kobject_create_and_add(name, &dev->kobj);
- 	if (!b->kobj) {
- 		err = -EINVAL;
-@@ -1357,16 +1357,17 @@ static int threshold_create_bank(unsigned int cpu, unsigned int bank)
- 
- 	err = allocate_threshold_blocks(cpu, b, bank, 0, msr_ops.misc(bank));
- 	if (err)
--		goto out_free;
-+		goto out_kobj;
- 
- 	per_cpu(threshold_banks, cpu)[bank] = b;
- 
- 	return 0;
- 
-- out_free:
-+out_kobj:
-+	kobject_put(b->kobj);
-+out_free:
- 	kfree(b);
--
-- out:
-+out:
- 	return err;
- }
- 
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
