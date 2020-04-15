@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BA11A9C24
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2BA1A9C2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 13:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896951AbgDOLZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 07:25:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:29224 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896922AbgDOLZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:25:10 -0400
-IronPort-SDR: eRDIGlJRQjiH0pnsIvDJ4ClQiiMJryjClAV+M7Soj5zQIeTp3mHQu9enQWRAt69CrGNDORa+5h
- MbqPXj46nfKA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 04:25:08 -0700
-IronPort-SDR: 4IyR2ipB0pYdd/yQryNiZ8IGlXDDKJiKdsxRxk1fS4mva48chEQCle75ccSjvdnecp+3ImSfB/
- hLee6EGB5dzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; 
-   d="scan'208";a="363645932"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 Apr 2020 04:25:04 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Apr 2020 14:25:03 +0300
-Date:   Wed, 15 Apr 2020 14:25:03 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, naresh.kamboju@linaro.org,
-        sakari.ailus@linux.intel.com, andy.shevchenko@gmail.com,
-        hdegoede@redhat.com, rafael.j.wysocki@intel.com,
-        linux-kselftest@vger.kernel.org, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        shuah@kernel.org, anders.roxell@linaro.org,
-        lkft-triage@lists.linaro.org, linux@rasmusvillemoes.dk
-Subject: Re: [PATCH v1] kobject: make sure parent is not released before
- children
-Message-ID: <20200415112503.GN2828150@kuha.fi.intel.com>
-References: <20200414204240.186377-1-brendanhiggins@google.com>
- <20200415061154.GA2496263@kroah.com>
- <20200415084653.GM2828150@kuha.fi.intel.com>
- <20200415092115.GA2565850@kroah.com>
+        id S2896971AbgDOL0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 07:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896945AbgDOLZ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:25:27 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34CEC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:25:26 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y24so18527060wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 04:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=apXLkj8/Y6/Je/J3pw9VYIeGtZznbEDSTaodMw9SIP8=;
+        b=CtHkHYlCnlsa+tUc8/F7g7a0/P6u8ejT1ayfSACtu0kpWhs3EFaqXHsG66HdK2TqVO
+         1YepPve4g/tteoWGzn/BId3gVqa0gSrcAXKoX7yewG/1H0vQN4Qe2Pn7YxQ/IdDn6tw3
+         UgUpHRyZ0gelkfNm/V6/st91NhPu8ozpGjQpo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=apXLkj8/Y6/Je/J3pw9VYIeGtZznbEDSTaodMw9SIP8=;
+        b=OVDf7P4YhIVcWJ2BAsxr9fxDfnQW+E7fGbtHd4QdB8u8jRYMKy/9fzfpSKpRKXn3T6
+         5BMCJHWLKtk0hFYC0shufr5qdJxRZH7zXFOaeOVAY5Fq29KvytmdZRx1Nme9+d9jRFg4
+         Xw0Fsu0K6EsDyyoL6HTYIQw6aI88ph53bYaeI9HuTGNNj264S2xferp4Na5f1+2GVcjk
+         AR6vhmXdu5lCG8sN1NPhKGt0fnbWFJfT6os3bTOIWInlOESya5KPUGn6JT0sAqPDH6vH
+         XhEV79i2kIhfWHXApsr6OoQrXDOEEOIfhywJs+A5R5dcod9zoNwPqT/V5+9nw2GmUY7j
+         I55A==
+X-Gm-Message-State: AGi0PuY3Pggs1nEJRt0PPaV+/etL896h4YDT0YRLMkoIGR0cnNZmBIRe
+        oIRJsEfbF4Gn/cMFluYone31oA==
+X-Google-Smtp-Source: APiQypLPhakDBiE4HRC90MnW5/bRC2vpIu2AQD3Xvb6Y3wPK7412N1qq31ytrTaUWKirLB1NJ1AesQ==
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr4706062wmc.124.1586949925687;
+        Wed, 15 Apr 2020 04:25:25 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w3sm4358429wrc.18.2020.04.15.04.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 04:25:25 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 13:25:23 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/rockchip: fix spelling mistake "modifer" ->
+ "modifier"
+Message-ID: <20200415112523.GA3456981@phenom.ffwll.local>
+Mail-Followup-To: Colin King <colin.king@canonical.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200415083420.366279-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415092115.GA2565850@kroah.com>
+In-Reply-To: <20200415083420.366279-1-colin.king@canonical.com>
+X-Operating-System: Linux phenom 5.3.0-3-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 11:21:15AM +0200, Greg KH wrote:
-> On Wed, Apr 15, 2020 at 11:46:53AM +0300, Heikki Krogerus wrote:
-> > Hi Greg,
-> > 
-> > On Wed, Apr 15, 2020 at 08:11:54AM +0200, Greg KH wrote:
-> > > > diff --git a/lib/kobject.c b/lib/kobject.c
-> > > > index 83198cb37d8d..5921e2470b46 100644
-> > > > --- a/lib/kobject.c
-> > > > +++ b/lib/kobject.c
-> > > > @@ -663,6 +663,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
-> > > >   */
-> > > >  static void kobject_cleanup(struct kobject *kobj)
-> > > >  {
-> > > > +	struct kobject *parent = kobj->parent;
-> > > >  	struct kobj_type *t = get_ktype(kobj);
-> > > >  	const char *name = kobj->name;
-> > > >  
-> > > > @@ -680,6 +681,9 @@ static void kobject_cleanup(struct kobject *kobj)
-> > > >  		kobject_uevent(kobj, KOBJ_REMOVE);
-> > > >  	}
-> > > >  
-> > > > +	/* make sure the parent is not released before the (last) child */
-> > > > +	kobject_get(parent);
-> > > > +
-> > > >  	/* remove from sysfs if the caller did not do it */
-> > > >  	if (kobj->state_in_sysfs) {
-> > > >  		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
-> > > > @@ -693,6 +697,8 @@ static void kobject_cleanup(struct kobject *kobj)
-> > > >  		t->release(kobj);
-> > > >  	}
-> > > >  
-> > > > +	kobject_put(parent);
-> > > > +
-> > > 
-> > > No, please don't do this.
-> > > 
-> > > A child device should have always incremented the parent already if it
-> > > was correctly registered.  We have had this patch been proposed multiple
-> > > times over the years, and every time it was, we said no and went and
-> > > fixed the real issue which was with the user of the interface.
-> > 
-> > The parent ref count is incremented by the child, that is not the
-> > problem. The problem is that when that child is released, if it's the
-> > last child of the parent, and there are no other users for the parent,
-> > then the parent is actually released _before_ the child. And that
-> > happens in the above function kobject_cleanup().
-> > 
-> > We can work around the problem by taking a reference to the parent
-> > separately, but we have to do that everywhere separately (which I
-> > guess is exactly what has been done so far). That workaroud still does
-> > not really fix the core problem. The core problem is still that
-> > lib/kboject.c is allowing the parent kobject to be released before the
-> > child kobject, and that quite simply should not be allowed to happen.
-> > 
-> > I don't have a problem if you want to have a better solution for this,
-> > but the solution really can't anymore be that we are always expected
-> > to separately increment the parent's ref count with every type of
-> > kobject.
+On Wed, Apr 15, 2020 at 09:34:20AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Why is this suddenly showing up as a issue and it hasn't ever before?
-> Because of that I would argue that the problem is not in the kobject
-> core, but the use of it.
-
-The problem has showed up before, and you pointed that out yourself in
-your previous mail.
-
-The thing is that we are going to continue to have this issue over and
-over again until the core issue is fixed.
-
-> When a child object is created, it should have already incremented the
-> parent reference count before it is registered, to ensure that the
-> parent does not go away before the child is finished being registered.
-> Then, when the child is removed, it decrements the reference count of
-> the parent as it "knows" it is done with that pointer.
-
-Please note that when you add a kobject, its parent ref count gets
-incremented (line 240 in lib/kobject.c). Are you saying here that that
-is actually not necessary, as the code that registers the new (child)
-kobject should _always_ be responsible of holding a reference to the
-parent? Because if that is the case, then we should actually cleanup
-lib/kboject.c and remove all parent reference handling. We obviously
-need to fix the documentation as well in this case.
-
-> So perhaps this new swnode code is just wrong?  Dealing with "raw"
-> kobjects is hard, and not generally recommended due to issues like this.
-> When you use the driver core, all of this logic is already handled for
-> you...
+> There is a spelling mistake in a DRM_DEBUG_KMS debug message. Fix it.
 > 
-> And I just looked at the code swnode_register() needs to increment the
-> parent kobject's reference, as it is saving a pointer to it away to be
-> used later.  That's just basic reference-counted-pointer logic here,
-> please fix the issue there.
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-That is fair, however, it still does not fix the core problem.
+Queued for 5.8, thanks for your patch.
+-Daniel
 
-Even if we did not need to save the pointer to the parent, we would
-still need to increment the parents reference count, because we have
-to prevent the parent from being released before us.
-
-There are two ways we can fix the situation:
-
-1) We can make it clear that lib/kboject.c does not take any
-   responsibility over the reference counting of the parents, and
-   remove all the parent reference handling from it.
-
-2) We fix this by guaranteeing that the parent kboject can not be
-   released before its children.
-
-thanks,
+> ---
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> index b87d22eb6ae1..33463b79a37b 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> @@ -769,7 +769,7 @@ static bool rockchip_mod_supported(struct drm_plane *plane,
+>  		return true;
+>  
+>  	if (!rockchip_afbc(modifier)) {
+> -		DRM_DEBUG_KMS("Unsupported format modifer 0x%llx\n", modifier);
+> +		DRM_DEBUG_KMS("Unsupported format modifier 0x%llx\n", modifier);
+>  
+>  		return false;
+>  	}
+> -- 
+> 2.25.1
+> 
 
 -- 
-heikki
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
