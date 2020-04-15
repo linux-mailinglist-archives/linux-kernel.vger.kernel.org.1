@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4361AAC70
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E621AAC8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Apr 2020 17:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410008AbgDOP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 11:57:21 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:54391 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404288AbgDOP5N (ORCPT
+        id S1415011AbgDOP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 11:58:55 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:39533 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2410029AbgDOP6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 11:57:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586966231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sWwTwNA7+phf5J6ocjP6MH/fyRWY0vqsvDmTIUNVg/c=;
-        b=N/YfUCBixnViJpfJf0EmRV51xFGlDjHe1LV6xMoSA1u4nYZC4VniHm3DSoHCUs7qiMgswP
-        DOFdUNpCabbXRCEHPWZ1xfwrsogSus2WeYgQxRJUn8rAJhyD38oJujj6M9m8uXpjJh4RR5
-        CkZNVT8+7HDZJydwaljGKO7T1xnfn2s=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-IMa1fkHbPIyHXrfns8LVwg-1; Wed, 15 Apr 2020 11:57:10 -0400
-X-MC-Unique: IMa1fkHbPIyHXrfns8LVwg-1
-Received: by mail-wr1-f72.google.com with SMTP id d17so118603wrr.17
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 08:57:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sWwTwNA7+phf5J6ocjP6MH/fyRWY0vqsvDmTIUNVg/c=;
-        b=k8fPjrWqf6niVCH2CX18SZEGTGD51tg9b7u6+7ZR3OBZHU2AhuXs2lmD4WEglCWh0p
-         yKq8DI87F15wUrSiP0yh9/CbLqXfZ023zE0B2bw0y83bm8pnFQjip9A0J07aaiw/C/La
-         ANSXks68cv6DasCcEnHE7I6eJwGrqCV43WmEkMdNpYC/0ujcpALL2WZJuIlkfa5swZLI
-         J56PCEDd97ad/C9dWjl6Da7M8ujLVC5x3BIAUZdTgmJLMmF6CI+vpn5w9d7xCtY7shJd
-         nWkYGSwukqPG4/8rqSX+wPr6Fl3eO2VPHpVt5OM4vN5MjvFVH/ptwqZfV30HGpA0XHaB
-         5TgA==
-X-Gm-Message-State: AGi0PubqF+Fty9FS+HZVV6R6JKZNMtShvcBE5EJ1812EaIsAQCSwL6UU
-        rRZzWqNz/P+cksIbIaNZj/9e65sH/xLIjqnzhKkfh1iD0FOCItfVjTfg8YkIAH93DtRSWZN6rHe
-        Wo3lhOm/0GmOsACWahpjJDjBe
-X-Received: by 2002:a5d:634d:: with SMTP id b13mr19463056wrw.353.1586966228729;
-        Wed, 15 Apr 2020 08:57:08 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIvk74Vbzc+nC3ZUdsH+JbRlmAAljzx/00bcskMqe7C68PkiOj6WX15mXQMgZZa33OZVhwlXw==
-X-Received: by 2002:a5d:634d:: with SMTP id b13mr19463030wrw.353.1586966228418;
-        Wed, 15 Apr 2020 08:57:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9066:4f2:9fbd:f90e? ([2001:b07:6468:f312:9066:4f2:9fbd:f90e])
-        by smtp.gmail.com with ESMTPSA id v21sm12010wmj.8.2020.04.15.08.57.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Apr 2020 08:57:07 -0700 (PDT)
-Subject: Re: [PATCH -next] kvm/svm: disable KCSAN for svm_vcpu_run()
-To:     Qian Cai <cai@lca.pw>, paulmck@kernel.org
-Cc:     elver@google.com, sean.j.christopherson@intel.com,
-        kasan-dev@googlegroups.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200415153709.1559-1-cai@lca.pw>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f02ca9b9-f0a6-dfb5-1ca0-32a12d4f56fb@redhat.com>
-Date:   Wed, 15 Apr 2020 17:57:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 15 Apr 2020 11:58:49 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03FFW5Hf032217;
+        Wed, 15 Apr 2020 17:58:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=25grhCA0X75blAO5Q3+BsOtCodm4ez+TgXpHxUqmcPk=;
+ b=Du3qQOqROvE191kXxbyLKK3rNuybC6dxETaPya+QqpmMu6r1eNoMUNktUHtPCj4kvv/K
+ zdsUFo681t87gK1b+uuyI+3mvYSmMXJ/tyVN0obCbPwi37+TIekKPPv71JfapyPQDukD
+ HKJPYsuyn640CFD2HdYgh0SNME/AiQVOYCMa78MdXGa4TdbXJCD86/pI3FEeo4JJVjAS
+ eK4cibIgeZfgh4E5tB4IOCLC9MU6lC2EBVrSyPcPTzESRHgAdRx8xbHyR7H3QIM3AnC+
+ YisKXfbiJhaGkMIhu0CzyOc1VTAUxcuTc5aDDQuIvXuvjyt6KUg3sJkwfFcWH71idRUF eA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30dn94cxv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 17:58:17 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6C56710003B;
+        Wed, 15 Apr 2020 17:58:13 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 34964212FAB;
+        Wed, 15 Apr 2020 17:58:13 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 15 Apr 2020 17:58:12
+ +0200
+From:   Christophe Kerello <christophe.kerello@st.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <lee.jones@linaro.org>, <robh+dt@kernel.org>,
+        <mark.rutland@arm.com>, <tony@atomide.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <marex@denx.de>,
+        Christophe Kerello <christophe.kerello@st.com>
+Subject: [PATCH v2 00/12] add STM32 FMC2 controller drivers
+Date:   Wed, 15 Apr 2020 17:57:24 +0200
+Message-ID: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200415153709.1559-1-cai@lca.pw>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-15_05:2020-04-14,2020-04-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/20 17:37, Qian Cai wrote:
-> For some reasons, running a simple qemu-kvm command with KCSAN will
-> reset AMD hosts. It turns out svm_vcpu_run() could not be instrumented.
-> Disable it for now.
-> 
->  # /usr/libexec/qemu-kvm -name ubuntu-18.04-server-cloudimg -cpu host
-> 	-smp 2 -m 2G -hda ubuntu-18.04-server-cloudimg.qcow2
-> 
-> === console output ===
-> Kernel 5.6.0-next-20200408+ on an x86_64
-> 
-> hp-dl385g10-05 login:
-> 
-> <...host reset...>
-> 
-> HPE ProLiant System BIOS A40 v1.20 (03/09/2018)
-> (C) Copyright 1982-2018 Hewlett Packard Enterprise Development LP
-> Early system initialization, please wait...
-> 
-> Signed-off-by: Qian Cai <cai@lca.pw>
-> ---
->  arch/x86/kvm/svm/svm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 2be5bbae3a40..1fdb300e9337 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3278,7 +3278,7 @@ static void svm_cancel_injection(struct kvm_vcpu *vcpu)
->  
->  bool __svm_vcpu_run(unsigned long vmcb_pa, unsigned long *regs);
->  
-> -static void svm_vcpu_run(struct kvm_vcpu *vcpu)
-> +static __no_kcsan void svm_vcpu_run(struct kvm_vcpu *vcpu)
->  {
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  
-> 
+The FMC2 functional block makes the interface with: synchronous and
+asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
+peripherals) and NAND flash memories.
+Its main purposes are:
+  - to translate AXI transactions into the appropriate external device
+    protocol
+  - to meet the access time requirements of the external devices
+All external devices share the addresses, data and control signals with the
+controller. Each external device is accessed by means of a unique Chip
+Select. The FMC2 performs only one access at a time to an external device.
 
-I suppose you tested the patch to move cli/sti into the .S file.  Anyway:
+Changes in v2:
+ - use of regmap_bulk_write/regmap_bulk_read APIs
+ - remove ops from stm32_fmc2 structure
+ - add 2 APIs to manage FMC2 enable/disable
+ - add 2 APIs to manage FMC2 NWAIT shared signal
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Christophe Kerello (12):
+  dt-bindings: mfd: stm32-fmc2: add STM32 FMC2 controller documentation
+  mfd: stm32-fmc2: add STM32 FMC2 controller driver
+  bus: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
+  mtd: rawnand: stm32_fmc2: manage all errors cases at probe time
+  mtd: rawnand: stm32_fmc2: remove useless inline comments
+  mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS for timeouts
+  mtd: rawnand: stm32_fmc2: cleanup
+  mtd: rawnand: stm32_fmc2: use FIELD_PREP/FIELD_GET macros
+  mtd: rawnand: stm32_fmc2: move all registers
+  mtd: rawnand: stm32_fmc2: use regmap APIs
+  mtd: rawnand: stm32_fmc2: use stm32_fmc2 structure in nfc controller
+  mtd: rawnand: stm32_fmc2: add new MP1 compatible string
 
-Thanks,
+ .../devicetree/bindings/mfd/st,stm32-fmc2.yaml     |  370 ++++++
+ drivers/bus/Kconfig                                |   11 +
+ drivers/bus/Makefile                               |    1 +
+ drivers/bus/stm32-fmc2-ebi.c                       | 1091 +++++++++++++++++
+ drivers/mfd/Kconfig                                |   12 +
+ drivers/mfd/Makefile                               |    1 +
+ drivers/mfd/stm32-fmc2.c                           |  136 +++
+ drivers/mtd/nand/raw/Kconfig                       |    3 +
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c             | 1277 +++++++++-----------
+ include/linux/mfd/stm32-fmc2.h                     |  225 ++++
+ 10 files changed, 2413 insertions(+), 714 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
+ create mode 100644 drivers/bus/stm32-fmc2-ebi.c
+ create mode 100644 drivers/mfd/stm32-fmc2.c
+ create mode 100644 include/linux/mfd/stm32-fmc2.h
 
-Paolo
+-- 
+1.9.1
 
