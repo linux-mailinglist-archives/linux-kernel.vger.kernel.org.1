@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CBD1ACACF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0D71AC2B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395442AbgDPPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:39:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50456 "EHLO mail.kernel.org"
+        id S2896495AbgDPNbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:31:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897622AbgDPNiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:04 -0400
+        id S2895759AbgDPN21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:28:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6349920732;
-        Thu, 16 Apr 2020 13:38:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1D0021D82;
+        Thu, 16 Apr 2020 13:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044283;
-        bh=shd0LP0Bg8wGz6s3YwEhALAbANLNDLZwnav84oEtfjo=;
+        s=default; t=1587043705;
+        bh=8g4rtJKK7f7hAR4yH8/t0x0WZTPgRBWJXq9lOexgqK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Loh7J90ST2vRKdND7RrQxWzNwJBj/EyrX14IUl8Y3zMOPykK7M2XsVtb9pcsfJFHq
-         f1cdKBXlCKdnUiOb9DZBdHiPHmK0j3OniEyVWFhX3XA70xI3PFFZn2boEXE2sqyLCU
-         uN07oY2krG/kMqSWyscaSRNebSk+sWg5pJXyDH5c=
+        b=v6fNHGj3tKnKdZWYdG0ypjoilqkysCBi6i3oyDKDk/A/rOm09HLjQpFFlhf1qu5BU
+         r/P4aiKLefKEk6uHbW7ejNDzch8q8JTuqR+z82YleqqnVG8JunQkkqd5PFNd/jI160
+         3sS/BdSGi30DCMTKkszfcAQ+vxnzJ9/fjzFMBncA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.5 154/257] mtd: spinand: Do not erase the block before writing a bad block marker
-Date:   Thu, 16 Apr 2020 15:23:25 +0200
-Message-Id: <20200416131345.831934767@linuxfoundation.org>
+        stable@vger.kernel.org, Yicong Yang <yangyicong@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.19 065/146] PCI/ASPM: Clear the correct bits when enabling L1 substates
+Date:   Thu, 16 Apr 2020 15:23:26 +0200
+Message-Id: <20200416131251.804144228@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-commit b645ad39d56846618704e463b24bb994c9585c7f upstream.
+commit 58a3862a10a317a81097ab0c78aecebabb1704f5 upstream.
 
-Currently when marking a block, we use spinand_erase_op() to erase
-the block before writing the marker to the OOB area. Doing so without
-waiting for the operation to finish can lead to the marking failing
-silently and no bad block marker being written to the flash.
+In pcie_config_aspm_l1ss(), we cleared the wrong bits when enabling ASPM L1
+Substates.  Instead of the L1.x enable bits (PCI_L1SS_CTL1_L1SS_MASK, 0xf), we
+cleared the Link Activation Interrupt Enable bit (PCI_L1SS_CAP_L1_PM_SS,
+0x10).
 
-In fact we don't need to do an erase at all before writing the BBM.
-The ECC is disabled for raw accesses to the OOB data and we don't
-need to work around any issues with chips reporting ECC errors as it
-is known to be the case for raw NAND.
+Clear the L1.x enable bits before writing the new L1.x configuration.
 
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200218100432.32433-4-frieder.schrempf@kontron.de
+[bhelgaas: changelog]
+Fixes: aeda9adebab8 ("PCI/ASPM: Configure L1 substate settings")
+Link: https://lore.kernel.org/r/1584093227-1292-1-git-send-email-yangyicong@hisilicon.com
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+CC: stable@vger.kernel.org	# v4.11+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/spi/core.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/pci/pcie/aspm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -612,7 +612,6 @@ static int spinand_markbad(struct nand_d
- 	};
- 	int ret;
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -747,9 +747,9 @@ static void pcie_config_aspm_l1ss(struct
  
--	/* Erase block before marking it bad. */
- 	ret = spinand_select_target(spinand, pos->target);
- 	if (ret)
- 		return ret;
-@@ -621,8 +620,6 @@ static int spinand_markbad(struct nand_d
- 	if (ret)
- 		return ret;
- 
--	spinand_erase_op(spinand, pos);
--
- 	return spinand_write_page(spinand, &req);
+ 	/* Enable what we need to enable */
+ 	pci_clear_and_set_dword(parent, up_cap_ptr + PCI_L1SS_CTL1,
+-				PCI_L1SS_CAP_L1_PM_SS, val);
++				PCI_L1SS_CTL1_L1SS_MASK, val);
+ 	pci_clear_and_set_dword(child, dw_cap_ptr + PCI_L1SS_CTL1,
+-				PCI_L1SS_CAP_L1_PM_SS, val);
++				PCI_L1SS_CTL1_L1SS_MASK, val);
  }
  
+ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
 
 
