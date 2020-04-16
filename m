@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECD31AC29F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514171AC41A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896294AbgDPNan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
+        id S2898785AbgDPNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895672AbgDPN2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:28:06 -0400
+        id S2897548AbgDPNhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:37:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69F8D21D79;
-        Thu, 16 Apr 2020 13:28:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 104FA20732;
+        Thu, 16 Apr 2020 13:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043685;
-        bh=IO9sfJh1ECQjFYciwaez13SC3S2Brz/c3XRKHxCtHkw=;
+        s=default; t=1587044271;
+        bh=Mnur4y7Z3DG/U51267RRZUuGvk/ACYGL1HqBmKdp/bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yf63naVU7rStPAm4pg+i32vXDf0uJk5xn8/w6cV9PtqVfXrpKaS2WfSh6gJlV8aTQ
-         pSV0wsugDFNK2RTtOTtf+silgFa/wJGhudEUAAsm+kEcwVYw8Qky1RgvtamhDrOcIi
-         OC9PlOH25lZorad76+nH1q95+9aip9zFZCxiWhE0=
+        b=oA6z+5XFKG+YSDOydFVk0B1eYAaTy6Dd5ZWxjYdEBDe8MhNmvV0OGoghc0vCeMrwk
+         bOdSHk2x3e5ktgkgVjaGBIFgiE9o5XHwCkyYH/QM/bszSL8rLKjbZPbbwkeAOKpMy2
+         5BfDbDIWWr5/+kB+JViCx/UlCI9spvJSwLswoRPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 058/146] ALSA: hda/realtek - Add quirk for MSI GL63
-Date:   Thu, 16 Apr 2020 15:23:19 +0200
-Message-Id: <20200416131250.822265021@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.5 149/257] KVM: VMX: Add a trampoline to fix VMREAD error handling
+Date:   Thu, 16 Apr 2020 15:23:20 +0200
+Message-Id: <20200416131345.116862483@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +44,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 1d3aa4a5516d2e4933fe3cca11d3349ef63bc547 upstream.
+commit 842f4be95899df22b5843ba1a7c8cf37e831a6e8 upstream.
 
-MSI GL63 laptop requires the similar quirk like other MSI models,
-ALC1220_FIXUP_CLEVO_P950.  The board BIOS doesn't provide a PCI SSID
-for the device, hence we need to take the codec SSID (1462:1275)
-instead.
+Add a hand coded assembly trampoline to preserve volatile registers
+across vmread_error(), and to handle the calling convention differences
+between 64-bit and 32-bit due to asmlinkage on vmread_error().  Pass
+@field and @fault on the stack when invoking the trampoline to avoid
+clobbering volatile registers in the context of the inline assembly.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207157
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200408135645.21896-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Calling vmread_error() directly from inline assembly is partially broken
+on 64-bit, and completely broken on 32-bit.  On 64-bit, it will clobber
+%rdi and %rsi (used to pass @field and @fault) and any volatile regs
+written by vmread_error().  On 32-bit, asmlinkage means vmread_error()
+expects the parameters to be passed on the stack, not via regs.
+
+Opportunistically zero out the result in the trampoline to save a few
+bytes of code for every VMREAD.  A happy side effect of the trampoline
+is that the inline code footprint is reduced by three bytes on 64-bit
+due to PUSH/POP being more efficent (in terms of opcode bytes) than MOV.
+
+Fixes: 6e2020977e3e6 ("KVM: VMX: Add error handling to VMREAD helper")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200326160712.28803-1-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/vmx/ops.h     |   28 ++++++++++++++++-----
+ arch/x86/kvm/vmx/vmenter.S |   58 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 79 insertions(+), 7 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2441,6 +2441,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
+--- a/arch/x86/kvm/vmx/ops.h
++++ b/arch/x86/kvm/vmx/ops.h
+@@ -12,7 +12,8 @@
+ 
+ #define __ex(x) __kvm_handle_fault_on_reboot(x)
+ 
+-asmlinkage void vmread_error(unsigned long field, bool fault);
++__attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
++							 bool fault);
+ void vmwrite_error(unsigned long field, unsigned long value);
+ void vmclear_error(struct vmcs *vmcs, u64 phys_addr);
+ void vmptrld_error(struct vmcs *vmcs, u64 phys_addr);
+@@ -70,15 +71,28 @@ static __always_inline unsigned long __v
+ 	asm volatile("1: vmread %2, %1\n\t"
+ 		     ".byte 0x3e\n\t" /* branch taken hint */
+ 		     "ja 3f\n\t"
+-		     "mov %2, %%" _ASM_ARG1 "\n\t"
+-		     "xor %%" _ASM_ARG2 ", %%" _ASM_ARG2 "\n\t"
+-		     "2: call vmread_error\n\t"
+-		     "xor %k1, %k1\n\t"
++
++		     /*
++		      * VMREAD failed.  Push '0' for @fault, push the failing
++		      * @field, and bounce through the trampoline to preserve
++		      * volatile registers.
++		      */
++		     "push $0\n\t"
++		     "push %2\n\t"
++		     "2:call vmread_error_trampoline\n\t"
++
++		     /*
++		      * Unwind the stack.  Note, the trampoline zeros out the
++		      * memory for @fault so that the result is '0' on error.
++		      */
++		     "pop %2\n\t"
++		     "pop %1\n\t"
+ 		     "3:\n\t"
+ 
++		     /* VMREAD faulted.  As above, except push '1' for @fault. */
+ 		     ".pushsection .fixup, \"ax\"\n\t"
+-		     "4: mov %2, %%" _ASM_ARG1 "\n\t"
+-		     "mov $1, %%" _ASM_ARG2 "\n\t"
++		     "4: push $1\n\t"
++		     "push %2\n\t"
+ 		     "jmp 2b\n\t"
+ 		     ".popsection\n\t"
+ 		     _ASM_EXTABLE(1b, 4b)
+--- a/arch/x86/kvm/vmx/vmenter.S
++++ b/arch/x86/kvm/vmx/vmenter.S
+@@ -234,3 +234,61 @@ SYM_FUNC_START(__vmx_vcpu_run)
+ 2:	mov $1, %eax
+ 	jmp 1b
+ SYM_FUNC_END(__vmx_vcpu_run)
++
++/**
++ * vmread_error_trampoline - Trampoline from inline asm to vmread_error()
++ * @field:	VMCS field encoding that failed
++ * @fault:	%true if the VMREAD faulted, %false if it failed
++
++ * Save and restore volatile registers across a call to vmread_error().  Note,
++ * all parameters are passed on the stack.
++ */
++SYM_FUNC_START(vmread_error_trampoline)
++	push %_ASM_BP
++	mov  %_ASM_SP, %_ASM_BP
++
++	push %_ASM_AX
++	push %_ASM_CX
++	push %_ASM_DX
++#ifdef CONFIG_X86_64
++	push %rdi
++	push %rsi
++	push %r8
++	push %r9
++	push %r10
++	push %r11
++#endif
++#ifdef CONFIG_X86_64
++	/* Load @field and @fault to arg1 and arg2 respectively. */
++	mov 3*WORD_SIZE(%rbp), %_ASM_ARG2
++	mov 2*WORD_SIZE(%rbp), %_ASM_ARG1
++#else
++	/* Parameters are passed on the stack for 32-bit (see asmlinkage). */
++	push 3*WORD_SIZE(%ebp)
++	push 2*WORD_SIZE(%ebp)
++#endif
++
++	call vmread_error
++
++#ifndef CONFIG_X86_64
++	add $8, %esp
++#endif
++
++	/* Zero out @fault, which will be popped into the result register. */
++	_ASM_MOV $0, 3*WORD_SIZE(%_ASM_BP)
++
++#ifdef CONFIG_X86_64
++	pop %r11
++	pop %r10
++	pop %r9
++	pop %r8
++	pop %rsi
++	pop %rdi
++#endif
++	pop %_ASM_DX
++	pop %_ASM_CX
++	pop %_ASM_AX
++	pop %_ASM_BP
++
++	ret
++SYM_FUNC_END(vmread_error_trampoline)
 
 
