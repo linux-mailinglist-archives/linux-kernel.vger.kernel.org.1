@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75B81ABB86
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8241ABB8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502671AbgDPInt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:43:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:12452 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502551AbgDPIiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:38:25 -0400
-IronPort-SDR: NA/ynhL3iCMIkdNNHsBTSAuS3MBlund7S1oeUWQVBHmxUJKW/GxqsvS3feZhLRB+lsTcOE9Fhu
- VJACoFc1VhVw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 01:38:23 -0700
-IronPort-SDR: rdm/YyN9bcHeb9GkMPmye0GRmbe4rYsAjLnoGkIXuxjYDrG319KjtNuSgE3re9qKzAukkPKeqO
- HMYr5Dl8YcUg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
-   d="scan'208";a="427756139"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.209.171]) ([10.254.209.171])
-  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2020 01:38:20 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 6/7] iommu/vt-d: Add page request draining support
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
- <20200415052542.30421-7-baolu.lu@linux.intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8209CE@SHSMSX104.ccr.corp.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <acf26559-49d2-653c-156d-3ef383b43879@linux.intel.com>
-Date:   Thu, 16 Apr 2020 16:38:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2502675AbgDPIpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:45:10 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:14288 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2441408AbgDPIjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:39:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587026388; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uYTomwNJ7JVKnSJj43lc2hrUMA3IdsRKM3uaYsQJc+A=;
+ b=T0YIR0kcnPMqh8xH9nsMCUR3u5CDv4lJV2u9xSy0lw1N2gFvKUePhme7gxNQ0YfojkxJmj8h
+ zO8rFEX58NgpOQBPw/6uysvxaKt/rotKglpgrtuVWwZQsZ7prcTxMkPFJTFEGHt0NCoQIVWn
+ A/6gLeGDbl1uzMT3vXlfL5gtt/U=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9819c3.7efe03ad8500-smtp-out-n03;
+ Thu, 16 Apr 2020 08:39:31 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30A09C43636; Thu, 16 Apr 2020 08:39:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94779C433F2;
+        Thu, 16 Apr 2020 08:39:30 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D8209CE@SHSMSX104.ccr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 16 Apr 2020 14:09:30 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Doug Anderson <dianders@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 0/8] Relax sanity checking for mismatched AArch32 EL1
+In-Reply-To: <20200414213114.2378-1-will@kernel.org>
+References: <20200414213114.2378-1-will@kernel.org>
+Message-ID: <a86108a91975cacf94adc2a2101fba1b@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+On 2020-04-15 03:01, Will Deacon wrote:
+> Hi all,
+> 
+> For better or worse, there are SoCs in production where some, but not
+> all of the CPUs, support AArch32 at EL1 and above. Right now, that
+> results in "SANITY CHECK" warnings during boot and an unconditional
+> kernel taint.
+> 
+> This patch series tries to do a bit better: the only time we care about
+> AArch32 at EL1 is for KVM, so rather than throw our toys out of the
+> pram, we can instead just disable support for 32-bit guests on these
+> systems. In the unlikely scenario of a late CPU hotplug being the first
+> time we notice that AArch32 is not available, then we fail the hotplug
+> (right now we let the thing come online, which leads to hilarious
+> results for any pre-existing 32-bit guests).
+> 
+> Feedback welcome,
+> 
+> Will
+> 
 
-On 2020/4/15 19:10, Tian, Kevin wrote:
-> the completion of above sequence ensures that previous queued
-> page group responses are sent out and received by the endpoint
-> and vice versa all in-fly page requests from the endpoint are queued
-> in iommu page request queue. Then comes a problem - you didn't
-> wait for completion of those newly-queued requests and their
-> responses.
+Thanks Will, tested this series on QCOM SC7180 and SM8150 SoCs.
 
-I thought about this again.
+For the entire series,
 
-We do page request draining after PASID table entry gets torn down and
-the devTLB gets invalidated. At this point, if any new page request for
-this pasid comes in, IOMMU will generate an unrecoverable fault and
-response the device with IR (Invalid Request). IOMMU won't put this page
-request into the queue. [VT-d spec 7.4.1]
+Tested-by: saiprakash.ranjan@codeaurora.org
 
-Hence, we don't need to worry about the newly-queued requests here.
+-Sai
 
-Best regards,
-baolu
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
