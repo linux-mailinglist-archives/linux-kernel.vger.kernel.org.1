@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC2C1AC248
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F305D1AC492
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895238AbgDPNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:25:37 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41735 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895219AbgDPNYt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:24:49 -0400
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id AF69AE0003;
-        Thu, 16 Apr 2020 13:24:42 +0000 (UTC)
+        id S2409497AbgDPOBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897432AbgDPNlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:41:11 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2BC1214D8;
+        Thu, 16 Apr 2020 13:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587044471;
+        bh=SoVqO3bK3jHNnFnqoHbBV+IZFxZYUJeXCaLy+Ihncvo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HYXe2YRas108WGyWdSAnRdjKTg6668K5Rvy6s8/ujPwOACFGg4DB247DGBZyvuBr8
+         xrGi9dCHk08zDs/yEp3qel4umRNSGBbPZvKZfYtiarxkDeOWkoe08wRZ2ASGEN8qAV
+         k32YUwUMzA3plkJSVUtPT25Qd9d6kTxydxqULeZw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Simon Gander <simon@tuxera.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.5 231/257] hfsplus: fix crash and filesystem corruption when deleting files
 Date:   Thu, 16 Apr 2020 15:24:42 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hansverk@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 2/4] arm64: dts: rockchip: Add RGA support to the PX30
-Message-ID: <20200416132442.GI125838@aptenodytes>
-References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
- <20200416115047.233720-3-paul.kocialkowski@bootlin.com>
- <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
+Message-Id: <20200416131354.568669149@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+PbGPm1eXpwOoWkI"
-Content-Disposition: inline
-In-Reply-To: <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Simon Gander <simon@tuxera.com>
 
---+PbGPm1eXpwOoWkI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 25efb2ffdf991177e740b2f63e92b4ec7d310a92 upstream.
 
-Hi,
+When removing files containing extended attributes, the hfsplus driver may
+remove the wrong entries from the attributes b-tree, causing major
+filesystem damage and in some cases even kernel crashes.
 
-On Thu 16 Apr 20, 15:02, Johan Jonker wrote:
-> Hi Paul,
->=20
-> The conversion of rockchip-rga.txt to rockchip-rga.yaml by myself just
-> has been approved by robh.
+To remove a file, all its extended attributes have to be removed as well.
+The driver does this by looking up all keys in the attributes b-tree with
+the cnid of the file.  Each of these entries then gets deleted using the
+key used for searching, which doesn't contain the attribute's name when it
+should.  Since the key doesn't contain the name, the deletion routine will
+not find the correct entry and instead remove the one in front of it.  If
+parent nodes have to be modified, these become corrupt as well.  This
+causes invalid links and unsorted entries that not even macOS's fsck_hfs
+is able to fix.
 
-Huh, I looked around for ongoing related work but missed it.
-I'll definitely rebase on top of your series and use the yaml description
-instead. Thanks!
+To fix this, modify the search key before an entry is deleted from the
+attributes b-tree by copying the found entry's key into the search key,
+therefore ensuring that the correct entry gets removed from the tree.
 
-> Maybe place dts patches at the end of a patch serie.
-> Could you include a &rga patch if your device is supported in mainline,
-> so we can test with:
-> make ARCH=3Darm64 dtbs_check
-> DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/media/rockchip-rga.ya=
-ml
+Signed-off-by: Simon Gander <simon@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327155541.1521-1-simon@tuxera.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I tested with the PX30 EVB so I can surely add a node there if that turns
-out necessary (see below).
+---
+ fs/hfsplus/attributes.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-> Johan
->=20
-> On 4/16/20 1:50 PM, Paul Kocialkowski wrote:
-> > The PX30 features a RGA block: add the necessary node to support it.
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/d=
-ts/rockchip/px30.dtsi
-> > index 75908c587511..4bfbee9d4123 100644
-> > --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-> > +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-> > @@ -1104,6 +1104,17 @@ vopl_mmu: iommu@ff470f00 {
-> >  		status =3D "disabled";
-> >  	};
-> > =20
-> > +	rga: rga@ff480000 {
-> > +		compatible =3D "rockchip,px30-rga";
-> > +		reg =3D <0x0 0xff480000 0x0 0x10000>;
-> > +		interrupts =3D <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
-> > +		clocks =3D <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE>;
-> > +		clock-names =3D "aclk", "hclk", "sclk";
-> > +		resets =3D <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
-> > +		reset-names =3D "core", "axi", "ahb";
-> > +		power-domains =3D <&power PX30_PD_VO>;
->=20
-> 		status =3D "disabled";
+--- a/fs/hfsplus/attributes.c
++++ b/fs/hfsplus/attributes.c
+@@ -292,6 +292,10 @@ static int __hfsplus_delete_attr(struct
+ 		return -ENOENT;
+ 	}
+ 
++	/* Avoid btree corruption */
++	hfs_bnode_read(fd->bnode, fd->search_key,
++			fd->keyoffset, fd->keylength);
++
+ 	err = hfs_brec_remove(fd);
+ 	if (err)
+ 		return err;
 
-As of 5.6, the rk3399 has the node enabled by default. Did that change?
 
-Since it's a standalone block that has no I/O dependency, I don't really see
-the point of disabling it by default.
-
-What do you think?
-
-Cheers,
-
-Paul
-
-> > +	};
-> > +
-> >  	qos_gmac: qos@ff518000 {
-> >  		compatible =3D "syscon";
-> >  		reg =3D <0x0 0xff518000 0x0 0x20>;
-> >=20
->=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---+PbGPm1eXpwOoWkI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6YXJoACgkQ3cLmz3+f
-v9Ho3wf/d9zxV64Bwt9TC0ABSimMOz4E7MQphqkXg/XbCpShScAkCWfzSQ71WxB4
-T0+gL2hGnJEua+rGBrWyXst54nDhfUvqmiKw2VDC+ukjpVgGwNNP1UFFWGf5rTqM
-TNY4QMIqmVhU1hvIGLYIT3iFZl66I1jlzBlywy1tM5SqC6B2N7Xy7P1FgtfVt7Wr
-iz3jUXj1tqFrSB4sFdr2HFkOV48LLhtzjfSEPJI5ZtIsgM+jh/fGYu/v38kPlDW5
-2bjcC2ZLiwHQyUpV8/+vEHFo8Ged/qocFyPrKtI1mCZd+Yd/VYRP85f551sbc0uz
-uuYKH6JbkP37Fdz/ONOdyMbAqj+dNg==
-=RgMQ
------END PGP SIGNATURE-----
-
---+PbGPm1eXpwOoWkI--
