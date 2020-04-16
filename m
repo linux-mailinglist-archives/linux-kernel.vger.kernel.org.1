@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950081AC475
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636FE1AC752
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733142AbgDPOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52782 "EHLO mail.kernel.org"
+        id S2394835AbgDPOxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:53:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898078AbgDPNkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:15 -0400
+        id S2409251AbgDPN5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:57:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1646F2222C;
-        Thu, 16 Apr 2020 13:40:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C86421734;
+        Thu, 16 Apr 2020 13:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044414;
-        bh=xGr13XJGLUS/LaE43iRBCiEAnAPKV75jLFypsS8T3w8=;
+        s=default; t=1587045427;
+        bh=w2Ej3Tf7bYLxv0YY/vSBA1bE+ot8s4ZOc9fI9Z+53YQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ci5HX4DR/5Pp5mI94YZ4N2J+QY3vYu5BvXFJKS0eHcDP4HrZSNt6fO+pXpkeZhNX
-         VCRXZfY7f7MXF045DuHdiQmQFpQaTisLOG74VUf6IuLYKdwf5NOMsma8kWOGd/q57S
-         YEYCsfAgWHpJLk9IvDw1Dzmf5qyAHdf1eAjW6vkM=
+        b=RBM275C89iZjh1sFdI0UXMLeFsqNJ0qX3eQN58BA0ygFiNwoQO3DRQ71PV3AWpLQ6
+         OoMwH5jhhPvbDaRlWvvZhFrvbRxSpT297O1nVVR4oBaqezmj1mUD+VHp7cdTdhc9E6
+         YSamk9K4dYiNUYfeuBhRlku6GYRRA9WuznlH4KQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH 5.5 167/257] remoteproc: qcom_q6v5_mss: Dont reassign mpss region on shutdown
+        stable@vger.kernel.org, Kristian Klausen <kristian@klausen.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.6 129/254] platform/x86: asus-wmi: Support laptops where the first battery is named BATT
 Date:   Thu, 16 Apr 2020 15:23:38 +0200
-Message-Id: <20200416131347.362917342@linuxfoundation.org>
+Message-Id: <20200416131342.593864784@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,100 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Kristian Klausen <kristian@klausen.dk>
 
-commit 900fc60df22748dbc28e4970838e8f7b8f1013ce upstream.
+commit 6b3586d45bba14f6912f37488090c37a3710e7b4 upstream.
 
-Trying to reclaim mpss memory while the mba is not running causes the
-system to crash on devices with security fuses blown, so leave it
-assigned to the remote on shutdown and recover it on a subsequent boot.
+The WMI method to set the charge threshold does not provide a
+way to specific a battery, so we assume it is the first/primary
+battery (by checking if the name is BAT0).
+On some newer ASUS laptops (Zenbook UM431DA) though, the
+primary/first battery isn't named BAT0 but BATT, so we need
+to support that case.
 
-Fixes: 6c5a9dc2481b ("remoteproc: qcom: Make secure world call for mem ownership switch")
+Fixes: 7973353e92ee ("platform/x86: asus-wmi: Refactor charge threshold to use the battery hooking API")
 Cc: stable@vger.kernel.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200304194729.27979-2-sibis@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Kristian Klausen <kristian@klausen.dk>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/qcom_q6v5_mss.c |   35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ drivers/platform/x86/asus-wmi.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -887,11 +887,6 @@ static void q6v5_mba_reclaim(struct q6v5
- 		writel(val, qproc->reg_base + QDSP6SS_PWR_CTL_REG);
- 	}
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -426,8 +426,11 @@ static int asus_wmi_battery_add(struct p
+ {
+ 	/* The WMI method does not provide a way to specific a battery, so we
+ 	 * just assume it is the first battery.
++	 * Note: On some newer ASUS laptops (Zenbook UM431DA), the primary/first
++	 * battery is named BATT.
+ 	 */
+-	if (strcmp(battery->desc->name, "BAT0") != 0)
++	if (strcmp(battery->desc->name, "BAT0") != 0 &&
++	    strcmp(battery->desc->name, "BATT") != 0)
+ 		return -ENODEV;
  
--	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
--				      false, qproc->mpss_phys,
--				      qproc->mpss_size);
--	WARN_ON(ret);
--
- 	q6v5_reset_assert(qproc);
- 
- 	q6v5_clk_disable(qproc->dev, qproc->reset_clks,
-@@ -981,6 +976,14 @@ static int q6v5_mpss_load(struct q6v5 *q
- 			max_addr = ALIGN(phdr->p_paddr + phdr->p_memsz, SZ_4K);
- 	}
- 
-+	/**
-+	 * In case of a modem subsystem restart on secure devices, the modem
-+	 * memory can be reclaimed only after MBA is loaded. For modem cold
-+	 * boot this will be a nop
-+	 */
-+	q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false,
-+				qproc->mpss_phys, qproc->mpss_size);
-+
- 	mpss_reloc = relocate ? min_addr : qproc->mpss_phys;
- 	qproc->mpss_reloc = mpss_reloc;
- 	/* Load firmware segments */
-@@ -1070,8 +1073,16 @@ static void qcom_q6v5_dump_segment(struc
- 	void *ptr = rproc_da_to_va(rproc, segment->da, segment->size);
- 
- 	/* Unlock mba before copying segments */
--	if (!qproc->dump_mba_loaded)
-+	if (!qproc->dump_mba_loaded) {
- 		ret = q6v5_mba_load(qproc);
-+		if (!ret) {
-+			/* Reset ownership back to Linux to copy segments */
-+			ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
-+						      false,
-+						      qproc->mpss_phys,
-+						      qproc->mpss_size);
-+		}
-+	}
- 
- 	if (!ptr || ret)
- 		memset(dest, 0xff, segment->size);
-@@ -1082,8 +1093,14 @@ static void qcom_q6v5_dump_segment(struc
- 
- 	/* Reclaim mba after copying segments */
- 	if (qproc->dump_segment_mask == qproc->dump_complete_mask) {
--		if (qproc->dump_mba_loaded)
-+		if (qproc->dump_mba_loaded) {
-+			/* Try to reset ownership back to Q6 */
-+			q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
-+						true,
-+						qproc->mpss_phys,
-+						qproc->mpss_size);
- 			q6v5_mba_reclaim(qproc);
-+		}
- 	}
- }
- 
-@@ -1123,10 +1140,6 @@ static int q6v5_start(struct rproc *rpro
- 	return 0;
- 
- reclaim_mpss:
--	xfermemop_ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
--						false, qproc->mpss_phys,
--						qproc->mpss_size);
--	WARN_ON(xfermemop_ret);
- 	q6v5_mba_reclaim(qproc);
- 
- 	return ret;
+ 	if (device_create_file(&battery->dev,
 
 
