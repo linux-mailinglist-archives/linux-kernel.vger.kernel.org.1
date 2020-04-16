@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445E81AC058
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF681AC04F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634222AbgDPLyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S2634196AbgDPLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506728AbgDPLxB (ORCPT
+        with ESMTP id S2506634AbgDPLwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:53:01 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B02DC0610D6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:53 -0700 (PDT)
+        Thu, 16 Apr 2020 07:52:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DDAC061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=oFzyaVj88aaR8oiosflQFJrDai8cGo3W9Px0LYEjy9U=; b=G9XHhxQicCODdXBelf5cWXb0tx
-        VISTe9cqz6tIyEoGt2zKSJHnlvzRX9Ib6ErlEOZ9uC+vyXWW/bfLSeIzsLVznP646AVF/9PJzYVpj
-        ou33hiNV0yN5JX18MeOE4l7HjGnNrlvklV5/8c2fTt4FK5JLm64gWfWUebH5AGShv8ad6oYJAvJzc
-        utBEOQ9Wz6i5IvDEWS8upNm2IkzOZz0hawmtl2gHZIlMVJBD9LtyeZyLLmdBNqqi8b6tXBv8iMEhs
-        94JtCt2SOA3jGX6LUEwKRyFv3tmUBiC0/D7vjwl3UCscxFoPPCOhnRs/q4FZtcDN5KM+qaV3QQ7zB
-        tAOoMrmA==;
+        bh=0tB8fwAECH9DTdmotSb06Thr66Emzkcwh377O0NwzJ4=; b=b3eUhw5BTRjg92BI6M0gYt1zTx
+        PRvWk7ZQ187dalXP040GwQh0EZi53VzRbjRK15igKl9jNrv3SpBQFrmT4bl6Wu5E9P7fSVlYHBUET
+        qJga+g/+ZaO4wZGOxtB3Vt1LFY7xfkzRaD6yDBLriM6EWwH3Ne4V57xmWFN4MIT/chCHj2FmBnu+G
+        ZD85Hqx3dxGTu3BrNDkWkLa421FLWnNaVtC8UdZi+F3cQu3obDlyZZ9tpcFj92R9pYdkU1KCTI4G3
+        sftACTIyBg3nk1NXsiO85bLmoHp820KJaMFxPCHxOEjv/Wyvfml+j107nJOodLEPGRJDYVEh63hMC
+        Uoed8LJg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP34G-0006ja-Kl; Thu, 16 Apr 2020 11:52:28 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP34D-0004s1-W9; Thu, 16 Apr 2020 11:52:26 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 590DB30746C;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58FEE3073F0;
         Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2FA252B0DE4C6; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
-Message-Id: <20200416115118.808485515@infradead.org>
+        id 318C82B0DE4C5; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
+Message-Id: <20200416115118.867411350@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 16 Apr 2020 13:47:11 +0200
+Date:   Thu, 16 Apr 2020 13:47:12 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, jpoimboe@redhat.com
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, peterz@infradead.org,
         mhiramat@kernel.org, mbenes@suse.cz, jthierry@redhat.com,
         alexandre.chartre@oracle.com
-Subject: [PATCH v5 05/17] x86,ftrace: Use SIZEOF_PTREGS
+Subject: [PATCH v5 06/17] x86,ftrace: Shrink ftrace_regs_caller() by one byte
 References: <20200416114706.625340212@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,37 +52,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a convenient macro for 'SS+8' called FRAME_SIZE. Use it to
-clarify things.
+'Optimize' ftrace_regs_caller. Instead of comparing against an
+immediate, the more natural way to test for zero on x86 is: 'test
+%r,%r'.
 
-(entry/calling.h calls this SIZEOF_PTREGS but we're using
-asm/ptrace-abi.h)
+  48 83 f8 00             cmp    $0x0,%rax
+  74 49                   je     226 <ftrace_regs_call+0xa3>
+
+  48 85 c0                test   %rax,%rax
+  74 49                   je     225 <ftrace_regs_call+0xa2>
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
  arch/x86/kernel/ftrace_64.S |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/arch/x86/kernel/ftrace_64.S
 +++ b/arch/x86/kernel/ftrace_64.S
-@@ -23,7 +23,7 @@
- #endif /* CONFIG_FRAME_POINTER */
- 
- /* Size of stack used to save mcount regs in save_mcount_regs */
--#define MCOUNT_REG_SIZE		(SS+8 + MCOUNT_FRAME_SIZE)
-+#define MCOUNT_REG_SIZE		(FRAME_SIZE + MCOUNT_FRAME_SIZE)
- 
- /*
-  * gcc -pg option adds a call to 'mcount' in most functions.
-@@ -77,7 +77,7 @@
- 	/*
- 	 * We add enough stack to save all regs.
+@@ -240,8 +240,8 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+ 	 * See arch_ftrace_set_direct_caller().
  	 */
--	subq $(MCOUNT_REG_SIZE - MCOUNT_FRAME_SIZE), %rsp
-+	subq $(FRAME_SIZE), %rsp
- 	movq %rax, RAX(%rsp)
- 	movq %rcx, RCX(%rsp)
- 	movq %rdx, RDX(%rsp)
+ 	movq ORIG_RAX(%rsp), %rax
+-	cmpq	$0, %rax
+-	je	1f
++	testq	%rax, %rax
++	jz	1f
+ 
+ 	/* Swap the flags with orig_rax */
+ 	movq MCOUNT_REG_SIZE(%rsp), %rdi
 
 
