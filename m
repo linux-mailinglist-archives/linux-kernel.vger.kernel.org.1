@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B701AC5C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3631ACA78
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392533AbgDPO1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:27:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46280 "EHLO mail.kernel.org"
+        id S2503292AbgDPPfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:35:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898851AbgDPN7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:59:18 -0400
+        id S2898157AbgDPNkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:40:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6481E21734;
-        Thu, 16 Apr 2020 13:59:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1FC120732;
+        Thu, 16 Apr 2020 13:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045556;
-        bh=0t/oLzkgFXhjX5DcSYiAxTJvv2saLqLGZ+qwSaWFEk8=;
+        s=default; t=1587044442;
+        bh=bUmdvRDb5tEGK8fivtesnFXdfAqQuZ+XnKtGFowAmT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PdLGDjgJNXy7HI6vKfgeQjxFVVsVibdneKNMksjj5Eb+hO03NyZhpNo/cMJib6Qxf
-         ThBOcpxY4cNqI7Z6JMgJ/1kjFOHxROgzepbgVzyDBgozzCDF4McvFKtKzIqqj5yESL
-         1SkWXR9SgeVL9fea4o1en3XvQxL5I84mWuTg97xM=
+        b=QiYB6rB4urjCuW0RLN9jVORwOIvuyl7Fm5Xvcz7DUzXoNtQ/LHUDbAXp8HFKXch6c
+         8SteUEwkE9jKowXz65tgLFwy7Q31sAwF6ae2pp4tAAMPCYH3NVTZ0k1Wr4CW4uEKfR
+         use/AjYtEa529Pv2YzixgyMWoJu45tDxuXyMywGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 5.6 181/254] XArray: Fix xas_pause for large multi-index entries
-Date:   Thu, 16 Apr 2020 15:24:30 +0200
-Message-Id: <20200416131349.034610037@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Andi Shyti <andi.shyti@intel.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.5 220/257] drm/i915/gt: Treat idling as a RPS downclock event
+Date:   Thu, 16 Apr 2020 15:24:31 +0200
+Message-Id: <20200416131353.462369462@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit c36d451ad386b34f452fc3c8621ff14b9eaa31a6 upstream.
+commit 98479ada421a8fd2123b98efd398a6f1379307ab upstream.
 
-Inspired by the recent Coverity report, I looked for other places where
-the offset wasn't being converted to an unsigned long before being
-shifted, and I found one in xas_pause() when the entry being paused is
-of order >32.
+If we park/unpark faster than we can respond to RPS events, we never
+will process a downclock event after expiring a waitboost, and thus we
+will forever restart the GPU at max clocks even if the workload switches
+and doesn't justify full power.
 
-Fixes: b803b42823d0 ("xarray: Add XArray iterators")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: stable@vger.kernel.org
+Closes: https://gitlab.freedesktop.org/drm/intel/issues/1500
+Fixes: 3e7abf814193 ("drm/i915: Extract GT render power state management")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Andi Shyti <andi.shyti@intel.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Andi Shyti <andi.shyti@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200322163225.28791-1-chris@chris-wilson.co.uk
+Cc: <stable@vger.kernel.org> # v5.5+
+(cherry picked from commit 21abf0bf168dffff1192e0f072af1dc74ae1ff0e)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/test_xarray.c |   37 +++++++++++++++++++++++++++++++++++++
- lib/xarray.c      |    2 +-
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/i915/gt/intel_rps.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/lib/test_xarray.c
-+++ b/lib/test_xarray.c
-@@ -1156,6 +1156,42 @@ static noinline void check_find_entry(st
- 	XA_BUG_ON(xa, !xa_empty(xa));
+--- a/drivers/gpu/drm/i915/gt/intel_rps.c
++++ b/drivers/gpu/drm/i915/gt/intel_rps.c
+@@ -763,6 +763,19 @@ void intel_rps_park(struct intel_rps *rp
+ 	intel_uncore_forcewake_get(rps_to_uncore(rps), FORCEWAKE_MEDIA);
+ 	rps_set(rps, rps->idle_freq);
+ 	intel_uncore_forcewake_put(rps_to_uncore(rps), FORCEWAKE_MEDIA);
++
++	/*
++	 * Since we will try and restart from the previously requested
++	 * frequency on unparking, treat this idle point as a downclock
++	 * interrupt and reduce the frequency for resume. If we park/unpark
++	 * more frequently than the rps worker can run, we will not respond
++	 * to any EI and never see a change in frequency.
++	 *
++	 * (Note we accommodate Cherryview's limitation of only using an
++	 * even bin by applying it to all.)
++	 */
++	rps->cur_freq =
++		max_t(int, round_down(rps->cur_freq - 1, 2), rps->min_freq);
  }
  
-+static noinline void check_pause(struct xarray *xa)
-+{
-+	XA_STATE(xas, xa, 0);
-+	void *entry;
-+	unsigned int order;
-+	unsigned long index = 1;
-+	unsigned int count = 0;
-+
-+	for (order = 0; order < order_limit; order++) {
-+		XA_BUG_ON(xa, xa_store_order(xa, index, order,
-+					xa_mk_index(index), GFP_KERNEL));
-+		index += 1UL << order;
-+	}
-+
-+	rcu_read_lock();
-+	xas_for_each(&xas, entry, ULONG_MAX) {
-+		XA_BUG_ON(xa, entry != xa_mk_index(1UL << count));
-+		count++;
-+	}
-+	rcu_read_unlock();
-+	XA_BUG_ON(xa, count != order_limit);
-+
-+	count = 0;
-+	xas_set(&xas, 0);
-+	rcu_read_lock();
-+	xas_for_each(&xas, entry, ULONG_MAX) {
-+		XA_BUG_ON(xa, entry != xa_mk_index(1UL << count));
-+		count++;
-+		xas_pause(&xas);
-+	}
-+	rcu_read_unlock();
-+	XA_BUG_ON(xa, count != order_limit);
-+
-+	xa_destroy(xa);
-+}
-+
- static noinline void check_move_tiny(struct xarray *xa)
- {
- 	XA_STATE(xas, xa, 0);
-@@ -1664,6 +1700,7 @@ static int xarray_checks(void)
- 	check_xa_alloc();
- 	check_find(&array);
- 	check_find_entry(&array);
-+	check_pause(&array);
- 	check_account(&array);
- 	check_destroy(&array);
- 	check_move(&array);
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -970,7 +970,7 @@ void xas_pause(struct xa_state *xas)
- 
- 	xas->xa_node = XAS_RESTART;
- 	if (node) {
--		unsigned int offset = xas->xa_offset;
-+		unsigned long offset = xas->xa_offset;
- 		while (++offset < XA_CHUNK_SIZE) {
- 			if (!xa_is_sibling(xa_entry(xas->xa, node, offset)))
- 				break;
+ void intel_rps_boost(struct i915_request *rq)
 
 
