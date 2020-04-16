@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9673E1AC4F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302681AC57F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732101AbgDPOHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:07:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58572 "EHLO mail.kernel.org"
+        id S2393797AbgDPOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898481AbgDPNpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:45:08 -0400
+        id S2409064AbgDPNyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:54:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC7CA208E4;
-        Thu, 16 Apr 2020 13:45:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A41C82076D;
+        Thu, 16 Apr 2020 13:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044708;
-        bh=cWNjo3ufoi2L8D9rzD7+OpFBpQLefCSdKcauXILmL3E=;
+        s=default; t=1587045293;
+        bh=akbKUhbtfBKfRWBbrLrWfpWB85pshxJLlbLzz96tEAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tsUtuvJ0SfA1YdO4KzS1VRU0EOa7hYHPp3ctv2F9mOK8c1w+ROHYaqLP3JIvjiFtV
-         qbmVbWGJca6xWaSmq44E1INBiolbwbXdHBj7UVb/xPIFc6eHpUI+1iJIl3Nr2v1RLp
-         0aJOAtiK+oZ5hMo3tzQP585YcYDtXdgrWAzkoP7o=
+        b=JY8mAemiKLLwSJtZF+RY4VuNcz5xV02o1JJKOosmjJ5vbECZGfb6BrCLILiGBhK6Z
+         SNGZaHm5ui1jmmUXKRkIORcCyZd9qMvgKGFGxg8cRh+hvsMkC4L9KoVJGIp7tGBnfm
+         3TEk0A2eiZinoIgBURe9z7FXQxS7XfPl0R8cxHCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 069/232] ASoC: fix regwmask
-Date:   Thu, 16 Apr 2020 15:22:43 +0200
-Message-Id: <20200416131324.001628167@linuxfoundation.org>
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 075/254] ALSA: ice1724: Fix invalid access for enumerated ctl items
+Date:   Thu, 16 Apr 2020 15:22:44 +0200
+Message-Id: <20200416131335.266828159@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 이경택 <gt82.lee@samsung.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 0ab070917afdc93670c2d0ea02ab6defb6246a7c upstream.
+commit c47914c00be346bc5b48c48de7b0da5c2d1a296c upstream.
 
-If regwshift is 32 and the selected architecture compiles '<<' operator
-for signed int literal into rotating shift, '1<<regwshift' became 1 and
-it makes regwmask to 0x0.
-The literal is set to unsigned long to get intended regwmask.
+The access to Analog Capture Source control value implemented in
+prodigy_hifi.c is wrong, as caught by the recently introduced sanity
+check; it should be accessing value.enumerated.item[] instead of
+value.integer.value[].  This patch corrects the wrong access pattern.
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Link: https://lore.kernel.org/r/001001d60665$db7af3e0$9270dba0$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 6b8d6e5518e2 ("[ALSA] ICE1724: Added support for Audiotrak Prodigy 7.1 HiFi & HD2, Hercules Fortissimo IV")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200407084402.25589-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-ops.c |    4 ++--
+ sound/pci/ice1712/prodigy_hifi.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -832,7 +832,7 @@ int snd_soc_get_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long min = mc->min;
-@@ -881,7 +881,7 @@ int snd_soc_put_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long max = mc->max;
+--- a/sound/pci/ice1712/prodigy_hifi.c
++++ b/sound/pci/ice1712/prodigy_hifi.c
+@@ -536,7 +536,7 @@ static int wm_adc_mux_enum_get(struct sn
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
+ 
+ 	mutex_lock(&ice->gpio_mutex);
+-	ucontrol->value.integer.value[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
++	ucontrol->value.enumerated.item[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
+ 	mutex_unlock(&ice->gpio_mutex);
+ 	return 0;
+ }
+@@ -550,7 +550,7 @@ static int wm_adc_mux_enum_put(struct sn
+ 
+ 	mutex_lock(&ice->gpio_mutex);
+ 	oval = wm_get(ice, WM_ADC_MUX);
+-	nval = (oval & 0xe0) | ucontrol->value.integer.value[0];
++	nval = (oval & 0xe0) | ucontrol->value.enumerated.item[0];
+ 	if (nval != oval) {
+ 		wm_put(ice, WM_ADC_MUX, nval);
+ 		change = 1;
 
 
