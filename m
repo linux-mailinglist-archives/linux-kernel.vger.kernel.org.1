@@ -2,220 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49D61ACDB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349311ACDC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408832AbgDPQ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733145AbgDPQ30 (ORCPT
+        id S1728686AbgDPQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:34:46 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27406 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727976AbgDPQeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:29:26 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DB9C061A0C;
-        Thu, 16 Apr 2020 09:29:25 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id BA4EB2A22CA
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH] dt-bindings: display: dw_mipi_dsi.txt: convert to yaml
-In-Reply-To: <CAL_JsqLyEjXjeADvxztT0kg6Sc-VASUeBPr0jJAwS39PckQjpw@mail.gmail.com>
-References: <20200416125207.425271-1-adrian.ratiu@collabora.com>
- <CAL_JsqLyEjXjeADvxztT0kg6Sc-VASUeBPr0jJAwS39PckQjpw@mail.gmail.com>
-Date:   Thu, 16 Apr 2020 19:30:32 +0300
-Message-ID: <87r1wnjsuv.fsf@adirat.com>
+        Thu, 16 Apr 2020 12:34:44 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GGXRkY107481
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 12:34:42 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30ermsw5w3-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 12:34:42 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
+        Thu, 16 Apr 2020 17:34:03 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 16 Apr 2020 17:33:58 +0100
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03GGYYwl55312546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 16:34:34 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1048752054;
+        Thu, 16 Apr 2020 16:34:34 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.0.99])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 300F452050;
+        Thu, 16 Apr 2020 16:34:33 +0000 (GMT)
+Date:   Thu, 16 Apr 2020 18:34:31 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>, linux-next@vger.kernel.org,
+        akpm@linux-foundation.org, jack@suse.cz, kirill@shutemov.name,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        borntraeger@de.ibm.com, david@redhat.com, aarcange@redhat.com,
+        linux-mm@kvack.org, frankja@linux.ibm.com, sfr@canb.auug.org.au,
+        jhubbard@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, Will Deacon <will@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v4 2/2] mm/gup/writeback: add callbacks for inaccessible
+ pages
+In-Reply-To: <a6b8728d-7382-9316-412d-dd48b5e7c41a@intel.com>
+References: <20200306132537.783769-1-imbrenda@linux.ibm.com>
+        <20200306132537.783769-3-imbrenda@linux.ibm.com>
+        <3ae46945-0c7b-03cd-700a-a6fe8003c6ab@intel.com>
+        <20200415221754.GM2483@worktop.programming.kicks-ass.net>
+        <a7c2eb84-94c2-a608-4b04-a740fa9a389d@intel.com>
+        <20200416141547.29be5ea0@p-imbrenda>
+        <de56aa8e-9035-4b68-33cb-15682d073e26@intel.com>
+        <20200416165900.68bd4dba@p-imbrenda>
+        <a6b8728d-7382-9316-412d-dd48b5e7c41a@intel.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20041616-4275-0000-0000-000003C10776
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041616-4276-0000-0000-000038D6824A
+Message-Id: <20200416183431.7216e1d1@p-imbrenda>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-16_06:2020-04-14,2020-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ adultscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 impostorscore=0
+ mlxlogscore=653 bulkscore=0 mlxscore=0 priorityscore=1501 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004160113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, 16 Apr 2020 08:36:50 -0700
+Dave Hansen <dave.hansen@intel.com> wrote:
 
-Thank you for the review, I will address all your points in v2, 
-however I have a one neclarity below.
-
-On Thu, 16 Apr 2020, Rob Herring <robh@kernel.org> wrote:
-> On Thu, Apr 16, 2020 at 7:51 AM Adrian Ratiu 
-> <adrian.ratiu@collabora.com> wrote: 
->> 
->> This converts the Synopsis MIPI DSI binding documentation to 
->> yaml and should be quite straightforward. I've added a missing 
->> ref clk and also added Mark and Rob as maintainers based on 
->> 'get_maintainer.pl' results. 
->> 
->> Cc: Rob Herring <robh@kernel.org> Cc: Mark Rutland 
->> <mark.rutland@arm.com> Cc: devicetree@vger.kernel.org 
->> Suggested-by: Laurent Pinchart 
->> <laurent.pinchart@ideasonboard.com> Signed-off-by: Adrian Ratiu 
->> <adrian.ratiu@collabora.com> --- 
->>  .../bindings/display/bridge/dw_mipi_dsi.txt   | 32 --------- 
->>  .../display/bridge/snps,dw-mipi-dsi.yaml      | 66 
->>  +++++++++++++++++++ 2 files changed, 66 insertions(+), 32 
->>  deletions(-) delete mode 100644 
->>  Documentation/devicetree/bindings/display/bridge/dw_mipi_dsi.txt 
->>  create mode 100644 
->>  Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml 
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/display/bridge/dw_mipi_dsi.txt 
->> b/Documentation/devicetree/bindings/display/bridge/dw_mipi_dsi.txt 
->> deleted file mode 100644 index b13adf30b8d3..000000000000 --- 
->> a/Documentation/devicetree/bindings/display/bridge/dw_mipi_dsi.txt 
->> +++ /dev/null @@ -1,32 +0,0 @@ -Synopsys DesignWare MIPI DSI 
->> host controller -============================================ - 
->> -This document defines device tree properties for the Synopsys 
->> DesignWare MIPI -DSI host controller. It doesn't constitue a 
->> device tree binding specification -by itself but is meant to be 
->> referenced by platform-specific device tree -bindings.  - -When 
->> referenced from platform device tree bindings the properties 
->> defined in -this document are defined as follows. The platform 
->> device tree bindings are -responsible for defining whether each 
->> optional property is used or not.  - -- reg: Memory mapped base 
->> address and length of the DesignWare MIPI DSI -  host 
->> controller registers. (mandatory) - -- clocks: References to 
->> all the clocks specified in the clock-names property -  as 
->> specified in [1]. (mandatory) - -- clock-names: -  - "pclk" is 
->> the peripheral clock for either AHB and APB. (mandatory) -  - 
->> "px_clk" is the pixel clock for the DPI/RGB input. (optional) - 
->> -- resets: References to all the resets specified in the 
->> reset-names property -  as specified in [2]. (optional) - -- 
->> reset-names: string reset name, must be "apb" if 
->> used. (optional) - -- panel or bridge node: see 
->> [3]. (mandatory) - -[1] 
->> Documentation/devicetree/bindings/clock/clock-bindings.txt -[2] 
->> Documentation/devicetree/bindings/reset/reset.txt -[3] 
->> Documentation/devicetree/bindings/display/mipi-dsi-bus.txt diff 
->> --git 
->> a/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml 
->> b/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml 
->> new file mode 100644 index 000000000000..0ab4125eee30 --- 
->> /dev/null +++ 
->> b/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml 
->> @@ -0,0 +1,66 @@ +# SPDX-License-Identifier: (GPL-2.0-only OR 
->> BSD-2-Clause) +%YAML 1.2 +--- +$id: 
->> http://devicetree.org/schemas/display/bridge/snps,dw-mipi-dsi.yaml# 
->> +$schema: http://devicetree.org/meta-schemas/core.yaml# + 
->> +title: Synopsys DesignWare MIPI DSI host controller + 
->> +maintainers: +  - Rob Herring <robh+dt@kernel.org> 
+> On 4/16/20 7:59 AM, Claudio Imbrenda wrote:
+> > On Thu, 16 Apr 2020 07:20:48 -0700
+> > Dave Hansen <dave.hansen@intel.com> wrote:  
+> >> On 4/16/20 5:15 AM, Claudio Imbrenda wrote:  
+> >>>> I assumed that this was all anonymous-only so it's always dirty
+> >>>> before writeback starts.    
+> >>> it could also be mmapped    
+> >>
+> >> Let's say you have a mmap()'d ramfs file.  Another process calls
+> >> which doesn't have it mapped calls sys_write() and writes to the
+> >> file.  
+> ...
+> >> Where is the arch_make_page_accessible() in this case on the ramfs
+> >> page?  
+> > 
+> > it's in the fault handler for the exception the CPU will get when
+> > attempting to write the data to the protected page  
 > 
-> No thanks, I don't know anything about this hardware. It should 
-> be the owner for this binding, not who applies patches. 
->
+> Ahh, so this is *just* intended to precede I/O done on the page, when
+> a non-host entity is touching the memory?
 
-Sorry about that, I just followed what get_maintainer.pl -f 
-returned.
+yep
 
-I'm not sure I understand the owner vs maintainers difference for 
-the "maintainers" entry. How do I find out who is the owner?
+> That seems inconsistent with the process_vm_readv/writev() paths which
+> set FOLL_PIN on their pin_remote_user_pages() requests, but don't do
+> I/O to the memory.
 
-Looking at the git log, this file was touched only once when added 
-in 88dd1e6f9ad8 ("dt-bindings: display: Add Synopsys DW MIPI DSI 
-host controller") by Philippe CORNU <philippe.cornu@st.com>.
+FOLL_PIN simply indicates potential access to the content of the page,
+not just for I/O.
 
-Is the person who added the file automatically owner?
+so yes, we are overdoing arch_make_page_accessible() in some cases,
+because we can't tell when a page will be used for I/O and when not.
 
-(cc'd Philippe)
- 
->> +  - Mark Rutland <mark.rutland@arm.com> 
-> 
-> Check current maintainers. Mark is not one anymore. 
->
+In most cases this will boil down to checking a flag and doing nothing,
+for example in case the page was already accessible.
 
-Yes, I just noticed he got removed in my latest next-20200416 
-tree, thanks.
+Also note that making the page accessible because of a FOLL_PIN in
+absence of I/O will probably later on spare us from triggering and
+handling the exception that would have caused us to make the page
+accessible anyway.
 
->> +
->> +description: |
->> +  This document defines device tree properties for the Synopsys DesignWare MIPI
->> +  DSI host controller. It doesn't constitue a device tree binding specification
->> +  by itself but is meant to be referenced by platform-specific device tree
->> +  bindings.
->> +
->> +  When referenced from platform device tree bindings the properties defined in
->> +  this document are defined as follows. The platform device tree bindings are
->> +  responsible for defining whether each property is required or optional.
->> +
->
-> Need to reference ($ref) dsi-controller.yaml here.
->
->> +properties:
->> +  reg:
->> +    description: |
->> +      Memory mapped base address and length of the DesignWare MIPI DSI host
->> +      controller registers.
->
-> Drop the description. That's every 'reg'. You need to say how many
-> regions (maxItems: 1?).
->
->> +
->> +  clocks:
->> +    description: |
->> +      References to all the clocks specified in the clock-names property as
->> +      specified in Documentation/devicetree/bindings/clock/clock-bindings.txt
->
-> Drop
->
->> +    items:
->> +      - description: Module clock
->> +      - description: DSI bus colck for either AHB and APB
->
-> typo
->
->> +      - description: Pixel clock for the DPI/RGB input
->> +    minItems: 2
->> +    maxItems: 3
->
-> You can drop 'maxItems'. It's implied by the length of 'items'.
->> +
->> +  clock-names:
->> +    items:
->> +      - const: ref
->> +      - const: pclk
->> +      - const: px_clk
->> +    minItems: 2
->> +    maxItems: 3
->> +
->> +  resets:
->> +    description: |
->> +      References to all the resets specified in the reset-names property as
->> +      specified in Documentation/devicetree/bindings/reset/reset.txt
->
-> Drop.
->
-> You need maxItems to define how many reset entries.
->
->> +
->> +  reset-names:
->> +    const: apb
->> +
->> +patternProperties:
->> +  "^panel@[0-3]$":
->> +    type: object
->> +    description: |
->> +      A node containing the panel or bridge description as documented in
->
-> bridge? But the node name says panel only.
->
->> +      Documentation/devicetree/bindings/display/mipi-dsi-bus.txt
->
-> Drop description.
->
->> +
->> +required:
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> --
->> 2.26.0
->>
