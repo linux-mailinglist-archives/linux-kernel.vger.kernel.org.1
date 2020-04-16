@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828121ABCEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021941ABCF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503881AbgDPJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42882 "EHLO mail.kernel.org"
+        id S2503952AbgDPJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:36:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35074 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503499AbgDPJf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:35:59 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7AD621BE5;
-        Thu, 16 Apr 2020 09:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587029759;
-        bh=8AFD3plu+KjEQrKRRIW/WPjAt6mrEDHJMoiYPlXMdsA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a0IjzBIGZOxVe1GHgJjUAzkRmKA0r5kDh8Nr7oICMwcdzUH7YneNHH72cx7RASZiS
-         j3cuL/YvRXpslmP88sumAU/EOcBQ+Ljt5i3GBS1uOisUHO3WwjkEPmqyL8Z8NloauQ
-         jMwFF3ysBTPYnXZ6lXlXh7A25hhFFc5TxTaJZ0ZU=
-Date:   Thu, 16 Apr 2020 10:35:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Takahide Higuchi <takahidehiguchi@gmail.com>
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: support full duplex operation
-Message-ID: <20200416093556.GB5354@sirena.org.uk>
-References: <20200306130147.27452-1-srinivas.kandagatla@linaro.org>
- <841cb73b-82d3-9fb9-0ed3-547882872085@linaro.org>
+        id S2503898AbgDPJgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:36:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 773B5AD0E;
+        Thu, 16 Apr 2020 09:36:13 +0000 (UTC)
+Message-ID: <aa03258a2db37293b4be56dcd2b3f5f32665c6dc.camel@suse.de>
+Subject: Re: [PATCH] ARM: dts: bcm283x: Disable dsi0 node
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Eric Anholt <eric@anholt.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 16 Apr 2020 11:36:11 +0200
+In-Reply-To: <CADaigPXwfjd-HoOtBm_fuPQ9eh7AKTaJx+ocLsppPFdL3Cr4jg@mail.gmail.com>
+References: <20200415144233.23274-1-nsaenzjulienne@suse.de>
+         <CADaigPXwfjd-HoOtBm_fuPQ9eh7AKTaJx+ocLsppPFdL3Cr4jg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-CzeniVIMWfPwxKpMT9vR"
+User-Agent: Evolution 3.34.2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
-Content-Disposition: inline
-In-Reply-To: <841cb73b-82d3-9fb9-0ed3-547882872085@linaro.org>
-X-Cookie: Tempt me with a spoon!
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ZoaI/ZTpAVc4A5k6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-CzeniVIMWfPwxKpMT9vR
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 16, 2020 at 09:05:55AM +0100, Srinivas Kandagatla wrote:
+On Wed, 2020-04-15 at 12:17 -0700, Eric Anholt wrote:
+> On Wed, Apr 15, 2020 at 7:42 AM Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> > Since its inception the module was meant to be disabled by default, but
+> > the original commit failed to add the relevant property.
+> >=20
+> > Fixes: 4aba4cf82054 ("ARM: dts: bcm2835: Add the DSI module nodes and
+> > clocks")
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > ---
+> >  arch/arm/boot/dts/bcm283x.dtsi | 1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+> > diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x=
+.dtsi
+> > index e1abe8c730cef..b83a864e2e8ba 100644
+> > --- a/arch/arm/boot/dts/bcm283x.dtsi
+> > +++ b/arch/arm/boot/dts/bcm283x.dtsi
+> > @@ -372,6 +372,7 @@ dsi0: dsi@7e209000 {
+> >                                              "dsi0_ddr2",
+> >                                              "dsi0_ddr";
+> >=20
+> > +                       status =3D "disabled";
+> >                 };
+>=20
+> If you've confirmed that vc4 still probes,
 
-> Looks like this patch was missed in last cycle, Should I resend this one =
-or
-> are you okay to apply this. This patch is required to get full duplex on
-> msm8916 based platforms.
+Confirmed.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+> Reviewed-by: Eric Anholt <eric@anholt.net>
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
+Thanks,
+Nicolas
 
---ZoaI/ZTpAVc4A5k6
+
+--=-CzeniVIMWfPwxKpMT9vR
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6YJvsACgkQJNaLcl1U
-h9BgUAf+P5xci/XZM3xcqCLxrOBiDlbEAw2QYHpY+orX/gMgPJIya4k0/3KNlPsQ
-Vr/987zEpqJApIrM6F3CYgwslsTcnLZzRvTJp/QxO4FR94Jb0guaZ6l031is7wHa
-N5rNI9lO7hXE9zoOoHGF8E+7Us0cW4xfZOgpJq19Tos9vVOzn+rFVowK5E5BIcoA
-k0oJ1MLNiUOq0lFIkwETNmvab9OVT9VJU+FpIvMqSmTh5CmaKtSx4W+HQGPbeWko
-0UmjJlrJBgfMYZGEnLiy98dUjlod1OclUMLbj0TZZdxT3kAaqNP/agjZNUXBfNM5
-FXtoMFWLdN+eJCtmhr1ABez71lygpQ==
-=BL6m
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6YJwsACgkQlfZmHno8
+x/4N9wgAqYlPDHTVq7kMKPOn6adydtLBBvfMnRHRMQMXIFhdmuET8wrmugAmzy9y
+DD67algfoFxdsMWGSIApFa1P0Yh2fkI9Wqe9jUIVdFn8od6P7s4ntl1ifzi//UDJ
+BA/iSHNI5AZfeeIarCjijfArnXocnV1qtGC6JypqTtPSXjZW2e3TepNg3WIPTx/W
+iw/7W7KOJC7nxFJ3M89ZGJ+GbZmt4Q3dbjX1CS3CeWNzibqTGqBkG+OsUvfOIs12
+W31QzmL50Qut49DVLk47tL2KxaMOdUoywRHcq2LYIJiN1cyShGGvt4uh80ITC7aw
+EjUyVcq3XKr6b81WqlQz982PVe+0IQ==
+=f98w
 -----END PGP SIGNATURE-----
 
---ZoaI/ZTpAVc4A5k6--
+--=-CzeniVIMWfPwxKpMT9vR--
+
