@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5991AC5CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361CF1AC2FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405799AbgDPO1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:27:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46514 "EHLO mail.kernel.org"
+        id S2897273AbgDPNgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:36:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898874AbgDPN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:59:30 -0400
+        id S2896041AbgDPN3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:29:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5F072223D;
-        Thu, 16 Apr 2020 13:59:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09E2F20767;
+        Thu, 16 Apr 2020 13:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045569;
-        bh=bdSAx6aYzNsELWFGcYGhzgSpwLK7PjSAoIDJugtAde0=;
+        s=default; t=1587043778;
+        bh=V59zFjV6ZZmWmqaah7XOzcTvl8C+F7D/XEZk8w+uE1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hbd/HDGRaztpeZBmt1xnDIuB7G5BJE1UpD5qJ3PXjupqwcGMry79TqZqzJccjyvg0
-         VWZGrwrtk5XnJnvR5Bon89emLNuxciWPQjymW6qGqVcFKIiozIL0tbY0XpeqkW+ztE
-         X1b8/iC7MBqP2CBIeF/oLieG5uhA+Ye1Ku2hbDxo=
+        b=rWvWjvg0AmVE2mNZE94RZSREArPC7+Iplmhc/zA3XYBT6jXjAfxrEtbMnMtaSDhxQ
+         G/nfXrF4OfVWDrVIQ0W+OomUjIFNXqysD1L0ZVPWJOVYcFgjFD5P0LeA6/JJ8K8SWe
+         NZR6Gs8S8xn5x5vpzOUd9Z3VPE4KC/KEG52OhBD0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Michal Mrozek <michal.mrozek@intel.com>,
-        Michal Mrozek <Michal.mrozek@intel.com>
-Subject: [PATCH 5.6 147/254] drm/i915/gen12: Disable preemption timeout
-Date:   Thu, 16 Apr 2020 15:23:56 +0200
-Message-Id: <20200416131344.929475014@linuxfoundation.org>
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 096/146] powerpc/pseries: Drop pointless static qualifier in vpa_debugfs_init()
+Date:   Thu, 16 Apr 2020 15:23:57 +0200
+Message-Id: <20200416131255.906873948@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,96 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit 07bcfd1291de77ffa9b627b4442783aba1335229 upstream.
+commit 11dd34f3eae5a468013bb161a1dcf1fecd2ca321 upstream.
 
-Allow super long OpenCL workloads which cannot be preempted within
-the default timeout to run out of the box.
+There is no need to have the 'struct dentry *vpa_dir' variable static
+since new value always be assigned before use it.
 
-v2:
- * Make it stick out more and apply only to RCS. (Chris)
-
-v3:
- * Mention platform override in kconfig. (Joonas)
-
-Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Michal Mrozek <michal.mrozek@intel.com>
-Cc: <stable@vger.kernel.org> # v5.6+
-Acked-by: Chris Wilson <chris@chris-wilson.co.uk>
-Acked-by: Michal Mrozek <Michal.mrozek@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200312115748.29970-1-tvrtko.ursulin@linux.intel.com
+Fixes: c6c26fb55e8e ("powerpc/pseries: Export raw per-CPU VPA data via debugfs")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20190218125644.87448-1-yuehaibing@huawei.com
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/Kconfig.profile      |    4 ++++
- drivers/gpu/drm/i915/gt/intel_engine_cs.c |   13 +++++++++----
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ arch/powerpc/platforms/pseries/lpar.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/Kconfig.profile
-+++ b/drivers/gpu/drm/i915/Kconfig.profile
-@@ -35,6 +35,10 @@ config DRM_I915_PREEMPT_TIMEOUT
- 
- 	  May be 0 to disable the timeout.
- 
-+	  The compiled in default may get overridden at driver probe time on
-+	  certain platforms and certain engines which will be reflected in the
-+	  sysfs control.
-+
- config DRM_I915_SPIN_REQUEST
- 	int "Busywait for request completion (us)"
- 	default 5 # microseconds
---- a/drivers/gpu/drm/i915/gt/intel_engine_cs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
-@@ -274,6 +274,7 @@ static void intel_engine_sanitize_mmio(s
- static int intel_engine_setup(struct intel_gt *gt, enum intel_engine_id id)
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -1056,7 +1056,7 @@ static int __init vpa_debugfs_init(void)
  {
- 	const struct engine_info *info = &intel_engines[id];
-+	struct drm_i915_private *i915 = gt->i915;
- 	struct intel_engine_cs *engine;
+ 	char name[16];
+ 	long i;
+-	static struct dentry *vpa_dir;
++	struct dentry *vpa_dir;
  
- 	BUILD_BUG_ON(MAX_ENGINE_CLASS >= BIT(GEN11_ENGINE_CLASS_WIDTH));
-@@ -300,11 +301,11 @@ static int intel_engine_setup(struct int
- 	engine->id = id;
- 	engine->legacy_idx = INVALID_ENGINE;
- 	engine->mask = BIT(id);
--	engine->i915 = gt->i915;
-+	engine->i915 = i915;
- 	engine->gt = gt;
- 	engine->uncore = gt->uncore;
- 	engine->hw_id = engine->guc_id = info->hw_id;
--	engine->mmio_base = __engine_mmio_base(gt->i915, info->mmio_bases);
-+	engine->mmio_base = __engine_mmio_base(i915, info->mmio_bases);
- 
- 	engine->class = info->class;
- 	engine->instance = info->instance;
-@@ -319,11 +320,15 @@ static int intel_engine_setup(struct int
- 	engine->props.timeslice_duration_ms =
- 		CONFIG_DRM_I915_TIMESLICE_DURATION;
- 
-+	/* Override to uninterruptible for OpenCL workloads. */
-+	if (INTEL_GEN(i915) == 12 && engine->class == RENDER_CLASS)
-+		engine->props.preempt_timeout_ms = 0;
-+
- 	engine->context_size = intel_engine_context_size(gt, engine->class);
- 	if (WARN_ON(engine->context_size > BIT(20)))
- 		engine->context_size = 0;
- 	if (engine->context_size)
--		DRIVER_CAPS(gt->i915)->has_logical_contexts = true;
-+		DRIVER_CAPS(i915)->has_logical_contexts = true;
- 
- 	/* Nothing to do here, execute in order of dependencies */
- 	engine->schedule = NULL;
-@@ -339,7 +344,7 @@ static int intel_engine_setup(struct int
- 	gt->engine_class[info->class][info->instance] = engine;
- 	gt->engine[id] = engine;
- 
--	gt->i915->engine[id] = engine;
-+	i915->engine[id] = engine;
- 
- 	return 0;
- }
+ 	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
+ 		return 0;
 
 
