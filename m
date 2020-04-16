@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03361AB92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547441AB936
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437520AbgDPHB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:01:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47887 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436624AbgDPHB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:01:56 -0400
-IronPort-SDR: Cf/ZWQB1NbiFBk8Ls5UO4dmS88HY4EUItmbn5FJglP2+G42bTlKLXweztmWTiJLfPB7Af/uOaO
- aSZV1Y4oyNGw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 00:01:53 -0700
-IronPort-SDR: k/yOcRMuFyGyqEZZ2PfMRX65AImLqtwCpR3s3MdXAyaLGY25O9FqZsrOC3b/+ZrkqCTZzoTYju
- 5I+9mdKSZJOg==
-X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
-   d="scan'208";a="257119822"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.236]) ([10.238.4.236])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 00:01:52 -0700
-Subject: Re: [PATCH] x86, smpboot: Disable frequency invariance when it's
- unsupported
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200416020700.167294-1-like.xu@linux.intel.com>
- <1587017284.32139.20.camel@suse.cz>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <bf43772d-48e5-01d4-dd03-330110e487fa@linux.intel.com>
-Date:   Thu, 16 Apr 2020 15:01:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2438034AbgDPHCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437790AbgDPHCi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:02:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB76C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:02:38 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOyXY-0005qT-Tq; Thu, 16 Apr 2020 09:02:24 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jOyXX-0003M3-SP; Thu, 16 Apr 2020 09:02:23 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: [PATCH v5 0/4] mainline Protonic boards
+Date:   Thu, 16 Apr 2020 09:02:18 +0200
+Message-Id: <20200416070222.12181-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <1587017284.32139.20.camel@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/16 14:08, Giovanni Gherdovich wrote:
-> On Thu, 2020-04-16 at 10:12 +0800, Like Xu wrote:
->> On the Intel SNR processors such as "Intel Atom(R) C6562", the
->> turbo_freq for 4C turbo may be zero which causes a divide by zero
->> exception and blocks the boot process when arch_scale_freq_tick().
->>
->> When one of the preset base_freq or turbo_freq is meaningless,
->> we may disable frequency invariance.
->>
->> Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
->> Signed-off-by: Like Xu <like.xu@linux.intel.com>
->> ---
->>   arch/x86/kernel/smpboot.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
->> index fe3ab9632f3b..741367ce4d14 100644
->> --- a/arch/x86/kernel/smpboot.c
->> +++ b/arch/x86/kernel/smpboot.c
->> @@ -1958,6 +1958,9 @@ static bool core_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
->>   	*base_freq = (*base_freq >> 8) & 0xFF;      /* max P state */
->>   	*turbo_freq = (*turbo_freq >> 24) & 0xFF;   /* 4C turbo    */
->>   
->> +	if (*turbo_freq == 0 || *base_freq == 0)
->> +		return false;
->> +
->>   	return true;
->>   }
->>
-> 
-> Hello Like Xu,
-> 
-> thanks for reporting this and for the patch. My preferred solution for when
-> the 4 cores turbo freq is detected as zero would be to look for the 1 core turbo
-> frequency, as we're likely on a machine with less than 4 cores. Is that the
-> case on your Atom C6562? I couldn't find it on ark.intel.com.
+changes v5:
+- PRTI6Q: remove status from the pwm-backlight node
+- drop the vendor-prefixes patch, it is already taken by Rob
+- add Reviewed-by: Rob Herring <robh@kernel.org>
 
-The Atom C6562 is "24 cores" based on 
-https://www.intel.com/content/dam/www/public/us/en/documents/product-briefs/atom-p5900-product-brief.pdf
+changes v4:
+- VT7: fix typo
 
-#define MSR_PLATFORM_INFO		0x000000ce
+changes v3:
+- move compatible to the start of node
+- move status to the end
+- use generic names in compatible
+- refactor dts/dtsi
+- use alphabet order for pinctrl and phandels
+- remove unused or currently not supported nodes
 
-the value for this msr is 80820f9801600
+changes v2:
+- squash PRTI6Q patches
 
-#define MSR_TURBO_RATIO_LIMIT		0x000001ad
+Oleksij Rempel (4):
+  ARM: dts: add Protonic PRTI6Q board
+  ARM: dts: add Protonic WD2 board
+  ARM: dts: add Protonic VT7 board
+  ARM: dts: add Protonic RVT board
 
-the value for this msr is 16
+ .../devicetree/bindings/arm/fsl.yaml          |   4 +
+ arch/arm/boot/dts/Makefile                    |   4 +
+ arch/arm/boot/dts/imx6dl-prtrvt.dts           | 203 +++++++
+ arch/arm/boot/dts/imx6dl-prtvt7.dts           | 473 +++++++++++++++
+ arch/arm/boot/dts/imx6q-prti6q.dts            | 550 ++++++++++++++++++
+ arch/arm/boot/dts/imx6q-prtwd2.dts            | 188 ++++++
+ arch/arm/boot/dts/imx6qdl-prti6q.dtsi         | 185 ++++++
+ 7 files changed, 1607 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-prtrvt.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-prtvt7.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-prti6q.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-prtwd2.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-prti6q.dtsi
 
-I know you didn't test your feature on this platform,
-but combinations of other various values ​​are also possible
-(unless it's made clear in the specification).
-
-> 
-> As per why I'd like to go with 1 core turbo instead of bailing out of freq
-> invariance entirely, I've left a comment in the openSUSE bugzilla with some
-> details: https://bugzilla.opensuse.org/show_bug.cgi?id=1166664#c35
-
-> The relevant part is:
-> 
-> :: The fix in this case is to take the 1 core turbo as normalizing factor. The
-> :: other choice would be to use the base frequency (no turbo at all), but using
-> :: base freq for normalization means that the ratio becomes current_freq / base_freq
-> :: which is an over-estimation, which leads the frequency governor to think the
-> :: CPU is more loaded than it really is and raise the frequency a bit too
-> :: aggressively. This is tolerable in performance-oriented servers but
-> :: inappropriate on small machines with 2 cores."
-> 
-> Regarding base_freq being reported as zero, you're right, that can happen too
-> and we've seen it in hypervisors.
-> 
-> I've just sent fixes for these two problems here:
-> https://lore.kernel.org/lkml/20200416054745.740-1-ggherdovich@suse.cz/
-
-Hence the "less than 4 cores" comment is weird for C6562
-but the use of "1C turbo" looks good to me.
-
-Thanks,
-Like Xu
-
-> 
-> 
-> Thanks,
-> Giovanni Gherdovich
-> 
+-- 
+2.26.0.rc2
 
