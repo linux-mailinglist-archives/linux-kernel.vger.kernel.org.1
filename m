@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DC71ACBF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC531AC8A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896240AbgDPPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:53:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
+        id S2395022AbgDPPLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:11:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896106AbgDPNcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:32:55 -0400
+        id S2441671AbgDPNuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 629922222D;
-        Thu, 16 Apr 2020 13:31:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECE53217D8;
+        Thu, 16 Apr 2020 13:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043900;
-        bh=/pRuMGAn0u2C8xDQzhfpisUenw8c2eLcIQtdrCXZSKY=;
+        s=default; t=1587045009;
+        bh=35DQCoLhU4IACeOnSBXyrN4iKj6AcylTdXMZ0STztX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h9ABYin6oNrEAi6x7OxIZRY/DMs0unW0lnbG6XLunpFtZz1p6CUiPxOtlMVSlEsJ5
-         q0lF9fWne/D9oFm7M8VFiMiMmE3luaVia66qQl9YP6mYe0UmvKOgacias+7gHRbdb7
-         zbgJCAXOPv4LpvbxNx7Y2xhNJGw5LkrLs0pP+Tkg=
+        b=pLz1A5Fp2SVTEkZ52U11Q3l4wWt7pjLgu1lTYqFxwsbEz3SDO6YjoMsRE5qAxrgf7
+         rA9qetYNVS7OVSXGRTyvybBo8JT1Puyzj+o2o5byWdh7yGMutmos/LZaWX9fdu5gAv
+         Cyc7FxLelaOyFWCTKOkqfSkmGTo81iC5Oq8xXftE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 146/146] etnaviv: perfmon: fix total and idle HI cyleces readout
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        NeilBrown <neilb@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 193/232] fs/filesystems.c: downgrade user-reachable WARN_ONCE() to pr_warn_once()
 Date:   Thu, 16 Apr 2020 15:24:47 +0200
-Message-Id: <20200416131302.322010649@linuxfoundation.org>
+Message-Id: <20200416131339.304534097@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,92 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Gmeiner <christian.gmeiner@gmail.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit 15ff4a7b584163b12b118a2c381529f05ff3a94d ]
+commit 26c5d78c976ca298e59a56f6101a97b618ba3539 upstream.
 
-As seen at CodeAurora's linux-imx git repo in imx_4.19.35_1.0.0 branch.
+After request_module(), nothing is stopping the module from being
+unloaded until someone takes a reference to it via try_get_module().
 
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The WARN_ONCE() in get_fs_type() is thus user-reachable, via userspace
+running 'rmmod' concurrently.
+
+Since WARN_ONCE() is for kernel bugs only, not for user-reachable
+situations, downgrade this warning to pr_warn_once().
+
+Keep it printed once only, since the intent of this warning is to detect
+a bug in modprobe at boot time.  Printing the warning more than once
+wouldn't really provide any useful extra information.
+
+Fixes: 41124db869b7 ("fs: warn in case userspace lied about modprobe return")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Jessica Yu <jeyu@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jeff Vander Stoep <jeffv@google.com>
+Cc: Jessica Yu <jeyu@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: NeilBrown <neilb@suse.com>
+Cc: <stable@vger.kernel.org>		[4.13+]
+Link: http://lkml.kernel.org/r/20200312202552.241885-3-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 43 +++++++++++++++++------
- 1 file changed, 32 insertions(+), 11 deletions(-)
+ fs/filesystems.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-index f86cb66a84b9c..3ce77cbad4ae3 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-@@ -37,13 +37,6 @@ struct etnaviv_pm_domain_meta {
- 	u32 nr_domains;
- };
+--- a/fs/filesystems.c
++++ b/fs/filesystems.c
+@@ -271,7 +271,9 @@ struct file_system_type *get_fs_type(con
+ 	fs = __get_fs_type(name, len);
+ 	if (!fs && (request_module("fs-%.*s", len, name) == 0)) {
+ 		fs = __get_fs_type(name, len);
+-		WARN_ONCE(!fs, "request_module fs-%.*s succeeded, but still no fs?\n", len, name);
++		if (!fs)
++			pr_warn_once("request_module fs-%.*s succeeded, but still no fs?\n",
++				     len, name);
+ 	}
  
--static u32 simple_reg_read(struct etnaviv_gpu *gpu,
--	const struct etnaviv_pm_domain *domain,
--	const struct etnaviv_pm_signal *signal)
--{
--	return gpu_read(gpu, signal->data);
--}
--
- static u32 perf_reg_read(struct etnaviv_gpu *gpu,
- 	const struct etnaviv_pm_domain *domain,
- 	const struct etnaviv_pm_signal *signal)
-@@ -77,6 +70,34 @@ static u32 pipe_reg_read(struct etnaviv_gpu *gpu,
- 	return value;
- }
- 
-+static u32 hi_total_cycle_read(struct etnaviv_gpu *gpu,
-+	const struct etnaviv_pm_domain *domain,
-+	const struct etnaviv_pm_signal *signal)
-+{
-+	u32 reg = VIVS_HI_PROFILE_TOTAL_CYCLES;
-+
-+	if (gpu->identity.model == chipModel_GC880 ||
-+		gpu->identity.model == chipModel_GC2000 ||
-+		gpu->identity.model == chipModel_GC2100)
-+		reg = VIVS_MC_PROFILE_CYCLE_COUNTER;
-+
-+	return gpu_read(gpu, reg);
-+}
-+
-+static u32 hi_total_idle_cycle_read(struct etnaviv_gpu *gpu,
-+	const struct etnaviv_pm_domain *domain,
-+	const struct etnaviv_pm_signal *signal)
-+{
-+	u32 reg = VIVS_HI_PROFILE_IDLE_CYCLES;
-+
-+	if (gpu->identity.model == chipModel_GC880 ||
-+		gpu->identity.model == chipModel_GC2000 ||
-+		gpu->identity.model == chipModel_GC2100)
-+		reg = VIVS_HI_PROFILE_TOTAL_CYCLES;
-+
-+	return gpu_read(gpu, reg);
-+}
-+
- static const struct etnaviv_pm_domain doms_3d[] = {
- 	{
- 		.name = "HI",
-@@ -86,13 +107,13 @@ static const struct etnaviv_pm_domain doms_3d[] = {
- 		.signal = (const struct etnaviv_pm_signal[]) {
- 			{
- 				"TOTAL_CYCLES",
--				VIVS_HI_PROFILE_TOTAL_CYCLES,
--				&simple_reg_read
-+				0,
-+				&hi_total_cycle_read
- 			},
- 			{
- 				"IDLE_CYCLES",
--				VIVS_HI_PROFILE_IDLE_CYCLES,
--				&simple_reg_read
-+				0,
-+				&hi_total_idle_cycle_read
- 			},
- 			{
- 				"AXI_CYCLES_READ_REQUEST_STALLED",
--- 
-2.20.1
-
+ 	if (dot && fs && !(fs->fs_flags & FS_HAS_SUBTYPE)) {
 
 
