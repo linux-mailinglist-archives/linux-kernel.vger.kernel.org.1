@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7478B1AC5A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC931AC465
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgDPOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:23:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43912 "EHLO mail.kernel.org"
+        id S2392486AbgDPN7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409234AbgDPN4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:56:53 -0400
+        id S2898023AbgDPNjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:39:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84F6B20732;
-        Thu, 16 Apr 2020 13:56:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C64220732;
+        Thu, 16 Apr 2020 13:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045413;
-        bh=dOADrGFjZ/rXCi+5xfhr7DK9w3epKFzRh782rc/iFgs=;
+        s=default; t=1587044394;
+        bh=dlEss9BDF5MWdoHoy1JlqYZL4Ppiy0B4C1vCgajjelQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BcfFVp62XfGL6tYjILljpO9WtuX6T2c+UyWhHC/xJrt3rN0e282GA84JGcCCxGqZH
-         ocWcC5vGqaxGLMIBRkI2saOOVWtZ77ihhzzNX7TbJiGv6FxImVtGUEJvsuNF9+Qlu7
-         Q2O2nUmJ2eYp0AZEo/iZ3FbTN5iRy7nv1FxtuyQU=
+        b=AsUY5EEO5RmCtgFxZhTTsXm4nQwG1A48oZmU/slWUzE0RD2pEu40tmxyiuLxAITHb
+         FyPH+ZAd11o3gRayqYDogzcUkdqVEBi33TdZRHc4ZrcOfvb1FRW5MSifsTNeilREpT
+         zLxrPxIeiaqCh95zLtVz/Vg3q+a3PdnXIQQ7nmMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.6 124/254] signal: Extend exec_id to 64bits
-Date:   Thu, 16 Apr 2020 15:23:33 +0200
-Message-Id: <20200416131341.888514502@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.5 163/257] btrfs: fix missing file extent item for hole after ranged fsync
+Date:   Thu, 16 Apr 2020 15:23:34 +0200
+Message-Id: <20200416131346.917604883@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +44,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit d1e7fd6462ca9fc76650fbe6ca800e35b24267da upstream.
+commit 95418ed1d10774cd9a49af6f39e216c1256f1eeb upstream.
 
-Replace the 32bit exec_id with a 64bit exec_id to make it impossible
-to wrap the exec_id counter.  With care an attacker can cause exec_id
-wrap and send arbitrary signals to a newly exec'd parent.  This
-bypasses the signal sending checks if the parent changes their
-credentials during exec.
+When doing a fast fsync for a range that starts at an offset greater than
+zero, we can end up with a log that when replayed causes the respective
+inode miss a file extent item representing a hole if we are not using the
+NO_HOLES feature. This is because for fast fsyncs we don't log any extents
+that cover a range different from the one requested in the fsync.
 
-The severity of this problem can been seen that in my limited testing
-of a 32bit exec_id it can take as little as 19s to exec 65536 times.
-Which means that it can take as little as 14 days to wrap a 32bit
-exec_id.  Adam Zabrocki has succeeded wrapping the self_exe_id in 7
-days.  Even my slower timing is in the uptime of a typical server.
-Which means self_exec_id is simply a speed bump today, and if exec
-gets noticably faster self_exec_id won't even be a speed bump.
+Example scenario to trigger it:
 
-Extending self_exec_id to 64bits introduces a problem on 32bit
-architectures where reading self_exec_id is no longer atomic and can
-take two read instructions.  Which means that is is possible to hit
-a window where the read value of exec_id does not match the written
-value.  So with very lucky timing after this change this still
-remains expoiltable.
+  $ mkfs.btrfs -O ^no-holes -f /dev/sdd
+  $ mount /dev/sdd /mnt
 
-I have updated the update of exec_id on exec to use WRITE_ONCE
-and the read of exec_id in do_notify_parent to use READ_ONCE
-to make it clear that there is no locking between these two
-locations.
+  # Create a file with a single 256K and fsync it to clear to full sync
+  # bit in the inode - we want the msync below to trigger a fast fsync.
+  $ xfs_io -f -c "pwrite -S 0xab 0 256K" -c "fsync" /mnt/foo
 
-Link: https://lore.kernel.org/kernel-hardening/20200324215049.GA3710@pi3.com.pl
-Fixes: 2.3.23pre2
-Cc: stable@vger.kernel.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+  # Force a transaction commit and wipe out the log tree.
+  $ sync
+
+  # Dirty 768K of data, increasing the file size to 1Mb, and flush only
+  # the range from 256K to 512K without updating the log tree
+  # (sync_file_range() does not trigger fsync, it only starts writeback
+  # and waits for it to finish).
+
+  $ xfs_io -c "pwrite -S 0xcd 256K 768K" /mnt/foo
+  $ xfs_io -c "sync_range -abw 256K 256K" /mnt/foo
+
+  # Now dirty the range from 768K to 1M again and sync that range.
+  $ xfs_io -c "mmap -w 768K 256K"        \
+           -c "mwrite -S 0xef 768K 256K" \
+           -c "msync -s 768K 256K"       \
+           -c "munmap"                   \
+           /mnt/foo
+
+  <power fail>
+
+  # Mount to replay the log.
+  $ mount /dev/sdd /mnt
+  $ umount /mnt
+
+  $ btrfs check /dev/sdd
+  Opening filesystem to check...
+  Checking filesystem on /dev/sdd
+  UUID: 482fb574-b288-478e-a190-a9c44a78fca6
+  [1/7] checking root items
+  [2/7] checking extents
+  [3/7] checking free space cache
+  [4/7] checking fs roots
+  root 5 inode 257 errors 100, file extent discount
+  Found file extent holes:
+       start: 262144, len: 524288
+  ERROR: errors found in fs roots
+  found 720896 bytes used, error(s) found
+  total csum bytes: 512
+  total tree bytes: 131072
+  total fs tree bytes: 32768
+  total extent tree bytes: 16384
+  btree space waste bytes: 123514
+  file data blocks allocated: 589824
+    referenced 589824
+
+Fix this issue by setting the range to full (0 to LLONG_MAX) when the
+NO_HOLES feature is not enabled. This results in extra work being done
+but it gives the guarantee we don't end up with missing holes after
+replaying the log.
+
+CC: stable@vger.kernel.org # 4.19+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/exec.c             |    2 +-
- include/linux/sched.h |    4 ++--
- kernel/signal.c       |    2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/file.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1386,7 +1386,7 @@ void setup_new_exec(struct linux_binprm
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2072,6 +2072,16 @@ int btrfs_sync_file(struct file *file, l
+ 	btrfs_init_log_ctx(&ctx, inode);
  
- 	/* An exec changes our domain. We are no longer part of the thread
- 	   group */
--	current->self_exec_id++;
-+	WRITE_ONCE(current->self_exec_id, current->self_exec_id + 1);
- 	flush_signal_handlers(current, 0);
- }
- EXPORT_SYMBOL(setup_new_exec);
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -939,8 +939,8 @@ struct task_struct {
- 	struct seccomp			seccomp;
- 
- 	/* Thread group tracking: */
--	u32				parent_exec_id;
--	u32				self_exec_id;
-+	u64				parent_exec_id;
-+	u64				self_exec_id;
- 
- 	/* Protection against (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed, mempolicy: */
- 	spinlock_t			alloc_lock;
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1931,7 +1931,7 @@ bool do_notify_parent(struct task_struct
- 		 * This is only possible if parent == real_parent.
- 		 * Check if it has changed security domain.
- 		 */
--		if (tsk->parent_exec_id != tsk->parent->self_exec_id)
-+		if (tsk->parent_exec_id != READ_ONCE(tsk->parent->self_exec_id))
- 			sig = SIGCHLD;
- 	}
- 
+ 	/*
++	 * Set the range to full if the NO_HOLES feature is not enabled.
++	 * This is to avoid missing file extent items representing holes after
++	 * replaying the log.
++	 */
++	if (!btrfs_fs_incompat(fs_info, NO_HOLES)) {
++		start = 0;
++		end = LLONG_MAX;
++	}
++
++	/*
+ 	 * We write the dirty pages in the range and wait until they complete
+ 	 * out of the ->i_mutex. If so, we can flush the dirty pages by
+ 	 * multi-task, and make the performance up.  See
 
 
