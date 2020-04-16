@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF52B1AC719
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E851ACC0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394802AbgDPOte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
+        id S2896841AbgDPPyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729547AbgDPN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:44 -0400
+        id S2896257AbgDPNac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B9DB21744;
-        Thu, 16 Apr 2020 13:58:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7946C208E4;
+        Thu, 16 Apr 2020 13:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045522;
-        bh=aBs0U7UDsdXOR98ZbF/DFAx8LAlxF0lzVvph7LALPJo=;
+        s=default; t=1587043832;
+        bh=ipGa19nKKTFXIKRlrk5uJWMpFfYkR2QvtOVETI2Td8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ARsxIn5e5DqOgQwVPkgXzfsjWC1uppMSt1INxxNGGTdo4yKkPiv67L+PjnNvwSfXc
-         BTpCZA3MMiw2O0QyEOQW4aUXikw51W7ggCls3EBkNMksasKL/42k/GAs7q+0ge/IR4
-         tFqgGhSt432aYusvN+aH+lP8yBPZLkbl6eBtR/Dw=
+        b=sSzqyAJ/A7jDUdZ0oTw7nE6bBabaDrxemejK0Zs/vi52OK1EezgA7YdlQlV8xmHS0
+         53FeXBapyOW7yxjMEUSLpKw9zyIm0EGgxiK5tOj/1BwGkSqj50uCrMYxJn4kXFy6NR
+         9hVzBHh5NVNkCctJGTUw1gBfjr+qwrqRppbECc8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Alex Elder <elder@linaro.org>
-Subject: [PATCH 5.6 168/254] net: qualcomm: rmnet: Allow configuration updates to existing devices
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 116/146] Input: i8042 - add Acer Aspire 5738z to nomux list
 Date:   Thu, 16 Apr 2020 15:24:17 +0200
-Message-Id: <20200416131347.528538989@linuxfoundation.org>
+Message-Id: <20200416131258.486011689@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 2abb5792387eb188b12051337d5dcd2cba615cb0 upstream.
+commit ebc68cedec4aead47d8d11623d013cca9bf8e825 upstream.
 
-This allows the changelink operation to succeed if the mux_id was
-specified as an argument. Note that the mux_id must match the
-existing mux_id of the rmnet device or should be an unused mux_id.
+The Acer Aspire 5738z has a button to disable (and re-enable) the
+touchpad next to the touchpad.
 
-Fixes: 1dc49e9d164c ("net: rmnet: do not allow to change mux id if mux id is duplicated")
-Reported-and-tested-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
-Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Guenter Roeck <linux@roeck-us.net>
+When this button is pressed a LED underneath indicates that the touchpad
+is disabled (and an event is send to userspace and GNOME shows its
+touchpad enabled / disable OSD thingie).
+
+So far so good, but after re-enabling the touchpad it no longer works.
+
+The laptop does not have an external ps2 port, so mux mode is not needed
+and disabling mux mode fixes the touchpad no longer working after toggling
+it off and back on again, so lets add this laptop model to the nomux list.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20200331123947.318908-1-hdegoede@redhat.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c |   31 ++++++++++++---------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
-@@ -279,7 +279,6 @@ static int rmnet_changelink(struct net_d
- {
- 	struct rmnet_priv *priv = netdev_priv(dev);
- 	struct net_device *real_dev;
--	struct rmnet_endpoint *ep;
- 	struct rmnet_port *port;
- 	u16 mux_id;
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -534,6 +534,17 @@ static const struct dmi_system_id __init
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo LaVie Z"),
+ 		},
+ 	},
++	{
++		/*
++		 * Acer Aspire 5738z
++		 * Touchpad stops working in mux mode when dis- + re-enabled
++		 * with the touchpad enable/disable toggle hotkey
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
++		},
++	},
+ 	{ }
+ };
  
-@@ -294,19 +293,27 @@ static int rmnet_changelink(struct net_d
- 
- 	if (data[IFLA_RMNET_MUX_ID]) {
- 		mux_id = nla_get_u16(data[IFLA_RMNET_MUX_ID]);
--		if (rmnet_get_endpoint(port, mux_id)) {
--			NL_SET_ERR_MSG_MOD(extack, "MUX ID already exists");
--			return -EINVAL;
--		}
--		ep = rmnet_get_endpoint(port, priv->mux_id);
--		if (!ep)
--			return -ENODEV;
- 
--		hlist_del_init_rcu(&ep->hlnode);
--		hlist_add_head_rcu(&ep->hlnode, &port->muxed_ep[mux_id]);
-+		if (mux_id != priv->mux_id) {
-+			struct rmnet_endpoint *ep;
-+
-+			ep = rmnet_get_endpoint(port, priv->mux_id);
-+			if (!ep)
-+				return -ENODEV;
-+
-+			if (rmnet_get_endpoint(port, mux_id)) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "MUX ID already exists");
-+				return -EINVAL;
-+			}
-+
-+			hlist_del_init_rcu(&ep->hlnode);
-+			hlist_add_head_rcu(&ep->hlnode,
-+					   &port->muxed_ep[mux_id]);
- 
--		ep->mux_id = mux_id;
--		priv->mux_id = mux_id;
-+			ep->mux_id = mux_id;
-+			priv->mux_id = mux_id;
-+		}
- 	}
- 
- 	if (data[IFLA_RMNET_FLAGS]) {
 
 
