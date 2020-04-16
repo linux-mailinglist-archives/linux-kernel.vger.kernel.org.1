@@ -2,303 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371FC1AB932
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948F61AB93F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437825AbgDPHCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2437682AbgDPHCe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:02:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1BBC061BD3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:02:33 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jOyXZ-0005qX-7a; Thu, 16 Apr 2020 09:02:25 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jOyXY-0003av-OP; Thu, 16 Apr 2020 09:02:24 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: [PATCH v5 4/4] ARM: dts: add Protonic RVT board
-Date:   Thu, 16 Apr 2020 09:02:22 +0200
-Message-Id: <20200416070222.12181-5-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200416070222.12181-1-o.rempel@pengutronix.de>
-References: <20200416070222.12181-1-o.rempel@pengutronix.de>
+        id S2438135AbgDPHDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:03:37 -0400
+Received: from smtp.gentoo.org ([140.211.166.183]:35004 "EHLO smtp.gentoo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437594AbgDPHDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:03:34 -0400
+Received: from sf (tunnel547699-pt.tunnel.tserv1.lon2.ipv6.he.net [IPv6:2001:470:1f1c:3e6::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: slyfox)
+        by smtp.gentoo.org (Postfix) with ESMTPSA id 704CC34F25B;
+        Thu, 16 Apr 2020 07:03:27 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 08:03:16 +0100
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org,
+        Sergey Kvachonok <ravenexp@gmail.com>,
+        Tony Vroon <chainsaw@gentoo.org>
+Subject: Re: [PATCH] umh: always return error when helper was not called
+Message-ID: <20200416080316.25d83dc0@sf>
+In-Reply-To: <20200416051127.GF11244@42.do-not-panic.com>
+References: <20200415065940.4103990-1-slyfox@gentoo.org>
+        <20200416051127.GF11244@42.do-not-panic.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Protonic RVT is an internal development platform for a wireless ISObus
-Virtual Terminal based on COTS tablets, and the predecessor of the WD2
-platform.
+On Thu, 16 Apr 2020 05:11:27 +0000
+Luis Chamberlain <mcgrof@kernel.org> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: David Jander <david@protonic.nl>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- .../devicetree/bindings/arm/fsl.yaml          |   1 +
- arch/arm/boot/dts/Makefile                    |   1 +
- arch/arm/boot/dts/imx6dl-prtrvt.dts           | 203 ++++++++++++++++++
- 3 files changed, 205 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6dl-prtrvt.dts
+> Sergei, first, thanks for your patch and bug report!!
+> 
+> On Wed, Apr 15, 2020 at 07:59:40AM +0100, Sergei Trofimovich wrote:
+> > Before this change on a system with the following setup crashed kernel:
+> > 
+> > ```
+> > CONFIG_STATIC_USERMODEHELPER=y
+> > CONFIG_STATIC_USERMODEHELPER_PATH=""
+> > kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h %e
+> > ```  
+> 
+> Let us backtrack. The combination of:
+> 
+> CONFIG_STATIC_USERMODEHELPER=y                                                
+> CONFIG_STATIC_USERMODEHELPER_PATH=""
+> 
+> is documented on the kconfig files for when you *want to disable all
+> usermode helper programs.
+> 
+> > The crash happens when a core dump is attempted:
+> > 
+> > ```
+> > [    2.819676] BUG: kernel NULL pointer dereference, address: 0000000000000020
+> > [    2.819859] #PF: supervisor read access in kernel mode
+> > [    2.820035] #PF: error_code(0x0000) - not-present page
+> > [    2.820188] PGD 0 P4D 0
+> > [    2.820305] Oops: 0000 [#1] SMP PTI
+> > [    2.820436] CPU: 2 PID: 89 Comm: a Not tainted 5.7.0-rc1+ #7
+> > [    2.820680] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190711_202441-buildvm-armv7-10.arm.fedoraproject.org-2.fc31 04/01/2014
+> > [    2.821150] RIP: 0010:do_coredump+0xd80/0x1060
+> > [    2.821385] Code: e8 95 11 ed ff 48 c7 c6 cc a7 b4 81 48 8d bd 28 ff ff ff 89 c2 e8 70 f1 ff ff 41 89 c2 85 c0 0f 84 72 f7 ff ff e9 b4 fe ff ff <48> 8b 57 20 0f b7 02 66 25 00 f0 66 3d 00 8
+> > 0 0f 84 9c 01 00 00 44
+> > [    2.822014] RSP: 0000:ffffc9000029bcb8 EFLAGS: 00010246
+> > [    2.822339] RAX: 0000000000000000 RBX: ffff88803f860000 RCX: 000000000000000a
+> > [    2.822746] RDX: 0000000000000009 RSI: 0000000000000282 RDI: 0000000000000000
+> > [    2.823141] RBP: ffffc9000029bde8 R08: 0000000000000000 R09: ffffc9000029bc00
+> > [    2.823508] R10: 0000000000000001 R11: ffff88803dec90be R12: ffffffff81c39da0
+> > [    2.823902] R13: ffff88803de84400 R14: 0000000000000000 R15: 0000000000000000
+> > [    2.824285] FS:  00007fee08183540(0000) GS:ffff88803e480000(0000) knlGS:0000000000000000
+> > [    2.824767] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    2.825111] CR2: 0000000000000020 CR3: 000000003f856005 CR4: 0000000000060ea0
+> > [    2.825479] Call Trace:
+> > [    2.825790]  get_signal+0x11e/0x720
+> > [    2.826087]  do_signal+0x1d/0x670
+> > [    2.826361]  ? force_sig_info_to_task+0xc1/0xf0
+> > [    2.826691]  ? force_sig_fault+0x3c/0x40
+> > [    2.826996]  ? do_trap+0xc9/0x100
+> > [    2.827179]  exit_to_usermode_loop+0x49/0x90
+> > [    2.827359]  prepare_exit_to_usermode+0x77/0xb0
+> > [    2.827559]  ? invalid_op+0xa/0x30
+> > [    2.827747]  ret_from_intr+0x20/0x20
+> > [    2.827921] RIP: 0033:0x55e2c76d2129
+> > [    2.828107] Code: 2d ff ff ff e8 68 ff ff ff 5d c6 05 18 2f 00 00 01 c3 0f 1f 80 00 00 00 00 c3 0f 1f 80 00 00 00 00 e9 7b ff ff ff 55 48 89 e5 <0f> 0b b8 00 00 00 00 5d c3 66 2e 0f 1f 84 0
+> > 0 00 00 00 00 0f 1f 40
+> > [    2.828603] RSP: 002b:00007fffeba5e080 EFLAGS: 00010246
+> > [    2.828801] RAX: 000055e2c76d2125 RBX: 0000000000000000 RCX: 00007fee0817c718
+> > [    2.829034] RDX: 00007fffeba5e188 RSI: 00007fffeba5e178 RDI: 0000000000000001
+> > [    2.829257] RBP: 00007fffeba5e080 R08: 0000000000000000 R09: 00007fee08193c00
+> > [    2.829482] R10: 0000000000000009 R11: 0000000000000000 R12: 000055e2c76d2040
+> > [    2.829727] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > [    2.829964] CR2: 0000000000000020
+> > [    2.830149] ---[ end trace ceed83d8c68a1bf1 ]---
+> > ```
+> > 
+> > Here is the sequence of events why it happens:
+> > fs/coredump.c:do_coredump():
+> > 1. create 'coredump_params = { .file = NULL }'
+> > 2. detect pipe mode
+> > 3. `call_usermodehelper_setup(..., umh_pipe_setup, ...)`
+> > 4. `call_usermodehelper_exec()`
+> > 5. (if both succeeded) `file_start_write(cprm.file);`
+> > 
+> > Here crash happens at [5.] as `cprm.file` is still NULL.
+> > 
+> > Normally it works because `fs/coredump.c:umh_pipe_setup()` is called
+> > successfully and populates `.file` field (or returns the error):
+> > 
+> > ```
+> > static int umh_pipe_setup(struct subprocess_info *info, struct cred *new)
+> > {
+> >         //...
+> >         struct coredump_params *cp = (struct coredump_params *)info->data;
+> >         // ...
+> >         cp->file = files[1];
+> >         // ...
+> > }
+> > ```
+> > 
+> > But in our case neither happens because `kernel/umh.c:call_usermodehelper_exec()`
+> > has a special case:
+> > 
+> > ```
+> > int call_usermodehelper_exec(struct subprocess_info *sub_info, int wait)
+> > {
+> >     int retval = 0;
+> >     // ...
+> >     /*
+> >      * If there is no binary for us to call, then just return and get out of
+> >      * here.  This allows us to set STATIC_USERMODEHELPER_PATH to "" and
+> >      * disable all call_usermodehelper() calls.
+> >      */
+> >     if (strlen(sub_info->path) == 0)
+> >         goto out;
+> >     ...
+> >     out:
+> >         // ...
+> >         return retval;
+> > 
+> > ```
+> > 
+> > This breaks assumption of `do_coredump()`: "either helper was called successfully
+> > and created a file to dump core to or it failed".
+> > 
+> > This change converts this special case to `-EPERM` error.
+> > 
+> > This way we notify user that helper call was not successful
+> > and don't attempt to act on uninitialized `.file` field.
+> > 
+> > User gets `"Core dump to |%s pipe failed\n` dmesg entry.
+> > 
+> > Reported-by: Sergey Kvachonok <ravenexp@gmail.com>
+> > Reported-by: Tony Vroon <chainsaw@gentoo.org>
+> > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=199795
+> > Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+> > CC: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  kernel/umh.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/umh.c b/kernel/umh.c
+> > index 7f255b5a8845..66b02634a9ba 100644
+> > --- a/kernel/umh.c
+> > +++ b/kernel/umh.c
+> > @@ -565,8 +565,10 @@ int call_usermodehelper_exec(struct subprocess_info *sub_info, int wait)
+> >  	 * here.  This allows us to set STATIC_USERMODEHELPER_PATH to "" and
+> >  	 * disable all call_usermodehelper() calls.
+> >  	 */
+> > -	if (strlen(sub_info->path) == 0)
+> > +	if (strlen(sub_info->path) == 0) {
+> > +		retval = -EPERM;
+> >  		goto out;
+> > +	}
+> >  
+> >  	/*
+> >  	 * Set the completion pointer only if there is a waiter.  
+> 
+> Stakeholders with this setup likely already are relying on the fact that
+> we don't return -EPERM. Your change to return -EPERM may fix the crash
+> you are seeing, but it may also break existing userspace, granted
+> for a crashdump that may not matter much, however I agree it is stupid
+> to crash on a crash :)
+> 
+> Anyway, I don't think its a good idea to return -EPERM unless
+> stakeholders really find a strong reason to change old behaviour.
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 424be1edf005a..2e8a03ef5c95e 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -168,6 +168,7 @@ properties:
-               - emtrion,emcon-mx6-avari   # emCON-MX6S or emCON-MX6DL SoM on Avari Base
-               - fsl,imx6dl-sabreauto      # i.MX6 DualLite/Solo SABRE Automotive Board
-               - fsl,imx6dl-sabresd        # i.MX6 DualLite SABRE Smart Device Board
-+              - prt,prtrvt                # Protonic RVT board
-               - prt,prtvt7                # Protonic VT7 board
-               - technologic,imx6dl-ts4900
-               - technologic,imx6dl-ts7970
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e53abe1de259c..afaccc9bc645b 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -446,6 +446,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-nitrogen6x.dtb \
- 	imx6dl-phytec-mira-rdk-nand.dtb \
- 	imx6dl-phytec-pbab01.dtb \
-+	imx6dl-prtrvt.dtb \
- 	imx6dl-prtvt7.dtb \
- 	imx6dl-rex-basic.dtb \
- 	imx6dl-riotboard.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-prtrvt.dts b/arch/arm/boot/dts/imx6dl-prtrvt.dts
-new file mode 100644
-index 0000000000000..cf097437b2762
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-prtrvt.dts
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2014 Protonic Holland
-+ */
-+
-+/dts-v1/;
-+#include "imx6dl.dtsi"
-+#include "imx6qdl-prti6q.dtsi"
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "Protonic RVT board";
-+	compatible = "prt,prtrvt", "fsl,imx6dl";
-+
-+	memory@10000000 {
-+		device_type = "memory";
-+		reg = <0x10000000 0x10000000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_leds>;
-+
-+		led-debug0 {
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-0 = <&pinctrl_can1 &pinctrl_can1phy>;
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi1>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "winbond,w25q64", "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "boot";
-+				reg = <0x0 0x80000>;
-+			};
-+
-+			partition@80000 {
-+				label = "env";
-+				reg = <0x80000 0x10000>;
-+			};
-+
-+			partition@90000 {
-+				label = "spare";
-+				reg = <0x90000 0x370000>;
-+			};
-+		};
-+	};
-+};
-+
-+&ecspi3 {
-+	cs-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi3>;
-+	status = "okay";
-+
-+	nfc@0 {
-+		compatible = "ti,trf7970a";
-+		reg = <0>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_nfc>;
-+		spi-max-frequency = <2000000>;
-+		interrupts-extended = <&gpio5 14 IRQ_TYPE_LEVEL_LOW>;
-+		ti,enable-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>,
-+				  <&gpio5 11 GPIO_ACTIVE_LOW>;
-+		vin-supply = <&reg_3v3>;
-+		vin-voltage-override = <3100000>;
-+		autosuspend-delay = <30000>;
-+		irq-status-read-quirk;
-+		en2-rf-quirk;
-+		t5t-rmb-extra-byte-quirk;
-+		status = "okay";
-+	};
-+};
-+
-+&i2c3 {
-+	adc@49 {
-+		compatible = "ti,ads1015";
-+		reg = <0x49>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* nc */
-+		channel@4 {
-+			reg = <4>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* nc */
-+		channel@5 {
-+			reg = <5>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* can1_l */
-+		channel@6 {
-+			reg = <6>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* can1_h */
-+		channel@7 {
-+			reg = <7>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+};
-+
-+&usbh1 {
-+	status = "disabled";
-+};
-+
-+&vpu {
-+	status = "disabled";
-+};
-+
-+&iomuxc {
-+	pinctrl_can1phy: can1phy {
-+		fsl,pins = <
-+			/* CAN1_SR */
-+			MX6QDL_PAD_KEY_COL3__GPIO4_IO12	0x13070
-+			/* CAN1_TERM */
-+			MX6QDL_PAD_GPIO_0__GPIO1_IO00	0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_ecspi1: ecspi1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D17__ECSPI1_MISO		0x100b1
-+			MX6QDL_PAD_EIM_D18__ECSPI1_MOSI		0x100b1
-+			MX6QDL_PAD_EIM_D16__ECSPI1_SCLK		0x100b1
-+			/* CS */
-+			MX6QDL_PAD_EIM_D19__GPIO3_IO19		0x000b1
-+		>;
-+	};
-+
-+	pinctrl_ecspi3: ecspi3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT0__ECSPI3_SCLK	0x100b1
-+			MX6QDL_PAD_DISP0_DAT1__ECSPI3_MOSI	0x100b1
-+			MX6QDL_PAD_DISP0_DAT2__ECSPI3_MISO	0x100b1
-+			MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24	0x000b1
-+		>;
-+	};
-+
-+	pinctrl_leds: ledsgrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_8__GPIO1_IO08		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_nfc: nfcgrp {
-+		fsl,pins = <
-+			/* NFC_ASK_OOK */
-+			MX6QDL_PAD_DISP0_DAT15__GPIO5_IO09	0x100b1
-+			/* NFC_PWR_EN */
-+			MX6QDL_PAD_DISP0_DAT16__GPIO5_IO10	0x100b1
-+			/* NFC_EN2 */
-+			MX6QDL_PAD_DISP0_DAT17__GPIO5_IO11	0x100b1
-+			/* NFC_EN */
-+			MX6QDL_PAD_DISP0_DAT18__GPIO5_IO12	0x100b1
-+			/* NFC_MOD */
-+			MX6QDL_PAD_DISP0_DAT19__GPIO5_IO13	0x100b1
-+			/* NFC_IRQ */
-+			MX6QDL_PAD_DISP0_DAT20__GPIO5_IO14	0x100b1
-+		>;
-+	};
-+};
+I agree changing existing API semantics is dangerous.
+Maybe tweaking a docstring to call_usermodehelper_exec() would be helpful.
+Something like:
+
+--- a/kernel/umh.c
++++ b/kernel/umh.c
+@@ -544,6 +544,11 @@ EXPORT_SYMBOL_GPL(fork_usermode_blob);
+  * Runs a user-space application.  The application is started
+  * asynchronously if wait is not set, and runs as a child of system workqueues.
+  * (ie. it runs with full root capabilities and optimized affinity).
++ *
++ * Note: successful return value does not guarantee helper was called at all.
++ * You can't rely on sub_info->{init,cleanup} being called even for UMH_WAIT_*
++ * wait modes as STATIC_USERMODEHELPER_PATH="" turns all helpers
++ * into a successful no-op.
+  */
+ int call_usermodehelper_exec(struct subprocess_info *sub_info, int wait)
+ {
+
+> Can you try this patch instead?
+
+Gave it a light crash-test locally. Works fine!
+
+Tested-by: Sergei Trofimovich <slyfox@gentoo.org>
+
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index f8296a82d01d..6957d513685e 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -786,6 +786,15 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>  	if (displaced)
+>  		put_files_struct(displaced);
+>  	if (!dump_interrupted()) {
+> +		/*
+> +		 * umh disabled with CONFIG_STATIC_USERMODEHELPER_PATH="" would
+> +		 * have this set to NULL.
+> +		 */
+> +		if (!cprm.file) {
+> +			printk(KERN_INFO "Core dump to |%s disabled\n",
+> +			       cn.corename);
+> +			goto close_fail;
+> +		}
+>  		file_start_write(cprm.file);
+>  		core_dumped = binfmt->core_dump(&cprm);
+>  		file_end_write(cprm.file);
+
+
 -- 
-2.26.0.rc2
 
+  Sergei
