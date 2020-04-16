@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D56C1ACB87
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC191AC7FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410583AbgDPPr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
+        id S1729049AbgDPPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896233AbgDPNdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:33:31 -0400
+        id S2408077AbgDPNyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:54:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D64522201;
-        Thu, 16 Apr 2020 13:33:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 863CA2076D;
+        Thu, 16 Apr 2020 13:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044010;
-        bh=bLaYknW8xJkpruAeW9vzpZ0HesbH5LKBqP1T/qNO/0I=;
+        s=default; t=1587045254;
+        bh=fpNrlUUTJSSi/PQgLIPLo6vQitr48svphV9IQte/vuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q4OkRmp0QUJ3JGk70pbVqcBoemSoo01w/1Jv/8dsEneJnZluDPM/VKkOH5nLCcf4a
-         /WWy1iZY7EIGf8nk9+AxErfCLebz+Ct0ZKUAFlwFHOOoDDU36ps8AFSyPBVHchWE17
-         srZoMzAcTnB19VlVfZVQvkgwiTgWwSAaELVR2eiY=
+        b=XzPgZpUIoBWh+C44cDJvJ5jpPORKSVmdEkEJL+pWFFNrHsYx19X+GroAHB3u65E3Z
+         kP7yVi+etXDl75Vx86CSU4N5jyes2H/Lw5w6hjqeeBYauz+eazJCU5hbgSAp9ysiAR
+         bfRs+PHkGCuxRVnRe/tMX0i7OTFIjMiDBzGIXd2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hellstrom <thellstrom@vmware.com>,
-        Borislav Petkov <bp@suse.de>, Christoph Hellwig <hch@lst.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
+        stable@vger.kernel.org, Helen Koike <helen.koike@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 045/257] dma-mapping: Fix dma_pgprot() for unencrypted coherent pages
-Date:   Thu, 16 Apr 2020 15:21:36 +0200
-Message-Id: <20200416131331.572758755@linuxfoundation.org>
+Subject: [PATCH 5.6 008/254] media: staging: rkisp1: use consistent bus_info string for media_dev
+Date:   Thu, 16 Apr 2020 15:21:37 +0200
+Message-Id: <20200416131326.784707488@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hellstrom <thellstrom@vmware.com>
+From: Helen Koike <helen.koike@collabora.com>
 
-[ Upstream commit 17c4a2ae15a7aaefe84bdb271952678c5c9cd8e1 ]
+[ Upstream commit 12d3d8090bc5e8cdda2f56caed2a2a0d70009456 ]
 
-When dma_mmap_coherent() sets up a mapping to unencrypted coherent memory
-under SEV encryption and sometimes under SME encryption, it will actually
-set up an encrypted mapping rather than an unencrypted, causing devices
-that DMAs from that memory to read encrypted contents. Fix this.
+Media device is using a slightly different bus_info string
+"platform: rkisp1" (with a space) instead of "platform:rkisp1" used by
+the rest of rkisp1 code.
+This causes errors when using v4l2-util tools that uses the bus_info
+string to identify the device.
 
-When force_dma_unencrypted() returns true, the linear kernel map of the
-coherent pages have had the encryption bit explicitly cleared and the
-page content is unencrypted. Make sure that any additional PTEs we set
-up to these pages also have the encryption bit cleared by having
-dma_pgprot() return a protection with the encryption bit cleared in this
-case.
-
-Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lkml.kernel.org/r/20200304114527.3636-3-thomas_os@shipmail.org
+Fixes: d65dd85281fb ("media: staging: rkisp1: add Rockchip ISP1 base driver")
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/dma/mapping.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/staging/media/rkisp1/rkisp1-dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 12ff766ec1fa3..98e3d873792ea 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -154,6 +154,8 @@ EXPORT_SYMBOL(dma_get_sgtable_attrs);
-  */
- pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
- {
-+	if (force_dma_unencrypted(dev))
-+		prot = pgprot_decrypted(prot);
- 	if (dev_is_dma_coherent(dev) ||
- 	    (IS_ENABLED(CONFIG_DMA_NONCOHERENT_CACHE_SYNC) &&
-              (attrs & DMA_ATTR_NON_CONSISTENT)))
+diff --git a/drivers/staging/media/rkisp1/rkisp1-dev.c b/drivers/staging/media/rkisp1/rkisp1-dev.c
+index 558126e66465c..9b47f41b36e94 100644
+--- a/drivers/staging/media/rkisp1/rkisp1-dev.c
++++ b/drivers/staging/media/rkisp1/rkisp1-dev.c
+@@ -502,8 +502,7 @@ static int rkisp1_probe(struct platform_device *pdev)
+ 	strscpy(rkisp1->media_dev.model, RKISP1_DRIVER_NAME,
+ 		sizeof(rkisp1->media_dev.model));
+ 	rkisp1->media_dev.dev = &pdev->dev;
+-	strscpy(rkisp1->media_dev.bus_info,
+-		"platform: " RKISP1_DRIVER_NAME,
++	strscpy(rkisp1->media_dev.bus_info, RKISP1_BUS_INFO,
+ 		sizeof(rkisp1->media_dev.bus_info));
+ 	media_device_init(&rkisp1->media_dev);
+ 
 -- 
 2.20.1
 
