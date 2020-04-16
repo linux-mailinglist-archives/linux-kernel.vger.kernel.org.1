@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3874C1ABCB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94201ABCC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502648AbgDPJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
+        id S2392178AbgDPJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2392093AbgDPJUx (ORCPT
+        by vger.kernel.org with ESMTP id S2392063AbgDPJ1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:20:53 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78EBC061A41
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:20:51 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x23so5054232lfq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:20:51 -0700 (PDT)
+        Thu, 16 Apr 2020 05:27:51 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC74C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:27:50 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id k21so2529332otl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iuZQPq25LlhzAjymFw6DX/CB5GWOdpk6lIwmaoZu2BE=;
-        b=hkTtnz2DkVpj5FadPidho1Yi0E3E7wBAIYmB61/Kj4lK/X8UrCLL81x5xmrcWGWc+H
-         azS6fkmcowWvwOnDXcI9l4y6Ucno0mzyziNpLxV9Mthz8Y0YUdXq82D8FzhAITXPdDF8
-         3tFd/DXFS5Ty+STvGvcwXllNt8lFNMCiTuvCiXYSz2PukY3ig/gTtCqCjuJHHyXpd1A3
-         QDfx/KUMUCLzLxrTqLoSlNd+gU4YBuAYH/DvcY6yoeUzHZc1o3NaKorVY+VcrIzkfObd
-         u7uovSiNsexRzNZk8c0flO0ZydCK1WaSDd1IcMQT71DefMnE/zm8iho+FD/0QJcA2MJG
-         wMcA==
+        bh=cZyNZ/PomFpedyOsDDa7ffLGcZMQ7O0BTntcLMz/kdI=;
+        b=Ug54GZiqLCZNF1AZgHx9DWEXBYW4tYFy1zr4hBZgAfstt/GYWDUs47wBklzo+23+t9
+         YmJnbAXg3WprGHCkIHEuVKvkwWlMcOVfdp5nhomCpAghySge7K0p9tSUXoHaiHrFaUDS
+         6LUoS0NA1VVy03IXqcwJy1FQiCyoacIF88eC2KAmrONcZUgaL0czwpNVPEWjBLcGd6RG
+         IW5LOFZva6W/aaz69R3Af3Zjj9vpXgse3Os37aVsJS9QTh/JCL89nx4IjTrmC1IYpbzN
+         uPeNyIPbRLogasFjum3DuNvw1aAHieSYrF0q/4Zco0rCFcgXpEHDnEjL3qAHC7lGCQXB
+         ZmqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iuZQPq25LlhzAjymFw6DX/CB5GWOdpk6lIwmaoZu2BE=;
-        b=HEM2sToZaoGocszHGAy62a7nYaLmLMQlENaxH/2QxV9DBieN9mOviaZw3U53wTcycK
-         36shLT205rO5o8yWL8G48UmSuYDfpw4RnqVvNGmKwjau4xNKHpUxqyiE0ZOAfQqJ46hS
-         JccBHhJweQJCRMB132kHToJWWIBsSIXcvyMTFTP65jxVtyUckYlcJvJY/JKUtJxsn8LL
-         d2zjyDFW3AV/HC0AwMtgWJJIenwBVx5WoDUwblz0IacBEEWPj44OAfVARa64uOTorsxH
-         TTP4wFcewcvgOWQxo5FTe2dfZTOhc8tzrk3i/r8lj69Whgj/cPbj2OEMOwXnHjNEvL4s
-         intw==
-X-Gm-Message-State: AGi0Pubb/BGoSsWjyKoUEtTaVRXmJS7Pu4OqnMVlSH4KNM7Z2pOnpriX
-        AnSoBm3O4hRbpD8th51woCIQ6KlV2QC8L47Ejbxqbg==
-X-Google-Smtp-Source: APiQypJvAs9P0NYlc+VDp3QIFWPUjuxP+cKRiyTPcwcbTngB4Tr+zwZ10UYlTO8u+2AsTbbibFkxTpAAASs25r3y/l8=
-X-Received: by 2002:a05:6512:52c:: with SMTP id o12mr5352302lfc.217.1587028850060;
- Thu, 16 Apr 2020 02:20:50 -0700 (PDT)
+        bh=cZyNZ/PomFpedyOsDDa7ffLGcZMQ7O0BTntcLMz/kdI=;
+        b=pyRBO1vw5y0AJ5OJT8wtCUa2GGVAgvRzE9OgsqKRjHmf+mx/CNjFVBf66eULpk5qLZ
+         HLfda1LbixaxFkFb7ODtL2r+v9YyT8ix8FronCHd4YzbRP830L3bYkGfVL7S/+Aj7sKp
+         l9e2vKCzi0wpYE50R3qx4ZtBqPUYM+NaFro10vVJYa/VKCK6im8LlGaLtUyNbXAe4sBf
+         OZ0wzFfmsLcw+NIyjm+305CmLm+fSu6e0Qm2clqamwUzi/xW6JMRuzXcIq3IG47ScYsC
+         q0lKrVOBsLcmRWY6w/f9Ro0Ms4ZyDPXpDNlLycTMd8YEybyCuM0TgmCL9HnwEaGf/1Cl
+         mVIQ==
+X-Gm-Message-State: AGi0PuYRljwCH5T6cvymA8vwffSxqe+FLW3vZgXZuNA940J8MB/k72CJ
+        oZkL4dS603+sLNtfJMOs4V6xKRmtA0HorBnmxWzoXw==
+X-Google-Smtp-Source: APiQypIHbHNvQL/JlVxmqXgUhr8PsOpNX/QEyz/TKaO2G/fMjv9IYaoRYLfVebjbSHhQkxDbHoMtIB4y94qcuZRWnrw=
+X-Received: by 2002:a9d:509:: with SMTP id 9mr14157880otw.17.1587029270015;
+ Thu, 16 Apr 2020 02:27:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200402203656.27047-1-michael@walle.cc> <20200402203656.27047-11-michael@walle.cc>
- <CAMpxmJVE3PgVCxkQ-ryc5=KSrKcpdmk1cnJUxJBz9QFCx-e_+A@mail.gmail.com>
- <80bd8661ec8a1f5eda3f09a267846eaa@walle.cc> <CAMpxmJVC7e9JnHzBo-h8M1+KmcA32=Rvxo7+znH=-kAbcCr_LQ@mail.gmail.com>
- <e0388a2137e23d76b2415a7549c01dd1@walle.cc> <CAMpxmJW1x4Orh1BZ4TUoCsYeaAAZ4NBUNvoMG9JgP0iLvXTOtg@mail.gmail.com>
- <62d157198a75a59ada15c496deeab49b@walle.cc> <eab972adf53bbac20b5a9e613fcfb5b0@walle.cc>
-In-Reply-To: <eab972adf53bbac20b5a9e613fcfb5b0@walle.cc>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Apr 2020 11:20:38 +0200
-Message-ID: <CACRpkdZPZ4nFQ6B3tGG9wvceoTWqAkfY0r1UKs2pf_c=ZNBG=w@mail.gmail.com>
-Subject: Re: [PATCH v2 10/16] gpio: add a reusable generic gpio_chip using regmap
-To:     Michael Walle <michael@walle.cc>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200401101714.44781-1-elver@google.com> <9de4fb8fa1223fc61d6d8d8c41066eea3963c12e.camel@perches.com>
+In-Reply-To: <9de4fb8fa1223fc61d6d8d8c41066eea3963c12e.camel@perches.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 16 Apr 2020 11:27:38 +0200
+Message-ID: <CANpmjNOSo2WqquKJwePdsA1VXS2V94DQZ=RVY9bULbVwGPx1RA@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: Warn about data_race() without comment
+To:     Joe Perches <joe@perches.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, apw@canonical.com,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 9:57 PM Michael Walle <michael@walle.cc> wrote:
-
-> So what about the following:
+On Wed, 1 Apr 2020 at 17:19, Joe Perches <joe@perches.com> wrote:
 >
-> #define GPIO_REGMAP_ADDR_ZERO (unsigned int)(-1)
+> On Wed, 2020-04-01 at 12:17 +0200, Marco Elver wrote:
+> > Warn about applications of data_race() without a comment, to encourage
+> > documenting the reasoning behind why it was deemed safe.
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -5833,6 +5833,14 @@ sub process {
+> >                       }
+> >               }
+> >
+> > +# check for data_race without a comment.
+> > +             if ($line =~ /\bdata_race\s*\(/) {
+> > +                     if (!ctx_has_comment($first_line, $linenr)) {
+> > +                             WARN("DATA_RACE",
+> > +                                  "data_race without comment\n" . $herecurr);
+> > +                     }
+> > +             }
+> > +
+> >  # check for smp_read_barrier_depends and read_barrier_depends
+> >               if (!$file && $line =~ /\b(smp_|)read_barrier_depends\s*\(/) {
+> >                       WARN("READ_BARRIER_DEPENDS",
 
-Yeah with regmap explicitly using int I guess we can't use
-S32_MAX, so that is fair.
+Do we still want to do this? Which tree can pick this up? Or was there
+anything left that we missed?
 
-> So this way the user might assign the base addresses the normal way
-> except when he wants to use zero, in that case he has to use
->
->    ->base_adr = GPIO_REGMAP_ADDR_ZERO;
->
-> gpio-regmap.c could use then:
->
-> if (base_addr)
->    something_useful(gpio_regmap_addr(base_addr));
->
-> unsigned int gpio_regmap_addr(unsigned int addr)
-> {
->    return (addr == GPIO_REGMAP_ADDR_ZERO) ? 0 : addr;
-> }
+> Sensible enough but it looks like ctx_has_comment should
+> be updated to allow c99 comments too, but that should be
+> a separate change from this patch.
 
-That's reasonably clean.
+AFAIK the C99 comment patch is in -mm now.
 
-Yours,
-Linus Walleij
+> Otherwise, this style emits a message:
+>
+> WARNING: data_race without comment
+> #135: FILE: kernel/rcu/tasks.h:135:
+> +       int i = data_race(rtp->gp_state); // Let KCSAN detect update races
+>
+
+Thanks,
+-- Marco
