@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6641AC0B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD621AC0BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634179AbgDPMGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634924AbgDPMGK (ORCPT
+        id S2635016AbgDPMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:07:46 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59898 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2635001AbgDPMHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:06:10 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F72DC061A0C;
-        Thu, 16 Apr 2020 05:06:10 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 16 Apr 2020 08:07:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587038851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wG2AA9p6i8I/UNxVkyDuMtpOTXAlIGJZQiEkiZEXjVk=;
+        b=At1JGyb9cwzYLxa10RU1Cp6Re6ehn5h0W202IS2P3MZ0qg9mZUGRxWBEwYua1rPYJf1oTj
+        BEcrKT1i8f+MZ7EiamJUpfXiSGAWysV3LFmXnAxdukdrQymCmjvhW4sIZ6gtQKcDsA7D2J
+        H0w79cGIUbHo/ffNsWM39xaXa+lvT2c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-45ApSQlFNbygU006p2L1RQ-1; Thu, 16 Apr 2020 08:07:27 -0400
+X-MC-Unique: 45ApSQlFNbygU006p2L1RQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5F9EB2A1171;
-        Thu, 16 Apr 2020 13:06:08 +0100 (BST)
-Date:   Thu, 16 Apr 2020 14:06:04 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Ashish Kumar <Ashish.Kumar@nxp.com>
-Cc:     broonie@kernel.org, frieder.schrempf@kontron.de,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: Re: [PATCH v3] spi: spi-fsl-qspi: Reduce devm_ioremap size to 4
- times AHB buffer size
-Message-ID: <20200416140604.3d8c9d78@collabora.com>
-In-Reply-To: <1587037399-18672-1-git-send-email-Ashish.Kumar@nxp.com>
-References: <1587037399-18672-1-git-send-email-Ashish.Kumar@nxp.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24BC68017F6;
+        Thu, 16 Apr 2020 12:06:56 +0000 (UTC)
+Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D00B25C290;
+        Thu, 16 Apr 2020 12:06:54 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 07:06:51 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com
+Subject: Re: [PATCH 4/7] s390/module: Use s390_kernel_write() for relocations
+Message-ID: <20200416120651.wqmoaa35jft4prox@treble>
+References: <cover.1586881704.git.jpoimboe@redhat.com>
+ <e7f2ad87cf83dcdaa7b69b4e37c11fa355bdfe78.1586881704.git.jpoimboe@redhat.com>
+ <alpine.LSU.2.21.2004161047410.10475@pobox.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2004161047410.10475@pobox.suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 17:13:19 +0530
-Ashish Kumar <Ashish.Kumar@nxp.com> wrote:
-
-> Reduce devm_ioremap size to (4 * AHB_BUFER_SIZE) rather than mapping
-> complete QSPI-Memmory as driver is now independent of flash size.
-> Flash of any size can be accessed.
+On Thu, Apr 16, 2020 at 10:56:02AM +0200, Miroslav Benes wrote:
+> > +	bool early = me->state == MODULE_STATE_UNFORMED;
+> > +
+> > +	return __apply_relocate_add(sechdrs, strtab, symindex, relsec, me,
+> > +				    early ? memcpy : s390_kernel_write);
 > 
-> Issue was reported on platform where devm_ioremap failure is observed
-> with size > 256M.
-> Error log on LS1021ATWR :
->  fsl-quadspi 1550000.spi: ioremap failed for resource [mem 0x40000000-0x7fffffff]
->  fsl-quadspi 1550000.spi: Freescale QuadSPI probe failed
->  fsl-quadspi: probe of 1550000.spi failed with error -12
+> The compiler warns about
 > 
-> This change was also suggested previously:
-> https://patchwork.kernel.org/patch/10508753/#22166385
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-> Signed-off-by: Ashish Kumar <Ashish.kumar@nxp.com>
-> ---
-> v3: 
-> Update comment
-> v2:
-> Add Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Incorrporate review comments from Frieder
->  drivers/spi/spi-fsl-qspi.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
-> index 63c9f7e..8b95e2f 100644
-> --- a/drivers/spi/spi-fsl-qspi.c
-> +++ b/drivers/spi/spi-fsl-qspi.c
-> @@ -859,14 +859,15 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  
->  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->  					"QuadSPI-memory");
-> -	q->ahb_addr = devm_ioremap_resource(dev, res);
-> +	q->memmap_phy = res->start;
-> +	/* Since there are 4 cs, map size required is 4 times ahb_buf_size */
-> +	q->ahb_addr = devm_ioremap(dev, q->memmap_phy,
-> +				   (q->devtype_data->ahb_buf_size * 4));
->  	if (IS_ERR(q->ahb_addr)) {
->  		ret = PTR_ERR(q->ahb_addr);
->  		goto err_put_ctrl;
->  	}
->  
-> -	q->memmap_phy = res->start;
-> -
+> arch/s390/kernel/module.c: In function 'apply_relocate_add':
+> arch/s390/kernel/module.c:453:24: warning: pointer type mismatch in conditional expression
+>          early ? memcpy : s390_kernel_write);
 
-Looks like this line move is unrelated to the ioremap range change. Not
-a big but I thought I'd mention it. In any case,
+Thanks, I'll get all that cleaned up.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+I could have sworn I got a SUCCESS message from the kbuild bot.  Does it
+ignore warnings nowadays?
 
->  	/* find the clocks */
->  	q->clk_en = devm_clk_get(dev, "qspi_en");
->  	if (IS_ERR(q->clk_en)) {
+-- 
+Josh
 
