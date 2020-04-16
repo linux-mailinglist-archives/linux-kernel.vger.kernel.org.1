@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9581ACC8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A011AC423
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636578AbgDPQCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35156 "EHLO mail.kernel.org"
+        id S2409082AbgDPNy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:54:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895174AbgDPN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:26:56 -0400
+        id S2897637AbgDPNiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:38:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E343D206E9;
-        Thu, 16 Apr 2020 13:26:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4E3822201;
+        Thu, 16 Apr 2020 13:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043615;
-        bh=A8vFarPiiiN5fEyJQtwwxUwgpvTAUNBhJo0Irej3s90=;
+        s=default; t=1587044286;
+        bh=HLGjj7h3WyvaDbSqmdm6oGvafQSOOqJMpGqMCWrwNTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u2A75txl+buExNEpROHr/5n4KEArioHnp/FX5C++1spz1epK0bNLbRa83p+PMioyt
-         xnFq+Unxfo25rKCc1K/tbMX82q9shS7tyB3VWosGWGS8emFOaZdIMwww5bv8kRRw28
-         AzYLryP9WQOgJ8Y14cIxTyca4xiReu0nyaz6URiM=
+        b=nQeVuqSxGeEpCUGJ9jZBirDRvvMJCrwmGuivOqgpY8bsKEnnYajLZSH6TAQNxSARu
+         5wEuOVmQovddhA8sw+rcs07Mry2mIk35wTZsGy5uMmbvJxo/6XAh4kywnu2FeB0kLm
+         E8Zwlx+Uh+Cjqx0UYR8ugo2BBNOEd0CmZeyOp4d8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 029/146] genirq/irqdomain: Check pointer in irq_domain_alloc_irqs_hierarchy()
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: [PATCH 5.5 119/257] sched/fair: Fix enqueue_task_fair warning
 Date:   Thu, 16 Apr 2020 15:22:50 +0200
-Message-Id: <20200416131246.436793511@linuxfoundation.org>
+Message-Id: <20200416131341.177449306@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +46,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-[ Upstream commit 87f2d1c662fa1761359fdf558246f97e484d177a ]
+commit fe61468b2cbc2b7ce5f8d3bf32ae5001d4c434e9 upstream.
 
-irq_domain_alloc_irqs_hierarchy() has 3 call sites in the compilation unit
-but only one of them checks for the pointer which is being dereferenced
-inside the called function. Move the check into the function. This allows
-for catching the error instead of the following crash:
+When a cfs rq is throttled, the latter and its child are removed from the
+leaf list but their nr_running is not changed which includes staying higher
+than 1. When a task is enqueued in this throttled branch, the cfs rqs must
+be added back in order to ensure correct ordering in the list but this can
+only happens if nr_running == 1.
+When cfs bandwidth is used, we call unconditionnaly list_add_leaf_cfs_rq()
+when enqueuing an entity to make sure that the complete branch will be
+added.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-PC is at 0x0
-LR is at gpiochip_hierarchy_irq_domain_alloc+0x11f/0x140
-...
-[<c06c23ff>] (gpiochip_hierarchy_irq_domain_alloc)
-[<c0462a89>] (__irq_domain_alloc_irqs)
-[<c0462dad>] (irq_create_fwspec_mapping)
-[<c06c2251>] (gpiochip_to_irq)
-[<c06c1c9b>] (gpiod_to_irq)
-[<bf973073>] (gpio_irqs_init [gpio_irqs])
-[<bf974048>] (gpio_irqs_exit+0xecc/0xe84 [gpio_irqs])
-Code: bad PC value
+Similarly unthrottle_cfs_rq() can stop adding cfs in the list when a parent
+is throttled. Iterate the remaining entity to ensure that the complete
+branch will be added in the list.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200306174720.82604-1-alexander.sverdlin@nokia.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: stable@vger.kernel.org
+Cc: stable@vger.kernel.org #v5.1+
+Link: https://lkml.kernel.org/r/20200306135257.25044-1-vincent.guittot@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/irq/irqdomain.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c |   26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index e0eda2bd39753..0a76c44eb6b29 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -1255,6 +1255,11 @@ int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
- 				    unsigned int irq_base,
- 				    unsigned int nr_irqs, void *arg)
- {
-+	if (!domain->ops->alloc) {
-+		pr_debug("domain->ops->alloc() is NULL\n");
-+		return -ENOSYS;
-+	}
-+
- 	return domain->ops->alloc(domain, irq_base, nr_irqs, arg);
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3943,6 +3943,7 @@ static inline void check_schedstat_requi
+ #endif
  }
  
-@@ -1292,11 +1297,6 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
- 			return -EINVAL;
++static inline bool cfs_bandwidth_used(void);
+ 
+ /*
+  * MIGRATION
+@@ -4021,10 +4022,16 @@ enqueue_entity(struct cfs_rq *cfs_rq, st
+ 		__enqueue_entity(cfs_rq, se);
+ 	se->on_rq = 1;
+ 
+-	if (cfs_rq->nr_running == 1) {
++	/*
++	 * When bandwidth control is enabled, cfs might have been removed
++	 * because of a parent been throttled but cfs->nr_running > 1. Try to
++	 * add it unconditionnally.
++	 */
++	if (cfs_rq->nr_running == 1 || cfs_bandwidth_used())
+ 		list_add_leaf_cfs_rq(cfs_rq);
++
++	if (cfs_rq->nr_running == 1)
+ 		check_enqueue_throttle(cfs_rq);
+-	}
+ }
+ 
+ static void __clear_buddies_last(struct sched_entity *se)
+@@ -4605,11 +4612,22 @@ void unthrottle_cfs_rq(struct cfs_rq *cf
+ 			break;
  	}
  
--	if (!domain->ops->alloc) {
--		pr_debug("domain->ops->alloc() is NULL\n");
--		return -ENOSYS;
--	}
+-	assert_list_leaf_cfs_rq(rq);
 -
- 	if (realloc && irq_base >= 0) {
- 		virq = irq_base;
- 	} else {
--- 
-2.20.1
-
+ 	if (!se)
+ 		add_nr_running(rq, task_delta);
+ 
++	/*
++	 * The cfs_rq_throttled() breaks in the above iteration can result in
++	 * incomplete leaf list maintenance, resulting in triggering the
++	 * assertion below.
++	 */
++	for_each_sched_entity(se) {
++		cfs_rq = cfs_rq_of(se);
++
++		list_add_leaf_cfs_rq(cfs_rq);
++	}
++
++	assert_list_leaf_cfs_rq(rq);
++
+ 	/* Determine whether we need to wake up potentially idle CPU: */
+ 	if (rq->curr == rq->idle && rq->cfs.nr_running)
+ 		resched_curr(rq);
 
 
