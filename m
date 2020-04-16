@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAF71AC8E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28391AC8B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394996AbgDPPQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        id S2395094AbgDPPMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2395072AbgDPPMS (ORCPT
+        by vger.kernel.org with ESMTP id S2395053AbgDPPMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:12:18 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4287EC0610D5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:12:18 -0700 (PDT)
+        Thu, 16 Apr 2020 11:12:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412F9C061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:12:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=9MwTIMpdaC4VygWnq1XRJh2I8O/EbbREN7voJhdd838=; b=REe17TcBlezyGYkTFxpl06sEVD
-        COBJ1rTV/OvT+Av5oNHPDbrbn3FC5ZrffRNxo6E1Ro7YSTubSgsPEStPA6nzlG0nJJd5HbIicXyOR
-        FKQnqPMqoVGIrelhqBR4E2r9hwVPiT0qZAjOvcSnT46InCkkyvmwLrsW3i6YGzjpPDR+Y50ad4n5Q
-        brxNokmHtiMV8T9qUOeDZHMeHUBsRPaflrmKRIyiIrfeoubcGtL8xYCJDNF2AfmKap/BiLYHosdzy
-        MPfGJLLTE3EFskGVgxYLaQnjMuLPk1fNzZC2dIN0OZUOIOJG6KYTanYswkUhXu6xd+0rcppp0LgdY
-        BCq2yWMw==;
+        bh=LNXKTw/zTEs+P8C9X4mauLkA1J1HXkddgGUFayNufW8=; b=hbFceX3MJlgsd5aXDNp7dFyclo
+        HpI4HI8TGk7Y/OdimcJdDNWQaQim1s1fXSWyEl2y38SABYq0Guuc1krw+0jjje1UgJ1k332ZJz95S
+        6kT4ASZG8R/LUrECf/rMunTpV8HdfRDf5L/yb+dxFAIa0lKSyYb++LqTJd3/D052QkDzGePQ0WWRK
+        xsAmTli1R9wSb6hWkqsW8zRZ4sbdzjncvF6sF+U1DvUE9j2fWh2uUgFVzSrkqr3FEcHuvZK77nsJz
+        ePycpHbOTEWvZvvg/YTHXRk31bBRNnBT5lgE0pRmcbwUiq1VlYKpimbA1gujbdc5YyE2EYuY2ZHmG
+        H1f2anvw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP6BH-00046c-L6; Thu, 16 Apr 2020 15:11:55 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP6BI-0003Wf-99; Thu, 16 Apr 2020 15:11:56 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 235A63071D5;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 255243073F0;
         Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 01F952B0DE4BC; Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
-Message-Id: <20200416151024.825863887@infradead.org>
+        id 0960A2B0DE4BE; Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
+Message-Id: <20200416151024.885221682@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 16 Apr 2020 17:07:54 +0200
+Date:   Thu, 16 Apr 2020 17:07:55 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, peterz@infradead.org
-Subject: [RFC][PATCH 2/7] objtool: UNWIND_HINT_RET_OFFSET should not check registers
+Subject: [RFC][PATCH 3/7] objtool: Allow branches within the same alternative.
 References: <20200416150752.569029800@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,34 +53,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-UNWIND_HINT_RET_OFFSET will adjust a modified stack. However if a
-callee-saved register was pushed on the stack then the stack frame
-will still appear modified. So stop checking registers when
-UNWIND_HINT_RET_OFFSET is used.
+Currently objtool prevents any branch to an alternative. While preventing
+branching from the outside to the middle of an alternative makes perfect
+sense, branching within the same alternative should be allowed. To do so,
+identify each alternative and check that a branch to an alternative comes
+from the same alternative.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200407073142.20659-3-alexandre.chartre@oracle.com
+Link: https://lkml.kernel.org/r/20200414103618.12657-3-alexandre.chartre@oracle.com
 ---
- tools/objtool/check.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ tools/objtool/check.c |   27 +++++++++++++++++++++------
+ tools/objtool/check.h |    3 ++-
+ 2 files changed, 23 insertions(+), 7 deletions(-)
 
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1513,6 +1513,14 @@ static bool has_modified_stack_frame(str
- 	if (cfi->stack_size != initial_func_cfi.cfa.offset + ret_offset)
- 		return true;
+@@ -768,7 +768,9 @@ static int handle_group_alt(struct objto
+ 			    struct instruction *orig_insn,
+ 			    struct instruction **new_insn)
+ {
++	static unsigned int alt_group_next_index = 1;
+ 	struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
++	unsigned int alt_group = alt_group_next_index++;
+ 	unsigned long dest_off;
  
-+	/*
-+	 * If there is a ret offset hint then don't check registers
-+	 * because a callee-saved register might have been pushed on
-+	 * the stack.
-+	 */
-+	if (ret_offset)
+ 	last_orig_insn = NULL;
+@@ -777,7 +779,7 @@ static int handle_group_alt(struct objto
+ 		if (insn->offset >= special_alt->orig_off + special_alt->orig_len)
+ 			break;
+ 
+-		insn->alt_group = true;
++		insn->alt_group = alt_group;
+ 		last_orig_insn = insn;
+ 	}
+ 
+@@ -811,6 +813,7 @@ static int handle_group_alt(struct objto
+ 	}
+ 
+ 	last_new_insn = NULL;
++	alt_group = alt_group_next_index++;
+ 	insn = *new_insn;
+ 	sec_for_each_insn_from(file, insn) {
+ 		if (insn->offset >= special_alt->new_off + special_alt->new_len)
+@@ -820,6 +823,7 @@ static int handle_group_alt(struct objto
+ 
+ 		insn->ignore = orig_insn->ignore_alts;
+ 		insn->func = orig_insn->func;
++		insn->alt_group = alt_group;
+ 
+ 		/*
+ 		 * Since alternative replacement code is copy/pasted by the
+@@ -2157,6 +2161,15 @@ static int validate_return(struct symbol
+ 	return 0;
+ }
+ 
++static bool is_branch_to_alternative(struct instruction *from,
++				     struct instruction *to)
++{
++	if (!from || !to->alt_group || !list_empty(&to->alts))
 +		return false;
 +
- 	for (i = 0; i < CFI_NUM_REGS; i++) {
- 		if (cfi->regs[i].base != initial_func_cfi.regs[i].base ||
- 		    cfi->regs[i].offset != initial_func_cfi.regs[i].offset)
++	return (from->alt_group != to->alt_group);
++}
++
+ /*
+  * Follow the branch starting at the given instruction, and recursively follow
+  * any other branches (jumps).  Meanwhile, track the frame pointer state at
+@@ -2164,6 +2177,7 @@ static int validate_return(struct symbol
+  * tools/objtool/Documentation/stack-validation.txt.
+  */
+ static int validate_branch(struct objtool_file *file, struct symbol *func,
++			   struct instruction *from,
+ 			   struct instruction *insn, struct insn_state state)
+ {
+ 	struct alternative *alt;
+@@ -2174,7 +2188,7 @@ static int validate_branch(struct objtoo
+ 
+ 	sec = insn->sec;
+ 
+-	if (insn->alt_group && list_empty(&insn->alts)) {
++	if (is_branch_to_alternative(from, insn)) {
+ 		WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
+ 			  sec, insn->offset);
+ 		return 1;
+@@ -2221,7 +2235,8 @@ static int validate_branch(struct objtoo
+ 				if (alt->skip_orig)
+ 					skip_orig = true;
+ 
+-				ret = validate_branch(file, func, alt->insn, state);
++				ret = validate_branch(file, func,
++						      NULL, alt->insn, state);
+ 				if (ret) {
+ 					if (backtrace)
+ 						BT_FUNC("(alt)", insn);
+@@ -2264,7 +2279,7 @@ static int validate_branch(struct objtoo
+ 					return ret;
+ 
+ 			} else if (insn->jump_dest) {
+-				ret = validate_branch(file, func,
++				ret = validate_branch(file, func, insn,
+ 						      insn->jump_dest, state);
+ 				if (ret) {
+ 					if (backtrace)
+@@ -2396,7 +2411,7 @@ static int validate_unwind_hints(struct
+ 
+ 	while (&insn->list != &file->insn_list && (!sec || insn->sec == sec)) {
+ 		if (insn->hint && !insn->visited) {
+-			ret = validate_branch(file, insn->func, insn, state);
++			ret = validate_branch(file, insn->func, NULL, insn, state);
+ 			if (ret && backtrace)
+ 				BT_FUNC("<=== (hint)", insn);
+ 			warnings += ret;
+@@ -2537,7 +2552,7 @@ static int validate_symbol(struct objtoo
+ 
+ 	state->uaccess = sym->uaccess_safe;
+ 
+-	ret = validate_branch(file, insn->func, insn, *state);
++	ret = validate_branch(file, insn->func, NULL, insn, *state);
+ 	if (ret && backtrace)
+ 		BT_FUNC("<=== (sym)", insn);
+ 	return ret;
+--- a/tools/objtool/check.h
++++ b/tools/objtool/check.h
+@@ -30,7 +30,8 @@ struct instruction {
+ 	unsigned int len;
+ 	enum insn_type type;
+ 	unsigned long immediate;
+-	bool alt_group, dead_end, ignore, ignore_alts;
++	int alt_group;
++	bool dead_end, ignore, ignore_alts;
+ 	bool hint;
+ 	bool retpoline_safe;
+ 	s8 instr;
 
 
