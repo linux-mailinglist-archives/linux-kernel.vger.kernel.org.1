@@ -2,158 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDAB1AC48D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF1A1ACA5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392800AbgDPOBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:01:25 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:43404 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898166AbgDPNko (ORCPT
+        id S2634943AbgDPPeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2898232AbgDPNk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:44 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GDcKwv084649;
-        Thu, 16 Apr 2020 13:40:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=+FwckwE718nnFr/35g3gcj/92E89oTBl1ZMCTR5KEIM=;
- b=iqUrY2H9ib6Tqb8czeWAPq4BibUWiDCpkkPRWOnjSVYxuYoossgOsmNXjtBStklxsrN/
- BOrP9qPYV44t2frUqNHruNf9bA99+R1qP05U+WRC7YzNrDD4UzCq2QgGT4EAt3bshHe6
- uvecHlGvvSUAozs7pESH75q4v9OcVMlmTfFEh0f+eEkP2GqqF+jBS5y6ULF4Gts0ilKP
- UQfVBSJ7cQ7MzwTlxH2YR1ArDYswN+/zbvf8AinEnvTOh0UOv/IUc/kzXkl9LS1QrkrD
- UccoJqRh/62a5sd4sXPR5SXu9rhd4Vp7QE2zsD71SkinXrPHQBHbDi4LQL4ew9aox85j 2Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30dn95sfm5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 13:40:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GDc55R134095;
-        Thu, 16 Apr 2020 13:40:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30dynyqbr5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 13:40:33 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GDeWWD019065;
-        Thu, 16 Apr 2020 13:40:32 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Apr 2020 06:40:32 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: What's a good default TTL for DNS keys in the kernel
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <128769.1587032833@warthog.procyon.org.uk>
-Date:   Thu, 16 Apr 2020 09:40:30 -0400
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-cifs@vger.kernel.org, linux-afs@lists.infradead.org,
-        ceph-devel@vger.kernel.org, keyrings@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+        Thu, 16 Apr 2020 09:40:58 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AEDC061A0C;
+        Thu, 16 Apr 2020 06:40:57 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id f8so5574259lfe.12;
+        Thu, 16 Apr 2020 06:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZLzws5i5Y18vpPpWQKpd4tf4rrBI/U3CKui/Sn/uhyY=;
+        b=XECzl8bnoYHa7JBihaNpNho0X+TXnG6VeYsCQPhuEXHf9Iehd/9SIW1/J9mcuEEe0b
+         WRwVX/i41aBzEhsORfM4ZC2TbVxNVMolHRAjUfke0s+RGZmitBw/DnJUZHiKqHqmrYT9
+         I9LXFKpBWBqhTZZXXair5qVTLlU/jJbsjPoWIwsJBBo0mTlFrj9HgsYRzAG31YSPElY4
+         QhYDKuMQA7falqvgwPR4X+Mt7f/W7ZeP/+/HYIh3CRJ+JsZlwpc6xEeVn3/TGziToDl9
+         VblLgngigFTr2b8o136x/G69URCT7TQHa/jhmCrUF857d5kXKZ74Z1HEVMSgcSz3RKnR
+         Ss3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZLzws5i5Y18vpPpWQKpd4tf4rrBI/U3CKui/Sn/uhyY=;
+        b=NbGit8VHchrgxfyZz/SMcGF8EXrjpZ/Fmr7frzB973H/WfmaPkkAXbxvGNS9htcR0/
+         L74iv6RJYfzNlyp9UimvTdUPvgTkOurxlmHFmR6DLGrMdDUv+llFXYj/ZOGVwYnhiIbg
+         aoCxr7sdIjQX+RZgnpWhwzp33fwaz/mKESkeIIzrih6K7ZE3MJj5S4+3YhC+NvieCrhs
+         15dBvWKJUq07oU2BgcE3cOD9+LRYCokG1/yICMgZwHZm2orN4Bt8oBr69cJsjfL5oFiS
+         +Nvr5rn1DMOuYRbOKNfo417tsSsmp3/RhPYVndqjlOMOeEU8dgLQDtRzsBpbrH+c/Hgk
+         dDWQ==
+X-Gm-Message-State: AGi0PubpMTX1O6rsMQFWR2Ide2kVGp1Poe7NKgrycDPIVwF1BGVUQhXd
+        atm2nfOuI1P1nMBRO/fQpCSrZamP3wKrNCQv5iA=
+X-Google-Smtp-Source: APiQypIWud1D1EiOfs9YtVdVtAQk8rF/e+TJLy4nQSWV2/scuMvXiD9YGPWzt7VIZM5qqDNDgcds4hTD9Rab+a60/+0=
+X-Received: by 2002:a19:88a:: with SMTP id 132mr6153501lfi.130.1587044456209;
+ Thu, 16 Apr 2020 06:40:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200414152843.32129-1-pthomas8589@gmail.com> <CACRpkdaPc-rxNmdq7KFKZ-Qi7Tqy2RJ5Lkcv-8bTAh0GX7VygQ@mail.gmail.com>
+ <CAMpxmJWZEhKho0+6zf=Ca8tif=Z7PcdNv2=tAsDnOUzeZLYqLg@mail.gmail.com>
+In-Reply-To: <CAMpxmJWZEhKho0+6zf=Ca8tif=Z7PcdNv2=tAsDnOUzeZLYqLg@mail.gmail.com>
+From:   Paul Thomas <pthomas8589@gmail.com>
+Date:   Thu, 16 Apr 2020 09:40:44 -0400
+Message-ID: <CAD56B7ezM5ewaFySr8zeybHvkLmLpcZQzMgYUnVNEvdJnvgGZw@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: gpio-pca953x, Add get_multiple function
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <8DC44895-E904-4155-B7B8-B109A777F23C@oracle.com>
-References: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
- <3865908.1586874010@warthog.procyon.org.uk>
- <128769.1587032833@warthog.procyon.org.uk>
-To:     David Howells <dhowells@redhat.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David-
+On Thu, Apr 16, 2020 at 9:21 AM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+>
+> czw., 16 kwi 2020 o 13:22 Linus Walleij <linus.walleij@linaro.org> napisa=
+=C5=82(a):
+> >
+> > On Tue, Apr 14, 2020 at 5:30 PM Paul Thomas <pthomas8589@gmail.com> wro=
+te:
+> >
+> > > Implement a get_multiple function for gpio-pca953x. If a driver
+> > > leaves get_multiple unimplemented then gpio_chip_get_multiple()
+> > > in gpiolib.c takes care of it by calling chip->get() as needed.
+> > > For i2c chips this is very inefficient. For example if you do an
+> > > 8-bit read then instead of a single i2c transaction there are
+> > > 8 transactions reading the same byte!
+> > >
+> > > This has been tested with max7312 chips on a 5.2 kernel.
+> > >
+> > > Signed-off-by: Paul Thomas <pthomas8589@gmail.com>
+> > > ---
+> > >  changes from v1: rebased to 5.7-rc1
+> >
+> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> >
+> > Since I know Bartosz is queueing other patches for this driver I
+> > let him pick it up.
+> >
+> > Yours,
+> > Linus Walleij
+>
+> Patch applied. I removed the last line of the commit message since I
+> guess you did test it on v5.7-rc1 after all?
+I applied the patch and compiled the kernel, but I didn't test on our
+embedded board with the actual max7312 chips, that board has a whole
+series of special commits.
 
-> On Apr 16, 2020, at 6:27 AM, David Howells <dhowells@redhat.com> =
-wrote:
->=20
-> Florian Weimer <fweimer@redhat.com> wrote:
->=20
->> You can get the real TTL if you do a DNS resolution on the name and
->> match the addresses against what you get out of the NSS functions.  =
-If
->> they match, you can use the TTL from DNS.  Hackish, but it does give =
-you
->> *some* TTL value.
->=20
-> I guess I'd have to do that in parallel.  Would calling something like
-> res_mkquery() use local DNS caching?
->=20
->> The question remains what the expected impact of TTL expiry is.  Will
->> the kernel just perform a new DNS query if it needs one?  Or would =
-you
->> expect that (say) the NFS client rechecks the addresses after TTL =
-expiry
->> and if they change, reconnect to a new NFS server?
->=20
-> It depends on the filesystem.
+-Paul
 
-Agreed. For example:
-
-The Linux NFS client won't connect to a new server when the server's
-DNS information changes. A fresh mount operation would be needed for
-the client to recognize and make use of it.
-
-There are mechanisms in the NFSv4 protocol to collect server IP =
-addresses
-from the server itself (fs_locations) and then try those locations if =
-the
-current server fails to respond. But currently that is not implemented =
-in
-Linux (and servers would need to be ready to provide that kind of =
-update).
-
-
-> AFS keeps track of the expiration on the record and will issue a new =
-lookup
-> when the data expires, but NFS doesn't make use of this information.  =
-The
-> keyring subsystem will itself dispose of dns_resolver keys that expire =
-and
-> request_key() will only upcall again if the key has expired.
-
-Our NFS colleagues working on Solaris have noted that handling the =
-expiry
-of DNS information can be tricky. It is usually desirable to continue =
-using
-expired information when a new DNS query fails temporarily (times out, =
-or
-the network is partitioned, etc). That makes for a more robust network =
-file
-service.
-
-
-> The problem for NFS is that the host IP address is the primary key for =
-the
-> superblock (see nfs_compare_super_address()).
-
-I thought that NFSv4.1 and newer have server-provided unique information
-that might be used in place of the server's IP address. This information
-is supposed to be independent of a server's network addresses.
-
-
-> CIFS also doesn't make direct use of the TTL, and again this may be =
-because it
-> uses the server address as part of the primary key for the superblock =
-(see
-> cifs_match_super()).
-
---
-Chuck Lever
-
-
-
+>
+> Bart
