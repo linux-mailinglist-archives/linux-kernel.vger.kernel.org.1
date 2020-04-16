@@ -2,205 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEA61AB4A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 02:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598CA1AB4A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 02:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388726AbgDPANe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 20:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733284AbgDPANH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 20:13:07 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12A6C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 17:13:07 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id k10so1519255plx.17
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 17:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=VSuhz+enLDEoUe8o3p0Ply7OBrvYmFVYQ8Yt4+PCZjw=;
-        b=ExLcymzbtB9kq61CDfHnbt/jG0yH7G8Ffm1tR+ZQ9J+dNcj33sP4aJNnNyc2bZBQ2Z
-         xMjyITOfO9cjJ0/kyf+s4IT6bUloJGGEzTB0MdGqIgHw6xpgBIc8IUVQ6O2txa52CWBq
-         994OQyQm5XFtE+6M9+ZEtC1sE46C4K7+lnN9LoNvmrCdqjkrMdIAB+OuI6008lRfq75+
-         sScc9jwlDpPzZfCws39Y04smVqihR/LkURdQJQGD/Xws+vfmREKPkoYP4djQlTaqFwzp
-         fdNyKX/H23KAAXREnJn8aTDXTLQKu6xlSOAf+Rm58FQ+EBBbQXK6fMRwJ1pwzGroMRlg
-         4QZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=VSuhz+enLDEoUe8o3p0Ply7OBrvYmFVYQ8Yt4+PCZjw=;
-        b=oZ9E6LMDBp81IwQWxmgJwqMotKDZlWFsX9fvtPuXmhqPWNCAXMhXQmOlenCIZ5Tmv1
-         vU/zhK415aNxua7zOLlzqG3DcA1Emj7Hgb5RzkF7t5SubBII9vEpXekBGqBMRdAwT40F
-         sVuBxUWWndnAUMqBt/Zj86mjTRy4p7vGnozymkL5YgtzZPBAgph66dXXx4xn2g63mU+q
-         m28beWk7VmoJXA66T2UYNfqy5TkBpeWD+0/JtxxcA9p3oGC8+oEYMsj+sscNkaT4SftQ
-         zVUkek8RasRnbwi3zssWoBL/hBL7xavyZQF3TYnw1VVmv/e8N+cNAXBvHMi7RMnKHQgA
-         wZpw==
-X-Gm-Message-State: AGi0Puag+hOJ2PXgwOftqqph7qFICSrRcbRwNDZ6hS1bJQcZuKIO33NN
-        w1HthXyP8OQIj/O0Ni4tz+xzoarmQDB8
-X-Google-Smtp-Source: APiQypLOVeuUMpLSIaXr0Ek5N6IEquPt7vV531GuJbYbQtTtJeDDPAXCy9U7xigL9h42WaNWly3PcOjUgcik
-X-Received: by 2002:a17:90a:f418:: with SMTP id ch24mr1925485pjb.68.1586995987222;
- Wed, 15 Apr 2020 17:13:07 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 17:13:03 -0700
-Message-Id: <20200416001303.96841-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH] perf/record: add num-synthesize-threads option
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Tony Jones <tonyj@suse.de>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2403937AbgDPAP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 20:15:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:22518 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403807AbgDPAPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 20:15:11 -0400
+IronPort-SDR: R8mEYhxg3fkW2VioydplFWwHA+/bw/mDsMhcZKszNBpcUmmZuJ8U+pscFYyp0YP7LIUxE4p8nN
+ yCoI+dzjrJfg==
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 17:15:07 -0700
+IronPort-SDR: 3rVFVDeGcNl6HtVcgLd4GMykj2Wf9o9VapmUD7r25jT4ac/rP8ZeBiUigUmTqE3rjlssuzILxu
+ ZO0SQ20jEDiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
+   d="gz'50?scan'50,208,50";a="274914925"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 15 Apr 2020 17:15:03 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jOsBK-000BU1-PM; Thu, 16 Apr 2020 08:15:02 +0800
+Date:   Thu, 16 Apr 2020 08:14:09 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>,
+        keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
+        x86@kernel.org
+Cc:     kbuild-all@lists.01.org, arjan@linux.intel.com,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
+        rick.p.edgecomb@intel.com, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 7/9] x86: Add support for function granular KASLR
+Message-ID: <202004160811.sBWd3bTo%lkp@intel.com>
+References: <20200415210452.27436-8-kristen@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
+Content-Disposition: inline
+In-Reply-To: <20200415210452.27436-8-kristen@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Eranian <eranian@google.com>
 
-To control degree of parallelism of the synthesize_mmap() code which
-is scanning /proc/PID/task/PID/maps and can be time consuming.
-Mimic perf top way of handling the option.
-If not specified will default to 1 thread, i.e. default behavior before
-this option.
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Stephane Eranian <eranian@google.com>
-Reviewed-by: Ian Rogers <irogers@google.com>
+Hi Kristen,
+
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on kees/for-next/pstore]
+[also build test ERROR on tip/auto-latest linus/master tip/x86/core v5.7-rc1 next-20200415]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Kristen-Carlson-Accardi/Function-Granular-Kernel-Address-Space-Layout-Randomization/20200416-072741
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/pstore
+config: i386-tinyconfig (attached as .config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=i386 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   ld: arch/x86/boot/compressed/misc.o: in function `index_update.isra.12':
+>> misc.c:(.text+0x102c): undefined reference to `xz_crc32_table'
+   ld: arch/x86/boot/compressed/misc.o: in function `xz_crc32_init':
+   misc.c:(.text+0x11c0): undefined reference to `xz_crc32_table'
+   ld: arch/x86/boot/compressed/misc.o: in function `xz_crc32':
+   misc.c:(.text+0x1213): undefined reference to `xz_crc32_table'
+   ld: arch/x86/boot/compressed/misc.o: in function `xz_dec_run':
+   misc.c:(.text+0x1e69): undefined reference to `xz_crc32_table'
+>> ld: misc.c:(.text+0x1f2d): undefined reference to `xz_crc32_table'
+   ld: arch/x86/boot/compressed/misc.o:misc.c:(.text+0x1ff3): more undefined references to `xz_crc32_table' follow
+
 ---
- tools/perf/Documentation/perf-record.txt |  4 +++
- tools/perf/builtin-record.c              | 35 ++++++++++++++++++++++--
- tools/perf/util/record.h                 |  1 +
- 3 files changed, 38 insertions(+), 2 deletions(-)
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index b3f3b3f1c161..6e8b4649307c 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -596,6 +596,10 @@ Make a copy of /proc/kcore and place it into a directory with the perf data file
- Limit the sample data max size, <size> is expected to be a number with
- appended unit character - B/K/M/G
- 
-+--num-thread-synthesize::
-+	The number of threads to run when synthesizing events for existing processes.
-+	By default, the number of threads equals 1.
-+
- SEE ALSO
- --------
- linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 1ab349abe904..2f97d0c32a75 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -43,6 +43,7 @@
- #include "util/time-utils.h"
- #include "util/units.h"
- #include "util/bpf-event.h"
-+#include "util/util.h"
- #include "asm/bug.h"
- #include "perf.h"
- 
-@@ -50,6 +51,7 @@
- #include <inttypes.h>
- #include <locale.h>
- #include <poll.h>
-+#include <pthread.h>
- #include <unistd.h>
- #include <sched.h>
- #include <signal.h>
-@@ -503,6 +505,20 @@ static int process_synthesized_event(struct perf_tool *tool,
- 	return record__write(rec, NULL, event, event->header.size);
- }
- 
-+static int process_locked_synthesized_event(struct perf_tool *tool,
-+				     union perf_event *event,
-+				     struct perf_sample *sample __maybe_unused,
-+				     struct machine *machine __maybe_unused)
-+{
-+	static pthread_mutex_t synth_lock = PTHREAD_MUTEX_INITIALIZER;
-+	int ret;
-+
-+	pthread_mutex_lock(&synth_lock);
-+	ret = process_synthesized_event(tool, event, sample, machine);
-+	pthread_mutex_unlock(&synth_lock);
-+	return ret;
-+}
-+
- static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- {
- 	struct record *rec = to;
-@@ -1288,6 +1304,8 @@ static int record__synthesize(struct record *rec, bool tail)
- 	struct perf_tool *tool = &rec->tool;
- 	int fd = perf_data__fd(data);
- 	int err = 0;
-+	int (*f)(struct perf_tool *, union perf_event *, struct perf_sample *,
-+		struct machine *) = process_synthesized_event;
- 
- 	if (rec->opts.tail_synthesize != tail)
- 		return 0;
-@@ -1402,9 +1420,18 @@ static int record__synthesize(struct record *rec, bool tail)
- 	if (err < 0)
- 		pr_warning("Couldn't synthesize cgroup events.\n");
- 
-+	if (rec->opts.nr_threads_synthesize > 1) {
-+		perf_set_multithreaded();
-+		f = process_locked_synthesized_event;
-+	}
-+
- 	err = __machine__synthesize_threads(machine, tool, &opts->target, rec->evlist->core.threads,
--					    process_synthesized_event, opts->sample_address,
--					    1);
-+					    f, opts->sample_address,
-+					    rec->opts.nr_threads_synthesize);
-+
-+	if (rec->opts.nr_threads_synthesize > 1)
-+		perf_set_singlethreaded();
-+
- out:
- 	return err;
- }
-@@ -2232,6 +2259,7 @@ static struct record record = {
- 			.default_per_cpu = true,
- 		},
- 		.mmap_flush          = MMAP_FLUSH_DEFAULT,
-+		.nr_threads_synthesize = 1,
- 	},
- 	.tool = {
- 		.sample		= process_sample_event,
-@@ -2421,6 +2449,9 @@ static struct option __record_options[] = {
- #endif
- 	OPT_CALLBACK(0, "max-size", &record.output_max_size,
- 		     "size", "Limit the maximum size of the output file", parse_output_max_size),
-+	OPT_UINTEGER(0, "num-thread-synthesize",
-+		     &record.opts.nr_threads_synthesize,
-+		     "number of threads to run for event synthesis"),
- 	OPT_END()
- };
- 
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index 24316458be20..923565c3b155 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -68,6 +68,7 @@ struct record_opts {
- 	int	      affinity;
- 	int	      mmap_flush;
- 	unsigned int  comp_level;
-+	unsigned int  nr_threads_synthesize;
- };
- 
- extern const char * const *record_usage;
--- 
-2.26.0.110.g2183baf09c-goog
+--2oS5YaxWCcQjTEyO
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+H4sICFKel14AAy5jb25maWcAlFxZc+O2k3/Pp2D9U7WVPMzE9zi75QcIhETEvIYgdfiFpcj0
+jCq25NWRzHz77QZIESQbymwqyYzRjbvR/euD/vmnnz12PGzflof1avn6+t37Um2q3fJQPXsv
+69fqfzw/8eIk94Qv84/AHK43x2+/ra/v77zbj58+XnzYrS69x2q3qV49vt28rL8cofd6u/np
+55/g35+h8e0dBtr9t/dltfrwyful+PO4ORy9Tx9voffdUf909av5GXrwJB7LScl5KVU54fzh
+e9MEP5RTkSmZxA+fLm4vLhpC6J/ar65vLvQ/p3FCFk9O5AtreM7iMpTxYzsBNAZMlUxF5STJ
+E5IgY+gjBqQZy+IyYouRKItYxjKXLJRPwu8w+lKxUSh+gFlmn8tZkllrGxUy9HMZiTLXY6gk
+y1tqHmSC+bC4cQL/AxaFXfX5T/R9vnr76nB8b893lCWPIi6TuFRRak0MqylFPC1ZBucqI5k/
+XF/hLdabSKJUwuy5ULm33nub7QEHPl1EwlnYnPV//tP2swklK/KE6Kx3WCoW5ti1bgzYVJSP
+IotFWE6epLVSmzICyhVNCp8iRlPmT64eiYtwA4TTnqxV2bvp0/XazjHgConjsFc57JKcH/GG
+GNAXY1aEeRkkKo9ZJB7+88tmu6l+ta5JLdRUppwcm2eJUmUkoiRblCzPGQ9IvkKJUI6I+fVR
+sowHIACgTGAukImwEVOQeG9//HP/fX+o3loxnYhYZJLrB5Fmych6eTZJBcnMvrTMh1ZVqlmZ
+CSVin+6FtGzKchTKKPFF9/2Nk4wLv35aMp60VJWyTAlk0ndTbZ697UtvB63+SfijSgoYC959
+zgM/sUbSx2Gz4PuzdIZFmYKO8FkuypCpvOQLHhJnoRXEtD3aHlmPJ6YiztVZYhmBEmH+H4XK
+Cb4oUWWR4lqay8vXb9VuT91f8FSm0CvxJbflOE6QIv1QkDKkySQlkJMA703vNFNdnvoiBqtp
+FpNmQkRpDsNrDX4atGmfJmER5yxbkFPXXDbNGLi0+C1f7v/yDjCvt4Q17A/Lw95brlZbsG3r
+zZf2OHLJH0voUDLOE5jLiNVpChQ7fYUtmV6KkuTOf2ApeskZLzw1vCyYb1ECzV4S/FiKOdwh
+pe+VYba7q6Z/vaTuVNZWH81fXIqiiFVt6HgAr1ALZyNuavW1ej4CpvBequXhuKv2urmekaB2
+ntuMxXk5wqcI4xZxxNIyD0flOCxUYO+cT7KkSBWtDAPBH9NEwkggjHmS0XJs1o72To9F8mQi
+ZLTAjcJHUNpTrRMyn2ZJEtAFg4Ns18nLJAWJAnSB+gzfIvwRsZgL4uD73Ar+0jOFhfQv7yxN
+CJomD0FAuEi1Gs0zxvt9Uq7SR5g7ZDlO3lKNXNlnHoGBkmBBMvo4JyKPANqUtYKjmRZqrM5y
+jAMWuzRPmig5J5XLSQvApT/Sl1E4Xmt3/3RfBgZlXLhWXORiTlJEmrjOQU5iFo5pudEbdNC0
+CXDQVAAAgKQwSUMSmZRF5tJjzJ9K2Hd9WfSBw4QjlmXSIROP2HER0X1H6fisJKCkaVDU3a6t
+LRDct0uA0WKwgPDeOzpSic9Ef+glfN+G9eY5wJzlyQhbUnJ50YFtWqfVnlVa7V62u7flZlV5
+4u9qAzqdgbbjqNXB1rUq3DG4L0A4DRH2XE4jOJGkh/Nq9fmDM7ZjTyMzYalNluvdoOfAQO9m
+9NtRIRs5CAUFJlWYjOwNYn+4p2wiGpzrkN9iPAajkjJg1GfAQHk7HnoyluFAcutT6npVzarm
+93flteWIwM+2a6XyrOBaTfqCA97MWmJS5GmRl1o5g/9Tvb5cX31AL/vkCaEB9EVaqiJNO74f
+2En+qPXukBZFRQ9sRmjvstgvR9LgvIf7c3Q2f7i8oxmaG/2XcTpsneFOUFyx0re9NDMAWzTm
+oxz7nMChAIhHGSJiH01orzu+WwRaaF7nFA38F4H+v+iZuRMH3D5Ic5lOQBLy3htWIi9SfE8G
+zIGH0DLEAmx+Q9I6AIbKELMHhR1t6PBpgSTZzHrkCFw746mAiVJyFPaXrAqVgqfjImvUo4+O
+hWVQgCUNR4MRtPSoRlvAkvQT6cgzyDd4IE+LcqJc3QvtqFnkMZhUwbJwwdHREhYCSCcG5IWg
+QUL1cNWLqiiG14PyjXcgOLzVBgOmu+2q2u+3O+/w/d1g3Q4YrAd6AqiPwkVrg4iGZLjNsWB5
+kYkSPWVao02S0B9LRXvBmcjBMoN0OScwwgnwKaNtE/KIeQ5XimJyDjvUtyIzSS/UoNAkkqBf
+MthOqYGrw54GCxBJsMoA/yZFL8rT2uSb+ztFAxIk0YTbM4Rc0UEHpEXRnDAA0Z3WrS0nCD9A
+x0hKeqAT+TydPuGGekNTHx0be/zkaL+n23lWqISWmEiMx5KLJKapMxnzQKbcsZCafE2DughU
+pGPciQAzNZlfnqGWoUMQ+CKTc+d5TyXj1yUdGNNEx9kh9nL0AlPufiC11SAkCan6PcS4G2MX
+VCDH+cOtzRJeummIqVJQUcYvVEXUVZkg3d0GHqVzHkzubvrNybTbAnZVRkWklcWYRTJcPNzZ
+dK2pwQOLlIUlJANtgPqrBEo3zpFwofBpKxGCNqVcQJgIFLk+ECuA1DTrO+1AnIbCIn/YGCwm
+SUyMAq+JFdmQACgmVpHIGTlFEXGy/SlgyVzG9k6DVOTGySEFwo8ksfdYm2JVwiLAGI/EBMa8
+pIkYUhyQauA5IEBDRxTxtFJJKzx96V3n3Jg7C46/bTfrw3ZnAkvt5bbIHy8DlPysv/sauzrG
+6i4iFBPGFwDuHVpbv5okDfF/wmGY8gTeyoi2vfKedgRw3ExgXANQgyv8EkkOogzP1X2Gir75
+2vJKyt+LE4wuGnzSCThC0w3twNbUuxsqjjWNVBqC0b3uxPjaVgy2kKM2LFf0pC35X0e4pNal
+sWYyHgOIfbj4xi/qhFnnjFJGBYg0zhsDFoE9wxtgBArVoXE3WeudJouAMXdLycgQhS5s4AlG
+vAvx0FuY1rDgTSQK3fCs0GEnh1Y38X2wUMns4e7GEp88o6VDrxFeuH/GkChwbJxEABjpGRMT
+gimY623j+dtSQXHQNpng7CfUWuQnOLpftOg+lZcXF1T49am8ur3ovIGn8rrL2huFHuYBhrEC
+NWIuKPObBgslwZdDnJ+hQF725RFcOPTTUZzO9Qd3cBJD/6te99oBnfqKPiQe+doNBJ1DI3E4
+YzlelKGf08GkRq2e8UiMDt/+U+080LvLL9VbtTloFsZT6W3fMWPecVxqd44OTUSut3nywXBY
++wr1NKSIjDvtTUbDG++q/z1Wm9V3b79avvZsjYYjWTfoZSchiN6ngeXza9Ufa5gIssYyHU6n
+/K+HqAcfHfdNg/dLyqVXHVYff7XnxajDqFDESdbxCDTSneSMcniRHEWOJCWhI5kKskqj5ljk
+t7cXNN7W2mehxiPyqBw7Nqex3ix33z3xdnxdNpLWfR0aV7VjDfi7SVwA2hi3SUAVNv74eL17
++2e5qzx/t/7bhCTbiLJPy/FYZtGMgZMN9sClVSdJMgnFiXUgq3n1Zbf0XprZn/XsdjrIwdCQ
+B+vuZv6nHTAwlVleYK0Gc1gdLBKZzm8vLZSKYYyAXZax7Ldd3d6Z1k6dxnK3+ro+VCtUHB+e
+q3dYJ4p5qyLs9SUmSmmZ2aaljCNpELC9gT+KKC1DNhIhpbFxRO1nSgznFrHWqJjA4ug29Ew5
++jxYspHLuBypGeuXZkhw1DAGSETPHvsBItOKMROKACCH7mBasYZlTOWdxkVsoq0iy8DnkfEf
+Qv/cY4OD6rXo/ekRgyR57BFRM8DPuZwUSUGk0RWcMOqzunCACiyChkaDYhL7BAMAsxoiOYi+
+zDSMGhy6WbkpBjLR5nIWSAAL0s7knwKC4LMsYoZvOddpNd2jx3d9NQIgCXCl7F8jlkOBbazL
+evq3k4kJPIbYN/G7WoZqndrhU+Kz6+KwCMnZMZiVI9ioScP2aJGcg9y2ZKWX089lAjrEQF2R
+xYD94UqkHZHv52oIOcE6EwzLg0PnCxOe1D2oQYj5m3RMVh+RX0TkfbaP9jxVx7pzOR2KlJHy
+UrGxaGIPvaHqVlOo5aD5SeGIK8uUl6Ympin+IhZag9E6rk5y4DGEcGf9aHs/AtzYrjpK3CEP
+qju6ZJfeM5uReQDqzFyHjpX274yo0OiLXoJXG/Wzfo1OidFDQvWKMXj0xKjzRBqOgVYi66s1
+eHKNryU4CK0VWwJSEYJGRN0sQhS6kNAgmqKdnGF+f5gD6jGIOWgDUrV1e913RShJF41eykNr
+TB5igH4E5w3W3bcICdYCykkNg68HBNao8j7ON/oK7+hcShdUnQTlWBfMZTMrRXSG1O9uzrvL
+0x5jCsd/fdW4L10VaeeWwVXm2SLNT0iAJ9MPfy731bP3l0nGvu+2L+vXTiXRaQDkLhujb6q+
+2izlmZE668XS2jQsJjJWnf4/hkmaoXQRg8Lcsh3yqoWSiuHX4ppnAp30BBSpfaEj1K0UPo9N
+2i6Fp1rEyFSX4nXpWtgM/RyN7DvLwGi6OtvEbu+eD2ZgMgBXAjp9LkQBJgo3oYv83CzZjGLQ
+UtgUI5QjMcY/0Jh0CxktXu25wuJZmopTGk18q1bHw/LP10qXe3s6MHjooPeRjMdRjlqDrrEw
+ZMUz6QhG1RyRdCR5cAdo+0i3xrVAvcKoetuCnxK13uAAJp+NODWhrIjFBeuEyts4lqERYlh3
+7o5W6iSC6WcZ83Y4sC25rbKNSheRFva69wDWjbHkc1J0BsTwXprrXjrIfNPThLzvorThA4z/
+ZQKFtFfeYLk5ZZ6ge2yfyaOi4g5NWbFW/6Zu1M8ebi5+v7MCwYTdowKwdkb8seN5cYAFsc6/
+OGI4tG/+lLqCOk+jgnZKn9SwOKYH8XUuu3FwOgkWkemkBNyxI2cMUHEE6j6IWEapttNzTXNh
+7DvrKHS3wHdCCE7nDgui/pAnS+NXf69XtsveYZaK2ZsTvQBIB8ryTqgEww+k5HHOupWMreu7
+XtXr8JJhNKwwFUaBCFNXSkdM8ygdOzLgOcAdhlDDUepjhj/FI/SnCINlnkIFr9vlcx1kaJ7+
+DOwX8x0Jl35HOw4UJjNd5EkrwdPmsCDDzwDbu3avGcQ0cxQrGAb8bKMeBhQAItUzUq4rW4o8
+cZTdI3lahFhQMpKgjKQYQofhnZ6Cc89a9DqXHAWyH5HrRLeaLtZzipUjQZTTjzsZux5dJCdB
+fio4Al1VF1JZWlM3DaQingLSVMf39+3uYMedOu3GWq33K2rfcO3RAoEEuWTQFmGisBQFkxmS
+Oy5YgbdCRw2xiG1eKn8sHOb3ityXEHDxkbe3dtasSFPK36/5/I68rF7XOk73bbn35GZ/2B3f
+dDnh/is8iWfvsFtu9sjnASytvGc4pPU7/rUbxPt/99bd2esBAKw3TifMCgFu/9ngS/Tetlgn
+7v2Cwer1roIJrvivzXdrcnMAvAwAzvsvb1e96i/iiMOYJqlTaM8NYR0nDxKye0deul6of/r0
+QnElayZreY1QABExj/0wqQ7Ww2Fcxpi3rdWEGsiF3LwfD8MZ2zB5nBZDaQqWu2d9+PK3xMMu
+3WQHfiLyYy9Ts9rvcgJeel+AT5ulpm1vh9iIWRXI1nIFkkO91jynq/VxYSzUunwgD83RpJEs
+TfG5o/hqdi77mPL7T9d338pJ6qi1jhV3E2FhrtptID26aPHUpVhgIxOTjXUXWuQc/ksd1QEi
+5H0Pr038DK6g7WiOCEBlAdYMKwWGptdI6hUnBfSKLny22S3ua1prKlc+LY1oQtD/Zqe51XT4
+xtI89Vav29Vf1vqNUt5oTygNFviNHaa+AO3hh6KYBtX3AFAnShHWH7YwXuUdvlbe8vl5jeYX
+PHk96v6jrVuHk1mLk7GzQBElrfel34k2ozNYuialZFPHpxWaikl72o80dHSvQ/oJBrPI4fLk
+ATjGjN5H81UeoX+UGtn1tO0lK6omfQReCMk+6rknBg0cXw/rl+NmhTfTqKHnYfIsGvuglUG+
+aQ8nyBGtKMmvaSAEvR9FlIaO0j8cPL+7/t1RbQdkFbnykWw0v7240MjV3XuhuKtoEci5LFl0
+fX07xxo55juKQJHxczTvVyI1ZvLcQVpaQ0yK0FntHwlfsiZ0M3RQdsv3r+vVnlInfrf4ycAO
+aLNNR71Su9l4FLvlW+X9eXx5AUXnD22NI9VLdjPIern663X95esBEEfI/TNmGqj4bbzCsjVE
+lXTkBuPx2vy6WRuA/i8zn/yC/lFaryopYqouq4BXmARcluBl5KEuvpPMSjEgvf3yofUZobkI
+04FPYZFP7nbA/V7XwZ1imwaa7Rs9tadfv+/x1yd44fI7mqzhK44BJuKMcy7klDzAM+N09zRh
+/sShIfNF6gD52DFL8HPKmcwdX25HkeP9iUjhh6uOggVwfYVPa3STu5PaP1wQdyB8xpswqeJZ
+YX2RoEmD71ky0HZgc7oNEb+8ubu/vK8p7YvPuZFbGvSgUh34UyYsErFRMSarcjDiipF215DQ
+z2SAdEKRNlM1WyBYv7yxFoXe/NZ5FnNfqtT1wWjhgH46nkfg+Q6DTOCi44Km+yk7Q8XfKDAg
+1y7varfdb18OXvD9vdp9mHpfjtX+0FFIJ2/nPKt1CTmbuL4o1LWL9ccSJXG/HaOCv9KgdHnF
+Abiw4jSW69vEMGRxMj//fUYwa6L8g/PhGnep7XHXMf7NGsJHlfFS3l/dWgkwaBXTnGgdhf6p
+tQXS1Ay2vyfDUULXIskkigqnTcyqt+2het9tV5S+w+hSjmEAGmsTnc2g72/7L+R4aaQaOaVH
+7PQ0rjFM/ovSH557yQZcivX7r97+vVqtX06BqZMaZ2+v2y/QrLa8M39jugmy6QcDglvv6jak
+Gju92y6fV9s3Vz+SbsJN8/S38a6qsK6u8j5vd/Kza5B/Y9W864/R3DXAgKaJn4/LV1iac+0k
+3bby+GsqBuI0x6zkt8GY3SDWlBfk5VOdT/GOH5ICy8vQemNY3djYpXnuBLQ6x0Q/JYdmTmdD
+8IiBwBWsklKSA5o1RYpFC67Qg/aqdN0SoICQcJbBf+z8SojWzavjvchAYkQelY9JzBBiXDm5
+0D1N56y8uo8jdIVppdvhwvGcXKYCWgwgS+PTdnbTcyG5o9Qw4kPUR3wrQd3LOTbrEtgQa7DN
+8267frZPnMV+lkif3FjDbqEJ5qgk7Yd7TBxuhiHT1XrzhXIKVE5bsLrePCCXRAxpeTAYeaWj
+P45fmSEd1kiFMnIG1vB7Afh73PuoqbXm5tN0Gm11k2B1qgc0ppEeyx775gOwWZJZNZEtDGp+
+Qc9YmWIo2tMUczSnwGMyvonjExddzoEcLqQDI9R1I648L3AA4pOOeKV/BqFKQyudv4ljzM70
+/lwkOX3pmE4aq5vSkaYzZBd1jDURDhog7gxQcY9sRHu5+trzqhWRSG7gkuE2b39fHZ+3uuyg
+FYVWlQC2cS1H03ggQz8T9N3o31JCo0XzbbaDav4gDqlRRMM1WwpOKuO9wOy5cGDa2PF7OIpY
+Dr+4OiU4redisFe1Ou7Wh++UE/UoFo4cluDF/1V2Nc1t20D07l/hyakHJWMnniQXHyhKlDmi
+SFqgwrYXjWwzqsa1rJHsTNpfX7wF+AFwl05PcYglCILA7gJ47wnjVa+QpopiFsGsBm2lweJg
+bPkaCInRYGb6Z8v1RLEAh7Z1QQe/kajF9Tvk2DhVGv2zedqMcLZ02O1Hp833Stezexjt9i/V
+Ft0xujt8f+coe/y1OT5UezjPtqe62JadDia7zd+7f2tRxWaKxoUFKvqARyoCehYwhqb5gpOo
+jSNgsCRbF33gN8lTDmHeqMnF/FHRGdjwZFlv9ia7uyOoCMfn15fd3p3HSHh4AEuDxS6WaZhr
+t4DzSnxoBq6tTZJpKpRGcVqrN4xjZ3cp1EEgHgKJ5GHcMCS8Iu9yCwwHzIckkPIkdoH7oV4H
+hmFcCOFtGV7yNE3cV1xeTGIevIXiuFitxWo/8SmYLvnMk+F1iVjAbzIn8ZgeJMkOhjxb3pwC
+ffoIhFfk61G2C4c/obXCfCb0t/4OXfyWuYTo7EOwlKtPQjglRRs5az12ZoWjG2apQwZywc85
+iBl6uk3Ns4DGtOMElLX+6NHhAQc9WTTpip5073FY0k4BQZd7OFRyI2WQzF3YNGSbhN6187k3
+O13Pdv9oIKt09XDUXvCRzqwenqrTtg/V0/+ojLKeGemBNITqL6LF7SqeFtdXDaBUp2QAt/Vq
+uOpG3sU4S4DiWi4h7sG+mNjYs46k7XtS2dP5wv3jiUzvrdQtF/QMAAcCrXxWSGxZPflJAGbK
+4l6NeAfEY68vLz5euZ8qJzqGqIQFwCs9IVDCJtUUZ0yKVIokuSzzDsqwaJBNLAJpL9k3Mpq3
+WSqc3JmaSXFzXU6DeY0C5HO0X+1+B1xmR+WkunvdbhGdOmgS57wtmCEs/KEEPI5tKnek0EK/
+57OJsxWN/zM3NJ5/NVZBCrmbuID4Xg3jrlMvlLJd8Usvd+a03ODaHYdF1314bjcJaep1wy+E
+EKBQo6QViCckxOfKxEYvU2GlQcV5FqsslVZC5inLTC++AkmZuInKhWXZeHdnY5DDxI9qu06H
+C0tP8W6vS4amDeVqK+VBX9sZQyo9xgo6Tj0v4NX3TSQBU7wyNoav2G+vLRio3gKmkR4Odwq1
+GOuvKCENXu6162KmJsvhmQeYAPYrteHJXKY6iFLgJqLtsOw99caD01m4q7Y/z54Pp9F5olP2
+14NxHDeb/dbLLPViB1lx5i3PufJGp8AppBC9KrryBSqLCo8uxrviPq1M+FAo1AtGHabB32ON
+ylsW4NDZh9ERxzxN2B0Z6rMzV47V9RM9PVb5e6G35tNp7k1xswTAAUbr2X476bUVoVhG50+v
+L9XPSv8BrvMH4nfXSSX2VqjuGWUx/eNhvUb/NrzDQnVglTg0q5mTHX8mQbxzEJZblsYIqoZl
+Hvj7bK6bK5W0cjcG1GrZ3Rqj+sw10X3+Rl3oPqSzdSLIP5ueqgcqaaaJ2Xj7ooNZ5f/44M5y
+3sog8o9G/gECzCpVOn0Hr0ZG2lmnboKC4EYsoeph87I5R6y972nP2T6Mhc6wwfGNcjUU82rW
+qqB+iriWriks8lop3iwXXsl/arjU/ZfiRwv6u22Qe2azBehIE+FVHByweHMEkZH4kUms+lZx
+S6+OHLXshkqr+r5e9rLPOhVr6LqC4qZLYCYjn+valM6WQX7D29S8bJbY7hYSa5XjF3NmljlO
+crt+s4zZgvbKdX3Y4fCJuJZERpaGWO1zhe2Nppa2EHcIjjiSv6cKFjlPHewkOjjnwG+FEJeC
+1HZp3P38+tkZiZ2GEI03SoKZ4toDCIHOV8aZIk2YQtDtNiSgATloO6T40wzDpZaFam1YTMYk
+Sy5lYItFnPnj0HkPqzPL+tt6MyIz+qnri9+/Oqo/nYIpjx5sLFYTUcS8sUkl9k2YBwN7JaYj
+tLsRTlYbFbx15C8X6ymblnGKThDFL31DCF86ZBZ3LHU3OYrqBFl9SonC5x/VcbN11G3mKy+B
+bvfZre/21SmE8xZsy7I2bh6t02Xwgc2gyJ3fXFiCrr4wvhVTUcTz6PkkxubB1+5tBJsNoP8A
+ilqbT2RoAAA=
+
+--2oS5YaxWCcQjTEyO--
