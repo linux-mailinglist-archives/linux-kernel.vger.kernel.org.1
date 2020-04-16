@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688911AC126
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5104E1AC152
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635580AbgDPMXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:23:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47624 "EHLO mx2.suse.de"
+        id S2635704AbgDPMeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:34:06 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:52802 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439151AbgDPMX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:23:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A92BCAC6D;
-        Thu, 16 Apr 2020 12:23:26 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B32BD1E1250; Thu, 16 Apr 2020 14:23:25 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 14:23:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, gregkh@linuxfoundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] bdi: remove the name field in struct backing_dev_info
-Message-ID: <20200416122325.GM23739@quack2.suse.cz>
-References: <20200416071519.807660-1-hch@lst.de>
- <20200416071519.807660-9-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416071519.807660-9-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2635543AbgDPMd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:33:57 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A8BE51A0D60;
+        Thu, 16 Apr 2020 14:33:54 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0DD9E1A0D44;
+        Thu, 16 Apr 2020 14:33:49 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 003BB402C4;
+        Thu, 16 Apr 2020 20:33:41 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 0/7] ASoC: Add new module driver for new ASRC
+Date:   Thu, 16 Apr 2020 20:25:30 +0800
+Message-Id: <cover.1587038908.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 16-04-20 09:15:19, Christoph Hellwig wrote:
-> The name is only printed for a not registered bdi in writeback.  Use the
-> device name there as is more useful anyway for the unlike case that the
-> warning triggers.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Add new module driver for new ASRC in i.MX8MN, several commits
+are added for new property fsl,asrc-format
 
-Ah, cool. So it isn't used in sysfs/debugfs as I was afraid. The patch
-looks good to me. You can add:
+Shengjiu Wang (7):
+  ASoC: fsl_asrc: rename asrc_priv to asrc
+  ASoC: dt-bindings: fsl_asrc: Add new property fsl,asrc-format
+  ASoC: fsl-asoc-card: Support new property fsl,asrc-format
+  ASoC: fsl_asrc: Support new property fsl,asrc-format
+  ASoC: fsl_asrc: Move common definition to fsl_asrc_common
+  ASoC: dt-bindings: fsl_easrc: Add document for EASRC
+  ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+changes in v9
+- use lowercase for dt example.
 
-								Honza
+changes in v8
+- change get_pair_priv_size to pair_priv_size variable
 
-> ---
->  block/blk-core.c                 | 1 -
->  drivers/mtd/mtdcore.c            | 1 -
->  fs/fs-writeback.c                | 2 +-
->  fs/super.c                       | 2 --
->  include/linux/backing-dev-defs.h | 2 --
->  mm/backing-dev.c                 | 1 -
->  6 files changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index ab87f2833ab2..f37068c611bf 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -494,7 +494,6 @@ struct request_queue *__blk_alloc_queue(int node_id)
->  
->  	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
->  	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
-> -	q->backing_dev_info->name = "block";
->  	q->node = node_id;
->  
->  	timer_setup(&q->backing_dev_info->laptop_mode_wb_timer,
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 39ec563d9a14..fcb018ce17c3 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -2040,7 +2040,6 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
->  	if (!bdi)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	bdi->name = name;
->  	/*
->  	 * We put '-0' suffix to the name to get the same name format as we
->  	 * used to get. Since this is called only once, we get a unique name. 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 76ac9c7d32ec..d85323607b49 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2320,7 +2320,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  
->  			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
->  			     !test_bit(WB_registered, &wb->state),
-> -			     "bdi-%s not registered\n", wb->bdi->name);
-> +			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
->  
->  			inode->dirtied_when = jiffies;
->  			if (dirtytime)
-> diff --git a/fs/super.c b/fs/super.c
-> index dd28fcd706ff..4991f441988e 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -1602,8 +1602,6 @@ int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
->  	if (!bdi)
->  		return -ENOMEM;
->  
-> -	bdi->name = sb->s_type->name;
-> -
->  	va_start(args, fmt);
->  	err = bdi_register_va(bdi, fmt, args);
->  	va_end(args);
-> diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-> index 249590bcccf7..0a55170b2142 100644
-> --- a/include/linux/backing-dev-defs.h
-> +++ b/include/linux/backing-dev-defs.h
-> @@ -194,8 +194,6 @@ struct backing_dev_info {
->  	congested_fn *congested_fn; /* Function pointer if device is md/dm */
->  	void *congested_data;	/* Pointer to aux data for congested func */
->  
-> -	const char *name;
-> -
->  	struct kref refcnt;	/* Reference counter for the structure */
->  	unsigned int capabilities; /* Device capabilities */
->  	unsigned int min_ratio;
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 119a41650833..dc7215dfd56b 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -15,7 +15,6 @@
->  #include <trace/events/writeback.h>
->  
->  struct backing_dev_info noop_backing_dev_info = {
-> -	.name		= "noop",
->  	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
->  };
->  EXPORT_SYMBOL_GPL(noop_backing_dev_info);
-> -- 
-> 2.25.1
-> 
+changes in v7
+- updated according to Nicoin's comments.
+- add get_pair_priv_size to replace PAIR_PRIVATE_SIZE
+
+changes in v6
+- updated according to Nicoin's and Rob's comments.
+
+changes in v5
+- Add new property fsl,asrc-format, rather than change fsl,asrc-width
+  to fsl,asrc-formt.
+- code change for above change.
+
+changes in v4
+- Add several commit for changing DT binding asrc-width to asrc-format
+- rename asrc_priv to asrc
+
+changes in v3
+- add new commit "ASoC: fsl_asrc: Change asrc_width to asrc_format"
+- modify binding doc to yaml format
+- remove fsl_easrc_dma.c, make fsl_asrc_dma.c useable for easrc.
+
+changes in v2
+- change i.MX815 to i.MX8MN
+- Add changes in Kconfig and Makefile
+
+ .../devicetree/bindings/sound/fsl,asrc.txt    |    4 +
+ .../devicetree/bindings/sound/fsl,easrc.yaml  |  101 +
+ sound/soc/fsl/Kconfig                         |   11 +
+ sound/soc/fsl/Makefile                        |    2 +
+ sound/soc/fsl/fsl-asoc-card.c                 |   24 +-
+ sound/soc/fsl/fsl_asrc.c                      |  305 +--
+ sound/soc/fsl/fsl_asrc.h                      |   74 +-
+ sound/soc/fsl/fsl_asrc_common.h               |  106 +
+ sound/soc/fsl/fsl_asrc_dma.c                  |   54 +-
+ sound/soc/fsl/fsl_easrc.c                     | 2114 +++++++++++++++++
+ sound/soc/fsl/fsl_easrc.h                     |  651 +++++
+ 11 files changed, 3212 insertions(+), 234 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+ create mode 100644 sound/soc/fsl/fsl_asrc_common.h
+ create mode 100644 sound/soc/fsl/fsl_easrc.c
+ create mode 100644 sound/soc/fsl/fsl_easrc.h
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.21.0
+
