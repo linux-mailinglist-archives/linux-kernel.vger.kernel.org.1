@@ -2,74 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DE71AC60E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F6B1AC611
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394327AbgDPOch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:32:37 -0400
-Received: from sauhun.de ([88.99.104.3]:43324 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404364AbgDPOLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:11:47 -0400
-Received: from localhost (p54B33393.dip0.t-ipconnect.de [84.179.51.147])
-        by pokefinder.org (Postfix) with ESMTPSA id C6CFC2C1F4B;
-        Thu, 16 Apr 2020 16:11:44 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 16:11:44 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c:imx-lpi2c: Omit superfluous error message in
- lpi2c_imx_probe()
-Message-ID: <20200416141144.GB1142@ninjato>
-References: <20200416140529.20036-1-tangbin@cmss.chinamobile.com>
+        id S2394355AbgDPOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2436806AbgDPOMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:12:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E0DC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:12:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d77so4752373wmd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:12:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4Aq3yCWYFY7wHOrarhjqlc9bx2dHHg6e1wr/Ld66Bgk=;
+        b=qj8hoC1SDgxFYAOGk71xzeMxtQHSHIwu8PjiwZmBwGsSYm8IihfCJCrxSJQXtgl/X5
+         c+vj6s/DYv24YDqAcfxP0rDCEsTpYk4GBQPzggmvav5urfiGyH1ZRJGVr7ex09wkDSg9
+         UkAqo5nXwdI70dkW1gu71uyo+FBwMZgwCr+VDW/vG8iaXlKniFv853cJ2Ij1oYbQv24B
+         iywACOyCQlFVLtOUXLo0UZnJ070gUMqihP5hdPy/x198yIny7nL2RQuqmfhp0yFtwfoT
+         1gdOARsCdOIIa13ccLMoiyMMGWvR2W6vc02+JH3e/jjWGKUKYJbro6D36gYa7n5glZ/e
+         0zMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4Aq3yCWYFY7wHOrarhjqlc9bx2dHHg6e1wr/Ld66Bgk=;
+        b=K1FtiYWk024M/RuR7G56v/jIY3gjBt7PvI7KfoP0Aa3g+5q6zUKazqMP2utGEJCWRM
+         VFXspwq0TV56bBEfyR85NEoC/yCBQtUks3VOI628LjzqqrsoT5K3CxKzcbFOCpEdEMDp
+         /sMlpmKSDDq2atEfLP3gSSYWG84sp4r2ZFYt2KnvUF4TOpUMYpD+3pvH0iF9bxIuL+7k
+         Fep1iNi6s59AlMJrkSiUFJ88P/iVoB0ntZ7r/lIVvMP/rrnAfWN74gVUjCrdLFluc2pO
+         zUXmYjL6KRNOQwYBM1pI5friWAzhLH/aoyyk5BCOnvvJn17/CvkWoldR+Z9U7DAQDg9E
+         4hzQ==
+X-Gm-Message-State: AGi0PuZ5LKApTPjovQhnATAbT83BF05k7jfDuAeFTRK1pQPRyIb/2nXM
+        BMRDRWfb9NLQ+rpMvW+7qHnxZjioOQ+Uo9xObgI=
+X-Google-Smtp-Source: APiQypIdWsKrNQFF3dbcu9dwh9adYCneRxwMvuzjpcjrEw5XcBXEAlvWpyxBcdkIEMdK28QlkmPrguTfgw0bFBIiK48=
+X-Received: by 2002:a1c:7f91:: with SMTP id a139mr4858422wmd.164.1587046327780;
+ Thu, 16 Apr 2020 07:12:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
-Content-Disposition: inline
-In-Reply-To: <20200416140529.20036-1-tangbin@cmss.chinamobile.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200416104707.20219-1-david@redhat.com> <20200416104707.20219-2-david@redhat.com>
+In-Reply-To: <20200416104707.20219-2-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Thu, 16 Apr 2020 16:11:56 +0200
+Message-ID: <CAM9Jb+iBAHr+UjxZBUGugQ_+9Z0a6CPAp8gXWorE57_rOQ9xqA@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] mm/memory_hotplug: no need to init new pgdat with node_start_pfn
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> A hotadded node/pgdat will span no pages at all, until memory is moved to
+> the zone/node via move_pfn_range_to_zone() -> resize_pgdat_range - e.g.,
+> when onlining memory blocks. We don't have to initialize the
+> node_start_pfn to the memory we are adding.
+>
+> Note: we'll also end up with pgdat->node_start_pfn == 0 when offlined the
+> last memory block belonging to a node (via remove_pfn_range_from_zone()->
+> update_pgdat_span()).
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/memory_hotplug.c | 15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
+>
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 47cf6036eb31..9b15ce465be2 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -866,10 +866,9 @@ static void reset_node_present_pages(pg_data_t *pgdat)
+>  }
+>
+>  /* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG */
+> -static pg_data_t __ref *hotadd_new_pgdat(int nid, u64 start)
+> +static pg_data_t __ref *hotadd_new_pgdat(int nid)
+>  {
+>         struct pglist_data *pgdat;
+> -       unsigned long start_pfn = PFN_DOWN(start);
+>
+>         pgdat = NODE_DATA(nid);
+>         if (!pgdat) {
+> @@ -899,9 +898,8 @@ static pg_data_t __ref *hotadd_new_pgdat(int nid, u64 start)
+>         }
+>
+>         /* we can use NODE_DATA(nid) from here */
+> -
+>         pgdat->node_id = nid;
+> -       pgdat->node_start_pfn = start_pfn;
+> +       pgdat->node_start_pfn = 0;
+>
+>         /* init node's zones as empty zones, we don't have any present pages.*/
+>         free_area_init_core_hotplug(nid);
+> @@ -936,7 +934,6 @@ static void rollback_node_hotadd(int nid)
+>  /**
+>   * try_online_node - online a node if offlined
+>   * @nid: the node ID
+> - * @start: start addr of the node
+>   * @set_node_online: Whether we want to online the node
+>   * called by cpu_up() to online a node without onlined memory.
+>   *
+> @@ -945,7 +942,7 @@ static void rollback_node_hotadd(int nid)
+>   * 0 -> the node is already online
+>   * -ENOMEM -> the node could not be allocated
+>   */
+> -static int __try_online_node(int nid, u64 start, bool set_node_online)
+> +static int __try_online_node(int nid, bool set_node_online)
+>  {
+>         pg_data_t *pgdat;
+>         int ret = 1;
+> @@ -953,7 +950,7 @@ static int __try_online_node(int nid, u64 start, bool set_node_online)
+>         if (node_online(nid))
+>                 return 0;
+>
+> -       pgdat = hotadd_new_pgdat(nid, start);
+> +       pgdat = hotadd_new_pgdat(nid);
+>         if (!pgdat) {
+>                 pr_err("Cannot online node %d due to NULL pgdat\n", nid);
+>                 ret = -ENOMEM;
+> @@ -977,7 +974,7 @@ int try_online_node(int nid)
+>         int ret;
+>
+>         mem_hotplug_begin();
+> -       ret =  __try_online_node(nid, 0, true);
+> +       ret =  __try_online_node(nid, true);
+>         mem_hotplug_done();
+>         return ret;
+>  }
+> @@ -1031,7 +1028,7 @@ int __ref add_memory_resource(int nid, struct resource *res)
+>          */
+>         memblock_add_node(start, size, nid);
+>
+> -       ret = __try_online_node(nid, start, false);
+> +       ret = __try_online_node(nid, false);
+>         if (ret < 0)
+>                 goto error;
+>         new_node = ret;
+> --
 
---ZoaI/ZTpAVc4A5k6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks right thing to me. Will wait for others to comment.
 
-On Thu, Apr 16, 2020 at 10:05:29PM +0800, Tang Bin wrote:
-> In the function lpi2c_imx_probe(), when get irq failed, the function
-> platform_get_irq() logs an error message, so remove redundant message
-> here.
->=20
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 
-Please make only one patch for all the drivers in the i2c subsystem.
-
-
---ZoaI/ZTpAVc4A5k6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6YZ6AACgkQFA3kzBSg
-KbZ4uA//a/dPITOlzgSHI6tPELR5gpZC0xTGuSky3954hG+aV8ceV2fh0as+wGYJ
-MOR4LdDFbHHG7EUGuQvMwjGxKvY/6aeHFQj9okzvc47PQvJeMEHay1PL8qIESUBe
-7L2v1LMDIwxK+/ymaYytvFhqwTwEPmmB8n9bB+H04yn67CyXXrpRxm++EsKHZomP
-fDtmo0L4Zmp9f5OOHFrPrOepbSJdtAV3nXnqgJDr/WaUxkvcrp9LZOhPDsZL2N9S
-mPEFMP41cxemrVms2b1/FlhSMjjKr2bgFv1rj7tjHyVnUrtEsHKPYLCnIk+xr7WO
-/FPLMxogTj6g27LPza5BpeFzw9WYW8dM/E9NVMb5K3kpjtlRYBNocH2kfs6E+kBU
-H4gs0HS3tpzscRLWyCGZKgQMA3WF+axfH8BK0N0TShLw+9wCoZ0waLWzsyUVBM3G
-XpVCjNjpVhIknjePazD94UYFT9Ck+m/s/hZB+GL1AtjW7CA+q63qQ7v6O7oDoOHx
-aMBnCJZ1ldAfRovuiaMApNv5Aa2OvajULWNfikviKRJOgsGCTMyxqFqCyWZ7Nxcq
-d9idpbEGojF5kzPWApZIxGy4pHZRwYmJ3YYd28Gb5ucEWo+qNZN3xd4byFFiOgUh
-p90MnmDjz6hiK/MnmuQtQ2thKAHmuB+CiKrMUCxo5yVuIE12wjI=
-=NVdq
------END PGP SIGNATURE-----
-
---ZoaI/ZTpAVc4A5k6--
+> 2.25.1
+>
