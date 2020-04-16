@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E011AC59F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAF21AC93B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394222AbgDPOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:23:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43862 "EHLO mail.kernel.org"
+        id S2505210AbgDPPUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409225AbgDPN4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:56:51 -0400
+        id S2898648AbgDPNrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:47:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17D4321734;
-        Thu, 16 Apr 2020 13:56:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79C962223D;
+        Thu, 16 Apr 2020 13:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045410;
+        s=default; t=1587044831;
         bh=WtyTCRlFyMzJAkJbuvSlHht8TZrezfj5ottSM/w2hRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ggogU+qQTHRtlsQS1CPJpz4VL2rGLWySvyqV0iFWXs8A29ilUUDsyJOeKwmKl56hS
-         zuhWEQGMQlpSJVVl8vTGpRg3rzBqLfqPYfoR4oS6wkBNBLW18XFLNklqisDs8Odgrr
-         h8zqN4m5y18If7Zgl31wfX2xOrQBsC4Jr1WMpb/8=
+        b=GD91+rmDcyWrFkzsphnMmQB5kmG3l2lvDgioQeY4g1ucZnUJau0vyWp47sEt52Av9
+         kZPjA6QSra2WM2FFGu87arMJv6KJMdHdKEBCbV/akcC6QNdzW4RGLqlGziSTK0uBB9
+         yP+JV3rpqoIL/zc7e1NX69a/Z8P4sjMfE1komwVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
         Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.6 123/254] ath9k: Handle txpower changes even when TPC is disabled
+Subject: [PATCH 5.4 118/232] ath9k: Handle txpower changes even when TPC is disabled
 Date:   Thu, 16 Apr 2020 15:23:32 +0200
-Message-Id: <20200416131341.751761811@linuxfoundation.org>
+Message-Id: <20200416131329.875693597@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
