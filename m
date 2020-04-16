@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A446C1ACCEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0781ACCDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506818AbgDPQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S2436897AbgDPQLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733250AbgDPQLP (ORCPT
+        by vger.kernel.org with ESMTP id S2391640AbgDPQLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:11:15 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43DDC061A0C;
-        Thu, 16 Apr 2020 09:11:14 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id q19so8395385ljp.9;
-        Thu, 16 Apr 2020 09:11:14 -0700 (PDT)
+        Thu, 16 Apr 2020 12:11:16 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64FEC0610D5;
+        Thu, 16 Apr 2020 09:11:15 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id r24so8465773ljd.4;
+        Thu, 16 Apr 2020 09:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cjk4TOp9DkEsXeH5hQNnG1jF9KFMqVg6rNNTj7d/UsU=;
-        b=pCslmX6HHeRy1aIXeE2iB+WUUY97k3WpjhJQ3tuVJiT7xNNL3gyBew9f0yczKv3VSg
-         8PFxLNzAGmCe9yJxSh8RtpjM1eVeT9bQeHYsEflL6A8dw9xdaOEMf366PlgGN+BJxSpy
-         gibrbk/S0O8983Q67jH1WI66mRlp4FKIUwiMCdOU4QbdEIgccxMvsDgHHW6UJNtFyBSx
-         T9oVvVIEm0rXkoYkRkFJVGL05kC5iwEFRX3JdnCz7dFf0pvBbNi/6WW8grMW+0NdgWCh
-         Bk064XUIPKOITiAMzp+vgnmddB/FQhoT/K3HbTEAgBc9rRUPbT7mY1HI5xMlUzpmUY1R
-         17Ww==
+        bh=NTx/eaYAn2EOObOw5K1yoeTPkB5owPl9cMTn96Ty+/g=;
+        b=newE/pJ0Ew1eEmed0KAEG0EnIdEI4Iycd/HDOMEgkLIsU1b7rIfEBPf9ld5sAtbtrn
+         nAvIbIehZShl6Zx1CDvzTFyY0Af/jx1EvA4NxvJL5AXza8slqp0s1oeWLTRNd8XxbG4d
+         6QKMoTEnhZR4b+EeEerlfv9G8HK845b7xtnO9rjwYQl2tFrrRvYpCni1YGyYV879ZvLl
+         69T7VFRr3eZEJRvqZx2qcqES2qWt7lucMs2lvT/wN3Y8RK1YIlzf/aLL7o+Hq51BiCDc
+         /YU5+YeEOjTTH5eR2JFH3YC0cT5kk+Zpji2EiDbvCqvEUgJtqxKCH//NJE9Mpx4lpM9E
+         WP0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cjk4TOp9DkEsXeH5hQNnG1jF9KFMqVg6rNNTj7d/UsU=;
-        b=OTpgx57KhvQ1/VbzYthvRZOvmjrGnDPyA2RnOMvqMKY+SN5uoXeS6qmYRFmYRm4xFs
-         uZ9cuDQfjVao7g1f6cyAS7QiNzjGc2ORsqMV3fE1Y/WFfWYFHonCVziMfpAerNlkNSmg
-         cTl4FnpL1eHasia2gfLGmgbQ4pu/vaTWRwv/I4xU2Qgrsr+uGvNFFpDmWPufd0ZjXZfP
-         cPktiN9V0M8sBbh+GJG1y6DF599RZ3DnHzEcmbJ9vieTpGTOaJbQtDuIZIl7qn6FG2cg
-         LRtwM7PBwlqy7tsq8ZBCeLM6U7qySU3f/dUrhKgJ//GStqFXhVMljkrV+3O7/UrrSgVy
-         A3wg==
-X-Gm-Message-State: AGi0Pua+Iedw20+qarF0K+TSY2JVUJehW74bvDcZ/hJ1y5xwLZ6T/vRX
-        3MgljrIvXcWczEneyO0B1dw=
-X-Google-Smtp-Source: APiQypIvfSNHxElBHhLWG0Z1ZuQbfUSaL8aCI4tk6aUmgDRnkeS7tGTkifA2seZfzFf/2WAxv3gz4Q==
-X-Received: by 2002:a2e:5851:: with SMTP id x17mr69352ljd.183.1587053473297;
-        Thu, 16 Apr 2020 09:11:13 -0700 (PDT)
+        bh=NTx/eaYAn2EOObOw5K1yoeTPkB5owPl9cMTn96Ty+/g=;
+        b=NvY5t3hEJB4Z4T/fNLlqq0+cXFvz9/P0PxO1kezJlq1/F/ezrhjcaGo43wFy/3vtwG
+         mvaoie8lrCdVD100vjg0Tbio4e61D1z8HCdGjTZwAkAHtHM9yj/G1Ro1kKbn4OPVPJ8X
+         +NFih1es9ZVDdj3MFD5UexApfalNU5/3yGteH9+rjfrGDmW67MwRuoid6HMQEBLu61Qj
+         fFkhQdBJDzuVEWmLNrWcNqib2Vu6neflg7UrotIWgFwu8bpfKbxOrVp/6A9ggdsOd+Lv
+         Eh0ZRoE3FEw0AUVgNfhXKC00Z4vv4UBwsm9B9hOy8zCxWetlJDx9gq95yZRYyawIP0QP
+         Xtag==
+X-Gm-Message-State: AGi0PuYivrTlV0UXbvmSpeyS6Gwckus6jMps7hSfdBcYzcB5t6rRGtjS
+        dedFq2Q9lUcjmDGoDo2hw20=
+X-Google-Smtp-Source: APiQypKnkhT0pbqBlCrteK63VUEuVhdpWYHed1I1A5W7sVdYRnpg07cPOCG/Y+wH5cmrJEhlQM2VtQ==
+X-Received: by 2002:a2e:a179:: with SMTP id u25mr6889276ljl.192.1587053474404;
+        Thu, 16 Apr 2020 09:11:14 -0700 (PDT)
 Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id 125sm15702234lfb.89.2020.04.16.09.11.12
+        by smtp.gmail.com with ESMTPSA id 125sm15702234lfb.89.2020.04.16.09.11.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 09:11:12 -0700 (PDT)
+        Thu, 16 Apr 2020 09:11:13 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -61,9 +61,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Matt Merhar <mattmerhar@protonmail.com>
 Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/6] dt-bindings: Add vendor prefix for Acer Inc.
-Date:   Thu, 16 Apr 2020 19:09:53 +0300
-Message-Id: <20200416160956.16468-4-digetx@gmail.com>
+Subject: [PATCH v5 4/6] dt-bindings: ARM: tegra: Add Acer Iconia Tab A500
+Date:   Thu, 16 Apr 2020 19:09:54 +0300
+Message-Id: <20200416160956.16468-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200416160956.16468-1-digetx@gmail.com>
 References: <20200416160956.16468-1-digetx@gmail.com>
@@ -74,29 +74,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acer is a hardware and electronics corporation, specializing in advanced
-electronics technology. Acer's products include desktop PCs, laptop PCs,
-tablets, servers, displays, storage devices, virtual reality devices,
-smartphones and peripherals. Their web site is http://www.acer.com/.
+Add a binding for the Tegra20-based Acer Iconia Tab A500 tablet device.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/tegra.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 66a7382add95..357aecba3e45 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -27,6 +27,8 @@ patternProperties:
-     description: Abilis Systems
-   "^abracon,.*":
-     description: Abracon Corporation
-+  "^acer,.*":
-+    description: Acer Inc.
-   "^acme,.*":
-     description: Acme Systems srl
-   "^actions,.*":
+diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
+index 60b38eb5c61a..7fd0b66c69b2 100644
+--- a/Documentation/devicetree/bindings/arm/tegra.yaml
++++ b/Documentation/devicetree/bindings/arm/tegra.yaml
+@@ -34,6 +34,9 @@ properties:
+               - toradex,colibri_t20-iris
+           - const: toradex,colibri_t20
+           - const: nvidia,tegra20
++      - items:
++          - const: acer,picasso
++          - const: nvidia,tegra20
+       - items:
+           - enum:
+               - nvidia,beaver
 -- 
 2.26.0
 
