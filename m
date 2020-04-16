@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC75C1ABB56
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095491AC070
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441360AbgDPIdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:33:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439552AbgDPILF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:11:05 -0400
-Received: from localhost (unknown [223.235.195.235])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D38A206B9;
-        Thu, 16 Apr 2020 08:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587024458;
-        bh=+AtB2qrsVxt1QWCAagtuBV0iMzA+FqM4hoS9ArXVBXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2SDVAHMhpWjl2KgmMtDeMa4mCSN5E7syFhtD6nl+7e+uOtdm92iHSJh7of/HWeSKy
-         HDPx9eDy3/ziMPBERearhYxolH1rzEwouN2J1vLT/RYfJAdCvbbfyQVciDd7LjXhj3
-         Rm7XEVuyXLSwCmFC9enIFNjzAhrkqZPWIGTVc9wk=
-Date:   Thu, 16 Apr 2020 13:37:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-i2c@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
- '$ref'
-Message-ID: <20200416080734.GJ72691@vkoul-mobl>
-References: <20200416005549.9683-1-robh@kernel.org>
- <20200416005549.9683-2-robh@kernel.org>
+        id S2634537AbgDPL5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:57:23 -0400
+Received: from 5.mo69.mail-out.ovh.net ([46.105.43.105]:51481 "EHLO
+        5.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634512AbgDPL45 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:56:57 -0400
+Received: from player699.ha.ovh.net (unknown [10.110.208.144])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id F1C938B908
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 10:07:56 +0200 (CEST)
+Received: from kaod.org (82-64-250-170.subs.proxad.net [82.64.250.170])
+        (Authenticated sender: clg@kaod.org)
+        by player699.ha.ovh.net (Postfix) with ESMTPSA id 5E029116DD815;
+        Thu, 16 Apr 2020 08:07:49 +0000 (UTC)
+Subject: Re: [PATCH] KVM: PPC: Book3S HV: Handle non-present PTEs in page
+ fault functions
+To:     Paul Mackerras <paulus@ozlabs.org>, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        groug@kaod.org, David Gibson <david@gibson.dropbear.id.au>
+References: <20200416050335.GB10545@blackberry>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <a4e1bf29-af52-232e-d0d2-06206fa05fbe@kaod.org>
+Date:   Thu, 16 Apr 2020 10:07:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
+In-Reply-To: <20200416050335.GB10545@blackberry>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 1322932392823262182
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrfeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucffohhmrghinheprhgvughhrghtrdgtohhmnecukfhppedtrddtrddtrddtpdekvddrieegrddvhedtrddujedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieelledrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-04-20, 19:55, Rob Herring wrote:
-> json-schema versions draft7 and earlier have a weird behavior in that
-> any keywords combined with a '$ref' are ignored (silently). The correct
-> form was to put a '$ref' under an 'allOf'. This behavior is now changed
-> in the 2019-09 json-schema spec and '$ref' can be mixed with other
-> keywords. The json-schema library doesn't yet support this, but the
-> tooling now does a fixup for this and either way works.
+On 4/16/20 7:03 AM, Paul Mackerras wrote:
+> Since cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT
+> page fault handler", it's been possible in fairly rare circumstances to
+> load a non-present PTE in kvmppc_book3s_hv_page_fault() when running a
+> guest on a POWER8 host.
 > 
-> This has been a constant source of review comments, so let's change this
-> treewide so everyone copies the simpler syntax.
+> Because that case wasn't checked for, we could misinterpret the non-present
+> PTE as being a cache-inhibited PTE.  That could mismatch with the
+> corresponding hash PTE, which would cause the function to fail with -EFAULT
+> a little further down.  That would propagate up to the KVM_RUN ioctl()
+> generally causing the KVM userspace (usually qemu) to fall over.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> This addresses the problem by catching that case and returning to the guest
+> instead, letting it fault again, and retrying the whole page fault from
+> the beginning.
+> 
+> For completeness, this fixes the radix page fault handler in the same
+> way.  For radix this didn't cause any obvious misbehaviour, because we
+> ended up putting the non-present PTE into the guest's partition-scoped
+> page tables, leading immediately to another hypervisor data/instruction
+> storage interrupt, which would go through the page fault path again
+> and fix things up.
+> 
+> Fixes: cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT page fault handler"
+> Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1820402
+> Reported-by: David Gibson <david@gibson.dropbear.id.au>
+> Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
+
+I didn't see the reported issue with the current 5.7-rc1. Anyhow I gave
+this patch a try on a P8 host and a P9 host with a radix guest and a hash 
+guest (using rhel6). Passthrough is fine also.
+
+Tested-by: Cédric Le Goater <clg@kaod.org>
+
+The code looks correct,
+
+Reviewed-by: Cédric Le Goater <clg@kaod.org>
+
+Thanks,
+
+C. 
+
+
 > ---
->  .../devicetree/bindings/arm/cpus.yaml         |  81 +++---
->  .../devicetree/bindings/arm/l2c2x0.yaml       |  87 +++---
->  .../devicetree/bindings/arm/psci.yaml         |  15 +-
->  .../bindings/arm/samsung/exynos-chipid.yaml   |   5 +-
->  .../bus/allwinner,sun50i-a64-de2.yaml         |   5 +-
->  .../bindings/clock/fixed-factor-clock.yaml    |   5 +-
->  .../bindings/connector/usb-connector.yaml     |  28 +-
->  .../bindings/crypto/st,stm32-hash.yaml        |   9 +-
->  .../allwinner,sun4i-a10-display-engine.yaml   |   7 +-
->  .../display/allwinner,sun4i-a10-tcon.yaml     |   5 +-
->  .../bindings/display/panel/panel-common.yaml  |   5 +-
->  .../devicetree/bindings/dma/dma-common.yaml   |   3 +-
->  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  18 +-
+> This is a reworked version of the patch David Gibson sent recently,
+> with the fix applied to the radix case as well. The commit message
+> is mostly stolen from David's patch.
+> 
+>  arch/powerpc/kvm/book3s_64_mmu_hv.c    | 9 +++++----
+>  arch/powerpc/kvm/book3s_64_mmu_radix.c | 9 +++++----
+>  2 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+> index 3aecec8..20b7dce 100644
+> --- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
+> +++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+> @@ -604,18 +604,19 @@ int kvmppc_book3s_hv_page_fault(struct kvm_run *run, struct kvm_vcpu *vcpu,
+>  	 */
+>  	local_irq_disable();
+>  	ptep = __find_linux_pte(vcpu->arch.pgdir, hva, NULL, &shift);
+> +	pte = __pte(0);
+> +	if (ptep)
+> +		pte = *ptep;
+> +	local_irq_enable();
+>  	/*
+>  	 * If the PTE disappeared temporarily due to a THP
+>  	 * collapse, just return and let the guest try again.
+>  	 */
+> -	if (!ptep) {
+> -		local_irq_enable();
+> +	if (!pte_present(pte)) {
+>  		if (page)
+>  			put_page(page);
+>  		return RESUME_GUEST;
+>  	}
+> -	pte = *ptep;
+> -	local_irq_enable();
+>  	hpa = pte_pfn(pte) << PAGE_SHIFT;
+>  	pte_size = PAGE_SIZE;
+>  	if (shift)
+> diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+> index 134fbc1..7bf94ba 100644
+> --- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
+> +++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+> @@ -815,18 +815,19 @@ int kvmppc_book3s_instantiate_page(struct kvm_vcpu *vcpu,
+>  	 */
+>  	local_irq_disable();
+>  	ptep = __find_linux_pte(vcpu->arch.pgdir, hva, NULL, &shift);
+> +	pte = __pte(0);
+> +	if (ptep)
+> +		pte = *ptep;
+> +	local_irq_enable();
+>  	/*
+>  	 * If the PTE disappeared temporarily due to a THP
+>  	 * collapse, just return and let the guest try again.
+>  	 */
+> -	if (!ptep) {
+> -		local_irq_enable();
+> +	if (!pte_present(pte)) {
+>  		if (page)
+>  			put_page(page);
+>  		return RESUME_GUEST;
+>  	}
+> -	pte = *ptep;
+> -	local_irq_enable();
+>  
+>  	/* If we're logging dirty pages, always map single pages */
+>  	large_enable = !(memslot->flags & KVM_MEM_LOG_DIRTY_PAGES);
+> 
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
-
--- 
-~Vinod
