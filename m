@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3441AC988
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB6E1AC8FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633273AbgDPPXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:23:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
+        id S2898775AbgDPNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:48:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898470AbgDPNo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:44:59 -0400
+        id S2897277AbgDPNgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:36:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 434D020732;
-        Thu, 16 Apr 2020 13:44:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 474C521BE5;
+        Thu, 16 Apr 2020 13:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044698;
-        bh=OUkSnEZhEGuu1K9o5YcKxKzW0scZgqC1euBVD3hJwOg=;
+        s=default; t=1587044170;
+        bh=wiq00+a0rQKfRniK04x21me3Tx711ZcZNXnWvLov+ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VaKLlDwIxhUI2TX4cQyqwyV2ynEV9A0Ze+J54t7g7Isip+AbQ4YrSJAdr1oQySMiH
-         jgImE3fbuDPuq4dk8faPkex4w/K8jIHFvztAo0vdE0FkUm1lQxi+lETZHFpnUajFsU
-         Ey4zRlsAdu3umNf9P0xQYJl+nUInmCVA+qC904/c=
+        b=AhXfMhQbqH/4iMwnkclXmGcg1o7+SqLBMt7JN7Q9k9F1Ax5ku+kEpowRc/Lv0axio
+         w8bsYRH+iZXNz/ONJ5cY4eddMQ84nH5IZ5ZURBQ2xPJKyDS9DpGyByno8p8uMdUrPw
+         kTrtHEBAyZE8T4DUOeCBqE5kcWsqQbQXgEMt9UFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Mahoney <jeffm@suse.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/232] btrfs: qgroup: ensure qgroup_rescan_running is only set when the worker is at least queued
+        stable@vger.kernel.org,
+        =?UTF-8?q?Ond=C5=99ej=20Caletka?= <ondrej@caletka.cz>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.5 108/257] ACPI: PM: s2idle: Refine active GPEs check
 Date:   Thu, 16 Apr 2020 15:22:39 +0200
-Message-Id: <20200416131323.494179904@linuxfoundation.org>
+Message-Id: <20200416131339.689197762@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,140 +44,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit d61acbbf54c612ea9bf67eed609494cda0857b3a ]
+commit d5406284ff803a578ca503373624312770319054 upstream.
 
-[BUG]
-There are some reports about btrfs wait forever to unmount itself, with
-the following call trace:
+The check for any active GPEs added by commit fdde0ff8590b ("ACPI:
+PM: s2idle: Prevent spurious SCIs from waking up the system") turns
+out to be insufficiently precise to prevent some systems from
+resuming prematurely due to a spurious EC wakeup, so refine it
+by first checking if any GPEs other than the EC GPE are active
+and skipping all of the SCIs coming from the EC that do not produce
+any genuine wakeup events after processing.
 
-  INFO: task umount:4631 blocked for more than 491 seconds.
-        Tainted: G               X  5.3.8-2-default #1
-  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  umount          D    0  4631   3337 0x00000000
-  Call Trace:
-  ([<00000000174adf7a>] __schedule+0x342/0x748)
-   [<00000000174ae3ca>] schedule+0x4a/0xd8
-   [<00000000174b1f08>] schedule_timeout+0x218/0x420
-   [<00000000174af10c>] wait_for_common+0x104/0x1d8
-   [<000003ff804d6994>] btrfs_qgroup_wait_for_completion+0x84/0xb0 [btrfs]
-   [<000003ff8044a616>] close_ctree+0x4e/0x380 [btrfs]
-   [<0000000016fa3136>] generic_shutdown_super+0x8e/0x158
-   [<0000000016fa34d6>] kill_anon_super+0x26/0x40
-   [<000003ff8041ba88>] btrfs_kill_super+0x28/0xc8 [btrfs]
-   [<0000000016fa39f8>] deactivate_locked_super+0x68/0x98
-   [<0000000016fcb198>] cleanup_mnt+0xc0/0x140
-   [<0000000016d6a846>] task_work_run+0xc6/0x110
-   [<0000000016d04f76>] do_notify_resume+0xae/0xb8
-   [<00000000174b30ae>] system_call+0xe2/0x2c8
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206629
+Fixes: fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from waking up the system")
+Reported-by: Ondřej Caletka <ondrej@caletka.cz>
+Tested-by: Ondřej Caletka <ondrej@caletka.cz>
+Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[CAUSE]
-The problem happens when we have called qgroup_rescan_init(), but
-not queued the worker. It can be caused mostly by error handling.
-
-	Qgroup ioctl thread		|	Unmount thread
-----------------------------------------+-----------------------------------
-					|
-btrfs_qgroup_rescan()			|
-|- qgroup_rescan_init()			|
-|  |- qgroup_rescan_running = true;	|
-|					|
-|- trans = btrfs_join_transaction()	|
-|  Some error happened			|
-|					|
-|- btrfs_qgroup_rescan() returns error	|
-   But qgroup_rescan_running == true;	|
-					| close_ctree()
-					| |- btrfs_qgroup_wait_for_completion()
-					|    |- running == true;
-					|    |- wait_for_completion();
-
-btrfs_qgroup_rescan_worker is never queued, thus no one is going to wake
-up close_ctree() and we get a deadlock.
-
-All involved qgroup_rescan_init() callers are:
-
-- btrfs_qgroup_rescan()
-  The example above. It's possible to trigger the deadlock when error
-  happened.
-
-- btrfs_quota_enable()
-  Not possible. Just after qgroup_rescan_init() we queue the work.
-
-- btrfs_read_qgroup_config()
-  It's possible to trigger the deadlock. It only init the work, the
-  work queueing happens in btrfs_qgroup_rescan_resume().
-  Thus if error happened in between, deadlock is possible.
-
-We shouldn't set fs_info->qgroup_rescan_running just in
-qgroup_rescan_init(), as at that stage we haven't yet queued qgroup
-rescan worker to run.
-
-[FIX]
-Set qgroup_rescan_running before queueing the work, so that we ensure
-the rescan work is queued when we wait for it.
-
-Fixes: 8d9eddad1946 ("Btrfs: fix qgroup rescan worker initialization")
-Signed-off-by: Jeff Mahoney <jeffm@suse.com>
-[ Change subject and cause analyse, use a smaller fix ]
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/qgroup.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/acpi/ec.c       |    5 +++++
+ drivers/acpi/internal.h |    1 +
+ drivers/acpi/sleep.c    |   19 ++++++++++---------
+ 3 files changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 286c8c11c8d32..590defdf88609 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1030,6 +1030,7 @@ out_add_root:
- 	ret = qgroup_rescan_init(fs_info, 0, 1);
- 	if (!ret) {
- 	        qgroup_rescan_zero_tracking(fs_info);
-+		fs_info->qgroup_rescan_running = true;
- 	        btrfs_queue_work(fs_info->qgroup_rescan_workers,
- 	                         &fs_info->qgroup_rescan_work);
- 	}
-@@ -3276,7 +3277,6 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
- 		sizeof(fs_info->qgroup_rescan_progress));
- 	fs_info->qgroup_rescan_progress.objectid = progress_objectid;
- 	init_completion(&fs_info->qgroup_rescan_completion);
--	fs_info->qgroup_rescan_running = true;
- 
- 	spin_unlock(&fs_info->qgroup_lock);
- 	mutex_unlock(&fs_info->qgroup_rescan_lock);
-@@ -3341,8 +3341,11 @@ btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info)
- 
- 	qgroup_rescan_zero_tracking(fs_info);
- 
-+	mutex_lock(&fs_info->qgroup_rescan_lock);
-+	fs_info->qgroup_rescan_running = true;
- 	btrfs_queue_work(fs_info->qgroup_rescan_workers,
- 			 &fs_info->qgroup_rescan_work);
-+	mutex_unlock(&fs_info->qgroup_rescan_lock);
- 
- 	return 0;
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -2052,6 +2052,11 @@ void acpi_ec_set_gpe_wake_mask(u8 action
+ 		acpi_set_gpe_wake_mask(NULL, first_ec->gpe, action);
  }
-@@ -3378,9 +3381,13 @@ int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
- void
- btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info)
+ 
++bool acpi_ec_other_gpes_active(void)
++{
++	return acpi_any_gpe_status_set(first_ec ? first_ec->gpe : U32_MAX);
++}
++
+ bool acpi_ec_dispatch_gpe(void)
  {
--	if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN)
-+	if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
-+		mutex_lock(&fs_info->qgroup_rescan_lock);
-+		fs_info->qgroup_rescan_running = true;
- 		btrfs_queue_work(fs_info->qgroup_rescan_workers,
- 				 &fs_info->qgroup_rescan_work);
-+		mutex_unlock(&fs_info->qgroup_rescan_lock);
-+	}
- }
+ 	u32 ret;
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -202,6 +202,7 @@ void acpi_ec_remove_query_handler(struct
  
- /*
--- 
-2.20.1
-
+ #ifdef CONFIG_PM_SLEEP
+ void acpi_ec_flush_work(void);
++bool acpi_ec_other_gpes_active(void);
+ bool acpi_ec_dispatch_gpe(void);
+ #endif
+ 
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -1014,19 +1014,20 @@ static bool acpi_s2idle_wake(void)
+ 			return true;
+ 
+ 		/*
+-		 * If there are no EC events to process and at least one of the
+-		 * other enabled GPEs is active, the wakeup is regarded as a
+-		 * genuine one.
+-		 *
+-		 * Note that the checks below must be carried out in this order
+-		 * to avoid returning prematurely due to a change of the EC GPE
+-		 * status bit from unset to set between the checks with the
+-		 * status bits of all the other GPEs unset.
++		 * If the status bit is set for any enabled GPE other than the
++		 * EC one, the wakeup is regarded as a genuine one.
+ 		 */
+-		if (acpi_any_gpe_status_set(U32_MAX) && !acpi_ec_dispatch_gpe())
++		if (acpi_ec_other_gpes_active())
+ 			return true;
+ 
+ 		/*
++		 * If the EC GPE status bit has not been set, the wakeup is
++		 * regarded as a spurious one.
++		 */
++		if (!acpi_ec_dispatch_gpe())
++			return false;
++
++		/*
+ 		 * Cancel the wakeup and process all pending events in case
+ 		 * there are any wakeup ones in there.
+ 		 *
 
 
