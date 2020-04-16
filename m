@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7141ACD8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976C51ACD88
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442001AbgDPQVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
+        id S2410493AbgDPQVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388137AbgDPQVI (ORCPT
+        by vger.kernel.org with ESMTP id S1730035AbgDPQVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:21:08 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A462C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:21:08 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id z22so263966pjt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:21:08 -0700 (PDT)
+        Thu, 16 Apr 2020 12:21:11 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE485C0610D5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:21:10 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id e18so3431281pfl.17
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=i6zi1rxo51fT0gF/9bIKSou9eRtAcSwwYlA8EKV06Zo=;
-        b=HN8WubAfA91Oq5unhGG2MkopzGLkdfvg9STdwJsiSIl7hxl76b/eAFL7jhXWb2Ox3m
-         SaEaUPM39ntxqpGiuXqlA9gEIeJArcs1oELta1pGoAcCQ8Y7j8qiITnix2h4f6JoQEYo
-         QGJQ8W+5urtqToRkZR16mEWxOdz8X99KKwur5GuVOBWessbgEv21JC8tFrrOd+XMsTgZ
-         3gGLM7hP3pDlEuoL69b+4rbPzHzQTdT7C2AiKjHEWbjy6fqk6wwDguVwtJvgVeZiRMRD
-         Qskf5j6/g0x46Y9hPI3Zx1XgQfznExjp8bc0l/9GDXZ+HHifmCBePWCImVSFvpI0yfuh
-         lE6Q==
+        bh=a6tQ7DnVmCoPtEQQNpyDptK3byF4qMP4x4cRpQx2XV4=;
+        b=AVbDpsLbKtAaOU3yTQ6Jkn38wfxP3SvLchMNOvt7HyyL0QwFZNGqVKoVyLKjt64kGs
+         xvsh/ec3XhwSbr/TYnKAw/3EEAX+t7qo6T8+MJ8Ll3dAzCOYHzCYANNSGso/eDiRS9Ss
+         TwXciuCd155RVkf14SrqLqp5b1JMcN15Pjj01mS+v2KVoLYkaqIbhd7LZiK4zyVVwE0i
+         Q2v23jJUpr1rVLNbAZh2otJz6lnKISqB1yeokKz4ZCu/G34JqABEXnsw0oGT3EyP+KXi
+         8B9f8n91EoUnn4jpPfhrK7RYaSMSWO0kyNJe15rOBs6fJJK0X8fifF6bz85UfbQpDz/m
+         ij0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=i6zi1rxo51fT0gF/9bIKSou9eRtAcSwwYlA8EKV06Zo=;
-        b=BjAHyNkrkgBBZbdXMlBrcv9V4r74/VPZ/spMXamMnSs6a77lLvnUe4QcfQ1/YjiI6g
-         Ok8GnYBO17PGX1ZYZUWkQnlWq7EJaNH4Ula++vmy9PRDQOmOdFVV5RwKty/vkOKLvqLw
-         SpW2Atdxz3gpASDsS9WU9lYWxLsYZp5/UeBUVo81P/FmkHmgYDaLRZJAbLokGd/rEqsh
-         tCE0OGxs43gdDc0kIqPnHj38TIOmnZCyoiuVgGkEq8WnMtuOcN7Y6S+5Hp6ybxqj4YUr
-         NkXgv7jNFQJWeWqi9MvyeH43Qc74ylp9e4hzCjYONQEehkoIRsZAVqWnB+FiTK90T+Nv
-         oyVQ==
-X-Gm-Message-State: AGi0Puarioazndw3z5owv4qO8oYpQkuo2fDxS22QLqILIkOkUCVmT0BT
-        vxdzG24LumxreUJaxtEvcrQzKRIOvjGk
-X-Google-Smtp-Source: APiQypJCtiTrQy1RWVW3S33PVpA4SuG+D/ydw+ePNnNNFVlEgIZ3Zws8LDl2fX9FI8lD+yI2Kl+taVRN26F2
-X-Received: by 2002:a63:6444:: with SMTP id y65mr27372866pgb.343.1587054067816;
- Thu, 16 Apr 2020 09:21:07 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 09:20:56 -0700
+        bh=a6tQ7DnVmCoPtEQQNpyDptK3byF4qMP4x4cRpQx2XV4=;
+        b=mTofJd2gLRnN9l+8mFoWODBjZMALV4216BibbmKGrki7Ig90bv2z73gowiE4YbXhb2
+         KTVmf9Vkniwy1m3KHpP/On6dOE3IBtxCY7GFvVp0JUvbHrPVSdFJihHa6jrwn9QxG1un
+         DEw1Pg9WfzWYLshS0x0fPn2fmaxZYBlX8bGsNuHyOU4WyGmQBbp2htWGplEniBiB2XIb
+         F6o6WsCdBiyIdCqgHP2PBtW2syrX81wv/owqx7po6WBa8khxZYMgcmwSlJv0S1EgALmT
+         64ikzsDUBN8oBoCOp2F1QCfJDJXy1Du49GjfB5wuD6qskOvNdBvY3WcAORXAAagLsIwV
+         3+RQ==
+X-Gm-Message-State: AGi0PubxP0dnhvnl5JHnKQcC5xss23g2cFSmsBbDUYzXCUp2uWSqjPez
+        xMH6c8znySpBZDRR6DfifygDnXMT1mNy
+X-Google-Smtp-Source: APiQypI/5T+C0TPvvOpusz5KPtkgU0R8dP8dM8GPvH2VRKVG1DKmMcsjfxZ4wvFE7gi8YomJ59uyV4oQeOg8
+X-Received: by 2002:a17:90b:23c8:: with SMTP id md8mr5869465pjb.172.1587054070393;
+ Thu, 16 Apr 2020 09:21:10 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 09:20:57 -0700
 In-Reply-To: <20200416162058.201954-1-irogers@google.com>
-Message-Id: <20200416162058.201954-3-irogers@google.com>
+Message-Id: <20200416162058.201954-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20200416162058.201954-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-Subject: [PATCH v10 2/4] tools feature: add support for detecting libpfm4
+Subject: [PATCH v10 3/4] perf pmu: add perf_pmu__find_by_type helper
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,70 +88,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stephane Eranian <eranian@google.com>
 
-libpfm4 provides an alternate command line encoding of perf events.
+This is used by libpfm4 during event parsing to locate the pmu for an
+event.
 
 Signed-off-by: Stephane Eranian <eranian@google.com>
 Reviewed-by: Ian Rogers <irogers@google.com>
 ---
- tools/build/Makefile.feature       | 3 ++-
- tools/build/feature/Makefile       | 6 +++++-
- tools/build/feature/test-libpfm4.c | 9 +++++++++
- 3 files changed, 16 insertions(+), 2 deletions(-)
- create mode 100644 tools/build/feature/test-libpfm4.c
+ tools/perf/util/pmu.c | 11 +++++++++++
+ tools/perf/util/pmu.h |  1 +
+ 2 files changed, 12 insertions(+)
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 3e0c019ef297..3abd4316cd4f 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -98,7 +98,8 @@ FEATURE_TESTS_EXTRA :=                  \
-          llvm                           \
-          llvm-version                   \
-          clang                          \
--         libbpf
-+         libbpf                         \
-+         libpfm4
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index ef6a63f3d386..5e918ca740c6 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -869,6 +869,17 @@ static struct perf_pmu *pmu_find(const char *name)
+ 	return NULL;
+ }
  
- FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
- 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 621f528f7822..a6eded94a36b 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -68,7 +68,8 @@ FILES=                                          \
-          test-llvm-version.bin			\
-          test-libaio.bin			\
-          test-libzstd.bin			\
--         test-file-handle.bin
-+         test-file-handle.bin			\
-+         test-libpfm4.bin
- 
- FILES := $(addprefix $(OUTPUT),$(FILES))
- 
-@@ -325,6 +326,9 @@ $(OUTPUT)test-libzstd.bin:
- $(OUTPUT)test-file-handle.bin:
- 	$(BUILD)
- 
-+$(OUTPUT)test-libpfm4.bin:
-+	$(BUILD) -lpfm
-+
- ###############################
- 
- clean:
-diff --git a/tools/build/feature/test-libpfm4.c b/tools/build/feature/test-libpfm4.c
-new file mode 100644
-index 000000000000..af49b259459e
---- /dev/null
-+++ b/tools/build/feature/test-libpfm4.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <sys/types.h>
-+#include <perfmon/pfmlib.h>
-+
-+int main(void)
++struct perf_pmu *perf_pmu__find_by_type(unsigned int type)
 +{
-+	pfm_initialize();
-+	return 0;
++	struct perf_pmu *pmu;
++
++	list_for_each_entry(pmu, &pmus, list)
++		if (pmu->type == type)
++			return pmu;
++
++	return NULL;
 +}
++
+ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu)
+ {
+ 	/*
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 5fb3f16828df..de3b868d912c 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -65,6 +65,7 @@ struct perf_pmu_alias {
+ };
+ 
+ struct perf_pmu *perf_pmu__find(const char *name);
++struct perf_pmu *perf_pmu__find_by_type(unsigned int type);
+ int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
+ 		     struct list_head *head_terms,
+ 		     struct parse_events_error *error);
 -- 
 2.26.1.301.g55bc3eb7cb9-goog
 
