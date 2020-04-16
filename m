@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206171AB583
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397171AB587
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732267AbgDPB3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:29:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732522AbgDPB3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:29:04 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CBC7208E0;
-        Thu, 16 Apr 2020 01:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587000543;
-        bh=hq/+bVXnleESn8mSlWiIeOiFdqP5VlQ1XkbPhFhBPAQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U7Apg3PrInj1bZ5S36DCxeG04p3aKJHJiJwrLO/6Ve1tvjwUnZziTJm8y1phI+4Gq
-         qj09WXqwTPZmoyuQl/UvHjdW2KG4XibW7wv0YzFOJQw378Na5/IhOsJJS4CJTq+Shr
-         P3ndXnQ/1SyJbLjFawUAT8sTOdLs7Go1HtB9nKKE=
-Date:   Wed, 15 Apr 2020 18:29:01 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/8] fs/ext4: Disallow verity if inode is DAX
-Message-ID: <20200416012901.GA816@sol.localdomain>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-3-ira.weiny@intel.com>
- <20200415120002.GE6126@quack2.suse.cz>
- <20200415191451.GA2305801@iweiny-DESK2.sc.intel.com>
+        id S1732429AbgDPB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:29:58 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:35645 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732857AbgDPB3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 21:29:34 -0400
+Received: by mail-pj1-f65.google.com with SMTP id mn19so664130pjb.0;
+        Wed, 15 Apr 2020 18:29:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PnF7XX+HBiChqiEIw8vxgcw83sjsqf5rskmR8bV1uhE=;
+        b=tWAj7qQd3oeZN5sWwnVVRe4xAV12h+mS3jvZkW2q26cKjI0ws0MZpgxSjdBp2X89TL
+         nEr6pbrnz4QMcRGbj+VEEHfYvDcPi3DtUxJaBGjxfcWRwvJQTAKyuCZjq/3dZVUWkUfu
+         ks4VkAXmBo/NTNisgYSILUWRc2+TEdsmwUEyn6OWfUaNM+l0916CPzDf8/n1GvpBVwnF
+         jw8sUPvl6SwzlaF/YZmjm0MasLdblBEtB35XxHMhhsoz4oSe6byloOeFJJQmq1NeD2mB
+         C1y0pWjLixQn/Ez1QOOSnylxRL4vDt0EO054231cc2HPY4y2CYCZpPZ/1iZ3LTZuqDWA
+         9wGg==
+X-Gm-Message-State: AGi0PuZLOkNixjirGeobqh2HSgjhxEppQk0FIJREQoU0yz7mZ43nKIF4
+        DlKmrMVQ5uoh2PcUuyVjSug=
+X-Google-Smtp-Source: APiQypL1Zry+M+f03DM3k+FuGlRfqeq4ZVim5hUX+tX4P9pE4l69kAMRnRCmwP6mQT5TXwK/Pbzv0g==
+X-Received: by 2002:a17:902:441:: with SMTP id 59mr7374218ple.339.1587000574181;
+        Wed, 15 Apr 2020 18:29:34 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id a136sm12241605pfa.99.2020.04.15.18.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 18:29:32 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id C0B9240277; Thu, 16 Apr 2020 01:29:31 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 01:29:31 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v2 1/3] kernel/sysctl: support setting sysctl parameters
+ from kernel command line
+Message-ID: <20200416012931.GE11244@42.do-not-panic.com>
+References: <20200414113222.16959-1-vbabka@suse.cz>
+ <20200414113222.16959-2-vbabka@suse.cz>
+ <20200415180355.00bc828ea726c421638db871@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415191451.GA2305801@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20200415180355.00bc828ea726c421638db871@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 12:14:52PM -0700, Ira Weiny wrote:
-> On Wed, Apr 15, 2020 at 02:00:02PM +0200, Jan Kara wrote:
-> > On Mon 13-04-20 21:00:24, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > Verity and DAX are incompatible.  Changing the DAX mode due to a verity
-> > > flag change is wrong without a corresponding address_space_operations
-> > > update.
-> > > 
-> > > Make the 2 options mutually exclusive by returning an error if DAX was
-> > > set first.
-> > > 
-> > > (Setting DAX is already disabled if Verity is set first.)
-> > > 
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > ---
-> > >  fs/ext4/verity.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-> > > index dc5ec724d889..ce3f9a198d3b 100644
-> > > --- a/fs/ext4/verity.c
-> > > +++ b/fs/ext4/verity.c
-> > > @@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
-> > >  	handle_t *handle;
-> > >  	int err;
-> > >  
-> > > +	if (WARN_ON_ONCE(IS_DAX(inode)))
-> > > +		return -EINVAL;
-> > > +
-> > 
-> > Hum, one question, is there a reason for WARN_ON_ONCE()? If I understand
-> > correctly, user could normally trigger this, couldn't he?
+On Wed, Apr 15, 2020 at 06:03:55PM +0900, Masami Hiramatsu wrote:
+> On Tue, 14 Apr 2020 13:32:20 +0200
+> Vlastimil Babka <vbabka@suse.cz> wrote:
+> > diff --git a/init/main.c b/init/main.c
+> > index a48617f2e5e5..7b43118215d6 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -1372,6 +1372,8 @@ static int __ref kernel_init(void *unused)
+> >  
+> >  	rcu_end_inkernel_boot();
+> >  
+> > +	do_sysctl_args();
+> > +
 > 
-> Ok.  I did not think this through but I did think about this.  I was following
-> the code from the encryption side which issues a warning and was thinking that
-> would be a good way to alert the user they are doing something wrong...
-> 
-> I think you are right about both of them but we also need to put something in
-> the verity, dax, and ...  (I can't find a file in Documentation which talks
-> about encryption right off) documentation files....  For verity something like.
-> 
-> <quote>
-> Verity and DAX
-> --------------
-> 
-> Verity and DAX are not compatible and attempts to set both of these flags on a
-> file will fail.
-> </quote>
-> 
-> And the same thing in the DAX doc?
-> 
-> And where would be appropriate for the encrypt doc?
-> 
+> Ah, I see. Since the sysctl is designed to be called after all __init calls were
+> done, it shouldn't use bootconfig directly because bootconfig is full of __init
+> call.
 
-Documentation/filesystems/fscrypt.rst mentions that DAX isn't supported on
-encrypted files, but it doesn't say what happens if someone tries to do it
-anyway.  Feel free to improve the documentation.
+The idea is bootconfig would be useful in the sense of a library set of
+helpers which could be modified to remove __init, and then used to
+instrument the cmdline depending on certain debugging kconfig entries.
 
-- Eric
+We currently have no way to purposely extend / break the cmdline for
+debugging purposes, so, bootconfig's parsers, since it already has a
+way to extend the cmdlineline, might make it much easier to do this
+later.
+
+Without bootconfig, if we wanted to add new kconfig to, for example,
+add new funny cmdline arguments to test they worked or not, we'd have
+to devise our own set of helpers now. ie, new functionality. bootconfig
+however already has existing functionality to tweak the cmdline, and so
+some code could be leveraged there for this purpose.
+
+  Luis
