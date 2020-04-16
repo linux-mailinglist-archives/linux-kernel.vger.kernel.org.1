@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D041AC5BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C094E1AC531
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410053AbgDPO0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:26:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45514 "EHLO mail.kernel.org"
+        id S2441957AbgDPON0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:13:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409362AbgDPN6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:33 -0400
+        id S2898761AbgDPNsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 717B3217D8;
-        Thu, 16 Apr 2020 13:58:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 395D72222C;
+        Thu, 16 Apr 2020 13:48:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045512;
-        bh=c/+ghOKLZbmpam34in/vAlc768DdP6257rzcST0JZms=;
+        s=default; t=1587044933;
+        bh=Q4F0B30tAtjMB3UUkUoCTh9k7686nZ8kTOr7gh4cJ4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WHigHWSjTzZQHph3NT0fvrNpXikN2N0RbgSLoqm+3nei/DANi+I649yrTD1GBShwE
-         uJ8yXShxS79diSHyJSrlEsYYCQlLEKxQmEq9ovIexu6thIsgmKY3ZhyrkjfOIS4RC8
-         zofJB7vZEVpZpCV25unOT20btg4giy24EGfSifKI=
+        b=ZhG1G+WQXlyGQr2SyVfmnl6lk6iCNcYgiyo7XFFbZcvPsvlawu+GDcQ9ajqc5VOtX
+         KfthE+LJZ26s2ez2Q9Uw9NY7az5H1x+g7mZQGOVeAX9jq7Bje4Lhjk3cAGJjPDFMSw
+         DGzYTGH+523S3fOyPtuAzC6ioxCFp/RZ0QLQZm20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 165/254] io_uring: honor original task RLIMIT_FSIZE
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.4 160/232] mm, memcg: do not high throttle allocators based on wraparound
 Date:   Thu, 16 Apr 2020 15:24:14 +0200
-Message-Id: <20200416131347.163857313@linuxfoundation.org>
+Message-Id: <20200416131335.015077692@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +48,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Jakub Kicinski <kuba@kernel.org>
 
-commit 4ed734b0d0913e566a9d871e15d24eb240f269f7 upstream.
+commit 9b8b17541f13809d06f6f873325305ddbb760e3e upstream.
 
-With the previous fixes for number of files open checking, I added some
-debug code to see if we had other spots where we're checking rlimit()
-against the async io-wq workers. The only one I found was file size
-checking, which we should also honor.
+If a cgroup violates its memory.high constraints, we may end up unduly
+penalising it.  For example, for the following hierarchy:
 
-During write and fallocate prep, store the max file size and override
-that for the current ask if we're in io-wq worker context.
+  A:   max high, 20 usage
+  A/B: 9 high, 10 usage
+  A/C: max high, 10 usage
 
-Cc: stable@vger.kernel.org # 5.1+
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+We would end up doing the following calculation below when calculating
+high delay for A/B:
+
+  A/B: 10 - 9 = 1...
+  A:   20 - PAGE_COUNTER_MAX = 21, so set max_overage to 21.
+
+This gets worse with higher disparities in usage in the parent.
+
+I have no idea how this disappeared from the final version of the patch,
+but it is certainly Not Good(tm).  This wasn't obvious in testing because,
+for a simple cgroup hierarchy with only one child, the result is usually
+roughly the same.  It's only in more complex hierarchies that things go
+really awry (although still, the effects are limited to a maximum of 2
+seconds in schedule_timeout_killable at a maximum).
+
+[chris@chrisdown.name: changelog]
+Fixes: e26733e0d0ec ("mm, memcg: throttle allocators based on ancestral memory.high")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Chris Down <chris@chrisdown.name>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: <stable@vger.kernel.org>	[5.4.x]
+Link: http://lkml.kernel.org/r/20200331152424.GA1019937@chrisdown.name
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- fs/io_uring.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ mm/memcontrol.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -565,6 +565,7 @@ struct io_kiocb {
- 	struct list_head	link_list;
- 	unsigned int		flags;
- 	refcount_t		refs;
-+	unsigned long		fsize;
- 	u64			user_data;
- 	u32			result;
- 	u32			sequence;
-@@ -2294,6 +2295,8 @@ static int io_write_prep(struct io_kiocb
- 	if (unlikely(!(req->file->f_mode & FMODE_WRITE)))
- 		return -EBADF;
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2441,6 +2441,9 @@ static unsigned long calculate_high_dela
+ 		usage = page_counter_read(&memcg->memory);
+ 		high = READ_ONCE(memcg->high);
  
-+	req->fsize = rlimit(RLIMIT_FSIZE);
-+
- 	/* either don't need iovec imported or already have it */
- 	if (!req->io || req->flags & REQ_F_NEED_CLEANUP)
- 		return 0;
-@@ -2366,10 +2369,17 @@ static int io_write(struct io_kiocb *req
- 		}
- 		kiocb->ki_flags |= IOCB_WRITE;
- 
-+		if (!force_nonblock)
-+			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = req->fsize;
-+
- 		if (req->file->f_op->write_iter)
- 			ret2 = call_write_iter(req->file, kiocb, &iter);
- 		else
- 			ret2 = loop_rw_iter(WRITE, req->file, kiocb, &iter);
-+
-+		if (!force_nonblock)
-+			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
++		if (usage <= high)
++			continue;
 +
  		/*
- 		 * Raw bdev writes will -EOPNOTSUPP for IOCB_NOWAIT. Just
- 		 * retry them without IOCB_NOWAIT.
-@@ -2512,8 +2522,10 @@ static void io_fallocate_finish(struct i
- 	if (io_req_cancelled(req))
- 		return;
- 
-+	current->signal->rlim[RLIMIT_FSIZE].rlim_cur = req->fsize;
- 	ret = vfs_fallocate(req->file, req->sync.mode, req->sync.off,
- 				req->sync.len);
-+	current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
- 	if (ret < 0)
- 		req_set_fail_links(req);
- 	io_cqring_add_event(req, ret);
-@@ -2531,6 +2543,7 @@ static int io_fallocate_prep(struct io_k
- 	req->sync.off = READ_ONCE(sqe->off);
- 	req->sync.len = READ_ONCE(sqe->addr);
- 	req->sync.mode = READ_ONCE(sqe->len);
-+	req->fsize = rlimit(RLIMIT_FSIZE);
- 	return 0;
- }
- 
+ 		 * Prevent division by 0 in overage calculation by acting as if
+ 		 * it was a threshold of 1 page
 
 
