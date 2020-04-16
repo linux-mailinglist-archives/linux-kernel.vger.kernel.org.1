@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E3F1ABBFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5708C1ABC05
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503132AbgDPJAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503089AbgDPI5y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:57:54 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D158FC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:57:53 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id d17so1353849pgo.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daemons-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+WhoZsJiZov2jfSxLGEtmiUut+TNZxfA/4UuVClNzr0=;
-        b=jHpY8l5EA3+YW5OG9e0VYhz/NzapK19wtLTeBckhDS8G0iv/JnvFI3KhBgA8HT2kUm
-         RO5bKx47ZhsvpuMwnd2IJwj42Dhl33PVwuPNE0XV3HKVl+qOreRwv9BsZI1Vs69c5qjt
-         gi2UdrnPZ2bnv4UmSfjz8GQQMZBIGSHi4oYN9Paocq9BJBmgwxcmLwcN7T859cjKUjhk
-         SmIrs9QoojeRFbklXMWVouoeyvytOMMuz2kZKnk/P8HH7EBnnQlNIIuo4+geFzJ7EapO
-         P3N4mUBxWGjasviGxpAW1cGtu3IQoi9LX90RCU11vvuIY7MLRqBwK+9rDpNdc5Gt+XXE
-         hjNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+WhoZsJiZov2jfSxLGEtmiUut+TNZxfA/4UuVClNzr0=;
-        b=Dkukpm+ZlGPO0tsxBXsCJY7w89CMb2BSrFTkZjLhV+sD0/xTSl5LZbb8qYvL0QSXz1
-         9hJbFqhr+e5pe2QdQcdp1H/OE7yikbI8KRzZY5psSWRzs1b25OACn46ThPNg3fBC6nLx
-         aeeLWI9niPsnxFmPEjAmjRcvhFleWpMsHDQVQt6Xirbnr4YHX6Do4CVGJWiw7bmPLjK2
-         jmluRYz0GiJmVcr10oR2eGTxfU09aJ087j80kc3zx+S6BSXZ7jwHW7k8OEQWwCrgunc/
-         1YOWOFCaNnTZlXOLRGce2cFHXV9yhoOdiQkwzdJCQcT5NvA3wW/aHp8lur6aDIm/AkO+
-         wYmg==
-X-Gm-Message-State: AGi0Pub7+Np6IOVgOnBiGHJ757yC4oGgu+IERC3i0Z6ufwspp1y3eY8b
-        b5oeOhOtkjuKvVVw1SdMX9VG
-X-Google-Smtp-Source: APiQypLtw7jKrx1finbL2m0OXLHS4c3y7qRzSB9kUcdRDN8RB6LcSHAIJ0x1AUc/8C91ijJiX9g75w==
-X-Received: by 2002:a63:6f84:: with SMTP id k126mr31197858pgc.391.1587027473270;
-        Thu, 16 Apr 2020 01:57:53 -0700 (PDT)
-Received: from localhost.localdomain ([47.156.151.166])
-        by smtp.googlemail.com with ESMTPSA id x10sm88957pgq.79.2020.04.16.01.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 01:57:52 -0700 (PDT)
-From:   Clay McClure <clay@daemons.net>
-Cc:     Clay McClure <clay@daemons.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: cpts: Condition WARN_ON on PTP_1588_CLOCK
-Date:   Thu, 16 Apr 2020 01:56:26 -0700
-Message-Id: <20200416085627.1882-1-clay@daemons.net>
-X-Mailer: git-send-email 2.20.1
+        id S2503261AbgDPJCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503097AbgDPI6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:58:48 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84BF220784;
+        Thu, 16 Apr 2020 08:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587027527;
+        bh=dVAp91Tj6hWWtUY7tL+aLgKkZ276mvf5MWRT7goV5sk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NAw/DPQ2vN2rzJzmUreAA38rnfxIXX3BUID+0uehW0Z9v4f/Ntd1a7JWQHTF+uDMv
+         4tUi3XdV3gd/0EuPpoon9MJXibqbgTfuDttD3xyfrTBNZAOlFyJ4cRJ6Z+sHqArQUT
+         PeqbbpCCaPZTxxeljv/xMr+adoczGliqtOh0MmEk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jP0M9-003lwb-Tr; Thu, 16 Apr 2020 09:58:46 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Date:   Thu, 16 Apr 2020 09:58:45 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        tsbogend@alpha.franken.de, paulus@ozlabs.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, christoffer.dall@arm.com,
+        peterx@redhat.com, thuth@redhat.com
+Subject: Re: [PATCH v2] KVM: Optimize kvm_arch_vcpu_ioctl_run function
+In-Reply-To: <8b92fb5b-5138-0695-fb90-6c36b8dfad00@linux.alibaba.com>
+References: <20200416051057.26526-1-tianjia.zhang@linux.alibaba.com>
+ <878sivx67g.fsf@vitty.brq.redhat.com>
+ <1000159f971a6fa3b5bd9e5871ce4d82@kernel.org>
+ <8b92fb5b-5138-0695-fb90-6c36b8dfad00@linux.alibaba.com>
+Message-ID: <b700f9bde1218b217ca4e571b1d29c1e@kernel.org>
+X-Sender: maz@kernel.org
+User-Agent: Roundcube Webmail/1.3.10
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: tianjia.zhang@linux.alibaba.com, vkuznets@redhat.com, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org, mpe@ellerman.id.au, benh@kernel.crashing.org, borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com, sean.j.christopherson@intel.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CPTS_MOD merely implies PTP_1588_CLOCK; it is possible to build cpts
-without PTP clock support. In that case, ptp_clock_register() returns
-NULL and we should not WARN_ON(cpts->clock) when downing the interface.
-The ptp_*() functions are stubbed without PTP_1588_CLOCK, so it's safe
-to pass them a null pointer.
+On 2020-04-16 09:45, Tianjia Zhang wrote:
+> On 2020/4/16 16:28, Marc Zyngier wrote:
 
-Signed-off-by: Clay McClure <clay@daemons.net>
----
- drivers/net/ethernet/ti/cpts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-diff --git a/drivers/net/ethernet/ti/cpts.c b/drivers/net/ethernet/ti/cpts.c
-index fd214f8730a9..daf4505f4a70 100644
---- a/drivers/net/ethernet/ti/cpts.c
-+++ b/drivers/net/ethernet/ti/cpts.c
-@@ -646,7 +646,7 @@ EXPORT_SYMBOL_GPL(cpts_register);
- 
- void cpts_unregister(struct cpts *cpts)
- {
--	if (WARN_ON(!cpts->clock))
-+	if (IS_REACHABLE(PTP_1588_CLOCK) && WARN_ON(!cpts->clock))
- 		return;
- 
- 	ptp_clock_unregister(cpts->clock);
+>> Overall, there is a large set of cleanups to be done when both the 
+>> vcpu and the run
+>> structures are passed as parameters at the same time. Just grepping 
+>> the tree for
+>> kvm_run is pretty instructive.
+>> 
+>>          M.
+> 
+> Sorry, it's my mistake, I only compiled the x86 platform, I will
+> submit patch again.
+
+Not a mistake. All I'm saying is that there is an opportunity for a 
+larger
+series that cleans up the code base, rather than just doing a couple of
+localized changes.
+
+Thanks,
+
+         M.
 -- 
-2.20.1
-
+Jazz is not dead. It just smells funny...
