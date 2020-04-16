@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E631ACAC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D5E1AC964
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395409AbgDPPjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
+        id S2410129AbgDPPWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:22:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897682AbgDPNiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:19 -0400
+        id S2898513AbgDPNpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:45:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71028221F7;
-        Thu, 16 Apr 2020 13:38:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F059920732;
+        Thu, 16 Apr 2020 13:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044298;
-        bh=HdXtnSDiFfxfTy6EzlLlUY/QDpdHEh4TrJnt8XaWZyw=;
+        s=default; t=1587044730;
+        bh=Ccx5IMb0hrnaC5537dtoCxBIqyonxRrmjubp0SWGv5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E27llNphJsjWCSb/i4G9Ag+eHDqOAHSgHi7ctcGiDdVyo+uP60FMJVgwwyO29UBZ6
-         +WIJWI+VlZyrGkDUPaBgkwhrlVddFnNDamFbDjViL833Qe+9GQfvfHKbSTi1HVtmCw
-         DlgwPpBHWZsKsLIHh+585bbLQF5sHIkDs3/isp0Q=
+        b=eUqSUmmJeVaTRLNrhEg3oUg7tv/E9M0zHPIkolqCkzTxQaE6PfEiYh5WFvwncCjis
+         rMgGgkYf/iFsh8ITsYF74O/O+u6rrcHq9mINsLGHaqdfYoygEez27tPkWXPEdwATeB
+         IJiA7d3hHUkWgPrqTVu4JCXRsJBq08Fw/SHgPlEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 5.5 120/257] tpm: Dont make log failures fatal
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 077/232] ALSA: hda: Fix potential access overflow in beep helper
 Date:   Thu, 16 Apr 2020 15:22:51 +0200
-Message-Id: <20200416131341.305815793@linuxfoundation.org>
+Message-Id: <20200416131324.835754846@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,92 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Garrett <matthewgarrett@google.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 805fa88e0780b7ce1cc9b649dd91a0a7164c6eb4 upstream.
+commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a upstream.
 
-If a TPM is in disabled state, it's reasonable for it to have an empty
-log. Bailing out of probe in this case means that the PPI interface
-isn't available, so there's no way to then enable the TPM from the OS.
-In general it seems reasonable to ignore log errors - they shouldn't
-interfere with any other TPM functionality.
+The beep control helper function blindly stores the values in two
+stereo channels no matter whether the actual control is mono or
+stereo.  This is practically harmless, but it annoys the recently
+introduced sanity check, resulting in an error when the checker is
+enabled.
 
-Signed-off-by: Matthew Garrett <matthewgarrett@google.com>
-Cc: stable@vger.kernel.org # 4.19.x
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+This patch corrects the behavior to store only on the defined array
+member.
+
+Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/tpm/eventlog/common.c |   12 ++++--------
- drivers/char/tpm/tpm-chip.c        |    4 +---
- drivers/char/tpm/tpm.h             |    2 +-
- 3 files changed, 6 insertions(+), 12 deletions(-)
+ sound/pci/hda/hda_beep.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/char/tpm/eventlog/common.c
-+++ b/drivers/char/tpm/eventlog/common.c
-@@ -99,11 +99,8 @@ static int tpm_read_log(struct tpm_chip
-  *
-  * If an event log is found then the securityfs files are setup to
-  * export it to userspace, otherwise nothing is done.
-- *
-- * Returns -ENODEV if the firmware has no event log or securityfs is not
-- * supported.
-  */
--int tpm_bios_log_setup(struct tpm_chip *chip)
-+void tpm_bios_log_setup(struct tpm_chip *chip)
+--- a/sound/pci/hda/hda_beep.c
++++ b/sound/pci/hda/hda_beep.c
+@@ -290,8 +290,12 @@ int snd_hda_mixer_amp_switch_get_beep(st
  {
- 	const char *name = dev_name(&chip->dev);
- 	unsigned int cnt;
-@@ -112,7 +109,7 @@ int tpm_bios_log_setup(struct tpm_chip *
- 
- 	rc = tpm_read_log(chip);
- 	if (rc < 0)
--		return rc;
-+		return;
- 	log_version = rc;
- 
- 	cnt = 0;
-@@ -158,13 +155,12 @@ int tpm_bios_log_setup(struct tpm_chip *
- 		cnt++;
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct hda_beep *beep = codec->beep;
++	int chs = get_amp_channels(kcontrol);
++
+ 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
+-		ucontrol->value.integer.value[0] =
++		if (chs & 1)
++			ucontrol->value.integer.value[0] = beep->enabled;
++		if (chs & 2)
+ 			ucontrol->value.integer.value[1] = beep->enabled;
+ 		return 0;
  	}
- 
--	return 0;
-+	return;
- 
- err:
--	rc = PTR_ERR(chip->bios_dir[cnt]);
- 	chip->bios_dir[cnt] = NULL;
- 	tpm_bios_log_teardown(chip);
--	return rc;
-+	return;
- }
- 
- void tpm_bios_log_teardown(struct tpm_chip *chip)
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -596,9 +596,7 @@ int tpm_chip_register(struct tpm_chip *c
- 
- 	tpm_sysfs_add_device(chip);
- 
--	rc = tpm_bios_log_setup(chip);
--	if (rc != 0 && rc != -ENODEV)
--		return rc;
-+	tpm_bios_log_setup(chip);
- 
- 	tpm_add_ppi(chip);
- 
---- a/drivers/char/tpm/tpm.h
-+++ b/drivers/char/tpm/tpm.h
-@@ -235,7 +235,7 @@ int tpm2_prepare_space(struct tpm_chip *
- int tpm2_commit_space(struct tpm_chip *chip, struct tpm_space *space, void *buf,
- 		      size_t *bufsiz);
- 
--int tpm_bios_log_setup(struct tpm_chip *chip);
-+void tpm_bios_log_setup(struct tpm_chip *chip);
- void tpm_bios_log_teardown(struct tpm_chip *chip);
- int tpm_dev_common_init(void);
- void tpm_dev_common_exit(void);
 
 
