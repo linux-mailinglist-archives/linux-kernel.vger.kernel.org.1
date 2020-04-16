@@ -2,117 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC64F1AC4BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B701AC4C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391277AbgDPODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:03:35 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50991 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726568AbgDPNmJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587044527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/1ZzkqlTi7SRUYHpseP8/ZANbIohPVFGcK3piqF1OY=;
-        b=TNY4ffNL0dG78/Oo8KKxKXSg5lRMFyVuD6Ow81OkH+6C6vRnbF4D7xIKIw4Li9Ae4j+y/f
-        WHx0eWPRPe9bicthCdxcd2PaOMfW1OeXFiZ4gN8Yr5OR6ML07hbNLN6mbWh5huF1ZAfY9a
-        yUJqpFDrPvP28rbi7+NG73ifMkxuRtg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-okW0YJh6OXmWSULMjcgr3Q-1; Thu, 16 Apr 2020 09:42:04 -0400
-X-MC-Unique: okW0YJh6OXmWSULMjcgr3Q-1
-Received: by mail-wr1-f70.google.com with SMTP id i10so1245102wrq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:42:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a/1ZzkqlTi7SRUYHpseP8/ZANbIohPVFGcK3piqF1OY=;
-        b=G5Ievk2Eca6lY7K+WGQ33hV5/NYsamhTkZ7Hadm8qiINJPdjZiPXLMG7Sl27GS3hj2
-         SekhmTY3q8e0QMztFiIgbgm3yMxDtIW1YiAJMK7qZDr+u1iqLdg8Rl0fZXi1G2ZTh4wB
-         jxNaXlDMVXlaF2g4NkLe4CjJ3wKsYXDbMS5aUsml8bnaFSdSimQZN1LV4cwNsqzWhksQ
-         hf1WSfn6erJ3/OzUEK5L0W5bSi+GgCBgpyMftZhAlzL211oaCxbuMKia+557dNEpWe6d
-         fkh7yS85v9yRILfSHmOV9Mc3yKkaqsmPvE5yGvjVShWLnkhXFOdFALWHCF2QUNWF6Y3S
-         1Oww==
-X-Gm-Message-State: AGi0PuZEyUP7j8SI+rttBJO+nqW2biYiB0if7z31/KUSl6hjxsCmDx25
-        hduXHSzI/4AEShOavcgfa5JqG6ZFJREZlDdTfmW8PLSbl6lPmjid8tNH1SbE9csafvu0ylM/sUm
-        i2VvVE05kiKFKLIYC0DD3AmI6
-X-Received: by 2002:a1c:32c7:: with SMTP id y190mr5217960wmy.13.1587044522784;
-        Thu, 16 Apr 2020 06:42:02 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKzoEVKX7f3apWSf+0ABegyK+KCs7PTPeOkDlwys1PA0/OzOllgPpSCI941twQhqGT7eyIuCQ==
-X-Received: by 2002:a1c:32c7:: with SMTP id y190mr5217940wmy.13.1587044522536;
-        Thu, 16 Apr 2020 06:42:02 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:399d:3ef7:647c:b12d? ([2001:b07:6468:f312:399d:3ef7:647c:b12d])
-        by smtp.gmail.com with ESMTPSA id o16sm28082541wrs.44.2020.04.16.06.42.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 06:42:02 -0700 (PDT)
-Subject: Re: [PATCH 0/5] KVM: VMX: Add caching of EXIT_QUAL and INTR_INFO
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200415203454.8296-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d449f6e3-ca28-2fac-e4ed-7dea2729d3b5@redhat.com>
-Date:   Thu, 16 Apr 2020 15:42:00 +0200
+        id S2392912AbgDPOD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:03:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:32874 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726627AbgDPNmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:42:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6F8C1FB;
+        Thu, 16 Apr 2020 06:42:17 -0700 (PDT)
+Received: from [192.168.1.84] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68A253F68F;
+        Thu, 16 Apr 2020 06:42:15 -0700 (PDT)
+Subject: Re: Multiple regulators for one device [was drm/panfrost: add devfreq
+ regulator support]
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200411200632.4045-1-peron.clem@gmail.com>
+ <20200411200632.4045-2-peron.clem@gmail.com>
+ <c96f31a2-6ff4-31aa-aaac-2ce9eafb3bfe@arm.com>
+ <CAJiuCcegkNGQ7j4jcT1rBpSLqG1c-nb8g0wq+Nbvt-dGj7am2Q@mail.gmail.com>
+ <CAJiuCceU662o7QGJ=mmT3pzVWK7uJUN=6+NKQnZ=Cfj9c2nw7A@mail.gmail.com>
+ <d6465e7e-8e05-8b7d-16bd-f40877969089@arm.com>
+ <CAJiuCccv2XPLY6sjcgvvrG5a8ONYHa_xn9i-YUDKUDK5a0DY=A@mail.gmail.com>
+ <CAJiuCcfa9ro1V4nBzfD48cCuHpEsLaNA5P0bb-tQ3hcWUCtpkA@mail.gmail.com>
+ <000f26f4-3640-797f-c7f6-4b31a5e2669e@arm.com>
+ <CAJiuCccF3tmbmMWNh0nC5WRJ1_iPdj6f1oH1zYMSue_pFrXsPQ@mail.gmail.com>
+ <20200414185523.GO5412@sirena.org.uk>
+ <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com>
+Date:   Thu, 16 Apr 2020 14:42:13 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200415203454.8296-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/20 22:34, Sean Christopherson wrote:
-> Patches 4-5 are the focus of this series, adding caching of
-> vmcs.EXIT_QUALIFICATION and proper caching of vmcs.INTR_INFO (instead of
-> caching it with ad hoc rules about when it's available).  Patches 1-3
-> are prep work to clean up the register caching to ensure correctness when
-> switching between vmcs01 and vmcs02.
+On 14/04/2020 20:16, Clément Péron wrote:
+> Hi Mark,
 > 
-> The idea for this came about when working on the "unionize exit_reason"
-> series.  The nested VM-Exit logic looks at both fields multiple times,
-> which is ok-ish when everything is crammed into one or two functions, but
-> incurs multiple VMREADs when split up.  I really didn't want to solve that
-> issue by piling on more cases where vmx->exit_intr_info would be valid, or
-> by duplicating that fragile pattern for exit_qualification.
+> On Tue, 14 Apr 2020 at 20:55, Mark Brown <broonie@kernel.org> wrote:
+>>
+>> On Tue, Apr 14, 2020 at 08:20:23PM +0200, Clément Péron wrote:
+>>> Hi Liam and Mark,
+>>
+>> You might want to flag stuff like this in the subject line, I very
+>> nearly deleted this without opening it since most of the email I get
+>> about panfrost appears to be coming from me having sent patches rather
+>> than being relevant.
 > 
-> Paolo, this will conflict with the "unionize exit_reason" series, though
-> the conflict resolution is all mechnical in nature.  Let me know if you
-> want me to respin one on top of the other, send a single series, etc...
+> Ok will do next time,
+> 
+>>
+>>> We are having an issue with Panfrost driver registering two times the
+>>> same regulator and giving an error when trying to create the debugfs
+>>> folder.
+>>
+>>> Could you clarify if it is allowed for a device to register two times
+>>> the same regulator?
+>>
+>>> I check Documentation/power/regulator/regulator.rst but this point is
+>>> not specified.
+>>
+>> We don't actively prevent it and I can't think what other than debugfs
+>> might run into problems (and that's just a warning) but it does seem
+>> like a weird thing to want to do and like it's pointing to some
+>> confusion in your code with two different parts of the device
+>> controlling the same supply independently.  What's the use case here?
+> 
+> Panfrost first probe clock, reset and regulator in device_init:
+> https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/gpu/drm/panfrost/panfrost_drv.c#L602
+> Then it probe for optional devfreq, devfreq will get opp tables and
+> also get regulator again.
+> https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/gpu/drm/panfrost/panfrost_drv.c#L609
+> 
+> That's can be reworked and Panfrost can only probe regulator if there
+> is no opp-table.
 
-Queued, I think I fixed the conflicts right.  We'll see if anything
-explodes when I test it. :)
+This is what I was thinking about looking at. But it may make sense 
+instead to extend the regulator API to allow multiple regualtor_get() 
+calls for a single device. I haven't had time to dig into how difficult 
+this would be.
 
-Paolo
+> But if multiple regulator is not an issue and as each request is logic.
+> The first in device_init assure to enable the regulator and the second
+> in OPP assure the voltage level.
+> 
+> Maybe we can just fix this warning?
 
-> 
-> Sean Christopherson (5):
->   KVM: nVMX: Invoke ept_save_pdptrs() if and only if PAE paging is
->     enabled
->   KVM: nVMX: Reset register cache (available and dirty masks) on VMCS
->     switch
->   KVM: nVMX: Drop manual clearing of segment cache on nested VMCS switch
->   KVM: VMX: Cache vmcs.EXIT_QUALIFICATION using arch avail_reg flags
->   KVM: VMX: Cache vmcs.EXIT_INTR_INFO using arch avail_reg flags
-> 
->  arch/x86/include/asm/kvm_host.h |  2 +
->  arch/x86/kvm/vmx/nested.c       | 29 +++++++------
->  arch/x86/kvm/vmx/nested.h       |  4 +-
->  arch/x86/kvm/vmx/vmx.c          | 73 ++++++++++++++++-----------------
->  arch/x86/kvm/vmx/vmx.h          | 35 +++++++++++++++-
->  5 files changed, 86 insertions(+), 57 deletions(-)
-> 
+ From what I can see in the code, just silencing the warning would lead 
+to 'odd' behaviour with debugfs. The first struct regulator Panfrost 
+acquires is the one that is used purely for turning the GPU on (no 
+voltage scaling). The second struct regulator is the one which is 
+obtained by the OPP framework. However the debugfs entries point into 
+the actual struct regulator, so it would be far more logical/useful if 
+those were pointing into the second struct regulator.
 
+Ideally calling regulator_get a second time for the same device would 
+simply return the same struct regulator object (with a reference count 
+increment).
+
+Perhaps a better approach would be for Panfrost to hand over the struct 
+regulator objects it has already got to the OPP framework. I.e. open 
+code dev_pm_opp_set_regulators(), but instead of calling 
+regulator_get_optional() simply populate the regulators we already have?
+
+The other benefit of that is it would provide a clear hand-over of 
+responsibility between Panfrost handling it's own regulators and the OPP 
+framework picking up the work. The disadvantage is that Panfrost would 
+have to track whether the regulators have been handed over or not.
+
+Steve
