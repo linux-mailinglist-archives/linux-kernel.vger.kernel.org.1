@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9245C1ACD51
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536B41ACD4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442888AbgDPQPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:15:24 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45362 "EHLO
+        id S2895810AbgDPQPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:15:06 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45368 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441904AbgDPQOe (ORCPT
+        by vger.kernel.org with ESMTP id S2442785AbgDPQOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:14:34 -0400
+        Thu, 16 Apr 2020 12:14:36 -0400
 Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GGBred014920;
-        Thu, 16 Apr 2020 18:14:31 +0200
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GGBqO0014914;
+        Thu, 16 Apr 2020 18:14:32 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=pa2XKTGGGIC2Vn05mbBcixvwehzmq3xfK9D+yvR8aDA=;
- b=ctuniGyVBb/CSSktXIwtrf4cIzhh/SE4J02vC1c/q9ms5aJ6vP7UBwNolnOT8dq/bEMZ
- pSY2sXRCQPSANeKInNiuFO+kyKz5n/cMlNQPIMWW2l2pxmMeGpBkvBwzv2fCra9LtuUU
- WXWzJwMiWg1PgQFX9/l9o7SCBsZkHQkq1G7IME90wqf1xuCH2ZEBn64WcAea0XBa7IhK
- DPu1kd/TpeUkowvpdBz1sDwZZSIe0eKSCA5Y1XWB6nARkLxbXZsGVEGhK3ZXtKc5mTru
- QkyeiztmT1jTLfNGeQ7kzYQ7/FlL5ohT/DZ3D+RThuxhEr5lb33AOneELH59ROkcE2or bA== 
+ bh=i7rw/RtCj8mfGz7yhHkYABF7/EhksBCp43vLFplujnY=;
+ b=m4npXIVvf17hNsHFXkA/EiYKrvP9Wbk7Mift9UB6b2O2h1/3cHsaGTXmB3H3FfhQ+mqa
+ G3Q0aWuuCvF4hBGzb7VHrG3TOHTdACHf0mfkra4XKtJB3ghfOYpiTtOr1zb1s0R2ywyh
+ hBM/4YkoQTfV+Kt9/rtiufieh9CVm5bSfKwHogb0/fnBipy2rI4chkl7BTP8P+rbq+2w
+ bX42EDitSKu16ku0oywvqTNTKZgFUKGdhOPVAMcgb1aJu2FlUqeHq7fmZn5FzAycdl5e
+ OvzZ65uWBZAuS88A3lIuXA4V5w/Mf1UARxSY1njoX5BZRRsVnZEmbBiBnTYMiRINb1lA Uw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30dn75umfc-1
+        by mx07-00178001.pphosted.com with ESMTP id 30dn75umff-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Apr 2020 18:14:31 +0200
+        Thu, 16 Apr 2020 18:14:32 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D23610002A;
-        Thu, 16 Apr 2020 18:14:31 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 79BAF10002A;
+        Thu, 16 Apr 2020 18:14:32 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 40D832B2D2C;
-        Thu, 16 Apr 2020 18:14:31 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Apr 2020 18:14:30
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6EF222B2D2C;
+        Thu, 16 Apr 2020 18:14:32 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Apr 2020 18:14:32
  +0200
 From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -44,16 +44,16 @@ To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
 CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <arnaud.pouliquen@st.com>
-Subject: [RFC 16/18] remoteproc: Parse virtio node for memory region
-Date:   Thu, 16 Apr 2020 18:13:29 +0200
-Message-ID: <20200416161331.7606-17-arnaud.pouliquen@st.com>
+Subject: [RFC 17/18] remoteproc: stm32: Add the pa to da ops.
+Date:   Thu, 16 Apr 2020 18:13:30 +0200
+Message-ID: <20200416161331.7606-18-arnaud.pouliquen@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200416161331.7606-1-arnaud.pouliquen@st.com>
 References: <20200416161331.7606-1-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE1.st.com
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE1.st.com
  (10.75.127.7)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-16_06:2020-04-14,2020-04-16 signatures=0
@@ -62,135 +62,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the possibility to declare memories associated to the virtio paltform
-in the device tree.
+Add pa_to_da ops to translate the physical address into
+device address.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Change-Id: Ie1aa26769635d6d4c4581486700c4061f0f99ff1
 ---
- drivers/remoteproc/remoteproc_virtio.c | 77 +++++++++++++++++++++++---
- 1 file changed, 68 insertions(+), 9 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index 0fd938afd146..3302ee7d6c14 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -610,12 +610,71 @@ static const struct component_ops rproc_virtio_ops = {
- 	.unbind = rproc_virtio_unbind,
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index a18f88044111..1dd4c0f9c423 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -507,6 +507,7 @@ static struct rproc_ops st_rproc_ops = {
+ 	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
+ 	.sanity_check	= rproc_elf_sanity_check,
+ 	.get_boot_addr	= rproc_elf_get_boot_addr,
++	.pa_to_da	= stm32_rproc_pa_to_da,
  };
  
-+static int rproc_virtio_of_parse(struct device *dev, struct rproc_vdev *rvdev)
-+{
-+	struct device_node *np = dev->of_node;
-+	struct rproc *rproc = rvdev->rproc;
-+	struct of_phandle_iterator it;
-+	struct rproc_mem_entry *mem;
-+	struct reserved_mem *rmem;
-+	char name[32];
-+	u64 da;
-+	int index = 0;
-+
-+	/* the reg is used to specify the vdev index */
-+	if (of_property_read_u32(np, "reg", &rvdev->index))
-+		return -EINVAL;
-+	/* Register associated reserved memory regions */
-+	of_phandle_iterator_init(&it, np, "memory-region", NULL, 0);
-+
-+	while (of_phandle_iterator_next(&it) == 0) {
-+		rmem = of_reserved_mem_lookup(it.node);
-+		if (!rmem) {
-+			dev_err(dev, "unable to acquire memory-region\n");
-+			return -EINVAL;
-+		}
-+
-+		if (rproc_pa_to_da(rproc, rmem->base, &da) < 0) {
-+			dev_err(dev, "memory region not valid %pa\n",
-+				&rmem->base);
-+			return -EINVAL;
-+		}
-+
-+		snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
-+		if (strcmp(it.node->name, name)) {
-+			/* Register memory region */
-+			mem = rproc_mem_entry_init(dev, NULL,
-+						   (dma_addr_t)rmem->base,
-+						   rmem->size, da,
-+						   rproc_default_mem_alloc,
-+						   rproc_default_mem_release,
-+						   it.node->name);
-+
-+			if (mem)
-+				rproc_coredump_add_segment(rproc, da,
-+							   rmem->size);
-+		} else {
-+			/* Register reserved memory for vdev buffer alloc */
-+			mem = rproc_of_resm_mem_entry_init(dev, index,
-+							   rmem->size,
-+							   rmem->base,
-+							   it.node->name);
-+		}
-+
-+		if (!mem)
-+			return -ENOMEM;
-+
-+		rproc_add_carveout(rproc, mem);
-+		index++;
-+	}
-+
-+	return 0;
-+}
-+
- static int rproc_virtio_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct device_node *np = dev->of_node;
- 	struct rproc_vdev *rvdev;
--	struct rproc *rproc;
- 	int ret;
- 
- 	rvdev = devm_kzalloc(&pdev->dev, sizeof(*rvdev), GFP_KERNEL);
-@@ -627,18 +686,16 @@ static int rproc_virtio_probe(struct platform_device *pdev)
- 		 * The platform device is declared in the device tree
- 		 * retrieve rproc struct through the remoteproc platform
- 		 */
--		rproc = rproc_get_by_node(dev->parent->of_node);
-+		rvdev->rproc = rproc_get_by_node(dev->parent->of_node);
- 
--		/* the reg is used to specify the vdev index */
--		if (of_property_read_u32(np, "reg", &rvdev->index))
--			return -EINVAL;
-+		ret = rproc_virtio_of_parse(dev, rvdev);
- 	} else {
- 		struct rproc_vdev_data *vdev_data = pdev->dev.platform_data;
- 
- 		if (!vdev_data)
- 			return -EINVAL;
- 
--		rproc = container_of(dev->parent, struct rproc, dev);
-+		rvdev->rproc = container_of(dev->parent, struct rproc, dev);
- 
- 		rvdev->rsc_offset = vdev_data->rsc_offset;
- 		rvdev->rsc = vdev_data->rsc;
-@@ -649,8 +706,10 @@ static int rproc_virtio_probe(struct platform_device *pdev)
- 		if (ret)
- 			return ret;
- 	}
-+	if (ret)
-+		return ret;
-+
- 	rvdev->pdev = pdev;
--	rvdev->rproc = rproc;
- 
- 	platform_set_drvdata(pdev, rvdev);
- 
-@@ -658,7 +717,7 @@ static int rproc_virtio_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	rproc_register_rvdev(rproc, rvdev);
-+	rproc_register_rvdev(rvdev->rproc, rvdev);
- 
- 	return 0;
- }
+ static const struct of_device_id stm32_rproc_match[] = {
 -- 
 2.17.1
 
