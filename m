@@ -2,144 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813F41AD209
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 23:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BE41AD21A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 23:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgDPVoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 17:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
+        id S1728413AbgDPVqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 17:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725843AbgDPVoQ (ORCPT
+        by vger.kernel.org with ESMTP id S1727829AbgDPVqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 17:44:16 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC2DC061A0C;
-        Thu, 16 Apr 2020 14:44:16 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a25so428258wrd.0;
-        Thu, 16 Apr 2020 14:44:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sffAzPhQCHYxlONYOcziAs0q3Ct9dInBstNF3EUot0A=;
-        b=YEYNjhgXkDenCpaBe24hLDaEJUvQf+AFbMkJW/M52iScpAsaPalPvb+cBzOAG4sWqw
-         VJUdkzApo+PR/PcD6/dpOypTZD35Cn+iYnDeBotGPwhxW08ok2pII37KP12YBWBlEwTj
-         zS3zoJ2kQuuLQtrKMIjJ6DVsVTg8gG34PMl4nMQ74O565/TEoKtCiFFquOfmKc3B2e2J
-         jqMcujTLmug9H9x8b31CN1vi6tnRVlZBCDvetFwy1hXGPaVV+BD9Qxq+EkGT5rwDQi49
-         lF2n9nFXAJNuIsIwNgPL566gMYGIiLmAyOLLCCQBJgYKHpjRsA508DIsMGXw27uti8u1
-         3naw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sffAzPhQCHYxlONYOcziAs0q3Ct9dInBstNF3EUot0A=;
-        b=HIxTGV2oRdRTTeyPyu4t3eZBnA/PS218S2OrxeE1cPn1nZmHyQV8Shx4ST7LWoMqed
-         QNW8ThFZIl9/f12yaKuKF/Vgm5La6yHH8m6EZhLzzocD9i65eZ6xqMjIQDNu6fB6Sip5
-         BpZWOnn6bueK0Tc/Cdc+W8gRaf8vn2m6lMS9dJJ88tBnvD5e0Kdgj8ZPE7g14ot+75Le
-         MxB1o7pR7jgrfVuTVjVRHhKiYcrzZAxkyXz+IFtJ6Znh6K5mG3Go/2lHSpwZLwUzFYot
-         C1NAE3EvcEZYoV7YTTbKgNJnADSVyrGfNTMEcxJ0MgMsgSAoSjtpq7Wt8ZmFsKBzrJsz
-         AuHg==
-X-Gm-Message-State: AGi0PuYlr8HoOfNAF5hO9L4EFxDrVqufnC74/Y8Umth9EtjLSTML57X+
-        NkgPaizFuIhE/VtC3D0SnT8=
-X-Google-Smtp-Source: APiQypJKY7xZFLf/Hax5amZPWqkmcol0SYTy6Ns1Cqz64Wk+JcRO5hXIDf9tGCtdetce2kIblVptsQ==
-X-Received: by 2002:a5d:6646:: with SMTP id f6mr275421wrw.318.1587073455065;
-        Thu, 16 Apr 2020 14:44:15 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id s27sm20203721wra.94.2020.04.16.14.44.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Apr 2020 14:44:14 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 21:44:13 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, josh@joshtriplett.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: init and destroy rcu_synchronize when necessary
-Message-ID: <20200416214413.uabk6ojzykiy5rol@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20200415222655.9006-1-richard.weiyang@gmail.com>
- <20200416002400.GL17661@paulmck-ThinkPad-P72>
+        Thu, 16 Apr 2020 17:46:11 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855FAC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 14:46:11 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C32E597D;
+        Thu, 16 Apr 2020 23:46:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1587073570;
+        bh=Wc8on2VFZc2Ti1oQLptvGuR0fEogjYjgir0yXNAH++0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TSXdROCed0cQIzGrDXt8uYy+lUSbuBXwrexS6RVjvk3JFessMHZb9sHBTYV0H3Wf3
+         MiUSJtgxAJNsKz4seBRDgwa6NpWXhOhETW3Jn0LEH5z26tOmC665Jo96UKEK6Ixa0p
+         /v2LLyBiCEhfSYIYrV7yYEZOWLCzDOhNwkVa8mHM=
+Date:   Fri, 17 Apr 2020 00:45:57 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 7/7] drm/mediatek: mtk_dsi: Create connector for
+ bridges
+Message-ID: <20200416214557.GC28162@pendragon.ideasonboard.com>
+References: <20200416155720.2360443-1-enric.balletbo@collabora.com>
+ <20200416155720.2360443-8-enric.balletbo@collabora.com>
+ <20200416173525.GQ4796@pendragon.ideasonboard.com>
+ <20200416173615.GR4796@pendragon.ideasonboard.com>
+ <cb5db1ad-c0c6-44aa-8a26-0c7731b973fd@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200416002400.GL17661@paulmck-ThinkPad-P72>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <cb5db1ad-c0c6-44aa-8a26-0c7731b973fd@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 05:24:00PM -0700, Paul E. McKenney wrote:
->On Wed, Apr 15, 2020 at 10:26:55PM +0000, Wei Yang wrote:
->> We would skip the rcu_synchronize if it is a duplicate call back function.
->> 
->> This is not necessary to init and destroy for them.
->> 
->> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->
->Applied, thank you!
->
->I edited the commit log a bit.  Could you please check below to make
->sure that I didn't mess anything up?
->
+Hi Enric,
 
-Yep, the changelog looks good to me :-)
-
-Glad you like it.
-
->							Thanx, Paul
->
->------------------------------------------------------------------------
->
->commit d9eaddf545fe8e3e2725e2fa0bf87b59b5667c14
->Author: Wei Yang <richard.weiyang@gmail.com>
->Date:   Wed Apr 15 22:26:55 2020 +0000
->
->    rcu: Initialize and destroy rcu_synchronize only when necessary
->    
->    The __wait_rcu_gp() function unconditionally initializes and cleans up
->    each element of rs_array[], whether used or not.  This is slightly
->    wasteful and rather confusing, so this commit skips both initialization
->    and cleanup for duplicate callback functions.
->    
->    Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
->diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
->index 3ce63a9..351c322 100644
->--- a/kernel/rcu/update.c
->+++ b/kernel/rcu/update.c
->@@ -391,13 +391,14 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
-> 			might_sleep();
-> 			continue;
-> 		}
->-		init_rcu_head_on_stack(&rs_array[i].head);
->-		init_completion(&rs_array[i].completion);
-> 		for (j = 0; j < i; j++)
-> 			if (crcu_array[j] == crcu_array[i])
-> 				break;
->-		if (j == i)
->+		if (j == i) {
->+			init_rcu_head_on_stack(&rs_array[i].head);
->+			init_completion(&rs_array[i].completion);
-> 			(crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
->+		}
-> 	}
+On Thu, Apr 16, 2020 at 11:33:24PM +0200, Enric Balletbo i Serra wrote:
+> On 16/4/20 19:36, Laurent Pinchart wrote:
+> > On Thu, Apr 16, 2020 at 08:35:26PM +0300, Laurent Pinchart wrote:
+> >> On Thu, Apr 16, 2020 at 05:57:19PM +0200, Enric Balletbo i Serra wrote:
+> >>> Use the drm_bridge_connector helper to create a connector for pipelines
+> >>> that use drm_bridge. This allows splitting connector operations across
+> >>> multiple bridges when necessary, instead of having the last bridge in
+> >>> the chain creating the connector and handling all connector operations
+> >>> internally.
+> >>
+> >> That's the right direction, but this should be done in the mtk display
+> >> controller driver core, not in here. I'm OK with the code being here as
+> >> an interim measure if needed to move forward, but that should then be
+> >> temporary only.
 > 
-> 	/* Wait for all callbacks to be invoked. */
->@@ -408,9 +409,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
-> 		for (j = 0; j < i; j++)
-> 			if (crcu_array[j] == crcu_array[i])
-> 				break;
->-		if (j == i)
->+		if (j == i) {
-> 			wait_for_completion(&rs_array[i].completion);
->-		destroy_rcu_head_on_stack(&rs_array[i].head);
->+			destroy_rcu_head_on_stack(&rs_array[i].head);
->+		}
-> 	}
-> }
-> EXPORT_SYMBOL_GPL(__wait_rcu_gp);
+> It'd be nice if we can do this as an interim measure for now, so at least we
+> have the embedded display working. IIUC to move that to the display controller
+> driver core I should also convert/rework the mtk_dpi and mtk_hdmi drivers. This
+> is used for the external display on my device but to fully support this I'll
+> also need to rework the bridge chain logic to handle the multi-sink/multi-source
+> use case. This is something I plan to work on but I suspect won't be easy and
+> will trigger lots of discussions, and, of course, some time.
+> 
+> So, if is fine I won't move this for now.
+
+That's totally fine with me, I just wanted to make sure you were aware
+that more work was needed :-)
+
+Thanks for all your efforts !
+
+> > I forgot to mention that the drm_encoder should also move out of the
+> > bridge driver to the display controller driver.
+> > 
+> >>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> >>> ---
+> >>>
+> >>> Changes in v2: None
+> >>>
+> >>>  drivers/gpu/drm/mediatek/mtk_dsi.c | 14 +++++++++++++-
+> >>>  1 file changed, 13 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> >>> index 44718fa3d1ca..2f8876c32864 100644
+> >>> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> >>> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> >>> @@ -17,6 +17,7 @@
+> >>>  
+> >>>  #include <drm/drm_atomic_helper.h>
+> >>>  #include <drm/drm_bridge.h>
+> >>> +#include <drm/drm_bridge_connector.h>
+> >>>  #include <drm/drm_mipi_dsi.h>
+> >>>  #include <drm/drm_of.h>
+> >>>  #include <drm/drm_panel.h>
+> >>> @@ -184,6 +185,7 @@ struct mtk_dsi {
+> >>>  	struct drm_bridge bridge;
+> >>>  	struct drm_bridge *panel_bridge;
+> >>>  	struct drm_bridge *next_bridge;
+> >>> +	struct drm_connector *connector;
+> >>>  	struct phy *phy;
+> >>>  
+> >>>  	void __iomem *regs;
+> >>> @@ -983,10 +985,19 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
+> >>>  	 */
+> >>>  	dsi->encoder.possible_crtcs = 1;
+> >>>  
+> >>> -	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL, 0);
+> >>> +	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
+> >>> +				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> >>>  	if (ret)
+> >>>  		goto err_cleanup_encoder;
+> >>>  
+> >>> +	dsi->connector = drm_bridge_connector_init(drm, &dsi->encoder);
+> >>> +	if (IS_ERR(dsi->connector)) {
+> >>> +		DRM_ERROR("Unable to create bridge connector\n");
+> >>> +		ret = PTR_ERR(dsi->connector);
+> >>> +		goto err_cleanup_encoder;
+> >>> +	}
+> >>> +	drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
+> >>> +
+> >>>  	return 0;
+> >>>  
+> >>>  err_cleanup_encoder:
+> >>> @@ -1144,6 +1155,7 @@ static int mtk_dsi_probe(struct platform_device *pdev)
+> >>>  
+> >>>  	dsi->bridge.funcs = &mtk_dsi_bridge_funcs;
+> >>>  	dsi->bridge.of_node = dev->of_node;
+> >>> +	dsi->bridge.type = DRM_MODE_CONNECTOR_DSI;
+> >>
+> >> I think this line belongs to the patch that adds drm_bridge support to
+> >> this driver.
+> >>
+> >>>  
+> >>>  	drm_bridge_add(&dsi->bridge);
+> >>>  
 
 -- 
-Wei Yang
-Help you, Help me
+Regards,
+
+Laurent Pinchart
