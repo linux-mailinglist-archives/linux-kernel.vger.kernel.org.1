@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A457E1AC006
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230271ABE01
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506610AbgDPLqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505036AbgDPKcZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:32:25 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CABC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:32:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o81so4016787wmo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=9L5k3Ln1Qt7W9TpURaqzpjRy4n7lxiu2UCwSIpKQOFY=;
-        b=Ryq1RWfipGTXPSDerCgXOnwVBcBk+SES+dQi/983JsKTieI0hUpxVt0XEnAt5BZtc+
-         3j0OPScJqjuBIE/e8RGOCz2qxvAOsR5mXaTJGLhb/2duJk/L3WjLQ/RFj565RNvubZUj
-         hrSaYRFzGzIrj5sKgXIknAqEaWAnJEKXWJhEzJV60auxxyKw0K6wI8LTl2AvhZqxAIzs
-         uUb+EokUxmU9Z5axhY1kITo29sfTFoPdQv2b6GKfiFiAtbS7xobLEghD53lOPZN2TpEu
-         nZmpRVx6DspQ/ffW9RGXXgnbX7+3JVYh3AZBYzIMNW5yjBNXwQzkQJY9vONcYn4HDTT4
-         WFog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=9L5k3Ln1Qt7W9TpURaqzpjRy4n7lxiu2UCwSIpKQOFY=;
-        b=g36K4pIluTAOzTaQFBTjVJESch1S+oA173n/c9R3B79tc79aTOzZ4vqf3lt4re+egf
-         mYwBtnrCR8BH2x0abHL8NiyApV9v26JYAiZlGb96XbXX7HJH2NjURaYWZ/zh2FXWKyIt
-         NrIgP6QQNBWpNw8IVP51xRaUQ1S1GB2f+ZnlMGcuM4fBiOssiKscK9BIEap+Ib2prTn/
-         YspyPFVz264ZZBrL+VY4HVMHo7PEpJCmYtesbAajBFFE27+f+PdIAYY2R6P6Gy0FVziu
-         VECaO4nJ6iaP7ftlB5CW2Z//P+rearnFq93+wutOB27scOVfoGAluV0H/lSN4H3mm5NR
-         vIdw==
-X-Gm-Message-State: AGi0PuaxRzafYJwr4IN32YzLB1n93fjumWrofLQvc59AlyDF9GlqNKxX
-        s6Ti8Jad8D/gcSeGhZqQdzvCaA==
-X-Google-Smtp-Source: APiQypJclY5jrpfvL8yZKMalQnkMXP+jCZNrFkQ3BCEqz3+ltwYSFd7LZVCdQLzaOSzpaZBpIvP+Cw==
-X-Received: by 2002:a7b:c181:: with SMTP id y1mr4442183wmi.83.1587033142678;
-        Thu, 16 Apr 2020 03:32:22 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.gmail.com with ESMTPSA id j135sm3021115wmj.46.2020.04.16.03.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 03:32:22 -0700 (PDT)
-References: <20200414200017.226136-1-martin.blumenstingl@googlemail.com> <20200414200017.226136-2-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org
-Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] clk: meson: meson8b: Fix the first parent of vid_pll_in_sel
-In-reply-to: <20200414200017.226136-2-martin.blumenstingl@googlemail.com>
-Date:   Thu, 16 Apr 2020 12:32:21 +0200
-Message-ID: <1jblnrbu16.fsf@starbuckisacylon.baylibre.com>
+        id S2504835AbgDPKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:34:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56282 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505042AbgDPKc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:32:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0F955AA55;
+        Thu, 16 Apr 2020 10:32:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E39E41E1250; Thu, 16 Apr 2020 12:32:26 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 12:32:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200416103226.GE23739@quack2.suse.cz>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-5-ira.weiny@intel.com>
+ <20200415120846.GG6126@quack2.suse.cz>
+ <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 15-04-20 13:39:25, Ira Weiny wrote:
+> > > @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
+> > >  	return error;
+> > >  }
+> > >  
+> > > +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
+> > > +{
+> > > +	struct ext4_inode_info *ei = EXT4_I(inode);
+> > > +
+> > > +	if (S_ISDIR(inode->i_mode))
+> > > +		return;
+> > > +
+> > > +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
+> > > +		inode->i_state |= I_DONTCACHE;
+> > > +}
+> > > +
+> > 
+> > You probably want to use the function you've introduced in the XFS series
+> > here...
+> 
+> you mean:
+> 
+> flag_inode_dontcache()
+> ???
 
-On Tue 14 Apr 2020 at 22:00, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+Yeah, that's what I meant.
 
-> Use hdmi_pll_lvds_out as parent of the vid_pll_in_sel clock. It's not
-> easy to see that the vendor kernel does the same, but it actually does.
-> meson_clk_pll_ops in mainline still cannot fully recalculate all rates
-> from the HDMI PLL registers because some register bits (at the time of
-> writing it's unknown which bits are used for this) double the HDMI PLL
-> output rate (compared to simply considering M, N and FRAC).
+> Yes that is done.  I sent this prior to v8 (where that was added) of the other
+> series...
 
-Have you considered adding a fixed_factor pre-multiplier, like in the
-gxbb driver ?
+Yep, I thought that was the case but I wanted to mention it as a reminder.
 
-Seems to be the same thing
-
->
-> Update the vid_pll_in_sel parent so our clock calculation works for
-> simple clock settings like the CVBS output (where no rate doubling is
-> going on). The PLL ops need to be fixed later on for more complex clock
-> settings (all HDMI rates).
->
-> Fixes: 6cb57c678bb70 ("clk: meson: meson8b: add the read-only video clock trees")
-> Suggested-by: Neil Armstrong <narmstrong@baylibre.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  drivers/clk/meson/meson8b.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-> index 7c55c695cbae..90d284ffc780 100644
-> --- a/drivers/clk/meson/meson8b.c
-> +++ b/drivers/clk/meson/meson8b.c
-> @@ -1077,7 +1077,7 @@ static struct clk_regmap meson8b_vid_pll_in_sel = {
->  		 * Meson8m2: vid2_pll
->  		 */
->  		.parent_hws = (const struct clk_hw *[]) {
-> -			&meson8b_hdmi_pll_dco.hw
-> +			&meson8b_hdmi_pll_lvds_out.hw
->  		},
->  		.num_parents = 1,
->  		.flags = CLK_SET_RATE_PARENT,
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
