@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFF51ABC5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C51ABC6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503362AbgDPJMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        id S2503630AbgDPJNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502361AbgDPIb6 (ORCPT
+        with ESMTP id S2502304AbgDPIbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:31:58 -0400
+        Thu, 16 Apr 2020 04:31:37 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB386C025480;
-        Thu, 16 Apr 2020 01:31:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6354C08C5F2;
+        Thu, 16 Apr 2020 01:31:35 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOzvk-0000pb-Rj; Thu, 16 Apr 2020 10:31:28 +0200
+        id 1jOzvl-0000qT-RS; Thu, 16 Apr 2020 10:31:30 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 71DFE1C03A9;
-        Thu, 16 Apr 2020 10:31:28 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 08:31:28 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6C99D1C03A9;
+        Thu, 16 Apr 2020 10:31:29 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 08:31:29 -0000
 From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] tools headers UAPI: Sync linux/mman.h with the kernel
+Subject: [tip: perf/urgent] tools headers: Update linux/vdso.h and grab a copy
+ of vdso/const.h
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
-        Brian Geffon <bgeffon@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158702588809.28353.3323891930635009385.tip-bot2@tip-bot2>
+Message-ID: <158702588903.28353.2967832668276700000.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,61 +53,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     f60b3878f47311a61fe2d4c5ef77c52e31554c52
-Gitweb:        https://git.kernel.org/tip/f60b3878f47311a61fe2d4c5ef77c52e31554c52
+Commit-ID:     ca64d84e93762f4e587e040a44ad9f6089afc777
+Gitweb:        https://git.kernel.org/tip/ca64d84e93762f4e587e040a44ad9f6089afc777
 Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
-AuthorDate:    Tue, 14 Apr 2020 09:04:53 -03:00
+AuthorDate:    Tue, 14 Apr 2020 08:52:23 -03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Tue, 14 Apr 2020 09:04:53 -03:00
+CommitterDate: Tue, 14 Apr 2020 08:55:03 -03:00
 
-tools headers UAPI: Sync linux/mman.h with the kernel
+tools headers: Update linux/vdso.h and grab a copy of vdso/const.h
 
-To get the changes in:
+To get in line with:
 
-  e346b3813067 ("mm/mremap: add MREMAP_DONTUNMAP to mremap()")
+  8165b57bca21 ("linux/const.h: Extract common header for vDSO")
 
-Add that to 'perf trace's mremap 'flags' decoder.
+And silence this tools/perf/ build warning:
 
-This silences this perf build warning:
-
-  Warning: Kernel ABI header at 'tools/include/uapi/linux/mman.h' differs from latest version at 'include/uapi/linux/mman.h'
-  diff -u tools/include/uapi/linux/mman.h include/uapi/linux/mman.h
+  Warning: Kernel ABI header at 'tools/include/linux/const.h' differs from latest version at 'include/linux/const.h'
+  diff -u tools/include/linux/const.h include/linux/const.h
 
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Brian Geffon <bgeffon@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/include/uapi/linux/mman.h | 5 +++--
- tools/perf/trace/beauty/mmap.c  | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ tools/include/linux/const.h |  5 +----
+ tools/include/vdso/const.h  | 10 ++++++++++
+ tools/perf/check-headers.sh |  1 +
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+ create mode 100644 tools/include/vdso/const.h
 
-diff --git a/tools/include/uapi/linux/mman.h b/tools/include/uapi/linux/mman.h
-index fc1a64c..923cc16 100644
---- a/tools/include/uapi/linux/mman.h
-+++ b/tools/include/uapi/linux/mman.h
-@@ -5,8 +5,9 @@
- #include <asm/mman.h>
- #include <asm-generic/hugetlb_encode.h>
+diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+index 7b55a55..81b8aae 100644
+--- a/tools/include/linux/const.h
++++ b/tools/include/linux/const.h
+@@ -1,9 +1,6 @@
+ #ifndef _LINUX_CONST_H
+ #define _LINUX_CONST_H
  
--#define MREMAP_MAYMOVE	1
--#define MREMAP_FIXED	2
-+#define MREMAP_MAYMOVE		1
-+#define MREMAP_FIXED		2
-+#define MREMAP_DONTUNMAP	4
+-#include <uapi/linux/const.h>
+-
+-#define UL(x)		(_UL(x))
+-#define ULL(x)		(_ULL(x))
++#include <vdso/const.h>
  
- #define OVERCOMMIT_GUESS		0
- #define OVERCOMMIT_ALWAYS		1
-diff --git a/tools/perf/trace/beauty/mmap.c b/tools/perf/trace/beauty/mmap.c
-index 9fa771a..862c833 100644
---- a/tools/perf/trace/beauty/mmap.c
-+++ b/tools/perf/trace/beauty/mmap.c
-@@ -69,6 +69,7 @@ static size_t syscall_arg__scnprintf_mremap_flags(char *bf, size_t size,
- 
- 	P_MREMAP_FLAG(MAYMOVE);
- 	P_MREMAP_FLAG(FIXED);
-+	P_MREMAP_FLAG(DONTUNMAP);
- #undef P_MREMAP_FLAG
- 
- 	if (flags)
+ #endif /* _LINUX_CONST_H */
+diff --git a/tools/include/vdso/const.h b/tools/include/vdso/const.h
+new file mode 100644
+index 0000000..94b385a
+--- /dev/null
++++ b/tools/include/vdso/const.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __VDSO_CONST_H
++#define __VDSO_CONST_H
++
++#include <uapi/linux/const.h>
++
++#define UL(x)		(_UL(x))
++#define ULL(x)		(_ULL(x))
++
++#endif /* __VDSO_CONST_H */
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index bfb21d0..c905c68 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -23,6 +23,7 @@ include/uapi/linux/vhost.h
+ include/uapi/sound/asound.h
+ include/linux/bits.h
+ include/linux/const.h
++include/vdso/const.h
+ include/linux/hash.h
+ include/uapi/linux/hw_breakpoint.h
+ arch/x86/include/asm/disabled-features.h
