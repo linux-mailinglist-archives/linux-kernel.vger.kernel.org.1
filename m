@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421F81AC94F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09321AC978
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409027AbgDPPVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        id S2505272AbgDPPXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2408935AbgDPPVX (ORCPT
+        by vger.kernel.org with ESMTP id S2442465AbgDPPXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:21:23 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F5BC061A0C;
-        Thu, 16 Apr 2020 08:21:23 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r4so1791133pgg.4;
-        Thu, 16 Apr 2020 08:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PqhlYvcZrmCM70l8lqNpCrbISzWwKQ5w1U1k6I8jKZA=;
-        b=hKnRbOBsCft+ZCJ3dOvl2hctclPsJj4Mm+JVYqlNJxl8IHZr4V0qPXZZM+ivEpKEr3
-         SiN+TJT7MwvBlrUZGKKnHLyuM09g2LTZ5sFEPYO2Bre9v1C57e3OEQzt+kQMlPAAU7bL
-         jT0KyN96EsaQH2rinKl69nFDw/sZWH5DDkU/O4cF2UmDzXP9sncAFR8MLi/sIqWHacV1
-         58Fu08H460YfxgFvw+eku5Xt1o1O02wzOt2uvW4l497UWGzwVRSjjjN32yjTL4x8Hb6/
-         yTs+chUep9thohSNFC3EA5qoHgYo1fuIHABHIVuWXuQQUGEAO5L/w7IuMCsfcBrVTRll
-         V8sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PqhlYvcZrmCM70l8lqNpCrbISzWwKQ5w1U1k6I8jKZA=;
-        b=Hzj7qJu9xBwq6KI+wckzFF1oSuRKCOwKOlT3ldv9A+dLzE4mdM08YNYwcRAB4/XhP8
-         M3J2QmOGr2McDKNmWL5wo1Swx1ddTu2K45hMyBqlGRGOXq5mKuHaLzZf7hd580BThJSZ
-         cRUx1q3o4tlmmv6bQCbMKXABtW1zROXuXCz3WppJp7nrj/2ikvJ+0dwi3XBHtIjiIrRB
-         O6rM0X/w5SrkTPK5QycWmroJUM0yftqrP0fL5KGbpRShJbJFZvzWJS1qWMe8nwnDjfqv
-         AHUQjFa1ur1BJ+Hqf5lDOxcA+CWhhyY6qA8c5/Ry+dk1/gXtB4nH54oPfdj+nYIm0wjS
-         31Cw==
-X-Gm-Message-State: AGi0PuZi1v5vaJuVNC+l5Xn46p3yWQkit2uxylndkxp5uneXSYDNnBHx
-        4hkIeG3KZHN0uNhXFiAyOucYisPH+mh/aB86HJ8=
-X-Google-Smtp-Source: APiQypL4QpTvQB0/qCwH/MWZ7VIatjMX02cplXwC/TTrnIKMzbV6jUInWZ+z6zydE0IKy2JVTEJ6y3JIo/biM4hFQT4=
-X-Received: by 2002:a63:5511:: with SMTP id j17mr15897581pgb.4.1587050482349;
- Thu, 16 Apr 2020 08:21:22 -0700 (PDT)
+        Thu, 16 Apr 2020 11:23:06 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E159C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M9wNHq+pJV/W7evRBOcE0MNL1FR2yu97YGtN2R1oU7o=; b=MWDvG5+H5FOuIDBVPwLMYaIisi
+        huR1f3hnuAS4/wljed0KyyLYKMVzwZIC0xASn0TjWKQyM2Qcvk1nck98+1w4hkfI50cd3jz2kSXk9
+        SKwDH8kZigK1n31z0kIUcKwfGhWfuaUN3mIkytP3GGZk5pTqeWCQwoEQMSwDlX4K3CuwT66XUc2OD
+        9uz5zrjYVLDKYgm2RJPtWuWy4nmlfI4tJmTsOxo1m861ebXIiAtbfVZD9rohf8lm9PN89D1s7kKSb
+        kT7dIKMAXhkHYEU/cezcS/+aWpoxvmWNWF2Z0DGtFzhXkRiDg3HaEmv+ZF2msCt4s9eSQCfkosBt0
+        KPehcKLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP6Ll-0004WQ-Iw; Thu, 16 Apr 2020 15:22:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECA9530746C;
+        Thu, 16 Apr 2020 17:22:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DA4B72B0DECD1; Thu, 16 Apr 2020 17:22:42 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 17:22:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
+Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
+        tglx@linutronix.de, x86@kernel.org
+Subject: Re: [RFC][PATCH 6/7] x86/retpoline: Out-of-line retpoline
+Message-ID: <20200416152242.GQ20730@hirez.programming.kicks-ass.net>
+References: <20200416150752.569029800@infradead.org>
+ <20200416151025.064291444@infradead.org>
 MIME-Version: 1.0
-References: <20200408160905.12101-1-andriy.shevchenko@linux.intel.com>
- <20200416141730.GE185537@smile.fi.intel.com> <CAJZ5v0ihzD4knW=pKFmcsW0Q9c5rfyJMFh2ChiePe5SWO6G_TQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0ihzD4knW=pKFmcsW0Q9c5rfyJMFh2ChiePe5SWO6G_TQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 16 Apr 2020 18:21:15 +0300
-Message-ID: <CAHp75Vf6MT1AFacUkRUP3760nv=3V5kzF2AHWJG64tr5yZ2=dg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] platform/x86: intel_cht_int33fe: clean up series
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416151025.064291444@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 6:05 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Apr 16, 2020 at 4:17 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Wed, Apr 08, 2020 at 07:09:00PM +0300, Andy Shevchenko wrote:
-> > > When I started looking into the intel_cht_int33fe driver for an example of use
-> > > software node API, I have noticed that it's hard to get and code a bit messy.
-> > > Here is a clean up, main part of which is to introduce node groups and API to
-> > > register and unregister them. This and some pre-existing APIs can be used in
-> > > the driver.
-> > >
-> > > So, because of cross-subsystem nature of this series, I may recommend to create
-> > > myself the immutable branch which can be pulled to Rafael's and Greg's trees
-> > > respectively. I'm also open for other proposals how to proceed.
-> >
-> > Greg, Rafael,
-> > any suggestion how to proceed with this series?
-> >
-> > (It has been reviewed and tested).
->
-> You can merge them through platform/x86 as far as I'm concerned, or
-> please let me know if you want me to pick them up.
 
-Works for me, but I would like to ask for formal Ack tag.
-Thanks!
+Bah, chunks went missing, I'll make sure to push out a working version.
 
--- 
-With Best Regards,
-Andy Shevchenko
+On Thu, Apr 16, 2020 at 05:07:58PM +0200, Peter Zijlstra wrote:
+> --- a/arch/x86/lib/retpoline.S
+> +++ b/arch/x86/lib/retpoline.S
+> @@ -7,15 +7,30 @@
+>  #include <asm/alternative-asm.h>
+>  #include <asm/export.h>
+>  #include <asm/nospec-branch.h>
+> +#include <asm/unwind_hints.h>
+> +#include <asm/frame.h>
+>  
+>  .macro THUNK reg
+>  	.section .text.__x86.indirect_thunk
+>  
+> +	.align 32
+>  SYM_FUNC_START(__x86_indirect_thunk_\reg)
+> -	CFI_STARTPROC
+> -	JMP_NOSPEC %\reg
+> -	CFI_ENDPROC
+> +	JMP_NOSPEC \reg
+>  SYM_FUNC_END(__x86_indirect_thunk_\reg)
+> +
+> +SYM_FUNC_START_NOALIGN(__x86_retpoline_\reg)
+> +	ANNOTATE_INTRA_FUNCTION_CALL
+> +	call	.Ldo_rop_\@
+> +.Lspec_trap_\@:
+	UNWIND_HINT_EMPTY
+> +	pause
+> +	lfence
+> +	jmp	.Lspec_trap_\@
+> +.Ldo_rop_\@:
+> +	mov	%\reg, (%_ASM_SP)
+> +	UNWIND_HINT_RET_OFFSET
+> +	ret
+> +SYM_FUNC_END(__x86_retpoline_\reg)
+> +
+>  .endm
+>  
+>  /*
