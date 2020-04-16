@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DDA1AC06E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEEA1AC02C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634036AbgDPL5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:57:04 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:37353 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634471AbgDPL4N (ORCPT
+        id S2506661AbgDPLvI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Apr 2020 07:51:08 -0400
+Received: from zimbra2.kalray.eu ([92.103.151.219]:37286 "EHLO
+        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504790AbgDPLu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:56:13 -0400
-X-Originating-IP: 93.29.109.196
-Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A53EA60015;
-        Thu, 16 Apr 2020 11:55:15 +0000 (UTC)
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hansverk@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH 4/4] media: rockchip: rga: Only set output CSC mode for RGB input
-Date:   Thu, 16 Apr 2020 13:50:47 +0200
-Message-Id: <20200416115047.233720-5-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
-References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+        Thu, 16 Apr 2020 07:50:57 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 9DE8127E0B48;
+        Thu, 16 Apr 2020 13:50:55 +0200 (CEST)
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id h6uaCYF89kXr; Thu, 16 Apr 2020 13:50:55 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 69CD127E0B5E;
+        Thu, 16 Apr 2020 13:50:55 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ufvqwe-r4Gu5; Thu, 16 Apr 2020 13:50:55 +0200 (CEST)
+Received: from zimbra2.kalray.eu (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 56C0127E0B48;
+        Thu, 16 Apr 2020 13:50:55 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 13:50:55 +0200 (CEST)
+From:   =?utf-8?Q?Cl=C3=A9ment?= Leger <cleger@kalrayinc.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <622416308.15749883.1587037855167.JavaMail.zimbra@kalray.eu>
+In-Reply-To: <20200416113539.GG5354@sirena.org.uk>
+References: <20200416110823.22565-1-cleger@kalray.eu> <20200416110916.22633-1-cleger@kalray.eu> <20200416110916.22633-2-cleger@kalray.eu> <20200416113539.GG5354@sirena.org.uk>
+Subject: Re: [PATCH 2/2] spi: dw: remove cs_control and poll_mode members
+ from chip_data
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [192.168.40.202]
+X-Mailer: Zimbra 8.8.15_GA_3895 (ZimbraWebClient - FF68 (Linux)/8.8.15_GA_3895)
+Thread-Topic: remove cs_control and poll_mode members from chip_data
+Thread-Index: H1Aqi4omUkzlnJc0pg+nDZ3opzqhcA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting the output CSC mode is required for a YUV output, but must not
-be set when the input is also YUV. Doing this (as tested with a YUV420P
-to YUV420P conversion) results in wrong colors.
+Hi Mark,
 
-Adapt the logic to only set the CSC mode when the output is YUV and the
-input is RGB.
+Sorry, maybe the commit message was not clear enough but actually
+these fields were not initialized so it does not break anything
+(ie, the default values were always used).
 
-Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
----
- drivers/media/platform/rockchip/rga/rga-hw.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Clément
 
-diff --git a/drivers/media/platform/rockchip/rga/rga-hw.c b/drivers/media/platform/rockchip/rga/rga-hw.c
-index 4be6dcf292ff..cbffcf986ccf 100644
---- a/drivers/media/platform/rockchip/rga/rga-hw.c
-+++ b/drivers/media/platform/rockchip/rga/rga-hw.c
-@@ -216,13 +216,17 @@ static void rga_cmd_set_trans_info(struct rga_ctx *ctx)
- 	}
- 
- 	if (ctx->out.fmt->hw_format >= RGA_COLOR_FMT_YUV422SP) {
--		switch (ctx->out.colorspace) {
--		case V4L2_COLORSPACE_REC709:
--			dst_info.data.csc_mode = RGA_SRC_CSC_MODE_BT709_R0;
--			break;
--		default:
--			dst_info.data.csc_mode = RGA_DST_CSC_MODE_BT601_R0;
--			break;
-+		if (ctx->in.fmt->hw_format < RGA_COLOR_FMT_YUV422SP) {
-+			switch (ctx->out.colorspace) {
-+			case V4L2_COLORSPACE_REC709:
-+				dst_info.data.csc_mode =
-+					RGA_SRC_CSC_MODE_BT709_R0;
-+				break;
-+			default:
-+				dst_info.data.csc_mode =
-+					RGA_DST_CSC_MODE_BT601_R0;
-+				break;
-+			}
- 		}
- 	}
- 
--- 
-2.26.0
+----- On 16 Apr, 2020, at 13:35, Mark Brown broonie@kernel.org wrote:
 
+> On Thu, Apr 16, 2020 at 01:09:16PM +0200, Clement Leger wrote:
+>> Since these members were initialized only with previous dw_spi_chip
+>> struct members and that there is no user anymore, remove them. Along
+>> this removal, remove code path which were using these members.
+> 
+> This means that your first patch will break the build, to keep things
+> bisectable please do some combination of moving this before the first
+> patch and squashing it into the first patch.
