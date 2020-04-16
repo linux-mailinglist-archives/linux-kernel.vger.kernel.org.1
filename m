@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50621ACBF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04CA1AC8CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896560AbgDPPxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:53:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44060 "EHLO mail.kernel.org"
+        id S2394998AbgDPPOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:14:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896555AbgDPNcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:32:54 -0400
+        id S2441677AbgDPNuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBD4C22202;
-        Thu, 16 Apr 2020 13:31:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3294022251;
+        Thu, 16 Apr 2020 13:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043893;
-        bh=M+5zH2hdYE1SFCdCfW6nfxHibGgFpi/+Dvdz/3pLESQ=;
+        s=default; t=1587045004;
+        bh=If3d0bFf0ABqG7dx9nfsBE7DqGX0DiVXtdEGTMR+un8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IsPVkOlN80zjRyowRTCQRkDwoC+6r4iMp4ogehNQSdJvSH2i9ibXO09o6Yny4Rbh4
-         hZD2ky2wOd33970KF+gf043cBi5CwOCEPuKTWbBDYFcNhJbgwt9H7itwoVe9THQ92V
-         5Qhqw1h447hxF6ccNUobHQya+FPrazUSJu9MLvUU=
+        b=Or41//+Wkbqpr2D4S0yh4DiQbcF+P4cxI26I8fsRQfaN836Z7Ef4qbVl262EIiORz
+         6Nim8A/et8ltEEhe6nCmtbuCIwlOqiGXWkHnuwlkiAvnpmZE2mLjoqDVKq+scRAPzX
+         a5fYHeM1MRmyrK0qw328BzmDr5wXmusWOFYmF1nE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taeung Song <treeze.taeung@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 143/146] ftrace/kprobe: Show the maxactive number on kprobe_events
-Date:   Thu, 16 Apr 2020 15:24:44 +0200
-Message-Id: <20200416131301.931565735@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.4 191/232] NFS: Fix a page leak in nfs_destroy_unlinked_subrequests()
+Date:   Thu, 16 Apr 2020 15:24:45 +0200
+Message-Id: <20200416131339.021103296@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 6a13a0d7b4d1171ef9b80ad69abc37e1daa941b3 ]
+commit add42de31721fa29ed77a7ce388674d69f9d31a4 upstream.
 
-Show maxactive parameter on kprobe_events.
-This allows user to save the current configuration and
-restore it without losing maxactive parameter.
+When we detach a subrequest from the list, we must also release the
+reference it holds to the parent.
 
-Link: http://lkml.kernel.org/r/4762764a-6df7-bc93-ed60-e336146dce1f@gmail.com
-Link: http://lkml.kernel.org/r/158503528846.22706.5549974121212526020.stgit@devnote2
+Fixes: 5b2b5187fa85 ("NFS: Fix nfs_page_group_destroy() and nfs_lock_and_join_requests() race cases")
+Cc: stable@vger.kernel.org # v4.14+
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Cc: stable@vger.kernel.org
-Fixes: 696ced4fb1d76 ("tracing/kprobes: expose maxactive for kretprobe in kprobe_events")
-Reported-by: Taeung Song <treeze.taeung@gmail.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_kprobe.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/nfs/write.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index c61b2b0a99e9c..65b4e28ff425f 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -975,6 +975,8 @@ static int probes_seq_show(struct seq_file *m, void *v)
- 	int i;
+--- a/fs/nfs/write.c
++++ b/fs/nfs/write.c
+@@ -441,6 +441,7 @@ nfs_destroy_unlinked_subrequests(struct
+ 		}
  
- 	seq_putc(m, trace_kprobe_is_return(tk) ? 'r' : 'p');
-+	if (trace_kprobe_is_return(tk) && tk->rp.maxactive)
-+		seq_printf(m, "%d", tk->rp.maxactive);
- 	seq_printf(m, ":%s/%s", tk->tp.call.class->system,
- 			trace_event_name(&tk->tp.call));
+ 		subreq->wb_head = subreq;
++		nfs_release_request(old_head);
  
--- 
-2.20.1
-
+ 		if (test_and_clear_bit(PG_INODE_REF, &subreq->wb_flags)) {
+ 			nfs_release_request(subreq);
 
 
