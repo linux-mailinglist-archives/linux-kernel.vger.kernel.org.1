@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8533A1AB867
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2A11AB8C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408463AbgDPGrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:47:48 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:10193 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408104AbgDPGra (ORCPT
+        id S2437549AbgDPGx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:53:56 -0400
+Received: from smtprelay0116.hostedemail.com ([216.40.44.116]:37100 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2436919AbgDPGwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:47:30 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200416064727epoutp04597aa32c380ee61a83762fb0fac3d0b1~GOfYibBVp3172231722epoutp04S
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:47:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200416064727epoutp04597aa32c380ee61a83762fb0fac3d0b1~GOfYibBVp3172231722epoutp04S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1587019648;
-        bh=aYAXJ/MbIpJmoQFqUryNTObxQnaVU2aQ3CBL7V8k3WY=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=t+mkgknIAieOdaTKUl/AhmdnlQgguDp39vaCI/vBp8oQ0xInuc5PbMylLoUYXE/Qi
-         qPxD9hq3xpNlBPjkCO5ny3IXKikJGRl3bul/dKUZER73qOM8Yqc8mJ+sFrQ96HCqst
-         ygt3NVxahuwNUh5WQTDFQuhshGEezB6G6N4TsYk4=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200416064727epcas1p31f13c4177c4d459a0f9aab82d170e137~GOfYAFVI61175811758epcas1p3s;
-        Thu, 16 Apr 2020 06:47:27 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 492qXY70RnzMqYm5; Thu, 16 Apr
-        2020 06:47:25 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AC.37.04402.D7FF79E5; Thu, 16 Apr 2020 15:47:25 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200416064724epcas1p25697c19824e1c6df85d53fdcbd89c665~GOfVcX5Bx1002810028epcas1p2h;
-        Thu, 16 Apr 2020 06:47:24 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200416064724epsmtrp11f8937e4afed8d34ff4658cd4eb2d6b3~GOfVbZaHa0338903389epsmtrp1l;
-        Thu, 16 Apr 2020 06:47:24 +0000 (GMT)
-X-AuditID: b6c32a35-ca04b9e000001132-0f-5e97ff7d0e04
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F4.4C.04024.C7FF79E5; Thu, 16 Apr 2020 15:47:24 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200416064724epsmtip1b42c54f5190392a57a1309cddcdc191f~GOfVPh2c42522925229epsmtip1B;
-        Thu, 16 Apr 2020 06:47:24 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
-Cc:     <Mori.Takahiro@ab.MitsubishiElectric.co.jp>,
-        <Motai.Hirotaka@aj.MitsubishiElectric.co.jp>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "'Matthew Wilcox'" <willy@infradead.org>
-In-Reply-To: <TY1PR01MB157894A971A781BE900C5A7590DD0@TY1PR01MB1578.jpnprd01.prod.outlook.com>
-Subject: RE: [PATCH v2] exfat: replace 'time_ms' with 'time_10ms'
-Date:   Thu, 16 Apr 2020 15:47:24 +0900
-Message-ID: <006a01d613ba$e2e19e10$a8a4da30$@samsung.com>
+        Thu, 16 Apr 2020 02:52:46 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0A616100E7B43;
+        Thu, 16 Apr 2020 06:51:59 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2911:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4425:5007:6742:6743:7903:10004:10400:10903:11232:11658:11914:12297:12346:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:21080:21433:21627:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: wheel34_84bb3b9f86d3c
+X-Filterd-Recvd-Size: 3344
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 16 Apr 2020 06:51:52 +0000 (UTC)
+Message-ID: <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
+Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
+ '$ref'
+From:   Joe Perches <joe@perches.com>
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org
+Date:   Wed, 15 Apr 2020 23:49:40 -0700
+In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
+References: <20200416005549.9683-1-robh@kernel.org>
+         <20200416005549.9683-2-robh@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQE756cOWkSWdyX4fUAG5iBImQRCHAHs2XDjAV3IMHoCBKFRS6mFKQKQ
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOJsWRmVeSWpSXmKPExsWy7bCmrm7t/+lxBl/Ws1u8OTmVxWLP3pMs
-        Fpd3zWGzuPz/E4vFsi+TWSy2/DvCavH7xxw2B3aPL3OOs3u0Tf7H7tF8bCWbx+YVWh59W1Yx
-        enzeJBfAFpVjk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuW
-        mQN0ipJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwNCgQK84Mbe4NC9dLzk/18rQ
-        wMDIFKgyISdjTetdtoKDnBVTn61ja2Bcy97FyMkhIWAi0XV+O3MXIxeHkMAORonzz26xQjif
-        GCW+b/vNAuF8Y5RYOm0iI0zLlPt7oRJ7GSVWfDrLCOG8ZJS4cqUZbDCbgK7Evz/72boYOThE
-        BIwknp4sBKlhFvjJKNFxZANYDadArMSVS33MIDXCAo4S7WdjQcIsAqoSv1YuYgKxeQUsJTbf
-        n80CYQtKnJz5BMxmFpCX2P52DjPEQQoSP58uY4VY5SZxerEARImIxOzONrDXJAQ+s0mcn9gL
-        9bOLxPJpV9ggbGGJV8e3QMWlJF72t7GDzJEQqJb4uB9qfAejxIvvthC2scTN9RvAVjELaEqs
-        36UPEVaU2Pl7LiPEWj6Jd197WCGm8Ep0tAlBlKhK9F06zARhS0t0tX9gn8CoNAvJX7OQ/DUL
-        yQOzEJYtYGRZxSiWWlCcm55abFhgiBzVmxjBiVTLdAfjlHM+hxgFOBiVeHgNXk6LE2JNLCuu
-        zD3EKMHBrCTCu8N/epwQb0piZVVqUX58UWlOavEhRlNgsE9klhJNzgcm+bySeENTI2NjYwsT
-        M3MzU2Mlcd6p13PihATSE0tSs1NTC1KLYPqYODilGhgt1l076qw5hfnAE5HjF1aq5hqzJn87
-        ePHZv3qZS2HpiyQvux+7njJvS0TpRNlpcfL70k4dfdh3x7Dkd2KbarSrZYz+xr7OJIkl870y
-        //28GJnQdfENp4376/igi60Hzdf+dXDiV5RbYPnBpyvNf0LU9JV+O1qr7r3s+rP3l61guXxY
-        VlPq46tKLMUZiYZazEXFiQA/S1cRugMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAIsWRmVeSWpSXmKPExsWy7bCSnG7N/+lxBs/Xqli8OTmVxWLP3pMs
-        Fpd3zWGzuPz/E4vFsi+TWSy2/DvCavH7xxw2B3aPL3OOs3u0Tf7H7tF8bCWbx+YVWh59W1Yx
-        enzeJBfAFsVlk5Kak1mWWqRvl8CVsab1LlvBQc6Kqc/WsTUwrmXvYuTkkBAwkZhyfy9LFyMX
-        h5DAbkaJGScOM0MkpCWOnTgDZHMA2cIShw8XQ9Q8Z5RouTGRFaSGTUBX4t+f/WwgNSICRhJP
-        TxaC1DAL/GWU+H66gQmiYQmTxNG1d8C2cQrESly51Ac2VFjAUaL9bCxImEVAVeLXykVMIDav
-        gKXE5vuzWSBsQYmTM5+wgJQzC+hJtG1kBAkzC8hLbH87B+pMBYmfT5exQpzgJnF6sQBEiYjE
-        7M425gmMwrOQDJqFMGgWkkGzkHQsYGRZxSiZWlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kR
-        HE9amjsYLy+JP8QowMGoxMNr8HJanBBrYllxZe4hRgkOZiUR3h3+0+OEeFMSK6tSi/Lji0pz
-        UosPMUpzsCiJ8z7NOxYpJJCeWJKanZpakFoEk2Xi4JRqYGxnVuNQu+ckq/Tg6MH9qxccsFVV
-        chZbxf/fQjHmZqhmyjG/jfldwfNzin5pzHpVxxu89+uZjcYnrEtWmPn0CxxmXbGnc8aJV1F/
-        Je3iFfsKrpjmN5Q+5miY+8jpSNsZo/e13W9rYnrDs/nKKrrFTp62fVZt+e//0yka3cfZbqje
-        UyuYvEJfTomlOCPRUIu5qDgRAIybIcWjAgAA
-X-CMS-MailID: 20200416064724epcas1p25697c19824e1c6df85d53fdcbd89c665
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200413094319epcas1p236a2145766a672f718030b4199b82956
-References: <20200408074610.35591-1-Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
-        <20200408112152.GP21484@bombadil.infradead.org>
-        <CGME20200413094319epcas1p236a2145766a672f718030b4199b82956@epcas1p2.samsung.com>
-        <TY1PR01MB157894A971A781BE900C5A7590DD0@TY1PR01MB1578.jpnprd01.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Please leave at least 24 hours between sending new versions so that
-> > you can collect all feedback relating to your change, and we don't see
-> > discussion fragment between different threads.
+On Wed, 2020-04-15 at 19:55 -0500, Rob Herring wrote:
+> json-schema versions draft7 and earlier have a weird behavior in that
+> any keywords combined with a '$ref' are ignored (silently). The correct
+> form was to put a '$ref' under an 'allOf'. This behavior is now changed
+> in the 2019-09 json-schema spec and '$ref' can be mixed with other
+> keywords. The json-schema library doesn't yet support this, but the
+> tooling now does a fixup for this and either way works.
 > 
-> Thanks for good advice!
-> 
-> > > +		ts->tv_sec += (time_10ms * 10) / 1000;
-> > > +		ts->tv_nsec = (time_10ms * 10) % 1000 * NSEC_PER_MSEC;
-> >
-> > I find this more confusing than the original.
-> 
-> The parentheses were intended to group conversions into milliseconds, but
-> were not necessary from an "operator precedence" perspective.
-> 
-> 
-> >
-> > 		ts->tv_sec += time_10ms / 100;
-> > 		ts->tv_nsec = (time_10ms % 100) * 10 * NSEC_PER_MSEC;
-> >
-> > is easier to understand for me, not least because I don't need to worry
-> > about the operator precedence between % and *.
-> 
-> If I use '100' for the divisor of '10ms', I find it difficult to
-> understand
-> the meaning of the operation.
-> 
-> When using '100' for the divisor, I think cs (centi-sec) is easier to
-> understand than 10ms.
-> Which do you prefer, time_10ms or time_cs?
-Can you resend the patch again after changing to time_cs ?
+> This has been a constant source of review comments, so let's change this
+> treewide so everyone copies the simpler syntax.
 
-> 
-> 
-> BR
-> ---
-> Kohada Tetsuhiro <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
+This is a large change.
+
+Was this done manually or by some script?
+If it was done manually, how likely is it there are defects
+in the conversion?
+
 
