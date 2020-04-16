@@ -2,138 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B5F1AC378
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DCF1ACB76
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896693AbgDPNno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:43:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:60900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896755AbgDPNdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:33:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 544F11FB;
-        Thu, 16 Apr 2020 06:33:42 -0700 (PDT)
-Received: from [10.57.59.184] (unknown [10.57.59.184])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 243AF3F68F;
-        Thu, 16 Apr 2020 06:33:40 -0700 (PDT)
-Subject: Re: [PATCH 1/2] iommu: arm-smmu-impl: Convert to a generic reset
- implementation
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Tomasz Figa <tfiga@chromium.org>
-References: <cover.1579692800.git.saiprakash.ranjan@codeaurora.org>
- <e7ba4dbd8e9c8aedd6f5db1b3453d9782b7943cd.1579692800.git.saiprakash.ranjan@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <cc3e3ed5-b187-c4a1-8229-974821a9e1ad@arm.com>
-Date:   Thu, 16 Apr 2020 14:33:38 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2896866AbgDPPqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2896816AbgDPNeP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:34:15 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B934DC061A0C;
+        Thu, 16 Apr 2020 06:34:14 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jP4eU-000231-6G; Thu, 16 Apr 2020 15:33:58 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id D02CA100C51; Thu, 16 Apr 2020 15:33:56 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Subject: Re: [PATCH v8 4/4] kvm: vmx: virtualize split lock detection
+In-Reply-To: <a6e9867c-15f0-96be-04fa-456cbe826ffb@intel.com>
+References: <20200414063129.133630-5-xiaoyao.li@intel.com> <871rooodad.fsf@nanos.tec.linutronix.de> <20200415191802.GE30627@linux.intel.com> <87tv1kmol8.fsf@nanos.tec.linutronix.de> <a6e9867c-15f0-96be-04fa-456cbe826ffb@intel.com>
+Date:   Thu, 16 Apr 2020 15:33:56 +0200
+Message-ID: <87mu7bmu63.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <e7ba4dbd8e9c8aedd6f5db1b3453d9782b7943cd.1579692800.git.saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-01-22 11:48 am, Sai Prakash Ranjan wrote:
-> Currently the QCOM specific smmu reset implementation is very
-> specific to SDM845 SoC and has a wait-for-safe logic which
-> may not be required for other SoCs. So move the SDM845 specific
-> logic to its specific reset function. Also add SC7180 SMMU
-> compatible for calling into QCOM specific implementation.
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->   drivers/iommu/arm-smmu-impl.c |  8 +++++---
->   drivers/iommu/arm-smmu-qcom.c | 16 +++++++++++++---
->   2 files changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
-> index 74d97a886e93..c75b9d957b70 100644
-> --- a/drivers/iommu/arm-smmu-impl.c
-> +++ b/drivers/iommu/arm-smmu-impl.c
-> @@ -150,6 +150,8 @@ static const struct arm_smmu_impl arm_mmu500_impl = {
->   
->   struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->   {
-> +	const struct device_node *np = smmu->dev->of_node;
-> +
->   	/*
->   	 * We will inevitably have to combine model-specific implementation
->   	 * quirks with platform-specific integration quirks, but everything
-> @@ -166,11 +168,11 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->   		break;
->   	}
->   
-> -	if (of_property_read_bool(smmu->dev->of_node,
-> -				  "calxeda,smmu-secure-config-access"))
-> +	if (of_property_read_bool(np, "calxeda,smmu-secure-config-access"))
->   		smmu->impl = &calxeda_impl;
->   
-> -	if (of_device_is_compatible(smmu->dev->of_node, "qcom,sdm845-smmu-500"))
-> +	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
-> +	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
->   		return qcom_smmu_impl_init(smmu);
->   
->   	return smmu;
-> diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
-> index 24c071c1d8b0..64a4ab270ab7 100644
-> --- a/drivers/iommu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm-smmu-qcom.c
-> @@ -15,8 +15,6 @@ static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
->   {
->   	int ret;
->   
-> -	arm_mmu500_reset(smmu);
-> -
->   	/*
->   	 * To address performance degradation in non-real time clients,
->   	 * such as USB and UFS, turn off wait-for-safe on sdm845 based boards,
-> @@ -30,8 +28,20 @@ static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
->   	return ret;
->   }
->   
-> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
-> +{
-> +	const struct device_node *np = smmu->dev->of_node;
-> +
-> +	arm_mmu500_reset(smmu);
-> +
-> +	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500"))
-> +		return qcom_sdm845_smmu500_reset(smmu);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct arm_smmu_impl qcom_smmu_impl = {
-> -	.reset = qcom_sdm845_smmu500_reset,
-> +	.reset = qcom_smmu500_reset,
->   };
+Xiaoyao Li <xiaoyao.li@intel.com> writes:
+> On 4/16/2020 5:22 AM, Thomas Gleixner wrote:
+>> I briefly thought about renaming the flag to TIF_SLD_ENABLED, set it by
+>> default and update the 5 places where it is used. But that's
+>> inconsistent as well simply because it does not make any sense to set
+>> that flag when detection is not available or disabled on the command
+>> line.
+>> 
+>
+> Assuming you'll pick TIF_SLD_DISABLED, I guess we need to set this flag 
+> by default for the case SLD is no available or disabled on the command, 
+> for consistency?
 
-It might be logical to have a separate SDM845 impl rather than 
-indirecting within the callback itself, but I'm not too concerned either 
-way. For the arm-smmu-impl.c changes,
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+No, because nothing cares if SLD is off. There is no way to make this
+fully consistent under all circumstances.
 
 Thanks,
-Robin.
 
->   
->   struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
-> 
+        tglx
