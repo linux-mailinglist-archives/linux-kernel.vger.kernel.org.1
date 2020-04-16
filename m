@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B71D1AC4ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF931ACC9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409719AbgDPOHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:07:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58212 "EHLO mail.kernel.org"
+        id S2636642AbgDPQCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896924AbgDPNoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:44:55 -0400
+        id S2895269AbgDPN0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:26:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5984A2076D;
-        Thu, 16 Apr 2020 13:44:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E181F21D91;
+        Thu, 16 Apr 2020 13:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044693;
-        bh=r82tKIi8mDH0MV9ri2qt6LEF7mgjBkWhy3KjXEKilYc=;
+        s=default; t=1587043581;
+        bh=3dyfdrcJtqedEAe78Sa25EvOU4P26dhA8o3gaVQR+yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxehtmeHMIuUSEeffCPTGeOX23pro1zASACd5ITzrf2M4VNjMb24hJTaCx6WDtGLV
-         DViqitGpHS0yb4vRJIqq2Vbd7PlgT94s+sRFqkhYiz08ZKVrIANK3ins/vcl3PEntn
-         WgUNL9zxpqln1JyZbNxJ+ANbMYwPWO2njrlYmhHo=
+        b=HCFS9w/CoaWJ0RpNZg2G87vjkB56KeKdjI+Hy+bBMQWY0JBHLS/xf/TPct1uazByY
+         FnPEynfaWUO8XXesPHZmtSFFWNyWdotWVyPKiR+9/ztL4+J3avh6JpBZP8eugsOBy0
+         +ZxyIejC1AjpYsyMdEprWl1sVMfxALLHn69nZ/84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 063/232] locking/lockdep: Avoid recursion in lockdep_count_{for,back}ward_deps()
+Subject: [PATCH 4.19 016/146] xhci: bail out early if driver cant accress host in resume
 Date:   Thu, 16 Apr 2020 15:22:37 +0200
-Message-Id: <20200416131323.295885799@linuxfoundation.org>
+Message-Id: <20200416131244.759791477@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,77 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 25016bd7f4caf5fc983bbab7403d08e64cba3004 ]
+[ Upstream commit 72ae194704da212e2ec312ab182a96799d070755 ]
 
-Qian Cai reported a bug when PROVE_RCU_LIST=y, and read on /proc/lockdep
-triggered a warning:
+Bail out early if the xHC host needs to be reset at resume
+but driver can't access xHC PCI registers.
 
-  [ ] DEBUG_LOCKS_WARN_ON(current->hardirqs_enabled)
-  ...
-  [ ] Call Trace:
-  [ ]  lock_is_held_type+0x5d/0x150
-  [ ]  ? rcu_lockdep_current_cpu_online+0x64/0x80
-  [ ]  rcu_read_lock_any_held+0xac/0x100
-  [ ]  ? rcu_read_lock_held+0xc0/0xc0
-  [ ]  ? __slab_free+0x421/0x540
-  [ ]  ? kasan_kmalloc+0x9/0x10
-  [ ]  ? __kmalloc_node+0x1d7/0x320
-  [ ]  ? kvmalloc_node+0x6f/0x80
-  [ ]  __bfs+0x28a/0x3c0
-  [ ]  ? class_equal+0x30/0x30
-  [ ]  lockdep_count_forward_deps+0x11a/0x1a0
+If xhci driver already fails to reset the controller then there
+is no point in attempting to free, re-initialize, re-allocate and
+re-start the host. If failure to access the host is detected later,
+failing the resume, xhci interrupts will be double freed
+when remove is called.
 
-The warning got triggered because lockdep_count_forward_deps() call
-__bfs() without current->lockdep_recursion being set, as a result
-a lockdep internal function (__bfs()) is checked by lockdep, which is
-unexpected, and the inconsistency between the irq-off state and the
-state traced by lockdep caused the warning.
-
-Apart from this warning, lockdep internal functions like __bfs() should
-always be protected by current->lockdep_recursion to avoid potential
-deadlocks and data inconsistency, therefore add the
-current->lockdep_recursion on-and-off section to protect __bfs() in both
-lockdep_count_forward_deps() and lockdep_count_backward_deps()
-
-Reported-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200312151258.128036-1-boqun.feng@gmail.com
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200312144517.1593-2-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/host/xhci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 35d3b6925b1ee..9ab1a965c3b92 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1719,9 +1719,11 @@ unsigned long lockdep_count_forward_deps(struct lock_class *class)
- 	this.class = class;
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 65cc362717fcb..b4177287d7d0f 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1147,8 +1147,10 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
+ 		xhci_dbg(xhci, "Stop HCD\n");
+ 		xhci_halt(xhci);
+ 		xhci_zero_64b_regs(xhci);
+-		xhci_reset(xhci);
++		retval = xhci_reset(xhci);
+ 		spin_unlock_irq(&xhci->lock);
++		if (retval)
++			return retval;
+ 		xhci_cleanup_msix(xhci);
  
- 	raw_local_irq_save(flags);
-+	current->lockdep_recursion = 1;
- 	arch_spin_lock(&lockdep_lock);
- 	ret = __lockdep_count_forward_deps(&this);
- 	arch_spin_unlock(&lockdep_lock);
-+	current->lockdep_recursion = 0;
- 	raw_local_irq_restore(flags);
- 
- 	return ret;
-@@ -1746,9 +1748,11 @@ unsigned long lockdep_count_backward_deps(struct lock_class *class)
- 	this.class = class;
- 
- 	raw_local_irq_save(flags);
-+	current->lockdep_recursion = 1;
- 	arch_spin_lock(&lockdep_lock);
- 	ret = __lockdep_count_backward_deps(&this);
- 	arch_spin_unlock(&lockdep_lock);
-+	current->lockdep_recursion = 0;
- 	raw_local_irq_restore(flags);
- 
- 	return ret;
+ 		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
 -- 
 2.20.1
 
