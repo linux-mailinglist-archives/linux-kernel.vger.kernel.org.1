@@ -2,101 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC03A1AB689
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FFF1AB68F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391682AbgDPELo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 00:11:44 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:26904 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389455AbgDPELi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 00:11:38 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 5B1A54E17F0;
-        Thu, 16 Apr 2020 12:11:32 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     oss@buserror.net, Wang Wenhu <wenhu.wang@vivo.com>,
-        gregkh@linuxfoundation.org
-Cc:     christophe.leroy@c-s.fr, kernel@vivo.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au
-Subject: Re: [PATCH v2,1/5] powerpc: 85xx: make FSL_85XX_CACHE_SRAM configurable
-Date:   Wed, 15 Apr 2020 21:11:13 -0700
-Message-Id: <20200416041113.112735-1-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <36961f9d8c533d8b576043a2c6fc4859accfd9f1.camel@buserror.net>
-References: <36961f9d8c533d8b576043a2c6fc4859accfd9f1.camel@buserror.net>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVJTkhLS0tJTkJIQkJPSllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MFE6NSo6LTg2PAg9MEIrTD0V
-        NRAaFE9VSlVKTkNMS0pLSUJPTE9PVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUlNSEI3Bg++
-X-HM-Tid: 0a71812f4ba89376kuws5b1a54e17f0
+        id S2391941AbgDPEQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 00:16:01 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21964 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389455AbgDPEP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 00:15:56 -0400
+IronPort-SDR: JkHxu8MxZV1GQtNUdMQaR0oByExv8mnq/kvR00Vgkz0xigTw+S8aeopdYfsEa+FlG9vyYRTkFs
+ WCj4uDuNRMVg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 21:15:54 -0700
+IronPort-SDR: p8FGYhBhOm2nAXr672lmqH6Pbtr2jBkyK2nNKAcsCMBUi0s8SfTtnQ4OgzfrFSx6kREuNoyRzC
+ 62E9lrRQdhNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
+   d="scan'208";a="299188766"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Apr 2020 21:15:54 -0700
+Date:   Wed, 15 Apr 2020 21:15:54 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V8 05/11] fs/xfs: Make DAX mount option a tri-state
+Message-ID: <20200416041553.GF2309605@iweiny-DESK2.sc.intel.com>
+References: <20200415064523.2244712-1-ira.weiny@intel.com>
+ <20200415064523.2244712-6-ira.weiny@intel.com>
+ <20200415151613.GO6742@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415151613.GO6742@magnolia>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Wood <oss@buserror.net>
+On Wed, Apr 15, 2020 at 08:16:13AM -0700, Darrick J. Wong wrote:
+> On Tue, Apr 14, 2020 at 11:45:17PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > As agreed upon[1].  We make the dax mount option a tri-state.  '-o dax'
+> > continues to operate the same.  We add 'always', 'never', and 'inode'
+> > (default).
+> > 
+> > [1] https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
+> > Changes from v7:
+> > 	Change to XFS_MOUNT_DAX_NEVER
+> > 
+> > Changes from v6:
+> > 	Use 2 flag bits rather than a field.
+> > 	change iflag to inode
+> > 
+> > Changes from v5:
+> > 	New Patch
+> > ---
+> >  fs/xfs/xfs_mount.h |  3 ++-
+> >  fs/xfs/xfs_super.c | 44 ++++++++++++++++++++++++++++++++++++++++----
+> >  2 files changed, 42 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
+> > index 54bd74088936..2e88c30642e3 100644
+> > --- a/fs/xfs/xfs_mount.h
+> > +++ b/fs/xfs/xfs_mount.h
+> > @@ -233,7 +233,8 @@ typedef struct xfs_mount {
+> >  						   allocator */
+> >  #define XFS_MOUNT_NOATTR2	(1ULL << 25)	/* disable use of attr2 format */
+> >  
+> > -#define XFS_MOUNT_DAX_ALWAYS	(1ULL << 62)	/* TEST ONLY! */
+> > +#define XFS_MOUNT_DAX_ALWAYS	(1ULL << 62)
+> > +#define XFS_MOUNT_DAX_NEVER	(1ULL << 63)
+> >  
+> >  /*
+> >   * Max and min values for mount-option defined I/O
+> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> > index 3863f41757d2..142e5d03566f 100644
+> > --- a/fs/xfs/xfs_super.c
+> > +++ b/fs/xfs/xfs_super.c
+> > @@ -47,6 +47,32 @@ static struct kset *xfs_kset;		/* top-level xfs sysfs dir */
+> >  static struct xfs_kobj xfs_dbg_kobj;	/* global debug sysfs attrs */
+> >  #endif
+> >  
+> > +enum {
+> 
+> enum xfs_dax_mode {  for the reasons given below?
+> 
+> > +	XFS_DAX_INODE = 0,
+> > +	XFS_DAX_ALWAYS = 1,
+> > +	XFS_DAX_NEVER = 2,
+> > +};
+> > +
+> > +static void xfs_mount_set_dax_mode(struct xfs_mount *mp, u32 val)
+> 
+> xfs style, please:
+> 
+> static void
+> xfs_mount_set_dax_mode(
+> 	struct xfs_mount	*mp,
+> 	u32			val)
 
->> +	bool "32-bit kernel"
->
->Why make that user selectable ?
->
->Either a kernel is 64-bit or it is 32-bit. So having PPC64 user 
->selectable is all we need.
->
->And what is the link between this change and the description in the log ?
->
->>   	default y if !PPC64
->>   	select KASAN_VMALLOC if KASAN && MODULES
->>   
->> @@ -15,6 +15,7 @@ config PPC_BOOK3S_32
->>   	bool
->>   
->>   menu "Processor support"
->> +
->
->Why adding this space ?
->
->>   choice
->>   	prompt "Processor Type"
->>   	depends on PPC32
->> @@ -211,9 +212,9 @@ config PPC_BOOK3E
->>   	depends on PPC_BOOK3E_64
->>   
->>   config E500
->> +	bool "e500 Support"
->>   	select FSL_EMB_PERFMON
->>   	select PPC_FSL_BOOK3E
->> -	bool
->
->Why make this user-selectable ? This is already selected by the 
->processors requiring it, ie 8500, e5500 and e6500.
->
->Is there any other case where we need E500 ?
->
->And again, what's the link between this change and the description in 
->the log ?
->
->
->>   
->>   config PPC_E500MC
->>   	bool "e500mc Support"
->> 
->
->Christophe
+NP changed.
 
-Hi, Scott, Christophe!
+> 
+> or if you give a name to the enum above, you can enforce some type
+> safety too:
+> 
+> 	enum xfs_dax_mode	val)
 
-I find that I did not get the point well of the defferences between
-configurability and selectability(maybe words I created) of Kconfig items.
+The problem is that the option parsing returns result.uint_32 type.  Generally
+I agree with using more specific types but here I'm not sure it matters.
 
-You are right that FSL_85XX_CACHE_SRAM should only be selected by a caller
-but never enable it seperately.
+> 
+> > +{
+> > +	if (val == XFS_DAX_INODE) {
+> 
+> and this probably could have been a "switch (val) {", in which case if
+> the enum ever gets expanded then gcc will whine about missing switch
+> cases.
 
-Same answer for the comments from Christophe. I will drop this patch in v3.
+Sure...  that does require the enum to be defined and used in the signature...
+
+Ok I'll use the enum!  :-D
+
+done.
 
 Thanks,
-Wenhu
+Ira
+
+
+> 
+> The rest of the patch looks good.
+> 
+> --D
+> 
+> > +		mp->m_flags &= ~(XFS_MOUNT_DAX_ALWAYS | XFS_MOUNT_DAX_NEVER);
+> > +	} else if (val == XFS_DAX_ALWAYS) {
+> > +		mp->m_flags |= XFS_MOUNT_DAX_ALWAYS;
+> > +		mp->m_flags &= ~XFS_MOUNT_DAX_NEVER;
+> > +	} else if (val == XFS_DAX_NEVER) {
+> > +		mp->m_flags |= XFS_MOUNT_DAX_NEVER;
+> > +		mp->m_flags &= ~XFS_MOUNT_DAX_ALWAYS;
+> > +	}
+> > +}
+> > +
+> > +static const struct constant_table dax_param_enums[] = {
+> > +	{"inode",	XFS_DAX_INODE },
+> > +	{"always",	XFS_DAX_ALWAYS },
+> > +	{"never",	XFS_DAX_NEVER },
+> > +	{}
+> > +};
+> > +
+> >  /*
+> >   * Table driven mount option parser.
+> >   */
+> > @@ -59,7 +85,7 @@ enum {
+> >  	Opt_filestreams, Opt_quota, Opt_noquota, Opt_usrquota, Opt_grpquota,
+> >  	Opt_prjquota, Opt_uquota, Opt_gquota, Opt_pquota,
+> >  	Opt_uqnoenforce, Opt_gqnoenforce, Opt_pqnoenforce, Opt_qnoenforce,
+> > -	Opt_discard, Opt_nodiscard, Opt_dax,
+> > +	Opt_discard, Opt_nodiscard, Opt_dax, Opt_dax_enum,
+> >  };
+> >  
+> >  static const struct fs_parameter_spec xfs_fs_parameters[] = {
+> > @@ -103,6 +129,7 @@ static const struct fs_parameter_spec xfs_fs_parameters[] = {
+> >  	fsparam_flag("discard",		Opt_discard),
+> >  	fsparam_flag("nodiscard",	Opt_nodiscard),
+> >  	fsparam_flag("dax",		Opt_dax),
+> > +	fsparam_enum("dax",		Opt_dax_enum, dax_param_enums),
+> >  	{}
+> >  };
+> >  
+> > @@ -129,7 +156,6 @@ xfs_fs_show_options(
+> >  		{ XFS_MOUNT_GRPID,		",grpid" },
+> >  		{ XFS_MOUNT_DISCARD,		",discard" },
+> >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
+> > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax" },
+> >  		{ 0, NULL }
+> >  	};
+> >  	struct xfs_mount	*mp = XFS_M(root->d_sb);
+> > @@ -185,6 +211,13 @@ xfs_fs_show_options(
+> >  	if (!(mp->m_qflags & XFS_ALL_QUOTA_ACCT))
+> >  		seq_puts(m, ",noquota");
+> >  
+> > +	if (mp->m_flags & XFS_MOUNT_DAX_ALWAYS)
+> > +		seq_puts(m, ",dax=always");
+> > +	else if (mp->m_flags & XFS_MOUNT_DAX_NEVER)
+> > +		seq_puts(m, ",dax=never");
+> > +	else
+> > +		seq_puts(m, ",dax=inode");
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > @@ -1244,7 +1277,10 @@ xfs_fc_parse_param(
+> >  		return 0;
+> >  #ifdef CONFIG_FS_DAX
+> >  	case Opt_dax:
+> > -		mp->m_flags |= XFS_MOUNT_DAX_ALWAYS;
+> > +		xfs_mount_set_dax_mode(mp, XFS_DAX_ALWAYS);
+> > +		return 0;
+> > +	case Opt_dax_enum:
+> > +		xfs_mount_set_dax_mode(mp, result.uint_32);
+> >  		return 0;
+> >  #endif
+> >  	default:
+> > @@ -1451,7 +1487,7 @@ xfs_fc_fill_super(
+> >  		if (!rtdev_is_dax && !datadev_is_dax) {
+> >  			xfs_alert(mp,
+> >  			"DAX unsupported by block device. Turning off DAX.");
+> > -			mp->m_flags &= ~XFS_MOUNT_DAX_ALWAYS;
+> > +			xfs_mount_set_dax_mode(mp, XFS_DAX_NEVER);
+> >  		}
+> >  		if (xfs_sb_version_hasreflink(&mp->m_sb)) {
+> >  			xfs_alert(mp,
+> > -- 
+> > 2.25.1
+> > 
