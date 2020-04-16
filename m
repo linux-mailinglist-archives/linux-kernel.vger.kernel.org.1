@@ -2,106 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7855E1AB646
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 05:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C951AB64D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 05:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391317AbgDPDhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 23:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        id S2391355AbgDPDkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 23:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729245AbgDPDhT (ORCPT
+        by vger.kernel.org with ESMTP id S2391128AbgDPDkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 23:37:19 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174E2C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 20:37:19 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a32so763389pje.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 20:37:19 -0700 (PDT)
+        Wed, 15 Apr 2020 23:40:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C190BC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 20:40:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d1so1067814pfh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 20:40:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=LcBjNCK+rf+2YEVvZPZcsG/AeuTYN98gz3c92chJ7YI=;
-        b=N62pR58MzOQlhuf1VXzQKfNlkAe28ps2Bt8L5EhPFsX8/ErCuUSI5IhuhLZ9lPMZmd
-         4fv7zApE3he/1DhHZan7KuMcZEMWwp+IYjVqAyT3oeHcIKD+PcmeejcO/8sKarT86ert
-         QVi6jh6siT+NHR8Jl67jjHMlF8qduOugqkYjke78fFCESRf64rRWcC/EpNPn4lABmjiZ
-         I8uMM3aDZK+rsVSzFl+vX0OPtCPq34gp37JaiW/fs+cxMxplqBiELQX6A0xmEi59cq2I
-         tlTKyVcR5aGR1O8fMAoQvlaF9ogOD8KHOruF2CG8CAaGbXxdCDiTn4cl4SHg8QUJytwv
-         TKeA==
+        bh=m5hy4xiunR5mbPaXPcryFldNP/am+ULUKmnq7qSCn+g=;
+        b=rRAYu5sOSvLYPzxWffYX0ycmRMPHrLZ5lHiPZ9pcq5k+rdLLWRssm+fW56CIpLszLi
+         ayhJb3kkkobrDJL0gj6BQPMIiUGgAOTvKuc/H73Fz+snsiIfonSV/OXB0V8U9sk6QOkv
+         /p12BI4vz2UqPIWf3UqKSnzcw0Y8mGgWolafGDKFe+XkKlPjfDhny1gjuF/sersF5lU0
+         DjbA3gq2I32tbz+foeXF+ngk7hNDyaCWA5JBNteUCMc8e/t6Sk5Qs7uKsf5jfTyyDNk8
+         DAoMkWhh+s+58/1IdngL+qSc07/UWMLfgxDOuWUtxu5DylkOHQb8LZQi4qAmBtx5TrYE
+         9zjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LcBjNCK+rf+2YEVvZPZcsG/AeuTYN98gz3c92chJ7YI=;
-        b=MYIHjFKs62ptbPnC4/W2OjjNwiPoFQw2X5LfTsk9V6tHc1+DADRbpnQFOo2fdKexl/
-         sEp3LBOWhhiXZ+UaW0pTx3xAnTqJRTX+eHbGyl3bvkSMsGfwKIHFR3sibdWuSdBE0aCp
-         lozDJ4ufMD+FTRfc4vHLlp7a6f8pDfdETCooX2MNk8zKlECwmpek2eNmpUCNfcKMoGNn
-         X2+Wvg8pebLuwEU8y9HJXZGOq77DEX0lk70tBwio7sFzd7ZLCbEqbF1LMRfWJxttBAFc
-         VkjWb+g0nT1zSHh3Z/pRu7QfG9zPTmyxz6gHFZbZ7XH58ds11qyA50qprBgSD9OHoXPc
-         2ggg==
-X-Gm-Message-State: AGi0PublQQiFd5BZt3RyoCoyaL2SaKw+FpBd10pC7EMp8spsEa1cjv7Z
-        ThwpFx+uN+m/I5RD8m7Ww08A1A==
-X-Google-Smtp-Source: APiQypJxmJr4qhcuXMSJJIMqhW62prSNyh3AQwxU2EaTI1aAzDTg8sr0oneUv2CRNeHAM+Dhf3qzxA==
-X-Received: by 2002:a17:902:8497:: with SMTP id c23mr8207091plo.335.1587008238452;
-        Wed, 15 Apr 2020 20:37:18 -0700 (PDT)
-Received: from localhost ([122.171.118.46])
-        by smtp.gmail.com with ESMTPSA id u8sm14019683pgl.19.2020.04.15.20.37.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 20:37:17 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 09:07:15 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, will@kernel.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, talho@nvidia.com,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bbasu@nvidia.com, mperttunen@nvidia.com
-Subject: Re: [TEGRA194_CPUFREQ Patch 2/3] cpufreq: Add Tegra194 cpufreq driver
-Message-ID: <20200416033715.hscztwkxie2o5i3r@vireshk-i7>
-References: <20200406025549.qfwzlk3745y3r274@vireshk-i7>
- <3ab4136c-8cca-c2f9-d286-b82dac23e720@nvidia.com>
- <20200408055301.jhvu5bc2luu3b5qr@vireshk-i7>
- <08307e54-0e14-14a3-7d6a-d59e1e04a683@nvidia.com>
- <20200409074415.twpzu2n4frqlde7b@vireshk-i7>
- <00390070-38a1-19aa-ca59-42c4658bee7e@nvidia.com>
- <20200413062141.a6hmwipexhv3sctq@vireshk-i7>
- <64b609f1-efb1-425f-a91a-27a492bd3ec4@nvidia.com>
- <20200414054504.e3qn2cnxqur4sclw@vireshk-i7>
- <d6e0eed6-4267-fca9-59e1-02d16e17ff34@nvidia.com>
+        bh=m5hy4xiunR5mbPaXPcryFldNP/am+ULUKmnq7qSCn+g=;
+        b=etMvg32iA/VRQ0RcNweAGO8eRAGA2AnQtGroIsKXnw3489YMHGK9Glevc2bPisFQf/
+         AEs09HFZZfKEdH0DYcfpESHv6wqRLJHBbpHLrWlpmEvDTaqMneVLmjZVg/TlrBEIhB5o
+         I+sU8VqC5qPKLDgBSoXo40cf45VWESeQ0lbgwLfru2X39bIJLXoF2oWQKdZuaPPZrGvY
+         yiQqpN6w5/ZG4tHyxJ3wLET+niaU2FYq3Q2PNQd7DLUB+I9GwFLejPkj58guWLM5vhmo
+         NVUy/HN6oOiD1OZRZJvGjHyZYntYb03LQax0Ljtb08aRCNOQdj5gwUXFpS5w6bRnEjo3
+         SHCg==
+X-Gm-Message-State: AGi0PubZVDtYnIN+Ur1RUeloK+0xPGJReovNEj65dqDQnnAFXI+ASVoS
+        p4I1Ps0g5exdkLvuBaevA4k=
+X-Google-Smtp-Source: APiQypKv+vtsM7+NyjKz3c0seHkYPKBdICKpdkWDHg5Z7D0tsjZ8vYtQ5VJgYitMbR8fsvzVNwgHoQ==
+X-Received: by 2002:a63:4526:: with SMTP id s38mr6778872pga.410.1587008415303;
+        Wed, 15 Apr 2020 20:40:15 -0700 (PDT)
+Received: from HP-G1 ([45.135.186.26])
+        by smtp.gmail.com with ESMTPSA id a12sm8840158pfr.28.2020.04.15.20.40.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 20:40:14 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 11:39:05 +0800
+From:   Chen Yu <yu.chen.surf@gmail.com>
+To:     vpillai <vpillai@digitalocean.com>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
+        tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>, joel@joelfernandes.org,
+        Aaron Lu <aaron.lu@linux.alibaba.com>,
+        Long Cui <long.cui@intel.com>
+Subject: Re: [RFC PATCH 07/13] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20200416033804.GA5712@HP-G1>
+References: <cover.1583332764.git.vpillai@digitalocean.com>
+ <e942da7fd881977923463f19648085c1bfaa37f8.1583332765.git.vpillai@digitalocean.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6e0eed6-4267-fca9-59e1-02d16e17ff34@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <e942da7fd881977923463f19648085c1bfaa37f8.1583332765.git.vpillai@digitalocean.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-04-20, 16:55, Sumit Gupta wrote:
+On Wed, Mar 04, 2020 at 04:59:57PM +0000, vpillai wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
 > 
+> Instead of only selecting a local task, select a task for all SMT
+> siblings for every reschedule on the core (irrespective which logical
+> CPU does the reschedule).
 > 
-> On 14/04/20 11:15 AM, Viresh Kumar wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > On 13-04-20, 17:50, Sumit Gupta wrote:
-> > > This was done considering long delay value as explained previously.
-> > > Do you think that smp_call_function_single() would be better than work queue
-> > > here?
-> > 
-> > Don't work with assumptions, you should test both and see which one
-> > works better. Workqueue should never be faster than
-> > smp_call_function_single() with my understanding.
-> Checked the time taken and its almost same in both cases.
-> Earlier we used smp_call_function_single(), but delay time period was small
-> in that SOC. In T194, the time period was more. So, this is an optimization
-> done because using work queue has advantage as interrupts will not be
-> disabled for that period.
+> There could be races in core scheduler where a CPU is trying to pick
+> a task for its sibling in core scheduler, when that CPU has just been
+> offlined.  We should not schedule any tasks on the CPU in this case.
+> Return an idle task in pick_next_task for this situation.
+> 
+> NOTE: there is still potential for siblings rivalry.
+> NOTE: this is far too complicated; but thus far I've failed to
+>       simplify it further.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
+> Signed-off-by: Aaron Lu <aaron.lu@linux.alibaba.com>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> ---
+[cut]
 
-Hmm, okay, keep the workqueue and mention the required details in a
-comment for everyone to understand why the implementation is done that
-way.
+Hi Vineeth,
+An NULL pointer exception was found when testing V5 on top of stable
+v5.6.2. And we tried the patch Peter suggested, the NULL pointer
+was not found so far. We don't know if this change would help mitigate
+the symptom, but it should do no harm to test with this fix applied.
 
+Thanks,
+Chenyu
+
+From 6828eaf4611eeb3e1bad3b9a0d4ec53c6fa01fe3 Mon Sep 17 00:00:00 2001
+From: Chen Yu <yu.c.chen@intel.com>
+Date: Thu, 16 Apr 2020 10:51:07 +0800
+Subject: [PATCH] sched: Fix pick_next_task() race condition in core scheduling
+
+As Perter mentioned that Commit 6e2df0581f56 ("sched: Fix pick_next_task()
+vs 'change' pattern race") has fixed a race condition due to rq->lock
+improperly released after put_prev_task(), backport this fix to core
+scheduling's pick_next_task() as well.
+
+Without this fix, Aubrey, Long and I found an NULL exception point
+triggered within one hour when running RDT MBA(Intel Resource Directory
+Technolodge Memory Bandwidth Allocation) benchmarks on a 36 Core(72 HTs)
+platform, which tries to dereference a NULL sched_entity:
+
+[ 3618.429053] BUG: kernel NULL pointer dereference, address: 0000000000000160
+[ 3618.429039] RIP: 0010:pick_task_fair+0x2e/0xa0
+[ 3618.429042] RSP: 0018:ffffc90000317da8 EFLAGS: 00010046
+[ 3618.429044] RAX: 0000000000000000 RBX: ffff88afdf4ad100 RCX: 0000000000000001
+[ 3618.429045] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88afdf4ad100
+[ 3618.429045] RBP: ffffc90000317dc0 R08: 0000000000000048 R09: 0100000000100000
+[ 3618.429046] R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+[ 3618.429047] R13: 000000000002d080 R14: ffff88afdf4ad080 R15: 0000000000000014
+[ 3618.429048]  ? pick_task_fair+0x48/0xa0
+[ 3618.429048]  pick_next_task+0x34c/0x7e0
+[ 3618.429049]  ? tick_program_event+0x44/0x70
+[ 3618.429049]  __schedule+0xee/0x5d0
+[ 3618.429050]  schedule_idle+0x2c/0x40
+[ 3618.429051]  do_idle+0x175/0x280
+[ 3618.429051]  cpu_startup_entry+0x1d/0x30
+[ 3618.429052]  start_secondary+0x169/0x1c0
+[ 3618.429052]  secondary_startup_64+0xa4/0xb0
+
+While with this patch applied, no NULL pointer exception was found within
+14 hours for now. Although there's no direct evidence this fix would solve
+the issue, it does fix a potential race condition.
+
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ kernel/sched/core.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 02495d44870f..ef101a3ef583 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4477,9 +4477,14 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		return next;
+ 	}
+ 
+-	prev->sched_class->put_prev_task(rq, prev);
+-	if (!rq->nr_running)
+-		newidle_balance(rq, rf);
++
++#ifdef CONFIG_SMP
++	for_class_range(class, prev->sched_class, &idle_sched_class) {
++		if (class->balance(rq, prev, rf))
++			break;
++	}
++#endif
++	put_prev_task(rq, prev);
+ 
+ 	smt_mask = cpu_smt_mask(cpu);
+ 
 -- 
-viresh
+2.20.1
+
