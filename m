@@ -2,213 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0251ACD9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B081ACDA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389899AbgDPQYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:24:18 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:51417 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732064AbgDPQYP (ORCPT
+        id S2410798AbgDPQ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:27:34 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60586 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387476AbgDPQ1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:24:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587054254; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=bwde/P04Uj3GTzNnCbAcH3UyrPWOeOqsIWQwb1Jxqqc=;
- b=QKxm7zWNODYXc9RljLMgjzzUEDObnZ9bI2I4Vg1jN7liOWv9HpO4zDOAAbv60m4jgsatPniH
- clMpzmQi3me+Q0gNpjfxVeS/C+NHBGtuuNWoM9d73MhPPi2r31aAWHbis8aRtuvgbtZS3tTL
- J2CVgerNuP79L9BZEbclqdOYKGs=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9886a1.7f930d7a33b0-smtp-out-n04;
- Thu, 16 Apr 2020 16:24:01 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4D503C44788; Thu, 16 Apr 2020 16:24:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8065AC433BA;
-        Thu, 16 Apr 2020 16:23:58 +0000 (UTC)
+        Thu, 16 Apr 2020 12:27:24 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GGHo2F164990;
+        Thu, 16 Apr 2020 16:27:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RdmCKsuZa668Ir+vRQIToVm1nsOndtntxoV1kjH984o=;
+ b=qSarJALwHWVs8pgq4IKohUJaQKca/21QyTJH7FV86xDoNnWBv8f6XVG/94fyEFyuqIPT
+ ynI/vWJ27r7vyG6ZC6C1+D4bkcv9ReNaaHkiBY874iEHUMsyV4M8Mid8JF2Lr576FZxR
+ aJVLKNAkMuFCcwdJiUPu6dypLY73zwH4eDXPIz1+DePz0clV/T4WFV423IskNCQGEbJM
+ /qI1Se99DYSWADw4q+wuA5yXzHG3KJfcthU5fArUb6Vv7p0gPdxG/VPhFIAfhkLP+0IP
+ AVrzdfzigSMAo4G1T92Otvg3XGPwH5w9Y8V5S/Lb4bk3J9c333MPYnsADLcebSe1O8WF Og== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30e0aa81ed-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 16:27:10 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GGH5gj032632;
+        Thu, 16 Apr 2020 16:25:10 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30emendjrr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 16:25:10 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03GGP6AQ015102;
+        Thu, 16 Apr 2020 16:25:06 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Apr 2020 09:25:06 -0700
+Date:   Thu, 16 Apr 2020 09:25:04 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200416162504.GB6733@magnolia>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-5-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Apr 2020 21:53:58 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        iommu@lists.linux-foundation.org,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] iommu/arm-smmu: Allow client devices to select direct
- mapping
-In-Reply-To: <3f12cefb-3887-859c-ddf5-c7a0fc755152@arm.com>
-References: <cover.1579692800.git.saiprakash.ranjan@codeaurora.org>
- <813cc5b2da10c27db982254b274bf26008a9e6da.1579692800.git.saiprakash.ranjan@codeaurora.org>
- <3f12cefb-3887-859c-ddf5-c7a0fc755152@arm.com>
-Message-ID: <540fc55811d0a60a929ff1f694d6d271@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414040030.1802884-5-ira.weiny@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=1
+ mlxlogscore=999 phishscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004160115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ suspectscore=1 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-On 2020-04-16 19:28, Robin Murphy wrote:
-> On 2020-01-22 11:48 am, Sai Prakash Ranjan wrote:
->> From: Jordan Crouse <jcrouse@codeaurora.org>
->> 
->> Some client devices want to directly map the IOMMU themselves instead
->> of using the DMA domain. Allow those devices to opt in to direct
->> mapping by way of a list of compatible strings.
->> 
->> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
->> Co-developed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>   drivers/iommu/arm-smmu-qcom.c | 39 
->> +++++++++++++++++++++++++++++++++++
->>   drivers/iommu/arm-smmu.c      |  3 +++
->>   drivers/iommu/arm-smmu.h      |  5 +++++
->>   3 files changed, 47 insertions(+)
->> 
->> diff --git a/drivers/iommu/arm-smmu-qcom.c 
->> b/drivers/iommu/arm-smmu-qcom.c
->> index 64a4ab270ab7..ff746acd1c81 100644
->> --- a/drivers/iommu/arm-smmu-qcom.c
->> +++ b/drivers/iommu/arm-smmu-qcom.c
->> @@ -3,6 +3,7 @@
->>    * Copyright (c) 2019, The Linux Foundation. All rights reserved.
->>    */
->>   +#include <linux/of_device.h>
->>   #include <linux/qcom_scm.h>
->>     #include "arm-smmu.h"
->> @@ -11,6 +12,43 @@ struct qcom_smmu {
->>   	struct arm_smmu_device smmu;
->>   };
->>   +static const struct arm_smmu_client_match_data qcom_adreno = {
->> +	.direct_mapping = true,
->> +};
->> +
->> +static const struct arm_smmu_client_match_data qcom_mdss = {
->> +	.direct_mapping = true,
->> +};
+On Mon, Apr 13, 2020 at 09:00:26PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Might it make sense to group these by the desired SMMU behaviour
-> rather than (apparently) what kind of device the client happens to be,
-> which seems like a completely arbitrary distinction from the SMMU
-> driver's PoV?
+> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
 > 
-
-Sorry, I did not get the "grouping by the desired SMMU behaviour" thing.
-Could you please give some more details?
-
->> +
->> +static const struct of_device_id qcom_smmu_client_of_match[] = {
->> +	{ .compatible = "qcom,adreno", .data = &qcom_adreno },
->> +	{ .compatible = "qcom,mdp4", .data = &qcom_mdss },
->> +	{ .compatible = "qcom,mdss", .data = &qcom_mdss },
->> +	{ .compatible = "qcom,sc7180-mdss", .data = &qcom_mdss },
->> +	{ .compatible = "qcom,sdm845-mdss", .data = &qcom_mdss },
->> +	{},
->> +};
->> +
->> +static const struct arm_smmu_client_match_data *
->> +qcom_smmu_client_data(struct device *dev)
->> +{
->> +	const struct of_device_id *match =
->> +		of_match_device(qcom_smmu_client_of_match, dev);
->> +
->> +	return match ? match->data : NULL;
+> Set the flag to be user visible and changeable.  Set the flag to be
+> inherited.  Allow applications to change the flag at any time.
 > 
-> of_device_get_match_data() is your friend.
+> Finally, on regular files, flag the inode to not be cached to facilitate
+> changing S_DAX on the next creation of the inode.
 > 
-
-Ok will use it.
-
->> +}
->> +
->> +static int qcom_smmu_request_domain(struct device *dev)
->> +{
->> +	const struct arm_smmu_client_match_data *client;
->> +
->> +	client = qcom_smmu_client_data(dev);
->> +	if (client)
->> +		iommu_request_dm_for_dev(dev);
->> +
->> +	return 0;
->> +}
->> +
->>   static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
->>   {
->>   	int ret;
->> @@ -41,6 +79,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device 
->> *smmu)
->>   }
->>     static const struct arm_smmu_impl qcom_smmu_impl = {
->> +	.req_domain = qcom_smmu_request_domain,
->>   	.reset = qcom_smmu500_reset,
->>   };
->>   diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
->> index 16c4b87af42b..67dd9326247a 100644
->> --- a/drivers/iommu/arm-smmu.c
->> +++ b/drivers/iommu/arm-smmu.c
->> @@ -1448,6 +1448,9 @@ static int arm_smmu_add_device(struct device 
->> *dev)
->>   	device_link_add(dev, smmu->dev,
->>   			DL_FLAG_PM_RUNTIME | DL_FLAG_AUTOREMOVE_SUPPLIER);
->>   +	if (smmu->impl && smmu->impl->req_domain)
->> +		return smmu->impl->req_domain(dev);
->> +
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/ext4/ext4.h  | 13 +++++++++----
+>  fs/ext4/ioctl.c | 21 ++++++++++++++++++++-
+>  2 files changed, 29 insertions(+), 5 deletions(-)
 > 
-> There are about 5 different patchsets flying around at the moment that
-> all touch default domain allocation, so this is a fast-moving target,
-> but I think where the dust should settle is with arm_smmu_ops
-> forwarding .def_domain_type (or whatever it ends up as) calls to
-> arm_smmu_impl as appropriate.
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 61b37a052052..434021fcec88 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -415,13 +415,16 @@ struct flex_groups {
+>  #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
+>  #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
+>  #define EXT4_EOFBLOCKS_FL		0x00400000 /* Blocks allocated beyond EOF */
+> +
+> +#define EXT4_DAX_FL			0x00800000 /* Inode is DAX */
+
+Sooo, fun fact about ext4 vs. the world--
+
+The GETFLAGS/SETFLAGS ioctl, since it came from ext2, shares the same
+flag values as the ondisk inode flags in ext*.  Therefore, each of these
+EXT4_[whatever]_FL values are supposed to have a FS_[whatever]_FL
+equivalent in include/uapi/linux/fs.h.
+
+(Note that the "[whatever]" is a straight translation since the same
+uapi header also defines the FS_XFLAG_[xfswhatever] flag values; ignore
+those.)
+
+Evidently, FS_NOCOW_FL already took 0x800000, but ext4.h was never
+updated to note that the value was taken.  I think Ted might be inclined
+to reserve the ondisk inode bit just in case ext4 ever does support copy
+on write, though that's his call. :)
+
+Long story short - can you use 0x1000000 for this instead, and add the
+corresponding value to the uapi fs.h?  I guess that also means that we
+can change FS_XFLAG_DAX (in the form of FS_DAX_FL in FSSETFLAGS) after
+that.
+
+--D
+
+> +
+>  #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has inline data. */
+>  #define EXT4_PROJINHERIT_FL		0x20000000 /* Create with parents projid */
+>  #define EXT4_CASEFOLD_FL		0x40000000 /* Casefolded file */
+>  #define EXT4_RESERVED_FL		0x80000000 /* reserved for ext4 lib */
+>  
+> -#define EXT4_FL_USER_VISIBLE		0x705BDFFF /* User visible flags */
+> -#define EXT4_FL_USER_MODIFIABLE		0x604BC0FF /* User modifiable flags */
+> +#define EXT4_FL_USER_VISIBLE		0x70DBDFFF /* User visible flags */
+> +#define EXT4_FL_USER_MODIFIABLE		0x60CBC0FF /* User modifiable flags */
+>  
+>  /* Flags we can manipulate with through EXT4_IOC_FSSETXATTR */
+>  #define EXT4_FL_XFLAG_VISIBLE		(EXT4_SYNC_FL | \
+> @@ -429,14 +432,16 @@ struct flex_groups {
+>  					 EXT4_APPEND_FL | \
+>  					 EXT4_NODUMP_FL | \
+>  					 EXT4_NOATIME_FL | \
+> -					 EXT4_PROJINHERIT_FL)
+> +					 EXT4_PROJINHERIT_FL | \
+> +					 EXT4_DAX_FL)
+>  
+>  /* Flags that should be inherited by new inodes from their parent. */
+>  #define EXT4_FL_INHERITED (EXT4_SECRM_FL | EXT4_UNRM_FL | EXT4_COMPR_FL |\
+>  			   EXT4_SYNC_FL | EXT4_NODUMP_FL | EXT4_NOATIME_FL |\
+>  			   EXT4_NOCOMPR_FL | EXT4_JOURNAL_DATA_FL |\
+>  			   EXT4_NOTAIL_FL | EXT4_DIRSYNC_FL |\
+> -			   EXT4_PROJINHERIT_FL | EXT4_CASEFOLD_FL)
+> +			   EXT4_PROJINHERIT_FL | EXT4_CASEFOLD_FL |\
+> +			   EXT4_DAX_FL)
+>  
+>  /* Flags that are appropriate for regular files (all but dir-specific ones). */
+>  #define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL |\
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index ee3401a32e79..ca07d5086f03 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -539,12 +539,15 @@ static inline __u32 ext4_iflags_to_xflags(unsigned long iflags)
+>  		xflags |= FS_XFLAG_NOATIME;
+>  	if (iflags & EXT4_PROJINHERIT_FL)
+>  		xflags |= FS_XFLAG_PROJINHERIT;
+> +	if (iflags & EXT4_DAX_FL)
+> +		xflags |= FS_XFLAG_DAX;
+>  	return xflags;
+>  }
+>  
+>  #define EXT4_SUPPORTED_FS_XFLAGS (FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | \
+>  				  FS_XFLAG_APPEND | FS_XFLAG_NODUMP | \
+> -				  FS_XFLAG_NOATIME | FS_XFLAG_PROJINHERIT)
+> +				  FS_XFLAG_NOATIME | FS_XFLAG_PROJINHERIT | \
+> +				  FS_XFLAG_DAX)
+>  
+>  /* Transfer xflags flags to internal */
+>  static inline unsigned long ext4_xflags_to_iflags(__u32 xflags)
+> @@ -563,6 +566,8 @@ static inline unsigned long ext4_xflags_to_iflags(__u32 xflags)
+>  		iflags |= EXT4_NOATIME_FL;
+>  	if (xflags & FS_XFLAG_PROJINHERIT)
+>  		iflags |= EXT4_PROJINHERIT_FL;
+> +	if (xflags & FS_XFLAG_DAX)
+> +		iflags |= EXT4_DAX_FL;
+>  
+>  	return iflags;
+>  }
+> @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
+>  	return error;
+>  }
+>  
+> +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
+> +{
+> +	struct ext4_inode_info *ei = EXT4_I(inode);
+> +
+> +	if (S_ISDIR(inode->i_mode))
+> +		return;
+> +
+> +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
+> +		inode->i_state |= I_DONTCACHE;
+> +}
+> +
+>  long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  {
+>  	struct inode *inode = file_inode(filp);
+> @@ -1273,6 +1289,9 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  			return err;
+>  
+>  		inode_lock(inode);
+> +
+> +		ext4_dax_dontcache(inode, flags);
+> +
+>  		ext4_fill_fsxattr(inode, &old_fa);
+>  		err = vfs_ioc_fssetxattr_check(inode, &old_fa, &fa);
+>  		if (err)
+> -- 
+> 2.25.1
 > 
-
-I'll wait till the dust settles down and then post the next version.
-
->>   	return 0;
->>     out_cfg_free:
->> diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
->> index 8d1cd54d82a6..059dc9c39f64 100644
->> --- a/drivers/iommu/arm-smmu.h
->> +++ b/drivers/iommu/arm-smmu.h
->> @@ -244,6 +244,10 @@ enum arm_smmu_arch_version {
->>   	ARM_SMMU_V2,
->>   };
->>   +struct arm_smmu_client_match_data {
->> +	bool direct_mapping;
->> +};
-> 
-> Does this need to be public? I don't see the other users...
-> 
-
-Will move this out.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
