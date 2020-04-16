@@ -2,105 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289B51AC007
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A251ABDDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506622AbgDPLqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:46:50 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:38255 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2504857AbgDPK0k (ORCPT
+        id S2504940AbgDPK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504868AbgDPK1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:26:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587032793; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7e7yje6Jk92q2KWOzUZdbFCXe9Taa4CbqlpJEFe/hWg=;
- b=pBNYSv1opwwNWkriETMzldswAcDR1LsnGCkke6wQRxF6NYHI/9SP6hTK2Lz64Z7qeJ1dba8y
- EzaAVRgt5Nn03C11y7H7oXOZ1AwNmRhRvq9jKPC0J+Qs6o5M07JapcAkmDJk07qkH4C2NRZS
- 0rFMY0PzVY3vR71l9ZITBj3yVLs=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9832d6.7ff68f8d8490-smtp-out-n02;
- Thu, 16 Apr 2020 10:26:30 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 41C33C44788; Thu, 16 Apr 2020 10:26:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BE44C433F2;
-        Thu, 16 Apr 2020 10:26:28 +0000 (UTC)
+        Thu, 16 Apr 2020 06:27:02 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70497C061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:27:00 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id h9so4175617wrc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=ytcr4DNGsM/t7kd6jXgpKOZ/wK7hRn1NK12HxIXMRKE=;
+        b=y283zphWTaRIHsqXboEQebyUcsf1x9LJ0OAGOqpxQTdsNtsjus/FsAB4jcOrbwQRmU
+         ovPNF7Uil97R6r1wi7otHb+HEG0ZivE/3Mal3+mMpWMpsqPOwJBWmUWk0JsYvYbtgPOz
+         xB2hC0AxW7bx/I9t4+kspS3NGqOmYzdltktQ1ic+DzL2O/t8O8tatfU4vxj77lCP1rf6
+         STIzdzowht1EWGVfD39Z2Aogi27qNWUcCQ2LIEVA6eJ0YMMEx8XGsgiilp69jV55p5Mz
+         MnUmmXnQXYlZXExyVCIqsI8j2WrJ9PcuiniGJdjht0BiqboZC/SX3qGiwcre7vT/LzJe
+         rLCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=ytcr4DNGsM/t7kd6jXgpKOZ/wK7hRn1NK12HxIXMRKE=;
+        b=db2yrmGB4m1t5P5Sa8+5ej8O6HrW9GjOscv3v4u1GzMzSHtKawwcQIoyvs007LjAB/
+         jqchXnpdvNK0UDHCKYdSQR/cdO08uU2aPXA4nE/93ZE0sdoKUG/oA5MFdikqxMx7+c2d
+         YgL8AQhylpCTbye5aWpbFAMau5zwraJiM7otrv7aQr5xO0rySzUtH3W5KObJ84Y4BtDN
+         5rchp823g4DPeBH0StPU/WjsDAdcYFKIpUKapsbRhidGaPpnNVrGiembdM8iQxrw0gUt
+         unzSXDAdbF3iTmR+8NBQKtLucbHYVjY8UlpmTDSaFnhFOUPMSRppzhuecapegrkIcv2i
+         BqlA==
+X-Gm-Message-State: AGi0PuaitHT9Ic/9hp5oiLJ+zwwYpBL6LSPrCXGZ+MvpojQmsfMx2mJh
+        fWGpQmn30xbwOz5qiIEl4gBWJw==
+X-Google-Smtp-Source: APiQypLHefjPm8Xgjdu6ICpgrvUDFrLOqOiQNSaKWVEHJV0E00xqUmBJ6qCW31i21zKvv/bei5YhbA==
+X-Received: by 2002:adf:e54c:: with SMTP id z12mr23478210wrm.276.1587032818803;
+        Thu, 16 Apr 2020 03:26:58 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id h137sm3760755wme.0.2020.04.16.03.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 03:26:58 -0700 (PDT)
+References: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org
+Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] clk: meson: prepare GX and G12 for GPU DVFS
+In-reply-to: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
+Date:   Thu, 16 Apr 2020 12:26:56 +0200
+Message-ID: <1jd087bua7.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Apr 2020 15:56:28 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH 0/8] Relax sanity checking for mismatched AArch32 EL1
-In-Reply-To: <a86108a91975cacf94adc2a2101fba1b@codeaurora.org>
-References: <20200414213114.2378-1-will@kernel.org>
- <a86108a91975cacf94adc2a2101fba1b@codeaurora.org>
-Message-ID: <e801954c0a14bf9483c084845c18dbfd@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-16 14:09, Sai Prakash Ranjan wrote:
-> On 2020-04-15 03:01, Will Deacon wrote:
->> Hi all,
->> 
->> For better or worse, there are SoCs in production where some, but not
->> all of the CPUs, support AArch32 at EL1 and above. Right now, that
->> results in "SANITY CHECK" warnings during boot and an unconditional
->> kernel taint.
->> 
->> This patch series tries to do a bit better: the only time we care 
->> about
->> AArch32 at EL1 is for KVM, so rather than throw our toys out of the
->> pram, we can instead just disable support for 32-bit guests on these
->> systems. In the unlikely scenario of a late CPU hotplug being the 
->> first
->> time we notice that AArch32 is not available, then we fail the hotplug
->> (right now we let the thing come online, which leads to hilarious
->> results for any pre-existing 32-bit guests).
->> 
->> Feedback welcome,
->> 
->> Will
->> 
-> 
-> Thanks Will, tested this series on QCOM SC7180 and SM8150 SoCs.
-> 
-> For the entire series,
-> 
-> Tested-by: saiprakash.ranjan@codeaurora.org
-> 
 
-Urgh sorry, it should be
+On Tue 14 Apr 2020 at 21:50, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> This contains only the clock driver updates from my other series titled
+> "GPU DVFS for Meson GXBB/GXL/GXM/G12A/G12B/SM1" from [0]
+>
+>
+> Changes since v1 at [0]:
+> - update the patch descriptions to indicate that we explicitly don't
+>   want CLK_SET_RATE_PARENT on the muxes
+> - split into clock driver (this series) and .dts changes (future
+>   series, waiting for testing feedback on v1 from [0])
+>
+>
+> [0] https://patchwork.kernel.org/cover/11466399/
+>
+>
+> Martin Blumenstingl (2):
+>   clk: meson: gxbb: Prepare the GPU clock tree to change at runtime
+>   clk: meson: g12a: Prepare the GPU clock tree to change at runtime
+>
+>  drivers/clk/meson/g12a.c | 30 ++++++++++++++++++++++--------
+>  drivers/clk/meson/gxbb.c | 40 ++++++++++++++++++++++------------------
+>  2 files changed, 44 insertions(+), 26 deletions(-)
 
--Sai
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Applied, Thx
