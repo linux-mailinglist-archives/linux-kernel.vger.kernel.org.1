@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFDC1AC3E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079C41AC9F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408687AbgDPNvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:51:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48770 "EHLO mail.kernel.org"
+        id S2410336AbgDPP3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:29:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896368AbgDPNgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:36:36 -0400
+        id S2897966AbgDPNnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:43:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB64620732;
-        Thu, 16 Apr 2020 13:36:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35EC72076D;
+        Thu, 16 Apr 2020 13:43:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044195;
-        bh=zCv7emeh8qqkvdSPxK1eftiliypS9jDLI+ZgAK+C4Os=;
+        s=default; t=1587044631;
+        bh=UnZbhbDBQCF/67WHGwIv0Ii6fJDazwVK16eoI7KevQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bq3QTIzAZNZHZOlVRqOU0lcYcJEtxrPj2xnn+cYlqcr/oUDEOQ4c/EVbIjBQAwB0A
-         XBFi7xrzX1qYW4CqACVqFMXIeApzTIJja5IQibLf6iKt6VQfIkygdkIwVUDLfQ6QFC
-         aAgmGaTMgMpeUqI9w7EWJiCI6tq8+ROP3lefHHas=
+        b=jMi+RqX8qy/YEgRfGxOsjkIYV1XM8m/ijHdMVRSTzuhTAcnWS0c2VmW5+XxhR7MGL
+         s4H8Ugs3NSQj9xEzpbwtATi5j6wjxYuIGPs0KeRCUayf4+6ZS5u5cU3HBkv2XPIFE4
+         8EEXJL6tdxd9Lwz4wO1BczBObdIL2rKTBGNICKrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Thomas Hellstrom <thellstrom@vmware.com>,
+        Borislav Petkov <bp@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 079/257] btrfs: restart relocate_tree_blocks properly
-Date:   Thu, 16 Apr 2020 15:22:10 +0200
-Message-Id: <20200416131335.808916832@linuxfoundation.org>
+Subject: [PATCH 5.4 037/232] dma-mapping: Fix dma_pgprot() for unencrypted coherent pages
+Date:   Thu, 16 Apr 2020 15:22:11 +0200
+Message-Id: <20200416131320.574767415@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Thomas Hellstrom <thellstrom@vmware.com>
 
-[ Upstream commit 50dbbb71c79df89532ec41d118d59386e5a877e3 ]
+[ Upstream commit 17c4a2ae15a7aaefe84bdb271952678c5c9cd8e1 ]
 
-There are two bugs here, but fixing them independently would just result
-in pain if you happened to bisect between the two patches.
+When dma_mmap_coherent() sets up a mapping to unencrypted coherent memory
+under SEV encryption and sometimes under SME encryption, it will actually
+set up an encrypted mapping rather than an unencrypted, causing devices
+that DMAs from that memory to read encrypted contents. Fix this.
 
-First is how we handle the -EAGAIN from relocate_tree_block().  We don't
-set error, unless we happen to be the first node, which makes no sense,
-I have no idea what the code was trying to accomplish here.
+When force_dma_unencrypted() returns true, the linear kernel map of the
+coherent pages have had the encryption bit explicitly cleared and the
+page content is unencrypted. Make sure that any additional PTEs we set
+up to these pages also have the encryption bit cleared by having
+dma_pgprot() return a protection with the encryption bit cleared in this
+case.
 
-We in fact _do_ want err set here so that we know we need to restart in
-relocate_block_group().  Also we need finish_pending_nodes() to not
-actually call link_to_upper(), because we didn't actually relocate the
-block.
-
-And then if we do get -EAGAIN we do not want to set our backref cache
-last_trans to the one before ours.  This would force us to update our
-backref cache if we didn't cross transaction ids, which would mean we'd
-have some nodes updated to their new_bytenr, but still able to find
-their old bytenr because we're searching the same commit root as the
-last time we went through relocate_tree_blocks.
-
-Fixing these two things keeps us from panicing when we start breaking
-out of relocate_tree_blocks() either for delayed ref flushing or enospc.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20200304114527.3636-3-thomas_os@shipmail.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ kernel/dma/mapping.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index f7060b2172c44..963e70141e398 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3175,9 +3175,8 @@ int relocate_tree_blocks(struct btrfs_trans_handle *trans,
- 		ret = relocate_tree_block(trans, rc, node, &block->key,
- 					  path);
- 		if (ret < 0) {
--			if (ret != -EAGAIN || &block->rb_node == rb_first(blocks))
--				err = ret;
--			goto out;
-+			err = ret;
-+			break;
- 		}
- 	}
- out:
-@@ -4151,12 +4150,6 @@ restart:
- 		if (!RB_EMPTY_ROOT(&blocks)) {
- 			ret = relocate_tree_blocks(trans, rc, &blocks);
- 			if (ret < 0) {
--				/*
--				 * if we fail to relocate tree blocks, force to update
--				 * backref cache when committing transaction.
--				 */
--				rc->backref_cache.last_trans = trans->transid - 1;
--
- 				if (ret != -EAGAIN) {
- 					err = ret;
- 					break;
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index d9334f31a5afb..8682a5305cb36 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -169,6 +169,8 @@ EXPORT_SYMBOL(dma_get_sgtable_attrs);
+  */
+ pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
+ {
++	if (force_dma_unencrypted(dev))
++		prot = pgprot_decrypted(prot);
+ 	if (dev_is_dma_coherent(dev) ||
+ 	    (IS_ENABLED(CONFIG_DMA_NONCOHERENT_CACHE_SYNC) &&
+              (attrs & DMA_ATTR_NON_CONSISTENT)))
 -- 
 2.20.1
 
