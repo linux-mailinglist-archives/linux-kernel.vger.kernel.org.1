@@ -2,94 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E36B1AC23B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5B81ACA27
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895186AbgDPNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895064AbgDPNV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:21:57 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36BCC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:21:56 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id q31so1932577qvf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=avRb3vLQGDTEWZLFL5bXMrEXh+qhpxFWoqH669TEkSU=;
-        b=J5nuE74uERUTtbCQhaVb6lN2px7tBz8nBjdjaloWli9LlHu86qVRpxY/XKDMJdmjzG
-         BeSYOHoRovGTYnDivdxWRpzCmemE0pWWE+2H9dPutd9ZypvWa3HQNBMY0HQAgcUf/t5V
-         /w5JBp99Bjfo0qsf6b45nXUuz4iCaJSrV7u7yqck4690fCBJwt1Iqxsnuz+qTGMtzoIx
-         6djHp0kOGO/Z0KcGacj1hcSg892w9wkl+SS+Wgmt0AwNhbiia5M4d8itueuP4UAbIxcu
-         fxIYS3tOhzeIzfdjerKNpK7W9BXiB4bc8hwDndGYyCYxVjJ6PmBlfZBCd+L0pt4TaKU2
-         Ni0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=avRb3vLQGDTEWZLFL5bXMrEXh+qhpxFWoqH669TEkSU=;
-        b=VSbLAxGlPqxeuAEnNWRk5LRz4uY/fw3UJtexUdZQJe9sCO9aLk0aDcF7me+un30tfH
-         L3v3S18+3y5kCwbIXy3WhLY+zj7/Fx20fSzAdJbo4MsFfCkOnLVrkOF/6bSYMwFx6GL7
-         SfD0cwAmspKQNhwVhmhWYnkg6Nfx11z4p5I4QwSB47jGY/cWQQtp0DIx2UKnyt38PljZ
-         3IN9H4R7SKiPj5nSM5UCPXE9ur/0c93X19iWYhQeo/E+D8T6FzCCuuD3FRb/xx8PJGga
-         rrer6VhrLSYQrqVj5t0q//PXduDB5mkdmAQ+GS+sJpCM0JwkjSaYqzAZClyDTe0/YEDX
-         tORw==
-X-Gm-Message-State: AGi0PuazuKbm1utW6aG5dA3ol7zbhDJHmMONrDCe5WJ6RjITjre8Sp5Y
-        w9itJwUEJ6EXlkSh/Qb8IiuhVib8skO5OfsILuDsaQ==
-X-Google-Smtp-Source: APiQypJWh/fFacLzkG78hbwLnxl5+BCUaI/XcNkBeTLfNrmfcZs6wqz1Gez3UoQW17XmSn3R7x9XVhg78QA48w/zWvQ=
-X-Received: by 2002:ad4:4951:: with SMTP id o17mr9910253qvy.76.1587043315884;
- Thu, 16 Apr 2020 06:21:55 -0700 (PDT)
+        id S2409643AbgDPPb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441560AbgDPNmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:42:43 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEB0F214D8;
+        Thu, 16 Apr 2020 13:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587044562;
+        bh=aJGDApDJxafW+Vlm41KJkKg+iMU290np3OMqekDT3+0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OR+cNrqJI99dV1MX6QebsPrlsGJVfRgVqCkCEHM+FSSJ/EO2GUCDkhdnH1E8WzN+Z
+         pslh3WgEvUyGcNKVm9SL8eBQK3RigaQEDRS9oAvCsKZTwpOoO36oXuHQsBDT5BOxXM
+         vex5HcgYw/RNMLp3pFX3TNh5YaxSjmet62BoOPiQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Zheng Wei <wei.zheng@vivo.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 011/232] net: vxge: fix wrong __VA_ARGS__ usage
+Date:   Thu, 16 Apr 2020 15:21:45 +0200
+Message-Id: <20200416131317.819053358@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-References: <20200414152843.32129-1-pthomas8589@gmail.com> <CACRpkdaPc-rxNmdq7KFKZ-Qi7Tqy2RJ5Lkcv-8bTAh0GX7VygQ@mail.gmail.com>
-In-Reply-To: <CACRpkdaPc-rxNmdq7KFKZ-Qi7Tqy2RJ5Lkcv-8bTAh0GX7VygQ@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 16 Apr 2020 15:21:44 +0200
-Message-ID: <CAMpxmJWZEhKho0+6zf=Ca8tif=Z7PcdNv2=tAsDnOUzeZLYqLg@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: gpio-pca953x, Add get_multiple function
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Paul Thomas <pthomas8589@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-czw., 16 kwi 2020 o 13:22 Linus Walleij <linus.walleij@linaro.org> napisa=
-=C5=82(a):
->
-> On Tue, Apr 14, 2020 at 5:30 PM Paul Thomas <pthomas8589@gmail.com> wrote=
-:
->
-> > Implement a get_multiple function for gpio-pca953x. If a driver
-> > leaves get_multiple unimplemented then gpio_chip_get_multiple()
-> > in gpiolib.c takes care of it by calling chip->get() as needed.
-> > For i2c chips this is very inefficient. For example if you do an
-> > 8-bit read then instead of a single i2c transaction there are
-> > 8 transactions reading the same byte!
-> >
-> > This has been tested with max7312 chips on a 5.2 kernel.
-> >
-> > Signed-off-by: Paul Thomas <pthomas8589@gmail.com>
-> > ---
-> >  changes from v1: rebased to 5.7-rc1
->
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Since I know Bartosz is queueing other patches for this driver I
-> let him pick it up.
->
-> Yours,
-> Linus Walleij
+From: Zheng Wei <wei.zheng@vivo.com>
 
-Patch applied. I removed the last line of the commit message since I
-guess you did test it on v5.7-rc1 after all?
+[ Upstream commit b317538c47943f9903860d83cc0060409e12d2ff ]
 
-Bart
+printk in macro vxge_debug_ll uses __VA_ARGS__ without "##" prefix,
+it causes a build error when there is no variable
+arguments(e.g. only fmt is specified.).
+
+Signed-off-by: Zheng Wei <wei.zheng@vivo.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-config.h |  2 +-
+ drivers/net/ethernet/neterion/vxge/vxge-main.h   | 14 +++++++-------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-config.h b/drivers/net/ethernet/neterion/vxge/vxge-config.h
+index e678ba379598e..628fa9b2f7416 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-config.h
++++ b/drivers/net/ethernet/neterion/vxge/vxge-config.h
+@@ -2045,7 +2045,7 @@ vxge_hw_vpath_strip_fcs_check(struct __vxge_hw_device *hldev, u64 vpath_mask);
+ 	if ((level >= VXGE_ERR && VXGE_COMPONENT_LL & VXGE_DEBUG_ERR_MASK) ||  \
+ 	    (level >= VXGE_TRACE && VXGE_COMPONENT_LL & VXGE_DEBUG_TRACE_MASK))\
+ 		if ((mask & VXGE_DEBUG_MASK) == mask)			       \
+-			printk(fmt "\n", __VA_ARGS__);			       \
++			printk(fmt "\n", ##__VA_ARGS__);		       \
+ } while (0)
+ #else
+ #define vxge_debug_ll(level, mask, fmt, ...)
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.h b/drivers/net/ethernet/neterion/vxge/vxge-main.h
+index 59a57ff5e96af..9c86f4f9cd424 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.h
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.h
+@@ -452,49 +452,49 @@ int vxge_fw_upgrade(struct vxgedev *vdev, char *fw_name, int override);
+ 
+ #if (VXGE_DEBUG_LL_CONFIG & VXGE_DEBUG_MASK)
+ #define vxge_debug_ll_config(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_LL_CONFIG, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_LL_CONFIG, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_ll_config(level, fmt, ...)
+ #endif
+ 
+ #if (VXGE_DEBUG_INIT & VXGE_DEBUG_MASK)
+ #define vxge_debug_init(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_INIT, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_INIT, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_init(level, fmt, ...)
+ #endif
+ 
+ #if (VXGE_DEBUG_TX & VXGE_DEBUG_MASK)
+ #define vxge_debug_tx(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_TX, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_TX, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_tx(level, fmt, ...)
+ #endif
+ 
+ #if (VXGE_DEBUG_RX & VXGE_DEBUG_MASK)
+ #define vxge_debug_rx(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_RX, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_RX, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_rx(level, fmt, ...)
+ #endif
+ 
+ #if (VXGE_DEBUG_MEM & VXGE_DEBUG_MASK)
+ #define vxge_debug_mem(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_MEM, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_MEM, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_mem(level, fmt, ...)
+ #endif
+ 
+ #if (VXGE_DEBUG_ENTRYEXIT & VXGE_DEBUG_MASK)
+ #define vxge_debug_entryexit(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_ENTRYEXIT, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_ENTRYEXIT, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_entryexit(level, fmt, ...)
+ #endif
+ 
+ #if (VXGE_DEBUG_INTR & VXGE_DEBUG_MASK)
+ #define vxge_debug_intr(level, fmt, ...) \
+-	vxge_debug_ll(level, VXGE_DEBUG_INTR, fmt, __VA_ARGS__)
++	vxge_debug_ll(level, VXGE_DEBUG_INTR, fmt, ##__VA_ARGS__)
+ #else
+ #define vxge_debug_intr(level, fmt, ...)
+ #endif
+-- 
+2.20.1
+
+
+
