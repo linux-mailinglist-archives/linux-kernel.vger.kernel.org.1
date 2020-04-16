@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE601AC925
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A1F1AC3FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504508AbgDPPTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:19:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33982 "EHLO mail.kernel.org"
+        id S2408882AbgDPNwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:52:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898723AbgDPNrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:55 -0400
+        id S2897389AbgDPNg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:36:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D8C8208E4;
-        Thu, 16 Apr 2020 13:47:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F075E221EB;
+        Thu, 16 Apr 2020 13:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044874;
-        bh=P0Kbr+jaiAUTu7vRnV1VEh+m2Ui/C/b38dc6jJjmH4w=;
+        s=default; t=1587044217;
+        bh=12ZmjrZ7vXDZ1I0Fi1c7lbqZUkrXG04AQoXKts4YLE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U7K1vAMwvVl5gKWujdNMQVk+9koJk8biI1iuVWHQ0VkQFMZ2FzNnfcTzT+gSOwfvd
-         /7w8C0Sq44xO/kp2dBYyCoXOkIk2dp/sdmezNYATlgn65W568DGFRsrZIMzh4wKAg+
-         63mwySlgdEJpY3D2lN64GwVFnWtctcWZNFw3t4Vk=
+        b=qcx5Acq2+NVDxYqrKkmJtUi9EG/VnahfL6cYcMCnrnvQMD2eQ4XRITPphf8TIltZe
+         VFj6XonX04weX70jXrLTrHFI0gBcCk3omSShm16/lP34IBCc/+xgV5zG8S9/1Oqltu
+         clv1v66Bq2/1QiOVtUtyiuvwqwK3nrgxF45B2WoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 086/232] ALSA: hda/realtek - Add quirk for MSI GL63
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.5 129/257] io_uring: remove bogus RLIMIT_NOFILE check in file registration
 Date:   Thu, 16 Apr 2020 15:23:00 +0200
-Message-Id: <20200416131325.778286538@linuxfoundation.org>
+Message-Id: <20200416131342.528363405@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 1d3aa4a5516d2e4933fe3cca11d3349ef63bc547 upstream.
+commit c336e992cb1cb1db9ee608dfb30342ae781057ab upstream.
 
-MSI GL63 laptop requires the similar quirk like other MSI models,
-ALC1220_FIXUP_CLEVO_P950.  The board BIOS doesn't provide a PCI SSID
-for the device, hence we need to take the codec SSID (1462:1275)
-instead.
+We already checked this limit when the file was opened, and we keep it
+open in the file table. Hence when we added unit_inflight to the count
+we want to register, we're doubly accounting these files. This results
+in -EMFILE for file registration, if we're at half the limit.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207157
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200408135645.21896-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: stable@vger.kernel.org # v5.1+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/io_uring.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2447,6 +2447,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4162,13 +4162,6 @@ static int __io_sqe_files_scm(struct io_
+ 	struct sk_buff *skb;
+ 	int i, nr_files;
+ 
+-	if (!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN)) {
+-		unsigned long inflight = ctx->user->unix_inflight + nr;
+-
+-		if (inflight > task_rlimit(current, RLIMIT_NOFILE))
+-			return -EMFILE;
+-	}
+-
+ 	fpl = kzalloc(sizeof(*fpl), GFP_KERNEL);
+ 	if (!fpl)
+ 		return -ENOMEM;
 
 
