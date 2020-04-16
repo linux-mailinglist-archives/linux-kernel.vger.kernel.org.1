@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6737B1AB7E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719801AB7FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407944AbgDPGYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2407332AbgDPGX5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:23:57 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272AFC061A0C;
-        Wed, 15 Apr 2020 23:23:55 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id g2so999433plo.3;
-        Wed, 15 Apr 2020 23:23:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=k9LiR9gqBCcCZdNQq4/YQxuQV5mvCYKBntiHSmfOytk=;
-        b=hmhHjntthZH7KFvuW/uCALSyrDaaZpjaURcbC1eWuZMaO/14HeEKZjksmWnkPw86qP
-         RwhRYDHjFfELQ1N77QeliUg4AKNXsdgS1gJVGunUKpARc6C1g7NUEmFfYx2SQ2+tVL5V
-         kX7pcDrYBDPxYNwfRtiKoi103cX8L991eZey7IoOSqCK9XbRvk+W9LgXEydGNzKNnICP
-         3HGyw/F+BC+u87V2vXZYhHCRmW7iX4HOyjs7e/GCt0zU5Oha+YUHdOZaKN9atjXhv0Qd
-         LjnIFYJ6Xo1yz0RT+XTkGJNVps8+WkaJux61hW/XAIBLY2sS+r09gagZE7MqhtDZAs/F
-         g7XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=k9LiR9gqBCcCZdNQq4/YQxuQV5mvCYKBntiHSmfOytk=;
-        b=hayXNpWYcuY/s+nhLCRNXI133AabRGf47tCF3UkOcKqUGFIqMs7v6Lpk83inZGPVeu
-         Q8/8JpO8Dvy9NhAkRfi13e7IYvfr+KosVc42mPrjvbLwgc+VHIg0v72HCn/wo0qT6c1y
-         xAaAe3EBRc7gfto3BpKXlmWXr/7YHq4Nt+4GE4keBgruT42LG7KOsrlCi6Z7t4hpLxsM
-         n7PEw4zgsgAsojXIT/BqHQGI+YuVBvJ/ebpviZ+I9s9wEIOs85eUmLmdKf1CsK8Sn5Mc
-         +SfPe3ZbVZ22iKi3mj+5pKLwvvUmU09mQAuXU5PxPODWt/YAedvy6SPTNqnxe+Bp/oGF
-         /2YQ==
-X-Gm-Message-State: AGi0PuY1ziIEVLIfAghJlyhzpzVlOP8pCqnyx0UUAHFpJvh3pM0OsYzx
-        4Mvp99q429n2XNdU6c9b4g==
-X-Google-Smtp-Source: APiQypKaVK5tHJIcKhm+h8B/y2dD4tsICDzX+exf1e1PqrpGq2QKMRt2sf3yVpSSWLw0bNTdtafcMQ==
-X-Received: by 2002:a17:902:9f95:: with SMTP id g21mr8282218plq.66.1587018234586;
-        Wed, 15 Apr 2020 23:23:54 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:13bf:b0b1:dcfd:f4e2:a41f:9129])
-        by smtp.gmail.com with ESMTPSA id u13sm1501463pjb.45.2020.04.15.23.23.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 23:23:53 -0700 (PDT)
-From:   madhuparnabhowmik10@gmail.com
-To:     dan.j.williams@intel.com, vkoul@kernel.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrianov@ispras.ru, ldv-project@linuxtesting.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH] drivers: dma: pch_dma.c: Avoid data race between probe and irq handler
-Date:   Thu, 16 Apr 2020 11:53:35 +0530
-Message-Id: <20200416062335.29223-1-madhuparnabhowmik10@gmail.com>
+        id S2407879AbgDPG1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:27:52 -0400
+Received: from mga02.intel.com ([134.134.136.20]:28084 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407996AbgDPG1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:27:06 -0400
+IronPort-SDR: YNq4ss/oPiPXVo5z/XMOuiGelGyIUmsrGWygjSI8DXOMq3xuhCQPb1ayYf91Jr1NXebSjhlcs2
+ /Ll7kexx/NWw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 23:27:06 -0700
+IronPort-SDR: dv7ZeaZqSqQD1m3XJF5id1Sh44URsCqzejypAsEWfIENW6XR2A8p/sqJRgp3+L1lXomWMDkut6
+ VXmqq46m2ZBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="277881075"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2020 23:27:02 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
+        kevin.tian@intel.com,
+        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Daniel Drake <drake@endlessm.com>,
+        Derrick Jonathan <jonathan.derrick@intel.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v3 0/3] Replace private domain with per-group default domain
+Date:   Thu, 16 Apr 2020 14:23:51 +0800
+Message-Id: <20200416062354.10307-1-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Some devices are required to use a specific type (identity or dma)
+of default domain when they are used with a vendor iommu. When the
+system level default domain type is different from it, the vendor
+iommu driver has to request a new default domain with either
+iommu_request_dma_domain_for_dev() or iommu_request_dm_for_dev()
+in the add_dev() callback. Unfortunately, these two helpers only
+work when the group hasn't been assigned to any other devices,
+hence, some vendor iommu driver has to use a private domain if
+it fails to request a new default one.
 
-pd->dma.dev is read in irq handler pd_irq().
-However, it is set to pdev->dev after request_irq().
-Therefore, set pd->dma.dev to pdev->dev before request_irq() to
-avoid data race between pch_dma_probe() and pd_irq().
+Joerg proposed an on-going proposal which makes the default domain
+framework to support configuring per-group default domain during
+boot process.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+https://lkml.org/lkml/2020/4/14/616
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
----
- drivers/dma/pch_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hence, there is no need to keep the private domain implementation
+in the Intel IOMMU driver. This patch series aims to remove it.
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index 581e7a290d98..a3b0b4c56a19 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -865,6 +865,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 	}
- 
- 	pci_set_master(pdev);
-+	pd->dma.dev = &pdev->dev;
- 
- 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
- 	if (err) {
-@@ -880,7 +881,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_free_irq;
- 	}
- 
--	pd->dma.dev = &pdev->dev;
- 
- 	INIT_LIST_HEAD(&pd->dma.channels);
- 
+Best regards,
+baolu
+
+Change log:
+v2->v3:
+ - Port necessary patches on the top of Joerg's new proposal.
+   https://lkml.org/lkml/2020/4/14/616
+   The per-group default domain proposed previously in this series
+   will be deprecated due to a race concern between domain switching
+   and device driver probing.
+
+v1->v2:
+ - Rename the iommu ops callback to def_domain_type
+
+Lu Baolu (3):
+  iommu/vt-d: Allow 32bit devices to uses DMA domain
+  iommu/vt-d: Allow PCI sub-hierarchy to use DMA domain
+  iommu/vt-d: Apply per-device dma_ops
+
+ drivers/iommu/intel-iommu.c | 396 +++---------------------------------
+ 1 file changed, 26 insertions(+), 370 deletions(-)
+
 -- 
 2.17.1
 
