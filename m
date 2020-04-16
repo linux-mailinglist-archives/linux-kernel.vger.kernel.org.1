@@ -2,259 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4CB1AC615
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955681AC618
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394387AbgDPOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:33:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442133AbgDPOSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:18:35 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FD4D2063A;
-        Thu, 16 Apr 2020 14:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587046714;
-        bh=bi7/m79MnrOcKtz1yNvD6Frj0cbUVGLU7NJgSHvxF2I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yi9hpirh1VtMlOGs0kGvX5fXAQAutpS3AwXEDY0pBvWzLHPLsyr9y6rTT+mlhSexI
-         8mZW2a3+sS9h7wpZPaT2ju6Ag4XCy7zSEByC0Z99bGfZjuqR83ehFJbjEgpiUCX/WG
-         5L0sH/InBOfdRrcHB/wO9rF1b/29CQLo7xeW3gFM=
-Date:   Thu, 16 Apr 2020 16:18:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mateusz Holenko <mholenko@antmicro.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Slaby <jslaby@suse.com>, devicetree@vger.kernel.org,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] drivers/soc/litex: add LiteX SoC Controller driver
-Message-ID: <20200416141832.GA1356374@kroah.com>
-References: <20200402084513.4173306-0-mholenko@antmicro.com>
- <20200402084513.4173306-3-mholenko@antmicro.com>
- <CAPk366QLHbR9cnLs244VbOXOLAg56yhG7O-DEAc1x1ZTvthiig@mail.gmail.com>
- <20200402074259.GC2755501@kroah.com>
- <CAPk366Qm62TtwM7xNUSUT4L+7MwWDSPXyGCWXrXHYPjLeVf9OA@mail.gmail.com>
+        id S2502242AbgDPOdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2441985AbgDPOSs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:18:48 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD30C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:18:48 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id i3so1720868pgk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MyOJremCk3EzjpsoU30tfV1XsZhjh2TFfXRegC+y3HU=;
+        b=aNHWx7WMCL3pKFz9abn899+tHqiepX+XwwEwwGdmPKekjZeTAnze7RmlacZ/MJneA/
+         RNWLU2soROhviQV/QcI3F4TuuhHY//2cY4sYxyWivTrwonrJAd3dkIVV5qQqkEUPJ01y
+         HOxl+7u178O+/9Vz+eNoNQ2o/yjoUVK+qdcr784IqnE05VfiYElHZFf4BHJ+c3ACgVtk
+         4JStNRBD48DMBlE6Hc6MRo0F7QVeSCoRQ+xILjAXXnARjH7qylOo0M72OnNGphMeKrs7
+         WvHGHJKRkuH40YAOEhuu4qtpN9xdm/+uU88yf2Z74/RdnbAu8638q//xy5+LmiWlFPrX
+         wsaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MyOJremCk3EzjpsoU30tfV1XsZhjh2TFfXRegC+y3HU=;
+        b=b3jmWlNbI+maMjdLuiX9ZnKkuBQvBNs4EIXWWQn0GWBQg4lndDl8PxKamszlj9YvNx
+         mpAUvySwR46rntDswJ/jm1Mzimm0FlmU5L4ho8Zdhu1Ce9a+kiRRzxSlaeCsgQrXa5l2
+         4THkf1+6urh6G0+hj5MVgLiK1KWW9VRiACwKj8vcQwm1b4p+Cdn8FiQy7yXSc3Oilbdd
+         yMXDZmY20FzSsn1CZbqHfgbyp5dIg3/H7oD6ruSSD4yY1z28n4cHiH8dPzZHK7WbUvBc
+         IxnmIOM1S2VeyC11jdp1NrQEJLVObfeEMjHvaVkbowrg8AJibBb3eDzm3cmUb6yGcEX9
+         h6gg==
+X-Gm-Message-State: AGi0Pub3n6S9ouNnlyTyniklFShxWPKRLx4Azhwe5tQo3fh8/fDnikxo
+        YaC4Vb8Rfs/y/oeQd97W6xVBVw==
+X-Google-Smtp-Source: APiQypJPiEwkGlvpiMcrn0ZRytjDUeoUJMF2YfxXT7BGQVmAq1Ot1RHWYwnx3DB4fcAV6UPbU/AtqQ==
+X-Received: by 2002:a63:1103:: with SMTP id g3mr5762695pgl.206.1587046728061;
+        Thu, 16 Apr 2020 07:18:48 -0700 (PDT)
+Received: from Smcdef-MBP.lan ([103.136.220.69])
+        by smtp.gmail.com with ESMTPSA id x16sm3221935pfc.61.2020.04.16.07.18.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 Apr 2020 07:18:47 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] sched/cpuacct: Fix charge cpuacct.usage_sys incorrently.
+Date:   Thu, 16 Apr 2020 22:18:33 +0800
+Message-Id: <20200416141833.50663-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPk366Qm62TtwM7xNUSUT4L+7MwWDSPXyGCWXrXHYPjLeVf9OA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 03:50:34PM +0200, Mateusz Holenko wrote:
-> On Thu, Apr 2, 2020 at 9:43 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Apr 02, 2020 at 08:50:40AM +0200, Mateusz Holenko wrote:
-> > > On Thu, Apr 2, 2020 at 8:46 AM Mateusz Holenko <mholenko@antmicro.com> wrote:
-> > > >
-> > > > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > >
-> > > > This commit adds driver for the FPGA-based LiteX SoC
-> > > > Controller from LiteX SoC builder.
-> > > >
-> > > > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > > ---
-> > > >
-> > > > Notes:
-> > > >     Changes in v4:
-> > > >     - fixed indent in Kconfig's help section
-> > > >     - fixed copyright header
-> > > >     - changed compatible to "litex,soc-controller"
-> > > >     - simplified litex_soc_ctrl_probe
-> > > >     - removed unnecessary litex_soc_ctrl_remove
-> > > >
-> > > >     This commit has been introduced in v3 of the patchset.
-> > > >
-> > > >     It includes a simplified version of common 'litex.h'
-> > > >     header introduced in v2 of the patchset.
-> > > >
-> > > >  MAINTAINERS                        |   2 +
-> > > >  drivers/soc/Kconfig                |   1 +
-> > > >  drivers/soc/Makefile               |   1 +
-> > > >  drivers/soc/litex/Kconfig          |  14 ++
-> > > >  drivers/soc/litex/Makefile         |   3 +
-> > > >  drivers/soc/litex/litex_soc_ctrl.c | 217 +++++++++++++++++++++++++++++
-> > > >  include/linux/litex.h              |  45 ++++++
-> > > >  7 files changed, 283 insertions(+)
-> > > >  create mode 100644 drivers/soc/litex/Kconfig
-> > > >  create mode 100644 drivers/soc/litex/Makefile
-> > > >  create mode 100644 drivers/soc/litex/litex_soc_ctrl.c
-> > > >  create mode 100644 include/linux/litex.h
-> > > >
-> > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > index 2f5ede8a08aa..a35be1be90d5 100644
-> > > > --- a/MAINTAINERS
-> > > > +++ b/MAINTAINERS
-> > > > @@ -9729,6 +9729,8 @@ M:        Karol Gugala <kgugala@antmicro.com>
-> > > >  M:     Mateusz Holenko <mholenko@antmicro.com>
-> > > >  S:     Maintained
-> > > >  F:     Documentation/devicetree/bindings/*/litex,*.yaml
-> > > > +F:     drivers/soc/litex/litex_soc_ctrl.c
-> > > > +F:     include/linux/litex.h
-> > > >
-> > > >  LIVE PATCHING
-> > > >  M:     Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-> > > > index 1778f8c62861..78add2a163be 100644
-> > > > --- a/drivers/soc/Kconfig
-> > > > +++ b/drivers/soc/Kconfig
-> > > > @@ -9,6 +9,7 @@ source "drivers/soc/bcm/Kconfig"
-> > > >  source "drivers/soc/fsl/Kconfig"
-> > > >  source "drivers/soc/imx/Kconfig"
-> > > >  source "drivers/soc/ixp4xx/Kconfig"
-> > > > +source "drivers/soc/litex/Kconfig"
-> > > >  source "drivers/soc/mediatek/Kconfig"
-> > > >  source "drivers/soc/qcom/Kconfig"
-> > > >  source "drivers/soc/renesas/Kconfig"
-> > > > diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> > > > index 8b49d782a1ab..fd016b51cddd 100644
-> > > > --- a/drivers/soc/Makefile
-> > > > +++ b/drivers/soc/Makefile
-> > > > @@ -14,6 +14,7 @@ obj-$(CONFIG_ARCH_GEMINI)     += gemini/
-> > > >  obj-$(CONFIG_ARCH_MXC)         += imx/
-> > > >  obj-$(CONFIG_ARCH_IXP4XX)      += ixp4xx/
-> > > >  obj-$(CONFIG_SOC_XWAY)         += lantiq/
-> > > > +obj-$(CONFIG_LITEX_SOC_CONTROLLER) += litex/
-> > > >  obj-y                          += mediatek/
-> > > >  obj-y                          += amlogic/
-> > > >  obj-y                          += qcom/
-> > > > diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
-> > > > new file mode 100644
-> > > > index 000000000000..71264c0e1d6c
-> > > > --- /dev/null
-> > > > +++ b/drivers/soc/litex/Kconfig
-> > > > @@ -0,0 +1,14 @@
-> > > > +# SPDX-License_Identifier: GPL-2.0
-> > > > +
-> > > > +menu "Enable LiteX SoC Builder specific drivers"
-> > > > +
-> > > > +config LITEX_SOC_CONTROLLER
-> > > > +       tristate "Enable LiteX SoC Controller driver"
-> > > > +       help
-> > > > +         This option enables the SoC Controller Driver which verifies
-> > > > +         LiteX CSR access and provides common litex_get_reg/litex_set_reg
-> > > > +         accessors.
-> > > > +         All drivers that use functions from litex.h must depend on
-> > > > +         LITEX_SOC_CONTROLLER.
-> > > > +
-> > > > +endmenu
-> > > > diff --git a/drivers/soc/litex/Makefile b/drivers/soc/litex/Makefile
-> > > > new file mode 100644
-> > > > index 000000000000..98ff7325b1c0
-> > > > --- /dev/null
-> > > > +++ b/drivers/soc/litex/Makefile
-> > > > @@ -0,0 +1,3 @@
-> > > > +# SPDX-License_Identifier: GPL-2.0
-> > > > +
-> > > > +obj-$(CONFIG_LITEX_SOC_CONTROLLER)     += litex_soc_ctrl.o
-> > > > diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
-> > > > new file mode 100644
-> > > > index 000000000000..5defba000fd4
-> > > > --- /dev/null
-> > > > +++ b/drivers/soc/litex/litex_soc_ctrl.c
-> > > > @@ -0,0 +1,217 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +/*
-> > > > + * LiteX SoC Controller Driver
-> > > > + *
-> > > > + * Copyright (C) 2020 Antmicro <www.antmicro.com>
-> > > > + *
-> > > > + */
-> > > > +
-> > > > +#include <linux/litex.h>
-> > > > +#include <linux/device.h>
-> > > > +#include <linux/errno.h>
-> > > > +#include <linux/of.h>
-> > > > +#include <linux/of_platform.h>
-> > > > +#include <linux/platform_device.h>
-> > > > +#include <linux/printk.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/errno.h>
-> > > > +#include <linux/io.h>
-> > > > +
-> > > > +/*
-> > > > + * The parameters below are true for LiteX SoC
-> > > > + * configured for 8-bit CSR Bus, 32-bit aligned.
-> > > > + *
-> > > > + * Supporting other configurations will require
-> > > > + * extending the logic in this header.
-> > > > + */
-> > > > +#define LITEX_REG_SIZE             0x4
-> > > > +#define LITEX_SUBREG_SIZE          0x1
-> > > > +#define LITEX_SUBREG_SIZE_BIT      (LITEX_SUBREG_SIZE * 8)
-> > > > +
-> > > > +static DEFINE_SPINLOCK(csr_lock);
-> > > > +
-> > > > +static inline unsigned long read_pointer_with_barrier(
-> > > > +       const volatile void __iomem *addr)
-> > > > +{
-> > > > +       unsigned long val;
-> > > > +
-> > > > +       __io_br();
-> > > > +       val = *(const volatile unsigned long __force *)addr;
-> > > > +       __io_ar();
-> > > > +       return val;
-> > > > +}
-> > > > +
-> > > > +static inline void write_pointer_with_barrier(
-> > > > +       volatile void __iomem *addr, unsigned long val)
-> > > > +{
-> > > > +       __io_br();
-> > > > +       *(volatile unsigned long __force *)addr = val;
-> > > > +       __io_ar();
-> > > > +}
-> > > > +
-> > >
-> > > I'm defining read_pointer_with_barrier/write_pointer_with_barrier in
-> > > order to make sure that a series of reads/writes to a single CSR
-> > > register will not be reordered by the compiler.
-> >
-> > Please do not do this, there are core kernel calls for this, otherwise
-> > this would be required by every individual driver, which would be crazy.
-> >
-> > > Does __raw_readl/__raw_writel guarantee this property? If so, I could
-> > > drop my functions and use the system ones instead.
-> >
-> > Try it and see.
-> 
-> Since I want to avoid read/write reordering caused by the compiler
-> optimizations I don't want to rely on a single manual test.
-> What I mean is that even if it works now for me, it does not guarantee
-> that it will in the future version of the compiler/using different
-> compilation flags/etc, right?
+The user_mode(task_pt_regs(tsk)) always return true for
+user thread, and false for kernel thread. So it means that
+the cpuacct.usage_sys is the time that kernel thread uses
+not the time that thread uses in the kernel mode. We can
+use get_irq_regs() instead of task_pt_regs() to fix it.
 
-No, if the common functions stop working, then they will be fixed.  If
-you try to roll your own and they stop working in the future, no one
-will notice.
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ kernel/sched/cpuacct.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Please use the common in-kernel functions for this, it's not ok for
-drivers to try to do it themselves for basic things like this, no matter
-what platform they think they are designed for :)
+diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
+index 6448b0438ffb2..edfc62554648e 100644
+--- a/kernel/sched/cpuacct.c
++++ b/kernel/sched/cpuacct.c
+@@ -5,6 +5,7 @@
+  * Based on the work by Paul Menage (menage@google.com) and Balbir Singh
+  * (balbir@in.ibm.com).
+  */
++#include <asm/irq_regs.h>
+ #include "sched.h"
+ 
+ /* Time spent by the tasks of the CPU accounting group executing in ... */
+@@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
+ {
+ 	struct cpuacct *ca;
+ 	int index = CPUACCT_STAT_SYSTEM;
+-	struct pt_regs *regs = task_pt_regs(tsk);
++	struct pt_regs *regs = get_irq_regs();
+ 
+ 	if (regs && user_mode(regs))
+ 		index = CPUACCT_STAT_USER;
+-- 
+2.11.0
 
-thanks,
-
-greg k-h
