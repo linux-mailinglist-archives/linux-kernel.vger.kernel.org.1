@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0E21AC56F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A141ACB49
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442403AbgDPOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:19:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40202 "EHLO mail.kernel.org"
+        id S1728376AbgDPPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2636312AbgDPNxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:53:43 -0400
+        id S2897063AbgDPNfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:35:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE4B620732;
-        Thu, 16 Apr 2020 13:53:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 227B520732;
+        Thu, 16 Apr 2020 13:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045222;
-        bh=KWxq6ZrFrO8jPWH9ZCMnZoxwcvM3QWIjNinxvnDkmIE=;
+        s=default; t=1587044106;
+        bh=g0JPxNPuqoHUzF/vEU+fleh3hf32aKcWMVB7AZyvb9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vQMUp9AS/NEdZbbrf1pV9NKwsjqaguD/kYn1hrFJeKVYJV1cdGJmIfU2jX5wezjh/
-         fC0p1dDbXMYKAmA+00x2lZSh2tgubpGLT/RKMsHeXsk1ZMHdBYIbZiWmCXUDtdHJdH
-         d4s45TXtipmOZ4SOeiMvT+jDFc635oCt5EnYf/Po=
+        b=XS5nQHAc3M+WYE04inD/mxaX/8lgEfnCt5m9NbXWl6z5cSyWPJRqDdxGk8EoF/Dw3
+         tzMGBeww49wVd3F2v7bZZlS0gYg9E8a4VnKTgiIO+r+P6t3XkhZ5BVaDQ0OwrSqtxO
+         erqY9KSWzONWmZNXMQ0xjoysmXDs1V99nRHI+dDA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 045/254] gfs2: Dont demote a glock until its revokes are written
-Date:   Thu, 16 Apr 2020 15:22:14 +0200
-Message-Id: <20200416131331.520541316@linuxfoundation.org>
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.5 084/257] ASoC: topology: use name_prefix for new kcontrol
+Date:   Thu, 16 Apr 2020 15:22:15 +0200
+Message-Id: <20200416131336.457554916@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: 이경택 <gt82.lee@samsung.com>
 
-[ Upstream commit df5db5f9ee112e76b5202fbc331f990a0fc316d6 ]
+commit abca9e4a04fbe9c6df4d48ca7517e1611812af25 upstream.
 
-Before this patch, run_queue would demote glocks based on whether
-there are any more holders. But if the glock has pending revokes that
-haven't been written to the media, giving up the glock might end in
-file system corruption if the revokes never get written due to
-io errors, node crashes and fences, etc. In that case, another node
-will replay the metadata blocks associated with the glock, but
-because the revoke was never written, it could replay that block
-even though the glock had since been granted to another node who
-might have made changes.
+Current topology doesn't add prefix of component to new kcontrol.
 
-This patch changes the logic in run_queue so that it never demotes
-a glock until its count of pending revokes reaches zero.
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/009b01d60804$ae25c2d0$0a714870$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-topology.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index d0eceaff3cea9..19ebc6cd0f2ba 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -645,6 +645,9 @@ __acquires(&gl->gl_lockref.lock)
- 			goto out_unlock;
- 		if (nonblock)
- 			goto out_sched;
-+		smp_mb();
-+		if (atomic_read(&gl->gl_revokes) != 0)
-+			goto out_sched;
- 		set_bit(GLF_DEMOTE_IN_PROGRESS, &gl->gl_flags);
- 		GLOCK_BUG_ON(gl, gl->gl_demote_state == LM_ST_EXCLUSIVE);
- 		gl->gl_target = gl->gl_demote_state;
--- 
-2.20.1
-
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -362,7 +362,7 @@ static int soc_tplg_add_kcontrol(struct
+ 	struct snd_soc_component *comp = tplg->comp;
+ 
+ 	return soc_tplg_add_dcontrol(comp->card->snd_card,
+-				comp->dev, k, NULL, comp, kcontrol);
++				comp->dev, k, comp->name_prefix, comp, kcontrol);
+ }
+ 
+ /* remove a mixer kcontrol */
 
 
