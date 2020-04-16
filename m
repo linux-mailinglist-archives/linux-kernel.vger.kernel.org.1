@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34171ACC75
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5101AC95C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632885AbgDPQA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35648 "EHLO mail.kernel.org"
+        id S2633652AbgDPPWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:22:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895455AbgDPN1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:27:17 -0400
+        id S2898550AbgDPNp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:45:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D357121D94;
-        Thu, 16 Apr 2020 13:27:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A2BB2223E;
+        Thu, 16 Apr 2020 13:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043637;
-        bh=Ew9ijdVo0MZy0U3RGxQUl97TyvgHRME/rCP+4QrqC+4=;
+        s=default; t=1587044757;
+        bh=NupKDHaU0vDTr4mFGVn6du0MAD0o5CYqbcBOyesCm5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tkgbMrE6re9xET3J4LLWbtnK+QDCuVcTWXNfkTL/P18kzWAZAfE/Q3fcXcK9Y7mLk
-         SL2IkL/5tQffS1aECvu4YYhqL1v9fWyDoPBI3P6HWOljT0kCgDphbl93c7WQwZaILg
-         ICI1h91KaP4yW0GBawvcoiQI1nInVg1kVeOy3ExY=
+        b=LHRRPhYe1RWt+BS8kZT0NHryawzJeufngnLiVikdxMA78fy66YVOCbVGH+IlzwYmL
+         YI/n9Ufk7QZm32CR1rWJmeoihvniS+Pl44ujHRlp6GwxV7LbzywxGaBu/jib9pc/wp
+         hUvcxrxHiBJZ4x9DkkQ97e7Ee2IrWV/KT/xo+/i0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, chenqiwu <chenqiwu@xiaomi.com>,
+        Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 002/146] bus: sunxi-rsb: Return correct data when mixing 16-bit and 8-bit reads
+Subject: [PATCH 5.4 049/232] pstore/platform: fix potential mem leak if pstore_init_fs failed
 Date:   Thu, 16 Apr 2020 15:22:23 +0200
-Message-Id: <20200416131242.729748289@linuxfoundation.org>
+Message-Id: <20200416131321.862555251@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+From: chenqiwu <chenqiwu@xiaomi.com>
 
-[ Upstream commit a43ab30dcd4a1abcdd0d2461bf1cf7c0817f6cd3 ]
+[ Upstream commit 8a57d6d4ddfa41c49014e20493152c41a38fcbf8 ]
 
-When doing a 16-bit read that returns data in the MSB byte, the
-RSB_DATA register will keep the MSB byte unchanged when doing
-the following 8-bit read. sunxi_rsb_read() will then return
-a result that contains high byte from 16-bit read mixed with
-the 8-bit result.
+There is a potential mem leak when pstore_init_fs failed,
+since the pstore compression maybe unlikey to initialized
+successfully. We must clean up the allocation once this
+unlikey issue happens.
 
-The consequence is that after this happens the PMIC's regmap will
-look like this: (0x33 is the high byte from the 16-bit read)
-
-% cat /sys/kernel/debug/regmap/sunxi-rsb-3a3/registers
-00: 33
-01: 33
-02: 33
-03: 33
-04: 33
-05: 33
-06: 33
-07: 33
-08: 33
-09: 33
-0a: 33
-0b: 33
-0c: 33
-0d: 33
-0e: 33
-[snip]
-
-Fix this by masking the result of the read with the correct mask
-based on the size of the read. There are no 16-bit users in the
-mainline kernel, so this doesn't need to get into the stable tree.
-
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: chenqiwu <chenqiwu@xiaomi.com>
+Link: https://lore.kernel.org/r/1581068800-13817-1-git-send-email-qiwuchen55@gmail.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/sunxi-rsb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/pstore/platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/sunxi-rsb.c b/drivers/bus/sunxi-rsb.c
-index 1b76d95859027..2ca2cc56bcef6 100644
---- a/drivers/bus/sunxi-rsb.c
-+++ b/drivers/bus/sunxi-rsb.c
-@@ -345,7 +345,7 @@ static int sunxi_rsb_read(struct sunxi_rsb *rsb, u8 rtaddr, u8 addr,
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index 3d7024662d295..cdf5b8ae2583c 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -823,9 +823,9 @@ static int __init pstore_init(void)
+ 
+ 	ret = pstore_init_fs();
  	if (ret)
- 		goto unlock;
+-		return ret;
++		free_buf_for_compression();
  
--	*buf = readl(rsb->regs + RSB_DATA);
-+	*buf = readl(rsb->regs + RSB_DATA) & GENMASK(len * 8 - 1, 0);
+-	return 0;
++	return ret;
+ }
+ late_initcall(pstore_init);
  
- unlock:
- 	mutex_unlock(&rsb->lock);
 -- 
 2.20.1
 
