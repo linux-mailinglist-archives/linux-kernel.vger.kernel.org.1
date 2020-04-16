@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72821ABB4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824E41ABAEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502418AbgDPIco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:32:44 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35962 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441122AbgDPILL (ORCPT
+        id S2501936AbgDPIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441179AbgDPIN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:11:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587024669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wFZ203bZj9/d1HrtvH0p9KqRawPq4JxwlKVrmFjPcis=;
-        b=bEDaLlNrtGwOSc7TADrkOK/PBCVfIv/cMTuZUFZjlQ/OMrsLOJKdah+F8fSxhRpMXhfrqw
-        CO0Xu3tbS9mGA3/y8nvZ+V8fPby+vaEn3OBuZ+p5n98fn/5gNF+nV5v8n+Z8Jc6RwYhtle
-        ETQ3gQ21dStAvFjc1rvQ4kRrPFsDX2Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-tZrY3pJgMBy2TZZWxU1zqg-1; Thu, 16 Apr 2020 04:11:08 -0400
-X-MC-Unique: tZrY3pJgMBy2TZZWxU1zqg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93AD81005509;
-        Thu, 16 Apr 2020 08:11:03 +0000 (UTC)
-Received: from gondolin (ovpn-112-234.ams2.redhat.com [10.36.112.234])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 734275DA7B;
-        Thu, 16 Apr 2020 08:10:49 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 10:10:47 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: Optimize kvm_arch_vcpu_ioctl_run function
-Message-ID: <20200416101047.1cb9693c.cohuck@redhat.com>
-In-Reply-To: <20200416051057.26526-1-tianjia.zhang@linux.alibaba.com>
-References: <20200416051057.26526-1-tianjia.zhang@linux.alibaba.com>
-Organization: Red Hat GmbH
+        Thu, 16 Apr 2020 04:13:28 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664BFC061A0C;
+        Thu, 16 Apr 2020 01:13:27 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=vostro)
+        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <john.ogness@linutronix.de>)
+        id 1jOzeH-0000Rs-4N; Thu, 16 Apr 2020 10:13:25 +0200
+From:   John Ogness <john.ogness@linutronix.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH RT] printk: console must not schedule for drivers
+References: <20200406212217.2323-1-john.ogness@linutronix.de>
+        <20200415163416.r3fce3g5kokm4bub@linutronix.de>
+Date:   Thu, 16 Apr 2020 10:13:23 +0200
+In-Reply-To: <20200415163416.r3fce3g5kokm4bub@linutronix.de> (Sebastian
+        Andrzej Siewior's message of "Wed, 15 Apr 2020 18:34:16 +0200")
+Message-ID: <87o8rrg864.fsf@vostro.fn.ogness.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 13:10:57 +0800
-Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
+On 2020-04-15, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+>> Even though the printk kthread is always preemptible, it is still not
+>> allowed to call cond_resched() from within console drivers. The
+>> task may become non-preemptible in the console driver call chain. For
+>> example, vt_console_print() takes a spinlock and then can call into
+>> fbcon_redraw(), which can conditionally invoke cond_resched():
+>> 
+>> BUG: sleeping function called from invalid context at
+>> kernel/printk/printk.c:2322
+>> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 177, name: printk
+>> CPU: 0 PID: 177 Comm: printk Not tainted 5.6.2-00011-ga536059557f1d9 #1
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1
+>> 04/01/2014
+>> Call Trace:
+>>  dump_stack+0x66/0x8b
+>>  ___might_sleep+0x102/0x120
+>>  console_conditional_schedule+0x24/0x30
+>>  fbcon_redraw+0x96/0x1c0
+>>  ? fbcon_cursor+0x100/0x190
+>>  fbcon_scroll+0x556/0xd70
+>>  con_scroll+0x147/0x1e0
+>>  lf+0x9e/0xb0
+>>  vt_console_print+0x253/0x3d0
+>>  printk_kthread_func+0x1d5/0x3b0
+>> 
+>> Disable cond_resched() for the call into the console drivers.
+>
+> Interesting. So you get a report and I don't?
 
-> In earlier versions of kvm, 'kvm_run' is an independent structure
-> and is not included in the vcpu structure. At present, 'kvm_run'
-> is already included in the vcpu structure, so the parameter
-> 'kvm_run' is redundant.
-> 
-> This patch simplify the function definition, removes the extra
+Apparently only the patch author was notified. The reporter should
+include all the people tagged in the patch. I'll send him an email about
+this.
 
-s/simplify/simplifies/
+> - So before the re-rewrite, console_unlock() set this 0 before
+>   invoking the console drivers so it was always 0. I assume it was
+>   called with disabled interrupts.
 
-> 'kvm_run' parameter, and extract it from the 'kvm_vcpu' structure
+Correct.
 
-s/extract/extracts/
+> - Is there a scenario in fbcon where this function is invoked and
+>   console_may_schedule is not 0?
 
-> if necessary.
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
-> 
-> v2 change:
->   remove 'kvm_run' parameter and extract it from 'kvm_vcpu'
-> 
->  arch/mips/kvm/mips.c       |  3 ++-
->  arch/powerpc/kvm/powerpc.c |  3 ++-
->  arch/s390/kvm/kvm-s390.c   |  3 ++-
->  arch/x86/kvm/x86.c         | 11 ++++++-----
->  include/linux/kvm_host.h   |  2 +-
->  virt/kvm/arm/arm.c         |  6 +++---
->  virt/kvm/kvm_main.c        |  2 +-
->  7 files changed, 17 insertions(+), 13 deletions(-)
-> 
+Yes. The ttys/consoles are invoked through other call chains not related
+to printk. Since console_lock() can sleep, any caller of console_lock()
+_should_ be allowed to perform the cond_resched(). (The printk thread is
+an exception here!)
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Here is one call chain I picked out:
 
+tty_io.c:tty_write_message()
+    mutex_lock()
+    tty->ops->write() -> usb-serial.c:serial_write()
+        port->serial->type->write() -> vt.c:con_write()
+            do_con_write()
+                console_lock()
+                    console_may_schedule = 1;
+                console_conditional_schedule();
+                    cond_resched();
+
+From the mutex_lock() we can see that we are in a non-atomic context. In
+this case it is OK to call console_lock() and cond_resched().
+
+John Ogness
