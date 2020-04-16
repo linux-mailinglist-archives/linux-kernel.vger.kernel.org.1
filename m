@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29921AC5C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451F71AC32B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730743AbgDPO1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:27:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46224 "EHLO mail.kernel.org"
+        id S2897929AbgDPNjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898849AbgDPN7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:59:16 -0400
+        id S2896326AbgDPNaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EED5720786;
-        Thu, 16 Apr 2020 13:59:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0BE321D94;
+        Thu, 16 Apr 2020 13:30:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045554;
-        bh=1m5wxyivcW2j67TdFd8cmYte2yfupQ9BTC223xGt5FI=;
+        s=default; t=1587043854;
+        bh=OVXRAMaUhSQWroAzhVmxDkhTa/hWRSuxxkkGdCSITOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N2F2xgcvaDoF6YQZAGJn3ffBBSfuYeek0FSXyxTP3mpmvOgh8I9nD7Ztx9rB/nCVe
-         o5U6rhzdZcSZLBD7g6mMW6lglZcA54E7RyyA++TpuJMtMwg17ASuLlyZLrMbfSnfhB
-         1VEjqPcaPEdYJLPac5EtbCaNkfbFfTIE3M7hG1Zw=
+        b=UI+z4+c2u+e7PZliZPbjjezEZyflF5XOki+kKNOfGuIu8AwWiplpMcpIMYdp2g5OX
+         8h8fLiGZpqTWX0w+VD0rhy9xSA4qnh9HMoyJOWLyu04ftZq5khuUZS7Kdkjoo9DvAo
+         M5HG1gUF3Zjsdl9bOnmG36vjitUIjFW0q1M0bJwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.6 180/254] dm clone metadata: Fix return type of dm_clone_nr_of_hydrated_regions()
+        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 128/146] powerpc/kprobes: Ignore traps that happened in real mode
 Date:   Thu, 16 Apr 2020 15:24:29 +0200
-Message-Id: <20200416131348.897131217@linuxfoundation.org>
+Message-Id: <20200416131259.984149713@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +46,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-commit 81d5553d1288c2ec0390f02f84d71ca0f0f9f137 upstream.
+commit 21f8b2fa3ca5b01f7a2b51b89ce97a3705a15aa0 upstream.
 
-dm_clone_nr_of_hydrated_regions() returns the number of regions that
-have been hydrated so far. In order to do so it employs bitmap_weight().
+When a program check exception happens while MMU translation is
+disabled, following Oops happens in kprobe_handler() in the following
+code:
 
-Until now, the return type of dm_clone_nr_of_hydrated_regions() was
-unsigned long.
+	} else if (*addr != BREAKPOINT_INSTRUCTION) {
 
-Because bitmap_weight() returns an int, in case BITS_PER_LONG == 64 and
-the return value of bitmap_weight() is 2^31 (the maximum allowed number
-of regions for a device), the result is sign extended from 32 bits to 64
-bits and an incorrect value is displayed, in the status output of
-dm-clone, as the number of hydrated regions.
+  BUG: Unable to handle kernel data access on read at 0x0000e268
+  Faulting instruction address: 0xc000ec34
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  BE PAGE_SIZE=16K PREEMPT CMPC885
+  Modules linked in:
+  CPU: 0 PID: 429 Comm: cat Not tainted 5.6.0-rc1-s3k-dev-00824-g84195dc6c58a #3267
+  NIP:  c000ec34 LR: c000ecd8 CTR: c019cab8
+  REGS: ca4d3b58 TRAP: 0300   Not tainted  (5.6.0-rc1-s3k-dev-00824-g84195dc6c58a)
+  MSR:  00001032 <ME,IR,DR,RI>  CR: 2a4d3c52  XER: 00000000
+  DAR: 0000e268 DSISR: c0000000
+  GPR00: c000b09c ca4d3c10 c66d0620 00000000 ca4d3c60 00000000 00009032 00000000
+  GPR08: 00020000 00000000 c087de44 c000afe0 c66d0ad0 100d3dd6 fffffff3 00000000
+  GPR16: 00000000 00000041 00000000 ca4d3d70 00000000 00000000 0000416d 00000000
+  GPR24: 00000004 c53b6128 00000000 0000e268 00000000 c07c0000 c07bb6fc ca4d3c60
+  NIP [c000ec34] kprobe_handler+0x128/0x290
+  LR [c000ecd8] kprobe_handler+0x1cc/0x290
+  Call Trace:
+  [ca4d3c30] [c000b09c] program_check_exception+0xbc/0x6fc
+  [ca4d3c50] [c000e43c] ret_from_except_full+0x0/0x4
+  --- interrupt: 700 at 0xe268
+  Instruction dump:
+  913e0008 81220000 38600001 3929ffff 91220000 80010024 bb410008 7c0803a6
+  38210020 4e800020 38600000 4e800020 <813b0000> 6d2a7fe0 2f8a0008 419e0154
+  ---[ end trace 5b9152d4cdadd06d ]---
 
-Fix this by having dm_clone_nr_of_hydrated_regions() return an unsigned
-int.
+kprobe is not prepared to handle events in real mode and functions
+running in real mode should have been blacklisted, so kprobe_handler()
+can safely bail out telling 'this trap is not mine' for any trap that
+happened while in real-mode.
 
-Fixes: 7431b7835f55 ("dm: add clone target")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+If the trap happened with MSR_IR or MSR_DR cleared, return 0
+immediately.
+
+Reported-by: Larry Finger <Larry.Finger@lwfinger.net>
+Fixes: 6cc89bad60a6 ("powerpc/kprobes: Invoke handlers directly")
+Cc: stable@vger.kernel.org # v4.10+
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/424331e2006e7291a1bfe40e7f3fa58825f565e1.1582054578.git.christophe.leroy@c-s.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-clone-metadata.c |    2 +-
- drivers/md/dm-clone-metadata.h |    2 +-
- drivers/md/dm-clone-target.c   |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/kprobes.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/md/dm-clone-metadata.c
-+++ b/drivers/md/dm-clone-metadata.c
-@@ -656,7 +656,7 @@ bool dm_clone_is_range_hydrated(struct d
- 	return (bit >= (start + nr_regions));
- }
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -277,6 +277,9 @@ int kprobe_handler(struct pt_regs *regs)
+ 	if (user_mode(regs))
+ 		return 0;
  
--unsigned long dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd)
-+unsigned int dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd)
- {
- 	return bitmap_weight(cmd->region_map, cmd->nr_regions);
- }
---- a/drivers/md/dm-clone-metadata.h
-+++ b/drivers/md/dm-clone-metadata.h
-@@ -156,7 +156,7 @@ bool dm_clone_is_range_hydrated(struct d
- /*
-  * Returns the number of hydrated regions.
-  */
--unsigned long dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd);
-+unsigned int dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd);
- 
- /*
-  * Returns the first unhydrated region with region_nr >= @start
---- a/drivers/md/dm-clone-target.c
-+++ b/drivers/md/dm-clone-target.c
-@@ -1473,7 +1473,7 @@ static void clone_status(struct dm_targe
- 			goto error;
- 		}
- 
--		DMEMIT("%u %llu/%llu %llu %lu/%lu %u ",
-+		DMEMIT("%u %llu/%llu %llu %u/%lu %u ",
- 		       DM_CLONE_METADATA_BLOCK_SIZE,
- 		       (unsigned long long)(nr_metadata_blocks - nr_free_metadata_blocks),
- 		       (unsigned long long)nr_metadata_blocks,
++	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
++		return 0;
++
+ 	/*
+ 	 * We don't want to be preempted for the entire
+ 	 * duration of kprobe processing
 
 
