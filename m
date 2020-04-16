@@ -2,152 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460C41AC84B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D731D1AC848
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441737AbgDPPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:06:31 -0400
-Received: from saul.pp3345.net ([163.172.111.124]:53468 "EHLO saul.pp3345.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392443AbgDPNwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:52:12 -0400
-Received: from localhost (localhost [127.0.0.1]) (Authenticated sender: dev@pp3345.net)
-        by saul.pp3345.net (Postcow) with ESMTPSA id 90B299A4642;
-        Thu, 16 Apr 2020 15:51:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pp3345.net; s=saul;
-        t=1587045100; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        id S2407606AbgDPPGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:06:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25991 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2392448AbgDPNwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:52:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587045132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:openpgp:autocrypt;
-        bh=p72sMrzpjiFBe093N4lGaIhYqi5PDODmXWZRAmXL3do=;
-        b=LPvAOFTHvmx2f6lB1iTk8U8tLB6dV9w5XwqI7PJuJaYAwrda2p7+AiHFfT3/PhQQzDYjDP
-        oPxW4oVvEGSuJ0qS6/XkwSD/o7Z8N+mjBfqQbkCc2YRcHuY0A5D7BxZyjynC2WdSyKBt2n
-        fBpqBRrq94kWjSoEoG9Q3NqfI8iG400Dd9g2Egy2dvd36Yih+uTDewxdd4AQWXuZxA2Emo
-        //TVSphDSFvYpJmaxFI/giDgAoSBjvgeUA3pq9MF4bek4K2uzIdxlnMPiLdSL+XNRrVXGR
-        VR0LhnxS6k24xrcs/h68mw/rC2ZYj9P66mQfOmcPHX6CakBpfSHwpXAnT6AkEA==
-Message-ID: <ac01c47a3b2c2ac73368882fb90eb6ee4e07fd04.camel@pp3345.net>
-Subject: Re: [PATCH 1/5] drm/modes: Indicate CEA-861 CE modes to user-space
-From:   Yussuf Khalil <dev@pp3345.net>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Thu, 16 Apr 2020 15:51:36 +0200
-In-Reply-To: <20200414124132.GV3456981@phenom.ffwll.local>
-References: <20200413214024.46500-1-dev@pp3345.net>
-         <20200413214024.46500-2-dev@pp3345.net>
-         <20200414124132.GV3456981@phenom.ffwll.local>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1 (3.36.1-1.fc32) 
+         in-reply-to:in-reply-to:references:references;
+        bh=JtZT59l+g5q4URhJXPd/sWhIspEh7jpqcBTOItYfg28=;
+        b=UpbfD+TjxgVDFCkYpiX4MvbZlZ/3FysYkwB0fTH9tdCPq6BVHM5dQCfhYNPNxApPRdKI8r
+        3FsrpcFlVWicKspJ6nDK0JJ5WUR7wbKDP1njDE/w32L2EkY/lVItDEr8Bn1dPQRMHk/LXg
+        QDbFEDP3oaFVWwGLjfx6r3YF2NQT0YY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-khDCBiQVNYuy8S_CwG-7UQ-1; Thu, 16 Apr 2020 09:52:11 -0400
+X-MC-Unique: khDCBiQVNYuy8S_CwG-7UQ-1
+Received: by mail-wm1-f69.google.com with SMTP id f8so1444311wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:52:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JtZT59l+g5q4URhJXPd/sWhIspEh7jpqcBTOItYfg28=;
+        b=OefavNLAroRu89bLBGe46kPiKqGbjheM711G+mNHGQrjtzHobQAU4r29Kav7xa+zWB
+         pQlngzKDXCWX+/OCGGaYWfXHaw/xv9lFpteW681AhI43NCrHRC2jqEG7ZHsG6DGolYEx
+         E7AHh15yNWoRVt/kiEVI4a9wLh+HcqTJwaXp9GoQkvo/QfKD1tMHBw6+b8apWncBoB/C
+         PN5PK0br3UhDNgmorqEnGUC8UtjhdsxI8Sq5Z9pq3plcbqB0UKcOUPHFV38IyQ9Ok0mO
+         p9jwse2Q3QeTmpYJHUSTECgCuDnLxb4rx7oRYF8Xh54B2KArYthHEXEVxwIWUxZtEL+4
+         RsrQ==
+X-Gm-Message-State: AGi0PuYfzn7RNcS1U7K8X33TZHnUd4Gp/vNHWXIIpMxMG7+TbYEF+lR+
+        u9rj7hKDeVO5V2gEEcSD5sbE6FsqSjKpNh880DHYH0O7QbJpB559oEH/lLK6Q8chwHU2yAX5Mop
+        j7NsIxtMFqJfwkFDgL6gwi2L0
+X-Received: by 2002:a5d:6950:: with SMTP id r16mr11568143wrw.388.1587045129598;
+        Thu, 16 Apr 2020 06:52:09 -0700 (PDT)
+X-Google-Smtp-Source: APiQypK63/aYHcwyhd8tocTraFkjK2hYA4p1i+B3r5iNYJk8yI1wvmbWMNaX6XdqWAZjmgzyg1U15w==
+X-Received: by 2002:a5d:6950:: with SMTP id r16mr11568119wrw.388.1587045129315;
+        Thu, 16 Apr 2020 06:52:09 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:399d:3ef7:647c:b12d? ([2001:b07:6468:f312:399d:3ef7:647c:b12d])
+        by smtp.gmail.com with ESMTPSA id p7sm28032996wrf.31.2020.04.16.06.52.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 06:52:08 -0700 (PDT)
+Subject: Re: [PATCH 0/2] KVM: x86/mmu: Minor cleanup in try_async_pf()
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20200415214414.10194-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <29248fbf-f0fd-74e6-3edb-ee5ad1e0b33d@redhat.com>
+Date:   Thu, 16 Apr 2020 15:52:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20200415214414.10194-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-14 at 14:41 +0200, Daniel Vetter wrote:
-> On Mon, Apr 13, 2020 at 11:40:22PM +0200, Yussuf Khalil wrote:
-> > Add a new flag to mark modes that are considered a CE mode
-> > according to the
-> > CEA-861 specification. Modes without this flag are implicitly
-> > considered to
-> > be IT modes.
-> > 
-> > User-space applications may use this flag to determine possible
-> > implications of using a CE mode (e.g., limited RGB range).
-> > 
-> > There is no use for this flag inside the kernel, so we set it only
-> > when
-> > communicating a mode to user-space.
-> > 
-> > Signed-off-by: Yussuf Khalil <dev@pp3345.net>
+On 15/04/20 23:44, Sean Christopherson wrote:
 > 
-> Do we have userspace for this?
-> 
-> If we go with the existing quant range property you don't need new
-> userspace for the property itself. But this flag here is new uapi, so
-> needs userspace per
-> 
-> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#open-source-userspace-requirements
-> 
-> Also since this standardizes kms uapi, we need testcases per
-> 
-> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-requirements-for-userspace-api
-> 
-> Cheers, Daniel
-> 
-> > ---
-> >  drivers/gpu/drm/drm_modes.c | 14 ++++++++++++++
-> >  include/uapi/drm/drm_mode.h |  2 ++
-> >  2 files changed, 16 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_modes.c
-> > b/drivers/gpu/drm/drm_modes.c
-> > index d4d64518e11b..0d8a032f437d 100644
-> > --- a/drivers/gpu/drm/drm_modes.c
-> > +++ b/drivers/gpu/drm/drm_modes.c
-> > @@ -1973,6 +1973,14 @@ void drm_mode_convert_to_umode(struct
-> > drm_mode_modeinfo *out,
-> >  		break;
-> >  	}
-> >  
-> > +	if (drm_match_cea_mode(in) > 1) {
-> > +		/*
-> > +		 * All modes in CTA-861-G Table 1 are CE modes, except
-> > 640x480p
-> > +		 * (VIC 1).
-> > +		 */
-> > +		out->flags |= DRM_MODE_FLAG_CEA_861_CE_MODE;
-> > +	}
-> > +
-> >  	strncpy(out->name, in->name, DRM_DISPLAY_MODE_LEN);
-> >  	out->name[DRM_DISPLAY_MODE_LEN-1] = 0;
-> >  }
-> > @@ -2045,6 +2053,12 @@ int drm_mode_convert_umode(struct drm_device
-> > *dev,
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > +	/*
-> > +	 * The CEA-861 CE mode flag is purely informational and
-> > intended for
-> > +	 * userspace only.
-> > +	 */
-> > +	out->flags &= ~DRM_MODE_FLAG_CEA_861_CE_MODE;
-> > +
-> >  	out->status = drm_mode_validate_driver(dev, out);
-> >  	if (out->status != MODE_OK)
-> >  		return -EINVAL;
-> > diff --git a/include/uapi/drm/drm_mode.h
-> > b/include/uapi/drm/drm_mode.h
-> > index 735c8cfdaaa1..5e78b350b2e2 100644
-> > --- a/include/uapi/drm/drm_mode.h
-> > +++ b/include/uapi/drm/drm_mode.h
-> > @@ -124,6 +124,8 @@ extern "C" {
-> >  #define  DRM_MODE_FLAG_PIC_AR_256_135 \
-> >  			(DRM_MODE_PICTURE_ASPECT_256_135<<19)
-> >  
-> > +#define DRM_MODE_FLAG_CEA_861_CE_MODE (1<<23)
-> > +
-> >  #define  DRM_MODE_FLAG_ALL	(DRM_MODE_FLAG_PHSYNC |		\
-> >  				 DRM_MODE_FLAG_NHSYNC |		\
-> >  				 DRM_MODE_FLAG_PVSYNC |		\
-> > -- 
-> > 2.26.0
-> > 
+> I'm not 100% on whether or not open coding the private memslot check in
+> patch 2 is a good idea.  Avoiding the extra memslot lookup is nice, but
+> that could be done by providing e.g. kvm_is_memslot_visible(). 
 
-Sorry, I wasn't aware DRM had these additional requirements. I do have a user-
-space implementation in mutter and gnome-control-center that makes use of the
-new property and this flag on my local machine. I'll try to propose the branch
-upstream before sending in the next revision of this patchset.
+Yeah, that's better.  The patch is so small that it's even pointless to
+split it in two:
 
-Do I understand it correctly that this will require test cases for both the
-property itself and the new flag? I'll write a patch for IGT then.
+From: Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH] KVM: x86/mmu: Avoid an extra memslot lookup in try_async_pf() for L2
 
-Regards
-Yussuf
+Create a new function kvm_is_visible_memslot() and use it from
+kvm_is_visible_gfn(); use the new function in try_async_pf() too,
+to avoid an extra memslot lookup.
+
+Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d6cb9416179..fe04ce843a57 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4082,19 +4082,18 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+ 			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, bool write,
+ 			 bool *writable)
+ {
+-	struct kvm_memory_slot *slot;
++	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+ 	bool async;
+ 
+ 	/*
+ 	 * Don't expose private memslots to L2.
+ 	 */
+-	if (is_guest_mode(vcpu) && !kvm_is_visible_gfn(vcpu->kvm, gfn)) {
++	if (is_guest_mode(vcpu) && !kvm_is_visible_memslot(slot)) {
+ 		*pfn = KVM_PFN_NOSLOT;
+ 		*writable = false;
+ 		return false;
+ 	}
+ 
+-	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+ 	async = false;
+ 	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async, write, writable);
+ 	if (!async)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 658215f6102c..7d4f1eb70274 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1357,6 +1357,12 @@ static inline void kvm_vcpu_set_dy_eligible(struct kvm_vcpu *vcpu, bool val)
+ }
+ #endif /* CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT */
+ 
++static inline bool kvm_is_visible_memslot(struct kvm_memory_slot *memslot)
++{
++	return (memslot && memslot->id < KVM_USER_MEM_SLOTS &&
++		!(memslot->flags & KVM_MEMSLOT_INVALID));
++}
++
+ struct kvm_vcpu *kvm_get_running_vcpu(void);
+ struct kvm_vcpu * __percpu *kvm_get_running_vcpus(void);
+ 
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index da8fd45e0e3e..8aa577db131e 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1607,11 +1607,7 @@ bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn)
+ {
+ 	struct kvm_memory_slot *memslot = gfn_to_memslot(kvm, gfn);
+ 
+-	if (!memslot || memslot->id >= KVM_USER_MEM_SLOTS ||
+-	      memslot->flags & KVM_MEMSLOT_INVALID)
+-		return false;
+-
+-	return true;
++	return kvm_is_visible_memslot(memslot);
+ }
+ EXPORT_SYMBOL_GPL(kvm_is_visible_gfn);
+ 
 
