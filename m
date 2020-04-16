@@ -2,142 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5551ACE27
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356021ACE2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390325AbgDPQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388292AbgDPQzV (ORCPT
+        id S2404176AbgDPQ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:57:02 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35800 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731440AbgDPQ44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:55:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893C5C061A0C;
-        Thu, 16 Apr 2020 09:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=SdsVaEuynxVl0UJCNR0r5+vmFyRSMSZDu5zqtsqcu0U=; b=Ps2uAwTN7losl6MeXexLUWKqZU
-        gQky90Gx8FSosuNCaA5J5/m6NQgL5elxwz4lSaigJa1mIs2+3aRxZYLdRIRITSaj/C7kLqdq/K0qB
-        8dDDt5K8gXRSSzG7J2jOgPaSO5VCC10Eyuligt0tBJk2Umzrjd0xL9gOz6omBnXtg7rsZFp32576q
-        aIQzIO5fYq3VFoDJsOSI7GXsNE+Z0+aRm8FU8onmSILIjG6Z+pA4E6FzjY5C9GJbCY0Q1rHK9IMcV
-        qLi/c5vJnS1WJQKRpOVjDsp4gdaszcY5Jsg+c+DH4B7FkiRW0Ft17rqV30gGMxslVbX65DhgJCVV7
-        bwemvb1w==;
-Received: from [2001:4bb8:184:4aa1:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP7nH-0004OJ-Bf; Thu, 16 Apr 2020 16:55:15 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     axboe@kernel.dk
-Cc:     yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, gregkh@linuxfoundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] bdi: remove the name field in struct backing_dev_info
-Date:   Thu, 16 Apr 2020 18:54:53 +0200
-Message-Id: <20200416165453.1080463-9-hch@lst.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200416165453.1080463-1-hch@lst.de>
-References: <20200416165453.1080463-1-hch@lst.de>
+        Thu, 16 Apr 2020 12:56:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587056215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FtqJ90xdaaArC4Wt+UP95sE7yqWa9iDJbaqMvVSt4X0=;
+        b=LkQrqoYcaEYmuVF370CzpuhcxLqCF7zoNQKvZBcyWvsqzGpsHObMjLg2yy1c1DrZPAOtnP
+        UtUom9dc8sK0Hl/EAdpYYT6Arby750KGLGbIWkYyC9c7Na9ycdhAkrrwTHcDJlsxAR5K0F
+        qtFVJ6QnfR3AaHka4wDPNmcErcG+j1g=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-f_Z4ST6tMpeoWKrcgAAWOQ-1; Thu, 16 Apr 2020 12:56:51 -0400
+X-MC-Unique: f_Z4ST6tMpeoWKrcgAAWOQ-1
+Received: by mail-qv1-f72.google.com with SMTP id t16so3856867qve.22
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:56:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=FtqJ90xdaaArC4Wt+UP95sE7yqWa9iDJbaqMvVSt4X0=;
+        b=LPNFMEXRu+f4l34W873RVypKAWPVteqllPgEzmwyMNVR7q4o55aJzJ1qpVtNMAQhi5
+         gkc/KN6Nke0CDma5sfiXjwRf6/sCR6ySIbu4XUv/iA6XoOqoHIu04WDCTr8BxINT4OYp
+         xIF6vpucm8E9dG3/qDJ3pUIdeyEtjVyYwR37ZchXyTfdNeNhCNEpPRUC8ieUZXK+1BZt
+         H690E+oq0ZuYUbtw/XtEQ8hK8ZqYmao+F2YAGI5wLKzrRT8dLCTjk77hvZ6DpXcuEsFe
+         IMJA8kYfpGOkLU6aLd7NTBN2715ZNIjfbL8r8urbzonQ48JjqX/TEJ7RzC5vuAoHXxp7
+         WfNg==
+X-Gm-Message-State: AGi0Pub7PRKFdcavl5HYvFxEuMmoxfKbHsH1wUkXty6s9bNNXbWxMB5a
+        26+kp7Dc0bEwSN6Gui9eKcaNFSkIhnGz15ElSUX5FD//tsxlx3fFkc6CmJFHVpi0UEhZugNkapD
+        mXJyY2Hm3lcNWcMpBdenXiy+Y
+X-Received: by 2002:a05:620a:2158:: with SMTP id m24mr22103004qkm.272.1587056211050;
+        Thu, 16 Apr 2020 09:56:51 -0700 (PDT)
+X-Google-Smtp-Source: APiQypISGwMhzI4XgAte4arKs5cwA/hMNtaSO2/TYLJCXRGvthdsD3ysU+JITN4tZMZtQ4vVgyLw6A==
+X-Received: by 2002:a05:620a:2158:: with SMTP id m24mr22102984qkm.272.1587056210851;
+        Thu, 16 Apr 2020 09:56:50 -0700 (PDT)
+Received: from trix.remote.csb ([75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c33sm11855109qtb.76.2020.04.16.09.56.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 09:56:50 -0700 (PDT)
+Subject: Re: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
+To:     "Wu, Hao" <hao.wu@intel.com>, "Xu, Yilun" <yilun.xu@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "bhu@redhat.com" <bhu@redhat.com>
+References: <1587006712-22696-1-git-send-email-yilun.xu@intel.com>
+ <1587006712-22696-2-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB3819619E9B2C7326218247E385D80@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <9b1d85e0-4f44-179b-c847-af858fcc212a@redhat.com>
+Date:   Thu, 16 Apr 2020 09:56:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <DM6PR11MB3819619E9B2C7326218247E385D80@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The name is only printed for a not registered bdi in writeback.  Use the
-device name there as is more useful anyway for the unlike case that the
-warning triggers.
+Please check the scope.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- block/blk-core.c                 | 1 -
- drivers/mtd/mtdcore.c            | 1 -
- fs/fs-writeback.c                | 2 +-
- fs/super.c                       | 2 --
- include/linux/backing-dev-defs.h | 2 --
- mm/backing-dev.c                 | 1 -
- 6 files changed, 1 insertion(+), 8 deletions(-)
+On linus/master, the result of this change looks like
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index ab87f2833ab2..f37068c611bf 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -494,7 +494,6 @@ struct request_queue *__blk_alloc_queue(int node_id)
- 
- 	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
- 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
--	q->backing_dev_info->name = "block";
- 	q->node = node_id;
- 
- 	timer_setup(&q->backing_dev_info->laptop_mode_wb_timer,
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 39ec563d9a14..fcb018ce17c3 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2040,7 +2040,6 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
- 	if (!bdi)
- 		return ERR_PTR(-ENOMEM);
- 
--	bdi->name = name;
- 	/*
- 	 * We put '-0' suffix to the name to get the same name format as we
- 	 * used to get. Since this is called only once, we get a unique name. 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 76ac9c7d32ec..d85323607b49 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2320,7 +2320,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 
- 			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
- 			     !test_bit(WB_registered, &wb->state),
--			     "bdi-%s not registered\n", wb->bdi->name);
-+			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
- 
- 			inode->dirtied_when = jiffies;
- 			if (dirtytime)
-diff --git a/fs/super.c b/fs/super.c
-index dd28fcd706ff..4991f441988e 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1602,8 +1602,6 @@ int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
- 	if (!bdi)
- 		return -ENOMEM;
- 
--	bdi->name = sb->s_type->name;
--
- 	va_start(args, fmt);
- 	err = bdi_register_va(bdi, fmt, args);
- 	va_end(args);
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index 2849bdbb3acb..011bb8ad0738 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -194,8 +194,6 @@ struct backing_dev_info {
- 	congested_fn *congested_fn; /* Function pointer if device is md/dm */
- 	void *congested_data;	/* Pointer to aux data for congested func */
- 
--	const char *name;
--
- 	struct kref refcnt;	/* Reference counter for the structure */
- 	unsigned int capabilities; /* Device capabilities */
- 	unsigned int min_ratio;
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 1f55d5b8269f..d382272bcc31 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -15,7 +15,6 @@
- #include <trace/events/writeback.h>
- 
- struct backing_dev_info noop_backing_dev_info = {
--	.name		= "noop",
- 	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
- };
- EXPORT_SYMBOL_GPL(noop_backing_dev_info);
--- 
-2.25.1
+static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
+{
+    struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+    struct dfl_fpga_cdev *cdev = drvdata->cdev;
+
+    if (!num_vfs) {
+        /*
+         * disable SRIOV and then put released ports back to default
+         * PF access mode.
+         */
+        pci_disable_sriov(pcidev);
+
+        dfl_fpga_cdev_config_ports_pf(cdev);
+
+    } else {
+        int ret; <--- defined here
+
+        /*
+         * before enable SRIOV, put released ports into VF access mode
+         * first of all.
+         */
+        ret = dfl_fpga_cdev_config_ports_vf(cdev, num_vfs);
+        if (ret)
+            return ret;
+
+        ret = pci_enable_sriov(pcidev, num_vfs);
+        if (ret)
+            dfl_fpga_cdev_config_ports_pf(cdev);
+    }
+
+    return ret;  <---- not in scope, not defined here
+}
+
+Tom
 
