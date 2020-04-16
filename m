@@ -2,75 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773CD1ACA76
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B5F1AC378
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898123AbgDPNkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2896307AbgDPNau (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:30:50 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B6CC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:30:50 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id E492DED; Thu, 16 Apr 2020 15:30:46 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 15:30:45 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH 12/70] x86/boot/compressed/64: Add IDT Infrastructure
-Message-ID: <20200416133045.GA4290@8bytes.org>
-References: <20200319091407.1481-1-joro@8bytes.org>
- <20200319091407.1481-13-joro@8bytes.org>
- <20200407022127.GA1048595@rani.riverdale.lan>
+        id S2896693AbgDPNno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:43:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:60900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896755AbgDPNdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:33:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 544F11FB;
+        Thu, 16 Apr 2020 06:33:42 -0700 (PDT)
+Received: from [10.57.59.184] (unknown [10.57.59.184])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 243AF3F68F;
+        Thu, 16 Apr 2020 06:33:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] iommu: arm-smmu-impl: Convert to a generic reset
+ implementation
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Tomasz Figa <tfiga@chromium.org>
+References: <cover.1579692800.git.saiprakash.ranjan@codeaurora.org>
+ <e7ba4dbd8e9c8aedd6f5db1b3453d9782b7943cd.1579692800.git.saiprakash.ranjan@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <cc3e3ed5-b187-c4a1-8229-974821a9e1ad@arm.com>
+Date:   Thu, 16 Apr 2020 14:33:38 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407022127.GA1048595@rani.riverdale.lan>
+In-Reply-To: <e7ba4dbd8e9c8aedd6f5db1b3453d9782b7943cd.1579692800.git.saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arvind,
-
-On Mon, Apr 06, 2020 at 10:21:27PM -0400, Arvind Sankar wrote:
-> On Thu, Mar 19, 2020 at 10:13:09AM +0100, Joerg Roedel wrote:
-> > From: Joerg Roedel <jroedel@suse.de>
-> > +/*
-> > + * Reload GDT after relocation - The GDT at the non-relocated position
-> > + * might be overwritten soon by the in-place decompression, so reload
-> > + * GDT at the relocated address. The GDT is referenced by exception
-> > + * handling and needs to be set up correctly.
-> > + */
-> > +	leaq	gdt(%rip), %rax
-> > +	movq	%rax, gdt64+2(%rip)
-> > +	lgdt	gdt64(%rip)
-> > +
-> >  /*
-> >   * Clear BSS (stack is currently empty)
-> >   */
+On 2020-01-22 11:48 am, Sai Prakash Ranjan wrote:
+> Currently the QCOM specific smmu reset implementation is very
+> specific to SDM845 SoC and has a wait-for-safe logic which
+> may not be required for other SoCs. So move the SDM845 specific
+> logic to its specific reset function. Also add SC7180 SMMU
+> compatible for calling into QCOM specific implementation.
 > 
-> Note that this is now done in mainline as of commit c98a76eabbb6e, just
-> prior to jumping to .Lrelocated, so this can be dropped on the next
-> rebase.
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>   drivers/iommu/arm-smmu-impl.c |  8 +++++---
+>   drivers/iommu/arm-smmu-qcom.c | 16 +++++++++++++---
+>   2 files changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
+> index 74d97a886e93..c75b9d957b70 100644
+> --- a/drivers/iommu/arm-smmu-impl.c
+> +++ b/drivers/iommu/arm-smmu-impl.c
+> @@ -150,6 +150,8 @@ static const struct arm_smmu_impl arm_mmu500_impl = {
+>   
+>   struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+>   {
+> +	const struct device_node *np = smmu->dev->of_node;
+> +
+>   	/*
+>   	 * We will inevitably have to combine model-specific implementation
+>   	 * quirks with platform-specific integration quirks, but everything
+> @@ -166,11 +168,11 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+>   		break;
+>   	}
+>   
+> -	if (of_property_read_bool(smmu->dev->of_node,
+> -				  "calxeda,smmu-secure-config-access"))
+> +	if (of_property_read_bool(np, "calxeda,smmu-secure-config-access"))
+>   		smmu->impl = &calxeda_impl;
+>   
+> -	if (of_device_is_compatible(smmu->dev->of_node, "qcom,sdm845-smmu-500"))
+> +	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
+> +	    of_device_is_compatible(np, "qcom,sc7180-smmu-500"))
+>   		return qcom_smmu_impl_init(smmu);
+>   
+>   	return smmu;
+> diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+> index 24c071c1d8b0..64a4ab270ab7 100644
+> --- a/drivers/iommu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm-smmu-qcom.c
+> @@ -15,8 +15,6 @@ static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
+>   {
+>   	int ret;
+>   
+> -	arm_mmu500_reset(smmu);
+> -
+>   	/*
+>   	 * To address performance degradation in non-real time clients,
+>   	 * such as USB and UFS, turn off wait-for-safe on sdm845 based boards,
+> @@ -30,8 +28,20 @@ static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
+>   	return ret;
+>   }
+>   
+> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+> +{
+> +	const struct device_node *np = smmu->dev->of_node;
+> +
+> +	arm_mmu500_reset(smmu);
+> +
+> +	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500"))
+> +		return qcom_sdm845_smmu500_reset(smmu);
+> +
+> +	return 0;
+> +}
+> +
+>   static const struct arm_smmu_impl qcom_smmu_impl = {
+> -	.reset = qcom_sdm845_smmu500_reset,
+> +	.reset = qcom_smmu500_reset,
+>   };
 
-Thanks for the heads-up, I removed this hunk.
+It might be logical to have a separate SDM845 impl rather than 
+indirecting within the callback itself, but I'm not too concerned either 
+way. For the arm-smmu-impl.c changes,
 
-Regards,
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-	Joerg
+Thanks,
+Robin.
+
+>   
+>   struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+> 
