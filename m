@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3BF1ACB37
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66391AC95B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634980AbgDPPo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:44:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47336 "EHLO mail.kernel.org"
+        id S2395150AbgDPPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:22:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897134AbgDPNfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:35:24 -0400
+        id S2898545AbgDPNp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:45:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FBA921BE5;
-        Thu, 16 Apr 2020 13:35:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DBDB21734;
+        Thu, 16 Apr 2020 13:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044123;
-        bh=4m1dUXBUV9k6o18wlvbkSZoGbZqakAwYAzHfc90hGU0=;
+        s=default; t=1587044755;
+        bh=QSSGrsx/jMeT0/9tWBypb7x/p6plGQ0B+Kwg+JKNt14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l/+h18iJsjz/JWvHt2VqqFbnIOoru5e2mxC77f2jgYf1h08c1Sj/FCQuuMeGp2L1o
-         4sQXUayUciThXSX2r0RriDp4VzPTW5BED8bRaEE6G3pPvVKzaUP4orwZEqKBVaOcLQ
-         CdlDCaf7XA2hwtACdtcF/jL9m6Y7Tvu1Ukfmlkqs=
+        b=cjYXCFvLALzgUWcvGUzH8Ce7gHVZEYA+4hE7p2x5RaNHmdQuXaiEhJEwrW9bDAJhD
+         XUDASV8QSvZwcl11BLB+3xZN2jb8C0plQrfgj0Dumbhj1HwV/xfg8UrWGz4uwq2b7v
+         9uTjasTEFFQxTtZo3nXNIVbwMT/iuPi7xGNS9kUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Jari Ruusu <jari.ruusu@gmail.com>
-Subject: [PATCH 5.5 091/257] ALSA: pcm: oss: Fix regression by buffer overflow fix
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 048/232] libata: Remove extra scsi_host_put() in ata_scsi_add_hosts()
 Date:   Thu, 16 Apr 2020 15:22:22 +0200
-Message-Id: <20200416131337.371835585@linuxfoundation.org>
+Message-Id: <20200416131321.760402771@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,126 +43,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: John Garry <john.garry@huawei.com>
 
-commit ae769d3556644888c964635179ef192995f40793 upstream.
+[ Upstream commit 1d72f7aec3595249dbb83291ccac041a2d676c57 ]
 
-The recent fix for the OOB access in PCM OSS plugins (commit
-f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
-regression on OSS applications.  The patch introduced the size check
-in client and slave size calculations to limit to each plugin's buffer
-size, but I overlooked that some code paths call those without
-allocating the buffer but just for estimation.
+If the call to scsi_add_host_with_dma() in ata_scsi_add_hosts() fails,
+then we may get use-after-free KASAN warns:
 
-This patch fixes the bug by skipping the size check for those code
-paths while keeping checking in the actual transfer calls.
+==================================================================
+BUG: KASAN: use-after-free in kobject_put+0x24/0x180
+Read of size 1 at addr ffff0026b8c80364 by task swapper/0/1
+CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         5.6.0-rc3-00004-g5a71b206ea82-dirty #1765
+Hardware name: Huawei TaiShan 200 (Model 2280)/BC82AMDD, BIOS 2280-V2 CS V3.B160.01 02/24/2020
+Call trace:
+dump_backtrace+0x0/0x298
+show_stack+0x14/0x20
+dump_stack+0x118/0x190
+print_address_description.isra.9+0x6c/0x3b8
+__kasan_report+0x134/0x23c
+kasan_report+0xc/0x18
+__asan_load1+0x5c/0x68
+kobject_put+0x24/0x180
+put_device+0x10/0x20
+scsi_host_put+0x10/0x18
+ata_devres_release+0x74/0xb0
+release_nodes+0x2d0/0x470
+devres_release_all+0x50/0x78
+really_probe+0x2d4/0x560
+driver_probe_device+0x7c/0x148
+device_driver_attach+0x94/0xa0
+__driver_attach+0xa8/0x110
+bus_for_each_dev+0xe8/0x158
+driver_attach+0x30/0x40
+bus_add_driver+0x220/0x2e0
+driver_register+0xbc/0x1d0
+__pci_register_driver+0xbc/0xd0
+ahci_pci_driver_init+0x20/0x28
+do_one_initcall+0xf0/0x608
+kernel_init_freeable+0x31c/0x384
+kernel_init+0x10/0x118
+ret_from_fork+0x10/0x18
 
-Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
-Tested-and-reported-by: Jari Ruusu <jari.ruusu@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200403072515.25539-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Allocated by task 5:
+save_stack+0x28/0xc8
+__kasan_kmalloc.isra.8+0xbc/0xd8
+kasan_kmalloc+0xc/0x18
+__kmalloc+0x1a8/0x280
+scsi_host_alloc+0x44/0x678
+ata_scsi_add_hosts+0x74/0x268
+ata_host_register+0x228/0x488
+ahci_host_activate+0x1c4/0x2a8
+ahci_init_one+0xd18/0x1298
+local_pci_probe+0x74/0xf0
+work_for_cpu_fn+0x2c/0x48
+process_one_work+0x488/0xc08
+worker_thread+0x330/0x5d0
+kthread+0x1c8/0x1d0
+ret_from_fork+0x10/0x18
 
+Freed by task 5:
+save_stack+0x28/0xc8
+__kasan_slab_free+0x118/0x180
+kasan_slab_free+0x10/0x18
+slab_free_freelist_hook+0xa4/0x1a0
+kfree+0xd4/0x3a0
+scsi_host_dev_release+0x100/0x148
+device_release+0x7c/0xe0
+kobject_put+0xb0/0x180
+put_device+0x10/0x20
+scsi_host_put+0x10/0x18
+ata_scsi_add_hosts+0x210/0x268
+ata_host_register+0x228/0x488
+ahci_host_activate+0x1c4/0x2a8
+ahci_init_one+0xd18/0x1298
+local_pci_probe+0x74/0xf0
+work_for_cpu_fn+0x2c/0x48
+process_one_work+0x488/0xc08
+worker_thread+0x330/0x5d0
+kthread+0x1c8/0x1d0
+ret_from_fork+0x10/0x18
+
+There is also refcount issue, as well:
+WARNING: CPU: 1 PID: 1 at lib/refcount.c:28 refcount_warn_saturate+0xf8/0x170
+
+The issue is that we make an erroneous extra call to scsi_host_put()
+for that host:
+
+So in ahci_init_one()->ata_host_alloc_pinfo()->ata_host_alloc(), we setup
+a device release method - ata_devres_release() - which intends to release
+the SCSI hosts:
+
+static void ata_devres_release(struct device *gendev, void *res)
+{
+	...
+	for (i = 0; i < host->n_ports; i++) {
+		struct ata_port *ap = host->ports[i];
+
+		if (!ap)
+			continue;
+
+		if (ap->scsi_host)
+			scsi_host_put(ap->scsi_host);
+
+	}
+	...
+}
+
+However in the ata_scsi_add_hosts() error path, we also call
+scsi_host_put() for the SCSI hosts.
+
+Fix by removing the the scsi_host_put() calls in ata_scsi_add_hosts() and
+leave this to ata_devres_release().
+
+Fixes: f31871951b38 ("libata: separate out ata_host_alloc() and ata_host_register()")
+Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/oss/pcm_plugin.c |   32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ drivers/ata/libata-scsi.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/sound/core/oss/pcm_plugin.c
-+++ b/sound/core/oss/pcm_plugin.c
-@@ -196,7 +196,9 @@ int snd_pcm_plugin_free(struct snd_pcm_p
- 	return 0;
- }
+diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
+index 58e09ffe8b9cb..5af34a3201ed2 100644
+--- a/drivers/ata/libata-scsi.c
++++ b/drivers/ata/libata-scsi.c
+@@ -4553,22 +4553,19 @@ int ata_scsi_add_hosts(struct ata_host *host, struct scsi_host_template *sht)
+ 		 */
+ 		shost->max_host_blocked = 1;
  
--snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
-+static snd_pcm_sframes_t plug_client_size(struct snd_pcm_substream *plug,
-+					  snd_pcm_uframes_t drv_frames,
-+					  bool check_size)
- {
- 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
- 	int stream;
-@@ -209,7 +211,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		plugin = snd_pcm_plug_last(plug);
- 		while (plugin && drv_frames > 0) {
--			if (drv_frames > plugin->buf_frames)
-+			if (check_size && drv_frames > plugin->buf_frames)
- 				drv_frames = plugin->buf_frames;
- 			plugin_prev = plugin->prev;
- 			if (plugin->src_frames)
-@@ -222,7 +224,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
- 			plugin_next = plugin->next;
- 			if (plugin->dst_frames)
- 				drv_frames = plugin->dst_frames(plugin, drv_frames);
--			if (drv_frames > plugin->buf_frames)
-+			if (check_size && drv_frames > plugin->buf_frames)
- 				drv_frames = plugin->buf_frames;
- 			plugin = plugin_next;
- 		}
-@@ -231,7 +233,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
- 	return drv_frames;
- }
- 
--snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t clt_frames)
-+static snd_pcm_sframes_t plug_slave_size(struct snd_pcm_substream *plug,
-+					 snd_pcm_uframes_t clt_frames,
-+					 bool check_size)
- {
- 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
- 	snd_pcm_sframes_t frames;
-@@ -252,14 +256,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
- 				if (frames < 0)
- 					return frames;
- 			}
--			if (frames > plugin->buf_frames)
-+			if (check_size && frames > plugin->buf_frames)
- 				frames = plugin->buf_frames;
- 			plugin = plugin_next;
- 		}
- 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		plugin = snd_pcm_plug_last(plug);
- 		while (plugin) {
--			if (frames > plugin->buf_frames)
-+			if (check_size && frames > plugin->buf_frames)
- 				frames = plugin->buf_frames;
- 			plugin_prev = plugin->prev;
- 			if (plugin->src_frames) {
-@@ -274,6 +278,18 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
- 	return frames;
- }
- 
-+snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug,
-+					   snd_pcm_uframes_t drv_frames)
-+{
-+	return plug_client_size(plug, drv_frames, false);
-+}
-+
-+snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug,
-+					  snd_pcm_uframes_t clt_frames)
-+{
-+	return plug_slave_size(plug, clt_frames, false);
-+}
-+
- static int snd_pcm_plug_formats(const struct snd_mask *mask,
- 				snd_pcm_format_t format)
- {
-@@ -630,7 +646,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_tra
- 		src_channels = dst_channels;
- 		plugin = next;
+-		rc = scsi_add_host_with_dma(ap->scsi_host,
+-						&ap->tdev, ap->host->dev);
++		rc = scsi_add_host_with_dma(shost, &ap->tdev, ap->host->dev);
+ 		if (rc)
+-			goto err_add;
++			goto err_alloc;
  	}
--	return snd_pcm_plug_client_size(plug, frames);
-+	return plug_client_size(plug, frames, true);
+ 
+ 	return 0;
+ 
+- err_add:
+-	scsi_host_put(host->ports[i]->scsi_host);
+  err_alloc:
+ 	while (--i >= 0) {
+ 		struct Scsi_Host *shost = host->ports[i]->scsi_host;
+ 
++		/* scsi_host_put() is in ata_devres_release() */
+ 		scsi_remove_host(shost);
+-		scsi_host_put(shost);
+ 	}
+ 	return rc;
  }
- 
- snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
-@@ -640,7 +656,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_tran
- 	snd_pcm_sframes_t frames = size;
- 	int err;
- 
--	frames = snd_pcm_plug_slave_size(plug, frames);
-+	frames = plug_slave_size(plug, frames, true);
- 	if (frames < 0)
- 		return frames;
- 
+-- 
+2.20.1
+
 
 
