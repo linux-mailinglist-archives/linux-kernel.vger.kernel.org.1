@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1421AD06F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 21:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6D91AD073
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 21:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbgDPTg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 15:36:28 -0400
-Received: from smtprelay0152.hostedemail.com ([216.40.44.152]:39730 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725894AbgDPTg1 (ORCPT
+        id S1731226AbgDPTi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 15:38:27 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:38538 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgDPTi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 15:36:27 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 18888100E7B47;
-        Thu, 16 Apr 2020 19:36:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2691:2693:2828:3138:3139:3140:3141:3142:3622:3865:3867:3870:3871:3872:3873:4321:5007:6691:6742:7903:9545:10004:10400:10848:11026:11232:11658:11914:12297:12740:12760:12895:13069:13095:13161:13229:13311:13357:13439:14659:14721:21080:21433:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: dress88_71e6f49a6bc61
-X-Filterd-Recvd-Size: 2200
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 16 Apr 2020 19:36:22 +0000 (UTC)
-Message-ID: <7713a931e4475294de85b74aca298dde8be4242d.camel@perches.com>
-Subject: Re: [PATCH v2] i2c: busses: remove duplicate dev_err()
-From:   Joe Perches <joe@perches.com>
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Dejin Zheng <zhengdejin5@gmail.com>, linux-i2c@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Thor Thayer <thor.thayer@linux.intel.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Patrick Williams <alpawi@amazon.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Barry Song <baohua@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        George Cherian <gcherian@marvell.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Date:   Thu, 16 Apr 2020 12:34:10 -0700
-In-Reply-To: <6ca3cd57-de73-5327-5773-e08bf12c4a85@web.de>
-References: <20200416152345.23077-1-zhengdejin5@gmail.com>
-         <6ca3cd57-de73-5327-5773-e08bf12c4a85@web.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
-MIME-Version: 1.0
+        Thu, 16 Apr 2020 15:38:27 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jPAJ1-00077a-HA; Thu, 16 Apr 2020 14:36:11 -0500
+Message-ID: <85bb4c9563377d2f76938ff1419ba34a5c825c0c.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Wang Wenhu <wenhu.wang@vivo.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@vivo.com,
+        Michael Ellerman <mpe@ellerman.id.au>
+Date:   Thu, 16 Apr 2020 14:36:09 -0500
+In-Reply-To: <20200416063034.GB299193@kroah.com>
+References: <20200415124929.GA3265842@kroah.com>
+         <20200415152442.122873-1-wenhu.wang@vivo.com>
+         <20200415152442.122873-6-wenhu.wang@vivo.com>
+         <37b6b890-e537-7424-6b26-04565681f40a@c-s.fr>
+         <f2a1f91f92c0fe4bce46c28222dea355d96e2090.camel@buserror.net>
+         <20200416063034.GB299193@kroah.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: gregkh@linuxfoundation.org, christophe.leroy@c-s.fr, wenhu.wang@vivo.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, mpe@ellerman.id.au
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH v2,5/5] drivers: uio: new driver for fsl_85xx_cache_sram
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-04-16 at 20:22 +0200, Markus Elfring wrote:
-> > it will print an error message by itself when platform_get_irq()
-> > goes wrong. so don't need dev_err() in here again.
+On Thu, 2020-04-16 at 08:30 +0200, Greg KH wrote:
+> On Wed, Apr 15, 2020 at 02:27:51PM -0500, Scott Wood wrote:
+> > > > +		dev_err(&pdev->dev, "error no valid uio-map
+> > > > configured\n");
+> > > > +		ret = -EINVAL;
+> > > > +		goto err_info_free_internel;
+> > > > +	}
+> > > > +
+> > > > +	info->version = "0.1.0";
+> > > 
+> > > Could you define some DRIVER_VERSION in the top of the file next to 
+> > > DRIVER_NAME instead of hard coding in the middle on a function ?
+> > 
+> > That's what v1 had, and Greg KH said to remove it.  I'm guessing that he
+> > thought it was the common-but-pointless practice of having the driver
+> > print a
+> > version number that never gets updated, rather than something the UIO API
+> > (unfortunately, compared to a feature query interface) expects.  That
+> > said,
+> > I'm not sure what the value is of making it a macro since it should only
+> > be
+> > used once, that use is self documenting, it isn't tunable, etc.  Though if
+> > this isn't a macro, UIO_NAME also shouldn't be (and if it is made a macro
+> > again, it should be UIO_VERSION, not DRIVER_VERSION).
+> > 
+> > Does this really need a three-part version scheme?  What's wrong with a
+> > version of "1", to be changed to "2" in the hopefully-unlikely event that
+> > the
+> > userspace API changes?  Assuming UIO is used for this at all, which
+> > doesn't
+> > seem like a great fit to me.
 > 
-> I suggest to improve the commit message considerably.
+> No driver version numbers at all please, they do not make any sense when
+> the driver is included in the kernel tree.
 
-I suggest you ignore Markus' suggestion.
+Again, reporting a version string is part of the UIO API.  It might not be a
+good API, but if it's left as NULL the registration will fail.
 
-The commit message is OK.
-
-The subject _could_ have included "platform_get_irq" something like
-
-Subject: [PATCH v2] i2c: busses: Remove platform_get_irq()'s duplicated dev_err()
-
-but I believe it's not important enough to redo.
+-Scott
 
 
