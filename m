@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1731ACAC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD471AC58B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395481AbgDPPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50914 "EHLO mail.kernel.org"
+        id S2393984AbgDPOVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:21:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897698AbgDPNi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:29 -0400
+        id S2392497AbgDPNzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:55:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F16C21BE5;
-        Thu, 16 Apr 2020 13:38:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14ED221734;
+        Thu, 16 Apr 2020 13:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044308;
-        bh=sRsf7xacDSWIjD5VxmR6mRyFX8pNfQp0G4me/WzHu8I=;
+        s=default; t=1587045322;
+        bh=W2NX7RUrjeSGIxVbUNcuOSZnXLYhBIfIG0GMm8GFxD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=imYKCNqYQ60fHfpp+w4R/nea+bmYQIPFuIU4Tbz2Tkrnvx7FctqMwXMsRpyUzqkeC
-         a1jivCUoQsEiP9Xfwrb6n23+hB38ArhjUbhA91QdehfVxafscUWpxSjid8Q/4rRCN7
-         obicWkx1XHq2XMqHqJCfIDCP5FvgoCgKKyGjHq/A=
+        b=ihjbL9ASNV13k6r/s/cIiJ1Ee3F0rVPep0H0FbLYsO6a/I5QNdHj8ARB0a1PDqz9b
+         1wk5Fs0y2UO+hz1Dxr6uI+wduIiCvwNGng0wZrvc9d7RkX+JDlWYtsE0qbX4FgF92T
+         +1RLNhfxV6LOTwiiItkRjXgQneHV01+QqtF5GBSk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ludovic Barre <ludovic.barre@st.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.5 124/257] mmc: mmci_sdmmc: Fix clear busyd0end irq flag
+        stable@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.6 086/254] media: hantro: Read be32 words starting at every fourth byte
 Date:   Thu, 16 Apr 2020 15:22:55 +0200
-Message-Id: <20200416131341.833005005@linuxfoundation.org>
+Message-Id: <20200416131336.676371735@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ludovic Barre <ludovic.barre@st.com>
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-commit d4a384cb563e555ce00255f5f496b503e6cc6358 upstream.
+commit e34bca49e4953e5c2afc0425303199a5fd515f82 upstream.
 
-The busyd0 line transition can be very fast. The busy request may be
-completed by busy_d0end, without waiting for the busy_d0 steps. Therefore,
-clear the busyd0end irq flag, even if no busy_status.
+Since (luma/chroma)_qtable is an array of unsigned char, indexing it
+returns consecutive byte locations, but we are supposed to read the arrays
+in four-byte words. Consequently, we should be pointing
+get_unaligned_be32() at consecutive word locations instead.
 
-Fixes: 0e68de6aa7b1 ("mmc: mmci: sdmmc: add busy_complete callback")
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Tested-by: Ezequiel Garcia <ezequiel@collabora.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-Link: https://lore.kernel.org/r/20200325143409.13005-2-ludovic.barre@st.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 00c30f42c7595f "media: rockchip vpu: remove some unused vars"
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/mmci_stm32_sdmmc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/media/hantro/hantro_h1_jpeg_enc.c     |    9 +++++++--
+ drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c |    9 +++++++--
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
---- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-+++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -315,11 +315,11 @@ complete:
- 	if (host->busy_status) {
- 		writel_relaxed(mask & ~host->variant->busy_detect_mask,
- 			       base + MMCIMASK0);
--		writel_relaxed(host->variant->busy_detect_mask,
--			       base + MMCICLEAR);
- 		host->busy_status = 0;
- 	}
- 
-+	writel_relaxed(host->variant->busy_detect_mask, base + MMCICLEAR);
+--- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
++++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+@@ -67,12 +67,17 @@ hantro_h1_jpeg_enc_set_qtable(struct han
+ 			      unsigned char *chroma_qtable)
+ {
+ 	u32 reg, i;
++	__be32 *luma_qtable_p;
++	__be32 *chroma_qtable_p;
 +
- 	return true;
- }
++	luma_qtable_p = (__be32 *)luma_qtable;
++	chroma_qtable_p = (__be32 *)chroma_qtable;
  
+ 	for (i = 0; i < H1_JPEG_QUANT_TABLE_COUNT; i++) {
+-		reg = get_unaligned_be32(&luma_qtable[i]);
++		reg = get_unaligned_be32(&luma_qtable_p[i]);
+ 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_LUMA_QUAT(i));
+ 
+-		reg = get_unaligned_be32(&chroma_qtable[i]);
++		reg = get_unaligned_be32(&chroma_qtable_p[i]);
+ 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_CHROMA_QUAT(i));
+ 	}
+ }
+--- a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
++++ b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
+@@ -98,12 +98,17 @@ rk3399_vpu_jpeg_enc_set_qtable(struct ha
+ 			       unsigned char *chroma_qtable)
+ {
+ 	u32 reg, i;
++	__be32 *luma_qtable_p;
++	__be32 *chroma_qtable_p;
++
++	luma_qtable_p = (__be32 *)luma_qtable;
++	chroma_qtable_p = (__be32 *)chroma_qtable;
+ 
+ 	for (i = 0; i < VEPU_JPEG_QUANT_TABLE_COUNT; i++) {
+-		reg = get_unaligned_be32(&luma_qtable[i]);
++		reg = get_unaligned_be32(&luma_qtable_p[i]);
+ 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_LUMA_QUAT(i));
+ 
+-		reg = get_unaligned_be32(&chroma_qtable[i]);
++		reg = get_unaligned_be32(&chroma_qtable_p[i]);
+ 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_CHROMA_QUAT(i));
+ 	}
+ }
 
 
