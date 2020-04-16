@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699101AC742
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A8D1ACAB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389350AbgDPOwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:52:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44516 "EHLO mail.kernel.org"
+        id S2395384AbgDPPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:38:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409326AbgDPN51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:57:27 -0400
+        id S2897762AbgDPNis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:38:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83B8220732;
-        Thu, 16 Apr 2020 13:57:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E0852224F;
+        Thu, 16 Apr 2020 13:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045447;
-        bh=AQGos6++wco5y3w2jWqbeTigZBPa3pQryy4NKEsY0sg=;
+        s=default; t=1587044328;
+        bh=79z7BDql8stYOus3GTROCiSx/mTNrMJNRyoDBHRU8TQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0n33/7XPlKyHEY/BVL7UpWM9kELuUw1HYG2FTxHsdFR875tz68WEgz2ig8zbYFfuM
-         TXc8iNC5/TQ658lEoF9cdAOansAYVBfGy3Y0pS2HbHPpr5dX+VO/UJPOEdkBTwLK90
-         vo3Rg0UjKujRQ7hW4B1iYBURNVyJfZGfqidldYpo=
+        b=gCWcUbeZ5M1qJQfd/PEzbOc1wLUSugDNQYvwU7WFX+3lLDrhc+UJ89xFtyf35emLG
+         9cXPaT6R/HE/YaE/xYAWKRGagwGv+zW0yvO/KxfczduXfuaxWX7ml8MmSk5lHC/9kN
+         vnvNixr+sFJUDnVWsMtkF5fiOYG7Jf2B84akLUUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.6 136/254] KVM: x86: Gracefully handle __vmalloc() failure during VM allocation
+        stable@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
+        Anssi Hannula <anssi.hannula@bitwise.fi>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.5 174/257] tools: gpio: Fix out-of-tree build regression
 Date:   Thu, 16 Apr 2020 15:23:45 +0200
-Message-Id: <20200416131343.504058000@linuxfoundation.org>
+Message-Id: <20200416131348.111146640@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-commit d18b2f43b9147c8005ae0844fb445d8cc6a87e31 upstream.
+commit 82f04bfe2aff428b063eefd234679b2d693228ed upstream.
 
-Check the result of __vmalloc() to avoid dereferencing a NULL pointer in
-the event that allocation failres.
+Commit 0161a94e2d1c7 ("tools: gpio: Correctly add make dependencies for
+gpio_utils") added a make rule for gpio-utils-in.o but used $(output)
+instead of the correct $(OUTPUT) for the output directory, breaking
+out-of-tree build (O=xx) with the following error:
 
-Fixes: d1e5b0e98ea27 ("kvm: Make VM ioctl do valloc for some archs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+  No rule to make target 'out/tools/gpio/gpio-utils-in.o', needed by 'out/tools/gpio/lsgpio-in.o'.  Stop.
+
+Fix that.
+
+Fixes: 0161a94e2d1c ("tools: gpio: Correctly add make dependencies for gpio_utils")
+Cc: <stable@vger.kernel.org>
+Cc: Laura Abbott <labbott@redhat.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Link: https://lore.kernel.org/r/20200325103154.32235-1-anssi.hannula@bitwise.fi
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/svm.c     |    4 ++++
- arch/x86/kvm/vmx/vmx.c |    4 ++++
- 2 files changed, 8 insertions(+)
+ tools/gpio/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -1943,6 +1943,10 @@ static struct kvm *svm_vm_alloc(void)
- 	struct kvm_svm *kvm_svm = __vmalloc(sizeof(struct kvm_svm),
- 					    GFP_KERNEL_ACCOUNT | __GFP_ZERO,
- 					    PAGE_KERNEL);
-+
-+	if (!kvm_svm)
-+		return NULL;
-+
- 	return &kvm_svm->kvm;
- }
+--- a/tools/gpio/Makefile
++++ b/tools/gpio/Makefile
+@@ -35,7 +35,7 @@ $(OUTPUT)include/linux/gpio.h: ../../inc
  
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6671,6 +6671,10 @@ static struct kvm *vmx_vm_alloc(void)
- 	struct kvm_vmx *kvm_vmx = __vmalloc(sizeof(struct kvm_vmx),
- 					    GFP_KERNEL_ACCOUNT | __GFP_ZERO,
- 					    PAGE_KERNEL);
-+
-+	if (!kvm_vmx)
-+		return NULL;
-+
- 	return &kvm_vmx->kvm;
- }
+ prepare: $(OUTPUT)include/linux/gpio.h
+ 
+-GPIO_UTILS_IN := $(output)gpio-utils-in.o
++GPIO_UTILS_IN := $(OUTPUT)gpio-utils-in.o
+ $(GPIO_UTILS_IN): prepare FORCE
+ 	$(Q)$(MAKE) $(build)=gpio-utils
  
 
 
