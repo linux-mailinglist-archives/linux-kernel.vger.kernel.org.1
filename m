@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFA71AC865
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E731ACA54
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442159AbgDPPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:07:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37532 "EHLO mail.kernel.org"
+        id S2442525AbgDPPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388826AbgDPNvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:51:25 -0400
+        id S2898243AbgDPNlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:41:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67B1E21734;
-        Thu, 16 Apr 2020 13:51:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFD542222E;
+        Thu, 16 Apr 2020 13:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045084;
-        bh=6+oJ7PTP3fBINPUhEl2O/+YvcOWV+wkkE4+IcT2lYTM=;
+        s=default; t=1587044461;
+        bh=0xsYi/11uzlyBJ4Trt/P+eIrlBBktqV/M2hg5BUuIQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2LQPnl9S/uwVGgR24ukAkI/S8QN7MFSovC2k6YPPKvnr+QfHf0joqdmxxtlKJLxsU
-         +bp3QuN1AtduLoMlNjrdeaQAjWOYu39GSjPPdh0TYNRvzkf48Yj64Zs3MdanIHWHcE
-         +Z/D2/LRyxJH8in2y5tDGuXe7+PI559bOr18WNoU=
+        b=1ZmpSiyPttD5fuLtz60+O8IprmyiwV+RTCWLzRgBB4NIbhMUffAIGUr/oKlYCKOTV
+         Dl2dEYWo6If+BO7UVtS6oaq0vKGBihKBfGxJQq8pRYs8LRTOAKLQQx2hCc/XYGLp6v
+         Oes8IyD9TJFYvPlc5oeAOlv2HVUwZdYUn1VfogZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.william.auld@gmail.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.4 183/232] drm/i915/gem: Flush all the reloc_gpu batch
-Date:   Thu, 16 Apr 2020 15:24:37 +0200
-Message-Id: <20200416131337.996434225@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        kbuild test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.5 227/257] clk: ingenic/jz4770: Exit with error if CGU init failed
+Date:   Thu, 16 Apr 2020 15:24:38 +0200
+Message-Id: <20200416131354.175034194@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 1aaea8476d9f014667d2cb24819f9bcaf3ebb7a4 upstream.
+commit c067b46d731a764fc46ecc466c2967088c97089e upstream.
 
-__i915_gem_object_flush_map() takes a byte range, so feed it the written
-bytes and do not mistake the u32 index as bytes!
+Exit jz4770_cgu_init() if the 'cgu' pointer we get is NULL, since the
+pointer is passed as argument to functions later on.
 
-Fixes: a679f58d0510 ("drm/i915: Flush pages on acquisition")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Matthew Auld <matthew.william.auld@gmail.com>
-Cc: <stable@vger.kernel.org> # v5.2+
-Reviewed-by: Matthew Auld <matthew.william.auld@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200406114821.10949-1-chris@chris-wilson.co.uk
-(cherry picked from commit 30c88a47f1abd5744908d3681f54dcf823fe2a12)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Fixes: 7a01c19007ad ("clk: Add Ingenic jz4770 CGU driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lkml.kernel.org/r/20200213161952.37460-1-paul@crapouillou.net
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/clk/ingenic/jz4770-cgu.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-@@ -931,11 +931,13 @@ static inline struct i915_ggtt *cache_to
+--- a/drivers/clk/ingenic/jz4770-cgu.c
++++ b/drivers/clk/ingenic/jz4770-cgu.c
+@@ -432,8 +432,10 @@ static void __init jz4770_cgu_init(struc
  
- static void reloc_gpu_flush(struct reloc_cache *cache)
- {
--	GEM_BUG_ON(cache->rq_size >= cache->rq->batch->obj->base.size / sizeof(u32));
-+	struct drm_i915_gem_object *obj = cache->rq->batch->obj;
-+
-+	GEM_BUG_ON(cache->rq_size >= obj->base.size / sizeof(u32));
- 	cache->rq_cmd[cache->rq_size] = MI_BATCH_BUFFER_END;
+ 	cgu = ingenic_cgu_new(jz4770_cgu_clocks,
+ 			      ARRAY_SIZE(jz4770_cgu_clocks), np);
+-	if (!cgu)
++	if (!cgu) {
+ 		pr_err("%s: failed to initialise CGU\n", __func__);
++		return;
++	}
  
--	__i915_gem_object_flush_map(cache->rq->batch->obj, 0, cache->rq_size);
--	i915_gem_object_unpin_map(cache->rq->batch->obj);
-+	__i915_gem_object_flush_map(obj, 0, sizeof(u32) * (cache->rq_size + 1));
-+	i915_gem_object_unpin_map(obj);
- 
- 	intel_gt_chipset_flush(cache->rq->engine->gt);
- 
+ 	retval = ingenic_cgu_register_clocks(cgu);
+ 	if (retval)
 
 
