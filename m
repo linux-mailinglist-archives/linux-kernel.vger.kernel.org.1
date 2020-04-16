@@ -2,107 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A63B1ABB64
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16391ABC6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502430AbgDPIfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
+        id S2503600AbgDPJNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502242AbgDPIbY (ORCPT
+        with ESMTP id S2502315AbgDPIbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:31:24 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355CAC03C1AB;
-        Thu, 16 Apr 2020 01:31:08 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a81so3813139wmf.5;
-        Thu, 16 Apr 2020 01:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jfrt17q5M4S5SAVVkdakw83Rj5cTfkomq3bpc03Lu9E=;
-        b=CFbFjllOBhKoFmAVsXkBQzBuRQAfDrmhFAfVIGB11rbD3zAjEQppK74PC9fnxFnMrl
-         sp2/EeMkEMZEPkJaKAPezTCzWxvNVCQxytUa+QkC+1t59d7i5I3Ft4/ciYIUyoPgOMmx
-         UiPK1SyxvMiF5/fQuHdgpj6dJ/kxBF7pqlJnwenUbEeoXzoXQDDOkD79QMrnqwADC91X
-         mAbhAkAD8NXfaYxauQUMXrLjqT8CjpZdwFVOxMjLk33tqqc1vixpmPBfeaEJadSe1cYi
-         RAtQlg/x50nnmchxxtr0K+qNEsQkfkEUxgrnt/DkUknFzWr3iZARx7zlhyFNK0Y/EZyB
-         KDIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jfrt17q5M4S5SAVVkdakw83Rj5cTfkomq3bpc03Lu9E=;
-        b=TMKknxl0MUt8yAzI4Yj7SWsQOBt2760gCbZx3zime8sxteJ7ta+PVKDfFXgC6SSx0A
-         ihRY+rw5SrL7dtp7j7oLMhqDE6ZXQGTRExcXpXdBp/Zp6vh4LMZ4GAO3MgIqyVco8EhV
-         a0RpMrhAU0oQEzQ5pc/HPT4HXsuBP9sJF+tOWc36jQxyw8NRSfAclqG2IP+IskWyGgNk
-         kt+//SgoMkqpo9en2dxKjN35woWRIwRSS3IYx1tMQyYJZ3MzfHch+NYQKWezOCpY53tj
-         KKBFlzdH5Br8j4zTKbXH12h0BZQIMD+b+TMebzZB8UIPvJ1wj+CQX3y7GUxG8FS68gRm
-         JAIw==
-X-Gm-Message-State: AGi0PubsfTdJN36ve3YLYFf9dh7Enk0Sw4z3zitBVPpXHzCYG4+nYyFE
-        cdyFgvrKGj8kYeBdlZgw+4o=
-X-Google-Smtp-Source: APiQypKSKsq45oAa/3mvfDvpWfY2V+jAcrUeSZODmwOpRthGJy4sv8r2h7IKlE30zB7Jtv03++ti6Q==
-X-Received: by 2002:a05:600c:24cf:: with SMTP id 15mr3541839wmu.94.1587025866950;
-        Thu, 16 Apr 2020 01:31:06 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id a9sm2611917wmm.38.2020.04.16.01.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 01:31:06 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 10:31:04 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        Thu, 16 Apr 2020 04:31:49 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13A1C0258D4;
+        Thu, 16 Apr 2020 01:31:36 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jOzvh-0000m0-26; Thu, 16 Apr 2020 10:31:25 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 53EEB1C001F;
+        Thu, 16 Apr 2020 10:31:24 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 08:31:23 -0000
+From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] tools headers: Synchronize linux/bits.h with the
+ kernel sources
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 10/33] docs: fix broken references for ReST files that
- moved around
-Message-ID: <20200416083104.GA29148@Red>
-References: <cover.1586881715.git.mchehab+huawei@kernel.org>
- <64773a12b4410aaf3e3be89e3ec7e34de2484eea.1586881715.git.mchehab+huawei@kernel.org>
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64773a12b4410aaf3e3be89e3ec7e34de2484eea.1586881715.git.mchehab+huawei@kernel.org>
+Message-ID: <158702588388.28353.9240938500051301319.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 06:48:36PM +0200, Mauro Carvalho Chehab wrote:
-> Some broken references happened due to shifting files around
-> and ReST renames. Those can't be auto-fixed by the script,
-> so let's fix them manually.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/doc-guide/maintainer-profile.rst      | 2 +-
->  Documentation/virt/kvm/mmu.rst                      | 2 +-
->  Documentation/virt/kvm/review-checklist.rst         | 2 +-
->  arch/x86/kvm/mmu/mmu.c                              | 2 +-
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 2 +-
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c   | 2 +-
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c   | 2 +-
->  drivers/media/v4l2-core/v4l2-fwnode.c               | 2 +-
->  include/uapi/linux/kvm.h                            | 4 ++--
->  tools/include/uapi/linux/kvm.h                      | 4 ++--
->  11 files changed, 13 insertions(+), 13 deletions(-)
-> 
+The following commit has been merged into the perf/urgent branch of tip:
 
-For sun8i-ce
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Commit-ID:     e3698b23ecb8c099b4b523e7d5c8c042e93ef15d
+Gitweb:        https://git.kernel.org/tip/e3698b23ecb8c099b4b523e7d5c8c042e93ef15d
+Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
+AuthorDate:    Tue, 14 Apr 2020 10:27:39 -03:00
+Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
+CommitterDate: Tue, 14 Apr 2020 11:40:05 -03:00
 
-Thanks
+tools headers: Synchronize linux/bits.h with the kernel sources
+
+To pick up the changes in these csets:
+
+  295bcca84916 ("linux/bits.h: add compile time sanity check of GENMASK inputs")
+  3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
+
+To address this tools/perf build warning:
+
+  Warning: Kernel ABI header at 'tools/include/linux/bits.h' differs from latest version at 'include/linux/bits.h'
+  diff -u tools/include/linux/bits.h include/linux/bits.h
+
+This clashes with usage of userspace's static_assert(), that, at least
+on glibc, is guarded by a ifnded/endif pair, do the same to our copy of
+build_bug.h and avoid that diff in check_headers.sh so that we continue
+checking for drifts with the kernel sources master copy.
+
+This will all be tested with the set of build containers that includes
+uCLibc, musl libc, lots of glibc versions in lots of distros and cross
+build environments.
+
+The tools/objtool, tools/bpf, etc were tested as well.
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/linux/bits.h      | 24 +++++++--
+ tools/include/linux/build_bug.h | 82 ++++++++++++++++++++++++++++++++-
+ tools/include/linux/kernel.h    |  4 +--
+ tools/include/vdso/bits.h       |  9 ++++-
+ tools/perf/check-headers.sh     |  2 +-
+ 5 files changed, 115 insertions(+), 6 deletions(-)
+ create mode 100644 tools/include/linux/build_bug.h
+ create mode 100644 tools/include/vdso/bits.h
+
+diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+index 669d694..4671fbf 100644
+--- a/tools/include/linux/bits.h
++++ b/tools/include/linux/bits.h
+@@ -3,9 +3,9 @@
+ #define __LINUX_BITS_H
+ 
+ #include <linux/const.h>
++#include <vdso/bits.h>
+ #include <asm/bitsperlong.h>
+ 
+-#define BIT(nr)			(UL(1) << (nr))
+ #define BIT_ULL(nr)		(ULL(1) << (nr))
+ #define BIT_MASK(nr)		(UL(1) << ((nr) % BITS_PER_LONG))
+ #define BIT_WORD(nr)		((nr) / BITS_PER_LONG)
+@@ -18,12 +18,30 @@
+  * position @h. For example
+  * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
+  */
+-#define GENMASK(h, l) \
++#if !defined(__ASSEMBLY__) && \
++	(!defined(CONFIG_CC_IS_GCC) || CONFIG_GCC_VERSION >= 49000)
++#include <linux/build_bug.h>
++#define GENMASK_INPUT_CHECK(h, l) \
++	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
++		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
++#else
++/*
++ * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
++ * disable the input check if that is the case.
++ */
++#define GENMASK_INPUT_CHECK(h, l) 0
++#endif
++
++#define __GENMASK(h, l) \
+ 	(((~UL(0)) - (UL(1) << (l)) + 1) & \
+ 	 (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
++#define GENMASK(h, l) \
++	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+ 
+-#define GENMASK_ULL(h, l) \
++#define __GENMASK_ULL(h, l) \
+ 	(((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+ 	 (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
++#define GENMASK_ULL(h, l) \
++	(GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+ 
+ #endif	/* __LINUX_BITS_H */
+diff --git a/tools/include/linux/build_bug.h b/tools/include/linux/build_bug.h
+new file mode 100644
+index 0000000..cc7070c
+--- /dev/null
++++ b/tools/include/linux/build_bug.h
+@@ -0,0 +1,82 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_BUILD_BUG_H
++#define _LINUX_BUILD_BUG_H
++
++#include <linux/compiler.h>
++
++#ifdef __CHECKER__
++#define BUILD_BUG_ON_ZERO(e) (0)
++#else /* __CHECKER__ */
++/*
++ * Force a compilation error if condition is true, but also produce a
++ * result (of value 0 and type int), so the expression can be used
++ * e.g. in a structure initializer (or where-ever else comma expressions
++ * aren't permitted).
++ */
++#define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
++#endif /* __CHECKER__ */
++
++/* Force a compilation error if a constant expression is not a power of 2 */
++#define __BUILD_BUG_ON_NOT_POWER_OF_2(n)	\
++	BUILD_BUG_ON(((n) & ((n) - 1)) != 0)
++#define BUILD_BUG_ON_NOT_POWER_OF_2(n)			\
++	BUILD_BUG_ON((n) == 0 || (((n) & ((n) - 1)) != 0))
++
++/*
++ * BUILD_BUG_ON_INVALID() permits the compiler to check the validity of the
++ * expression but avoids the generation of any code, even if that expression
++ * has side-effects.
++ */
++#define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
++
++/**
++ * BUILD_BUG_ON_MSG - break compile if a condition is true & emit supplied
++ *		      error message.
++ * @condition: the condition which the compiler should know is false.
++ *
++ * See BUILD_BUG_ON for description.
++ */
++#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
++
++/**
++ * BUILD_BUG_ON - break compile if a condition is true.
++ * @condition: the condition which the compiler should know is false.
++ *
++ * If you have some code which relies on certain constants being equal, or
++ * some other compile-time-evaluated condition, you should use BUILD_BUG_ON to
++ * detect if someone changes it.
++ */
++#define BUILD_BUG_ON(condition) \
++	BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
++
++/**
++ * BUILD_BUG - break compile if used.
++ *
++ * If you have some code that you expect the compiler to eliminate at
++ * build time, you should use BUILD_BUG to detect if it is
++ * unexpectedly used.
++ */
++#define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
++
++/**
++ * static_assert - check integer constant expression at build time
++ *
++ * static_assert() is a wrapper for the C11 _Static_assert, with a
++ * little macro magic to make the message optional (defaulting to the
++ * stringification of the tested expression).
++ *
++ * Contrary to BUILD_BUG_ON(), static_assert() can be used at global
++ * scope, but requires the expression to be an integer constant
++ * expression (i.e., it is not enough that __builtin_constant_p() is
++ * true for expr).
++ *
++ * Also note that BUILD_BUG_ON() fails the build if the condition is
++ * true, while static_assert() fails the build if the expression is
++ * false.
++ */
++#ifndef static_assert
++#define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
++#define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
++#endif // static_assert
++
++#endif	/* _LINUX_BUILD_BUG_H */
+diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
+index cba2269..a7e54a0 100644
+--- a/tools/include/linux/kernel.h
++++ b/tools/include/linux/kernel.h
+@@ -5,6 +5,7 @@
+ #include <stdarg.h>
+ #include <stddef.h>
+ #include <assert.h>
++#include <linux/build_bug.h>
+ #include <linux/compiler.h>
+ #include <endian.h>
+ #include <byteswap.h>
+@@ -35,9 +36,6 @@
+ 	(type *)((char *)__mptr - offsetof(type, member)); })
+ #endif
+ 
+-#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+-#define BUILD_BUG_ON_ZERO(e) (sizeof(struct { int:-!!(e); }))
+-
+ #ifndef max
+ #define max(x, y) ({				\
+ 	typeof(x) _max1 = (x);			\
+diff --git a/tools/include/vdso/bits.h b/tools/include/vdso/bits.h
+new file mode 100644
+index 0000000..6d005a1
+--- /dev/null
++++ b/tools/include/vdso/bits.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __VDSO_BITS_H
++#define __VDSO_BITS_H
++
++#include <vdso/const.h>
++
++#define BIT(nr)			(UL(1) << (nr))
++
++#endif	/* __VDSO_BITS_H */
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index c905c68..cf147db 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -22,6 +22,7 @@ include/uapi/linux/usbdevice_fs.h
+ include/uapi/linux/vhost.h
+ include/uapi/sound/asound.h
+ include/linux/bits.h
++include/vdso/bits.h
+ include/linux/const.h
+ include/vdso/const.h
+ include/linux/hash.h
+@@ -116,6 +117,7 @@ check arch/x86/lib/memcpy_64.S        '-I "^EXPORT_SYMBOL" -I "^#include <asm/ex
+ check arch/x86/lib/memset_64.S        '-I "^EXPORT_SYMBOL" -I "^#include <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memset_\(erms\|orig\))"'
+ check include/uapi/asm-generic/mman.h '-I "^#include <\(uapi/\)*asm-generic/mman-common\(-tools\)*.h>"'
+ check include/uapi/linux/mman.h       '-I "^#include <\(uapi/\)*asm/mman.h>"'
++check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)* static_assert$"'
+ check include/linux/ctype.h	      '-I "isdigit("'
+ check lib/ctype.c		      '-I "^EXPORT_SYMBOL" -I "^#include <linux/export.h>" -B'
+ check arch/x86/include/asm/inat.h     '-I "^#include [\"<]\(asm/\)*inat_types.h[\">]"'
