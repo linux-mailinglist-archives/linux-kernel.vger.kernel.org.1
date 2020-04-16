@@ -2,102 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67331AD0FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5C31AD0E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgDPUSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729120AbgDPUSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:18:21 -0400
-X-Greylist: delayed 330 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Apr 2020 13:18:17 PDT
-Received: from forward501j.mail.yandex.net (forward501j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADF7C03C1A8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 13:18:17 -0700 (PDT)
-Received: from mxback2q.mail.yandex.net (mxback2q.mail.yandex.net [IPv6:2a02:6b8:c0e:40:0:640:9c8c:4946])
-        by forward501j.mail.yandex.net (Yandex) with ESMTP id 47A43338071F;
-        Thu, 16 Apr 2020 23:12:41 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback2q.mail.yandex.net (mxback/Yandex) with ESMTP id YUcaSHdlDb-Ceg4lJIF;
-        Thu, 16 Apr 2020 23:12:40 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1587067960;
-        bh=FjgtpRfNnNo3G5mZ6JF4NLtbDrsA/Hb5OCt/UqoNZkY=;
-        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
-        b=c1zv+sv3JOpzKhBNttUBmSNhIREG4HQQAtiqvDWoEjhdc5HF/QBcUzLodfyI1IuGu
-         EV6r+WKIFaFX+lczdK6ABSSLhr+v75S5eNjVFzXv80TBjFNPdC9YjV4CXWLeu3Gr6i
-         HPONBKoAp4517407xuyl6T0RXduxdWtbuLWDwpWc=
-Authentication-Results: mxback2q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla5-dcf36e533bf7.qloud-c.yandex.net with HTTP;
-        Thu, 16 Apr 2020 23:12:40 +0300
-From:   Evgeniy Polyakov <zbr@ioremap.net>
-Envelope-From: drustafa@yandex.ru
-To:     Akira Shimahara <akira215corp@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Greg Kroah-Hartman <greg@kroah.com>
-In-Reply-To: <20200414170248.299534-1-akira215corp@gmail.com>
-References: <20200414170248.299534-1-akira215corp@gmail.com>
-Subject: Re: [PATCH] Changes in w1_therm.c and adding w1_therm.h
+        id S1728190AbgDPUNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:13:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726523AbgDPUNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 16:13:30 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E20F321841;
+        Thu, 16 Apr 2020 20:13:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587068010;
+        bh=LyH9cHiVsHhYNaY8doBcGxuSdbtSiTmUFJcreEJc7dI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=he9cyi9U6qNaI++P4yCtou68OtfJj0xa0yu9eO1qYXQ1+RZUP6SNUIDA8c4tpI1x7
+         ROTa+l+WyFq7FbIeME4zKIxrIRqh0spV4dXEZBEQxFGhVQEHQkW0/VgGE8tx85M39A
+         BjqBeLISgOkfBcSVeZ8aj67Hq/kN1LV4SVppD++k=
+Date:   Thu, 16 Apr 2020 16:13:28 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 4.19 003/146] rxrpc: Abstract out the calculation of
+ whether theres Tx space
+Message-ID: <20200416201328.GQ1068@sasha-vm>
+References: <20200416131242.353444678@linuxfoundation.org>
+ <20200416131242.886803103@linuxfoundation.org>
+ <20200416170515.GA29803@duo.ucw.cz>
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Thu, 16 Apr 2020 23:12:40 +0300
-Message-Id: <20621587067856@mail.yandex.ru>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200416170515.GA29803@duo.ucw.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Thu, Apr 16, 2020 at 07:05:15PM +0200, Pavel Machek wrote:
+>Hi!
+>
+>> Abstract out the calculation of there being sufficient Tx buffer space.
+>> This is reproduced several times in the rxrpc sendmsg code.
+>
+>I don't think this is suitable for stable. It does not fix anything.
 
-14.04.2020, 20:03, "Akira Shimahara" <akira215corp@gmail.com>:
-> From: Akira SHIMAHARA <akira215corp@gmail.com>
->
-> Patch for enhacement of w1_therm module. Added features :
->  - Bulk read : send one command for all the slaves
->                  on the bus to trigger temperature conversion
->  - Optimized conversion time regarding to device resolution
->  - Dedicated sysfs entry for powering read,
->                  resolution set/get, eeprom save/restore
->  - Alarms settings and reading
->  - Code optimization to mitigate bus traffic
->                  (devices information are stored to avoid
->                 interrogating each device every-time)
->
-> Following sysfs entry are added :
->  - temperature (RO) : return the temperature in 1/1000°
->  - ext_power (RO) : return the power status of the device
->  - resolution (RW) : get or set the device resolution (supported devices)
->  - eeprom (WO) :trigger a save or restore to/from device EEPROM
->  - alarms (RW) : read or write TH and TL in the device RAM
->  - therm_bulk_read (RW) : Attribute at master level to trigger
->                  bulk read and to survey the progress of devices conversions
->  - w1_slave has been kept for compatibility
->
-> Main motivation was to improve temperature reading speed, which depend
-> on resolution settings of devices. The module store the powwer status and
-> the resolution of each device so that during reading operation, no
-> transaction is required on the bus, which improve speed.
-> The harware status is checked as soon as a new device is detected,
-> when a user change occured, or when the corresponding sys file is
-> accessed by user.
->
-> The bulk read allow to trigger convserion of all devices on the bus at
-> the same time. It will apply a strong pull up on the line if at least
-> one device required it. The duration of the pull up is the max time
-> required by a device on the line.
->
-> Please let me know any feedback you have on this patch.
->
-> Thanks ahead,
->
-> Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
+You're right - I've grabbed it so that I could also take e138aa7d3271
+("rxrpc: Fix call interruptibility handling").
 
-Looks good to me, thank you!
-These are really good changes.
-
-Greg, please pull it into your tree, thank you.
-
-Acked-by: Evgeniy Polyakov <zbr@ioremap.net>
+-- 
+Thanks,
+Sasha
