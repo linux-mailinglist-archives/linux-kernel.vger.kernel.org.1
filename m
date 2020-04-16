@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46E81AC468
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A301AC725
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898853AbgDPN7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:59:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52512 "EHLO mail.kernel.org"
+        id S1728046AbgDPOu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:50:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898032AbgDPNkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:00 -0400
+        id S1731230AbgDPN60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D468218AC;
-        Thu, 16 Apr 2020 13:39:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E66720786;
+        Thu, 16 Apr 2020 13:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044399;
-        bh=aXAtVK+3azr1DoaYGy80vAEztDOR8O4VG7NpPABhYWg=;
+        s=default; t=1587045505;
+        bh=uS2XvlTl56H4jcaiC9wk+rQLx8ZcbiN32EuYD9MrFuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=baKMh1coucDXqOT5HiQp57zZDSA67OPzkF1i06qgXgM2XWGj1542ae6eq1nMiT0wR
-         47E1xXtZTbLc9t1FmegMF8WlQ4KRlaQCsv4AqKsJT20G+hlzsi1fUsXdTu74H9WmXb
-         vQ55T3wdTjGRJHiNnY9zoPlvpl2Yv5czN2/7PagM=
+        b=eewccISnGrz2dj7Nq5o/gUCenUq3VKzXbMQH/TGNCW7VUv7aaqVdMY92pRsRZ36Bt
+         ckvn/CBWNDlHSvXh9FMhg+JnpTrnKE7Qv8LLAG4VqqQQvGU7j1UiYJwFNC8/N7Xy3I
+         fj9hONxiJwVBiyE8seXvYPY/tb0nQJLFlchzcjns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
-        Roger Quadros <rogerq@ti.com>, stable@kernel.org,
-        Tero Kristo <t-kristo@ti.com>
-Subject: [PATCH 5.5 200/257] arm64: dts: ti: k3-am65: Add clocks to dwc3 nodes
+        stable@vger.kernel.org,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        stable@kernel.org
+Subject: [PATCH 5.6 162/254] time/namespace: Add max_time_namespaces ucount
 Date:   Thu, 16 Apr 2020 15:24:11 +0200
-Message-Id: <20200416131351.113959638@linuxfoundation.org>
+Message-Id: <20200416131346.861418414@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Gerlach <d-gerlach@ti.com>
+From: Dmitry Safonov <dima@arista.com>
 
-commit a81e5442d796ccfa2cc97d205a5477053264d978 upstream.
+commit eeec26d5da8248ea4e240b8795bb4364213d3247 upstream.
 
-The TI sci-clk driver can scan the DT for all clocks provided by system
-firmware and does this by checking the clocks property of all nodes, so
-we must add this to the dwc3 nodes so USB clocks are available.
+Michael noticed that userns limit for number of time namespaces is missing.
 
-Without this USB does not work with latest system firmware i.e.
-[    1.714662] clk: couldn't get parent clock 0 for /interconnect@100000/dwc3@4020000
+Furthermore, time namespace introduced UCOUNT_TIME_NAMESPACES, but didn't
+introduce an array member in user_table[]. It would make array's
+initialisation OOB write, but by luck the user_table array has an excessive
+empty member (all accesses to the array are limited with UCOUNT_COUNTS - so
+it silently reuses the last free member.
 
-Fixes: cc54a99464ccd ("arm64: dts: ti: k3-am6: add USB suppor")
-Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-Signed-off-by: Roger Quadros <rogerq@ti.com>
+Fixes user-visible regression: max_inotify_instances by reason of the
+missing UCOUNT_ENTRY() has limited max number of namespaces instead of the
+number of inotify instances.
+
+Fixes: 769071ac9f20 ("ns: Introduce Time Namespace")
+Reported-by: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Andrei Vagin <avagin@gmail.com>
+Acked-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Cc: stable@kernel.org
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Link: https://lkml.kernel.org/r/20200406171342.128733-1-dima@arista.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi |    2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/admin-guide/sysctl/user.rst |    6 ++++++
+ kernel/ucount.c                           |    1 +
+ 2 files changed, 7 insertions(+)
 
---- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-@@ -307,6 +307,7 @@
- 		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		dma-coherent;
- 		power-domains = <&k3_pds 151 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 151 2>, <&k3_clks 151 7>;
- 		assigned-clocks = <&k3_clks 151 2>, <&k3_clks 151 7>;
- 		assigned-clock-parents = <&k3_clks 151 4>,	/* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
- 					 <&k3_clks 151 9>;	/* set PIPE3_TXB_CLK to CLK_12M_RC/256 (for HS only) */
-@@ -346,6 +347,7 @@
- 		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
- 		dma-coherent;
- 		power-domains = <&k3_pds 152 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 152 2>;
- 		assigned-clocks = <&k3_clks 152 2>;
- 		assigned-clock-parents = <&k3_clks 152 4>;	/* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
+--- a/Documentation/admin-guide/sysctl/user.rst
++++ b/Documentation/admin-guide/sysctl/user.rst
+@@ -65,6 +65,12 @@ max_pid_namespaces
+   The maximum number of pid namespaces that any user in the current
+   user namespace may create.
  
++max_time_namespaces
++===================
++
++  The maximum number of time namespaces that any user in the current
++  user namespace may create.
++
+ max_user_namespaces
+ ===================
+ 
+--- a/kernel/ucount.c
++++ b/kernel/ucount.c
+@@ -69,6 +69,7 @@ static struct ctl_table user_table[] = {
+ 	UCOUNT_ENTRY("max_net_namespaces"),
+ 	UCOUNT_ENTRY("max_mnt_namespaces"),
+ 	UCOUNT_ENTRY("max_cgroup_namespaces"),
++	UCOUNT_ENTRY("max_time_namespaces"),
+ #ifdef CONFIG_INOTIFY_USER
+ 	UCOUNT_ENTRY("max_inotify_instances"),
+ 	UCOUNT_ENTRY("max_inotify_watches"),
 
 
