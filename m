@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4491AC44F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D161AC2FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506749AbgDPN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
+        id S2897301AbgDPNgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:36:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897943AbgDPNjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:21 -0400
+        id S2896049AbgDPN3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:29:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 355272063A;
-        Thu, 16 Apr 2020 13:39:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ECA521D7F;
+        Thu, 16 Apr 2020 13:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044360;
-        bh=9dyaT9wnAWhQSKmAiJwAuMsv2hIYneiLsOUo5frnMTc=;
+        s=default; t=1587043780;
+        bh=mXD2I/il6tBw5ftO+FfyEg8zHZ3c8AkmHQr4H5K2YyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q3AtTKOOcI0g0c6D/On/Sj2muOcAVdg0kFfap/rtkIp5D3Of9WbNpq0eWjmiFWbAW
-         oslhASLUXUqPGBwiH0Xr5+wdADpndPzOQ7RmE7nctnv0ODEEpH3zaEJ784iwceh1cE
-         C7P1Itv3W81dKOB+iWS6rPKLts3y5kawjtklakv8=
+        b=jikhFanPKnNZdxRJ6UVEQiSC3ilQe2BP58fMIylRUz/pBwlVj8Gk3jHGrZ30ZxtSo
+         OTEaD0dZDJHXZCFtGggHBpuEULKOOZTRTjiUDUYu31zSu74m5pAyYEpH9xG+HmW7ZR
+         xhNA4hEvX/z++SXtrE2ozEKcjphLp4xwO+1A1InY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.5 186/257] dm clone: Add missing casts to prevent overflows and data corruption
-Date:   Thu, 16 Apr 2020 15:23:57 +0200
-Message-Id: <20200416131349.554357030@linuxfoundation.org>
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, konrad.wilk@oracle.com,
+        dwmw@amazon.co.uk, bp@suse.de, srinivas.eeda@oracle.com,
+        peterz@infradead.org, hpa@zytor.com,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 097/146] x86/speculation: Remove redundant arch_smt_update() invocation
+Date:   Thu, 16 Apr 2020 15:23:58 +0200
+Message-Id: <20200416131256.026395108@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+From: Zhenzhong Duan <zhenzhong.duan@oracle.com>
 
-commit 9fc06ff56845cc5ccafec52f545fc2e08d22f849 upstream.
+commit 34d66caf251df91ff27b24a3a786810d29989eca upstream.
 
-Add missing casts when converting from regions to sectors.
+With commit a74cfffb03b7 ("x86/speculation: Rework SMT state change"),
+arch_smt_update() is invoked from each individual CPU hotplug function.
 
-In case BITS_PER_LONG == 32, the lack of the appropriate casts can lead
-to overflows and miscalculation of the device sector.
+Therefore the extra arch_smt_update() call in the sysfs SMT control is
+redundant.
 
-As a result, we could end up discarding and/or copying the wrong parts
-of the device, thus corrupting the device's data.
-
-Fixes: 7431b7835f55 ("dm: add clone target")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: a74cfffb03b7 ("x86/speculation: Rework SMT state change")
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: <konrad.wilk@oracle.com>
+Cc: <dwmw@amazon.co.uk>
+Cc: <bp@suse.de>
+Cc: <srinivas.eeda@oracle.com>
+Cc: <peterz@infradead.org>
+Cc: <hpa@zytor.com>
+Link: https://lkml.kernel.org/r/e2e064f2-e8ef-42ca-bf4f-76b612964752@default
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-clone-target.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/cpu.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/drivers/md/dm-clone-target.c
-+++ b/drivers/md/dm-clone-target.c
-@@ -282,7 +282,7 @@ static bool bio_triggers_commit(struct c
- /* Get the address of the region in sectors */
- static inline sector_t region_to_sector(struct clone *clone, unsigned long region_nr)
- {
--	return (region_nr << clone->region_shift);
-+	return ((sector_t)region_nr << clone->region_shift);
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2070,10 +2070,8 @@ int cpuhp_smt_disable(enum cpuhp_smt_con
+ 		 */
+ 		cpuhp_offline_cpu_device(cpu);
+ 	}
+-	if (!ret) {
++	if (!ret)
+ 		cpu_smt_control = ctrlval;
+-		arch_smt_update();
+-	}
+ 	cpu_maps_update_done();
+ 	return ret;
  }
+@@ -2084,7 +2082,6 @@ int cpuhp_smt_enable(void)
  
- /* Get the region number of the bio */
-@@ -471,7 +471,7 @@ static void complete_discard_bio(struct
- 	if (test_bit(DM_CLONE_DISCARD_PASSDOWN, &clone->flags) && success) {
- 		remap_to_dest(clone, bio);
- 		bio_region_range(clone, bio, &rs, &nr_regions);
--		trim_bio(bio, rs << clone->region_shift,
-+		trim_bio(bio, region_to_sector(clone, rs),
- 			 nr_regions << clone->region_shift);
- 		generic_make_request(bio);
- 	} else
-@@ -804,11 +804,14 @@ static void hydration_copy(struct dm_clo
- 	struct dm_io_region from, to;
- 	struct clone *clone = hd->clone;
- 
-+	if (WARN_ON(!nr_regions))
-+		return;
-+
- 	region_size = clone->region_size;
- 	region_start = hd->region_nr;
- 	region_end = region_start + nr_regions - 1;
- 
--	total_size = (nr_regions - 1) << clone->region_shift;
-+	total_size = region_to_sector(clone, nr_regions - 1);
- 
- 	if (region_end == clone->nr_regions - 1) {
- 		/*
+ 	cpu_maps_update_begin();
+ 	cpu_smt_control = CPU_SMT_ENABLED;
+-	arch_smt_update();
+ 	for_each_present_cpu(cpu) {
+ 		/* Skip online CPUs and CPUs on offline nodes */
+ 		if (cpu_online(cpu) || !node_online(cpu_to_node(cpu)))
 
 
