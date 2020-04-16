@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747F91ABEED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DC41ABEF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632791AbgDPLOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506234AbgDPLLh (ORCPT
+        id S2632863AbgDPLQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:16:27 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:35707 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506182AbgDPLNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:11:37 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AF2C061A0F;
-        Thu, 16 Apr 2020 04:11:37 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a81so4359345wmf.5;
-        Thu, 16 Apr 2020 04:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rNPv0L8oZ2ZNvAhFBy+sIdUoPqgqCnfq1Lqa8UBCAVU=;
-        b=n/5Ydq3YFrlj/SwcMbqob7nqCSdfpwQ2sooxAqKUqoqglVpnYPTCrA9eIP1pCHqyrY
-         h04bJzJvraxcPvNsHzcl0YJamieMAcNUQXjdhtfwl0M3KjPCFf8LgkZmZI3L6Tq3Xyxj
-         pVpBmFW8xV0oOoWxLrO2ridYw6m659eWw4rqjNTtUFTHsXYOeZ+KWk6S/XiTgJM/C40v
-         9vEOKMnJ5Ka0X80/V4u8th8j54Taa0cPmgtMrLfWXv8fFNR8IZIHBTOPVeM5hQ1lhNbG
-         4lXvh6rvmxPZdzq2B5PHXWCcgRXFZBnfl2MMkvAuOBsVzJyrlakiOBAcYbv9aAyh9Wm3
-         c0ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rNPv0L8oZ2ZNvAhFBy+sIdUoPqgqCnfq1Lqa8UBCAVU=;
-        b=itIQ7VZLxXSG4hmUttvrbES6LkJGkv9LlKZ6hvwK11b81shOwWHWv43WbNIdqTF18z
-         ovDZcUmG52sOsGK9GCQvO09292BbKGHQyzvIn7lMdhT79vlCRQUGdPqQ1Cn1qmzoNekd
-         ZE6S/OUwqhidlXiw6uzmjpqhnhHNt232Snnb4j70WJ80MCSlRdpGkyw3il0HfNXEJtXB
-         sx5Y+W9wqMdQIJP1YKcWNmj5rPOeED1iSoCKf+24+KmlCe2mV/TFX4NQITpjt4KuQJT5
-         TZz5i9BaxJdqmSXNbKIXV8aA5dF4vz1v+2X5KPZc7mXafdqH62Ev2Find5pVTf3ucXbx
-         QrBw==
-X-Gm-Message-State: AGi0PuYW7urQAWAN1spyTp7blQEzbq3qloTsxL7rVRUUxk3Qn1QgavGP
-        449vozsp7b7Rae59OwLsiDN1JG9XFaMiqJF6uRY=
-X-Google-Smtp-Source: APiQypLQ3fWux9KGt9LS7rjW4OY0UEaEFLZ7HroqDMMQtyLjSL6kfMZyd/LfqGNRxtBhzjQ4TGpdz7tF8cGRfyR32As=
-X-Received: by 2002:a1c:2b05:: with SMTP id r5mr4478119wmr.16.1587035495915;
- Thu, 16 Apr 2020 04:11:35 -0700 (PDT)
+        Thu, 16 Apr 2020 07:13:55 -0400
+Received: from mail-qv1-f49.google.com ([209.85.219.49]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MuDPh-1j6o4C3Hq9-00uaJK; Thu, 16 Apr 2020 13:12:01 +0200
+Received: by mail-qv1-f49.google.com with SMTP id y19so1575640qvv.4;
+        Thu, 16 Apr 2020 04:12:01 -0700 (PDT)
+X-Gm-Message-State: AGi0PubRT2SdYTkhIEjJSZmqyTc0qSMC/rqcVrbySVmMnMRFiBtUWHra
+        4u3zl+sq1SfKxlSNwIzblvmJJAtajZ24vv1trIg=
+X-Google-Smtp-Source: APiQypKUBOB6XQd2d+M75WuZ0DqJUTG/HnuwXa8550Av2Y6bO9ZONTvLBnhPRU7U+ROebImWwMBgxhHTnpmmhVTBibs=
+X-Received: by 2002:a0c:a602:: with SMTP id s2mr9756889qva.222.1587035520523;
+ Thu, 16 Apr 2020 04:12:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200409043851.31217-1-paweldembicki@gmail.com> <CACRpkdYKB0CHgOQ0DEhYoy16n3tSZ=DZ0WvL-GhAVCq0Jk8s2w@mail.gmail.com>
-In-Reply-To: <CACRpkdYKB0CHgOQ0DEhYoy16n3tSZ=DZ0WvL-GhAVCq0Jk8s2w@mail.gmail.com>
-From:   =?UTF-8?Q?Pawe=C5=82_Dembicki?= <paweldembicki@gmail.com>
-Date:   Thu, 16 Apr 2020 13:10:38 +0200
-Message-ID: <CAJN1Kky_Wor15GAZvHgdxusVsH+0z_k=K2H3uj28iGMwh8kDOA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: vendor-prefixes: Add Check Point
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+References: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com> <1586937773-5836-3-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <1586937773-5836-3-git-send-email-abel.vesa@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 16 Apr 2020 13:11:44 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Zd8Pctn9ra9dH7bTUSSMoTOwmDNOc6JwmKQA4fgdpWw@mail.gmail.com>
+Message-ID: <CAK8P3a1Zd8Pctn9ra9dH7bTUSSMoTOwmDNOc6JwmKQA4fgdpWw@mail.gmail.com>
+Subject: Re: [PATCH v3 02/13] Documentation: mfd: Add DT bindings for i.MX Mix
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Anson Huang <anson.huang@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:+sq+YMxtlC9OU/qKkZhu9BGJJ5gWuzZ4Ytnc0jfFhmWzcXtl8+M
+ Q95Yh2SeJzbVsDYPxBAg+r4yfopOTdjV65qorKsHYDqfkavkuHc23AZjKcoTXN1ULekS/Rh
+ gKZ/WDwKJkGbVkbIcexDMUqmPwWYE64i/VuZ/s7HV8H7v3g7stGbn9SBDKw46MmNCPp/Eej
+ s6MydABCpcfdbZ9dV0LGA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:n3Rsk45AdaQ=:EaVzcBvIGXitKFCtnWj6Xf
+ 0pLpWUsZtJIIoFMn78shvZX8VWdWAVeUIg9J4demjPjeKUODaW/CpIKBFB70iMVbf8InxR3I+
+ +FfJkG4RiH6W+rMrpz8ZfphUc/VPGuHlkE+K1P3Hswct0XFAuToVa8Zfx2hq9801TjHbl7jyu
+ H70lU8TmpXNKlnmK4MtwzYXBuOqRXhtaLHZHjO2qSne2tm8rs6TsTO5VrBk3tYNff3gC3fWw9
+ lhGI5iKrWPxxPnz3ZTy2KtePbzhA+vb+YLX/X8QlIRAZKndk6RnSZ7Nx5apHFdNQ8EzBPg6h9
+ rUNcNMioMDUXp7wrSQL6JIrQpsMOXllNXag16Ep6QxJ5HD3ox0iNARfM4b9Xu6c7YVmY1Xc0t
+ Bme/cjR2hw5ovsObpAm2TcKOwBv9h3K0Pn/Ac6G46kM7y/Lf+Lb7CK+Nsj0poXx6JzLYsI0Tv
+ ZEi6jCjvvsTkzsh+dTY8yhOtvRFx9uAGqWxd75ccy1vN0LJmUinyNwrPiSBmf3JZxZjdX+Pzt
+ 4ZfxfHlKSpPJ8bJTsQOyrF6+3UjpZcXXnkPIeM8Z/0USfHQhJAeUgM2M1Rl0bWy2odwwgaalj
+ 2sZLyanKooMUe76ztk7cLOM+m3AoxCgJge4M4mni6/Dn0F8Dy2B00u49wDa6WZmqbibd+vDTY
+ GF0D6NLH6olyyTnBvZtuhaXNBnalSxkkuf83oIgKNbJmPbHW5XZgRq7Y/6Tb6WBq1sGIUwBBp
+ 9he2vzD455wDPZDzqMlu34kghREwKYKjeBfz9dg3NQEpj+9s7DpQ0/QC2UjwU0BPaPrs0wMdB
+ 0bxyJ3JKkH8L7c98Xejqk2YZoKDIWk7ILaB4M4d5+335vjKSSY=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 12:57  Linus Walleij <linus.walleij@linaro.org> wrote:
+On Wed, Apr 15, 2020 at 10:05 AM Abel Vesa <abel.vesa@nxp.com> wrote:
 >
-> Hi Pawel,
+> Documnent the i.MX Mix with its devicetree properties.
 >
-
-Hi Linus,
-
-> On Thu, Apr 9, 2020 at 6:39 AM Pawel Dembicki <paweldembicki@gmail.com> wrote:
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>  .../devicetree/bindings/mfd/fsl,imx-mix.yaml       | 34 ++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/fsl,imx-mix.yaml
 >
-> >    "^ceva,.*":
-> >      description: Ceva, Inc.
-> >    "^chipidea,.*":
-> > +    description: Check Point Software Technologies Ltd.
-> > +  "^checkpoint,.*":
-> >      description: Chipidea, Inc
-> >    "^chipone,.*":
-> >      description: ChipOne
->
-> This is wrong, you inserted your new vendor between the regexp
-> and description for chipidea and flipped the two lines in your
-> match.
+> diff --git a/Documentation/devicetree/bindings/mfd/fsl,imx-mix.yaml b/Documentation/devicetree/bindings/mfd/fsl,imx-mix.yaml
+> new file mode 100644
+> index 00000000..8b1870e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/fsl,imx-mix.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/fsl,imx-mix.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX mix
+> +
+> +description: |
+> +  i.MX mix is a conglomerate of different GPRs that are
+> +  usually dedicated to one subsystem. These GPRs can be
+> +  further split between different types of drivers, once
+> +  the MFD populates all the devices based on its devicetree
+> +  subnodes.
 
-I prepared v2 of my patch and it was merged into next:
-https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git/commit/?h=dt/next&id=84a25ea9cfd9889acf1e1021cbd835277a1df71e
+This does not describe the hardware but the implementation in Linux.
+Please rephrase it to not independent of the software that interprets
+the DT nodes.
 
--- 
-Best regards,
-Pawel Dembicki
+       Arnd
