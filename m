@@ -2,155 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB531ABD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0891ABD40
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504201AbgDPJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:47:33 -0400
-Received: from mout.web.de ([212.227.17.11]:53001 "EHLO mout.web.de"
+        id S2504222AbgDPJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:48:56 -0400
+Received: from mga17.intel.com ([192.55.52.151]:63822 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503681AbgDPJrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:47:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1587030407;
-        bh=W6Q51/NlWIpeKBgEWUnDBil03bI8pW/k0GwiuNlbhNU=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
-        b=TUA+uAkn0e/+fOsgBqkkIXdT+rMNx8IN4SXpK7w3krrAgC28nsnZkPLPgJsjn3XIK
-         cx42ktABJjq7fDgRYaMBqPqj17SB8mObAZfP8LeTs7pbP5WCfobMx7CD5d0ibmLbkF
-         YsWc2NA6YSjuY8FyRRT10rWi/HFHWLoGRWrF71Ak=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([2.243.109.113]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MA5v3-1jVqbm1nIH-00BHVN; Thu, 16
- Apr 2020 11:46:47 +0200
-Subject: Re: i2c: img-scb: remove duplicate dev_err()
-From:   Markus Elfring <Markus.Elfring@web.de>
-To:     Dejin Zheng <zhengdejin5@gmail.com>, linux-i2c@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Shah Nehal-Bakulchandra <Nehal-bakulchandra.Shah@amd.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Thor Thayer <thor.thayer@linux.intel.com>,
-        Robert Richter <rrichter@marvell.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Barry Song <baohua@kernel.org>, kernel-janitors@vger.kernel.org
-References: <08564c03-3bbd-5518-1a9d-a40b8ca09f48@web.de>
- <20200415025426.GB14300@nuc8i5> <b5db65f5-f236-9e22-98df-07629a827738@web.de>
- <20200415152115.GA17519@nuc8i5> <668fe4da-56f2-8abe-1113-fa180f307524@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <73cc5a7c-787c-b263-7679-0f1fa58a70f8@web.de>
-Date:   Thu, 16 Apr 2020 11:46:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <668fe4da-56f2-8abe-1113-fa180f307524@web.de>
-Content-Type: text/plain; charset=utf-8
+        id S2504126AbgDPJsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:48:37 -0400
+IronPort-SDR: drNFHjEeXl7DGqHhua/GDKvw7OVpjoktN3JGuEy9dX5ie8/ZuGanb7B77lt5Pi43ay69Lcw2LB
+ TPJXSuFtyQyQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 02:48:31 -0700
+IronPort-SDR: wL3njhJkGut5DF2SN985WpBAthwzTrFL94B6JKx80uvQKxmKALNU0BtdNEMn1ZoxQkG4Go6Hux
+ 5RK2wC/OMuiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="242599418"
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by orsmga007.jf.intel.com with ESMTP; 16 Apr 2020 02:48:31 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 02:48:31 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 16 Apr 2020 02:48:30 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 16 Apr 2020 02:48:30 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 02:48:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U7f5b7YDue6amdfPxheAb/WQyv0im0OyCMKI56k0JqWhmQHt/w0XYyzD1/EC910FMLHPMGj08hTdR50xgAKGMSkHvCmbKIjwiVEx4yviGA2XvrYc/W6Dz6cPlv1bmH91tz7+XxcO8TFWLCO4UG2MU4Ub6dSMbnjPywBdFuvci2cNlqakucu4oQAvvadud/1XA4/QaBGy2+5ig1WY/PsGE+wVf9JPTfXWwdhwJkK9eU5vApAv6PEYJf3F3XN7NLoxRRMWYc5DqTOFwE+x+U9XFACU0tMM5RUCwXYDKaRDATCjwTHFgdIJEQPId1TOcDpQv5J4aNVpEpw1Rso7JEIDDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JDZvfXGuknErF0hZ9/n6QDVNhdBo9TTnR1f9/DuHLIY=;
+ b=BjPYccFah8WcDunbp8Y9DX4gJ4AYfLPOtci03OpyMQ5yo1JfBk8G8/TPQkrRGIWkP+YX6YSlL3iXrHxaqEn8oX/PAKsK3gEjs/4hbGSobpDMgkR2DCnSXDyVKLOBPqOjsozuTfCNpLmlWptpBqcnpuGPgPX+WP7jlI90bzL2RvlHwooCF1qfBkGRLtbmhIHiSlkQs8FpiYUT6mEPvzrV34OgY7+k8rzmgzr6zJRXRVR3gtDQVgIoJv9KIBlqzKetzHPkQxiG3//7v679b1yxAlE3dGAaFqUeEtc7jY1sLu0pvE26Ap/olQP11n33QyCJK8Qg+gEoP8qky2z78LjYdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JDZvfXGuknErF0hZ9/n6QDVNhdBo9TTnR1f9/DuHLIY=;
+ b=rCBrPVK3wNknbnmfXZJue5Az3xS2zP2MCFkypkzw7Hn9ELJm+LtZ/QSqJiOMrylfrg947YW+5CKzTRpwjKQrE0GnWVJCJrJBcXzPwzRfiVNWywLCSbA25V2GCFw1pWR4T9oqNrkUfhc6eWwgkxAAq38sARYxRFx2iMCKpHfORQY=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB3834.namprd11.prod.outlook.com (2603:10b6:5:137::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Thu, 16 Apr
+ 2020 09:47:53 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::98a:bb06:5551:e5a3]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::98a:bb06:5551:e5a3%3]) with mapi id 15.20.2900.028; Thu, 16 Apr 2020
+ 09:47:53 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     "Xu, Yilun" <yilun.xu@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "trix@redhat.com" <trix@redhat.com>,
+        "bhu@redhat.com" <bhu@redhat.com>,
+        "Kang, Luwei" <luwei.kang@intel.com>
+Subject: RE: [PATCH v4 5/7] fpga: dfl: fme: add interrupt support for global
+ error reporting
+Thread-Topic: [PATCH v4 5/7] fpga: dfl: fme: add interrupt support for global
+ error reporting
+Thread-Index: AQHWEw5ReWeaVzoLK0+zi/nRtLwP8Kh7gcmw
+Date:   Thu, 16 Apr 2020 09:47:53 +0000
+Message-ID: <DM6PR11MB3819E22A4BBA27F532476B4485D80@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <1586945255-30823-1-git-send-email-yilun.xu@intel.com>
+ <1586945255-30823-6-git-send-email-yilun.xu@intel.com>
+In-Reply-To: <1586945255-30823-6-git-send-email-yilun.xu@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=hao.wu@intel.com; 
+x-originating-ip: [192.102.204.38]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 585b9beb-4134-409c-b570-08d7e1eb3c1e
+x-ms-traffictypediagnostic: DM6PR11MB3834:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB38343F610A150D09B6524D1D85D80@DM6PR11MB3834.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0375972289
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(346002)(376002)(366004)(396003)(136003)(110136005)(316002)(26005)(478600001)(6506007)(33656002)(7696005)(53546011)(2906002)(8676002)(5660300002)(81156014)(52536014)(54906003)(66946007)(66446008)(4326008)(186003)(9686003)(86362001)(55016002)(8936002)(76116006)(66476007)(64756008)(71200400001)(66556008)(107886003);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Cn+TNGhwCsOvMqyIueraK8eC7E2T8bmOyvSb9vO/gkjYjKDzI84zJL8G4oaeQqq7hYYRVf6P9d/+PVgioHBTeu84TKUSjoNx+uA8/+b51bod7OGBkG1DQ9/07t9ybjqSStQ3kyrJqmWKr943KJGupZj4FvD9ryjqH68XQl2UV98TBGLHjVgr7Vc2D8QD9fZPJUlRtEUPS86+HlM4lyR9e868C93VRsR0Ib7q+SRyAdQ3AX4qtppMd3eFewJNw7ossddBeUjMUYV5wZRTNtUGG2cy8LlKtzfPDpOkqEV28ir3+8YoL7EkSlprVKJ2Jaej9dxwgX8dJ81Qzh15TePs2991x05gqfvT++Y9TyZDxHRuiidVVxJnLiWVQXMwIY/cV5gUudc8WlI3VRHcxR8VOy7bYOXZPrV2/uQ97CFTt0kezS8M/VFvkmq+m3OAFPfc
+x-ms-exchange-antispam-messagedata: HjtkSC5rGGPwJK0JRgTRR4M0SZUsJ/GYli2L2vukhWuN3zLetUBNVbnevPtdJnb7xWx5P0liGed8vM/3vYDZl9Q1hyjTM6IXm0jl76rhCNKI0qkm/XlHZtACbKOWXuTRqKTl1VmzjImj9N90wfEU2w==
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AiYgFY9UTSVKOEH/5tKx1okowyBy10eZO96km7yW3j3VhiI7TBT
- z2MpcOfq278PqIDVlV8nHwYEn1WkholtN/7lPl9jeOrshsqBjP+IsIE8SeG5uUZnaATD7BV
- 5F03JJWZzHWJHK6/i0wb2F7NOA7t7RxUhg2OExSrSiT4G1w3DWl4V5y2cuwD7w96oz4ymx5
- Kic5NB6DDd7miIsd84spA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dUphwKjnKnc=:C3s07ABfGQ/id+upkfhxfG
- fSuDnBJZoHpZbg3/s5PpN1NS7+G/uDzN7h1YZm1KcjYd5I0A/Vy/h4PDo+19eBNaHydABsx8o
- qKFiTFScV7OhCErJ53zEd0F8ZW3i/C+IGSyI39HyakqlOZzwFUNRSKi9Pk9lnA7hKJ8Ei/h+L
- r1wunarL0KiRKOLeYns75LDpOXc3SzT4Il0aaDrZBZikVT/U/q4l0BQvgTmqrY0K3WXdmzpz+
- W9u0GEP8vXZd3Hv62PTBEOJ2L3du/YG+MMrhTIYsWLZ8xC8g43B2Etorz4SjczCGuw2TydKSJ
- TEy4KJdGplxDtIC191d7zDiNz/Y+SJt4YfMHmUfBU5HrZFMf7TSbfEKZ4wcHhN2+3zN/1QhIF
- oJepdF4Zkldkrs5Rjebi/zkrI2jMbH8CWqP4Qkzg5BFGQM28QRqlPRq+2vkPf9EmxT3oqdjJz
- oAMYMTpSiDRFDJJtOoz8dMvVoqhc/AovrAvoKbhKf18o2VHQAMnudnb/x/4KL7dSJjSaG+ZqB
- xBJHPKyBlqXMoecmN5pfYxF70gr/JuBTHi8o9938S0QPGcJJNGRNNX6b/g4n5uN4SoJQvJsxj
- wIOXhg/VChjdnFGHn+4Pxnrgju1QuZu+r8Aq03YG49Yo8DzBD2JTDRiusGCdx5om9gDro80m0
- zZxZU6BGlzXlATVcq6w0njxo0YBXiT0M5Fll6RqWOxRv2hOI0aVwsKkjmbJVfu1Toi7Zzj4Ws
- iavUw4LNJzwcSls/QwyzgLfIy1dRIf6LdJJ+zrq0BLUlxgfVGCk/3hXLx/d87vtBJPGsr0/z7
- Ov4schpOURWmTn+UTViC3JbyLcTdz9HL1CZJ6u93N+eYpZHAARdzz0IYtMDo58wjZsZvqohx2
- sK8CbOk0+38RC9siiDQmPU/F2O9j0ecFLoic8L+FzrJRUabpSw07N9VE7yuiLzzW7h1y1qbdl
- 8BDKnCLdCt5xnvC6U/4WQH3gD8OmJF1CUtq+TTldcOhSrXj2vnZzKuWHsToqAEFYdCZ+G1kJO
- eJI+QvE+W/XqfwgluGmoOkhLGUX5ldmKgX6CLe5dbZ8IawJDff5pFl8WXkpxT/eZXkoGcu7Pc
- DX0K2nek3ltsWSP9duQ3a4vbYFB6Vy/1K5FZXd9NLKDHUpyZxqAnHScrIUhhPLbR9qzqa3fP8
- S9JHwgIyqL+J55/UfSI50l6JB8pE7cNqC8+mxFk3NnopJHiGHnFN35ebeS7rKgNp85lZ5jkmG
- gtTF0wZ9Rlqj9Xn2L
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 585b9beb-4134-409c-b570-08d7e1eb3c1e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2020 09:47:53.7334
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pbCmg86lJ2GyIe40XrIY3yifoqNK+UUdSPIwwbsIVWOsBrsljcFbdQ+XOXhQHCE9nhzVhAyVphIP5a8P9RinMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3834
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> Would you like to take another look at corresponding change possibilit=
-ies?
->>>
->> yes, I want to do it and thanks for your info.
+> -----Original Message-----
+> From: Xu, Yilun <yilun.xu@intel.com>
+> Sent: Wednesday, April 15, 2020 6:08 PM
+> To: mdf@kernel.org; linux-fpga@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Cc: trix@redhat.com; bhu@redhat.com; Xu, Yilun <yilun.xu@intel.com>;
+> Kang, Luwei <luwei.kang@intel.com>; Wu, Hao <hao.wu@intel.com>
+> Subject: [PATCH v4 5/7] fpga: dfl: fme: add interrupt support for global =
+error
+> reporting
+>=20
+> Error reporting interrupt is very useful to notify users that some
+> errors are detected by the hardware. Once users are notified, they
+> could query hardware logged error states, no need to continuously
+> poll on these states.
+>=20
+> This patch adds interrupt support for fme global error reporting sub
+> feature. It follows the common DFL interrupt notification and handling
+> mechanism. And it implements two ioctls below for user to query
+> number of irqs supported, and set/unset interrupt triggers.
+>=20
+>  Ioctls:
+>  * DFL_FPGA_FME_ERR_GET_IRQ_NUM
+>    get the number of irqs, which is used to determine whether/how many
+>    interrupts fme error reporting feature supports.
+>=20
+>  * DFL_FPGA_FME_ERR_SET_IRQ
+>    set/unset given eventfds as fme error reporting interrupt triggers.
+>=20
+> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
+> Signed-off-by: Wu Hao <hao.wu@intel.com>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ----
+> v2: use DFL_FPGA_FME_ERR_GET_IRQ_NUM instead of
+>     DFL_FPGA_FME_ERR_GET_INFO
+>     Delete flags field for DFL_FPGA_FME_ERR_SET_IRQ
+> v3: put_user() instead of copy_to_user()
+>     improves comments
+> v4: use common functions to handle irq ioctls
+> ---
+>  drivers/fpga/dfl-fme-error.c  | 23 +++++++++++++++++++++++
+>  drivers/fpga/dfl-fme-main.c   |  6 ++++++
+>  include/uapi/linux/fpga-dfl.h | 23 +++++++++++++++++++++++
+>  3 files changed, 52 insertions(+)
+>=20
+> diff --git a/drivers/fpga/dfl-fme-error.c b/drivers/fpga/dfl-fme-error.c
+> index f897d41..a4cbf8c 100644
+> --- a/drivers/fpga/dfl-fme-error.c
+> +++ b/drivers/fpga/dfl-fme-error.c
+> @@ -16,6 +16,7 @@
+>   */
+>=20
+>  #include <linux/uaccess.h>
+> +#include <linux/fpga-dfl.h>
+>=20
+>  #include "dfl.h"
+>  #include "dfl-fme.h"
+> @@ -348,6 +349,27 @@ static void fme_global_err_uinit(struct
+> platform_device *pdev,
+>  	fme_err_mask(&pdev->dev, true);
+>  }
+>=20
+> +static long
+> +fme_global_error_ioctl(struct platform_device *pdev,
+> +		       struct dfl_feature *feature,
+> +		       unsigned int cmd, unsigned long arg)
+> +{
+> +	long ret =3D -ENODEV;
 
-How do you think about to improve the clarification around potentially
-=E2=80=9Codd fixes=E2=80=9D (because of collateral evolution)?
+Same case for patch #5 and #6.=20
+Other place looks good to me.
 
+Thanks
+Hao
 
-I noticed your update suggestion =E2=80=9Ci2c: busses: convert to devm_pla=
-tform_ioremap_resource=E2=80=9D.
-https://lore.kernel.org/linux-i2c/20200409135224.7426-1-zhengdejin5@gmail.=
-com/
-https://lore.kernel.org/patchwork/patch/1222122/
-https://lkml.org/lkml/2020/4/9/431
+> +
+> +	switch (cmd) {
+> +	case DFL_FPGA_FME_ERR_GET_IRQ_NUM:
+> +		ret =3D dfl_feature_ioctl_get_num_irqs(pdev, feature, arg);
+> +		break;
+> +	case DFL_FPGA_FME_ERR_SET_IRQ:
+> +		ret =3D dfl_feature_ioctl_set_irq(pdev, feature, arg);
+> +		break;
+> +	default:
+> +		dev_dbg(&pdev->dev, "%x cmd not handled", cmd);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  const struct dfl_feature_id fme_global_err_id_table[] =3D {
+>  	{.id =3D FME_FEATURE_ID_GLOBAL_ERR,},
+>  	{0,}
+> @@ -356,4 +378,5 @@ const struct dfl_feature_id fme_global_err_id_table[]
+> =3D {
+>  const struct dfl_feature_ops fme_global_err_ops =3D {
+>  	.init =3D fme_global_err_init,
+>  	.uinit =3D fme_global_err_uinit,
+> +	.ioctl =3D fme_global_error_ioctl,
+>  };
+> diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
+> index 56d720c..ab3722d 100644
+> --- a/drivers/fpga/dfl-fme-main.c
+> +++ b/drivers/fpga/dfl-fme-main.c
+> @@ -616,11 +616,17 @@ static int fme_release(struct inode *inode, struct
+> file *filp)
+>  {
+>  	struct dfl_feature_platform_data *pdata =3D filp->private_data;
+>  	struct platform_device *pdev =3D pdata->dev;
+> +	struct dfl_feature *feature;
+>=20
+>  	dev_dbg(&pdev->dev, "Device File Release\n");
+>=20
+>  	mutex_lock(&pdata->lock);
+>  	dfl_feature_dev_use_end(pdata);
+> +
+> +	if (!dfl_feature_dev_use_count(pdata))
+> +		dfl_fpga_dev_for_each_feature(pdata, feature)
+> +			dfl_fpga_set_irq_triggers(feature, 0,
+> +						  feature->nr_irqs, NULL);
+>  	mutex_unlock(&pdata->lock);
+>=20
+>  	return 0;
+> diff --git a/include/uapi/linux/fpga-dfl.h b/include/uapi/linux/fpga-dfl.=
+h
+> index fbe1e99..9e12fff 100644
+> --- a/include/uapi/linux/fpga-dfl.h
+> +++ b/include/uapi/linux/fpga-dfl.h
+> @@ -230,4 +230,27 @@ struct dfl_fpga_fme_port_pr {
+>   */
+>  #define DFL_FPGA_FME_PORT_ASSIGN     _IOW(DFL_FPGA_MAGIC,
+> DFL_FME_BASE + 2, int)
+>=20
+> +/**
+> + * DFL_FPGA_FME_ERR_GET_IRQ_NUM - _IOR(DFL_FPGA_MAGIC,
+> DFL_FME_BASE + 3,
+> + *							__u32 num_irqs)
+> + *
+> + * Get the number of irqs supported by the fpga fme error reporting priv=
+ate
+> + * feature. Currently hardware supports up to 1 irq.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +#define DFL_FPGA_FME_ERR_GET_IRQ_NUM	_IOR(DFL_FPGA_MAGIC,
+> 	\
+> +					     DFL_FME_BASE + 3, __u32)
+> +
+> +/**
+> + * DFL_FPGA_FME_ERR_SET_IRQ - _IOW(DFL_FPGA_MAGIC, DFL_FME_BASE
+> + 4,
+> + *						struct dfl_fpga_irq_set)
+> + *
+> + * Set fpga fme error reporting interrupt trigger if evtfds[n] is valid.
+> + * Unset related interrupt trigger if evtfds[n] is a negative value.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +#define DFL_FPGA_FME_ERR_SET_IRQ	_IOW(DFL_FPGA_MAGIC,
+> 	\
+> +					     DFL_FME_BASE + 4,	\
+> +					     struct dfl_fpga_irq_set)
+> +
+>  #endif /* _UAPI_LINUX_FPGA_DFL_H */
+> --
+> 2.7.4
 
-It seems that you got encouraged to contribute changes according to anothe=
-r
-transformation approach by a single patch for a directory hierarchy.
-How likely is it that such adjustments touch source code places
-where related error messages would be found for further software
-development considerations?
-Would you like to wait until the integration of this update succeeded?
-
-Will it be interesting in the meantime to become more familiar with
-applications around scripts for the semantic patch language?
-Can the Coccinelle software make the discussed transformations more conven=
-ient
-also for your needs?
-
-Regards,
-Markus
