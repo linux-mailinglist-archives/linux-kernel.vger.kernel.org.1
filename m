@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E0D1AC59A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C59C1AC2B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394080AbgDPOW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:22:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
+        id S2896597AbgDPNba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408942AbgDPN4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:56:22 -0400
+        id S2895714AbgDPN2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:28:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C88812078B;
-        Thu, 16 Apr 2020 13:56:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 268F821BE5;
+        Thu, 16 Apr 2020 13:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045381;
-        bh=YvEO37qKCjWeczjWU6192GteB1w/O74tNl8rInnF+to=;
+        s=default; t=1587043695;
+        bh=wgY92Up2hqj3U3bxEm7of4dFDNE/XdwTMo46DQJ7BiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkhIm8gItBZmnVOXqvsguodWDWUwELpdy9CY3GL3KzgvSq+uHIvGg8vNc2qQp6CGW
-         XEwcx0zSvaLuM0jv5ec9wj0gIKO+n1IC4t1nuGONcBXY10sumMmZSIo7m+JSUoHFN9
-         S7B77vIWprF7oHAKRQ2PutyfMU5IoCpKUsW6KIjE=
+        b=j7nLaaFULL2DL5XTBgFixTFEQUSkjptBXM2PCPv4uF1Mx/7peMckAZN6U7EtY+nTD
+         6Hq0MuCnWFMGWDZVSTXh7G9zv9ez/osJLXaa7CMr3bBXG8NYtL4niQw48aGWAjWV2U
+         K4LUgcjsFA4K3qyK9JoZsp3IuvvHsrogZUHCMW/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Pavankumar Kondeti <pkondeti@codeaurora.org>
-Subject: [PATCH 5.6 112/254] cpu/hotplug: Ignore pm_wakeup_pending() for disable_nonboot_cpus()
-Date:   Thu, 16 Apr 2020 15:23:21 +0200
-Message-Id: <20200416131340.201976543@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 4.19 061/146] thermal: devfreq_cooling: inline all stubs for CONFIG_DEVFREQ_THERMAL=n
+Date:   Thu, 16 Apr 2020 15:23:22 +0200
+Message-Id: <20200416131251.230752850@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-commit e98eac6ff1b45e4e73f2e6031b37c256ccb5d36b upstream.
+commit 3f5b9959041e0db6dacbea80bb833bff5900999f upstream.
 
-A recent change to freeze_secondary_cpus() which added an early abort if a
-wakeup is pending missed the fact that the function is also invoked for
-shutdown, reboot and kexec via disable_nonboot_cpus().
+When CONFIG_DEVFREQ_THERMAL is disabled all functions except
+of_devfreq_cooling_register_power() were already inlined. Also inline
+the last function to avoid compile errors when multiple drivers call
+of_devfreq_cooling_register_power() when CONFIG_DEVFREQ_THERMAL is not
+set. Compilation failed with the following message:
+  multiple definition of `of_devfreq_cooling_register_power'
+(which then lists all usages of of_devfreq_cooling_register_power())
 
-In case of disable_nonboot_cpus() the wakeup event needs to be ignored as
-the purpose is to terminate the currently running kernel.
+Thomas Zimmermann reported this problem [0] on a kernel config with
+CONFIG_DRM_LIMA={m,y}, CONFIG_DRM_PANFROST={m,y} and
+CONFIG_DEVFREQ_THERMAL=n after both, the lima and panfrost drivers
+gained devfreq cooling support.
 
-Add a 'suspend' argument which is only set when the freeze is in context of
-a suspend operation. If not set then an eventually pending wakeup event is
-ignored.
+[0] https://www.spinics.net/lists/dri-devel/msg252825.html
 
-Fixes: a66d955e910a ("cpu/hotplug: Abort disabling secondary CPUs if wakeup is pending")
-Reported-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Pavankumar Kondeti <pkondeti@codeaurora.org>
+Fixes: a76caf55e5b356 ("thermal: Add devfreq cooling")
 Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/874kuaxdiz.fsf@nanos.tec.linutronix.de
+Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200403205133.1101808-1-martin.blumenstingl@googlemail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/cpu.h |   12 +++++++++---
- kernel/cpu.c        |    4 ++--
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ include/linux/devfreq_cooling.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -138,12 +138,18 @@ static inline void get_online_cpus(void)
- static inline void put_online_cpus(void) { cpus_read_unlock(); }
+--- a/include/linux/devfreq_cooling.h
++++ b/include/linux/devfreq_cooling.h
+@@ -75,7 +75,7 @@ void devfreq_cooling_unregister(struct t
  
- #ifdef CONFIG_PM_SLEEP_SMP
--extern int freeze_secondary_cpus(int primary);
-+int __freeze_secondary_cpus(int primary, bool suspend);
-+static inline int freeze_secondary_cpus(int primary)
-+{
-+	return __freeze_secondary_cpus(primary, true);
-+}
-+
- static inline int disable_nonboot_cpus(void)
+ #else /* !CONFIG_DEVFREQ_THERMAL */
+ 
+-struct thermal_cooling_device *
++static inline struct thermal_cooling_device *
+ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+ 				  struct devfreq_cooling_power *dfc_power)
  {
--	return freeze_secondary_cpus(0);
-+	return __freeze_secondary_cpus(0, false);
- }
--extern void enable_nonboot_cpus(void);
-+
-+void enable_nonboot_cpus(void);
- 
- static inline int suspend_disable_secondary_cpus(void)
- {
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1212,7 +1212,7 @@ EXPORT_SYMBOL_GPL(cpu_up);
- #ifdef CONFIG_PM_SLEEP_SMP
- static cpumask_var_t frozen_cpus;
- 
--int freeze_secondary_cpus(int primary)
-+int __freeze_secondary_cpus(int primary, bool suspend)
- {
- 	int cpu, error = 0;
- 
-@@ -1237,7 +1237,7 @@ int freeze_secondary_cpus(int primary)
- 		if (cpu == primary)
- 			continue;
- 
--		if (pm_wakeup_pending()) {
-+		if (suspend && pm_wakeup_pending()) {
- 			pr_info("Wakeup pending. Abort CPU freeze\n");
- 			error = -EBUSY;
- 			break;
 
 
