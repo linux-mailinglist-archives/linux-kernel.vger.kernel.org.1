@@ -2,60 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5C31AD0E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CFD1AD10A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgDPUNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726523AbgDPUNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:13:30 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E20F321841;
-        Thu, 16 Apr 2020 20:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587068010;
-        bh=LyH9cHiVsHhYNaY8doBcGxuSdbtSiTmUFJcreEJc7dI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=he9cyi9U6qNaI++P4yCtou68OtfJj0xa0yu9eO1qYXQ1+RZUP6SNUIDA8c4tpI1x7
-         ROTa+l+WyFq7FbIeME4zKIxrIRqh0spV4dXEZBEQxFGhVQEHQkW0/VgGE8tx85M39A
-         BjqBeLISgOkfBcSVeZ8aj67Hq/kN1LV4SVppD++k=
-Date:   Thu, 16 Apr 2020 16:13:28 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 4.19 003/146] rxrpc: Abstract out the calculation of
- whether theres Tx space
-Message-ID: <20200416201328.GQ1068@sasha-vm>
-References: <20200416131242.353444678@linuxfoundation.org>
- <20200416131242.886803103@linuxfoundation.org>
- <20200416170515.GA29803@duo.ucw.cz>
+        id S1728749AbgDPUYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727870AbgDPUYr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 16:24:47 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1383AC03C1A7;
+        Thu, 16 Apr 2020 13:15:31 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id q31so2719321qvf.11;
+        Thu, 16 Apr 2020 13:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RrhoCocMui3bsFc5qkdYNErfeCVARryDRP7TYadbG5M=;
+        b=QfKW6F7xCXl6+vxdlzAiOL5ivPMy1SHP4U5CM8CVeegJchb5+KDPwsbTufj449g+u4
+         SD8E5bdY6BjaDM0KbK7iKkgwtLkedOn6so4ibg1BTWRdPCngH3jq4GS1rAXU0x3tqAW+
+         +Z+52kZuoEnBLuNVBNWfPaISsumvknew1jf03TvmuKfwG9QZs3ABAS2cvd1he0XhnLDQ
+         aeKzpcLxXOlZl4GkR6FTBIMSIghnearpfUmTipNkoasRCwGXVJ76zE+VYDzzcJFVV3tu
+         IXG/BpW9slI84n6+qwgUnA2Ga9rgXPyqvF4yPDwBPGswDWoEGlWhip+xHunJQ8F1C6C2
+         YMLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RrhoCocMui3bsFc5qkdYNErfeCVARryDRP7TYadbG5M=;
+        b=TxR6pCTybx7DLqPkCXvASkTm+yOx7i0dc6NJmog2VSZj+3AGhajz9sgFok9ha1iUXs
+         RtT2iDxh3ZWF8/XcGuTUN+kKdFAEm90L/1rlx6IrsnTMFO0Qv20vZ9XtqQoTgLbOcXNv
+         ReYUVdLLb+VKp33KS6OJAZbvEDnXKJS3EeiT/CrGYLagMlgnnfEGN8n8nRcmbGgsENNk
+         HjXmyHiGSpuymfx8FbXewudisdAEjGXDzMQjxwJBqEVOJfVeN7cbWWZG2700+FumEDhr
+         rOLDPfZz3SFZc7R5zyD6SQrv3VuVrLygedOMnm6iF/wV1JKF3tZQMhPJzUR4xcT/4ftO
+         RHYA==
+X-Gm-Message-State: AGi0PuYjXvJ5m3N8DRwcO/SOeJu8RuwbMRSZeGADg46s/CBi+9z2qZir
+        MggCqmTbmvvtLqneYfyo1rdgbmBa/sW2+mIjYFqyq3ycFoE=
+X-Google-Smtp-Source: APiQypLEw9l7W2hSliB15jHFogvAHufSRGn0ZYH76LQ8VoeRoID9myxCgGr4Pn9PvD87gHrPUOj8sgZxasNifp8qNh4=
+X-Received: by 2002:a0c:f748:: with SMTP id e8mr11834286qvo.237.1587068130311;
+ Thu, 16 Apr 2020 13:15:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200416170515.GA29803@duo.ucw.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200414151955.311949-1-adrian.ratiu@collabora.com>
+ <20200414151955.311949-2-adrian.ratiu@collabora.com> <CAFqH_52eKB4jtmn5e4HQubv8ijOPqDqncp1dRGahhU3NOorJMQ@mail.gmail.com>
+ <87lfmvjmt5.fsf@collabora.com>
+In-Reply-To: <87lfmvjmt5.fsf@collabora.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Thu, 16 Apr 2020 22:15:19 +0200
+Message-ID: <CAFqH_513KB+En_xbpXSBG6Q38kYxWCgw0KO3NVxCb6fqHDaKBA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/8] drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Adrian Pop <pop.adrian61@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        linux-imx@nxp.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 07:05:15PM +0200, Pavel Machek wrote:
->Hi!
->
->> Abstract out the calculation of there being sufficient Tx buffer space.
->> This is reproduced several times in the rxrpc sendmsg code.
->
->I don't think this is suitable for stable. It does not fix anything.
+Hi Adrian,
 
-You're right - I've grabbed it so that I could also take e138aa7d3271
-("rxrpc: Fix call interruptibility handling").
+[snip]
 
--- 
-Thanks,
-Sasha
+> >>
+> >> +static void dw_mipi_dsi_get_hw_version(struct dw_mipi_dsi
+> >> *dsi) +{ +       regmap_read(dsi->regs, DSI_VERSION,
+> >> &dsi->hw_version); +       dsi->hw_version &= VERSION; +
+> >> if (!dsi->hw_version) +               dev_err(dsi->dev, "Failed
+> >> to read DSI hw version register\n");
+> >
+> > Is this an error that should be ignored? If you can't get the HW
+> > version, probably, there is something wrong with your hardware
+> > so, don't you need to return an error?
+> >
+>
+> After thinking a bit more about it, that error should be a
+> warning.
+>
+> I added it because in some cases (for eg. if the peripheral clock
+> is disabled) the reads can return 0 which is obviously an invalid
+> version and the bridge will error in the next step when not
+> finding a layout.
+>
+
+If you'll error anyway, why wait? IIUC at this point the clock *must*
+be enabled, and if not, something is wrong with the driver, I don't
+see any advantage on delay the error. do you have a use case where
+this is called and peripheral clock disabled?
+
+> So I'll make this a warning in v7 and explicitely mention that
+> reads version == 0 can be caused by a disabled pclk.
+>
+
+-- Enric
