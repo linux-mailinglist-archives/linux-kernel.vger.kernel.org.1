@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4FC1AC5FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B001AC54B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409631AbgDPObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        id S2392370AbgDPOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:15:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409637AbgDPOCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:02:24 -0400
+        id S2392375AbgDPNvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:51:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CCCD22201;
-        Thu, 16 Apr 2020 14:02:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB84C20786;
+        Thu, 16 Apr 2020 13:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045743;
-        bh=x88x2MROQSuasxIps+Xd6wS0fxFRe6Oh0oZV5yoekJ8=;
+        s=default; t=1587045092;
+        bh=f2nfdowtFUPRJVr50sgXvSeHbCKeNi0Vh/piumCywyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4Srqz9tq3owAKZdIXCBbCqb3i/hdZp7V7bqQGVv2qGWjlz1u3oThxMZeqz5Q2dFm
-         ctaz3mBoVJe4qir2NYzcSQfN6GSE53ZViy2VzhEuDkfWCwpuoP0dSX1TVzrG+X0em4
-         WAlJwvpkjzmZWEUQD1AG2ZTQ41JN+wOX44kFU4sA=
+        b=OGwtjSEYV6tGYb6rKYuPLrXgN1VSeEOt76BdesqIJLoXbszJAoaI2t7XebChCE/Rm
+         dxpoxrUWimQtK24sW0VIR+6uw3/uE6tcGJedTEqIVrxL9FSBRYnJTrUp8TBo//40kR
+         L7bCPYU7+elEL9TZadVTIvw+bLbSOcBrsC5LsBM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 231/254] libata: Return correct status in sata_pmp_eh_recover_pm() when ATA_DFLAG_DETACH is set
-Date:   Thu, 16 Apr 2020 15:25:20 +0200
-Message-Id: <20200416131354.527470124@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Paul <sean@poorly.run>,
+        Wayne Lin <Wayne.Lin@amd.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Lyude Paul <lyude@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 227/232] drm/dp_mst: Fix clearing payload state on topology disable
+Date:   Thu, 16 Apr 2020 15:25:21 +0200
+Message-Id: <20200416131343.911710209@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,74 +46,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Lyude Paul <lyude@redhat.com>
 
-commit 8305f72f952cff21ce8109dc1ea4b321c8efc5af upstream.
+[ Upstream commit 8732fe46b20c951493bfc4dba0ad08efdf41de81 ]
 
-During system resume from suspend, this can be observed on ASM1062 PMP
-controller:
+The issues caused by:
 
-ata10.01: SATA link down (SStatus 0 SControl 330)
-ata10.02: hard resetting link
-ata10.02: SATA link down (SStatus 0 SControl 330)
-ata10.00: configured for UDMA/133
-Kernel panic - not syncing: stack-protector: Kernel
- in: sata_pmp_eh_recover+0xa2b/0xa40
+commit 64e62bdf04ab ("drm/dp_mst: Remove VCPI while disabling topology
+mgr")
 
-CPU: 2 PID: 230 Comm: scsi_eh_9 Tainted: P OE
-#49-Ubuntu
-Hardware name: System manufacturer System Product
- 1001 12/10/2017
-Call Trace:
-dump_stack+0x63/0x8b
-panic+0xe4/0x244
-? sata_pmp_eh_recover+0xa2b/0xa40
-__stack_chk_fail+0x19/0x20
-sata_pmp_eh_recover+0xa2b/0xa40
-? ahci_do_softreset+0x260/0x260 [libahci]
-? ahci_do_hardreset+0x140/0x140 [libahci]
-? ata_phys_link_offline+0x60/0x60
-? ahci_stop_engine+0xc0/0xc0 [libahci]
-sata_pmp_error_handler+0x22/0x30
-ahci_error_handler+0x45/0x80 [libahci]
-ata_scsi_port_error_handler+0x29b/0x770
-? ata_scsi_cmd_error_handler+0x101/0x140
-ata_scsi_error+0x95/0xd0
-? scsi_try_target_reset+0x90/0x90
-scsi_error_handler+0xd0/0x5b0
-kthread+0x121/0x140
-? scsi_eh_get_sense+0x200/0x200
-? kthread_create_worker_on_cpu+0x70/0x70
-ret_from_fork+0x22/0x40
-Kernel Offset: 0xcc00000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+Prompted me to take a closer look at how we clear the payload state in
+general when disabling the topology, and it turns out there's actually
+two subtle issues here.
 
-Since sata_pmp_eh_recover_pmp() doens't set rc when ATA_DFLAG_DETACH is
-set, sata_pmp_eh_recover() continues to run. During retry it triggers
-the stack protector.
+The first is that we're not grabbing &mgr.payload_lock when clearing the
+payloads in drm_dp_mst_topology_mgr_set_mst(). Seeing as the canonical
+lock order is &mgr.payload_lock -> &mgr.lock (because we always want
+&mgr.lock to be the inner-most lock so topology validation always
+works), this makes perfect sense. It also means that -technically- there
+could be racing between someone calling
+drm_dp_mst_topology_mgr_set_mst() to disable the topology, along with a
+modeset occurring that's modifying the payload state at the same time.
 
-Set correct rc in sata_pmp_eh_recover_pmp() to let sata_pmp_eh_recover()
-jump to pmp_fail directly.
+The second is the more obvious issue that Wayne Lin discovered, that
+we're not clearing proposed_payloads when disabling the topology.
 
-BugLink: https://bugs.launchpad.net/bugs/1821434
-Cc: stable@vger.kernel.org
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I actually can't see any obvious places where the racing caused by the
+first issue would break something, and it could be that some of our
+higher-level locks already prevent this by happenstance, but better safe
+then sorry. So, let's make it so that drm_dp_mst_topology_mgr_set_mst()
+first grabs &mgr.payload_lock followed by &mgr.lock so that we never
+race when modifying the payload state. Then, we also clear
+proposed_payloads to fix the original issue of enabling a new topology
+with a dirty payload state. This doesn't clear any of the drm_dp_vcpi
+structures, but those are getting destroyed along with the ports anyway.
 
+Changes since v1:
+* Use sizeof(mgr->payloads[0])/sizeof(mgr->proposed_vcpis[0]) instead -
+  vsyrjala
+
+Cc: Sean Paul <sean@poorly.run>
+Cc: Wayne Lin <Wayne.Lin@amd.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200122194321.14953-1-lyude@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-pmp.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/ata/libata-pmp.c
-+++ b/drivers/ata/libata-pmp.c
-@@ -763,6 +763,7 @@ static int sata_pmp_eh_recover_pmp(struc
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index a48a4c21b1b38..4b7aaad074233 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2696,6 +2696,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 	int ret = 0;
+ 	struct drm_dp_mst_branch *mstb = NULL;
  
- 	if (dev->flags & ATA_DFLAG_DETACH) {
- 		detach = 1;
-+		rc = -ENODEV;
- 		goto fail;
- 	}
++	mutex_lock(&mgr->payload_lock);
+ 	mutex_lock(&mgr->lock);
+ 	if (mst_state == mgr->mst_state)
+ 		goto out_unlock;
+@@ -2754,7 +2755,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 		/* this can fail if the device is gone */
+ 		drm_dp_dpcd_writeb(mgr->aux, DP_MSTM_CTRL, 0);
+ 		ret = 0;
+-		memset(mgr->payloads, 0, mgr->max_payloads * sizeof(struct drm_dp_payload));
++		memset(mgr->payloads, 0,
++		       mgr->max_payloads * sizeof(mgr->payloads[0]));
++		memset(mgr->proposed_vcpis, 0,
++		       mgr->max_payloads * sizeof(mgr->proposed_vcpis[0]));
+ 		mgr->payload_mask = 0;
+ 		set_bit(0, &mgr->payload_mask);
+ 		mgr->vcpi_mask = 0;
+@@ -2762,6 +2766,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
  
+ out_unlock:
+ 	mutex_unlock(&mgr->lock);
++	mutex_unlock(&mgr->payload_lock);
+ 	if (mstb)
+ 		drm_dp_mst_topology_put_mstb(mstb);
+ 	return ret;
+-- 
+2.20.1
+
 
 
