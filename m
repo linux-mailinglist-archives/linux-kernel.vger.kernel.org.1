@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCE31AC41F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E0D1AC59A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404632AbgDPNym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
+        id S2394080AbgDPOW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:22:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896376AbgDPNhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:37:54 -0400
+        id S2408942AbgDPN4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:56:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8995D21BE5;
-        Thu, 16 Apr 2020 13:37:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C88812078B;
+        Thu, 16 Apr 2020 13:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044274;
-        bh=0QWkgSBGNSY24xOj/Y0cCCQ4J4uNUMUkBlsyxRF5Sm0=;
+        s=default; t=1587045381;
+        bh=YvEO37qKCjWeczjWU6192GteB1w/O74tNl8rInnF+to=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s9YO2dNZylBPEb8bAWgO/TFCjyVUTyNWkfcp6056IxgMMbVa5fQNkYUYEt5SBcCsr
-         KZAe1paHcO7oilvCFd6m2ii6dobkN70TInRAe03JpDE4qkOsIDTzQ8tFOCpn+XrIWD
-         Ltf+3w4HO3R62JsEECR1FTcWHJhJeSWDOEkU3JSQ=
+        b=CkhIm8gItBZmnVOXqvsguodWDWUwELpdy9CY3GL3KzgvSq+uHIvGg8vNc2qQp6CGW
+         XEwcx0zSvaLuM0jv5ec9wj0gIKO+n1IC4t1nuGONcBXY10sumMmZSIo7m+JSUoHFN9
+         S7B77vIWprF7oHAKRQ2PutyfMU5IoCpKUsW6KIjE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.5 150/257] KVM: VMX: fix crash cleanup when KVM wasnt used
+        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Pavankumar Kondeti <pkondeti@codeaurora.org>
+Subject: [PATCH 5.6 112/254] cpu/hotplug: Ignore pm_wakeup_pending() for disable_nonboot_cpus()
 Date:   Thu, 16 Apr 2020 15:23:21 +0200
-Message-Id: <20200416131345.257475880@linuxfoundation.org>
+Message-Id: <20200416131340.201976543@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit dbef2808af6c594922fe32833b30f55f35e9da6d upstream.
+commit e98eac6ff1b45e4e73f2e6031b37c256ccb5d36b upstream.
 
-If KVM wasn't used at all before we crash the cleanup procedure fails with
- BUG: unable to handle page fault for address: ffffffffffffffc8
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 23215067 P4D 23215067 PUD 23217067 PMD 0
- Oops: 0000 [#8] SMP PTI
- CPU: 0 PID: 3542 Comm: bash Kdump: loaded Tainted: G      D           5.6.0-rc2+ #823
- RIP: 0010:crash_vmclear_local_loaded_vmcss.cold+0x19/0x51 [kvm_intel]
+A recent change to freeze_secondary_cpus() which added an early abort if a
+wakeup is pending missed the fact that the function is also invoked for
+shutdown, reboot and kexec via disable_nonboot_cpus().
 
-The root cause is that loaded_vmcss_on_cpu list is not yet initialized,
-we initialize it in hardware_enable() but this only happens when we start
-a VM.
+In case of disable_nonboot_cpus() the wakeup event needs to be ignored as
+the purpose is to terminate the currently running kernel.
 
-Previously, we used to have a bitmap with enabled CPUs and that was
-preventing [masking] the issue.
+Add a 'suspend' argument which is only set when the freeze is in context of
+a suspend operation. If not set then an eventually pending wakeup event is
+ignored.
 
-Initialized loaded_vmcss_on_cpu list earlier, right before we assign
-crash_vmclear_loaded_vmcss pointer. blocked_vcpu_on_cpu list and
-blocked_vcpu_on_cpu_lock are moved altogether for consistency.
-
-Fixes: 31603d4fc2bb ("KVM: VMX: Always VMCLEAR in-use VMCSes during crash with kexec support")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Message-Id: <20200401081348.1345307-1-vkuznets@redhat.com>
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: a66d955e910a ("cpu/hotplug: Abort disabling secondary CPUs if wakeup is pending")
+Reported-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Pavankumar Kondeti <pkondeti@codeaurora.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/874kuaxdiz.fsf@nanos.tec.linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx/vmx.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ include/linux/cpu.h |   12 +++++++++---
+ kernel/cpu.c        |    4 ++--
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2232,10 +2232,6 @@ static int hardware_enable(void)
- 	    !hv_get_vp_assist_page(cpu))
- 		return -EFAULT;
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -138,12 +138,18 @@ static inline void get_online_cpus(void)
+ static inline void put_online_cpus(void) { cpus_read_unlock(); }
  
--	INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
--	INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
--	spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
--
- 	rdmsrl(MSR_IA32_FEATURE_CONTROL, old);
- 
- 	test_bits = FEATURE_CONTROL_LOCKED;
-@@ -8006,7 +8002,7 @@ module_exit(vmx_exit);
- 
- static int __init vmx_init(void)
- {
--	int r;
-+	int r, cpu;
- 
- #if IS_ENABLED(CONFIG_HYPERV)
- 	/*
-@@ -8060,6 +8056,12 @@ static int __init vmx_init(void)
- 		return r;
- 	}
- 
-+	for_each_possible_cpu(cpu) {
-+		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-+		INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
-+		spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
-+	}
+ #ifdef CONFIG_PM_SLEEP_SMP
+-extern int freeze_secondary_cpus(int primary);
++int __freeze_secondary_cpus(int primary, bool suspend);
++static inline int freeze_secondary_cpus(int primary)
++{
++	return __freeze_secondary_cpus(primary, true);
++}
 +
- #ifdef CONFIG_KEXEC_CORE
- 	rcu_assign_pointer(crash_vmclear_loaded_vmcss,
- 			   crash_vmclear_local_loaded_vmcss);
+ static inline int disable_nonboot_cpus(void)
+ {
+-	return freeze_secondary_cpus(0);
++	return __freeze_secondary_cpus(0, false);
+ }
+-extern void enable_nonboot_cpus(void);
++
++void enable_nonboot_cpus(void);
+ 
+ static inline int suspend_disable_secondary_cpus(void)
+ {
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1212,7 +1212,7 @@ EXPORT_SYMBOL_GPL(cpu_up);
+ #ifdef CONFIG_PM_SLEEP_SMP
+ static cpumask_var_t frozen_cpus;
+ 
+-int freeze_secondary_cpus(int primary)
++int __freeze_secondary_cpus(int primary, bool suspend)
+ {
+ 	int cpu, error = 0;
+ 
+@@ -1237,7 +1237,7 @@ int freeze_secondary_cpus(int primary)
+ 		if (cpu == primary)
+ 			continue;
+ 
+-		if (pm_wakeup_pending()) {
++		if (suspend && pm_wakeup_pending()) {
+ 			pr_info("Wakeup pending. Abort CPU freeze\n");
+ 			error = -EBUSY;
+ 			break;
 
 
