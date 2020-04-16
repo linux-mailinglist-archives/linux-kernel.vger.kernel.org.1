@@ -2,109 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347611ABC0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACEC1ABBC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503339AbgDPJDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:03:17 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47850 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503146AbgDPI6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:58:20 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E8F23200C33;
-        Thu, 16 Apr 2020 10:58:14 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 30E49200C3E;
-        Thu, 16 Apr 2020 10:58:12 +0200 (CEST)
-Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 53BD7402A8;
-        Thu, 16 Apr 2020 16:58:08 +0800 (SGT)
-From:   Yuantian Tang <andy.tang@nxp.com>
-To:     rui.zhang@intel.com, edubezval@gmail.com, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuantian Tang <andy.tang@nxp.com>
-Subject: [PATCH] thermal: qoriq: Update the settings for TMUv2
-Date:   Thu, 16 Apr 2020 16:43:52 +0800
-Message-Id: <20200416084352.33604-1-andy.tang@nxp.com>
-X-Mailer: git-send-email 2.9.5
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2502949AbgDPIy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:54:26 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:4019 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2502820AbgDPIqu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:46:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0TvgT7ce_1587026733;
+Received: from 30.27.118.45(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TvgT7ce_1587026733)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 16 Apr 2020 16:45:35 +0800
+Subject: Re: [PATCH v2] KVM: Optimize kvm_arch_vcpu_ioctl_run function
+To:     Marc Zyngier <maz@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, christoffer.dall@arm.com,
+        peterx@redhat.com, thuth@redhat.com
+References: <20200416051057.26526-1-tianjia.zhang@linux.alibaba.com>
+ <878sivx67g.fsf@vitty.brq.redhat.com>
+ <1000159f971a6fa3b5bd9e5871ce4d82@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <8b92fb5b-5138-0695-fb90-6c36b8dfad00@linux.alibaba.com>
+Date:   Thu, 16 Apr 2020 16:45:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <1000159f971a6fa3b5bd9e5871ce4d82@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For TMU v2, TMSAR registers need to be set properly to get the
-accurate temperature values.
-Also temperature reading needs to convert to degree Celsius
-since it is in degrees Kelvin.
 
-Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
----
- drivers/thermal/qoriq_thermal.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/thermal/qoriq_thermal.c b/drivers/thermal/qoriq_thermal.c
-index 028a6bbf75dc..c6ab0a0681cb 100644
---- a/drivers/thermal/qoriq_thermal.c
-+++ b/drivers/thermal/qoriq_thermal.c
-@@ -23,6 +23,7 @@
- #define TMTMIR_DEFAULT	0x0000000f
- #define TIER_DISABLE	0x0
- #define TEUMR0_V2		0x51009c00
-+#define TMSARA_V2		0xe
- #define TMU_VER1		0x1
- #define TMU_VER2		0x2
- 
-@@ -50,6 +51,9 @@
- 					    * Site Register
- 					    */
- #define TRITSR_V	BIT(31)
-+#define REGS_V2_TMSAR(n)	(0x304 + 16 * (n))	/* TMU monitoring
-+						* site adjustment register
-+						*/
- #define REGS_TTRnCR(n)	(0xf10 + 4 * (n)) /* Temperature Range n
- 					   * Control Register
- 					   */
-@@ -100,7 +104,11 @@ static int tmu_get_temp(void *p, int *temp)
- 				     10 * USEC_PER_MSEC))
- 		return -ENODATA;
- 
--	*temp = (val & 0xff) * 1000;
-+	/* For TMUv2, temperature reading in degrees Kelvin */
-+	if (qdata->ver == TMU_VER1)
-+		*temp = (val & 0xff) * 1000;
-+	else
-+		*temp = (val & 0x1ff) - 273;
- 
- 	return 0;
- }
-@@ -192,6 +200,8 @@ static int qoriq_tmu_calibration(struct device *dev,
- 
- static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
- {
-+	int i;
-+
- 	/* Disable interrupt, using polling instead */
- 	regmap_write(data->regmap, REGS_TIER, TIER_DISABLE);
- 
-@@ -202,6 +212,8 @@ static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
- 	} else {
- 		regmap_write(data->regmap, REGS_V2_TMTMIR, TMTMIR_DEFAULT);
- 		regmap_write(data->regmap, REGS_V2_TEUMR(0), TEUMR0_V2);
-+		for (i = 0; i < 7; i++)
-+			regmap_write(data->regmap, REGS_V2_TMSAR(i), TMSARA_V2);
- 	}
- 
- 	/* Disable monitoring */
-@@ -212,6 +224,7 @@ static const struct regmap_range qoriq_yes_ranges[] = {
- 	regmap_reg_range(REGS_TMR, REGS_TSCFGR),
- 	regmap_reg_range(REGS_TTRnCR(0), REGS_TTRnCR(3)),
- 	regmap_reg_range(REGS_V2_TEUMR(0), REGS_V2_TEUMR(2)),
-+	regmap_reg_range(REGS_V2_TMSAR(0), REGS_V2_TMSAR(15)),
- 	regmap_reg_range(REGS_IPBRR(0), REGS_IPBRR(1)),
- 	/* Read only registers below */
- 	regmap_reg_range(REGS_TRITSR(0), REGS_TRITSR(15)),
--- 
-2.17.1
+On 2020/4/16 16:28, Marc Zyngier wrote:
+> On 2020-04-16 08:03, Vitaly Kuznetsov wrote:
+>> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> writes:
+>>
+>>> In earlier versions of kvm, 'kvm_run' is an independent structure
+>>> and is not included in the vcpu structure. At present, 'kvm_run'
+>>> is already included in the vcpu structure, so the parameter
+>>> 'kvm_run' is redundant.
+>>>
+>>> This patch simplify the function definition, removes the extra
+>>> 'kvm_run' parameter, and extract it from the 'kvm_vcpu' structure
+>>> if necessary.
+>>>
+>>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>>> ---
+>>>
+>>> v2 change:
+>>>   remove 'kvm_run' parameter and extract it from 'kvm_vcpu'
+>>>
+>>>  arch/mips/kvm/mips.c       |  3 ++-
+>>>  arch/powerpc/kvm/powerpc.c |  3 ++-
+>>>  arch/s390/kvm/kvm-s390.c   |  3 ++-
+>>>  arch/x86/kvm/x86.c         | 11 ++++++-----
+>>>  include/linux/kvm_host.h   |  2 +-
+>>>  virt/kvm/arm/arm.c         |  6 +++---
+>>>  virt/kvm/kvm_main.c        |  2 +-
+>>>  7 files changed, 17 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+>>> index 8f05dd0a0f4e..ec24adf4857e 100644
+>>> --- a/arch/mips/kvm/mips.c
+>>> +++ b/arch/mips/kvm/mips.c
+>>> @@ -439,8 +439,9 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct 
+>>> kvm_vcpu *vcpu,
+>>>      return -ENOIOCTLCMD;
+>>>  }
+>>>
+>>> -int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+>>> +int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>>  {
+>>> +    struct kvm_run *run = vcpu->run;
+>>>      int r = -EINTR;
+>>>
+>>>      vcpu_load(vcpu);
+>>> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+>>> index e15166b0a16d..7e24691e138a 100644
+>>> --- a/arch/powerpc/kvm/powerpc.c
+>>> +++ b/arch/powerpc/kvm/powerpc.c
+>>> @@ -1764,8 +1764,9 @@ int kvm_vcpu_ioctl_set_one_reg(struct kvm_vcpu 
+>>> *vcpu, struct kvm_one_reg *reg)
+>>>      return r;
+>>>  }
+>>>
+>>> -int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+>>> +int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>>  {
+>>> +    struct kvm_run *run = vcpu->run;
+>>>      int r;
+>>>
+>>>      vcpu_load(vcpu);
+>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>> index 19a81024fe16..443af3ead739 100644
+>>> --- a/arch/s390/kvm/kvm-s390.c
+>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>> @@ -4333,8 +4333,9 @@ static void store_regs(struct kvm_vcpu *vcpu, 
+>>> struct kvm_run *kvm_run)
+>>>          store_regs_fmt2(vcpu, kvm_run);
+>>>  }
+>>>
+>>> -int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run 
+>>> *kvm_run)
+>>> +int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>>  {
+>>> +    struct kvm_run *kvm_run = vcpu->run;
+>>>      int rc;
+>>>
+>>>      if (kvm_run->immediate_exit)
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index 3bf2ecafd027..a0338e86c90f 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -8707,8 +8707,9 @@ static void kvm_put_guest_fpu(struct kvm_vcpu 
+>>> *vcpu)
+>>>      trace_kvm_fpu(0);
+>>>  }
+>>>
+>>> -int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run 
+>>> *kvm_run)
+>>> +int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>>  {
+>>> +    struct kvm_run *kvm_run = vcpu->run;
+>>>      int r;
+>>>
+>>>      vcpu_load(vcpu);
+>>> @@ -8726,18 +8727,18 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu 
+>>> *vcpu, struct kvm_run *kvm_run)
+>>>          r = -EAGAIN;
+>>>          if (signal_pending(current)) {
+>>>              r = -EINTR;
+>>> -            vcpu->run->exit_reason = KVM_EXIT_INTR;
+>>> +            kvm_run->exit_reason = KVM_EXIT_INTR;
+>>>              ++vcpu->stat.signal_exits;
+>>>          }
+>>>          goto out;
+>>>      }
+>>>
+>>> -    if (vcpu->run->kvm_valid_regs & ~KVM_SYNC_X86_VALID_FIELDS) {
+>>> +    if (kvm_run->kvm_valid_regs & ~KVM_SYNC_X86_VALID_FIELDS) {
+>>>          r = -EINVAL;
+>>>          goto out;
+>>>      }
+>>>
+>>> -    if (vcpu->run->kvm_dirty_regs) {
+>>> +    if (kvm_run->kvm_dirty_regs) {
+>>>          r = sync_regs(vcpu);
+>>>          if (r != 0)
+>>>              goto out;
+>>> @@ -8767,7 +8768,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu 
+>>> *vcpu, struct kvm_run *kvm_run)
+>>>
+>>>  out:
+>>>      kvm_put_guest_fpu(vcpu);
+>>> -    if (vcpu->run->kvm_valid_regs)
+>>> +    if (kvm_run->kvm_valid_regs)
+>>>          store_regs(vcpu);
+>>>      post_kvm_run_save(vcpu);
+>>>      kvm_sigset_deactivate(vcpu);
+>>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+>>> index 6d58beb65454..1e17ef719595 100644
+>>> --- a/include/linux/kvm_host.h
+>>> +++ b/include/linux/kvm_host.h
+>>> @@ -866,7 +866,7 @@ int kvm_arch_vcpu_ioctl_set_mpstate(struct 
+>>> kvm_vcpu *vcpu,
+>>>                      struct kvm_mp_state *mp_state);
+>>>  int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+>>>                      struct kvm_guest_debug *dbg);
+>>> -int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run 
+>>> *kvm_run);
+>>> +int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu);
+>>>
+>>>  int kvm_arch_init(void *opaque);
+>>>  void kvm_arch_exit(void);
+>>> diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
+>>> index 48d0ec44ad77..f5390ac2165b 100644
+>>> --- a/virt/kvm/arm/arm.c
+>>> +++ b/virt/kvm/arm/arm.c
+>>> @@ -639,7 +639,6 @@ static void check_vcpu_requests(struct kvm_vcpu 
+>>> *vcpu)
+>>>  /**
+>>>   * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute 
+>>> guest code
+>>>   * @vcpu:    The VCPU pointer
+>>> - * @run:    The kvm_run structure pointer used for userspace state 
+>>> exchange
+>>>   *
+>>>   * This function is called through the VCPU_RUN ioctl called from 
+>>> user space. It
+>>>   * will execute VM code in a loop until the time slice for the 
+>>> process is used
+>>> @@ -647,8 +646,9 @@ static void check_vcpu_requests(struct kvm_vcpu 
+>>> *vcpu)
+>>>   * return with return value 0 and with the kvm_run structure filled 
+>>> in with the
+>>>   * required data for the requested emulation.
+>>>   */
+>>> -int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+>>> +int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>>>  {
+>>> +    struct kvm_run *run = vcpu->run;
+>>>      int ret;
+>>>
+>>>      if (unlikely(!kvm_vcpu_initialized(vcpu)))
+>>> @@ -659,7 +659,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu 
+>>> *vcpu, struct kvm_run *run)
+>>>          return ret;
+>>>
+>>>      if (run->exit_reason == KVM_EXIT_MMIO) {
+>>> -        ret = kvm_handle_mmio_return(vcpu, vcpu->run);
+>>> +        ret = kvm_handle_mmio_return(vcpu, run);
+>>
+>> I don't know much about ARM but this also seems redundant,
+>> kvm_handle_mmio_return() is also able to extruct 'struct kvm_run' from'
+>> 'struct kvm_vcpu'. This likely deserves it's own patch though.
+> 
+> Something like this (untested):
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h 
+> b/arch/arm64/include/asm/kvm_host.h
+> index 32c8a675e5a4..82978995bdd6 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -490,7 +490,7 @@ void handle_exit_early(struct kvm_vcpu *vcpu, struct 
+> kvm_run *run,
+>   void kvm_mmio_write_buf(void *buf, unsigned int len, unsigned long data);
+>   unsigned long kvm_mmio_read_buf(const void *buf, unsigned int len);
+> 
+> -int kvm_handle_mmio_return(struct kvm_vcpu *vcpu, struct kvm_run *run);
+> +int kvm_handle_mmio_return(struct kvm_vcpu *vcpu);
+>   int io_mem_abort(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>            phys_addr_t fault_ipa);
+> 
+> diff --git a/virt/kvm/arm/mmio.c b/virt/kvm/arm/mmio.c
+> index 4e0366759726..3b2c822b4859 100644
+> --- a/virt/kvm/arm/mmio.c
+> +++ b/virt/kvm/arm/mmio.c
+> @@ -77,9 +77,8 @@ unsigned long kvm_mmio_read_buf(const void *buf, 
+> unsigned int len)
+>    *                 or in-kernel IO emulation
+>    *
+>    * @vcpu: The VCPU pointer
+> - * @run:  The VCPU run struct containing the mmio data
+>    */
+> -int kvm_handle_mmio_return(struct kvm_vcpu *vcpu, struct kvm_run *run)
+> +int kvm_handle_mmio_return(struct kvm_vcpu *vcpu)
+>   {
+>       unsigned long data;
+>       unsigned int len;
+> @@ -93,7 +92,7 @@ int kvm_handle_mmio_return(struct kvm_vcpu *vcpu, 
+> struct kvm_run *run)
+> 
+>       if (!kvm_vcpu_dabt_iswrite(vcpu)) {
+>           len = kvm_vcpu_dabt_get_as(vcpu);
+> -        data = kvm_mmio_read_buf(run->mmio.data, len);
+> +        data = kvm_mmio_read_buf(vcpu->run->mmio.data, len);
+> 
+>           if (kvm_vcpu_dabt_issext(vcpu) &&
+>               len < sizeof(unsigned long)) {
+> @@ -104,7 +103,8 @@ int kvm_handle_mmio_return(struct kvm_vcpu *vcpu, 
+> struct kvm_run *run)
+>           if (!kvm_vcpu_dabt_issf(vcpu))
+>               data = data & 0xffffffff;
+> 
+> -        trace_kvm_mmio(KVM_TRACE_MMIO_READ, len, run->mmio.phys_addr,
+> +        trace_kvm_mmio(KVM_TRACE_MMIO_READ, len,
+> +                   vcpu->run->mmio.phys_addr,
+>                      &data);
+>           data = vcpu_data_host_to_guest(vcpu, data, len);
+>           vcpu_set_reg(vcpu, kvm_vcpu_dabt_get_rd(vcpu), data);
+> 
+> Overall, there is a large set of cleanups to be done when both the vcpu 
+> and the run
+> structures are passed as parameters at the same time. Just grepping the 
+> tree for
+> kvm_run is pretty instructive.
+> 
+>          M.
 
+Sorry, it's my mistake, I only compiled the x86 platform, I will submit 
+patch again.
+
+Thanks,
+Tianjia
