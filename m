@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB8B1AC457
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE361AC52A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441886AbgDPN6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        id S2404242AbgDPOMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:12:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897976AbgDPNjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:33 -0400
+        id S2392150AbgDPNsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67A5D20786;
-        Thu, 16 Apr 2020 13:39:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84AA621734;
+        Thu, 16 Apr 2020 13:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044372;
-        bh=HgRYTwaT0K3i6R4yyE0ffxtTm8sNUE/pRjIWBN7QiJ0=;
+        s=default; t=1587044897;
+        bh=mIuUQxU4C9LhXoJZoBsHP1rJd4Q01CVjnmswic9NNzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YHMphaOCJALqXRA6HM7daI6AK6I7WQKSM90RJhZaDY0Ou0en40X8vo1uyIZ2Uibgo
-         ndGB/9sLCgru1o28UGryKZrp+6huTPXKBANg4NI9/G8ATAaSQ0zZRbQ7fFZvEY+BhD
-         G7GbtISTM4PrVHr24AXQKw6juqvxil021MRqQrnM=
+        b=T1K7zA3TPezDq+DFdb4eFsZJxDMf0TIvqX6M3SWnLPqQRYK+2Z58hbWfQ4+Dp4h2G
+         lEpgSFN0wTBHkK4rey6COeqphAKjO0zV7sae/bJvz5Lmdx/CjFahO34s6O+OebklII
+         OeK73tAZd1QiN+X+tsKUBcfnASwxuJ/PANNPlevI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Valentin Ciocoi Radulescu <valentin.ciocoi@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.5 190/257] crypto: caam/qi2 - fix chacha20 data size error
+        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 5.4 147/232] remoteproc: qcom_q6v5_mss: Reload the mba region on coredump
 Date:   Thu, 16 Apr 2020 15:24:01 +0200
-Message-Id: <20200416131350.027267421@linuxfoundation.org>
+Message-Id: <20200416131333.399215592@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Sibi Sankar <sibis@codeaurora.org>
 
-commit 3a5a9e1ef37b030b836d92df8264f840988f4a38 upstream.
+commit d96f2571dc84d128cacf1944f4ecc87834c779a6 upstream.
 
-HW generates a Data Size error for chacha20 requests that are not
-a multiple of 64B, since algorithm state (AS) does not have
-the FINAL bit set.
+On secure devices after a wdog/fatal interrupt, the mba region has to be
+refreshed in order to prevent the following errors during mba load.
 
-Since updating req->iv (for chaining) is not required,
-modify skcipher descriptors to set the FINAL bit for chacha20.
+Err Logs:
+remoteproc remoteproc2: stopped remote processor 4080000.remoteproc
+qcom-q6v5-mss 4080000.remoteproc: PBL returned unexpected status -284031232
+qcom-q6v5-mss 4080000.remoteproc: PBL returned unexpected status -284031232
+....
+qcom-q6v5-mss 4080000.remoteproc: PBL returned unexpected status -284031232
+qcom-q6v5-mss 4080000.remoteproc: MBA booted, loading mpss
 
-[Note that for skcipher decryption we know that ctx1_iv_off is 0,
-which allows for an optimization by not checking algorithm type,
-since append_dec_op1() sets FINAL bit for all algorithms except AES.]
-
-Also drop the descriptor operations that save the IV.
-However, in order to keep code logic simple, things like
-S/G tables generation etc. are not touched.
-
-Cc: <stable@vger.kernel.org> # v5.3+
-Fixes: 334d37c9e263 ("crypto: caam - update IV using HW support")
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Tested-by: Valentin Ciocoi Radulescu <valentin.ciocoi@nxp.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 7dd8ade24dc2a ("remoteproc: qcom: q6v5-mss: Add custom dump function for modem")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20200304194729.27979-4-sibis@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/caam/caamalg_desc.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/remoteproc/qcom_q6v5_mss.c |   19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
---- a/drivers/crypto/caam/caamalg_desc.c
-+++ b/drivers/crypto/caam/caamalg_desc.c
-@@ -1379,6 +1379,9 @@ void cnstr_shdsc_skcipher_encap(u32 * co
- 				const u32 ctx1_iv_off)
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -904,6 +904,23 @@ static void q6v5_mba_reclaim(struct q6v5
+ 	}
+ }
+ 
++static int q6v5_reload_mba(struct rproc *rproc)
++{
++	struct q6v5 *qproc = rproc->priv;
++	const struct firmware *fw;
++	int ret;
++
++	ret = request_firmware(&fw, rproc->firmware, qproc->dev);
++	if (ret < 0)
++		return ret;
++
++	q6v5_load(rproc, fw);
++	ret = q6v5_mba_load(qproc);
++	release_firmware(fw);
++
++	return ret;
++}
++
+ static int q6v5_mpss_load(struct q6v5 *qproc)
  {
- 	u32 *key_jump_cmd;
-+	u32 options = cdata->algtype | OP_ALG_AS_INIT | OP_ALG_ENCRYPT;
-+	bool is_chacha20 = ((cdata->algtype & OP_ALG_ALGSEL_MASK) ==
-+			    OP_ALG_ALGSEL_CHACHA20);
+ 	const struct elf32_phdr *phdrs;
+@@ -1062,7 +1079,7 @@ static void qcom_q6v5_dump_segment(struc
  
- 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
- 	/* Skip if already shared */
-@@ -1417,14 +1420,15 @@ void cnstr_shdsc_skcipher_encap(u32 * co
- 				      LDST_OFFSET_SHIFT));
- 
- 	/* Load operation */
--	append_operation(desc, cdata->algtype | OP_ALG_AS_INIT |
--			 OP_ALG_ENCRYPT);
-+	if (is_chacha20)
-+		options |= OP_ALG_AS_FINALIZE;
-+	append_operation(desc, options);
- 
- 	/* Perform operation */
- 	skcipher_append_src_dst(desc);
- 
- 	/* Store IV */
--	if (ivsize)
-+	if (!is_chacha20 && ivsize)
- 		append_seq_store(desc, ivsize, LDST_SRCDST_BYTE_CONTEXT |
- 				 LDST_CLASS_1_CCB | (ctx1_iv_off <<
- 				 LDST_OFFSET_SHIFT));
-@@ -1451,6 +1455,8 @@ void cnstr_shdsc_skcipher_decap(u32 * co
- 				const u32 ctx1_iv_off)
- {
- 	u32 *key_jump_cmd;
-+	bool is_chacha20 = ((cdata->algtype & OP_ALG_ALGSEL_MASK) ==
-+			    OP_ALG_ALGSEL_CHACHA20);
- 
- 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
- 	/* Skip if already shared */
-@@ -1499,7 +1505,7 @@ void cnstr_shdsc_skcipher_decap(u32 * co
- 	skcipher_append_src_dst(desc);
- 
- 	/* Store IV */
--	if (ivsize)
-+	if (!is_chacha20 && ivsize)
- 		append_seq_store(desc, ivsize, LDST_SRCDST_BYTE_CONTEXT |
- 				 LDST_CLASS_1_CCB | (ctx1_iv_off <<
- 				 LDST_OFFSET_SHIFT));
+ 	/* Unlock mba before copying segments */
+ 	if (!qproc->dump_mba_loaded) {
+-		ret = q6v5_mba_load(qproc);
++		ret = q6v5_reload_mba(rproc);
+ 		if (!ret) {
+ 			/* Reset ownership back to Linux to copy segments */
+ 			ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
 
 
