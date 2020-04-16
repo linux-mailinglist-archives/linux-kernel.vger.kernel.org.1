@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8BA1AC3FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5091AC402
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440359AbgDPNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:52:38 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:38091 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897390AbgDPNhA (ORCPT
+        id S2392303AbgDPNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2897376AbgDPNhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:37:00 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N79q8-1jAqgf0EW4-017YmP; Thu, 16 Apr 2020 15:36:57 +0200
-Received: by mail-qk1-f179.google.com with SMTP id j4so21187396qkc.11;
-        Thu, 16 Apr 2020 06:36:56 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZjfQOakkBeJhSdzg1EQ4Yni8buejfx9qHBBF5n5sgs2SjRWb8c
-        slfbla8MWhx1viB09XWLFEWqV1uSewhZje81w0Y=
-X-Google-Smtp-Source: APiQypLVyFmoRVlk38JL3t/KgQwGOgf5vTbZbwYZ8CAepAFC6fF8Q7UEBWUdcp5NmdoSyWhbML+tvWJCMo127crkfFc=
-X-Received: by 2002:a37:851:: with SMTP id 78mr31807202qki.352.1587044215844;
- Thu, 16 Apr 2020 06:36:55 -0700 (PDT)
+        Thu, 16 Apr 2020 09:37:02 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158AEC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:37:00 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id t11so5604760lfe.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KwBByiAv3HXmeAVixqGHcJ2QpuSnLZEjcGbMG0rBWiQ=;
+        b=nKlcSTBO8GkCKIkCf8/N+OMHUq2yJYsqJGYD/0xJeirmiL64DS1GL7ARltujhYVJCj
+         dUcAkGooLg9w7Fuy+DNQJD2FFRtk0QD57uBCP94rYqxGvIPCvKR1dw+XyStjOb2YoAIl
+         PwdoynVoOS9JWj3oNz4rDpHm2mwiLLDuy0685MPer49Pl2VzWtr5+7AHZ0owr7GSU2Vw
+         Dx4+edpy7ydLHo4deZyEk3HcgSrgU4jl57t7L1kVq6AvvsEqujV7hZOY0EHmgzsbwUir
+         KvceFCIP5jh/EonIzK2rfMaLEHcFLOao5FM/mJFsc+ZypqihrCRzBvizg+3e1qUDVRwt
+         1Aew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KwBByiAv3HXmeAVixqGHcJ2QpuSnLZEjcGbMG0rBWiQ=;
+        b=aNqX6bL24G3rGLgDvRXtzDgK/UeVjH3Nf7p76xSeNct71zgsgkhIwksY16bU+s4lMh
+         am9pyiKnpXeMVlWDrS/KTfGvL6Yyuys38w6vhVxh3Dqz2INLKydzUzNzfwbxOnMb0H/5
+         LG8QWoTw8jJjzsW2DJnhXHkQkAgYB/gJxR7lKUigG6sr7jMcFM0K7DdDxRRNSk/J6L5i
+         NVj5fYmJ9cL7CkKr2KUXmePD9xwcRGAAZIRDo8i2WxRBtgYv4hjGFZJCtQOub9+l8hNY
+         sw08OnThW+aEa5ksqp3kPhtftaAD619xc5LItO4iE4dRyqRoBeV0SJcotS+kdA/6NImi
+         CRGA==
+X-Gm-Message-State: AGi0PuYi2cRJkDH0NPnr2RH3VMKAEJVJ9zWTTR5IWILRjOU0PXsCbv3L
+        qOk7EEo4B3R/1uI7uHhKT8JumRwz9yO2XIZHriXteQ==
+X-Google-Smtp-Source: APiQypLmaDu06MvhRiFlvEJ/ov7gw/I0ZklH5i188LmiqNllxsyeo5Ed3VdGtvtxCNaWeQh4QttNyhq118LSIysiZXQ=
+X-Received: by 2002:ac2:51c9:: with SMTP id u9mr6422380lfm.184.1587044218400;
+ Thu, 16 Apr 2020 06:36:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200416115658.20406-1-geert+renesas@glider.be>
- <20200416115658.20406-3-geert+renesas@glider.be> <20200416125630.GF4987@lakrids.cambridge.arm.com>
-In-Reply-To: <20200416125630.GF4987@lakrids.cambridge.arm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 16 Apr 2020 15:36:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3HkXotBFVfbL3iaqUAM2ENpBKh7gy+hXH8TXsZHPfwTQ@mail.gmail.com>
-Message-ID: <CAK8P3a3HkXotBFVfbL3iaqUAM2ENpBKh7gy+hXH8TXsZHPfwTQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] [RFC] arm64: Add dependencies to vendor-specific errata
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Robert Richter <rrichter@marvell.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20200415210512.805-1-valentin.schneider@arm.com>
+ <20200415210512.805-10-valentin.schneider@arm.com> <CAKfTPtBDGzrvG=YhjBZBEgfx5EtM-rTC-dWX5phqh4bOY5XqgA@mail.gmail.com>
+ <jhj4ktjpw2z.mognet@arm.com> <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com>
+In-Reply-To: <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 16 Apr 2020 15:36:46 +0200
+Message-ID: <CAKfTPtD5x_NQ1KfHhTiAR3eNA85+k13nfSR-9_PKLp6FgVu08A@mail.gmail.com>
+Subject: Re: [PATCH v3 9/9] sched/topology: Define and use shortcut pointers
+ for wakeup sd_flag scan
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:zICuUsxQPPQJD0mFrfj74gKDbR2oFM2uttNnB1Q9C3oNdi5LUtv
- 5D6vxZFGM/iFgzEoQ5IUx5wa/5KVR2w0jlyVvP4fg+H74Ianhbu1TbcYM3puwlF/LOmYA1g
- ipQbQGngZ9ulwoqwP43Iy+D+FiperRfFB1lS5OwY7cFdRnKwHSy9XcKbs6ze/eAmuhzbQc6
- ba3Xk7hYzVpNGelRS4umw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lWGfSsnYJZU=:cg0dI2jhukpt3KneC3m51U
- 4dp48keK9naDXcPzv+ZxDaUthdtZZp4jiK2p0jlHlQ/hlS9LIoR70Lzo7xxWdY1TVM1NcUOFz
- 4DEk7JN2+Oiv8O83Xc3f9BtleBV6Le8MWI8+ESBu1OIqv4Yw4N49W0jUfZDbQaPmJbFhyUtgH
- E8Ik75fnVMl74xDRoHroFqVKTcisthkw5epvHqyMdGS5ct1i15TCz00X3NOZMdzUWG7xmM2Th
- jv3JObSm9NpoD+sA+zxmZaHgtX0tKtdQQfr+Tfsje34OaftldJnj3kmJIe3JtssyAprc8Ru8o
- LKw876ziLaoncBv6AM5asEyOcJMFgiG/0jmSKSsUmZK/SoVZXYgoBp5e1QUPVEJ7Xqalkgz1x
- 36pneyTABXBkzAjuPivkDEslewaUIMj0k2LEtXlWSGW6WqDKpvGlXm/IGHJlfi0DF0uJ8usgk
- 8Q+AV3nSGobnvvsEMBIdEwjl28qLflaLCzVkV/BPXvZnO2cHNt+kDJcQYMWvynGCktgZuXpTf
- +mplQBjiPq5Narv2crbmgINc/PSxY3AfmYWBjEHjzuO6EsooFIjNUJbFNgAzSvTw+72KRmuAo
- F+LIXifeAZ6NZLqH+Hc3KOTy2DlKihNwmjvFt0YGQiR8Mbxgi4qVdlKQXlvn4K7kcDjh7k0Gt
- RDxQjsN5zeUYPOYeJ32hFtZu/+hfKsMsb+BvMnzH6JmPuwVkqpAfN0FPCXVgr7naD0edb2p2Q
- k+0n1j1v6GHyuZkYxrCBTTlDxJYYLsukDlDEIoGb7XqlIBY6FzG3+UeR9ntO/xMNLfmVcRgsQ
- itFMpk7bMYhDtLr+NI7ueNyh/Ficmo9MbEXhlxqRfH5QyoCMmo=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 2:56 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> On Thu, Apr 16, 2020 at 01:56:58PM +0200, Geert Uytterhoeven wrote:
-> > Currently the user is asked about enabling support for each and every
-> > vendor-specific erratum, even when support for the specific platform is
-> > not enabled.
+On Thu, 16 Apr 2020 at 15:04, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 16.04.20 12:24, Valentin Schneider wrote:
 > >
-> > Fix this by adding platform dependencies to the config options
-> > controlling support for vendor-specific errata.
+> > On 16/04/20 08:46, Vincent Guittot wrote:
+> >>> @@ -6657,7 +6646,19 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+> >>>
+> >>>         rcu_read_lock();
+> >>>
+> >>> -       sd = highest_flag_domain(cpu, sd_flag);
+> >>> +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
+> >>> +       case WF_TTWU:
+> >>> +               sd_flag = SD_BALANCE_WAKE;
+> >>> +               sd = rcu_dereference(per_cpu(sd_balance_wake, cpu));
+> >>
+> >> It's worth having a direct pointer for the fast path which we always
+> >> try to keep short but the other paths are already slow and will not
+> >> get any benefit of this per cpu pointer.
+> >> We should keep the loop for the slow paths
+> >>
 > >
-> > Note that FUJITSU_ERRATUM_010001 is left untouched, as no config symbol
-> > exists for the Fujitsu A64FX platform.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Which fast/slow paths are you referring to here? want_affine vs
+> > !want_affine? If so, do you then mean that we should do the switch case
+> > only when !want_affine, and otherwise look for the domain via the
+> > for_each_domain() loop?
 >
-> I'm not su1re that it makes sense to do this in general, becaose the
-> ARCH_* platform symbols are about plactform/SoC support (e.g. pinctrl
-> drivers), and these are (mostly) CPU-local and/or VM-visible.
+> Coming back to the v2 discussion on this patch
 >
-> I think that it makes sense for those to be independent because:
+> https://lore.kernel.org/r/20200311181601.18314-10-valentin.schneider@arm.com
 >
-> * future SoCs in the same family might not need the same CPU errata
->   workarounds, and it's arguably just as confusing to have the option
->   there.
+> SD_BALANCE_WAKE is not used in mainline anymore, so wakeups are always
+> fast today.
 >
-> * It prevents building a minimal VM image with all (non-virtualized)
->   platform support disabled, but all possible (VM-visible) errata
->   options enabled. I do that occassionally for testing/analysis, and I
->   can imagine this is useful for those building images that are only
->   intended to be used in VMs.
+> I.e. you wouldn't need a per_cpu(sd_balance_wake, cpu) since it's always
+> NULL.
+>
+> I.e. want_affine logic and the 'for_each_domain(cpu, tmp)' isn't needed
+> anymore.
+>
+> This will dramatically simplify the code in select_task_rq_fair().
+>
+> But I guess Vincent wants to keep the functionality so we're able to
+> enable SD_BALANCE_WAKE on certain sd's?
 
-Most architectures over time grow a CPU selection option that is
-at least somewhat orthogonal to the platform selection. I think so far
-arm64 has intentionally resisted this based on the idea that the CPUs
-are mostly equal and differences are better handled at runtime.
+I looked too quickly what was done by this patch. I thought that it
+was adding a per_cpu pointer for all cases including the fast path
+with wake affine but it only skips the for_each_domain loop for the
+slow paths which don't need it because they are already slow.
 
-If we decide to revisit this in the future that might help both the
-errata selection and give a way to e.g. build for an ARMv8.2
-baseline.
-This does seem pretty far out at the moment of course, given
-that most SoCs we work on are still based on Cortex-A53 or A72 ;-)
-
-> I think the change to SOCIONEXT_SYNQUACER_PREITS makes sense given
-> that's a platform-level detail. Arguably that should be moved into
-> drivers/irqchip/Kconfig.
-
-Agreed
-
-       Arnd
+It would be better to keep the for_each_domain loop for slow paths and
+to use a per_cpu pointer for fast_path/wake affine. Regarding the
+wake_affine path, we don't really care about looping all domains and
+we could directly use the highest domain because wake_affine() that is
+used in the loop, only uses the imbalance_pct of the sched domain for
+wake_affine_weight() and it should not harm to use only the highest
+domain and then select_idle_sibling doesn't use it but the llc or
+asym_capacity pointer instead.
