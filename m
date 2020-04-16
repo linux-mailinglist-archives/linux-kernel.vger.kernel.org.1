@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28AE1AB86F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE541AB83F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408529AbgDPGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:48:19 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:41332 "EHLO inva021.nxp.com"
+        id S2408207AbgDPGlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:41:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57568 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408337AbgDPGrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:47:39 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F53C200BAF;
-        Thu, 16 Apr 2020 08:47:35 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 63DBE200BC5;
-        Thu, 16 Apr 2020 08:47:30 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 92C874030C;
-        Thu, 16 Apr 2020 14:47:23 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 5/5] dt-bindings: clock: Convert i.MX6UL clock to json-schema
-Date:   Thu, 16 Apr 2020 14:39:18 +0800
-Message-Id: <1587019158-12143-5-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587019158-12143-1-git-send-email-Anson.Huang@nxp.com>
-References: <1587019158-12143-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2408204AbgDPGlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:41:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7EE9AACB1;
+        Thu, 16 Apr 2020 06:41:10 +0000 (UTC)
+Message-ID: <1587019269.32139.24.camel@suse.cz>
+Subject: Re: [PATCH 1/4] x86, sched: Bail out of frequency invariance if
+ base frequency is unknown
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Cc:     x86@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Doug Smythies <dsmythies@telus.net>,
+        Like Xu <like.xu@linux.intel.com>,
+        Neil Rickert <nwr10cst-oslnx@yahoo.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Dario Faggioli <dfaggioli@suse.com>
+Date:   Thu, 16 Apr 2020 08:41:09 +0200
+In-Reply-To: <20200416054745.740-2-ggherdovich@suse.cz>
+References: <20200416054745.740-1-ggherdovich@suse.cz>
+         <20200416054745.740-2-ggherdovich@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX6UL clock binding to DT schema format using json-schema.
++Dario Faggioli
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V1:
-	- remove minItem of interrupts;
-	- remove '...' at the end of file
----
- .../devicetree/bindings/clock/imx6ul-clock.txt     | 13 -----
- .../devicetree/bindings/clock/imx6ul-clock.yaml    | 60 ++++++++++++++++++++++
- 2 files changed, 60 insertions(+), 13 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/imx6ul-clock.txt
- create mode 100644 Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
-
-diff --git a/Documentation/devicetree/bindings/clock/imx6ul-clock.txt b/Documentation/devicetree/bindings/clock/imx6ul-clock.txt
-deleted file mode 100644
-index 571d503..0000000
---- a/Documentation/devicetree/bindings/clock/imx6ul-clock.txt
-+++ /dev/null
-@@ -1,13 +0,0 @@
--* Clock bindings for Freescale i.MX6 UltraLite
--
--Required properties:
--- compatible: Should be "fsl,imx6ul-ccm"
--- reg: Address and length of the register set
--- #clock-cells: Should be <1>
--- clocks: list of clock specifiers, must contain an entry for each required
--  entry in clock-names
--- clock-names: should include entries "ckil", "osc", "ipp_di0" and "ipp_di1"
--
--The clock consumer should specify the desired clock by having the clock
--ID in its "clocks" phandle cell.  See include/dt-bindings/clock/imx6ul-clock.h
--for the full list of i.MX6 UltraLite clock IDs.
-diff --git a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
-new file mode 100644
-index 0000000..9a8ba48
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/imx6ul-clock.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Clock bindings for Freescale i.MX6 UltraLite
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+properties:
-+  compatible:
-+    const: fsl,imx6ul-ccm
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 2
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  clocks:
-+    items:
-+      - description: 32k osc
-+      - description: 24m osc
-+      - description: ipp_di0 clock input
-+      - description: ipp_di1 clock input
-+
-+  clock-names:
-+    items:
-+      - const: ckil
-+      - const: osc
-+      - const: ipp_di0
-+      - const: ipp_di1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - '#clock-cells'
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  # Clock Control Module node:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    clks: clock-controller@20c4000 {
-+        compatible = "fsl,imx6ul-ccm";
-+        reg = <0x020c4000 0x4000>;
-+        interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>;
-+        #clock-cells = <1>;
-+        clocks = <&ckil>, <&osc>, <&ipp_di0>, <&ipp_di1>;
-+        clock-names = "ckil", "osc", "ipp_di0", "ipp_di1";
-+    };
--- 
-2.7.4
-
+On Thu, 2020-04-16 at 07:47 +0200, Giovanni Gherdovich wrote:
+> Some hypervisors such as VMWare ESXi 5.5 advertise support for
+> X86_FEATURE_APERFMPERF but then fill all MSR's with zeroes. In particular,
+> MSR_PLATFORM_INFO set to zero tricks the code that wants to know the base
+> clock frequency of the CPU (highest non-turbo frequency), producing a
+> division by zero when computing the ratio turbo_freq/base_freq necessary
+> for frequency invariant accounting.
+> 
+> It is to be noted that even if MSR_PLATFORM_INFO contained the appropriate
+> data, APERF and MPERF are constantly zero on ESXi 5.5, thus freq-invariance
+> couldn't be done in principle (not that it would make a lot of sense in a
+> VM anyway). The real problem is advertising X86_FEATURE_APERFMPERF. This
+> appears to be fixed in more recent versions: ESXi 6.7 doesn't advertise
+> that feature.
+> 
+> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
+> ---
+>  arch/x86/kernel/smpboot.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index fe3ab9632f3b..3a318ec9bc17 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1985,6 +1985,15 @@ static bool intel_set_max_freq_ratio(void)
+>  	return false;
+>  
+>  out:
+> +	/*
+> +	 * Some hypervisors advertise X86_FEATURE_APERFMPERF
+> +	 * but then fill all MSR's with zeroes.
+> +	 */
+> +	if (!base_freq) {
+> +		pr_debug("Couldn't determine cpu base frequency, necessary for scale-invariant accounting.\n");
+> +		return false;
+> +	}
+> +
+>  	arch_turbo_freq_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE,
+>  					base_freq);
+>  	arch_set_max_freq_ratio(turbo_disabled());
