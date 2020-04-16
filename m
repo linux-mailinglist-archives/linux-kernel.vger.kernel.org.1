@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F86C1AC8DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1CC1AC443
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408892AbgDPPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:15:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35828 "EHLO mail.kernel.org"
+        id S2441825AbgDPN5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:57:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441571AbgDPNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:50:02 -0400
+        id S2897786AbgDPNi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:38:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A920921734;
-        Thu, 16 Apr 2020 13:49:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED85B22202;
+        Thu, 16 Apr 2020 13:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044958;
-        bh=Yh6gZjfyX6QP1J55zaEdH+YpizqUockH6mB2K0kyNj0=;
+        s=default; t=1587044338;
+        bh=qeJIGrrKdtjjhYFAXGoPTkTclmMEdQSo7v/P9jFqUMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uVWZvvOQQ2lS/pzF4P7Q/pod//hbCB7tZrS5N+mutR5UPyBjr9VwKxUqmqQ9k5p9+
-         WBLYxlaozJPvbqyanVJqTsShJ+i66vCbE0XyNmkSq7LmOphJHCW/RIrzIUZIlepPnT
-         KM6/iRzhxpyqokb7AzcRTxRx3kXTu1u0qDdGSqIE=
+        b=b24VPXW/zjC+7uKUOYHXoe5syDFUrsEB5rfCFSJdhRwZrynOHNPN+MD0dlnUFpoX1
+         CWPQp78H0aV6sTiPNCrUQ5oXoNrAalo2jYMSLtTAOWdvcZSxezO19AZzH2PZUPVfll
+         2F7hYDAK8FOgC/jr7iNmSrWEW4UJEIcniyfeeObk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yilu Lin <linyilu@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>
-Subject: [PATCH 5.4 134/232] CIFS: Fix bug which the return value by asynchronous read is error
-Date:   Thu, 16 Apr 2020 15:23:48 +0200
-Message-Id: <20200416131331.755418580@linuxfoundation.org>
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.5 178/257] arm64: dts: allwinner: h5: Fix PMU compatible
+Date:   Thu, 16 Apr 2020 15:23:49 +0200
+Message-Id: <20200416131348.603331667@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yilu Lin <linyilu@huawei.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit 97adda8b3ab703de8e4c8d27646ddd54fe22879c upstream.
+commit 4ae7a3c3d7d31260f690d8d658f0365f3eca67a2 upstream.
 
-This patch is used to fix the bug in collect_uncached_read_data()
-that rc is automatically converted from a signed number to an
-unsigned number when the CIFS asynchronous read fails.
-It will cause ctx->rc is error.
+The commit c35a516a4618 ("arm64: dts: allwinner: H5: Add PMU node")
+introduced support for the PMU found on the Allwinner H5. However, the
+binding only allows for a single compatible, while the patch was adding
+two.
 
-Example:
-Share a directory and create a file on the Windows OS.
-Mount the directory to the Linux OS using CIFS.
-On the CIFS client of the Linux OS, invoke the pread interface to
-deliver the read request.
+Make sure we follow the binding.
 
-The size of the read length plus offset of the read request is greater
-than the maximum file size.
-
-In this case, the CIFS server on the Windows OS returns a failure
-message (for example, the return value of
-smb2.nt_status is STATUS_INVALID_PARAMETER).
-
-After receiving the response message, the CIFS client parses
-smb2.nt_status to STATUS_INVALID_PARAMETER
-and converts it to the Linux error code (rdata->result=-22).
-
-Then the CIFS client invokes the collect_uncached_read_data function to
-assign the value of rdata->result to rc, that is, rc=rdata->result=-22.
-
-The type of the ctx->total_len variable is unsigned integer,
-the type of the rc variable is integer, and the type of
-the ctx->rc variable is ssize_t.
-
-Therefore, during the ternary operation, the value of rc is
-automatically converted to an unsigned number. The final result is
-ctx->rc=4294967274. However, the expected result is ctx->rc=-22.
-
-Signed-off-by: Yilu Lin <linyilu@huawei.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-CC: Stable <stable@vger.kernel.org>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Fixes: c35a516a4618 ("arm64: dts: allwinner: H5: Add PMU node")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/file.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -3778,7 +3778,7 @@ again:
- 	if (rc == -ENODATA)
- 		rc = 0;
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
+@@ -77,8 +77,7 @@
+ 	};
  
--	ctx->rc = (rc == 0) ? ctx->total_len : rc;
-+	ctx->rc = (rc == 0) ? (ssize_t)ctx->total_len : rc;
- 
- 	mutex_unlock(&ctx->aio_mutex);
- 
+ 	pmu {
+-		compatible = "arm,cortex-a53-pmu",
+-			     "arm,armv8-pmuv3";
++		compatible = "arm,cortex-a53-pmu";
+ 		interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
 
 
