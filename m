@@ -2,133 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850C81AC108
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338F51AC114
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635387AbgDPMUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2635291AbgDPMTb (ORCPT
+        id S2635500AbgDPMVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:21:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25163 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2635421AbgDPMU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:19:31 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72155C03C1AE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:19:29 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f13so4505261wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HXXf6CzGWvqGfJ+pWD/XxsKx7m/sfAMCErpAVa4yyHE=;
-        b=WQyDyR5mxzNp5S9/EFFpNUBzyCTrTp2awkJyanbeEFwI7GQHQF6wbpwEwd+J9y+Upf
-         qEzKbb5p8JSw6giqyoQ8c3kElv/qoYGvCe1/xCr4lg6pTaVtbW6ErRiHU88hL3t9VNbB
-         hhiYTyMz3U2/c8QGkhk8GwYOR1CYm1Kc7ZHlN/E7INk4aXqte01N1CSiyAp2tveR1B2I
-         hb7cQ9CsHMHsxaI2V7jJmoW2KDav/NTUM93UD8Vif1i9eqqJ7NQ1fzC0WTcRwn2aiWl/
-         zA0XNuRTHj4BeQ6HxqOBh8YmKwiNvREECaZahCrX4PcwvIhE6M82DGq7hR9Agv1jpOn6
-         0YkA==
+        Thu, 16 Apr 2020 08:20:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587039654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N//aUi9ilfSYZbtt9uubNhdLlMHa9VPzC/9aWc7u2N4=;
+        b=TV6CBrEOpmWjIdSjNFIyBBxbVxnW1vZwBpM+nEFbziHjfTD1lMafWgBfFgYEMhlzSjVvFP
+        43eL+wswiT81sTOO5cNMAWYDWpvy8gHKTWn7Rx39eLEUeTPBr3z7rAaoWYThPYk4OzPtGO
+        LrBlUIsyBa20ny3ZniiYZ4eAt6gWVnI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-UlnQvrd8OZSrEW39ykNGkA-1; Thu, 16 Apr 2020 08:20:52 -0400
+X-MC-Unique: UlnQvrd8OZSrEW39ykNGkA-1
+Received: by mail-wm1-f71.google.com with SMTP id f8so1338301wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:20:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HXXf6CzGWvqGfJ+pWD/XxsKx7m/sfAMCErpAVa4yyHE=;
-        b=SmnCMpYxH5jJUUkto3/x/nIfPiLuj565tAveG+OzF0eIGBAaiHROGMGg5O4ISBTmbl
-         qMwnTeQNoRDl0sUv2w14QdgGiXpZuvAN5jWzgruk7RKRjGdLjv8wEcGAu0ANLLU7KJb/
-         cbrfobVxrCsgSglp2TOML+eT/2Lq2p0DtnXw6w1GKsSpzLIejR6D6r5oCa1vcAIn6fO8
-         adqaes8IuIcYI6Mr3jMaHtDmcjrsmmG6cCKyENeBUzy711l9Z8/nvjGQFZF84ymFTwRJ
-         YGhOMDCDdz7Wj+EM49haDD2afkqeN70nrLQus01mrnzutjlPYHu9/1wByNZiRatj5r+t
-         TnIA==
-X-Gm-Message-State: AGi0Pub6QnG5LzHyOuik/8vXqkXaTpVbWtCcoveHnpapD+FNonpxmz6N
-        xWSke3pvtyoiYBdFVFZ2EdRwhA==
-X-Google-Smtp-Source: APiQypKqIj6sEk0xjD5CGDimPOpkhr5FgQcDq+KtN3ZtPclHdg8q5OF+FP+2ZyDS9S0qDaRuPbSqCQ==
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr35779556wrx.185.1587039568034;
-        Thu, 16 Apr 2020 05:19:28 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
-        by smtp.gmail.com with ESMTPSA id i13sm22035602wro.50.2020.04.16.05.19.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N//aUi9ilfSYZbtt9uubNhdLlMHa9VPzC/9aWc7u2N4=;
+        b=spULp70nsL0p2Vlpb8Iqrd+wFyWC2S8WJgt6KdhTYcJ3AOmzzZk8vfZuq1bbaA1ctx
+         c4dXPAYOjKaVLgQ1l3uIiIM6H8aLPz0GA3d2T6H+E2vMRMkJOSyRQksZYE27zR2yNAbA
+         hMnKdQs1CjoHEU5gUJ6llmN9o+Ra4G25VWNX3xGxjjD2UcKhGw5Y8v5F5rLKpknNFnMy
+         GrwgRjIh/3Jx0HpCsnDPHmT76GwOEPmv8WdEhDWcQHP/aEnDPLpsQl87pWCd6WdSPZv1
+         s5C6Iaem6dWyGebDt7tp3hyW3MkzqqgX9zluAtyn866b3/USC3MaDMcmAY/G//brpbbg
+         PY/w==
+X-Gm-Message-State: AGi0PubV2rGMkgkbQ6FIk7O5I+05mR+550eXQu86b4+NOhcnxsPW1oI7
+        X8yjqKrZX2KVk+A4i/HbC5BaJcWipjCRt3ehl1ePv1AbvMjw7BrqacH2ZV70Unv+fTiOLVvijhS
+        gohkglMnkMA/Rk2P9mzaqAKyc
+X-Received: by 2002:a1c:a344:: with SMTP id m65mr4634834wme.20.1587039648640;
+        Thu, 16 Apr 2020 05:20:48 -0700 (PDT)
+X-Google-Smtp-Source: APiQypL7Zr1AmadDiZcqsAC7y2lchYjfJabub1W1Nve6Z9EGEGzkMDXcyVU803uWBITr/U3dkRDooA==
+X-Received: by 2002:a1c:a344:: with SMTP id m65mr4634814wme.20.1587039648429;
+        Thu, 16 Apr 2020 05:20:48 -0700 (PDT)
+Received: from redhat.com (bzq-79-183-51-3.red.bezeqint.net. [79.183.51.3])
+        by smtp.gmail.com with ESMTPSA id a67sm3645719wmc.30.2020.04.16.05.20.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 05:19:27 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     kishon@ti.com, balbi@kernel.org, khilman@baylibre.com,
-        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org
-Cc:     linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v3 8/8] dt-bindings: usb: dwc3: remove old DWC3 wrapper
-Date:   Thu, 16 Apr 2020 14:19:10 +0200
-Message-Id: <20200416121910.12723-9-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200416121910.12723-1-narmstrong@baylibre.com>
-References: <20200416121910.12723-1-narmstrong@baylibre.com>
+        Thu, 16 Apr 2020 05:20:47 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 08:20:44 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, ashutosh.dixit@intel.com,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        eli@mellanox.com, eperezma@redhat.com,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>, hulkci@huawei.com,
+        "Cc: stable@vger.kernel.org, david@redhat.com, dverkamp@chromium.org,
+        hch@lst.de, jasowang@redhat.com, liang.z.li@intel.com, mst@redhat.com,
+        tiny.windzz@gmail.com," <jasowang@redhat.com>,
+        matej.genci@nutanix.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        yanaijie@huawei.com, YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [GIT PULL] vhost: cleanups and fixes
+Message-ID: <20200416081330-mutt-send-email-mst@kernel.org>
+References: <20200414123606-mutt-send-email-mst@kernel.org>
+ <CAHk-=wgVQcD=JJVmowEorHHQSVmSw+vG+Ddc4FATZoTp9mfUmw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgVQcD=JJVmowEorHHQSVmSw+vG+Ddc4FATZoTp9mfUmw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Wed, Apr 15, 2020 at 05:46:33PM -0700, Linus Torvalds wrote:
+> On Tue, Apr 14, 2020 at 9:36 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > virtio: fixes, cleanups
+> 
+> Looking at this, about 75% of it looks like it should have come in
+> during the merge window, not now.
+> 
+>               Linus
 
-There is now an updated bindings for these SoCs making the old
-compatible obsolete.
+Well it's all just fallout from
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- .../devicetree/bindings/usb/amlogic,dwc3.txt  | 42 -------------------
- 1 file changed, 42 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/amlogic,dwc3.txt
+	commit 61b89f23f854f458b8e23719978df58260f051ed
+	Author: Michael S. Tsirkin <mst@redhat.com>
+	Date:   Mon Apr 6 08:42:55 2020 -0400
 
-diff --git a/Documentation/devicetree/bindings/usb/amlogic,dwc3.txt b/Documentation/devicetree/bindings/usb/amlogic,dwc3.txt
-deleted file mode 100644
-index 9a8b631904fd..000000000000
---- a/Documentation/devicetree/bindings/usb/amlogic,dwc3.txt
-+++ /dev/null
-@@ -1,42 +0,0 @@
--Amlogic Meson GX DWC3 USB SoC controller
--
--Required properties:
--- compatible:	depending on the SoC this should contain one of:
--			* amlogic,meson-axg-dwc3
--			* amlogic,meson-gxl-dwc3
--- clocks:	a handle for the "USB general" clock
--- clock-names:	must be "usb_general"
--- resets:	a handle for the shared "USB OTG" reset line
--- reset-names:	must be "usb_otg"
--
--Required child node:
--A child node must exist to represent the core DWC3 IP block. The name of
--the node is not important. The content of the node is defined in dwc3.txt.
--
--PHY documentation is provided in the following places:
--- Documentation/devicetree/bindings/phy/meson-gxl-usb2-phy.txt
--- Documentation/devicetree/bindings/phy/meson-gxl-usb3-phy.txt
--
--Example device nodes:
--		usb0: usb@ff500000 {
--			compatible = "amlogic,meson-axg-dwc3";
--			#address-cells = <2>;
--			#size-cells = <2>;
--			ranges;
--
--			clocks = <&clkc CLKID_USB>;
--			clock-names = "usb_general";
--			resets = <&reset RESET_USB_OTG>;
--			reset-names = "usb_otg";
--
--			dwc3: dwc3@ff500000 {
--				compatible = "snps,dwc3";
--				reg = <0x0 0xff500000 0x0 0x100000>;
--				interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
--				dr_mode = "host";
--				maximum-speed = "high-speed";
--				snps,dis_u2_susphy_quirk;
--				phys = <&usb3_phy>, <&usb2_phy0>;
--				phy-names = "usb2-phy", "usb3-phy";
--			};
--		};
+	    vhost: force spec specified alignment on types
+
+which I didn't know we need until things landed upstream and
+people started testing with weird configs.
+
+That forced changes to a header file and the rest followed.
+
+We could just ignore -mabi=apcs-gnu build being broken for this release -
+is that preferable? Pls let me know.
+
 -- 
-2.22.0
+MST
 
