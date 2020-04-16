@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328F61AC9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130981AC3A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403767AbgDPP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:28:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57344 "EHLO mail.kernel.org"
+        id S2898594AbgDPNq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:46:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898421AbgDPNoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:44:02 -0400
+        id S2897053AbgDPNfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:35:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1CDB2076D;
-        Thu, 16 Apr 2020 13:44:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B003221EB;
+        Thu, 16 Apr 2020 13:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044641;
-        bh=7RdBcKbcSA8txvE3ou1/hXYhwhq2DHXO8rive13W17M=;
+        s=default; t=1587044104;
+        bh=HdizPfjVsQk6OW/5Fhc56Trey2v1qKgX3QcEPGOiDjU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfxOS3sUxLoquHCNZ54SKnJ4yAGCHd9tTM3TYCBOGQMltF97kO7S2+Oz5AAkGMksX
-         U3aIF4xoRFhKp8mD0NqYJUz/HbvDh3X81EsEqQtbmMkSbgTU9BwM1w78I2Gq9MTWBY
-         vjkbUnwSJ3Ch5KD339GomVw+X+52Y7/ka/M5obHI=
+        b=XbwFPnG93evRRK7YGKEar/drCMq1AaZq9YaIK+gUp/fFAefNu/K/91PNngTHaV6l/
+         54NpFV9QRC7emE47N9mgsO2d7f0dn5Wr4+EeaGLGk5perUrHf31uuCTO5+ayDUsD51
+         6YBgGaG6+n4QWFClsml6XhV5cVX9jMBlF8NvZjFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sungbo Eo <mans0n@gorani.run>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/232] irqchip/versatile-fpga: Handle chained IRQs properly
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.5 083/257] ASoC: dpcm: allow start or stop during pause for backend
 Date:   Thu, 16 Apr 2020 15:22:14 +0200
-Message-Id: <20200416131320.890660320@linuxfoundation.org>
+Message-Id: <20200416131336.325424525@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sungbo Eo <mans0n@gorani.run>
+From: 이경택 <gt82.lee@samsung.com>
 
-[ Upstream commit 486562da598c59e9f835b551d7cf19507de2d681 ]
+commit 21fca8bdbb64df1297e8c65a746c4c9f4a689751 upstream.
 
-Enclose the chained handler with chained_irq_{enter,exit}(), so that the
-muxed interrupts get properly acked.
+soc_compr_trigger_fe() allows start or stop after pause_push.
+In dpcm_be_dai_trigger(), however, only pause_release is allowed
+command after pause_push.
+So, start or stop after pause in compress offload is always
+returned as error if the compress offload is used with dpcm.
+To fix the problem, SND_SOC_DPCM_STATE_PAUSED should be allowed
+for start or stop command.
 
-This patch also fixes a reboot bug on OX820 SoC, where the jiffies timer
-interrupt is never acked. The kernel waits a clock tick forever in
-calibrate_delay_converge(), which leads to a boot hang.
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/004d01d607c1$7a3d5250$6eb7f6f0$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: c41b16f8c9d9 ("ARM: integrator/versatile: consolidate FPGA IRQ handling code")
-Signed-off-by: Sungbo Eo <mans0n@gorani.run>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200319023448.1479701-1-mans0n@gorani.run
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-versatile-fpga.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-versatile-fpga.c b/drivers/irqchip/irq-versatile-fpga.c
-index 928858dada756..70e2cfff8175f 100644
---- a/drivers/irqchip/irq-versatile-fpga.c
-+++ b/drivers/irqchip/irq-versatile-fpga.c
-@@ -6,6 +6,7 @@
- #include <linux/irq.h>
- #include <linux/io.h>
- #include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
- #include <linux/irqchip/versatile-fpga.h>
- #include <linux/irqdomain.h>
- #include <linux/module.h>
-@@ -68,12 +69,16 @@ static void fpga_irq_unmask(struct irq_data *d)
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2256,7 +2256,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
  
- static void fpga_irq_handle(struct irq_desc *desc)
- {
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct fpga_irq_data *f = irq_desc_get_handler_data(desc);
--	u32 status = readl(f->base + IRQ_STATUS);
-+	u32 status;
-+
-+	chained_irq_enter(chip, desc);
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+@@ -2286,7 +2287,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
  
-+	status = readl(f->base + IRQ_STATUS);
- 	if (status == 0) {
- 		do_bad_IRQ(desc);
--		return;
-+		goto out;
- 	}
- 
- 	do {
-@@ -82,6 +87,9 @@ static void fpga_irq_handle(struct irq_desc *desc)
- 		status &= ~(1 << irq);
- 		generic_handle_irq(irq_find_mapping(f->domain, irq));
- 	} while (status);
-+
-+out:
-+	chained_irq_exit(chip, desc);
- }
- 
- /*
--- 
-2.20.1
-
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
 
 
