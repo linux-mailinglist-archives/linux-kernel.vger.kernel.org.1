@@ -2,135 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDAA1ACC04
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC2C1AC248
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896791AbgDPPxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896402AbgDPNcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:32:48 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09001221EB;
-        Thu, 16 Apr 2020 13:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043888;
-        bh=LoemScDtwq3mKzvNIvuf4pkxIjr/iGO4pf7UOgojR8A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U06ecuROZpseln+qta9b2DmSBw9LZKEgN+hpLhJN8ezlQCiwZnjijj7Oepipkuipp
-         XDVmsnkWWJNd/8VVEytoOE+LfE4ZPLFJNmOLmcle1SCuCki23VsETHMhZ6Bzqvq01r
-         LC8dTUdOQxREGg7rgWkDOwrPxO70aipmwd2nfkIk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Wayne Lin <Wayne.Lin@amd.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Lyude Paul <lyude@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 141/146] drm/dp_mst: Fix clearing payload state on topology disable
+        id S2895238AbgDPNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:25:37 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41735 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895219AbgDPNYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:24:49 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id AF69AE0003;
+        Thu, 16 Apr 2020 13:24:42 +0000 (UTC)
 Date:   Thu, 16 Apr 2020 15:24:42 +0200
-Message-Id: <20200416131301.651728040@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
-User-Agent: quilt/0.66
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hansverk@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/4] arm64: dts: rockchip: Add RGA support to the PX30
+Message-ID: <20200416132442.GI125838@aptenodytes>
+References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+ <20200416115047.233720-3-paul.kocialkowski@bootlin.com>
+ <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+PbGPm1eXpwOoWkI"
+Content-Disposition: inline
+In-Reply-To: <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lyude Paul <lyude@redhat.com>
 
-[ Upstream commit 8732fe46b20c951493bfc4dba0ad08efdf41de81 ]
+--+PbGPm1eXpwOoWkI
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The issues caused by:
+Hi,
 
-commit 64e62bdf04ab ("drm/dp_mst: Remove VCPI while disabling topology
-mgr")
+On Thu 16 Apr 20, 15:02, Johan Jonker wrote:
+> Hi Paul,
+>=20
+> The conversion of rockchip-rga.txt to rockchip-rga.yaml by myself just
+> has been approved by robh.
 
-Prompted me to take a closer look at how we clear the payload state in
-general when disabling the topology, and it turns out there's actually
-two subtle issues here.
+Huh, I looked around for ongoing related work but missed it.
+I'll definitely rebase on top of your series and use the yaml description
+instead. Thanks!
 
-The first is that we're not grabbing &mgr.payload_lock when clearing the
-payloads in drm_dp_mst_topology_mgr_set_mst(). Seeing as the canonical
-lock order is &mgr.payload_lock -> &mgr.lock (because we always want
-&mgr.lock to be the inner-most lock so topology validation always
-works), this makes perfect sense. It also means that -technically- there
-could be racing between someone calling
-drm_dp_mst_topology_mgr_set_mst() to disable the topology, along with a
-modeset occurring that's modifying the payload state at the same time.
+> Maybe place dts patches at the end of a patch serie.
+> Could you include a &rga patch if your device is supported in mainline,
+> so we can test with:
+> make ARCH=3Darm64 dtbs_check
+> DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/media/rockchip-rga.ya=
+ml
 
-The second is the more obvious issue that Wayne Lin discovered, that
-we're not clearing proposed_payloads when disabling the topology.
+I tested with the PX30 EVB so I can surely add a node there if that turns
+out necessary (see below).
 
-I actually can't see any obvious places where the racing caused by the
-first issue would break something, and it could be that some of our
-higher-level locks already prevent this by happenstance, but better safe
-then sorry. So, let's make it so that drm_dp_mst_topology_mgr_set_mst()
-first grabs &mgr.payload_lock followed by &mgr.lock so that we never
-race when modifying the payload state. Then, we also clear
-proposed_payloads to fix the original issue of enabling a new topology
-with a dirty payload state. This doesn't clear any of the drm_dp_vcpi
-structures, but those are getting destroyed along with the ports anyway.
+> Johan
+>=20
+> On 4/16/20 1:50 PM, Paul Kocialkowski wrote:
+> > The PX30 features a RGA block: add the necessary node to support it.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >=20
+> > diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/d=
+ts/rockchip/px30.dtsi
+> > index 75908c587511..4bfbee9d4123 100644
+> > --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+> > @@ -1104,6 +1104,17 @@ vopl_mmu: iommu@ff470f00 {
+> >  		status =3D "disabled";
+> >  	};
+> > =20
+> > +	rga: rga@ff480000 {
+> > +		compatible =3D "rockchip,px30-rga";
+> > +		reg =3D <0x0 0xff480000 0x0 0x10000>;
+> > +		interrupts =3D <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
+> > +		clocks =3D <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE>;
+> > +		clock-names =3D "aclk", "hclk", "sclk";
+> > +		resets =3D <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
+> > +		reset-names =3D "core", "axi", "ahb";
+> > +		power-domains =3D <&power PX30_PD_VO>;
+>=20
+> 		status =3D "disabled";
 
-Changes since v1:
-* Use sizeof(mgr->payloads[0])/sizeof(mgr->proposed_vcpis[0]) instead -
-  vsyrjala
+As of 5.6, the rk3399 has the node enabled by default. Did that change?
 
-Cc: Sean Paul <sean@poorly.run>
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.4+
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200122194321.14953-1-lyude@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/drm_dp_mst_topology.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Since it's a standalone block that has no I/O dependency, I don't really see
+the point of disabling it by default.
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index b4fd20062bb80..5f508ec321fef 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2117,6 +2117,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 	int ret = 0;
- 	struct drm_dp_mst_branch *mstb = NULL;
- 
-+	mutex_lock(&mgr->payload_lock);
- 	mutex_lock(&mgr->lock);
- 	if (mst_state == mgr->mst_state)
- 		goto out_unlock;
-@@ -2175,7 +2176,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		/* this can fail if the device is gone */
- 		drm_dp_dpcd_writeb(mgr->aux, DP_MSTM_CTRL, 0);
- 		ret = 0;
--		memset(mgr->payloads, 0, mgr->max_payloads * sizeof(struct drm_dp_payload));
-+		memset(mgr->payloads, 0,
-+		       mgr->max_payloads * sizeof(mgr->payloads[0]));
-+		memset(mgr->proposed_vcpis, 0,
-+		       mgr->max_payloads * sizeof(mgr->proposed_vcpis[0]));
- 		mgr->payload_mask = 0;
- 		set_bit(0, &mgr->payload_mask);
- 		mgr->vcpi_mask = 0;
-@@ -2183,6 +2187,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 
- out_unlock:
- 	mutex_unlock(&mgr->lock);
-+	mutex_unlock(&mgr->payload_lock);
- 	if (mstb)
- 		drm_dp_put_mst_branch_device(mstb);
- 	return ret;
--- 
-2.20.1
+What do you think?
 
+Cheers,
 
+Paul
 
+> > +	};
+> > +
+> >  	qos_gmac: qos@ff518000 {
+> >  		compatible =3D "syscon";
+> >  		reg =3D <0x0 0xff518000 0x0 0x20>;
+> >=20
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--+PbGPm1eXpwOoWkI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6YXJoACgkQ3cLmz3+f
+v9Ho3wf/d9zxV64Bwt9TC0ABSimMOz4E7MQphqkXg/XbCpShScAkCWfzSQ71WxB4
+T0+gL2hGnJEua+rGBrWyXst54nDhfUvqmiKw2VDC+ukjpVgGwNNP1UFFWGf5rTqM
+TNY4QMIqmVhU1hvIGLYIT3iFZl66I1jlzBlywy1tM5SqC6B2N7Xy7P1FgtfVt7Wr
+iz3jUXj1tqFrSB4sFdr2HFkOV48LLhtzjfSEPJI5ZtIsgM+jh/fGYu/v38kPlDW5
+2bjcC2ZLiwHQyUpV8/+vEHFo8Ged/qocFyPrKtI1mCZd+Yd/VYRP85f551sbc0uz
+uuYKH6JbkP37Fdz/ONOdyMbAqj+dNg==
+=RgMQ
+-----END PGP SIGNATURE-----
+
+--+PbGPm1eXpwOoWkI--
