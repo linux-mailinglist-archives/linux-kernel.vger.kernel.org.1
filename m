@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165C31AC71B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668E01AC73C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393827AbgDPOtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387540AbgDPOtp (ORCPT
+        id S1731681AbgDPOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:52:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40968 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728543AbgDPOvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:49:45 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA9EC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:49:44 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b62so21530506qkf.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=30WpPuLdsF1vPq82Jwx+bqfIHjpFy3a2O81YCQ5FRFk=;
-        b=Rb4MJ2soVuS3pxrQpUJyV7014U/EyLQdwxDlP4RNzfbWBzhK020e94ngMapWQ9yXLi
-         2w4BC6C0UiYkmSht9qNyTvxZOpH2RL4qVHug9Iau2Dc40AePEen3KdMDSIHrrCWFRY18
-         yR/g77B8VwU3H33ktg90f4Zw8OmbVLd2IitE0oGPk242n1s9MWm3flNCtIt5R0CiVy2r
-         pssMup8LaW/A0bdHYU9fpK+myRntemkAfYjmtDwgAJaFXlk/b9AJnUmobBmkBzHZiwKC
-         yIW64yJpc14LcKp2+RHJnTlH1yl/R8RTwN7ZW/tH++5rrkm2FqirtXOSqtwloQj7PElf
-         piQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=30WpPuLdsF1vPq82Jwx+bqfIHjpFy3a2O81YCQ5FRFk=;
-        b=kFAWrJxkec5cOtr170SaHyXHWm9fqD/MlT79hv6/mPz5Cwpr2wfYeDzV/DlZ+fCZgG
-         azgwAX0DZ5nK1fqA1FqLpKKsvRTkxqDwtUIe+RM+Acr0yVfLQ8I1XfIZTtaA/AQwi6Cz
-         triIVo2KNwxzmFkgWiMJlWQLe8OlNA9I5nwsayH3NAcM73ClWTiIpi61KLq9eT6mLqHD
-         wfPh4NXhnnkylQAHEvQvniIqMgbbJ9I630larmwtUH3Ggr1A2VkRRrXwWUbEOc+R+Lpa
-         xg6nRhhoy6f+qPDZ1p0K17yoSfKtEU35gq60i6ILyyvjHYCYP8CNuuvadFoddcefOm0A
-         Yh3g==
-X-Gm-Message-State: AGi0PuaAyq/DR6psFc4ZpU5cIQwyS1IX+eq2vi7SvtvNHguN1FPeu6nl
-        brhqh1vQX0fT7kGCQYYe3F/J2B3/eY2OTA==
-X-Google-Smtp-Source: APiQypK8IXkQ6uYwp63LhOfNah5+ZsAL/mkzxz8fRjRohseE/Bnc+/B7EI8A6yTW9tLsTCmGAnRXug==
-X-Received: by 2002:a37:5004:: with SMTP id e4mr31691259qkb.18.1587048584130;
-        Thu, 16 Apr 2020 07:49:44 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c69sm858670qkg.104.2020.04.16.07.49.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Apr 2020 07:49:43 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jP5pm-0003ul-HA; Thu, 16 Apr 2020 11:49:42 -0300
-Date:   Thu, 16 Apr 2020 11:49:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Hillf Danton <hdanton@sina.com>, Peter Xu <peterx@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sonny Rao <sonnyrao@google.com>
-Subject: Re: Userfaultfd doesn't seem to break out of poll on fd close
-Message-ID: <20200416144942.GQ5100@ziepe.ca>
-References: <CADyq12wPW69ovpW4akDY5PGBbrvnwsLO86=sSKTU4CB3dNwG3Q@mail.gmail.com>
- <20200414214516.GA182757@xz-x1>
- <20200415031602.22348-1-hdanton@sina.com>
- <20200415142546.GO5100@ziepe.ca>
- <20200416000229.GA9922@redhat.com>
- <CADyq12xg8vxetG8y=M6i2m4qYrtjsRhmpds-3yKTY2icrHG2GA@mail.gmail.com>
+        Thu, 16 Apr 2020 10:51:43 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 00BA52A21ED
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 4C63F4800F7; Thu, 16 Apr 2020 16:51:38 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Ian Ray <ian.ray@ge.com>,
+        Samu Nuutamo <samu.nuutamo@vincit.fi>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH] ARM: dts: imx53: ppd: alarm LEDs use kernel LED interface
+Date:   Thu, 16 Apr 2020 16:51:23 +0200
+Message-Id: <20200416145123.73039-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADyq12xg8vxetG8y=M6i2m4qYrtjsRhmpds-3yKTY2icrHG2GA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 06:15:26PM -0700, Brian Geffon wrote:
+From: Ian Ray <ian.ray@ge.com>
 
-> And all of that I guess makes sense in the case of a non-blocking fd,
-> but what about the case of a blocking file descriptor? Both
-> userfaultfd and eventfd can seemingly be stuck in a read syscall with
-> no way to break them out when the userfaultfd/eventfd has no further
-> utility. Here is an example:
-> https://gist.github.com/bgaff/607302d86d99ac539efca307ce2dd679
+Use kernel LED interface for the alarm LEDs.
 
-If an application wants to terminate blocking calls it has to rely on
-signal delivery or pthread_cancel to end it.
+Signed-off-by: Ian Ray <ian.ray@ge.com>
+[Rebased]
+Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
+[Rebased]
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ arch/arm/boot/dts/imx53-ppd.dts | 49 +++++++++++++++++++++++++++------
+ 1 file changed, 40 insertions(+), 9 deletions(-)
 
-This is very complicated so it is generally better to use poll and non
-blocking.
+diff --git a/arch/arm/boot/dts/imx53-ppd.dts b/arch/arm/boot/dts/imx53-ppd.dts
+index 5ff9a179c83c..34ce41600098 100644
+--- a/arch/arm/boot/dts/imx53-ppd.dts
++++ b/arch/arm/boot/dts/imx53-ppd.dts
+@@ -176,7 +176,7 @@ pwm_bl: backlight {
+ 		power-supply = <&reg_3v3_lcd>;
+ 	};
+ 
+-	leds {
++	leds-brightness {
+ 		compatible = "pwm-leds";
+ 
+ 		alarm-brightness {
+@@ -185,6 +185,32 @@ alarm-brightness {
+ 		};
+ 	};
+ 
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_alarmled_pins>;
++
++		alarm1 {
++			label = "alarm:red";
++			gpios = <&gpio7 3 GPIO_ACTIVE_HIGH>;
++		};
++
++		alarm2 {
++			label = "alarm:yellow";
++			gpios = <&gpio7 7 GPIO_ACTIVE_HIGH>;
++		};
++
++		alarm3 {
++			label = "alarm:blue";
++			gpios = <&gpio7 8 GPIO_ACTIVE_HIGH>;
++		};
++
++		alarm4 {
++			label = "alarm:silenced";
++			gpios = <&gpio7 13 GPIO_ACTIVE_HIGH>;
++		};
++	};
++
+ 	gpio-poweroff {
+ 		compatible = "gpio-poweroff";
+ 		gpios = <&gpio3 9 GPIO_ACTIVE_HIGH>;
+@@ -909,18 +935,10 @@ MX53_PAD_NANDF_CS2__GPIO6_15		0x0
+ 			MX53_PAD_NANDF_CS3__GPIO6_16		0x0
+ 			/* POWER_AND_BOOT_STATUS_INDICATOR */
+ 			MX53_PAD_PATA_INTRQ__GPIO7_2		0x1e4
+-			/* ACTIVATE_ALARM_LIGHT_RED */
+-			MX53_PAD_PATA_DIOR__GPIO7_3		0x0
+-			/* ACTIVATE_ALARM_LIGHT_YELLOW */
+-			MX53_PAD_PATA_DA_1__GPIO7_7		0x0
+-			/* ACTIVATE_ALARM_LIGHT_CYAN */
+-			MX53_PAD_PATA_DA_2__GPIO7_8		0x0
+ 			/* RUNNING_ON_BATTERY_INDICATOR_GREEN */
+ 			MX53_PAD_GPIO_16__GPIO7_11		0x0
+ 			/* BATTERY_STATUS_INDICATOR_AMBER */
+ 			MX53_PAD_GPIO_17__GPIO7_12		0x0
+-			/* AUDIO_ALARMS_SILENCED_INDICATOR */
+-			MX53_PAD_GPIO_18__GPIO7_13		0x0
+ 		>;
+ 	};
+ 
+@@ -1080,4 +1098,17 @@ pinctrl_usb_otg: usbotggrp {
+ 			MX53_PAD_KEY_COL4__USBOH3_USBOTG_OC	0x180
+ 		>;
+ 	};
++
++	pinctrl_alarmled_pins: qmx6alarmledgrp {
++		fsl,pins = <
++			/* ACTIVATE_ALARM_LIGHT_RED */
++			MX53_PAD_PATA_DIOR__GPIO7_3		0x0
++			/* ACTIVATE_ALARM_LIGHT_YELLOW */
++			MX53_PAD_PATA_DA_1__GPIO7_7		0x0
++			/* ACTIVATE_ALARM_LIGHT_CYAN */
++			MX53_PAD_PATA_DA_2__GPIO7_8		0x0
++			/* AUDIO_ALARMS_SILENCED_INDICATOR */
++			MX53_PAD_GPIO_18__GPIO7_13		0x0
++		>;
++	};
+ };
+-- 
+2.25.1
 
-Jason
