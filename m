@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427401AC2BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F128A1AC513
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896317AbgDPNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:32:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37588 "EHLO mail.kernel.org"
+        id S2393570AbgDPOLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895781AbgDPN2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:28:34 -0400
+        id S1731775AbgDPNrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:47:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D8F6217D8;
-        Thu, 16 Apr 2020 13:28:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0E1421734;
+        Thu, 16 Apr 2020 13:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043712;
-        bh=+1jJAipbKsBP4A6cGWqZanA8GOgZ3Am4/T7UsiGhELc=;
+        s=default; t=1587044821;
+        bh=sPrl9R+yoAc0NrziY7jtHcAjfyMMgN98O+1GI2m295k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTIzuM8JSwMbAPQjtlNFowWvB7ENUgK+O1VV8gvPB1JNw+OzyZcBHAmYAtgsucriV
-         cqnB7LdlBsaKeboQPBqRQZqmeyNLtu97mN5MJiLe8kM6gSPOLxjXD63FXknR8IwdMC
-         2tDW+uiwINOdsC58JO+eyKHtXM0e5TGqo9OXHNKU=
+        b=B+DgOhhr3Exwl6nHvj4YzSCfjKOwN6Xgivw7Qp8xkcVuAI5QIeg1J6PhiNR/m9uet
+         nDKYOnwpiasdBJ2Fkz49oT1TExwOstyFzrfQxdjjftiZkR6raBqL7zFIz8cNR/OuYL
+         fNNTur4YTntU54tBFdXGImYngbGL7qBR6acnVZkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 4.19 068/146] tpm: Dont make log failures fatal
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.4 115/232] MIPS: OCTEON: irq: Fix potential NULL pointer dereference
 Date:   Thu, 16 Apr 2020 15:23:29 +0200
-Message-Id: <20200416131252.245390317@linuxfoundation.org>
+Message-Id: <20200416131329.509258625@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,91 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Garrett <matthewgarrett@google.com>
+From: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-commit 805fa88e0780b7ce1cc9b649dd91a0a7164c6eb4 upstream.
+commit 792a402c2840054533ef56279c212ef6da87d811 upstream.
 
-If a TPM is in disabled state, it's reasonable for it to have an empty
-log. Bailing out of probe in this case means that the PPI interface
-isn't available, so there's no way to then enable the TPM from the OS.
-In general it seems reasonable to ignore log errors - they shouldn't
-interfere with any other TPM functionality.
+There is a potential NULL pointer dereference in case kzalloc()
+fails and returns NULL.
 
-Signed-off-by: Matthew Garrett <matthewgarrett@google.com>
-Cc: stable@vger.kernel.org # 4.19.x
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Fix this by adding a NULL check on *cd*
+
+This bug was detected with the help of Coccinelle.
+
+Fixes: 64b139f97c01 ("MIPS: OCTEON: irq: add CIB and other fixes")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/tpm/eventlog/common.c |   12 ++++--------
- drivers/char/tpm/tpm-chip.c        |    4 +---
- drivers/char/tpm/tpm.h             |    2 +-
- 3 files changed, 6 insertions(+), 12 deletions(-)
+ arch/mips/cavium-octeon/octeon-irq.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/char/tpm/eventlog/common.c
-+++ b/drivers/char/tpm/eventlog/common.c
-@@ -104,11 +104,8 @@ static int tpm_read_log(struct tpm_chip
-  *
-  * If an event log is found then the securityfs files are setup to
-  * export it to userspace, otherwise nothing is done.
-- *
-- * Returns -ENODEV if the firmware has no event log or securityfs is not
-- * supported.
-  */
--int tpm_bios_log_setup(struct tpm_chip *chip)
-+void tpm_bios_log_setup(struct tpm_chip *chip)
- {
- 	const char *name = dev_name(&chip->dev);
- 	unsigned int cnt;
-@@ -117,7 +114,7 @@ int tpm_bios_log_setup(struct tpm_chip *
- 
- 	rc = tpm_read_log(chip);
- 	if (rc < 0)
--		return rc;
-+		return;
- 	log_version = rc;
- 
- 	cnt = 0;
-@@ -163,13 +160,12 @@ int tpm_bios_log_setup(struct tpm_chip *
- 		cnt++;
+--- a/arch/mips/cavium-octeon/octeon-irq.c
++++ b/arch/mips/cavium-octeon/octeon-irq.c
+@@ -2199,6 +2199,9 @@ static int octeon_irq_cib_map(struct irq
  	}
  
--	return 0;
-+	return;
+ 	cd = kzalloc(sizeof(*cd), GFP_KERNEL);
++	if (!cd)
++		return -ENOMEM;
++
+ 	cd->host_data = host_data;
+ 	cd->bit = hw;
  
- err:
--	rc = PTR_ERR(chip->bios_dir[cnt]);
- 	chip->bios_dir[cnt] = NULL;
- 	tpm_bios_log_teardown(chip);
--	return rc;
-+	return;
- }
- 
- void tpm_bios_log_teardown(struct tpm_chip *chip)
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -463,9 +463,7 @@ int tpm_chip_register(struct tpm_chip *c
- 
- 	tpm_sysfs_add_device(chip);
- 
--	rc = tpm_bios_log_setup(chip);
--	if (rc != 0 && rc != -ENODEV)
--		return rc;
-+	tpm_bios_log_setup(chip);
- 
- 	tpm_add_ppi(chip);
- 
---- a/drivers/char/tpm/tpm.h
-+++ b/drivers/char/tpm/tpm.h
-@@ -602,6 +602,6 @@ int tpm2_prepare_space(struct tpm_chip *
- int tpm2_commit_space(struct tpm_chip *chip, struct tpm_space *space,
- 		      u32 cc, u8 *buf, size_t *bufsiz);
- 
--int tpm_bios_log_setup(struct tpm_chip *chip);
-+void tpm_bios_log_setup(struct tpm_chip *chip);
- void tpm_bios_log_teardown(struct tpm_chip *chip);
- #endif
 
 
