@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4571AC7D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632FD1AC57B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438782AbgDPO7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:59:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41150 "EHLO mail.kernel.org"
+        id S2389290AbgDPOUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:20:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898866AbgDPNyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:54:41 -0400
+        id S1727941AbgDPNyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:54:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A8F120732;
-        Thu, 16 Apr 2020 13:54:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52D282078B;
+        Thu, 16 Apr 2020 13:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045280;
-        bh=RlPp1iaNAIZtXV/7DCpgYxXxtz24O5yn7VLRupqjAtw=;
+        s=default; t=1587045285;
+        bh=7SRvRr9oGqe5O3+KQvo7jEjrTxqZh64PRVA9WYJHS50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JKCQjvfk1GQRueUJiR/LvcbgYidSenVFPHxqOE24zBkt2laJlQxfdeG4Rf71MzUO6
-         tvJxnijcdcVi8KYI7XNrRzmKFDrHLYkRXfJGeBVdgCe6lZnwXT8bEAVp9CU7f9FgGg
-         qcV4xxR4NGRvig5tuUpGvgHIo6jfLh1LzIbA2xbI=
+        b=mODQkeRlXrhM4+knNyp1/kdJdgVH6VOrqzB5LJWhpL3fGlDm+uhPNClrxYZ9rQwVv
+         Zc5A2v54tMp1Wfoo5b1mCnu7+WuhI9QQ4yNhQM46JQz7nVd2NBsUyaC9ErCM5uLkAq
+         2HPamg4vJbKbAhkfxGy0jv85hiUyJxYSiueRu7gI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.6 071/254] usb: gadget: composite: Inform controller driver of self-powered
-Date:   Thu, 16 Apr 2020 15:22:40 +0200
-Message-Id: <20200416131334.752534395@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 072/254] ALSA: usb-audio: Add mixer workaround for TRX40 and co
+Date:   Thu, 16 Apr 2020 15:22:41 +0200
+Message-Id: <20200416131334.885425481@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
 References: <20200416131325.804095985@linuxfoundation.org>
@@ -43,57 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 5e5caf4fa8d3039140b4548b6ab23dd17fce9b2c upstream.
+commit 2a48218f8e23d47bd3e23cfdfb8aa9066f7dc3e6 upstream.
 
-Different configuration/condition may draw different power. Inform the
-controller driver of the change so it can respond properly (e.g.
-GET_STATUS request). This fixes an issue with setting MaxPower from
-configfs. The composite driver doesn't check this value when setting
-self-powered.
+Some recent boards (supposedly with a new AMD platform) contain the
+USB audio class 2 device that is often tied with HD-audio.  The device
+exposes an Input Gain Pad control (id=19, control=12) but this node
+doesn't behave correctly, returning an error for each inquiry of
+GET_MIN and GET_MAX that should have been mandatory.
 
-Cc: stable@vger.kernel.org
-Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+As a workaround, simply ignore this node by adding a usbmix_name_map
+table entry.  The currently known devices are:
+* 0414:a002 - Gigabyte TRX40 Aorus Pro WiFi
+* 0b05:1916 - ASUS ROG Zenith II
+* 0b05:1917 - ASUS ROG Strix
+* 0db0:0d64 - MSI TRX40 Creator
+* 0db0:543d - MSI TRX40
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206543
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200408140449.22319-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/composite.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/usb/mixer_maps.c |   28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -861,6 +861,11 @@ static int set_config(struct usb_composi
- 	else
- 		power = min(power, 900U);
- done:
-+	if (power <= USB_SELF_POWER_VBUS_MAX_DRAW)
-+		usb_gadget_set_selfpowered(gadget);
-+	else
-+		usb_gadget_clear_selfpowered(gadget);
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -359,6 +359,14 @@ static const struct usbmix_name_map cors
+ 	{ 0 }
+ };
+ 
++/* Some mobos shipped with a dummy HD-audio show the invalid GET_MIN/GET_MAX
++ * response for Input Gain Pad (id=19, control=12).  Skip it.
++ */
++static const struct usbmix_name_map asus_rog_map[] = {
++	{ 19, NULL, 12 }, /* FU, Input Gain Pad */
++	{}
++};
 +
- 	usb_gadget_vbus_draw(gadget, power);
- 	if (result >= 0 && cdev->delayed_status)
- 		result = USB_GADGET_DELAYED_STATUS;
-@@ -2279,6 +2284,7 @@ void composite_suspend(struct usb_gadget
- 
- 	cdev->suspended = 1;
- 
-+	usb_gadget_set_selfpowered(gadget);
- 	usb_gadget_vbus_draw(gadget, 2);
- }
- 
-@@ -2307,6 +2313,9 @@ void composite_resume(struct usb_gadget
- 		else
- 			maxpower = min(maxpower, 900U);
- 
-+		if (maxpower > USB_SELF_POWER_VBUS_MAX_DRAW)
-+			usb_gadget_clear_selfpowered(gadget);
-+
- 		usb_gadget_vbus_draw(gadget, maxpower);
- 	}
+ /*
+  * Control map entries
+  */
+@@ -488,6 +496,26 @@ static const struct usbmix_ctl_map usbmi
+ 		.id = USB_ID(0x1b1c, 0x0a42),
+ 		.map = corsair_virtuoso_map,
+ 	},
++	{	/* Gigabyte TRX40 Aorus Pro WiFi */
++		.id = USB_ID(0x0414, 0xa002),
++		.map = asus_rog_map,
++	},
++	{	/* ASUS ROG Zenith II */
++		.id = USB_ID(0x0b05, 0x1916),
++		.map = asus_rog_map,
++	},
++	{	/* ASUS ROG Strix */
++		.id = USB_ID(0x0b05, 0x1917),
++		.map = asus_rog_map,
++	},
++	{	/* MSI TRX40 Creator */
++		.id = USB_ID(0x0db0, 0x0d64),
++		.map = asus_rog_map,
++	},
++	{	/* MSI TRX40 */
++		.id = USB_ID(0x0db0, 0x543d),
++		.map = asus_rog_map,
++	},
+ 	{ 0 } /* terminator */
+ };
  
 
 
