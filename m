@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80C71AC18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E390A1AC192
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635832AbgDPMmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:42:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2635873AbgDPMmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:42:44 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49352217D8;
-        Thu, 16 Apr 2020 12:42:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587040962;
-        bh=umyc9davKjGqXHYPYEvThedj9clicVOmBqruhPJYEFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zp7ebm6DopU7sArZWdGxQggJE37jsvDiwSqQhp2ZslVXLlsAtZP9PFkv7rVHZcf6p
-         K79sqKU/ej7aOzUyBp6HI0SOB71YVYluma2yTvrzfsOxWKMwUrigfDB21UNHHCqQAl
-         m1nMjTZ29M+hj/kIKx/HGl5MNrPVPeYUMrecer6U=
-Date:   Thu, 16 Apr 2020 13:42:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] ASoC: Add initial ZL38060 driver
-Message-ID: <20200416124239.GH5354@sirena.org.uk>
-References: <20200416001414.25746-1-TheSven73@gmail.com>
- <20200416001414.25746-2-TheSven73@gmail.com>
+        id S2636049AbgDPMnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:43:39 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:37931 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2635998AbgDPMnP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:43:15 -0400
+Received: by mail-il1-f198.google.com with SMTP id c16so8837483ilh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:43:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=v779y82BJy6MKZS+0kJTYe+V/6NgiP+kTl/bmTEDrfc=;
+        b=dM+dww7js6YZ1plvgx92WW7lFXv6SlefazsDjWaQD/d8FNC4e95GUxOg8QcjRttWex
+         7p5FbpnWCrgavyoLSwyBlGOJVN3H5A0T/yFLNxdt5o8HybIx0FG+1SvK/WBywc/CkyFG
+         omRhA+S//XUu3ZbvyWuXeTGoSSRQXaKuLhpDifRFWzMgXCF69Jk2kB9aTJuJ8yFqNPNO
+         79zF2FHCRSApJEUdIBlaEMIAmuBXLDpzVP+rxhBMNHrF4LqYM4j9WJSsB20Pd/TjiZik
+         TZr6ZFMqU7IRknlv2KyxUnmli+RybZJrmfr+nfHRno8VjCEEAP3VSMiEaPZt7kU2WZ5M
+         tijA==
+X-Gm-Message-State: AGi0PuYRq+gLBEc4nUZ4FJ/OUCKAqWFHIcnmm/jVsWpyHkOlwqjeUws2
+        dmOk6aK0ixtnGNn3+rpZIkCR6+937MX2M01v8m905B2MbGV1
+X-Google-Smtp-Source: APiQypKMnYxPxaGGAl2cOD7eeEOXoMXsFbWYPyW/ZxxwTU6g7/qemE6/IycCIRdOSdAIACf+ehAkYyrhfCZKrCrjeNAeOKwjcr2S
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l06SQqiZYCi8rTKz"
-Content-Disposition: inline
-In-Reply-To: <20200416001414.25746-2-TheSven73@gmail.com>
-X-Cookie: Tempt me with a spoon!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a92:750f:: with SMTP id q15mr10663775ilc.146.1587040993304;
+ Thu, 16 Apr 2020 05:43:13 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 05:43:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a6661c05a367c669@google.com>
+Subject: WARNING in fib6_add (4)
+From:   syzbot <syzbot+5f122ebd258b7e43e492@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---l06SQqiZYCi8rTKz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+syzbot found the following crash on:
 
-On Wed, Apr 15, 2020 at 08:14:14PM -0400, Sven Van Asbroeck wrote:
+HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to __get_user_x..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=143443b3e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f122ebd258b7e43e492
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-> +++ b/sound/soc/codecs/zl38060.c
-> @@ -0,0 +1,643 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Codec driver for Microsemi ZL38060 Connected Home Audio Processor.
-> + *
+Unfortunately, I don't have any reproducer for this crash yet.
 
-Please make the entire comment a C++ one so things look more
-intentional.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+5f122ebd258b7e43e492@syzkaller.appspotmail.com
 
-> +			err = zl38_fw_send_data(regmap, addr, rec->data, len);
-> +		} else if (len == 4) {
-> +			/* execution address ihex record */
-> +			err = zl38_fw_send_xaddr(regmap, rec->data);
-> +		} else
-> +			err = -EINVAL;
-> +		if (err)
+IPv6: NLM_F_REPLACE set, but no existing node found!
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 31420 at net/ipv6/ip6_fib.c:1501 fib6_add+0x3405/0x3df0 net/ipv6/ip6_fib.c:1501
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 31420 Comm: syz-executor.4 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ fixup_bug arch/x86/kernel/traps.c:170 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:fib6_add+0x3405/0x3df0 net/ipv6/ip6_fib.c:1501
+Code: df 48 8d bb d0 09 00 00 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 7b 08 00 00 48 8b 9b d0 09 00 00 e9 45 f6 ff ff e8 6b 67 b2 fa <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 8b 54 24 20 48 c1 ea 03 80
+RSP: 0018:ffffc90015df7488 EFLAGS: 00010202
+RAX: 0000000000040000 RBX: 0000000000000000 RCX: ffffc90011987000
+RDX: 00000000000069f0 RSI: ffffffff86c081f5 RDI: ffff88809a03e3a0
+RBP: ffff8880952fb3a0 R08: ffff8880643820c0 R09: ffffed1013edef06
+R10: ffffed1013edef05 R11: ffff88809f6f782f R12: 00000000fffffffe
+R13: 0000000000000000 R14: ffff8880952fb380 R15: 0000000000000000
+ __ip6_ins_rt+0x4f/0x70 net/ipv6/route.c:1313
+ ip6_route_add+0x58/0x120 net/ipv6/route.c:3705
+ inet6_rtm_newroute+0x152/0x160 net/ipv6/route.c:5330
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5454
+ netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
+ ___sys_sendmsg+0x100/0x170 net/socket.c:2416
+ __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45c889
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f1f04409c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f1f0440a6d4 RCX: 000000000045c889
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00000000000009f5 R14: 00000000004ccb09 R15: 000000000076bf0c
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-If any part of an if/else has { } then all of them should.
 
-> +skip_setup:
-> +	if (priv->amp_en_gpio && tx) {
-> +		/* enable the external amplifier before playback starts */
-> +		gpiod_set_value_cansleep(priv->amp_en_gpio, 1);
-> +		if (priv->amp_startup_delay_ms)
-> +			msleep(priv->amp_startup_delay_ms);
-> +	}
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-This external amplifier support shouldn't be here, if there's other
-devices in the system then they will have their own drivers and the
-machine driver will take care of linking things together.
-
-> +	/* take chip out of reset, if a reset gpio is provided */
-> +	reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
-> +	if (IS_ERR(reset_gpio))
-> +		return PTR_ERR(reset_gpio);
-> +	if (reset_gpio) {
-> +		/* according to the datasheet, chip needs 3ms for its digital
-> +		 * section to become stable.
-> +		 */
-> +		usleep_range(3000, 10000);
-> +	}
-
-It would be better to explicitly put the chip into reset and then bring
-it out of reset if there's a GPIO, that way the chip is in a known
-state.
-
-> +	priv->regmap = devm_regmap_init(dev, &zl38_regmap_bus, spi,
-> +					&zl38_regmap_conf);
-> +	if (IS_ERR(priv->regmap))
-> +		return PTR_ERR(priv->regmap);
-
-devm_regmap_init_spi()
-
-> +	if (device_property_present(dev, "mscc,load-firmware")) {
-> +		err = zl38_load_firmware(dev, priv->regmap);
-> +		if (err)
-> +			return err;
-> +	}
-
-I'm assuming this is for the case where the device has a flash attached
-to the master SPI port I can see described on the web site and can boot
-off it - if that's the case I think it'd be clearer for the DT to
-explicitly say that rather than this indirected property.
-
---l06SQqiZYCi8rTKz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6YUr8ACgkQJNaLcl1U
-h9ABcgf/Tj/IGLfLFKTvEn5EJsyFi3tGt5Xy/ZQ29ZIbyGZC+8Gj/85vqttsDvSg
-zP2RRJg+LiI2SiuvcT0tXKqZiDJxYTdFWHtfNtQa27h5WWeQUsaaRXBAvhqsO7ST
-dkwkYy4HrPqUgCS3C1rZTeWIQpW/T4YvOoWxFdfnlvx71gWeTH+i3KFo6hL3XaxK
-meKVm+++KWEaj1Xs+XXyN4mSM3qFOkX0zEvuoGa70UntYXKLMiXKL4F2mXJ0alg9
-odPSEnzCtSfguo1tQuoh2h1/zN4kHJ93hJ3i2VciLegnOEom4FOBG+TuNnY6fLfp
-Kw/npw1Cv0onjL4GrMLF6DBBC4PtCw==
-=0cFL
------END PGP SIGNATURE-----
-
---l06SQqiZYCi8rTKz--
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
