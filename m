@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DDC1ACABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4281AC5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395401AbgDPPi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:38:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
+        id S2409852AbgDPOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:24:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897716AbgDPNih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:37 -0400
+        id S2409284AbgDPN5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:57:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B53FB21BE5;
-        Thu, 16 Apr 2020 13:38:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0059220732;
+        Thu, 16 Apr 2020 13:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044316;
-        bh=KaZ+jyFK5/97KBfEQ6ZwXYCk6VooRCDsmOvyMF+v610=;
+        s=default; t=1587045432;
+        bh=E4Xt0jaCiE8HVhys4kN8r55umD1bQArBZZistsB45IE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x5gtZavkhkfpu0V2adRJ/BpkD/hlN8Tq53hRwK6WZRSCuBtwNmRoxwcE+RhaTs7kA
-         tBLl2XIbxuS/wN+N6uVIBCrjuEIzrNND/AM6/EpTSHo8VswtYJmN3Zl2eEwZfwuwTz
-         D/iltUiDzMGb5XHD0slxgQM/qQGEcYuIkcWm7cDI=
+        b=i/qXCM8iBVZj37JPaO6Sv1/7Eliufj9x7jUkeobdh4XedriZAoNDOxKHKXjihZdka
+         HFbAuRsekGkC2y4U0z6j/HD66HKNJ7I1sReOsCZ/elVg7ObDm9cPr2iwx8kEL1QfFv
+         vmHZKqDeYR6jl+lqrsAKr2Q9pfwLnNdF0BaljmdM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Nikita Shubin <NShubin@topcon.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.5 169/257] remoteproc: Fix NULL pointer dereference in rproc_virtio_notify
+        stable@vger.kernel.org, Liran Alon <liran.alon@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.6 131/254] KVM: nVMX: Properly handle userspace interrupt window request
 Date:   Thu, 16 Apr 2020 15:23:40 +0200
-Message-Id: <20200416131347.594328279@linuxfoundation.org>
+Message-Id: <20200416131342.869006935@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,122 +44,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikita Shubin <NShubin@topcon.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 791c13b709dd51eb37330f2a5837434e90c87c27 upstream.
+commit a1c77abb8d93381e25a8d2df3a917388244ba776 upstream.
 
-Undefined rproc_ops .kick method in remoteproc driver will result in
-"Unable to handle kernel NULL pointer dereference" in rproc_virtio_notify,
-after firmware loading if:
+Return true for vmx_interrupt_allowed() if the vCPU is in L2 and L1 has
+external interrupt exiting enabled.  IRQs are never blocked in hardware
+if the CPU is in the guest (L2 from L1's perspective) when IRQs trigger
+VM-Exit.
 
- 1) .kick method wasn't defined in driver
- 2) resource_table exists in firmware and has "Virtio device entry" defined
+The new check percolates up to kvm_vcpu_ready_for_interrupt_injection()
+and thus vcpu_run(), and so KVM will exit to userspace if userspace has
+requested an interrupt window (to inject an IRQ into L1).
 
-Let's refuse to register an rproc-induced virtio device if no kick method was
-defined for rproc.
+Remove the @external_intr param from vmx_check_nested_events(), which is
+actually an indicator that userspace wants an interrupt window, e.g.
+it's named @req_int_win further up the stack.  Injecting a VM-Exit into
+L1 to try and bounce out to L0 userspace is all kinds of broken and is
+no longer necessary.
 
-[   13.180049][  T415] 8<--- cut here ---
-[   13.190558][  T415] Unable to handle kernel NULL pointer dereference at virtual address 00000000
-[   13.212544][  T415] pgd = (ptrval)
-[   13.217052][  T415] [00000000] *pgd=00000000
-[   13.224692][  T415] Internal error: Oops: 80000005 [#1] PREEMPT SMP ARM
-[   13.231318][  T415] Modules linked in: rpmsg_char imx_rproc virtio_rpmsg_bus rpmsg_core [last unloaded: imx_rproc]
-[   13.241687][  T415] CPU: 0 PID: 415 Comm: unload-load.sh Not tainted 5.5.2-00002-g707df13bbbdd #6
-[   13.250561][  T415] Hardware name: Freescale i.MX7 Dual (Device Tree)
-[   13.257009][  T415] PC is at 0x0
-[   13.260249][  T415] LR is at rproc_virtio_notify+0x2c/0x54
-[   13.265738][  T415] pc : [<00000000>]    lr : [<8050f6b0>]    psr: 60010113
-[   13.272702][  T415] sp : b8d47c48  ip : 00000001  fp : bc04de00
-[   13.278625][  T415] r10: bc04c000  r9 : 00000cc0  r8 : b8d46000
-[   13.284548][  T415] r7 : 00000000  r6 : b898f200  r5 : 00000000  r4 : b8a29800
-[   13.291773][  T415] r3 : 00000000  r2 : 990a3ad4  r1 : 00000000  r0 : b8a29800
-[   13.299000][  T415] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[   13.306833][  T415] Control: 10c5387d  Table: b8b4806a  DAC: 00000051
-[   13.313278][  T415] Process unload-load.sh (pid: 415, stack limit = 0x(ptrval))
-[   13.320591][  T415] Stack: (0xb8d47c48 to 0xb8d48000)
-[   13.325651][  T415] 7c40:                   b895b680 00000001 b898f200 803c6430 b895bc80 7f00ae18
-[   13.334531][  T415] 7c60: 00000035 00000000 00000000 b9393200 80b3ed80 00004000 b9393268 bbf5a9a2
-[   13.343410][  T415] 7c80: 00000e00 00000200 00000000 7f00aff0 7f00a014 b895b680 b895b800 990a3ad4
-[   13.352290][  T415] 7ca0: 00000001 b898f210 b898f200 00000000 00000000 7f00e000 00000001 00000000
-[   13.361170][  T415] 7cc0: 00000000 803c62e0 80b2169c 802a0924 b898f210 00000000 00000000 b898f210
-[   13.370049][  T415] 7ce0: 80b9ba44 00000000 80b9ba48 00000000 7f00e000 00000008 80b2169c 80400114
-[   13.378929][  T415] 7d00: 80b2169c 8061fd64 b898f210 7f00e000 80400744 b8d46000 80b21634 80b21634
-[   13.387809][  T415] 7d20: 80b2169c 80400614 80b21634 80400718 7f00e000 00000000 b8d47d7c 80400744
-[   13.396689][  T415] 7d40: b8d46000 80b21634 80b21634 803fe338 b898f254 b80fe76c b8d32e38 990a3ad4
-[   13.405569][  T415] 7d60: fffffff3 b898f210 b8d46000 00000001 b898f254 803ffe7c 80857a90 b898f210
-[   13.414449][  T415] 7d80: 00000001 990a3ad4 b8d46000 b898f210 b898f210 80b17aec b8a29c20 803ff0a4
-[   13.423328][  T415] 7da0: b898f210 00000000 b8d46000 803fb8e0 b898f200 00000000 80b17aec b898f210
-[   13.432209][  T415] 7dc0: b8a29c20 990a3ad4 b895b900 b898f200 8050fb7c 80b17aec b898f210 b8a29c20
-[   13.441088][  T415] 7de0: b8a29800 b895b900 b8a29a04 803c5ec0 b8a29c00 b898f200 b8a29a20 00000007
-[   13.449968][  T415] 7e00: b8a29c20 8050fd78 b8a29800 00000000 b8a29a20 b8a29c04 b8a29820 b8a299d0
-[   13.458848][  T415] 7e20: b895b900 8050e5a4 b8a29800 b8a299d8 b8d46000 b8a299e0 b8a29820 b8a299d0
-[   13.467728][  T415] 7e40: b895b900 8050e008 000041ed 00000000 b8b8c440 b8a299d8 b8a299e0 b8a299d8
-[   13.476608][  T415] 7e60: b8b8c440 990a3ad4 00000000 b8a29820 b8b8c400 00000006 b8a29800 b895b880
-[   13.485487][  T415] 7e80: b8d47f78 00000000 00000000 8050f4b4 00000006 b895b890 b8b8c400 008fbea0
-[   13.494367][  T415] 7ea0: b895b880 8029f530 00000000 00000000 b8d46000 00000006 b8d46000 008fbea0
-[   13.503246][  T415] 7ec0: 8029f434 00000000 b8d46000 00000000 00000000 8021e2e4 0000000a 8061fd0c
-[   13.512125][  T415] 7ee0: 0000000a b8af0c00 0000000a b8af0c40 00000001 b8af0c40 00000000 8061f910
-[   13.521005][  T415] 7f00: 0000000a 80240af4 00000002 b8d46000 00000000 8061fd0c 00000002 80232d7c
-[   13.529884][  T415] 7f20: 00000000 b8d46000 00000000 990a3ad4 00000000 00000006 b8a62d80 008fbea0
-[   13.538764][  T415] 7f40: b8d47f78 00000000 b8d46000 00000000 00000000 802210c0 b88f2900 00000000
-[   13.547644][  T415] 7f60: b8a62d80 b8a62d80 b8d46000 00000006 008fbea0 80221320 00000000 00000000
-[   13.556524][  T415] 7f80: b8af0c00 990a3ad4 0000006c 008fbea0 76f1cda0 00000004 80101204 00000004
-[   13.565403][  T415] 7fa0: 00000000 80101000 0000006c 008fbea0 00000001 008fbea0 00000006 00000000
-[   13.574283][  T415] 7fc0: 0000006c 008fbea0 76f1cda0 00000004 00000006 00000006 00000000 00000000
-[   13.583162][  T415] 7fe0: 00000004 7ebaf7d0 76eb4c0b 76e3f206 600d0030 00000001 00000000 00000000
-[   13.592056][  T415] [<8050f6b0>] (rproc_virtio_notify) from [<803c6430>] (virtqueue_notify+0x1c/0x34)
-[   13.601298][  T415] [<803c6430>] (virtqueue_notify) from [<7f00ae18>] (rpmsg_probe+0x280/0x380 [virtio_rpmsg_bus])
-[   13.611663][  T415] [<7f00ae18>] (rpmsg_probe [virtio_rpmsg_bus]) from [<803c62e0>] (virtio_dev_probe+0x1f8/0x2c4)
-[   13.622022][  T415] [<803c62e0>] (virtio_dev_probe) from [<80400114>] (really_probe+0x200/0x450)
-[   13.630817][  T415] [<80400114>] (really_probe) from [<80400614>] (driver_probe_device+0x16c/0x1ac)
-[   13.639873][  T415] [<80400614>] (driver_probe_device) from [<803fe338>] (bus_for_each_drv+0x84/0xc8)
-[   13.649102][  T415] [<803fe338>] (bus_for_each_drv) from [<803ffe7c>] (__device_attach+0xd4/0x164)
-[   13.658069][  T415] [<803ffe7c>] (__device_attach) from [<803ff0a4>] (bus_probe_device+0x84/0x8c)
-[   13.666950][  T415] [<803ff0a4>] (bus_probe_device) from [<803fb8e0>] (device_add+0x444/0x768)
-[   13.675572][  T415] [<803fb8e0>] (device_add) from [<803c5ec0>] (register_virtio_device+0xa4/0xfc)
-[   13.684541][  T415] [<803c5ec0>] (register_virtio_device) from [<8050fd78>] (rproc_add_virtio_dev+0xcc/0x1b8)
-[   13.694466][  T415] [<8050fd78>] (rproc_add_virtio_dev) from [<8050e5a4>] (rproc_start+0x148/0x200)
-[   13.703521][  T415] [<8050e5a4>] (rproc_start) from [<8050e008>] (rproc_boot+0x384/0x5c0)
-[   13.711708][  T415] [<8050e008>] (rproc_boot) from [<8050f4b4>] (state_store+0x3c/0xc8)
-[   13.719723][  T415] [<8050f4b4>] (state_store) from [<8029f530>] (kernfs_fop_write+0xfc/0x214)
-[   13.728348][  T415] [<8029f530>] (kernfs_fop_write) from [<8021e2e4>] (__vfs_write+0x30/0x1cc)
-[   13.736971][  T415] [<8021e2e4>] (__vfs_write) from [<802210c0>] (vfs_write+0xac/0x17c)
-[   13.744985][  T415] [<802210c0>] (vfs_write) from [<80221320>] (ksys_write+0x64/0xe4)
-[   13.752825][  T415] [<80221320>] (ksys_write) from [<80101000>] (ret_fast_syscall+0x0/0x54)
-[   13.761178][  T415] Exception stack(0xb8d47fa8 to 0xb8d47ff0)
-[   13.766932][  T415] 7fa0:                   0000006c 008fbea0 00000001 008fbea0 00000006 00000000
-[   13.775811][  T415] 7fc0: 0000006c 008fbea0 76f1cda0 00000004 00000006 00000006 00000000 00000000
-[   13.784687][  T415] 7fe0: 00000004 7ebaf7d0 76eb4c0b 76e3f206
-[   13.790442][  T415] Code: bad PC value
-[   13.839214][  T415] ---[ end trace 1fe21ecfc9f28852 ]---
+Remove the hack in nested_vmx_vmexit() that attempted to workaround the
+breakage in vmx_check_nested_events() by only filling interrupt info if
+there's an actual interrupt pending.  The hack actually made things
+worse because it caused KVM to _never_ fill interrupt info when the
+LAPIC resides in userspace (kvm_cpu_has_interrupt() queries
+interrupt.injected, which is always cleared by prepare_vmcs12() before
+reaching the hack in nested_vmx_vmexit()).
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Nikita Shubin <NShubin@topcon.com>
-Fixes: 7a186941626d ("remoteproc: remove the single rpmsg vdev limitation")
+Fixes: 6550c4df7e50 ("KVM: nVMX: Fix interrupt window request with "Acknowledge interrupt on exit"")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200306072452.24743-1-NShubin@topcon.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Liran Alon <liran.alon@oracle.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/remoteproc_virtio.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/include/asm/kvm_host.h |    2 +-
+ arch/x86/kvm/vmx/nested.c       |   18 ++++--------------
+ arch/x86/kvm/vmx/vmx.c          |    9 +++++++--
+ arch/x86/kvm/x86.c              |   10 +++++-----
+ 4 files changed, 17 insertions(+), 22 deletions(-)
 
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -334,6 +334,13 @@ int rproc_add_virtio_dev(struct rproc_vd
- 	struct rproc_mem_entry *mem;
- 	int ret;
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1180,7 +1180,7 @@ struct kvm_x86_ops {
+ 	bool (*pt_supported)(void);
+ 	bool (*pku_supported)(void);
  
-+	if (rproc->ops->kick == NULL) {
-+		ret = -EINVAL;
-+		dev_err(dev, ".kick method not defined for %s",
-+				rproc->name);
-+		goto out;
-+	}
+-	int (*check_nested_events)(struct kvm_vcpu *vcpu, bool external_intr);
++	int (*check_nested_events)(struct kvm_vcpu *vcpu);
+ 	void (*request_immediate_exit)(struct kvm_vcpu *vcpu);
+ 
+ 	void (*sched_in)(struct kvm_vcpu *kvm, int cpu);
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -3604,7 +3604,7 @@ static void nested_vmx_update_pending_db
+ 			    vcpu->arch.exception.payload);
+ }
+ 
+-static int vmx_check_nested_events(struct kvm_vcpu *vcpu, bool external_intr)
++static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	unsigned long exit_qual;
+@@ -3680,8 +3680,7 @@ static int vmx_check_nested_events(struc
+ 		return 0;
+ 	}
+ 
+-	if ((kvm_cpu_has_interrupt(vcpu) || external_intr) &&
+-	    nested_exit_on_intr(vcpu)) {
++	if (kvm_cpu_has_interrupt(vcpu) && nested_exit_on_intr(vcpu)) {
+ 		if (block_nested_events)
+ 			return -EBUSY;
+ 		nested_vmx_vmexit(vcpu, EXIT_REASON_EXTERNAL_INTERRUPT, 0, 0);
+@@ -4329,17 +4328,8 @@ void nested_vmx_vmexit(struct kvm_vcpu *
+ 	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 
+ 	if (likely(!vmx->fail)) {
+-		/*
+-		 * TODO: SDM says that with acknowledge interrupt on
+-		 * exit, bit 31 of the VM-exit interrupt information
+-		 * (valid interrupt) is always set to 1 on
+-		 * EXIT_REASON_EXTERNAL_INTERRUPT, so we shouldn't
+-		 * need kvm_cpu_has_interrupt().  See the commit
+-		 * message for details.
+-		 */
+-		if (nested_exit_intr_ack_set(vcpu) &&
+-		    exit_reason == EXIT_REASON_EXTERNAL_INTERRUPT &&
+-		    kvm_cpu_has_interrupt(vcpu)) {
++		if (exit_reason == EXIT_REASON_EXTERNAL_INTERRUPT &&
++		    nested_exit_intr_ack_set(vcpu)) {
+ 			int irq = kvm_cpu_get_interrupt(vcpu);
+ 			WARN_ON(irq < 0);
+ 			vmcs12->vm_exit_intr_info = irq |
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4507,8 +4507,13 @@ static int vmx_nmi_allowed(struct kvm_vc
+ 
+ static int vmx_interrupt_allowed(struct kvm_vcpu *vcpu)
+ {
+-	return (!to_vmx(vcpu)->nested.nested_run_pending &&
+-		vmcs_readl(GUEST_RFLAGS) & X86_EFLAGS_IF) &&
++	if (to_vmx(vcpu)->nested.nested_run_pending)
++		return false;
 +
- 	/* Try to find dedicated vdev buffer carveout */
- 	mem = rproc_find_carveout_by_name(rproc, "vdev%dbuffer", rvdev->index);
- 	if (mem) {
++	if (is_guest_mode(vcpu) && nested_exit_on_intr(vcpu))
++		return true;
++
++	return (vmcs_readl(GUEST_RFLAGS) & X86_EFLAGS_IF) &&
+ 		!(vmcs_read32(GUEST_INTERRUPTIBILITY_INFO) &
+ 			(GUEST_INTR_STATE_STI | GUEST_INTR_STATE_MOV_SS));
+ }
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7635,7 +7635,7 @@ static void update_cr8_intercept(struct
+ 	kvm_x86_ops->update_cr8_intercept(vcpu, tpr, max_irr);
+ }
+ 
+-static int inject_pending_event(struct kvm_vcpu *vcpu, bool req_int_win)
++static int inject_pending_event(struct kvm_vcpu *vcpu)
+ {
+ 	int r;
+ 
+@@ -7671,7 +7671,7 @@ static int inject_pending_event(struct k
+ 	 * from L2 to L1.
+ 	 */
+ 	if (is_guest_mode(vcpu) && kvm_x86_ops->check_nested_events) {
+-		r = kvm_x86_ops->check_nested_events(vcpu, req_int_win);
++		r = kvm_x86_ops->check_nested_events(vcpu);
+ 		if (r != 0)
+ 			return r;
+ 	}
+@@ -7733,7 +7733,7 @@ static int inject_pending_event(struct k
+ 		 * KVM_REQ_EVENT only on certain events and not unconditionally?
+ 		 */
+ 		if (is_guest_mode(vcpu) && kvm_x86_ops->check_nested_events) {
+-			r = kvm_x86_ops->check_nested_events(vcpu, req_int_win);
++			r = kvm_x86_ops->check_nested_events(vcpu);
+ 			if (r != 0)
+ 				return r;
+ 		}
+@@ -8266,7 +8266,7 @@ static int vcpu_enter_guest(struct kvm_v
+ 			goto out;
+ 		}
+ 
+-		if (inject_pending_event(vcpu, req_int_win) != 0)
++		if (inject_pending_event(vcpu) != 0)
+ 			req_immediate_exit = true;
+ 		else {
+ 			/* Enable SMI/NMI/IRQ window open exits if needed.
+@@ -8496,7 +8496,7 @@ static inline int vcpu_block(struct kvm
+ static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
+ {
+ 	if (is_guest_mode(vcpu) && kvm_x86_ops->check_nested_events)
+-		kvm_x86_ops->check_nested_events(vcpu, false);
++		kvm_x86_ops->check_nested_events(vcpu);
+ 
+ 	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
+ 		!vcpu->arch.apf.halted);
 
 
