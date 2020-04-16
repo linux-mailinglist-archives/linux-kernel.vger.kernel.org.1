@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54C11AB569
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605821AB56E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387484AbgDPBU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:20:58 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:37743 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729511AbgDPBUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:20:46 -0400
-Received: by mail-pl1-f196.google.com with SMTP id m16so737183pls.4;
-        Wed, 15 Apr 2020 18:20:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t/UVxcfsOZlATHrxT1BtEcSV7XCXKURmZ3LY2D7NJu8=;
-        b=GRK6vtwHQr7J5X5gTqGepEtXDoAkqfJ2WjCUR9SUFTH5op5ZTalSNcQ7tna/6/ZJQs
-         afGzNMNaL09l6yF0o+ltAy2ExfbmqrE/UbemKRDgzpbUBpT2ve+P3InAK4bvuTRuO00T
-         fN4gYNCxxrpvfrfJFb6g7u8ySOiYKGRKCzOkByz3pGFvkHoToadeuGhThyoiEVDELVJq
-         p3+vTb6OnwhjFHbWZU5Q9BeiuQvKg3bIasZfL5sOByY2YB3tluGAl+yQYVzZ7pXClMnk
-         gdPU1S60ao+2f8HHoX58QuE0LwreD/sPpzE03NBCylLm4dyZ+gj4uWGtSxiam4MUrXkj
-         1wbA==
-X-Gm-Message-State: AGi0Puaip4bddKRY3O/5wr2HMO6rWfxKhYP4+pyv8xzCcCxbsqHOWgLN
-        GsSf06JvUSHGe85MtKVy7DE=
-X-Google-Smtp-Source: APiQypKsoy5OswG4beg+t+DZPY2ToYWmF3rusQi++8/xjuNFf2sr4eDmbcDmFPW16CTt2byhESFlqA==
-X-Received: by 2002:a17:902:9b89:: with SMTP id y9mr6854674plp.75.1587000044633;
-        Wed, 15 Apr 2020 18:20:44 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id c3sm14942152pfa.160.2020.04.15.18.20.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 18:20:43 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id C7B7C40277; Thu, 16 Apr 2020 01:20:42 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 01:20:42 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Eric Sandeen <sandeen@sandeen.net>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/5] blktrace: fix debugfs use after free
-Message-ID: <20200416012042.GD11244@42.do-not-panic.com>
-References: <20200414041902.16769-1-mcgrof@kernel.org>
- <20200414041902.16769-3-mcgrof@kernel.org>
- <55401e02-f61c-25eb-271c-3ec7baf35e28@sandeen.net>
- <20200416005636.GA11244@42.do-not-panic.com>
- <924950e6-e016-25b2-4ee1-b5ea9f752c12@sandeen.net>
+        id S1731144AbgDPBXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728589AbgDPBWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 21:22:55 -0400
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BCFD208E4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587000174;
+        bh=WpBtJ2OE7796v0OAM/LxTWCtHsLnk0YxplA1elCpSFE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ua/y4Cs+y4osdY2SSKXr6B/IiqSFdks0EILn0wDqCk6wC3WIV7aST6PZtOuSbOEUs
+         aLaU/u5gveKMeAoPtXq2gcvEGYYAD+k8+sIA6nEUKIWC96W+aYD2NWupc4NTldpqix
+         EuS4yiPzZYzct+ARMNjEpEh6EzCJL4swgP331xaU=
+Received: by mail-wr1-f50.google.com with SMTP id h9so2910616wrc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:22:54 -0700 (PDT)
+X-Gm-Message-State: AGi0Pubv0ZB5z7EXqyOdTS5/p7iQ8POEqyKnCyxGSE1t5HVG2VE69FeE
+        Lcm4MVkMWV+dBxTIf5ZROKrlHam4/2fVgO32LD/b3A==
+X-Google-Smtp-Source: APiQypKH0Gc84O1GGPl9yxMxB+q91TwBbHMhmQdTlRv52VBqyPcr5bcH+2Dm+pUjhPtse9FHUyL45Vc1TEAic8X84I8=
+X-Received: by 2002:adf:e7ca:: with SMTP id e10mr9790817wrn.18.1587000172481;
+ Wed, 15 Apr 2020 18:22:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <924950e6-e016-25b2-4ee1-b5ea9f752c12@sandeen.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <a5b07aa9-96ea-a9b5-13db-e5dcbd7760e6@intel.com>
+ <BEA3CCB8-5127-4E6A-9696-E293C00BFA82@amacapital.net> <CABV8kRxqcCmPKtX3DDOf+47Re1hO1gMeUPhCd6HtDP0-SpcSBw@mail.gmail.com>
+ <CALCETrVmsWZ+w6C4RV50DWoL0Qaiy+S6BtXr=QKQEg3MYgAc6w@mail.gmail.com>
+ <CABV8kRxfMNxzy8r2P4GKj-22i+GMj=VDfPWAZB-VSgfrsQsjCA@mail.gmail.com>
+ <CALCETrWTDrcynTwpWZ6u6JXRL1rz6_vakLK7=BqMjCPCkQ+9dg@mail.gmail.com>
+ <CABV8kRzbGgF4Uc9+VyzBUiH-kGfMALd8tDtjE3hjyE2Z5VD3-g@mail.gmail.com> <CABV8kRz0nxSu=Nr-ViGamKd=vZ5-v6=+CFRC19hB+CdQ28C4yg@mail.gmail.com>
+In-Reply-To: <CABV8kRz0nxSu=Nr-ViGamKd=vZ5-v6=+CFRC19hB+CdQ28C4yg@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 15 Apr 2020 18:22:41 -0700
+X-Gmail-Original-Message-ID: <CALCETrWY3tk=NckFjjZ0dixr5WmNTRRw1Wiry0uAjBJw7jnZ3g@mail.gmail.com>
+Message-ID: <CALCETrWY3tk=NckFjjZ0dixr5WmNTRRw1Wiry0uAjBJw7jnZ3g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0 per-thread
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kyle Huey <khuey@kylehuey.com>,
+        "Robert O'Callahan" <robert@ocallahan.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 08:02:04PM -0500, Eric Sandeen wrote:
-> 
-> 
-> On 4/15/20 7:56 PM, Luis Chamberlain wrote:
-> > On Wed, Apr 15, 2020 at 12:38:26PM -0500, Eric Sandeen wrote:
-> >> On 4/13/20 11:18 PM, Luis Chamberlain wrote:
-> >>> On commit 6ac93117ab00 ("blktrace: use existing disk debugfs directory")
-> >>> merged on v4.12 Omar fixed the original blktrace code for request-based
-> >>> drivers (multiqueue). This however left in place a possible crash, if you
-> >>> happen to abuse blktrace in a way it was not intended.
-> >>>
-> >>> Namely, if you loop adding a device, setup the blktrace with BLKTRACESETUP,
-> >>> forget to BLKTRACETEARDOWN, and then just remove the device you end up
-> >>> with a panic:
-> >>
-> >> I think this patch makes this all cleaner anyway, but - without the apparent
-> >> loop bug mentioned by Bart which allows removal of the loop device while blktrace
-> >> is active (if I read that right), can this still happen?
-> > 
-> > I have not tested that, but some modifications of the break-blktrace
-> > program could enable us to test that
-> 
-> FWIW, I modified it to modprobe & rmmod scsi_debug instead of the loop ioctls,
-> and the module can't be unloaded after the blktrace is started since it's busy.
-> 
-> Not sure that's equivalent tho.
+On Wed, Apr 15, 2020 at 6:17 PM Keno Fischer <keno@juliacomputing.com> wrote:
+>
+> On Wed, Apr 15, 2020 at 9:14 PM Keno Fischer <keno@juliacomputing.com> wrote:
+> >
+> > > Would it make matters easier if tasks with nonstandard XCR0 were not
+> > > allowed to use ptrace() at all?  And if ARCH_SET_XCR0 were disallowed
+> > > if the caller is tracing anyone?
+> >
+> > That would be fine by me (as long as you're still allowed to ptrace them of
+> > course).
+>
+> Sorry, I realized after I had hit send that this wording may not be clear.
+> What I meant was that it would need to be able to have an external ptracer
+> (with unmodified XCR0) attach to the task, even if it had modified its XCR0.
+> I don't think you were suggesting that that wouldn't be possible,
+> but I just wanted to make sure.
 
-Given what Bart mentioned about sd_open, that might be the saving grace
-for blocking async behaviour on scsi. If it only refcounted the
-request_queue as the loop driver it would have been exposed to the
-same bug.
+Yes, exactly.  Just to make sure we're on the same page, I suggest:
 
-> > however I don't think the race
-> > would be possible after patch 3/5 "blktrace: refcount the request_queue
-> > during ioctl" is merged, as removal then a pending blktrace would
-> > refcount the request_queue and the removal would have to wait until
-> > the refcount is decremeneted, until after the blktrace ioctl.
-> 
-> I'm out of my depth in the block layer, not sure who's supposed to take
-> refs on what. ;)
+If a process modifies XCR0, then it cannot use ptrace().  Signal
+delivery and sigreturn use the modified XCR0.  If you modify your XCR0
+from within a signal handler, you get to keep both pieces.  If you
+ptrace() a process with a modified XCR0, you see the full regset.
+Among other things, this means that you could ptrace() a task with a
+reduced XCR0, poke a value in one of the disabled register sets with
+ptrace(), and read that same value back out again with ptrace().
 
-I'm new to all this code, only been a few weeks looking into it, but am
-trying to do my best ot make sense of it. So the above is what I can
-tell would be needed.
+Before you implement this, you might want to make sure that at least
+one other x86 maintainer agrees with me. :)
 
-  Luis
+I'm sure the CRIU people will notice this and want to find a way to
+make ptrace() work from a modified-XCR0 process.  They are welcome to
+propose semantics, since neither of the obvious ways to handle it
+actually seem correct.
+
+--Andy
