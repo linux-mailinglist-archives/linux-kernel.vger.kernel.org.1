@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6101ACE97
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BC01ACEA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390070AbgDPRW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 13:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S2391577AbgDPRXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 13:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388338AbgDPRW4 (ORCPT
+        by vger.kernel.org with ESMTP id S2388338AbgDPRXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 13:22:56 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B72C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 10:22:56 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3145897D;
-        Thu, 16 Apr 2020 19:22:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1587057775;
-        bh=bTfJZ+75ndQOARxqXeuOxJFXyYt8RzIOrx7gvZeGM5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UhIfmKrRUNzc0klYEFAND1I5BO8RI0zq5GjDoZW2tHzP9cxwLQYneLPVCYJ6bl+02
-         XVgqihJFaXzbRtD0iNQStH+CzDk+kbln0wVmmiI0D6U496AnHN2pJmiKOEEsagB50g
-         PBTy+E/IcEX3vmXwbUlbFLnp1q9O0VQPqx3NMc+I=
-Date:   Thu, 16 Apr 2020 20:22:43 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 2/7] drm/bridge_connector: Set default status
- connected for eDP connectors
-Message-ID: <20200416172243.GL4796@pendragon.ideasonboard.com>
-References: <20200416155720.2360443-1-enric.balletbo@collabora.com>
- <20200416155720.2360443-3-enric.balletbo@collabora.com>
+        Thu, 16 Apr 2020 13:23:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233EFC061A0C;
+        Thu, 16 Apr 2020 10:23:39 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f13so5732058wrm.13;
+        Thu, 16 Apr 2020 10:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z9XHKckPCLBcZSv3PK4hH27LcSZZ7AZ4+cDFop3NIPQ=;
+        b=H5GIAQ0ShVvZb4fhj6iIB/qGY+q4uMEhxdwpqxo2RaCk09uo88RWgc7BsALOUjTMJn
+         UHhhIXKm/FtjQ7UvVHE8rUq2UxdnF9xjdDoYkeETt4M3AnyI9FTDbKTpdAtPMavCjVAu
+         mmMFYGLVD28KNJETihHa9RJp1ZWrHlKhjJ6kqsqya6J69vTK2bb5leJwZ9/ZFeFMnm2w
+         DU/HQgUQkL4gHQJbuXVXIiQmskobgdkOuQn8t4Idb+CgVTUOk9XTwnBfAsWjH2SL2I/Q
+         rwWrumE37oriWHoUcImXD/3QMcXa6KapOYwmPMYzARG9qi8dnY43bi0dlrdZXv4pGReF
+         ONPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z9XHKckPCLBcZSv3PK4hH27LcSZZ7AZ4+cDFop3NIPQ=;
+        b=p6DEMabk6LI+CfAF2mMdZa1AQASQefBuT7F/UQnLFY+J7hIr3diM2SL4drIAoeJhP3
+         pt181Bjxbr/Cqu1LxhX/t7H3rE/lB81Dc2+22jVHceV/LRxluwgNI5ZHEXpLmHEo288Y
+         HwoQ+ZsYa4qGNY3ZlOscPEuCn5MUTh8ilOZMqN68DCGAja8EUzlrGobNAMpN6dfsEhFE
+         k7Ij7QG/Fyn9I4ErJQOsb1W3PHuK3xPouBcutMdm6AhrNtd8HrUOCTxR+P1pQiPChRDV
+         IiQKmR7Nx87DwPCIThWw6JZfoIb36gMsPorHldg4zA9bRsqY3k04Orovd2cnqeo3EO3+
+         aE0w==
+X-Gm-Message-State: AGi0PuYKN/ayTqYlxAdnidDqw1oNg0Iu0U89d1beq0+l/yRWEAbugjOc
+        ECSKHDoiI1612O3gih4JhLg=
+X-Google-Smtp-Source: APiQypKzyc24yuJDB7Jn2s/8pHU8T+iSuTsxPtDgiWHOEQc+B31IaI7PkAzu9cFFtSFWJO0CCqW+7g==
+X-Received: by 2002:a5d:4286:: with SMTP id k6mr23465999wrq.222.1587057817866;
+        Thu, 16 Apr 2020 10:23:37 -0700 (PDT)
+Received: from kwango.redhat.com (ip-94-112-129-237.net.upcbroadband.cz. [94.112.129.237])
+        by smtp.gmail.com with ESMTPSA id w12sm13763186wrk.56.2020.04.16.10.23.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 10:23:37 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fixes for 5.7-rc2
+Date:   Thu, 16 Apr 2020 19:23:21 +0200
+Message-Id: <20200416172321.20778-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200416155720.2360443-3-enric.balletbo@collabora.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric,
+Hi Linus,
 
-Thank you for the patch.
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-On Thu, Apr 16, 2020 at 05:57:14PM +0200, Enric Balletbo i Serra wrote:
-> In an eDP application, HPD is not required and on most bridge chips
-> useless. If HPD is not used, we need to set initial status as connected,
-> otherwise the connector created by the drm_bridge_connector API remains
-> in an unknown state.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+are available in the Git repository at:
 
-> ---
-> 
-> Changes in v2: None
-> 
->  drivers/gpu/drm/drm_bridge_connector.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
-> index c6994fe673f3..a58cbde59c34 100644
-> --- a/drivers/gpu/drm/drm_bridge_connector.c
-> +++ b/drivers/gpu/drm/drm_bridge_connector.c
-> @@ -187,6 +187,7 @@ drm_bridge_connector_detect(struct drm_connector *connector, bool force)
->  		case DRM_MODE_CONNECTOR_DPI:
->  		case DRM_MODE_CONNECTOR_LVDS:
->  		case DRM_MODE_CONNECTOR_DSI:
-> +		case DRM_MODE_CONNECTOR_eDP:
->  			status = connector_status_connected;
->  			break;
->  		default:
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.7-rc2
 
--- 
-Regards,
+for you to fetch changes up to 2a575f138d003fff0f4930b5cfae4a1c46343b8f:
 
-Laurent Pinchart
+  ceph: fix potential bad pointer deref in async dirops cb's (2020-04-13 19:33:47 +0200)
+
+----------------------------------------------------------------
+A set of patches for a deadlock on "rbd map" error path and a fix
+for invalid pointer dereference and uninitialized variable use on
+asynchronous create and unlink error paths.
+
+----------------------------------------------------------------
+Ilya Dryomov (4):
+      rbd: avoid a deadlock on header_rwsem when flushing notifies
+      rbd: call rbd_dev_unprobe() after unwatching and flushing notifies
+      rbd: don't test rbd_dev->opts in rbd_dev_image_release()
+      rbd: don't mess with a page vector in rbd_notify_op_lock()
+
+Jeff Layton (1):
+      ceph: fix potential bad pointer deref in async dirops cb's
+
+ drivers/block/rbd.c  | 33 +++++++++++++++++++--------------
+ fs/ceph/dir.c        |  4 ++--
+ fs/ceph/file.c       |  4 ++--
+ fs/ceph/mds_client.h |  2 +-
+ 4 files changed, 24 insertions(+), 19 deletions(-)
