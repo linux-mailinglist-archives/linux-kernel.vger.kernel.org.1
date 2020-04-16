@@ -2,147 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6781AC914
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5A51AC929
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504333AbgDPPS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:18:27 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:48115 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2504094AbgDPPSQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:18:16 -0400
-Received: (qmail 4506 invoked by uid 500); 16 Apr 2020 11:18:15 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 16 Apr 2020 11:18:15 -0400
-Date:   Thu, 16 Apr 2020 11:18:15 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        Linux-pm mailing list <linux-pm@vger.kernel.org>,
-        Kernel development list <linux-kernel@vger.kernel.org>
-Subject: Re: lockdep warning in urb.c:363 usb_submit_urb
-In-Reply-To: <1998412.Cp2JyuGtSI@kreacher>
-Message-ID: <Pine.LNX.4.44L0.2004161036410.14937-100000@netrider.rowland.org>
+        id S2442421AbgDPPTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:19:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53094 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389903AbgDPPTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:19:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 110BDAD1E;
+        Thu, 16 Apr 2020 15:19:07 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id EC4091E0E5A; Thu, 16 Apr 2020 17:19:06 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 17:19:06 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2 V3] MM: replace PF_LESS_THROTTLE with
+ PF_LOCAL_THROTTLE
+Message-ID: <20200416151906.GQ23739@quack2.suse.cz>
+References: <87tv2b7q72.fsf@notabene.neil.brown.name>
+ <87v9miydai.fsf@notabene.neil.brown.name>
+ <87ftdgw58w.fsf@notabene.neil.brown.name>
+ <87wo6gs26e.fsf@notabene.neil.brown.name>
+ <87tv1ks24t.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tv1ks24t.fsf@notabene.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for all your help straightening this out.  I think the end 
-result will be a distinct improvement over the old code.
-
-On Thu, 16 Apr 2020, Rafael J. Wysocki wrote:
-
-> This means that the dev_pm_skip_resume() logic really is relatively
-> straightforward:
->  - If the current transition is RESTORE, return "false".
->  - Otherwise, if the current transition is THAW, return the return value
->    of dev_pm_skip_suspend().
->  - Otherwise (so the current transition is RESUME which is the only remaining
->    case), return the logical negation of power.must_resume.
+On Thu 16-04-20 10:30:42, NeilBrown wrote:
 > 
-> > Also, it would mean 
-> > that a device whose subsystem doesn't know about power.may_skip_resume 
-> > would never be allowed to stay in runtime suspend.
+> PF_LESS_THROTTLE exists for loop-back nfsd (and a similar need in the
+> loop block driver and callers of prctl(PR_SET_IO_FLUSHER)), where a
+> daemon needs to write to one bdi (the final bdi) in order to free up
+> writes queued to another bdi (the client bdi).
 > 
-> Not really, because I want the core to set power.may_skip_resume for the
-> devices for which dev_pm_skip_suspend() returns "true" if the "suspend_late"
-> subsystem-level callback is not present.  [It might be more consistent
-> to simply set it for all devices for which dev_pm_skip_suspend() returns
-> "true" and let the subsystems update it should they want to?  IOW, the
-> default value of power.may_skip_resume could be the return value of
-> dev_pm_skip_suspend()?]
-
-How about this?  Let's set power.may_skip_resume to "true" for each
-device before issuing ->prepare.  The subsystem can set it to "false"
-if it wants to during any of the suspend-side callbacks.  Following the
-->suspend_noirq callback, the core will do the equivalent of:
-
-	dev->power.may_skip_resume &= dev_pm_skip_suspend(dev);
-
-before propagating the flag.  Any subsystem changes to support this
-should be minimal, since only ACPI and PCI currently use
-may_skip_resume.
-
-> > What about the runtime PM usage counter?
+> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dirty
+> pages, so that it can still dirty pages after other processses have been
+> throttled.
 > 
-> Yes, it applies to that too.
+> This approach was designed when all threads were blocked equally,
+> independently on which device they were writing to, or how fast it was.
+> Since that time the writeback algorithm has changed substantially with
+> different threads getting different allowances based on non-trivial
+> heuristics.  This means the simple "add 25%" heuristic is no longer
+> reliable.
 > 
-> Of course, if dev_pm_skip_suspend() returns "true", the usage counter cannot
-> be greater than 1 (for the given device as well as for any dependent devices).
-
-Well, in theory the subsystem could call pm_runtime_get_noresume().  I 
-can't imagine why it would want to, though.
-
-So here's what we've got:
-
-> > Transition   Conditions for dev_pm_skip_resume() to return "true"
-> > ----------   ----------------------------------------------------
-> > 
-> > RESTORE      Never
+> The important issue is not that the daemon needs a *larger* dirty page
+> allowance, but that it needs a *private* dirty page allowance, so that
+> dirty pages for the "client" bdi that it is helping to clear (the bdi for
+> an NFS filesystem or loop block device etc) do not affect the throttling
+> of the deamon writing to the "final" bdi.
 > 
-> Right.
-
->  THAW	         dev_pm_skip_suspend() returns "true".
-
->  RESUME        power.must_resume is clear (which requires
->                  MAY_SKIP_RESUME and power.may_skip_resume to be set and
->                  the runtime usage counter to be = 1, and which 
->                  propagates up from dependent devices)
+> This patch changes the heuristic so that the task is only throttled if
+> *both* the global threshhold *and* the per-wb threshold are exceeded.
+> This is similar to the effect of BDI_CAP_STRICTLIMIT which causes the
+> global limits to be ignored, but it isn't as strict.  A PF_LOCAL_THROTTLE
+> task will be allowed to proceed unthrottled if the global threshold is
+> not exceeded or if the local threshold is not exceeded.  They need to
+> both be exceeded before PF_LOCAL_THROTTLE tasks are throttled.
 > 
-> Nothing else is really strictly required IMO.
+> This approach of "only throttle when target bdi is busy" is consistent
+> with the other use of PF_LESS_THROTTLE in current_may_throttle(), were
+> it causes attention to be focussed only on the target bdi.
+> 
+> So this patch
+>  - renames PF_LESS_THROTTLE to PF_LOCAL_THROTTLE,
+>  - removes the 25% bonus that that flag gives, and
+>  - If PF_LOCAL_THROTTLE is set, don't delay at all unless both
+>    thresholds are exceeded.
+> 
+> Note that previously realtime threads were treated the same as
+> PF_LESS_THROTTLE threads.  This patch does *not* change the behvaiour for
+> real-time threads, so it is now different from the behaviour of nfsd and
+> loop tasks.  I don't know what is wanted for realtime.
+> 
+> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> Signed-off-by: NeilBrown <neilb@suse.de>
 
-This seems very clear and simple.  And I will repeat here some of the 
-things posted earlier, to make the description more complete:
+...
 
-	During the suspend side, for each of the
-	{suspend,freeze,poweroff}_{late,noirq} phases: If
-	dev_pm_skip_suspend() returns true then the subsystem should
-	not invoke the driver's callback, and if there is no subsystem
-	callback then the core will not invoke the driver's callback.
+> @@ -1700,6 +1699,17 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
+>  				sdtc = mdtc;
+>  		}
+>  
+> +		if (current->flags & PF_LOCAL_THROTTLE)
+> +			/* This task must only be throttled based on the bdi
+> +			 * it is writing to - dirty pages for other bdis might
+> +			 * be pages this task is trying to write out.  So it
+> +			 * gets a free pass unless both global and local
+> +			 * thresholds are exceeded.  i.e unless
+> +			 * "dirty_exceeded".
+> +			 */
+> +			if (!dirty_exceeded)
+> +				break;
+> +
+>  		if (dirty_exceeded && !wb->dirty_exceeded)
+>  			wb->dirty_exceeded = 1;
 
-	During the resume side, for each of the
-	{resume,thaw,restore}_{early,noirq} phases: If
-	dev_pm_skip_resume() returns true then the subsystem should
-	not invoke the driver's callback, and if there is no subsystem
-	callback then the core will not invoke the driver's callback.
+Ok, but note that this will have one sideeffect you maybe didn't realize:
+Currently we try to throttle tasks softly - the heuristic rougly works like
+this: If dirty < (thresh + bg_thresh)/2, leave the task alone.
+(thresh+bg_thresh)/2 is called "freerun ceiling". If dirty is greater than
+this, we delay the task somewhat (the aim is to delay the task as long as
+it would take to write back the pages task has dirtied) in
+balance_dirty_pages() so ideally 'thresh' is never hit. Only if the
+heuristic consistently underestimates the time to writeback pages, we hit
+'thresh' and then block the task as long as it takes flush worker to clean
+enough pages to get below 'thresh'. This all leads to task being usually
+gradually slowed down in balance_dirty_pages() which generally leads to
+smoother overall system behavior.
 
-	dev_pm_skip_suspend() will return "true" if SMART_SUSPEND is
-	set and the device's runtime status is "suspended".
+What you did makes PF_LOCAL_THROTTLE tasks ignore any limits and then when
+local bdi limit is exceeded, they'll suddently hit the wall and be blocked
+for a long time in balance_dirty_pages().
 
-	For dev_pm_skip_resume() and power.must_resume, see above.
+So I like what you suggest in principle, just I think the implementation
+has undesirable sideeffects. I think it would be better to modify
+wb_position_ratio() to take PF_LOCAL_THROTTLE into account. It will be
+probably similar to how BDI_CAP_STRICTLIMIT is handled but different in
+some ways because BDI_CAP_STRICTLIMIT takes minimum from wb_pos_ratio and
+global pos_ratio, you rather want to take wb_pos_ratio only. Also there are
+some early bail out conditions when we are over global dirty limit which
+you need to handle differently for PF_LOCAL_THROTTLE. And then, when you
+have appropriate pos_ratio computed based on your policy, you can let the
+task wait for appropriate amount of time and things should just work (TM) ;).
+Thinking about it, you probably also want to add 'freerun' condition for
+PF_LOCAL_THROTTLE tasks like:
 
-	At the start of the {resume,thaw,restore}_noirq phase, if
-	dev_pm_skip_resume() returns true then the core will set the
-	runtime status to "suspended".  Otherwise it will set the
-	runtime status to "active".  If this is not what the subsystem
-	or driver wants, it must update the runtime status itself.
+	if ((current->flags & PF_LOCAL_THROTTLE) &&
+	    wb_dirty <= dirty_freerun_ceiling(wb_thresh, wb_bg_thresh))
+		go the freerun path...
 
-For this to work properly, we will have to rely on subsystems/drivers
-to call pm_runtime_resume() during the suspend/freeze transition if
-SMART_SUSPEND is clear.  Otherwise we could have the following
-scenario:
-
-Device A has a child B, and both are runtime suspended when hibernation
-starts.  Suppose that the SMART_SUSPEND flag is set for A but not for
-B, and suppose that B's subsystem/driver neglects to call
-pm_runtime_resume() during the FREEZE transition.  Then during the THAW
-transition, dev_pm_skip_resume() will return "true" for A and "false"  
-for B.  This will lead to an error when the core tries to set B's
-runtime status to "active" while A's status is "suspended".
-
-One way to avoid this is to have the core make the pm_runtime_resume()  
-call, but you have said that you don't like that approach.  Any 
-suggestions?
-
-Should the core take some special action following ->freeze_noirq if
-the runtime status is "suspended" and SMART_SUSPEND is clear?
-
-Alan Stern
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
