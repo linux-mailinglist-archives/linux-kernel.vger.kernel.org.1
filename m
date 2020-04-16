@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4921AC92B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7011AC5AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442425AbgDPPTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:19:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
+        id S2405510AbgDPOYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:24:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898716AbgDPNrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:53 -0400
+        id S2506646AbgDPN5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:57:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA02121734;
-        Thu, 16 Apr 2020 13:47:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6616F2078B;
+        Thu, 16 Apr 2020 13:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044872;
-        bh=wgY92Up2hqj3U3bxEm7of4dFDNE/XdwTMo46DQJ7BiA=;
+        s=default; t=1587045451;
+        bh=8g4rtJKK7f7hAR4yH8/t0x0WZTPgRBWJXq9lOexgqK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SNJ1aOqdsVNmJ8ezySs7RTfuPLjHZ5BBj/ZHoFpMgLrqxRVu214Y4wFRQRKdFP6Lo
-         1Bb2TFMG1wALK/P1/aH5voevginFS1hINSar0M5CuLjSpCKr/L/Vvq4TLuesHaI/BR
-         JD9KlyWkrhtJQpRZ6M0GpCX553fhVv1Z74AoF4uk=
+        b=keXCxssXaydKQbhpfSnJKg2roaGi5k6nzLgUIaNo2/+1mqvmKKnIVd6l/sxUiefa9
+         IvG+AdxUfIL5RIBe/8Ppw902m+7Ivo9MKmENuA+HAEWK+UsBn5yKF4mK+/z+eAxjns
+         yWFTzSPbCWNxyQQePCyzA+oiyk7/zCqSDckeNc9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.4 095/232] thermal: devfreq_cooling: inline all stubs for CONFIG_DEVFREQ_THERMAL=n
+        stable@vger.kernel.org, Yicong Yang <yangyicong@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.6 100/254] PCI/ASPM: Clear the correct bits when enabling L1 substates
 Date:   Thu, 16 Apr 2020 15:23:09 +0200
-Message-Id: <20200416131326.865094161@linuxfoundation.org>
+Message-Id: <20200416131338.529867016@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-commit 3f5b9959041e0db6dacbea80bb833bff5900999f upstream.
+commit 58a3862a10a317a81097ab0c78aecebabb1704f5 upstream.
 
-When CONFIG_DEVFREQ_THERMAL is disabled all functions except
-of_devfreq_cooling_register_power() were already inlined. Also inline
-the last function to avoid compile errors when multiple drivers call
-of_devfreq_cooling_register_power() when CONFIG_DEVFREQ_THERMAL is not
-set. Compilation failed with the following message:
-  multiple definition of `of_devfreq_cooling_register_power'
-(which then lists all usages of of_devfreq_cooling_register_power())
+In pcie_config_aspm_l1ss(), we cleared the wrong bits when enabling ASPM L1
+Substates.  Instead of the L1.x enable bits (PCI_L1SS_CTL1_L1SS_MASK, 0xf), we
+cleared the Link Activation Interrupt Enable bit (PCI_L1SS_CAP_L1_PM_SS,
+0x10).
 
-Thomas Zimmermann reported this problem [0] on a kernel config with
-CONFIG_DRM_LIMA={m,y}, CONFIG_DRM_PANFROST={m,y} and
-CONFIG_DEVFREQ_THERMAL=n after both, the lima and panfrost drivers
-gained devfreq cooling support.
+Clear the L1.x enable bits before writing the new L1.x configuration.
 
-[0] https://www.spinics.net/lists/dri-devel/msg252825.html
-
-Fixes: a76caf55e5b356 ("thermal: Add devfreq cooling")
-Cc: stable@vger.kernel.org
-Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200403205133.1101808-1-martin.blumenstingl@googlemail.com
+[bhelgaas: changelog]
+Fixes: aeda9adebab8 ("PCI/ASPM: Configure L1 substate settings")
+Link: https://lore.kernel.org/r/1584093227-1292-1-git-send-email-yangyicong@hisilicon.com
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+CC: stable@vger.kernel.org	# v4.11+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/devfreq_cooling.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/pcie/aspm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/linux/devfreq_cooling.h
-+++ b/include/linux/devfreq_cooling.h
-@@ -75,7 +75,7 @@ void devfreq_cooling_unregister(struct t
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -747,9 +747,9 @@ static void pcie_config_aspm_l1ss(struct
  
- #else /* !CONFIG_DEVFREQ_THERMAL */
+ 	/* Enable what we need to enable */
+ 	pci_clear_and_set_dword(parent, up_cap_ptr + PCI_L1SS_CTL1,
+-				PCI_L1SS_CAP_L1_PM_SS, val);
++				PCI_L1SS_CTL1_L1SS_MASK, val);
+ 	pci_clear_and_set_dword(child, dw_cap_ptr + PCI_L1SS_CTL1,
+-				PCI_L1SS_CAP_L1_PM_SS, val);
++				PCI_L1SS_CTL1_L1SS_MASK, val);
+ }
  
--struct thermal_cooling_device *
-+static inline struct thermal_cooling_device *
- of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
- 				  struct devfreq_cooling_power *dfc_power)
- {
+ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
 
 
