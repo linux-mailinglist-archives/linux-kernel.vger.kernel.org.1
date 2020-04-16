@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43B11AB59F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B251AB5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732857AbgDPBqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:46:34 -0400
-Received: from mga03.intel.com ([134.134.136.65]:13648 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730833AbgDPBq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:46:27 -0400
-IronPort-SDR: rh4PMB+u2via/grgLW28WwEHtfYCVKBYUM7Kp1DL5UcEruUjJ56tHqMHbKAumYSyL8EQqI09Kq
- AwXqLyNlX7QQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 18:46:24 -0700
-IronPort-SDR: 4ir7BZso7cfJHuzUa1A+4Z7QoZGNfojvIlXnYMd/siRdmlT3Tu+gzm64EBH0YxTbdZN7y6Gu8/
- nMmEFt/mjn5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="245845976"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.208.171]) ([10.254.208.171])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 18:46:22 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/7] iommu/vt-d: Save prq descriptors in an internal
- list
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
- <20200415052542.30421-6-baolu.lu@linux.intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8207B2@SHSMSX104.ccr.corp.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <399dd037-b32e-30a7-013c-b68e9a3bbc7a@linux.intel.com>
-Date:   Thu, 16 Apr 2020 09:46:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2388105AbgDPBsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:48:51 -0400
+Received: from smtprelay0171.hostedemail.com ([216.40.44.171]:47966 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387838AbgDPBsh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 21:48:37 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id A4AD86130;
+        Thu, 16 Apr 2020 01:48:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2731:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3872:3874:4321:4362:5007:6119:6742:7514:7901:7903:8957:9586:10004:10400:10471:10848:11232:11658:11914:12043:12297:12555:12740:12760:12895:13069:13138:13231:13255:13311:13357:13439:13548:14096:14097:14181:14659:14721:21080:21451:21611:21627:21809:30029:30030:30054:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: vein82_67ab8ba175634
+X-Filterd-Recvd-Size: 3060
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 16 Apr 2020 01:48:32 +0000 (UTC)
+Message-ID: <9cd5b3c0a9a0f55d799a3d3ebd68ba8ff5f907d8.camel@perches.com>
+Subject: Re: [PATCH lkmm tip/core/rcu 06/10] MAINTAINERS: Update maintainers
+ for new Documentaion/litmus-tests/
+From:   Joe Perches <joe@perches.com>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Date:   Wed, 15 Apr 2020 18:46:21 -0700
+In-Reply-To: <20200416001741.GJ17661@paulmck-ThinkPad-P72>
+References: <20200415183343.GA12265@paulmck-ThinkPad-P72>
+         <20200415184945.16487-6-paulmck@kernel.org>
+         <1288d0e231eb61566fefc8a9c0510fc123528da2.camel@perches.com>
+         <20200416001741.GJ17661@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D8207B2@SHSMSX104.ccr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/15 17:30, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Wednesday, April 15, 2020 1:26 PM
->>
->> Currently, the page request interrupt thread handles the page
->> requests in the queue in this way:
->>
->> - Clear PPR bit to ensure new interrupt could come in;
->> - Read and record the head and tail registers;
->> - Handle all descriptors between head and tail;
->> - Write tail to head register.
->>
->> This might cause some descriptors to be handles multiple times.
->> An example sequence:
->>
->> - Thread A got scheduled with PRQ_1 and PRQ_2 in the queue;
->> - Thread A clear the PPR bit and record the head and tail;
->> - A new PRQ_3 comes and Thread B gets scheduled;
->> - Thread B record the head and tail which includes PRQ_1
->>    and PRQ_2.
-> I may overlook something but isn't the prq interrupt thread
-> per iommu then why would two prq threads contend here?
+On Wed, 2020-04-15 at 17:17 -0700, Paul E. McKenney wrote:
+> On Wed, Apr 15, 2020 at 02:39:59PM -0700, Joe Perches wrote:
+> > On Wed, 2020-04-15 at 11:49 -0700, paulmck@kernel.org wrote:
+> > > Also add me as Reviewer for LKMM. Previously a patch to do this was
+> > > Acked but somewhere along the line got lost. Add myself in this patch.
+> > []
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > []
+> > > @@ -9806,6 +9806,7 @@ M:	Luc Maranget <luc.maranget@inria.fr>
+> > >  M:	"Paul E. McKenney" <paulmck@kernel.org>
+> > >  R:	Akira Yokosawa <akiyks@gmail.com>
+> > >  R:	Daniel Lustig <dlustig@nvidia.com>
+> > > +R:	Joel Fernandes <joel@joelfernandes.org>
+> > >  L:	linux-kernel@vger.kernel.org
+> > >  L:	linux-arch@vger.kernel.org
+> > >  S:	Supported
+> > > @@ -9816,6 +9817,7 @@ F:	Documentation/core-api/atomic_ops.rst
+> > >  F:	Documentation/core-api/refcount-vs-atomic.rst
+> > >  F:	Documentation/memory-barriers.txt
+> > >  F:	tools/memory-model/
+> > > +F:	Documentation/litmus-tests/
+> > 
+> > trivia:
+> > 
+> > Alphabetic ordering of F: entries please.
+> > This should be between core-api and memory-barriers.
+> > 
+> > >  LIS3LV02D ACCELEROMETER DRIVER
+> > >  M:	Eric Piel <eric.piel@tremplin-utc.net>
+> 
+> New one on me, but it does make a lot of sense, especially for cases
+> with lots of scattered paths.  How about the following?
 
-The prq interrupt could be masked by the PPR (Pending Page Request) bit
-in Page Request Status Register. In the interrupt handling thread once
-this bit is clear, new prq interrupts are allowed to be generated.
+Thanks Paul.
 
-So, if a page request is in process and the PPR bit is cleared, another
-page request from any devices under the same iommu could trigger another
-interrupt thread.
+If the recent commits that Linus did just before v5.7-rc1:
 
-Best regards,
-baolu
+3b50142d8528 ("MAINTAINERS: sort field names for all entries")
+4400b7d68f6e ("MAINTAINERS: sort entries by entry name")
+
+don't create too many problems I suppose
+
+$ scripts/parse-maintainers.pl --order --input=MAINTAINERS --output=MAINTAINERS
+
+could be run just before every -rc1 to keep all this stuff organized.
+
+We'll see.
+
+
