@@ -2,133 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2498A1ACE5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED731ACE62
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394304AbgDPRFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 13:05:43 -0400
-Received: from mga12.intel.com ([192.55.52.136]:7539 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730647AbgDPRFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 13:05:41 -0400
-IronPort-SDR: ZtviEUcwAw04AQ6vGY2G6qGqhVhluMbOfUY9MOTyDKQ/HBJlrfEQCTppp6icNF6lCYwwlEBLwe
- lgH+ydAGIQXQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 10:05:40 -0700
-IronPort-SDR: r2p37llV8oTWEX2XJNI4HUD191O2WCdTioOapylF9eDQt2rnWXEtqiqUUUL7PgwyfxBRBlAi4M
- pxaUQq64DoUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="257290016"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga006.jf.intel.com with ESMTP; 16 Apr 2020 10:05:39 -0700
-Date:   Fri, 17 Apr 2020 01:06:11 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     'Len Brown' <lenb@kernel.org>,
-        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/3][v2] tools/power turbostat: Introduce functions to
- accumulate RAPL consumption
-Message-ID: <20200416170611.GA23628@chenyu-office.sh.intel.com>
-References: <cover.1586782089.git.yu.c.chen@intel.com>
- <db96fd31afd0ff65e4041665293b96c984e675bc.1586782089.git.yu.c.chen@intel.com>
- <001901d613a4$010e0a70$032a1f50$@net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <001901d613a4$010e0a70$032a1f50$@net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728457AbgDPRHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 13:07:37 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:44902 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727795AbgDPRHg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 13:07:36 -0400
+Received: from pps.filterd (m0170395.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GGrDqw012698;
+        Thu, 16 Apr 2020 13:07:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=smtpout1;
+ bh=57rCVVKOXdckaGYFkHn6a/IguIgTfi8gpKH3/fQWiVs=;
+ b=IGCFY8PRMCHKrmrIvC1CTJj6W8IYNzYjcDKB4vcqxIGXxQwyf0O+i7/g23L4/LSumnk+
+ fe2QjGPdvgxs1AhE0Vi9VNGnzeShpaTRR3CU/qIDpTHtCmEu65R7IGS8hQ6OboXr2NT4
+ 9YLqo2X1j51vJZosba3O82F/5sY3WqKZ1Cbiy29mmk+ZW9ZN2cAFjrTygUXQl3Dp96KJ
+ kNHegMdb5z0Dvy37mfd4ICid9Xe2OPB8yULCbPTYppMMtK+lCC7DTFJmC9s8caPjgZdH
+ YS14ZicdIFfpMmwQM5qd5QLX1/PcYsuINcYy1R1j5ObHrSf/emYQYcIKqdVBO5AOyJ7A DA== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 30dn8uu99k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 13:07:17 -0400
+Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GGt3pP042361;
+        Thu, 16 Apr 2020 13:07:17 -0400
+Received: from mailuogwhop.emc.com (mailuogwhop-nat.lss.emc.com [168.159.213.141] (may be forged))
+        by mx0a-00154901.pphosted.com with ESMTP id 30dn7qqr0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 16 Apr 2020 13:07:16 -0400
+Received: from emc.com (localhost [127.0.0.1])
+        by mailuogwprd03.lss.emc.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.0) with ESMTP id 03GH7FKQ009592;
+        Thu, 16 Apr 2020 13:07:15 -0400
+Received: from mailapphubprd03.lss.emc.com ([mailapphubprd03.lss.emc.com [10.253.24.70]]) by mailuogwprd03.lss.emc.com with ESMTP id 03GH6lrt009364 ;
+          Thu, 16 Apr 2020 13:06:48 -0400
+Received: from arwen2.xiolab.lab.emc.com. (arwen2.xiolab.lab.emc.com [10.76.211.113])
+        by mailapphubprd03.lss.emc.com (Sentrion-MTA-4.3.1/Sentrion-MTA-4.3.0) with ESMTP id 03GH6hRv020685;
+        Thu, 16 Apr 2020 13:06:44 -0400
+From:   leonid.ravich@dell.com
+To:     dmaengine@vger.kernel.org
+Cc:     lravich@gmail.com, Leonid Ravich <Leonid.Ravich@dell.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        "Alexander.Barabash@dell.com" <Alexander.Barabash@dell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Jilayne Lovejoy <opensource@jilayne.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dmaengine: ioat: fixing chunk sizing macros dependency
+Date:   Thu, 16 Apr 2020 20:06:21 +0300
+Message-Id: <20200416170628.16196-1-leonid.ravich@dell.com>
+X-Mailer: git-send-email 2.16.2
+In-Reply-To: <20200402163356.9029-2-leonid.ravich@dell.com>
+References: <20200402163356.9029-2-leonid.ravich@dell.com>
+X-Sentrion-Hostname: mailuogwprd03.lss.emc.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-16_07:2020-04-14,2020-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 spamscore=0 impostorscore=0 clxscore=1015 suspectscore=38
+ priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ mlxlogscore=839 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160120
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=38 adultscore=0
+ mlxlogscore=895 priorityscore=1501 impostorscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 clxscore=1015 bulkscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004160120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-Thanks for reviewing this patch.
-On Wed, Apr 15, 2020 at 09:03:34PM -0700, Doug Smythies wrote:
-> On 2020.04.15 05:57 Chen Yu wrote:
-> 
-> ...
-> 
-> > v2: According to Len's suggestion:
-> >    1. Enable the accumulated RAPL mechanism by default.
-> 
-> I am not a fan of this, but O.K.
-> 
-> >    2. Re-use the rapl_joule_counter_range to represent the
-> >       the timeout of periodical timer.
-> 
-> No, please no. It is too easy to still have an overflow.
-> 
-> ...
-> > +	/*
-> > +	 * A wraparound time is calculated early.
-> > +	 */
-> > +	its.it_interval.tv_sec = rapl_joule_counter_range;
-> 
-> Would this be o.K.?
-> 
-> +	its.it_interval.tv_sec = rapl_joule_counter_range / 2;
-> 
-This should be okay. I've checked the defination of TDP, and
-on a wiki page it has mentioned that[1]:
-"Some sources state that the peak power for a microprocessor
-is usually 1.5 times the TDP rating"
-although the defination of TDP varies, using 2 * TDP should
-be safe.
-> > +	its.it_interval.tv_nsec = 0;
-> 
-> The way it was sent, this patch set does not work.
-> It still overflows.
-> 
-> Example, sample time calculated to ensure overflow:
-> 
-> Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
-> 100.00  3500    3592125 80      9.72    0.12
-> 100.00  3500    3587391 79      9.77    0.12
-> 
-> Actual package watts was around 65.
-> 
-> However, if this additional patch is applied (I only fixed one of them):
-> 
-> doug@s18:~/temp-k-git/linux/tools/power/x86/turbostat$ git diff
-> diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-> index 29fc4069f467..4d72d9be5209 100644
-> --- a/tools/power/x86/turbostat/turbostat.c
-> +++ b/tools/power/x86/turbostat/turbostat.c
-> @@ -1350,7 +1350,8 @@ delta_package(struct pkg_data *new, struct pkg_data *old)
-> 
->         old->gfx_mhz = new->gfx_mhz;
-> 
-> -       DELTA_WRAP32(new->energy_pkg, old->energy_pkg);
-> +/*     DELTA_WRAP32(new->energy_pkg, old->energy_pkg);  */
-> +       old->energy_pkg = new->energy_pkg - old->energy_pkg;
->         DELTA_WRAP32(new->energy_cores, old->energy_cores);
->         DELTA_WRAP32(new->energy_gfx, old->energy_gfx);
->         DELTA_WRAP32(new->energy_dram, old->energy_dram);
-> 
-> Then it seems to work.
-> 
-Nice catch, I did not realize that the energy_pkg field has
-already been converted into accumuted variable which does not
-need to consider the wrapping(64bit should be long enough for
-normal test cases).
+From: Leonid Ravich <Leonid.Ravich@emc.com>
 
-Thanks,
-Chenyu
-> Example:
-> 
-> doug@s15:~/temp-turbostat$ sudo ./turbostat --Summary --show Busy%,Bzy_MHz,PkgTmp,PkgWatt,GFXWatt,IRQ --interval 1200
-> ...
-> RAPL: 690 sec. Joule Counter Range, at 95 Watts
-> ...
-> Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
-> 100.00  3500    3592328 80      64.32   0.12
-> 100.00  3500    3595195 79      64.37   0.12
-> 
-> ... Doug
-> 
-> 
+changing macros which assumption is chunk size of 2M,
+which can be other size
+prepare for changing allocation chunk size.
+
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
+---
+Changing in v3:
+  - Make the commit message more clearer.
+
+ drivers/dma/ioat/dma.c  | 14 ++++++++------
+ drivers/dma/ioat/dma.h  | 10 ++++++----
+ drivers/dma/ioat/init.c |  2 +-
+ 3 files changed, 15 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
+index 18c011e..1e0e6c1 100644
+--- a/drivers/dma/ioat/dma.c
++++ b/drivers/dma/ioat/dma.c
+@@ -332,8 +332,8 @@ static dma_cookie_t ioat_tx_submit_unlock(struct dma_async_tx_descriptor *tx)
+ 	u8 *pos;
+ 	off_t offs;
+ 
+-	chunk = idx / IOAT_DESCS_PER_2M;
+-	idx &= (IOAT_DESCS_PER_2M - 1);
++	chunk = idx / IOAT_DESCS_PER_CHUNK;
++	idx &= (IOAT_DESCS_PER_CHUNK - 1);
+ 	offs = idx * IOAT_DESC_SZ;
+ 	pos = (u8 *)ioat_chan->descs[chunk].virt + offs;
+ 	phys = ioat_chan->descs[chunk].hw + offs;
+@@ -370,7 +370,8 @@ struct ioat_ring_ent **
+ 	if (!ring)
+ 		return NULL;
+ 
+-	ioat_chan->desc_chunks = chunks = (total_descs * IOAT_DESC_SZ) / SZ_2M;
++	chunks = (total_descs * IOAT_DESC_SZ) / IOAT_CHUNK_SIZE;
++	ioat_chan->desc_chunks = chunks;
+ 
+ 	for (i = 0; i < chunks; i++) {
+ 		struct ioat_descs *descs = &ioat_chan->descs[i];
+@@ -382,8 +383,9 @@ struct ioat_ring_ent **
+ 
+ 			for (idx = 0; idx < i; idx++) {
+ 				descs = &ioat_chan->descs[idx];
+-				dma_free_coherent(to_dev(ioat_chan), SZ_2M,
+-						  descs->virt, descs->hw);
++				dma_free_coherent(to_dev(ioat_chan),
++						IOAT_CHUNK_SIZE,
++						descs->virt, descs->hw);
+ 				descs->virt = NULL;
+ 				descs->hw = 0;
+ 			}
+@@ -404,7 +406,7 @@ struct ioat_ring_ent **
+ 
+ 			for (idx = 0; idx < ioat_chan->desc_chunks; idx++) {
+ 				dma_free_coherent(to_dev(ioat_chan),
+-						  SZ_2M,
++						  IOAT_CHUNK_SIZE,
+ 						  ioat_chan->descs[idx].virt,
+ 						  ioat_chan->descs[idx].hw);
+ 				ioat_chan->descs[idx].virt = NULL;
+diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
+index b8e8e0b..5216c6b 100644
+--- a/drivers/dma/ioat/dma.h
++++ b/drivers/dma/ioat/dma.h
+@@ -81,6 +81,11 @@ struct ioatdma_device {
+ 	u32 msixpba;
+ };
+ 
++#define IOAT_MAX_ORDER 16
++#define IOAT_MAX_DESCS (1 << IOAT_MAX_ORDER)
++#define IOAT_CHUNK_SIZE (SZ_2M)
++#define IOAT_DESCS_PER_CHUNK (IOAT_CHUNK_SIZE / IOAT_DESC_SZ)
++
+ struct ioat_descs {
+ 	void *virt;
+ 	dma_addr_t hw;
+@@ -128,7 +133,7 @@ struct ioatdma_chan {
+ 	u16 produce;
+ 	struct ioat_ring_ent **ring;
+ 	spinlock_t prep_lock;
+-	struct ioat_descs descs[2];
++	struct ioat_descs descs[IOAT_MAX_DESCS / IOAT_DESCS_PER_CHUNK];
+ 	int desc_chunks;
+ 	int intr_coalesce;
+ 	int prev_intr_coalesce;
+@@ -301,9 +306,6 @@ static inline bool is_ioat_bug(unsigned long err)
+ 	return !!err;
+ }
+ 
+-#define IOAT_MAX_ORDER 16
+-#define IOAT_MAX_DESCS 65536
+-#define IOAT_DESCS_PER_2M 32768
+ 
+ static inline u32 ioat_ring_size(struct ioatdma_chan *ioat_chan)
+ {
+diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
+index 60e9afb..58d1356 100644
+--- a/drivers/dma/ioat/init.c
++++ b/drivers/dma/ioat/init.c
+@@ -651,7 +651,7 @@ static void ioat_free_chan_resources(struct dma_chan *c)
+ 	}
+ 
+ 	for (i = 0; i < ioat_chan->desc_chunks; i++) {
+-		dma_free_coherent(to_dev(ioat_chan), SZ_2M,
++		dma_free_coherent(to_dev(ioat_chan), IOAT_CHUNK_SIZE,
+ 				  ioat_chan->descs[i].virt,
+ 				  ioat_chan->descs[i].hw);
+ 		ioat_chan->descs[i].virt = NULL;
+-- 
+1.9.3
+
