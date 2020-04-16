@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D5E1AC964
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584551AC586
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410129AbgDPPWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
+        id S1726083AbgDPOVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:21:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898513AbgDPNpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:45:31 -0400
+        id S2409136AbgDPNzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:55:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F059920732;
-        Thu, 16 Apr 2020 13:45:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 479CC21927;
+        Thu, 16 Apr 2020 13:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044730;
-        bh=Ccx5IMb0hrnaC5537dtoCxBIqyonxRrmjubp0SWGv5o=;
+        s=default; t=1587045312;
+        bh=S7nX239u2h/t/AEuMNtsW8RA5Xt1MqxgFCsb+8eKRNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eUqSUmmJeVaTRLNrhEg3oUg7tv/E9M0zHPIkolqCkzTxQaE6PfEiYh5WFvwncCjis
-         rMgGgkYf/iFsh8ITsYF74O/O+u6rrcHq9mINsLGHaqdfYoygEez27tPkWXPEdwATeB
-         IJiA7d3hHUkWgPrqTVu4JCXRsJBq08Fw/SHgPlEM=
+        b=2VcxvwGugaidrcEXlS3x1krpD1hc7Ldmng9Cm3t7vXIj8wh8tgJ05/bqU1mX/dU50
+         UUR5BFZwtswtPUneMG9tN/1zl5KlAxtjog/o7APKyurX8oERY3H5VE5ARqtKCFbaRz
+         N8IVQHacm7MH4bmMp+UIiTE8ZPDnfByavbXyIWRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Hans de Goede <hdegoede@redhat.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 077/232] ALSA: hda: Fix potential access overflow in beep helper
+Subject: [PATCH 5.6 082/254] ALSA: hda/realtek - Add quirk for Lenovo Carbon X1 8th gen
 Date:   Thu, 16 Apr 2020 15:22:51 +0200
-Message-Id: <20200416131324.835754846@linuxfoundation.org>
+Message-Id: <20200416131336.164084340@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a upstream.
+commit ca707b3f00b4f31a6e1eb37e8ae99f15f2bb1fe5 upstream.
 
-The beep control helper function blindly stores the values in two
-stereo channels no matter whether the actual control is mono or
-stereo.  This is practically harmless, but it annoys the recently
-introduced sanity check, resulting in an error when the checker is
-enabled.
+The audio setup on the Lenovo Carbon X1 8th gen is the same as that on
+the Lenovo Carbon X1 7th gen, as such it needs the same
+ALC285_FIXUP_THINKPAD_HEADSET_JACK quirk.
 
-This patch corrects the behavior to store only on the defined array
-member.
+This fixes volume control of the speaker not working among other things.
 
-Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1820196
+Cc: stable@vger.kernel.org
+Suggested-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
+Link: https://lore.kernel.org/r/20200402174311.238614-1-hdegoede@redhat.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_beep.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/hda_beep.c
-+++ b/sound/pci/hda/hda_beep.c
-@@ -290,8 +290,12 @@ int snd_hda_mixer_amp_switch_get_beep(st
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct hda_beep *beep = codec->beep;
-+	int chs = get_amp_channels(kcontrol);
-+
- 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
--		ucontrol->value.integer.value[0] =
-+		if (chs & 1)
-+			ucontrol->value.integer.value[0] = beep->enabled;
-+		if (chs & 2)
- 			ucontrol->value.integer.value[1] = beep->enabled;
- 		return 0;
- 	}
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7325,6 +7325,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
++	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
 
 
