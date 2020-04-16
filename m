@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23791AC9FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A4B1AC56E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633727AbgDPP3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:29:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57106 "EHLO mail.kernel.org"
+        id S2442372AbgDPOTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897452AbgDPNnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:43:47 -0400
+        id S2503837AbgDPNxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:53:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46B8E2076D;
-        Thu, 16 Apr 2020 13:43:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 192B720732;
+        Thu, 16 Apr 2020 13:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044626;
-        bh=5dglAWUhtBT7vyLpNme4Hm5zBd/bkD6DsA0BDIhulF0=;
+        s=default; t=1587045212;
+        bh=MnuWYLFkdb1YHimhXS6d0CxSVI1WAlx/FlXUz917YfU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdxrl794IKAyDe0aXjP1QVdRin7Y3JhDCOjmnvSbVrQkB6x7pzshO4oc6oxIT4psp
-         W8Z235GdiadaYvVysoG/7j0ci1GDnZ/zZNNZUJggaAOpMJKZ/ceOjCxttLrwJXp9qB
-         ipcTdCjpT20W1YpCFlO3YPKLFldluZvZ3ZGUErec=
+        b=rDOsbKTZ3N2+sdUVSzzm1zktlRUlkxAVhvbKjIUdLcNc+8JiwYyMD4ckpdKtaWS5M
+         zt3GX3HlBE3un9/HIjHwhuXF/8pQFprlx4UU0P+7rwUCohx3PqmssNWB4mlWFF0AkS
+         KxoPx+DU78k9NL8IoPhwzKlEWDjwD88ecOD7jzMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, rdunlap@infradead.org,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 035/232] ACPI: EC: Do not clear boot_ec_is_ecdt in acpi_ec_add()
-Date:   Thu, 16 Apr 2020 15:22:09 +0200
-Message-Id: <20200416131320.356637843@linuxfoundation.org>
+Subject: [PATCH 5.6 041/254] media: i2c: video-i2c: fix build errors due to imply hwmon
+Date:   Thu, 16 Apr 2020 15:22:10 +0200
+Message-Id: <20200416131330.993957329@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Matt Ranostay <matt.ranostay@konsulko.com>
 
-[ Upstream commit 65a691f5f8f0bb63d6a82eec7b0ffd193d8d8a5f ]
+[ Upstream commit 64d4fc9926f09861a35d8f0f7d81f056e6d5af7b ]
 
-The reason for clearing boot_ec_is_ecdt in acpi_ec_add() (if a
-PNP0C09 device object matching the ECDT boot EC had been found in
-the namespace) was to cause acpi_ec_ecdt_start() to return early,
-but since the latter does not look at boot_ec_is_ecdt any more,
-acpi_ec_add() need not clear it.
+Fix build fault when CONFIG_HWMON is a module, and CONFIG_VIDEO_I2C
+as builtin. This is due to 'imply hwmon' in the respective Kconfig.
 
-Moreover, doing that may be confusing as it may cause "DSDT" to be
-printed instead of "ECDT" in the EC initialization completion
-message, so stop doing it.
+Issue build log:
 
-While at it, split the EC initialization completion message into
-two messages, one regarding the boot EC and another one printed
-regardless of whether or not the EC at hand is the boot one.
+ld: drivers/media/i2c/video-i2c.o: in function `amg88xx_hwmon_init':
+video-i2c.c:(.text+0x2e1): undefined reference to `devm_hwmon_device_register_with_info
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: rdunlap@infradead.org
+Fixes: acbea6798955 (media: video-i2c: add hwmon support for amg88xx)
+Signed-off-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/ec.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/i2c/video-i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index ca5cdb621c2a7..2dba4e7a83b76 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1573,7 +1573,6 @@ static int acpi_ec_add(struct acpi_device *device)
+diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
+index 078141712c887..0b977e73ceb29 100644
+--- a/drivers/media/i2c/video-i2c.c
++++ b/drivers/media/i2c/video-i2c.c
+@@ -255,7 +255,7 @@ static int amg88xx_set_power(struct video_i2c_data *data, bool on)
+ 	return amg88xx_set_power_off(data);
+ }
  
- 		if (boot_ec && ec->command_addr == boot_ec->command_addr &&
- 		    ec->data_addr == boot_ec->data_addr) {
--			boot_ec_is_ecdt = false;
- 			/*
- 			 * Trust PNP0C09 namespace location rather than
- 			 * ECDT ID. But trust ECDT GPE rather than _GPE
-@@ -1593,9 +1592,12 @@ static int acpi_ec_add(struct acpi_device *device)
+-#if IS_ENABLED(CONFIG_HWMON)
++#if IS_REACHABLE(CONFIG_HWMON)
  
- 	if (ec == boot_ec)
- 		acpi_handle_info(boot_ec->handle,
--				 "Boot %s EC used to handle transactions and events\n",
-+				 "Boot %s EC initialization complete\n",
- 				 boot_ec_is_ecdt ? "ECDT" : "DSDT");
- 
-+	acpi_handle_info(ec->handle,
-+			 "EC: Used to handle transactions and events\n");
-+
- 	device->driver_data = ec;
- 
- 	ret = !!request_region(ec->data_addr, 1, "EC data");
+ static const u32 amg88xx_temp_config[] = {
+ 	HWMON_T_INPUT,
 -- 
 2.20.1
 
