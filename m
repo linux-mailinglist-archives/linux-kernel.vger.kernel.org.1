@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AEB1AC438
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476B81AC92E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404860AbgDPN4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51152 "EHLO mail.kernel.org"
+        id S2501981AbgDPPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897741AbgDPNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:44 -0400
+        id S2898696AbgDPNrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:47:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BEFD221F7;
-        Thu, 16 Apr 2020 13:38:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A825921734;
+        Thu, 16 Apr 2020 13:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044323;
-        bh=KtggvIYcmYpaeupy2pxpogJA2WSu2oQ8qYpjo3uH7w8=;
+        s=default; t=1587044860;
+        bh=EJt1zxE3Dw7U70czLT6GAlEXQmogHRnm8l2IKKSPbVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMrJtuZJWnE8gpidA8IrPMLLEW9hp8S8dKguI1gw8XGEEiGjFDfhE1MVQz2kVIx6S
-         WhEJ3CkVrjZnLeUujrlqyQmZTiD4FhiTbRqmiuhmHglxD4pRaGBm4SpsQ1ESo66T+3
-         7Odxx4w9jkb7NpBn0Ei//dr4XqgZo14NFKoKDbco=
+        b=g5z444mWIHgGNLO1tR44T9FOJht36r+3ACQSnHP/rSmxxhiP+S5wpyl3JKNWPXXBX
+         QmUs9vOZGJyPSyNCWIN2vwCXOYD666S2DFJ9Rauyi60JaAF/23cmhC2ZsLTh1cSsSZ
+         qSynKaOsjE0EPsO8jmy5V8tXnfv48Exmi3BSfKvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.5 172/257] io_uring: honor original task RLIMIT_FSIZE
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 129/232] KVM: VMX: Always VMCLEAR in-use VMCSes during crash with kexec support
 Date:   Thu, 16 Apr 2020 15:23:43 +0200
-Message-Id: <20200416131347.893221294@linuxfoundation.org>
+Message-Id: <20200416131331.181618025@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +45,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 4ed734b0d0913e566a9d871e15d24eb240f269f7 upstream.
+commit 31603d4fc2bb4f0815245d496cb970b27b4f636a upstream.
 
-With the previous fixes for number of files open checking, I added some
-debug code to see if we had other spots where we're checking rlimit()
-against the async io-wq workers. The only one I found was file size
-checking, which we should also honor.
+VMCLEAR all in-use VMCSes during a crash, even if kdump's NMI shootdown
+interrupted a KVM update of the percpu in-use VMCS list.
 
-During write and fallocate prep, store the max file size and override
-that for the current ask if we're in io-wq worker context.
+Because NMIs are not blocked by disabling IRQs, it's possible that
+crash_vmclear_local_loaded_vmcss() could be called while the percpu list
+of VMCSes is being modified, e.g. in the middle of list_add() in
+vmx_vcpu_load_vmcs().  This potential corner case was called out in the
+original commit[*], but the analysis of its impact was wrong.
 
-Cc: stable@vger.kernel.org # 5.1+
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Skipping the VMCLEARs is wrong because it all but guarantees that a
+loaded, and therefore cached, VMCS will live across kexec and corrupt
+memory in the new kernel.  Corruption will occur because the CPU's VMCS
+cache is non-coherent, i.e. not snooped, and so the writeback of VMCS
+memory on its eviction will overwrite random memory in the new kernel.
+The VMCS will live because the NMI shootdown also disables VMX, i.e. the
+in-progress VMCLEAR will #UD, and existing Intel CPUs do not flush the
+VMCS cache on VMXOFF.
+
+Furthermore, interrupting list_add() and list_del() is safe due to
+crash_vmclear_local_loaded_vmcss() using forward iteration.  list_add()
+ensures the new entry is not visible to forward iteration unless the
+entire add completes, via WRITE_ONCE(prev->next, new).  A bad "prev"
+pointer could be observed if the NMI shootdown interrupted list_del() or
+list_add(), but list_for_each_entry() does not consume ->prev.
+
+In addition to removing the temporary disabling of VMCLEAR, open code
+loaded_vmcs_init() in __loaded_vmcs_clear() and reorder VMCLEAR so that
+the VMCS is deleted from the list only after it's been VMCLEAR'd.
+Deleting the VMCS before VMCLEAR would allow a race where the NMI
+shootdown could arrive between list_del() and vmcs_clear() and thus
+neither flow would execute a successful VMCLEAR.  Alternatively, more
+code could be moved into loaded_vmcs_init(), but that gets rather silly
+as the only other user, alloc_loaded_vmcs(), doesn't need the smp_wmb()
+and would need to work around the list_del().
+
+Update the smp_*() comments related to the list manipulation, and
+opportunistically reword them to improve clarity.
+
+[*] https://patchwork.kernel.org/patch/1675731/#3720461
+
+Fixes: 8f536b7697a0 ("KVM: VMX: provide the vmclear function and a bitmap to support VMCLEAR in kdump")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200321193751.24985-2-sean.j.christopherson@intel.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- fs/io_uring.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/kvm/vmx/vmx.c |   67 +++++++++++--------------------------------------
+ 1 file changed, 16 insertions(+), 51 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -432,6 +432,7 @@ struct io_kiocb {
- #define REQ_F_INFLIGHT		16384	/* on inflight list */
- #define REQ_F_COMP_LOCKED	32768	/* completion under lock */
- #define REQ_F_HARDLINK		65536	/* doesn't sever on completion < 0 */
-+	unsigned long		fsize;
- 	u64			user_data;
- 	u32			result;
- 	u32			sequence;
-@@ -1899,6 +1900,8 @@ static int io_write_prep(struct io_kiocb
- 	if (unlikely(!(req->file->f_mode & FMODE_WRITE)))
- 		return -EBADF;
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -648,43 +648,15 @@ void loaded_vmcs_init(struct loaded_vmcs
+ }
  
-+	req->fsize = rlimit(RLIMIT_FSIZE);
-+
- 	if (!req->io)
- 		return 0;
+ #ifdef CONFIG_KEXEC_CORE
+-/*
+- * This bitmap is used to indicate whether the vmclear
+- * operation is enabled on all cpus. All disabled by
+- * default.
+- */
+-static cpumask_t crash_vmclear_enabled_bitmap = CPU_MASK_NONE;
+-
+-static inline void crash_enable_local_vmclear(int cpu)
+-{
+-	cpumask_set_cpu(cpu, &crash_vmclear_enabled_bitmap);
+-}
+-
+-static inline void crash_disable_local_vmclear(int cpu)
+-{
+-	cpumask_clear_cpu(cpu, &crash_vmclear_enabled_bitmap);
+-}
+-
+-static inline int crash_local_vmclear_enabled(int cpu)
+-{
+-	return cpumask_test_cpu(cpu, &crash_vmclear_enabled_bitmap);
+-}
+-
+ static void crash_vmclear_local_loaded_vmcss(void)
+ {
+ 	int cpu = raw_smp_processor_id();
+ 	struct loaded_vmcs *v;
  
-@@ -1970,10 +1973,17 @@ static int io_write(struct io_kiocb *req
- 		}
- 		kiocb->ki_flags |= IOCB_WRITE;
+-	if (!crash_local_vmclear_enabled(cpu))
+-		return;
+-
+ 	list_for_each_entry(v, &per_cpu(loaded_vmcss_on_cpu, cpu),
+ 			    loaded_vmcss_on_cpu_link)
+ 		vmcs_clear(v->vmcs);
+ }
+-#else
+-static inline void crash_enable_local_vmclear(int cpu) { }
+-static inline void crash_disable_local_vmclear(int cpu) { }
+ #endif /* CONFIG_KEXEC_CORE */
  
-+		if (!force_nonblock)
-+			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = req->fsize;
+ static void __loaded_vmcs_clear(void *arg)
+@@ -696,19 +668,24 @@ static void __loaded_vmcs_clear(void *ar
+ 		return; /* vcpu migration can race with cpu offline */
+ 	if (per_cpu(current_vmcs, cpu) == loaded_vmcs->vmcs)
+ 		per_cpu(current_vmcs, cpu) = NULL;
+-	crash_disable_local_vmclear(cpu);
 +
- 		if (req->file->f_op->write_iter)
- 			ret2 = call_write_iter(req->file, kiocb, &iter);
- 		else
- 			ret2 = loop_rw_iter(WRITE, req->file, kiocb, &iter);
++	vmcs_clear(loaded_vmcs->vmcs);
++	if (loaded_vmcs->shadow_vmcs && loaded_vmcs->launched)
++		vmcs_clear(loaded_vmcs->shadow_vmcs);
 +
-+		if (!force_nonblock)
-+			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
-+
+ 	list_del(&loaded_vmcs->loaded_vmcss_on_cpu_link);
+ 
+ 	/*
+-	 * we should ensure updating loaded_vmcs->loaded_vmcss_on_cpu_link
+-	 * is before setting loaded_vmcs->vcpu to -1 which is done in
+-	 * loaded_vmcs_init. Otherwise, other cpu can see vcpu = -1 fist
+-	 * then adds the vmcs into percpu list before it is deleted.
++	 * Ensure all writes to loaded_vmcs, including deleting it from its
++	 * current percpu list, complete before setting loaded_vmcs->vcpu to
++	 * -1, otherwise a different cpu can see vcpu == -1 first and add
++	 * loaded_vmcs to its percpu list before it's deleted from this cpu's
++	 * list. Pairs with the smp_rmb() in vmx_vcpu_load_vmcs().
+ 	 */
+ 	smp_wmb();
+ 
+-	loaded_vmcs_init(loaded_vmcs);
+-	crash_enable_local_vmclear(cpu);
++	loaded_vmcs->cpu = -1;
++	loaded_vmcs->launched = 0;
+ }
+ 
+ void loaded_vmcs_clear(struct loaded_vmcs *loaded_vmcs)
+@@ -1317,18 +1294,17 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu
+ 	if (!already_loaded) {
+ 		loaded_vmcs_clear(vmx->loaded_vmcs);
+ 		local_irq_disable();
+-		crash_disable_local_vmclear(cpu);
+ 
  		/*
- 		 * Raw bdev writes will -EOPNOTSUPP for IOCB_NOWAIT. Just
- 		 * retry them without IOCB_NOWAIT.
+-		 * Read loaded_vmcs->cpu should be before fetching
+-		 * loaded_vmcs->loaded_vmcss_on_cpu_link.
+-		 * See the comments in __loaded_vmcs_clear().
++		 * Ensure loaded_vmcs->cpu is read before adding loaded_vmcs to
++		 * this cpu's percpu list, otherwise it may not yet be deleted
++		 * from its previous cpu's percpu list.  Pairs with the
++		 * smb_wmb() in __loaded_vmcs_clear().
+ 		 */
+ 		smp_rmb();
+ 
+ 		list_add(&vmx->loaded_vmcs->loaded_vmcss_on_cpu_link,
+ 			 &per_cpu(loaded_vmcss_on_cpu, cpu));
+-		crash_enable_local_vmclear(cpu);
+ 		local_irq_enable();
+ 	}
+ 
+@@ -2256,17 +2232,6 @@ static int hardware_enable(void)
+ 	INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
+ 	spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
+ 
+-	/*
+-	 * Now we can enable the vmclear operation in kdump
+-	 * since the loaded_vmcss_on_cpu list on this cpu
+-	 * has been initialized.
+-	 *
+-	 * Though the cpu is not in VMX operation now, there
+-	 * is no problem to enable the vmclear operation
+-	 * for the loaded_vmcss_on_cpu list is empty!
+-	 */
+-	crash_enable_local_vmclear(cpu);
+-
+ 	rdmsrl(MSR_IA32_FEATURE_CONTROL, old);
+ 
+ 	test_bits = FEATURE_CONTROL_LOCKED;
 
 
