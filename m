@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E872C1ACC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5CE1ACC7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410636AbgDPQB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:01:57 -0400
-Received: from mga18.intel.com ([134.134.136.126]:35923 "EHLO mga18.intel.com"
+        id S2636496AbgDPQBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:01:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:45354 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2633998AbgDPQAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:00:36 -0400
-IronPort-SDR: KH8iD6faohdzk9sJjykt1jhGxcV5bE9pCnOYtHpFH3zoPF84EJSFgpt41apkibcJNT9iR72rQB
- LJ4iF3UHeEGA==
+        id S2636422AbgDPQAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 12:00:45 -0400
+IronPort-SDR: jcXLGTVjmxAyTXmYWpPDwPgGM1Xg3XC5Mc32WntXdEY7MD+X3TOP2hIAdXXRPIdMMfAHYzpQ0i
+ HwzZFKFivLBw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 09:00:34 -0700
-IronPort-SDR: Bo+j2Yt/hjZIEmSiIMDxJUqWl425YPSUrLtW0UC1/In9qKFwSxeqgtoCI38E2ipozrWN5oLJbV
- hN90B6B0sSHA==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 09:00:35 -0700
+IronPort-SDR: NQIcM0V3MN2Fg/uMznKWIBC3Pdni5h6eJawVvQTVFnCw969sy6vJ89vFVR2vHDLDK2HEGxPdqE
+ rqdqI2AvGKfg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="244434300"
+   d="scan'208";a="454377398"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Apr 2020 09:00:32 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 16 Apr 2020 09:00:33 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 5B73119C; Thu, 16 Apr 2020 19:00:31 +0300 (EEST)
+        id 6B6F249F; Thu, 16 Apr 2020 19:00:31 +0300 (EEST)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
 Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
@@ -34,9 +34,9 @@ Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
         William Kucharski <william.kucharski@oracle.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv4 2/8] khugepaged: Do not stop collapse if less than half PTEs are referenced
-Date:   Thu, 16 Apr 2020 19:00:20 +0300
-Message-Id: <20200416160026.16538-3-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv4 3/8] khugepaged: Drain all LRU caches before scanning pages
+Date:   Thu, 16 Apr 2020 19:00:21 +0300
+Message-Id: <20200416160026.16538-4-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200416160026.16538-1-kirill.shutemov@linux.intel.com>
 References: <20200416160026.16538-1-kirill.shutemov@linux.intel.com>
@@ -47,97 +47,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__collapse_huge_page_swapin() checks the number of referenced PTE to
-decide if the memory range is hot enough to justify swapin.
+Having a page in LRU add cache offsets page refcount and gives
+false-negative on PageLRU(). It reduces collapse success rate.
 
-We have few problems with the approach:
-
- - It is way too late: we can do the check much earlier and safe time.
-   khugepaged_scan_pmd() already knows if we have any pages to swap in
-   and number of referenced page.
-
- - It stops collapse altogether if there's not enough referenced pages,
-   not only swappingin.
-
-Fix it by making the right check early. We also can avoid additional
-page table scanning if khugepaged_scan_pmd() haven't found any swap
-entries.
+Drain all LRU add caches before scanning. It happens relatively
+rare and should not disturb the system too much.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: 0db501f7a34c ("mm, thp: convert from optimistic swapin collapsing to conservative")
 Reviewed-by: William Kucharski <william.kucharski@oracle.com>
 Reviewed-and-Tested-by: Zi Yan <ziy@nvidia.com>
 Acked-by: Yang Shi <yang.shi@linux.alibaba.com>
 ---
- mm/khugepaged.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ mm/khugepaged.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 99d77ffb79c2..6e69dc9a9fb1 100644
+index 6e69dc9a9fb1..0b75b9821f44 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -899,11 +899,6 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
- 		.pgoff = linear_page_index(vma, address),
- 	};
+@@ -2078,6 +2078,8 @@ static void khugepaged_do_scan(void)
  
--	/* we only decide to swapin, if there is enough young ptes */
--	if (referenced < HPAGE_PMD_NR/2) {
--		trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
--		return false;
--	}
- 	vmf.pte = pte_offset_map(pmd, address);
- 	for (; vmf.address < address + HPAGE_PMD_NR*PAGE_SIZE;
- 			vmf.pte++, vmf.address += PAGE_SIZE) {
-@@ -943,7 +938,7 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
- static void collapse_huge_page(struct mm_struct *mm,
- 				   unsigned long address,
- 				   struct page **hpage,
--				   int node, int referenced)
-+				   int node, int referenced, int unmapped)
- {
- 	pmd_t *pmd, _pmd;
- 	pte_t *pte;
-@@ -1000,7 +995,8 @@ static void collapse_huge_page(struct mm_struct *mm,
- 	 * If it fails, we release mmap_sem and jump out_nolock.
- 	 * Continuing to collapse causes inconsistency.
- 	 */
--	if (!__collapse_huge_page_swapin(mm, vma, address, pmd, referenced)) {
-+	if (unmapped && !__collapse_huge_page_swapin(mm, vma, address,
-+				pmd, referenced)) {
- 		mem_cgroup_cancel_charge(new_page, memcg, true);
- 		up_read(&mm->mmap_sem);
- 		goto out_nolock;
-@@ -1233,22 +1229,21 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
- 		    mmu_notifier_test_young(vma->vm_mm, address))
- 			referenced++;
- 	}
--	if (writable) {
--		if (referenced) {
--			result = SCAN_SUCCEED;
--			ret = 1;
--		} else {
--			result = SCAN_LACK_REFERENCED_PAGE;
--		}
--	} else {
-+	if (!writable) {
- 		result = SCAN_PAGE_RO;
-+	} else if (!referenced || (unmapped && referenced < HPAGE_PMD_NR/2)) {
-+		result = SCAN_LACK_REFERENCED_PAGE;
-+	} else {
-+		result = SCAN_SUCCEED;
-+		ret = 1;
- 	}
- out_unmap:
- 	pte_unmap_unlock(pte, ptl);
- 	if (ret) {
- 		node = khugepaged_find_target_node();
- 		/* collapse_huge_page will return with the mmap_sem released */
--		collapse_huge_page(mm, address, hpage, node, referenced);
-+		collapse_huge_page(mm, address, hpage, node,
-+				referenced, unmapped);
- 	}
- out:
- 	trace_mm_khugepaged_scan_pmd(mm, page, writable, referenced,
+ 	barrier(); /* write khugepaged_pages_to_scan to local stack */
+ 
++	lru_add_drain_all();
++
+ 	while (progress < pages) {
+ 		if (!khugepaged_prealloc_page(&hpage, &wait))
+ 			break;
 -- 
 2.26.1
 
