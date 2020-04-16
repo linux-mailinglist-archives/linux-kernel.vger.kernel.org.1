@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A582C1AC533
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705BD1ACBF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441986AbgDPONj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:13:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35826 "EHLO mail.kernel.org"
+        id S2894918AbgDPPwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:52:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441581AbgDPNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:50:02 -0400
+        id S2896559AbgDPNcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:32:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88AE42063A;
-        Thu, 16 Apr 2020 13:49:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DA5D22251;
+        Thu, 16 Apr 2020 13:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044963;
-        bh=W67J4mpFhxI5aIfA8+lYU7Gbb6BRpGz4wwe69mq9YR8=;
+        s=default; t=1587043910;
+        bh=bFUCpEEVzOrm1acvZr3Ly3iJYoGVkZhsua8izAbxhqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qkHOHERH+jIds9BD1A1UHpxfgCAOV/7hQcnpLFK3eB1V5aoddOpIZQ5htjWBDauzw
-         NlIVE2L4HbFbs174pLNx35VwmrWxD1IJbLIb+dFQ5/Mqk+npC+2EmaC1pq/bPwXZEd
-         vUVn6sMCM/GKfyv6ZWCfU/GMXlGR9JtlX891cLsM=
+        b=OQK0sZiaaGjJm8v7zU2SHzD46mUleB2cYhSbzGdvqhJZeVTyC7ODHaKmG6IG/vzxJ
+         8De/WKGIaL3hlIp9lwgklYDONueT2rQSVr5m3yUg0f6oPeeI6KW+xEF8uP176vcTG3
+         rJJzocePKiI34CRl+mpOE21qlhezulitNvPILn48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 171/232] crypto: ccree - only try to map auth tag if needed
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Donnellan <ajd@linux.ibm.com>
+Subject: [PATCH 4.19 124/146] powerpc/powernv/idle: Restore AMR/UAMOR/AMOR after idle
 Date:   Thu, 16 Apr 2020 15:24:25 +0200
-Message-Id: <20200416131336.402131587@linuxfoundation.org>
+Message-Id: <20200416131259.520587819@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gilad Ben-Yossef <gilad@benyossef.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 504e84abec7a635b861afd8d7f92ecd13eaa2b09 upstream.
+commit 53a712bae5dd919521a58d7bad773b949358add0 upstream.
 
-Make sure to only add the size of the auth tag to the source mapping
-for encryption if it is an in-place operation. Failing to do this
-previously caused us to try and map auth size len bytes from a NULL
-mapping and crashing if both the cryptlen and assoclen are zero.
+In order to implement KUAP (Kernel Userspace Access Protection) on
+Power9 we will be using the AMR, and therefore indirectly the
+UAMOR/AMOR.
 
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Cc: stable@vger.kernel.org # v4.19+
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+So save/restore these regs in the idle code.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+[ajd: Backport to 4.19 tree, CVE-2020-11669]
+Signed-off-by: Andrew Donnellan <ajd@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/crypto/ccree/cc_buffer_mgr.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/idle_book3s.S |   27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
 
---- a/drivers/crypto/ccree/cc_buffer_mgr.c
-+++ b/drivers/crypto/ccree/cc_buffer_mgr.c
-@@ -1109,9 +1109,11 @@ int cc_map_aead_request(struct cc_drvdat
- 	}
+--- a/arch/powerpc/kernel/idle_book3s.S
++++ b/arch/powerpc/kernel/idle_book3s.S
+@@ -170,8 +170,11 @@ core_idle_lock_held:
+ 	bne-	core_idle_lock_held
+ 	blr
  
- 	size_to_map = req->cryptlen + areq_ctx->assoclen;
--	if (areq_ctx->gen_ctx.op_type == DRV_CRYPTO_DIRECTION_ENCRYPT)
-+	/* If we do in-place encryption, we also need the auth tag */
-+	if ((areq_ctx->gen_ctx.op_type == DRV_CRYPTO_DIRECTION_ENCRYPT) &&
-+	   (req->src == req->dst)) {
- 		size_to_map += authsize;
--
-+	}
- 	if (is_gcm4543)
- 		size_to_map += crypto_aead_ivsize(tfm);
- 	rc = cc_map_sg(dev, req->src, size_to_map, DMA_BIDIRECTIONAL,
+-/* Reuse an unused pt_regs slot for IAMR */
++/* Reuse some unused pt_regs slots for AMR/IAMR/UAMOR/UAMOR */
++#define PNV_POWERSAVE_AMR	_TRAP
+ #define PNV_POWERSAVE_IAMR	_DAR
++#define PNV_POWERSAVE_UAMOR	_DSISR
++#define PNV_POWERSAVE_AMOR	RESULT
+ 
+ /*
+  * Pass requested state in r3:
+@@ -205,8 +208,16 @@ pnv_powersave_common:
+ 	SAVE_NVGPRS(r1)
+ 
+ BEGIN_FTR_SECTION
++	mfspr	r4, SPRN_AMR
+ 	mfspr	r5, SPRN_IAMR
++	mfspr	r6, SPRN_UAMOR
++	std	r4, PNV_POWERSAVE_AMR(r1)
+ 	std	r5, PNV_POWERSAVE_IAMR(r1)
++	std	r6, PNV_POWERSAVE_UAMOR(r1)
++BEGIN_FTR_SECTION_NESTED(42)
++	mfspr	r7, SPRN_AMOR
++	std	r7, PNV_POWERSAVE_AMOR(r1)
++END_FTR_SECTION_NESTED_IFSET(CPU_FTR_HVMODE, 42)
+ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+ 
+ 	mfcr	r5
+@@ -935,12 +946,20 @@ END_FTR_SECTION_IFSET(CPU_FTR_HVMODE)
+ 	REST_GPR(2, r1)
+ 
+ BEGIN_FTR_SECTION
+-	/* IAMR was saved in pnv_powersave_common() */
++	/* These regs were saved in pnv_powersave_common() */
++	ld	r4, PNV_POWERSAVE_AMR(r1)
+ 	ld	r5, PNV_POWERSAVE_IAMR(r1)
++	ld	r6, PNV_POWERSAVE_UAMOR(r1)
++	mtspr	SPRN_AMR, r4
+ 	mtspr	SPRN_IAMR, r5
++	mtspr	SPRN_UAMOR, r6
++BEGIN_FTR_SECTION_NESTED(42)
++	ld	r7, PNV_POWERSAVE_AMOR(r1)
++	mtspr	SPRN_AMOR, r7
++END_FTR_SECTION_NESTED_IFSET(CPU_FTR_HVMODE, 42)
+ 	/*
+-	 * We don't need an isync here because the upcoming mtmsrd is
+-	 * execution synchronizing.
++	 * We don't need an isync here after restoring IAMR because the upcoming
++	 * mtmsrd is execution synchronizing.
+ 	 */
+ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+ 
 
 
