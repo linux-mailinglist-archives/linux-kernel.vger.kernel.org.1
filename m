@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988FB1ACA5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058961AC606
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442579AbgDPPeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53590 "EHLO mail.kernel.org"
+        id S2441030AbgDPO3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:29:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898216AbgDPNkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:52 -0400
+        id S2392697AbgDPOAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:00:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DD9A214D8;
-        Thu, 16 Apr 2020 13:40:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 744D12078B;
+        Thu, 16 Apr 2020 14:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044451;
-        bh=OX08Yy+S0/dVbFy6XcBFg78t8CZ/ZdRHwjDiG4BWfVM=;
+        s=default; t=1587045654;
+        bh=W67J4mpFhxI5aIfA8+lYU7Gbb6BRpGz4wwe69mq9YR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=paMwxTuxFiR9xBF990B35BAzHlVPcbmLOJcVtF8FKBY5DMPtlp7Jm1kkoo1PRve+U
-         hjqpDJmXCTPG2HwRjAA6Ar72MTdDQA7Z/ebks3eetL6paETB9blpdtETRedc+Q56M3
-         GIS8lU3m2qQe3EHWB/kNZtAYT7BwL/jRd3RtW2rg=
+        b=IRYvXvweRxm7CqBVigwoc6meNAzTBT8YwPdPuOmv7oKFoSP2mOhbb63bxSPE9CkQs
+         IfTouPlUl0zVjOYUHxri6WgClpCzLMb1CDTtcE3nC5CdhQJNpk3oxqNsXVaC9aRf3M
+         ARQ3KpUx2D0DY8zh9kC7XHovAbX9FeGtUYq666Nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sam Lunt <samuel.j.lunt@gmail.com>,
-        He Zhe <zhe.he@windriver.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, trivial@kernel.org,
-        stable@kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.5 223/257] perf tools: Support Python 3.8+ in Makefile
-Date:   Thu, 16 Apr 2020 15:24:34 +0200
-Message-Id: <20200416131353.772880178@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.6 186/254] crypto: ccree - only try to map auth tag if needed
+Date:   Thu, 16 Apr 2020 15:24:35 +0200
+Message-Id: <20200416131349.608563665@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,59 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sam Lunt <samueljlunt@gmail.com>
+From: Gilad Ben-Yossef <gilad@benyossef.com>
 
-commit b9c9ce4e598e012ca7c1813fae2f4d02395807de upstream.
+commit 504e84abec7a635b861afd8d7f92ecd13eaa2b09 upstream.
 
-Python 3.8 changed the output of 'python-config --ldflags' to no longer
-include the '-lpythonX.Y' flag (this apparently fixed an issue loading
-modules with a statically linked Python executable).  The libpython
-feature check in linux/build/feature fails if the Python library is not
-included in FEATURE_CHECK_LDFLAGS-libpython variable.
+Make sure to only add the size of the auth tag to the source mapping
+for encryption if it is an in-place operation. Failing to do this
+previously caused us to try and map auth size len bytes from a NULL
+mapping and crashing if both the cryptlen and assoclen are zero.
 
-This adds a check in the Makefile to determine if PYTHON_CONFIG accepts
-the '--embed' flag and passes that flag alongside '--ldflags' if so.
-
-tools/perf is the only place the libpython feature check is used.
-
-Signed-off-by: Sam Lunt <samuel.j.lunt@gmail.com>
-Tested-by: He Zhe <zhe.he@windriver.com>
-Link: http://lore.kernel.org/lkml/c56be2e1-8111-9dfe-8298-f7d0f9ab7431@windriver.com
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: trivial@kernel.org
-Cc: stable@kernel.org
-Link: http://lore.kernel.org/lkml/20200131181123.tmamivhq4b7uqasr@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/Makefile.config |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/crypto/ccree/cc_buffer_mgr.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -228,8 +228,17 @@ strip-libs  = $(filter-out -l%,$(1))
+--- a/drivers/crypto/ccree/cc_buffer_mgr.c
++++ b/drivers/crypto/ccree/cc_buffer_mgr.c
+@@ -1109,9 +1109,11 @@ int cc_map_aead_request(struct cc_drvdat
+ 	}
  
- PYTHON_CONFIG_SQ := $(call shell-sq,$(PYTHON_CONFIG))
- 
-+# Python 3.8 changed the output of `python-config --ldflags` to not include the
-+# '-lpythonX.Y' flag unless '--embed' is also passed. The feature check for
-+# libpython fails if that flag is not included in LDFLAGS
-+ifeq ($(shell $(PYTHON_CONFIG_SQ) --ldflags --embed 2>&1 1>/dev/null; echo $$?), 0)
-+  PYTHON_CONFIG_LDFLAGS := --ldflags --embed
-+else
-+  PYTHON_CONFIG_LDFLAGS := --ldflags
-+endif
-+
- ifdef PYTHON_CONFIG
--  PYTHON_EMBED_LDOPTS := $(shell $(PYTHON_CONFIG_SQ) --ldflags 2>/dev/null)
-+  PYTHON_EMBED_LDOPTS := $(shell $(PYTHON_CONFIG_SQ) $(PYTHON_CONFIG_LDFLAGS) 2>/dev/null)
-   PYTHON_EMBED_LDFLAGS := $(call strip-libs,$(PYTHON_EMBED_LDOPTS))
-   PYTHON_EMBED_LIBADD := $(call grep-libs,$(PYTHON_EMBED_LDOPTS)) -lutil
-   PYTHON_EMBED_CCOPTS := $(shell $(PYTHON_CONFIG_SQ) --includes 2>/dev/null)
+ 	size_to_map = req->cryptlen + areq_ctx->assoclen;
+-	if (areq_ctx->gen_ctx.op_type == DRV_CRYPTO_DIRECTION_ENCRYPT)
++	/* If we do in-place encryption, we also need the auth tag */
++	if ((areq_ctx->gen_ctx.op_type == DRV_CRYPTO_DIRECTION_ENCRYPT) &&
++	   (req->src == req->dst)) {
+ 		size_to_map += authsize;
+-
++	}
+ 	if (is_gcm4543)
+ 		size_to_map += crypto_aead_ivsize(tfm);
+ 	rc = cc_map_sg(dev, req->src, size_to_map, DMA_BIDIRECTIONAL,
 
 
