@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B536D1ACE58
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3631A1ACE5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393781AbgDPREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 13:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2393172AbgDPREa (ORCPT
+        id S2394200AbgDPRFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 13:05:20 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46456 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730647AbgDPRFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 13:04:30 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438A1C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 10:04:30 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id ADD8D97D;
-        Thu, 16 Apr 2020 19:04:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1587056668;
-        bh=6anfdQG9yggTGdSflvo7pft6sQkL8/h+L8urd2XHqOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X6s4aKYZ0HnypTp4DjT87L+G9p89XiHG75XXhtgoPJlyuqdJe6jG6rxE1UR1BOVlR
-         J9FxNgivCQ2sJ0Mg2ZvkNq3WwWsB8rDs7T5aGPdg/tj5VvO1kh/hjKPtfVMu4QV7iM
-         VGQI/Wkc0oD8lObB0dgS7lJPXvjmaWPLautl2Qbg=
-Date:   Thu, 16 Apr 2020 20:04:16 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        sam@ravnborg.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 2/2] drm/bridge: ps8640: Let panel to set the connector
- type
-Message-ID: <20200416170416.GH4796@pendragon.ideasonboard.com>
-References: <20200416164404.2418426-1-enric.balletbo@collabora.com>
- <20200416164404.2418426-2-enric.balletbo@collabora.com>
+        Thu, 16 Apr 2020 13:05:18 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DB6931C01E5; Thu, 16 Apr 2020 19:05:15 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 19:05:15 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 003/146] rxrpc: Abstract out the calculation of
+ whether theres Tx space
+Message-ID: <20200416170515.GA29803@duo.ucw.cz>
+References: <20200416131242.353444678@linuxfoundation.org>
+ <20200416131242.886803103@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
 Content-Disposition: inline
-In-Reply-To: <20200416164404.2418426-2-enric.balletbo@collabora.com>
+In-Reply-To: <20200416131242.886803103@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric,
 
-Thank you for the patch.
+--CE+1k2dSO48ffgeK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 16, 2020 at 06:44:04PM +0200, Enric Balletbo i Serra wrote:
-> The panel connector type should be set by the panel not the bridge, so
-> remove the connector_type assignment.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Hi!
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Abstract out the calculation of there being sufficient Tx buffer space.
+> This is reproduced several times in the rxrpc sendmsg code.
 
-> ---
-> 
->  drivers/gpu/drm/bridge/parade-ps8640.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> index 956b76e0a44d..13755d278db6 100644
-> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> @@ -278,8 +278,6 @@ static int ps8640_probe(struct i2c_client *client)
->  	if (!panel)
->  		return -ENODEV;
->  
-> -	panel->connector_type = DRM_MODE_CONNECTOR_eDP;
-> -
->  	ps_bridge->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
->  	if (IS_ERR(ps_bridge->panel_bridge))
->  		return PTR_ERR(ps_bridge->panel_bridge);
+I don't think this is suitable for stable. It does not fix anything.
 
--- 
-Regards,
+> +/*
+> + * Return true if there's sufficient Tx queue space.
+> + */
+> +static bool rxrpc_check_tx_space(struct rxrpc_call *call, rxrpc_seq_t *_=
+tx_win)
+> +{
+> +	unsigned int win_size =3D
+> +		min_t(unsigned int, call->tx_winsize,
+> +		      call->cong_cwnd + call->cong_extra);
+> +	rxrpc_seq_t tx_win =3D READ_ONCE(call->tx_hard_ack);
+> +
+> +	if (_tx_win)
+> +		*_tx_win =3D tx_win;
 
-Laurent Pinchart
+Plus, this is very very strange. Most callers pass NULL here, so we
+do READ_ONCE(call->tx_hard_ack) and it can't be optimized out, and
+then we drop the result.
+
+> @@ -72,9 +85,7 @@ static int rxrpc_wait_for_tx_window_nonintr(struct rxrp=
+c_sock *rx,
+>  		set_current_state(TASK_UNINTERRUPTIBLE);
+> =20
+>  		tx_win =3D READ_ONCE(call->tx_hard_ack);
+> -		if (call->tx_top - tx_win <
+> -		    min_t(unsigned int, call->tx_winsize,
+> -			  call->cong_cwnd + call->cong_extra))
+> +		if (rxrpc_check_tx_space(call, &tx_win))
+>  			return 0;
+> =20
+>  		if (call->state >=3D RXRPC_CALL_COMPLETE)
+
+And the remaining caller already has right value in tx_win, and it is
+discarded and READ again.
+
+This does not make sense.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--CE+1k2dSO48ffgeK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXpiQSwAKCRAw5/Bqldv6
+8pxlAJ4jlYRivfobYEnRilD+7i/P/WH66QCeK3UC3V/yoW3FBSFpofNrBuqkwgs=
+=oxcX
+-----END PGP SIGNATURE-----
+
+--CE+1k2dSO48ffgeK--
