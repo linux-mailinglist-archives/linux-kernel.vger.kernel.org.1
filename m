@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB1C1ACA03
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B2C1ACA25
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395286AbgDPPaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2395276AbgDPPaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:30:09 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584AFC061A10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:30:09 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id w20so21461512iob.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bgLKTDMc966pLZePK7Gy4v5POGBi54ywnFTq5rJSgzs=;
-        b=xig6g/WfEF6trkg+0bcPLBXurHgj5BTteF/0bBs3S1SiPTI9eFkmsiah/l6oXRYuc4
-         zkslZZdVvLAWgF0iEVZIyTeaxPgYk0LncDabFx/Kt7CGJC0/Wcztp1H/XH7BCabWb2Li
-         +3iteA8k8S4RTWplvYBrO8hJ9kQIVhFywXE3gVg2U9sjyHWhwQTswfZut7DE1JL3jYzF
-         okcX8eMj9A7MTPleU1A+uVJD+E8ajXhwpEK/djVcnI5BC9ciULzrr8zoBF6Qi2bWBJLC
-         J92SSWGu9sUk3rF/7qe+Hw+ct6OCLF373Xl5/deOMRiBil0k4xNutPCfd0ZT0SBfF5QU
-         PT/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bgLKTDMc966pLZePK7Gy4v5POGBi54ywnFTq5rJSgzs=;
-        b=EC5R7zqFD/uoObUahDScOo70RaDSP4ykH7MzNqmQwlPK/xwKA2gj3FwgmnCjrLgsP2
-         6iC+Ap175qbHxMcHwuesM6gyBWc6MHX0bCCgQLpx0yHQeQqSokYtTimwtqiLwFJPu7QE
-         HV9QyHP5XHFAVFsuBmJGmq6V/4p+NEQ0BgOMAgxbQkNQWkSkvv7hXlTDsQnH22yKjtli
-         E4h/jKMvo3JOo3si9vM2nw+NTVPakFYrBT071JfguY+EgrXtRg2hIXejBzAvu+LeY2oC
-         /zboMVJ3PIxnrVZ1Ws6B7nIJkVcl1ZOQjaUj74xBPr7zV90DBUZ/78nRl3ln5tJLZ/ET
-         swWQ==
-X-Gm-Message-State: AGi0PubA62JAuG/EdWZ4gWoySzuRO0t3pxpFA1jkjHpDWBNC21d8ByZc
-        yrba+e3qpMml6nwgugq4o6QHaq6qjmbczA==
-X-Google-Smtp-Source: APiQypJ3ogc/LftQFKCcQO/enKyIUEms8Z22MlRj0HPuqyykMQA7qtclm9/YE48pZzjgb3iq7VFBJw==
-X-Received: by 2002:a5d:8f02:: with SMTP id f2mr2254689iof.55.1587051008389;
-        Thu, 16 Apr 2020 08:30:08 -0700 (PDT)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id a19sm5725806ilk.34.2020.04.16.08.30.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 08:30:07 -0700 (PDT)
-Subject: Re: bdi: fix use-after-free for dev_name(bdi->dev)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, gregkh@linuxfoundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200416071519.807660-1-hch@lst.de>
- <874d57cb-90f1-db09-8f9d-29527451e241@kernel.dk>
- <20200416152946.GA10845@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ca7973dc-3be5-e482-900a-1018a0762b93@kernel.dk>
-Date:   Thu, 16 Apr 2020 09:30:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2634253AbgDPPbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:31:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504592AbgDPPbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:31:36 -0400
+Received: from linux-8ccs.fritz.box (p3EE2C7AC.dip0.t-ipconnect.de [62.226.199.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD59F21927;
+        Thu, 16 Apr 2020 15:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587051095;
+        bh=SCB+M9/K5bk5wKrZcAzFzoSpybGBfyanXCKWdEgGEbM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WGH6YrLc/B+FvD1kgigsj0IXt0Hmn/LxdTcxRftpJcmYrSeEdnU6J8PM5JK9t09KQ
+         5h20NWDDQ1p2nYScKkTMrgSmc5dwRMBZUgFbJyW+NcmRL4OULv7stTobEqI6s2+I+C
+         cfeh0cvcBeaYjDPg0ymdZ4f5rxmg2rEpc9T6x1dE=
+Date:   Thu, 16 Apr 2020 17:31:31 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
+ module_disable_ro()
+Message-ID: <20200416153131.GC6164@linux-8ccs.fritz.box>
+References: <cover.1586881704.git.jpoimboe@redhat.com>
+ <20200414182726.GF2483@worktop.programming.kicks-ass.net>
+ <20200414190814.glra2gceqgy34iyx@treble>
+ <20200415142415.GH20730@hirez.programming.kicks-ass.net>
+ <20200415161706.3tw5o4se2cakxmql@treble>
 MIME-Version: 1.0
-In-Reply-To: <20200416152946.GA10845@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200415161706.3tw5o4se2cakxmql@treble>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/20 9:29 AM, Christoph Hellwig wrote:
-> On Thu, Apr 16, 2020 at 09:29:13AM -0600, Jens Axboe wrote:
->> On 4/16/20 1:15 AM, Christoph Hellwig wrote:
->>> Hi all,
->>>
->>> the first three patches are my take on the proposal from Yufen Yu
->>> to fix the use after free of the device name of the bdi device.
->>>
->>> The rest is vaguely related cleanups.
++++ Josh Poimboeuf [15/04/20 11:17 -0500]:
+>On Wed, Apr 15, 2020 at 04:24:15PM +0200, Peter Zijlstra wrote:
+>> > It bothers me that both the notifiers and the module init() both see the
+>> > same MODULE_STATE_COMING state, but only in the former case is the text
+>> > writable.
+>> >
+>> > I think it's cognitively simpler if MODULE_STATE_COMING always means the
+>> > same thing, like the comments imply, "fully formed" and thus
+>> > not-writable:
+>> >
+>> > enum module_state {
+>> > 	MODULE_STATE_LIVE,	/* Normal state. */
+>> > 	MODULE_STATE_COMING,	/* Full formed, running module_init. */
+>> > 	MODULE_STATE_GOING,	/* Going away. */
+>> > 	MODULE_STATE_UNFORMED,	/* Still setting it up. */
+>> > };
+>> >
+>> > And, it keeps tighter constraints on what a notifier can do, which is a
+>> > good thing if we can get away with it.
 >>
->> Applied, thanks.
-> 
-> Please hold back, we still have a major issues with it.  I will resend
-> a fixed version tomorrow.
+>> Moo! -- but jump_label and static_call are on the notifier chain and I
+>> was hoping to make it cheaper for them. Should we perhaps weane them off the
+>> notifier and, like ftrace/klp put in explicit calls?
+>>
+>> It'd make the error handling in prepare_coming_module() a bigger mess,
+>> but it should work.
+>
+>So you're wanting to have jump labels and static_call do direct writes
+>instead of text pokes, right?  Makes sense.
+>
+>I don't feel strongly about "don't let module notifiers modify text".
+>
+>But I still not a fan of the fact that COMING has two different
+>"states".  For example, after your patch, when apply_relocate_add() is
+>called from klp_module_coming(), it can use memcpy(), but when called
+>from klp module init() it has to use text poke.  But both are COMING so
+>there's no way to look at the module state to know which can be used.
 
-OK, will do.
+This is a good observation, thanks for bringing it up. I agree that we
+should strive to be consistent with what the module states mean. In my
+head, I think it is easiest to assume/establish the following meanings
+for each module state:
 
--- 
-Jens Axboe
+MODULE_STATE_UNFORMED - no protections. relocations, alternatives,
+ftrace module initialization, etc. any other text modifications are
+in the process of being applied. Direct writes are permissible.
+
+MODULE_STATE_COMING - module fully formed, text modifications are
+done, protections applied, module is ready to execute init or is
+executing init.
+
+I wonder if we could enforce the meaning of these two states more
+consistently without needing to add another module state.
+
+Regarding Peter's patches, with the set_all_modules_text_*() api gone,
+and ftrace reliance on MODULE_STATE_COMING gone (I think?), is there
+anything preventing ftrace_module_init+enable from being called
+earlier (i.e., before complete_formation()) while the module is
+unformed? Then you don't have to move module_enable_ro/nx later and we
+keep the MODULE_STATE_COMING semantics. And if we're enforcing the
+above module state meanings, I would also be OK with moving jump_label
+and static_call out of the coming notifier chain and making them
+explicit calls while the module is still writable.
+
+Sorry in advance if I missed anything above, I'm still trying to wrap
+my head around which callers need what module state and what module
+permissions :/
+
+Jessica
 
