@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899341AC4B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BB51ACA75
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387646AbgDPODC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54844 "EHLO mail.kernel.org"
+        id S2897806AbgDPNkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408333AbgDPNl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:41:56 -0400
+        id S2896319AbgDPNaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7FE920732;
-        Thu, 16 Apr 2020 13:41:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4430A217D8;
+        Thu, 16 Apr 2020 13:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044515;
-        bh=LkFSaWD8eK5fUBwVuEfFuYOdlmwas0uXDLBhIaHcx94=;
+        s=default; t=1587043851;
+        bh=LQNbIgJ+U5/3KxFvMzUvY8TsjaNY+iAGrti+5QlJiFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elPWituUXMtrpFn7POeBzEkvuRuD41kzrADC67z+4YyT17vRP5F0pz0HtmsWxi/uE
-         LOdDhRLBRdR/uykd+9w2Djedixl0DQ5nzribcXHwhZfqgZfuaxkwON/SM+XmWtYFye
-         lR5raXC4Im6sp7u9JLIgbW3yN0RMRhLSw2Vj68sk=
+        b=dBRHUpXs8LlWPQFqjrdZH/CxHtOenlZ2s7Ydb/5UjoC0zEGWRlvst8476/8j0B+mK
+         omFYuObkFFfobw3WpymMGCBdQBugd6i4e26Ti+zFaVXwOo8oIUWqcraEypcwiYwxHv
+         2lGt+PBZkJBsk3J6Xm27EK/ZlsoPJSKOO3PcD4vk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.5 209/257] drm: Remove PageReserved manipulation from drm_pci_alloc
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 119/146] cpufreq: powernv: Fix use-after-free
 Date:   Thu, 16 Apr 2020 15:24:20 +0200
-Message-Id: <20200416131352.194060957@linuxfoundation.org>
+Message-Id: <20200416131258.866303568@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,92 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-commit ea36ec8623f56791c6ff6738d0509b7920f85220 upstream.
+commit d0a72efac89d1c35ac55197895201b7b94c5e6ef upstream.
 
-drm_pci_alloc/drm_pci_free are very thin wrappers around the core dma
-facilities, and we have no special reason within the drm layer to behave
-differently. In particular, since
+The cpufreq driver has a use-after-free that we can hit if:
 
-commit de09d31dd38a50fdce106c15abd68432eebbd014
-Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Date:   Fri Jan 15 16:51:42 2016 -0800
+a) There's an OCC message pending when the notifier is registered, and
+b) The cpufreq driver fails to register with the core.
 
-    page-flags: define PG_reserved behavior on compound pages
+When a) occurs the notifier schedules a workqueue item to handle the
+message. The backing work_struct is located on chips[].throttle and
+when b) happens we clean up by freeing the array. Once we get to
+the (now free) queued item and the kernel crashes.
 
-    As far as I can see there's no users of PG_reserved on compound pages.
-    Let's use PF_NO_COMPOUND here.
-
-it has been illegal to combine GFP_COMP with SetPageReserved, so lets
-stop doing both and leave the dma layer to its own devices.
-
-Reported-by: Taketo Kabe
-Bug: https://gitlab.freedesktop.org/drm/intel/issues/1027
-Fixes: de09d31dd38a ("page-flags: define PG_reserved behavior on compound pages")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: <stable@vger.kernel.org> # v4.5+
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200202171635.4039044-1-chris@chris-wilson.co.uk
+Fixes: c5e29ea7ac14 ("cpufreq: powernv: Fix bugs in powernv_cpufreq_{init/exit}")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200206062622.28235-1-oohall@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/drm_pci.c |   23 ++---------------------
- 1 file changed, 2 insertions(+), 21 deletions(-)
+ drivers/cpufreq/powernv-cpufreq.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/gpu/drm/drm_pci.c
-+++ b/drivers/gpu/drm/drm_pci.c
-@@ -51,8 +51,6 @@
- drm_dma_handle_t *drm_pci_alloc(struct drm_device * dev, size_t size, size_t align)
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -1081,6 +1081,12 @@ free_and_return:
+ 
+ static inline void clean_chip_info(void)
  {
- 	drm_dma_handle_t *dmah;
--	unsigned long addr;
--	size_t sz;
- 
- 	/* pci_alloc_consistent only guarantees alignment to the smallest
- 	 * PAGE_SIZE order which is greater than or equal to the requested size.
-@@ -68,20 +66,13 @@ drm_dma_handle_t *drm_pci_alloc(struct d
- 	dmah->size = size;
- 	dmah->vaddr = dma_alloc_coherent(&dev->pdev->dev, size,
- 					 &dmah->busaddr,
--					 GFP_KERNEL | __GFP_COMP);
-+					 GFP_KERNEL);
- 
- 	if (dmah->vaddr == NULL) {
- 		kfree(dmah);
- 		return NULL;
- 	}
- 
--	/* XXX - Is virt_to_page() legal for consistent mem? */
--	/* Reserve */
--	for (addr = (unsigned long)dmah->vaddr, sz = size;
--	     sz > 0; addr += PAGE_SIZE, sz -= PAGE_SIZE) {
--		SetPageReserved(virt_to_page((void *)addr));
--	}
--
- 	return dmah;
++	int i;
++
++	/* flush any pending work items */
++	if (chips)
++		for (i = 0; i < nr_chips; i++)
++			cancel_work_sync(&chips[i].throttle);
+ 	kfree(chips);
  }
  
-@@ -94,19 +85,9 @@ EXPORT_SYMBOL(drm_pci_alloc);
-  */
- void __drm_legacy_pci_free(struct drm_device * dev, drm_dma_handle_t * dmah)
- {
--	unsigned long addr;
--	size_t sz;
--
--	if (dmah->vaddr) {
--		/* XXX - Is virt_to_page() legal for consistent mem? */
--		/* Unreserve */
--		for (addr = (unsigned long)dmah->vaddr, sz = dmah->size;
--		     sz > 0; addr += PAGE_SIZE, sz -= PAGE_SIZE) {
--			ClearPageReserved(virt_to_page((void *)addr));
--		}
-+	if (dmah->vaddr)
- 		dma_free_coherent(&dev->pdev->dev, dmah->size, dmah->vaddr,
- 				  dmah->busaddr);
--	}
- }
- 
- /**
 
 
