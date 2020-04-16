@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1731ACC4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A371ACC57
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442864AbgDPP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:57:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:36780 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442848AbgDPP5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:57:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2620A30E;
-        Thu, 16 Apr 2020 08:57:05 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 94EA73F237;
-        Thu, 16 Apr 2020 08:57:03 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 16:56:56 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Robert Richter <rrichter@marvell.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/2] [RFC] arm64: Add dependencies to vendor-specific
- errata
-Message-ID: <20200416155655.GA7155@lakrids.cambridge.arm.com>
-References: <20200416115658.20406-1-geert+renesas@glider.be>
- <20200416115658.20406-3-geert+renesas@glider.be>
- <20200416125630.GF4987@lakrids.cambridge.arm.com>
- <CAMuHMdWRW4+YLR8fz0hUTAPupRkM4Y5c82XHuOWSvNYOh-BZ0A@mail.gmail.com>
+        id S2442905AbgDPP6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2442870AbgDPP53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:57:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67E9C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:57:29 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 6D65F2A22A6
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        laurent.pinchart@ideasonboard.com,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 0/7] Convert mtk-dsi to drm_bridge API and get EDID for ps8640 bridge
+Date:   Thu, 16 Apr 2020 17:57:12 +0200
+Message-Id: <20200416155720.2360443-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWRW4+YLR8fz0hUTAPupRkM4Y5c82XHuOWSvNYOh-BZ0A@mail.gmail.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 05:38:07PM +0200, Geert Uytterhoeven wrote:
-> On Thu, Apr 16, 2020 at 2:56 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Thu, Apr 16, 2020 at 01:56:58PM +0200, Geert Uytterhoeven wrote:
-> > > Currently the user is asked about enabling support for each and every
-> > > vendor-specific erratum, even when support for the specific platform is
-> > > not enabled.
-> > >
-> > > Fix this by adding platform dependencies to the config options
-> > > controlling support for vendor-specific errata.
 
-> > I'm not su1re that it makes sense to do this in general, becaose the
-> > ARCH_* platform symbols are about plactform/SoC support (e.g. pinctrl
-> > drivers), and these are (mostly) CPU-local and/or VM-visible.
-> >
-> > I think that it makes sense for those to be independent because:
- 
-> > * It prevents building a minimal VM image with all (non-virtualized)
-> >   platform support disabled, but all possible (VM-visible) errata
-> >   options enabled. I do that occassionally for testing/analysis, and I
-> >   can imagine this is useful for those building images that are only
-> >   intended to be used in VMs.
-> 
-> Oh, you also want to build a "generic" guest kernel, with all ARCH_*
-> symbols disabled. 
+The PS8640 dsi-to-eDP bridge driver is using the panel bridge API,
+however, not all the components in the chain have been ported to the
+drm_bridge API. Actually, when a panel is attached the default panel's mode
+is used, but in some cases we can't get display up if mode getting from
+eDP control EDID is not chosen.
 
-Yup! As above I do this today for building test kernels I run on a
-number of different hosts, and I'm aware of other use-cases (e.g. WSL2
-or docker for mac) where you may want to do this to minimize the core
-kernel either for size or security reasons.
+This series address that problem, first implements the .get_edid()
+callback in the PS8640 driver (which is not used until the conversion is
+done) and then, converts the Mediatek DSI driver to use the drm_bridge
+API.
 
-> Let's hope a maleficent user cannot disable errata mitigations in the
-> guest kernel and break the host ;-)
+As far as I know, we're the only users of the mediatek dsi driver in
+mainline, so should be safe to switch to the new chain of drm_bridge API
+unconditionally.
 
-Indeed ;)
+The patches has been tested on a Acer Chromebook R13 (Elm) running a
+Chrome OS userspace and checking that the valid EDID mode reported by
+the bridge is selected.
 
-For cases where a malicious guest could cause harm we've added
-workarounds in KVM, so unless we've missed something that shouldn't be
-the case.
+[1] https://lore.kernel.org/lkml/20200210063523.133333-1-hsinyi@chromium.org/
 
-Otherwise, a guest missing these is just shooting itself in the foot.
+Changes in v2:
+- Do not set connector_type for panel here. (Sam Ravnborg)
 
-> And perhaps you do want to enable some platform-specific drivers for
-> VFIO pass-through?  Hence having ARCH_* dependencies on those drivers
-> means they cannot be enabled :-( Hmm...
+Enric Balletbo i Serra (7):
+  drm/bridge: ps8640: Get the EDID from eDP control
+  drm/bridge_connector: Set default status connected for eDP connectors
+  drm/mediatek: mtk_dsi: Rename bridge to next_bridge
+  drm/mediatek: mtk_dsi: Convert to bridge driver
+  drm/mediatek: mtk_dsi: Use simple encoder
+  drm/mediatek: mtk_dsi: Use the drm_panel_bridge API
+  drm/mediatek: mtk_dsi: Create connector for bridges
 
-IIRC platform device passthrough requires an corresponding VFIO platform
-driver in the host to handle reset and so on, but it does seem a shame
-to not allow the user to select a driver if they really want it.
+ drivers/gpu/drm/bridge/parade-ps8640.c |  12 ++
+ drivers/gpu/drm/drm_bridge_connector.c |   1 +
+ drivers/gpu/drm/mediatek/mtk_dsi.c     | 280 ++++++++-----------------
+ 3 files changed, 101 insertions(+), 192 deletions(-)
 
-I guess there might be platform-specific PCIe drivers too, which might
-work with VFIO regardless.
+-- 
+2.25.1
 
-Thanks,
-Mark.
