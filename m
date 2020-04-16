@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1D51ACC11
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16851AC5B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732351AbgDPPyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:54:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40394 "EHLO mail.kernel.org"
+        id S2410020AbgDPOZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895908AbgDPNaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:30:13 -0400
+        id S1728926AbgDPN6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D4F0208E4;
-        Thu, 16 Apr 2020 13:30:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1D5B21744;
+        Thu, 16 Apr 2020 13:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043812;
-        bh=xqhYctsbPYWAQFJ5JpgiISPALWCmUCtnpQ4HqLrMCZw=;
+        s=default; t=1587045503;
+        bh=LY47aTPPMAmsiUBhTInmnH4kGMQUiyaa/B9hGY7Hsd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PRoWCA0ut7TR7FzwC5rEpc2KzVY3ul1MPSO9KAqDwKl1/kx/vgz5FGsoTnanpKhld
-         lglkjbYj3obvrn7c8iWI385UW4bwKaZ4JLiTLDYFd9Gak/xBgOTXRd26MIkXLdoJhd
-         g1kpkYZucRkcW7BNsxZ+NZMHKO9E0BVauPby2EG0=
+        b=Li4StG1GgoqCnu7On+Swp6GftdHmG28viKEnxQ3SSX7qQ48HvJe3wUz+vsvkdSrZ/
+         IPIsmoenbk2JemQKVQA1uq+speLfLvSPj5NMiwILlr2ZFyqdpqpA8eROzXe993EMFj
+         zitAcIHm8Ouv7QeKexpmmSRMlGejFv0M+3/mJqbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.cz>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 109/146] powerpc/pseries: Avoid NULL pointer dereference when drmem is unavailable
+        stable@vger.kernel.org, Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrei Vagin <avagin@gmail.com>
+Subject: [PATCH 5.6 161/254] time/namespace: Fix time_for_children symlink
 Date:   Thu, 16 Apr 2020 15:24:10 +0200
-Message-Id: <20200416131257.595487715@linuxfoundation.org>
+Message-Id: <20200416131346.748653817@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,101 +46,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Libor Pechacek <lpechacek@suse.cz>
+From: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
 
-commit a83836dbc53e96f13fec248ecc201d18e1e3111d upstream.
+commit b801f1e22c23c259d6a2c955efddd20370de19a6 upstream.
 
-In guests without hotplugagble memory drmem structure is only zero
-initialized. Trying to manipulate DLPAR parameters results in a crash.
+Looking at the contents of the /proc/PID/ns/time_for_children symlink shows
+an anomaly:
 
-  $ echo "memory add count 1" > /sys/kernel/dlpar
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-  ...
-  NIP:  c0000000000ff294 LR: c0000000000ff248 CTR: 0000000000000000
-  REGS: c0000000fb9d3880 TRAP: 0300   Tainted: G            E      (5.5.0-rc6-2-default)
-  MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28242428  XER: 20000000
-  CFAR: c0000000009a6c10 DAR: 0000000000000010 DSISR: 40000000 IRQMASK: 0
-  ...
-  NIP dlpar_memory+0x6e4/0xd00
-  LR  dlpar_memory+0x698/0xd00
-  Call Trace:
-    dlpar_memory+0x698/0xd00 (unreliable)
-    handle_dlpar_errorlog+0xc0/0x190
-    dlpar_store+0x198/0x4a0
-    kobj_attr_store+0x30/0x50
-    sysfs_kf_write+0x64/0x90
-    kernfs_fop_write+0x1b0/0x290
-    __vfs_write+0x3c/0x70
-    vfs_write+0xd0/0x260
-    ksys_write+0xdc/0x130
-    system_call+0x5c/0x68
+$ ls -l /proc/self/ns/* |awk '{print $9, $10, $11}'
+...
+/proc/self/ns/pid -> pid:[4026531836]
+/proc/self/ns/pid_for_children -> pid:[4026531836]
+/proc/self/ns/time -> time:[4026531834]
+/proc/self/ns/time_for_children -> time_for_children:[4026531834]
+/proc/self/ns/user -> user:[4026531837]
+...
 
-Taking closer look at the code, I can see that for_each_drmem_lmb is a
-macro expanding into `for (lmb = &drmem_info->lmbs[0]; lmb <=
-&drmem_info->lmbs[drmem_info->n_lmbs - 1]; lmb++)`. When drmem_info->lmbs
-is NULL, the loop would iterate through the whole address range if it
-weren't stopped by the NULL pointer dereference on the next line.
+The reference for 'time_for_children' should be a 'time' namespace, just as
+the reference for 'pid_for_children' is a 'pid' namespace.  In other words,
+the above time_for_children link should read:
 
-This patch aligns for_each_drmem_lmb and for_each_drmem_lmb_in_range
-macro behavior with the common C semantics, where the end marker does
-not belong to the scanned range, and alters get_lmb_range() semantics.
-As a side effect, the wraparound observed in the crash is prevented.
+/proc/self/ns/time_for_children -> time:[4026531834]
 
-Fixes: 6c6ea53725b3 ("powerpc/mm: Separate ibm, dynamic-memory data from DT format")
-Cc: stable@vger.kernel.org # v4.16+
-Signed-off-by: Libor Pechacek <lpechacek@suse.cz>
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200131132829.10281-1-msuchanek@suse.de
+Fixes: 769071ac9f20 ("ns: Introduce Time Namespace")
+Signed-off-by: Michael Kerrisk <mtk.manpages@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Dmitry Safonov <dima@arista.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Acked-by: Andrei Vagin <avagin@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/a2418c48-ed80-3afe-116e-6611cb799557@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/drmem.h                |    4 ++--
- arch/powerpc/platforms/pseries/hotplug-memory.c |    8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ kernel/time/namespace.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/include/asm/drmem.h
-+++ b/arch/powerpc/include/asm/drmem.h
-@@ -28,12 +28,12 @@ struct drmem_lmb_info {
- extern struct drmem_lmb_info *drmem_info;
+--- a/kernel/time/namespace.c
++++ b/kernel/time/namespace.c
+@@ -446,6 +446,7 @@ const struct proc_ns_operations timens_o
  
- #define for_each_drmem_lmb_in_range(lmb, start, end)		\
--	for ((lmb) = (start); (lmb) <= (end); (lmb)++)
-+	for ((lmb) = (start); (lmb) < (end); (lmb)++)
- 
- #define for_each_drmem_lmb(lmb)					\
- 	for_each_drmem_lmb_in_range((lmb),			\
- 		&drmem_info->lmbs[0],				\
--		&drmem_info->lmbs[drmem_info->n_lmbs - 1])
-+		&drmem_info->lmbs[drmem_info->n_lmbs])
- 
- /*
-  * The of_drconf_cell_v1 struct defines the layout of the LMB data
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -227,7 +227,7 @@ static int get_lmb_range(u32 drc_index,
- 			 struct drmem_lmb **end_lmb)
- {
- 	struct drmem_lmb *lmb, *start, *end;
--	struct drmem_lmb *last_lmb;
-+	struct drmem_lmb *limit;
- 
- 	start = NULL;
- 	for_each_drmem_lmb(lmb) {
-@@ -240,10 +240,10 @@ static int get_lmb_range(u32 drc_index,
- 	if (!start)
- 		return -EINVAL;
- 
--	end = &start[n_lmbs - 1];
-+	end = &start[n_lmbs];
- 
--	last_lmb = &drmem_info->lmbs[drmem_info->n_lmbs - 1];
--	if (end > last_lmb)
-+	limit = &drmem_info->lmbs[drmem_info->n_lmbs];
-+	if (end > limit)
- 		return -EINVAL;
- 
- 	*start_lmb = start;
+ const struct proc_ns_operations timens_for_children_operations = {
+ 	.name		= "time_for_children",
++	.real_ns_name	= "time",
+ 	.type		= CLONE_NEWTIME,
+ 	.get		= timens_for_children_get,
+ 	.put		= timens_put,
 
 
