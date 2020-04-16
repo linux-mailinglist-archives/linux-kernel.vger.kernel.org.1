@@ -2,145 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C281AC010
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7996E1ABDE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506641AbgDPLrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:47:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504827AbgDPKZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:25:14 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 457552192A;
-        Thu, 16 Apr 2020 10:25:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587032711;
-        bh=lKwbnEdUTTba3AJVKzmuvKJ2X9FO6D210s3WkJT/zZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W2uMPyIU+mZIh4oNdYX1OAnVqWzjphWKBN2GBWPvfUx+i38L7tiemQkppi+gxHlZW
-         JlF2YNYah1X+HwUMB3yZOQ35X0ro+n9Y78fNlVj/EfyxfoZZsOyB5MYhQSYl8R4ERW
-         H/AbdIG7irc1sh8ffKpw66MvAQ+0sft+pvgi+fyg=
-Date:   Thu, 16 Apr 2020 12:25:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     driverdevel <devel@driverdev.osuosl.org>, nd <nd@arm.com>,
-        Todd Kjos <tkjos@android.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Anders Pedersen <anders.pedersen@arm.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Darren Hart (VMware)" <dvhart@infradead.org>,
-        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] staging: android: ion: Skip sync if not mapped
-Message-ID: <20200416102508.GA820251@kroah.com>
-References: <20200414134629.54567-1-orjan.eide@arm.com>
- <20200414141849.55654-1-orjan.eide@arm.com>
- <20200414142810.GA958163@kroah.com>
- <CALAqxLX-SUhHPH6ewt-s9cEMc8DtMTgXem=JruAkLofuJf1syg@mail.gmail.com>
+        id S2504997AbgDPK3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:29:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50822 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504943AbgDPK2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:28:48 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GASCrM163539;
+        Thu, 16 Apr 2020 10:28:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=9GnHtY/DK7oYqI+ruPXthvzHvwuzbjixOeDMP1A3xwA=;
+ b=ryIu0QaKo4LeO4bycJw+XOJ8VTN2Bit2GAL9x4zh0mW+wgPUUKYohMOjoeEJ7nFV8F+X
+ UmHMEnkWRp5hi1SuX1ImTiIc6vODNq/tbZQ02lPH3y+tBHdzHL1LXdO5OF+lAAbYkApZ
+ 3VcOub2stRuofE2WSJkHG2UQRaG5sZFxINw5Mis5Yh1ZHdTCeZNjpTQdN65ogH1B2hpT
+ ZnWmHK+zs0k82NcoNmZCuJm/g5G3r6cAXwv5Dsxiq9LLykNhgE2etZlCwPgVUOEy6kZy
+ nwss6PZbtEDxw0mRCZ7o6AUYYjTGr38iuuCCW/i1l4ijk0R417piCZ++wNatgXaIriIc vA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30dn95rjtp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 10:28:27 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GAHsZJ099521;
+        Thu, 16 Apr 2020 10:26:26 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30dynya2y6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 10:26:26 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GAQOEY025630;
+        Thu, 16 Apr 2020 10:26:24 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Apr 2020 03:26:24 -0700
+Date:   Thu, 16 Apr 2020 13:26:12 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>,
+        ast@kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: WARNING in bpf_cgroup_link_release
+Message-ID: <20200416102612.GO1163@kadam>
+References: <000000000000500e6f05a34ecc01@google.com>
+ <4ba5ee0c-ec81-8ce3-6681-465e34b98a93@iogearbox.net>
+ <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALAqxLX-SUhHPH6ewt-s9cEMc8DtMTgXem=JruAkLofuJf1syg@mail.gmail.com>
+In-Reply-To: <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=896 suspectscore=0
+ malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160071
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 09:41:31PM -0700, John Stultz wrote:
-> On Tue, Apr 14, 2020 at 7:28 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Apr 14, 2020 at 04:18:47PM +0200, Ørjan Eide wrote:
-> > > Only sync the sg-list of an Ion dma-buf attachment when the attachment
-> > > is actually mapped on the device.
-> > >
-> > > dma-bufs may be synced at any time. It can be reached from user space
-> > > via DMA_BUF_IOCTL_SYNC, so there are no guarantees from callers on when
-> > > syncs may be attempted, and dma_buf_end_cpu_access() and
-> > > dma_buf_begin_cpu_access() may not be paired.
-> > >
-> > > Since the sg_list's dma_address isn't set up until the buffer is used
-> > > on the device, and dma_map_sg() is called on it, the dma_address will be
-> > > NULL if sync is attempted on the dma-buf before it's mapped on a device.
-> > >
-> > > Before v5.0 (commit 55897af63091 ("dma-direct: merge swiotlb_dma_ops
-> > > into the dma_direct code")) this was a problem as the dma-api (at least
-> > > the swiotlb_dma_ops on arm64) would use the potentially invalid
-> > > dma_address. How that failed depended on how the device handled physical
-> > > address 0. If 0 was a valid address to physical ram, that page would get
-> > > flushed a lot, while the actual pages in the buffer would not get synced
-> > > correctly. While if 0 is an invalid physical address it may cause a
-> > > fault and trigger a crash.
-> > >
-> > > In v5.0 this was incidentally fixed by commit 55897af63091 ("dma-direct:
-> > > merge swiotlb_dma_ops into the dma_direct code"), as this moved the
-> > > dma-api to use the page pointer in the sg_list, and (for Ion buffers at
-> > > least) this will always be valid if the sg_list exists at all.
-> > >
-> > > But, this issue is re-introduced in v5.3 with
-> > > commit 449fa54d6815 ("dma-direct: correct the physical addr in
-> > > dma_direct_sync_sg_for_cpu/device") moves the dma-api back to the old
-> > > behaviour and picks the dma_address that may be invalid.
-> > >
-> > > dma-buf core doesn't ensure that the buffer is mapped on the device, and
-> > > thus have a valid sg_list, before calling the exporter's
-> > > begin_cpu_access.
-> > >
-> > > Signed-off-by: Ørjan Eide <orjan.eide@arm.com>
-> > > ---
-> > >  drivers/staging/android/ion/ion.c | 12 ++++++++++++
-> > >  1 file changed, 12 insertions(+)
-> > >
-> > > Resubmit without disclaimer, sorry about that.
-> > >
-> > > This seems to be part of a bigger issue where dma-buf exporters assume
-> > > that their dma-buf begin_cpu_access and end_cpu_access callbacks have a
-> > > certain guaranteed behavior, which isn't ensured by dma-buf core.
-> > >
-> > > This patch fixes this in ion only, but it also needs to be fixed for
-> > > other exporters, either handled like this in each exporter, or in
-> > > dma-buf core before calling into the exporters.
-> > >
-> > > diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
-> > > index 38b51eace4f9..7b752ba0cb6d 100644
-> > > --- a/drivers/staging/android/ion/ion.c
-> > > +++ b/drivers/staging/android/ion/ion.c
-> >
-> > Now that we have the dma-buff stuff in the tree, do we even need the
-> > ion code in the kernel anymore?  Can't we delete it now?
-> >
+On Wed, Apr 15, 2020 at 09:51:40AM -0700, 'Andrii Nakryiko' via syzkaller-bugs wrote:
+> On 4/15/20 4:57 AM, Daniel Borkmann wrote:
+> > On 4/15/20 8:55 AM, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following crash on:
+> > 
+> > Andrii, ptal.
+> > 
+> > > HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to
+> > > __get_user_x..
+> > > git tree:       bpf-next
+> > > console output: https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_x_log.txt-3Fx-3D148ccb57e00000&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=-6XBbsNV1O4X5flrx4Yssfjc56d0qeSHgwHhd92UPJc&e=
+> > > kernel config:  https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_x_.config-3Fx-3D8c1e98458335a7d1&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=s5-1AlWtSiBvo66WN4_UXoXMGIGIqsoUCrmAnxNnfX0&e=
+> > > dashboard link: https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_bug-3Fextid-3D8a5dadc5c0b1d7055945&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=hAA0702qJH5EwRwvG0RKmj8FwIRm1O8hvmoS7ne5Dls&e=
+> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > 
+> > > Unfortunately, I don't have any reproducer for this crash yet.
+> > > 
+> > > IMPORTANT: if you fix the bug, please add the following tag to the
+> > > commit:
+> > > Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
+> > > 
+> > > ------------[ cut here ]------------
+> > > WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796
+> > > bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
 > 
-> I agree that we shouldn't be taking further (non-security/cleanup)
-> patches to the ION code.
-> 
-> I'd like to give developers a little bit of a transition period (I was
-> thinking a year, but really just one LTS release that has both would
-> do) where they can move their ION heaps over to dmabuf heaps and test
-> both against the same tree.
-> 
-> But I do think we can mark it as deprecated and let folks know that
-> around the end of the year it will be deleted.
+> This warning is triggered due to __cgroup_bpf_detach returning an error. It
+> can do it only in two cases: either attached item is not found, which from
+> starting at code some moreI don't see how that can happen. The other reason
+> - kmalloc() failing to allocate memory for new effective prog array.
 
-No one ever notices "depreciated" things, they only notice if the code
-is no longer there :)
+If you look at the log file then this was allocation fault injection in
+bpf_prog_array_alloc().
 
-So I'm all for just deleting it and seeing who even notices...
+https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
 
-thanks,
+regards,
+dan carpenter
 
-greg k-h
