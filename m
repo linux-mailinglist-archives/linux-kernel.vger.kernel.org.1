@@ -2,282 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C206C1AC8D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51D21AC911
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502899AbgDPPO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2394996AbgDPPOt (ORCPT
+        id S2392432AbgDPPST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:18:19 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42002 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442384AbgDPPSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:14:49 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8327C061A0C;
-        Thu, 16 Apr 2020 08:14:48 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id s18so2182796qvn.1;
-        Thu, 16 Apr 2020 08:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Cnt3x0WILSXdfVWn7882iFMH+QiRIlDfwNW40+BegY0=;
-        b=lo/6TnrLdqo1Ewp3AIQ1weYKVf3pST5BGFgwzzXzjXt/T0AcCNPHfoeNs5ZYVoOi6m
-         geBSnPIrbBsNyX+lqRTtoK1nTMaKBqchz+3rDcHipl1Nn46jw0Lgi2+wSkDtzOQLlxvW
-         JYFA6TFwbEZnUO4SqzVnuBgWCfKU38JCZOmrQdUo4BamS0hs8jYmZZC+AQovz1hffrK4
-         SZ+mhLPjsljUT3QoBUdaPsMcdS6uaMt/F6d6xreHUxrWbFEj/hyStpgPi1jbJrWfjtvN
-         CPppM8SPFfml035WgPtaeQBYAi9btxak6virqsZQDuem+sQMLypTBBibYfpeA/uDbJvs
-         nvYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cnt3x0WILSXdfVWn7882iFMH+QiRIlDfwNW40+BegY0=;
-        b=e85RrMROmiU9OUe16QGa2p/k8ZDJ33jMHpHX/WLhlj0of3eUmNH/55KntGEWwMbWn0
-         D61f6He5fKZjZ7WGPQw1UdfHYDvu5Gl+3i6VQ/dvoQZO1e9cTpyHHvef2arS48Qglufa
-         EspGtgdrZARQzGqBhXOuN5o+z983wIBfiIjzIRo9y4+b1/VsKnTPnPqLttOubWfs+qRw
-         INgsAiGZeSgVWIxaUJ1Y6RgaDQuCYav+CiiCxeG8TKwJHfKD5/ClZ2w+qMlqBVmdg413
-         MD2jVef4zZzWlVdftHecEHjJUWzul/8dQ8i2xJfSvDE9taKRKOQuLbiTfmXVmKmK0BNV
-         c0nA==
-X-Gm-Message-State: AGi0PuYShg9B/KPUD0HZhFEdXZ3/d7A2y2E3lZr0LWMmWM2tNt6oNQLz
-        smxvLwBoHc5yKY6YWcGd5mSdZ7Ph448=
-X-Google-Smtp-Source: APiQypJHqwAuZ7GPj3oytzZce/pR8UCGlJpw2xo0MDfBi8zTZ7/K4yT1ZiM/cIWANAouoftU6c+Qxw==
-X-Received: by 2002:a0c:f748:: with SMTP id e8mr10500262qvo.237.1587050087026;
-        Thu, 16 Apr 2020 08:14:47 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id i6sm13802634qkk.123.2020.04.16.08.14.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 08:14:46 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AD719409A3; Thu, 16 Apr 2020 12:14:43 -0300 (-03)
-Date:   Thu, 16 Apr 2020 12:14:43 -0300
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 11/16] perf intel-pt: Add support for synthesizing
- callchains for regular events
-Message-ID: <20200416151443.GA2650@kernel.org>
-References: <20200401101613.6201-1-adrian.hunter@intel.com>
- <20200401101613.6201-12-adrian.hunter@intel.com>
+        Thu, 16 Apr 2020 11:18:07 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20E5497D;
+        Thu, 16 Apr 2020 17:18:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1587050283;
+        bh=kRV0TK76jaLsKumnRx9oBxQ+fB9EZ/hBhcVvcCrUN8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KunL1GHnZWE+ve/sOLaoFkAzYPKX6+/n+r78iuYJs7x5e+okkGATOqE6ApGMnuikF
+         /2ayUcQFN/Z9UdwuSHJbBCZB/V8aA1w7KUzO09ROtISEFr9rEn/3j6xTfoHtnx7/rk
+         eGxptalaFyRgrldUK2vtce1M8FhIp7rddugLnmJg=
+Date:   Thu, 16 Apr 2020 18:17:51 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
+Message-ID: <20200416151751.GD4796@pendragon.ideasonboard.com>
+References: <20200414201739.GJ19819@pendragon.ideasonboard.com>
+ <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
+ <20200414205158.GM19819@pendragon.ideasonboard.com>
+ <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
+ <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
+ <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
+ <CAK8P3a0CoPUTSJp6ddDnmabo59iE73pugGSYayoeB5N57az9_w@mail.gmail.com>
+ <20200415211220.GQ4758@pendragon.ideasonboard.com>
+ <CAK8P3a1rDZO4cuL6VAXgu9sOiedcHqOSL7ELhpvULz+YYRaGbA@mail.gmail.com>
+ <CAKMK7uEoZ1jC8c25tPVX20kcdC1=+TpUUNyf+-c=sg5iK2cTZA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200401101613.6201-12-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAKMK7uEoZ1jC8c25tPVX20kcdC1=+TpUUNyf+-c=sg5iK2cTZA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Apr 01, 2020 at 01:16:08PM +0300, Adrian Hunter escreveu:
-> Currently, callchains can be synthesized only for synthesized events.
-> Support also synthesizing callchains for regular events.
+On Thu, Apr 16, 2020 at 08:51:14AM +0200, Daniel Vetter wrote:
+> On Wed, Apr 15, 2020 at 11:22 PM Arnd Bergmann wrote:
+> > On Wed, Apr 15, 2020 at 11:12 PM Laurent Pinchart wrote:
+> > > On Wed, Apr 15, 2020 at 09:07:14PM +0200, Arnd Bergmann wrote:
+> > > > On Wed, Apr 15, 2020 at 5:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > On Wed, Apr 15, 2020 at 4:13 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > On Wed, Apr 15, 2020 at 3:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > > > On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> > > > > > > > Doesn't "imply" mean it gets selected by default but can be manually
+> > > > > > > > disabled ?
+> > > > > > >
+> > > > > > > That may be what it means now (I still don't understand how it's defined
+> > > > > > > as of v5.7-rc1), but traditionally it was more like a 'select if all
+> > > > > > > dependencies are met'.
+> > > > > >
+> > > > > > That's still what it is supposed to mean right now ;-)
+> > > > > > Except that now it should correctly handle the modular case, too.
+> > > > >
+> > > > > Then there is a bug. If I run 'make menuconfig' now on a mainline kernel
+> > > > > and enable CONFIG_DRM_RCAR_DU, I can set
+> > > > > DRM_RCAR_CMM and DRM_RCAR_LVDS to 'y', 'n' or 'm' regardless
+> > > > > of whether CONFIG_DRM_RCAR_DU is 'm' or 'y'. The 'implies'
+> > > > > statement seems to be ignored entirely, except as reverse 'default'
+> > > > > setting.
+> > > >
+> > > > Here is another version that should do what we want and is only
+> > > > half-ugly. I can send that as a proper patch if it passes my testing
+> > > > and nobody hates it too much.
+> > >
+> > > This may be a stupid question, but doesn't this really call for fixing
+> > > Kconfig ? This seems to be such a common pattern that requiring
+> > > constructs similar to the ones below will be a never-ending chase of
+> > > offenders.
+> >
+> > Maybe, I suppose the hardest part here would be to come up with
+> > an appropriate name for the keyword ;-)
+> >
+> > Any suggestions?
 
-This is super cool, I wonder if we shouldn't do it automatically or just
-adding a new type of callchains, i.e.:
+Would it make sense to fix the imply semantics ? Or are they use cases
+for the current behaviour of imply ? "recommend" could be another
+keyword. I think we should try to limit the number of keywords though,
+as it would otherwise become quite messy.
 
-	perf record --call-graph pt uname
-
-Should take care of all the details, i.e. do the extra steps below
-behind the scenes.
-
-Possibly even find out that the workload specified was built with
--fomit-frame-pointers, that the hardware has Intel PT and do all behind
-the scenes for:
-
-	perf record -g uname
-
-Alternatively we could take some less seemingly far fetched approach and
-make this configurable via:
-
-	perf config call-graph.record-mode=pt
-
-What do you think?
-
-- Arnaldo
- 
-> Example:
+> > This specific issue is fairly rare though, in most cases the dependencies
+> > are in the right order so a Kconfig symbol 'depends on' a second one
+> > when the corresponding loadable module uses symbols from that second
+> > module. The problem here is that the two are mixed up.
+> >
+> > The much more common problem is the one where one needs to
+> > wrong
+> >
+> > config FOO
+> >        depends on BAR || !BAR
+> >
+> > To ensure the dependency is either met or BAR is disabled, but
+> > not FOO=y with BAR=m. If you have any suggestions for a keyword
+> > for that thing, we can clean up hundreds of such instances.
 > 
->  # perf record --kcore --aux-sample -e '{intel_pt//,cycles}' -c 10000 uname
->  Linux
->  [ perf record: Woken up 3 times to write data ]
->  [ perf record: Captured and wrote 0.532 MB perf.data ]
->  # perf script --itrace=Ge | head -20
->  uname  4864 2419025.358181:      10000     cycles:
->         ffffffffbba56965 apparmor_bprm_committing_creds+0x35 ([kernel.kallsyms])
->         ffffffffbc400cd5 __indirect_thunk_start+0x5 ([kernel.kallsyms])
->         ffffffffbba07422 security_bprm_committing_creds+0x22 ([kernel.kallsyms])
->         ffffffffbb89805d install_exec_creds+0xd ([kernel.kallsyms])
->         ffffffffbb90d9ac load_elf_binary+0x3ac ([kernel.kallsyms])
+> Some ideas:
 > 
->  uname  4864 2419025.358185:      10000     cycles:
->         ffffffffbba56db0 apparmor_bprm_committed_creds+0x20 ([kernel.kallsyms])
->         ffffffffbc400cd5 __indirect_thunk_start+0x5 ([kernel.kallsyms])
->         ffffffffbba07452 security_bprm_committed_creds+0x22 ([kernel.kallsyms])
->         ffffffffbb89809a install_exec_creds+0x4a ([kernel.kallsyms])
->         ffffffffbb90d9ac load_elf_binary+0x3ac ([kernel.kallsyms])
-> 
->  uname  4864 2419025.358189:      10000     cycles:
->         ffffffffbb86fdf6 vma_adjust_trans_huge+0x6 ([kernel.kallsyms])
->         ffffffffbb821660 __vma_adjust+0x160 ([kernel.kallsyms])
->         ffffffffbb897be7 shift_arg_pages+0x97 ([kernel.kallsyms])
->         ffffffffbb897ed9 setup_arg_pages+0x1e9 ([kernel.kallsyms])
->         ffffffffbb90d9f2 load_elf_binary+0x3f2 ([kernel.kallsyms])
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/util/intel-pt.c | 68 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 61 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index db25c77d82f3..a659b4a1b3f2 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -124,6 +124,8 @@ struct intel_pt {
->  
->  	struct range *time_ranges;
->  	unsigned int range_cnt;
-> +
-> +	struct ip_callchain *chain;
->  };
->  
->  enum switch_state {
-> @@ -868,6 +870,45 @@ static u64 intel_pt_ns_to_ticks(const struct intel_pt *pt, u64 ns)
->  		pt->tc.time_mult;
->  }
->  
-> +static struct ip_callchain *intel_pt_alloc_chain(struct intel_pt *pt)
-> +{
-> +	size_t sz = sizeof(struct ip_callchain);
-> +
-> +	/* Add 1 to callchain_sz for callchain context */
-> +	sz += (pt->synth_opts.callchain_sz + 1) * sizeof(u64);
-> +	return zalloc(sz);
-> +}
-> +
-> +static int intel_pt_callchain_init(struct intel_pt *pt)
-> +{
-> +	struct evsel *evsel;
-> +
-> +	evlist__for_each_entry(pt->session->evlist, evsel) {
-> +		if (!(evsel->core.attr.sample_type & PERF_SAMPLE_CALLCHAIN))
-> +			evsel->synth_sample_type |= PERF_SAMPLE_CALLCHAIN;
-> +	}
-> +
-> +	pt->chain = intel_pt_alloc_chain(pt);
-> +	if (!pt->chain)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
-> +static void intel_pt_add_callchain(struct intel_pt *pt,
-> +				   struct perf_sample *sample)
-> +{
-> +	struct thread *thread = machine__findnew_thread(pt->machine,
-> +							sample->pid,
-> +							sample->tid);
-> +
-> +	thread_stack__sample_late(thread, sample->cpu, pt->chain,
-> +				  pt->synth_opts.callchain_sz + 1, sample->ip,
-> +				  pt->kernel_start);
-> +
-> +	sample->callchain = pt->chain;
-> +}
-> +
->  static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
->  						   unsigned int queue_nr)
->  {
-> @@ -880,11 +921,7 @@ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
->  		return NULL;
->  
->  	if (pt->synth_opts.callchain) {
-> -		size_t sz = sizeof(struct ip_callchain);
-> -
-> -		/* Add 1 to callchain_sz for callchain context */
-> -		sz += (pt->synth_opts.callchain_sz + 1) * sizeof(u64);
-> -		ptq->chain = zalloc(sz);
-> +		ptq->chain = intel_pt_alloc_chain(pt);
->  		if (!ptq->chain)
->  			goto out_free;
->  	}
-> @@ -1992,7 +2029,8 @@ static int intel_pt_sample(struct intel_pt_queue *ptq)
->  	if (!(state->type & INTEL_PT_BRANCH))
->  		return 0;
->  
-> -	if (pt->synth_opts.callchain || pt->synth_opts.thread_stack)
-> +	if (pt->synth_opts.callchain || pt->synth_opts.add_callchain ||
-> +	    pt->synth_opts.thread_stack)
->  		thread_stack__event(ptq->thread, ptq->cpu, ptq->flags, state->from_ip,
->  				    state->to_ip, ptq->insn_len,
->  				    state->trace_nr);
-> @@ -2639,6 +2677,11 @@ static int intel_pt_process_event(struct perf_session *session,
->  	if (err)
->  		return err;
->  
-> +	if (event->header.type == PERF_RECORD_SAMPLE) {
-> +		if (pt->synth_opts.add_callchain && !sample->callchain)
-> +			intel_pt_add_callchain(pt, sample);
-> +	}
-> +
->  	if (event->header.type == PERF_RECORD_AUX &&
->  	    (event->aux.flags & PERF_AUX_FLAG_TRUNCATED) &&
->  	    pt->synth_opts.errors) {
-> @@ -2710,6 +2753,7 @@ static void intel_pt_free(struct perf_session *session)
->  	session->auxtrace = NULL;
->  	thread__put(pt->unknown_thread);
->  	addr_filters__exit(&pt->filts);
-> +	zfree(&pt->chain);
->  	zfree(&pt->filter);
->  	zfree(&pt->time_ranges);
->  	free(pt);
-> @@ -3348,6 +3392,7 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
->  		    !session->itrace_synth_opts->inject) {
->  			pt->synth_opts.branches = false;
->  			pt->synth_opts.callchain = true;
-> +			pt->synth_opts.add_callchain = true;
->  		}
->  		pt->synth_opts.thread_stack =
->  				session->itrace_synth_opts->thread_stack;
-> @@ -3380,14 +3425,22 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
->  		pt->branches_filter |= PERF_IP_FLAG_RETURN |
->  				       PERF_IP_FLAG_TRACE_BEGIN;
->  
-> -	if (pt->synth_opts.callchain && !symbol_conf.use_callchain) {
-> +	if ((pt->synth_opts.callchain || pt->synth_opts.add_callchain) &&
-> +	    !symbol_conf.use_callchain) {
->  		symbol_conf.use_callchain = true;
->  		if (callchain_register_param(&callchain_param) < 0) {
->  			symbol_conf.use_callchain = false;
->  			pt->synth_opts.callchain = false;
-> +			pt->synth_opts.add_callchain = false;
->  		}
->  	}
->  
-> +	if (pt->synth_opts.add_callchain) {
-> +		err = intel_pt_callchain_init(pt);
-> +		if (err)
-> +			goto err_delete_thread;
-> +	}
-> +
->  	err = intel_pt_synth_events(pt, session);
->  	if (err)
->  		goto err_delete_thread;
-> @@ -3410,6 +3463,7 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
->  	return 0;
->  
->  err_delete_thread:
-> +	zfree(&pt->chain);
->  	thread__zput(pt->unknown_thread);
->  err_free_queues:
->  	intel_pt_log_disable();
-> -- 
-> 2.17.1
-> 
+> config FOO
+>     can use  BAR
+>     maybe BAR
+>     optional BAR
+
+Another idea,
+
+	depends optionally on BAR
+
+> We should probably double-check that this is only ever used for when
+> both FOO and BAR are tri-state, since without that it doesn't make
+> much sense.
 
 -- 
+Regards,
 
-- Arnaldo
+Laurent Pinchart
