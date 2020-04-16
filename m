@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA601ACA08
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52BD1AC828
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395300AbgDPPaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
+        id S2394900AbgDPPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730805AbgDPNng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:43:36 -0400
+        id S2408967AbgDPNxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:53:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F279A2076D;
-        Thu, 16 Apr 2020 13:43:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D68720732;
+        Thu, 16 Apr 2020 13:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044614;
-        bh=MpFa2RzevKvcXTB5pGdrQb5k9ujVmRPbMRp3+OFoiQQ=;
+        s=default; t=1587045197;
+        bh=F82Aeypw6OM8mgKESuyYgGleTKbJ+gGMp9FjnyoILqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WL+YL+35T2LdojFku8xPm023gyGc52970rPABBJNVDDAUvEZJdUsRAQ59xX3yINio
-         zqpT7JvodKKBqaQ0aOEOeopC9fJFIZUyf7THWdPxMzimUdJtfvLs4pFPcinVaoZwML
-         XMZEa+1skWf8EvfhvU/kZe8F4utqFaxgexoq5Iac=
+        b=CSRuRTr0/j+KeyMYvj5pSmKBmsUylkVAqMJpPNpGwF/yLAZoZQP2pFZOA2V/cgd52
+         rRyKVSoohf3xL8Q6PTp57CEPFmPv56/OQXxLw9V5/W4hZ5QP3jYKnb+lXwrH9k3jLe
+         teKwBHiQ2b2mSN/fsEbRVU0OqudjHWk7qEXh2IQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 030/232] null_blk: Handle null_add_dev() failures properly
-Date:   Thu, 16 Apr 2020 15:22:04 +0200
-Message-Id: <20200416131319.865184186@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Michael Wang <yun.wang@linux.alibaba.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 036/254] sched: Avoid scale real weight down to zero
+Date:   Thu, 16 Apr 2020 15:22:05 +0200
+Message-Id: <20200416131330.377950623@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,62 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Michael Wang <yun.wang@linux.alibaba.com>
 
-[ Upstream commit 9b03b713082a31a5b90e0a893c72aa620e255c26 ]
+[ Upstream commit 26cf52229efc87e2effa9d788f9b33c40fb3358a ]
 
-If null_add_dev() fails then null_del_dev() is called with a NULL argument.
-Make null_del_dev() handle this scenario correctly. This patch fixes the
-following KASAN complaint:
+During our testing, we found a case that shares no longer
+working correctly, the cgroup topology is like:
 
-null-ptr-deref in null_del_dev+0x28/0x280 [null_blk]
-Read of size 8 at addr 0000000000000000 by task find/1062
+  /sys/fs/cgroup/cpu/A		(shares=102400)
+  /sys/fs/cgroup/cpu/A/B	(shares=2)
+  /sys/fs/cgroup/cpu/A/B/C	(shares=1024)
 
-Call Trace:
- dump_stack+0xa5/0xe6
- __kasan_report.cold+0x65/0x99
- kasan_report+0x16/0x20
- __asan_load8+0x58/0x90
- null_del_dev+0x28/0x280 [null_blk]
- nullb_group_drop_item+0x7e/0xa0 [null_blk]
- client_drop_item+0x53/0x80 [configfs]
- configfs_rmdir+0x395/0x4e0 [configfs]
- vfs_rmdir+0xb6/0x220
- do_rmdir+0x238/0x2c0
- __x64_sys_unlinkat+0x75/0x90
- do_syscall_64+0x6f/0x2f0
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  /sys/fs/cgroup/cpu/D		(shares=1024)
+  /sys/fs/cgroup/cpu/D/E	(shares=1024)
+  /sys/fs/cgroup/cpu/D/E/F	(shares=1024)
 
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc: Johannes Thumshirn <jth@kernel.org>
-Cc: Hannes Reinecke <hare@suse.com>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The same benchmark is running in group C & F, no other tasks are
+running, the benchmark is capable to consumed all the CPUs.
+
+We suppose the group C will win more CPU resources since it could
+enjoy all the shares of group A, but it's F who wins much more.
+
+The reason is because we have group B with shares as 2, since
+A->cfs_rq.load.weight == B->se.load.weight == B->shares/nr_cpus,
+so A->cfs_rq.load.weight become very small.
+
+And in calc_group_shares() we calculate shares as:
+
+  load = max(scale_load_down(cfs_rq->load.weight), cfs_rq->avg.load_avg);
+  shares = (tg_shares * load) / tg_weight;
+
+Since the 'cfs_rq->load.weight' is too small, the load become 0
+after scale down, although 'tg_shares' is 102400, shares of the se
+which stand for group A on root cfs_rq become 2.
+
+While the se of D on root cfs_rq is far more bigger than 2, so it
+wins the battle.
+
+Thus when scale_load_down() scale real weight down to 0, it's no
+longer telling the real story, the caller will have the wrong
+information and the calculation will be buggy.
+
+This patch add check in scale_load_down(), so the real weight will
+be >= MIN_SHARES after scale, after applied the group C wins as
+expected.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/38e8e212-59a1-64b2-b247-b6d0b52d8dc1@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/null_blk_main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ kernel/sched/sched.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
-index 0b504989d09d9..6603598b7bae9 100644
---- a/drivers/block/null_blk_main.c
-+++ b/drivers/block/null_blk_main.c
-@@ -1382,7 +1382,12 @@ static void cleanup_queues(struct nullb *nullb)
- 
- static void null_del_dev(struct nullb *nullb)
- {
--	struct nullb_device *dev = nullb->dev;
-+	struct nullb_device *dev;
-+
-+	if (!nullb)
-+		return;
-+
-+	dev = nullb->dev;
- 
- 	ida_simple_remove(&nullb_indexes, nullb->index);
- 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 9ea647835fd6f..b056149c228ba 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -118,7 +118,13 @@ extern long calc_load_fold_active(struct rq *this_rq, long adjust);
+ #ifdef CONFIG_64BIT
+ # define NICE_0_LOAD_SHIFT	(SCHED_FIXEDPOINT_SHIFT + SCHED_FIXEDPOINT_SHIFT)
+ # define scale_load(w)		((w) << SCHED_FIXEDPOINT_SHIFT)
+-# define scale_load_down(w)	((w) >> SCHED_FIXEDPOINT_SHIFT)
++# define scale_load_down(w) \
++({ \
++	unsigned long __w = (w); \
++	if (__w) \
++		__w = max(2UL, __w >> SCHED_FIXEDPOINT_SHIFT); \
++	__w; \
++})
+ #else
+ # define NICE_0_LOAD_SHIFT	(SCHED_FIXEDPOINT_SHIFT)
+ # define scale_load(w)		(w)
 -- 
 2.20.1
 
