@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379431AC777
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65201AC785
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394759AbgDPOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387683AbgDPOzO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:55:14 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4303C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:55:13 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m14so16792680oic.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:55:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ApXDAryjVZ1NhYOMhZ0mJPFGTTxjNrpKZ3hMH5Wk1rI=;
-        b=kpXBeRuMgKb9LePzXmq5+Q2/HlepHeCz+xauCU2QEg6c2e/xDJcEUohgjmYjscEq1J
-         XKWfkcaXqYCvVdTswUZjrfdAcu8Kcxm7Hpgxdwuw+TsstUrs8lJHeSWA1OvS6ZGmMueo
-         WHEia2smDdJ3WMRRjy0tsJP47OYlOKiFxEPNMJOoKKOifDUiB7fT72vxt9O8YR2W4sxL
-         2YpZhvGh+Gu1yJXf9iA1Oj2Z4Ethgac1sdAND647J6BbqvIwoACZQDi9IKZkhRLblixF
-         XfiFDU6+x3BDGPfNrEjWEXBOZ+ndTFzmE0U5E9NQl+TosuHwYdlqAFg/+rII+3Qs1M4Y
-         NMRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ApXDAryjVZ1NhYOMhZ0mJPFGTTxjNrpKZ3hMH5Wk1rI=;
-        b=fVfXiSSHyTyaYFZj7cahdQEY4T5ytm73dK3bgXjKpQ8HTQf/KCG9SS3fx3s+3Fm0Q7
-         opbUeWJpril9kBot1Lyzbveybg9cNVgx8230lac3yW3To5QxGV2xvQrYgxN3VAeNukY2
-         ZKxu07ZhoJV8D1th04Se/NSd0bDeD0pha1DF8QeEFZTkvxFYNM7q0n0pDIMXNqCOzZpC
-         rahPPrRMrxic0uW44qxZ1EkY2E81jthTbQX3xhzcFTwNCLxjd3q0QjgSF1uQTqxOe+G+
-         dGhc/1Bg9B/6MWx5ysynUZSyLYrVVj22gjhEq4RsupU0vht2DkXdP4gO6kNaSDV1ydSV
-         fcCg==
-X-Gm-Message-State: AGi0PuavwkTcY1rJVZAPbJqk05m7GrkYYKCGsOQv667k/UdCyC1MZ0Lw
-        RPN6qoWBcALutjjcHhxNasEPWD6OdokRayP8/cg=
-X-Google-Smtp-Source: APiQypLCtSncMsxPH2cCTJRXm5LeJw8H8IJylLVXO7vXh/4Tfb4DcpcxBoTRyE5JutCoMEGfnxOSoxdCQWnhPttFh2I=
-X-Received: by 2002:aca:f1c6:: with SMTP id p189mr3237696oih.5.1587048913230;
- Thu, 16 Apr 2020 07:55:13 -0700 (PDT)
+        id S2394477AbgDPO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:56:12 -0400
+Received: from mail.manjaro.org ([176.9.38.148]:33370 "EHLO mail.manjaro.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394833AbgDPO4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:56:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.manjaro.org (Postfix) with ESMTP id 735653702995;
+        Thu, 16 Apr 2020 16:55:59 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at manjaro.org
+Received: from mail.manjaro.org ([127.0.0.1])
+        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Erx_frVr7CfS; Thu, 16 Apr 2020 16:55:57 +0200 (CEST)
+From:   Tobias Schramm <t.schramm@manjaro.org>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tobias Schramm <t.schramm@manjaro.org>
+Subject: [PATCH] arm64: dts: rockchip: add micro SD card regulator to rockpro64
+Date:   Thu, 16 Apr 2020 16:55:34 +0200
+Message-Id: <20200416145534.1263575-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
-References: <20200406160914.14698-1-rminnich@google.com> <CACRpkdYVwFiCf5MJGLEyhxL8omxr9Tav=8Le_zEX-D89SXjV1Q@mail.gmail.com>
-In-Reply-To: <CACRpkdYVwFiCf5MJGLEyhxL8omxr9Tav=8Le_zEX-D89SXjV1Q@mail.gmail.com>
-From:   ron minnich <rminnich@gmail.com>
-Date:   Thu, 16 Apr 2020 07:55:01 -0700
-Message-ID: <CAP6exY+pDg8rAi4RZw5s5jZh1awtWg6_Q5=tm6RYC4c+XZz+cQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: parsers: Support '[]' for id in mtdparts
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
-        Ronald Minnich <rminnich@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh R <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 2:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+This patch adds the RockPro64's micro SD card regulator to the
+RockPro64 dtsi. The regulator is present on all revisions of the
+device.
+Previously the regular was missing, resulting in unreliable boot
+behaviour when booting from SD card.
 
-> I suppose the use case is using PCI-based MTD devices for testing
-> something android images on desktops? I'm surprised it didn't
-> come up earlier.
+Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+---
+ .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-Thanks. In this case it's for systems that companies are deploying
-into their data centers, using linuxboot (linuxboot.org) and Intel
-chipsets. On Intel  chipsets, there is a 64 MiB SPI part, but only 16
-MiB is directly addressable.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+index 9bca25801260..6788ab28f89a 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+@@ -96,6 +96,24 @@ vcc1v8_s3: vcca1v8_s3: vcc1v8-s3 {
+ 		vin-supply = <&vcc_1v8>;
+ 	};
+ 
++	/* micro SD card power */
++	vcc3v0_sd: vcc3v0-sd {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&sdmmc0_pwr_h>;
++		regulator-name = "vcc3v0_sd";
++		regulator-always-on;
++		regulator-min-microvolt = <3000000>;
++		regulator-max-microvolt = <3000000>;
++		vin-supply = <&vcc3v3_sys>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
+ 	vcc3v3_pcie: vcc3v3-pcie-regulator {
+ 		compatible = "regulator-fixed";
+ 		enable-active-high;
+@@ -603,6 +621,13 @@ vsel2_gpio: vsel2-gpio {
+ 		};
+ 	};
+ 
++	sdcard {
++		sdmmc0_pwr_h: sdmmc0-pwr-h {
++			rockchip,pins = <0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++	};
++
+ 	sdio-pwrseq {
+ 		wifi_enable_h: wifi-enable-h {
+ 			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
+@@ -661,6 +686,8 @@ &sdmmc {
+ 	max-frequency = <150000000>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_bus4>;
++	vmmc-supply = <&vcc3v0_sd>;
++	vqmmc-supply = <&vcc_sdio>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.26.0
 
-Linux goes in the memory-addressable part of the SPI, and UEFI loads
-it into RAM, since to UEFI the kernel is just another UEFI driver --
-in fact in most cases we replace the UEFI shell with Linux.
-
-But we need a file system, and with the huge amount of drivers that
-come with UEFI there's not much room in the top 16M. (we're working to
-fix that glitch, a process we call DXE-ectomy, but it takes time).
-
-We wish to place a file system in the low 48 MiB -- lots of room there.
-
-So what one can do is put a squashfs-formatted file system in that low
-part of SPI, and, using this mtdparts capability, point the kernel at
-it ("root=/dev/mtd1 mtdparts=[a:b.c]etc.etc"). It's a lifesaver for
-those of us using u-root for our userland.
-
-ron
