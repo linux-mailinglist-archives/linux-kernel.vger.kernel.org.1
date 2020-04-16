@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD311ABF40
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8C61ABF45
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633374AbgDPLbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:31:55 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:57457 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633137AbgDPLaE (ORCPT
+        id S2506065AbgDPLcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:32:21 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:50092 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506170AbgDPLJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:30:04 -0400
-Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N4A1h-1jGgZn1t8T-0103T1; Thu, 16 Apr 2020 13:07:14 +0200
-Received: by mail-qk1-f174.google.com with SMTP id y3so20748368qky.8;
-        Thu, 16 Apr 2020 04:07:14 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZ0HtBnhGYMaYQOLJpCyPgjWJpQF/FPXuoNeABZ+xQ43q/4+0e/
-        iwuzvD7bQRjpZ9z2IuUym61FN3Sx5xYhi/YAW/c=
-X-Google-Smtp-Source: APiQypK4+pWIjTlcQKHWs83hDUiq9HrROe6p4sKwqSeztDfxIRma7taMpjWbk4MOI+E9EtZHMoCq/s3VDhbpWUliCGE=
-X-Received: by 2002:a37:851:: with SMTP id 78mr31161821qki.352.1587035233142;
- Thu, 16 Apr 2020 04:07:13 -0700 (PDT)
+        Thu, 16 Apr 2020 07:09:07 -0400
+Received: by mail-il1-f200.google.com with SMTP id r17so8542332ila.16
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:08:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=eW5xO3rmmKlcyvNXxv8/k1vDrsALM6R8izzm/K7H98E=;
+        b=Z26rOEXykfCKkr7quNxILcNa6QLanQfnAO7eQkd/FYcQSDUN1ym7Lva/iaPOwXVHB1
+         bXvyIRnphztmEgXtOurqfIQs/6jQEVCU3uBPjk24yOjYKpGw3OUa0QotxZp4NuXNxXOQ
+         RGkDf59IMP6ATaTfvwE4LJih6nsL3OIk4CD6vXbY0UmQxOVNbr9tsAqA0exxonxcLWnA
+         Laa7gJUqlu5o2IM0dzCtVnB0jevGHUr+YHT3bstlnHnIU4F0yc4d2xZrsK9NJxMk/VjM
+         uDErpeqRc552JX9x2Y2W8cbNQva9z2nQrbKTlv+congXIwZHQcJAYMZMvs8D4rYTE2pr
+         YytA==
+X-Gm-Message-State: AGi0PuYGlQPlcq2EQ+J5DZpEevO81L8jbclN1N2GKichH+4hUZdM7855
+        lVjE9UC6w8/l0FzKA4UaK0e2HC020s2vC7f5d2DbAnTgO4F2
+X-Google-Smtp-Source: APiQypKHPmbdOV6a2pVkExQJNi44Xg7ki95J0szeZHGhoZ7RC+BcNxefu0IQpANQbcQ5Ldf6IPA6br93GCvwh2owOG5I2qQLc0aD
 MIME-Version: 1.0
-References: <1583226206-19758-1-git-send-email-abel.vesa@nxp.com> <CAK8P3a3FLRotVmMnBAyBKFMbXeEx760S-Cvqr19VPMi81PKJgw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3FLRotVmMnBAyBKFMbXeEx760S-Cvqr19VPMi81PKJgw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 16 Apr 2020 13:06:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a26JS4FVt5wiaRQahF+OJZp9Ot84o8GSth9Rk2skkEMSQ@mail.gmail.com>
-Message-ID: <CAK8P3a26JS4FVt5wiaRQahF+OJZp9Ot84o8GSth9Rk2skkEMSQ@mail.gmail.com>
-Subject: Re: [RFC 00/11] Add generic MFD i.MX mix and audiomix support
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Anson Huang <anson.huang@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>, Jacky Bai <ping.bai@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
+X-Received: by 2002:a92:394d:: with SMTP id g74mr9911618ila.250.1587035293853;
+ Thu, 16 Apr 2020 04:08:13 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 04:08:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000efafd205a366722c@google.com>
+Subject: general protection fault in macvlan_device_event
+From:   syzbot <syzbot+5035b1f9dc7ea4558d5a@syzkaller.appspotmail.com>
+To:     ap420073@gmail.com, davem@davemloft.net, edumazet@google.com,
+        gustavo@embeddedor.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, richardcochran@gmail.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:XDrsoNce09dQF4v/GnqEBmnqKLXmtj6TBeZwkb0Q1p/Uh3G4zU2
- 0k3IovXzNymJfDpYP+paFT5/eWoSFAeiBFdDU4Rni9XRQeX3O1+NLIdTwj2Pjh0XkF+TDll
- 1IlwD9gwjHnD+odPwajh6GbLWG891MKN9Rx98amEyN7OMvBE52hiFWSTxA3GU6fNMtSEwOp
- pw5aRLFhsd4iHpP797jPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t3ySx5qoRa0=:2HgHQY70QGwlkgI3fd/eDa
- AviZf6zFsbZjh8abcajtOMUIU8ec4suLeE1tLGe1qNYlXJjFgH5yLiRkbv7Jv119q4cGRI47k
- ulcWRrKrIn8q8Szo9gLmvZT4PDEti7XWh2lIKhsPVK5wmG8omJGghWLYr3FrrWBS7jWdVQepY
- RDOnpoo9NE0PI5Ve4r4zw6ULw/tOxe86wsQ3OABlinqTQsPMV0ExIVXaOtCgw2kasQClBKje4
- pPFNcqJYOt6zpuK2oxsd5DfMBpEM22SH5Aaiq5Zb7VyhwuHattW5vlvGQKCElDh3tcEnWV6bw
- bUnM/ZPAQNEGPR8g7m5ruTSsiozjsGUI9rSCCaCAYQHHaqjosbKgpmODs4hTwrriiOHqN60qC
- GzAEGwTGc7iZXl5EiGJEZ6JfWzW8TGY8YODikiaWEHoTd0V/hTcnn4Y4mLLWTDl0qWfpCiwXH
- PrL9XK2ktcwFXv7Kx0KD2C6hIkUnIfu5+Dz7LnCxt4YnAMiHhl/CMnJYOrzb9FCyKxslxC/wl
- ZQp5iS6c8hU+mRYOQofWdd0K8TAhHKYmCsWES7Y20KdqJxcKsNookgsSleDlMf1jBwS2EIm9L
- pJC9KqSsd+1ctOcIlpyd2KIt8ETnzuJGNRqHMF2e8wDydFqPyUHdLerbSmyn4yY1Z8EdxBxgr
- TLqzdSLmTGN8l6/aohZ8OPuWJd8wnq4CtJ3xqK6t3w4WE+lgdiZXU6mKJFmjY4x3LFvxVa7B3
- 2ZZnNAzumTPVrYA2zjIF4B4eCJU6EOd24Kre/LagaFV/taRh1jkk8CT6ar3kW8A8b0W3mTrhP
- fJ0ga0Iw/mJ2kAVxV8cvOB/IdmS+TRWr3t9wjlxxb8QGyTa/YY=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 1:06 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Mar 3, 2020 at 10:04 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-> >
-> > The i.MX8MP has some new IPs called mixes. They are formed usually by some
-> > GPRs that can be split into different functionalities. The first example
-> > here is the audiomix which has dedicated registers that can be registered
-> > as a clock controller and some other registers that can be registered as
-> > a reset controller, plus some dedicated ones that will be registered as
-> > syscon and used by each dedicated audio IP.
-> >
-> > More mixes to be following the same structure are to come, like hdmimix,
-> > dispmix and mediamix. They will all be populated and registered by the MFD
-> > imx-mix generic driver.
->
-> Can you enumerate what functionality is in each one?
->
-> I'm not convinced that using an MFD driver is the best solution here,
-> compared to e.g. a clk driver with a few extra bits in it, if most of the
-> code for the child drivers ends up being for the clk subsystem.
->
-> Lee suggested maybe having a generic (platform independent) driver
-> for it, which may help here, as it would let others share the trivial
-> mfd portion.
->
-> Another option that we are using on several platforms today is to
-> have a single syscon node and have other drivers that reference
-> that one using a phandle to get at the regmap.
+Hello,
 
-Sorry I replied to the wrong thread, I meant to reply to the v3 version.
+syzbot found the following crash on:
 
-       Arnd
+HEAD commit:    8f3d9f35 Linux 5.7-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1377da00100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d351a1019ed81a2
+dashboard link: https://syzkaller.appspot.com/bug?extid=5035b1f9dc7ea4558d5a
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+5035b1f9dc7ea4558d5a@syzkaller.appspotmail.com
+
+device veth0_macvtap left promiscuous mode
+device veth1_vlan left promiscuous mode
+device veth0_vlan left promiscuous mode
+bond0 (unregistering): (slave macvlan4): Releasing backup interface
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 9087 Comm: kworker/u4:9 Not tainted 5.7.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:macvlan_device_event+0x62c/0x930 drivers/net/macvlan.c:1707
+Code: df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 09 03 00 00 4c 89 e2 48 8b b3 50 03 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 d2 02 00 00 49 8b 3c 24 41 bc 02 80 00 00 e8 5b
+RSP: 0018:ffffc90002407410 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88808e450000 RCX: ffffffff84b25ca5
+RDX: 0000000000000000 RSI: ffff88809eefbb90 RDI: ffff88808e450350
+RBP: 1ffff92000480e88 R08: ffff88804a7a8000 R09: fffffbfff14b0471
+R10: ffffffff8a582387 R11: fffffbfff14b0470 R12: 0000000000000000
+R13: ffff88804adfc808 R14: ffff88804adfc808 R15: ffff88804adfc000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055e77ab909c0 CR3: 00000000936d3000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ notifier_call_chain+0xc0/0x230 kernel/notifier.c:83
+ call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1933
+ call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
+ call_netdevice_notifiers net/core/dev.c:1974 [inline]
+ dev_set_mac_address net/core/dev.c:8404 [inline]
+ dev_set_mac_address+0x2ef/0x3f0 net/core/dev.c:8385
+ macvlan_set_mac_address drivers/net/macvlan.c:747 [inline]
+ macvlan_set_mac_address+0x298/0x320 drivers/net/macvlan.c:733
+ dev_set_mac_address+0x283/0x3f0 net/core/dev.c:8400
+ __bond_release_one.cold+0xcb3/0xd11 drivers/net/bonding/bond_main.c:2055
+ bond_slave_netdev_event drivers/net/bonding/bond_main.c:3166 [inline]
+ bond_netdev_event+0x81c/0x930 drivers/net/bonding/bond_main.c:3277
+ notifier_call_chain+0xc0/0x230 kernel/notifier.c:83
+ call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1933
+ call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
+ call_netdevice_notifiers net/core/dev.c:1974 [inline]
+ rollback_registered_many+0x75c/0xe70 net/core/dev.c:8826
+ unregister_netdevice_many.part.0+0x16/0x1e0 net/core/dev.c:9986
+ unregister_netdevice_many net/core/dev.c:9985 [inline]
+ default_device_exit_batch+0x311/0x3d0 net/core/dev.c:10469
+ ops_exit_list.isra.0+0x103/0x150 net/core/net_namespace.c:189
+ cleanup_net+0x511/0xa50 net/core/net_namespace.c:603
+ process_one_work+0x965/0x16a0 kernel/workqueue.c:2268
+ worker_thread+0x96/0xe20 kernel/workqueue.c:2414
+ kthread+0x388/0x470 kernel/kthread.c:268
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+Modules linked in:
+---[ end trace 91121f28d4d1c866 ]---
+RIP: 0010:macvlan_device_event+0x62c/0x930 drivers/net/macvlan.c:1707
+Code: df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 09 03 00 00 4c 89 e2 48 8b b3 50 03 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 d2 02 00 00 49 8b 3c 24 41 bc 02 80 00 00 e8 5b
+RSP: 0018:ffffc90002407410 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88808e450000 RCX: ffffffff84b25ca5
+RDX: 0000000000000000 RSI: ffff88809eefbb90 RDI: ffff88808e450350
+RBP: 1ffff92000480e88 R08: ffff88804a7a8000 R09: fffffbfff14b0471
+R10: ffffffff8a582387 R11: fffffbfff14b0470 R12: 0000000000000000
+R13: ffff88804adfc808 R14: ffff88804adfc808 R15: ffff88804adfc000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7c22392008 CR3: 00000000936d3000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
