@@ -2,150 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CBC1AC76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C4F1AC76E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgDPOyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405907AbgDPOyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:54:31 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58362C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:54:31 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id w29so16178281qtv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Etbk7rdNgMqH7Cm8FhnpqP53Wbqbw8Y1RuUVXb+PXc0=;
-        b=mPAP3fsGoyvk1dnOOsH0XuvNzRFb5Jg50JWZ4sXWpWeMM88oUYkrd7xnyCnkhz9abZ
-         M0tvegs1eXEdDVTgD1mIOrssZf0+UbBQVBNEMzNgHbXSO5032WKTKgC9VdrBeR+9X1cV
-         pSg7OlcUuubn/X8tcG7T3wlNxPaoS8ty1329CIt/c7AExIdPScqmU4RHjigWP6ymcEwZ
-         Gjy+FnbuKId4045xM2NkGxdqzZmWjO4XGu7Fv8LNKy/axEl7fAaUUOvbcXgJ5M4AtWn2
-         hA9Wskt5DOvDWwXGoiZVymfGI6wp3b9QnVDPoTtLB/TStossYehgvTmWij4KETVqMuJz
-         9cfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Etbk7rdNgMqH7Cm8FhnpqP53Wbqbw8Y1RuUVXb+PXc0=;
-        b=WqSyzFWkikaoi1x5KOS3qLU2Ytx9yYu8j95/MmHYQzqxwCj/TaOgb4/gysINVTAfkj
-         ifbv6YqCEkMwBz+A9dPn0H9ggUT0ma19+1KEJu4WNPSCl7I+oY9bKgOBw5ILCrA1oziU
-         18nu80gM9M1zVLp3ZkZulB1NBMJUO4rhVqi1dO5U+u4QbHOkdMrEyD4FEHzG1ufuDlwp
-         TJbQpUrjpm/GAh9sCpDQPIFFW5xbbUQ0JcsvLa5z4F/1w7gssx6W8El7DnxhP1TRwD6o
-         Avpf9T9J+KDqxP4GwPob1hfE1azEt7lwO6V2xIuukizkteWbCBUFqSFnXnYdMIGXdCn3
-         z6bw==
-X-Gm-Message-State: AGi0PuaTv9aPhfJjp11m/STf+KZ4yVZiA84ghOFGT3DHh8478JZkkKSf
-        pEUGEm6mvRLADicriruTv74=
-X-Google-Smtp-Source: APiQypLux5mTNMuigb4n9Q+X+zhIREe2Oc8Nq38zS8fpePrHuEK54ntNvmlKfjsnxNLCeIYzOKDxhQ==
-X-Received: by 2002:ac8:3466:: with SMTP id v35mr26649342qtb.308.1587048870419;
-        Thu, 16 Apr 2020 07:54:30 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id y17sm11707586qky.33.2020.04.16.07.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 07:54:29 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B7A70409A3; Thu, 16 Apr 2020 11:54:26 -0300 (-03)
-Date:   Thu, 16 Apr 2020 11:54:26 -0300
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/16] perf tools: Add support for synthesized sample type
-Message-ID: <20200416145426.GA31666@kernel.org>
-References: <20200401101613.6201-1-adrian.hunter@intel.com>
- <20200401101613.6201-11-adrian.hunter@intel.com>
+        id S2405082AbgDPOzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:55:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408393AbgDPOyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:54:53 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 526A5206A2;
+        Thu, 16 Apr 2020 14:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587048891;
+        bh=vAtU5Xx99QfFj3XxBnnRT4MOmEgZ5p5mlNaETRiv7Lg=;
+        h=Date:From:To:Subject:From;
+        b=OFO9EfiT7kIcb3KhYvOZ1HgyGMRStA1+iVDnobHikOYr1ArMZWAOj4lOFcd8Q7CV9
+         wULy62pmoEiouml3XE4+l/XyQVCPgvPXdtTwLdqn4b1pGTCzEW/58nPjypcmsX5TlG
+         M7v28Mv1R5M6LaLXngHhOj/ActcLXwQoBawxlCms=
+Date:   Thu, 16 Apr 2020 16:54:48 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] debugfs: remove return value of debugfs_create_u32()
+Message-ID: <20200416145448.GA1380878@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200401101613.6201-11-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Apr 01, 2020 at 01:16:07PM +0300, Adrian Hunter escreveu:
-> For reporting purposes, an evsel sample can have a callchain synthesized
-> from AUX area data. Add support for keeping track of synthesized sample
-> types. Note, the recorded sample_type cannot be changed because it is
-> needed to continue to parse events.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/util/evsel.c |  2 +-
->  tools/perf/util/evsel.h | 15 ++++++++++++++-
->  2 files changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index eb880efbce16..60e6cd49dee3 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2136,7 +2136,7 @@ int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  		}
->  	}
->  
-> -	if (evsel__has_callchain(evsel)) {
-> +	if (type & PERF_SAMPLE_CALLCHAIN) {
->  		const u64 max_callchain_nr = UINT64_MAX / sizeof(u64);
+No one checks the return value of debugfs_create_u32(), as it's not
+needed, so make the return value void, so that no one tries to do so in
+the future.
 
-This ends up looking unrelated, I had to go and look at the source to
-see that this is just a simplification, i.e. earlier in this function
-(perf_evsel__parse_sample) we have:
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/filesystems/debugfs.rst |  4 ++--
+ fs/debugfs/file.c                     | 15 +++------------
+ include/linux/debugfs.h               | 12 ++++--------
+ 3 files changed, 9 insertions(+), 22 deletions(-)
 
-        u64 type = evsel->core.attr.sample_type;
-
-So the above doesn't change anything, good, but slowed reviewing a bit,
-please consider next time to have this in a separate patch, I'll do it
-this time.
-
-Thanks,
-
-- Arnaldo
-  
->  		OVERFLOW_CHECK_u64(array);
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 53187c501ee8..e64ed4202cab 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -104,6 +104,14 @@ struct evsel {
->  		perf_evsel__sb_cb_t	*cb;
->  		void			*data;
->  	} side_band;
-> +	/*
-> +	 * For reporting purposes, an evsel sample can have a callchain
-> +	 * synthesized from AUX area data. Keep track of synthesized sample
-> +	 * types here. Note, the recorded sample_type cannot be changed because
-> +	 * it is needed to continue to parse events.
-> +	 * See also evsel__has_callchain().
-> +	 */
-> +	__u64			synth_sample_type;
->  };
->  
->  struct perf_missing_features {
-> @@ -398,7 +406,12 @@ static inline bool perf_evsel__has_branch_hw_idx(const struct evsel *evsel)
->  
->  static inline bool evsel__has_callchain(const struct evsel *evsel)
->  {
-> -	return (evsel->core.attr.sample_type & PERF_SAMPLE_CALLCHAIN) != 0;
-> +	/*
-> +	 * For reporting purposes, an evsel sample can have a recorded callchain
-> +	 * or a callchain synthesized from AUX area data.
-> +	 */
-> +	return evsel->core.attr.sample_type & PERF_SAMPLE_CALLCHAIN ||
-> +	       evsel->synth_sample_type & PERF_SAMPLE_CALLCHAIN;
->  }
->  
->  struct perf_env *perf_evsel__env(struct evsel *evsel);
-> -- 
-> 2.17.1
-> 
-
+diff --git a/Documentation/filesystems/debugfs.rst b/Documentation/filesystems/debugfs.rst
+index db9ea0854040..6c032db235a5 100644
+--- a/Documentation/filesystems/debugfs.rst
++++ b/Documentation/filesystems/debugfs.rst
+@@ -79,8 +79,8 @@ created with any of::
+ 			   struct dentry *parent, u8 *value);
+     void debugfs_create_u16(const char *name, umode_t mode,
+ 			    struct dentry *parent, u16 *value);
+-    struct dentry *debugfs_create_u32(const char *name, umode_t mode,
+-				      struct dentry *parent, u32 *value);
++    void debugfs_create_u32(const char *name, umode_t mode,
++			    struct dentry *parent, u32 *value);
+     void debugfs_create_u64(const char *name, umode_t mode,
+ 			    struct dentry *parent, u64 *value);
+ 
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index 2d357680094c..ae49a55bda00 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -506,20 +506,11 @@ DEFINE_DEBUGFS_ATTRIBUTE(fops_u32_wo, NULL, debugfs_u32_set, "%llu\n");
+  * This function creates a file in debugfs with the given name that
+  * contains the value of the variable @value.  If the @mode variable is so
+  * set, it can be read from, and written to.
+- *
+- * This function will return a pointer to a dentry if it succeeds.  This
+- * pointer must be passed to the debugfs_remove() function when the file is
+- * to be removed (no automatic cleanup happens if your module is unloaded,
+- * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
+- * returned.
+- *
+- * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
+- * be returned.
+  */
+-struct dentry *debugfs_create_u32(const char *name, umode_t mode,
+-				 struct dentry *parent, u32 *value)
++void debugfs_create_u32(const char *name, umode_t mode, struct dentry *parent,
++			u32 *value)
+ {
+-	return debugfs_create_mode_unsafe(name, mode, parent, value, &fops_u32,
++	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_u32,
+ 				   &fops_u32_ro, &fops_u32_wo);
+ }
+ EXPORT_SYMBOL_GPL(debugfs_create_u32);
+diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
+index a274d95fa66e..63cb3606dea7 100644
+--- a/include/linux/debugfs.h
++++ b/include/linux/debugfs.h
+@@ -103,8 +103,8 @@ void debugfs_create_u8(const char *name, umode_t mode, struct dentry *parent,
+ 		       u8 *value);
+ void debugfs_create_u16(const char *name, umode_t mode, struct dentry *parent,
+ 			u16 *value);
+-struct dentry *debugfs_create_u32(const char *name, umode_t mode,
+-				  struct dentry *parent, u32 *value);
++void debugfs_create_u32(const char *name, umode_t mode, struct dentry *parent,
++			u32 *value);
+ void debugfs_create_u64(const char *name, umode_t mode, struct dentry *parent,
+ 			u64 *value);
+ struct dentry *debugfs_create_ulong(const char *name, umode_t mode,
+@@ -250,12 +250,8 @@ static inline void debugfs_create_u8(const char *name, umode_t mode,
+ static inline void debugfs_create_u16(const char *name, umode_t mode,
+ 				      struct dentry *parent, u16 *value) { }
+ 
+-static inline struct dentry *debugfs_create_u32(const char *name, umode_t mode,
+-						struct dentry *parent,
+-						u32 *value)
+-{
+-	return ERR_PTR(-ENODEV);
+-}
++static inline void debugfs_create_u32(const char *name, umode_t mode,
++				      struct dentry *parent, u32 *value) { }
+ 
+ static inline void debugfs_create_u64(const char *name, umode_t mode,
+ 				      struct dentry *parent, u64 *value) { }
 -- 
+2.26.1
 
-- Arnaldo
