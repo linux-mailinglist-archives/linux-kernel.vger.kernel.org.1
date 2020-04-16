@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052721AB746
+	by mail.lfdr.de (Postfix) with ESMTP id DD08E1AB748
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 07:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406720AbgDPF13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 01:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
+        id S2406837AbgDPF1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 01:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2406511AbgDPF0s (ORCPT
+        by vger.kernel.org with ESMTP id S2406517AbgDPF0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 01:26:48 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C12C061A10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 22:26:48 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t40so878747pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 22:26:48 -0700 (PDT)
+        Thu, 16 Apr 2020 01:26:49 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5EEC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 22:26:49 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d24so946492pll.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 22:26:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=AEQhnnrMzAKTzUbyWrr7Pn4129iWSFF1XGDPYTPl2Oo=;
-        b=sWvjSCgNi/pGxJ8po/5HgKguAxlQRy+wCBCGw8arJtEyunm27lNPBjARK9WhHOxtuN
-         PCDJQbLfnmWLVk1MnPOlWVYUs97/Wy2E8cJHx8x/J01Ub27iy/U2s/wFJUeZQRgmeG6v
-         nv6a2yjc5r19eVoqvfywnonahteeHbS/nJzY6SiJKvzAhSQXJxZaHeUUHOzp4rvfXg3o
-         PhvP8YF87YuawnruPOYOd55HhIJc6LsLXSgAe3BY+WNbTr2TY+NJAmMfjbXZj3G8Fn3G
-         u8lJSQ928A4dYFDNmfcwgxQJf16qA6B0PT+kT6jmI2cbwspu1P46Q26TJ6FqsuI8L+cW
-         HfbA==
+        bh=+clC7a2/1FEkxH5L412Da4FtFwUsVwwlBRiREeEjlLw=;
+        b=V5pdJaOvRn+DHbnxN6QoJiCMe7RWYYKUXbeReCoVSsHWYcF7ML2ovCf36gqPglEB9T
+         X2kXrmroM/bHXrc6F+99r+yIBpvSN6LNCnCCcDE9JhkfhYH6VP4fouEiOyHGKPj9sK9w
+         SVvNje5mZ1JA3oz7WM7MST0a7UMZSg3EwpWthfJ5TjTF5mcpsQA7QvDDAo62sb3WcjxL
+         PJ6/cbRib1prgDgG5P/7bLl/IFbnTGC6bRIy+zrBmQ8TvdCOxiiAnsGZg26r5KXeq75M
+         byXsvMAXEPvE4lNzgUEX0DA6kD9HCEg6xVHwwVjjpAKwScHqYa6Gar6yoSmNkjEX3t3B
+         ObFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=AEQhnnrMzAKTzUbyWrr7Pn4129iWSFF1XGDPYTPl2Oo=;
-        b=O/lwWuH9mH3S04OiSfua2sD1NRTJTpoobvTzWAt0+NBYRPJEsS6gCm++lVPluxnryC
-         FJfKA997Z1FbCPfgWb3VHG1QI/DRFmN8zy2ofhNiDf5zZzoIfrf9o2a8dyH0aVkUr79B
-         0+/VK/MuRIGNX3Kn5iunNRe5H+4n/If3z0qzgJno7C2i+EPe0vTXv1SffyfvJ/sK/T9f
-         U+4Uk4mHS0y/ynP84NkWW3G4It1KXqgJMqoRKs51cFN6ex4MANnH8w2DtKGFcsew69s0
-         gPLQLUquNmn+TZ5Yaf6mZGVzm26dbFdvnikHaAmZQL1j0cal9Epg0fBiXnjENd5ewwYK
-         zkKg==
-X-Gm-Message-State: AGi0PuYQJuK3tBa7fJEA96vl99PWUQyYwkiW0SjXuDjW1MDvraeGyEOX
-        nFu7T08YvL8Lh20Fg2BSjHI=
-X-Google-Smtp-Source: APiQypIgTAWtfPtyJjPPgrd+7oA27QM8CD3i2vxGeg9P6ikV7cBNyesXqbfzDxy45o2NIKtFDcNuEQ==
-X-Received: by 2002:a17:90a:a402:: with SMTP id y2mr3199895pjp.55.1587014807867;
-        Wed, 15 Apr 2020 22:26:47 -0700 (PDT)
+        bh=+clC7a2/1FEkxH5L412Da4FtFwUsVwwlBRiREeEjlLw=;
+        b=JkoPbM1043YAMLqW7PIK90wPev0rQCillrhmnbeWApChI2yBcCAn3ZfaF1XCNoP1jG
+         72kMbswqVap8cgHE2B8ZgkUTxXNhltdyxqe+AcROIzrFS3Trx1tgNy6aqu5m0Fu5lBSc
+         56j0I6T0gZ824xtf41S7cxAbwvtOg7kLn0yfdVqZg9TEnfmfR81G6MB51FSG1Xlg6IF/
+         LGAyPUKWGGaDZtCecZzFQkfbSwd3RCz+V0o5/5DW5YGVcqb/lD1q5iGMBdqDC6EKyN1D
+         5FWkM3oYiIPob4mv/luYAI7sb2QJyPjYuc2ubvwPdDdypp/Vz2b3xXONkznnSeOs+SzI
+         Cl2g==
+X-Gm-Message-State: AGi0PuYdx+Yyk82eKKNN6KhGP8IcjPeKA0dpjdNqDIR/Q0aB7wxFNOet
+        d6pN/pc/0GMc0Wg7Y9rZpAk=
+X-Google-Smtp-Source: APiQypJYSDvwlGCvr5dvbD0A+DHSbieYwKyY0491/Fvf4ywv0PRbK0VmBw+hCLL1KjNWod/U2Q8B/A==
+X-Received: by 2002:a17:90a:1910:: with SMTP id 16mr3074324pjg.119.1587014809274;
+        Wed, 15 Apr 2020 22:26:49 -0700 (PDT)
 Received: from laptop.hsd1.wa.comcast.net ([2601:600:817f:a132:df3e:521d:99d5:710d])
-        by smtp.gmail.com with ESMTPSA id c21sm53699pjr.2.2020.04.15.22.26.47
+        by smtp.gmail.com with ESMTPSA id c21sm53699pjr.2.2020.04.15.22.26.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 22:26:47 -0700 (PDT)
+        Wed, 15 Apr 2020 22:26:48 -0700 (PDT)
 From:   Andrei Vagin <avagin@gmail.com>
 To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -56,9 +56,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Andrei Vagin <avagin@gmail.com>,
         Dmitry Safonov <dima@arista.com>
-Subject: [PATCH 5/6] arm64/vdso: Restrict splitting VVAR VMA
-Date:   Wed, 15 Apr 2020 22:26:17 -0700
-Message-Id: <20200416052618.804515-6-avagin@gmail.com>
+Subject: [PATCH 6/6] arm64: enable time namespace support
+Date:   Wed, 15 Apr 2020 22:26:18 -0700
+Message-Id: <20200416052618.804515-7-avagin@gmail.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20200416052618.804515-1-avagin@gmail.com>
 References: <20200416052618.804515-1-avagin@gmail.com>
@@ -67,57 +67,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forbid splitting VVAR VMA resulting in a stricter ABI and reducing the
-amount of corner-cases to consider while working further on VDSO time
-namespace support.
-
-As the offset from timens to VVAR page is computed compile-time, the pages
-in VVAR should stay together and not being partically mremap()'ed.
+CONFIG_TIME_NS is dependes on GENERIC_VDSO_TIME_NS.
 
 Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Andrei Vagin <avagin@gmail.com>
 ---
- arch/arm64/kernel/vdso.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index fb32c6f76078..c003f7ee383a 100644
---- a/arch/arm64/kernel/vdso.c
-+++ b/arch/arm64/kernel/vdso.c
-@@ -235,6 +235,17 @@ static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
- 	return vmf_insert_pfn(vma, vmf->address, pfn);
- }
- 
-+static int vvar_mremap(const struct vm_special_mapping *sm,
-+		       struct vm_area_struct *new_vma)
-+{
-+	unsigned long new_size = new_vma->vm_end - new_vma->vm_start;
-+
-+	if (new_size != VVAR_NR_PAGES * PAGE_SIZE)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- static int __setup_additional_pages(enum arch_vdso_type arch_index,
- 				    struct mm_struct *mm,
- 				    struct linux_binprm *bprm,
-@@ -315,6 +326,7 @@ static struct vm_special_mapping aarch32_vdso_spec[C_PAGES] = {
- 	{
- 		.name = "[vvar]",
- 		.fault = vvar_fault,
-+		.mremap = vvar_mremap,
- 	},
- 	{
- 		.name = "[vdso]",
-@@ -497,6 +509,7 @@ static struct vm_special_mapping vdso_spec[A_PAGES] __ro_after_init = {
- 	{
- 		.name	= "[vvar]",
- 		.fault = vvar_fault,
-+		.mremap = vvar_mremap,
- 	},
- 	{
- 		.name	= "[vdso]",
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 40fb05d96c60..68619faf0838 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -110,6 +110,7 @@ config ARM64
+ 	select GENERIC_STRNLEN_USER
+ 	select GENERIC_TIME_VSYSCALL
+ 	select GENERIC_GETTIMEOFDAY
++	select GENERIC_VDSO_TIME_NS
+ 	select HANDLE_DOMAIN_IRQ
+ 	select HARDIRQS_SW_RESEND
+ 	select HAVE_PCI
 -- 
 2.24.1
 
