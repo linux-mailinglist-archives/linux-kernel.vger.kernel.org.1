@@ -2,135 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00BE1ACA7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22361ACA88
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505780AbgDPPfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:35:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437135AbgDPPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:35:06 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C6A921927;
-        Thu, 16 Apr 2020 15:35:04 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 11:35:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/cpuacct: Fix charge cpuacct.usage_sys
- incorrently.
-Message-ID: <20200416113502.53b33a1c@gandalf.local.home>
-In-Reply-To: <20200416141833.50663-1-songmuchun@bytedance.com>
-References: <20200416141833.50663-1-songmuchun@bytedance.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2410237AbgDPPgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:36:05 -0400
+Received: from mail-m127101.qiye.163.com ([115.236.127.101]:3706 "EHLO
+        mail-m127101.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407626AbgDPPfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:35:55 -0400
+Received: from ubuntu.localdomain (unknown [58.251.74.226])
+        by mail-m127101.qiye.163.com (Hmail) with ESMTPA id B2D3747589;
+        Thu, 16 Apr 2020 23:35:48 +0800 (CST)
+From:   Wang Wenhu <wenhu.wang@vivo.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        oss@buserror.net, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>
+Subject: [PATCH v4,0/4] drivers: uio: new driver uio_fsl_85xx_cache_sram
+Date:   Thu, 16 Apr 2020 08:35:33 -0700
+Message-Id: <20200416153537.23736-1-wenhu.wang@vivo.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVOQk1LS0tKQk9OT0JOTVlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MxQ6Vio6QzgwEg8hF00rTkMw
+        LQMaCRNVSlVKTkNMS05KSE5KS0JCVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUlNTk83Bg++
+X-HM-Tid: 0a7183a1c3ec9865kuuub2d3747589
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 22:18:33 +0800
-Muchun Song <songmuchun@bytedance.com> wrote:
 
-> The user_mode(task_pt_regs(tsk)) always return true for
-> user thread, and false for kernel thread. So it means that
-> the cpuacct.usage_sys is the time that kernel thread uses
-> not the time that thread uses in the kernel mode. We can
-> use get_irq_regs() instead of task_pt_regs() to fix it.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  kernel/sched/cpuacct.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
-> index 6448b0438ffb2..edfc62554648e 100644
-> --- a/kernel/sched/cpuacct.c
-> +++ b/kernel/sched/cpuacct.c
-> @@ -5,6 +5,7 @@
->   * Based on the work by Paul Menage (menage@google.com) and Balbir Singh
->   * (balbir@in.ibm.com).
->   */
-> +#include <asm/irq_regs.h>
->  #include "sched.h"
->  
->  /* Time spent by the tasks of the CPU accounting group executing in ... */
-> @@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
->  {
->  	struct cpuacct *ca;
->  	int index = CPUACCT_STAT_SYSTEM;
-> -	struct pt_regs *regs = task_pt_regs(tsk);
-> +	struct pt_regs *regs = get_irq_regs();
+Changes since v1:
+ * Addressed comments from Greg K-H
+ * Moved kfree(info->name) into uio_info_free_internal()
 
-But get_irq_regs() is only available from interrupt context. This will be
-NULL most the time, whereas the original way will have regs existing for
-the task.
+Changes since v2:
+ * Drop the patch that modifies Kconfigs of arch/powerpc/platforms
+   and modified the sequence of patches:
+    01:dropped, 02->03, 03->02, 04->01, 05->04
+ * Addressed comments from Greg, Scott and Christophe
+ * Use "uiomem->internal_addr" as if condition for sram memory free,
+   and memset the uiomem entry
+ * Modified of_match_table make the driver apart from Cache-Sram HW info
+   which belong to the HW level driver fsl_85xx_cache_sram to match
+ * Use roundup_pow_of_two for align calc(really learned a lot from Christophe)
+ * Remove useless clear block of uiomem entries.
+ * Use UIO_INFO_VER micro for info->version, and define it as
+   "devicetree,pseudo", meaning this is pseudo device and probed from
+   device tree configuration
+ * Select FSL_85XX_CACHE_SRAM rather than depends on it
 
->  
->  	if (regs && user_mode(regs))
->  		index = CPUACCT_STAT_USER;
+Changes since v3:
+ * Addressed comments from Christophe(use devm_xxx memory alloc interfaces)
 
-To show this, I applied your patch then did the following:
+Wang Wenhu (4):
+  powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+  powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
+  drivers: uio: new driver for fsl_85xx_cache_sram
 
- # echo 'p:cpuacct cpuacct_charge+0x36 regs=%ax' > /sys/kernel/tracing/kprobe_events
+ arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
+ arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
+ drivers/uio/Kconfig                       |   9 ++
+ drivers/uio/Makefile                      |   1 +
+ drivers/uio/uio_fsl_85xx_cache_sram.c     | 148 ++++++++++++++++++++++
+ 5 files changed, 161 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
 
-Where I found that the test of 'regs' is %rax at offset 0x36.
+-- 
+2.17.1
 
- # trace-cmd start -p function -l cpuacct_charge -e kprobes
- # trace-cmd show
-# tracer: function
-#
-# entries-in-buffer/entries-written: 70664/70664   #P:8
-#
-#                              _-----=> irqs-off
-#                             / _----=> need-resched
-#                            | / _---=> hardirq/softirq
-#                            || / _--=> preempt-depth
-#                            ||| /     delay
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#              | |       |   ||||       |         |
-           <...>-1720  [002] d..2   306.430302: cpuacct_charge <-update_curr
-           <...>-1720  [002] d..3   306.430306: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-           <...>-1720  [002] dN.2   306.430321: cpuacct_charge <-update_curr
-           <...>-1720  [002] dN.3   306.430322: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-           <...>-1720  [002] d..2   306.430355: cpuacct_charge <-update_curr
-           <...>-1720  [002] d..3   306.430357: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-            bash-1652  [006] d.h2   306.430799: cpuacct_charge <-update_curr
-            bash-1652  [006] d.h3   306.430802: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0xffffaf34012abdd8
-           <...>-199   [005] d.h2   306.430806: cpuacct_charge <-update_curr
-           <...>-199   [005] d.h3   306.430809: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0xffffaf3400347c38
-           <...>-16    [001] d..2   306.430873: cpuacct_charge <-update_curr
-           <...>-16    [001] d..3   306.430875: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-           <...>-199   [005] d..2   306.430936: cpuacct_charge <-update_curr
-           <...>-199   [005] d..3   306.430937: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-            bash-1652  [006] d..2   306.430944: cpuacct_charge <-update_curr
-            bash-1652  [006] d..3   306.430946: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-            sshd-1649  [000] d..2   306.430990: cpuacct_charge <-update_curr
-            sshd-1649  [000] d..3   306.430992: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     rcu_preempt-10    [006] d..2   306.432844: cpuacct_charge <-update_curr
-     rcu_preempt-10    [006] d..3   306.432846: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     rcu_preempt-10    [006] d..2   306.436848: cpuacct_charge <-update_curr
-     rcu_preempt-10    [006] d..3   306.436850: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     rcu_preempt-10    [006] d..2   306.440868: cpuacct_charge <-update_curr
-     rcu_preempt-10    [006] d..3   306.440871: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     rcu_preempt-10    [006] d..2   306.444867: cpuacct_charge <-update_curr
-     rcu_preempt-10    [006] d..3   306.444870: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     kworker/2:1-127   [002] d..2   306.446925: cpuacct_charge <-update_curr
-     kworker/2:1-127   [002] d..3   306.446928: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     rcu_preempt-10    [006] d..2   306.448868: cpuacct_charge <-update_curr
-     rcu_preempt-10    [006] d..3   306.448870: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-     rcu_preempt-10    [006] d..2   306.452869: cpuacct_charge <-update_curr
-     rcu_preempt-10    [006] d..3   306.452872: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
-
-The only times regs has content is from the the interrupt handler (seen as
-the 'h' in the status portion of the trace.
-
--- Steve
