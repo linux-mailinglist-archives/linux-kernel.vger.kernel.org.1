@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7996E1ABDE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C08E1ABDDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504997AbgDPK3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:29:31 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50822 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504943AbgDPK2s (ORCPT
+        id S2504879AbgDPK2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:28:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38016 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504681AbgDPK00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:28:48 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GASCrM163539;
-        Thu, 16 Apr 2020 10:28:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=9GnHtY/DK7oYqI+ruPXthvzHvwuzbjixOeDMP1A3xwA=;
- b=ryIu0QaKo4LeO4bycJw+XOJ8VTN2Bit2GAL9x4zh0mW+wgPUUKYohMOjoeEJ7nFV8F+X
- UmHMEnkWRp5hi1SuX1ImTiIc6vODNq/tbZQ02lPH3y+tBHdzHL1LXdO5OF+lAAbYkApZ
- 3VcOub2stRuofE2WSJkHG2UQRaG5sZFxINw5Mis5Yh1ZHdTCeZNjpTQdN65ogH1B2hpT
- ZnWmHK+zs0k82NcoNmZCuJm/g5G3r6cAXwv5Dsxiq9LLykNhgE2etZlCwPgVUOEy6kZy
- nwss6PZbtEDxw0mRCZ7o6AUYYjTGr38iuuCCW/i1l4ijk0R417piCZ++wNatgXaIriIc vA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30dn95rjtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 10:28:27 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GAHsZJ099521;
-        Thu, 16 Apr 2020 10:26:26 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30dynya2y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 10:26:26 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GAQOEY025630;
-        Thu, 16 Apr 2020 10:26:24 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Apr 2020 03:26:24 -0700
-Date:   Thu, 16 Apr 2020 13:26:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>,
-        ast@kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: WARNING in bpf_cgroup_link_release
-Message-ID: <20200416102612.GO1163@kadam>
-References: <000000000000500e6f05a34ecc01@google.com>
- <4ba5ee0c-ec81-8ce3-6681-465e34b98a93@iogearbox.net>
- <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com>
+        Thu, 16 Apr 2020 06:26:26 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7C98B2A1375;
+        Thu, 16 Apr 2020 11:26:23 +0100 (BST)
+Date:   Thu, 16 Apr 2020 12:26:19 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        anders.roxell@linaro.org, andriy.shevchenko@intel.com,
+        arnd@arndb.de, brendanhiggins@google.com, cheol.yong.kim@intel.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, masonccyang@mxic.com.tw,
+        miquel.raynal@bootlin.com, piotrs@cadence.com,
+        qi-ming.wu@intel.com, richard@nod.at, robh+dt@kernel.org,
+        tglx@linutronix.de, vigneshr@ti.com
+Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200416122619.2c481792@collabora.com>
+In-Reply-To: <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
+References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
+        <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
+        <20200416113822.2ef326cb@collabora.com>
+        <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=896 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160071
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160072
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 09:51:40AM -0700, 'Andrii Nakryiko' via syzkaller-bugs wrote:
-> On 4/15/20 4:57 AM, Daniel Borkmann wrote:
-> > On 4/15/20 8:55 AM, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following crash on:
-> > 
-> > Andrii, ptal.
-> > 
-> > > HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to
-> > > __get_user_x..
-> > > git tree:       bpf-next
-> > > console output: https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_x_log.txt-3Fx-3D148ccb57e00000&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=-6XBbsNV1O4X5flrx4Yssfjc56d0qeSHgwHhd92UPJc&e=
-> > > kernel config:  https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_x_.config-3Fx-3D8c1e98458335a7d1&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=s5-1AlWtSiBvo66WN4_UXoXMGIGIqsoUCrmAnxNnfX0&e=
-> > > dashboard link: https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_bug-3Fextid-3D8a5dadc5c0b1d7055945&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=hAA0702qJH5EwRwvG0RKmj8FwIRm1O8hvmoS7ne5Dls&e=
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > 
-> > > Unfortunately, I don't have any reproducer for this crash yet.
-> > > 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the
-> > > commit:
-> > > Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
-> > > 
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796
-> > > bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+On Thu, 16 Apr 2020 17:45:49 +0800
+"Ramuthevar, Vadivel MuruganX"
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+
+> >>>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> >>>>
+> >>>> This patch adds the new IP of Nand Flash Controller(NFC) support
+> >>>> on Intel's Lightning Mountain(LGM) SoC.
+> >>>>
+> >>>> DMA is used for burst data transfer operation, also DMA HW supports
+> >>>> aligned 32bit memory address and aligned data access by default.
+> >>>> DMA burst of 8 supported. Data register used to support the read/write
+> >>>> operation from/to device.  
+> >>> I am wondering how this new hardware is different from the Lantiq NAND
+> >>> controller IP - for which there is already a driver in mainline (it's
+> >>> in drivers/mtd/nand/raw/xway_nand.c).
+> >>> The CON and WAIT registers look suspiciously similar.
+> >>>
+> >>> As far as I understand the "old" SoCs (VRX200 and earlier) don't have
+> >>> a built-in ECC engine. This seems to have changed with ARX300 though
+> >>> (again, AFAIK).
+> >>>
+> >>> A bit of lineage on these SoCs (initially these were developed by
+> >>> Infineon. Lantiq then started as an Infineon spin-off in 2009 and
+> >>> was then acquired by Intel in 2015):
+> >>> - Danube
+> >>> - ARX100 from 2008/2009
+> >>> - VRX200 from 2009/2010
+> >>> - ARX300 from 2014
+> >>> - GRX350 from 2015/2016
+> >>> - GRX550 from 2017
+> >>> - and now finally: LGM from 2020 (est.)
+> >>>
+> >>> The existing xway_nand driver supports the Danube, ARX100 and VRX200
+> >>> SoCs.  
+> >> Lantiq upstreamed a driver for an older version of this IP core 8 years
+> >> ago, see here:
+> >> https://elixir.bootlin.com/linux/v5.5.6/source/drivers/mtd/nand/raw/xway_nand.c
+> >> It does not support DMA and ECC.  
+> > Then let's just extend this driver to support the new features. Plus,  
+> We do not have the platform to test also it's very old legacy driver .
+
+Well, if it's similar enough, we want to have one driver.
+
+> > we'll be happy to have one more of the existing driver converted to  
+> > ->exec_op() ;-).  
 > 
-> This warning is triggered due to __cgroup_bpf_detach returning an error. It
-> can do it only in two cases: either attached item is not found, which from
-> starting at code some moreI don't see how that can happen. The other reason
-> - kmalloc() failing to allocate memory for new effective prog array.
+> I have completely adapted to ->exec_op() hook up to replace the legacy 
+> call-back.
 
-If you look at the log file then this was allocation fault injection in
-bpf_prog_array_alloc().
-
-https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
-
-regards,
-dan carpenter
-
+I suspect porting what you've done to the xway driver shouldn't be too
+complicated.
