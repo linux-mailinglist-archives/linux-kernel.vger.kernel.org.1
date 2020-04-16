@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF861AD0B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936241AD0CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730431AbgDPT7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 15:59:43 -0400
-Received: from baldur.buserror.net ([165.227.176.147]:38602 "EHLO
-        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbgDPT7m (ORCPT
+        id S1731520AbgDPUFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:05:32 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40412 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730759AbgDPUD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 15:59:42 -0400
-Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
-        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <oss@buserror.net>)
-        id 1jPAfj-0007F3-PU; Thu, 16 Apr 2020 14:59:40 -0500
-Message-ID: <16f8fa2d26d88f22ed05e9870709c2fd5c3960cf.camel@buserror.net>
-From:   Scott Wood <oss@buserror.net>
-To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, christophe.leroy@c-s.fr,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, Michael Ellerman <mpe@ellerman.id.au>
-Date:   Thu, 16 Apr 2020 14:59:36 -0500
-In-Reply-To: <20200416153537.23736-5-wenhu.wang@vivo.com>
-References: <20200416153537.23736-1-wenhu.wang@vivo.com>
-         <20200416153537.23736-5-wenhu.wang@vivo.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
-X-SA-Exim-Rcpt-To: wenhu.wang@vivo.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, christophe.leroy@c-s.fr, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, mpe@ellerman.id.au
-X-SA-Exim-Mail-From: oss@buserror.net
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
-X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
-        *      this recipient and sender
-Subject: Re: [PATCH v4,4/4] drivers: uio: new driver for fsl_85xx_cache_sram
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
+        Thu, 16 Apr 2020 16:03:59 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GK3pOB038859;
+        Thu, 16 Apr 2020 16:03:52 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ewfqrx49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 16:03:51 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03GK3JUI026246;
+        Thu, 16 Apr 2020 20:03:43 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 30b5h7g0wy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 20:03:43 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03GK3gFk41812346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 20:03:42 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F1ABAC05B;
+        Thu, 16 Apr 2020 20:03:42 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9BD2AC059;
+        Thu, 16 Apr 2020 20:03:40 +0000 (GMT)
+Received: from talon7.ibm.com (unknown [9.163.81.122])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 16 Apr 2020 20:03:40 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-aspeed@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        eajames@linux.ibm.com
+Subject: [PATCH v9 0/5] soc: aspeed: Add XDMA engine driver
+Date:   Thu, 16 Apr 2020 15:03:34 -0500
+Message-Id: <1587067419-5107-1-git-send-email-eajames@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-16_08:2020-04-14,2020-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 suspectscore=3 phishscore=0 clxscore=1015
+ adultscore=0 mlxlogscore=925 priorityscore=1501 spamscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160137
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-04-16 at 08:35 -0700, Wang Wenhu wrote:
-> +#define UIO_INFO_VER	"devicetree,pseudo"
+This series adds a driver to control the Aspeed XDMA engine embedded in the
+AST2500 and AST2600. The XDMA engine performs automatic DMA operations
+over PCI-E between the Aspeed SOC (acting as a BMC) and a host processor.
 
-What does this mean?  Changing a number into a non-obvious string (Why
-"pseudo"?  Why does the UIO user care that the config came from the device
-tree?) just to avoid setting off Greg's version number autoresponse isn't
-really helping anything.
+Changes since v8:
+ - Use DMA API to allocate memory from reserved region.
+ - Fix the driver for the AST2500 by keeping the command queue in kernel
+   memory and copying the whole buffer to the reserved memory area before
+   starting the operation.
+ - Add krefs to the client structure to prevent use-after-free.
+ - Switch reset-names binding to "device", "root-complex"
 
-> +static const struct of_device_id uio_mpc85xx_l2ctlr_of_match[] = {
-> +	{	.compatible = "uio,mpc85xx-cache-sram",	},
-> +	{},
-> +};
-> +
-> +static struct platform_driver uio_fsl_85xx_cache_sram = {
-> +	.probe = uio_fsl_85xx_cache_sram_probe,
-> +	.remove = uio_fsl_85xx_cache_sram_remove,
-> +	.driver = {
-> +		.name = DRIVER_NAME,
-> +		.owner = THIS_MODULE,
-> +		.of_match_table	= uio_mpc85xx_l2ctlr_of_match,
-> +	},
-> +};
+Eddie James (5):
+  dt-bindings: soc: Add Aspeed XDMA Engine
+  soc: aspeed: Add XDMA Engine Driver
+  soc: aspeed: xdma: Add user interface
+  soc: aspeed: xdma: Add reset ioctl
+  ARM: dts: Aspeed: AST2600: Add XDMA PCI-E root control reset
 
-Greg's comment notwithstanding, I really don't think this belongs in the
-device tree (and if I do get overruled on that point, it at least needs a
-binding document).  Let me try to come up with a patch for dynamic allocation.
+ .../devicetree/bindings/soc/aspeed/xdma.txt        |   45 +
+ MAINTAINERS                                        |    8 +
+ arch/arm/boot/dts/aspeed-g6.dtsi                   |    3 +-
+ drivers/soc/aspeed/Kconfig                         |    8 +
+ drivers/soc/aspeed/Makefile                        |    1 +
+ drivers/soc/aspeed/aspeed-xdma.c                   | 1099 ++++++++++++++++++++
+ include/uapi/linux/aspeed-xdma.h                   |   42 +
+ 7 files changed, 1205 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/xdma.txt
+ create mode 100644 drivers/soc/aspeed/aspeed-xdma.c
+ create mode 100644 include/uapi/linux/aspeed-xdma.h
 
--Scott
-
+-- 
+1.8.3.1
 
