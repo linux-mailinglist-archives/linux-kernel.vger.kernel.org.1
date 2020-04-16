@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA4E1AC6DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDAA1ACC04
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394629AbgDPOpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:45:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
+        id S2896791AbgDPPxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:53:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437193AbgDPN7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:59:39 -0400
+        id S2896402AbgDPNcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:32:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70FFF20732;
-        Thu, 16 Apr 2020 13:59:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09001221EB;
+        Thu, 16 Apr 2020 13:31:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045578;
-        bh=VYuhQynOOttQXgdTesb/aAZL2uNah2HlHkKcMndQFn4=;
+        s=default; t=1587043888;
+        bh=LoemScDtwq3mKzvNIvuf4pkxIjr/iGO4pf7UOgojR8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2UGgNkGIspkRJQST1qZtxZu1YtT9HZOZPuOmCC/tV7EbPOGJ0haxWbclHqqn8Ms6C
-         cU3TnFshqUNx19gE3daHqJRvXo8pZWaDHMFfRWv07ANklnx8qn1oe2dMiGbc3r1t8C
-         dMak0Q3NETXYilAZqe8lfoPeb/cEI2/UoEonxfZE=
+        b=U06ecuROZpseln+qta9b2DmSBw9LZKEgN+hpLhJN8ezlQCiwZnjijj7Oepipkuipp
+         XDVmsnkWWJNd/8VVEytoOE+LfE4ZPLFJNmOLmcle1SCuCki23VsETHMhZ6Bzqvq01r
+         LC8dTUdOQxREGg7rgWkDOwrPxO70aipmwd2nfkIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
-        Roger Quadros <rogerq@ti.com>, stable@kernel.org,
-        Tero Kristo <t-kristo@ti.com>
-Subject: [PATCH 5.6 193/254] arm64: dts: ti: k3-am65: Add clocks to dwc3 nodes
+        stable@vger.kernel.org, Sean Paul <sean@poorly.run>,
+        Wayne Lin <Wayne.Lin@amd.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Lyude Paul <lyude@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 141/146] drm/dp_mst: Fix clearing payload state on topology disable
 Date:   Thu, 16 Apr 2020 15:24:42 +0200
-Message-Id: <20200416131350.389876357@linuxfoundation.org>
+Message-Id: <20200416131301.651728040@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +46,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Gerlach <d-gerlach@ti.com>
+From: Lyude Paul <lyude@redhat.com>
 
-commit a81e5442d796ccfa2cc97d205a5477053264d978 upstream.
+[ Upstream commit 8732fe46b20c951493bfc4dba0ad08efdf41de81 ]
 
-The TI sci-clk driver can scan the DT for all clocks provided by system
-firmware and does this by checking the clocks property of all nodes, so
-we must add this to the dwc3 nodes so USB clocks are available.
+The issues caused by:
 
-Without this USB does not work with latest system firmware i.e.
-[    1.714662] clk: couldn't get parent clock 0 for /interconnect@100000/dwc3@4020000
+commit 64e62bdf04ab ("drm/dp_mst: Remove VCPI while disabling topology
+mgr")
 
-Fixes: cc54a99464ccd ("arm64: dts: ti: k3-am6: add USB suppor")
-Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Cc: stable@kernel.org
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Prompted me to take a closer look at how we clear the payload state in
+general when disabling the topology, and it turns out there's actually
+two subtle issues here.
 
+The first is that we're not grabbing &mgr.payload_lock when clearing the
+payloads in drm_dp_mst_topology_mgr_set_mst(). Seeing as the canonical
+lock order is &mgr.payload_lock -> &mgr.lock (because we always want
+&mgr.lock to be the inner-most lock so topology validation always
+works), this makes perfect sense. It also means that -technically- there
+could be racing between someone calling
+drm_dp_mst_topology_mgr_set_mst() to disable the topology, along with a
+modeset occurring that's modifying the payload state at the same time.
+
+The second is the more obvious issue that Wayne Lin discovered, that
+we're not clearing proposed_payloads when disabling the topology.
+
+I actually can't see any obvious places where the racing caused by the
+first issue would break something, and it could be that some of our
+higher-level locks already prevent this by happenstance, but better safe
+then sorry. So, let's make it so that drm_dp_mst_topology_mgr_set_mst()
+first grabs &mgr.payload_lock followed by &mgr.lock so that we never
+race when modifying the payload state. Then, we also clear
+proposed_payloads to fix the original issue of enabling a new topology
+with a dirty payload state. This doesn't clear any of the drm_dp_vcpi
+structures, but those are getting destroyed along with the ports anyway.
+
+Changes since v1:
+* Use sizeof(mgr->payloads[0])/sizeof(mgr->proposed_vcpis[0]) instead -
+  vsyrjala
+
+Cc: Sean Paul <sean@poorly.run>
+Cc: Wayne Lin <Wayne.Lin@amd.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200122194321.14953-1-lyude@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-@@ -296,6 +296,7 @@
- 		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		dma-coherent;
- 		power-domains = <&k3_pds 151 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 151 2>, <&k3_clks 151 7>;
- 		assigned-clocks = <&k3_clks 151 2>, <&k3_clks 151 7>;
- 		assigned-clock-parents = <&k3_clks 151 4>,	/* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
- 					 <&k3_clks 151 9>;	/* set PIPE3_TXB_CLK to CLK_12M_RC/256 (for HS only) */
-@@ -335,6 +336,7 @@
- 		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
- 		dma-coherent;
- 		power-domains = <&k3_pds 152 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 152 2>;
- 		assigned-clocks = <&k3_clks 152 2>;
- 		assigned-clock-parents = <&k3_clks 152 4>;	/* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index b4fd20062bb80..5f508ec321fef 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2117,6 +2117,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 	int ret = 0;
+ 	struct drm_dp_mst_branch *mstb = NULL;
  
++	mutex_lock(&mgr->payload_lock);
+ 	mutex_lock(&mgr->lock);
+ 	if (mst_state == mgr->mst_state)
+ 		goto out_unlock;
+@@ -2175,7 +2176,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 		/* this can fail if the device is gone */
+ 		drm_dp_dpcd_writeb(mgr->aux, DP_MSTM_CTRL, 0);
+ 		ret = 0;
+-		memset(mgr->payloads, 0, mgr->max_payloads * sizeof(struct drm_dp_payload));
++		memset(mgr->payloads, 0,
++		       mgr->max_payloads * sizeof(mgr->payloads[0]));
++		memset(mgr->proposed_vcpis, 0,
++		       mgr->max_payloads * sizeof(mgr->proposed_vcpis[0]));
+ 		mgr->payload_mask = 0;
+ 		set_bit(0, &mgr->payload_mask);
+ 		mgr->vcpi_mask = 0;
+@@ -2183,6 +2187,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 
+ out_unlock:
+ 	mutex_unlock(&mgr->lock);
++	mutex_unlock(&mgr->payload_lock);
+ 	if (mstb)
+ 		drm_dp_put_mst_branch_device(mstb);
+ 	return ret;
+-- 
+2.20.1
+
 
 
