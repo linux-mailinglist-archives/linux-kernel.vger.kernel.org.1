@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FA81ABEBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736741ABF31
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506067AbgDPLGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:06:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2057 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2505994AbgDPLBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:01:48 -0400
-Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 7070F6156CB31EE8123A;
-        Thu, 16 Apr 2020 18:45:18 +0800 (CST)
-Received: from DGGEML524-MBX.china.huawei.com ([169.254.1.24]) by
- dggeml405-hub.china.huawei.com ([10.3.17.49]) with mapi id 14.03.0487.000;
- Thu, 16 Apr 2020 18:45:12 +0800
-From:   "Zouwei (Samuel)" <zou_wei@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIC1uZXh0XSBtbS91c2VyY29weTogZml4IHdhcm5pbmcg?=
- =?gb2312?Q?Comparison_to_bool?=
-Thread-Topic: [PATCH -next] mm/usercopy: fix warning Comparison to bool
-Thread-Index: AQHWEg3NM5G3b6CdWkWVy/pKazaWX6h6SkKAgAFHhdA=
-Date:   Thu, 16 Apr 2020 10:45:12 +0000
-Message-ID: <C3CD0DF8AD11A84CB25A1426DE537C61E594BFF6@dggeml524-mbx.china.huawei.com>
-References: <1586835724-45738-1-git-send-email-zou_wei@huawei.com>
- <20200415160439.256c89d4cb67b76d4119935d@linux-foundation.org>
-In-Reply-To: <20200415160439.256c89d4cb67b76d4119935d@linux-foundation.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.166.212.180]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S2633296AbgDPLaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:30:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:58956 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506191AbgDPLJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:09:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB356C14;
+        Thu, 16 Apr 2020 03:45:30 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D08083F73D;
+        Thu, 16 Apr 2020 03:45:29 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 11:45:27 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [PATCH 3/6] arm64/vdso: Add time napespace page
+Message-ID: <20200416104527.GD4987@lakrids.cambridge.arm.com>
+References: <20200416052618.804515-1-avagin@gmail.com>
+ <20200416052618.804515-4-avagin@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416052618.804515-4-avagin@gmail.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5kcmV3LA0KDQpUaGFua3MgZm9yIHlvdXIgcmVwbHkuDQpQZXJoYXBzIHRoaXMgaXMgYSBk
-ZXRlY3Rpb24gcnVsZSBvZiBDb2NjaW5lbGxlIChjb2NjaWNoZWNrKSBzb2Z0d2FyZSBmb3IgcHJv
-Z3JhbW1pbmcgc3BlY2lmaWNhdGlvbnMsDQphbmQgaXQncyBubyB3cm9uZyB3aXRoIHRoZSBjb2Rl
-LCBqdXN0IGEgY29kaW5nIHN0eWxlLg0KDQpCZXN0IFJlZ2FyZHMNClpvdSBXZWkNCi0tLS0t08q8
-/tStvP4tLS0tLQ0Kt6K8/sjLOiBBbmRyZXcgTW9ydG9uIFttYWlsdG86YWtwbUBsaW51eC1mb3Vu
-ZGF0aW9uLm9yZ10gDQq3osvNyrG85DogMjAyMMTqNNTCMTbI1SA3OjA1DQrK1bz+yMs6IFpvdXdl
-aSAoU2FtdWVsKSA8em91X3dlaUBodWF3ZWkuY29tPg0Ks63LzTogbGludXgtbW1Aa3ZhY2sub3Jn
-OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQrW98ziOiBSZTogW1BBVENIIC1uZXh0XSBt
-bS91c2VyY29weTogZml4IHdhcm5pbmcgQ29tcGFyaXNvbiB0byBib29sDQoNCk9uIFR1ZSwgMTQg
-QXByIDIwMjAgMTE6NDI6MDQgKzA4MDAgWm91IFdlaSA8em91X3dlaUBodWF3ZWkuY29tPiB3cm90
-ZToNCg0KPiBmaXggYmVsb3cgd2FybmluZ3MgcmVwb3J0ZWQgYnkgY29jY2ljaGVjaw0KPiANCj4g
-bW0vdXNlcmNvcHkuYzozMDQ6NS0xODogV0FSTklORzogQ29tcGFyaXNvbiB0byBib29sDQo+DQo+
-IC4uLg0KPg0KPiAtLS0gYS9tbS91c2VyY29weS5jDQo+ICsrKyBiL21tL3VzZXJjb3B5LmMNCj4g
-QEAgLTMwMSw3ICszMDEsNyBAQCBfX3NldHVwKCJoYXJkZW5lZF91c2VyY29weT0iLCANCj4gcGFy
-c2VfaGFyZGVuZWRfdXNlcmNvcHkpOw0KPiAgDQo+ICBzdGF0aWMgaW50IF9faW5pdCBzZXRfaGFy
-ZGVuZWRfdXNlcmNvcHkodm9pZCkgIHsNCj4gLQlpZiAoZW5hYmxlX2NoZWNrcyA9PSBmYWxzZSkN
-Cj4gKwlpZiAoIWVuYWJsZV9jaGVja3MpDQo+ICAJCXN0YXRpY19icmFuY2hfZW5hYmxlKCZieXBh
-c3NfdXNlcmNvcHlfY2hlY2tzKTsNCj4gIAlyZXR1cm4gMTsNCj4gIH0NCg0KTXkgaW5pdGlhbCBy
-ZWFjdGlvbiBpcyAiZml4IGNvY2NpY2hlY2siLiAgVGhlcmUncyBub3RoaW5nIHdyb25nIHdpdGgg
-dGhhdCBjb2RlPw0KDQo=
+Hi Andrei,
+
+On Wed, Apr 15, 2020 at 10:26:15PM -0700, Andrei Vagin wrote:
+> diff --git a/arch/arm64/include/asm/vdso.h b/arch/arm64/include/asm/vdso.h
+> index 07468428fd29..351c145d3808 100644
+> --- a/arch/arm64/include/asm/vdso.h
+> +++ b/arch/arm64/include/asm/vdso.h
+> @@ -12,6 +12,12 @@
+>   */
+>  #define VDSO_LBASE	0x0
+>  
+> +#ifdef CONFIG_TIME_NS
+> +#define __VVAR_PAGES    2
+> +#else
+> +#define __VVAR_PAGES    1
+> +#endif
+> +
+>  #ifndef __ASSEMBLY__
+  
+> +#ifdef CONFIG_TIME_NS
+> +static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
+> +{
+> +	const struct vdso_data *ret;
+> +
+> +	ret = _timens_data;
+> +	OPTIMIZER_HIDE_VAR(ret);
+> +
+> +	return ret;
+> +}
+> +#endif
+
+Sorry for the confusion here, but please either:
+
+* Add a preparatory patch making __arch_get_vdso_data() use
+  OPTIMIZER_HIDE_VAR(), and use OPTIMIZER_HIDE_VAR() here.
+
+* Use the same assembly as __arch_get_vdso_data() currently does.
+
+... and either way add a comment here:
+
+	/* See __arch_get_vdso_data() */
+
+... so taht the rationale is obvious.
+
+[...]
+
+> +enum vvar_pages {
+> +	VVAR_DATA_PAGE_OFFSET = 0,
+> +#ifdef CONFIG_TIME_NS
+> +	VVAR_TIMENS_PAGE_OFFSET = 1,
+> +#endif /* CONFIG_TIME_NS */
+> +	VVAR_NR_PAGES = __VVAR_PAGES,
+> +};
+
+Pet peeve, but we don't need the initializers here, as enums start from
+zero. The last element shouldn't have a trailing comma as we don't
+expect to add elements after it in future.
+
+Rather than assigning to VVAR_NR_PAGES, it'd be better to use a
+BUILD_BUG_ON() to verify that it is the number we expect:
+
+enum vvar_pages {
+	VVAR_DATA_PAGE,
+#ifdef CONFIG_TIME_NS
+	VVAR_TIMENS_PAGE,
+#endif
+	VVAR_NR_PAGES
+};
+
+BUILD_BUG_ON(VVAR_NR_PAGES != __VVAR_PAGES);
+
+Thanks,
+Mark.
