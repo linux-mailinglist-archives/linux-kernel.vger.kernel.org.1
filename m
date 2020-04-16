@@ -2,104 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824E41ABAEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0EC1ABB26
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501936AbgDPIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441179AbgDPIN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:13:28 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664BFC061A0C;
-        Thu, 16 Apr 2020 01:13:27 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=vostro)
-        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <john.ogness@linutronix.de>)
-        id 1jOzeH-0000Rs-4N; Thu, 16 Apr 2020 10:13:25 +0200
-From:   John Ogness <john.ogness@linutronix.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH RT] printk: console must not schedule for drivers
-References: <20200406212217.2323-1-john.ogness@linutronix.de>
-        <20200415163416.r3fce3g5kokm4bub@linutronix.de>
-Date:   Thu, 16 Apr 2020 10:13:23 +0200
-In-Reply-To: <20200415163416.r3fce3g5kokm4bub@linutronix.de> (Sebastian
-        Andrzej Siewior's message of "Wed, 15 Apr 2020 18:34:16 +0200")
-Message-ID: <87o8rrg864.fsf@vostro.fn.ogness.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2441290AbgDPI2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:28:24 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51567 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2501892AbgDPIQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:16:38 -0400
+IronPort-SDR: BBGj86xwNN6HmniwMCPU9ZcMc4kR3ME1aek7XmGGZJXlHKHiqUefbYKzfLt1On7LBOo7AOmW8w
+ Wfn0axd9Y3eA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 01:15:57 -0700
+IronPort-SDR: yk+xaIdcd7Nx9J106ohlNCHqoRYEjccP0ldcBojk+5cuy0KtwkHorp4X2wQrQhkrZI3ANDAPdQ
+ GlfCxiw7pPIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="363914363"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Apr 2020 01:15:53 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 10957190; Thu, 16 Apr 2020 11:15:52 +0300 (EEST)
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 00/20] platform/x86: Rework intel_scu_ipc and intel_pmc_ipc drivers
+Date:   Thu, 16 Apr 2020 11:15:32 +0300
+Message-Id: <20200416081552.68083-1-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-15, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
->> Even though the printk kthread is always preemptible, it is still not
->> allowed to call cond_resched() from within console drivers. The
->> task may become non-preemptible in the console driver call chain. For
->> example, vt_console_print() takes a spinlock and then can call into
->> fbcon_redraw(), which can conditionally invoke cond_resched():
->> 
->> BUG: sleeping function called from invalid context at
->> kernel/printk/printk.c:2322
->> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 177, name: printk
->> CPU: 0 PID: 177 Comm: printk Not tainted 5.6.2-00011-ga536059557f1d9 #1
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1
->> 04/01/2014
->> Call Trace:
->>  dump_stack+0x66/0x8b
->>  ___might_sleep+0x102/0x120
->>  console_conditional_schedule+0x24/0x30
->>  fbcon_redraw+0x96/0x1c0
->>  ? fbcon_cursor+0x100/0x190
->>  fbcon_scroll+0x556/0xd70
->>  con_scroll+0x147/0x1e0
->>  lf+0x9e/0xb0
->>  vt_console_print+0x253/0x3d0
->>  printk_kthread_func+0x1d5/0x3b0
->> 
->> Disable cond_resched() for the call into the console drivers.
->
-> Interesting. So you get a report and I don't?
+Hi all,
 
-Apparently only the patch author was notified. The reporter should
-include all the people tagged in the patch. I'll send him an email about
-this.
+Currently both intel_scu_ipc.c and intel_pmc_ipc.c implement the same SCU
+IPC communications with minor differences. This duplication does not make
+much sense so this series reworks the two drivers so that there is only a
+single implementation of the SCU IPC. In addition to that the API will be
+updated to take SCU instance pointer as an argument, and most of the
+callers will be converted to this new API. The old API is left there but
+the plan is to get rid the callers and then the old API as well.
 
-> - So before the re-rewrite, console_unlock() set this 0 before
->   invoking the console drivers so it was always 0. I assume it was
->   called with disabled interrupts.
+The intel_pmc_ipc.c is then moved under MFD which suits better for this
+kind of a driver that pretty much sets up the SCU IPC and then creates a
+bunch of platform devices for the things sitting behind the PMC. The driver
+is renamed to intel_pmc_bxt.c which should follow the existing conventions
+under drivers/mfd (and it is only meant for Intel Broxton derivatives).
 
-Correct.
+Changes from v8:
 
-> - Is there a scenario in fbcon where this function is invoked and
->   console_may_schedule is not 0?
+  * Rebased on top of v5.7-rc1.
+  * Added Lee's Acked-for-MFD-by to patch 1.
+  * There is a new patch (14/20) from Heikki to convert the newly
+    introduced Intel PMC Mux driver over to this new SCU IPC API.
+  * Call PMC API directly from iTCO_wdt and drop the ->update_no_reboot_bit
+    callback and the ->no_reboot_priv from the iTCO_wdt platform data
+  * Fill the MFD cells directly, do not take copies.
 
-Yes. The ttys/consoles are invoked through other call chains not related
-to printk. Since console_lock() can sleep, any caller of console_lock()
-_should_ be allowed to perform the cond_resched(). (The printk thread is
-an exception here!)
+Changes from v7:
 
-Here is one call chain I picked out:
+  * Added Lee's Acked-for-MFD-by to patches 10, 11 and 12.
+  * In patch 18 use same four-digit value for SMI_EN_OFFSET and
+    TCO_BASE_OFFSET to be consistent with others.
+  * Drop comma after PMC_DEVICE_MAX in patch 18.
 
-tty_io.c:tty_write_message()
-    mutex_lock()
-    tty->ops->write() -> usb-serial.c:serial_write()
-        port->serial->type->write() -> vt.c:con_write()
-            do_con_write()
-                console_lock()
-                    console_may_schedule = 1;
-                console_conditional_schedule();
-                    cond_resched();
+Changes from v6:
 
-From the mutex_lock() we can see that we are in a non-atomic context. In
-this case it is OK to call console_lock() and cond_resched().
+  * Added Reviewed-by tag from Andy
+  * Expanded PMC, IPC and IA acronyms
+  * Drop TCO_DEVICE_NAME, PUNIT_DEVICE_NAME and TELEMETRY_DEVICE_NAME
+  * Move struct intel_pmc_dev into include/linux/mfd/intel_pmc_bxt.h
+  * Add PMC_DEVICE_MAX to the enum and use it
+  * Add kernel-docs for simplecmd_store() and northpeak_store()
+  * Use if (ret) return ret; over the ternary operator
+  * Drop "This is index X" from comments
+  * Use acpi_has_watchdog() to determine whether iTCO_wdt is added or not.
+  * Rename intel_scu_ipc_pdata -> intel_scu_ipc_data to make it less
+    confusing wrt. platform data for platform drivers.
 
-John Ogness
+Previous versions can be found:
+
+  v8: https://www.spinics.net/lists/platform-driver-x86/msg21062.html
+  v7: https://www.spinics.net/lists/platform-driver-x86/msg21020.html
+  v6: https://www.spinics.net/lists/platform-driver-x86/msg20896.html
+  v5: https://www.spinics.net/lists/platform-driver-x86/msg20841.html
+  v4: https://www.spinics.net/lists/platform-driver-x86/msg20658.html
+  v3: https://www.spinics.net/lists/platform-driver-x86/msg20583.html
+  v2: https://www.spinics.net/lists/platform-driver-x86/msg20446.html
+  v1: https://www.spinics.net/lists/platform-driver-x86/msg20359.html
+
+Heikki Krogerus (1):
+  usb: typec: mux: Convert the Intel PMC Mux driver to use new SCU IPC API
+
+Mika Westerberg (19):
+  platform/x86: intel_scu_ipc: Split out SCU IPC functionality from the SCU driver
+  platform/x86: intel_scu_ipc: Log more information if SCU IPC command fails
+  platform/x86: intel_scu_ipc: Move legacy SCU IPC API to a separate header
+  platform/x86: intel_scu_ipc: Introduce new SCU IPC API
+  platform/x86: intel_mid_powerbtn: Convert to use new SCU IPC API
+  watchdog: intel-mid_wdt: Convert to use new SCU IPC API
+  platform/x86: intel_scu_ipcutil: Convert to use new SCU IPC API
+  platform/x86: intel_scu_ipc: Add managed function to register SCU IPC
+  platform/x86: intel_pmc_ipc: Start using SCU IPC
+  mfd: intel_soc_pmic: Add SCU IPC member to struct intel_soc_pmic
+  mfd: intel_soc_pmic_bxtwc: Convert to use new SCU IPC API
+  mfd: intel_soc_pmic_mrfld: Convert to use new SCU IPC API
+  platform/x86: intel_telemetry: Convert to use new SCU IPC API
+  platform/x86: intel_pmc_ipc: Drop intel_pmc_ipc_command()
+  x86/platform/intel-mid: Add empty stubs for intel_scu_devices_[create|destroy]()
+  platform/x86: intel_pmc_ipc: Move PCI IDs to intel_scu_pcidrv.c
+  platform/x86: intel_telemetry: Add telemetry_get_pltdata()
+  platform/x86: intel_pmc_ipc: Convert to MFD
+  MAINTAINERS: Update entry for Intel Broxton PMC driver
+
+ .../ABI/obsolete/sysfs-driver-intel_pmc_bxt   |  22 +
+ MAINTAINERS                                   |  23 +-
+ arch/x86/Kconfig                              |   2 +-
+ arch/x86/include/asm/intel-mid.h              |   9 +-
+ arch/x86/include/asm/intel_pmc_ipc.h          |  59 --
+ arch/x86/include/asm/intel_scu_ipc.h          | 114 ++-
+ arch/x86/include/asm/intel_scu_ipc_legacy.h   |  91 ++
+ arch/x86/include/asm/intel_telemetry.h        |   6 +-
+ drivers/mfd/Kconfig                           |  20 +-
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/intel_pmc_bxt.c                   | 468 +++++++++
+ drivers/mfd/intel_soc_pmic_bxtwc.c            |  34 +-
+ drivers/mfd/intel_soc_pmic_mrfld.c            |  10 +-
+ drivers/platform/x86/Kconfig                  |  46 +-
+ drivers/platform/x86/Makefile                 |   2 +-
+ drivers/platform/x86/intel_mid_powerbtn.c     |  15 +-
+ drivers/platform/x86/intel_pmc_ipc.c          | 949 ------------------
+ drivers/platform/x86/intel_scu_ipc.c          | 447 +++++++--
+ drivers/platform/x86/intel_scu_ipcutil.c      |  43 +-
+ drivers/platform/x86/intel_scu_pcidrv.c       |  68 ++
+ drivers/platform/x86/intel_telemetry_core.c   |  17 +-
+ .../platform/x86/intel_telemetry_debugfs.c    |  15 +-
+ drivers/platform/x86/intel_telemetry_pltdrv.c |  97 +-
+ drivers/usb/typec/mux/Kconfig                 |   2 +-
+ drivers/usb/typec/mux/intel_pmc_mux.c         |  12 +-
+ drivers/usb/typec/tcpm/Kconfig                |   2 +-
+ drivers/watchdog/iTCO_wdt.c                   |  25 +-
+ drivers/watchdog/intel-mid_wdt.c              |  53 +-
+ include/linux/mfd/intel_pmc_bxt.h             |  53 +
+ include/linux/mfd/intel_soc_pmic.h            |  15 +
+ include/linux/platform_data/itco_wdt.h        |  11 +-
+ 31 files changed, 1411 insertions(+), 1320 deletions(-)
+ create mode 100644 Documentation/ABI/obsolete/sysfs-driver-intel_pmc_bxt
+ delete mode 100644 arch/x86/include/asm/intel_pmc_ipc.h
+ create mode 100644 arch/x86/include/asm/intel_scu_ipc_legacy.h
+ create mode 100644 drivers/mfd/intel_pmc_bxt.c
+ delete mode 100644 drivers/platform/x86/intel_pmc_ipc.c
+ create mode 100644 drivers/platform/x86/intel_scu_pcidrv.c
+ create mode 100644 include/linux/mfd/intel_pmc_bxt.h
+
+-- 
+2.25.1
+
