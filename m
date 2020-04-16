@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016591AC48A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C731AC33C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731912AbgDPOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:01:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53314 "EHLO mail.kernel.org"
+        id S2898064AbgDPNkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898153AbgDPNkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:40 -0400
+        id S2896335AbgDPNa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CE5E20732;
-        Thu, 16 Apr 2020 13:40:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27F9B217D8;
+        Thu, 16 Apr 2020 13:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044439;
-        bh=5HTjWd+7Sl/qy30l/W4PW40cjGlT+DFrvZafOXww43Q=;
+        s=default; t=1587043856;
+        bh=gmomtnoUFFxZBqPiF7+JiwuErCelD3NR6Jnx/RtDmn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KCFtje6LA+EjkoWmIOlOfWUDeD9ZzDxJK+jxrgVJs+r6CpKk/C7p9Ik5LG+oUFiwL
-         T5gTuneOHr0VXqPnnwVfEvy6qgpFZALEgx/72/lDsCt0qBeHCI37YIatiW8ktuIxdy
-         NqMWAGalFF4g0ZSdX+Gie2AF7zrMY76ZIF2h+dgU=
+        b=A7RsWKJYtK94cDEd+dWWqrF9psd/XBNDArolrQvJuxGN4r8wuok3bBhdcUW7nR9og
+         4xKyJWPWSZPVJ6qaWHnzOX5WRIlWIbMgoMf5OaeCveauqkKykiTkPePnYJEGohq595
+         uB/jY0zNGtLzG1shoPOFbNf1/4MMHlxUq0SElbYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 5.5 219/257] ext4: fix a data race at inode->i_blocks
+        stable@vger.kernel.org,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 129/146] scsi: mpt3sas: Fix kernel panic observed on soft HBA unplug
 Date:   Thu, 16 Apr 2020 15:24:30 +0200
-Message-Id: <20200416131353.356092661@linuxfoundation.org>
+Message-Id: <20200416131300.126014665@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
 
-commit 28936b62e71e41600bab319f262ea9f9b1027629 upstream.
+commit cc41f11a21a51d6869d71e525a7264c748d7c0d7 upstream.
 
-inode->i_blocks could be accessed concurrently as noticed by KCSAN,
+Generic protection fault type kernel panic is observed when user performs
+soft (ordered) HBA unplug operation while IOs are running on drives
+connected to HBA.
 
- BUG: KCSAN: data-race in ext4_do_update_inode [ext4] / inode_add_bytes
+When user performs ordered HBA removal operation, the kernel calls PCI
+device's .remove() call back function where driver is flushing out all the
+outstanding SCSI IO commands with DID_NO_CONNECT host byte and also unmaps
+sg buffers allocated for these IO commands.
 
- write to 0xffff9a00d4b982d0 of 8 bytes by task 22100 on cpu 118:
-  inode_add_bytes+0x65/0xf0
-  __inode_add_bytes at fs/stat.c:689
-  (inlined by) inode_add_bytes at fs/stat.c:702
-  ext4_mb_new_blocks+0x418/0xca0 [ext4]
-  ext4_ext_map_blocks+0x1a6b/0x27b0 [ext4]
-  ext4_map_blocks+0x1a9/0x950 [ext4]
-  _ext4_get_block+0xfc/0x270 [ext4]
-  ext4_get_block_unwritten+0x33/0x50 [ext4]
-  __block_write_begin_int+0x22e/0xae0
-  __block_write_begin+0x39/0x50
-  ext4_write_begin+0x388/0xb50 [ext4]
-  ext4_da_write_begin+0x35f/0x8f0 [ext4]
-  generic_perform_write+0x15d/0x290
-  ext4_buffered_write_iter+0x11f/0x210 [ext4]
-  ext4_file_write_iter+0xce/0x9e0 [ext4]
-  new_sync_write+0x29c/0x3b0
-  __vfs_write+0x92/0xa0
-  vfs_write+0x103/0x260
-  ksys_write+0x9d/0x130
-  __x64_sys_write+0x4c/0x60
-  do_syscall_64+0x91/0xb05
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+However, in the ordered HBA removal case (unlike of real HBA hot removal),
+HBA device is still alive and hence HBA hardware is performing the DMA
+operations to those buffers on the system memory which are already unmapped
+while flushing out the outstanding SCSI IO commands and this leads to
+kernel panic.
 
- read to 0xffff9a00d4b982d0 of 8 bytes by task 8 on cpu 65:
-  ext4_do_update_inode+0x4a0/0xf60 [ext4]
-  ext4_inode_blocks_set at fs/ext4/inode.c:4815
-  ext4_mark_iloc_dirty+0xaf/0x160 [ext4]
-  ext4_mark_inode_dirty+0x129/0x3e0 [ext4]
-  ext4_convert_unwritten_extents+0x253/0x2d0 [ext4]
-  ext4_convert_unwritten_io_end_vec+0xc5/0x150 [ext4]
-  ext4_end_io_rsv_work+0x22c/0x350 [ext4]
-  process_one_work+0x54f/0xb90
-  worker_thread+0x80/0x5f0
-  kthread+0x1cd/0x1f0
-  ret_from_fork+0x27/0x50
+Don't flush out the outstanding IOs from .remove() path in case of ordered
+removal since HBA will be still alive in this case and it can complete the
+outstanding IOs. Flush out the outstanding IOs only in case of 'physical
+HBA hot unplug' where there won't be any communication with the HBA.
 
- 4 locks held by kworker/u256:0/8:
-  #0: ffff9a025abc4328 ((wq_completion)ext4-rsv-conversion){+.+.}, at: process_one_work+0x443/0xb90
-  #1: ffffab5a862dbe20 ((work_completion)(&ei->i_rsv_conversion_work)){+.+.}, at: process_one_work+0x443/0xb90
-  #2: ffff9a025a9d0f58 (jbd2_handle){++++}, at: start_this_handle+0x1c1/0x9d0 [jbd2]
-  #3: ffff9a00d4b985d8 (&(&ei->i_raw_lock)->rlock){+.+.}, at: ext4_do_update_inode+0xaa/0xf60 [ext4]
- irq event stamp: 3009267
- hardirqs last  enabled at (3009267): [<ffffffff980da9b7>] __find_get_block+0x107/0x790
- hardirqs last disabled at (3009266): [<ffffffff980da8f9>] __find_get_block+0x49/0x790
- softirqs last  enabled at (3009230): [<ffffffff98a0034c>] __do_softirq+0x34c/0x57c
- softirqs last disabled at (3009223): [<ffffffff97cc67a2>] irq_exit+0xa2/0xc0
+During shutdown also it is possible that HBA hardware can perform DMA
+operations on those outstanding IO buffers which are completed with
+DID_NO_CONNECT by the driver from .shutdown(). So same above fix is applied
+in shutdown path as well.
 
- Reported by Kernel Concurrency Sanitizer on:
- CPU: 65 PID: 8 Comm: kworker/u256:0 Tainted: G L 5.6.0-rc2-next-20200221+ #7
- Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
- Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work [ext4]
+It is safe to drop the outstanding commands when HBA is inaccessible such
+as when permanent PCI failure happens, when HBA is in non-operational
+state, or when someone does a real HBA hot unplug operation. Since driver
+knows that HBA is inaccessible during these cases, it is safe to drop the
+outstanding commands instead of waiting for SCSI error recovery to kick in
+and clear these outstanding commands.
 
-The plain read is outside of inode->i_lock critical section which
-results in a data race. Fix it by adding READ_ONCE() there.
-
-Link: https://lore.kernel.org/r/20200222043258.2279-1-cai@lca.pw
-Signed-off-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/1585302763-23007-1-git-send-email-sreekanth.reddy@broadcom.com
+Fixes: c666d3be99c0 ("scsi: mpt3sas: wait for and flush running commands on shutdown/unload")
+Cc: stable@vger.kernel.org #v4.14.174+
+Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- fs/ext4/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4783,7 +4783,7 @@ static int ext4_inode_blocks_set(handle_
- 				struct ext4_inode_info *ei)
- {
- 	struct inode *inode = &(ei->vfs_inode);
--	u64 i_blocks = inode->i_blocks;
-+	u64 i_blocks = READ_ONCE(inode->i_blocks);
- 	struct super_block *sb = inode->i_sb;
+---
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+@@ -9841,8 +9841,8 @@ static void scsih_remove(struct pci_dev
  
- 	if (i_blocks <= ~0U) {
+ 	ioc->remove_host = 1;
+ 
+-	mpt3sas_wait_for_commands_to_complete(ioc);
+-	_scsih_flush_running_cmds(ioc);
++	if (!pci_device_is_present(pdev))
++		_scsih_flush_running_cmds(ioc);
+ 
+ 	_scsih_fw_event_cleanup_queue(ioc);
+ 
+@@ -9919,8 +9919,8 @@ scsih_shutdown(struct pci_dev *pdev)
+ 
+ 	ioc->remove_host = 1;
+ 
+-	mpt3sas_wait_for_commands_to_complete(ioc);
+-	_scsih_flush_running_cmds(ioc);
++	if (!pci_device_is_present(pdev))
++		_scsih_flush_running_cmds(ioc);
+ 
+ 	_scsih_fw_event_cleanup_queue(ioc);
+ 
 
 
