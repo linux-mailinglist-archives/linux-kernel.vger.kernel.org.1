@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0BD1ACF89
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 20:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBE61ACF9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 20:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732154AbgDPSWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 14:22:49 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35428 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729376AbgDPSWs (ORCPT
+        id S2390027AbgDPSY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 14:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbgDPSYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 14:22:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04428;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TvjuKCW_1587061357;
-Received: from localhost(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0TvjuKCW_1587061357)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Apr 2020 02:22:45 +0800
-From:   Yang Shi <yang.shi@linux.alibaba.com>
-To:     hughd@google.com, aarcange@redhat.com, akpm@linux-foundation.org
-Cc:     yang.shi@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: shmem: disable interrupt when acquiring info->lock in userfaultfd_copy path
-Date:   Fri, 17 Apr 2020 02:22:37 +0800
-Message-Id: <1587061357-122619-1-git-send-email-yang.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 16 Apr 2020 14:24:22 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6C1C061A0C;
+        Thu, 16 Apr 2020 11:24:22 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id d7so12339653oif.9;
+        Thu, 16 Apr 2020 11:24:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2E+VoUpcxjbQphezSMSElLeeuveF/zt0QguBrsX5PCw=;
+        b=tU5V57h/iPNI4Y1l78anoeSVneu4LlVuHUKxUiMbl8Oy9YR3fE1vFQ54wH7wyaQgPI
+         W0LOtOGtwSCtnAVZ725R+5RVA7GGFdpaol+0gzHRFwJL7N9uFl9ckkZSlOCLUh0oB2ZR
+         p0t9R/48+mm/QXh4v+8xRp26i0cZu7fkKHmPL6b0TaK0/lC2TAWh9J9pZoCt6DxR7HPM
+         dC2WIUlP7P6P5he2r92zp7PIuvR6VAWDL2DuGvCuu98DcvpwNGKzAupDuCVscNSgkmqW
+         IIZBNi5m1XUY22XCmTVQkjStgiYYGJSgLC3lUU9CDQBByMp+Bx37BYctTiZw+difdveo
+         FLOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2E+VoUpcxjbQphezSMSElLeeuveF/zt0QguBrsX5PCw=;
+        b=RAFLDM5byGugCTq455Oz4A1lmIrDMa2Ebkc52zYIepwkkVBoGHKHoNx+OO28Kw9+at
+         W7W8vCVMlHLm4z2weUo4bslf3Tui0sS6NgKKMD+Cn5t1MuwBTWsMp7Ffzx2RXfnHgT/a
+         vZF/lBxVhJ0Mi3NqLcb9v7JJ8NjKzZQ4zu8T8V7sBMTLfI15WFxQB37d/MnuFpLNGIYc
+         bX+NOc/MItumIk/XtXBXSQMR6xpWivF93JgC3XFLzNAcjIG8bLJ3CtfAhWKYohodJ5r7
+         KeP0q54DVY8c7fD4yANLOEQsCUQAowRuFQuZyY11vVfowo15/yvwxkGGdoC9UVvs905G
+         qQ+g==
+X-Gm-Message-State: AGi0PuZOwJlwhUf+te+tQGUyEL8Fy/wa+O14AX2L3IynzTWOuVQpqFJc
+        0kQeVwur5Ikb/4P6HCNp91s=
+X-Google-Smtp-Source: APiQypJYh1NRb4Bfqrxrls0PNIPJSeRz4pqPGg+Id5hgSKPZZZfHQFC+goUmyTwlAmRhqTKJJj0n0A==
+X-Received: by 2002:aca:d705:: with SMTP id o5mr3958283oig.67.1587061461676;
+        Thu, 16 Apr 2020 11:24:21 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id f45sm7307785otf.30.2020.04.16.11.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 11:24:20 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Manish Narani <manish.narani@xilinx.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "kernelci . org bot" <bot@kernelci.org>
+Subject: [PATCH] mmc: sdhci-of-arasan: Remove uninitialized ret variables
+Date:   Thu, 16 Apr 2020 11:24:02 -0700
+Message-Id: <20200416182402.16858-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.26.1
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported the below lockdep splat:
+Clang warns:
 
-WARNING: possible irq lock inversion dependency detected
-5.6.0-rc7-syzkaller #0 Not tainted
---------------------------------------------------------
-syz-executor.0/10317 just changed the state of lock:
-ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: spin_lock
-include/linux/spinlock.h:338 [inline]
-ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at:
-shmem_mfill_atomic_pte+0x1012/0x21c0 mm/shmem.c:2407
-but this lock was taken by another, SOFTIRQ-safe lock in the past:
- (&(&xa->xa_lock)->rlock#5){..-.}
+drivers/mmc/host/sdhci-of-arasan.c:784:9: warning: variable 'ret' is
+uninitialized when used here [-Wuninitialized]
+        return ret;
+               ^~~
+drivers/mmc/host/sdhci-of-arasan.c:738:9: note: initialize the variable
+'ret' to silence this warning
+        int ret;
+               ^
+                = 0
+drivers/mmc/host/sdhci-of-arasan.c:860:9: warning: variable 'ret' is
+uninitialized when used here [-Wuninitialized]
+        return ret;
+               ^~~
+drivers/mmc/host/sdhci-of-arasan.c:810:9: note: initialize the variable
+'ret' to silence this warning
+        int ret;
+               ^
+                = 0
+2 warnings generated.
 
-and interrupts could create inverse lock ordering between them.
+This looks like a copy paste error. Neither function has handling that
+needs ret so just remove it and return 0 directly.
 
-other info that might help us debug this:
- Possible interrupt unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&(&info->lock)->rlock);
-                               local_irq_disable();
-                               lock(&(&xa->xa_lock)->rlock#5);
-                               lock(&(&info->lock)->rlock);
-  <Interrupt>
-    lock(&(&xa->xa_lock)->rlock#5);
-
- *** DEADLOCK ***
-
-The full report is quite lengthy, please see:
-https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2004152007370.13597@eggly.anvils/T/#m813b412c5f78e25ca8c6c7734886ed4de43f241d
-
-It is because CPU 0 held info->lock with IRQ enabled in userfaultfd_copy
-path, then CPU 1 is splitting a THP which held xa_lock and info->lock in
-IRQ disabled context at the same time.  If softirq comes in to acquire
-xa_lock, the deadlock would be triggered.
-
-The fix is to acquire/release info->lock with *_irq version instead of
-plain spin_{lock,unlock} to make it softirq safe.
-
-Fixes: 4c27fe4c4c84 ("userfaultfd: shmem: add shmem_mcopy_atomic_pte for userfaultfd support")
-Reported-and-tested-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
-Acked-by: Hugh Dickins <hughd@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+Fixes: f73e66a36772 ("sdhci: arasan: Add support for Versal Tap Delays")
+Link: https://github.com/ClangBuiltLinux/linux/issues/996
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- mm/shmem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci-of-arasan.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index d722eb8..762da6a 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2399,11 +2399,11 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index 16e26c217a77..18bf0e76b1eb 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -735,7 +735,6 @@ static int sdhci_versal_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
+ 		container_of(clk_data, struct sdhci_arasan_data, clk_data);
+ 	struct sdhci_host *host = sdhci_arasan->host;
+ 	u8 tap_delay, tap_max = 0;
+-	int ret;
  
- 	lru_cache_add_anon(page);
+ 	/*
+ 	 * This is applicable for SDHCI_SPEC_300 and above
+@@ -781,7 +780,7 @@ static int sdhci_versal_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
+ 		sdhci_writel(host, regval, SDHCI_ARASAN_OTAPDLY_REGISTER);
+ 	}
  
--	spin_lock(&info->lock);
-+	spin_lock_irq(&info->lock);
- 	info->alloced++;
- 	inode->i_blocks += BLOCKS_PER_PAGE;
- 	shmem_recalc_inode(inode);
--	spin_unlock(&info->lock);
-+	spin_unlock_irq(&info->lock);
+-	return ret;
++	return 0;
+ }
  
- 	inc_mm_counter(dst_mm, mm_counter_file(page));
- 	page_add_file_rmap(page, false);
+ static const struct clk_ops versal_sdcardclk_ops = {
+@@ -807,7 +806,6 @@ static int sdhci_versal_sampleclk_set_phase(struct clk_hw *hw, int degrees)
+ 		container_of(clk_data, struct sdhci_arasan_data, clk_data);
+ 	struct sdhci_host *host = sdhci_arasan->host;
+ 	u8 tap_delay, tap_max = 0;
+-	int ret;
+ 
+ 	/*
+ 	 * This is applicable for SDHCI_SPEC_300 and above
+@@ -857,7 +855,7 @@ static int sdhci_versal_sampleclk_set_phase(struct clk_hw *hw, int degrees)
+ 		sdhci_writel(host, regval, SDHCI_ARASAN_ITAPDLY_REGISTER);
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct clk_ops versal_sampleclk_ops = {
+
+base-commit: a3ca59b9af21e68069555ffff1ad89bd2a7c40fc
 -- 
-1.8.3.1
+2.26.1
 
