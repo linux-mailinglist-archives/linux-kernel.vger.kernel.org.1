@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D821AC4FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFE11ACAE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393508AbgDPOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60184 "EHLO mail.kernel.org"
+        id S2395499AbgDPPlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392296AbgDPNqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:46:17 -0400
+        id S2897470AbgDPNh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:37:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C89512076D;
-        Thu, 16 Apr 2020 13:46:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9D97221EB;
+        Thu, 16 Apr 2020 13:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044777;
-        bh=1jzhNCiKswhoIJTfB2OLMsRckfeRXXkCNaRRwVljCGw=;
+        s=default; t=1587044249;
+        bh=x3Qs4aSBXK64Z+K9htOVT9QwK/aJU4j3a0hDBID9p/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1XwVQIwwDgT6qZooVs194NawgPWKaz/Z7xbhWz0YUt2OZjpgxrNKIapnicc9XL2ST
-         B4Ooln7hPRXk7tPHvEHGprNcaADlF8m4XvRePkRpe5v372pqKUPDnjkrLpQKlKecmF
-         pJCtwRmY7xb2Sj4aG5PsvjqjifIwixyLC/uSOOnM=
+        b=l/I0wCTaIAIzQuF4RLi6BuWQ095yviDLN5QiPAUwpefj/fs4wu0FBPKihR4pABj7Y
+         OGbbexotFBYziRZxSIUF3NIF4Ktnnx/AdvzqXvMg4YMEy6wlPBbwAYqlGFyGoKVRmH
+         9BAspEJFfEwHKhQSa176Apbj/RzOahKPDWmRbEuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-efi@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Hildenbrand <david@redhat.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 5.4 098/232] efi/x86: Add TPM related EFI tables to unencrypted mapping checks
+        stable@vger.kernel.org, Kristian Klausen <kristian@klausen.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.5 141/257] platform/x86: asus-wmi: Support laptops where the first battery is named BATT
 Date:   Thu, 16 Apr 2020 15:23:12 +0200
-Message-Id: <20200416131327.275420952@linuxfoundation.org>
+Message-Id: <20200416131344.056757034@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,45 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+From: Kristian Klausen <kristian@klausen.dk>
 
-commit f10e80a19b07b58fc2adad7945f8313b01503bae upstream.
+commit 6b3586d45bba14f6912f37488090c37a3710e7b4 upstream.
 
-When booting with SME active, EFI tables must be mapped unencrypted since
-they were built by UEFI in unencrypted memory. Update the list of tables
-to be checked during early_memremap() processing to account for the EFI
-TPM tables.
+The WMI method to set the charge threshold does not provide a
+way to specific a battery, so we assume it is the first/primary
+battery (by checking if the name is BAT0).
+On some newer ASUS laptops (Zenbook UM431DA) though, the
+primary/first battery isn't named BAT0 but BATT, so we need
+to support that case.
 
-This fixes a bug where an EFI TPM log table has been created by UEFI, but
-it lives in memory that has been marked as usable rather than reserved.
-
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: linux-efi@vger.kernel.org
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc: <stable@vger.kernel.org> # v5.4+
-Link: https://lore.kernel.org/r/4144cd813f113c20cdfa511cf59500a64e6015be.1582662842.git.thomas.lendacky@amd.com
-Link: https://lore.kernel.org/r/20200228121408.9075-2-ardb@kernel.org
+Fixes: 7973353e92ee ("platform/x86: asus-wmi: Refactor charge threshold to use the battery hooking API")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kristian Klausen <kristian@klausen.dk>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/platform/efi/efi.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/asus-wmi.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/arch/x86/platform/efi/efi.c
-+++ b/arch/x86/platform/efi/efi.c
-@@ -85,6 +85,8 @@ static const unsigned long * const efi_t
- #ifdef CONFIG_EFI_RCI2_TABLE
- 	&rci2_table_phys,
- #endif
-+	&efi.tpm_log,
-+	&efi.tpm_final_log,
- };
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -418,8 +418,11 @@ static int asus_wmi_battery_add(struct p
+ {
+ 	/* The WMI method does not provide a way to specific a battery, so we
+ 	 * just assume it is the first battery.
++	 * Note: On some newer ASUS laptops (Zenbook UM431DA), the primary/first
++	 * battery is named BATT.
+ 	 */
+-	if (strcmp(battery->desc->name, "BAT0") != 0)
++	if (strcmp(battery->desc->name, "BAT0") != 0 &&
++	    strcmp(battery->desc->name, "BATT") != 0)
+ 		return -ENODEV;
  
- u64 efi_setup;		/* efi setup_data physical address */
+ 	if (device_create_file(&battery->dev,
 
 
