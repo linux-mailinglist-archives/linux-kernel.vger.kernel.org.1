@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673441AC923
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8ADA1AC596
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898705AbgDPNrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47796 "EHLO mail.kernel.org"
+        id S2394081AbgDPOWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897201AbgDPNfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:35:48 -0400
+        id S1729968AbgDPNz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:55:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90206221F4;
-        Thu, 16 Apr 2020 13:35:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A38820732;
+        Thu, 16 Apr 2020 13:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044146;
-        bh=LGYD6nF+jAY2y5u0s809J0M2sYuL/telrnLiHSscRN0=;
+        s=default; t=1587045356;
+        bh=Q94W4PNVVIVvfaXdckSluT+xUIuuKaVxxd873MZ9eYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SCDaIIbbQ3+yO3W+xsoYg/SdvM1vOGCbMcUOd3kIEAaFKiiU0m0sU3S0IHzoesmB1
-         E43vJx9MZ0nd7L3k01SIkP4+QLfpVLwB8J4flY4Pz52nH4WLCflk2XTNiernDmPACg
-         +ks1K3LlKMKeRAr56SI4LYyW+AmyeBFhCD7nUzgU=
+        b=R1JTpEgoLqkS/7NONCWNBpRimc8zXyXOyHxFmBOP/IdjcpK4dxCPUsHrkLHedZvwH
+         f4yoodQb28P8Z4r4nu6OvbYH05+cNhcR6yzB5JJKWHjLaWGd4E3GvGTwNucmMXI8Ct
+         NwVSkfaGgBO33ArF+iVta8Or32JKCjySB4iUx6HE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.5 099/257] media: venus: cache vb payload to be used by clock scaling
+        stable@vger.kernel.org, Paolo Valente <paolo.valente@linaro.org>,
+        Wang Wang <wangwang2@huawei.com>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Feilong Lin <linfeilong@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 061/254] block, bfq: fix use-after-free in bfq_idle_slice_timer_body
 Date:   Thu, 16 Apr 2020 15:22:30 +0200
-Message-Id: <20200416131338.452724993@linuxfoundation.org>
+Message-Id: <20200416131333.568693190@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,143 +46,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
 
-commit fd1ee315dcd4a0f913a74939eb88f6d9b0bd9250 upstream.
+[ Upstream commit 2f95fa5c955d0a9987ffdc3a095e2f4e62c5f2a9 ]
 
-Instead of iterate over previously queued buffers in clock
-scaling code do cache the payload in instance context structure
-for later use when calculating new clock rate.
+In bfq_idle_slice_timer func, bfqq = bfqd->in_service_queue is
+not in bfqd-lock critical section. The bfqq, which is not
+equal to NULL in bfq_idle_slice_timer, may be freed after passing
+to bfq_idle_slice_timer_body. So we will access the freed memory.
 
-This will avoid to use spin locks during buffer list iteration
-in clock_scaling.
+In addition, considering the bfqq may be in race, we should
+firstly check whether bfqq is in service before doing something
+on it in bfq_idle_slice_timer_body func. If the bfqq in race is
+not in service, it means the bfqq has been expired through
+__bfq_bfqq_expire func, and wait_request flags has been cleared in
+__bfq_bfqd_reset_in_service func. So we do not need to re-clear the
+wait_request of bfqq which is not in service.
 
-This fixes following kernel Oops:
+KASAN log is given as follows:
+[13058.354613] ==================================================================
+[13058.354640] BUG: KASAN: use-after-free in bfq_idle_slice_timer+0xac/0x290
+[13058.354644] Read of size 8 at addr ffffa02cf3e63f78 by task fork13/19767
+[13058.354646]
+[13058.354655] CPU: 96 PID: 19767 Comm: fork13
+[13058.354661] Call trace:
+[13058.354667]  dump_backtrace+0x0/0x310
+[13058.354672]  show_stack+0x28/0x38
+[13058.354681]  dump_stack+0xd8/0x108
+[13058.354687]  print_address_description+0x68/0x2d0
+[13058.354690]  kasan_report+0x124/0x2e0
+[13058.354697]  __asan_load8+0x88/0xb0
+[13058.354702]  bfq_idle_slice_timer+0xac/0x290
+[13058.354707]  __hrtimer_run_queues+0x298/0x8b8
+[13058.354710]  hrtimer_interrupt+0x1b8/0x678
+[13058.354716]  arch_timer_handler_phys+0x4c/0x78
+[13058.354722]  handle_percpu_devid_irq+0xf0/0x558
+[13058.354731]  generic_handle_irq+0x50/0x70
+[13058.354735]  __handle_domain_irq+0x94/0x110
+[13058.354739]  gic_handle_irq+0x8c/0x1b0
+[13058.354742]  el1_irq+0xb8/0x140
+[13058.354748]  do_wp_page+0x260/0xe28
+[13058.354752]  __handle_mm_fault+0x8ec/0x9b0
+[13058.354756]  handle_mm_fault+0x280/0x460
+[13058.354762]  do_page_fault+0x3ec/0x890
+[13058.354765]  do_mem_abort+0xc0/0x1b0
+[13058.354768]  el0_da+0x24/0x28
+[13058.354770]
+[13058.354773] Allocated by task 19731:
+[13058.354780]  kasan_kmalloc+0xe0/0x190
+[13058.354784]  kasan_slab_alloc+0x14/0x20
+[13058.354788]  kmem_cache_alloc_node+0x130/0x440
+[13058.354793]  bfq_get_queue+0x138/0x858
+[13058.354797]  bfq_get_bfqq_handle_split+0xd4/0x328
+[13058.354801]  bfq_init_rq+0x1f4/0x1180
+[13058.354806]  bfq_insert_requests+0x264/0x1c98
+[13058.354811]  blk_mq_sched_insert_requests+0x1c4/0x488
+[13058.354818]  blk_mq_flush_plug_list+0x2d4/0x6e0
+[13058.354826]  blk_flush_plug_list+0x230/0x548
+[13058.354830]  blk_finish_plug+0x60/0x80
+[13058.354838]  read_pages+0xec/0x2c0
+[13058.354842]  __do_page_cache_readahead+0x374/0x438
+[13058.354846]  ondemand_readahead+0x24c/0x6b0
+[13058.354851]  page_cache_sync_readahead+0x17c/0x2f8
+[13058.354858]  generic_file_buffered_read+0x588/0xc58
+[13058.354862]  generic_file_read_iter+0x1b4/0x278
+[13058.354965]  ext4_file_read_iter+0xa8/0x1d8 [ext4]
+[13058.354972]  __vfs_read+0x238/0x320
+[13058.354976]  vfs_read+0xbc/0x1c0
+[13058.354980]  ksys_read+0xdc/0x1b8
+[13058.354984]  __arm64_sys_read+0x50/0x60
+[13058.354990]  el0_svc_common+0xb4/0x1d8
+[13058.354994]  el0_svc_handler+0x50/0xa8
+[13058.354998]  el0_svc+0x8/0xc
+[13058.354999]
+[13058.355001] Freed by task 19731:
+[13058.355007]  __kasan_slab_free+0x120/0x228
+[13058.355010]  kasan_slab_free+0x10/0x18
+[13058.355014]  kmem_cache_free+0x288/0x3f0
+[13058.355018]  bfq_put_queue+0x134/0x208
+[13058.355022]  bfq_exit_icq_bfqq+0x164/0x348
+[13058.355026]  bfq_exit_icq+0x28/0x40
+[13058.355030]  ioc_exit_icq+0xa0/0x150
+[13058.355035]  put_io_context_active+0x250/0x438
+[13058.355038]  exit_io_context+0xd0/0x138
+[13058.355045]  do_exit+0x734/0xc58
+[13058.355050]  do_group_exit+0x78/0x220
+[13058.355054]  __wake_up_parent+0x0/0x50
+[13058.355058]  el0_svc_common+0xb4/0x1d8
+[13058.355062]  el0_svc_handler+0x50/0xa8
+[13058.355066]  el0_svc+0x8/0xc
+[13058.355067]
+[13058.355071] The buggy address belongs to the object at ffffa02cf3e63e70#012 which belongs to the cache bfq_queue of size 464
+[13058.355075] The buggy address is located 264 bytes inside of#012 464-byte region [ffffa02cf3e63e70, ffffa02cf3e64040)
+[13058.355077] The buggy address belongs to the page:
+[13058.355083] page:ffff7e80b3cf9800 count:1 mapcount:0 mapping:ffff802db5c90780 index:0xffffa02cf3e606f0 compound_mapcount: 0
+[13058.366175] flags: 0x2ffffe0000008100(slab|head)
+[13058.370781] raw: 2ffffe0000008100 ffff7e80b53b1408 ffffa02d730c1c90 ffff802db5c90780
+[13058.370787] raw: ffffa02cf3e606f0 0000000000370023 00000001ffffffff 0000000000000000
+[13058.370789] page dumped because: kasan: bad access detected
+[13058.370791]
+[13058.370792] Memory state around the buggy address:
+[13058.370797]  ffffa02cf3e63e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fb fb
+[13058.370801]  ffffa02cf3e63e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[13058.370805] >ffffa02cf3e63f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[13058.370808]                                                                 ^
+[13058.370811]  ffffa02cf3e63f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[13058.370815]  ffffa02cf3e64000: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[13058.370817] ==================================================================
+[13058.370820] Disabling lock debugging due to kernel taint
 
- Unable to handle kernel paging request at virtual address deacfffffffffd6c
- Mem abort info:
-   ESR = 0x96000004
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
- Data abort info:
-   ISV = 0, ISS = 0x00000004
-   CM = 0, WnR = 0
- [deacfffffffffd6c] address between user and kernel address ranges
- Internal error: Oops: 96000004 [#1] PREEMPT SMP
- CPU: 7 PID: 5763 Comm: V4L2DecoderThre Tainted: G S      W         5.4.11 #8
- pstate: 20400009 (nzCv daif +PAN -UAO)
- pc : load_scale_v4+0x4c/0x2bc [venus_core]
- lr : session_process_buf+0x18c/0x1c0 [venus_core]
- sp : ffffffc01376b8d0
- x29: ffffffc01376b8d0 x28: ffffff80cf1b0220
- x27: ffffffc01376bba0 x26: ffffffd8f562b2d8
- x25: ffffff80cf1b0220 x24: 0000000000000005
- x23: ffffffd8f5620d98 x22: ffffff80ca01c800
- x21: ffffff80cf1b0000 x20: ffffff8149490080
- x19: ffffff8174b2c010 x18: 0000000000000000
- x17: 0000000000000000 x16: ffffffd96ee3a0dc
- x15: 0000000000000026 x14: 0000000000000026
- x13: 00000000000055ac x12: 0000000000000001
- x11: deacfffffffffd6c x10: dead000000000100
- x9 : ffffff80ca01cf28 x8 : 0000000000000026
- x7 : 0000000000000000 x6 : ffffff80cdd899c0
- x5 : ffffff80cdd899c0 x4 : 0000000000000008
- x3 : ffffff80ca01cf28 x2 : ffffff80ca01cf28
- x1 : ffffff80d47ffc00 x0 : ffffff80cf1b0000
- Call trace:
-  load_scale_v4+0x4c/0x2bc [venus_core]
-  session_process_buf+0x18c/0x1c0 [venus_core]
-  venus_helper_vb2_buf_queue+0x7c/0xf0 [venus_core]
-  __enqueue_in_driver+0xe4/0xfc [videobuf2_common]
-  vb2_core_qbuf+0x15c/0x338 [videobuf2_common]
-  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
-  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
-  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
-  v4l_qbuf+0x48/0x58
-  __video_do_ioctl+0x2b0/0x39c
-  video_usercopy+0x394/0x710
-  video_ioctl2+0x38/0x48
-  v4l2_ioctl+0x6c/0x80
-  do_video_ioctl+0xb00/0x2874
-  v4l2_compat_ioctl32+0x5c/0xcc
-  __se_compat_sys_ioctl+0x100/0x2074
-  __arm64_compat_sys_ioctl+0x20/0x2c
-  el0_svc_common+0xa4/0x154
-  el0_svc_compat_handler+0x2c/0x38
-  el0_svc_compat+0x8/0x10
- Code: eb0a013f 54000200 aa1f03e8 d10e514b (b940016c)
- ---[ end trace e11304b46552e0b9 ]---
+Here, we directly pass the bfqd to bfq_idle_slice_timer_body func.
+--
+V2->V3: rewrite the comment as suggested by Paolo Valente
+V1->V2: add one comment, and add Fixes and Reported-by tag.
 
-Fixes: c0e284ccfeda ("media: venus: Update clock scaling")
-
-Cc: stable@vger.kernel.org # v5.5+
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: aee69d78d ("block, bfq: introduce the BFQ-v0 I/O scheduler as an extra scheduler")
+Acked-by: Paolo Valente <paolo.valente@linaro.org>
+Reported-by: Wang Wang <wangwang2@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/venus/core.h    |    1 +
- drivers/media/platform/qcom/venus/helpers.c |   20 +++++++++++++-------
- 2 files changed, 14 insertions(+), 7 deletions(-)
+ block/bfq-iosched.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -344,6 +344,7 @@ struct venus_inst {
- 	unsigned int subscriptions;
- 	int buf_count;
- 	struct venus_ts_metadata tss[VIDEO_MAX_FRAME];
-+	unsigned long payloads[VIDEO_MAX_FRAME];
- 	u64 fps;
- 	struct v4l2_fract timeperframe;
- 	const struct venus_format *fmt_out;
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -544,18 +544,13 @@ static int scale_clocks_v4(struct venus_
- 	struct venus_core *core = inst->core;
- 	const struct freq_tbl *table = core->res->freq_tbl;
- 	unsigned int num_rows = core->res->freq_tbl_size;
--	struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
- 	struct device *dev = core->dev;
- 	unsigned long freq = 0, freq_core1 = 0, freq_core2 = 0;
- 	unsigned long filled_len = 0;
--	struct venus_buffer *buf, *n;
--	struct vb2_buffer *vb;
- 	int i, ret;
- 
--	v4l2_m2m_for_each_src_buf_safe(m2m_ctx, buf, n) {
--		vb = &buf->vb.vb2_buf;
--		filled_len = max(filled_len, vb2_get_plane_payload(vb, 0));
--	}
-+	for (i = 0; i < inst->num_input_bufs; i++)
-+		filled_len = max(filled_len, inst->payloads[i]);
- 
- 	if (inst->session_type == VIDC_SESSION_TYPE_DEC && !filled_len)
- 		return 0;
-@@ -1289,6 +1284,15 @@ int venus_helper_vb2_buf_prepare(struct
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 8c436abfaf14f..4a44c7f194353 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -6215,20 +6215,28 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
+ 	return bfqq;
  }
- EXPORT_SYMBOL_GPL(venus_helper_vb2_buf_prepare);
  
-+static void cache_payload(struct venus_inst *inst, struct vb2_buffer *vb)
-+{
-+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+	unsigned int idx = vbuf->vb2_buf.index;
-+
-+	if (vbuf->vb2_buf.type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-+		inst->payloads[idx] = vb2_get_plane_payload(vb, 0);
-+}
-+
- void venus_helper_vb2_buf_queue(struct vb2_buffer *vb)
+-static void bfq_idle_slice_timer_body(struct bfq_queue *bfqq)
++static void
++bfq_idle_slice_timer_body(struct bfq_data *bfqd, struct bfq_queue *bfqq)
  {
- 	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-@@ -1300,6 +1304,8 @@ void venus_helper_vb2_buf_queue(struct v
+-	struct bfq_data *bfqd = bfqq->bfqd;
+ 	enum bfqq_expiration reason;
+ 	unsigned long flags;
  
- 	v4l2_m2m_buf_queue(m2m_ctx, vbuf);
+ 	spin_lock_irqsave(&bfqd->lock, flags);
+-	bfq_clear_bfqq_wait_request(bfqq);
  
-+	cache_payload(inst, vb);
++	/*
++	 * Considering that bfqq may be in race, we should firstly check
++	 * whether bfqq is in service before doing something on it. If
++	 * the bfqq in race is not in service, it has already been expired
++	 * through __bfq_bfqq_expire func and its wait_request flags has
++	 * been cleared in __bfq_bfqd_reset_in_service func.
++	 */
+ 	if (bfqq != bfqd->in_service_queue) {
+ 		spin_unlock_irqrestore(&bfqd->lock, flags);
+ 		return;
+ 	}
+ 
++	bfq_clear_bfqq_wait_request(bfqq);
 +
- 	if (inst->session_type == VIDC_SESSION_TYPE_ENC &&
- 	    !(inst->streamon_out && inst->streamon_cap))
- 		goto unlock;
+ 	if (bfq_bfqq_budget_timeout(bfqq))
+ 		/*
+ 		 * Also here the queue can be safely expired
+@@ -6273,7 +6281,7 @@ static enum hrtimer_restart bfq_idle_slice_timer(struct hrtimer *timer)
+ 	 * early.
+ 	 */
+ 	if (bfqq)
+-		bfq_idle_slice_timer_body(bfqq);
++		bfq_idle_slice_timer_body(bfqd, bfqq);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+-- 
+2.20.1
+
 
 
