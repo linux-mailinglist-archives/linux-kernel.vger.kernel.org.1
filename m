@@ -2,97 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C77F1AB79D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4219E1AB79F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407310AbgDPGAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:00:23 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33195 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407207AbgDPGAP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:00:15 -0400
-Received: by mail-pf1-f196.google.com with SMTP id c138so1203914pfc.0;
-        Wed, 15 Apr 2020 23:00:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FAXeeAl+06npcabuQvuYuTP3jQapHCqy0Znm1m8x2B8=;
-        b=iP6f3iMHUfMmkbuyoThhrT00qQSQkzJMJmkB8O0Y6zk/6F7bDP1uwppX7Ax1n4pc0m
-         ij1axBsmWvIKBXyZVsPULpNtPE97C1YVNJHXsgMVYkUx/qnO7/xhZJoiIRtRoZsVZ0lV
-         XfcrzdjOqL4ifTecs2St0d40XmxWfmXAg2rHaGFqgMmgSvpzCbwcc+wiEACnfpEgMFZC
-         YfVCzOC1WsULzNqy77dVUy8pnfDfqFx8q1Ng3CO4DBWR6qnuMeGHZbNniN0nCaSjQYKp
-         vks11fANGSBanXTx6szcEvbfU4jKldxecEvXYW0Z/9k+kAbqd/DP/nzg+MiU5NihyX2b
-         jg/w==
-X-Gm-Message-State: AGi0PuaWQf+05rcZJG6RiUM1IEFoxQO/TwtlbKGANikoY+BS79aPoIsh
-        YSL/DhntgM98mh3ZUWHe2uM=
-X-Google-Smtp-Source: APiQypICnolUc2W/UZn/odHanFGW9jsn8iT5iFZCqWPgDqKQJOk8NCqaY2uIAeFAHoAedVh6nx2WBg==
-X-Received: by 2002:a63:a07:: with SMTP id 7mr29039722pgk.261.1587016814132;
-        Wed, 15 Apr 2020 23:00:14 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id z7sm6449944pff.47.2020.04.15.23.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 23:00:12 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id E2FE740277; Thu, 16 Apr 2020 06:00:11 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 06:00:11 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
+        id S2407397AbgDPGBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:01:06 -0400
+Received: from mout.web.de ([212.227.17.12]:42335 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407345AbgDPGA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:00:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1587016846;
+        bh=RpJs2DXqttTf+Vv+o/O3GhRJDxw7hx42291B9GNdEes=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=my+5VYU4nwFmi1ZgvGFQi+rfNBWfPVHRDiDh335R1vzjJLAyteol+ybjJ687+gh1s
+         ar0N4iHlmyq+RWvnZMezK7mpCrvXAiFYCSC4F2nwbsgbVLUQQsCJUNYksvbNktsVta
+         AsksgwJV8rsXu0YIW0q5O+EL7KbmdFfCzRIUf9Ms=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([2.243.109.113]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M6mTI-1j1dL00G2O-00wUpS; Thu, 16
+ Apr 2020 08:00:46 +0200
+Subject: Re: [PATCH v4] mm/ksm: Fix NULL pointer dereference when KSM zero
+ page is enabled
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH] test_firmware: remove unnecessary test_fw_mutex in
- test_dev_config_show_xxx
-Message-ID: <20200416060011.GK11244@42.do-not-panic.com>
-References: <20200415002517.4328-1-scott.branden@broadcom.com>
- <202004142010.C0847F5@keescook>
- <e2b95fde-0ab7-c0d1-2c64-cceffc458673@broadcom.com>
- <202004150943.01DF9E85@keescook>
+        David Hildenbrand <david@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+References: <20200416025034.29780-1-songmuchun@bytedance.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <039d201a-a5fc-5ce2-54a1-f236531f9829@web.de>
+Date:   Thu, 16 Apr 2020 08:00:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202004150943.01DF9E85@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200416025034.29780-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RKx8zEDYvDQfBB2YiAv7zoArG3Sm2dAqndOJZdX62p3epEf9Q6u
+ twj9rG3Y6d39g0Yw2AVdB65UoR7CVz5k3UWZq+ltssKebCliXGK7+v1iclJB5hb7IzW+vXU
+ iPEy/bHOeOEPg8mE5ZI3ajqM0E/5QJ3sK+88iIg+cHHmSmtcsDNGPZMGnJGZtRrVd1kSzS6
+ rfPEFBwLZQqgqO2vbmT/w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5dIKY8+DE64=:csTGDJ/L22B1g1+uiYI1sF
+ WAZQEr5oOIKpZ5hdkENcqnSTX6kO8Ib562pVL6KA3VYkvSQOZaBaO2GcBDSJNf6ufm4ob1jQ5
+ /H6oCw5Uviu46yeO+sbltJC8Xdx+FfWe9SV+efuGYFRnMmroqiqfMC5GPI9CtUZJCzJSt/2bE
+ xv5IfRoSkwaZKT/jhIEt7VqekWHC0GlTR+yiTK0MC8TrynC56Ea9MNi+lYdgR4wJY8qRheTvz
+ CPunCqgocfOO0uzTQxekImHUkxJFtIkHb//9lBzSa0R0jydR2mdgUoZmPU3nNLJGGEFserXqH
+ F0nL8y4DiOY/pkzG3OcnE/73y1Xb2WguibyNLpOlH8L04xSj001UrJxi0VPpSF6mcmnBDjVb6
+ bKyTEJBPNRGxWC6XYu1hocNL72tCsfEk+Roa4DbL0VSbMKcYYkBe416mqUstwZPKRWWYZK+dC
+ iuLxvaKaJlbGhcqy17HHKe5xRTujvp6dqh+Yh6zzOrTH4n9lgno8O2hqOxnjGBYd711SyVxBY
+ yhSsMc55qw2UIiS3puVT1UD63u4Rkp7d4EFvqIQnL4VhD4lvsMiS0/yGVgRmi4Ne2yVMNaPAj
+ H0fZ9V/SJP5qmhx+4Xy37Dt2i/e4AM5Bp1yEujjvUTlQTE+1qHuuN7paG/DMsNI8CwTtkDbKc
+ eK1zc2CHUlHE59U29pCzd/pDSXch6h3Jj2LcHwHYYLDH/KISJqNM5deg+mHes9mghAS05xAbb
+ gkJKWO7rizTZ4MQH6kITYnBqMXNbEDIrlIMsxuabPhGmL+qGUeNgVo4gaL9khWyDuONu1zBFg
+ F21P2OT23gCd6T/SeCiURX51jhmuLLBzE2Vw5Fq2W0F18QqDi1XOI2FrnTWU/Qj6hdiDoNHNt
+ jOCxydcywMSZ9SCcTCoiB9WJQo2cAj/q0lM6jLsozsL+2Q3wcfvk4Rby5G2dvnt2YAQKRWuQW
+ qs8IfNRt6AE3QcT/+nvQmfJJvoWY5EnlN5CIiySFmBUT8WJu3IncRwIvL4PJSQaYPIGf+76R6
+ PTdJmmuTHR+AfG4SCTjUj46qc4QPGpYV3dC90RXcQNexCz8piu+KGUzPb4Go+rNovY3FyvjL2
+ dMMHhuRsFd6aTo2zIgF/dpjmkinCFBEySkADoAS6F2ebzpU4iF29W+HhKDSqTYJyaoz8RAk2u
+ 0JZ29gs4utsozceN1W47SrVk5X6usP4ZeiEQasnh1gAj/6gIDXqKvZv1qGuyuRe/huMlc1qOU
+ eXdxGCtXIY9vY4BVA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 09:44:31AM -0700, Kees Cook wrote:
-> On Wed, Apr 15, 2020 at 09:28:18AM -0700, Scott Branden wrote:
-> > Hi Kees,
-> > 
-> > On 2020-04-14 8:10 p.m., Kees Cook wrote:
-> > > On Tue, Apr 14, 2020 at 05:25:17PM -0700, Scott Branden wrote:
-> > > > Remove unnecessary use of test_fw_mutex in test_dev_config_show_xxx
-> > > > functions that show simple bool, int, and u8.
-> > > I would expect at least a READ_ONCE(), yes?
-> > I don't understand why you need a READ_ONCE when removing a mutex around an
-> > assignment
-> > of a parameter passed into a function being assigned to a local variable.
-> > 
-> > Could you please explain your expectations.
-> 
-> Oops, yes, you're right. I misread and was thinking this was reading
-> from a global. This looks fine.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> to a crash when we access vm_mm(its offset is 0x40) later in
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Would the text variant =E2=80=9C=E2=80=A6 vm_mm (its =E2=80=A6=E2=80=9D be=
+ a bit nicer?
 
-  Luis
+
+=E2=80=A6
+> +++ b/mm/ksm.c
+> @@ -2112,8 +2112,15 @@ static void cmp_and_merge_page(struct page *page,=
+ struct rmap_item *rmap_item)
+=E2=80=A6
+> +		if (vma)
+> +			err =3D try_to_merge_one_page(vma, page,
+> +					ZERO_PAGE(rmap_item->address));
+
+Can the parameter alignment trigger further software development considera=
+tions
+for such a function call?
+
+Regards,
+Markus
