@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760E31AC426
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA191AC771
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409116AbgDPNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:55:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50586 "EHLO mail.kernel.org"
+        id S1728871AbgDPOzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:55:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897651AbgDPNiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:09 -0400
+        id S2441809AbgDPN4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:56:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7326921BE5;
-        Thu, 16 Apr 2020 13:38:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 850EE21734;
+        Thu, 16 Apr 2020 13:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044288;
-        bh=1W5KIwf4IEZ/S6UWBR0GAJ66klrhUvvnU62RubpXa4Q=;
+        s=default; t=1587045396;
+        bh=YdurenuvYXqj8lZs7kKY9HUmHPXOIkJEorYnYCGwvPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cGmXZODKtsYuFzVEUaK/2ppN+Oxot06WimN4rSJwuFbknERLojcYrjufN7HypER8Y
-         3z+EsV0kmjWtG3Uw2olL7V2Cr0opjGB6OT+wx2UkpoIzVYxye0FxiXGJxa03UHF74I
-         kzmw1u7TgPvg3HlDgBHNAVikSuz2l4oyDmVsk/oY=
+        b=TbzGU5anfUvuW3ToxIuvo5J6R8V52d4f11WANrJlMIldXX7LWjrZZgqKGJUw8FEdX
+         fzLTo64OHzibywkVFYh3dRfBnup5FY6JDB/o4/STxinBY4icSWRER3SXUruZjOuMa0
+         TkDMQul9kkCjBHi7nxuIlxkbjVgXdNp93tJwqFGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Piotr Sroka <piotrs@cadence.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.5 155/257] mtd: rawnand: cadence: fix the calculation of the avaialble OOB size
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.6 117/254] io_uring: fix ctx refcounting in io_submit_sqes()
 Date:   Thu, 16 Apr 2020 15:23:26 +0200
-Message-Id: <20200416131345.945130591@linuxfoundation.org>
+Message-Id: <20200416131340.873146158@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piotr Sroka <piotrs@cadence.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit e4578af0354176ff6b4ae78b9998b4f479f7c31c upstream.
+commit 48bdd849e967f1c573d2b2bc24308e24a83f39c2 upstream.
 
-The value of cdns_chip->sector_count is not known at the moment
-of the derivation of ecc_size, leading to a zero value. Fix
-this by assigning ecc_size later in the code.
+If io_get_req() fails, it drops a ref. Then, awhile keeping @submitted
+unmodified, io_submit_sqes() breaks the loop and puts @nr - @submitted
+refs. For each submitted req a ref is dropped in io_put_req() and
+friends. So, for @nr taken refs there will be
+(@nr - @submitted + @submitted + 1) dropped.
 
-Fixes: ec4ba01e894d ("mtd: rawnand: Add new Cadence NAND driver to MTD subsystem")
-Cc: stable@vger.kernel.org
-Signed-off-by: Piotr Sroka <piotrs@cadence.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/1581328530-29966-2-git-send-email-piotrs@cadence.com
+Remove ctx refcounting from io_get_req(), that at the same time makes
+it clearer.
+
+Fixes: 2b85edfc0c90 ("io_uring: batch getting pcpu references")
+Cc: stable@vger.kernel.org # v5.6
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/cadence-nand-controller.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/io_uring.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -2585,7 +2585,7 @@ int cadence_nand_attach_chip(struct nand
- {
- 	struct cdns_nand_ctrl *cdns_ctrl = to_cdns_nand_ctrl(chip->controller);
- 	struct cdns_nand_chip *cdns_chip = to_cdns_nand_chip(chip);
--	u32 ecc_size = cdns_chip->sector_count * chip->ecc.bytes;
-+	u32 ecc_size;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	u32 max_oob_data_size;
- 	int ret;
-@@ -2625,6 +2625,7 @@ int cadence_nand_attach_chip(struct nand
- 	/* Error correction configuration. */
- 	cdns_chip->sector_size = chip->ecc.size;
- 	cdns_chip->sector_count = mtd->writesize / cdns_chip->sector_size;
-+	ecc_size = cdns_chip->sector_count * chip->ecc.bytes;
- 
- 	cdns_chip->avail_oob_size = mtd->oobsize - ecc_size;
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1242,7 +1242,6 @@ fallback:
+ 	req = io_get_fallback_req(ctx);
+ 	if (req)
+ 		goto got_it;
+-	percpu_ref_put(&ctx->refs);
+ 	return NULL;
+ }
  
 
 
