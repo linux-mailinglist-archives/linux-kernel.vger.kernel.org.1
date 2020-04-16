@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73861AB6CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E171AB6E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404556AbgDPE3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 00:29:05 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12729 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404389AbgDPE27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 00:28:59 -0400
-IronPort-SDR: 7SQp4IvJlew/b1fUSbbu5TMOOzrYLqCVcWkXWZ3rPAFOIb+nxRlfyU8yBQrxHzme9DQk0z6+Xq
- SBSsJglwiVew==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 21:28:58 -0700
-IronPort-SDR: 1g5z3mqT7MPKc5WE8UlYn4auWnJz61lGB4LK3uTGRmkzOPkisju/QyJnL7n4DD3IWRDLMJxNUp
- uJsruy5zF1TA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="427687659"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga005.jf.intel.com with ESMTP; 15 Apr 2020 21:28:58 -0700
-Date:   Wed, 15 Apr 2020 21:28:58 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V8 08/11] fs: Define I_DONTCACNE in VFS layer
-Message-ID: <20200416042857.GH2309605@iweiny-DESK2.sc.intel.com>
-References: <20200415064523.2244712-1-ira.weiny@intel.com>
- <20200415064523.2244712-9-ira.weiny@intel.com>
- <20200415085216.GE501@quack2.suse.cz>
- <20200415151832.GQ6742@magnolia>
+        id S2404716AbgDPEgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 00:36:40 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:53275 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390974AbgDPEge (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 00:36:34 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id EAFB48066C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 16:36:29 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1587011789;
+        bh=iR/xLGd3DJPB2nXscwgT+ip6d4BcE/91XKQDr+QCjyQ=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=pcXD9Q6+gUnTrYIyro8LjCWQORQ9nC6vmw48uRveTqnVcRwc5hJVdPEVdWjBVlYby
+         B3D1KNfrhYK9vDoToCjEMTr7452y5oubBw5Jr7lg/gBQgsE8A0artdXbEnnR94dbRy
+         WDIn6NOeZ31U6pMvJaKgrea9g0fGNW0PwAV55to42PcBbzCQi3K1U0Cz6yHfe3S4DW
+         zd6kkSRPzaxZBjmPsfOUMxk4NLa8mPjNiCikIRb9AEK2Rg4mctfVvPJ8OugyaKs5Lk
+         6mOxN5OKNvzMLp4LX1uHcHVZzDyD7/LYB7040pA+Hm5Dq3s/d5nt3id77D4le9zCsR
+         g5HDbilk4XN3Q==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5e97e0ce0001>; Thu, 16 Apr 2020 16:36:30 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 16 Apr 2020 16:36:29 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Thu, 16 Apr 2020 16:36:29 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     "christophe.leroy@c-s.fr" <christophe.leroy@c-s.fr>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "oss@buserror.net" <oss@buserror.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+Subject: Re: [PATCH v2] powerpc/setup_64: Set cache-line-size based on
+ cache-block-size
+Thread-Topic: [PATCH v2] powerpc/setup_64: Set cache-line-size based on
+ cache-block-size
+Thread-Index: AQHWAlQjUst7lNY0iUusXBl8ThU16Kh6g10A
+Date:   Thu, 16 Apr 2020 04:36:29 +0000
+Message-ID: <343c0e8b01ab74481e0b8dfbe588b1c84127a487.camel@alliedtelesis.co.nz>
+References: <dd342c71e03e654a8786302d82f9662004418c6e.camel@alliedtelesis.co.nz>
+         <20200325031854.7625-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20200325031854.7625-1-chris.packham@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.14.96]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <722C3DDA3A28BB468DAEE7EF8AD6C49F@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415151832.GQ6742@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 08:18:32AM -0700, Darrick J. Wong wrote:
-> On Wed, Apr 15, 2020 at 10:52:16AM +0200, Jan Kara wrote:
-> > There's a typo in the subject - I_DONTCACNE.
-> > 
-> > On Tue 14-04-20 23:45:20, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > DAX effective mode changes (setting of S_DAX) require inode eviction.
-> > > 
-> > > Define a flag which can be set to inform the VFS layer that inodes
-> > > should not be cached.  This will expedite the eviction of those nodes
-> > > requiring reload.
-> > > 
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > ---
-> > >  include/linux/fs.h | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > > index a818ced22961..e2db71d150c3 100644
-> > > --- a/include/linux/fs.h
-> > > +++ b/include/linux/fs.h
-> > > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> > >   *
-> > >   * I_CREATING		New object's inode in the middle of setting up.
-> > >   *
-> > > + * I_DONTCACHE		Do not cache the inode
-> > > + *
-> > 
-> > Maybe, I'd be more specific here and write: "Evict inode as soon as it is
-> > not used anymore"?
-> 
-> I had the same two comments about the V7 version of this patch...
-
-Sorry I must have missed it.
-
-Done for V9,
-Ira
-
-> 
-> --D
-> 
-> > Otherwise the patch looks good to me so feel free to add:
-> > 
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > 
-> > Also it would be good to CC Al Viro on this one (and the dentry flag) I
-> > guess.
-> > 
-> > 								Honza
-> > 
-> > >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> > >   */
-> > >  #define I_DIRTY_SYNC		(1 << 0)
-> > > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
-> > >  #define I_WB_SWITCH		(1 << 13)
-> > >  #define I_OVL_INUSE		(1 << 14)
-> > >  #define I_CREATING		(1 << 15)
-> > > +#define I_DONTCACHE		(1 << 16)
-> > >  
-> > >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-> > >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
-> > > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
-> > >  extern int generic_delete_inode(struct inode *inode);
-> > >  static inline int generic_drop_inode(struct inode *inode)
-> > >  {
-> > > -	return !inode->i_nlink || inode_unhashed(inode);
-> > > +	return !inode->i_nlink || inode_unhashed(inode) ||
-> > > +		(inode->i_state & I_DONTCACHE);
-> > >  }
-> > >  
-> > >  extern struct inode *ilookup5_nowait(struct super_block *sb,
-> > > -- 
-> > > 2.25.1
-> > > 
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
+SGkgQWxsLA0KDQpPbiBXZWQsIDIwMjAtMDMtMjUgYXQgMTY6MTggKzEzMDAsIENocmlzIFBhY2to
+YW0gd3JvdGU6DQo+IElmIHtpLGR9LWNhY2hlLWJsb2NrLXNpemUgaXMgc2V0IGFuZCB7aSxkfS1j
+YWNoZS1saW5lLXNpemUgaXMgbm90LA0KPiB1c2UNCj4gdGhlIGJsb2NrLXNpemUgdmFsdWUgZm9y
+IGJvdGguIFBlciB0aGUgZGV2aWNldHJlZSBzcGVjIGNhY2hlLWxpbmUtDQo+IHNpemUNCj4gaXMg
+b25seSBuZWVkZWQgaWYgaXQgZGlmZmVycyBmcm9tIHRoZSBibG9jayBzaXplLg0KPiANCj4gU2ln
+bmVkLW9mZi1ieTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNv
+Lm56Pg0KPiAtLS0NCj4gSXQgbG9va3MgYXMgdGhvdWdoIHRoZSBic2l6ZXAgPSBsc2l6ZXAgaXMg
+bm90IHJlcXVpcmVkIHBlciB0aGUgc3BlYw0KPiBidXQgaXQncw0KPiBwcm9iYWJseSBzYWZlciB0
+byByZXRhaW4gaXQuDQo+IA0KPiBDaGFuZ2VzIGluIHYyOg0KPiAtIFNjb3R0IHBvaW50ZWQgb3V0
+IHRoYXQgdS1ib290IHNob3VsZCBiZSBmaWxsaW5nIGluIHRoZSBjYWNoZQ0KPiBwcm9wZXJ0aWVz
+DQo+ICAgKHdoaWNoIGl0IGRvZXMpLiBCdXQgaXQgZG9lcyBub3Qgc3BlY2lmeSBhIGNhY2hlLWxp
+bmUtc2l6ZSBiZWNhdXNlDQo+IGl0DQo+ICAgcHJvdmlkZXMgYSBjYWNoZS1ibG9jay1zaXplIGFu
+ZCB0aGUgc3BlYyBzYXlzIHlvdSBkb24ndCBoYXZlIHRvIGlmDQo+IHRoZXkgYXJlDQo+ICAgdGhl
+IHNhbWUuIFNvIHRoZSBlcnJvciBpcyBpbiB0aGUgcGFyc2luZyBub3QgaW4gdGhlIGRldmljZXRy
+ZWUNCj4gaXRzZWxmLg0KPiANCg0KUGluZz8gVGhpcyB0aHJlYWQgd2VudCBraW5kIG9mIHF1aWV0
+Lg0KDQo+ICBhcmNoL3Bvd2VycGMva2VybmVsL3NldHVwXzY0LmMgfCAyICsrDQo+ICAxIGZpbGUg
+Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBj
+L2tlcm5lbC9zZXR1cF82NC5jDQo+IGIvYXJjaC9wb3dlcnBjL2tlcm5lbC9zZXR1cF82NC5jDQo+
+IGluZGV4IGUwNWU2ZGQ2N2FlNi4uZGQ4YTIzOGI1NGI4IDEwMDY0NA0KPiAtLS0gYS9hcmNoL3Bv
+d2VycGMva2VybmVsL3NldHVwXzY0LmMNCj4gKysrIGIvYXJjaC9wb3dlcnBjL2tlcm5lbC9zZXR1
+cF82NC5jDQo+IEBAIC01MTYsNiArNTE2LDggQEAgc3RhdGljIGJvb2wgX19pbml0IHBhcnNlX2Nh
+Y2hlX2luZm8oc3RydWN0DQo+IGRldmljZV9ub2RlICpucCwNCj4gIAlsc2l6ZXAgPSBvZl9nZXRf
+cHJvcGVydHkobnAsIHByb3BuYW1lc1szXSwgTlVMTCk7DQo+ICAJaWYgKGJzaXplcCA9PSBOVUxM
+KQ0KPiAgCQlic2l6ZXAgPSBsc2l6ZXA7DQo+ICsJaWYgKGxzaXplcCA9PSBOVUxMKQ0KPiArCQls
+c2l6ZXAgPSBic2l6ZXA7DQo+ICAJaWYgKGxzaXplcCAhPSBOVUxMKQ0KPiAgCQlsc2l6ZSA9IGJl
+MzJfdG9fY3B1KCpsc2l6ZXApOw0KPiAgCWlmIChic2l6ZXAgIT0gTlVMTCkNCg==
