@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620431AC505
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390AE1AC78B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393424AbgDPOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60498 "EHLO mail.kernel.org"
+        id S2394854AbgDPO4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898592AbgDPNq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:46:27 -0400
+        id S1732182AbgDPN4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:56:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 761382076D;
-        Thu, 16 Apr 2020 13:46:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93AF220732;
+        Thu, 16 Apr 2020 13:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044786;
-        bh=+uJIfhq4To9PPx/vDjuWEYrcyKoHKGRkmagYR3usmxQ=;
+        s=default; t=1587045369;
+        bh=1ClpcThwENIVjhgFj2BIfnEiPBTFpOMrznL6cQRlSt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NFIV2OQE6qZN61gMLsHRSKMI+9AlHc08TZ+4v22FwJuDooLVn61AHhN2UOaZMRyjo
-         g+f4P8S24U4JIwUR71h0dfvwwAQ4c0xVFz0B/ToDd6PvxFbTkLyLiYNNP4PeWUgSGP
-         2O9fZ3noZKMmYxrbpU0iA9skvpKbm77oqFMP/kfg=
+        b=ViF1dydqOOEypDST0JeDeldwEJzyi9gO3304A8JgKBzQLS8flkrYEXMn824zORiOD
+         K6cz6X83TBSx03puNOwx7jA+KXiAJwfHzkV8x30IAe1pNYMF3F3y6HpvXrWdVDX6Yp
+         cDEqZEO2GM34OzgQA/w7WrnA+nbuQ53l4B7uUutI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>
-Subject: [PATCH 5.4 102/232] PCI: qcom: Fix the fixup of PCI_VENDOR_ID_QCOM
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH 5.6 107/254] tpm: tpm1_bios_measurements_next should increase position index
 Date:   Thu, 16 Apr 2020 15:23:16 +0200
-Message-Id: <20200416131327.815719699@linuxfoundation.org>
+Message-Id: <20200416131339.494494210@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 604f3956524a6a53c1e3dd27b4b685b664d181ec upstream.
+commit d7a47b96ed1102551eb7325f97937e276fb91045 upstream.
 
-There exists non-bridge PCIe devices with PCI_VENDOR_ID_QCOM, so limit
-the fixup to only affect the relevant PCIe bridges.
+If .next function does not change position index,
+following .show function will repeat output related
+to current position index.
 
-Fixes: 322f03436692 ("PCI: qcom: Use default config space read function")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc: stable@vger.kernel.org # v5.2+
+In case of /sys/kernel/security/tpm0/ascii_bios_measurements
+and binary_bios_measurements:
+1) read after lseek beyound end of file generates whole last line.
+2) read after lseek to middle of last line generates
+expected end of last line and unexpected whole last line once again.
+
+Cc: stable@vger.kernel.org # 4.19.x
+Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code ...")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206283
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/controller/dwc/pcie-qcom.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/char/tpm/eventlog/tpm1.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -1289,7 +1289,13 @@ static void qcom_fixup_class(struct pci_
- {
- 	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
- }
--DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, PCI_ANY_ID, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0101, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0104, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0106, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0107, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0302, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1000, qcom_fixup_class);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1001, qcom_fixup_class);
+--- a/drivers/char/tpm/eventlog/tpm1.c
++++ b/drivers/char/tpm/eventlog/tpm1.c
+@@ -115,6 +115,7 @@ static void *tpm1_bios_measurements_next
+ 	u32 converted_event_size;
+ 	u32 converted_event_type;
  
- static struct platform_driver qcom_pcie_driver = {
- 	.probe = qcom_pcie_probe,
++	(*pos)++;
+ 	converted_event_size = do_endian_conversion(event->event_size);
+ 
+ 	v += sizeof(struct tcpa_event) + converted_event_size;
+@@ -132,7 +133,6 @@ static void *tpm1_bios_measurements_next
+ 	    ((v + sizeof(struct tcpa_event) + converted_event_size) > limit))
+ 		return NULL;
+ 
+-	(*pos)++;
+ 	return v;
+ }
+ 
 
 
