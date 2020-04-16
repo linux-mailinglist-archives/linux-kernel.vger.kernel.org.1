@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E3E1ACA39
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336FD1ACA68
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410514AbgDPPch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
+        id S2391005AbgDPPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2410465AbgDPPc0 (ORCPT
+        by vger.kernel.org with ESMTP id S1730236AbgDPPed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:32:26 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D7EC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cxO05dwwYyFWwu+Hjn5nmvuxzYZOEhq4dvVTeZURZr4=; b=wYtN3PzQ7GgPwToOvgM9/4hK/R
-        Z8HkRKuRdSqdOi7AT6JMqdGX15fKOb7s2Lc9UYQAcmr3E+BKt+XQw+R+z7p2+DgpIuazcYd9QXT3x
-        VxTnE8LG5+3T5uG5xwVp2R3eSL238wUg99IHUpaIMlSd0+pxOVFbDqyA5atwM4VLpJrEDc/ipXKMP
-        p0kS5h02C4jMaD7nb2tep9Zq55UAxKHfOmqRS1HtPehAtIBIOQ9FusbDpQCwHmv3ytzEPce/fDmHM
-        F0QFebRgPvB1UycdQK85sfdaL7mT54E43I+QpfDNlQsQ7UorSdbjV1D0SwLhGWxRXVzD9uOolpJqa
-        vmiZAONA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP6Un-0004ut-No; Thu, 16 Apr 2020 15:32:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73E9730477A;
-        Thu, 16 Apr 2020 17:32:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E0382B0DED29; Thu, 16 Apr 2020 17:32:04 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 17:32:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
-Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de, x86@kernel.org
-Subject: Re: [RFC][PATCH 0/7] objtool vs retpoline
-Message-ID: <20200416153204.GR20730@hirez.programming.kicks-ass.net>
-References: <20200416150752.569029800@infradead.org>
+        Thu, 16 Apr 2020 11:34:33 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C44DC061A0C;
+        Thu, 16 Apr 2020 08:34:33 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id nu11so1522511pjb.1;
+        Thu, 16 Apr 2020 08:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jsditFk3QKLKaKpu5zzpEVcrt2IGRFih4NDFzQtyXXs=;
+        b=nPBqXI8RiRZdfS2zVTNjKBcFjW1AiNA5GXKlCRD34qCrxOunxJDlcKSBtTdBkx6LaO
+         3kiYSF4SvFi1mAc85MycEMHgdDdf6UhULXycpoUNdccUqkntP9dMagf8d76xDPmXKbHn
+         5YHzNTQNT5pvW2CkY28qT/FVpsWqEu+1yJfzFoS6ye616yzbWocIlqVOmyvJ2HRI1Rm6
+         dDJ0gq95XZ3IckajpWuAr/2rIuYp3da+APc4yMjPY42rRrbLfGts4cqcr82J+6qW0YZ9
+         NYpY0tWmByLIT2EqOg68uaMX3KBDbSx7l19DNhKh2utV0DLkYcg5MfYPj8fo0XonnZGy
+         LAXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jsditFk3QKLKaKpu5zzpEVcrt2IGRFih4NDFzQtyXXs=;
+        b=Jei8QuvZJX1RyfOt0dBEadtx/Z4gq+z5NwWnqDZLfNWG7ehJAVnhl7Ai5fITfCE44t
+         YDecjAyGVQchVHcyqaVPxURAY1jiRgGU9167zpeBM4BiDeEcViULzjbfSn0BiSg++u1r
+         NZVWT9odTt7JnEccwGr/QIr5br4pj7BvofBS+raEZNHs5CzgginfhdMdHqSky38m3Bto
+         oE3iS1ZFain16qNAtu9OzRzn3s7nxPAmrn0XErVfmE/iy+rVjS2iw2+AkwKpLvI9SSV4
+         2tOnzuNN0DfRbU69rpwFkFY4p4LpnLNcoSpxutJg2rLPYpUZzb1tesg/UJSiXFpRyNmp
+         S2nQ==
+X-Gm-Message-State: AGi0PuYY7uchaComsIo7C+qK6rhNMoo7O+mU4l0gESoaYk4c8B7Y0Xeq
+        +6QYXEbkajGRUdKHtF+epxw=
+X-Google-Smtp-Source: APiQypIT7t86j5DQnRvr72mtBhKlm/8M5gvrfLGHQgJQXMiJ6n+DxQ1J8xQce7uQ5l2gqo1m2++oXA==
+X-Received: by 2002:a17:90a:c24a:: with SMTP id d10mr5756020pjx.5.1587051272906;
+        Thu, 16 Apr 2020 08:34:32 -0700 (PDT)
+Received: from localhost ([89.208.244.140])
+        by smtp.gmail.com with ESMTPSA id u15sm2897957pjm.47.2020.04.16.08.34.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 Apr 2020 08:34:32 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 23:34:28 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Allison Randal <allison@lohutok.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Shah Nehal-Bakulchandra <Nehal-bakulchandra.Shah@amd.com>,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: i2c: img-scb: remove duplicate dev_err()
+Message-ID: <20200416153428.GA23125@nuc8i5>
+References: <08564c03-3bbd-5518-1a9d-a40b8ca09f48@web.de>
+ <20200415025426.GB14300@nuc8i5>
+ <b5db65f5-f236-9e22-98df-07629a827738@web.de>
+ <20200415152115.GA17519@nuc8i5>
+ <668fe4da-56f2-8abe-1113-fa180f307524@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200416150752.569029800@infradead.org>
+In-Reply-To: <668fe4da-56f2-8abe-1113-fa180f307524@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 05:07:52PM +0200, Peter Zijlstra wrote:
-> Hi!
+On Wed, Apr 15, 2020 at 06:24:09PM +0200, Markus Elfring wrote:
+> >> Would you like to take another look at corresponding change possibilities?
+> >>
+> > yes, I want to do it and thanks for your info.
 > 
-> Based on Alexandre's patches, here's a few patches that apply on top of my
-> other series:
-> 
->   https://lkml.kernel.org/r/20200416114706.625340212@infradead.org
-> 
-> which seems to build a clean defconfig without ANNOTATE_NOSPEC_ALTERNATIVE on.
-> 
-> I've not tried to boot the thing, I'll leave that to the robots.
+> This positive feedback can lead to corresponding software development opportunities.
+> Which directions would you like try out next?
+>
+May be related to usb, ethernet and pcie. My current job is related to
+these. Thanks!
 
-Find a slightly cleaner, and more actually working, version here:
+BR,
+Dejin
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git core/objtool-retpoline
+> Regards,
+> Markus
