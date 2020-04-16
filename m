@@ -2,126 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2B61ABF57
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70FF1ABF6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633647AbgDPLdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633531AbgDPLdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:33:16 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44B5C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:33:15 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id m2so5299968lfo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:33:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dZXyKWWyETrlLsP8MP/5ANSEwhcD1vRzeNbXaoZ1FlQ=;
-        b=ZtnbFjIXjubeS6JcX+8DoYi/vy15QVyxl7cKN0GWBZRYUB0ZLKg6xjCzrG3JXlwILO
-         uDLuVQ9pj6WJG6c+onVOPCtQhVn9f6PJh2D53fGRj0SEO+7L5LVsjO9nQq8jJYAJjhsY
-         yWsl14a+KuSDynhsGbFfEUjc0z4KC3E3uXnPdOfpXL6v4b0c8w9gwaiRj/ASZP5nr5fD
-         TNFEFiM7ZN7q0Akzkk7Mv9FiV9UfWiOt1oFblgSCSkN9PHFN+ofYqolkieMRulp2te1N
-         GGAfjIS2TyTq7TYVuxtpbrSgd8PSVgqqRUn8xtiRalg4QNJnUo4U6qkRR9P+uOAHvqCY
-         +fog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dZXyKWWyETrlLsP8MP/5ANSEwhcD1vRzeNbXaoZ1FlQ=;
-        b=gKfALgGhwslG1IKIisULOLvYBAdUiSG7sstNkvBErNVek37JP/TQ714AW4xjawU+pE
-         9dd68YsNk4rttj0mP7k6X2opO2FTcKiHdSYxMwipilmOIHkQemUw+3WXms5meWN+EX52
-         vP4bFHwioCu31NerXe5QDXOhK1S1o24ECihaomqEhXanI2TeRy5/zbjLt6HuWEcqJDMd
-         qGjC922S/l6jpg8V3p7x9lqyTOkn2JYnFLJCJSI6q7WjYiffmJ6jNHsKT8gqVChUKoHk
-         4Ls4qS3p6vYrS7LOv3zQtCUuQoOY9Hj4TdwKRvt2xUdtE4Ls2pVBsFKyfkh6OQrtePyu
-         pyfg==
-X-Gm-Message-State: AGi0PuZbFGak5W7C2EHC1Fvo3bXNke8TC4GlUv3giBppgosRsALjXUcC
-        8NLaDNOk4D/9nR2ZlGVfUwM7oZnu75QsES5IJ9MTTA==
-X-Google-Smtp-Source: APiQypIkVbWK0Y/NjP6SU5E5L6VATrX3t+lUaZZYekHGYc+ikfyuybV0BXu40Puubowf7WnD35eo+JaAfoRr1FC2kTk=
-X-Received: by 2002:ac2:5c4e:: with SMTP id s14mr5882671lfp.77.1587036794076;
- Thu, 16 Apr 2020 04:33:14 -0700 (PDT)
+        id S2506297AbgDPLfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:35:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506364AbgDPLez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:34:55 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3897621D7F;
+        Thu, 16 Apr 2020 11:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587036895;
+        bh=TMMfR8jMQehfnp/7rpYl0nN/kHBVXZuS884Eb6S1ra0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b5ykmFcsbQ8fI1oYE/loZdT7usuZpFJH39y8yBp80iyEjSpXZaaf94MzDXvRDSVbz
+         Y0fDUo3giLXBWWoshTb3x2ou1LV6G7CJAnLnhE8K7cLuQ3d+d8o63hqHCa+uS506j/
+         RwUDMDd7HGyxBlfgaMJ/LqXn9dnZE5te6iPQdHxI=
+From:   Jeff Layton <jlayton@kernel.org>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, andres@anarazel.de, willy@infradead.org,
+        dhowells@redhat.com, hch@infradead.org, jack@suse.cz,
+        akpm@linux-foundation.org, david@fromorbit.com
+Subject: [PATCH v6 0/2] vfs: have syncfs() return error when there are writeback errors
+Date:   Thu, 16 Apr 2020 07:34:51 -0400
+Message-Id: <20200416113453.227229-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-References: <20200414222713.32660-1-digetx@gmail.com>
-In-Reply-To: <20200414222713.32660-1-digetx@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Apr 2020 13:33:03 +0200
-Message-ID: <CACRpkdY_J8e127etFFYkoxLDDkc334Xgg8ZbapdU36oGsaZ08g@mail.gmail.com>
-Subject: Re: [PATCH v1] iio: magnetometer: ak8974: Silence deferred-probe error
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+v6:
+- use READ_ONCE to ensure that compiler doesn't optimize away local var
 
-thanks for your patch!
+The only difference from v5 is the change to use READ_ONCE to fetch the
+bd_super pointer, to ensure that the compiler doesn't refetch it
+afterward. Many thanks to Jan K. for the explanation!
 
-On Wed, Apr 15, 2020 at 12:27 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+Jeff Layton (2):
+  vfs: track per-sb writeback errors and report them to syncfs
+  buffer: record blockdev write errors in super_block that it backs
 
-> It's not uncommon that voltage regulator becomes available later during
-> kernel's boot process, in this case there is no need to print a noisy
-> error message. This patch moves the message about unavailable regulator
-> to the debug level in a case of the deferred-probe error and also amends
-> the message with error code.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/iio/magnetometer/ak8974.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/magnetometer/ak8974.c b/drivers/iio/magnetometer/ak8974.c
-> index d32996702110..cc3861f97d42 100644
-> --- a/drivers/iio/magnetometer/ak8974.c
-> +++ b/drivers/iio/magnetometer/ak8974.c
-> @@ -718,6 +718,7 @@ static const struct regmap_config ak8974_regmap_config = {
->  static int ak8974_probe(struct i2c_client *i2c,
->                         const struct i2c_device_id *id)
->  {
-> +       const char *level = KERN_ERR;
->         struct iio_dev *indio_dev;
->         struct ak8974 *ak8974;
->         unsigned long irq_trig;
-> @@ -746,7 +747,11 @@ static int ak8974_probe(struct i2c_client *i2c,
->                                       ARRAY_SIZE(ak8974->regs),
->                                       ak8974->regs);
->         if (ret < 0) {
-> -               dev_err(&i2c->dev, "cannot get regulators\n");
-> +               if (ret == -EPROBE_DEFER)
-> +                       level = KERN_DEBUG;
-> +
-> +               dev_printk(level, &i2c->dev, "cannot get regulators: %d\n",
+ drivers/dax/device.c    |  1 +
+ fs/buffer.c             |  7 +++++++
+ fs/file_table.c         |  1 +
+ fs/open.c               |  3 +--
+ fs/sync.c               |  6 ++++--
+ include/linux/fs.h      | 16 ++++++++++++++++
+ include/linux/pagemap.h |  5 ++++-
+ 7 files changed, 34 insertions(+), 5 deletions(-)
 
-This misses some important aspects of dev_dbg(), notably this:
+-- 
+2.25.2
 
-#if defined(CONFIG_DYNAMIC_DEBUG)
-#define dev_dbg(dev, fmt, ...)                                          \
-        dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-#elif defined(DEBUG)
-#define dev_dbg(dev, fmt, ...)                                          \
-        dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__)
-#else
-#define dev_dbg(dev, fmt, ...)                                          \
-({                                                                      \
-        if (0)                                                          \
-                dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__); \
-})
-#endif
-
-If DEBUG is not defined the entire dev_dbg() message is enclodes in if (0)
-and compiled out of the kernel, saving space. The above does not
-fulfil that.
-
-Yours,
-Linus Walleij
