@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35761AC60C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63AB1AC60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394312AbgDPOca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:32:30 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:59949 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896728AbgDPOFs (ORCPT
+        id S2437034AbgDPOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:32:15 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:12038 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393013AbgDPOEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:05:48 -0400
-Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7A4D9100009;
-        Thu, 16 Apr 2020 14:05:42 +0000 (UTC)
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH] drm/rockchip: Add per-pixel alpha support for the PX30 VOP
-Date:   Thu, 16 Apr 2020 16:05:26 +0200
-Message-Id: <20200416140526.262533-1-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.26.0
+        Thu, 16 Apr 2020 10:04:08 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee45e9865c9f24-87203; Thu, 16 Apr 2020 22:03:53 +0800 (CST)
+X-RM-TRANSID: 2ee45e9865c9f24-87203
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.1.173.7])
+        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35e9865c63fd-fa69c;
+        Thu, 16 Apr 2020 22:03:53 +0800 (CST)
+X-RM-TRANSID: 2ee35e9865c63fd-fa69c
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com
+Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] i2c:imx-lpi2c: Omit superfluous error message in lpi2c_imx_probe()
+Date:   Thu, 16 Apr 2020 22:05:29 +0800
+Message-Id: <20200416140529.20036-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -37,84 +37,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compared to its predecessors, the PX30 VOP has a different register layout
-for enabling per-pixel alpha. Instead of src_alpha_ctl and dst_alpha_ctl,
-there is a single alpha control register. This register takes some fields
-from src_alpha_ctl, but with a different layout.
+In the function lpi2c_imx_probe(), when get irq failed, the function
+platform_get_irq() logs an error message, so remove redundant message
+here.
 
-Add support for the required fields to the PX30 VOP window descriptions,
-which makes per-pixel-alpha formats behave correctly.
-
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 4 ++++
- drivers/gpu/drm/rockchip/rockchip_drm_vop.h | 3 +++
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 9 +++++++++
- 3 files changed, 16 insertions(+)
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-index d04b3492bdac..ac1b1923c4bc 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-@@ -906,6 +906,10 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
- 			SRC_ALPHA_CAL_M0(ALPHA_NO_SATURATION) |
- 			SRC_FACTOR_M0(ALPHA_ONE);
- 		VOP_WIN_SET(vop, win, src_alpha_ctl, val);
-+
-+		VOP_WIN_SET(vop, win, alpha_pre_mul, ALPHA_SRC_PRE_MUL);
-+		VOP_WIN_SET(vop, win, alpha_mode, ALPHA_PER_PIX);
-+		VOP_WIN_SET(vop, win, alpha_en, 1);
- 	} else {
- 		VOP_WIN_SET(vop, win, src_alpha_ctl, SRC_ALPHA_EN(0));
- 	}
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-index 0b3d18c457b2..562b127d120b 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-@@ -151,6 +151,9 @@ struct vop_win_phy {
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index c92b56485..ee16e7e22 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -557,10 +557,8 @@ static int lpi2c_imx_probe(struct platform_device *pdev)
+ 		return PTR_ERR(lpi2c_imx->base);
  
- 	struct vop_reg dst_alpha_ctl;
- 	struct vop_reg src_alpha_ctl;
-+	struct vop_reg alpha_pre_mul;
-+	struct vop_reg alpha_mode;
-+	struct vop_reg alpha_en;
- 	struct vop_reg channel;
- };
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(&pdev->dev, "can't get irq number\n");
++	if (irq < 0)
+ 		return irq;
+-	}
  
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index 7a9d979c8d5d..67bb2625db68 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -244,6 +244,9 @@ static const struct vop_win_phy px30_win0_data = {
- 	.uv_mst = VOP_REG(PX30_WIN0_CBR_MST0, 0xffffffff, 0),
- 	.yrgb_vir = VOP_REG(PX30_WIN0_VIR, 0x1fff, 0),
- 	.uv_vir = VOP_REG(PX30_WIN0_VIR, 0x1fff, 16),
-+	.alpha_pre_mul = VOP_REG(PX30_WIN0_ALPHA_CTRL, 0x1, 2),
-+	.alpha_mode = VOP_REG(PX30_WIN0_ALPHA_CTRL, 0x1, 1),
-+	.alpha_en = VOP_REG(PX30_WIN0_ALPHA_CTRL, 0x1, 0),
- };
- 
- static const struct vop_win_phy px30_win1_data = {
-@@ -256,6 +259,9 @@ static const struct vop_win_phy px30_win1_data = {
- 	.dsp_st = VOP_REG(PX30_WIN1_DSP_ST, 0xffffffff, 0),
- 	.yrgb_mst = VOP_REG(PX30_WIN1_MST, 0xffffffff, 0),
- 	.yrgb_vir = VOP_REG(PX30_WIN1_VIR, 0x1fff, 0),
-+	.alpha_pre_mul = VOP_REG(PX30_WIN1_ALPHA_CTRL, 0x1, 2),
-+	.alpha_mode = VOP_REG(PX30_WIN1_ALPHA_CTRL, 0x1, 1),
-+	.alpha_en = VOP_REG(PX30_WIN1_ALPHA_CTRL, 0x1, 0),
- };
- 
- static const struct vop_win_phy px30_win2_data = {
-@@ -269,6 +275,9 @@ static const struct vop_win_phy px30_win2_data = {
- 	.dsp_st = VOP_REG(PX30_WIN2_DSP_ST0, 0x1fff1fff, 0),
- 	.yrgb_mst = VOP_REG(PX30_WIN2_MST0, 0xffffffff, 0),
- 	.yrgb_vir = VOP_REG(PX30_WIN2_VIR0_1, 0x1fff, 0),
-+	.alpha_pre_mul = VOP_REG(PX30_WIN2_ALPHA_CTRL, 0x1, 2),
-+	.alpha_mode = VOP_REG(PX30_WIN2_ALPHA_CTRL, 0x1, 1),
-+	.alpha_en = VOP_REG(PX30_WIN2_ALPHA_CTRL, 0x1, 0),
- };
- 
- static const struct vop_win_data px30_vop_big_win_data[] = {
+ 	lpi2c_imx->adapter.owner	= THIS_MODULE;
+ 	lpi2c_imx->adapter.algo		= &lpi2c_imx_algo;
 -- 
-2.26.0
+2.20.1.windows.1
+
+
 
