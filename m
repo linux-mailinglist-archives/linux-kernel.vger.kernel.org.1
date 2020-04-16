@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63261AC2D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA141AC404
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896848AbgDPNeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
+        id S2408912AbgDPNw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895233AbgDPN3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:29:00 -0400
+        id S2897397AbgDPNhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:37:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12232217D8;
-        Thu, 16 Apr 2020 13:28:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E19321BE5;
+        Thu, 16 Apr 2020 13:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043739;
-        bh=0XSTBhX2zm6ioqTEpMmLcdqllM/RPn/aU26VIs+NCX4=;
+        s=default; t=1587044219;
+        bh=/BTERr8ntuoVM+oROY3RpI5yVZsGtjKuXRPEP0DY5B8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OT/pTNfSSzc8bH68LZLwZMvJf3F4TUxEncqmkhWk/at6+qeu30WbNkliR4CHpHpYn
-         k2rsJGy6ZmhzVYoybDDuYRzqtWub1yIjXxzoqVZl0iQucX6X6ptV3p8Tnu1Vz03Zi0
-         hDUOtTGk3KabDvKLxqIXFc0mp2M5ZkjWyHojrFMI=
+        b=rmv2zcOwZhObRGnzgDYEqpGza+Xx5zH75Y5gtEHLiTGyJkx27uhiXHriEw6bk1Df5
+         62PYxle9DQLOZtJskHx/imRDj/H6/xhPTFMrAngm3NpUAjGf0etwNb99fzYIq07K7Q
+         2S7lyUsPBC4k1JNgUy3gmsiRn9sLXZMYfEAOSxPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 039/146] btrfs: remove a BUG_ON() from merge_reloc_roots()
-Date:   Thu, 16 Apr 2020 15:23:00 +0200
-Message-Id: <20200416131247.884032479@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.5 130/257] pstore: pstore_ftrace_seq_next should increase position index
+Date:   Thu, 16 Apr 2020 15:23:01 +0200
+Message-Id: <20200416131342.666222972@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,77 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 7b7b74315b24dc064bc1c683659061c3d48f8668 ]
+commit 6c871b7314dde9ab64f20de8f5aa3d01be4518e8 upstream.
 
-This was pretty subtle, we default to reloc roots having 0 root refs, so
-if we crash in the middle of the relocation they can just be deleted.
-If we successfully complete the relocation operations we'll set our root
-refs to 1 in prepare_to_merge() and then go on to merge_reloc_roots().
+In Aug 2018 NeilBrown noticed
+commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
+"Some ->next functions do not increment *pos when they return NULL...
+Note that such ->next functions are buggy and should be fixed.
+A simple demonstration is
 
-At prepare_to_merge() time if any of the reloc roots have a 0 reference
-still, we will remove that reloc root from our reloc root rb tree, and
-then clean it up later.
+ dd if=/proc/swaps bs=1000 skip=1
 
-However this only happens if we successfully start a transaction.  If
-we've aborted previously we will skip this step completely, and only
-have reloc roots with a reference count of 0, but were never properly
-removed from the reloc control's rb tree.
+Choose any block size larger than the size of /proc/swaps. This will
+always show the whole last line of /proc/swaps"
 
-This isn't a problem per-se, our references are held by the list the
-reloc roots are on, and by the original root the reloc root belongs to.
-If we end up in this situation all the reloc roots will be added to the
-dirty_reloc_list, and then properly dropped at that point.  The reloc
-control will be free'd and the rb tree is no longer used.
+/proc/swaps output was fixed recently, however there are lot of other
+affected files, and one of them is related to pstore subsystem.
 
-There were two options when fixing this, one was to remove the BUG_ON(),
-the other was to make prepare_to_merge() handle the case where we
-couldn't start a trans handle.
+If .next function does not change position index, following .show function
+will repeat output related to current position index.
 
-IMO this is the cleaner solution.  I started with handling the error in
-prepare_to_merge(), but it turned out super ugly.  And in the end this
-BUG_ON() simply doesn't matter, the cleanup was happening properly, we
-were just panicing because this BUG_ON() only matters in the success
-case.  So I've opted to just remove it and add a comment where it was.
+There are at least 2 related problems:
+- read after lseek beyond end of file, described above by NeilBrown
+  "dd if=<AFFECTED_FILE> bs=1000 skip=1" will generate whole last list
+- read after lseek on in middle of last line will output expected rest of
+  last line but then repeat whole last line once again.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+If .show() function generates multy-line output (like
+pstore_ftrace_seq_show() does ?) following bash script cycles endlessly
+
+ $ q=;while read -r r;do echo "$((++q)) $r";done < AFFECTED_FILE
+
+Unfortunately I'm not familiar enough to pstore subsystem and was unable
+to find affected pstore-related file on my test node.
+
+If .next function does not change position index, following .show function
+will repeat output related to current position index.
+
+Cc: stable@vger.kernel.org
+Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code ...")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206283
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Link: https://lore.kernel.org/r/4e49830d-4c88-0171-ee24-1ee540028dad@virtuozzo.com
+[kees: with robustness tweak from Joel Fernandes <joelaf@google.com>]
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/btrfs/relocation.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ fs/pstore/inode.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index f98913061a40c..6f4cb2db3b1a0 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2434,7 +2434,21 @@ out:
- 			free_reloc_roots(&reloc_roots);
- 	}
+--- a/fs/pstore/inode.c
++++ b/fs/pstore/inode.c
+@@ -87,11 +87,11 @@ static void *pstore_ftrace_seq_next(stru
+ 	struct pstore_private *ps = s->private;
+ 	struct pstore_ftrace_seq_data *data = v;
  
--	BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root));
-+	/*
-+	 * We used to have
-+	 *
-+	 * BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root));
-+	 *
-+	 * here, but it's wrong.  If we fail to start the transaction in
-+	 * prepare_to_merge() we will have only 0 ref reloc roots, none of which
-+	 * have actually been removed from the reloc_root_tree rb tree.  This is
-+	 * fine because we're bailing here, and we hold a reference on the root
-+	 * for the list that holds it, so these roots will be cleaned up when we
-+	 * do the reloc_dirty_list afterwards.  Meanwhile the root->reloc_root
-+	 * will be cleaned up on unmount.
-+	 *
-+	 * The remaining nodes will be cleaned up by free_reloc_control.
-+	 */
++	(*pos)++;
+ 	data->off += REC_SIZE;
+ 	if (data->off + REC_SIZE > ps->total_size)
+ 		return NULL;
+ 
+-	(*pos)++;
+ 	return data;
  }
  
- static void free_block_list(struct rb_root *blocks)
--- 
-2.20.1
-
+@@ -101,6 +101,9 @@ static int pstore_ftrace_seq_show(struct
+ 	struct pstore_ftrace_seq_data *data = v;
+ 	struct pstore_ftrace_record *rec;
+ 
++	if (!data)
++		return 0;
++
+ 	rec = (struct pstore_ftrace_record *)(ps->record->buf + data->off);
+ 
+ 	seq_printf(s, "CPU:%d ts:%llu %08lx  %08lx  %ps <- %pS\n",
 
 
