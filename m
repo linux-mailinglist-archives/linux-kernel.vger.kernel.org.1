@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26101ACAA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CD71AC43B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897851AbgDPNjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:39:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
+        id S2438803AbgDPN42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:56:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896274AbgDPNap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:30:45 -0400
+        id S2897752AbgDPNiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:38:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C714F208E4;
-        Thu, 16 Apr 2020 13:30:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F36221BE5;
+        Thu, 16 Apr 2020 13:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043844;
-        bh=4WmZeTUyeAqntnHxv7Qm2vNvcaXBe85221U2KvsrKXw=;
+        s=default; t=1587044326;
+        bh=ASMEch0h1JuR4P5sOL7px8K3jpr0UJzaccFnZCfO7/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xeay12ssKUiE8Sm4C8gfU/wWBl35EF34K+g2k4Zbd41TllsjtgQgNkOBpogNPtpQs
-         FlEYNWOu2ossZIrg3GEXFUPJTsAK4tW8jGoqoxkyN+4/cOWybqwxnXrEAOVHzbDIww
-         djmnaxzvgAjQiKeNFebn5xQYMxA1pd/YvGwe1igM=
+        b=jI+WYXMcUEztdeoq+EvdFQHU5aTS/WkBhto5Td5e3SvBXgNpTYP1ADfs5pxeZmuyr
+         Fi8U9FT4rb8slr4ej7tWxElgtBKoShuY47g0WQphZZqrqwZ9glVOupFUDdGWuyTnwU
+         Lh73LXB9g5T69TJWMV/4Pghsdb7Hf5E4wraSb2C0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 083/146] KVM: VMX: Always VMCLEAR in-use VMCSes during crash with kexec support
+        stable@vger.kernel.org, Yangbo Lu <yangbo.lu@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.5 173/257] mmc: sdhci-of-esdhc: fix esdhc_reset() for different controller versions
 Date:   Thu, 16 Apr 2020 15:23:44 +0200
-Message-Id: <20200416131254.186306698@linuxfoundation.org>
+Message-Id: <20200416131347.984912332@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,180 +44,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Yangbo Lu <yangbo.lu@nxp.com>
 
-commit 31603d4fc2bb4f0815245d496cb970b27b4f636a upstream.
+commit 2aa3d826adb578b26629a79b775a552cfe3fedf7 upstream.
 
-VMCLEAR all in-use VMCSes during a crash, even if kdump's NMI shootdown
-interrupted a KVM update of the percpu in-use VMCS list.
+This patch is to fix operating in esdhc_reset() for different
+controller versions, and to add bus-width restoring after data
+reset for eSDHC (verdor version <= 2.2).
 
-Because NMIs are not blocked by disabling IRQs, it's possible that
-crash_vmclear_local_loaded_vmcss() could be called while the percpu list
-of VMCSes is being modified, e.g. in the middle of list_add() in
-vmx_vcpu_load_vmcs().  This potential corner case was called out in the
-original commit[*], but the analysis of its impact was wrong.
+Also add annotation for understanding.
 
-Skipping the VMCLEARs is wrong because it all but guarantees that a
-loaded, and therefore cached, VMCS will live across kexec and corrupt
-memory in the new kernel.  Corruption will occur because the CPU's VMCS
-cache is non-coherent, i.e. not snooped, and so the writeback of VMCS
-memory on its eviction will overwrite random memory in the new kernel.
-The VMCS will live because the NMI shootdown also disables VMX, i.e. the
-in-progress VMCLEAR will #UD, and existing Intel CPUs do not flush the
-VMCS cache on VMXOFF.
-
-Furthermore, interrupting list_add() and list_del() is safe due to
-crash_vmclear_local_loaded_vmcss() using forward iteration.  list_add()
-ensures the new entry is not visible to forward iteration unless the
-entire add completes, via WRITE_ONCE(prev->next, new).  A bad "prev"
-pointer could be observed if the NMI shootdown interrupted list_del() or
-list_add(), but list_for_each_entry() does not consume ->prev.
-
-In addition to removing the temporary disabling of VMCLEAR, open code
-loaded_vmcs_init() in __loaded_vmcs_clear() and reorder VMCLEAR so that
-the VMCS is deleted from the list only after it's been VMCLEAR'd.
-Deleting the VMCS before VMCLEAR would allow a race where the NMI
-shootdown could arrive between list_del() and vmcs_clear() and thus
-neither flow would execute a successful VMCLEAR.  Alternatively, more
-code could be moved into loaded_vmcs_init(), but that gets rather silly
-as the only other user, alloc_loaded_vmcs(), doesn't need the smp_wmb()
-and would need to work around the list_del().
-
-Update the smp_*() comments related to the list manipulation, and
-opportunistically reword them to improve clarity.
-
-[*] https://patchwork.kernel.org/patch/1675731/#3720461
-
-Fixes: 8f536b7697a0 ("KVM: VMX: provide the vmclear function and a bitmap to support VMCLEAR in kdump")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200321193751.24985-2-sean.j.christopherson@intel.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20200108040713.38888-1-yangbo.lu@nxp.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx.c |   67 ++++++++++++-----------------------------------------
- 1 file changed, 16 insertions(+), 51 deletions(-)
+ drivers/mmc/host/sdhci-of-esdhc.c |   43 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kvm/vmx.c
-+++ b/arch/x86/kvm/vmx.c
-@@ -2156,43 +2156,15 @@ static void vmcs_load(struct vmcs *vmcs)
- }
- 
- #ifdef CONFIG_KEXEC_CORE
--/*
-- * This bitmap is used to indicate whether the vmclear
-- * operation is enabled on all cpus. All disabled by
-- * default.
-- */
--static cpumask_t crash_vmclear_enabled_bitmap = CPU_MASK_NONE;
--
--static inline void crash_enable_local_vmclear(int cpu)
--{
--	cpumask_set_cpu(cpu, &crash_vmclear_enabled_bitmap);
--}
--
--static inline void crash_disable_local_vmclear(int cpu)
--{
--	cpumask_clear_cpu(cpu, &crash_vmclear_enabled_bitmap);
--}
--
--static inline int crash_local_vmclear_enabled(int cpu)
--{
--	return cpumask_test_cpu(cpu, &crash_vmclear_enabled_bitmap);
--}
--
- static void crash_vmclear_local_loaded_vmcss(void)
+--- a/drivers/mmc/host/sdhci-of-esdhc.c
++++ b/drivers/mmc/host/sdhci-of-esdhc.c
+@@ -758,23 +758,58 @@ static void esdhc_reset(struct sdhci_hos
  {
- 	int cpu = raw_smp_processor_id();
- 	struct loaded_vmcs *v;
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct sdhci_esdhc *esdhc = sdhci_pltfm_priv(pltfm_host);
+-	u32 val;
++	u32 val, bus_width = 0;
  
--	if (!crash_local_vmclear_enabled(cpu))
--		return;
--
- 	list_for_each_entry(v, &per_cpu(loaded_vmcss_on_cpu, cpu),
- 			    loaded_vmcss_on_cpu_link)
- 		vmcs_clear(v->vmcs);
- }
--#else
--static inline void crash_enable_local_vmclear(int cpu) { }
--static inline void crash_disable_local_vmclear(int cpu) { }
- #endif /* CONFIG_KEXEC_CORE */
++	/*
++	 * Add delay to make sure all the DMA transfers are finished
++	 * for quirk.
++	 */
+ 	if (esdhc->quirk_delay_before_data_reset &&
+ 	    (mask & SDHCI_RESET_DATA) &&
+ 	    (host->flags & SDHCI_REQ_USE_DMA))
+ 		mdelay(5);
  
- static void __loaded_vmcs_clear(void *arg)
-@@ -2204,19 +2176,24 @@ static void __loaded_vmcs_clear(void *ar
- 		return; /* vcpu migration can race with cpu offline */
- 	if (per_cpu(current_vmcs, cpu) == loaded_vmcs->vmcs)
- 		per_cpu(current_vmcs, cpu) = NULL;
--	crash_disable_local_vmclear(cpu);
++	/*
++	 * Save bus-width for eSDHC whose vendor version is 2.2
++	 * or lower for data reset.
++	 */
++	if ((mask & SDHCI_RESET_DATA) &&
++	    (esdhc->vendor_ver <= VENDOR_V_22)) {
++		val = sdhci_readl(host, ESDHC_PROCTL);
++		bus_width = val & ESDHC_CTRL_BUSWIDTH_MASK;
++	}
 +
-+	vmcs_clear(loaded_vmcs->vmcs);
-+	if (loaded_vmcs->shadow_vmcs && loaded_vmcs->launched)
-+		vmcs_clear(loaded_vmcs->shadow_vmcs);
+ 	sdhci_reset(host, mask);
+ 
+-	sdhci_writel(host, host->ier, SDHCI_INT_ENABLE);
+-	sdhci_writel(host, host->ier, SDHCI_SIGNAL_ENABLE);
++	/*
++	 * Restore bus-width setting and interrupt registers for eSDHC
++	 * whose vendor version is 2.2 or lower for data reset.
++	 */
++	if ((mask & SDHCI_RESET_DATA) &&
++	    (esdhc->vendor_ver <= VENDOR_V_22)) {
++		val = sdhci_readl(host, ESDHC_PROCTL);
++		val &= ~ESDHC_CTRL_BUSWIDTH_MASK;
++		val |= bus_width;
++		sdhci_writel(host, val, ESDHC_PROCTL);
 +
- 	list_del(&loaded_vmcs->loaded_vmcss_on_cpu_link);
++		sdhci_writel(host, host->ier, SDHCI_INT_ENABLE);
++		sdhci_writel(host, host->ier, SDHCI_SIGNAL_ENABLE);
++	}
  
- 	/*
--	 * we should ensure updating loaded_vmcs->loaded_vmcss_on_cpu_link
--	 * is before setting loaded_vmcs->vcpu to -1 which is done in
--	 * loaded_vmcs_init. Otherwise, other cpu can see vcpu = -1 fist
--	 * then adds the vmcs into percpu list before it is deleted.
-+	 * Ensure all writes to loaded_vmcs, including deleting it from its
-+	 * current percpu list, complete before setting loaded_vmcs->vcpu to
-+	 * -1, otherwise a different cpu can see vcpu == -1 first and add
-+	 * loaded_vmcs to its percpu list before it's deleted from this cpu's
-+	 * list. Pairs with the smp_rmb() in vmx_vcpu_load_vmcs().
- 	 */
- 	smp_wmb();
+-	if (mask & SDHCI_RESET_ALL) {
++	/*
++	 * Some bits have to be cleaned manually for eSDHC whose spec
++	 * version is higher than 3.0 for all reset.
++	 */
++	if ((mask & SDHCI_RESET_ALL) &&
++	    (esdhc->spec_ver >= SDHCI_SPEC_300)) {
+ 		val = sdhci_readl(host, ESDHC_TBCTL);
+ 		val &= ~ESDHC_TB_EN;
+ 		sdhci_writel(host, val, ESDHC_TBCTL);
  
--	loaded_vmcs_init(loaded_vmcs);
--	crash_enable_local_vmclear(cpu);
-+	loaded_vmcs->cpu = -1;
-+	loaded_vmcs->launched = 0;
- }
- 
- static void loaded_vmcs_clear(struct loaded_vmcs *loaded_vmcs)
-@@ -3067,18 +3044,17 @@ static void vmx_vcpu_load(struct kvm_vcp
- 	if (!already_loaded) {
- 		loaded_vmcs_clear(vmx->loaded_vmcs);
- 		local_irq_disable();
--		crash_disable_local_vmclear(cpu);
- 
- 		/*
--		 * Read loaded_vmcs->cpu should be before fetching
--		 * loaded_vmcs->loaded_vmcss_on_cpu_link.
--		 * See the comments in __loaded_vmcs_clear().
-+		 * Ensure loaded_vmcs->cpu is read before adding loaded_vmcs to
-+		 * this cpu's percpu list, otherwise it may not yet be deleted
-+		 * from its previous cpu's percpu list.  Pairs with the
-+		 * smb_wmb() in __loaded_vmcs_clear().
- 		 */
- 		smp_rmb();
- 
- 		list_add(&vmx->loaded_vmcs->loaded_vmcss_on_cpu_link,
- 			 &per_cpu(loaded_vmcss_on_cpu, cpu));
--		crash_enable_local_vmclear(cpu);
- 		local_irq_enable();
- 	}
- 
-@@ -4426,17 +4402,6 @@ static int hardware_enable(void)
- 	INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
- 	spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
- 
--	/*
--	 * Now we can enable the vmclear operation in kdump
--	 * since the loaded_vmcss_on_cpu list on this cpu
--	 * has been initialized.
--	 *
--	 * Though the cpu is not in VMX operation now, there
--	 * is no problem to enable the vmclear operation
--	 * for the loaded_vmcss_on_cpu list is empty!
--	 */
--	crash_enable_local_vmclear(cpu);
--
- 	rdmsrl(MSR_IA32_FEATURE_CONTROL, old);
- 
- 	test_bits = FEATURE_CONTROL_LOCKED;
++		/*
++		 * Initialize eSDHC_DLLCFG1[DLL_PD_PULSE_STRETCH_SEL] to
++		 * 0 for quirk.
++		 */
+ 		if (esdhc->quirk_unreliable_pulse_detection) {
+ 			val = sdhci_readl(host, ESDHC_DLLCFG1);
+ 			val &= ~ESDHC_DLL_PD_PULSE_STRETCH_SEL;
 
 
