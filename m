@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3822D1AC284
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5708D1AC40D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896005AbgDPN3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:29:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
+        id S2409054AbgDPNxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:53:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895536AbgDPN1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:27:35 -0400
+        id S2897436AbgDPNhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:37:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF837217D8;
-        Thu, 16 Apr 2020 13:27:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A757221BE5;
+        Thu, 16 Apr 2020 13:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043654;
-        bh=mYu2WYaQfbcfssFqcLlPAdkcon5iUH4r3m8kw8TyHIc=;
+        s=default; t=1587044237;
+        bh=YhHQ8Pn5tnS3rOozkj3F34JxgYMy1nVFrfal4eA4U58=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cPnAgnWmweEG/s9N1clN8JT29agZUiSFhHYQNMoJO1vMW/0A2u5Rogu2Ymq1YfJTf
-         Je37QqgQprC7sRi1mctN+rjDVVG5M23iy7fvQhf+pFBfy4XbDYpCFTDvihzlwLkJQx
-         sdRsKEJwO+vl0Vr1EG6F2dNn0+YB08TsyJUgMfXk=
+        b=yAwxnDc0YfMlE6Jv1fANE7jmWEUYLuYD2NzMn+cCyQmcTzIzjTUhNaO7VHHVP0mNF
+         7CLUJortZTY/CIn1AG/bRLeREKi7LQ8GwAr5zzhFdNJBSla0YrbBKYW5n1YXkPrWFl
+         3W/p1gmgFJAilkUEOPuJbPr3gPsures2WqH9DmY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 046/146] ASoC: dpcm: allow start or stop during pause for backend
+        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 5.5 136/257] signal: Extend exec_id to 64bits
 Date:   Thu, 16 Apr 2020 15:23:07 +0200
-Message-Id: <20200416131249.109529412@linuxfoundation.org>
+Message-Id: <20200416131343.468200755@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +42,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 이경택 <gt82.lee@samsung.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 21fca8bdbb64df1297e8c65a746c4c9f4a689751 upstream.
+commit d1e7fd6462ca9fc76650fbe6ca800e35b24267da upstream.
 
-soc_compr_trigger_fe() allows start or stop after pause_push.
-In dpcm_be_dai_trigger(), however, only pause_release is allowed
-command after pause_push.
-So, start or stop after pause in compress offload is always
-returned as error if the compress offload is used with dpcm.
-To fix the problem, SND_SOC_DPCM_STATE_PAUSED should be allowed
-for start or stop command.
+Replace the 32bit exec_id with a 64bit exec_id to make it impossible
+to wrap the exec_id counter.  With care an attacker can cause exec_id
+wrap and send arbitrary signals to a newly exec'd parent.  This
+bypasses the signal sending checks if the parent changes their
+credentials during exec.
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/004d01d607c1$7a3d5250$6eb7f6f0$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The severity of this problem can been seen that in my limited testing
+of a 32bit exec_id it can take as little as 19s to exec 65536 times.
+Which means that it can take as little as 14 days to wrap a 32bit
+exec_id.  Adam Zabrocki has succeeded wrapping the self_exe_id in 7
+days.  Even my slower timing is in the uptime of a typical server.
+Which means self_exec_id is simply a speed bump today, and if exec
+gets noticably faster self_exec_id won't even be a speed bump.
+
+Extending self_exec_id to 64bits introduces a problem on 32bit
+architectures where reading self_exec_id is no longer atomic and can
+take two read instructions.  Which means that is is possible to hit
+a window where the read value of exec_id does not match the written
+value.  So with very lucky timing after this change this still
+remains expoiltable.
+
+I have updated the update of exec_id on exec to use WRITE_ONCE
+and the read of exec_id in do_notify_parent to use READ_ONCE
+to make it clear that there is no locking between these two
+locations.
+
+Link: https://lore.kernel.org/kernel-hardening/20200324215049.GA3710@pi3.com.pl
+Fixes: 2.3.23pre2
+Cc: stable@vger.kernel.org
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-pcm.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/exec.c             |    2 +-
+ include/linux/sched.h |    4 ++--
+ kernel/signal.c       |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2266,7 +2266,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
- 		switch (cmd) {
- 		case SNDRV_PCM_TRIGGER_START:
- 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
--			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				continue;
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1382,7 +1382,7 @@ void setup_new_exec(struct linux_binprm
  
- 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
-@@ -2296,7 +2297,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			break;
- 		case SNDRV_PCM_TRIGGER_STOP:
--			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
-+			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				continue;
+ 	/* An exec changes our domain. We are no longer part of the thread
+ 	   group */
+-	current->self_exec_id++;
++	WRITE_ONCE(current->self_exec_id, current->self_exec_id + 1);
+ 	flush_signal_handlers(current, 0);
+ }
+ EXPORT_SYMBOL(setup_new_exec);
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -939,8 +939,8 @@ struct task_struct {
+ 	struct seccomp			seccomp;
  
- 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 	/* Thread group tracking: */
+-	u32				parent_exec_id;
+-	u32				self_exec_id;
++	u64				parent_exec_id;
++	u64				self_exec_id;
+ 
+ 	/* Protection against (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed, mempolicy: */
+ 	spinlock_t			alloc_lock;
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1931,7 +1931,7 @@ bool do_notify_parent(struct task_struct
+ 		 * This is only possible if parent == real_parent.
+ 		 * Check if it has changed security domain.
+ 		 */
+-		if (tsk->parent_exec_id != tsk->parent->self_exec_id)
++		if (tsk->parent_exec_id != READ_ONCE(tsk->parent->self_exec_id))
+ 			sig = SIGCHLD;
+ 	}
+ 
 
 
