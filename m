@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F65B1AC824
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98BC1AC4D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729929AbgDPPEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39744 "EHLO mail.kernel.org"
+        id S2894870AbgDPOFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408983AbgDPNxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:53:20 -0400
+        id S2896749AbgDPNnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:43:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE4B82076D;
-        Thu, 16 Apr 2020 13:53:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D8D92076D;
+        Thu, 16 Apr 2020 13:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045200;
-        bh=4PpD070jqdkedZt8ThZiTCX383+wNv8MLoZ3mDIv1Aw=;
+        s=default; t=1587044621;
+        bh=cD3HNfjxwqG1X/QHqJC2nXVmCHZlJSzV9ZXuWKVzoYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5mbzYANFoihGrbsvOwtmQ4dLKrj048dDVSZLVsrUmILsRM67dhL5qf90nyYdnOIS
-         dle7g3XQgsC8Mid6QOXHs7QC3Ywxt+14koYxJ/V3LvjcKsrF/Fsrx8cs2L/GTLXFOT
-         9+/YUiW0ytOyfPLtRdksII6Dq6NaXRvCWqEzrBFI=
+        b=VBrbRtc8R5gPZ8hW7jIi4nK2ytLSvxNQB43nhSVKcFldW9s3MBbbl3FpTlnpuRVTz
+         SVp3UR17kA+OsDRgX4wVz+/bCvNaj0CpocmkMd6WYCDnp3/k4t0KyDc++OFSlB0n0d
+         DM/E6nfzFZvubM6MPBb3EWIuMFys1B0lV6Kgdclk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tao Zhou <ouwen210@hotmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 037/254] sched/fair: Fix condition of avg_load calculation
-Date:   Thu, 16 Apr 2020 15:22:06 +0200
-Message-Id: <20200416131330.497922858@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 033/232] media: imx: imx7-media-csi: Fix video field handling
+Date:   Thu, 16 Apr 2020 15:22:07 +0200
+Message-Id: <20200416131320.151570906@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Zhou <ouwen210@hotmail.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit 6c8116c914b65be5e4d6f66d69c8142eb0648c22 ]
+[ Upstream commit f7b8488bd39ae8feced4dfbb41cf1431277b893f ]
 
-In update_sg_wakeup_stats(), the comment says:
+Commit 4791bd7d6adc ("media: imx: Try colorimetry at both sink and
+source pads") reworked the way that formats are set on the sink pad of
+the CSI subdevice, and accidentally removed video field handling.
+Restore it by defaulting to V4L2_FIELD_NONE if the field value isn't
+supported, with the only two supported value being V4L2_FIELD_NONE and
+V4L2_FIELD_INTERLACED.
 
-Computing avg_load makes sense only when group is fully
-busy or overloaded.
-
-But, the code below this comment does not check like this.
-
->From reading the code about avg_load in other functions, I
-confirm that avg_load should be calculated in fully busy or
-overloaded case. The comment is correct and the checking
-condition is wrong. So, change that condition.
-
-Fixes: 57abff067a08 ("sched/fair: Rework find_idlest_group()")
-Signed-off-by: Tao Zhou <ouwen210@hotmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Link: https://lkml.kernel.org/r/Message-ID:
+Fixes: 4791bd7d6adc ("media: imx: Try colorimetry at both sink and source pads")
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/staging/media/imx/imx7-media-csi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c1217bfe5e819..7f895d5139948 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8345,7 +8345,8 @@ static inline void update_sg_wakeup_stats(struct sched_domain *sd,
- 	 * Computing avg_load makes sense only when group is fully busy or
- 	 * overloaded
- 	 */
--	if (sgs->group_type < group_fully_busy)
-+	if (sgs->group_type == group_fully_busy ||
-+		sgs->group_type == group_overloaded)
- 		sgs->avg_load = (sgs->group_load * SCHED_CAPACITY_SCALE) /
- 				sgs->group_capacity;
- }
+diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
+index bfd6b5fbf4841..d24897d06947f 100644
+--- a/drivers/staging/media/imx/imx7-media-csi.c
++++ b/drivers/staging/media/imx/imx7-media-csi.c
+@@ -1009,6 +1009,7 @@ static int imx7_csi_try_fmt(struct imx7_csi *csi,
+ 		sdformat->format.width = in_fmt->width;
+ 		sdformat->format.height = in_fmt->height;
+ 		sdformat->format.code = in_fmt->code;
++		sdformat->format.field = in_fmt->field;
+ 		*cc = in_cc;
+ 
+ 		sdformat->format.colorspace = in_fmt->colorspace;
+@@ -1023,6 +1024,9 @@ static int imx7_csi_try_fmt(struct imx7_csi *csi,
+ 							 false);
+ 			sdformat->format.code = (*cc)->codes[0];
+ 		}
++
++		if (sdformat->format.field != V4L2_FIELD_INTERLACED)
++			sdformat->format.field = V4L2_FIELD_NONE;
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.20.1
 
