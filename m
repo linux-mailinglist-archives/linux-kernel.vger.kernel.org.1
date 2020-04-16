@@ -2,69 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927F41AC089
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219681AC086
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634493AbgDPL7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:59:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2634634AbgDPL6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:58:30 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84BA521D7F;
-        Thu, 16 Apr 2020 11:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587038307;
-        bh=C02HcDV/4ymZNiH43m0bSPRVlDyWt+JoeqGraHiMLd0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=URf8tVUpg0dmW48kXtETXHP24CfevH1ltJdpvaAbByZa5tCvk27qPG9Kfjtvb4RAs
-         tlGYb9cWL6gOnGvPrPDx0n8WM9ShN8U2ZjoQEDehefBb+vVe2Mnw3CPY3McZnvoZ9w
-         Bg39tBl0Nx4JN2v/pxk4wIRYnLg1kI+62/88Of/0=
-Date:   Thu, 16 Apr 2020 12:58:22 +0100
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu
-Cc:     linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>, kernel-team@android.com
-Subject: Re: [PATCH 8/8] arm64: cpufeature: Add an overview comment for the
- cpufeature framework
-Message-ID: <20200416115817.GB32443@willie-the-truck>
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-9-will@kernel.org>
+        id S2634694AbgDPL7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:59:01 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:58538 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2634544AbgDPL6J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:58:09 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GBqVpS019700;
+        Thu, 16 Apr 2020 07:58:07 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 30dn9adgm7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 07:58:07 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 03GBw6K9016564
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 16 Apr 2020 07:58:06 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 16 Apr
+ 2020 04:58:04 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 16 Apr 2020 04:58:04 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03GBw2DW013213;
+        Thu, 16 Apr 2020 07:58:03 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>
+Subject: [PATCH v2 0/2] iio: dac: ad5770r: dt bindings fixes
+Date:   Thu, 16 Apr 2020 14:58:46 +0300
+Message-ID: <20200416115848.56156-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414213114.2378-9-will@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-16_03:2020-04-14,2020-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 malwarescore=0 mlxlogscore=709 clxscore=1015
+ mlxscore=0 priorityscore=1501 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-On Tue, Apr 14, 2020 at 10:31:14PM +0100, Will Deacon wrote:
-> Now that Suzuki isn't within throwing distance, I thought I'd better add
-> a rough overview comment to cpufeature.c so that it doesn't take me days
-> to remember how it works next time.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  arch/arm64/kernel/cpufeature.c | 43 ++++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
+This aims to replace use of num property from dt nodes with
+reg property both in dt bindings and driver and fix
+dt bindings errors.
 
-Any chance you can look at this one, please? I don't trust myself to get
-all of the details right here! I'm also wondering whether we should mention
-something about KVM and the guest view of the registers.
+1. read from fwnode reg property instead of num property
 
-What do you think?
+2. replace num property with reg property and fix dt
+bindings errors
 
-Will
+Changelog v1 -> v2:
+	- replaced "oneOf:" with items for adi,range-microamp
+	- added reg allowed values to each channel
+
+Alexandru Tachici (2):
+  iio: dac: ad5770r: read channel nr from reg
+  dt-bindings: iio: dac: AD5570R fix bindings errors
+
+ .../bindings/iio/dac/adi,ad5770r.yaml         | 82 +++++++++----------
+ drivers/iio/dac/ad5770r.c                     |  2 +-
+ 2 files changed, 40 insertions(+), 44 deletions(-)
+
+-- 
+2.20.1
+
