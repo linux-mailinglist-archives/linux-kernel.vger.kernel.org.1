@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7550C1ACA9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407581ACC19
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504596AbgDPPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:36:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52140 "EHLO mail.kernel.org"
+        id S2636123AbgDPPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896932AbgDPNjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:43 -0400
+        id S2896141AbgDPNaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3278620732;
-        Thu, 16 Apr 2020 13:39:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61FA220767;
+        Thu, 16 Apr 2020 13:30:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044382;
-        bh=cIOg4crpwTP9ciJe671gs1El4Wkf8mdK+l18SkpVrV8=;
+        s=default; t=1587043802;
+        bh=zCxdmxk+xF0rzlWanTvMntFQXgMJrgDQ+bSTN19CucI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncisuMbiK2Q73P4OfGYuJbFLVWmffx04ai7BBwINvptpv9VvcU8vgLklzduT4Fr8f
-         C6t0KK/EwFqLxAucu77zhAK1et/y4KtnL/aQ7O/Kbnzl9Wkbtqree70V5QPUtbomVB
-         CCFZgpAYYEhiF0CFtXAnTZ7xDxTqfJnQKaDM2X94=
+        b=YFvydO04sKk5eksSyQaIW8XptlEuPl+6Ls9+YUFIfyvYJQD5C+254CjJKCW9R9rRF
+         A+y7m7TGkrO9ds9CsIYewu9gS7DfuzVS5NKO/b1527Pa4pxx4SO/Qyj4lj5aZjPpB2
+         2TIhl6aaVbqUAW7YB/QRFdTrjd0xC2+jRdqt7neA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gilad Ben-Yossef <gilad@benyossef.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.5 194/257] crypto: ccree - dec auth tag size from cryptlen map
-Date:   Thu, 16 Apr 2020 15:24:05 +0200
-Message-Id: <20200416131350.460464378@linuxfoundation.org>
+        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Fredrik Strupe <fredrik@strupe.net>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 4.19 105/146] arm64: armv8_deprecated: Fix undef_hook mask for thumb setend
+Date:   Thu, 16 Apr 2020 15:24:06 +0200
+Message-Id: <20200416131257.059352454@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gilad Ben-Yossef <gilad@benyossef.com>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-commit 8962c6d2c2b8ca51b0f188109015b15fc5f4da44 upstream.
+commit fc2266011accd5aeb8ebc335c381991f20e26e33 upstream.
 
-Remove the auth tag size from cryptlen before mapping the destination
-in out-of-place AEAD decryption thus resolving a crash with
-extended testmgr tests.
+For thumb instructions, call_undef_hook() in traps.c first reads a u16,
+and if the u16 indicates a T32 instruction (u16 >= 0xe800), a second
+u16 is read, which then makes up the the lower half-word of a T32
+instruction. For T16 instructions, the second u16 is not read,
+which makes the resulting u32 opcode always have the upper half set to
+0.
 
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: stable@vger.kernel.org # v4.19+
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+However, having the upper half of instr_mask in the undef_hook set to 0
+masks out the upper half of all thumb instructions - both T16 and T32.
+This results in trapped T32 instructions with the lower half-word equal
+to the T16 encoding of setend (b650) being matched, even though the upper
+half-word is not 0000 and thus indicates a T32 opcode.
+
+An example of such a T32 instruction is eaa0b650, which should raise a
+SIGILL since T32 instructions with an eaa prefix are unallocated as per
+Arm ARM, but instead works as a SETEND because the second half-word is set
+to b650.
+
+This patch fixes the issue by extending instr_mask to include the
+upper u32 half, which will still match T16 instructions where the upper
+half is 0, but not T32 instructions.
+
+Fixes: 2d888f48e056 ("arm64: Emulate SETEND for AArch32 tasks")
+Cc: <stable@vger.kernel.org> # 4.0.x-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/ccree/cc_buffer_mgr.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/armv8_deprecated.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/crypto/ccree/cc_buffer_mgr.c
-+++ b/drivers/crypto/ccree/cc_buffer_mgr.c
-@@ -894,8 +894,12 @@ static int cc_aead_chain_data(struct cc_
- 
- 	if (req->src != req->dst) {
- 		size_for_map = areq_ctx->assoclen + req->cryptlen;
--		size_for_map += (direct == DRV_CRYPTO_DIRECTION_ENCRYPT) ?
--				authsize : 0;
-+
-+		if (direct == DRV_CRYPTO_DIRECTION_ENCRYPT)
-+			size_for_map += authsize;
-+		else
-+			size_for_map -= authsize;
-+
- 		if (is_gcm4543)
- 			size_for_map += crypto_aead_ivsize(tfm);
- 
+--- a/arch/arm64/kernel/armv8_deprecated.c
++++ b/arch/arm64/kernel/armv8_deprecated.c
+@@ -604,7 +604,7 @@ static struct undef_hook setend_hooks[]
+ 	},
+ 	{
+ 		/* Thumb mode */
+-		.instr_mask	= 0x0000fff7,
++		.instr_mask	= 0xfffffff7,
+ 		.instr_val	= 0x0000b650,
+ 		.pstate_mask	= (PSR_AA32_T_BIT | PSR_AA32_MODE_MASK),
+ 		.pstate_val	= (PSR_AA32_T_BIT | PSR_AA32_MODE_USR),
 
 
