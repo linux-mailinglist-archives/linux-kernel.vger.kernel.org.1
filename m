@@ -2,84 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0994F1AC245
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2481AC7C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895107AbgDPNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895194AbgDPNXj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:23:39 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31751C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:22:53 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 198so5570985lfo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5ghI5WBqdl870WOE8SE5UO5Yl3nEjaDEWsi+NZM23pY=;
-        b=wL7Q0gPf1pOG5mpwohfKkO+zHQJzeFIgDMOlXgthXC9kCDgo3A7DD5pysOL3BHoeod
-         9XSu8hDaxyyuh7eoujNL7pHKDV5/1LuFvn2pDWwWZ4jc6neNJ8uKftpodRcTX67KUlsx
-         fexJIz75CoqVryD54Bsk8MrFrBwykj61Qb8mG4kNMDVQ6FRzkxckoxDdAu/ami5maQeV
-         c5Uba+Lu/rQG7nrGTdwIukGU4NevTWa2wQxjDbrZBOeeWlug+8NVsPwTpTRyofKSwXoY
-         qpK1Bzc6r7+rQqoSa1wuwKVOL3bQXczAy72GWXvV5vrM16D2iGMDg7xTX41johkrwoo/
-         JeHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5ghI5WBqdl870WOE8SE5UO5Yl3nEjaDEWsi+NZM23pY=;
-        b=YIuJ+MDEJRRr6cxVkDi7ZM3LYXFHwFM1INW3+SCC7r/hV+6N4yuXBGPANav5CL59SO
-         wHuSUCGIBGzdO+G/ygv+r2BugBn+xM2T0YM/JZT/bukip31nFT/epFeByEIsPAPV05so
-         dQl6i2tOH+40E3RchxcvcU40aNo/S7X13FnuxQoGj0YR0A8tv8/eT3ZqVYzXtWKolbt4
-         WLSmQaTsT39uLH3dIRY8zgKPEj+MLBXD1/UnBY4AblSEcM0lmmKIpHC2tAVT3vbEms+F
-         0lUWuUDFefBt+CudANlj5bwlXloAqG8SfcMV6TpDavgXwSPBYWlnFCHofGP0fbQY+dQu
-         IL4Q==
-X-Gm-Message-State: AGi0PuYtXQsxZuXFEMEpwws3kD5UCnAqlWMc1ljLAfr9OwjwX6FrMfWq
-        C1I9tZkV+m567dZTkuHFhI+GBgoIKf/6lRVJ7KbMyhPT
-X-Google-Smtp-Source: APiQypI8lGR85RQI+rU+pCf9V2Sn5n7Mvg4Ykbb7nhe56xJbWhdmIJaMewqk1OlOrMbaRXyV8387wTS3UaZFas2e/P8=
-X-Received: by 2002:ac2:5dc6:: with SMTP id x6mr6011166lfq.108.1587043371445;
- Thu, 16 Apr 2020 06:22:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200415222312.236431-1-jannh@google.com> <20200416030232.15680-1-hdanton@sina.com>
-In-Reply-To: <20200416030232.15680-1-hdanton@sina.com>
-From:   Jann Horn <jannh@google.com>
+        id S2438977AbgDPO7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409133AbgDPNzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:55:11 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEEA421744;
+        Thu, 16 Apr 2020 13:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587045310;
+        bh=30hy3yBwfYpGQ3YmwExCQUUPvJUTtZHkZv+HN2q/6M4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Bn5dqy84busxFTxp+oOMZyEFx5tP1zCtAU4TiMBv+WVc4lmy23gLLmVLL3rDzS7Zv
+         PSDWsoyD6onkMSujb+Ce0Tma40XqCB4JFYSyj7jxsAeOY5bLaFe9g8wLZN3mPpu88l
+         TzUE/TIqyAtabM2K6gXGxadI8qF0EfawXhcPxFlI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 055/254] irqchip/gic-v4: Provide irq_retrigger to avoid circular locking dependency
 Date:   Thu, 16 Apr 2020 15:22:24 +0200
-Message-ID: <CAG48ez2TPqUnDpuQOmmTw7WeMH3+zOJWG=zYzExEb8yPYQQ3uQ@mail.gmail.com>
-Subject: Re: [PATCH] vmalloc: Fix remap_vmalloc_range() bounds checks
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <20200416131332.790863670@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 7:02 AM Hillf Danton <hdanton@sina.com> wrote:
-> On Thu, 16 Apr 2020 00:23:12 +0200 Jann Horn wrote:
-> > remap_vmalloc_range() has had various issues with the bounds checks it
-> > promises to perform ("This function checks that addr is a valid vmalloc'ed
-> > area, and that it is big enough to cover the vma") over time, e.g.:
-[...]
-> > @@ -3082,8 +3090,10 @@ int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
-> >       if (!(area->flags & (VM_USERMAP | VM_DMA_COHERENT)))
-> >               return -EINVAL;
-> >
-> The current kaddr is checked valid by finding area with it despite
-> there is room for adding change in checking its boundary in a valid
-> area.
+From: Marc Zyngier <maz@kernel.org>
 
-I have no idea what you're trying to say. Could you rephrase, please?
+[ Upstream commit 7809f7011c3bce650e502a98afeb05961470d865 ]
+
+On a very heavily loaded D05 with GICv4, I managed to trigger the
+following lockdep splat:
+
+[ 6022.598864] ======================================================
+[ 6022.605031] WARNING: possible circular locking dependency detected
+[ 6022.611200] 5.6.0-rc4-00026-geee7c7b0f498 #680 Tainted: G            E
+[ 6022.618061] ------------------------------------------------------
+[ 6022.624227] qemu-system-aar/7569 is trying to acquire lock:
+[ 6022.629789] ffff042f97606808 (&p->pi_lock){-.-.}, at: try_to_wake_up+0x54/0x7a0
+[ 6022.637102]
+[ 6022.637102] but task is already holding lock:
+[ 6022.642921] ffff002fae424cf0 (&irq_desc_lock_class){-.-.}, at: __irq_get_desc_lock+0x5c/0x98
+[ 6022.651350]
+[ 6022.651350] which lock already depends on the new lock.
+[ 6022.651350]
+[ 6022.659512]
+[ 6022.659512] the existing dependency chain (in reverse order) is:
+[ 6022.666980]
+[ 6022.666980] -> #2 (&irq_desc_lock_class){-.-.}:
+[ 6022.672983]        _raw_spin_lock_irqsave+0x50/0x78
+[ 6022.677848]        __irq_get_desc_lock+0x5c/0x98
+[ 6022.682453]        irq_set_vcpu_affinity+0x40/0xc0
+[ 6022.687236]        its_make_vpe_non_resident+0x6c/0xb8
+[ 6022.692364]        vgic_v4_put+0x54/0x70
+[ 6022.696273]        vgic_v3_put+0x20/0xd8
+[ 6022.700183]        kvm_vgic_put+0x30/0x48
+[ 6022.704182]        kvm_arch_vcpu_put+0x34/0x50
+[ 6022.708614]        kvm_sched_out+0x34/0x50
+[ 6022.712700]        __schedule+0x4bc/0x7f8
+[ 6022.716697]        schedule+0x50/0xd8
+[ 6022.720347]        kvm_arch_vcpu_ioctl_run+0x5f0/0x978
+[ 6022.725473]        kvm_vcpu_ioctl+0x3d4/0x8f8
+[ 6022.729820]        ksys_ioctl+0x90/0xd0
+[ 6022.733642]        __arm64_sys_ioctl+0x24/0x30
+[ 6022.738074]        el0_svc_common.constprop.3+0xa8/0x1e8
+[ 6022.743373]        do_el0_svc+0x28/0x88
+[ 6022.747198]        el0_svc+0x14/0x40
+[ 6022.750761]        el0_sync_handler+0x124/0x2b8
+[ 6022.755278]        el0_sync+0x140/0x180
+[ 6022.759100]
+[ 6022.759100] -> #1 (&rq->lock){-.-.}:
+[ 6022.764143]        _raw_spin_lock+0x38/0x50
+[ 6022.768314]        task_fork_fair+0x40/0x128
+[ 6022.772572]        sched_fork+0xe0/0x210
+[ 6022.776484]        copy_process+0x8c4/0x18d8
+[ 6022.780742]        _do_fork+0x88/0x6d8
+[ 6022.784478]        kernel_thread+0x64/0x88
+[ 6022.788563]        rest_init+0x30/0x270
+[ 6022.792390]        arch_call_rest_init+0x14/0x1c
+[ 6022.796995]        start_kernel+0x498/0x4c4
+[ 6022.801164]
+[ 6022.801164] -> #0 (&p->pi_lock){-.-.}:
+[ 6022.806382]        __lock_acquire+0xdd8/0x15c8
+[ 6022.810813]        lock_acquire+0xd0/0x218
+[ 6022.814896]        _raw_spin_lock_irqsave+0x50/0x78
+[ 6022.819761]        try_to_wake_up+0x54/0x7a0
+[ 6022.824018]        wake_up_process+0x1c/0x28
+[ 6022.828276]        wakeup_softirqd+0x38/0x40
+[ 6022.832533]        __tasklet_schedule_common+0xc4/0xf0
+[ 6022.837658]        __tasklet_schedule+0x24/0x30
+[ 6022.842176]        check_irq_resend+0xc8/0x158
+[ 6022.846609]        irq_startup+0x74/0x128
+[ 6022.850606]        __enable_irq+0x6c/0x78
+[ 6022.854602]        enable_irq+0x54/0xa0
+[ 6022.858431]        its_make_vpe_non_resident+0xa4/0xb8
+[ 6022.863557]        vgic_v4_put+0x54/0x70
+[ 6022.867469]        kvm_arch_vcpu_blocking+0x28/0x38
+[ 6022.872336]        kvm_vcpu_block+0x48/0x490
+[ 6022.876594]        kvm_handle_wfx+0x18c/0x310
+[ 6022.880938]        handle_exit+0x138/0x198
+[ 6022.885022]        kvm_arch_vcpu_ioctl_run+0x4d4/0x978
+[ 6022.890148]        kvm_vcpu_ioctl+0x3d4/0x8f8
+[ 6022.894494]        ksys_ioctl+0x90/0xd0
+[ 6022.898317]        __arm64_sys_ioctl+0x24/0x30
+[ 6022.902748]        el0_svc_common.constprop.3+0xa8/0x1e8
+[ 6022.908046]        do_el0_svc+0x28/0x88
+[ 6022.911871]        el0_svc+0x14/0x40
+[ 6022.915434]        el0_sync_handler+0x124/0x2b8
+[ 6022.919951]        el0_sync+0x140/0x180
+[ 6022.923773]
+[ 6022.923773] other info that might help us debug this:
+[ 6022.923773]
+[ 6022.931762] Chain exists of:
+[ 6022.931762]   &p->pi_lock --> &rq->lock --> &irq_desc_lock_class
+[ 6022.931762]
+[ 6022.942101]  Possible unsafe locking scenario:
+[ 6022.942101]
+[ 6022.948007]        CPU0                    CPU1
+[ 6022.952523]        ----                    ----
+[ 6022.957039]   lock(&irq_desc_lock_class);
+[ 6022.961036]                                lock(&rq->lock);
+[ 6022.966595]                                lock(&irq_desc_lock_class);
+[ 6022.973109]   lock(&p->pi_lock);
+[ 6022.976324]
+[ 6022.976324]  *** DEADLOCK ***
+
+This is happening because we have a pending doorbell that requires
+retrigger. As SW retriggering is done in a tasklet, we trigger the
+circular dependency above.
+
+The easy cop-out is to provide a retrigger callback that doesn't
+require acquiring any extra lock.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200310184921.23552-5-maz@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/irqchip/irq-gic-v3-its.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index da883a6910284..7c8f65c9c32de 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -3679,12 +3679,18 @@ static int its_vpe_set_irqchip_state(struct irq_data *d,
+ 	return 0;
+ }
+ 
++static int its_vpe_retrigger(struct irq_data *d)
++{
++	return !its_vpe_set_irqchip_state(d, IRQCHIP_STATE_PENDING, true);
++}
++
+ static struct irq_chip its_vpe_irq_chip = {
+ 	.name			= "GICv4-vpe",
+ 	.irq_mask		= its_vpe_mask_irq,
+ 	.irq_unmask		= its_vpe_unmask_irq,
+ 	.irq_eoi		= irq_chip_eoi_parent,
+ 	.irq_set_affinity	= its_vpe_set_affinity,
++	.irq_retrigger		= its_vpe_retrigger,
+ 	.irq_set_irqchip_state	= its_vpe_set_irqchip_state,
+ 	.irq_set_vcpu_affinity	= its_vpe_set_vcpu_affinity,
+ };
+-- 
+2.20.1
+
+
+
