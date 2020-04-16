@@ -2,102 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2A51AC0E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA7E1AC0ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635195AbgDPMR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2635208AbgDPMRB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:17:01 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89762C061A10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:17:01 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id p28so2201571vsg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rH9FNHKfAt+A1vHsUhr40PXb20A41+AkKVxM0KJ3IUA=;
-        b=YUVqGmj/+GDGZBvHkZaAeyYUaCRpluZmazweWxd6ZTa1hCXJxkmgtRpeDTvGw5VNgw
-         YENHKM8ub9JsSLNmhcXOjQxXDkG02vY9SW1cy5/5Y8B6DXqy11HiNhxWQRF74NPi98WC
-         8hkPHF2sg8VzTIDNarYVAjdvoA5fGmKo0e+rdoHewmOZG1+42kAgfbhcrFUg8Z9kulkv
-         q+rkXjNZV/6Ja/Ok6top274QmChv32s3aLm27Qrd+DaZFNI9ghZcBPRMgEpA7Up9fQUG
-         nkrl9DjNvC02IDUfXElBurkhW6dU4Q4BXyQXbLoT+T7TxEhGqMSSjhOBRmrJvMVppIGc
-         XOmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rH9FNHKfAt+A1vHsUhr40PXb20A41+AkKVxM0KJ3IUA=;
-        b=pLjiqSJ4Ees4PI1sAkgutK4IyhFWUZyZw7TOVvZJ2AjeN+lnm2KrHZYu+VRgbmsB9j
-         MNk5qB3GIWtQZIADl+VjJZ8+skGI/vYWVPhVOUWHJoxG7HJEEXQCXwtq5rmi8SGf68KQ
-         jkfb92VP+hpVwzZvBXuPZF6Q/E9NOtwseeRMsvmtTHa3GrL+AmSO15JPvK7rphWyHCjA
-         cvRbQI0/++paegGesgepnkMvnq14tZrZbHFMsVWrRWPjl7fJVKaosHentSiI8J2mOvPM
-         sLOr1yGDfpz3IVznvpIa8AA319aKpwYO2mAghD/vRRzLSWCETONWReQplDRREyAriP51
-         8vLA==
-X-Gm-Message-State: AGi0PuaSrrANo6C/5Nu/zjWaPnlsqzcVMSDBYRuMjU5APEVdpMUF7+bM
-        b4PHE/8Gfne65AwSPyzzZ7M4PlI5SHq+UPLlyzRVKQ==
-X-Google-Smtp-Source: APiQypKimtohzaeLEMo41Jq2vIhngmFgs5gR9SEFIMKBisOybswa7H7HDo9Cz25Xudtsu4/Cr3AMFl9xkeaY4PUinE0=
-X-Received: by 2002:a67:f24b:: with SMTP id y11mr8636206vsm.165.1587039420609;
- Thu, 16 Apr 2020 05:17:00 -0700 (PDT)
+        id S2635241AbgDPMTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:19:11 -0400
+Received: from verein.lst.de ([213.95.11.211]:51210 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2635208AbgDPMTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:19:05 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A893A68BEB; Thu, 16 Apr 2020 14:19:01 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 14:19:01 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Yufen Yu <yuyufen@huawei.com>, Christoph Hellwig <hch@lst.de>,
+        axboe@kernel.dk, tj@kernel.org, bvanassche@acm.org, tytso@mit.edu,
+        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] bdi: add a ->dev_name field to struct
+ backing_dev_info
+Message-ID: <20200416121901.GA26483@lst.de>
+References: <20200416071519.807660-1-hch@lst.de> <20200416071519.807660-4-hch@lst.de> <5bfcd35a-2463-3769-be93-911c4e3c38bb@huawei.com> <20200416120223.GI23739@quack2.suse.cz>
 MIME-Version: 1.0
-References: <1586706808-27337-1-git-send-email-vbadigan@codeaurora.org> <1586706808-27337-3-git-send-email-vbadigan@codeaurora.org>
-In-Reply-To: <1586706808-27337-3-git-send-email-vbadigan@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 16 Apr 2020 14:16:24 +0200
-Message-ID: <CAPDyKFobBGDYMGmkpTcmKVrnT7MywM5=xaOx86f91ay6c7DUWw@mail.gmail.com>
-Subject: Re: [PATCH V1 2/4] mmc: sdhci-msm: Enable MMC_CAP_NEED_RSP_BUSY host capability
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416120223.GI23739@quack2.suse.cz>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Apr 2020 at 17:54, Veerabhadrarao Badiganti
-<vbadigan@codeaurora.org> wrote:
->
-> sdhci-msm controller requires the R1B response for commands that
-> has this response associated with them.
->
-> So enable MMC_CAP_NEED_RSP_BUSY capability.
+On Thu, Apr 16, 2020 at 02:02:23PM +0200, Jan Kara wrote:
+> Yes, that can indeed happen. E.g. I remember that drivers/scsi/sd.c calls
+> device_add_disk() + del_gendisk() repeatedly for one request_queue and that
+> would result in leaking the name (and possibly cause use-after-free
+> issues).
 
-I assume this potentially should be considered as fix and tagged for stable?
+Sd calls device_add_disk once in ->probe, and del_gendisk once in
+sd_remove.  Note that sd_probe allocates a new scsi_disk structure and
+a new gendisk everytime, but it does indeed reuse the request_queue
+and thus bdi.
 
-Another question, if there is there an upper limit of the busy timeout
-in the HW (cmd->busy_timeout) or does the driver use a software
-timeout that is adjustable?
+> I think dev_name has to be just a static array inside
+> backing_dev_info which gets overwritten on reregistration. The question is
+> how big should be this array... Some grepping shows that 40 bytes should be
+> enough for everybody except fs/vboxsf/super.c which puts 'fc->source' into
+> the name which can be presumably rather large. Anyway, I'd make it 40 and
+> just truncate it case in case it does not fit. bdi_dev_name() is used for
+> informational purposes anyway...
 
-Kind regards
-Uffe
-
->
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> ---
->  drivers/mmc/host/sdhci-msm.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index 013dcea..d826e9b 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -2088,6 +2088,7 @@ static int sdhci_msm_probe(struct platform_device *pdev)
->         }
->
->         msm_host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
-> +       msm_host->mmc->caps |= MMC_CAP_NEED_RSP_BUSY;
->
->         pm_runtime_get_noresume(&pdev->dev);
->         pm_runtime_set_active(&pdev->dev);
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
+We could just make it a variable sized array at the end of the structure
+and size it based on the len.
