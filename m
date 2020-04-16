@@ -2,171 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9B71ACC60
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4CB1ACC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897280AbgDPP7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2896089AbgDPP7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:59:00 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B5FC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:59:00 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id t199so13578171oif.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RKkzesvk5cYfKkW+cuVfyJJ4B3TfqgCX4qySMMGKGlg=;
-        b=MGeTnGvI/2k6bxRBviIyd1LSkMZNOawQBC63cTOw3eNT0E2cqiGkqP5WM1LyY9cMCd
-         O8yJOXkdTY9vlwgcQZEdCBZkjsiMs3JQEKv/w07/loPznlTIv0qQfB+83EaslJL1jHkk
-         QH0H/Oka1VIrsQPXERMd/sv/kAn1gX1q4CJAHf8eRMVOIBks6PtE+Pks7rIMGXpx+kdr
-         gm+GETzmhGS5ichB041ZwaGZFAxNB4gCONZf2UN1wWrfDm+u6Jo6rrQ3HgGJaQNta4yz
-         Oyg+mE8xJ43OI3nc5YKILs3NLr2uH1ld2+XpCXKn0sHlE3V5pdNa7vaex7HxtTiNbdU5
-         YI8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RKkzesvk5cYfKkW+cuVfyJJ4B3TfqgCX4qySMMGKGlg=;
-        b=KjcAGPdSFXh9/fKvaNf/GSsgsVjpp9tOTEJDXTRhFn6R1WcEYEqBW+ulTDbVAYbTve
-         +9AYP1o4/MChVukN36+iNErV6EcTC/Uc71r3S9qvVgj3oVgAzaeu+9lOvfbk3bLlUzD5
-         6wGT8TmBEZTNVM+YTLvIB7qC615fHh7VqoKIV7Ar700VC6JyUtrdvMj6Ytgh1IxTAbaG
-         52Lq/fdMxwcoe2wkuGaTpwTb63OzbViwAMaVUg7a3FpzMzXhV/pGzO3H0vv6rHOslwhA
-         LjUW8NGB11Z6Fe4nS5DbPjSXKtaf5UKRx/IFqh+YIP9kZJY7XLBWukZ60QitCIggz1M8
-         KTug==
-X-Gm-Message-State: AGi0PuaV1QQ8u/s11wneXWJLHhhjCSJ7qFjWu2t1Ud7jAU6DDRPBgyQS
-        7Mv7HpahKh1xKLIBSIUWEAhn3YD2AXUI+6mGaNmaLQ==
-X-Google-Smtp-Source: APiQypL37Ygn1cZS2h8rp5duKkw4wQjuaqjVXMf73uWNup7h9A6Akm1TUOoiCtGtBN76Q4Q8+Bnc9jARMpQqUlQlZIA=
-X-Received: by 2002:aca:56c2:: with SMTP id k185mr3169314oib.141.1587052739351;
- Thu, 16 Apr 2020 08:58:59 -0700 (PDT)
+        id S2504097AbgDPQBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:01:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:40294 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2636404AbgDPQAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 12:00:42 -0400
+IronPort-SDR: g/XFrmyn5GwHB/99h6aH5bxxV06mE5I3+7kN0X3X60a0RMe8qOgHfCHxQCcC+NYMrlEewS1Kg6
+ yAscooNY1Yxw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 09:00:37 -0700
+IronPort-SDR: pDMNkWvYNHv1ubiGEOcKw/KAQTj5tzHAVB/4Q19JN+AEY6d4sLqBsaG9vLrsgh1d22eY0Z521B
+ sV9XGTvo7wyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
+   d="scan'208";a="455314877"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Apr 2020 09:00:34 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 3FAC717F; Thu, 16 Apr 2020 19:00:31 +0300 (EEST)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv4 0/8] thp/khugepaged improvements and CoW semantics
+Date:   Thu, 16 Apr 2020 19:00:18 +0300
+Message-Id: <20200416160026.16538-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200415210512.805-1-valentin.schneider@arm.com>
- <20200415210512.805-10-valentin.schneider@arm.com> <CAKfTPtBDGzrvG=YhjBZBEgfx5EtM-rTC-dWX5phqh4bOY5XqgA@mail.gmail.com>
- <jhj4ktjpw2z.mognet@arm.com> <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com>
- <CAKfTPtD5x_NQ1KfHhTiAR3eNA85+k13nfSR-9_PKLp6FgVu08A@mail.gmail.com> <jhjv9lz78nv.mognet@arm.com>
-In-Reply-To: <jhjv9lz78nv.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 16 Apr 2020 17:58:47 +0200
-Message-ID: <CAKfTPtDFD7KMcSK-2_LP-_APN2m05pWVhzKvJOVnD+Nacn846w@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] sched/topology: Define and use shortcut pointers
- for wakeup sd_flag scan
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 at 17:27, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
->
-> On 16/04/20 14:36, Vincent Guittot wrote:
-> >> Coming back to the v2 discussion on this patch
-> >>
-> >> https://lore.kernel.org/r/20200311181601.18314-10-valentin.schneider@arm.com
-> >>
-> >> SD_BALANCE_WAKE is not used in mainline anymore, so wakeups are always
-> >> fast today.
-> >>
-> >> I.e. you wouldn't need a per_cpu(sd_balance_wake, cpu) since it's always
-> >> NULL.
-> >>
-> >> I.e. want_affine logic and the 'for_each_domain(cpu, tmp)' isn't needed
-> >> anymore.
-> >>
-> >> This will dramatically simplify the code in select_task_rq_fair().
-> >>
-> >> But I guess Vincent wants to keep the functionality so we're able to
-> >> enable SD_BALANCE_WAKE on certain sd's?
-> >
-> > I looked too quickly what was done by this patch. I thought that it
-> > was adding a per_cpu pointer for all cases including the fast path
-> > with wake affine but it only skips the for_each_domain loop for the
-> > slow paths which don't need it because they are already slow.
-> >
-> > It would be better to keep the for_each_domain loop for slow paths and
-> > to use a per_cpu pointer for fast_path/wake affine. Regarding the
-> > wake_affine path, we don't really care about looping all domains and
-> > we could directly use the highest domain because wake_affine() that is
-> > used in the loop, only uses the imbalance_pct of the sched domain for
-> > wake_affine_weight() and it should not harm to use only the highest
-> > domain and then select_idle_sibling doesn't use it but the llc or
-> > asym_capacity pointer instead.
->
-> So Dietmar's pointing out that sd will always be NULL for want_affine,
-> because want_affine can only be true at wakeups and we don't have any
-> topologies with SD_BALANCE_WAKE anymore. We would still want to call
-> wake_affine() though, because that can change new_cpu.
->
-> What you are adding on top is that the only sd field used in wake_affine()
-> is the imbalance_pct, so we could take a shortcut and just go for the
-> highest domain with SD_WAKE_AFFINE; i.e. something like this:
->
-> ---
-> if (want_affine) {
->         // We can cache that at topology buildup
->         sd = highest_flag_domain(cpu, SD_WAKE_AFFINE);
+The patchset adds khugepaged selftest (anon-THP only for now), expands
+cases khugepaged can handle and switches anon-THP copy-on-write handling
+to 4k.
 
-Yes and this one should be cached at topology buildup
+Please review and consider applying.
 
->
->         if (cpumask_test_cpu(prev_cpu, sched_domain_span(sd) &&
->             cpu != prev_cpu)
->                 new_cpu = wake_affine();
->
->         // Directly go to select_idle_sibling()
->         goto sis;
-> }
->
-> // !want_affine logic here
-> ---
->
-> As for the !want_affine part, we could either keep the current domain walk
-> (IIUC this is what you are suggesting) or go for the extra cached pointers
-> I'm introducing.
->
-> Now if we are a bit bolder than that, because there are no more
-> (mainline) topologies w/ SD_BALANCE_WAKE, we could even turn the above
-> into:
->
-> ---
-> if (wake_flags & WF_TTWU) {
->         if (want_affine) {
->                 // We can cache that at topology buildup
->                 sd = highest_flag_domain(cpu, SD_WAKE_AFFINE);
->
->                 if (cpumask_test_cpu(prev_cpu, sched_domain_span(sd) &&
->                     cpu != prev_cpu)
->                         new_cpu = wake_affine();
->
->         }
->         // Directly go to select_idle_sibling()
->         goto sis;
-> }
->
-> // !want_affine logic here
-> ---
->
-> This in turns mean we could get rid of SD_BALANCE_WAKE entirely... I'm a
-> bit more reluctant to that only because the last SD_BALANCE_WAKE setter was
+v4:
+ - Rebase to v5.7-rc1;
+ - Minor adjustments based on feedback: comments/messages/whitespace
+ - Apply Reviewed/Acked/Tested-by;
+v3:
+ - Fix handling compound pages in swap cache;
+ - Rework swaped vs. referenced check;
+ - Fix refcounting for compound pages;
+ - Drop Reviewed-by/Acked-by as patchset changed non-trivially;
+ - Typos;
+v2:
+ - Fix race in compound page handling;
+ - Add one more test-case for compound page case;
+ - Rework LRU add cache draining;
+ - Typos;
 
-For now, we should probably skip the additional test above: "if
-(wake_flags & WF_TTWU) {" and keep SD_BALANCE_WAKE so we will continue
-to loop in case of !want_affine.
+Kirill A. Shutemov (8):
+  khugepaged: Add self test
+  khugepaged: Do not stop collapse if less than half PTEs are referenced
+  khugepaged: Drain all LRU caches before scanning pages
+  khugepaged: Drain LRU add pagevec after swapin
+  khugepaged: Allow to collapse a page shared across fork
+  khugepaged: Allow to collapse PTE-mapped compound pages
+  thp: Change CoW semantics for anon-THP
+  khugepaged: Introduce 'max_ptes_shared' tunable
 
-We can imagine that we might want at the end to be a bit more smart
-for SD_BALANCE_WAKE and the slow path... like with the latency nice
-proposal and latency-nice=19 as a example
+ Documentation/admin-guide/mm/transhuge.rst |   7 +
+ include/trace/events/huge_memory.h         |   3 +-
+ mm/huge_memory.c                           | 250 +-----
+ mm/khugepaged.c                            | 220 +++--
+ tools/testing/selftests/vm/Makefile        |   1 +
+ tools/testing/selftests/vm/khugepaged.c    | 982 +++++++++++++++++++++
+ 6 files changed, 1175 insertions(+), 288 deletions(-)
+ create mode 100644 tools/testing/selftests/vm/khugepaged.c
 
-> removed fairly recently, see
->   a526d466798d ("sched/topology: Remove SD_BALANCE_WAKE on asymmetric capacity systems")
+-- 
+2.26.1
+
