@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27C81ABC83
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A63B1ABB64
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501956AbgDPJOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
+        id S2502430AbgDPIfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502201AbgDPIbL (ORCPT
+        with ESMTP id S2502242AbgDPIbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:31:11 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D93C03C1AA
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:30:49 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n10so1350237pff.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:30:49 -0700 (PDT)
+        Thu, 16 Apr 2020 04:31:24 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355CAC03C1AB;
+        Thu, 16 Apr 2020 01:31:08 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a81so3813139wmf.5;
+        Thu, 16 Apr 2020 01:31:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nLKE5lsx5SwaWEyA9+AGeYv3YbiLM647KJWineLVY5w=;
-        b=E0L0gFMenYipGpqMJTyjfrUSWFiOP83B8e3kPCSBf6dL1TJCYsTK8cDGDjOS3cMT8c
-         5T2Gj0p2io9+akp03jF/IQpQyRLTmXOU9wK3o0UPXfixUJHBMr0n2dODuPdkxYf/oMza
-         Iiq22NTBYNiIpKDopNL0RIZbyyWNcaWhjkjcTYMF8IIIl99lJyhCI1x07gYmVoeZAaw3
-         Dxu9QT2uq9LwBIbfDQ86PG0HGD76QsHb/iPniqeu5e906dfIT9l6S+I2qYDHwYgvOR0O
-         YE4Go3S/pKfK5MQ4uHPzfvCkgi3maMSNqCo/Uc9curCr5Oim8d5WeXpwBNESqPKdMg9x
-         GUjQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jfrt17q5M4S5SAVVkdakw83Rj5cTfkomq3bpc03Lu9E=;
+        b=CFbFjllOBhKoFmAVsXkBQzBuRQAfDrmhFAfVIGB11rbD3zAjEQppK74PC9fnxFnMrl
+         sp2/EeMkEMZEPkJaKAPezTCzWxvNVCQxytUa+QkC+1t59d7i5I3Ft4/ciYIUyoPgOMmx
+         UiPK1SyxvMiF5/fQuHdgpj6dJ/kxBF7pqlJnwenUbEeoXzoXQDDOkD79QMrnqwADC91X
+         mAbhAkAD8NXfaYxauQUMXrLjqT8CjpZdwFVOxMjLk33tqqc1vixpmPBfeaEJadSe1cYi
+         RAtQlg/x50nnmchxxtr0K+qNEsQkfkEUxgrnt/DkUknFzWr3iZARx7zlhyFNK0Y/EZyB
+         KDIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nLKE5lsx5SwaWEyA9+AGeYv3YbiLM647KJWineLVY5w=;
-        b=QMsvdd9w2x+vkH7bcwOfjPe/qJE1VHZWLQNODlT96X4C+6TCgBLonC4xpLX3gvbTOw
-         oITtlSwos7O3m7vvuPXSilXdPQG5QcmruMgLA+hTfA+uOnImqbh1i180jBaxu5fpPGz/
-         s+lOUhvsy1C2G7HBs5+SwLwFJGBMFwd3ugsBN3B3oEMZe1p7I7zCCkke6WYLamhhV9cX
-         ydzqSviokaEq86ExL9lPQf9zvggh9n1CSCbXUZPqPKujjQB9s4fClgpYv/8Ktet9xYv3
-         Ehk3+ZdpaP2J2jyjwTGMqFykwlGg0OBFyqu+fSAezQ3oHENOM5mHOaUmYLAgqRTS01c6
-         JSDw==
-X-Gm-Message-State: AGi0PuaYYeZZe4Pml6kQyIni547G4TAekASedzONkqeRvu5eV5c5gRcw
-        avtac8eSkzdr7zn8AYtH2j4fgQ==
-X-Google-Smtp-Source: APiQypJEoAQxZEfi7kmL+uXpcDYh5L5u+UHKejPp3YAMKG7CMCn7qaBzYy4Bz3QYcqZTq1W52hetZQ==
-X-Received: by 2002:aa7:80d5:: with SMTP id a21mr12529408pfn.49.1587025849344;
-        Thu, 16 Apr 2020 01:30:49 -0700 (PDT)
-Received: from Smcdef-MBP.lan ([103.136.220.69])
-        by smtp.gmail.com with ESMTPSA id z12sm16723291pfj.144.2020.04.16.01.30.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Apr 2020 01:30:48 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] sched/cpuacct: Use __this_cpu_add() instead of this_cpu_ptr()
-Date:   Thu, 16 Apr 2020 16:29:57 +0800
-Message-Id: <20200416082957.40691-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jfrt17q5M4S5SAVVkdakw83Rj5cTfkomq3bpc03Lu9E=;
+        b=TMKknxl0MUt8yAzI4Yj7SWsQOBt2760gCbZx3zime8sxteJ7ta+PVKDfFXgC6SSx0A
+         ihRY+rw5SrL7dtp7j7oLMhqDE6ZXQGTRExcXpXdBp/Zp6vh4LMZ4GAO3MgIqyVco8EhV
+         a0RpMrhAU0oQEzQ5pc/HPT4HXsuBP9sJF+tOWc36jQxyw8NRSfAclqG2IP+IskWyGgNk
+         kt+//SgoMkqpo9en2dxKjN35woWRIwRSS3IYx1tMQyYJZ3MzfHch+NYQKWezOCpY53tj
+         KKBFlzdH5Br8j4zTKbXH12h0BZQIMD+b+TMebzZB8UIPvJ1wj+CQX3y7GUxG8FS68gRm
+         JAIw==
+X-Gm-Message-State: AGi0PubsfTdJN36ve3YLYFf9dh7Enk0Sw4z3zitBVPpXHzCYG4+nYyFE
+        cdyFgvrKGj8kYeBdlZgw+4o=
+X-Google-Smtp-Source: APiQypKSKsq45oAa/3mvfDvpWfY2V+jAcrUeSZODmwOpRthGJy4sv8r2h7IKlE30zB7Jtv03++ti6Q==
+X-Received: by 2002:a05:600c:24cf:: with SMTP id 15mr3541839wmu.94.1587025866950;
+        Thu, 16 Apr 2020 01:31:06 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id a9sm2611917wmm.38.2020.04.16.01.31.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 01:31:06 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 10:31:04 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 10/33] docs: fix broken references for ReST files that
+ moved around
+Message-ID: <20200416083104.GA29148@Red>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
+ <64773a12b4410aaf3e3be89e3ec7e34de2484eea.1586881715.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64773a12b4410aaf3e3be89e3ec7e34de2484eea.1586881715.git.mchehab+huawei@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpuacct_charge() and cpuacct_account_field() are called with
-rq->lock held, and this means preemption(and IRQs) are indeed
-disabled, so it is safe to use __this_cpu_*() to allow for better
-code-generation.
+On Tue, Apr 14, 2020 at 06:48:36PM +0200, Mauro Carvalho Chehab wrote:
+> Some broken references happened due to shifting files around
+> and ReST renames. Those can't be auto-fixed by the script,
+> so let's fix them manually.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/doc-guide/maintainer-profile.rst      | 2 +-
+>  Documentation/virt/kvm/mmu.rst                      | 2 +-
+>  Documentation/virt/kvm/review-checklist.rst         | 2 +-
+>  arch/x86/kvm/mmu/mmu.c                              | 2 +-
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c | 2 +-
+>  drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c   | 2 +-
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c | 2 +-
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c   | 2 +-
+>  drivers/media/v4l2-core/v4l2-fwnode.c               | 2 +-
+>  include/uapi/linux/kvm.h                            | 4 ++--
+>  tools/include/uapi/linux/kvm.h                      | 4 ++--
+>  11 files changed, 13 insertions(+), 13 deletions(-)
+> 
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
-Chane in v2:
-    1. Update changelog.
+For sun8i-ce
+Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 
- kernel/sched/cpuacct.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
-index 9fbb103834345..6448b0438ffb2 100644
---- a/kernel/sched/cpuacct.c
-+++ b/kernel/sched/cpuacct.c
-@@ -347,7 +347,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
- 	rcu_read_lock();
- 
- 	for (ca = task_ca(tsk); ca; ca = parent_ca(ca))
--		this_cpu_ptr(ca->cpuusage)->usages[index] += cputime;
-+		__this_cpu_add(ca->cpuusage->usages[index], cputime);
- 
- 	rcu_read_unlock();
- }
-@@ -363,7 +363,7 @@ void cpuacct_account_field(struct task_struct *tsk, int index, u64 val)
- 
- 	rcu_read_lock();
- 	for (ca = task_ca(tsk); ca != &root_cpuacct; ca = parent_ca(ca))
--		this_cpu_ptr(ca->cpustat)->cpustat[index] += val;
-+		__this_cpu_add(ca->cpustat->cpustat[index], val);
- 	rcu_read_unlock();
- }
- 
--- 
-2.11.0
-
+Thanks
