@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B1E1ABF25
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682E51ABF01
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633251AbgDPL2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506212AbgDPLQn (ORCPT
+        id S2632999AbgDPLUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:20:47 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38774 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506318AbgDPLTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:16:43 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A60C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:16:43 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id r24so7401764ljd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SMyype6pheH6p2B+meThOWdIwkgayOziZmviW73TOhc=;
-        b=G11PTYYbg1ocBkCFQdd0WZXWBNANuFHYcy3Q0hhd1bv4erB3jLCmyws8c3lC3wfILN
-         aEjQAMcNSSjZZ6VYLsP3RjLmeeQ38obVAOp2FdH9Hlkb8BMxpeq3nwMChdscaoxLphO8
-         18kcnImbDmf2F/hY8mCF7NtGP/QOU7TJwbMgnElSglmUjALRd4is/kaKoJKq40iCMbPA
-         C1QwlcoOo3YW/zqzVF6bz/vrgujFNn9QGK85RYjnFtqO4MxCkihbN9IwBEIKIAYnum09
-         8ZZmTfW3LKVQrk/WFYzTTBtn+gbVGGOmr1fFaDOez9a9KTwK5u0sO836VbnhsXxjs2/u
-         li7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SMyype6pheH6p2B+meThOWdIwkgayOziZmviW73TOhc=;
-        b=gbVWXKJ5ell7uWm4vejKsA/0itM5eLmZhQtlFJk2RCpnH4VVHeRcKunSTrIRysYXkx
-         i8nmk09YWoNbkkJa50rRQNz5OvmmCR+mjT09+gjbwfNjhcGDhfMA//lrl3A5wSzRVtRb
-         wSUGr2ouUuvTOTL+gcgnwtpAezrFXA6kvjr/Yr6lnPRAg8LBEq7uMdxcBAX15DHiuEJN
-         +EatWW7RQZqWFG2dulnqQV4bgAR7Kkf7MbN0MskNpt4cg2SH42YSAJBSSzGH53BjhLWo
-         svHvr7jKcp+PvW71/BIzQBcI3cOW1nS7M7b0LeWMHEsg9bWkm4amO2AeTHbr3/Juok8c
-         7LXg==
-X-Gm-Message-State: AGi0PuZw52fiGvxoawZAcmtduanP+pSG3Q8FN78kUhhEPIk5tEG7a/Lb
-        2H5x7/PZQmX+RpqL0MH94JAFrPBZwOL5kBFpbaG0TA==
-X-Google-Smtp-Source: APiQypJtQonKD3jh+va1+KhfBd6fpkD1BkWgrhEcoubjUXb3Sm75zbBsDipOQ9OsoADIUiMNpnQEpKxU7Wdf1AH6W6s=
-X-Received: by 2002:a05:651c:23b:: with SMTP id z27mr5910865ljn.125.1587035801960;
- Thu, 16 Apr 2020 04:16:41 -0700 (PDT)
+        Thu, 16 Apr 2020 07:19:18 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 263642A205D;
+        Thu, 16 Apr 2020 12:17:28 +0100 (BST)
+Date:   Thu, 16 Apr 2020 13:17:25 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        anders.roxell@linaro.org, andriy.shevchenko@intel.com,
+        arnd@arndb.de, brendanhiggins@google.com, cheol.yong.kim@intel.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, masonccyang@mxic.com.tw,
+        miquel.raynal@bootlin.com, piotrs@cadence.com,
+        qi-ming.wu@intel.com, richard@nod.at, robh+dt@kernel.org,
+        tglx@linutronix.de, vigneshr@ti.com
+Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200416131725.51259573@collabora.com>
+In-Reply-To: <d3e137fa-54a0-b4ec-eb24-3984eab2a247@linux.intel.com>
+References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
+        <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
+        <20200416113822.2ef326cb@collabora.com>
+        <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
+        <20200416122619.2c481792@collabora.com>
+        <d3e137fa-54a0-b4ec-eb24-3984eab2a247@linux.intel.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200414003726.25347-1-ansuelsmth@gmail.com>
-In-Reply-To: <20200414003726.25347-1-ansuelsmth@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Apr 2020 13:16:30 +0200
-Message-ID: <CACRpkdY-t5GPdUg4uf-1W6VXBcgSL5MSPe46Aj93hPSdWDbwCw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: qcom: fix wrong write in update_dual_edge
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 2:37 AM Ansuel Smith <ansuelsmth@gmail.com> wrote:
+On Thu, 16 Apr 2020 18:40:53 +0800
+"Ramuthevar, Vadivel MuruganX"
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
 
-> Fix a typo in the readl/writel accessor conversion where val is used
-> instead of pol changing the behavior of the original code.
->
-> Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
->
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> >>> we'll be happy to have one more of the existing driver converted to  
+> >>> ->exec_op() ;-).  
+> >> I have completely adapted to ->exec_op() hook up to replace the legacy
+> >> call-back.  
+> > I suspect porting what you've done to the xway driver shouldn't be too
+> > complicated.  
+> Not ported from xway_nand.c driver , we have developed from the scratch 
+> to make it work on
+> Intel LGM SoC , it's new x86 ATOM based SoC, IP itself completely 
+> different and most of the registers won't match.
+> if we port then it would be ugly and also what are the problem may occur 
+> we do not know.
 
-Patch applied for fixes and tagged for stable with Bjorn's ACK.
-
-Yours,
-Linus Walleij
+Sorry but IMO they look similar enough to try to merge them.
