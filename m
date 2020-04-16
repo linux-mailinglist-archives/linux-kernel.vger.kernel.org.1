@@ -2,102 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659791ACC5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9B71ACC60
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895927AbgDPP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:58:58 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:41347 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895850AbgDPP6w (ORCPT
+        id S2897280AbgDPP7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2896089AbgDPP7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:58:52 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MNso2-1jaCjx2SnQ-00OGie; Thu, 16 Apr 2020 17:58:49 +0200
-Received: by mail-qk1-f170.google.com with SMTP id o19so14496656qkk.5;
-        Thu, 16 Apr 2020 08:58:49 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZ2KdLVAVbdkKvggkA12EKvnomfG7hGlLVN8SvY09KMHhQMhu5G
-        Fk9PEpVHam3/+dhMMl3BELWq1nn2ymFMSscbLAI=
-X-Google-Smtp-Source: APiQypKGrakVFJpHU6+2/9ubHFZSVsfORqHq+Dek4jgUuB+FQt0sMX/hFlCLPEJjO3Byfz+ywXPktI2/F+cmyK0/LA8=
-X-Received: by 2002:a37:851:: with SMTP id 78mr32467282qki.352.1587052728173;
- Thu, 16 Apr 2020 08:58:48 -0700 (PDT)
+        Thu, 16 Apr 2020 11:59:00 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B5FC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:59:00 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t199so13578171oif.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RKkzesvk5cYfKkW+cuVfyJJ4B3TfqgCX4qySMMGKGlg=;
+        b=MGeTnGvI/2k6bxRBviIyd1LSkMZNOawQBC63cTOw3eNT0E2cqiGkqP5WM1LyY9cMCd
+         O8yJOXkdTY9vlwgcQZEdCBZkjsiMs3JQEKv/w07/loPznlTIv0qQfB+83EaslJL1jHkk
+         QH0H/Oka1VIrsQPXERMd/sv/kAn1gX1q4CJAHf8eRMVOIBks6PtE+Pks7rIMGXpx+kdr
+         gm+GETzmhGS5ichB041ZwaGZFAxNB4gCONZf2UN1wWrfDm+u6Jo6rrQ3HgGJaQNta4yz
+         Oyg+mE8xJ43OI3nc5YKILs3NLr2uH1ld2+XpCXKn0sHlE3V5pdNa7vaex7HxtTiNbdU5
+         YI8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RKkzesvk5cYfKkW+cuVfyJJ4B3TfqgCX4qySMMGKGlg=;
+        b=KjcAGPdSFXh9/fKvaNf/GSsgsVjpp9tOTEJDXTRhFn6R1WcEYEqBW+ulTDbVAYbTve
+         +9AYP1o4/MChVukN36+iNErV6EcTC/Uc71r3S9qvVgj3oVgAzaeu+9lOvfbk3bLlUzD5
+         6wGT8TmBEZTNVM+YTLvIB7qC615fHh7VqoKIV7Ar700VC6JyUtrdvMj6Ytgh1IxTAbaG
+         52Lq/fdMxwcoe2wkuGaTpwTb63OzbViwAMaVUg7a3FpzMzXhV/pGzO3H0vv6rHOslwhA
+         LjUW8NGB11Z6Fe4nS5DbPjSXKtaf5UKRx/IFqh+YIP9kZJY7XLBWukZ60QitCIggz1M8
+         KTug==
+X-Gm-Message-State: AGi0PuaV1QQ8u/s11wneXWJLHhhjCSJ7qFjWu2t1Ud7jAU6DDRPBgyQS
+        7Mv7HpahKh1xKLIBSIUWEAhn3YD2AXUI+6mGaNmaLQ==
+X-Google-Smtp-Source: APiQypL37Ygn1cZS2h8rp5duKkw4wQjuaqjVXMf73uWNup7h9A6Akm1TUOoiCtGtBN76Q4Q8+Bnc9jARMpQqUlQlZIA=
+X-Received: by 2002:aca:56c2:: with SMTP id k185mr3169314oib.141.1587052739351;
+ Thu, 16 Apr 2020 08:58:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
- <20200414152312.GF5100@ziepe.ca> <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
- <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
- <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
- <834c7606743424c64951dd2193ca15e29799bf18.camel@mellanox.com>
- <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com>
- <874ktj4tvn.fsf@intel.com> <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
- <20200416145235.GR5100@ziepe.ca>
-In-Reply-To: <20200416145235.GR5100@ziepe.ca>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 16 Apr 2020 17:58:31 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3HwFYKfZftm2fWE=Lzi486rXpMBwjy1F4oohYU2+o7-g@mail.gmail.com>
-Message-ID: <CAK8P3a3HwFYKfZftm2fWE=Lzi486rXpMBwjy1F4oohYU2+o7-g@mail.gmail.com>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+References: <20200415210512.805-1-valentin.schneider@arm.com>
+ <20200415210512.805-10-valentin.schneider@arm.com> <CAKfTPtBDGzrvG=YhjBZBEgfx5EtM-rTC-dWX5phqh4bOY5XqgA@mail.gmail.com>
+ <jhj4ktjpw2z.mognet@arm.com> <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com>
+ <CAKfTPtD5x_NQ1KfHhTiAR3eNA85+k13nfSR-9_PKLp6FgVu08A@mail.gmail.com> <jhjv9lz78nv.mognet@arm.com>
+In-Reply-To: <jhjv9lz78nv.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 16 Apr 2020 17:58:47 +0200
+Message-ID: <CAKfTPtDFD7KMcSK-2_LP-_APN2m05pWVhzKvJOVnD+Nacn846w@mail.gmail.com>
+Subject: Re: [PATCH v3 9/9] sched/topology: Define and use shortcut pointers
+ for wakeup sd_flag scan
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:NvuMKkUOlsrp2prjXUqiJgwl2fFGba1tjbVPgdJTXH3/mhN0MMO
- V1nblPlClntAmE57yT9m+FF7dqNXEKFVfWA1yfdb6htAepBEPga8nvSndR5RyyuJ0SOgU3a
- QfXMeh6PgxUfxNwK/RiPHCUwXPvl83ppSySAWgOh356/NJb2EEBRIuhmfA8++gpR3FWDhjf
- +ipZITRcVMeuNVkejH/PA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nLLF9c2uOC4=:CO3B1+y57PnWI3KAQsNtp+
- XOVUMAJLv1uP+nnwoMyOUjWAMxhCA6kUHH7SUVTnLLwkWYun6Il50xBEv34zL2Pb8WHHTGI7T
- KfT2u4SNrBxbBee4PnMm40NQ9ECxnvLlIulMqwAvSgEk1DuxD5reTyl3t1lzxx9EISnrshAXm
- zglvRnqi7s3epUZv4BqyE7xXeQA08X27PykRNW3RRioJR6KiGmdmSZOal6A6x2dudQtzITvRJ
- TSsGr3s6vQJbaMOzjFeLsrA7TDOdOeSo1kodMSS1grC3HuUUcmrDHwPp8HFTk13vaSl2vOaKt
- 9Fn6p8mFjguKEDBuECGUV2yHLUhUHRd59j/oVymQC6d5TWMgmIYQ6Hn+vdoVovyQcxzQ/aLGO
- 4LsMntB1DvHXkkeN/vfkjbf4LnvXwe4CGneR0xG2PSa9m81qHrN1cMPYCBH6F2sLz+IJbYX/q
- nbtMESTGcTyvqvPye/VfuXNBj2UD83hkLtAE2n2o+My9LfSXib/AdERcqp1Xp9YzN/zqxEyF/
- NWRLC47HtdeXVdeCr631fjjqSZZK7wYG6kb/QO1p5FZKWhrvoTr/Ehtvpe/5UdUrWSZ7hUJ1x
- YTOC3D2zs3dNhYmNwlO5qNUv6Nia+657JxMI6xtbpxastY9GwIQYixo8NoEvjcnr218KwnY9Y
- fXk/dLaeKc862FyZie5AQfE4Bfp2WT9FV7cRG6hH0QjPK4mPGXto/QzH60dNsl43z+0OinG4H
- gAB32EphIxXK56OMN4KW/RI6RYOPkcDnjM/pTu+XibtSbRtDYFYJyOellq8Kx/mS8jT/8JyaW
- Av3FXArCl/gJb7EVEeywqp9NPDw1Z2n/lzxFR28MPRyqkMehXU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 4:52 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> On Thu, Apr 16, 2020 at 02:38:50PM +0200, Arnd Bergmann wrote:
-> > On Thu, Apr 16, 2020 at 12:17 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> > > Of course, this is all just talk until someone(tm) posts a patch
-> > > actually making the change. I've looked at the kconfig tool sources
-> > > before; not going to make the same mistake again.
-> >
-> > Right. OTOH whoever implements it gets to pick the color of the
-> > bikeshed. ;-)
+On Thu, 16 Apr 2020 at 17:27, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
 >
-> I hope someone takes it up, especially now that imply, which
-> apparently used to do this, doesn't any more :)
+>
+> On 16/04/20 14:36, Vincent Guittot wrote:
+> >> Coming back to the v2 discussion on this patch
+> >>
+> >> https://lore.kernel.org/r/20200311181601.18314-10-valentin.schneider@arm.com
+> >>
+> >> SD_BALANCE_WAKE is not used in mainline anymore, so wakeups are always
+> >> fast today.
+> >>
+> >> I.e. you wouldn't need a per_cpu(sd_balance_wake, cpu) since it's always
+> >> NULL.
+> >>
+> >> I.e. want_affine logic and the 'for_each_domain(cpu, tmp)' isn't needed
+> >> anymore.
+> >>
+> >> This will dramatically simplify the code in select_task_rq_fair().
+> >>
+> >> But I guess Vincent wants to keep the functionality so we're able to
+> >> enable SD_BALANCE_WAKE on certain sd's?
+> >
+> > I looked too quickly what was done by this patch. I thought that it
+> > was adding a per_cpu pointer for all cases including the fast path
+> > with wake affine but it only skips the for_each_domain loop for the
+> > slow paths which don't need it because they are already slow.
+> >
+> > It would be better to keep the for_each_domain loop for slow paths and
+> > to use a per_cpu pointer for fast_path/wake affine. Regarding the
+> > wake_affine path, we don't really care about looping all domains and
+> > we could directly use the highest domain because wake_affine() that is
+> > used in the loop, only uses the imbalance_pct of the sched domain for
+> > wake_affine_weight() and it should not harm to use only the highest
+> > domain and then select_idle_sibling doesn't use it but the llc or
+> > asym_capacity pointer instead.
+>
+> So Dietmar's pointing out that sd will always be NULL for want_affine,
+> because want_affine can only be true at wakeups and we don't have any
+> topologies with SD_BALANCE_WAKE anymore. We would still want to call
+> wake_affine() though, because that can change new_cpu.
+>
+> What you are adding on top is that the only sd field used in wake_affine()
+> is the imbalance_pct, so we could take a shortcut and just go for the
+> highest domain with SD_WAKE_AFFINE; i.e. something like this:
+>
+> ---
+> if (want_affine) {
+>         // We can cache that at topology buildup
+>         sd = highest_flag_domain(cpu, SD_WAKE_AFFINE);
 
-The old 'imply' was something completely different, it was more of a
-'try to select if you can so we can assume it's there, but give up
-if it can only be a module and we need it to be built-in".
+Yes and this one should be cached at topology buildup
 
-        Arnd
+>
+>         if (cpumask_test_cpu(prev_cpu, sched_domain_span(sd) &&
+>             cpu != prev_cpu)
+>                 new_cpu = wake_affine();
+>
+>         // Directly go to select_idle_sibling()
+>         goto sis;
+> }
+>
+> // !want_affine logic here
+> ---
+>
+> As for the !want_affine part, we could either keep the current domain walk
+> (IIUC this is what you are suggesting) or go for the extra cached pointers
+> I'm introducing.
+>
+> Now if we are a bit bolder than that, because there are no more
+> (mainline) topologies w/ SD_BALANCE_WAKE, we could even turn the above
+> into:
+>
+> ---
+> if (wake_flags & WF_TTWU) {
+>         if (want_affine) {
+>                 // We can cache that at topology buildup
+>                 sd = highest_flag_domain(cpu, SD_WAKE_AFFINE);
+>
+>                 if (cpumask_test_cpu(prev_cpu, sched_domain_span(sd) &&
+>                     cpu != prev_cpu)
+>                         new_cpu = wake_affine();
+>
+>         }
+>         // Directly go to select_idle_sibling()
+>         goto sis;
+> }
+>
+> // !want_affine logic here
+> ---
+>
+> This in turns mean we could get rid of SD_BALANCE_WAKE entirely... I'm a
+> bit more reluctant to that only because the last SD_BALANCE_WAKE setter was
+
+For now, we should probably skip the additional test above: "if
+(wake_flags & WF_TTWU) {" and keep SD_BALANCE_WAKE so we will continue
+to loop in case of !want_affine.
+
+We can imagine that we might want at the end to be a bit more smart
+for SD_BALANCE_WAKE and the slow path... like with the latency nice
+proposal and latency-nice=19 as a example
+
+> removed fairly recently, see
+>   a526d466798d ("sched/topology: Remove SD_BALANCE_WAKE on asymmetric capacity systems")
