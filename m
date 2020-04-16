@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707B31AC70D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4111B1AC71F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388830AbgDPOsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2394595AbgDPOsS (ORCPT
+        id S2394769AbgDPOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:50:07 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:28534 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394766AbgDPOtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:48:18 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5409BC061A0C;
-        Thu, 16 Apr 2020 07:48:18 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id o10so16537703qtr.6;
-        Thu, 16 Apr 2020 07:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hqU3RukC+Wcy1beI5mHwFrne2ji8Zyuh2QqLhWnxtHQ=;
-        b=fTo8UcmsXD7A4NEtK3NfBs49RNNLGi8bxg8SWycx2D/czAgWIQTTGo/VvyAmQ+0fYs
-         kx+EfbJ7RyO56KbIZfrC5aCoJdh6TyLnlrfjp0NCPwAw6S57AU11ThPuH9nJQCdmG3H5
-         dno7C3cer5UF4qIRAtg6tbFzFUPOZW7qfQntg6Cfe8S44N+OOUjhpylckOpPTPsxmKlX
-         jiFwa3EbZgVlr/ngN8+zDaANiyc3pwcm5y4QmI055bj8g5IB7mHGaE7B09V3keALJFfJ
-         7pUq8YICJvXL4P4/T4M2D19LkyOmkaPtzLHVqgwuqOB3dNezlTF8uWqEf/cJy+97EaNa
-         xG9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hqU3RukC+Wcy1beI5mHwFrne2ji8Zyuh2QqLhWnxtHQ=;
-        b=MrWrKXKIj0jt2d83c9a7t8vMOBCjbUnDzk3VnrGXzaGlbI5+ZAi7lVr5zRvSlqQXZk
-         /V6LswMkUjbWaRxk82wyQv2AwvgcZF8XZMd5lc3eTDjTVSbHe11ji9UgbLzYpsiOh4Ma
-         o73aWBKuLJZm1x37V2Jz087ZwtxJMdABEhy5nnneGexdlXsufKz1BkpSmvHlTiYTnx9l
-         96hWlTGUSBQNyEtWifRBl5MKB5PyDbRn33YvPk9hvjj1/gu3+RFlbyx8WmEM+AaZ7ZnQ
-         bqGAt4tIvKMVxvOpzCsf9mjtQOP6LY6B+yDFD5QsilRyq/YOgMZnifb4wYG0dM28Jes+
-         GWNw==
-X-Gm-Message-State: AGi0PuZhqkMBoHLujRx4R3rOAs34zbzzymbwyVt5mqd4k1KLHbWhoZav
-        pgIb0ahtKcyVWAP0xwa8T0g=
-X-Google-Smtp-Source: APiQypJ9bGDSqwPsZ0XN/Iu2gtQIYZ2l4vmi9YmWye0Bcsk+dfXSmqg2MkX3IQZo0l71xMCmebXclg==
-X-Received: by 2002:aed:3bf2:: with SMTP id s47mr15097558qte.126.1587048497317;
-        Thu, 16 Apr 2020 07:48:17 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o7sm2584717qkh.76.2020.04.16.07.48.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 07:48:16 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 16 Apr 2020 10:48:15 -0400
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] efi/x86: Check for bad relocations
-Message-ID: <20200416144815.GA3267283@rani.riverdale.lan>
-References: <20200415221520.2692512-1-nivedita@alum.mit.edu>
- <20200415221520.2692512-6-nivedita@alum.mit.edu>
- <CAMj1kXFMMeYUPirY10JJfs31Z5GnHvUe=gLgG6SUJY9uWj588g@mail.gmail.com>
+        Thu, 16 Apr 2020 10:49:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587048551; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Skl7Q5RWa0/wmSos/4aZNHd6qEL+q77C8ZcG2EaOzNY=; b=t5PWNeSy1HiRcwnkPQ8StRRLWCecKOXc5xpoKO4T1btqIycgKAr7gs7fr8EfUGFrQpWlU99L
+ sqjkWItjSwz3VjAszXXlNEjCXyXeR1UWpmh/gGkIsFEQTkXQMQUdyCJMHnsfbDRussg7I56/
+ Q4ARwqHJG+OSKY9Bb4kHlsE4aBM=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e987055.7ff69210fa08-smtp-out-n02;
+ Thu, 16 Apr 2020 14:48:53 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5BFF7C432C2; Thu, 16 Apr 2020 14:48:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from [192.168.0.105] (unknown [183.83.68.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09658C433CB;
+        Thu, 16 Apr 2020 14:48:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 09658C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH V1 2/4] mmc: sdhci-msm: Enable MMC_CAP_NEED_RSP_BUSY host
+ capability
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>
+References: <1586706808-27337-1-git-send-email-vbadigan@codeaurora.org>
+ <1586706808-27337-3-git-send-email-vbadigan@codeaurora.org>
+ <CAPDyKFobBGDYMGmkpTcmKVrnT7MywM5=xaOx86f91ay6c7DUWw@mail.gmail.com>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <abe9cee2-dce4-c887-cece-5a321e4852bd@codeaurora.org>
+Date:   Thu, 16 Apr 2020 20:18:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFMMeYUPirY10JJfs31Z5GnHvUe=gLgG6SUJY9uWj588g@mail.gmail.com>
+In-Reply-To: <CAPDyKFobBGDYMGmkpTcmKVrnT7MywM5=xaOx86f91ay6c7DUWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 09:38:36AM +0200, Ard Biesheuvel wrote:
-> On Thu, 16 Apr 2020 at 00:15, Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > Add relocation checking for x86 as well to catch non-PC-relative
-> > relocations that require runtime processing, since the EFI stub does not
-> > do any runtime relocation processing.
-> >
-> > This will catch, for example, data relocations created by static
-> > initializers of pointers.
-> >
-> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > ---
-> >  drivers/firmware/efi/libstub/Makefile | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> > index 0bb2916eb12b..2aff59812a54 100644
-> > --- a/drivers/firmware/efi/libstub/Makefile
-> > +++ b/drivers/firmware/efi/libstub/Makefile
-> > @@ -96,6 +96,8 @@ STUBCOPY_RELOC-$(CONFIG_ARM)  := R_ARM_ABS
-> >  # .bss section here so it's easy to pick out in the linker script.
-> >  #
-> >  STUBCOPY_FLAGS-$(CONFIG_X86)   += --rename-section .bss=.bss.efistub,load,alloc
-> > +STUBCOPY_RELOC-$(CONFIG_X86_32) := 'R_X86_32_(8|16|32)'
-> 
-> This should be R_386_xxx
+Hi Ulf,
 
-Oops. I tested 64-bit but not 32-bit. I'll fix.
+On 4/16/2020 5:46 PM, Ulf Hansson wrote:
+> On Sun, 12 Apr 2020 at 17:54, Veerabhadrarao Badiganti
+> <vbadigan@codeaurora.org> wrote:
+>> sdhci-msm controller requires the R1B response for commands that
+>> has this response associated with them.
+>>
+>> So enable MMC_CAP_NEED_RSP_BUSY capability.
+> I assume this potentially should be considered as fix and tagged for stable?
+Yes Stable flag can be applied to this.
 
-> 
-> > +STUBCOPY_RELOC-$(CONFIG_X86_64) := 'R_X86_64_(8|16|32|32S|64)'
-> >
-> 
-> ... and in general, I think we only need the native pointer sized ones, so
-> 
-> R_386_32
-> R_X86_64_64
+Patch with MMC_CAP_WAIT_WHILE_BUSY cap also needed besides this.
+Shall I push V2 with stable flag?
 
-Ok.
+> Another question, if there is there an upper limit of the busy timeout
+> in the HW (cmd->busy_timeout) or does the driver use a software
+> timeout that is adjustable?
 
-> 
-> >  $(obj)/%.stub.o: $(obj)/%.o FORCE
-> >         $(call if_changed,stubcopy)
-> > @@ -107,16 +109,14 @@ $(obj)/%.stub.o: $(obj)/%.o FORCE
-> >  # this time, use objcopy and leave all sections in place.
-> >  #
-> >
-> > -cmd_stubrelocs_check-y = /bin/true
-> > -
-> > -cmd_stubrelocs_check-$(CONFIG_EFI_ARMSTUB) =                           \
-> > +cmd_stubrelocs_check =                                                 \
-> >         $(STRIP) --strip-debug -o $@ $<;                                \
-> > -       if $(OBJDUMP) -r $@ | grep $(STUBCOPY_RELOC-y); then            \
-> > +       if $(OBJDUMP) -r $@ | grep -E $(STUBCOPY_RELOC-y); then         \
-> 
-> ... which means we don't need to -E either
-> 
-> >                 echo "$@: absolute symbol references not allowed in the EFI stub" >&2; \
-> >                 /bin/false;                                             \
-> >         fi
-> >
-> >  quiet_cmd_stubcopy = STUBCPY $@
-> >        cmd_stubcopy =                                                   \
-> > -       $(cmd_stubrelocs_check-y);                                      \
-> > +       $(cmd_stubrelocs_check);                                        \
-> >         $(OBJCOPY) $(STUBCOPY_FLAGS-y) $< $@
-> > --
-> > 2.24.1
-> >
-> 
-> Could we fold this into the previous x86 patch, and drop the one that
-> splits off the relocation check from stubcpy?
+The max supported h.w busy timeout value on qcom h/w 21sec.
 
-Will do.
+> Kind regards
+> Uffe
+>
+>> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+>> ---
+>>   drivers/mmc/host/sdhci-msm.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+>> index 013dcea..d826e9b 100644
+>> --- a/drivers/mmc/host/sdhci-msm.c
+>> +++ b/drivers/mmc/host/sdhci-msm.c
+>> @@ -2088,6 +2088,7 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>>          }
+>>
+>>          msm_host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>> +       msm_host->mmc->caps |= MMC_CAP_NEED_RSP_BUSY;
+>>
+>>          pm_runtime_get_noresume(&pdev->dev);
+>>          pm_runtime_set_active(&pdev->dev);
+>> --
+>> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
