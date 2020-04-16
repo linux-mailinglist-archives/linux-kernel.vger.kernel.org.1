@@ -2,125 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3631AB68A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6C61AB682
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391858AbgDPEMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 00:12:00 -0400
-Received: from cmta19.telus.net ([209.171.16.92]:55853 "EHLO cmta19.telus.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389455AbgDPEL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 00:11:57 -0400
-X-Greylist: delayed 494 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Apr 2020 00:11:56 EDT
-Received: from dougxps ([173.180.45.4])
-        by cmsmtp with SMTP
-        id OvkUjbfUfFblkOvkWj2yjM; Wed, 15 Apr 2020 22:03:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
-        t=1587009817; bh=Zn1xtELv6JCY8tNYhmpOgWYNjoqTG3j5w3+geDPacPc=;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date;
-        b=gEkXV0oHPIHN9wUtxHnAZFKw5C+A4TiIMnFMCv0gmuy3crm+tB9x5JhCCnNuaGjYO
-         635oFhrfzyr90AMDrpsOWBFPSr7V1LVbclQFNRZN+LB0DOQY+ld22MQ+s9UYPzwgdi
-         ehP4B68C3nveG8AbojtKRmJb1dKocmRvHHda8pCUxPitw+3GdKLCALI3ovKeX9NrEQ
-         xOukJhylGcjjwepwzrlFoFRogWakDAQnhnuAorlmpRceSrUB8A9cVXnAfEXDbjkEUl
-         lxPXEnzOqGzLLMqPxWNC/dETuM/vDhxgolwqTDm3fyFPE6NEHMhXk5BoALci2QCkAk
-         UwRBd6mDBeRJQ==
-X-Telus-Authed: none
-X-Authority-Analysis: v=2.3 cv=BNTNU2YG c=1 sm=1 tr=0
- a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
- a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19
- a=kj9zAlcOel0A:10 a=80HlKv23USs_H_yaKB0A:9 a=CjuIK1q_8ugA:10
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Chen Yu'" <yu.c.chen@intel.com>
-Cc:     "'Len Brown'" <lenb@kernel.org>,
-        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-References: <cover.1586782089.git.yu.c.chen@intel.com> <db96fd31afd0ff65e4041665293b96c984e675bc.1586782089.git.yu.c.chen@intel.com>
-In-Reply-To: <db96fd31afd0ff65e4041665293b96c984e675bc.1586782089.git.yu.c.chen@intel.com>
-Subject: RE: [PATCH 2/3][v2] tools/power turbostat: Introduce functions to accumulate RAPL consumption
-Date:   Wed, 15 Apr 2020 21:03:34 -0700
-Message-ID: <001901d613a4$010e0a70$032a1f50$@net>
+        id S1726460AbgDPEH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 00:07:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24243 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726409AbgDPEHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 00:07:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587010070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OTMaR92SihjV5ChuxWQeel8tadAmxm943VhVpwb3Ti0=;
+        b=NxyQqYmpAqE6rAjeeEtC3AGYqvBD1Z/7vAK+uIOzRDKXBzLXrfcu3u1llbA+hFEfNON6vq
+        9W5cJnBcAom54uPiYrNSxsfR3a1qqYCaLdG+ifang6JT7BSQgHxTwjYG0Uzuzc+FSFtGRy
+        q+c/Mk51ck3BC5+vgObHfgB7LKTwTuA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-7eV2h5M0OHOPzkEfEcYyJw-1; Thu, 16 Apr 2020 00:07:44 -0400
+X-MC-Unique: 7eV2h5M0OHOPzkEfEcYyJw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67ACC800D5C;
+        Thu, 16 Apr 2020 04:07:13 +0000 (UTC)
+Received: from [10.72.13.240] (ovpn-13-240.pek2.redhat.com [10.72.13.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 480FFD7664;
+        Thu, 16 Apr 2020 04:07:07 +0000 (UTC)
+Subject: Re: linux-next: Tree for Apr 15 (vdpa)
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org
+References: <20200415152240.2422e06c@canb.auug.org.au>
+ <620e1646-5899-a077-b9de-95443887364d@infradead.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <33e4922f-d2b5-f3fa-4d32-a5db5a177238@redhat.com>
+Date:   Thu, 16 Apr 2020 12:07:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Office Outlook 12.0
-Content-Language: en-ca
-Thread-Index: AdYSXDnMXkJ5RB5zStyDB6tksB289gBRJlyA
-X-CMAE-Envelope: MS4wfBOnqG2ci47ZFLMGWqetE1328PnfGu28WGOKFsABayPB9upiYSGVZXppBbxXWifzyY+GYDvLMBtjnkN8OX/QvkqW+klj583SvoDZNlFanQxvpH6o9pU6
- 0vtzr/HnF2Mc/L5+m1g/8PjJWTsYCxu/+YDOqVXJGCpDdm751DS5xLnVQDcJ3UXtCtAWXcXWEFcfjFQYACxEvT9czTHQcili5C6oU3iJVd4H9ojJLwiqHV+6
- LNm+PLEpByx0jDjcOMzt5Tc9/8pWqnaS4WEzdT0hx9I4XQRM0jTTNPVvdnEpIhT/
+In-Reply-To: <620e1646-5899-a077-b9de-95443887364d@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020.04.15 05:57 Chen Yu wrote:
 
-...
+On 2020/4/16 =E4=B8=8A=E5=8D=8812:16, Randy Dunlap wrote:
+> On 4/14/20 10:22 PM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Changes since 20200414:
+>>
+> on x86_64:
+>
+> ERROR: modpost: "vringh_set_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim.ko] =
+undefined!
+> ERROR: modpost: "vringh_init_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim.ko]=
+ undefined!
+> ERROR: modpost: "vringh_iov_push_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim=
+.ko] undefined!
+> ERROR: modpost: "vringh_iov_pull_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim=
+.ko] undefined!
+> ERROR: modpost: "vringh_complete_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim=
+.ko] undefined!
+> ERROR: modpost: "vringh_getdesc_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim.=
+ko] undefined!
+>
+>
+> Full randconfig file is attached.
+>
 
-> v2: According to Len's suggestion:
->    1. Enable the accumulated RAPL mechanism by default.
+The config has
 
-I am not a fan of this, but O.K.
+CONFIG_VHOST_IOTLB=3Dm
+CONFIG_VHOST_RING=3Dy
 
->    2. Re-use the rapl_joule_counter_range to represent the
->       the timeout of periodical timer.
+But we don't select VHOST_IOTLB in VHOST_RING after commit=20
+e6faeaa128417("vhost: drop vring dependency on iotlb"). Which seems wrong=
+.
 
-No, please no. It is too easy to still have an overflow.
-
-...
-> +	/*
-> +	 * A wraparound time is calculated early.
-> +	 */
-> +	its.it_interval.tv_sec = rapl_joule_counter_range;
-
-Would this be o.K.?
-
-+	its.it_interval.tv_sec = rapl_joule_counter_range / 2;
-
-> +	its.it_interval.tv_nsec = 0;
-
-The way it was sent, this patch set does not work.
-It still overflows.
-
-Example, sample time calculated to ensure overflow:
-
-Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
-100.00  3500    3592125 80      9.72    0.12
-100.00  3500    3587391 79      9.77    0.12
-
-Actual package watts was around 65.
-
-However, if this additional patch is applied (I only fixed one of them):
-
-doug@s18:~/temp-k-git/linux/tools/power/x86/turbostat$ git diff
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 29fc4069f467..4d72d9be5209 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -1350,7 +1350,8 @@ delta_package(struct pkg_data *new, struct pkg_data *old)
-
-        old->gfx_mhz = new->gfx_mhz;
-
--       DELTA_WRAP32(new->energy_pkg, old->energy_pkg);
-+/*     DELTA_WRAP32(new->energy_pkg, old->energy_pkg);  */
-+       old->energy_pkg = new->energy_pkg - old->energy_pkg;
-        DELTA_WRAP32(new->energy_cores, old->energy_cores);
-        DELTA_WRAP32(new->energy_gfx, old->energy_gfx);
-        DELTA_WRAP32(new->energy_dram, old->energy_dram);
-
-Then it seems to work.
-
-Example:
-
-doug@s15:~/temp-turbostat$ sudo ./turbostat --Summary --show Busy%,Bzy_MHz,PkgTmp,PkgWatt,GFXWatt,IRQ --interval 1200
-...
-RAPL: 690 sec. Joule Counter Range, at 95 Watts
-...
-Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
-100.00  3500    3592328 80      64.32   0.12
-100.00  3500    3595195 79      64.37   0.12
-
-... Doug
-
+Thanks
 
