@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC961AC5B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819851AC452
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394070AbgDPOZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:25:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44968 "EHLO mail.kernel.org"
+        id S2441877AbgDPN5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:57:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506765AbgDPN5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:57:52 -0400
+        id S2897946AbgDPNjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:39:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E704420786;
-        Thu, 16 Apr 2020 13:57:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A054420732;
+        Thu, 16 Apr 2020 13:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045471;
-        bh=HMkyFOAwE2LMU7wi/koqtjzzkjzWeV+5+pYzeCTOIaQ=;
+        s=default; t=1587044363;
+        bh=1m5wxyivcW2j67TdFd8cmYte2yfupQ9BTC223xGt5FI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=joNl7O6tuJdzOQ3QsL1OhLppT1K5W/ZG8Y5312N3tVSoIU47xW9V4QHF+swZQypma
-         xG8oCPqYYQr8HaazJ+alE55NQdkcV/f2IzA7osW6LLRyMBKNBAha9k0pu/vDmpsDnr
-         quTNba2gIGSvVBMfUd/9uyCwfj+lj0OtPc/Qbl8s=
+        b=HwiSjph2m+bnL14vhGpm5dz0zPVdMvdA008ttRygFuRd/uKK0/bQJnc4NNtIuV2rb
+         zSDzfJ8j1HhKIrCI2glSdiO9q9ebUFq+5bsLFYqp2rOzDY6rTz1xkqZ5HXoVVCXEW5
+         Kl1TqjeLSRVZ2L3NV0h1aFB3p2+3UVAHMbSWVSTQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.6 149/254] btrfs: fix btrfs_calc_reclaim_metadata_size calculation
+        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.5 187/257] dm clone metadata: Fix return type of dm_clone_nr_of_hydrated_regions()
 Date:   Thu, 16 Apr 2020 15:23:58 +0200
-Message-Id: <20200416131345.212451956@linuxfoundation.org>
+Message-Id: <20200416131349.658837141@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,122 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Nikos Tsironis <ntsironis@arrikto.com>
 
-commit fa121a26b2ceabce613e0b4cfc7498cfde73fe8d upstream.
+commit 81d5553d1288c2ec0390f02f84d71ca0f0f9f137 upstream.
 
-I noticed while running my snapshot torture test that we were getting a
-lot of metadata chunks allocated with very little actually used.
-Digging into this we would commit the transaction, still not have enough
-space, and then force a chunk allocation.
+dm_clone_nr_of_hydrated_regions() returns the number of regions that
+have been hydrated so far. In order to do so it employs bitmap_weight().
 
-I noticed that we were barely flushing any delalloc at all, despite the
-fact that we had around 13gib of outstanding delalloc reservations.  It
-turns out this is because of our btrfs_calc_reclaim_metadata_size()
-calculation.  It _only_ takes into account the outstanding ticket sizes,
-which isn't the whole story.  In this particular workload we're slowly
-filling up the disk, which means our overcommit space will suddenly
-become a lot less, and our outstanding reservations will be well more
-than what we can handle.  However we are only flushing based on our
-ticket size, which is much less than we need to actually reclaim.
+Until now, the return type of dm_clone_nr_of_hydrated_regions() was
+unsigned long.
 
-So fix btrfs_calc_reclaim_metadata_size() to take into account the
-overage in the case that we've gotten less available space suddenly.
-This makes it so we attempt to reclaim a lot more delalloc space, which
-allows us to make our reservations and we no longer are allocating a
-bunch of needless metadata chunks.
+Because bitmap_weight() returns an int, in case BITS_PER_LONG == 64 and
+the return value of bitmap_weight() is 2^31 (the maximum allowed number
+of regions for a device), the result is sign extended from 32 bits to 64
+bits and an incorrect value is displayed, in the status output of
+dm-clone, as the number of hydrated regions.
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fix this by having dm_clone_nr_of_hydrated_regions() return an unsigned
+int.
+
+Fixes: 7431b7835f55 ("dm: add clone target")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/space-info.c |   43 ++++++++++++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 9 deletions(-)
+ drivers/md/dm-clone-metadata.c |    2 +-
+ drivers/md/dm-clone-metadata.h |    2 +-
+ drivers/md/dm-clone-target.c   |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -159,25 +159,19 @@ static inline u64 calc_global_rsv_need_s
- 	return (global->size << 1);
+--- a/drivers/md/dm-clone-metadata.c
++++ b/drivers/md/dm-clone-metadata.c
+@@ -656,7 +656,7 @@ bool dm_clone_is_range_hydrated(struct d
+ 	return (bit >= (start + nr_regions));
  }
  
--int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
--			 struct btrfs_space_info *space_info, u64 bytes,
--			 enum btrfs_reserve_flush_enum flush)
-+static u64 calc_available_free_space(struct btrfs_fs_info *fs_info,
-+			  struct btrfs_space_info *space_info,
-+			  enum btrfs_reserve_flush_enum flush)
+-unsigned long dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd)
++unsigned int dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd)
  {
- 	u64 profile;
- 	u64 avail;
--	u64 used;
- 	int factor;
+ 	return bitmap_weight(cmd->region_map, cmd->nr_regions);
+ }
+--- a/drivers/md/dm-clone-metadata.h
++++ b/drivers/md/dm-clone-metadata.h
+@@ -156,7 +156,7 @@ bool dm_clone_is_range_hydrated(struct d
+ /*
+  * Returns the number of hydrated regions.
+  */
+-unsigned long dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd);
++unsigned int dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd);
  
--	/* Don't overcommit when in mixed mode. */
--	if (space_info->flags & BTRFS_BLOCK_GROUP_DATA)
--		return 0;
--
- 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
- 		profile = btrfs_system_alloc_profile(fs_info);
- 	else
- 		profile = btrfs_metadata_alloc_profile(fs_info);
+ /*
+  * Returns the first unhydrated region with region_nr >= @start
+--- a/drivers/md/dm-clone-target.c
++++ b/drivers/md/dm-clone-target.c
+@@ -1473,7 +1473,7 @@ static void clone_status(struct dm_targe
+ 			goto error;
+ 		}
  
--	used = btrfs_space_info_used(space_info, true);
- 	avail = atomic64_read(&fs_info->free_chunk_space);
- 
- 	/*
-@@ -198,6 +192,22 @@ int btrfs_can_overcommit(struct btrfs_fs
- 		avail >>= 3;
- 	else
- 		avail >>= 1;
-+	return avail;
-+}
-+
-+int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
-+			 struct btrfs_space_info *space_info, u64 bytes,
-+			 enum btrfs_reserve_flush_enum flush)
-+{
-+	u64 avail;
-+	u64 used;
-+
-+	/* Don't overcommit when in mixed mode */
-+	if (space_info->flags & BTRFS_BLOCK_GROUP_DATA)
-+		return 0;
-+
-+	used = btrfs_space_info_used(space_info, true);
-+	avail = calc_available_free_space(fs_info, space_info, flush);
- 
- 	if (used + bytes < space_info->total_bytes + avail)
- 		return 1;
-@@ -629,6 +639,7 @@ btrfs_calc_reclaim_metadata_size(struct
- {
- 	struct reserve_ticket *ticket;
- 	u64 used;
-+	u64 avail;
- 	u64 expected;
- 	u64 to_reclaim = 0;
- 
-@@ -636,6 +647,20 @@ btrfs_calc_reclaim_metadata_size(struct
- 		to_reclaim += ticket->bytes;
- 	list_for_each_entry(ticket, &space_info->priority_tickets, list)
- 		to_reclaim += ticket->bytes;
-+
-+	avail = calc_available_free_space(fs_info, space_info,
-+					  BTRFS_RESERVE_FLUSH_ALL);
-+	used = btrfs_space_info_used(space_info, true);
-+
-+	/*
-+	 * We may be flushing because suddenly we have less space than we had
-+	 * before, and now we're well over-committed based on our current free
-+	 * space.  If that's the case add in our overage so we make sure to put
-+	 * appropriate pressure on the flushing state machine.
-+	 */
-+	if (space_info->total_bytes + avail < used)
-+		to_reclaim += used - (space_info->total_bytes + avail);
-+
- 	if (to_reclaim)
- 		return to_reclaim;
- 
+-		DMEMIT("%u %llu/%llu %llu %lu/%lu %u ",
++		DMEMIT("%u %llu/%llu %llu %u/%lu %u ",
+ 		       DM_CLONE_METADATA_BLOCK_SIZE,
+ 		       (unsigned long long)(nr_metadata_blocks - nr_free_metadata_blocks),
+ 		       (unsigned long long)nr_metadata_blocks,
 
 
