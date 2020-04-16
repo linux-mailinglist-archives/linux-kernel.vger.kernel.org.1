@@ -2,53 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2201AB680
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC03A1AB689
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgDPEHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 00:07:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725298AbgDPEH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 00:07:28 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69C3020767;
-        Thu, 16 Apr 2020 04:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587010048;
-        bh=5Js663jCMQnnanixbXGlT1h0jEUb3V5uU1s+WTiHyYE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FtmA36invyFrgzCq2vyJyaVOVMJLXulhRWuGbEv5CxK6N+hgNugmwsZ1VMlompByA
-         yAwdUfOrIn+BgK1fZm2N86xYmiVtyGBc/hgOmqr2OdWBfPqVzTNJ9c+EsB0/u1kxwe
-         tY2h4XDhpoDeHiUCHaoJ8kPbncRCBGlM+zmNfv9Y=
-Date:   Wed, 15 Apr 2020 21:07:27 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] proc: rename "catch" function argument
-Message-Id: <20200415210727.c0cf80b5a981292bb15d9858@linux-foundation.org>
-In-Reply-To: <20200331210905.GA31680@avx2>
-References: <20200331210905.GA31680@avx2>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2391682AbgDPELo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 00:11:44 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:26904 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389455AbgDPELi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 00:11:38 -0400
+Received: from ubuntu.localdomain (unknown [58.251.74.226])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 5B1A54E17F0;
+        Thu, 16 Apr 2020 12:11:32 +0800 (CST)
+From:   Wang Wenhu <wenhu.wang@vivo.com>
+To:     oss@buserror.net, Wang Wenhu <wenhu.wang@vivo.com>,
+        gregkh@linuxfoundation.org
+Cc:     christophe.leroy@c-s.fr, kernel@vivo.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au
+Subject: Re: [PATCH v2,1/5] powerpc: 85xx: make FSL_85XX_CACHE_SRAM configurable
+Date:   Wed, 15 Apr 2020 21:11:13 -0700
+Message-Id: <20200416041113.112735-1-wenhu.wang@vivo.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <36961f9d8c533d8b576043a2c6fc4859accfd9f1.camel@buserror.net>
+References: <36961f9d8c533d8b576043a2c6fc4859accfd9f1.camel@buserror.net>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVJTkhLS0tJTkJIQkJPSllXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MFE6NSo6LTg2PAg9MEIrTD0V
+        NRAaFE9VSlVKTkNMS0pLSUJPTE9PVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUlNSEI3Bg++
+X-HM-Tid: 0a71812f4ba89376kuws5b1a54e17f0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Apr 2020 00:09:05 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
+From: Scott Wood <oss@buserror.net>
 
-> "catch" is reserved keyword in C++, rename it to something
-> both gcc and g++ accept.
+>> +	bool "32-bit kernel"
+>
+>Why make that user selectable ?
+>
+>Either a kernel is 64-bit or it is 32-bit. So having PPC64 user 
+>selectable is all we need.
+>
+>And what is the link between this change and the description in the log ?
+>
+>>   	default y if !PPC64
+>>   	select KASAN_VMALLOC if KASAN && MODULES
+>>   
+>> @@ -15,6 +15,7 @@ config PPC_BOOK3S_32
+>>   	bool
+>>   
+>>   menu "Processor support"
+>> +
+>
+>Why adding this space ?
+>
+>>   choice
+>>   	prompt "Processor Type"
+>>   	depends on PPC32
+>> @@ -211,9 +212,9 @@ config PPC_BOOK3E
+>>   	depends on PPC_BOOK3E_64
+>>   
+>>   config E500
+>> +	bool "e500 Support"
+>>   	select FSL_EMB_PERFMON
+>>   	select PPC_FSL_BOOK3E
+>> -	bool
+>
+>Why make this user-selectable ? This is already selected by the 
+>processors requiring it, ie 8500, e5500 and e6500.
+>
+>Is there any other case where we need E500 ?
+>
+>And again, what's the link between this change and the description in 
+>the log ?
+>
+>
+>>   
+>>   config PPC_E500MC
+>>   	bool "e500mc Support"
+>> 
+>
+>Christophe
 
-Why? Is someone compiling the kernel with g++?
+Hi, Scott, Christophe!
 
-> Rename "ign" for symmetry.
-> 
-> Signed-off-by: _Z6Alexeyv <adobriyan@gmail.com>
+I find that I did not get the point well of the defferences between
+configurability and selectability(maybe words I created) of Kconfig items.
 
-Was this intentional?
+You are right that FSL_85XX_CACHE_SRAM should only be selected by a caller
+but never enable it seperately.
+
+Same answer for the comments from Christophe. I will drop this patch in v3.
+
+Thanks,
+Wenhu
