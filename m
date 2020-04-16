@@ -2,174 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6EB1AB547
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492391AB540
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729827AbgDPBMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728816AbgDPBMb (ORCPT
+        id S1728758AbgDPBK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:10:57 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:10479 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728102AbgDPBKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:12:31 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3ED3C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:12:29 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 198so4286537lfo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:12:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RLXrMgkzQHFW3b+SlhNpB17QVhD+CtFuaz/Wf6gaH7c=;
-        b=ke1sn34kqduIn0oSGOMF+iZfjQmztWauKOCFQwXQ0qkWqpAsrha6m/GTacRa+j57Qm
-         KA2lis8YwY3gQgktu/UWLGnGPrChWiqtUVgpHeLLPYDvKWr0aLiDarPNq9KBpFbf+cKr
-         HFyyai3aoq9ZvmNn2/S5XzQKLu/dBQmw6OEs0VZED+M8qVHELkH4T7VFhUWEYCgXkt5I
-         savcJgWrG9AaJGwuIvG9g3Ut/hHs5fzOq1PH0dfrHNEVXEoh7I7L655uGnf4ZU+uwVT+
-         +UGyZYxiqubMmWy5GMGb01V5SdS2rmw8E9Xw+V4HBtrBMnETN3CzgwVHe5+5huFM85b6
-         zk6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RLXrMgkzQHFW3b+SlhNpB17QVhD+CtFuaz/Wf6gaH7c=;
-        b=CqVsI+ywCVX70wljLPppJp864IV8GpiTEB/6AmhHeYceVtj6MmJ6tmiB1wjTXXXt1Z
-         o4ctVZdsB5U2ziGXMZ1j434AhyY2s3dfoD6ZdiR/N3dgOYzF9ak2hjcIe4udB0v8dX1M
-         qNZGj1/UZbZYK3dxaZP5VpDmSAyHZaJcq2lEkcl9HNmLFk5rPBXTnMfhdWa8MQkeFrDN
-         rYgPBF0b3JsfvB8IAeDqJEU9XvHrEq5CMTHPYnn69dARWsks5OCpDZV+ZVMxklsw3pFl
-         esLhArgvb8vclkL8hqWc6gxBAKVoCNVfVdpsebe66RamwQRwa3eysyEYF8Bm07APDN50
-         DtBA==
-X-Gm-Message-State: AGi0PubFf2XDedxqyv+0gdx8aU/Q1vW/Pf6ROecVrxfUhQrmDWjhEHMu
-        PiJnEwDY4QkhdmbW4XUGlkREliqyAnplcFornKM=
-X-Google-Smtp-Source: APiQypLGkYKWGZqyAluteVjPen7uPL4oZlK0q6N+kDdKMce2t++tPRm7fj5pNTgzFPtxwzSsqDgVkjAthCr0Su7oW18=
-X-Received: by 2002:a19:48c3:: with SMTP id v186mr4451137lfa.194.1586999548275;
- Wed, 15 Apr 2020 18:12:28 -0700 (PDT)
+        Wed, 15 Apr 2020 21:10:51 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95e97b0821fe-732a6; Thu, 16 Apr 2020 09:10:26 +0800 (CST)
+X-RM-TRANSID: 2ee95e97b0821fe-732a6
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [172.20.146.139] (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65e97b08104b-9e65a;
+        Thu, 16 Apr 2020 09:10:26 +0800 (CST)
+X-RM-TRANSID: 2ee65e97b08104b-9e65a
+Subject: Re: [PATCH] i2c: drivers: Omit superfluous error message
+ inefm32_i2c_probe()
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     wsa@the-dreams.de, o.rempel@pengutronix.de, ardb@kernel.org,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200415135734.14660-1-tangbin@cmss.chinamobile.com>
+ <20200415142225.pxstqwyqvj7ayd6m@pengutronix.de>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <9948c5c2-fbdd-4782-8fae-1eccb03e5c85@cmss.chinamobile.com>
+Date:   Thu, 16 Apr 2020 09:12:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200412090756.GA19574@open-light-1.localdomain> <c0bd9b1b-a0e7-5c88-ab99-e867ef25c935@linux.intel.com>
-In-Reply-To: <c0bd9b1b-a0e7-5c88-ab99-e867ef25c935@linux.intel.com>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Thu, 16 Apr 2020 09:12:16 +0800
-Message-ID: <CA+2MQi-u-Kd=iqoYt+Mg0Ts-wZogo3K5fSMWHGdnfCrYvt=2Yw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] mm: reduce the impaction of page reporing worker
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        liliang.opensource@gmail.com, liliang324@gmail.com
-Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200415142225.pxstqwyqvj7ayd6m@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 10:59 PM Alexander Duyck
-<alexander.h.duyck@linux.intel.com> wrote:
->
-> On 4/12/2020 2:08 AM, liliangleo wrote:
-> > When scaning the free list, 'page_reporting_cycle' may hold the
-> > zone->lock for a long time when there are no reported page in the
-> > free list. Setting PAGE_REPORTING_MIN_ORDER to a lower oder will
-> > make this issue worse.
-> >
-> > Two ways were used to reduce the impact:
-> >     1. Release zone lock periodicly
-> >     2. Yield cpu voluntarily if needed.
-> >
-> > Signed-off-by: liliangleo <liliangleo@didiglobal.com>
->
-> One of the reasons why I had limited this to no lower than pageblock
-> order was in order to keep number of pages we would have to walk in each
-> list on the smaller side.
->
-> Also the lock ends up being released every time we report a batch of
-> pages. It might make more sense to look at calling cond_resched after a
-> batch as been submitted rather than try to introduce a new loop around
-> page_reporting_cycle.
->
+Hi Uwe:
 
-Hi Alexander,
-
-My original intention is to prevent 'page_reporting_cycle' hold the
-zone lock for too long
-when scanning free list but there is very few pages need to report.
-For PG_zero use case, it's better for users to decide the page order,
-if the order is set to
-a low order, the impaction will be much more serious.
-Just call cond_resched after batch submission is not enough, that's
-the reason why I add
-cond_resched.
-
-> >   static struct page_reporting_dev_info __rcu *pr_dev_info __read_mostly;
-> >
-> >   enum {
-> > @@ -115,7 +118,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
-> >       unsigned int page_len = PAGE_SIZE << order;
-> >       struct page *page, *next;
-> >       long budget;
-> > -     int err = 0;
-> > +     int err = 0, scan_cnt = 0;
-> >
-> >       /*
-> >        * Perform early check, if free area is empty there is
-> > @@ -145,8 +148,14 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
-> >       /* loop through free list adding unreported pages to sg list */
-> >       list_for_each_entry_safe(page, next, list, lru) {
-> >               /* We are going to skip over the reported pages. */
-> > -             if (PageReported(page))
-> > +             if (PageReported(page)) {
-> > +                     if (++scan_cnt >= MAX_SCAN_NUM) {
-> > +                             err = scan_cnt;
-> > +                             break;
-> > +                     }
-> >                       continue;
-> > +             }
-> > +
-> >
-> >               /*
-> >                * If we fully consumed our budget then update our
+On 2020/4/15 22:22, Uwe Kleine-König wrote:
+> Hello,
 >
-> Why add yet another loopvariable, why not just move our budget test to
-> before the PageReported check and then increase the value?
+> On Wed, Apr 15, 2020 at 09:57:34PM +0800, Tang Bin wrote:
+>> In the function efm32_i2c_probe(),when get irq failed,the function
+>> platform_get_irq() logs an error message,so remove redundant message
+>> here.
+> adding a space after each comma seems usual style.
+Got it, I will notice. Whether should I submit v2 for this problems? Thanks.
+>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+> Usually the Sign-off of the sender comes last. How is Shengju Zhang
+> involved with this patch?
+Got it, I will notice next time. Thanks.
+>> diff --git a/drivers/i2c/busses/i2c-efm32.c b/drivers/i2c/busses/i2c-efm32.c
+>> index a8c6323e7..4de31fae7 100644
+>> --- a/drivers/i2c/busses/i2c-efm32.c
+>> +++ b/drivers/i2c/busses/i2c-efm32.c
+>> @@ -352,7 +352,6 @@ static int efm32_i2c_probe(struct platform_device *pdev)
+>>   
+>>   	ret = platform_get_irq(pdev, 0);
+>>   	if (ret <= 0) {
+>> -		dev_err(&pdev->dev, "failed to get irq (%d)\n", ret);
+> The change looks fine.
+
+Thanks,
+
+Tang Bin
+
 >
 
-The code can be refined, I just don't want to break the budget stuff.
 
-Thanks for your feedback your work.
-
-Liang
-
-> > @@ -219,6 +228,26 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
-> >       return err;
-> >   }
-> >
-> > +static int
-> > +reporting_order_type(struct page_reporting_dev_info *prdev, struct zone *zone,
-> > +                  unsigned int order, unsigned int mt,
-> > +                  struct scatterlist *sgl, unsigned int *offset)
-> > +{
-> > +     int ret = 0;
-> > +     unsigned long total = 0;
-> > +
-> > +     might_sleep();
-> > +     do {
-> > +             cond_resched();
-> > +             ret = page_reporting_cycle(prdev, zone, order, mt,
-> > +                                        sgl, offset);
-> > +             if (ret > 0)
-> > +                     total += ret;
-> > +     } while (ret > 0 && total < zone->free_area[order].nr_free);
-> > +
-> > +     return ret;
-> > +}
-> > +
->
-> The idea behind page reporting is it is supposed to happen while the
-> system is idle. As such we don't need to be in a hurry. I would get rid
-> of the loop and just let the natural placing take over so that we are
-> only processing something like 1/8 of the nr_free with each pass.
