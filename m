@@ -2,200 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3791AC61E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F391AC623
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410293AbgDPOdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:33:53 -0400
-Received: from m142-177.yeah.net ([123.58.177.142]:10672 "EHLO
-        m142-177.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729952AbgDPOad (ORCPT
+        id S1725960AbgDPOee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:34:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60465 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2394302AbgDPObQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:30:33 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by m142-177.yeah.net (Hmail) with ESMTP id A2C3D6424FA;
-        Thu, 16 Apr 2020 22:30:18 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AOIACwBUCMatiFZ3fJh5AapO.3.1587047418654.Hmail.wenhu.wang@vivo.com>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        oss@buserror.net, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBSRVNFTkQsdjMsNC80XSBkcml2ZXJzOiB1aW86IG5ldyBkcml2ZXIgZm9yIGZzbF84NXh4X2NhY2hlX3NyYW0=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
-In-Reply-To: <6173e4ce-bc26-b87c-e679-65329e8336cc@c-s.fr>
+        Thu, 16 Apr 2020 10:31:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587047475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QTWMpbTktAVYk+SbLJpTXF8mGx9KiEfJHn3C7GjisGs=;
+        b=er6kp0SrzR8KYp5nQbIWW8F6Tm32wH1T4b2YkDGbaJFOSTyDWm9RTJPHAxZbkGjiNorxXz
+        uazsH70mpnv0yA7LjvGZU/HgDyQy0EK+Mj9AxLu3XYqYFMqJEwEcmAi22s51AkxPEi7z8l
+        asJWPA8jOAKtzCy00JBdAE1YbGDTz2w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-5XOMxQSkN2SrvotDeDjguw-1; Thu, 16 Apr 2020 10:31:12 -0400
+X-MC-Unique: 5XOMxQSkN2SrvotDeDjguw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46FDB13FA;
+        Thu, 16 Apr 2020 14:31:11 +0000 (UTC)
+Received: from krava (unknown [10.40.195.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 809395E241;
+        Thu, 16 Apr 2020 14:31:07 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 16:31:04 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "bibo,mao" <bibo.mao@intel.com>,
+        "Ziqian SUN (Zamir)" <zsun@redhat.com>, stable@vger.kernel.org
+Subject: [PATCHv2] kretprobe: Prevent triggering kretprobe from within
+ kprobe_flush_task
+Message-ID: <20200416143104.GA400699@krava>
+References: <20200408164641.3299633-1-jolsa@kernel.org>
+ <20200409234101.8814f3cbead69337ac5a33fa@kernel.org>
+ <20200409184451.GG3309111@krava>
+ <20200409201336.GH3309111@krava>
+ <20200410093159.0d7000a08fd76c2eaf1398f8@kernel.org>
+ <20200414160338.GE208694@krava>
+ <20200415090507.GG208694@krava>
+ <20200416105506.904b7847a1b621b75463076d@kernel.org>
+ <20200416091320.GA322899@krava>
+ <20200416224250.7a53fb581e50aa32df75a0cf@kernel.org>
 MIME-Version: 1.0
-Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 16 Apr 2020 22:30:18 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date:   Thu, 16 Apr 2020 22:30:18 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VIS0JLS0tLSk5JTkNMQllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSU1NT0xCTUhJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6NDI6OAw5Ljg2Gg8SPSFIHTETTjoaCzRVSFVKTkNMS09MT0lLTE5CVTMWGhIXVQweFRMOVQwa
-        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUpPSkJINwY+
-X-HM-Tid: 0a718365cb2e6473kursa2c3d6424fa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416224250.7a53fb581e50aa32df75a0cf@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIENocmlzdG9waGUsCmRldl9remFsbG9jIHJlYWxseSBsb29rcyBiZXR0ZXIuIEkgd2lsbCB1
-cGRhdGUgdGhlIHBhdGNoIHdpdGggdGhlIGNvbW1lbnRzIGFkZHJlc3NlZC4KClRoYW5rcywKV2Vu
-aHUKCkZyb206IENocmlzdG9waGUgTGVyb3kgPGNocmlzdG9waGUubGVyb3lAYy1zLmZyPiBEYXRl
-OiAyMDIwLTA0LTE2IDE5OjQ5OjAxClRvOldhbmcgV2VuaHUgPHdlbmh1LndhbmdAdml2by5jb20+
-LGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnLApsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-LG9zc0BidXNlcnJvci5uZXQsbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcKIGNjOiBrZXJu
-ZWxAdml2by5jb20sTWljaGFlbCBFbGxlcm1hbiA8bXBlQGVsbGVybWFuLmlkLmF1PgpTdWJqZWN0
-OiBSZTogW1BBVENIIFJFU0VORCx2Myw0LzRdIGRyaXZlcnM6IHVpbzogbmV3IGRyaXZlciBmb3Ig
-ZnNsXzg1eHhfY2FjaGVfc3JhbT4KPgo+TGUgMTYvMDQvMjAyMCDDoCAxMzoxNiwgV2FuZyBXZW5o
-dSBhIMOpY3JpdMKgOgo+PiBBIGRyaXZlciBmb3IgZnJlZXNjYWxlIDg1eHggcGxhdGZvcm1zIHRv
-IGFjY2VzcyB0aGUgQ2FjaGUtU3JhbSBmb3JtCj4+IHVzZXIgbGV2ZWwuIFRoaXMgaXMgZXh0cmVt
-ZWx5IGhlbHBmdWwgZm9yIHNvbWUgdXNlci1zcGFjZSBhcHBsaWNhdGlvbnMKPj4gdGhhdCByZXF1
-aXJlIGhpZ2ggcGVyZm9ybWFuY2UgbWVtb3J5IGFjY2Vzc2VzLgo+PiAKPj4gQ2M6IEdyZWcgS3Jv
-YWgtSGFydG1hbiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+Cj4+IENjOiBDaHJpc3RvcGhl
-IExlcm95IDxjaHJpc3RvcGhlLmxlcm95QGMtcy5mcj4KPj4gQ2M6IFNjb3R0IFdvb2QgPG9zc0Bi
-dXNlcnJvci5uZXQ+Cj4+IENjOiBNaWNoYWVsIEVsbGVybWFuIDxtcGVAZWxsZXJtYW4uaWQuYXU+
-Cj4+IENjOiBsaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZwo+PiBTaWduZWQtb2ZmLWJ5OiBX
-YW5nIFdlbmh1IDx3ZW5odS53YW5nQHZpdm8uY29tPgo+PiAtLS0KPj4gQ2hhbmdlcyBzaW5jZSB2
-MToKPj4gICAqIEFkZHJlc3NlZCBjb21tZW50cyBmcm9tIEdyZWcgSy1ICj4+ICAgKiBNb3ZlZCBr
-ZnJlZShpbmZvLT5uYW1lKSBpbnRvIHVpb19pbmZvX2ZyZWVfaW50ZXJuYWwoKQo+PiBDaGFuZ2Vz
-IHNpbmNlIHYyOgo+PiAgICogQWRkcmVzc2VkIGNvbW1lbnRzIGZyb20gR3JlZywgU2NvdHQgYW5k
-IENocmlzdG9waGUKPj4gICAqIFVzZSAidWlvbWVtLT5pbnRlcm5hbF9hZGRyIiBhcyBpZiBjb25k
-aXRpb24gZm9yIHNyYW0gbWVtb3J5IGZyZWUsCj4+ICAgICBhbmQgbWVtc2V0IHRoZSB1aW9tZW0g
-ZW50cnkKPj4gICAqIE1vZGlmaWVkIG9mX21hdGNoX3RhYmxlIG1ha2UgdGhlIGRyaXZlciBhcGFy
-dCBmcm9tIENhY2hlLVNyYW0gSFcgaW5mbwo+PiAgICAgd2hpY2ggYmVsb25nIHRvIHRoZSBIVyBs
-ZXZlbCBkcml2ZXIgZnNsXzg1eHhfY2FjaGVfc3JhbSB0byBtYXRjaAo+PiAgICogVXNlIHJvdW5k
-dXBfcG93X29mX3R3byBmb3IgYWxpZ24gY2FsY3VsYXRpb24KPj4gICAqIFJlbW92ZSB1c2VsZXNz
-IGNsZWFyIGJsb2NrIG9mIHVpb21lbSBlbnRyaWVzLgo+PiAgICogVXNlIFVJT19JTkZPX1ZFUiBt
-aWNybyBmb3IgaW5mby0+dmVyc2lvbiwgYW5kIGRlZmluZSBpdCBhcwo+PiAgICAgImRldmljZXRy
-ZWUscHNldWRvIiwgbWVhbmluZyB0aGlzIGlzIHBzZXVkbyBkZXZpY2UgYW5kIHByb2JlZCBmcm9t
-Cj4+ICAgICBkZXZpY2UgdHJlZSBjb25maWd1cmF0aW9uCj4+ICAgKiBTZWxlY3QgRlNMXzg1WFhf
-Q0FDSEVfU1JBTSByYXRoZXIgdGhhbiBkZXBlbmRzIG9uIGl0Cj4+IC0tLQo+PiAgIGRyaXZlcnMv
-dWlvL0tjb25maWcgICAgICAgICAgICAgICAgICAgfCAgIDkgKysKPj4gICBkcml2ZXJzL3Vpby9N
-YWtlZmlsZSAgICAgICAgICAgICAgICAgIHwgICAxICsKPj4gICBkcml2ZXJzL3Vpby91aW9fZnNs
-Xzg1eHhfY2FjaGVfc3JhbS5jIHwgMTU4ICsrKysrKysrKysrKysrKysrKysrKysrKysrCj4+ICAg
-MyBmaWxlcyBjaGFuZ2VkLCAxNjggaW5zZXJ0aW9ucygrKQo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBkcml2ZXJzL3Vpby91aW9fZnNsXzg1eHhfY2FjaGVfc3JhbS5jCj4+IAo+PiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy91aW8vS2NvbmZpZyBiL2RyaXZlcnMvdWlvL0tjb25maWcKPj4gaW5kZXggMjAy
-ZWU4MWNmYzJiLi45YzNiNDc0NjFiNzEgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdWlvL0tjb25m
-aWcKPj4gKysrIGIvZHJpdmVycy91aW8vS2NvbmZpZwo+PiBAQCAtMTA1LDYgKzEwNSwxNSBAQCBj
-b25maWcgVUlPX05FVFgKPj4gICAJICBUbyBjb21waWxlIHRoaXMgZHJpdmVyIGFzIGEgbW9kdWxl
-LCBjaG9vc2UgTSBoZXJlOyB0aGUgbW9kdWxlCj4+ICAgCSAgd2lsbCBiZSBjYWxsZWQgdWlvX25l
-dHguCj4+ICAgCj4+ICtjb25maWcgVUlPX0ZTTF84NVhYX0NBQ0hFX1NSQU0KPj4gKwl0cmlzdGF0
-ZSAiRnJlZXNjYWxlIDg1eHggQ2FjaGUtU3JhbSBkcml2ZXIiCj4+ICsJZGVwZW5kcyBvbiBGU0xf
-U09DX0JPT0tFICYmIFBQQzMyCj4+ICsJc2VsZWN0IEZTTF84NVhYX0NBQ0hFX1NSQU0KPj4gKwlo
-ZWxwCj4+ICsJICBHZW5lcmljIGRyaXZlciBmb3IgYWNjZXNzaW5nIHRoZSBDYWNoZS1TcmFtIGZv
-cm0gdXNlciBsZXZlbC4gVGhpcwo+PiArCSAgaXMgZXh0cmVtZWx5IGhlbHBmdWwgZm9yIHNvbWUg
-dXNlci1zcGFjZSBhcHBsaWNhdGlvbnMgdGhhdCByZXF1aXJlCj4+ICsJICBoaWdoIHBlcmZvcm1h
-bmNlIG1lbW9yeSBhY2Nlc3Nlcy4KPj4gKwo+PiAgIGNvbmZpZyBVSU9fRlNMX0VMQkNfR1BDTQo+
-PiAgIAl0cmlzdGF0ZSAiZUxCQy9HUENNIGRyaXZlciIKPj4gICAJZGVwZW5kcyBvbiBGU0xfTEJD
-Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Vpby9NYWtlZmlsZSBiL2RyaXZlcnMvdWlvL01ha2Vm
-aWxlCj4+IGluZGV4IGMyODVkZDJhNDUzOS4uYmUyMDU2Y2ZmYzIxIDEwMDY0NAo+PiAtLS0gYS9k
-cml2ZXJzL3Vpby9NYWtlZmlsZQo+PiArKysgYi9kcml2ZXJzL3Vpby9NYWtlZmlsZQo+PiBAQCAt
-MTAsNCArMTAsNSBAQCBvYmotJChDT05GSUdfVUlPX05FVFgpCSs9IHVpb19uZXR4Lm8KPj4gICBv
-YmotJChDT05GSUdfVUlPX1BSVVNTKSAgICAgICAgICs9IHVpb19wcnVzcy5vCj4+ICAgb2JqLSQo
-Q09ORklHX1VJT19NRjYyNCkgICAgICAgICArPSB1aW9fbWY2MjQubwo+PiAgIG9iai0kKENPTkZJ
-R19VSU9fRlNMX0VMQkNfR1BDTSkJKz0gdWlvX2ZzbF9lbGJjX2dwY20ubwo+PiArb2JqLSQoQ09O
-RklHX1VJT19GU0xfODVYWF9DQUNIRV9TUkFNKQkrPSB1aW9fZnNsXzg1eHhfY2FjaGVfc3JhbS5v
-Cj4+ICAgb2JqLSQoQ09ORklHX1VJT19IVl9HRU5FUklDKQkrPSB1aW9faHZfZ2VuZXJpYy5vCj4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Vpby91aW9fZnNsXzg1eHhfY2FjaGVfc3JhbS5jIGIvZHJp
-dmVycy91aW8vdWlvX2ZzbF84NXh4X2NhY2hlX3NyYW0uYwo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0
-NAo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLjg3MDFkZjY5NTMwNwo+PiAtLS0gL2Rldi9udWxsCj4+
-ICsrKyBiL2RyaXZlcnMvdWlvL3Vpb19mc2xfODV4eF9jYWNoZV9zcmFtLmMKPj4gQEAgLTAsMCAr
-MSwxNTggQEAKPj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4+ICsvKgo+
-PiArICogQ29weXJpZ2h0IChDKSAyMDIwIFZpdm8gQ29tbXVuaWNhdGlvbiBUZWNobm9sb2d5IENv
-LiBMdGQuCj4+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMjAgV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2
-aXZvLmNvbT4KPj4gKyAqIEFsbCByaWdodHMgcmVzZXJ2ZWQuCj4+ICsgKi8KPj4gKwo+PiArI2lu
-Y2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L3Vpb19k
-cml2ZXIuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9zdHJpbmdpZnkuaD4KPj4gKyNpbmNsdWRlIDxs
-aW51eC9tb2R1bGUuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4KPj4gKyNpbmNsdWRl
-IDxhc20vZnNsXzg1eHhfY2FjaGVfc3JhbS5oPgo+PiArCj4+ICsjZGVmaW5lIERSSVZFUl9OQU1F
-CSJ1aW9fZnNsXzg1eHhfY2FjaGVfc3JhbSIKPj4gKyNkZWZpbmUgVUlPX0lORk9fVkVSCSJkZXZp
-Y2V0cmVlLHBzZXVkbyIKPj4gKyNkZWZpbmUgVUlPX05BTUUJInVpb19jYWNoZV9zcmFtIgo+PiAr
-Cj4+ICtzdGF0aWMgdm9pZCB1aW9faW5mb19mcmVlX2ludGVybmFsKHN0cnVjdCB1aW9faW5mbyAq
-aW5mbykKPj4gK3sKPj4gKwlzdHJ1Y3QgdWlvX21lbSAqdWlvbWVtID0gaW5mby0+bWVtOwo+PiAr
-Cj4+ICsJd2hpbGUgKHVpb21lbSA8ICZpbmZvLT5tZW1bTUFYX1VJT19NQVBTXSkgewo+Cj5BcyBz
-dWdnZXN0ZWQgYnkgU2NvdHQsIG1heWJlIGl0IHdvdWxkIGJlIGJldHRlciB0byB1c2UgYSBsb29w
-IHdpdGggYW4gCj5pbmRleCwgc29tZXRoaW5nIGxpa2UKPgo+CWZvciAoaSA9IDA7IGkgPCBNQVhf
-VUlPX01BUFM7IGkrKywgdWlvbWVtKyspIHsKPgkJc3RydWN0IHVpb19tZW0gKnVpb21lbSA9IGlu
-Zm8tPm1lbVtpXTsKPgo+PiArCQlpZiAodWlvbWVtLT5pbnRlcm5hbF9hZGRyKSB7Cj4+ICsJCQlt
-cGM4NXh4X2NhY2hlX3NyYW1fZnJlZSh1aW9tZW0tPmludGVybmFsX2FkZHIpOwo+PiArCQkJa2Zy
-ZWUodWlvbWVtLT5uYW1lKTsKPgo+VW5uZWVkZWQgd2hlbiB1c2luZyBkZXZtX2tzdHJkdXAoKSwg
-c2VlIGluIHRoZSBwcm9iZSBmdW5jdGlvbi4KPgo+PiArCQkJbWVtc2V0KHVpb21lbSwgMCwgc2l6
-ZW9mKCp1aW9tZW0pKTsKPj4gKwkJfQo+PiArCQl1aW9tZW0rKzsKPj4gKwl9Cj4+ICsKPj4gKwlr
-ZnJlZShpbmZvLT5uYW1lKTsKPgo+VGhhdCdzIGEgYml0IHVuYmFsYW5jZWQuIFRoaXMgZnVuY3Rp
-b24gaXMgaGFuZHkgZm9yIHRoZSB0aGluZ3MgYWxsb2NhdGVkIAo+aW5zaWRlIHRoZSBsb29wLCBi
-dXQgZm9yIHRoZSBpbmZvLT5uYW1lIGFsbG9jYXRlZCBvdXRzaWRlIHRoZSBsb29wLCBpdCAKPnNo
-b3VsZCBiZSByZWxlYXNlZCBvdXRzaWRlIHRoaXMgZnVuY3Rpb24uCj4KPkF0IHRoZSBlbmQgaWYg
-eW91IHVzZSBkZXZtX2tzdHJkdXAoKSwgaXQgd2lsbCB2b2lkIGFueXdheS4KPgo+PiArfQo+PiAr
-Cj4+ICtzdGF0aWMgaW50IHVpb19mc2xfODV4eF9jYWNoZV9zcmFtX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4+ICt7Cj4+ICsJc3RydWN0IGRldmljZV9ub2RlICpwYXJlbnQg
-PSBwZGV2LT5kZXYub2Zfbm9kZTsKPj4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUgPSBOVUxM
-Owo+PiArCXN0cnVjdCB1aW9faW5mbyAqaW5mbzsKPj4gKwlzdHJ1Y3QgdWlvX21lbSAqdWlvbWVt
-Owo+PiArCWNvbnN0IGNoYXIgKmR0X25hbWU7Cj4+ICsJdTMyIG1lbV9zaXplOwo+PiArCWludCBy
-ZXQ7Cj4+ICsKPj4gKwkvKiBhbGxvYyB1aW9faW5mbyBmb3Igb25lIGRldmljZSAqLwo+PiArCWlu
-Zm8gPSBremFsbG9jKHNpemVvZigqaW5mbyksIEdGUF9LRVJORUwpOwo+Cj5NYXliZSB1c2UgZGV2
-bV9remFsbG9jKCkuIFRoYXQgd2F5LCBpdCB3aWxsIGJlIGF1dG9tYXRpY2FsbHkgZnJlZWQgd2hl
-biAKPnRoZSBkcml2ZXIgaXMgcmVsZWFzZWQsIGJvdGggYSBub3JtYWwgcmVsZWFzZSBhbmQgb24g
-cHJvYmUgZmFpbHVyZS4KPgo+PiArCWlmICghaW5mbykKPj4gKwkJcmV0dXJuIC1FTk9NRU07Cj4+
-ICsKPj4gKwkvKiBnZXQgb3B0aW9uYWwgdWlvIG5hbWUgKi8KPj4gKwlpZiAob2ZfcHJvcGVydHlf
-cmVhZF9zdHJpbmcocGFyZW50LCAidWlvX25hbWUiLCAmZHRfbmFtZSkpCj4+ICsJCWR0X25hbWUg
-PSBVSU9fTkFNRTsKPj4gKwo+PiArCWluZm8tPm5hbWUgPSBrc3RyZHVwKGR0X25hbWUsIEdGUF9L
-RVJORUwpOwo+Cj5DYW4gdXNlIGRldm1fa3N0cmR1cCgpCj4KPj4gKwlpZiAoIWluZm8tPm5hbWUp
-IHsKPj4gKwkJcmV0ID0gLUVOT01FTTsKPgo+SWYgdXNpbmcgZGV2bV9remFsbG9jKCksIHlvdSBj
-YW4gdGhlbiBkaXJlY3RseSBkbyByZXR1cm4gLUVOT01FTSwgYW5kIAo+dGhlIHJlbGVhc2Ugd2ls
-bCBiZSBhdXRvbWF0aWMuCj4KPj4gKwkJZ290byBlcnJfaW5mb19mcmVlOwo+PiArCX0KPj4gKwo+
-PiArCXVpb21lbSA9IGluZm8tPm1lbTsKPj4gKwlmb3JfZWFjaF9jaGlsZF9vZl9ub2RlKHBhcmVu
-dCwgbm9kZSkgewo+PiArCQl2b2lkICp2aXJ0Owo+PiArCQlwaHlzX2FkZHJfdCBwaHlzOwo+PiAr
-Cj4+ICsJCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5vZGUsICJjYWNoZS1tZW0tc2l6ZSIs
-ICZtZW1fc2l6ZSk7Cj4+ICsJCWlmIChyZXQpIHsKPj4gKwkJCXJldCA9IC1FSU5WQUw7Cj4+ICsJ
-CQlnb3RvIGVycl9pbmZvX2ZyZWVfaW50ZXJuYWw7Cj4+ICsJCX0KPj4gKwo+PiArCQlpZiAobWVt
-X3NpemUgPT0gMCkgewo+PiArCQkJZGV2X2VycigmcGRldi0+ZGV2LCAiY2FjaGUtbWVtLXNpemUg
-c2hvdWxkIG5vdCBiZSAwXG4iKTsKPj4gKwkJCXJldCA9IC1FSU5WQUw7Cj4+ICsJCQlnb3RvIGVy
-cl9pbmZvX2ZyZWVfaW50ZXJuYWw7Cj4+ICsJCX0KPj4gKwo+PiArCQl2aXJ0ID0gbXBjODV4eF9j
-YWNoZV9zcmFtX2FsbG9jKG1lbV9zaXplLAo+PiArCQkJCQkJJnBoeXMsCj4KPkkgdGhpbmsgJnBo
-eXMgY2FuIGZpdCBvbiBmaXJzdCBsaW5lLgo+Cj4+ICsJCQkJCQlyb3VuZHVwX3Bvd19vZl90d28o
-bWVtX3NpemUpKTsKPj4gKwkJaWYgKCF2aXJ0KSB7Cj4+ICsJCQkvKiBtcGM4NXh4X2NhY2hlX3Ny
-YW1fYWxsb2MgdG8gZGVmaW5lIHRoZSByZWFsIGNhdXNlICovCj4+ICsJCQlyZXQgPSAtRU5PTUVN
-Owo+PiArCQkJZ290byBlcnJfaW5mb19mcmVlX2ludGVybmFsOwo+PiArCQl9Cj4+ICsKPj4gKwkJ
-dWlvbWVtLT5tZW10eXBlID0gVUlPX01FTV9QSFlTOwo+PiArCQl1aW9tZW0tPmFkZHIgPSBwaHlz
-Owo+PiArCQl1aW9tZW0tPnNpemUgPSBtZW1fc2l6ZTsKPj4gKwkJdWlvbWVtLT5uYW1lID0ga3N0
-cmR1cChub2RlLT5uYW1lLCBHRlBfS0VSTkVMKTs7Cj4KPlVzZSBkZXZtX2tzdHJkdXAoKQo+Cj4+
-ICsJCXVpb21lbS0+aW50ZXJuYWxfYWRkciA9IHZpcnQ7Cj4+ICsJCXVpb21lbSsrOwo+PiArCj4+
-ICsJCWlmICh1aW9tZW0gPj0gJmluZm8tPm1lbVtNQVhfVUlPX01BUFNdKSB7Cj4+ICsJCQlkZXZf
-d2FybigmcGRldi0+ZGV2LCAibW9yZSB0aGFuICVkIHVpby1tYXBzIGZvciBkZXZpY2UuXG4iLAo+
-PiArCQkJCSBNQVhfVUlPX01BUFMpOwo+PiArCQkJYnJlYWs7Cj4+ICsJCX0KPj4gKwl9Cj4+ICsK
-Pj4gKwlpZiAodWlvbWVtID09IGluZm8tPm1lbSkgewo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYs
-ICJlcnJvciBubyB2YWxpZCB1aW8tbWFwIGNvbmZpZ3VyZWRcbiIpOwo+PiArCQlyZXQgPSAtRUlO
-VkFMOwo+PiArCQlnb3RvIGVycl9pbmZvX2ZyZWVfaW50ZXJuYWw7Cj4KPklzIHRoZXJlIGFueXRo
-aW5nIHRvIGZyZWUgdXAgaWYgbm90aGluZyBoYXMgYmVlbiBhbGxvY2F0ZWQgPwo+Cj4+ICsJfQo+
-PiArCj4+ICsJaW5mby0+dmVyc2lvbiA9IFVJT19JTkZPX1ZFUjsKPj4gKwo+PiArCS8qIHJlZ2lz
-dGVyIHVpbyBkZXZpY2UgKi8KPj4gKwlpZiAodWlvX3JlZ2lzdGVyX2RldmljZSgmcGRldi0+ZGV2
-LCBpbmZvKSkgewo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJ1aW8gcmVnaXN0cmF0aW9uIGZh
-aWxlZFxuIik7Cj4+ICsJCXJldCA9IC1FTk9ERVY7Cj4+ICsJCWdvdG8gZXJyX2luZm9fZnJlZV9p
-bnRlcm5hbDsKPj4gKwl9Cj4+ICsKPj4gKwlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBpbmZv
-KTsKPj4gKwo+PiArCXJldHVybiAwOwo+PiArZXJyX2luZm9fZnJlZV9pbnRlcm5hbDoKPj4gKwl1
-aW9faW5mb19mcmVlX2ludGVybmFsKGluZm8pOwo+PiArZXJyX2luZm9fZnJlZToKPj4gKwlrZnJl
-ZShpbmZvKTsKPgo+U2hvdWxkbid0IGJlIG5lZWRlZCB3aGVuIHVzaW5nIGRldm1fa3phbGxvYygp
-Lgo+Cj4+ICsJcmV0dXJuIHJldDsKPj4gK30KPj4gKwo+PiArc3RhdGljIGludCB1aW9fZnNsXzg1
-eHhfY2FjaGVfc3JhbV9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPj4gK3sK
-Pj4gKwlzdHJ1Y3QgdWlvX2luZm8gKmluZm8gPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsK
-Pj4gKwo+PiArCXVpb191bnJlZ2lzdGVyX2RldmljZShpbmZvKTsKPj4gKwo+PiArCXVpb19pbmZv
-X2ZyZWVfaW50ZXJuYWwoaW5mbyk7Cj4+ICsKPj4gKwlrZnJlZShpbmZvKTsKPgo+Tm90IG5lZWRl
-ZCB3aGVuIHVzaW5nIGRldl9remFsbG9jKCkKPgo+PiArCj4+ICsJcmV0dXJuIDA7Cj4+ICt9Cj4+
-ICsKPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIHVpb19tcGM4NXh4X2wyY3Rs
-cl9vZl9tYXRjaFtdID0gewo+PiArCXsJLmNvbXBhdGlibGUgPSAidWlvLG1wYzg1eHgtY2FjaGUt
-c3JhbSIsCX0sCj4+ICsJe30sCj4+ICt9Owo+PiArCj4+ICtzdGF0aWMgc3RydWN0IHBsYXRmb3Jt
-X2RyaXZlciB1aW9fZnNsXzg1eHhfY2FjaGVfc3JhbSA9IHsKPj4gKwkucHJvYmUgPSB1aW9fZnNs
-Xzg1eHhfY2FjaGVfc3JhbV9wcm9iZSwKPj4gKwkucmVtb3ZlID0gdWlvX2ZzbF84NXh4X2NhY2hl
-X3NyYW1fcmVtb3ZlLAo+PiArCS5kcml2ZXIgPSB7Cj4+ICsJCS5uYW1lID0gRFJJVkVSX05BTUUs
-Cj4+ICsJCS5vd25lciA9IFRISVNfTU9EVUxFLAo+PiArCQkub2ZfbWF0Y2hfdGFibGUJPSB1aW9f
-bXBjODV4eF9sMmN0bHJfb2ZfbWF0Y2gsCj4+ICsJfSwKPj4gK307Cj4+ICsKPj4gK21vZHVsZV9w
-bGF0Zm9ybV9kcml2ZXIodWlvX2ZzbF84NXh4X2NhY2hlX3NyYW0pOwo+PiArCj4+ICtNT0RVTEVf
-QVVUSE9SKCJXYW5nIFdlbmh1IDx3ZW5odS53YW5nQHZpdm8uY29tPiIpOwo+PiArTU9EVUxFX0RF
-U0NSSVBUSU9OKCJGcmVlc2NhbGUgTVBDODV4eCBDYWNoZS1TcmFtIFVJTyBQbGF0Zm9ybSBEcml2
-ZXIiKTsKPj4gK01PRFVMRV9BTElBUygicGxhdGZvcm06IiBEUklWRVJfTkFNRSk7Cj4+ICtNT0RV
-TEVfTElDRU5TRSgiR1BMIHYyIik7Cj4+IAo+Cj5DaHJpc3RvcGhlCg0KDQo=
+Ziqian reported lockup when adding retprobe on _raw_spin_lock_irqsave.
+My test was also able to trigger lockdep output:
+
+ ============================================
+ WARNING: possible recursive locking detected
+ 5.6.0-rc6+ #6 Not tainted
+ --------------------------------------------
+ sched-messaging/2767 is trying to acquire lock:
+ ffffffff9a492798 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_hash_lock+0x52/0xa0
+
+ but task is already holding lock:
+ ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
+
+ other info that might help us debug this:
+  Possible unsafe locking scenario:
+
+        CPU0
+        ----
+   lock(&(kretprobe_table_locks[i].lock));
+   lock(&(kretprobe_table_locks[i].lock));
+
+  *** DEADLOCK ***
+
+  May be due to missing lock nesting notation
+
+ 1 lock held by sched-messaging/2767:
+  #0: ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
+
+ stack backtrace:
+ CPU: 3 PID: 2767 Comm: sched-messaging Not tainted 5.6.0-rc6+ #6
+ Call Trace:
+  dump_stack+0x96/0xe0
+  __lock_acquire.cold.57+0x173/0x2b7
+  ? native_queued_spin_lock_slowpath+0x42b/0x9e0
+  ? lockdep_hardirqs_on+0x590/0x590
+  ? __lock_acquire+0xf63/0x4030
+  lock_acquire+0x15a/0x3d0
+  ? kretprobe_hash_lock+0x52/0xa0
+  _raw_spin_lock_irqsave+0x36/0x70
+  ? kretprobe_hash_lock+0x52/0xa0
+  kretprobe_hash_lock+0x52/0xa0
+  trampoline_handler+0xf8/0x940
+  ? kprobe_fault_handler+0x380/0x380
+  ? find_held_lock+0x3a/0x1c0
+  kretprobe_trampoline+0x25/0x50
+  ? lock_acquired+0x392/0xbc0
+  ? _raw_spin_lock_irqsave+0x50/0x70
+  ? __get_valid_kprobe+0x1f0/0x1f0
+  ? _raw_spin_unlock_irqrestore+0x3b/0x40
+  ? finish_task_switch+0x4b9/0x6d0
+  ? __switch_to_asm+0x34/0x70
+  ? __switch_to_asm+0x40/0x70
+
+The code within the kretprobe handler checks for probe reentrancy,
+so we won't trigger any _raw_spin_lock_irqsave probe in there.
+
+The problem is in outside kprobe_flush_task, where we call:
+
+  kprobe_flush_task
+    kretprobe_table_lock
+      raw_spin_lock_irqsave
+        _raw_spin_lock_irqsave
+
+where _raw_spin_lock_irqsave triggers the kretprobe and installs
+kretprobe_trampoline handler on _raw_spin_lock_irqsave return.
+
+The kretprobe_trampoline handler is then executed with already
+locked kretprobe_table_locks, and first thing it does is to
+lock kretprobe_table_locks ;-) the whole lockup path like:
+
+  kprobe_flush_task
+    kretprobe_table_lock
+      raw_spin_lock_irqsave
+        _raw_spin_lock_irqsave ---> probe triggered, kretprobe_trampoline installed
+
+        ---> kretprobe_table_locks locked
+
+        kretprobe_trampoline
+          trampoline_handler
+            kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
+
+Adding kprobe_busy_begin/end helpers that mark code with fake
+probe installed to prevent triggering of another kprobe within
+this code.
+
+Using these helpers in kprobe_flush_task, so the probe recursion
+protection check is hit and the probe is never set to prevent
+above lockup.
+
+Fixes: ef53d9c5e4da ('kprobes: improve kretprobe scalability with hashed locking')
+Cc: stable@vger.kernel.org
+Reported-by: "Ziqian SUN (Zamir)" <zsun@redhat.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ arch/x86/kernel/kprobes/core.c | 16 +++-------------
+ include/linux/kprobes.h        |  4 ++++
+ kernel/kprobes.c               | 24 ++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 13 deletions(-)
+
+v2 changes: updated changelog with Fixes/Ack and Cc stable
+
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 4d7022a740ab..a12adbe1559d 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -753,16 +753,11 @@ asm(
+ NOKPROBE_SYMBOL(kretprobe_trampoline);
+ STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+ 
+-static struct kprobe kretprobe_kprobe = {
+-	.addr = (void *)kretprobe_trampoline,
+-};
+-
+ /*
+  * Called from kretprobe_trampoline
+  */
+ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ {
+-	struct kprobe_ctlblk *kcb;
+ 	struct kretprobe_instance *ri = NULL;
+ 	struct hlist_head *head, empty_rp;
+ 	struct hlist_node *tmp;
+@@ -772,16 +767,12 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ 	void *frame_pointer;
+ 	bool skipped = false;
+ 
+-	preempt_disable();
+-
+ 	/*
+ 	 * Set a dummy kprobe for avoiding kretprobe recursion.
+ 	 * Since kretprobe never run in kprobe handler, kprobe must not
+ 	 * be running at this point.
+ 	 */
+-	kcb = get_kprobe_ctlblk();
+-	__this_cpu_write(current_kprobe, &kretprobe_kprobe);
+-	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
++	kprobe_busy_begin();
+ 
+ 	INIT_HLIST_HEAD(&empty_rp);
+ 	kretprobe_hash_lock(current, &head, &flags);
+@@ -857,7 +848,7 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ 			__this_cpu_write(current_kprobe, &ri->rp->kp);
+ 			ri->ret_addr = correct_ret_addr;
+ 			ri->rp->handler(ri, regs);
+-			__this_cpu_write(current_kprobe, &kretprobe_kprobe);
++			__this_cpu_write(current_kprobe, &kprobe_busy);
+ 		}
+ 
+ 		recycle_rp_inst(ri, &empty_rp);
+@@ -873,8 +864,7 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ 
+ 	kretprobe_hash_unlock(current, &flags);
+ 
+-	__this_cpu_write(current_kprobe, NULL);
+-	preempt_enable();
++	kprobe_busy_end();
+ 
+ 	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+ 		hlist_del(&ri->hlist);
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 04bdaf01112c..645fd401c856 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -350,6 +350,10 @@ static inline struct kprobe_ctlblk *get_kprobe_ctlblk(void)
+ 	return this_cpu_ptr(&kprobe_ctlblk);
+ }
+ 
++extern struct kprobe kprobe_busy;
++void kprobe_busy_begin(void);
++void kprobe_busy_end(void);
++
+ kprobe_opcode_t *kprobe_lookup_name(const char *name, unsigned int offset);
+ int register_kprobe(struct kprobe *p);
+ void unregister_kprobe(struct kprobe *p);
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 2625c241ac00..75bb4a8458e7 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1236,6 +1236,26 @@ __releases(hlist_lock)
+ }
+ NOKPROBE_SYMBOL(kretprobe_table_unlock);
+ 
++struct kprobe kprobe_busy = {
++	.addr = (void *) get_kprobe,
++};
++
++void kprobe_busy_begin(void)
++{
++	struct kprobe_ctlblk *kcb;
++
++	preempt_disable();
++	__this_cpu_write(current_kprobe, &kprobe_busy);
++	kcb = get_kprobe_ctlblk();
++	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
++}
++
++void kprobe_busy_end(void)
++{
++	__this_cpu_write(current_kprobe, NULL);
++	preempt_enable();
++}
++
+ /*
+  * This function is called from finish_task_switch when task tk becomes dead,
+  * so that we can recycle any function-return probe instances associated
+@@ -1253,6 +1273,8 @@ void kprobe_flush_task(struct task_struct *tk)
+ 		/* Early boot.  kretprobe_table_locks not yet initialized. */
+ 		return;
+ 
++	kprobe_busy_begin();
++
+ 	INIT_HLIST_HEAD(&empty_rp);
+ 	hash = hash_ptr(tk, KPROBE_HASH_BITS);
+ 	head = &kretprobe_inst_table[hash];
+@@ -1266,6 +1288,8 @@ void kprobe_flush_task(struct task_struct *tk)
+ 		hlist_del(&ri->hlist);
+ 		kfree(ri);
+ 	}
++
++	kprobe_busy_end();
+ }
+ NOKPROBE_SYMBOL(kprobe_flush_task);
+ 
+-- 
+2.18.2
+
