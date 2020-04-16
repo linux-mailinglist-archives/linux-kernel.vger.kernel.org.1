@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF2D1AC7BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8627E1ACC74
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437569AbgDPO6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
+        id S2895447AbgDPQA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392469AbgDPNzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:55:18 -0400
+        id S2895469AbgDPN1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:27:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B68220732;
-        Thu, 16 Apr 2020 13:55:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40C5A206E9;
+        Thu, 16 Apr 2020 13:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045317;
-        bh=LGYD6nF+jAY2y5u0s809J0M2sYuL/telrnLiHSscRN0=;
+        s=default; t=1587043639;
+        bh=pYYnWNXIOOVYT3paGvt0+fyCX+Hzf57UqsPRpVa5kcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OnbV3X8kGoRUDiCfXcVy0SL9qTX+E/x9Kz3MHFgrZvaZEt4q66d5IHUy6UBsRgmN2
-         2xQI87rfZW2FmabJ0VTcUUMPBsduprLjkQ/A1CCsia+O20YzzY0H13o1NabMEjb2jt
-         1JFtvSlU/mJscPrKr8LRBxYe4LQwwxJ1wQsoZsJw=
+        b=2O9iiMRv+zB2ucvferMQgKTFUe+ces2f8ZnRen8xNC+JOsW8lSG7eAB3CDulGMtMZ
+         h7bZIhxM/cOjW0Ub+wZrVe6Yeaei+XVLgfZkPIiGKBaCEY/J2fx9dQBFzVACRvIwcU
+         iOBNSWuou282jdp4h6Uf6qjH79nk79WMFsX5HfDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.6 084/254] media: venus: cache vb payload to be used by clock scaling
+        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
+        Jianxin Pan <jianxin.pan@amlogic.com>,
+        Thinh Nguyen <thinhn@synopsys.com>,
+        Jun Li <lijun.kernel@gmail.com>, Tim <elatllat@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 032/146] usb: dwc3: core: add support for disabling SS instances in park mode
 Date:   Thu, 16 Apr 2020 15:22:53 +0200
-Message-Id: <20200416131336.418217827@linuxfoundation.org>
+Message-Id: <20200416131246.895332182@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,143 +48,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit fd1ee315dcd4a0f913a74939eb88f6d9b0bd9250 upstream.
+[ Upstream commit 7ba6b09fda5e0cb741ee56f3264665e0edc64822 ]
 
-Instead of iterate over previously queued buffers in clock
-scaling code do cache the payload in instance context structure
-for later use when calculating new clock rate.
+In certain circumstances, the XHCI SuperSpeed instance in park mode
+can fail to recover, thus on Amlogic G12A/G12B/SM1 SoCs when there is high
+load on the single XHCI SuperSpeed instance, the controller can crash like:
+ xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command.
+ xhci-hcd xhci-hcd.0.auto: Host halt failed, -110
+ xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
+ xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command.
+ hub 2-1.1:1.0: hub_ext_port_status failed (err = -22)
+ xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
+ usb 2-1.1-port1: cannot reset (err = -22)
 
-This will avoid to use spin locks during buffer list iteration
-in clock_scaling.
+Setting the PARKMODE_DISABLE_SS bit in the DWC3_USB3_GUCTL1 mitigates
+the issue. The bit is described as :
+"When this bit is set to '1' all SS bus instances in park mode are disabled"
 
-This fixes following kernel Oops:
+Synopsys explains:
+The GUCTL1.PARKMODE_DISABLE_SS is only available in
+dwc_usb3 controller running in host mode.
+This should not be set for other IPs.
+This can be disabled by default based on IP, but I recommend to have a
+property to enable this feature for devices that need this.
 
- Unable to handle kernel paging request at virtual address deacfffffffffd6c
- Mem abort info:
-   ESR = 0x96000004
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
- Data abort info:
-   ISV = 0, ISS = 0x00000004
-   CM = 0, WnR = 0
- [deacfffffffffd6c] address between user and kernel address ranges
- Internal error: Oops: 96000004 [#1] PREEMPT SMP
- CPU: 7 PID: 5763 Comm: V4L2DecoderThre Tainted: G S      W         5.4.11 #8
- pstate: 20400009 (nzCv daif +PAN -UAO)
- pc : load_scale_v4+0x4c/0x2bc [venus_core]
- lr : session_process_buf+0x18c/0x1c0 [venus_core]
- sp : ffffffc01376b8d0
- x29: ffffffc01376b8d0 x28: ffffff80cf1b0220
- x27: ffffffc01376bba0 x26: ffffffd8f562b2d8
- x25: ffffff80cf1b0220 x24: 0000000000000005
- x23: ffffffd8f5620d98 x22: ffffff80ca01c800
- x21: ffffff80cf1b0000 x20: ffffff8149490080
- x19: ffffff8174b2c010 x18: 0000000000000000
- x17: 0000000000000000 x16: ffffffd96ee3a0dc
- x15: 0000000000000026 x14: 0000000000000026
- x13: 00000000000055ac x12: 0000000000000001
- x11: deacfffffffffd6c x10: dead000000000100
- x9 : ffffff80ca01cf28 x8 : 0000000000000026
- x7 : 0000000000000000 x6 : ffffff80cdd899c0
- x5 : ffffff80cdd899c0 x4 : 0000000000000008
- x3 : ffffff80ca01cf28 x2 : ffffff80ca01cf28
- x1 : ffffff80d47ffc00 x0 : ffffff80cf1b0000
- Call trace:
-  load_scale_v4+0x4c/0x2bc [venus_core]
-  session_process_buf+0x18c/0x1c0 [venus_core]
-  venus_helper_vb2_buf_queue+0x7c/0xf0 [venus_core]
-  __enqueue_in_driver+0xe4/0xfc [videobuf2_common]
-  vb2_core_qbuf+0x15c/0x338 [videobuf2_common]
-  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
-  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
-  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
-  v4l_qbuf+0x48/0x58
-  __video_do_ioctl+0x2b0/0x39c
-  video_usercopy+0x394/0x710
-  video_ioctl2+0x38/0x48
-  v4l2_ioctl+0x6c/0x80
-  do_video_ioctl+0xb00/0x2874
-  v4l2_compat_ioctl32+0x5c/0xcc
-  __se_compat_sys_ioctl+0x100/0x2074
-  __arm64_compat_sys_ioctl+0x20/0x2c
-  el0_svc_common+0xa4/0x154
-  el0_svc_compat_handler+0x2c/0x38
-  el0_svc_compat+0x8/0x10
- Code: eb0a013f 54000200 aa1f03e8 d10e514b (b940016c)
- ---[ end trace e11304b46552e0b9 ]---
-
-Fixes: c0e284ccfeda ("media: venus: Update clock scaling")
-
-Cc: stable@vger.kernel.org # v5.5+
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+CC: Dongjin Kim <tobetter@gmail.com>
+Cc: Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: Thinh Nguyen <thinhn@synopsys.com>
+Cc: Jun Li <lijun.kernel@gmail.com>
+Reported-by: Tim <elatllat@gmail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/venus/core.h    |    1 +
- drivers/media/platform/qcom/venus/helpers.c |   20 +++++++++++++-------
- 2 files changed, 14 insertions(+), 7 deletions(-)
+ drivers/usb/dwc3/core.c | 5 +++++
+ drivers/usb/dwc3/core.h | 4 ++++
+ 2 files changed, 9 insertions(+)
 
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -344,6 +344,7 @@ struct venus_inst {
- 	unsigned int subscriptions;
- 	int buf_count;
- 	struct venus_ts_metadata tss[VIDEO_MAX_FRAME];
-+	unsigned long payloads[VIDEO_MAX_FRAME];
- 	u64 fps;
- 	struct v4l2_fract timeperframe;
- 	const struct venus_format *fmt_out;
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -544,18 +544,13 @@ static int scale_clocks_v4(struct venus_
- 	struct venus_core *core = inst->core;
- 	const struct freq_tbl *table = core->res->freq_tbl;
- 	unsigned int num_rows = core->res->freq_tbl_size;
--	struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
- 	struct device *dev = core->dev;
- 	unsigned long freq = 0, freq_core1 = 0, freq_core2 = 0;
- 	unsigned long filled_len = 0;
--	struct venus_buffer *buf, *n;
--	struct vb2_buffer *vb;
- 	int i, ret;
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 6666d2a52bf56..60d08269ad9a0 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -981,6 +981,9 @@ static int dwc3_core_init(struct dwc3 *dwc)
+ 		if (dwc->dis_tx_ipgap_linecheck_quirk)
+ 			reg |= DWC3_GUCTL1_TX_IPGAP_LINECHECK_DIS;
  
--	v4l2_m2m_for_each_src_buf_safe(m2m_ctx, buf, n) {
--		vb = &buf->vb.vb2_buf;
--		filled_len = max(filled_len, vb2_get_plane_payload(vb, 0));
--	}
-+	for (i = 0; i < inst->num_input_bufs; i++)
-+		filled_len = max(filled_len, inst->payloads[i]);
- 
- 	if (inst->session_type == VIDC_SESSION_TYPE_DEC && !filled_len)
- 		return 0;
-@@ -1289,6 +1284,15 @@ int venus_helper_vb2_buf_prepare(struct
- }
- EXPORT_SYMBOL_GPL(venus_helper_vb2_buf_prepare);
- 
-+static void cache_payload(struct venus_inst *inst, struct vb2_buffer *vb)
-+{
-+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+	unsigned int idx = vbuf->vb2_buf.index;
++		if (dwc->parkmode_disable_ss_quirk)
++			reg |= DWC3_GUCTL1_PARKMODE_DISABLE_SS;
 +
-+	if (vbuf->vb2_buf.type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-+		inst->payloads[idx] = vb2_get_plane_payload(vb, 0);
-+}
-+
- void venus_helper_vb2_buf_queue(struct vb2_buffer *vb)
- {
- 	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-@@ -1300,6 +1304,8 @@ void venus_helper_vb2_buf_queue(struct v
+ 		dwc3_writel(dwc->regs, DWC3_GUCTL1, reg);
+ 	}
  
- 	v4l2_m2m_buf_queue(m2m_ctx, vbuf);
+@@ -1287,6 +1290,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+ 				"snps,dis-del-phy-power-chg-quirk");
+ 	dwc->dis_tx_ipgap_linecheck_quirk = device_property_read_bool(dev,
+ 				"snps,dis-tx-ipgap-linecheck-quirk");
++	dwc->parkmode_disable_ss_quirk = device_property_read_bool(dev,
++				"snps,parkmode-disable-ss-quirk");
  
-+	cache_payload(inst, vb);
-+
- 	if (inst->session_type == VIDC_SESSION_TYPE_ENC &&
- 	    !(inst->streamon_out && inst->streamon_cap))
- 		goto unlock;
+ 	dwc->tx_de_emphasis_quirk = device_property_read_bool(dev,
+ 				"snps,tx_de_emphasis_quirk");
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 131028501752b..e34308d64619e 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -242,6 +242,7 @@
+ #define DWC3_GUCTL_HSTINAUTORETRY	BIT(14)
+ 
+ /* Global User Control 1 Register */
++#define DWC3_GUCTL1_PARKMODE_DISABLE_SS	BIT(17)
+ #define DWC3_GUCTL1_TX_IPGAP_LINECHECK_DIS	BIT(28)
+ #define DWC3_GUCTL1_DEV_L1_EXIT_BY_HW	BIT(24)
+ 
+@@ -992,6 +993,8 @@ struct dwc3_scratchpad_array {
+  *			change quirk.
+  * @dis_tx_ipgap_linecheck_quirk: set if we disable u2mac linestate
+  *			check during HS transmit.
++ * @parkmode_disable_ss_quirk: set if we need to disable all SuperSpeed
++ *			instances in park mode.
+  * @tx_de_emphasis_quirk: set if we enable Tx de-emphasis quirk
+  * @tx_de_emphasis: Tx de-emphasis value
+  * 	0	- -6dB de-emphasis
+@@ -1163,6 +1166,7 @@ struct dwc3 {
+ 	unsigned		dis_u2_freeclk_exists_quirk:1;
+ 	unsigned		dis_del_phy_power_chg_quirk:1;
+ 	unsigned		dis_tx_ipgap_linecheck_quirk:1;
++	unsigned		parkmode_disable_ss_quirk:1;
+ 
+ 	unsigned		tx_de_emphasis_quirk:1;
+ 	unsigned		tx_de_emphasis:2;
+-- 
+2.20.1
+
 
 
