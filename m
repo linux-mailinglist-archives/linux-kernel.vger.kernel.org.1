@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B1A1AB7E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6737B1AB7E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407873AbgDPGWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:22:53 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34934 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407768AbgDPGWk (ORCPT
+        id S2407944AbgDPGYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407332AbgDPGX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:22:40 -0400
-Received: by mail-pl1-f193.google.com with SMTP id y12so999385pll.2;
-        Wed, 15 Apr 2020 23:22:38 -0700 (PDT)
+        Thu, 16 Apr 2020 02:23:57 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272AFC061A0C;
+        Wed, 15 Apr 2020 23:23:55 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id g2so999433plo.3;
+        Wed, 15 Apr 2020 23:23:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=k9LiR9gqBCcCZdNQq4/YQxuQV5mvCYKBntiHSmfOytk=;
+        b=hmhHjntthZH7KFvuW/uCALSyrDaaZpjaURcbC1eWuZMaO/14HeEKZjksmWnkPw86qP
+         RwhRYDHjFfELQ1N77QeliUg4AKNXsdgS1gJVGunUKpARc6C1g7NUEmFfYx2SQ2+tVL5V
+         kX7pcDrYBDPxYNwfRtiKoi103cX8L991eZey7IoOSqCK9XbRvk+W9LgXEydGNzKNnICP
+         3HGyw/F+BC+u87V2vXZYhHCRmW7iX4HOyjs7e/GCt0zU5Oha+YUHdOZaKN9atjXhv0Qd
+         LjnIFYJ6Xo1yz0RT+XTkGJNVps8+WkaJux61hW/XAIBLY2sS+r09gagZE7MqhtDZAs/F
+         g7XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=k27Be6sd1Yc09djkEIgQideX2oHMZDOH9/7c5zs2sCc=;
-        b=UrfsfCP48hRFvskEspBLAuBT8+9ZF22buldeOcgDFg1so3URLPfBMRsrd2DCOJl2gt
-         2B3Jx0JzpI4p2q+8oXGa92W6wJmanSdQzXJQfxEeIPbeKINh1WFhf5MY6ifq0hCel26I
-         jZDQs4D5Jakq5Wv2H4mCn3fXkVD53mSLhLWESEIIhMh32IoiK0PcAuZ4r7XCPhNffTRS
-         Ci6h3cH/3K6L7/GgBJ7Bdv+F1kDbfkK34tXTXpJPrDpQElVBIIVmQrq950wstG4kj/l0
-         g+zhVYPUbB4BnqOLYdJUPXxOQaE1uPBgPCTU5PSnOCMfpW4Y4ZLwAjGsiXIlhrGdugVo
-         1lBA==
-X-Gm-Message-State: AGi0PuaS0WMxJQNIGC6hEl2tOoGnZLFGwldBK2T2yCq2F9UZsyxMs/E3
-        0XELc079bNBBPPfJ3gXzdac=
-X-Google-Smtp-Source: APiQypIQ51ni3Je5IKOGJuKEzLtGVk37MLMrhVVcjFEkKHx5TdRw0XNEdFYvpD1Pu+HekUaYWJdUZQ==
-X-Received: by 2002:a17:90b:20a:: with SMTP id fy10mr3426003pjb.9.1587018158495;
-        Wed, 15 Apr 2020 23:22:38 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id f21sm1896083pfn.71.2020.04.15.23.22.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=k9LiR9gqBCcCZdNQq4/YQxuQV5mvCYKBntiHSmfOytk=;
+        b=hayXNpWYcuY/s+nhLCRNXI133AabRGf47tCF3UkOcKqUGFIqMs7v6Lpk83inZGPVeu
+         Q8/8JpO8Dvy9NhAkRfi13e7IYvfr+KosVc42mPrjvbLwgc+VHIg0v72HCn/wo0qT6c1y
+         xAaAe3EBRc7gfto3BpKXlmWXr/7YHq4Nt+4GE4keBgruT42LG7KOsrlCi6Z7t4hpLxsM
+         n7PEw4zgsgAsojXIT/BqHQGI+YuVBvJ/ebpviZ+I9s9wEIOs85eUmLmdKf1CsK8Sn5Mc
+         +SfPe3ZbVZ22iKi3mj+5pKLwvvUmU09mQAuXU5PxPODWt/YAedvy6SPTNqnxe+Bp/oGF
+         /2YQ==
+X-Gm-Message-State: AGi0PuY1ziIEVLIfAghJlyhzpzVlOP8pCqnyx0UUAHFpJvh3pM0OsYzx
+        4Mvp99q429n2XNdU6c9b4g==
+X-Google-Smtp-Source: APiQypKaVK5tHJIcKhm+h8B/y2dD4tsICDzX+exf1e1PqrpGq2QKMRt2sf3yVpSSWLw0bNTdtafcMQ==
+X-Received: by 2002:a17:902:9f95:: with SMTP id g21mr8282218plq.66.1587018234586;
+        Wed, 15 Apr 2020 23:23:54 -0700 (PDT)
+Received: from localhost.localdomain ([2402:3a80:13bf:b0b1:dcfd:f4e2:a41f:9129])
+        by smtp.gmail.com with ESMTPSA id u13sm1501463pjb.45.2020.04.15.23.23.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 23:22:37 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id BFD6C40277; Thu, 16 Apr 2020 06:22:36 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 06:22:36 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, nstange@suse.de, akpm@linux-foundation.org,
-        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/5] blktrace: fix debugfs use after free
-Message-ID: <20200416062236.GM11244@42.do-not-panic.com>
-References: <20200414041902.16769-1-mcgrof@kernel.org>
- <20200414041902.16769-3-mcgrof@kernel.org>
- <20200416021036.GA2717677@T590>
- <20200416052524.GH11244@42.do-not-panic.com>
- <20200416054750.GA2723777@T590>
- <20200416060921.GB2723777@T590>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416060921.GB2723777@T590>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 15 Apr 2020 23:23:53 -0700 (PDT)
+From:   madhuparnabhowmik10@gmail.com
+To:     dan.j.williams@intel.com, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrianov@ispras.ru, ldv-project@linuxtesting.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Subject: [PATCH] drivers: dma: pch_dma.c: Avoid data race between probe and irq handler
+Date:   Thu, 16 Apr 2020 11:53:35 +0530
+Message-Id: <20200416062335.29223-1-madhuparnabhowmik10@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 02:09:21PM +0800, Ming Lei wrote:
-> On Thu, Apr 16, 2020 at 01:47:50PM +0800, Ming Lei wrote:
-> > On Thu, Apr 16, 2020 at 05:25:24AM +0000, Luis Chamberlain wrote:
-> > > On Thu, Apr 16, 2020 at 10:10:36AM +0800, Ming Lei wrote:
-> > > > In theory, multiple partitions can be traced concurrently, but looks
-> > > > it never works, so it won't cause trouble for multiple partition trace.
-> > > > 
-> > > > One userspace visible change is that blktrace debugfs dir name is switched 
-> > > > to disk name from partition name in case of partition trace, will it
-> > > > break some utilities?
-> > > 
-> > > How is this possible, its not clear to me, we go from:
-> > > 
-> > > -	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
-> > > -					    blk_debugfs_root);
-> > > 
-> > > To this:
-> > > 
-> > > +	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
-> > > +					    blk_debugfs_root);
-> > > 
-> > > 
-> > > Maybe I am overlooking something.
-> > 
-> > Your patch removes the blktrace debugfs dir:
-> > 
-> > do_blk_trace_setup()
-> > 
-> > -       dir = debugfs_lookup(buts->name, blk_debugfs_root);
-> > -       if (!dir)
-> > -               bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
-> > -
-> > 
-> > Then create blktrace attributes under the dir of q->debugfs_dir.
-> > 
-> > However, buts->name could be one partition device name, but
-> > q->debugfs_dir has to be disk name.
-> > 
-> > This change is visible to blktrace utilities.
-> 
-> Just test the 1st two patches via "blktrace /dev/sda2", follows the
-> result, so this way can't be accepted.
-> 
-> [root@ktest-01 ~]# blktrace /dev/sda2
-> Thread 0 failed open /sys/kernel/debug/block/sda2/trace0: 2/No such file or directory
-> Thread 4 failed open /sys/kernel/debug/block/sda2/trace4: 2/No such file or directory
-> Thread 1 failed open /sys/kernel/debug/block/sda2/trace1: 2/No such file or directory
-> Thread 2 failed open /sys/kernel/debug/block/sda2/trace2: 2/No such file or directory
-> Thread 5 failed open /sys/kernel/debug/block/sda2/trace5: 2/No such file or directory
-> Thread 3 failed open /sys/kernel/debug/block/sda2/trace3: 2/No such file or directory
-> Thread 6 failed open /sys/kernel/debug/block/sda2/trace6: 2/No such file or directory
-> Thread 7 failed open /sys/kernel/debug/block/sda2/trace7: 2/No such file or directory
-> FAILED to start thread on CPU 0: 1/Operation not permitted
-> FAILED to start thread on CPU 1: 1/Operation not permitted
-> FAILED to start thread on CPU 2: 1/Operation not permitted
-> FAILED to start thread on CPU 3: 1/Operation not permitted
-> FAILED to start thread on CPU 4: 1/Operation not permitted
-> FAILED to start thread on CPU 5: 1/Operation not permitted
-> FAILED to start thread on CPU 6: 1/Operation not permitted
-> FAILED to start thread on CPU 7: 1/Operation not permitted
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Thanks, as I noted, I think we'd need to pre-create the directories per
-parition. Let me know if you think of a better alternative.
+pd->dma.dev is read in irq handler pd_irq().
+However, it is set to pdev->dev after request_irq().
+Therefore, set pd->dma.dev to pdev->dev before request_irq() to
+avoid data race between pch_dma_probe() and pd_irq().
 
-  Luis
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+---
+ drivers/dma/pch_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
+index 581e7a290d98..a3b0b4c56a19 100644
+--- a/drivers/dma/pch_dma.c
++++ b/drivers/dma/pch_dma.c
+@@ -865,6 +865,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	pci_set_master(pdev);
++	pd->dma.dev = &pdev->dev;
+ 
+ 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
+ 	if (err) {
+@@ -880,7 +881,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
+ 		goto err_free_irq;
+ 	}
+ 
+-	pd->dma.dev = &pdev->dev;
+ 
+ 	INIT_LIST_HEAD(&pd->dma.channels);
+ 
+-- 
+2.17.1
+
