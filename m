@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA171AD18E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA6D1AD191
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgDPUyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:54:36 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:39851 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgDPUyf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:54:35 -0400
-X-Originating-IP: 86.202.105.35
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 288F4FF805;
-        Thu, 16 Apr 2020 20:54:33 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 2/2] iio: adc: ti-ads8344: optimize consumption
-Date:   Thu, 16 Apr 2020 22:54:28 +0200
-Message-Id: <20200416205428.437503-3-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200416205428.437503-1-alexandre.belloni@bootlin.com>
-References: <20200416205428.437503-1-alexandre.belloni@bootlin.com>
+        id S1728564AbgDPUy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:54:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:41368 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727952AbgDPUy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 16:54:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16C7F30E;
+        Thu, 16 Apr 2020 13:54:58 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B9BE3F237;
+        Thu, 16 Apr 2020 13:54:57 -0700 (PDT)
+References: <20200415210512.805-1-valentin.schneider@arm.com> <20200415210512.805-10-valentin.schneider@arm.com> <CAKfTPtBDGzrvG=YhjBZBEgfx5EtM-rTC-dWX5phqh4bOY5XqgA@mail.gmail.com> <jhj4ktjpw2z.mognet@arm.com> <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com> <CAKfTPtD5x_NQ1KfHhTiAR3eNA85+k13nfSR-9_PKLp6FgVu08A@mail.gmail.com> <jhjv9lz78nv.mognet@arm.com> <CAKfTPtDFD7KMcSK-2_LP-_APN2m05pWVhzKvJOVnD+Nacn846w@mail.gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 9/9] sched/topology: Define and use shortcut pointers for wakeup sd_flag scan
+In-reply-to: <CAKfTPtDFD7KMcSK-2_LP-_APN2m05pWVhzKvJOVnD+Nacn846w@mail.gmail.com>
+Date:   Thu, 16 Apr 2020 21:54:52 +0100
+Message-ID: <jhjsgh36tib.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the clock mode only once, at probe time and then keep the ADC powered
-down between conversions.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/iio/adc/ti-ads8344.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On 16/04/20 16:58, Vincent Guittot wrote:
+>> ---
+>> if (wake_flags & WF_TTWU) {
+>>         if (want_affine) {
+>>                 // We can cache that at topology buildup
+>>                 sd = highest_flag_domain(cpu, SD_WAKE_AFFINE);
+>>
+>>                 if (cpumask_test_cpu(prev_cpu, sched_domain_span(sd) &&
+>>                     cpu != prev_cpu)
+>>                         new_cpu = wake_affine();
+>>
+>>         }
+>>         // Directly go to select_idle_sibling()
+>>         goto sis;
+>> }
+>>
+>> // !want_affine logic here
+>> ---
+>>
+>> This in turns mean we could get rid of SD_BALANCE_WAKE entirely... I'm a
+>> bit more reluctant to that only because the last SD_BALANCE_WAKE setter was
+>
+> For now, we should probably skip the additional test above: "if
+> (wake_flags & WF_TTWU) {" and keep SD_BALANCE_WAKE so we will continue
+> to loop in case of !want_affine.
+>
+> We can imagine that we might want at the end to be a bit more smart
+> for SD_BALANCE_WAKE and the slow path... like with the latency nice
+> proposal and latency-nice=19 as a example
+>
 
-diff --git a/drivers/iio/adc/ti-ads8344.c b/drivers/iio/adc/ti-ads8344.c
-index abe4b56c847c..40e7a9eee189 100644
---- a/drivers/iio/adc/ti-ads8344.c
-+++ b/drivers/iio/adc/ti-ads8344.c
-@@ -72,7 +72,7 @@ static const struct iio_chan_spec ads8344_channels[] = {
- };
- 
- static int ads8344_adc_conversion(struct ads8344 *adc, int channel,
--				  bool differential)
-+				  bool differential, u8 clock)
- {
- 	struct spi_device *spi = adc->spi;
- 	int ret;
-@@ -81,7 +81,7 @@ static int ads8344_adc_conversion(struct ads8344 *adc, int channel,
- 	if (!differential)
- 		adc->tx_buf |= ADS8344_SINGLE_END;
- 	adc->tx_buf |= ADS8344_CHANNEL(channel);
--	adc->tx_buf |= ADS8344_CLOCK_INTERNAL;
-+	adc->tx_buf |= clock;
- 
- 	ret = spi_write(spi, &adc->tx_buf, 1);
- 	if (ret)
-@@ -106,7 +106,7 @@ static int ads8344_read_raw(struct iio_dev *iio,
- 	case IIO_CHAN_INFO_RAW:
- 		mutex_lock(&adc->lock);
- 		*value = ads8344_adc_conversion(adc, channel->scan_index,
--						channel->differential);
-+						channel->differential, 0);
- 		mutex_unlock(&adc->lock);
- 		if (*value < 0)
- 			return *value;
-@@ -161,6 +161,11 @@ static int ads8344_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
-+	/* Do a dummy read and set external clock mode */
-+	ret = ads8344_adc_conversion(adc, 0, 0, ADS8344_CLOCK_INTERNAL);
-+	if (ret < 0)
-+		return ret;
-+
- 	spi_set_drvdata(spi, indio_dev);
- 
- 	ret = iio_device_register(indio_dev);
--- 
-2.25.2
+Good point. I'll go for the first option and see where I end up; I'd like
+to cache the other domain pointers if possible, I'll do some benchmarking
+and see if I can do that without another switch case.
 
+>> removed fairly recently, see
+>>   a526d466798d ("sched/topology: Remove SD_BALANCE_WAKE on asymmetric capacity systems")
