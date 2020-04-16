@@ -2,86 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A8F1AD171
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06361AD176
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgDPUpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:45:49 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43152 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgDPUpr (ORCPT
+        id S1727981AbgDPUs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725894AbgDPUs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:45:47 -0400
-Received: by mail-ot1-f65.google.com with SMTP id g14so4233531otg.10;
-        Thu, 16 Apr 2020 13:45:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uNp2FEE1PLVvPcRli4Kxfk/uC3bIO5nhdJmFaCVvZ8Y=;
-        b=i1YjojYHHnAIATVcPzzcwz+2X/tQwCqulyG8vDqYH3apIB0pI8iXEKuPqH/zmfNrZ5
-         54s7LrkzkVU68EnbNAAw29RZ0JcOfEyQMyNfrLuOB7lP4XNWOxnStBV/Fbr8EXad+JLD
-         PX/BrFnE0iDNT+JHMLKV7J+VnoRBwXdWyrCHd0SAtWYjQUnpnVSM6PU6QTjwBnRUc3RE
-         b90OC9ZcLWup61RkOe61+nj2+mdOO4xEHZlULMoOgar2Cy+F+oEFOoCO/wRU9hxHoyAs
-         RO+M3ob0e1IkmU8rIDg2AxH98gWJz08HydHw1S+4OzFxGi76JA7xBg1SQpbwF5Dz87Uv
-         YTLA==
-X-Gm-Message-State: AGi0Pub0G0jeYFdfOvdmOPQo34pfbXhKEFoO2ajl+nKkdLnp/B05d9wB
-        I4SdGjbGia9YDIiYFqX14Q==
-X-Google-Smtp-Source: APiQypK5AKz1ujNN52aZa37611roc3sbyihjxaYggNSCUvmDTZoTUNxSsPeEJfql3QtvsIAeOCVY9A==
-X-Received: by 2002:a05:6830:1599:: with SMTP id i25mr2759otr.188.1587069947265;
-        Thu, 16 Apr 2020 13:45:47 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f45sm7402999otf.30.2020.04.16.13.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 13:45:46 -0700 (PDT)
-Received: (nullmailer pid 19615 invoked by uid 1000);
-        Thu, 16 Apr 2020 20:45:45 -0000
-Date:   Thu, 16 Apr 2020 15:45:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Anthony Huang <anthony.huang@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thu, 16 Apr 2020 16:48:56 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9802AC061A0C;
+        Thu, 16 Apr 2020 13:48:56 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 627C412757E6A;
+        Thu, 16 Apr 2020 13:48:55 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 13:48:54 -0700 (PDT)
+Message-Id: <20200416.134854.89754180705215688.davem@davemloft.net>
+To:     f.fainelli@gmail.com
+Cc:     netdev@vger.kernel.org, olteanv@gmail.com, peppe.cavallaro@st.com,
+        alexandre.torgue@st.com, joabreu@synopsys.com, mripard@kernel.org,
+        wens@csie.org, mcoquelin.stm32@gmail.com,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        Anthony Huang <anthony.huang@mediatek.com>
-Subject: Re: [PATCH 1/2] dt-bindings: soc: mediatek: Add document for mmdvfs
- driver
-Message-ID: <20200416204545.GA19079@bogus>
-References: <1586949506-22990-1-git-send-email-anthony.huang@mediatek.com>
- <1586949506-22990-2-git-send-email-anthony.huang@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586949506-22990-2-git-send-email-anthony.huang@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: stmmac: dwmac-sunxi: Provide TX and RX fifo
+ sizes
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200414223952.5886-1-f.fainelli@gmail.com>
+References: <20200414223952.5886-1-f.fainelli@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 16 Apr 2020 13:48:56 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 19:18:25 +0800, Anthony Huang wrote:
-> This document describes the properties what mtk mmdvfs
-> device node support.
+From: Florian Fainelli <f.fainelli@gmail.com>
+Date: Tue, 14 Apr 2020 15:39:52 -0700
+
+> After commit bfcb813203e619a8960a819bf533ad2a108d8105 ("net: dsa:
+> configure the MTU for switch ports") my Lamobo R1 platform which uses
+> an allwinner,sun7i-a20-gmac compatible Ethernet MAC started to fail
+> by rejecting a MTU of 1536. The reason for that is that the DMA
+> capabilities are not readable on this version of the IP, and there
+> is also no 'tx-fifo-depth' property being provided in Device Tree. The
+> property is documented as optional, and is not provided.
 > 
-> Signed-off-by: Anthony Huang <anthony.huang@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/mmdvfs.yaml   |  198 ++++++++++++++++++++
->  1 file changed, 198 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mmdvfs.yaml
+> Chen-Yu indicated that the FIFO sizes are 4KB for TX and 16KB for RX, so
+> provide these values through platform data as an immediate fix until
+> various Device Tree sources get updated accordingly.
 > 
+> Fixes: eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
+> Suggested-by: Chen-Yu Tsai <wens@csie.org>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mmdvfs.example.dt.yaml: example-0: opp-table-mm: {'compatible': ['operating-points-v2'], 'phandle': [[1]], 'opp-0': {'opp-hz': [[315000000]], 'opp-microvolt': [[650000]]}, 'opp-1': {'opp-hz': [[450000000]], 'opp-microvolt': [[725000]]}, 'opp-2': {'opp-hz': [[606000000]], 'opp-microvolt': [[825000]]}} is not valid under any of the given schemas (Possible causes of the failure):
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mmdvfs.example.dt.yaml: example-0: opp-table-mm: {'compatible': ['operating-points-v2'], 'phandle': [[1]], 'opp-0': {'opp-hz': [[315000000]], 'opp-microvolt': [[650000]]}, 'opp-1': {'opp-hz': [[450000000]], 'opp-microvolt': [[725000]]}, 'opp-2': {'opp-hz': [[606000000]], 'opp-microvolt': [[825000]]}} is not of type 'array'
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mmdvfs.example.dt.yaml: mmdvfs: 'clock' is a required property
-
-See https://patchwork.ozlabs.org/patch/1271100
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+Applied and queued up for -stable, thanks.
