@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDFB1ACDE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9B71ACDF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389935AbgDPQlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:41:44 -0400
-Received: from elvis.franken.de ([193.175.24.41]:42211 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731023AbgDPQlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:41:35 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jP7Zy-0001kl-05; Thu, 16 Apr 2020 18:41:30 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4946EC0144; Thu, 16 Apr 2020 18:40:55 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 18:40:55 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson: Use CONFIG_NR_CPUS_DEFAULT_64 to support
- more CPUs
-Message-ID: <20200416164055.GF24743@alpha.franken.de>
-References: <1585638006-19439-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1730282AbgDPQoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728947AbgDPQoN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 12:44:13 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84097C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:44:12 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 32BF42A22D1
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org, sam@ravnborg.org,
+        laurent.pinchart@ideasonboard.com, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 1/2] drm: panel: Set connector type for LP120UP1
+Date:   Thu, 16 Apr 2020 18:44:03 +0200
+Message-Id: <20200416164404.2418426-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1585638006-19439-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 03:00:06PM +0800, Tiezhu Yang wrote:
-> When I update the mainline kernel on the Loongson 2-way platform which
-> has 8 CPUs, it only shows 4 CPUs due to NR_CPUS is 4, this is obviously
-> wrong.
-> 
-> In order to support more CPUs on the Loongson platform, it is better
-> to use CONFIG_NR_CPUS_DEFAULT_64 instead of CONFIG_NR_CPUS_DEFAULT_4
-> to specify the maximum number of CPUs which the kernel will support.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+The LP120UP1 is a eDP panel, set the connector type accordingly.
 
-applied to mips-next.
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
-Thomas.
+ drivers/gpu/drm/panel/panel-simple.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 3ad828eaefe1..6253635601bb 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -2168,6 +2168,7 @@ static const struct panel_desc lg_lp120up1 = {
+ 		.width = 267,
+ 		.height = 183,
+ 	},
++	.connector_type = DRM_MODE_CONNECTOR_eDP,
+ };
+ 
+ static const struct drm_display_mode lg_lp129qe_mode = {
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.25.1
+
