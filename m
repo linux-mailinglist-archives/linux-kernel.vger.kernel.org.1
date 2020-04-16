@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD501AC5CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648171AC876
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731746AbgDPO1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:27:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
+        id S2394977AbgDPPIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:08:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392583AbgDPN7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:59:35 -0400
+        id S1728769AbgDPNvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:51:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CCF920732;
-        Thu, 16 Apr 2020 13:59:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7EA220732;
+        Thu, 16 Apr 2020 13:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045574;
-        bh=HgRYTwaT0K3i6R4yyE0ffxtTm8sNUE/pRjIWBN7QiJ0=;
+        s=default; t=1587045065;
+        bh=P/0lskj5n+fVsZdBwi59YdaK/6ajOC5ljhBBmqt4dHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WRKkNoXM/YRn2kSv3T2KtVyacFpEg9upGfx5rQMnx70DIImUTUWtFnXSYgHyhvst+
-         Ak0wdgXUMGmBxtc3S2p9unma4rTr+K2EDpNhu0HPGhnXFFQPe/BktJmUlpDxbmBvZb
-         cb99vryv1snxo+jneowZIaIRP2yly3mVv6nEhkdA=
+        b=JQfVQcGJDPPA5uTPxoysT1FtXhrKzhpvMD3/JGx3H1AA2H4+IIocRoPYIqajE74Ws
+         VmQPd+aclKpDK+T5NpyaR9WgvF04oxu17vdbsrVbxBbn1apWisfQOIRPYUApIj+D1Q
+         99YR48Raa6JNfP3EZbQFcqb3IyVMWJyxVnXTxdVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Valentin Ciocoi Radulescu <valentin.ciocoi@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.6 183/254] crypto: caam/qi2 - fix chacha20 data size error
+        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Fredrik Strupe <fredrik@strupe.net>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.4 178/232] arm64: armv8_deprecated: Fix undef_hook mask for thumb setend
 Date:   Thu, 16 Apr 2020 15:24:32 +0200
-Message-Id: <20200416131349.265927802@linuxfoundation.org>
+Message-Id: <20200416131337.303018510@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-commit 3a5a9e1ef37b030b836d92df8264f840988f4a38 upstream.
+commit fc2266011accd5aeb8ebc335c381991f20e26e33 upstream.
 
-HW generates a Data Size error for chacha20 requests that are not
-a multiple of 64B, since algorithm state (AS) does not have
-the FINAL bit set.
+For thumb instructions, call_undef_hook() in traps.c first reads a u16,
+and if the u16 indicates a T32 instruction (u16 >= 0xe800), a second
+u16 is read, which then makes up the the lower half-word of a T32
+instruction. For T16 instructions, the second u16 is not read,
+which makes the resulting u32 opcode always have the upper half set to
+0.
 
-Since updating req->iv (for chaining) is not required,
-modify skcipher descriptors to set the FINAL bit for chacha20.
+However, having the upper half of instr_mask in the undef_hook set to 0
+masks out the upper half of all thumb instructions - both T16 and T32.
+This results in trapped T32 instructions with the lower half-word equal
+to the T16 encoding of setend (b650) being matched, even though the upper
+half-word is not 0000 and thus indicates a T32 opcode.
 
-[Note that for skcipher decryption we know that ctx1_iv_off is 0,
-which allows for an optimization by not checking algorithm type,
-since append_dec_op1() sets FINAL bit for all algorithms except AES.]
+An example of such a T32 instruction is eaa0b650, which should raise a
+SIGILL since T32 instructions with an eaa prefix are unallocated as per
+Arm ARM, but instead works as a SETEND because the second half-word is set
+to b650.
 
-Also drop the descriptor operations that save the IV.
-However, in order to keep code logic simple, things like
-S/G tables generation etc. are not touched.
+This patch fixes the issue by extending instr_mask to include the
+upper u32 half, which will still match T16 instructions where the upper
+half is 0, but not T32 instructions.
 
-Cc: <stable@vger.kernel.org> # v5.3+
-Fixes: 334d37c9e263 ("crypto: caam - update IV using HW support")
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Tested-by: Valentin Ciocoi Radulescu <valentin.ciocoi@nxp.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 2d888f48e056 ("arm64: Emulate SETEND for AArch32 tasks")
+Cc: <stable@vger.kernel.org> # 4.0.x-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/caam/caamalg_desc.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/arm64/kernel/armv8_deprecated.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/crypto/caam/caamalg_desc.c
-+++ b/drivers/crypto/caam/caamalg_desc.c
-@@ -1379,6 +1379,9 @@ void cnstr_shdsc_skcipher_encap(u32 * co
- 				const u32 ctx1_iv_off)
- {
- 	u32 *key_jump_cmd;
-+	u32 options = cdata->algtype | OP_ALG_AS_INIT | OP_ALG_ENCRYPT;
-+	bool is_chacha20 = ((cdata->algtype & OP_ALG_ALGSEL_MASK) ==
-+			    OP_ALG_ALGSEL_CHACHA20);
- 
- 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
- 	/* Skip if already shared */
-@@ -1417,14 +1420,15 @@ void cnstr_shdsc_skcipher_encap(u32 * co
- 				      LDST_OFFSET_SHIFT));
- 
- 	/* Load operation */
--	append_operation(desc, cdata->algtype | OP_ALG_AS_INIT |
--			 OP_ALG_ENCRYPT);
-+	if (is_chacha20)
-+		options |= OP_ALG_AS_FINALIZE;
-+	append_operation(desc, options);
- 
- 	/* Perform operation */
- 	skcipher_append_src_dst(desc);
- 
- 	/* Store IV */
--	if (ivsize)
-+	if (!is_chacha20 && ivsize)
- 		append_seq_store(desc, ivsize, LDST_SRCDST_BYTE_CONTEXT |
- 				 LDST_CLASS_1_CCB | (ctx1_iv_off <<
- 				 LDST_OFFSET_SHIFT));
-@@ -1451,6 +1455,8 @@ void cnstr_shdsc_skcipher_decap(u32 * co
- 				const u32 ctx1_iv_off)
- {
- 	u32 *key_jump_cmd;
-+	bool is_chacha20 = ((cdata->algtype & OP_ALG_ALGSEL_MASK) ==
-+			    OP_ALG_ALGSEL_CHACHA20);
- 
- 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
- 	/* Skip if already shared */
-@@ -1499,7 +1505,7 @@ void cnstr_shdsc_skcipher_decap(u32 * co
- 	skcipher_append_src_dst(desc);
- 
- 	/* Store IV */
--	if (ivsize)
-+	if (!is_chacha20 && ivsize)
- 		append_seq_store(desc, ivsize, LDST_SRCDST_BYTE_CONTEXT |
- 				 LDST_CLASS_1_CCB | (ctx1_iv_off <<
- 				 LDST_OFFSET_SHIFT));
+--- a/arch/arm64/kernel/armv8_deprecated.c
++++ b/arch/arm64/kernel/armv8_deprecated.c
+@@ -601,7 +601,7 @@ static struct undef_hook setend_hooks[]
+ 	},
+ 	{
+ 		/* Thumb mode */
+-		.instr_mask	= 0x0000fff7,
++		.instr_mask	= 0xfffffff7,
+ 		.instr_val	= 0x0000b650,
+ 		.pstate_mask	= (PSR_AA32_T_BIT | PSR_AA32_MODE_MASK),
+ 		.pstate_val	= (PSR_AA32_T_BIT | PSR_AA32_MODE_USR),
 
 
