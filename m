@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7043B1AC26B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAB61AC9D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895671AbgDPN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:28:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35338 "EHLO mail.kernel.org"
+        id S2395266AbgDPP2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:28:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895354AbgDPN1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:27:03 -0400
+        id S2898440AbgDPNo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:44:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BE74217D8;
-        Thu, 16 Apr 2020 13:27:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E330920732;
+        Thu, 16 Apr 2020 13:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043622;
-        bh=eUYWMO0lOftTvx7LH14lERm5G1MalglcjgYGjYMuWzQ=;
+        s=default; t=1587044666;
+        bh=Gf392KoCBUhgkrXocXreLB3YDk6gRHSO655nXvCucgw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DMTXrlX5kcUJGpsS9HSUS6KG9BcZNNp8uQGJ2ylJKrfvyvY5wZvhGptsV+mjohaOB
-         Xpk8IXv3ddI42jvmAxIcGxLQxRNLAOItUk/rlIXYGYVCQYA6uSgOUeRGpQE1b5FpiS
-         r1zIMQwxwM07v8bl/kD80G2DtrmaMiXBz3binOxo=
+        b=eyjQn0oHwJrDadj1mNA03ifBU33i0gKVjnasav1kUbrSicoi67yihALJNvpfCSXXr
+         Izv8xFaxonmZ+fRGUPqnovAW/dUz5HOfG8im+dGEp+dstUrP9ikEUuBqL1240lL8Kf
+         O4y+7P05RC/8+tZiynGANBEY/AlY1B+ERuZ8YEcQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 006/146] hinic: fix wrong para of wait_for_completion_timeout
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 053/232] x86/boot: Use unsigned comparison for addresses
 Date:   Thu, 16 Apr 2020 15:22:27 +0200
-Message-Id: <20200416131243.369745622@linuxfoundation.org>
+Message-Id: <20200416131322.276267211@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit 0da7c322f116210ebfdda59c7da663a6fc5e9cc8 ]
+[ Upstream commit 81a34892c2c7c809f9c4e22c5ac936ae673fb9a2 ]
 
-the second input parameter of wait_for_completion_timeout should
-be jiffies instead of millisecond
+The load address is compared with LOAD_PHYSICAL_ADDR using a signed
+comparison currently (using jge instruction).
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+When loading a 64-bit kernel using the new efi32_pe_entry() point added by:
+
+  97aa276579b2 ("efi/x86: Add true mixed mode entry point into .compat section")
+
+using Qemu with -m 3072, the firmware actually loads us above 2Gb,
+resulting in a very early crash.
+
+Use the JAE instruction to perform a unsigned comparison instead, as physical
+addresses should be considered unsigned.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200301230436.2246909-6-nivedita@alum.mit.edu
+Link: https://lore.kernel.org/r/20200308080859.21568-14-ardb@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c | 3 ++-
- drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c | 5 +++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ arch/x86/boot/compressed/head_32.S | 2 +-
+ arch/x86/boot/compressed/head_64.S | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-index 4d09ea786b35f..ee715bf785adf 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-@@ -398,7 +398,8 @@ static int cmdq_sync_cmd_direct_resp(struct hinic_cmdq *cmdq,
- 
- 	spin_unlock_bh(&cmdq->cmdq_lock);
- 
--	if (!wait_for_completion_timeout(&done, CMDQ_TIMEOUT)) {
-+	if (!wait_for_completion_timeout(&done,
-+					 msecs_to_jiffies(CMDQ_TIMEOUT))) {
- 		spin_lock_bh(&cmdq->cmdq_lock);
- 
- 		if (cmdq->errcode[curr_prod_idx] == &errcode)
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-index 278dc13f3dae8..9fcf2e5e00039 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-@@ -52,7 +52,7 @@
- 
- #define MSG_NOT_RESP                    0xFFFF
- 
--#define MGMT_MSG_TIMEOUT                1000
-+#define MGMT_MSG_TIMEOUT                5000
- 
- #define mgmt_to_pfhwdev(pf_mgmt)        \
- 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
-@@ -276,7 +276,8 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
- 		goto unlock_sync_msg;
- 	}
- 
--	if (!wait_for_completion_timeout(recv_done, MGMT_MSG_TIMEOUT)) {
-+	if (!wait_for_completion_timeout(recv_done,
-+					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
- 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
- 		err = -ETIMEDOUT;
- 		goto unlock_sync_msg;
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index 5e30eaaf8576f..70ffce98c5683 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -106,7 +106,7 @@ ENTRY(startup_32)
+ 	notl	%eax
+ 	andl    %eax, %ebx
+ 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+-	jge	1f
++	jae	1f
+ #endif
+ 	movl	$LOAD_PHYSICAL_ADDR, %ebx
+ 1:
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index e9a7f7cadb121..07d2002da642a 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -106,7 +106,7 @@ ENTRY(startup_32)
+ 	notl	%eax
+ 	andl	%eax, %ebx
+ 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+-	jge	1f
++	jae	1f
+ #endif
+ 	movl	$LOAD_PHYSICAL_ADDR, %ebx
+ 1:
+@@ -297,7 +297,7 @@ ENTRY(startup_64)
+ 	notq	%rax
+ 	andq	%rax, %rbp
+ 	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
+-	jge	1f
++	jae	1f
+ #endif
+ 	movq	$LOAD_PHYSICAL_ADDR, %rbp
+ 1:
 -- 
 2.20.1
 
