@@ -2,60 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3021AC8B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6571AC8C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395106AbgDPPMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        id S2442328AbgDPPOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729914AbgDPPM2 (ORCPT
+        by vger.kernel.org with ESMTP id S2395069AbgDPPMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:12:28 -0400
+        Thu, 16 Apr 2020 11:12:18 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FE1C0610D6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3216DC061A10
         for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-Id:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=LsVp9g60MKfk7ryW4q0HIe7K/ddM+Pems4kp0GQK70U=; b=IJoM4vYQ5wKB1Y075Ha4+wmc2i
-        k6uFvNeMeGEhNXLuStb8tKAr3+l9czSLwKL1lsUBsPmw+7fYmxD8bmwEgjlYnsbcQRyA0ZZXW6sz2
-        1gAQ4wJ+2bDi4McjHGBlX42yBILZdkzilBzmQS3KWoiOb/9wOfpi/cAhMwNa6hP6dzCIo3bbT2eIH
-        4IrWjQB8AJQOqzC7znzE3gc/jHn3f6nL4JazYj6YIIAhiPXSt7JT44Ftjjuvv+PlyNWLWK94366GE
-        4BnNk8chhxgVsTr30PAOBaaso3lXGACVb2JhPEiPqcu12LDTsibv3n7N2qX514v6Brs1s3bX7IV+f
-        oum1WxiA==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=0LPOq6kuy6O1K32QsrMgcnJ+qO6SmUMAmC4PPFEY/AA=; b=slkqMMMYJA/Q6+5N7QtpC8MfTj
+        CtJkDDEtyBqtxAp2K3uXP09j6BT1ErP+xXe+TQUgIDcSKfY5+5833370Lt+r8rztrd7HHy9uLCxnY
+        l/00cgplngYA2rJD8eFd6wT5Df5HwjW4Qx8LpE+bNCKy8q5eHsogcUZUTTzHw/Zn2/q/3hJyEdrDk
+        JWFMuIEGQq9b6dFs7jRNRt2wUsiFiM6svWHv7WQA4P7CEJHxv5HjK7KCbE3Y4H2Viu/c8YCXIqxj3
+        gaPasnK1pP/P72zi/0sdyxfud2UfNX9tkPwV+KGq8eRlHLzr4NICnId8/AN+HDwjFWDYO150szyI5
+        +8Cw5Ehg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP6BH-00046e-Lf; Thu, 16 Apr 2020 15:11:55 +0000
+        id 1jP6BH-00046b-LX; Thu, 16 Apr 2020 15:11:55 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CA88304D2B;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 205DF306089;
         Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id EF7C52B0DE4BB; Thu, 16 Apr 2020 17:11:53 +0200 (CEST)
-Message-Id: <20200416150752.569029800@infradead.org>
+        id 00159203C0A2B; Thu, 16 Apr 2020 17:11:53 +0200 (CEST)
+Message-Id: <20200416151024.763553292@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 16 Apr 2020 17:07:52 +0200
+Date:   Thu, 16 Apr 2020 17:07:53 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, peterz@infradead.org
-Subject: [RFC][PATCH 0/7] objtool vs retpoline
+Subject: [RFC][PATCH 1/7] objtool: is_fentry_call() crashes if call has no destination
+References: <20200416150752.569029800@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-Based on Alexandre's patches, here's a few patches that apply on top of my
-other series:
+Fix is_fentry_call() so that it works if a call has no destination
+set (call_dest). This needs to be done in order to support intra-
+function calls.
 
-  https://lkml.kernel.org/r/20200416114706.625340212@infradead.org
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200414103618.12657-2-alexandre.chartre@oracle.com
+---
+ tools/objtool/check.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-which seems to build a clean defconfig without ANNOTATE_NOSPEC_ALTERNATIVE on.
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1490,7 +1490,7 @@ static int decode_sections(struct objtoo
+ 
+ static bool is_fentry_call(struct instruction *insn)
+ {
+-	if (insn->type == INSN_CALL &&
++	if (insn->type == INSN_CALL && insn->call_dest &&
+ 	    insn->call_dest->type == STT_NOTYPE &&
+ 	    !strcmp(insn->call_dest->name, "__fentry__"))
+ 		return true;
 
-I've not tried to boot the thing, I'll leave that to the robots.
 
