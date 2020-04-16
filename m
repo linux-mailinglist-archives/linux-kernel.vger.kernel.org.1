@@ -2,130 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE5C1ABFA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570CB1ABFD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505961AbgDPLiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:38:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57660 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506483AbgDPLhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:37:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CF685AC64;
-        Thu, 16 Apr 2020 11:37:48 +0000 (UTC)
-Message-ID: <55611d3e028b6ea418cba1ef9d94fe7bf1e1b1fd.camel@suse.de>
-Subject: Re: [PATCH 2/4] of: property: Do not link to disabled devices
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 16 Apr 2020 13:37:48 +0200
-In-Reply-To: <CAGETcx_7cTp0zx2hfGX0X=NpudkAjER8YeLMmRxTEtoqxc0pFw@mail.gmail.com>
-References: <20200415150550.28156-1-nsaenzjulienne@suse.de>
-         <20200415150550.28156-3-nsaenzjulienne@suse.de>
-         <CAGETcx_7cTp0zx2hfGX0X=NpudkAjER8YeLMmRxTEtoqxc0pFw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-YH2OaEqwZ+TPp+cvOI2i"
-User-Agent: Evolution 3.34.2 
+        id S2633965AbgDPLly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:41:54 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47335 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633487AbgDPLlG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:41:06 -0400
+Received: by mail-il1-f200.google.com with SMTP id a15so8579203ild.14
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:41:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=C9yW33QDEUiY5an82lDXKD3mLsUL223GO6Ib+tlyzoM=;
+        b=fI+CMG2mWBFuf2N1FEmuoa3dVorNuRax+K7wql8iFVtDuVWT1ayD/pjBIoxJAZCUof
+         5PSGggn+DhrIpysvXuYGhtgzkVpNg5oVQ18nuzfSiD7IAk3xqXHACDEa6Q1CYrSNBEit
+         +/iWsxfd7lN+z02XGUAYFr0LG4gvI7onk1ZxWS7fk2+aEUamo2GxOmFU9IEiMBxuu0o7
+         zW23mAf9Dgiq3fKmZMGy62HpU9l80I/8T7+gbuKsc7SnqHN5m+0hdP6pGFOmX/agXoa5
+         1eO9s8KimgkA1lc1eQpT8/lP6xxjDULH/4KfHkQTeQutpUtCveKZM4L5hAisz8jJFLIG
+         9Pig==
+X-Gm-Message-State: AGi0PuZRqpnTHvf/BCby5+5xKJ2E7ITs8XwlOrZX1hsm2Rr3HSMq00P5
+        l3ffQJj9GK7u4qNttIOYWB7pbup+Nmw+w5mwpgyn/+YvQpAj
+X-Google-Smtp-Source: APiQypLGCbfrNBXGAzTYguk/JReM3IFzhEiQP93KNzG3OtYg4VohI8tQeAUPLXVpEeM0uiK/1QFybXNi9nCvgC+u4R70td4JgNv0
 MIME-Version: 1.0
+X-Received: by 2002:a92:bad5:: with SMTP id t82mr2221201ill.171.1587037264592;
+ Thu, 16 Apr 2020 04:41:04 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 04:41:04 -0700
+In-Reply-To: <000000000000e15ee0058f5dfa81@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000066c5a605a366e88c@google.com>
+Subject: Re: WARNING in kernfs_new_node
+From:   syzbot <syzbot+499aea72daa2cea73cb7@syzkaller.appspotmail.com>
+To:     benh@kernel.crashing.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, longman@redhat.com, mingo@kernel.org,
+        peterz@infradead.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org,
+        torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot suspects this bug was fixed by commit:
 
---=-YH2OaEqwZ+TPp+cvOI2i
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+commit 810507fe6fd5ff3de429121adff49523fabb643a
+Author: Waiman Long <longman@redhat.com>
+Date:   Thu Feb 6 15:24:08 2020 +0000
 
-On Wed, 2020-04-15 at 11:30 -0700, Saravana Kannan wrote:
-> On Wed, Apr 15, 2020 at 8:06 AM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > When creating a consumer/supplier relationship between two devices, mak=
-e
-> > sure the supplier node is actually active. Otherwise this will create a
-> > device link that will never be fulfilled. This, in the worst case
-> > scenario, will hang the system during boot.
-> >=20
-> > Note that, in practice, the fact that a device-tree represented
-> > consumer/supplier relationship isn't fulfilled will not prevent devices
-> > from successfully probing.
-> >=20
-> > Fixes: a3e1d1a7f5fc ("of: property: Add functional dependency link from=
- DT
-> > bindings")
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > ---
-> >  drivers/of/property.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >=20
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index a8c2b13521b27..487685ff8bb19 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1052,6 +1052,13 @@ static int of_link_to_phandle(struct device *dev=
-,
-> > struct device_node *sup_np,
-> >                 return -ENODEV;
-> >         }
-> >=20
-> > +       /* Don't allow linking a device node as consumer of a disabled =
-node
-> > */
-> > +       if (!of_device_is_available(sup_np)) {
-> > +               dev_dbg(dev, "Not linking to %pOFP - Not available\n",
-> > sup_np);
-> > +               of_node_put(sup_np);
-> > +               return -ENODEV;
-> > +       }
-> > +
->=20
-> Again, surprised I haven't hit this situation with the number of
-> disabled devices I have.
+    locking/lockdep: Reuse freed chain_hlocks entries
 
-I'll point out to the example that triggered this issue on my reply to patc=
-h
-#4.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=177d726fe00000
+start commit:   1e78030e Merge tag 'mmc-v5.3-rc1' of git://git.kernel.org/..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e397351d2615e10
+dashboard link: https://syzkaller.appspot.com/bug?extid=499aea72daa2cea73cb7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111d80fc600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d9060c600000
 
-> The idea is right, but the implementation can be better. I think this
-> check needs to be the first check after the of_node_get(sup_np) --
-> before we do any of the "walk up to find the device" part.
->=20
-> Otherwise, you could have a supplier device (the one with compatible
-> prop) that's available with a child node that's disabled. And the
-> phandle could be pointing to that disabled child node. If you don't do
-> this as the first check, you might still try to form a pointless
-> device link. It won't affect probing (because the actual struct device
-> will probe) but it's still a pointless device link and a pointless
-> delay in probing, etc.
+If the result looks correct, please mark the bug fixed by replying with:
 
-Agree, I'll update the patch.
+#syz fix: locking/lockdep: Reuse freed chain_hlocks entries
 
-Regards,
-Nicolas
-
-
---=-YH2OaEqwZ+TPp+cvOI2i
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6YQ4wACgkQlfZmHno8
-x/7CQwgAlEnq8CbPih0tHYb/hiZxVOfc5OBXZ8B1bBe5PoGNyCKfxSehoWqog+fw
-/LDFWdYASXiHvs3jSnKeSoXJTHa+rtBt+EeE/UEXU/c6geGUFq6FKnhRQBmzceBP
-yAJOgDwKtvS86k5bpNuFRbh+nkwN+AFNYglSWBOWlFsuIg2JXaXOCNsF52q7rSS5
-mhNFPkGCqHtvgGlFPYA5hLQMjR+pdwn8/G5rk4Tzr/KSCqJNqNMtsAqpGTvTrI5E
-MtY2COIf/pkkqi7hNbxhD8jaS62zPJ5jBdRq3nkWroZAWwd01CfdYsqfNZhoPdyX
-1PyuuJgabgqfbPrjcIHqWMV5M0DJlg==
-=hiud
------END PGP SIGNATURE-----
-
---=-YH2OaEqwZ+TPp+cvOI2i--
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
