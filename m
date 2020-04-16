@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED29B1AC56D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6553F1ACA04
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442336AbgDPOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39910 "EHLO mail.kernel.org"
+        id S2395293AbgDPPaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409047AbgDPNx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:53:28 -0400
+        id S2896596AbgDPNno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:43:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38C7F2076D;
-        Thu, 16 Apr 2020 13:53:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB0A120732;
+        Thu, 16 Apr 2020 13:43:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045207;
-        bh=RNwFNWBjhyFKt/046IiLuAMSumi5DABqIaiGdEpHIl4=;
+        s=default; t=1587044624;
+        bh=6udrQF6+eqNb7J8MjuaEbwbF3uzk3PjNir0m9HPYV3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UMghaPCJQkk1bkc36xf83pdL4zWbg1urlXmXnygiZuVXkeAB1ciEv+0/xblpEX9g2
-         uQzzlt5Rtw+ZCU5RO7xk8Jf2/EgoY3dm5FpQ97B/cYGqgcz+sxy4NT13w6t8LDdwA9
-         Tt6CJsGH+QOBKvuRF2aRf+quo06zCUzu0a6bkqIc=
+        b=Q63cXkzUzMn9e+m3mGpEtf0coJz3BWV49oCH9T/52tYGD5jwKZFHKyZKdj7R7x1mi
+         D8Puud2W9ZqUl1lzjNlhjKe4pIoM/WHok701grp3Ib2EvsDQ7s+WOvKhaa+lgsffpi
+         gtyjozmAyfRfqQOotas8iUAgFd3/5exBB+IcX1ZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 039/254] PCI/switchtec: Fix init_completion race condition with poll_wait()
+Subject: [PATCH 5.4 034/232] xhci: bail out early if driver cant accress host in resume
 Date:   Thu, 16 Apr 2020 15:22:08 +0200
-Message-Id: <20200416131330.744544737@linuxfoundation.org>
+Message-Id: <20200416131320.264012138@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,50 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit efbdc769601f4d50018bf7ca50fc9f7c67392ece ]
+[ Upstream commit 72ae194704da212e2ec312ab182a96799d070755 ]
 
-The call to init_completion() in mrpc_queue_cmd() can theoretically
-race with the call to poll_wait() in switchtec_dev_poll().
+Bail out early if the xHC host needs to be reset at resume
+but driver can't access xHC PCI registers.
 
-  poll()			write()
-    switchtec_dev_poll()   	  switchtec_dev_write()
-      poll_wait(&s->comp.wait);      mrpc_queue_cmd()
-			               init_completion(&s->comp)
-				         init_waitqueue_head(&s->comp.wait)
+If xhci driver already fails to reset the controller then there
+is no point in attempting to free, re-initialize, re-allocate and
+re-start the host. If failure to access the host is detected later,
+failing the resume, xhci interrupts will be double freed
+when remove is called.
 
-To my knowledge, no one has hit this bug.
-
-Fix this by using reinit_completion() instead of init_completion() in
-mrpc_queue_cmd().
-
-Fixes: 080b47def5e5 ("MicroSemi Switchtec management interface driver")
-
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Link: https://lkml.kernel.org/r/20200313183608.2646-1-logang@deltatee.com
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200312144517.1593-2-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/switch/switchtec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index a823b4b8ef8a9..81dc7ac013817 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -175,7 +175,7 @@ static int mrpc_queue_cmd(struct switchtec_user *stuser)
- 	kref_get(&stuser->kref);
- 	stuser->read_len = sizeof(stuser->data);
- 	stuser_set_state(stuser, MRPC_QUEUED);
--	init_completion(&stuser->comp);
-+	reinit_completion(&stuser->comp);
- 	list_add_tail(&stuser->list, &stdev->mrpc_queue);
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 9b3b1b16eafba..2f49a7b3ce854 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1157,8 +1157,10 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
+ 		xhci_dbg(xhci, "Stop HCD\n");
+ 		xhci_halt(xhci);
+ 		xhci_zero_64b_regs(xhci);
+-		xhci_reset(xhci);
++		retval = xhci_reset(xhci);
+ 		spin_unlock_irq(&xhci->lock);
++		if (retval)
++			return retval;
+ 		xhci_cleanup_msix(xhci);
  
- 	mrpc_cmd_submit(stdev);
+ 		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
 -- 
 2.20.1
 
