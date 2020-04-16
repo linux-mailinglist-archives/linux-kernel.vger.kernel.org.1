@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6CF1AB810
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859401AB81B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408016AbgDPGcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:32:51 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:35700 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407709AbgDPGcn (ORCPT
+        id S2408133AbgDPGfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:35:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52067 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2407924AbgDPGey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:32:43 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03G6WSNl091235;
-        Thu, 16 Apr 2020 01:32:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587018748;
-        bh=Rb8TXWTmwQcjPvJd3E+h6uzfxHfRJWCoNumVEM5OcBE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=VxcMqauSvSkeMWgQZ96WlmQKP7xDtXR9gTemFrgiHZGchILth/PH2eIgvnZ6vSIyN
-         duAgQ04xBDc0michmtgvgpby/jE9vXZ+KeM8ySYDQYN8PZ56bb+Wbi7Gr2F8Bv9Y1S
-         vlN+qO/9AW3welU9Mu/1Q890ytQBOxnUPO5Gp4k0=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03G6WRfg083663
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Apr 2020 01:32:27 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 16
- Apr 2020 01:32:26 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 16 Apr 2020 01:32:26 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03G6WOfQ025822;
-        Thu, 16 Apr 2020 01:32:25 -0500
-Subject: Re: [PATCH -next] drm/omap: venc: remove unused variable
- 'venc_config_pal_bdghi'
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        YueHaibing <yuehaibing@huawei.com>
-CC:     <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <sebastian.reichel@collabora.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20200415132105.43636-1-yuehaibing@huawei.com>
- <20200415153959.GI4758@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <1c9e1e60-5ff6-3ee7-e31e-e7cfb0cd279e@ti.com>
-Date:   Thu, 16 Apr 2020 09:32:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 16 Apr 2020 02:34:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587018892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nCd3WtsGaX/OvVWiMxmVzNhR7/RYCqVcgsji7FHaInc=;
+        b=AmZPzQWeTZCiG7pttWXhMI2sKSMMve2zwOdHuUKRGwoMSQvvkAQuMhV7pLB8dj+rLsRZ58
+        lBr9hOY9X7sTnhRMuLPVywRgiJH5t1nX5nIeNPpZK0FQfBtkEtbcdHyZGCmmiAmz76OUkt
+        8bw+1TBY9Pl6DqU/REZrQJr77cA/xDE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-fUDLkM2QNBqVmJ_SYclSCw-1; Thu, 16 Apr 2020 02:34:47 -0400
+X-MC-Unique: fUDLkM2QNBqVmJ_SYclSCw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0CE51005513;
+        Thu, 16 Apr 2020 06:34:44 +0000 (UTC)
+Received: from T590 (ovpn-8-29.pek2.redhat.com [10.72.8.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 47CA7A0997;
+        Thu, 16 Apr 2020 06:34:32 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 14:34:28 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, nstange@suse.de, akpm@linux-foundation.org,
+        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 4/5] mm/swapfile: refcount block and queue before using
+ blkcg_schedule_throttle()
+Message-ID: <20200416063428.GE2723777@T590>
+References: <20200414041902.16769-1-mcgrof@kernel.org>
+ <20200414041902.16769-5-mcgrof@kernel.org>
+ <20200416062222.GC2723777@T590>
+ <20200416062532.GN11244@42.do-not-panic.com>
 MIME-Version: 1.0
-In-Reply-To: <20200415153959.GI4758@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416062532.GN11244@42.do-not-panic.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/2020 18:39, Laurent Pinchart wrote:
-> Hi Yue,
+On Thu, Apr 16, 2020 at 06:25:32AM +0000, Luis Chamberlain wrote:
+> On Thu, Apr 16, 2020 at 02:22:22PM +0800, Ming Lei wrote:
+> > On Tue, Apr 14, 2020 at 04:19:01AM +0000, Luis Chamberlain wrote:
+> > > block devices are refcounted so to ensure once its final user goes away it
+> > > can be cleaned up by the lower layers properly. The block device's
+> > > request_queue structure is also refcounted, however, if the last
+> > > blk_put_queue() is called under atomic context the block layer has
+> > > to defer removal.
+> > > 
+> > > By refcounting the block device during the use of blkcg_schedule_throttle(),
+> > > we ensure ensure two things:
+> > > 
+> > > 1) the block device remains available during the call
+> > > 2) we ensure avoid having to deal with the fact we're using the
+> > >    request_queue structure in atomic context, since the last
+> > >    blk_put_queue() will be called upon disk_release(), *after*
+> > >    our own bdput().
+> > > 
+> > > This means this code path is *not* going to remove the request_queue
+> > > structure, as we are ensuring some later upper layer disk_release()
+> > > will be the one to release the request_queue structure for us.
+> > > 
+> > > Cc: Bart Van Assche <bvanassche@acm.org>
+> > > Cc: Omar Sandoval <osandov@fb.com>
+> > > Cc: Hannes Reinecke <hare@suse.com>
+> > > Cc: Nicolai Stange <nstange@suse.de>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: Michal Hocko <mhocko@kernel.org>
+> > > Cc: yu kuai <yukuai3@huawei.com>
+> > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > ---
+> > >  mm/swapfile.c | 14 ++++++++++++--
+> > >  1 file changed, 12 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > > index 6659ab563448..9285ff6030ca 100644
+> > > --- a/mm/swapfile.c
+> > > +++ b/mm/swapfile.c
+> > > @@ -3753,6 +3753,7 @@ static void free_swap_count_continuations(struct swap_info_struct *si)
+> > >  void mem_cgroup_throttle_swaprate(struct mem_cgroup *memcg, int node,
+> > >  				  gfp_t gfp_mask)
+> > >  {
+> > > +	struct block_device *bdev;
+> > >  	struct swap_info_struct *si, *next;
+> > >  	if (!(gfp_mask & __GFP_IO) || !memcg)
+> > >  		return;
+> > > @@ -3771,8 +3772,17 @@ void mem_cgroup_throttle_swaprate(struct mem_cgroup *memcg, int node,
+> > >  	plist_for_each_entry_safe(si, next, &swap_avail_heads[node],
+> > >  				  avail_lists[node]) {
+> > >  		if (si->bdev) {
+> > > -			blkcg_schedule_throttle(bdev_get_queue(si->bdev),
+> > > -						true);
+> > > +			bdev = bdgrab(si->bdev);
+> > 
+> > When swapon, the block_device has been opened in claim_swapfile(),
+> > so no need to worry about the queue being gone here.
 > 
-> Thank you for the patch.
-> 
-> On Wed, Apr 15, 2020 at 09:21:05PM +0800, YueHaibing wrote:
->> drivers/gpu/drm/omapdrm/dss/venc.c:211:33:
->>   warning: 'venc_config_pal_bdghi' defined but not used [-Wunused-const-variable=]
->>   static const struct venc_config venc_config_pal_bdghi = {
->>                                   ^~~~~~~~~~~~~~~~~~~~~
->>
->> It is never used, remove it.
-> 
-> Tomi, is this the right fix, or should we work on making use of this
-> structure ?
+> Thanks, so why bdev_get_queue() before?
 
-I think we can remove it. I'll pick you this patch.
+bdev_get_queue() returns the request queue associated with the
+the block device, and it is just that blkcg_schedule_throttle() needs
+it.
 
-  Tomi
+Maybe I misunderstood your question, if yes, please explain it in
+a bit detail.
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks,
+Ming
+
