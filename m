@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BB51ACA75
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FF71AC8D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897806AbgDPNkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:40:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41166 "EHLO mail.kernel.org"
+        id S2436598AbgDPPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:15:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896319AbgDPNaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:30:52 -0400
+        id S2441634AbgDPNuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4430A217D8;
-        Thu, 16 Apr 2020 13:30:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B98721744;
+        Thu, 16 Apr 2020 13:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043851;
-        bh=LQNbIgJ+U5/3KxFvMzUvY8TsjaNY+iAGrti+5QlJiFQ=;
+        s=default; t=1587044950;
+        bh=4cmYFuZIvrPD00tqCGA8A3E+BrUOuvrUQXc12DEPsCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dBRHUpXs8LlWPQFqjrdZH/CxHtOenlZ2s7Ydb/5UjoC0zEGWRlvst8476/8j0B+mK
-         omFYuObkFFfobw3WpymMGCBdQBugd6i4e26Ti+zFaVXwOo8oIUWqcraEypcwiYwxHv
-         2lGt+PBZkJBsk3J6Xm27EK/ZlsoPJSKOO3PcD4vk=
+        b=HYfgCMKEZHXdifJXvmrrYUf3OaFfliTtWmkETGc/epDOLTxlhcmqwH7Bu1qC7XAzZ
+         +f4zpvdEPdEyf6pydVwaGYPWFA/NtTf9UfIiuSZH2m6bPAtd22CQTZIvw9PDlQgK4n
+         UxzT3Qi6uX+8ebLhbiWqGoQBOkr3KJSo/jfB1J8c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 119/146] cpufreq: powernv: Fix use-after-free
-Date:   Thu, 16 Apr 2020 15:24:20 +0200
-Message-Id: <20200416131258.866303568@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 5.4 167/232] xarray: Fix early termination of xas_for_each_marked
+Date:   Thu, 16 Apr 2020 15:24:21 +0200
+Message-Id: <20200416131335.900290572@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver O'Halloran <oohall@gmail.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit d0a72efac89d1c35ac55197895201b7b94c5e6ef upstream.
+commit 7e934cf5ace1dceeb804f7493fa28bb697ed3c52 upstream.
 
-The cpufreq driver has a use-after-free that we can hit if:
+xas_for_each_marked() is using entry == NULL as a termination condition
+of the iteration. When xas_for_each_marked() is used protected only by
+RCU, this can however race with xas_store(xas, NULL) in the following
+way:
 
-a) There's an OCC message pending when the notifier is registered, and
-b) The cpufreq driver fails to register with the core.
+TASK1                                   TASK2
+page_cache_delete()         	        find_get_pages_range_tag()
+                                          xas_for_each_marked()
+                                            xas_find_marked()
+                                              off = xas_find_chunk()
 
-When a) occurs the notifier schedules a workqueue item to handle the
-message. The backing work_struct is located on chips[].throttle and
-when b) happens we clean up by freeing the array. Once we get to
-the (now free) queued item and the kernel crashes.
+  xas_store(&xas, NULL)
+    xas_init_marks(&xas);
+    ...
+    rcu_assign_pointer(*slot, NULL);
+                                              entry = xa_entry(off);
 
-Fixes: c5e29ea7ac14 ("cpufreq: powernv: Fix bugs in powernv_cpufreq_{init/exit}")
-Cc: stable@vger.kernel.org # v4.6+
-Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200206062622.28235-1-oohall@gmail.com
+And thus xas_for_each_marked() terminates prematurely possibly leading
+to missed entries in the iteration (translating to missing writeback of
+some pages or a similar problem).
+
+If we find a NULL entry that has been marked, skip it (unless we're trying
+to allocate an entry).
+
+Reported-by: Jan Kara <jack@suse.cz>
+CC: stable@vger.kernel.org
+Fixes: ef8e5717db01 ("page cache: Convert delete_batch to XArray")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/powernv-cpufreq.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/xarray.h                       |    6 +
+ lib/xarray.c                                 |    2 
+ tools/testing/radix-tree/Makefile            |    4 -
+ tools/testing/radix-tree/iteration_check_2.c |   87 +++++++++++++++++++++++++++
+ tools/testing/radix-tree/main.c              |    1 
+ tools/testing/radix-tree/test.h              |    1 
+ 6 files changed, 98 insertions(+), 3 deletions(-)
 
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -1081,6 +1081,12 @@ free_and_return:
- 
- static inline void clean_chip_info(void)
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -1613,6 +1613,7 @@ static inline void *xas_next_marked(stru
+ 								xa_mark_t mark)
  {
-+	int i;
-+
-+	/* flush any pending work items */
-+	if (chips)
-+		for (i = 0; i < nr_chips; i++)
-+			cancel_work_sync(&chips[i].throttle);
- 	kfree(chips);
+ 	struct xa_node *node = xas->xa_node;
++	void *entry;
+ 	unsigned int offset;
+ 
+ 	if (unlikely(xas_not_node(node) || node->shift))
+@@ -1624,7 +1625,10 @@ static inline void *xas_next_marked(stru
+ 		return NULL;
+ 	if (offset == XA_CHUNK_SIZE)
+ 		return xas_find_marked(xas, max, mark);
+-	return xa_entry(xas->xa, node, offset);
++	entry = xa_entry(xas->xa, node, offset);
++	if (!entry)
++		return xas_find_marked(xas, max, mark);
++	return entry;
  }
  
+ /*
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1208,6 +1208,8 @@ void *xas_find_marked(struct xa_state *x
+ 		}
+ 
+ 		entry = xa_entry(xas->xa, xas->xa_node, xas->xa_offset);
++		if (!entry && !(xa_track_free(xas->xa) && mark == XA_FREE_MARK))
++			continue;
+ 		if (!xa_is_node(entry))
+ 			return entry;
+ 		xas->xa_node = xa_to_node(entry);
+--- a/tools/testing/radix-tree/Makefile
++++ b/tools/testing/radix-tree/Makefile
+@@ -7,8 +7,8 @@ LDLIBS+= -lpthread -lurcu
+ TARGETS = main idr-test multiorder xarray
+ CORE_OFILES := xarray.o radix-tree.o idr.o linux.o test.o find_bit.o bitmap.o
+ OFILES = main.o $(CORE_OFILES) regression1.o regression2.o regression3.o \
+-	 regression4.o \
+-	 tag_check.o multiorder.o idr-test.o iteration_check.o benchmark.o
++	 regression4.o tag_check.o multiorder.o idr-test.o iteration_check.o \
++	 iteration_check_2.o benchmark.o
+ 
+ ifndef SHIFT
+ 	SHIFT=3
+--- /dev/null
++++ b/tools/testing/radix-tree/iteration_check_2.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * iteration_check_2.c: Check that deleting a tagged entry doesn't cause
++ * an RCU walker to finish early.
++ * Copyright (c) 2020 Oracle
++ * Author: Matthew Wilcox <willy@infradead.org>
++ */
++#include <pthread.h>
++#include "test.h"
++
++static volatile bool test_complete;
++
++static void *iterator(void *arg)
++{
++	XA_STATE(xas, arg, 0);
++	void *entry;
++
++	rcu_register_thread();
++
++	while (!test_complete) {
++		xas_set(&xas, 0);
++		rcu_read_lock();
++		xas_for_each_marked(&xas, entry, ULONG_MAX, XA_MARK_0)
++			;
++		rcu_read_unlock();
++		assert(xas.xa_index >= 100);
++	}
++
++	rcu_unregister_thread();
++	return NULL;
++}
++
++static void *throbber(void *arg)
++{
++	struct xarray *xa = arg;
++
++	rcu_register_thread();
++
++	while (!test_complete) {
++		int i;
++
++		for (i = 0; i < 100; i++) {
++			xa_store(xa, i, xa_mk_value(i), GFP_KERNEL);
++			xa_set_mark(xa, i, XA_MARK_0);
++		}
++		for (i = 0; i < 100; i++)
++			xa_erase(xa, i);
++	}
++
++	rcu_unregister_thread();
++	return NULL;
++}
++
++void iteration_test2(unsigned test_duration)
++{
++	pthread_t threads[2];
++	DEFINE_XARRAY(array);
++	int i;
++
++	printv(1, "Running iteration test 2 for %d seconds\n", test_duration);
++
++	test_complete = false;
++
++	xa_store(&array, 100, xa_mk_value(100), GFP_KERNEL);
++	xa_set_mark(&array, 100, XA_MARK_0);
++
++	if (pthread_create(&threads[0], NULL, iterator, &array)) {
++		perror("create iterator thread");
++		exit(1);
++	}
++	if (pthread_create(&threads[1], NULL, throbber, &array)) {
++		perror("create throbber thread");
++		exit(1);
++	}
++
++	sleep(test_duration);
++	test_complete = true;
++
++	for (i = 0; i < 2; i++) {
++		if (pthread_join(threads[i], NULL)) {
++			perror("pthread_join");
++			exit(1);
++		}
++	}
++
++	xa_destroy(&array);
++}
+--- a/tools/testing/radix-tree/main.c
++++ b/tools/testing/radix-tree/main.c
+@@ -311,6 +311,7 @@ int main(int argc, char **argv)
+ 	regression4_test();
+ 	iteration_test(0, 10 + 90 * long_run);
+ 	iteration_test(7, 10 + 90 * long_run);
++	iteration_test2(10 + 90 * long_run);
+ 	single_thread_tests(long_run);
+ 
+ 	/* Free any remaining preallocated nodes */
+--- a/tools/testing/radix-tree/test.h
++++ b/tools/testing/radix-tree/test.h
+@@ -34,6 +34,7 @@ void xarray_tests(void);
+ void tag_check(void);
+ void multiorder_checks(void);
+ void iteration_test(unsigned order, unsigned duration);
++void iteration_test2(unsigned duration);
+ void benchmark(void);
+ void idr_checks(void);
+ void ida_tests(void);
 
 
