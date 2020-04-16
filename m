@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817E11ACA29
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5C21AC843
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410405AbgDPPcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
+        id S2439964AbgDPPF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:05:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441538AbgDPNmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:37 -0400
+        id S2408894AbgDPNwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:52:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAEBA2076D;
-        Thu, 16 Apr 2020 13:42:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73B1020732;
+        Thu, 16 Apr 2020 13:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044557;
-        bh=5tu6jgjQORBsXTyfqgjJ3eMKXV2UrGsH132oHEvwEcc=;
+        s=default; t=1587045143;
+        bh=gRsQNMLbwAKVeC0Gb+JWu5Kd2OwoKKeUa99fqZnlHeI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fovl8ECzJJmB98/VgMt4lrAiUYzEgGDAgGNwv4nx1UgKPSMVKcMLUjcPNCSZ1Bnh9
-         DqSkm0KnsNg8+ZPMRW3ULgq7Ksc/MK6H3GgJ7YSl9OF7cB7nwojcwVQzXbWpWb8MVb
-         TEMPbJM2EGIv2uEr6M1ZdaZ8CGtZl0dlmYJvbjPw=
+        b=eAAVR1JZ+ZUpFvahDdOB3qyPp91/lsvwX93E3T0L6yHhbW4Y5N6pjhNsMEfMgLBbS
+         yyJStOffgemZeVTQvrcgfwr8t4soJvP+bagwe95Tb9K+JrK4WhXNhK9fp+jLWZ01oE
+         JkICbWnmQnfmE31m0flw0zvgVXC3zpEuae9H6oy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 001/232] ARM: dts: sun8i-a83t-tbs-a711: HM5065 doesnt like such a high voltage
-Date:   Thu, 16 Apr 2020 15:21:35 +0200
-Message-Id: <20200416131316.814283255@linuxfoundation.org>
+Subject: [PATCH 5.6 007/254] media: hantro: fix extra MV/MC sync space calculation
+Date:   Thu, 16 Apr 2020 15:21:36 +0200
+Message-Id: <20200416131326.646275180@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,35 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit a40550952c000667b20082d58077bc647da6c890 ]
+[ Upstream commit 042584e9055b615ac917239884fb0d65690f56ec ]
 
-Lowering the voltage solves the quick image degradation over time
-(minutes), that was probably caused by overheating.
+Add space for MVs and MC sync data to the capture buffers depending on
+whether the post processor will be enabled for the new capture format
+passed to TRY_FMT, not the currently set capture format.
 
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/media/hantro/hantro_v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
-index 397140454132f..6bf93e5ed6817 100644
---- a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
-@@ -358,8 +358,8 @@
- };
- 
- &reg_dldo3 {
--	regulator-min-microvolt = <2800000>;
--	regulator-max-microvolt = <2800000>;
-+	regulator-min-microvolt = <1800000>;
-+	regulator-max-microvolt = <1800000>;
- 	regulator-name = "vdd-csi";
- };
- 
+diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+index 0198bcda26b75..f4ae2cee0f189 100644
+--- a/drivers/staging/media/hantro/hantro_v4l2.c
++++ b/drivers/staging/media/hantro/hantro_v4l2.c
+@@ -295,7 +295,7 @@ static int vidioc_try_fmt(struct file *file, void *priv, struct v4l2_format *f,
+ 		 * +---------------------------+
+ 		 */
+ 		if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE &&
+-		    !hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
++		    !hantro_needs_postproc(ctx, fmt))
+ 			pix_mp->plane_fmt[0].sizeimage +=
+ 				64 * MB_WIDTH(pix_mp->width) *
+ 				     MB_WIDTH(pix_mp->height) + 32;
 -- 
 2.20.1
 
