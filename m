@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F591AC5C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7A41AC8EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgDPO0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45926 "EHLO mail.kernel.org"
+        id S2503791AbgDPPQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:16:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894549AbgDPN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:58 -0400
+        id S2441637AbgDPNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFE3A20732;
-        Thu, 16 Apr 2020 13:58:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2190E2223F;
+        Thu, 16 Apr 2020 13:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045537;
-        bh=cOdDWYDw+GJ+hRmAPg16sAWISZrCcsqiTeYFKrelNr8=;
+        s=default; t=1587044960;
+        bh=VmVN60V25JspsZ14eGwB7Xo4/VC6TrWzh+uz3z2ASuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tMahRcEstcT3xEaELcRoeo9UmNq927aZW8msgLNaXnuks4xyeZV7xi3e2q93qzkzo
-         oprO77WGW3M0tnYEadovtiRZabj4Wa1NxwsPnpffrJ+vV9CWi+c+qA9uCZGuP2z8JI
-         obxCOEzhJsiVWQGBXmRKNom5preLKCivRknH328c=
+        b=aNpvQQk/jcMLMdXwkMur12w2GRR/N9HqcS/6PZJ/LaX8jwJKFdWyyL6owh5Afr85q
+         7OChxm0jFKzOqTlwAnenadwL49pqJocUy/qcvHsxeUxra6zyE3fwOkwqOd1xn3Qeu0
+         1gDcuyT61WmUzqzZePBPRWuBO3h6e6c8KKrOFcbw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.6 174/254] dm integrity: fix a crash with unusually large tag size
-Date:   Thu, 16 Apr 2020 15:24:23 +0200
-Message-Id: <20200416131348.189769005@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.4 170/232] crypto: ccree - protect against empty or NULL scatterlists
+Date:   Thu, 16 Apr 2020 15:24:24 +0200
+Message-Id: <20200416131336.274627879@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Gilad Ben-Yossef <gilad@benyossef.com>
 
-commit b93b6643e9b5a7f260b931e97f56ffa3fa65e26d upstream.
+commit ce0fc6db38decf0d2919bfe783de6d6b76e421a9 upstream.
 
-If the user specifies tag size larger than HASH_MAX_DIGESTSIZE,
-there's a crash in integrity_metadata().
+Deal gracefully with a NULL or empty scatterlist which can happen
+if both cryptlen and assoclen are zero and we're doing in-place
+AEAD encryption.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+This fixes a crash when this causes us to try and map a NULL page,
+at least with some platforms / DMA mapping configs.
+
+Cc: stable@vger.kernel.org # v4.19+
+Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-integrity.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/ccree/cc_buffer_mgr.c |   62 +++++++++++++++--------------------
+ drivers/crypto/ccree/cc_buffer_mgr.h |    1 
+ 2 files changed, 28 insertions(+), 35 deletions(-)
 
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -1519,7 +1519,7 @@ static void integrity_metadata(struct wo
- 		struct bio *bio = dm_bio_from_per_bio_data(dio, sizeof(struct dm_integrity_io));
- 		char *checksums;
- 		unsigned extra_space = unlikely(digest_size > ic->tag_size) ? digest_size - ic->tag_size : 0;
--		char checksums_onstack[HASH_MAX_DIGESTSIZE];
-+		char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
- 		unsigned sectors_to_process = dio->range.n_sectors;
- 		sector_t sector = dio->range.logical_sector;
+--- a/drivers/crypto/ccree/cc_buffer_mgr.c
++++ b/drivers/crypto/ccree/cc_buffer_mgr.c
+@@ -87,6 +87,8 @@ static unsigned int cc_get_sgl_nents(str
+ {
+ 	unsigned int nents = 0;
  
-@@ -1748,7 +1748,7 @@ retry_kmap:
- 				} while (++s < ic->sectors_per_block);
- #ifdef INTERNAL_VERIFY
- 				if (ic->internal_hash) {
--					char checksums_onstack[max(HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
-+					char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
++	*lbytes = 0;
++
+ 	while (nbytes && sg_list) {
+ 		nents++;
+ 		/* get the number of bytes in the last entry */
+@@ -95,6 +97,7 @@ static unsigned int cc_get_sgl_nents(str
+ 				nbytes : sg_list->length;
+ 		sg_list = sg_next(sg_list);
+ 	}
++
+ 	dev_dbg(dev, "nents %d last bytes %d\n", nents, *lbytes);
+ 	return nents;
+ }
+@@ -290,37 +293,25 @@ static int cc_map_sg(struct device *dev,
+ 		     unsigned int nbytes, int direction, u32 *nents,
+ 		     u32 max_sg_nents, u32 *lbytes, u32 *mapped_nents)
+ {
+-	if (sg_is_last(sg)) {
+-		/* One entry only case -set to DLLI */
+-		if (dma_map_sg(dev, sg, 1, direction) != 1) {
+-			dev_err(dev, "dma_map_sg() single buffer failed\n");
+-			return -ENOMEM;
+-		}
+-		dev_dbg(dev, "Mapped sg: dma_address=%pad page=%p addr=%pK offset=%u length=%u\n",
+-			&sg_dma_address(sg), sg_page(sg), sg_virt(sg),
+-			sg->offset, sg->length);
+-		*lbytes = nbytes;
+-		*nents = 1;
+-		*mapped_nents = 1;
+-	} else {  /*sg_is_last*/
+-		*nents = cc_get_sgl_nents(dev, sg, nbytes, lbytes);
+-		if (*nents > max_sg_nents) {
+-			*nents = 0;
+-			dev_err(dev, "Too many fragments. current %d max %d\n",
+-				*nents, max_sg_nents);
+-			return -ENOMEM;
+-		}
+-		/* In case of mmu the number of mapped nents might
+-		 * be changed from the original sgl nents
+-		 */
+-		*mapped_nents = dma_map_sg(dev, sg, *nents, direction);
+-		if (*mapped_nents == 0) {
+-			*nents = 0;
+-			dev_err(dev, "dma_map_sg() sg buffer failed\n");
+-			return -ENOMEM;
+-		}
++	int ret = 0;
++
++	*nents = cc_get_sgl_nents(dev, sg, nbytes, lbytes);
++	if (*nents > max_sg_nents) {
++		*nents = 0;
++		dev_err(dev, "Too many fragments. current %d max %d\n",
++			*nents, max_sg_nents);
++		return -ENOMEM;
+ 	}
  
- 					integrity_sector_checksum(ic, logical_sector, mem + bv.bv_offset, checksums_onstack);
- 					if (unlikely(memcmp(checksums_onstack, journal_entry_tag(ic, je), ic->tag_size))) {
++	ret = dma_map_sg(dev, sg, *nents, direction);
++	if (dma_mapping_error(dev, ret)) {
++		*nents = 0;
++		dev_err(dev, "dma_map_sg() sg buffer failed %d\n", ret);
++		return -ENOMEM;
++	}
++
++	*mapped_nents = ret;
++
+ 	return 0;
+ }
+ 
+@@ -555,11 +546,12 @@ void cc_unmap_aead_request(struct device
+ 		sg_virt(req->src), areq_ctx->src.nents, areq_ctx->assoc.nents,
+ 		areq_ctx->assoclen, req->cryptlen);
+ 
+-	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_BIDIRECTIONAL);
++	dma_unmap_sg(dev, req->src, areq_ctx->src.mapped_nents,
++		     DMA_BIDIRECTIONAL);
+ 	if (req->src != req->dst) {
+ 		dev_dbg(dev, "Unmapping dst sgl: req->dst=%pK\n",
+ 			sg_virt(req->dst));
+-		dma_unmap_sg(dev, req->dst, sg_nents(req->dst),
++		dma_unmap_sg(dev, req->dst, areq_ctx->dst.mapped_nents,
+ 			     DMA_BIDIRECTIONAL);
+ 	}
+ 	if (drvdata->coherent &&
+@@ -881,7 +873,7 @@ static int cc_aead_chain_data(struct cc_
+ 					    &src_last_bytes);
+ 	sg_index = areq_ctx->src_sgl->length;
+ 	//check where the data starts
+-	while (sg_index <= size_to_skip) {
++	while (src_mapped_nents && (sg_index <= size_to_skip)) {
+ 		src_mapped_nents--;
+ 		offset -= areq_ctx->src_sgl->length;
+ 		sgl = sg_next(areq_ctx->src_sgl);
+@@ -908,7 +900,7 @@ static int cc_aead_chain_data(struct cc_
+ 			size_for_map += crypto_aead_ivsize(tfm);
+ 
+ 		rc = cc_map_sg(dev, req->dst, size_for_map, DMA_BIDIRECTIONAL,
+-			       &areq_ctx->dst.nents,
++			       &areq_ctx->dst.mapped_nents,
+ 			       LLI_MAX_NUM_OF_DATA_ENTRIES, &dst_last_bytes,
+ 			       &dst_mapped_nents);
+ 		if (rc)
+@@ -921,7 +913,7 @@ static int cc_aead_chain_data(struct cc_
+ 	offset = size_to_skip;
+ 
+ 	//check where the data starts
+-	while (sg_index <= size_to_skip) {
++	while (dst_mapped_nents && sg_index <= size_to_skip) {
+ 		dst_mapped_nents--;
+ 		offset -= areq_ctx->dst_sgl->length;
+ 		sgl = sg_next(areq_ctx->dst_sgl);
+@@ -1123,7 +1115,7 @@ int cc_map_aead_request(struct cc_drvdat
+ 	if (is_gcm4543)
+ 		size_to_map += crypto_aead_ivsize(tfm);
+ 	rc = cc_map_sg(dev, req->src, size_to_map, DMA_BIDIRECTIONAL,
+-		       &areq_ctx->src.nents,
++		       &areq_ctx->src.mapped_nents,
+ 		       (LLI_MAX_NUM_OF_ASSOC_DATA_ENTRIES +
+ 			LLI_MAX_NUM_OF_DATA_ENTRIES),
+ 		       &dummy, &mapped_nents);
+--- a/drivers/crypto/ccree/cc_buffer_mgr.h
++++ b/drivers/crypto/ccree/cc_buffer_mgr.h
+@@ -25,6 +25,7 @@ enum cc_sg_cpy_direct {
+ 
+ struct cc_mlli {
+ 	cc_sram_addr_t sram_addr;
++	unsigned int mapped_nents;
+ 	unsigned int nents; //sg nents
+ 	unsigned int mlli_nents; //mlli nents might be different than the above
+ };
 
 
