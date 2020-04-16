@@ -2,114 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DC51ABB7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C431ABB88
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441450AbgDPIjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502097AbgDPIfd (ORCPT
+        id S2502767AbgDPIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:44:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32007 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2501961AbgDPIdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:35:33 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20983C061A41
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:24:26 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id 1so1853024vsl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:24:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/TaBcNBr0LmHmhCu1jIrvYkIUcv+feENwdQ/ZDbQJes=;
-        b=YUjM35XZNkCke18ASEVQzu3oQOeQ67Z70V6beRoVND6LL9BBZ+3//1papRDqvwu0ET
-         tQ4NufGIlbdwNCmPwdQqkrrAGiSSOTwPtFR2mLdFrRsMdTb/QsflO8TZ31VhqZvny3hN
-         2PY6Cv1TAFkYPf9Nq55TNDQPdM4CZR5yFLfriuIVACuwdRMuBTL30ZcSh7fdpzH/kx9O
-         RhlOJjOCIABO8hrrWqJxxEjlfDg6y8EUdm2J6ym3mBDh+tfwsoQsvgh9yO0sq1KeYq+5
-         uyrbZ/Ek1LmsVDH01d/yEhBpQbbbwwR/FtG9PpLOjjaRQWuShfKBQmS3yqjb/oBDsOgf
-         Vjkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/TaBcNBr0LmHmhCu1jIrvYkIUcv+feENwdQ/ZDbQJes=;
-        b=D/aqlmeNhUbrxJq1Z5QsvtVZEsKbffElFTXggCkyAdO1R0JXNN0lTzS37Ip/VrfzsL
-         CtYVXgH4euhiSP0vptgHAHPlUFA6SdvVm71M0GVqIEkCJYXcd4sVXSmFrCC+XvnF+Iww
-         3r0wUKjaAdcdrMFuPduU3tcFXD+zVJ2Uj4GKX078rNOqhZDK8T2h3GiDzyHn3OqVmKpM
-         CAW1JHK50saltpOqUFvRW+Q9luhbpqQJoGDVzGVmwj1zHdiUHq1XQ9adCkCdHsPfWJVQ
-         KgfK3JLmKcWwc2RkpMPOYT8yjQ2xYQtTgEYbZAin8cTNkxjQSVUU3uogKz8KJkrmjUGP
-         JYWA==
-X-Gm-Message-State: AGi0PuYAX1wOLFNiG9/21iZe/1KJoRVB9pm/zY7ficIiePA3a/dEZkx6
-        YCsJRdAtlTMYVeNqj5P7+rZq2BhQxgHphp/a9V3LxA==
-X-Google-Smtp-Source: APiQypLB3ByHxPcUtZOdM+rFhnnuQHeltCT3o4Wld28Z33lBkBrgQXNCizCw/78zmL5SElkXmD9y+IsRZr/CeHWIJLY=
-X-Received: by 2002:a67:11c4:: with SMTP id 187mr8059654vsr.34.1587025465228;
- Thu, 16 Apr 2020 01:24:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
- <1586353607-32222-14-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFrOFOLCWHu8nE4i5t=d+Ei-kcJ15_42Ft3ROSUDe5jkpw@mail.gmail.com> <3e5f8e78-7cd1-30fb-e005-78c1e7111794@codeaurora.org>
-In-Reply-To: <3e5f8e78-7cd1-30fb-e005-78c1e7111794@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 16 Apr 2020 10:23:49 +0200
-Message-ID: <CAPDyKFrD7sh4gnbX8B2j22h18T=7ZRGCc_RYXd0ePm2fZwDcVA@mail.gmail.com>
-Subject: Re: [PATCH 13/21] mmc: sdhci-msm: Use OPP API to set clk/perf state
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
+        Thu, 16 Apr 2020 04:33:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587025983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6uigvF/bqZ4XEJh+/Tp1y2eX448wtyf+x6UNwQLqPY=;
+        b=SO7VsIzB47+T1G+5I1oHNdbrD6NB4ZG+PgZkF/JKzT0vqErjBgZVPvXb8m0BP0GLTBlY8U
+        9DtjrjvJx6hdHCNrf+1R8GJ+Vgd2lAmXBwpOqjoWcexOINRbz7gt8aMUJZtBJQeUD6EGAX
+        MJ+vB4QEepOtQu2MpNaKwTonm1AhOXk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-IrgZkNNJM023eKiYKLtW2A-1; Thu, 16 Apr 2020 04:24:28 -0400
+X-MC-Unique: IrgZkNNJM023eKiYKLtW2A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1A5310CE780;
+        Thu, 16 Apr 2020 08:24:26 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A80E119DED;
+        Thu, 16 Apr 2020 08:24:24 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 03G8ONMg008685;
+        Thu, 16 Apr 2020 04:24:23 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 03G8OKM4008681;
+        Thu, 16 Apr 2020 04:24:21 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Thu, 16 Apr 2020 04:24:20 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Dan Williams <dan.j.williams@intel.com>
+cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pradeep P V K <ppvk@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Subhash Jadavani <subhashj@codeaurora.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        device-mapper development <dm-devel@redhat.com>
+Subject: Re: [PATCH] memcpy_flushcache: use cache flusing for larger
+ lengths
+In-Reply-To: <alpine.LRH.2.02.2004090612320.27517@file01.intranet.prod.int.rdu2.redhat.com>
+Message-ID: <alpine.LRH.2.02.2004160411460.7833@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2004071029270.8662@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4goJ2jbXNVZbMUKtRUominhuMhuTKrMh=fnhrfvC4jyjw@mail.gmail.com> <alpine.LRH.2.02.2004081439080.13932@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4grNHvyYEc4W6PkymhEJvLb17tXbC3JZdqvtFxmMZ8DCQ@mail.gmail.com> <alpine.LRH.2.02.2004090612320.27517@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 at 18:43, Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
->
->
-> On 4/15/2020 7:22 PM, Ulf Hansson wrote:
-> > On Wed, 8 Apr 2020 at 15:48, Rajendra Nayak <rnayak@codeaurora.org> wrote:
-> >>
-> >> On some qualcomm SoCs we need to vote on a performance state of a power
-> >> domain depending on the clock rates. Hence move to using OPP api to set
-> >> the clock rate and performance state specified in the OPP table.
-> >> On platforms without an OPP table, dev_pm_opp_set_rate() is eqvivalent to
-> >> clk_set_rate()
-> >>
-> >> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> >> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> >> Cc: Pradeep P V K <ppvk@codeaurora.org>
-> >> Cc: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> >> Cc: Subhash Jadavani <subhashj@codeaurora.org>
-> >> Cc: linux-mmc@vger.kernel.org
-> >
-> > This looks good to me!
-> >
-> > However, are there any of the other patches in the series that
-> > $subject patch depends on - or can I apply this as a standalone mmc
-> > patch?
->
-> Hey Ulf, thanks for the review. I'll just need to respin these to make
-> sure I do not do a dev_pm_opp_of_remove_table() if dev_pm_opp_of_add_table()
-> isn;t successful as discussed with Viresh on another thread [1]
->
-> As for the dependencies, its only PATCH 01/21 in this series and that's
-> already been queued by Viresh [2]
 
-I see, thanks!
 
-Looks like Viresh is sending it to be included for v5.7-rc2, so I can
-pick your new version of $subject patch next week.
+On Thu, 9 Apr 2020, Mikulas Patocka wrote:
 
-[...]
+> With dm-writecache on emulated pmem (with the memmap argument), we get
+> 
+> With the original kernel:
+> 8508 - 11378
+> real    0m4.960s
+> user    0m0.638s
+> sys     0m4.312s
+> 
+> With dm-writecache hacked to use cached writes + clflushopt:
+> 8505 - 11378
+> real    0m4.151s
+> user    0m0.560s
+> sys     0m3.582s
 
-Kind regards
-Uffe
+I did some multithreaded tests: 
+http://people.redhat.com/~mpatocka/testcases/pmem/microbenchmarks/pmem-multithreaded.txt
+
+And it turns out that for singlethreaded access, write+clwb performs 
+better, while for multithreaded access, non-temporal stores perform 
+better.
+
+1       sequential write-nt 8 bytes             1.3 GB/s
+2       sequential write-nt 8 bytes             2.5 GB/s
+3       sequential write-nt 8 bytes             2.8 GB/s
+4       sequential write-nt 8 bytes             2.8 GB/s
+5       sequential write-nt 8 bytes             2.5 GB/s
+
+1       sequential write 8 bytes + clwb         1.6 GB/s
+2       sequential write 8 bytes + clwb         2.4 GB/s
+3       sequential write 8 bytes + clwb         1.7 GB/s
+4       sequential write 8 bytes + clwb         1.2 GB/s
+5       sequential write 8 bytes + clwb         0.8 GB/s
+
+For one thread, we can see that write-nt 8 bytes has 1.3 GB/s and write 
+8+clwb has 1.6 GB/s, but for multiple threads, write-nt has better 
+throughput.
+
+The dm-writecache target is singlethreaded (all the copying is done while 
+holding the writecache lock), so it benefits from clwb.
+
+Should memcpy_flushcache be changed to write+clwb? Or are there some 
+multithreaded users of memcpy_flushcache that would be hurt by this 
+change?
+
+Mikulas
+
