@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28391AC8B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28AB1AC8E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395094AbgDPPMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        id S2503459AbgDPPP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2395053AbgDPPMC (ORCPT
+        by vger.kernel.org with ESMTP id S2395070AbgDPPMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:12:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412F9C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:12:02 -0700 (PDT)
+        Thu, 16 Apr 2020 11:12:18 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3173FC061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=LNXKTw/zTEs+P8C9X4mauLkA1J1HXkddgGUFayNufW8=; b=hbFceX3MJlgsd5aXDNp7dFyclo
-        HpI4HI8TGk7Y/OdimcJdDNWQaQim1s1fXSWyEl2y38SABYq0Guuc1krw+0jjje1UgJ1k332ZJz95S
-        6kT4ASZG8R/LUrECf/rMunTpV8HdfRDf5L/yb+dxFAIa0lKSyYb++LqTJd3/D052QkDzGePQ0WWRK
-        xsAmTli1R9wSb6hWkqsW8zRZ4sbdzjncvF6sF+U1DvUE9j2fWh2uUgFVzSrkqr3FEcHuvZK77nsJz
-        ePycpHbOTEWvZvvg/YTHXRk31bBRNnBT5lgE0pRmcbwUiq1VlYKpimbA1gujbdc5YyE2EYuY2ZHmG
-        H1f2anvw==;
+        bh=VO8OgZtTlpanMZN2sQJ/dRFzTr62tn4AjfwviFGlzT4=; b=TYfep7erSM+2EBYCzjis1tAedJ
+        xpXq5szVbZYnLk8Ieb7Q5uaMG6kHqPggeZFeqcU0/ZBDLsAtClpYiOQumYkr+K53AWY0POcq699jH
+        Xk3XMN/IKl9L+dVDJOuvPxaAzITm3ngbw0oQ7mZriZsaDijOXaj00sp2KeD218hyMO5mbfa7u5T1r
+        zL1T/VfuO+iEaqqkUJHFYsYiL/eScYNYU1cjw6JsuIne8H6QluJLL9iEmdOogGuWo+nFi9FjDPcae
+        5qy5XszowiEqj/yXk0NJYxZr1G/sMpZ6b1yskWBWizzlFysdPM/R8Vrd2d4YlW2QhZrWGZ7lQuv/n
+        eUOPGfmQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP6BI-0003Wf-99; Thu, 16 Apr 2020 15:11:56 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP6BJ-00046v-3u; Thu, 16 Apr 2020 15:11:57 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 255243073F0;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 277A9307456;
         Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0960A2B0DE4BE; Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
-Message-Id: <20200416151024.885221682@infradead.org>
+        id 10A492B0DE4BF; Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
+Message-Id: <20200416151024.944613249@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 16 Apr 2020 17:07:55 +0200
+Date:   Thu, 16 Apr 2020 17:07:56 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, peterz@infradead.org
-Subject: [RFC][PATCH 3/7] objtool: Allow branches within the same alternative.
+Subject: [RFC][PATCH 4/7] objtool: Add support for intra-function calls
 References: <20200416150752.569029800@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,138 +53,287 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-Currently objtool prevents any branch to an alternative. While preventing
-branching from the outside to the middle of an alternative makes perfect
-sense, branching within the same alternative should be allowed. To do so,
-identify each alternative and check that a branch to an alternative comes
-from the same alternative.
+Change objtool to support intra-function calls. On x86, an intra-function
+call is represented in objtool as a push onto the stack (of the return
+address), and a jump to the destination address. That way the stack
+information is correctly updated and the call flow is still accurate.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200414103618.12657-3-alexandre.chartre@oracle.com
+Link: https://lkml.kernel.org/r/20200414103618.12657-4-alexandre.chartre@oracle.com
 ---
- tools/objtool/check.c |   27 +++++++++++++++++++++------
- tools/objtool/check.h |    3 ++-
- 2 files changed, 23 insertions(+), 7 deletions(-)
+ include/linux/frame.h                            |   11 +
+ tools/objtool/Documentation/stack-validation.txt |    8 +
+ tools/objtool/arch/x86/decode.c                  |   17 ++-
+ tools/objtool/check.c                            |  129 ++++++++++++++++++-----
+ tools/objtool/check.h                            |    1 
+ 5 files changed, 140 insertions(+), 26 deletions(-)
 
+--- a/include/linux/frame.h
++++ b/include/linux/frame.h
+@@ -15,9 +15,20 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * This macro indicates that the following intra-function call is valid.
++ * Any non-annotated intra-function call will cause objtool to issue warning.
++ */
++#define ANNOTATE_INTRA_FUNCTION_CALL				\
++	999:							\
++	.pushsection .discard.intra_function_calls;		\
++	.long 999b;						\
++	.popsection;
++
+ #else /* !CONFIG_STACK_VALIDATION */
+ 
+ #define STACK_FRAME_NON_STANDARD(func)
++#define ANNOTATE_INTRA_FUNCTION_CALL
+ 
+ #endif /* CONFIG_STACK_VALIDATION */
+ 
+--- a/tools/objtool/Documentation/stack-validation.txt
++++ b/tools/objtool/Documentation/stack-validation.txt
+@@ -290,6 +290,14 @@ they mean, and suggestions for how to fi
+       https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70646
+ 
+ 
++9. file.o: warning: unsupported intra-function call
++
++   This warning means that a direct call is done to a destination which
++   is not at the beginning of a function. If this is a legit call, you
++   can remove this warning by putting the ANNOTATE_INTRA_FUNCTION_CALL
++   directive right before the call.
++
++
+ If the error doesn't seem to make sense, it could be a bug in objtool.
+ Feel free to ask the objtool maintainer for help.
+ 
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -453,6 +453,12 @@ int arch_decode_instruction(struct elf *
+ 
+ 	case 0xe8:
+ 		*type = INSN_CALL;
++		/*
++		 * For the impact on the stack, a call behaves like
++		 * a push of an immediate value (the return address).
++		 */
++		op->src.type = OP_SRC_CONST;
++		op->dest.type = OP_DEST_PUSH;
+ 		break;
+ 
+ 	case 0xfc:
+@@ -493,10 +499,17 @@ int arch_decode_instruction(struct elf *
+ 
+ 	*immediate = insn.immediate.nbytes ? insn.immediate.value : 0;
+ 
+-	if (*type == INSN_STACK || *type == INSN_EXCEPTION_RETURN)
++	switch (*type) {
++	case INSN_STACK:
++	case INSN_EXCEPTION_RETURN:
++	case INSN_CALL:
+ 		list_add_tail(&op->list, ops_list);
+-	else
++		break;
++
++	default:
+ 		free(op);
++		break;
++	}
+ 
+ 	return 0;
+ }
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -768,7 +768,9 @@ static int handle_group_alt(struct objto
- 			    struct instruction *orig_insn,
- 			    struct instruction **new_insn)
- {
-+	static unsigned int alt_group_next_index = 1;
- 	struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
-+	unsigned int alt_group = alt_group_next_index++;
- 	unsigned long dest_off;
- 
- 	last_orig_insn = NULL;
-@@ -777,7 +779,7 @@ static int handle_group_alt(struct objto
- 		if (insn->offset >= special_alt->orig_off + special_alt->orig_len)
- 			break;
- 
--		insn->alt_group = true;
-+		insn->alt_group = alt_group;
- 		last_orig_insn = insn;
- 	}
- 
-@@ -811,6 +813,7 @@ static int handle_group_alt(struct objto
- 	}
- 
- 	last_new_insn = NULL;
-+	alt_group = alt_group_next_index++;
- 	insn = *new_insn;
- 	sec_for_each_insn_from(file, insn) {
- 		if (insn->offset >= special_alt->new_off + special_alt->new_len)
-@@ -820,6 +823,7 @@ static int handle_group_alt(struct objto
- 
- 		insn->ignore = orig_insn->ignore_alts;
- 		insn->func = orig_insn->func;
-+		insn->alt_group = alt_group;
- 
- 		/*
- 		 * Since alternative replacement code is copy/pasted by the
-@@ -2157,6 +2161,15 @@ static int validate_return(struct symbol
+@@ -691,44 +691,51 @@ static int add_jump_destinations(struct
  	return 0;
  }
  
-+static bool is_branch_to_alternative(struct instruction *from,
-+				     struct instruction *to)
++static int setup_call_dest(struct objtool_file *file, struct instruction *insn)
 +{
-+	if (!from || !to->alt_group || !list_empty(&to->alts))
-+		return false;
++	unsigned long dest_off;
 +
-+	return (from->alt_group != to->alt_group);
++	dest_off = insn->offset + insn->len + insn->immediate;
++	insn->call_dest = find_func_by_offset(insn->sec, dest_off);
++	if (!insn->call_dest)
++		insn->call_dest = find_symbol_by_offset(insn->sec, dest_off);
++
++	if (!insn->call_dest) {
++		/* intra-function call */
++		if (insn->intra_function_call)
++			return 0;
++
++		WARN_FUNC("intra-function call", insn->sec, insn->offset);
++		return -1;
++	}
++
++	/* regular call */
++	if (insn->func && insn->call_dest->type != STT_FUNC) {
++		WARN_FUNC("unsupported call to non-function",
++			  insn->sec, insn->offset);
++		return -1;
++	}
++
++	return 0;
 +}
 +
  /*
-  * Follow the branch starting at the given instruction, and recursively follow
-  * any other branches (jumps).  Meanwhile, track the frame pointer state at
-@@ -2164,6 +2177,7 @@ static int validate_return(struct symbol
-  * tools/objtool/Documentation/stack-validation.txt.
+  * Find the destination instructions for all calls.
   */
- static int validate_branch(struct objtool_file *file, struct symbol *func,
-+			   struct instruction *from,
- 			   struct instruction *insn, struct insn_state state)
+ static int add_call_destinations(struct objtool_file *file)
  {
- 	struct alternative *alt;
-@@ -2174,7 +2188,7 @@ static int validate_branch(struct objtoo
+ 	struct instruction *insn;
+-	unsigned long dest_off;
+ 	struct rela *rela;
  
- 	sec = insn->sec;
+ 	for_each_insn(file, insn) {
+-		if (insn->type != INSN_CALL)
++		if (insn->type != INSN_CALL || insn->ignore)
+ 			continue;
  
--	if (insn->alt_group && list_empty(&insn->alts)) {
-+	if (is_branch_to_alternative(from, insn)) {
- 		WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
- 			  sec, insn->offset);
- 		return 1;
-@@ -2221,7 +2235,8 @@ static int validate_branch(struct objtoo
- 				if (alt->skip_orig)
- 					skip_orig = true;
+ 		rela = find_rela_by_dest_range(file->elf, insn->sec,
+ 					       insn->offset, insn->len);
+ 		if (!rela) {
+-			dest_off = insn->offset + insn->len + insn->immediate;
+-			insn->call_dest = find_func_by_offset(insn->sec, dest_off);
+-			if (!insn->call_dest)
+-				insn->call_dest = find_symbol_by_offset(insn->sec, dest_off);
+-
+-			if (insn->ignore)
+-				continue;
+-
+-			if (!insn->call_dest) {
+-				WARN_FUNC("unsupported intra-function call",
+-					  insn->sec, insn->offset);
+-				if (retpoline)
+-					WARN("If this is a retpoline, please patch it in with alternatives and annotate it with ANNOTATE_NOSPEC_ALTERNATIVE.");
+-				return -1;
+-			}
+-
+-			if (insn->func && insn->call_dest->type != STT_FUNC) {
+-				WARN_FUNC("unsupported call to non-function",
+-					  insn->sec, insn->offset);
++			if (setup_call_dest(file, insn))
+ 				return -1;
+-			}
+-
+ 		} else if (rela->sym->type == STT_SECTION) {
+ 			insn->call_dest = find_func_by_offset(rela->sym->sec,
+ 							      rela->addend+4);
+@@ -1414,6 +1421,52 @@ static int read_instr_hints(struct objto
+ 	return 0;
+ }
  
--				ret = validate_branch(file, func, alt->insn, state);
-+				ret = validate_branch(file, func,
-+						      NULL, alt->insn, state);
- 				if (ret) {
- 					if (backtrace)
- 						BT_FUNC("(alt)", insn);
-@@ -2264,7 +2279,7 @@ static int validate_branch(struct objtoo
- 					return ret;
++static int read_intra_function_calls(struct objtool_file *file)
++{
++	struct instruction *insn;
++	struct section *sec;
++	struct rela *rela;
++
++	sec = find_section_by_name(file->elf, ".rela.discard.intra_function_calls");
++	if (!sec)
++		return 0;
++
++	list_for_each_entry(rela, &sec->rela_list, list) {
++		unsigned long dest_off;
++
++		if (rela->sym->type != STT_SECTION) {
++			WARN("unexpected relocation symbol type in %s",
++			     sec->name);
++			return -1;
++		}
++
++		insn = find_insn(file, rela->sym->sec, rela->addend);
++		if (!insn) {
++			WARN("bad .discard.intra_function_call entry");
++			return -1;
++		}
++
++		if (insn->type != INSN_CALL) {
++			WARN_FUNC("intra_function_call not a direct call",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++
++		insn->intra_function_call = true;
++
++		dest_off = insn->offset + insn->len + insn->immediate;
++		insn->jump_dest = find_insn(file, insn->sec, dest_off);
++		if (!insn->jump_dest) {
++			WARN_FUNC("can't find call dest at %s+0x%lx",
++				  insn->sec, insn->offset,
++				  insn->sec->name, dest_off);
++			return -1;
++		}
++	}
++
++	return 0;
++}
++
+ static void mark_rodata(struct objtool_file *file)
+ {
+ 	struct section *sec;
+@@ -1469,6 +1522,10 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
  
- 			} else if (insn->jump_dest) {
--				ret = validate_branch(file, func,
++	ret = read_intra_function_calls(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_call_destinations(file);
+ 	if (ret)
+ 		return ret;
+@@ -2260,7 +2317,8 @@ static int validate_branch(struct objtoo
+ 				return ret;
+ 
+ 			if (!no_fp && func && !is_fentry_call(insn) &&
+-			    !has_valid_stack_frame(&state)) {
++			    !has_valid_stack_frame(&state) &&
++			    !insn->intra_function_call) {
+ 				WARN_FUNC("call without frame pointer save/setup",
+ 					  sec, insn->offset);
+ 				return 1;
+@@ -2269,6 +2327,29 @@ static int validate_branch(struct objtoo
+ 			if (dead_end_function(file, insn->call_dest))
+ 				return 0;
+ 
++			if (insn->intra_function_call) {
++				/*
++				 * The call instruction can update the stack
++				 * state. Then make the intra-function call
++				 * behaves like and unconditional jump.
++				 */
++				ret = handle_insn_ops(insn, &state);
++				if (ret)
++					return ret;
++
 +				ret = validate_branch(file, func, insn,
- 						      insn->jump_dest, state);
- 				if (ret) {
- 					if (backtrace)
-@@ -2396,7 +2411,7 @@ static int validate_unwind_hints(struct
++						      insn->jump_dest, state);
++				if (ret) {
++					if (backtrace) {
++						BT_FUNC("(intra-function call)",
++							insn);
++					}
++					return ret;
++				}
++
++				return 0;
++			}
++
+ 			break;
  
- 	while (&insn->list != &file->insn_list && (!sec || insn->sec == sec)) {
- 		if (insn->hint && !insn->visited) {
--			ret = validate_branch(file, insn->func, insn, state);
-+			ret = validate_branch(file, insn->func, NULL, insn, state);
- 			if (ret && backtrace)
- 				BT_FUNC("<=== (hint)", insn);
- 			warnings += ret;
-@@ -2537,7 +2552,7 @@ static int validate_symbol(struct objtoo
- 
- 	state->uaccess = sym->uaccess_safe;
- 
--	ret = validate_branch(file, insn->func, insn, *state);
-+	ret = validate_branch(file, insn->func, NULL, insn, *state);
- 	if (ret && backtrace)
- 		BT_FUNC("<=== (sym)", insn);
- 	return ret;
+ 		case INSN_JUMP_CONDITIONAL:
 --- a/tools/objtool/check.h
 +++ b/tools/objtool/check.h
-@@ -30,7 +30,8 @@ struct instruction {
- 	unsigned int len;
- 	enum insn_type type;
- 	unsigned long immediate;
--	bool alt_group, dead_end, ignore, ignore_alts;
-+	int alt_group;
-+	bool dead_end, ignore, ignore_alts;
+@@ -33,6 +33,7 @@ struct instruction {
+ 	int alt_group;
+ 	bool dead_end, ignore, ignore_alts;
  	bool hint;
++	bool intra_function_call;
  	bool retpoline_safe;
  	s8 instr;
+ 	u8 visited;
 
 
