@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E7B1AB4E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 02:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8511AB4F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 02:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405044AbgDPAsn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Apr 2020 20:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404980AbgDPAsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 20:48:31 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0960206A2;
-        Thu, 16 Apr 2020 00:48:29 +0000 (UTC)
-Date:   Wed, 15 Apr 2020 20:48:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        lkml <linux-kernel@vger.kernel.org>,
+        id S2405338AbgDPAyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 20:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405170AbgDPAy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 20:54:26 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900CFC061A0C;
+        Wed, 15 Apr 2020 17:54:25 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1FE639CE;
+        Thu, 16 Apr 2020 02:54:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1586998462;
+        bh=dZMu091chEyqroFKiISuS3a3zyFSmf1eCaPuRd8WZVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=locygWHL2WF1Ca6qoSa6yVUf3P0xH4QJioRzvG/rX2BlbeKwenhKLMB6syGrJAIYh
+         561P+rcQu4eJrG8FDeUW3A5XHYuOw3K+vfGhLgI0/MoeWeABHwQFwPTIZu4+Fg694D
+         hlbQ9RnS3NKvnX8hMsjovvOtfdJ34+YTwwOogorU=
+Date:   Thu, 16 Apr 2020 03:54:09 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>, Stephen Boyd <sboyd@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: On trace_*_rcuidle functions in modules
-Message-ID: <20200415204827.24f2c548@oasis.local.home>
-In-Reply-To: <CALAqxLX2UDQ7=dvzMoP6g-rYzw9dBebrynMfo4Gnv=SzaqhE=g@mail.gmail.com>
-References: <CALAqxLV4rM74wuzuZ+BkUi+keccxkAxv30N4vrFO7CVQ5vnT1A@mail.gmail.com>
-        <20200415085348.5511a5fe@gandalf.local.home>
-        <CALAqxLV1A6sOC1GWpFYXeBoDff0+AJgoOYK7NktcTdvX3kvAeg@mail.gmail.com>
-        <20200415161424.584d07d3@gandalf.local.home>
-        <CALAqxLU26PVFPSza5GceSF6gTVdzo_2D3G0dBp0KZXvAWFUktA@mail.gmail.com>
-        <20200415164116.40564f2c@gandalf.local.home>
-        <CALAqxLW6jqr38bk8pp-Hom2=MLm3coTmzCP8MMfrDvMfx388=Q@mail.gmail.com>
-        <20200415174918.154a86d0@gandalf.local.home>
-        <20200415220459.GE17661@paulmck-ThinkPad-P72>
-        <20200415185121.381a4bc3@gandalf.local.home>
-        <CALAqxLX2UDQ7=dvzMoP6g-rYzw9dBebrynMfo4Gnv=SzaqhE=g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] dt-bindings: drm/bridge: ti-sn65dsi86: Add hpd-gpios
+ to the bindings
+Message-ID: <20200416005409.GR4758@pendragon.ideasonboard.com>
+References: <20200415084758.1.Ifcdc4ecb12742a27862744ee1e8753cb95a38a7f@changeid>
+ <20200415084758.2.Ic98f6622c60a1aa547ed85781f2c3b9d3e56b734@changeid>
+ <158698038289.105027.2860892334897893887@swboyd.mtv.corp.google.com>
+ <20200415203256.GP4758@pendragon.ideasonboard.com>
+ <CAD=FV=U1U7y_U4+zySzA9e_uYE0ECdM1Bd-ew0OxG3ciqjRVSA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=U1U7y_U4+zySzA9e_uYE0ECdM1Bd-ew0OxG3ciqjRVSA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 17:06:24 -0700
-John Stultz <john.stultz@linaro.org> wrote:
+Hi Doug,
 
-> So you're saying the recent change to move to using trace_*_rcuidle()
-> was unnecessary?
+On Wed, Apr 15, 2020 at 04:49:00PM -0700, Doug Anderson wrote:
+> On Wed, Apr 15, 2020 at 1:33 PM Laurent Pinchart wrote:
+> > On Wed, Apr 15, 2020 at 12:53:02PM -0700, Stephen Boyd wrote:
+> > > Quoting Douglas Anderson (2020-04-15 08:48:40)
+> > > > Allow people to specify to use a GPIO for hot-plug-detect.  Add an
+> > > > example.
+> > > >
+> > > > NOTE: The current patch adding support for hpd-gpios to the Linux
+> > > > driver for hpd-gpios only adds enough support to the driver so that
+> > > > the bridge can use one of its own GPIOs.  The bindings, however, are
+> > > > written generically.
+> > > >
+> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > ---
+> > > >
+> > > >  .../bindings/display/bridge/ti,sn65dsi86.yaml          | 10 +++++++++-
+> > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> > > > index 8cacc6db33a9..554bfd003000 100644
+> > > > --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> > > > +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> > > > @@ -60,6 +60,10 @@ properties:
+> > > >      const: 1
+> > > >      description: See ../../pwm/pwm.yaml for description of the cell formats.
+> > > >
+> > > > +  hpd-gpios:
+> > > > +    maxItems: 1
+> > > > +    description: If present use the given GPIO for hot-plug-detect.
+> > >
+> > > Shouldn't this go in the panel node? And the panel driver should get the
+> > > gpio and poll it after powering up the panel? Presumably that's why we
+> > > have the no-hpd property in the simple panel binding vs. putting it here
+> > > in the bridge.
+> >
+> > Same question really, I think this belongs to the panel (or connector)
+> > node indeed.
 > 
-> Or is there a different notifier then cpu_pm_register_notifier() that
-> the driver should be using (that one seems to be using
-> atomic_notifier_chain_register())?
+> Hrm.
+> 
+> To me "no-hpd" feels OK in the panel because the lack of a connection
+> is somewhat symmetric.  Thus it's OK to say either "HPD isn't hooked
+> up to the panel in this system" or "HPD isn't hooked up to the bridge
+> in this system" and both express the same thing (AKA that there is no
+> HPD connection between the bridge and the panel).  In the case of
+> "no-hpd" it's more convenient to express it on the panel side because
+> the panel driver is the one whose behavior has to change if HPD isn't
+> hooked up.  The panel datasheet is the one that says how long of a
+> delay we need if HPD isn't hooked up.
+> 
+> ...but when you're talking about where the bridge driver should look
+> to find the HPD signal that it needs, that really feels like it should
+> be described as part of the bridge.  Specifically imagine we were
+> using our bridge for DP, not for eDP.  In that case simple-panel
+> wouldn't be involved because we could get any type of display plugged
+> in.  Thus it couldn't go in the panel node.  Here it feels clearer
+> that hpd-gpio needs to be a property of the bridge driver.
 
-From looking at the trace event in __tcs_buffer_write() in
-drivers/soc/qcom/rpmh-rsc.c, the _rcuidle() was added by:
+If you were using it for DP, you would need a DT node for the DP
+connector (with bindings to be added to
+Documentation/devicetree/bindings/display/connector/, similar to the
+ones we already have for other connectors). That DT node should
+reference the HPD pin GPIO. The bridge driver for the connector
+(drivers/gpu/drm/bridge/display-connector.c) would then handle HPD. The
+good news is that it already does :-)
 
-efde2659b0fe8 ("drivers: qcom: rpmh-rsc: Use rcuidle tracepoints for rpmh")
+> Looking at other usages of "hpd-gpio" in the kernel, it seems like the
+> usage I'm proposing is also common.  Grepping for "hpd-gpios" shows
+> numerous examples of "hpd-gpios" being defined at the display
+> controller level and (effectively) I believe the bridge is at the
+> equivalent level.
 
-Which shows a backtrace dump of:
+Bridge drivers should only implement support for features available from
+the corresponding hardware. If an HPD signal is connected to a dedicated
+pin of the bridge, and the bridge can generate an interrupt and expose
+the HPD status through I2C, then it should implement HPD-related
+operations. If the HPD pin from the connector is hooked up to a GPIO of
+the SoC, it should be handled by the connector bridge driver.
 
-     Call trace:
-      dump_backtrace+0x0/0x174
-      show_stack+0x20/0x2c
-      dump_stack+0xc8/0x124
-      lockdep_rcu_suspicious+0xe4/0x104
-      __tcs_buffer_write+0x230/0x2d0
-      rpmh_rsc_write_ctrl_data+0x210/0x270
-      rpmh_flush+0x84/0x24c
-      rpmh_domain_power_off+0x78/0x98
-      _genpd_power_off+0x40/0xc0
-      genpd_power_off+0x168/0x208
-      genpd_power_off+0x1e0/0x208
-      genpd_power_off+0x1e0/0x208
-      genpd_runtime_suspend+0x1ac/0x220
-      __rpm_callback+0x70/0xfc
-      rpm_callback+0x34/0x8c
-      rpm_suspend+0x218/0x4a4
-      __pm_runtime_suspend+0x88/0xac
-      psci_enter_domain_idle_state+0x3c/0xb4
-      cpuidle_enter_state+0xb8/0x284
-      cpuidle_enter+0x38/0x4c
-      call_cpuidle+0x3c/0x68
-      do_idle+0x194/0x260
-      cpu_startup_entry+0x24/0x28
-      secondary_start_kernel+0x150/0x15c
+-- 
+Regards,
 
-
-There's no notifier that calls this. This is called by the rpm_callback
-logic. Perhaps that callback will require a call to rcu_irq_enter()
-before calling the callback.
-
-In any case, I think it is wrong that these callbacks are called
-without RCU watching. The _rcuidle() on that tracepoint should be
-removed, and we fix the code that gets there to ensure that RCU is
-enabled. I agree with Peter, that no module code should be executed
-without RCU watching.
-
--- Steve
-
+Laurent Pinchart
