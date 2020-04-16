@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CDB1AC4A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256C01AC5CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441911AbgDPOCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:02:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
+        id S2409712AbgDPO2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:28:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898334AbgDPNlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:41:36 -0400
+        id S2406183AbgDPOAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:00:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51DA1214D8;
-        Thu, 16 Apr 2020 13:41:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E5DC21734;
+        Thu, 16 Apr 2020 14:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044495;
-        bh=f/MuBIwhf8lkkmoBHa26oyZAK+2rL9c6PazhpF9AxPo=;
+        s=default; t=1587045603;
+        bh=7rP73lTWU6+Q7t9AJyrmnd9s5HX/5v+B3ctmotKKrpU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RpmsedYNPhtyf2FFnmKvrlXW4P2XHxf03Id3jWpE9cE33hLmCcJgd/KHrdFc9qsXZ
-         1itPj24h+otMwPUieTdmZ+T+McG1PjFEJ8jNpLMadc7y9O8bjw7VcJ/BZzY98gXPPy
-         pwkj8JShSbbg2vCaiubVrUUfw7oehrNsDXfvUIro=
+        b=CKewqjzu8nHbIjXFuhAZjnq4gSrYKhtkX6qKmyOXumAxFQoogrOSmRkg67mknJllC
+         MqoITKrGtZayuugnfizXNuCUY7o5Rj5aSRGgKzgbDGhcEpktSZ5auaqk+pMhNDk/37
+         Be3ggPu6vXDJk11fr+waaVUvDjppvHz6Kz9SyjRE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Axtens <dja@axtens.net>
-Subject: [PATCH 5.5 240/257] powerpc/64: Setup a paca before parsing device tree etc.
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: [PATCH 5.6 202/254] drm/etnaviv: rework perfmon query infrastructure
 Date:   Thu, 16 Apr 2020 15:24:51 +0200
-Message-Id: <20200416131355.536237727@linuxfoundation.org>
+Message-Id: <20200416131351.366951961@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,132 +44,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
 
-commit d4a8e98621543d5798421eed177978bf2b3cdd11 upstream.
+commit ed1dd899baa32d47d9a93d98336472da50564346 upstream.
 
-Currently we set up the paca after parsing the device tree for CPU
-features. Prior to that, r13 contains random data, which means there
-is random data in r13 while we're running the generic dt parsing code.
+Report the correct perfmon domains and signals depending
+on the supported feature flags.
 
-This random data varies depending on whether we boot through a vmlinux
-or a zImage: for the vmlinux case it's usually around zero, but for
-zImages we see random values like 912a72603d420015.
-
-This is poor practice, and can also lead to difficult-to-debug
-crashes. For example, when kcov is enabled, the kcov instrumentation
-attempts to read preempt_count out of the current task, which goes via
-the paca. This then crashes in the zImage case.
-
-Similarly stack protector can cause crashes if r13 is bogus, by
-reading from the stack canary in the paca.
-
-To resolve this:
-
- - move the paca setup to before the CPU feature parsing.
-
- - because we no longer have access to CPU feature flags in paca
- setup, change the HV feature test in the paca setup path to consider
- the actual value of the MSR rather than the CPU feature.
-
-Translations get switched on once we leave early_setup, so I think
-we'd already catch any other cases where the paca or task aren't set
-up.
-
-Boot tested on a P9 guest and host.
-
-Fixes: fb0b0a73b223 ("powerpc: Enable kcov")
-Fixes: 06ec27aea9fc ("powerpc/64: add stack protector support")
-Cc: stable@vger.kernel.org # v4.20+
-Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-[mpe: Reword comments & change log a bit to mention stack protector]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200320032116.1024773-1-mpe@ellerman.id.au
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 9e2c2e273012 ("drm/etnaviv: add infrastructure to query perf counter")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/dt_cpu_ftrs.c |    1 -
- arch/powerpc/kernel/paca.c        |   10 +++++++---
- arch/powerpc/kernel/setup_64.c    |   30 ++++++++++++++++++++++++------
- 3 files changed, 31 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_perfmon.c |   59 ++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 7 deletions(-)
 
---- a/arch/powerpc/kernel/dt_cpu_ftrs.c
-+++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
-@@ -139,7 +139,6 @@ static void __init cpufeatures_setup_cpu
- 	/* Initialize the base environment -- clear FSCR/HFSCR.  */
- 	hv_mode = !!(mfmsr() & MSR_HV);
- 	if (hv_mode) {
--		/* CPU_FTR_HVMODE is used early in PACA setup */
- 		cur_cpu_spec->cpu_features |= CPU_FTR_HVMODE;
- 		mtspr(SPRN_HFSCR, 0);
+--- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+@@ -32,6 +32,7 @@ struct etnaviv_pm_domain {
+ };
+ 
+ struct etnaviv_pm_domain_meta {
++	unsigned int feature;
+ 	const struct etnaviv_pm_domain *domains;
+ 	u32 nr_domains;
+ };
+@@ -410,36 +411,78 @@ static const struct etnaviv_pm_domain do
+ 
+ static const struct etnaviv_pm_domain_meta doms_meta[] = {
+ 	{
++		.feature = chipFeatures_PIPE_3D,
+ 		.nr_domains = ARRAY_SIZE(doms_3d),
+ 		.domains = &doms_3d[0]
+ 	},
+ 	{
++		.feature = chipFeatures_PIPE_2D,
+ 		.nr_domains = ARRAY_SIZE(doms_2d),
+ 		.domains = &doms_2d[0]
+ 	},
+ 	{
++		.feature = chipFeatures_PIPE_VG,
+ 		.nr_domains = ARRAY_SIZE(doms_vg),
+ 		.domains = &doms_vg[0]
  	}
---- a/arch/powerpc/kernel/paca.c
-+++ b/arch/powerpc/kernel/paca.c
-@@ -214,11 +214,15 @@ void setup_paca(struct paca_struct *new_
- 	/* On Book3E, initialize the TLB miss exception frames */
- 	mtspr(SPRN_SPRG_TLB_EXFRAME, local_paca->extlb);
- #else
--	/* In HV mode, we setup both HPACA and PACA to avoid problems
-+	/*
-+	 * In HV mode, we setup both HPACA and PACA to avoid problems
- 	 * if we do a GET_PACA() before the feature fixups have been
--	 * applied
-+	 * applied.
-+	 *
-+	 * Normally you should test against CPU_FTR_HVMODE, but CPU features
-+	 * are not yet set up when we first reach here.
- 	 */
--	if (early_cpu_has_feature(CPU_FTR_HVMODE))
-+	if (mfmsr() & MSR_HV)
- 		mtspr(SPRN_SPRG_HPACA, local_paca);
- #endif
- 	mtspr(SPRN_SPRG_PACA, local_paca);
---- a/arch/powerpc/kernel/setup_64.c
-+++ b/arch/powerpc/kernel/setup_64.c
-@@ -285,18 +285,36 @@ void __init early_setup(unsigned long dt
+ };
  
- 	/* -------- printk is _NOT_ safe to use here ! ------- */
- 
--	/* Try new device tree based feature discovery ... */
--	if (!dt_cpu_ftrs_init(__va(dt_ptr)))
--		/* Otherwise use the old style CPU table */
--		identify_cpu(0, mfspr(SPRN_PVR));
--
--	/* Assume we're on cpu 0 for now. Don't write to the paca yet! */
-+	/*
-+	 * Assume we're on cpu 0 for now.
-+	 *
-+	 * We need to load a PACA very early for a few reasons.
-+	 *
-+	 * The stack protector canary is stored in the paca, so as soon as we
-+	 * call any stack protected code we need r13 pointing somewhere valid.
-+	 *
-+	 * If we are using kcov it will call in_task() in its instrumentation,
-+	 * which relies on the current task from the PACA.
-+	 *
-+	 * dt_cpu_ftrs_init() calls into generic OF/fdt code, as well as
-+	 * printk(), which can trigger both stack protector and kcov.
-+	 *
-+	 * percpu variables and spin locks also use the paca.
-+	 *
-+	 * So set up a temporary paca. It will be replaced below once we know
-+	 * what CPU we are on.
-+	 */
- 	initialise_paca(&boot_paca, 0);
- 	setup_paca(&boot_paca);
- 	fixup_boot_paca();
- 
- 	/* -------- printk is now safe to use ------- */
- 
-+	/* Try new device tree based feature discovery ... */
-+	if (!dt_cpu_ftrs_init(__va(dt_ptr)))
-+		/* Otherwise use the old style CPU table */
-+		identify_cpu(0, mfspr(SPRN_PVR));
++static unsigned int num_pm_domains(const struct etnaviv_gpu *gpu)
++{
++	unsigned int num = 0, i;
 +
- 	/* Enable early debugging if any specified (see udbg.h) */
- 	udbg_early_init();
++	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
++		const struct etnaviv_pm_domain_meta *meta = &doms_meta[i];
++
++		if (gpu->identity.features & meta->feature)
++			num += meta->nr_domains;
++	}
++
++	return num;
++}
++
++static const struct etnaviv_pm_domain *pm_domain(const struct etnaviv_gpu *gpu,
++	unsigned int index)
++{
++	const struct etnaviv_pm_domain *domain = NULL;
++	unsigned int offset = 0, i;
++
++	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
++		const struct etnaviv_pm_domain_meta *meta = &doms_meta[i];
++
++		if (!(gpu->identity.features & meta->feature))
++			continue;
++
++		if (meta->nr_domains < (index - offset)) {
++			offset += meta->nr_domains;
++			continue;
++		}
++
++		domain = meta->domains + (index - offset);
++	}
++
++	return domain;
++}
++
+ int etnaviv_pm_query_dom(struct etnaviv_gpu *gpu,
+ 	struct drm_etnaviv_pm_domain *domain)
+ {
+-	const struct etnaviv_pm_domain_meta *meta = &doms_meta[domain->pipe];
++	const unsigned int nr_domains = num_pm_domains(gpu);
+ 	const struct etnaviv_pm_domain *dom;
  
+-	if (domain->iter >= meta->nr_domains)
++	if (domain->iter >= nr_domains)
+ 		return -EINVAL;
+ 
+-	dom = meta->domains + domain->iter;
++	dom = pm_domain(gpu, domain->iter);
++	if (!dom)
++		return -EINVAL;
+ 
+ 	domain->id = domain->iter;
+ 	domain->nr_signals = dom->nr_signals;
+ 	strncpy(domain->name, dom->name, sizeof(domain->name));
+ 
+ 	domain->iter++;
+-	if (domain->iter == meta->nr_domains)
++	if (domain->iter == nr_domains)
+ 		domain->iter = 0xff;
+ 
+ 	return 0;
+@@ -448,14 +491,16 @@ int etnaviv_pm_query_dom(struct etnaviv_
+ int etnaviv_pm_query_sig(struct etnaviv_gpu *gpu,
+ 	struct drm_etnaviv_pm_signal *signal)
+ {
+-	const struct etnaviv_pm_domain_meta *meta = &doms_meta[signal->pipe];
++	const unsigned int nr_domains = num_pm_domains(gpu);
+ 	const struct etnaviv_pm_domain *dom;
+ 	const struct etnaviv_pm_signal *sig;
+ 
+-	if (signal->domain >= meta->nr_domains)
++	if (signal->domain >= nr_domains)
+ 		return -EINVAL;
+ 
+-	dom = meta->domains + signal->domain;
++	dom = pm_domain(gpu, signal->domain);
++	if (!dom)
++		return -EINVAL;
+ 
+ 	if (signal->iter >= dom->nr_signals)
+ 		return -EINVAL;
 
 
