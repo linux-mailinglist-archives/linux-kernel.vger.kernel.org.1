@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C290A1ABFDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14511ABEA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506077AbgDPLmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
+        id S2505911AbgDPK7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505771AbgDPK6T (ORCPT
+        with ESMTP id S2505840AbgDPK6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:58:19 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BF2C025480
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:57:42 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id q22so7368297ljg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hFUPXxI7jgn/ktPgVbzarMZTHyOx1Nmg/5SBKx4pX4g=;
-        b=GG/A2srh1ACSKZdgHLplfZ/jUi+xHfqSi5dZn0vX/6LIw14wKAv/iShVBee6mNV5+s
-         h/hhCCKNTZ8wtmb9f1Jt173dqX4oF1+DkWJ4ACKhY9XBPC+ndcyHKHhegZ2z25zLjqdM
-         Ehvs/TadXFAZKCdBTBOGRjR6Via/IMCITluuyqfnu9qgdMAWwwr94JMRJ9PXzHSHwoKG
-         slfZgsRKpMg6Si96q2oW1y8x5M9cUVH+dIgZOVHSUa6+BYV9cJG+7SHeLLyODLsXz/eJ
-         SW7YYs6U9T6bf5huPX/Aij1ZcFiQbMPt4YrItZjEd+w3gVbfCsBZyy0qZEzTaFACpgdW
-         5xUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hFUPXxI7jgn/ktPgVbzarMZTHyOx1Nmg/5SBKx4pX4g=;
-        b=qqd3Vo/nW7yBAjOYldsF+vnq2XtWLcQ9HznUuqFqi7iq2cVT3PJB1OsO5NwSM5+FLF
-         nG9csOnUW+dThFQVjncf+nO6+ORDKzZbO0xHmQE+FQtRBtpP9gRW4Kc7flLukumrREhD
-         sEnVHVUoOgRzgxj3WWQnGYpOtj2Z/ILoHTkp+i+R705y8nJxss+O5xAcPm2lkaSvxCPS
-         ++yBb9JKLWUDcA/5IFInFpC2oGCdyDNqvwluiZEK/2RRWOo69IxkpIH4xZbeLYLchkT5
-         QNWB2qd9wO3bU3A/C3a+gQGlWdIR0juJETJ2/tAyKMFbn0b60DpDJ3B8X1DebWoafxPC
-         tEEw==
-X-Gm-Message-State: AGi0PuZWnfDA1E3vWGDYgOLm7eiGlwYPGnVWg87+d0YAfy4ljjZ1ByGA
-        GyVowuedVDEihZ1Oy/zf80MIVg/NDl2nr8odVBAO1A==
-X-Google-Smtp-Source: APiQypIW5KNqgRNJ9hqsEXxDLzCkOX0q/HE89bJBbc8uzjThgdcyvk1104plBxo1ff06jPElEWcriKNEBaC2qQTgiy0=
-X-Received: by 2002:a2e:5048:: with SMTP id v8mr5610475ljd.99.1587034660887;
- Thu, 16 Apr 2020 03:57:40 -0700 (PDT)
+        Thu, 16 Apr 2020 06:58:54 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF972C02C444
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NtnNGmlGPTwRKZ1Q+5wTjwAsOTAHrQj/JuJqY7+2rjs=; b=BjSDPCBYfWFThRkvm8iktpdgsb
+        BllI6Ng/MvrX+cIT6yk9JffYzKqQSUZfIq2Nzc/aWuDAUxgZgtwNvJZhyzcDcerjBJ521lUQNdhnN
+        Xqt9kDecKhmh2/d+M2awlwYeFF/pZc8OzXGblW6YDMzKs/G8Nx9/jXyBag/M5ZHVAD/uIrNse1qUv
+        YoNuO16q5fxILiD+1TooTGxJ8VoCl+hRo59KTv/pm9HerLlx990iDzJB2Ilhi9chzz23KOnYcdtqT
+        Vp6nVXsnaBD3tdX7ap/eIZp6GOmHr2OM/S8EZKwDjALsJbrM3O+gJMXo7n4oczhdCf8POEjim3CrI
+        I6vV0muQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP2E2-0005MF-5N; Thu, 16 Apr 2020 10:58:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B729F30477A;
+        Thu, 16 Apr 2020 12:58:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9C3232B0DC745; Thu, 16 Apr 2020 12:58:28 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 12:58:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 0/9] sched: Streamline select_task_rq() &
+ select_task_rq_fair()
+Message-ID: <20200416105828.GN20730@hirez.programming.kicks-ass.net>
+References: <20200415210512.805-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-References: <20200409043851.31217-1-paweldembicki@gmail.com>
-In-Reply-To: <20200409043851.31217-1-paweldembicki@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Apr 2020 12:57:29 +0200
-Message-ID: <CACRpkdYKB0CHgOQ0DEhYoy16n3tSZ=DZ0WvL-GhAVCq0Jk8s2w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: vendor-prefixes: Add Check Point
-To:     Pawel Dembicki <paweldembicki@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415210512.805-1-valentin.schneider@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pawel,
+On Wed, Apr 15, 2020 at 10:05:03PM +0100, Valentin Schneider wrote:
+> Valentin Schneider (9):
+>   sched/fair: find_idlest_group(): Remove unused sd_flag parameter
+>   sched/debug: Make sd->flags sysctl read-only
+>   sched: Remove checks against SD_LOAD_BALANCE
+>   sched/topology: Kill SD_LOAD_BALANCE
+>   sched: Add WF_TTWU, WF_EXEC wakeup flags
 
-On Thu, Apr 9, 2020 at 6:39 AM Pawel Dembicki <paweldembicki@gmail.com> wrote:
+How about I queue two first 5, and you rework these last few?
 
->    "^ceva,.*":
->      description: Ceva, Inc.
->    "^chipidea,.*":
-> +    description: Check Point Software Technologies Ltd.
-> +  "^checkpoint,.*":
->      description: Chipidea, Inc
->    "^chipone,.*":
->      description: ChipOne
+>   sched: Kill select_task_rq()'s sd_flag parameter
+>   sched/fair: Dissociate wakeup decisions from SD flag value
+>   sched/fair: Split select_task_rq_fair want_affine logic
+>   sched/topology: Define and use shortcut pointers for wakeup sd_flag scan
 
-This is wrong, you inserted your new vendor between the regexp
-and description for chipidea and flipped the two lines in your
-match.
 
-Yours,
-Linus Walleij
