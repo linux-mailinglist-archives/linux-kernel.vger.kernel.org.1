@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7421AC4B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F591AC5C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391918AbgDPOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:03:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54980 "EHLO mail.kernel.org"
+        id S1728583AbgDPO0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgDPNmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:02 -0400
+        id S2894549AbgDPN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4148A20732;
-        Thu, 16 Apr 2020 13:42:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFE3A20732;
+        Thu, 16 Apr 2020 13:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044522;
-        bh=tRXqSHZ8cQC+9aPAz8WM9CyiqdFKO7LOWNsUqFUbfmM=;
+        s=default; t=1587045537;
+        bh=cOdDWYDw+GJ+hRmAPg16sAWISZrCcsqiTeYFKrelNr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0kUPLg3V6op0UbpTWi78tCraM9y8FTJA2iIxbXsu0ffUbtVpMDBqVJGzE39+o04T9
-         FG63WjuX41ljRC/EcHWQURUp6z0HAI7i2zOI/0HXhGNdiQLp5kWy/fdb2r5TlMG5f5
-         vFsBihuPwkJgJymecnR3G/v6a3babmRxYVEey474=
+        b=tMahRcEstcT3xEaELcRoeo9UmNq927aZW8msgLNaXnuks4xyeZV7xi3e2q93qzkzo
+         oprO77WGW3M0tnYEadovtiRZabj4Wa1NxwsPnpffrJ+vV9CWi+c+qA9uCZGuP2z8JI
+         obxCOEzhJsiVWQGBXmRKNom5preLKCivRknH328c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Strauss <michael.strauss@amd.com>,
-        Eric Yang <eric.yang2@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.5 212/257] drm/amd/display: Check for null fclk voltage when parsing clock table
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.6 174/254] dm integrity: fix a crash with unusually large tag size
 Date:   Thu, 16 Apr 2020 15:24:23 +0200
-Message-Id: <20200416131352.553064905@linuxfoundation.org>
+Message-Id: <20200416131348.189769005@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Strauss <michael.strauss@amd.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 72f5b5a308c744573fdbc6c78202c52196d2c162 upstream.
+commit b93b6643e9b5a7f260b931e97f56ffa3fa65e26d upstream.
 
-[WHY]
-In cases where a clock table is malformed such that fclk entries have
-frequencies but not voltages listed, we don't catch the error and set
-clocks to 0 instead of using hardcoded values as we should.
+If the user specifies tag size larger than HASH_MAX_DIGESTSIZE,
+there's a crash in integrity_metadata().
 
-[HOW]
-Add check for clock tables fclk entry's voltage as well
-
-Signed-off-by: Michael Strauss <michael.strauss@amd.com>
-Reviewed-by: Eric Yang <eric.yang2@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-integrity.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
-@@ -641,7 +641,7 @@ static void rn_clk_mgr_helper_populate_b
- 	/* Find lowest DPM, FCLK is filled in reverse order*/
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -1519,7 +1519,7 @@ static void integrity_metadata(struct wo
+ 		struct bio *bio = dm_bio_from_per_bio_data(dio, sizeof(struct dm_integrity_io));
+ 		char *checksums;
+ 		unsigned extra_space = unlikely(digest_size > ic->tag_size) ? digest_size - ic->tag_size : 0;
+-		char checksums_onstack[HASH_MAX_DIGESTSIZE];
++		char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+ 		unsigned sectors_to_process = dio->range.n_sectors;
+ 		sector_t sector = dio->range.logical_sector;
  
- 	for (i = PP_SMU_NUM_FCLK_DPM_LEVELS - 1; i >= 0; i--) {
--		if (clock_table->FClocks[i].Freq != 0) {
-+		if (clock_table->FClocks[i].Freq != 0 && clock_table->FClocks[i].Vol != 0) {
- 			j = i;
- 			break;
- 		}
+@@ -1748,7 +1748,7 @@ retry_kmap:
+ 				} while (++s < ic->sectors_per_block);
+ #ifdef INTERNAL_VERIFY
+ 				if (ic->internal_hash) {
+-					char checksums_onstack[max(HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
++					char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+ 
+ 					integrity_sector_checksum(ic, logical_sector, mem + bv.bv_offset, checksums_onstack);
+ 					if (unlikely(memcmp(checksums_onstack, journal_entry_tag(ic, je), ic->tag_size))) {
 
 
