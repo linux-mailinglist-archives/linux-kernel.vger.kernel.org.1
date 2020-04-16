@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041B81AC8CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E271AC495
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392425AbgDPPOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:14:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
+        id S2409255AbgDPOBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441663AbgDPNuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:50:11 -0400
+        id S2898256AbgDPNlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:41:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5316F22247;
-        Thu, 16 Apr 2020 13:49:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D11520732;
+        Thu, 16 Apr 2020 13:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044994;
-        bh=d9pFvTfnO44VU4f05RrOD3sJL8UbpjbwLQHFV2pQFuM=;
+        s=default; t=1587044468;
+        bh=LoTfbwCSaBF2QyTddDg0v6TEKT+rRRwgXkOpkMtXQUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwgXW7xHP0uRTHdSXQhsStBZ5O0ha/a8ExBTeBc9/C1LMzZu+fhBtuFEbaeAu1nG8
-         MBOSkIIwTFq5XXxN5azTka72p3h/EasnCJhAXSxcL8A4z+fBXzv06ewu14hKlvd3/e
-         BwJUO0JrEjvPkkR+EHVcnQN3ouMJ41pT/yLqbnRk=
+        b=BgIA0Ha14XaTy3LIEeW1Kn+urgMPBIppHaa0t9d0dE31ymG9LG2cZebu1DU06dspH
+         IQpdOqmCCjP6hC4HB9PBKm0Wex8ckanhLd7ZbB/Tu6INqi/1ou3jEAqZEDhNL7eou6
+         aWNx/PWSq4QJAIGoQlzgEfesiCiVykL+xmugxATU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Liu <aaron.liu@amd.com>,
-        Yuxian Dai <Yuxian.Dai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH 5.4 187/232] drm/amdgpu: unify fw_write_wait for new gfx9 asics
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.5 230/257] cpufreq: powernv: Fix use-after-free
 Date:   Thu, 16 Apr 2020 15:24:41 +0200
-Message-Id: <20200416131338.514465096@linuxfoundation.org>
+Message-Id: <20200416131354.479566978@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Liu <aaron.liu@amd.com>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-commit 2960758cce2310774de60bbbd8d6841d436c54d9 upstream.
+commit d0a72efac89d1c35ac55197895201b7b94c5e6ef upstream.
 
-Make the fw_write_wait default case true since presumably all new
-gfx9 asics will have updated firmware. That is using unique WAIT_REG_MEM
-packet with opration=1.
+The cpufreq driver has a use-after-free that we can hit if:
 
-Signed-off-by: Aaron Liu <aaron.liu@amd.com>
-Tested-by: Aaron Liu <aaron.liu@amd.com>
-Tested-by: Yuxian Dai <Yuxian.Dai@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Acked-by: Huang Rui <ray.huang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+a) There's an OCC message pending when the notifier is registered, and
+b) The cpufreq driver fails to register with the core.
+
+When a) occurs the notifier schedules a workqueue item to handle the
+message. The backing work_struct is located on chips[].throttle and
+when b) happens we clean up by freeing the array. Once we get to
+the (now free) queued item and the kernel crashes.
+
+Fixes: c5e29ea7ac14 ("cpufreq: powernv: Fix bugs in powernv_cpufreq_{init/exit}")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200206062622.28235-1-oohall@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/cpufreq/powernv-cpufreq.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -1026,6 +1026,8 @@ static void gfx_v9_0_check_fw_write_wait
- 			adev->gfx.mec_fw_write_wait = true;
- 		break;
- 	default:
-+		adev->gfx.me_fw_write_wait = true;
-+		adev->gfx.mec_fw_write_wait = true;
- 		break;
- 	}
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -1080,6 +1080,12 @@ free_and_return:
+ 
+ static inline void clean_chip_info(void)
+ {
++	int i;
++
++	/* flush any pending work items */
++	if (chips)
++		for (i = 0; i < nr_chips; i++)
++			cancel_work_sync(&chips[i].throttle);
+ 	kfree(chips);
  }
+ 
 
 
