@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A251ABDDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5F61ABDFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504940AbgDPK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504868AbgDPK1C (ORCPT
+        id S2505082AbgDPKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:33:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27613 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2504890AbgDPK1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:27:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70497C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:27:00 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h9so4175617wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=ytcr4DNGsM/t7kd6jXgpKOZ/wK7hRn1NK12HxIXMRKE=;
-        b=y283zphWTaRIHsqXboEQebyUcsf1x9LJ0OAGOqpxQTdsNtsjus/FsAB4jcOrbwQRmU
-         ovPNF7Uil97R6r1wi7otHb+HEG0ZivE/3Mal3+mMpWMpsqPOwJBWmUWk0JsYvYbtgPOz
-         xB2hC0AxW7bx/I9t4+kspS3NGqOmYzdltktQ1ic+DzL2O/t8O8tatfU4vxj77lCP1rf6
-         STIzdzowht1EWGVfD39Z2Aogi27qNWUcCQ2LIEVA6eJ0YMMEx8XGsgiilp69jV55p5Mz
-         MnUmmXnQXYlZXExyVCIqsI8j2WrJ9PcuiniGJdjht0BiqboZC/SX3qGiwcre7vT/LzJe
-         rLCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=ytcr4DNGsM/t7kd6jXgpKOZ/wK7hRn1NK12HxIXMRKE=;
-        b=db2yrmGB4m1t5P5Sa8+5ej8O6HrW9GjOscv3v4u1GzMzSHtKawwcQIoyvs007LjAB/
-         jqchXnpdvNK0UDHCKYdSQR/cdO08uU2aPXA4nE/93ZE0sdoKUG/oA5MFdikqxMx7+c2d
-         YgL8AQhylpCTbye5aWpbFAMau5zwraJiM7otrv7aQr5xO0rySzUtH3W5KObJ84Y4BtDN
-         5rchp823g4DPeBH0StPU/WjsDAdcYFKIpUKapsbRhidGaPpnNVrGiembdM8iQxrw0gUt
-         unzSXDAdbF3iTmR+8NBQKtLucbHYVjY8UlpmTDSaFnhFOUPMSRppzhuecapegrkIcv2i
-         BqlA==
-X-Gm-Message-State: AGi0PuaitHT9Ic/9hp5oiLJ+zwwYpBL6LSPrCXGZ+MvpojQmsfMx2mJh
-        fWGpQmn30xbwOz5qiIEl4gBWJw==
-X-Google-Smtp-Source: APiQypLHefjPm8Xgjdu6ICpgrvUDFrLOqOiQNSaKWVEHJV0E00xqUmBJ6qCW31i21zKvv/bei5YhbA==
-X-Received: by 2002:adf:e54c:: with SMTP id z12mr23478210wrm.276.1587032818803;
-        Thu, 16 Apr 2020 03:26:58 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.gmail.com with ESMTPSA id h137sm3760755wme.0.2020.04.16.03.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 03:26:58 -0700 (PDT)
-References: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org
-Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] clk: meson: prepare GX and G12 for GPU DVFS
-In-reply-to: <20200414195031.224021-1-martin.blumenstingl@googlemail.com>
-Date:   Thu, 16 Apr 2020 12:26:56 +0200
-Message-ID: <1jd087bua7.fsf@starbuckisacylon.baylibre.com>
+        Thu, 16 Apr 2020 06:27:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587032842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DM6k/0BvmOX6t724NGkINWqm7Df0IRyLKBF1DXuH/q0=;
+        b=g1VX12aIx+6Ib+AoiKvvR6MHClI5YNY4n9RkXCVQOzbFK5L0i2cs6Nryr9SrVlzVvGKW5G
+        DOrLx8WCm9cPbbj9EQmpdDdfjFBYHysCg5aoq5YHtVEwjnW6FSSot6jzuKPRseBK7TZcCR
+        fagfvdfck0JvoMT4shCsQqRp1pIfVgo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-LzQOBPtSNCKB7AltKEzm1A-1; Thu, 16 Apr 2020 06:27:17 -0400
+X-MC-Unique: LzQOBPtSNCKB7AltKEzm1A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDC918017F6;
+        Thu, 16 Apr 2020 10:27:15 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A7C87E7C1;
+        Thu, 16 Apr 2020 10:27:13 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
+References: <874ktl2ide.fsf@oldenburg2.str.redhat.com> <3865908.1586874010@warthog.procyon.org.uk>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     dhowells@redhat.com, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-afs@lists.infradead.org,
+        ceph-devel@vger.kernel.org, keyrings@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: What's a good default TTL for DNS keys in the kernel
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <128768.1587032833.1@warthog.procyon.org.uk>
+Date:   Thu, 16 Apr 2020 11:27:13 +0100
+Message-ID: <128769.1587032833@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Florian Weimer <fweimer@redhat.com> wrote:
 
-On Tue 14 Apr 2020 at 21:50, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+> You can get the real TTL if you do a DNS resolution on the name and
+> match the addresses against what you get out of the NSS functions.  If
+> they match, you can use the TTL from DNS.  Hackish, but it does give you
+> *some* TTL value.
 
-> This contains only the clock driver updates from my other series titled
-> "GPU DVFS for Meson GXBB/GXL/GXM/G12A/G12B/SM1" from [0]
->
->
-> Changes since v1 at [0]:
-> - update the patch descriptions to indicate that we explicitly don't
->   want CLK_SET_RATE_PARENT on the muxes
-> - split into clock driver (this series) and .dts changes (future
->   series, waiting for testing feedback on v1 from [0])
->
->
-> [0] https://patchwork.kernel.org/cover/11466399/
->
->
-> Martin Blumenstingl (2):
->   clk: meson: gxbb: Prepare the GPU clock tree to change at runtime
->   clk: meson: g12a: Prepare the GPU clock tree to change at runtime
->
->  drivers/clk/meson/g12a.c | 30 ++++++++++++++++++++++--------
->  drivers/clk/meson/gxbb.c | 40 ++++++++++++++++++++++------------------
->  2 files changed, 44 insertions(+), 26 deletions(-)
+I guess I'd have to do that in parallel.  Would calling something like
+res_mkquery() use local DNS caching?
 
-Applied, Thx
+> The question remains what the expected impact of TTL expiry is.  Will
+> the kernel just perform a new DNS query if it needs one?  Or would you
+> expect that (say) the NFS client rechecks the addresses after TTL expiry
+> and if they change, reconnect to a new NFS server?
+
+It depends on the filesystem.
+
+AFS keeps track of the expiration on the record and will issue a new lookup
+when the data expires, but NFS doesn't make use of this information.  The
+keyring subsystem will itself dispose of dns_resolver keys that expire and
+request_key() will only upcall again if the key has expired.
+
+The problem for NFS is that the host IP address is the primary key for the
+superblock (see nfs_compare_super_address()).
+
+CIFS also doesn't make direct use of the TTL, and again this may be because it
+uses the server address as part of the primary key for the superblock (see
+cifs_match_super()).
+
+David
+
