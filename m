@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE24B1ABEF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFC21ABF24
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632845AbgDPLTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:19:01 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54847 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506160AbgDPLOW (ORCPT
+        id S2633237AbgDPL1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:27:51 -0400
+Received: from m177134.mail.qiye.163.com ([123.58.177.134]:58079 "EHLO
+        m177134.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506183AbgDPLQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:14:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587035661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uMhEZOoHAJnjG/UJiypTrpHYCbpZgvJbU4bT3L0FKI4=;
-        b=Hh7rete3ARXQJJ6CQij9vn+QxSdXsHjWC8oi8jSs6rzA1Bo6BZ2ApYJOMUvKM+MbCg6zAJ
-        QM8pYpo2Yg35TtcxOUkWUsF7G9xOwLfcpSMCTOZfjxUP3Is/OwTYYk3fcJRQd6GHaApqkn
-        0+F3K8P2RGAKHX3TT/n9s8s9UEPpSAg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-IhQnZEqzOiyLqd_xHe7YTA-1; Thu, 16 Apr 2020 07:14:19 -0400
-X-MC-Unique: IhQnZEqzOiyLqd_xHe7YTA-1
-Received: by mail-wm1-f72.google.com with SMTP id h6so1252682wmi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:14:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uMhEZOoHAJnjG/UJiypTrpHYCbpZgvJbU4bT3L0FKI4=;
-        b=C1FPKOW6qETBQ/IcJ15Z5XCueXIQd0yG8/tFm6icMPM1ijhj6t7qv2C2QQSJpwIDt1
-         DzvpXhWeClDJ3TlL6qy3Y1553NOBg3j3QZwjAxurK4cgIxAIN4h0ZiYRcZXgEinECW9X
-         OBIzvqP3SDkezWjn/8grqfzoWMll7mnPgHiYBw3J7tOdfgMMTfqyQ2O5u/MFwHTJt4h6
-         44rOO5yIt2c35fkkZ2Y0WRvEsedRG9uxLk85fw9sdImN0b+ntzZwmgMbJ80hHa0oqyrG
-         L+OA7uFfcavsAJaYiHAcZHqkG7AtdoIhD58iMzU+ntTjksKI1LsgRjys63OTSImO1jIE
-         q1Uw==
-X-Gm-Message-State: AGi0PubcGOZUuzTwLgpFZuCXwwX/rstHfBWbqF3jLv+5lHrJ5FuHnemO
-        QGrHKfTmCWDnppZHLp3DIFsIpaH/27sEpnrWZQunN+2oVJynJMH/6mOltWEIi0896UfjT0eFZNe
-        m30r7fwQlge5XS4zK1F2Zfxso
-X-Received: by 2002:a5d:408a:: with SMTP id o10mr14651246wrp.163.1587035658170;
-        Thu, 16 Apr 2020 04:14:18 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIhCbY4Z2dk2GyzeI5Yi3sRn1ddz4I0YHF5eNgOdzfpIeQMINfj7YSC5j77R84e3b7mkneo+w==
-X-Received: by 2002:a5d:408a:: with SMTP id o10mr14651234wrp.163.1587035657963;
-        Thu, 16 Apr 2020 04:14:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:399d:3ef7:647c:b12d? ([2001:b07:6468:f312:399d:3ef7:647c:b12d])
-        by smtp.gmail.com with ESMTPSA id h5sm8397012wrp.97.2020.04.16.04.14.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 04:14:17 -0700 (PDT)
-Subject: Re: [PATCH] x86/kvm: make steal_time static
-To:     Jason Yan <yanaijie@huawei.com>, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Hulk Robot <hulkci@huawei.com>
-References: <20200415084939.6367-1-yanaijie@huawei.com>
- <d1700173-29c1-2e7c-46bd-471876d96762@redhat.com>
- <35c3890e-0c45-0dac-e9f0-f2a9446a387d@huawei.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bd77af4b-1e08-af7a-3167-eeb03dfbd1d6@redhat.com>
-Date:   Thu, 16 Apr 2020 13:14:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 16 Apr 2020 07:16:43 -0400
+Received: from ubuntu.localdomain (unknown [58.251.74.226])
+        by mail-m127101.qiye.163.com (Hmail) with ESMTPA id 9752248233;
+        Thu, 16 Apr 2020 19:16:35 +0800 (CST)
+From:   Wang Wenhu <wenhu.wang@vivo.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        oss@buserror.net, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>
+Subject: [PATCH RESEND,v3,0/4] drivers: uio: new driver uio_fsl_85xx_cache_sram
+Date:   Thu, 16 Apr 2020 04:16:05 -0700
+Message-Id: <20200416111609.4191-1-wenhu.wang@vivo.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <35c3890e-0c45-0dac-e9f0-f2a9446a387d@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUlXWQgYFAkeWUFZTFVJSENCQkJDT0hOQkxPSllXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OUk6Fjo6GjgwFg8iLw4LMxke
+        KBEwCjFVSlVKTkNMS0hOTEJDS0tOVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUlCSk43Bg++
+X-HM-Tid: 0a7182b471ac9865kuuu9752248233
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/20 04:15, Jason Yan wrote:
->>
-> 
-> Sorry that I found 14e581c381b9 ("x86/kvm: Make steal_time visible")
-> said that it is used by assembler code but I didn't find where.
-> Please drop this patch if it's true.
-> 
-> Sorry to make this trouble again.
+This series add a new uio driver for freescale 85xx platforms to
+access the Cache-Sram form user level. This is extremely helpful
+for the user-space applications that require high performance memory
+accesses.
 
-Here:
+It fixes the compile errors and warning of the hardware level drivers
+and implements the uio driver in uio_fsl_85xx_cache_sram.c.
 
-arch/x86/kernel/kvm.c:"cmpb	$0, " __stringify(KVM_STEAL_TIME_preempted) "+steal_time(%rax);"
+Changes since v1:
+ * Addressed comments from Greg K-H
+ * Moved kfree(info->name) into uio_info_free_internal()
 
-The __visible argument shouldn't be needed, __used should be enough.  I'll take a look.
+Changes since v2:
+ * Drop the patch that modifies Kconfigs of arch/powerpc/platforms
+   and modified the sequence of patches:
+    01:dropped, 02->03, 03->02, 04->01, 05->04
+ * Addressed comments from Greg, Scott and Christophe
+ * Use "uiomem->internal_addr" as if condition for sram memory free,
+   and memset the uiomem entry
+ * Modified of_match_table make the driver apart from Cache-Sram HW info
+   which belong to the HW level driver fsl_85xx_cache_sram to match
+ * Use roundup_pow_of_two for align calc(really learned a lot from Christophe)
+ * Remove useless clear block of uiomem entries.
+ * Use UIO_INFO_VER micro for info->version, and define it as
+   "devicetree,pseudo", meaning this is pseudo device and probed from
+   device tree configuration
+ * Select FSL_85XX_CACHE_SRAM rather than depends on it
 
-Paolo
+Wang Wenhu (4):
+  powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+  powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
+  drivers: uio: new driver for fsl_85xx_cache_sram
+
+ arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
+ arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
+ drivers/uio/Kconfig                       |   9 ++
+ drivers/uio/Makefile                      |   1 +
+ drivers/uio/uio_fsl_85xx_cache_sram.c     | 158 ++++++++++++++++++++++
+ 5 files changed, 171 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+
+-- 
+2.17.1
 
