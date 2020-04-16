@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5700C1AC939
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DECF1AC2DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408858AbgDPPU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:20:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33448 "EHLO mail.kernel.org"
+        id S2896316AbgDPNeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:34:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898667AbgDPNrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:23 -0400
+        id S2895946AbgDPN3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:29:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF4B82222C;
-        Thu, 16 Apr 2020 13:47:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F2F1217D8;
+        Thu, 16 Apr 2020 13:29:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044843;
-        bh=dDkcbgK3ffEB2mTKQRx9e4Lyh2KH5LHD9ttx5tTYxkY=;
+        s=default; t=1587043746;
+        bh=WtyTCRlFyMzJAkJbuvSlHht8TZrezfj5ottSM/w2hRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2BuLe8zDP4+7nr3zNFm9zbc0fufLiq76Sq2rO1caF8yA39MFp5kFl5mMconwgggb5
-         ufIMnTbXxtaDdHBYi8UIialUGypEaDhadr5yEsg86t/0y7YU9Lh7j0mYd/LXg3GL2q
-         2Ae8yekwEwoqD5d1x/K2cvo330E2ZWDvDcsq3tnc=
+        b=sU3Un7XsYcIDGlz/TEcJ+RC5Kl1IFUUfidUIeo0X3EkHE5X/me+0aWA4DJkhMp85U
+         5p8lJCesLgLZPMEc/JlEkz+bEilKXoGyGYQr75R6qh6Hi1jOfgkhlIUQLxuF/K3eP6
+         tstpR170yZRnQzDIZcegxgV7W+Jw3lcCEetnsudE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH 5.4 123/232] x86/entry/32: Add missing ASM_CLAC to general_protection entry
+        stable@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.19 076/146] ath9k: Handle txpower changes even when TPC is disabled
 Date:   Thu, 16 Apr 2020 15:23:37 +0200
-Message-Id: <20200416131330.475322058@linuxfoundation.org>
+Message-Id: <20200416131253.328364379@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Remi Pommarel <repk@triplefau.lt>
 
-commit 3d51507f29f2153a658df4a0674ec5b592b62085 upstream.
+commit 968ae2caad0782db5dbbabb560d3cdefd2945d38 upstream.
 
-All exception entry points must have ASM_CLAC right at the
-beginning. The general_protection entry is missing one.
+When TPC is disabled IEEE80211_CONF_CHANGE_POWER event can be handled to
+reconfigure HW's maximum txpower.
 
-Fixes: e59d1b0a2419 ("x86-32, smap: Add STAC/CLAC instructions to 32-bit kernel entry")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
+This fixes 0dBm txpower setting when user attaches to an interface for
+the first time with the following scenario:
+
+ieee80211_do_open()
+    ath9k_add_interface()
+        ath9k_set_txpower() /* Set TX power with not yet initialized
+                               sc->hw->conf.power_level */
+
+    ieee80211_hw_config() /* Iniatilize sc->hw->conf.power_level and
+                             raise IEEE80211_CONF_CHANGE_POWER */
+
+    ath9k_config() /* IEEE80211_CONF_CHANGE_POWER is ignored */
+
+This issue can be reproduced with the following:
+
+  $ modprobe -r ath9k
+  $ modprobe ath9k
+  $ wpa_supplicant -i wlan0 -c /tmp/wpa.conf &
+  $ iw dev /* Here TX power is either 0 or 3 depending on RF chain */
+  $ killall wpa_supplicant
+  $ iw dev /* TX power goes back to calibrated value and subsequent
+              calls will be fine */
+
+Fixes: 283dd11994cde ("ath9k: add per-vif TX power capability")
 Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200225220216.219537887@linutronix.de
+Signed-off-by: Remi Pommarel <repk@triplefau.lt>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/entry/entry_32.S |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath9k/main.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -1647,6 +1647,7 @@ ENTRY(int3)
- END(int3)
+--- a/drivers/net/wireless/ath/ath9k/main.c
++++ b/drivers/net/wireless/ath/ath9k/main.c
+@@ -1457,6 +1457,9 @@ static int ath9k_config(struct ieee80211
+ 		ath_chanctx_set_channel(sc, ctx, &hw->conf.chandef);
+ 	}
  
- ENTRY(general_protection)
-+	ASM_CLAC
- 	pushl	$do_general_protection
- 	jmp	common_exception
- END(general_protection)
++	if (changed & IEEE80211_CONF_CHANGE_POWER)
++		ath9k_set_txpower(sc, NULL);
++
+ 	mutex_unlock(&sc->mutex);
+ 	ath9k_ps_restore(sc);
+ 
 
 
