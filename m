@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F122B1AB8C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2671AB8CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437702AbgDPGyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:54:20 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:41546 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437468AbgDPGyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:54:07 -0400
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jOyP5-0005SP-QY; Thu, 16 Apr 2020 16:53:40 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:53:39 +1000
-Date:   Thu, 16 Apr 2020 16:53:39 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
-        davem@davemloft.net, lbartosik@marvell.com,
-        colin.king@canonical.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH V2] crypto: marvell/octeontx - Add missing '\n' in log
- messages
-Message-ID: <20200416065339.GK7901@gondor.apana.org.au>
-References: <20200411120633.22150-1-christophe.jaillet@wanadoo.fr>
+        id S2437711AbgDPGym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437468AbgDPGy1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:54:27 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536CDC061A0C;
+        Wed, 15 Apr 2020 23:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PhktM7xkiFtBGJ6dx8UYLKoYK1Fp1IPWa9qQEpZldmY=; b=qUXYZs7ybgSXUPkdc9bshfC+TP
+        YyTj+O9gfG0xSQUFcPVmDbSivTYGU6T8/JuO8e+CniEHH5g4brZ+JIjPGkHNQ1Qgd9FQuMnHRH9DA
+        pYH8fUNhGvOZjF3ofrnhGaElg7f6EIZCxYZ7ErJZHnaKVw1IhmGBjHgHu9iYquVmRmQq3Z1R2CDwX
+        8jyvhp/HLmJlwW8wPJnyfCNCsNlth/WA6d2FKQ0szNVS+hZYuffh7eyhNWbHofsN5HjZc+KXsnQj5
+        hphNYzS+rYK+nICKfsydWgXQr87HpsubyYPPTg9E5LA0ddCCMxD5mqZ3UUxLFLm3cEFXcundK/gP2
+        +gLPWsqw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOyPi-00010l-Cc; Thu, 16 Apr 2020 06:54:18 +0000
+Date:   Wed, 15 Apr 2020 23:54:18 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2 V3] MM: replace PF_LESS_THROTTLE with
+ PF_LOCAL_THROTTLE
+Message-ID: <20200416065418.GA1092@infradead.org>
+References: <87tv2b7q72.fsf@notabene.neil.brown.name>
+ <87v9miydai.fsf@notabene.neil.brown.name>
+ <87ftdgw58w.fsf@notabene.neil.brown.name>
+ <87wo6gs26e.fsf@notabene.neil.brown.name>
+ <87tv1ks24t.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200411120633.22150-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87tv1ks24t.fsf@notabene.neil.brown.name>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 02:06:33PM +0200, Christophe JAILLET wrote:
-> Message logged by 'dev_xxx()' or 'pr_xxx()' should end with a '\n'.
-> 
-> While at it, I've introduced a few pr_cont that looked logical to me.
-> 
-> Fixes: 10b4f09491bf ("crypto: marvell - add the Virtual Function driver for CPT")
-> Fixes: d9110b0b01ff ("crypto: marvell - add support for OCTEON TX CPT engine")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> V2: remove a pr_cont after a pr_debug
->     avoid repeating 'engine_group' in a message
-> ---
->  .../crypto/marvell/octeontx/otx_cptpf_main.c  |  4 +-
->  .../crypto/marvell/octeontx/otx_cptpf_mbox.c  | 12 +--
->  .../crypto/marvell/octeontx/otx_cptpf_ucode.c | 95 ++++++++++---------
->  .../crypto/marvell/octeontx/otx_cptvf_algs.c  |  6 +-
->  .../crypto/marvell/octeontx/otx_cptvf_main.c  | 12 +--
->  .../marvell/octeontx/otx_cptvf_reqmgr.c       | 10 +-
->  6 files changed, 70 insertions(+), 69 deletions(-)
+> +		if (current->flags & PF_LOCAL_THROTTLE)
+> +			/* This task must only be throttled based on the bdi
+> +			 * it is writing to - dirty pages for other bdis might
+> +			 * be pages this task is trying to write out.  So it
+> +			 * gets a free pass unless both global and local
+> +			 * thresholds are exceeded.  i.e unless
+> +			 * "dirty_exceeded".
+> +			 */
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+This is not our normal multi-line comment style.  The first line should
+be just a
+
+			/*
+
+Otherwise this looks good.
