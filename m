@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EEB1AC889
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBFA1ACA36
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395024AbgDPPJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36774 "EHLO mail.kernel.org"
+        id S2410455AbgDPPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408517AbgDPNut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:50:49 -0400
+        id S1727125AbgDPNmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:42:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E9B721734;
-        Thu, 16 Apr 2020 13:50:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E1D32222E;
+        Thu, 16 Apr 2020 13:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045048;
-        bh=6yOYKSkkjiW+PSa9ceaqSZizZQtvjSKI5yYQ7sjHvpw=;
+        s=default; t=1587044540;
+        bh=mDyuvzBU0DHXlkElGu1lIgKkQhTG1xpoGSILQu6UrOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GPfFT3jozhDFqEMTMNP97UhApunLldGpAH5CN/I7tQAPim9XoBTaUcryW9dluca4m
-         aBvTiIyvvicT1a5XStiAd1UUTwWL7lKCbHadcZcYSUfwmfvxard9scmV0N9J1CWtg3
-         ZZn7zyxwS7gR9aDOVXUv66Ig3cP/rijiWNeZ+3JU=
+        b=BMaXPPPpkr4F5wWBJG/T6OTLCBKVJu95xtkyCjE3/AutH2kzJiL6UyUw2hfE2GN08
+         iyFSTLRK2i2oOJgD+gcnwQC28QJ75hf3Eht2OBVEAwG0bw3mnmbA+RA5gm5T6iFI+A
+         K4tCmi9ae6uLrK8xjc5R8KP2P/MpNmHDY7mpHr/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 207/232] powerpc/64/tm: Dont let userspace set regs->trap via sigreturn
+        stable@vger.kernel.org, Imre Deak <imre.deak@intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.5 250/257] drm/i915/icl+: Dont enable DDI IO power on a TypeC port in TBT mode
 Date:   Thu, 16 Apr 2020 15:25:01 +0200
-Message-Id: <20200416131341.247743593@linuxfoundation.org>
+Message-Id: <20200416131356.855824146@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Imre Deak <imre.deak@intel.com>
 
-commit c7def7fbdeaa25feaa19caf4a27c5d10bd8789e4 upstream.
+The DDI IO power well must not be enabled for a TypeC port in TBT mode,
+ensure this during driver loading/system resume.
 
-In restore_tm_sigcontexts() we take the trap value directly from the
-user sigcontext with no checking:
+This gets rid of error messages like
+[drm] *ERROR* power well DDI E TC2 IO state mismatch (refcount 1/enabled 0)
 
-	err |= __get_user(regs->trap, &sc->gp_regs[PT_TRAP]);
+and avoids leaking the power ref when disabling the output.
 
-This means we can be in the kernel with an arbitrary regs->trap value.
-
-Although that's not immediately problematic, there is a risk we could
-trigger one of the uses of CHECK_FULL_REGS():
-
-	#define CHECK_FULL_REGS(regs)	BUG_ON(regs->trap & 1)
-
-It can also cause us to unnecessarily save non-volatile GPRs again in
-save_nvgprs(), which shouldn't be problematic but is still wrong.
-
-It's also possible it could trick the syscall restart machinery, which
-relies on regs->trap not being == 0xc00 (see 9a81c16b5275 ("powerpc:
-fix double syscall restarts")), though I haven't been able to make
-that happen.
-
-Finally it doesn't match the behaviour of the non-TM case, in
-restore_sigcontext() which zeroes regs->trap.
-
-So change restore_tm_sigcontexts() to zero regs->trap.
-
-This was discovered while testing Nick's upcoming rewrite of the
-syscall entry path. In that series the call to save_nvgprs() prior to
-signal handling (do_notify_resume()) is removed, which leaves the
-low-bit of regs->trap uncleared which can then trigger the FULL_REGS()
-WARNs in setup_tm_sigcontexts().
-
-Fixes: 2b0a576d15e0 ("powerpc: Add new transactional memory state to the signal context")
-Cc: stable@vger.kernel.org # v3.9+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200401023836.3286664-1-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: <stable@vger.kernel.org> # v5.4+
+Signed-off-by: Imre Deak <imre.deak@intel.com>
+Reviewed-by: José Roberto de Souza <jose.souza@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200330152244.11316-1-imre.deak@intel.com
+(cherry picked from commit f77a2db27f26c3ccba0681f7e89fef083718f07f)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/signal_64.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/i915/display/intel_ddi.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/signal_64.c
-+++ b/arch/powerpc/kernel/signal_64.c
-@@ -473,8 +473,10 @@ static long restore_tm_sigcontexts(struc
- 	err |= __get_user(tsk->thread.ckpt_regs.ccr,
- 			  &sc->gp_regs[PT_CCR]);
+diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+index 1488822398fed..4872c357eb6da 100644
+--- a/drivers/gpu/drm/i915/display/intel_ddi.c
++++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+@@ -2235,7 +2235,11 @@ static void intel_ddi_get_power_domains(struct intel_encoder *encoder,
+ 		return;
  
-+	/* Don't allow userspace to set the trap value */
-+	regs->trap = 0;
+ 	dig_port = enc_to_dig_port(&encoder->base);
+-	intel_display_power_get(dev_priv, dig_port->ddi_io_power_domain);
 +
- 	/* These regs are not checkpointed; they can go in 'regs'. */
--	err |= __get_user(regs->trap, &sc->gp_regs[PT_TRAP]);
- 	err |= __get_user(regs->dar, &sc->gp_regs[PT_DAR]);
- 	err |= __get_user(regs->dsisr, &sc->gp_regs[PT_DSISR]);
- 	err |= __get_user(regs->result, &sc->gp_regs[PT_RESULT]);
++	if (!intel_phy_is_tc(dev_priv, phy) ||
++	    dig_port->tc_mode != TC_PORT_TBT_ALT)
++		intel_display_power_get(dev_priv,
++					dig_port->ddi_io_power_domain);
+ 
+ 	/*
+ 	 * AUX power is only needed for (e)DP mode, and for HDMI mode on TC
+-- 
+2.20.1
+
 
 
