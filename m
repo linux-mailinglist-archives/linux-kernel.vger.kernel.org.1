@@ -2,140 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00391AB7CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9561AB7D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407452AbgDPGOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:14:33 -0400
-Received: from mout.web.de ([212.227.17.11]:54495 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407264AbgDPGO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:14:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1587017649;
-        bh=yE3WRQFbzy9TZxF3eQPkIGcnX6B9c+jYyC2kI29aWMk=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fnz5YT8NWV94IsnzLzg8HgmsXko0cm3fapuGIKC2PC7NQZxkqk1P2/fvHpT93GUQu
-         IA7VaM5mS1fau5ng+Lorwb4Z4ChVpsGpch4JyA99nCk+KataGoo/u+hiMl2Snu4NFv
-         RvD3wp8K4pZ3kxL5vDhedDO+W0IH4Smds1MUpUGI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([2.243.109.113]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MVLak-1jlOTn0EYA-00YfQo; Thu, 16
- Apr 2020 08:14:09 +0200
-Subject: Re: [PATCH v4] mm/ksm: Fix NULL pointer dereference when KSM zero
- page is enabled
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>
-References: <20200416025034.29780-1-songmuchun@bytedance.com>
- <20200415195841.da4361916f662a0136a271a5@linux-foundation.org>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <516df5d7-b514-11dc-130e-f1a2edce0108@web.de>
-Date:   Thu, 16 Apr 2020 08:14:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200415195841.da4361916f662a0136a271a5@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
+        id S2407306AbgDPGQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:16:48 -0400
+Received: from mail-eopbgr80041.outbound.protection.outlook.com ([40.107.8.41]:58759
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2407530AbgDPGQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:16:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWzGuDAPd7zlSSICVvF0+2sR0v77L4i8p6SwLKiAB1tmK3Sk03T2n/mLiICTH5yvXvHkC9Su1YVVosB4DbY+BDqgIdQH5JBXiuOaoLh4pXKZThdWQYoNmcAY+rm1MihtkI3y4WzhbbOCCbzXXwpEZPzFAIehCUYpCwFQt4JK3JwLh+/l0So41HM7iOGSpXEdjwNPxh7xfT2Lnta9IaD+40kqp2jg30UaaKh4c6d6EyTDVak1fo4Hf0f7DG1ETC0tHpFJEDsuvqkHlJVQNmiMHTvUEoL3r2oq0/Mxpz3hi+qHHh0TWnk/K1kdzdFm/TWLm5PDGvDqarDv4Y7bMo13AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9fjyfTPX276GIV6J5ZkAEiJKCdZuURyFXqVVKsKed3k=;
+ b=V3hL9XMzISBVzF0CxNlDBdnYm+Dsje63dxBnLeBvO+BAmjcK0+DXytvcdsHmR/Rn73ljaeOjoK4rxM577qWdFqGN3OSVqq7Tt/WRaiJ7ngQM2SxrTssSPwEndz10D1Rq4n8ThvnqRPhY+o034rn0ug/oN2Wv8089k/11lIZlJU8/x5hGXOYMfsY3/L1pwlLSxyQuaMXu/mDYGuLYwVMQeaWEvQx7k6VBYEnE4dyne69r40e/H6Ltd67hTT1KH+yPQ16+v95DurwRVlFTvXRFkx6eNaBgurZLdFK6P1TE0tnSoobf8p64RhK0edtlRS0PIqQeY9O4TgodOEhxeAHqQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9fjyfTPX276GIV6J5ZkAEiJKCdZuURyFXqVVKsKed3k=;
+ b=DCwOWYHROx30qFL0XbPodF+2pGoK2JrLwc9+7EgLpQrY3zQpZ1jzDG9PH1v+1xCs0Zd6b5r7KDmBWwJ2/Vmp/qGl2pZPsp5Xeh8JrvK0mRIadZfNZlB2Pu9+G0jlFTlyJuihSZeGJVTby1J0XAA/KVKKgtacyCMuaWWR6vHrnXk=
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
+ by DB3PR0402MB3755.eurprd04.prod.outlook.com (2603:10a6:8:f::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Thu, 16 Apr
+ 2020 06:16:23 +0000
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::3143:c46:62e4:8a8b]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::3143:c46:62e4:8a8b%7]) with mapi id 15.20.2900.028; Thu, 16 Apr 2020
+ 06:16:23 +0000
+From:   Anson Huang <anson.huang@nxp.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+CC:     "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH 1/5] dt-bindings: clock: Convert i.MX6Q clock to
+ json-schema
+Thread-Topic: [PATCH 1/5] dt-bindings: clock: Convert i.MX6Q clock to
+ json-schema
+Thread-Index: AQHWE6hQuNBNfLUpxU+eFy69TbX/iqh7NrqAgAAOwFA=
+Date:   Thu, 16 Apr 2020 06:16:23 +0000
+Message-ID: <DB3PR0402MB391654AB729CC8E27467E6C1F5D80@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <1587011171-24532-1-git-send-email-Anson.Huang@nxp.com>
+ <20200416052229.m6ur2coyfg6ef7vz@pengutronix.de>
+In-Reply-To: <20200416052229.m6ur2coyfg6ef7vz@pengutronix.de>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=anson.huang@nxp.com; 
+x-originating-ip: [183.192.13.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9f9eed6e-d5b4-41f2-f091-08d7e1cdb005
+x-ms-traffictypediagnostic: DB3PR0402MB3755:|DB3PR0402MB3755:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB3PR0402MB37554AC1D21A81D0426E1695F5D80@DB3PR0402MB3755.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0375972289
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(366004)(346002)(136003)(376002)(396003)(66556008)(66446008)(66476007)(66946007)(33656002)(71200400001)(9686003)(76116006)(4326008)(86362001)(44832011)(55016002)(186003)(8676002)(81156014)(54906003)(2906002)(45080400002)(5660300002)(6916009)(6506007)(478600001)(8936002)(53546011)(83080400001)(316002)(26005)(52536014)(7416002)(64756008)(7696005);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L7RfxUid8/cGrNB1Qr1CeWULeviejqUttJTKj1ZWJ1v6q/ic1Qo2f2Utfz/MYoXrSYvOWJwgEEW4WXWDbxYD5su3bghi3P5MMqLjyu7YBHoHNzhUH9IpOsbSTVRgeW8jBsVs/5IPMfgGxgCxp7q0XG9O75i620NzTUbJSAqBUGm//OgJrexNW1Rnzd2Dcj5H8DOuHk0uK0QO73STgQYZUUNis9ekO/VQNqIrEqayXol0520RkeQxQBjbkMx7NikXRWI6BV6IdYC+xBx23SIyN8pkp4yIOJv7gzp+K0hkQZD6q1gp7+XeXxjExoNb6lXOjCO7g6Zzb9sc6ecU1dg/jTeeF4yKpr3UQoEp35DcLkc2zCeFf+1vmde7HfXcsmv3MARz5PbZYFCxe45X9EYarHZVea/n9IafTTLxk797D3JoRK8f0tNDwPe/yVClTMqCmApwaMWBOR0iMLW2aPQCaIOkimc+Wjss3Q8nzrXE0giy1eEqsTptJQdZve1MHSINlQXbPy6/5DNJacfpb0MXOg==
+x-ms-exchange-antispam-messagedata: 7VHUPH0lV8QOX8qXqF0MZ6u9zmmGtyR5MaFT7Cs7DXJ29Kx0GTfG2T+tJznytZwDPle9TBSxQOFJaDpd/r9+kMkGjOhN2oaooF0KXJSIYgosaO0n2OLTEVT/hSaIJwv1VbRJoOxRhieVDeT3bLH/HQ==
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hruyfe80HoKoDtVWzyXWpdMt82R75FeTYIsTEIQFpTkH1L8Nu+o
- lAwuc9XEJ2+0Dk5Fc0Q6CYathRlKeRsy/Kv6OeZGoGMC/QJU/6L+fMQbsw4t9PlqQVgK83p
- TrCyZGQmWFu/pyhIFFYVQDcA6rr15iaMC+oFAhwoJoMqE9F9+gPxf0ZQGK6OVvjtd4jg0qG
- dIZTN20xmgPlKlbwt22mA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QRbQ1/dJKzc=:1GZqrtpF/61F7ORjcJLWGY
- zeen+Xs8iyH9Cj/YMb0eFBL5VgfSLpqAPZdtHMNloybZ/g0RsT1FvA3JxaRl6Cn7H16bQwuen
- inUkmshyYK5dy79PXyUAlv6g0ApZBmNfx+Jan8Lkvp6UkmjWM7V1WOt5LH/AdJpgFt0Hs7G89
- UP9eYygtAJutKXpGQfWMMo/5Hr/h3khGpMXU9c2BaXNAqbeg970q791nO7iKfn0aVTe6l4lHk
- zR8Ups+G5ttVryZZ0txhVh272pbUACPPtxlgNFNintEI47qpZ2js5Dz8/88r8XsvBcEbSSBWi
- SAjqGKOqFJtYCiXy7J20jyhy4EDS8iZlOH7IRze1bOYLsh3HJ3/nhb/6zWuoi7mUaLsUhp63b
- HsboVUc5djT4TBCWXFSSpSXIZHg7X7VLl7XOiXQLOvj2QPREZmK9oiNwAOmJzjlmUMNH0HUok
- qvM1VHNuNPsTZAb4k/oi1K5U3CHTpfu+w03ePHOwVwkFsUIhQPqeNS1f1vizjCwZFd1YPdgqm
- xCeTqAs5NNpkQDN/0swjjePXAPW0XcWZNnJX5RIO+6wSEKOfNpGlC8/4ubMZFw9Bn6qPsG/0P
- YbRdfhlCwUGBEgXowJlG2h1oifU53ldQRONuKBJ2tn2V+wwxVoV33yjkVL52MewxJexok4QKz
- Dcvm1Dt9bIDGh1FhXDTIGff5Q189t5rsJpeMMf3gPWk6eAlwiAZrWwELqzqBTQcuhk0H5Y5QU
- 8qYk16r3JuoJOwiEZULjMmhYkW6xVbR2l7GPuZqzNA8auEFuw0AFp5yQ+5aj0d9rb7PyroaWP
- 20SnDDlSmGaSLNsCUV+iD1YYq9zmOYI2JpOZeI66QnejfanC7VBCmcZa63SeX0u9h+3um8PMT
- Fo5m7poJsWYctm16DA1XpTNPmxjQpejlyYwIhQ1Z9O1vbFQiGL55xXz5746M3HwI6Q3u+VFBD
- Il77XE6d44Y2x5Ko3OJAR0578tsCSxvEbJiomr4rjsG0Z8S/ipDbvliRCQIr47JhySIqVCXZ5
- 7EyjBIS6e3WgcUFXblUHtVfxhcu9UbMSej8LhoiTUgmlI5IW6u00j12JzaZwJgOJ57V+nSXRu
- rLQVV2T1sQuq86e7xDw61STR6HprDd93e/nTKoeSND/Md8NduKcLNaZ3updBV5UEI7R2zSsj7
- SRuJ3Y3iwFrjC1CcI9sVRtjcGmRfPt4wcnRds1g9lCis2llWlNel+zf9G235vCaMbfTPfZPgf
- KnjiESZZ5QhNV7L7Q
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f9eed6e-d5b4-41f2-f091-08d7e1cdb005
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2020 06:16:23.2939
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4G2jotaQQxGzrbdOKRxxYvU8xwVGEJAwPmAulFiPt6mgyIQa5ku8KnIfAhzXQVfOAMmPHOkXlQcJVYrpO6XivA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3755
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E2=80=A6
->> +++ b/mm/ksm.c
->> @@ -2112,8 +2112,15 @@ static void cmp_and_merge_page(struct page *page=
-, struct rmap_item *rmap_item)
-=E2=80=A6
->> +		if (vma)
->> +			err =3D try_to_merge_one_page(vma, page,
->> +					ZERO_PAGE(rmap_item->address));
->> +		else
->> +			/**
->> +			 * If the vma is out of date, we do not need to
->> +			 * continue.
->> +			 */
->> +			err =3D 0;
->>  		up_read(&mm->mmap_sem);
-=E2=80=A6
-> It's conventional to put braces around multi-line blocks such as this.
+Hi, Marco
 
-Are there different views to consider around the usage of single statement=
-s
-together with curly brackets in if branches?
+> Subject: Re: [PATCH 1/5] dt-bindings: clock: Convert i.MX6Q clock to
+> json-schema
+>=20
+> Hi Anson,
+>=20
+> thanks for the patch. I have two questions please see inline which applie=
+s to all
+> patches.
+>=20
+> On 20-04-16 12:26, Anson Huang wrote:
+>=20
+> ...
+>=20
+> > diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+> > b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+> > new file mode 100644
+> > index 0000000..084d4f0
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+> > @@ -0,0 +1,69 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id:
+> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
+i
+> >
+> +cetree.org%2Fschemas%2Fclock%2Fimx6q-clock.yaml%23&amp;data=3D02%7C
+> 01%7
+> >
+> +Canson.huang%40nxp.com%7Cf07db2c34e834628725208d7e1c63083%7C6
+> 86ea1d3b
+> >
+> +c2b4c6fa92cd99c5c301635%7C0%7C0%7C637226113645218967&amp;sdat
+> a=3DsBVaIF
+> > +hEoFSfaot7P%2Bjcbu6gnAlaB%2BDeEUqn3sv3%2BA8%3D&amp;reserved=3D0
+> > +$schema:
+> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
+i
+> >
+> +cetree.org%2Fmeta-schemas%2Fcore.yaml%23&amp;data=3D02%7C01%7Cans
+> on.hua
+> >
+> +ng%40nxp.com%7Cf07db2c34e834628725208d7e1c63083%7C686ea1d3bc2
+> b4c6fa92
+> >
+> +cd99c5c301635%7C0%7C0%7C637226113645218967&amp;sdata=3DKLIuh1sJ
+> 2OQDp%2B
+> > +zSncLn87ziXGb85rwJFu2NnLgvxGI%3D&amp;reserved=3D0
+> > +
+> > +title: Clock bindings for Freescale i.MX6 Quad
+> > +
+> > +maintainers:
+> > +  - Anson Huang <Anson.Huang@nxp.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: fsl,imx6q-ccm
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+>=20
+> Why 1 and not 2? The RM describes that the ccm has 2 interrupts.
 
-Regards,
-Markus
+This is a typo, since we all use 2 interrupts for ccm, I will change them t=
+o ONLY 2;
+
+>=20
+> > +    maxItems: 2
+> > +
+> > +  '#clock-cells':
+> > +    const: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: 24m osc
+> > +      - description: 32k osc
+> > +      - description: ckih1 clock input
+> > +      - description: anaclk1 clock input
+> > +      - description: anaclk2 clock input
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: osc
+> > +      - const: ckil
+> > +      - const: ckih1
+> > +      - const: anaclk1
+> > +      - const: anaclk2
+> > +
+> > +  fsl,pmic-stby-poweroff:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Use this property if the SoC should be powered off by external p=
+ower
+> > +      management IC (PMIC) triggered via PMIC_STBY_REQ signal.
+> > +      Boards that are designed to initiate poweroff on PMIC_ON_REQ
+> signal should
+> > +      be using "syscon-poweroff" driver instead.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - '#clock-cells'
+> > +
+> > +examples:
+> > +  # Clock Control Module node:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +
+> > +    clks: clock-controller@20c4000 {
+> > +        compatible =3D "fsl,imx6q-ccm";
+> > +        reg =3D <0x020c4000 0x4000>;
+> > +        interrupts =3D <0 87 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <0 88 IRQ_TYPE_LEVEL_HIGH>;
+> > +        #clock-cells =3D <1>;
+> > +    };
+> > +
+> > +...
+>=20
+> Why these '...' here?
+
+I will remove it
+
+Thanks,
+Anson
+
+>=20
+> Regards,
+>   Marco
+>=20
+> > --
+> > 2.7.4
