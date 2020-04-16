@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A7F1ACA50
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF52B1AC719
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634657AbgDPPdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54014 "EHLO mail.kernel.org"
+        id S2394802AbgDPOte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898283AbgDPNlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:41:16 -0400
+        id S1729547AbgDPN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0C5B2076D;
-        Thu, 16 Apr 2020 13:41:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B9DB21744;
+        Thu, 16 Apr 2020 13:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044476;
-        bh=cj9k2hAYAxhpwnoNJGeoddNVllBSWZVfbFc0dQYDt/U=;
+        s=default; t=1587045522;
+        bh=aBs0U7UDsdXOR98ZbF/DFAx8LAlxF0lzVvph7LALPJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vf2LNXkFe5ZQ3XudJq52LiYLEWKnKW9REbWep05E3pG498uqcI8/UssWflM/GA8GV
-         DLGfRSLp8hih5Pss2rcSwAE2Wz6ILubBZ4zelQNo8TxsKMm79ok84PABYOYz4kReOE
-         4knCM628HbMIn8apaZsrcTA/9FggH+oPNkYEIbPo=
+        b=ARsxIn5e5DqOgQwVPkgXzfsjWC1uppMSt1INxxNGGTdo4yKkPiv67L+PjnNvwSfXc
+         BTpCZA3MMiw2O0QyEOQW4aUXikw51W7ggCls3EBkNMksasKL/42k/GAs7q+0ge/IR4
+         tFqgGhSt432aYusvN+aH+lP8yBPZLkbl6eBtR/Dw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: [PATCH 5.5 206/257] vfio: platform: Switch to platform_get_irq_optional()
+        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Alex Elder <elder@linaro.org>
+Subject: [PATCH 5.6 168/254] net: qualcomm: rmnet: Allow configuration updates to existing devices
 Date:   Thu, 16 Apr 2020 15:24:17 +0200
-Message-Id: <20200416131351.833164111@linuxfoundation.org>
+Message-Id: <20200416131347.528538989@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +46,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Auger <eric.auger@redhat.com>
+From: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
 
-commit 723fe298ad85ad1278bd2312469ad14738953cc6 upstream.
+commit 2abb5792387eb188b12051337d5dcd2cba615cb0 upstream.
 
-Since commit 7723f4c5ecdb ("driver core: platform: Add an error
-message to platform_get_irq*()"), platform_get_irq() calls dev_err()
-on an error. As we enumerate all interrupts until platform_get_irq()
-fails, we now systematically get a message such as:
-"vfio-platform fff51000.ethernet: IRQ index 3 not found" which is
-a false positive.
+This allows the changelink operation to succeed if the mux_id was
+specified as an argument. Note that the mux_id must match the
+existing mux_id of the rmnet device or should be an unused mux_id.
 
-Let's use platform_get_irq_optional() instead.
-
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Cc: stable@vger.kernel.org # v5.3+
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-Tested-by: Andre Przywara <andre.przywara@arm.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: 1dc49e9d164c ("net: rmnet: do not allow to change mux id if mux id is duplicated")
+Reported-and-tested-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
+Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/vfio/platform/vfio_platform.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c |   31 ++++++++++++---------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
---- a/drivers/vfio/platform/vfio_platform.c
-+++ b/drivers/vfio/platform/vfio_platform.c
-@@ -44,7 +44,7 @@ static int get_platform_irq(struct vfio_
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+@@ -279,7 +279,6 @@ static int rmnet_changelink(struct net_d
  {
- 	struct platform_device *pdev = (struct platform_device *) vdev->opaque;
+ 	struct rmnet_priv *priv = netdev_priv(dev);
+ 	struct net_device *real_dev;
+-	struct rmnet_endpoint *ep;
+ 	struct rmnet_port *port;
+ 	u16 mux_id;
  
--	return platform_get_irq(pdev, i);
-+	return platform_get_irq_optional(pdev, i);
- }
+@@ -294,19 +293,27 @@ static int rmnet_changelink(struct net_d
  
- static int vfio_platform_probe(struct platform_device *pdev)
+ 	if (data[IFLA_RMNET_MUX_ID]) {
+ 		mux_id = nla_get_u16(data[IFLA_RMNET_MUX_ID]);
+-		if (rmnet_get_endpoint(port, mux_id)) {
+-			NL_SET_ERR_MSG_MOD(extack, "MUX ID already exists");
+-			return -EINVAL;
+-		}
+-		ep = rmnet_get_endpoint(port, priv->mux_id);
+-		if (!ep)
+-			return -ENODEV;
+ 
+-		hlist_del_init_rcu(&ep->hlnode);
+-		hlist_add_head_rcu(&ep->hlnode, &port->muxed_ep[mux_id]);
++		if (mux_id != priv->mux_id) {
++			struct rmnet_endpoint *ep;
++
++			ep = rmnet_get_endpoint(port, priv->mux_id);
++			if (!ep)
++				return -ENODEV;
++
++			if (rmnet_get_endpoint(port, mux_id)) {
++				NL_SET_ERR_MSG_MOD(extack,
++						   "MUX ID already exists");
++				return -EINVAL;
++			}
++
++			hlist_del_init_rcu(&ep->hlnode);
++			hlist_add_head_rcu(&ep->hlnode,
++					   &port->muxed_ep[mux_id]);
+ 
+-		ep->mux_id = mux_id;
+-		priv->mux_id = mux_id;
++			ep->mux_id = mux_id;
++			priv->mux_id = mux_id;
++		}
+ 	}
+ 
+ 	if (data[IFLA_RMNET_FLAGS]) {
 
 
