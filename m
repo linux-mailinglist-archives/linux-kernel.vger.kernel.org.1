@@ -2,159 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A2B1ABBC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1621ABBFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503016AbgDPIyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:54:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35550 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502885AbgDPIru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:47:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ED75AACD8;
-        Thu, 16 Apr 2020 08:47:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1D3711E1250; Thu, 16 Apr 2020 10:47:48 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 10:47:48 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jan Kara <jack@suse.com>
-Subject: Re: [PATCH 24/34] docs: filesystems: convert quota.txt to ReST
-Message-ID: <20200416084748.GB23739@quack2.suse.cz>
-References: <cover.1586960617.git.mchehab+huawei@kernel.org>
- <36dc2cc02b525893ab66dca7ada2090236fb1879.1586960617.git.mchehab+huawei@kernel.org>
+        id S2502869AbgDPJBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502923AbgDPIsR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:48:17 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B69FC061A10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:48:12 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k1so3857957wrx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gCC6rxpfNBHEEJoswTl2+v3GlY13e+wv1Apu4C5uUJ0=;
+        b=qMyY08os0xXarDJEQ8j9nJU1G/4i1ajvSN1547JGWNAU4kptYy+l0ETyItzmwelvLC
+         nCDep5Cl1t95mbiIhlCDcowJNJGFakofRU/UeiPQv049DorrDQDyvOhQ0iXlohLp8hin
+         3bAdw+39EFnaQiFiejH+534QfsSXNhMyYx4ZtJs1O8APzJpuT9KiZORIU2xx8m9me3GJ
+         nRCzeSz6fhZnRuGUV65gJOj0k8DMrASVs1ffDMfO5wQ+4MKhMzyo1Hf7xWdNJii/ENzy
+         uOrTcZOmWLeo1D6phvtKajqfSbjF0JkyzG19tN5chV4GtOZYui9witk4RNmc7L0KIuBW
+         GEOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gCC6rxpfNBHEEJoswTl2+v3GlY13e+wv1Apu4C5uUJ0=;
+        b=bZgbylvH98ByyNXo1T6evCgKM+pLgkqgUM9Dd29qam9Sog6d3lYWapcqowHnn7V2lJ
+         z5jJAgvpzXSaef/KnvyGVYVfSxSOkqQtoyRzqJ1ktIrsXSYbowmj3cf1qknQaPRnNsir
+         qum3Ort+UUrmduDY2mKM3cmu/DPAAHyV7lPEWGcrSNv0MNjZvTCcDG6Hw2hebDqWrSze
+         arO+ZaLw8lca7ovqAjrIPIcp861w9A/vLS96hjXWWBrUrKypIJgg6e0tsZWWX+kk0VJy
+         eg19VLUNYXrdrSjnb7KwMwPUoNqDgX32+urN3bsfLyR6nGuRJthYemTRRN4Oh1Lm9Y7R
+         7iKQ==
+X-Gm-Message-State: AGi0Pub/4NK2xcYPu2gfhUNKljVvh8tYMNdGFCdZjPdV804tRrUmaChR
+        w0pczgXTp0GrsMijoF0R0Ed1sQ==
+X-Google-Smtp-Source: APiQypLyhDVW4E+VOlBHWErivAdlGrtxixDqwonOAkbRNQamJnKVsV0vJKLtvSLryabLtX0HhH0tLg==
+X-Received: by 2002:a5d:4286:: with SMTP id k6mr21252278wrq.222.1587026890846;
+        Thu, 16 Apr 2020 01:48:10 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id z15sm14429845wrs.47.2020.04.16.01.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 01:48:10 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 09:49:10 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Josef Friedl <josef.friedl@speed.at>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ran Bi <ran.bi@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v12 1/6] mfd: mt6397: Modify suspend/resume behavior
+Message-ID: <20200416084910.GX2167633@dell>
+References: <1586333531-21641-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1586333531-21641-2-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <36dc2cc02b525893ab66dca7ada2090236fb1879.1586960617.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1586333531-21641-2-git-send-email-hsin-hsiung.wang@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15-04-20 16:32:37, Mauro Carvalho Chehab wrote:
-> - Add a SPDX header;
-> - Adjust document title;
-> - Some whitespace fixes and new line breaks;
-> - Add it to filesystems/index.rst.
+On Wed, 08 Apr 2020, Hsin-Hsiung Wang wrote:
+
+> Some pmics don't need backup interrupt settings, so we change to use
+> pm notifier for the pmics which are necessary to store settings.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Looks good to me. You can add:
-
-Acked-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 > ---
->  Documentation/filesystems/index.rst           |  1 +
->  .../filesystems/{quota.txt => quota.rst}      | 41 +++++++++++++------
->  MAINTAINERS                                   |  2 +-
->  3 files changed, 31 insertions(+), 13 deletions(-)
->  rename Documentation/filesystems/{quota.txt => quota.rst} (81%)
+>  drivers/mfd/mt6397-core.c       | 30 ------------------------------
+>  drivers/mfd/mt6397-irq.c        | 35 ++++++++++++++++++++++++++++++++++-
+>  include/linux/mfd/mt6397/core.h |  2 ++
+>  3 files changed, 36 insertions(+), 31 deletions(-)
 > 
-> diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-> index a35b7d6ee5bc..8a17f8234b86 100644
-> --- a/Documentation/filesystems/index.rst
-> +++ b/Documentation/filesystems/index.rst
-> @@ -33,6 +33,7 @@ algorithms work.
->     locks
->     mandatory-locking
->     mount_api
-> +   quota
+> diff --git a/drivers/mfd/mt6397-core.c b/drivers/mfd/mt6397-core.c
+> index 0437c85..d2e70d8 100644
+> --- a/drivers/mfd/mt6397-core.c
+> +++ b/drivers/mfd/mt6397-core.c
+> @@ -100,35 +100,6 @@ static const struct mfd_cell mt6397_devs[] = {
+>  	}
+>  };
 >  
->     automount-support
+> -#ifdef CONFIG_PM_SLEEP
+> -static int mt6397_irq_suspend(struct device *dev)
+> -{
+> -	struct mt6397_chip *chip = dev_get_drvdata(dev);
+> -
+> -	regmap_write(chip->regmap, chip->int_con[0], chip->wake_mask[0]);
+> -	regmap_write(chip->regmap, chip->int_con[1], chip->wake_mask[1]);
+> -
+> -	enable_irq_wake(chip->irq);
+> -
+> -	return 0;
+> -}
+> -
+> -static int mt6397_irq_resume(struct device *dev)
+> -{
+> -	struct mt6397_chip *chip = dev_get_drvdata(dev);
+> -
+> -	regmap_write(chip->regmap, chip->int_con[0], chip->irq_masks_cur[0]);
+> -	regmap_write(chip->regmap, chip->int_con[1], chip->irq_masks_cur[1]);
+> -
+> -	disable_irq_wake(chip->irq);
+> -
+> -	return 0;
+> -}
+> -#endif
+> -
+> -static SIMPLE_DEV_PM_OPS(mt6397_pm_ops, mt6397_irq_suspend,
+> -			mt6397_irq_resume);
+> -
+>  struct chip_data {
+>  	u32 cid_addr;
+>  	u32 cid_shift;
+> @@ -238,7 +209,6 @@ static struct platform_driver mt6397_driver = {
+>  	.driver = {
+>  		.name = "mt6397",
+>  		.of_match_table = of_match_ptr(mt6397_of_match),
+> -		.pm = &mt6397_pm_ops,
+>  	},
+>  	.id_table = mt6397_id,
+>  };
+> diff --git a/drivers/mfd/mt6397-irq.c b/drivers/mfd/mt6397-irq.c
+> index b2d3ce1..2924919 100644
+> --- a/drivers/mfd/mt6397-irq.c
+> +++ b/drivers/mfd/mt6397-irq.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> +#include <linux/suspend.h>
+>  #include <linux/mfd/mt6323/core.h>
+>  #include <linux/mfd/mt6323/registers.h>
+>  #include <linux/mfd/mt6397/core.h>
+> @@ -81,7 +82,7 @@ static struct irq_chip mt6397_irq_chip = {
+>  static void mt6397_irq_handle_reg(struct mt6397_chip *mt6397, int reg,
+>  				  int irqbase)
+>  {
+> -	unsigned int status;
+> +	unsigned int status = 0;
+
+This looks like an unrelated change, no?
+
+>  	int i, irq, ret;
 >  
-> diff --git a/Documentation/filesystems/quota.txt b/Documentation/filesystems/quota.rst
-> similarity index 81%
-> rename from Documentation/filesystems/quota.txt
-> rename to Documentation/filesystems/quota.rst
-> index 32874b06ebe9..a30cdd47c652 100644
-> --- a/Documentation/filesystems/quota.txt
-> +++ b/Documentation/filesystems/quota.rst
-> @@ -1,4 +1,6 @@
-> +.. SPDX-License-Identifier: GPL-2.0
->  
-> +===============
->  Quota subsystem
->  ===============
->  
-> @@ -39,6 +41,7 @@ Currently, the interface supports only one message type QUOTA_NL_C_WARNING.
->  This command is used to send a notification about any of the above mentioned
->  events. Each message has six attributes. These are (type of the argument is
->  in parentheses):
-> +
->          QUOTA_NL_A_QTYPE (u32)
->  	  - type of quota being exceeded (one of USRQUOTA, GRPQUOTA)
->          QUOTA_NL_A_EXCESS_ID (u64)
-> @@ -48,20 +51,34 @@ in parentheses):
->  	  - UID of a user who caused the event
->          QUOTA_NL_A_WARNING (u32)
->  	  - what kind of limit is exceeded:
-> -		QUOTA_NL_IHARDWARN - inode hardlimit
-> -		QUOTA_NL_ISOFTLONGWARN - inode softlimit is exceeded longer
-> -		  than given grace period
-> -		QUOTA_NL_ISOFTWARN - inode softlimit
-> -		QUOTA_NL_BHARDWARN - space (block) hardlimit
-> -		QUOTA_NL_BSOFTLONGWARN - space (block) softlimit is exceeded
-> -		  longer than given grace period.
-> -		QUOTA_NL_BSOFTWARN - space (block) softlimit
-> +
-> +		QUOTA_NL_IHARDWARN
-> +		    inode hardlimit
-> +		QUOTA_NL_ISOFTLONGWARN
-> +		    inode softlimit is exceeded longer
-> +		    than given grace period
-> +		QUOTA_NL_ISOFTWARN
-> +		    inode softlimit
-> +		QUOTA_NL_BHARDWARN
-> +		    space (block) hardlimit
-> +		QUOTA_NL_BSOFTLONGWARN
-> +		    space (block) softlimit is exceeded
-> +		    longer than given grace period.
-> +		QUOTA_NL_BSOFTWARN
-> +		    space (block) softlimit
-> +
->  	  - four warnings are also defined for the event when user stops
->  	    exceeding some limit:
-> -		QUOTA_NL_IHARDBELOW - inode hardlimit
-> -		QUOTA_NL_ISOFTBELOW - inode softlimit
-> -		QUOTA_NL_BHARDBELOW - space (block) hardlimit
-> -		QUOTA_NL_BSOFTBELOW - space (block) softlimit
-> +
-> +		QUOTA_NL_IHARDBELOW
-> +		    inode hardlimit
-> +		QUOTA_NL_ISOFTBELOW
-> +		    inode softlimit
-> +		QUOTA_NL_BHARDBELOW
-> +		    space (block) hardlimit
-> +		QUOTA_NL_BSOFTBELOW
-> +		    space (block) softlimit
-> +
->          QUOTA_NL_A_DEV_MAJOR (u32)
->  	  - major number of a device with the affected filesystem
->          QUOTA_NL_A_DEV_MINOR (u32)
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 470389ef0135..519f5d84adca 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5009,7 +5009,7 @@ W:	http://www.win.tue.nl/~aeb/partitions/partition_types-1.html
->  DISKQUOTA
->  M:	Jan Kara <jack@suse.com>
->  S:	Maintained
-> -F:	Documentation/filesystems/quota.txt
-> +F:	Documentation/filesystems/quota.rst
->  F:	fs/quota/
->  F:	include/linux/quota*.h
->  F:	include/uapi/linux/quota*.h
-> -- 
-> 2.25.2
-> 
+>  	ret = regmap_read(mt6397->regmap, reg, &status);
+> @@ -128,6 +129,36 @@ static const struct irq_domain_ops mt6397_irq_domain_ops = {
+>  	.map = mt6397_irq_domain_map,
+>  };
+
+Other than that.
+
+For my own reference:
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
