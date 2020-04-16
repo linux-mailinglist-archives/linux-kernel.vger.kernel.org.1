@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC4D1AC724
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9691F1AC905
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394746AbgDPOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45440 "EHLO mail.kernel.org"
+        id S2395049AbgDPPRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:17:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405693AbgDPN62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:28 -0400
+        id S2636304AbgDPNsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AB462078B;
-        Thu, 16 Apr 2020 13:58:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1C31208E4;
+        Thu, 16 Apr 2020 13:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045508;
-        bh=YTCURO/wpL4mZgGhN38MtVtgTdD2kwxE6Zl9cpyaaFg=;
+        s=default; t=1587044926;
+        bh=NzVsl77g47J5ch7O3/qgCHAedtZoN5S+VS8l9N5SDAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uoIogT3c1Unh82B2EI5KaVS5pP2UxHO70AQZz+oJrN3LOFEX7TUrddG3hprQtltlP
-         Z7fh1txeGcUegw5hS7AHxQnijd4Dzf+btJEoQgfqFn0xsux0nbs8wQ8OZ1fYFHLx9S
-         HFdeRM94qQieW62wPm5Lq53h1Tz4PJd/iYZYoJCY=
+        b=Ot2RsA4DuCX9K0qVGJoAlME95UP5Kda1lU1TGxydofHdrGplMNZZ6O3R1K4Qn1kc3
+         KnZG43erD2IYFxTJ6RfAph7stkHuP9RCFTRxAjCbflfOLc2sLY49j5t7h/9T6+l91N
+         n0tK6bAWXZxyT9zPkwyWeq63gP5ZmnzSwlBklzjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.6 163/254] crypto: rng - Fix a refcounting bug in crypto_rng_reset()
+        stable@vger.kernel.org, Scott Wood <swood@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.4 158/232] sched/core: Remove duplicate assignment in sched_tick_remote()
 Date:   Thu, 16 Apr 2020 15:24:12 +0200
-Message-Id: <20200416131346.958192326@linuxfoundation.org>
+Message-Id: <20200416131334.775155848@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Scott Wood <swood@redhat.com>
 
-commit eed74b3eba9eda36d155c11a12b2b4b50c67c1d8 upstream.
+commit 82e0516ce3a147365a5dd2a9bedd5ba43a18663d upstream.
 
-We need to decrement this refcounter on these error paths.
+A redundant "curr = rq->curr" was added; remove it.
 
-Fixes: f7d76e05d058 ("crypto: user - fix use_after_free of struct xxx_request")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Neil Horman <nhorman@tuxdriver.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: ebc0f83c78a2 ("timers/nohz: Update NOHZ load in remote tick")
+Signed-off-by: Scott Wood <swood@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/1580776558-12882-1-git-send-email-swood@redhat.com
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/rng.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ kernel/sched/core.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/crypto/rng.c
-+++ b/crypto/rng.c
-@@ -37,12 +37,16 @@ int crypto_rng_reset(struct crypto_rng *
- 	crypto_stats_get(alg);
- 	if (!seed && slen) {
- 		buf = kmalloc(slen, GFP_KERNEL);
--		if (!buf)
-+		if (!buf) {
-+			crypto_alg_put(alg);
- 			return -ENOMEM;
-+		}
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3676,7 +3676,6 @@ static void sched_tick_remote(struct wor
+ 	if (cpu_is_offline(cpu))
+ 		goto out_unlock;
  
- 		err = get_random_bytes_wait(buf, slen);
--		if (err)
-+		if (err) {
-+			crypto_alg_put(alg);
- 			goto out;
-+		}
- 		seed = buf;
- 	}
+-	curr = rq->curr;
+ 	update_rq_clock(rq);
  
+ 	if (!is_idle_task(curr)) {
 
 
