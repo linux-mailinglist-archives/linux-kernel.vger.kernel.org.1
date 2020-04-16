@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20771ACA21
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FEB1AC9D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505864AbgDPPbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:31:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392171AbgDPNm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:56 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5779720732;
-        Thu, 16 Apr 2020 13:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044576;
-        bh=pKr2ODiezIbXVsIZUlYbDhELk4vhbLO4dwd5JanhVDs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DYDoeT+4hlWnZScNJWKzbPVJP6AmaxiEBcN9QaCMwpYR+ioBzx5PL3FhzIHC2+c/+
-         RtXULmJ+QUoHFlldeF7OO8+NpY0b6xRd4MEh28kb8NOorpCxOltXVb4oSb79+AIqvn
-         UMDWYBszSdyr4a5FPV5Dcb7rjUAOmOj9YorEfYTo=
-Date:   Thu, 16 Apr 2020 22:42:50 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "bibo,mao" <bibo.mao@intel.com>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] kretprobe: Prevent triggering kretprobe from within
- kprobe_flush_task
-Message-Id: <20200416224250.7a53fb581e50aa32df75a0cf@kernel.org>
-In-Reply-To: <20200416091320.GA322899@krava>
-References: <20200408164641.3299633-1-jolsa@kernel.org>
-        <20200409234101.8814f3cbead69337ac5a33fa@kernel.org>
-        <20200409184451.GG3309111@krava>
-        <20200409201336.GH3309111@krava>
-        <20200410093159.0d7000a08fd76c2eaf1398f8@kernel.org>
-        <20200414160338.GE208694@krava>
-        <20200415090507.GG208694@krava>
-        <20200416105506.904b7847a1b621b75463076d@kernel.org>
-        <20200416091320.GA322899@krava>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729009AbgDPP2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:28:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47947 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2898442AbgDPNo2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587044666;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VNwYgeif6SS8pR2Shi4E6mQu99cc3aS7IJK5cTr/jMU=;
+        b=Y31rxYOX6a5ie4Vcllyg+ubkQekwhnPQbcta1uZXhI+eqVtzyPxOmvsKVwppDFMCpwkknU
+        Ni9OSMvNVexBYOve4bc4J9Ji3ZQNAs0QVSPLBTqWt57OywnbnIajaaRNnArvLALZ+r2i4m
+        ZaBy8dWdpLBXuNEztEfKtQc3CLbzZ0M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-65-9eDRhbKIOHyWmyAlGo8qgg-1; Thu, 16 Apr 2020 09:44:09 -0400
+X-MC-Unique: 9eDRhbKIOHyWmyAlGo8qgg-1
+Received: by mail-wr1-f71.google.com with SMTP id f2so1732581wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:44:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VNwYgeif6SS8pR2Shi4E6mQu99cc3aS7IJK5cTr/jMU=;
+        b=HyBDvEcihdarhppNJJnco55JIYHaz3o94q/W2jpRLlgiMCYSoqaUOej885tzMd6ASR
+         bFNJHyDlOVNX+U8GQZ2oQhI+fFxbeXVVj98eMNA297buoXM87oijzk61/JSdYfXWJppB
+         0VByS6sWOpCVRMpwWmiQBLomL6BLtVpgCPBzcoztaV3IOlPnGcVHDkg7nkDY96f59kFs
+         Z/Q1f9qG24tu2OvMcOB1upzvKH0h/cUiXxxu629h7CI6WMeYKjMLOv44BwfFYBGl+BA7
+         V7hS5nO1u0B9BfgUekSp2hT7yUIMkxwUwFrsHRbLZck/vxPR5ueFuv85M714zTeBYtdv
+         jaLw==
+X-Gm-Message-State: AGi0PuYSiy8kXVlFX+WsAN/WDn/+Gi6yM6hPI98dm4+YvcdPJPumrik+
+        YsCCPRcgLAOIBm7I5UmdfJIk0YSf91tSfvIhWe4IQnAwMP52RhNHAhYDfxB9Z0VwGnUouQW5Zjw
+        SzhPfML4MGSiJ1pOLODvDIskl
+X-Received: by 2002:a1c:9e42:: with SMTP id h63mr4711036wme.115.1587044648698;
+        Thu, 16 Apr 2020 06:44:08 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJbJo3jezBS7NrZjbC7U3OMTYgi+dwQqgaUpndr48EWx/XnTEuvdzSDmjn7g2cPMV+vyM9+Dg==
+X-Received: by 2002:a1c:9e42:: with SMTP id h63mr4711010wme.115.1587044648389;
+        Thu, 16 Apr 2020 06:44:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:399d:3ef7:647c:b12d? ([2001:b07:6468:f312:399d:3ef7:647c:b12d])
+        by smtp.gmail.com with ESMTPSA id s24sm3860611wmj.28.2020.04.16.06.44.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 06:44:07 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] KVM: VMX: Unionize vcpu_vmx.exit_reason
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
+References: <20200415175519.14230-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a77ca940-afe4-a94a-2698-6cda0f95ba5c@redhat.com>
+Date:   Thu, 16 Apr 2020 15:44:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20200415175519.14230-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On Thu, 16 Apr 2020 11:13:20 +0200
-Jiri Olsa <jolsa@redhat.com> wrote:
-
-> On Thu, Apr 16, 2020 at 10:55:06AM +0900, Masami Hiramatsu wrote:
+On 15/04/20 19:55, Sean Christopherson wrote:
+> Convert the exit_reason field in struct vcpu_vmx from a vanilla u32 to a
+> union, (ab)using the union to provide access to the basic exit reason and
+> flags.
 > 
-> SNIP
+> There is a fairly substantial delta relative to v1, as I ran with Vitaly's
+> suggestion to split nested_vmx_exit_reflected() into VM-Fail, "L0 wants"
+> and "L1 wants", and move the tracepoint into nested_vmx_reflect_vmexit().
+> IMO, this yields cleaner and more understandable code overall, and helps
+> eliminate caching the basic exit reason (see below) by avoiding large
+> functions that repeatedly query the basic exit reason.  The refactoring
+> isn't strictly related to making exit_reason a union, but the code would
+> conflict horribly and the end code nicely demonstrates the value of using
+> a union for the exit reason.
 > 
-> > >           trampoline_handler
-> > >             kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
-> > > 
-> > > Adding kprobe_busy_begin/end helpers that mark code with fake
-> > > probe installed to prevent triggering of another kprobe within
-> > > this code.
-> > > 
-> > > Using these helpers in kprobe_flush_task, so the probe recursion
-> > > protection check is hit and the probe is never set to prevent
-> > > above lockup.
-> > > 
-> > > Reported-by: "Ziqian SUN (Zamir)" <zsun@redhat.com>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > 
-> > Thanks Jiri and Ziqian!
-> > 
-> > Looks good to me.
-> > 
-> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> > BTW, this is a kind of bugfix. So should it add a Fixes tag?
-> > 
-> > Fixes: ef53d9c5e4da ('kprobes: improve kretprobe scalability with hashed locking')
-> > Cc: stable@vger.kernel.org
+> There are three motivating factors for making exit_reason a union:
 > 
-> ah right, do you want me to repost with those?
-
-Yeah, if you don't mind.
-
-Thank you,
-
+>   - Help avoid bugs where a basic exit reason is compared against the full
+>     exit reason, e.g. there have been two bugs where MCE_DURING_VMENTRY
+>     was incorrectly compared against the full exit reason.
 > 
-> thanks,
-> jirka
+>   - Clarify the intent of related flows, e.g. exit_reason is used for both
+>     "basic exit reason" and "full exit reason", and it's not always clear
+>     which of the two is intended without a fair bit of digging.
 > 
+>   - Prepare for future Intel features, e.g. SGX, that add new exit flags
+>     that are less restricted than FAILED_VMENTRY, i.e. can be set on what
+>     is otherwise a standard VM-Exit.
+> 
+> v2:
+>   - Don't snapshot the basic exit reason, i.e. either use vmx->exit_reason
+>     directly or snapshot the whole thing.  The resulting code is similar
+>     to Xiaoyao's original patch, e.g. vmx_handle_exit() now uses
+>     "exit_reason.basic" instead of "exit_reason" to reference the basic
+>     exit reason.
+>   - Split nested_vmx_exit_reflected() into VM-Fail, "L0 wants" and "L1
+>     wants", and move the tracepoint into nested_vmx_reflect_vmexit().
+>     [Vitaly]
+>   - Use a "union vmx_exit_reason exit_reason" to handle a consistency
+>     check VM-Exit on VM-Enter in nested_vmx_enter_non_root_mode() to avoid
+>     some implicit casting shenanigans. [Vitaly]
+>   - Collect tags. [Vitaly]
+> 
+> v1: https://lkml.kernel.org/r/20200312184521.24579-1-sean.j.christopherson@intel.com
 
+For now I committed only patches 1-9, just to limit the conflicts with
+the other series.  I would like to understand how you think the
+conflicts should be fixed with the union.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Paolo
+
