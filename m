@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11B11AC4A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FD21AC62A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409646AbgDPOCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54436 "EHLO mail.kernel.org"
+        id S2442125AbgDPOOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898325AbgDPNle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:41:34 -0400
+        id S2392352AbgDPNuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C812620732;
-        Thu, 16 Apr 2020 13:41:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBF802063A;
+        Thu, 16 Apr 2020 13:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044493;
-        bh=28OW14Pg6V+cY9SZW+S9pbIyd0BluxIjxSwJPQi4yws=;
+        s=default; t=1587045021;
+        bh=T7UqCQ4MmuEZ9jZMyvkZ7fXJdJnl0Slb6/yftBff6Ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tf4i/vLVj6BlqYtxYiDlTLSpkL6FxT9q01S6cU244dgKkZ0PJRAnebZe+Wd2jI4VT
-         q+rXpZuFuLCrfqZ10KYu2QDMpnTYMgh2YDhvU/6BIkaBkWXo+Ey5aelEt3TlifMRUO
-         Nw0g8mEiQRYHk0Bew/XWVbqJxTX9SX40bEdkZYog=
+        b=n0CZrKoILp2viB04K/SKAnUaHuIuPOe40IXsg8jBdXjxk6+UamHLkYDFT50+Eu69k
+         XvVmezAsmTnONJXThUemh1olxrGCHsppqLqmZlJ++eZ7uuvxhrkGBHujVWSHl8wnR1
+         jUEIg3meZUKVvY4oxmnuwYDXnQ8PvY28tvvIclsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Gibson <david@gibson.dropbear.id.au>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.5 239/257] powerpc/xive: Use XIVE_BAD_IRQ instead of zero to catch non configured IPIs
-Date:   Thu, 16 Apr 2020 15:24:50 +0200
-Message-Id: <20200416131355.429458228@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.4 197/232] Input: i8042 - add Acer Aspire 5738z to nomux list
+Date:   Thu, 16 Apr 2020 15:24:51 +0200
+Message-Id: <20200416131339.839053626@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,133 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit b1a504a6500df50e83b701b7946b34fce27ad8a3 upstream.
+commit ebc68cedec4aead47d8d11623d013cca9bf8e825 upstream.
 
-When a CPU is brought up, an IPI number is allocated and recorded
-under the XIVE CPU structure. Invalid IPI numbers are tracked with
-interrupt number 0x0.
+The Acer Aspire 5738z has a button to disable (and re-enable) the
+touchpad next to the touchpad.
 
-On the PowerNV platform, the interrupt number space starts at 0x10 and
-this works fine. However, on the sPAPR platform, it is possible to
-allocate the interrupt number 0x0 and this raises an issue when CPU 0
-is unplugged. The XIVE spapr driver tracks allocated interrupt numbers
-in a bitmask and it is not correctly updated when interrupt number 0x0
-is freed. It stays allocated and it is then impossible to reallocate.
+When this button is pressed a LED underneath indicates that the touchpad
+is disabled (and an event is send to userspace and GNOME shows its
+touchpad enabled / disable OSD thingie).
 
-Fix by using the XIVE_BAD_IRQ value instead of zero on both platforms.
+So far so good, but after re-enabling the touchpad it no longer works.
 
-Reported-by: David Gibson <david@gibson.dropbear.id.au>
-Fixes: eac1e731b59e ("powerpc/xive: guest exploitation of the XIVE interrupt controller")
-Cc: stable@vger.kernel.org # v4.14+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
-Tested-by: David Gibson <david@gibson.dropbear.id.au>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200306150143.5551-2-clg@kaod.org
+The laptop does not have an external ps2 port, so mux mode is not needed
+and disabling mux mode fixes the touchpad no longer working after toggling
+it off and back on again, so lets add this laptop model to the nomux list.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20200331123947.318908-1-hdegoede@redhat.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/sysdev/xive/common.c        |   12 +++---------
- arch/powerpc/sysdev/xive/native.c        |    4 ++--
- arch/powerpc/sysdev/xive/spapr.c         |    4 ++--
- arch/powerpc/sysdev/xive/xive-internal.h |    7 +++++++
- 4 files changed, 14 insertions(+), 13 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -68,13 +68,6 @@ static u32 xive_ipi_irq;
- /* Xive state for each CPU */
- static DEFINE_PER_CPU(struct xive_cpu *, xive_cpu);
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -530,6 +530,17 @@ static const struct dmi_system_id __init
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo LaVie Z"),
+ 		},
+ 	},
++	{
++		/*
++		 * Acer Aspire 5738z
++		 * Touchpad stops working in mux mode when dis- + re-enabled
++		 * with the touchpad enable/disable toggle hotkey
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
++		},
++	},
+ 	{ }
+ };
  
--/*
-- * A "disabled" interrupt should never fire, to catch problems
-- * we set its logical number to this
-- */
--#define XIVE_BAD_IRQ		0x7fffffff
--#define XIVE_MAX_IRQ		(XIVE_BAD_IRQ - 1)
--
- /* An invalid CPU target */
- #define XIVE_INVALID_TARGET	(-1)
- 
-@@ -1150,7 +1143,7 @@ static int xive_setup_cpu_ipi(unsigned i
- 	xc = per_cpu(xive_cpu, cpu);
- 
- 	/* Check if we are already setup */
--	if (xc->hw_ipi != 0)
-+	if (xc->hw_ipi != XIVE_BAD_IRQ)
- 		return 0;
- 
- 	/* Grab an IPI from the backend, this will populate xc->hw_ipi */
-@@ -1187,7 +1180,7 @@ static void xive_cleanup_cpu_ipi(unsigne
- 	/* Disable the IPI and free the IRQ data */
- 
- 	/* Already cleaned up ? */
--	if (xc->hw_ipi == 0)
-+	if (xc->hw_ipi == XIVE_BAD_IRQ)
- 		return;
- 
- 	/* Mask the IPI */
-@@ -1343,6 +1336,7 @@ static int xive_prepare_cpu(unsigned int
- 		if (np)
- 			xc->chip_id = of_get_ibm_chip_id(np);
- 		of_node_put(np);
-+		xc->hw_ipi = XIVE_BAD_IRQ;
- 
- 		per_cpu(xive_cpu, cpu) = xc;
- 	}
---- a/arch/powerpc/sysdev/xive/native.c
-+++ b/arch/powerpc/sysdev/xive/native.c
-@@ -312,7 +312,7 @@ static void xive_native_put_ipi(unsigned
- 	s64 rc;
- 
- 	/* Free the IPI */
--	if (!xc->hw_ipi)
-+	if (xc->hw_ipi == XIVE_BAD_IRQ)
- 		return;
- 	for (;;) {
- 		rc = opal_xive_free_irq(xc->hw_ipi);
-@@ -320,7 +320,7 @@ static void xive_native_put_ipi(unsigned
- 			msleep(OPAL_BUSY_DELAY_MS);
- 			continue;
- 		}
--		xc->hw_ipi = 0;
-+		xc->hw_ipi = XIVE_BAD_IRQ;
- 		break;
- 	}
- }
---- a/arch/powerpc/sysdev/xive/spapr.c
-+++ b/arch/powerpc/sysdev/xive/spapr.c
-@@ -560,11 +560,11 @@ static int xive_spapr_get_ipi(unsigned i
- 
- static void xive_spapr_put_ipi(unsigned int cpu, struct xive_cpu *xc)
- {
--	if (!xc->hw_ipi)
-+	if (xc->hw_ipi == XIVE_BAD_IRQ)
- 		return;
- 
- 	xive_irq_bitmap_free(xc->hw_ipi);
--	xc->hw_ipi = 0;
-+	xc->hw_ipi = XIVE_BAD_IRQ;
- }
- #endif /* CONFIG_SMP */
- 
---- a/arch/powerpc/sysdev/xive/xive-internal.h
-+++ b/arch/powerpc/sysdev/xive/xive-internal.h
-@@ -5,6 +5,13 @@
- #ifndef __XIVE_INTERNAL_H
- #define __XIVE_INTERNAL_H
- 
-+/*
-+ * A "disabled" interrupt should never fire, to catch problems
-+ * we set its logical number to this
-+ */
-+#define XIVE_BAD_IRQ		0x7fffffff
-+#define XIVE_MAX_IRQ		(XIVE_BAD_IRQ - 1)
-+
- /* Each CPU carry one of these with various per-CPU state */
- struct xive_cpu {
- #ifdef CONFIG_SMP
 
 
