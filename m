@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F88B1AC250
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AFB1AC57A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895355AbgDPN1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34574 "EHLO mail.kernel.org"
+        id S2389491AbgDPOUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:20:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895261AbgDPN0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:26:20 -0400
+        id S2898845AbgDPNyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:54:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F48A21D82;
-        Thu, 16 Apr 2020 13:26:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4DAA20786;
+        Thu, 16 Apr 2020 13:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043579;
-        bh=oj+XMYejkYfYV1Q101OcM0l/io3atrU26NDGuzee03E=;
+        s=default; t=1587045271;
+        bh=1c08XC1B6rSTFGUlvN4qhU6O/IY9IRqHTGMA58kStOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQaZLXbirB8QTTptARSWFhMT8KNHbL5/7YNGdhou5Jf0TKrhcFpcUf873xWZ34QKU
-         Kk/z2wh3OHzZ5uZlULH5JelTDdbiJKS5Leq9uN9QPj4H8jaoEQ1A78SZh0Jk4G/PRc
-         mETYyur+cT6TzrETu4iT3hdLQ3rw2DFeTL03qR6s=
+        b=NbpfQsiU9EtbT+TSDevuZ/4GF0nydOUeChXz52hsNe8PY1Boa2wOrrvmbsDM/fvyY
+         Ct98wOjEICEsPxGysLRcMppZdo8qBCg1/CF5sLuSmJeGGTUaRczTQ976MKW37Xurzo
+         sxa9b0gLLuEUvIJPv6wG552q7vwi6Ce/lNVIYMlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Alexey Dobriyan (SK hynix)" <adobriyan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 015/146] null_blk: fix spurious IO errors after failed past-wp access
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 067/254] ASoC: dapm: connect virtual mux with default value
 Date:   Thu, 16 Apr 2020 15:22:36 +0200
-Message-Id: <20200416131244.597812857@linuxfoundation.org>
+Message-Id: <20200416131334.275495011@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Dobriyan <adobriyan@gmail.com>
+From: 이경택 <gt82.lee@samsung.com>
 
-[ Upstream commit ff77042296d0a54535ddf74412c5ae92cb4ec76a ]
+commit 3bbbb7728fc853d71dbce4073fef9f281fbfb4dd upstream.
 
-Steps to reproduce:
+Since a virtual mixer has no backing registers
+to decide which path to connect,
+it will try to match with initial state.
+This is to ensure that the default mixer choice will be
+correctly powered up during initialization.
+Invert flag is used to select initial state of the virtual switch.
+Since actual hardware can't be disconnected by virtual switch,
+connected is better choice as initial state in many cases.
 
-	BLKRESETZONE zone 0
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/01a301d60731$b724ea10$256ebe30$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-	// force EIO
-	pwrite(fd, buf, 4096, 4096);
-
-	[issue more IO including zone ioctls]
-
-It will start failing randomly including IO to unrelated zones because of
-->error "reuse". Trigger can be partition detection as well if test is not
-run immediately which is even more entertaining.
-
-The fix is of course to clear ->error where necessary.
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Alexey Dobriyan (SK hynix) <adobriyan@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/null_blk_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-dapm.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
-index 78355a0e61db6..d2d7dc9cd58d2 100644
---- a/drivers/block/null_blk_main.c
-+++ b/drivers/block/null_blk_main.c
-@@ -571,6 +571,7 @@ static struct nullb_cmd *__alloc_cmd(struct nullb_queue *nq)
- 	if (tag != -1U) {
- 		cmd = &nq->cmds[tag];
- 		cmd->tag = tag;
-+		cmd->error = BLK_STS_OK;
- 		cmd->nq = nq;
- 		if (nq->dev->irqmode == NULL_IRQ_TIMER) {
- 			hrtimer_init(&cmd->timer, CLOCK_MONOTONIC,
-@@ -1433,6 +1434,7 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		cmd->timer.function = null_cmd_timer_expired;
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -802,7 +802,13 @@ static void dapm_set_mixer_path_status(s
+ 			val = max - val;
+ 		p->connect = !!val;
+ 	} else {
+-		p->connect = 0;
++		/* since a virtual mixer has no backing registers to
++		 * decide which path to connect, it will try to match
++		 * with initial state.  This is to ensure
++		 * that the default mixer choice will be
++		 * correctly powered up during initialization.
++		 */
++		p->connect = invert;
  	}
- 	cmd->rq = bd->rq;
-+	cmd->error = BLK_STS_OK;
- 	cmd->nq = nq;
+ }
  
- 	blk_mq_start_request(bd->rq);
--- 
-2.20.1
-
 
 
