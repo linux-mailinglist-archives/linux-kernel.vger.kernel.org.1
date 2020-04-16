@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275FD1ABBD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F37F1ABBEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502989AbgDPI47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502975AbgDPIyR (ORCPT
+        id S2503042AbgDPI7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:59:14 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:38605 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502875AbgDPI4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:54:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116C7C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:54:11 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a25so3913221wrd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Gn7oXfoGCRvoMbfplo6Pb14LOH1Awil1DJDkiOGVDA=;
-        b=ANgZo75lCcjV734wSTxcu1rem1hvUQY9dUge/mBQetsuentv23rJlSRrGoYm+gKbnW
-         +1ppqgKe+wI7w8MMAm4UsgjLC7Sq5gRO5PbuQ/ZHGNzQVtiSA+gaLzKB3xv8oFPlXNGi
-         vZK82B9+TPzJtwaWEeoekqDyPy58ly5rewSxozAE11rbNCYy1e5f0p24l/167A75P8oQ
-         nSxd2un7HnOLt5z1GzMONG7FYv7GNpuHcgVXDmV4UZi8YeomQ6BQQvo81aMN0DPGG5EA
-         SVce1GKH/R6nfaaBJ/0psVsb+eOWca16adx0PRM2FiyuFteCkCiB8Hb/N9LYVsVixM8m
-         cyaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Gn7oXfoGCRvoMbfplo6Pb14LOH1Awil1DJDkiOGVDA=;
-        b=rC1Y58929ISVsjbXWU1ajpBAc2Agl5lRbPr4IlYtVl8z/t9BkGLuDWVGqq84IkMPPU
-         BYVGqnKlGRw5flm6xgnq0R5oOi447E6cZDAWY7+vwbmww2hKGO7KaYmbxgz3YzRdTxiL
-         vnxXBQAiwa+CBwcXMEu2j/Re1q1froO1xrw0PsxpPQZgJyBIHY9sWMuT30NZnvyYM6IW
-         PzQXSIp6uAB/epH5uio2bzNHMdd9YnaVdU3By7NceUQ9yNZZSG9l4O1WGkufmfjseKf6
-         fs8+2zRpUclvdKjE5wWddabfF81BoFoqA2Al+/OLbyslGDVjmFIz8xHXTg3KJlGQpiD6
-         /NbA==
-X-Gm-Message-State: AGi0PubcmG/efMoB8fln5yfIlGxTwhTFxbdwOC2OZnwq8j/VcHV7NZ4q
-        xxibG6wWcUY1baEGAqjGpX4i2g==
-X-Google-Smtp-Source: APiQypK49a7tE2PU7rlG+OoBz58EGTIHngL7sj2g3M9u+J/luNQNGQV9Ak1+2qtK4eqbh7Dz8O6WwQ==
-X-Received: by 2002:a5d:60ca:: with SMTP id x10mr10505214wrt.407.1587027249479;
-        Thu, 16 Apr 2020 01:54:09 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id k184sm2776749wmf.9.2020.04.16.01.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 01:54:08 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 09:54:05 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, juri.lelli@redhat.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        ctheegal@codeaurora.org, valentin.schneider@arm.com,
-        qais.yousef@arm.com, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH] sched/core: Fix reset-on-fork from RT with uclamp
-Message-ID: <20200416085405.GA215493@google.com>
-References: <20200414161320.251897-1-qperret@google.com>
- <CAD=FV=Vo4h43vS1K1+ziAJhQ3UG+Zrx8JN8Q1tkMWU1Oh6OavA@mail.gmail.com>
- <20200415082001.GA256573@google.com>
- <CAD=FV=UB7OZzQO46dV7KOHGqRkgbtaSgLfq55yddyx0L_e37Fg@mail.gmail.com>
- <20200415174718.GA30565@darkstar>
+        Thu, 16 Apr 2020 04:56:03 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id E19F222F53;
+        Thu, 16 Apr 2020 10:55:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1587027354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6knnTYd0SD0a2gjJU3xQbFJUgo1WzPpSFmhjfIQyUcY=;
+        b=M9q2RMUFDQVW4SbouNkFNdJPzvQSvOQC+FhQtrDgr+5/mkydRI7TAhGXO0tbJzmPNNyyHX
+        L7gLiTb5PDKWNrrSnrCdEZyt6jYVPk3HsLMtzmSAX0AXDADeVgSzEhGLRf7b5MFNZM8a6g
+        TAZ0ODC6jxTAJEZd8Mh17RprqqBe0Lw=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415174718.GA30565@darkstar>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 16 Apr 2020 10:55:46 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 11/16] gpio: add support for the sl28cpld GPIO
+ controller
+In-Reply-To: <CACRpkdbANL_W3gcTwue5VUCWT95boMXjFSqTeFDZvJ6iSeNpJg@mail.gmail.com>
+References: <20200402203656.27047-1-michael@walle.cc>
+ <20200402203656.27047-12-michael@walle.cc>
+ <CACRpkdbANL_W3gcTwue5VUCWT95boMXjFSqTeFDZvJ6iSeNpJg@mail.gmail.com>
+Message-ID: <46eb76699a76b3feedccc70f1d1da1de@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.10
+X-Spamd-Bar: +
+X-Spam-Level: *
+X-Rspamd-Server: web
+X-Spam-Status: No, score=1.40
+X-Spam-Score: 1.40
+X-Rspamd-Queue-Id: E19F222F53
+X-Spamd-Result: default: False [1.40 / 15.00];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_TWELVE(0.00)[23];
+         NEURAL_HAM(-0.00)[-0.402];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,baylibre.com,kernel.org,suse.com,roeck-us.net,linaro.org,gmail.com,pengutronix.de,linux-watchdog.org,nxp.com,linutronix.de,lakedaemon.net,linuxfoundation.org];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 15 Apr 2020 at 19:47:18 (+0200), Patrick Bellasi wrote:
-> Honestly I was almost there to ask for the same cleanup. :)
-> 
-> If you get rid of the useless variable we can go back to the exact
-> same code modified by the commit we are fixing, i.e. 1a00d999971c.
-> 
-> So, not strong opinions here too, but if it's not a big problem I
-> would post a cleaned up v2.
 
-Alright, that works for me. I'll send a v2 shortly.
+Hi Linus,
 
-Thanks!
-Quentin
+Am 2020-04-16 10:34, schrieb Linus Walleij:
+> Hi Michael,
+> 
+> this is looking good provided we can get the generic GPIO regmap
+> helper reviewed and merged. Thanks!
+> 
+> On Thu, Apr 2, 2020 at 10:37 PM Michael Walle <michael@walle.cc> wrote:
+> 
+>> This adds support for the GPIO controller of the sl28 board management
+>> controller. This driver is part of a multi-function device.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+> 
+>> +       depends on MFD_SL28CPLD
+> 
+> Apart from this depends it seems the patch is compile-time
+> independent of the other patches
+
+correct. There are no common mfd headers or something like that.
+
+> so I'd suggest we just merge
+> the generic regmap driver and this driver to the GPIO tree once
+> we feel finished with them, optimistically assuming that the MFD
+> driver will land and that we will not need any fundamental
+> changes in the GPIO driver.
+> 
+> Worst case we have to revert the driver and that is no disaster.
+
+Sure. One major thing I'm waiting for is the decision/new ideas on
+how to handle the "register is not set or zero" problem, see the
+other thread on the generic regmap gpio. Then I'd respin an update
+of this whole series.
+
+-michael
