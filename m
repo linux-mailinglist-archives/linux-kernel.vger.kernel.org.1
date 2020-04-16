@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397171AB587
+	by mail.lfdr.de (Postfix) with ESMTP id ACC7A1AB588
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732429AbgDPB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:29:58 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:35645 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732857AbgDPB3e (ORCPT
+        id S1732903AbgDPBal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730899AbgDPBaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:29:34 -0400
-Received: by mail-pj1-f65.google.com with SMTP id mn19so664130pjb.0;
-        Wed, 15 Apr 2020 18:29:34 -0700 (PDT)
+        Wed, 15 Apr 2020 21:30:17 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B983C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:30:17 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id r24so6025700ljd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o8xFtf2O/rL/WIr7oyJJuxQp2aXJgl2Dd99kFiXV1KM=;
+        b=iQ/+6uUCtwZyZ//JZbSuMrVBoG/GZ+Ft7Oh2SIRBGKS5hDeftNDSiNz7IpIBW6QS9D
+         vn3TCpvcsHORaxFOWrL3OqWKA1eMM50ueicfcEgsESuml6duhm3MmYPGLsoWG3qzRXkT
+         y+wvTrZqfTXqeEPT+pOGEmJDwCU1sdIJT6Hz92lEZu5oPNbESXZJjp1MpHfsTbZfdakc
+         HHVj2UMQi1sPAsGK/t/crNDl38nfWZ7cWoOi7UveAnPKioPit4TvDe8FqKCxxHrvGHjM
+         FhU4/kmt0i1K9E3XSp5glB64T15x+kKnz0X57HmxN9/ng2us9lyD8Bg17kwTFWMBKqVQ
+         hFiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PnF7XX+HBiChqiEIw8vxgcw83sjsqf5rskmR8bV1uhE=;
-        b=tWAj7qQd3oeZN5sWwnVVRe4xAV12h+mS3jvZkW2q26cKjI0ws0MZpgxSjdBp2X89TL
-         nEr6pbrnz4QMcRGbj+VEEHfYvDcPi3DtUxJaBGjxfcWRwvJQTAKyuCZjq/3dZVUWkUfu
-         ks4VkAXmBo/NTNisgYSILUWRc2+TEdsmwUEyn6OWfUaNM+l0916CPzDf8/n1GvpBVwnF
-         jw8sUPvl6SwzlaF/YZmjm0MasLdblBEtB35XxHMhhsoz4oSe6byloOeFJJQmq1NeD2mB
-         C1y0pWjLixQn/Ez1QOOSnylxRL4vDt0EO054231cc2HPY4y2CYCZpPZ/1iZ3LTZuqDWA
-         9wGg==
-X-Gm-Message-State: AGi0PuZLOkNixjirGeobqh2HSgjhxEppQk0FIJREQoU0yz7mZ43nKIF4
-        DlKmrMVQ5uoh2PcUuyVjSug=
-X-Google-Smtp-Source: APiQypL1Zry+M+f03DM3k+FuGlRfqeq4ZVim5hUX+tX4P9pE4l69kAMRnRCmwP6mQT5TXwK/Pbzv0g==
-X-Received: by 2002:a17:902:441:: with SMTP id 59mr7374218ple.339.1587000574181;
-        Wed, 15 Apr 2020 18:29:34 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id a136sm12241605pfa.99.2020.04.15.18.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 18:29:32 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id C0B9240277; Thu, 16 Apr 2020 01:29:31 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 01:29:31 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v2 1/3] kernel/sysctl: support setting sysctl parameters
- from kernel command line
-Message-ID: <20200416012931.GE11244@42.do-not-panic.com>
-References: <20200414113222.16959-1-vbabka@suse.cz>
- <20200414113222.16959-2-vbabka@suse.cz>
- <20200415180355.00bc828ea726c421638db871@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o8xFtf2O/rL/WIr7oyJJuxQp2aXJgl2Dd99kFiXV1KM=;
+        b=Bl9ruAJeM+qQjpYGsbSPJw4aqnW8T/rDxYLUJ/KRzPD4sICMVX7M72ULYQFb0+SVHw
+         JB57p9gL74emP2xNTRCUBuxlY/OD/ocHNeJ603vDyx4Y6XH8HX7zXJG4Qtw2AG8AcKDF
+         S1pO6G/PehHD4A4ynV47czdYDU76i2XOMDgDx+j7lc1YPN1DpuwVMkaAzCQLw43WKEu4
+         PHnRqTgSuBgWr7i04A6k3HXPEeH/3K+oW1BocyEyhybGxuIfYj3IIyEvRlh7jggwrmKP
+         apn/k8NsyaVbORADGmdTAZS9eN8hyz0Nhq5ykwmHYGwtKBfk3s0DKNjxLeS98uS9b9oQ
+         Rd2g==
+X-Gm-Message-State: AGi0PuYTw8Z9YxQndkt2iZSyeLTAkSEjATTn4Oek7ejcChVjkjxfbdKQ
+        K8rlVOPSal5rzFc0DwF9oFrwE/zfPpUu+81SRAQ=
+X-Google-Smtp-Source: APiQypJCxdBT41q9hezBo1+xLbB9VsfBygbJ6hE/4CS5ylv1NnFddxHOcliaLALk9a+tsO0Yrrm8xTBV1OwgUnWU3Lo=
+X-Received: by 2002:a2e:7807:: with SMTP id t7mr4918437ljc.203.1587000615751;
+ Wed, 15 Apr 2020 18:30:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415180355.00bc828ea726c421638db871@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200412090919.GA19580@open-light-1.localdomain> <64985d09-d11e-5fc0-64b0-b56ef514448a@linux.intel.com>
+In-Reply-To: <64985d09-d11e-5fc0-64b0-b56ef514448a@linux.intel.com>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Thu, 16 Apr 2020 09:30:04 +0800
+Message-ID: <CA+2MQi9KHbw5fJZ4pZJYbcKU545rhM3bPddCJjupmJZCGqHqaw@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] mm: add sys fs configuration for page reporting
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 06:03:55PM +0900, Masami Hiramatsu wrote:
-> On Tue, 14 Apr 2020 13:32:20 +0200
-> Vlastimil Babka <vbabka@suse.cz> wrote:
-> > diff --git a/init/main.c b/init/main.c
-> > index a48617f2e5e5..7b43118215d6 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -1372,6 +1372,8 @@ static int __ref kernel_init(void *unused)
-> >  
-> >  	rcu_end_inkernel_boot();
-> >  
-> > +	do_sysctl_args();
-> > +
-> 
-> Ah, I see. Since the sysctl is designed to be called after all __init calls were
-> done, it shouldn't use bootconfig directly because bootconfig is full of __init
-> call.
+On Mon, Apr 13, 2020 at 11:02 PM Alexander Duyck
+<alexander.h.duyck@linux.intel.com> wrote:
+>
+> On 4/12/2020 2:09 AM, liliangleo wrote:
+> > This patch add 'delay_millisecs', 'mini_order', 'batch_size',
+> > in '/sys/kernel/mm/page_report/'. Usage:
+> >
+> > "delay_millisecs":
+> > Time delay interval between page free and work start to run.
+> >
+> > "mini_order":
+> > Only pages with order equal or greater than mini_order will be
+> > reported.
+> >
+> > "batch_size"
+> > Wake up the worker only when free pages total size are greater
+> > than 'batch_size'.
+> >
+> > Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> > Cc: Mel Gorman <mgorman@techsingularity.net>
+> > Cc: Andrea Arcangeli <aarcange@redhat.com>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Dave Hansen <dave.hansen@intel.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Michal Hocko <mhocko@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: liliangleo <liliangleo@didiglobal.com>
+>
+> I am not really a fan of making these configurable globally. Especially
+> since the existing virtio-balloon is relying on some of this being
+> configured the way it is.
+>
+> It would make much more sense to push these configuration options out to
+> the registration interface so that the thing that is registering for
+> page reporting can configure them when it is registered.
+>
 
-The idea is bootconfig would be useful in the sense of a library set of
-helpers which could be modified to remove __init, and then used to
-instrument the cmdline depending on certain debugging kconfig entries.
-
-We currently have no way to purposely extend / break the cmdline for
-debugging purposes, so, bootconfig's parsers, since it already has a
-way to extend the cmdlineline, might make it much easier to do this
-later.
-
-Without bootconfig, if we wanted to add new kconfig to, for example,
-add new funny cmdline arguments to test they worked or not, we'd have
-to devise our own set of helpers now. ie, new functionality. bootconfig
-however already has existing functionality to tweak the cmdline, and so
-some code could be leveraged there for this purpose.
-
-  Luis
+Agree, that's better.  Thanks!
