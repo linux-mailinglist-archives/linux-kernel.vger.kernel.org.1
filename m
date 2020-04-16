@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636FE1AC752
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C769D1AC316
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394835AbgDPOxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:53:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44188 "EHLO mail.kernel.org"
+        id S2897530AbgDPNhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:37:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409251AbgDPN5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:57:07 -0400
+        id S2896135AbgDPNaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C86421734;
-        Thu, 16 Apr 2020 13:57:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 000C0206E9;
+        Thu, 16 Apr 2020 13:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045427;
-        bh=w2Ej3Tf7bYLxv0YY/vSBA1bE+ot8s4ZOc9fI9Z+53YQ=;
+        s=default; t=1587043800;
+        bh=OAYfl77dFe7z5NHt4SZRihGZVn4j8EZMzz9u7uf5uoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RBM275C89iZjh1sFdI0UXMLeFsqNJ0qX3eQN58BA0ygFiNwoQO3DRQ71PV3AWpLQ6
-         OoMwH5jhhPvbDaRlWvvZhFrvbRxSpT297O1nVVR4oBaqezmj1mUD+VHp7cdTdhc9E6
-         YSamk9K4dYiNUYfeuBhRlku6GYRRA9WuznlH4KQ4=
+        b=sG29FhVPHxc+V+cfRRfyKqaie2/pbmOAQrFM+RGvUND9u5HkbjWGpzjghIxYP15IX
+         mQAC9UraDrPgIn21nPT4EVK8RhCZeWUlpH52ixSYh6PyVk7lpteAJIKoUDnbm1iqrn
+         7emJZd8Vd6jYYM3wKFECn6Y4wKH5QvwjIdqZrZfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kristian Klausen <kristian@klausen.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 5.6 129/254] platform/x86: asus-wmi: Support laptops where the first battery is named BATT
-Date:   Thu, 16 Apr 2020 15:23:38 +0200
-Message-Id: <20200416131342.593864784@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH 4.19 078/146] x86/entry/32: Add missing ASM_CLAC to general_protection entry
+Date:   Thu, 16 Apr 2020 15:23:39 +0200
+Message-Id: <20200416131253.580131849@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kristian Klausen <kristian@klausen.dk>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 6b3586d45bba14f6912f37488090c37a3710e7b4 upstream.
+commit 3d51507f29f2153a658df4a0674ec5b592b62085 upstream.
 
-The WMI method to set the charge threshold does not provide a
-way to specific a battery, so we assume it is the first/primary
-battery (by checking if the name is BAT0).
-On some newer ASUS laptops (Zenbook UM431DA) though, the
-primary/first battery isn't named BAT0 but BATT, so we need
-to support that case.
+All exception entry points must have ASM_CLAC right at the
+beginning. The general_protection entry is missing one.
 
-Fixes: 7973353e92ee ("platform/x86: asus-wmi: Refactor charge threshold to use the battery hooking API")
+Fixes: e59d1b0a2419 ("x86-32, smap: Add STAC/CLAC instructions to 32-bit kernel entry")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Kristian Klausen <kristian@klausen.dk>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lkml.kernel.org/r/20200225220216.219537887@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/platform/x86/asus-wmi.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/entry/entry_32.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -426,8 +426,11 @@ static int asus_wmi_battery_add(struct p
- {
- 	/* The WMI method does not provide a way to specific a battery, so we
- 	 * just assume it is the first battery.
-+	 * Note: On some newer ASUS laptops (Zenbook UM431DA), the primary/first
-+	 * battery is named BATT.
- 	 */
--	if (strcmp(battery->desc->name, "BAT0") != 0)
-+	if (strcmp(battery->desc->name, "BAT0") != 0 &&
-+	    strcmp(battery->desc->name, "BATT") != 0)
- 		return -ENODEV;
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -1489,6 +1489,7 @@ ENTRY(int3)
+ END(int3)
  
- 	if (device_create_file(&battery->dev,
+ ENTRY(general_protection)
++	ASM_CLAC
+ 	pushl	$do_general_protection
+ 	jmp	common_exception
+ END(general_protection)
 
 
