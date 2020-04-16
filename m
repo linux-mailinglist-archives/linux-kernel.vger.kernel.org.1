@@ -2,121 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329451AC18A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C031AC190
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635953AbgDPMmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:42:33 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:45031 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2635940AbgDPMmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:42:03 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 492zPh13xMz9tyrG;
-        Thu, 16 Apr 2020 14:42:00 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=c8TasGQY; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id aVjCzTv4DTiP; Thu, 16 Apr 2020 14:42:00 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 492zPh01qQz9tylm;
-        Thu, 16 Apr 2020 14:42:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1587040920; bh=2ljz1nBL0vCUAzYsmnWMgAQ1qstKSVseeRiTlYNCisw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=c8TasGQY5NCkEsCb/sMMNlOMPh5/phE1iiPq1mCNdcnugijQ+I3aJvCt6VHWD9FvA
-         kwM+raumBoqTBRoapNS1cNvXLqt/zyb63lIWK7MOYT0e2kc7WBbjY2Ntc8XlrjEOsZ
-         Nj5J4t1ahc5l8MRIVgmEBDiiv/TrlsK+J7Os54gw=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 874B68BBCF;
-        Thu, 16 Apr 2020 14:42:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id A-kyLt3tW5FA; Thu, 16 Apr 2020 14:42:01 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9BBC78BB88;
-        Thu, 16 Apr 2020 14:42:00 +0200 (CEST)
-Subject: Re: [PATCH v2] powerpc/uaccess: Implement unsafe_put_user() using
- 'asm goto'
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <c9abd91e9bb0b3dd6e3470015e92b98bc2483780.1586942304.git.christophe.leroy@c-s.fr>
- <20200415223747.GX26902@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <f797e5ac-a29a-0eb0-89c8-ff0a9f537ccf@c-s.fr>
-Date:   Thu, 16 Apr 2020 14:41:56 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2635721AbgDPMnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:43:10 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40392 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2635975AbgDPMm4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:42:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587040975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LME8Y2qNaZg7VmXSTR943cLi5X9fQl71QY2mWj1pI9E=;
+        b=Ha8SxzK+rGcb3Wm7KpPZTYivnusdu/64e1tjoR+SsWLZTwkJ0vsCZoCO/9EobXlBvdLtfk
+        wUj9vpTjoWI0je8ez8Tql/bQ61ZYkTijKU/EU21APgEg8qAzSgg45Cs3jrx+qXXyb4r+VY
+        EPk7sgfiYPy8ldRHjjTOeRppGX55RCw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-hM7QRMx5P1iP3uP3ubMk9g-1; Thu, 16 Apr 2020 08:42:51 -0400
+X-MC-Unique: hM7QRMx5P1iP3uP3ubMk9g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CB611084424;
+        Thu, 16 Apr 2020 12:42:49 +0000 (UTC)
+Received: from [10.36.115.53] (ovpn-115-53.ams2.redhat.com [10.36.115.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E96485C1C5;
+        Thu, 16 Apr 2020 12:42:39 +0000 (UTC)
+Subject: Re: [PATCH v1 7/8] vfio/type1: Add VFIO_IOMMU_CACHE_INVALIDATE
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>
+References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
+ <1584880325-10561-8-git-send-email-yi.l.liu@intel.com>
+ <20200402142428.2901432e@w520.home>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D807C4A@SHSMSX104.ccr.corp.intel.com>
+ <20200403093436.094b1928@w520.home>
+ <A2975661238FB949B60364EF0F2C25743A231BAA@SHSMSX104.ccr.corp.intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D82336C@SHSMSX104.ccr.corp.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <7d13bdbb-e972-c301-0970-90f63ecf69fc@redhat.com>
+Date:   Thu, 16 Apr 2020 14:42:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-In-Reply-To: <20200415223747.GX26902@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D82336C@SHSMSX104.ccr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 16/04/2020 à 00:37, Segher Boessenkool a écrit :
-> Hi!
+Hi Kevin,
+On 4/16/20 2:09 PM, Tian, Kevin wrote:
+>> From: Liu, Yi L <yi.l.liu@intel.com>
+>> Sent: Thursday, April 16, 2020 6:40 PM
+>>
+>> Hi Alex,
+>> Still have a direction question with you. Better get agreement with you
+>> before heading forward.
+>>
+>>> From: Alex Williamson <alex.williamson@redhat.com>
+>>> Sent: Friday, April 3, 2020 11:35 PM
+>> [...]
+>>>>>> + *
+>>>>>> + * returns: 0 on success, -errno on failure.
+>>>>>> + */
+>>>>>> +struct vfio_iommu_type1_cache_invalidate {
+>>>>>> +	__u32   argsz;
+>>>>>> +	__u32   flags;
+>>>>>> +	struct	iommu_cache_invalidate_info cache_info;
+>>>>>> +};
+>>>>>> +#define VFIO_IOMMU_CACHE_INVALIDATE      _IO(VFIO_TYPE,
+>>> VFIO_BASE
+>>>>> + 24)
+>>>>>
+>>>>> The future extension capabilities of this ioctl worry me, I wonder if
+>>>>> we should do another data[] with flag defining that data as
+>> CACHE_INFO.
+>>>>
+>>>> Can you elaborate? Does it mean with this way we don't rely on iommu
+>>>> driver to provide version_to_size conversion and instead we just pass
+>>>> data[] to iommu driver for further audit?
+>>>
+>>> No, my concern is that this ioctl has a single function, strictly tied
+>>> to the iommu uapi.  If we replace cache_info with data[] then we can
+>>> define a flag to specify that data[] is struct
+>>> iommu_cache_invalidate_info, and if we need to, a different flag to
+>>> identify data[] as something else.  For example if we get stuck
+>>> expanding cache_info to meet new demands and develop a new uapi to
+>>> solve that, how would we expand this ioctl to support it rather than
+>>> also create a new ioctl?  There's also a trade-off in making the ioctl
+>>> usage more difficult for the user.  I'd still expect the vfio layer to
+>>> check the flag and interpret data[] as indicated by the flag rather
+>>> than just passing a blob of opaque data to the iommu layer though.
+>>> Thanks,
+>>
+>> Based on your comments about defining a single ioctl and a unified
+>> vfio structure (with a @data[] field) for pasid_alloc/free, bind/
+>> unbind_gpasid, cache_inv. After some offline trying, I think it would
+>> be good for bind/unbind_gpasid and cache_inv as both of them use the
+>> iommu uapi definition. While the pasid alloc/free operation doesn't.
+>> It would be weird to put all of them together. So pasid alloc/free
+>> may have a separate ioctl. It would look as below. Does this direction
+>> look good per your opinion?
+>>
+>> ioctl #22: VFIO_IOMMU_PASID_REQUEST
+>> /**
+>>   * @pasid: used to return the pasid alloc result when flags == ALLOC_PASID
+>>   *         specify a pasid to be freed when flags == FREE_PASID
+>>   * @range: specify the allocation range when flags == ALLOC_PASID
+>>   */
+>> struct vfio_iommu_pasid_request {
+>> 	__u32	argsz;
+>> #define VFIO_IOMMU_ALLOC_PASID	(1 << 0)
+>> #define VFIO_IOMMU_FREE_PASID	(1 << 1)
+>> 	__u32	flags;
+>> 	__u32	pasid;
+>> 	struct {
+>> 		__u32	min;
+>> 		__u32	max;
+>> 	} range;
+>> };
+>>
+>> ioctl #23: VFIO_IOMMU_NESTING_OP
+>> struct vfio_iommu_type1_nesting_op {
+>> 	__u32	argsz;
+>> 	__u32	flags;
+>> 	__u32	op;
+>> 	__u8	data[];
+>> };
+>>
+>> /* Nesting Ops */
+>> #define VFIO_IOMMU_NESTING_OP_BIND_PGTBL        0
+>> #define VFIO_IOMMU_NESTING_OP_UNBIND_PGTBL      1
+>> #define VFIO_IOMMU_NESTING_OP_CACHE_INVLD       2
+>>
 > 
-> On Wed, Apr 15, 2020 at 09:25:59AM +0000, Christophe Leroy wrote:
->> +#define __put_user_goto(x, ptr, label) \
->> +	__put_user_nocheck_goto((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), label)
+> Then why cannot we just put PASID into the header since the
+> majority of nested usage is associated with a pasid? 
 > 
-> This line gets too long, can you break it up somehow?
-
-This line has 86 chars.
-
-powerpc arch tolerates lines with up to 90 chars, see 
-arch/powerpc/tools/checkpatch.sh
-
+> ioctl #23: VFIO_IOMMU_NESTING_OP
+> struct vfio_iommu_type1_nesting_op {
+> 	__u32	argsz;
+> 	__u32	flags;
+> 	__u32	op;
+> 	__u32   pasid;
+> 	__u8	data[];
+> };
 > 
->> +#define __put_user_asm_goto(x, addr, label, op)			\
->> +	asm volatile goto(					\
->> +		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
->> +		EX_TABLE(1b, %l2)				\
->> +		:						\
->> +		: "r" (x), "m" (*addr)				\
->> +		:						\
->> +		: label)
+> In case of SMMUv2 which supports nested w/o PASID, this field can
+> be ignored for that specific case.
+On my side I would prefer keeping the pasid in the data[]. This is not
+always used.
+
+For instance, in iommu_cache_invalidate_info/iommu_inv_pasid_info we
+devised flags to tell whether the PASID is used.
+
+Thanks
+
+Eric
 > 
-> Same "%Un" problem as in the other patch.  You could use "m<>" here,
-> but maybe just dropping "%Un" is better.
-
-Ok.
-
-I kept it to be consistent with the other patch.
-
+> Thanks
+> Kevin
 > 
->> +#ifdef __powerpc64__
->> +#define __put_user_asm2_goto(x, ptr, label)			\
->> +	__put_user_asm_goto(x, ptr, label, "std")
->> +#else /* __powerpc64__ */
->> +#define __put_user_asm2_goto(x, addr, label)			\
->> +	asm volatile goto(					\
->> +		"1:	stw%U1%X1 %0, %1\n"			\
->> +		"2:	stw%U1%X1 %L0, %L1\n"			\
->> +		EX_TABLE(1b, %l2)				\
->> +		EX_TABLE(2b, %l2)				\
->> +		:						\
->> +		: "r" (x), "m" (*addr)				\
->> +		:						\
->> +		: label)
->> +#endif /* __powerpc64__ */
-> 
-> Here, you should drop it for sure.
 
-Done.
-
-Christophe
