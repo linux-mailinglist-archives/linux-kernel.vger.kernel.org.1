@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80AE1ACC9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D356F1AC3CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636682AbgDPQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34574 "EHLO mail.kernel.org"
+        id S2898796AbgDPNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:48:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895263AbgDPN0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:26:35 -0400
+        id S2897300AbgDPNgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:36:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92E57221F4;
-        Thu, 16 Apr 2020 13:26:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98D9D221F7;
+        Thu, 16 Apr 2020 13:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043591;
-        bh=xPCg/qppnNYd0X4wUKky/6es7Ms3c9iMxBzuit/N0Qg=;
+        s=default; t=1587044178;
+        bh=WQ2GBdbncs0pgwwcbxwy8DH/t/mkVeV1o2bgg3dntvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hmt7LgbBuZ2vaATh4jN9LHoFNwbKBTd9nRTCGv5ojX2w/OCslfd0GMchzwGrIY2s8
-         3gMJnv6WHueKVxSDlZ+ULDp7XGeVtXRa59x1LJNVeU4OymJObQBakADWk4SaWreVkY
-         UD99Ljk4W0C9oim5QP4n8V6d7/169RvoooG/gDxI=
+        b=J5nZVDiK+58gquh/nwpqCAtfFmUtDUwwsLDLPHLwML5joS9fVQc29BPeD6nX0G1Ny
+         w4/4G/hJ/0a8RdmxTohhcJvF26xQ5U2Pxpddw6BFaR3CWQsjg0812HXQUjaokkPpN/
+         y7dEd9qkmcJsAPyoQSmk/624dpBi0w/2V9AhBlz4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 020/146] sched: Avoid scale real weight down to zero
-Date:   Thu, 16 Apr 2020 15:22:41 +0200
-Message-Id: <20200416131245.275722512@linuxfoundation.org>
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.5 111/257] nvme-fc: Revert "add module to ops template to allow module references"
+Date:   Thu, 16 Apr 2020 15:22:42 +0200
+Message-Id: <20200416131340.114502108@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +44,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Wang <yun.wang@linux.alibaba.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 26cf52229efc87e2effa9d788f9b33c40fb3358a ]
+commit 8c5c660529209a0e324c1c1a35ce3f83d67a2aa5 upstream.
 
-During our testing, we found a case that shares no longer
-working correctly, the cgroup topology is like:
+The original patch was to resolve the lldd being able to be unloaded
+while being used to talk to the boot device of the system. However, the
+end result of the original patch is that any driver unload while a nvme
+controller is live via the lldd is now being prohibited. Given the module
+reference, the module teardown routine can't be called, thus there's no
+way, other than manual actions to terminate the controllers.
 
-  /sys/fs/cgroup/cpu/A		(shares=102400)
-  /sys/fs/cgroup/cpu/A/B	(shares=2)
-  /sys/fs/cgroup/cpu/A/B/C	(shares=1024)
+Fixes: 863fbae929c7 ("nvme_fc: add module to ops template to allow module references")
+Cc: <stable@vger.kernel.org> # v5.4+
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  /sys/fs/cgroup/cpu/D		(shares=1024)
-  /sys/fs/cgroup/cpu/D/E	(shares=1024)
-  /sys/fs/cgroup/cpu/D/E/F	(shares=1024)
-
-The same benchmark is running in group C & F, no other tasks are
-running, the benchmark is capable to consumed all the CPUs.
-
-We suppose the group C will win more CPU resources since it could
-enjoy all the shares of group A, but it's F who wins much more.
-
-The reason is because we have group B with shares as 2, since
-A->cfs_rq.load.weight == B->se.load.weight == B->shares/nr_cpus,
-so A->cfs_rq.load.weight become very small.
-
-And in calc_group_shares() we calculate shares as:
-
-  load = max(scale_load_down(cfs_rq->load.weight), cfs_rq->avg.load_avg);
-  shares = (tg_shares * load) / tg_weight;
-
-Since the 'cfs_rq->load.weight' is too small, the load become 0
-after scale down, although 'tg_shares' is 102400, shares of the se
-which stand for group A on root cfs_rq become 2.
-
-While the se of D on root cfs_rq is far more bigger than 2, so it
-wins the battle.
-
-Thus when scale_load_down() scale real weight down to 0, it's no
-longer telling the real story, the caller will have the wrong
-information and the calculation will be buggy.
-
-This patch add check in scale_load_down(), so the real weight will
-be >= MIN_SHARES after scale, after applied the group C wins as
-expected.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/38e8e212-59a1-64b2-b247-b6d0b52d8dc1@linux.alibaba.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/sched.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/nvme/host/fc.c          |   14 ++------------
+ drivers/nvme/target/fcloop.c    |    1 -
+ drivers/scsi/lpfc/lpfc_nvme.c   |    2 --
+ drivers/scsi/qla2xxx/qla_nvme.c |    1 -
+ include/linux/nvme-fc-driver.h  |    4 ----
+ 5 files changed, 2 insertions(+), 20 deletions(-)
 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 94bec97bd5e28..5f0eb4565957f 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -123,7 +123,13 @@ static inline void cpu_load_update_active(struct rq *this_rq) { }
- #ifdef CONFIG_64BIT
- # define NICE_0_LOAD_SHIFT	(SCHED_FIXEDPOINT_SHIFT + SCHED_FIXEDPOINT_SHIFT)
- # define scale_load(w)		((w) << SCHED_FIXEDPOINT_SHIFT)
--# define scale_load_down(w)	((w) >> SCHED_FIXEDPOINT_SHIFT)
-+# define scale_load_down(w) \
-+({ \
-+	unsigned long __w = (w); \
-+	if (__w) \
-+		__w = max(2UL, __w >> SCHED_FIXEDPOINT_SHIFT); \
-+	__w; \
-+})
- #else
- # define NICE_0_LOAD_SHIFT	(SCHED_FIXEDPOINT_SHIFT)
- # define scale_load(w)		(w)
--- 
-2.20.1
-
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -342,8 +342,7 @@ nvme_fc_register_localport(struct nvme_f
+ 	    !template->ls_req || !template->fcp_io ||
+ 	    !template->ls_abort || !template->fcp_abort ||
+ 	    !template->max_hw_queues || !template->max_sgl_segments ||
+-	    !template->max_dif_sgl_segments || !template->dma_boundary ||
+-	    !template->module) {
++	    !template->max_dif_sgl_segments || !template->dma_boundary) {
+ 		ret = -EINVAL;
+ 		goto out_reghost_failed;
+ 	}
+@@ -2016,7 +2015,6 @@ nvme_fc_ctrl_free(struct kref *ref)
+ {
+ 	struct nvme_fc_ctrl *ctrl =
+ 		container_of(ref, struct nvme_fc_ctrl, ref);
+-	struct nvme_fc_lport *lport = ctrl->lport;
+ 	unsigned long flags;
+ 
+ 	if (ctrl->ctrl.tagset) {
+@@ -2043,7 +2041,6 @@ nvme_fc_ctrl_free(struct kref *ref)
+ 	if (ctrl->ctrl.opts)
+ 		nvmf_free_options(ctrl->ctrl.opts);
+ 	kfree(ctrl);
+-	module_put(lport->ops->module);
+ }
+ 
+ static void
+@@ -3074,15 +3071,10 @@ nvme_fc_init_ctrl(struct device *dev, st
+ 		goto out_fail;
+ 	}
+ 
+-	if (!try_module_get(lport->ops->module)) {
+-		ret = -EUNATCH;
+-		goto out_free_ctrl;
+-	}
+-
+ 	idx = ida_simple_get(&nvme_fc_ctrl_cnt, 0, 0, GFP_KERNEL);
+ 	if (idx < 0) {
+ 		ret = -ENOSPC;
+-		goto out_mod_put;
++		goto out_free_ctrl;
+ 	}
+ 
+ 	ctrl->ctrl.opts = opts;
+@@ -3235,8 +3227,6 @@ out_free_queues:
+ out_free_ida:
+ 	put_device(ctrl->dev);
+ 	ida_simple_remove(&nvme_fc_ctrl_cnt, ctrl->cnum);
+-out_mod_put:
+-	module_put(lport->ops->module);
+ out_free_ctrl:
+ 	kfree(ctrl);
+ out_fail:
+--- a/drivers/nvme/target/fcloop.c
++++ b/drivers/nvme/target/fcloop.c
+@@ -850,7 +850,6 @@ fcloop_targetport_delete(struct nvmet_fc
+ #define FCLOOP_DMABOUND_4G		0xFFFFFFFF
+ 
+ static struct nvme_fc_port_template fctemplate = {
+-	.module			= THIS_MODULE,
+ 	.localport_delete	= fcloop_localport_delete,
+ 	.remoteport_delete	= fcloop_remoteport_delete,
+ 	.create_queue		= fcloop_create_queue,
+--- a/drivers/scsi/lpfc/lpfc_nvme.c
++++ b/drivers/scsi/lpfc/lpfc_nvme.c
+@@ -1985,8 +1985,6 @@ out_unlock:
+ 
+ /* Declare and initialization an instance of the FC NVME template. */
+ static struct nvme_fc_port_template lpfc_nvme_template = {
+-	.module	= THIS_MODULE,
+-
+ 	/* initiator-based functions */
+ 	.localport_delete  = lpfc_nvme_localport_delete,
+ 	.remoteport_delete = lpfc_nvme_remoteport_delete,
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -610,7 +610,6 @@ static void qla_nvme_remoteport_delete(s
+ }
+ 
+ static struct nvme_fc_port_template qla_nvme_fc_transport = {
+-	.module	= THIS_MODULE,
+ 	.localport_delete = qla_nvme_localport_delete,
+ 	.remoteport_delete = qla_nvme_remoteport_delete,
+ 	.create_queue   = qla_nvme_alloc_queue,
+--- a/include/linux/nvme-fc-driver.h
++++ b/include/linux/nvme-fc-driver.h
+@@ -270,8 +270,6 @@ struct nvme_fc_remote_port {
+  *
+  * Host/Initiator Transport Entrypoints/Parameters:
+  *
+- * @module:  The LLDD module using the interface
+- *
+  * @localport_delete:  The LLDD initiates deletion of a localport via
+  *       nvme_fc_deregister_localport(). However, the teardown is
+  *       asynchronous. This routine is called upon the completion of the
+@@ -385,8 +383,6 @@ struct nvme_fc_remote_port {
+  *       Value is Mandatory. Allowed to be zero.
+  */
+ struct nvme_fc_port_template {
+-	struct module	*module;
+-
+ 	/* initiator-based functions */
+ 	void	(*localport_delete)(struct nvme_fc_local_port *);
+ 	void	(*remoteport_delete)(struct nvme_fc_remote_port *);
 
 
