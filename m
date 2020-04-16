@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C291ABDAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AAE1AC002
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441489AbgDPKOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441467AbgDPKNq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:13:46 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77D3C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:13:41 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id d77so3961493wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wf1Npf9XSC73Ejyy+DvRIDVeqsXEFPd8u8XiRzEMgUA=;
-        b=V7ZUsQXrHaQgXeN9L6GIsDZcF5AXmwDSfb8Fu+bYTmu7cNylxhcGZmQO8ex3UvnUKl
-         vnTPCRJxEgE979dRUeC+LRYyVqm7tlsyBIsZXlPH89z5nI1vlM2mtJzKJSkBiKxZvhoV
-         E7B4hxkHnxkj+W7iRO4nzrzI5ZcbaehqM5QvpP4V53KA2a8e9S0WZDK2eCHDLDzcRsd7
-         eq07Moye1J6gN+zHqKk/QS4TkK03UXSt/jDvKG3Z80N202RxmyxtXh/I0T1weeGvipUl
-         PTBF1P6H91Jk7afn4eg9ncOVvJgvoXwVyMMcKtcCN6yh8Jhm+kM2aD8e7Og15Kb6Y6SH
-         HEBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wf1Npf9XSC73Ejyy+DvRIDVeqsXEFPd8u8XiRzEMgUA=;
-        b=ZUzAL1ijhB2VsuteUxiYSrXvlSz11o9Xv14jW0l9wCmfJ4RKSl/EKts0hwS10JffSE
-         SC9r64pX/DvH/Utn+nv0xadloBmLfxvhPHOE4PwU8/VGFFff1r6aclF6sQhEPpaHHS/0
-         kZfHVIt0hqCilKHahF0q4u8qjSmEG1roLhH+jEnXGhcYdv2286gk7pCCzwNKf3+aIINx
-         STgGDDcCVRKFPSIGIsl//noaL07Ogl0dE8rGFQ6Y6kbolnBLsFnMhYRowvaCCiN9piJa
-         z95+O57kZIBX6e0s0EXiR5mQhVA/xBghXTfJLbFjD/7TUhqRMZdxj2u9DA0BhQMHtlwx
-         OpGA==
-X-Gm-Message-State: AGi0PuY3bSHlGK3N/s5kb5bAFkNrj/SekBKFPXGQJaqlrOsr/a5kLiXY
-        dilHxo1Rg+o7mtyWcDjQYN295w==
-X-Google-Smtp-Source: APiQypJXPwtuhD8dFO+JsNn5QLOU6Dyekq3TSruLoNK9phQLHnzSPcNF8U1T4kQiCuJrZMDNKiED+Q==
-X-Received: by 2002:a1c:384:: with SMTP id 126mr4165777wmd.58.1587032020316;
-        Thu, 16 Apr 2020 03:13:40 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id y10sm3039407wma.5.2020.04.16.03.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 03:13:39 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 11:14:39 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     andrew@lunn.ch, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mfd: tqmx86: Fix a typo in MODULE_DESCRIPTION
-Message-ID: <20200416101439.GD2167633@dell>
-References: <20200412213047.4827-1-christophe.jaillet@wanadoo.fr>
+        id S2506602AbgDPLqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:46:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:46605 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505063AbgDPKd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:33:26 -0400
+IronPort-SDR: qj6fw7nsAkLFIw6CQ46hLHVUHke4cwaqpbARTWcPrgHQ6cS4Qooqki5jwpsd1rcgSuQBFvZ6s/
+ MP63fBKVMxBg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 03:33:25 -0700
+IronPort-SDR: vhzr2qoTpxKTwtiF8Qj7zuovZ5//O+5bjszfwZb2LMA9daDK6L8WDAMBSXR0wCXQTDZbkWfGnP
+ LCfwj8KVclYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="277947885"
+Received: from lxy-clx-4s.sh.intel.com ([10.239.43.132])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Apr 2020 03:33:24 -0700
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        kvm@vger.kernel.org
+Cc:     Nadav Amit <namit@cs.technion.ac.il>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [RFC PATCH 0/3] kvm: x86: Cleanup and optimazation of switch_db_regs
+Date:   Thu, 16 Apr 2020 18:15:06 +0800
+Message-Id: <20200416101509.73526-1-xiaoyao.li@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200412213047.4827-1-christophe.jaillet@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Apr 2020, Christophe JAILLET wrote:
+Through reading debug related codes in kvm/x86, I found the flags of
+switch_db_regs is a little confusing (at least for me) and there is
+something to improve. So this patchset comes. But it only go througg
+compilation.
 
-> Based on the file name and code of the driver, it is likely that this
-> module is related to TQMx86 and not TQx86.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/mfd/tqmx86.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Xiaoyao Li (3):
+  kvm: x86: Rename KVM_DEBUGREG_RELOAD to KVM_DEBUGREG_NEED_RELOAD
+  kvm: x86: Use KVM_DEBUGREG_NEED_RELOAD instead of
+    KVM_DEBUGREG_BP_ENABLED
+  kvm: x86: skip DRn reload if previous VM exit is DR access VM exit
 
-Applied, thanks.
+ arch/x86/include/asm/kvm_host.h |  3 +--
+ arch/x86/kvm/svm/svm.c          |  8 +++++---
+ arch/x86/kvm/vmx/vmx.c          |  8 +++++---
+ arch/x86/kvm/x86.c              | 12 ++++++------
+ 4 files changed, 17 insertions(+), 14 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.20.1
+
