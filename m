@@ -2,117 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA2A1AB65D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 05:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8851AB662
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 05:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391523AbgDPDsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 23:48:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:19725 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729245AbgDPDsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 23:48:12 -0400
-IronPort-SDR: /wZTq7bzQ0E2k8W/6XYNSgW1CO7wELK0a4a0VcxVCIN37lfF+DtwwWlY/1ZF2w4zwxoVHaQFTi
- otbtaWhvrEYg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 20:48:09 -0700
-IronPort-SDR: cGlxBQg4ApLsZNxgWwU23EqDS+zS9AKNnudf6RGW9EJiuVSZKIvfqcnZn9JXpx2LoQzprTKucW
- nOfLuM2iPAbA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="299183864"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Apr 2020 20:48:10 -0700
-Date:   Wed, 15 Apr 2020 20:48:09 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/8] fs/ext4: Disallow verity if inode is DAX
-Message-ID: <20200416034809.GE2309605@iweiny-DESK2.sc.intel.com>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-3-ira.weiny@intel.com>
- <20200415120002.GE6126@quack2.suse.cz>
- <20200415191451.GA2305801@iweiny-DESK2.sc.intel.com>
- <20200416012901.GA816@sol.localdomain>
+        id S2391726AbgDPDtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 23:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391279AbgDPDtQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 23:49:16 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C50BC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 20:49:16 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 198so4480211lfo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 20:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B3JNvCdZgbFSQz7mQJpHJcPKtGpsAZ4Y0IkkDDj6gpg=;
+        b=gpex2hAcHUsmi+tyoml6G6ol2ENqtPsx+9vpeeWViSzlwbBwaRSIfpFUZemDCMQHx/
+         KRb0l/Cd8gLrVJtkNN3bHYXXc2tKPPZhvi6gOxZFtE8jNUB84EnR0wMICYHA7BpBo1Hj
+         UIDbGTiKYcv9pYnz32RGJ1W3IO5V8+y4yhGPMQHEPV6QQsJ+R8XbE3zJzp+foDake7qK
+         G9veh3xdQyU1mmVsIBOfMc/VYCOT45UulYFLYrBDytA28sab/fFQAksJ7UWGd4iSCxCi
+         ABj4l3mBINjx02t/6FZ2eyIgphE7W472GOQW5PhsJDDMmI4f7Cn3bY7j/O74eRC/OxGT
+         tZ9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B3JNvCdZgbFSQz7mQJpHJcPKtGpsAZ4Y0IkkDDj6gpg=;
+        b=O19Za2sxyExhn+dH933AvSH8Hj1ubLv4nOkks2Apa+LGSDA4nlWJZuRpVhhIRCANJA
+         mhTdzCOk6EDBYt9yOgmHZ7MQoqSo3fp/yNLJLkNEyjeSbnYS5Rq7Z6ZBt/i0i+pSLE5r
+         NZW4R+IWxa39Z5gdN75Gmx3AwDzgTr00pmAyg0R/98Z9HFXgKdRltGffwEtQg2hc+BOV
+         DmorjhQT5S5GgPL1f7SXUtnuca7Axonq6ikKCVpd4hMHF/62ThCf2yDt0yEi05ueYkw1
+         yjZ0DbDBaRhfszUG0BiH67x6yWpgnsAmb9ZulYlB4Uardok8iQCnNdH+MOaVlhh9CDTH
+         vL0A==
+X-Gm-Message-State: AGi0PuYlvxSn0alrFA/IkaMTFGhVfyOhl89px9YM2SqNTx0GiX2ajVui
+        7e5L5B0B0UBC8nrWJ08rSTETeXd2lbVOfvpmGj0=
+X-Google-Smtp-Source: APiQypJBOrPxHgHXHERVsr13f92KjCKk198TkiNUWnCwtUcvXdY8ubArZjXj/iPODNhiBSK4yfiTkbZThYg8PtfYV0o=
+X-Received: by 2002:a05:6512:74:: with SMTP id i20mr4801706lfo.104.1587008954864;
+ Wed, 15 Apr 2020 20:49:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416012901.GA816@sol.localdomain>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <cover.1586757922.git.baolin.wang7@gmail.com> <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
+ <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com>
+In-Reply-To: <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Thu, 16 Apr 2020 11:49:03 +0800
+Message-ID: <CADBw62r06X6mMTx3eLY1iU5KLOK644d1vA49Kp9JXzUtm2CpCw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] soc: sprd: Add Spreadtrum special bits
+ updating support
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 06:29:01PM -0700, Eric Biggers wrote:
-> On Wed, Apr 15, 2020 at 12:14:52PM -0700, Ira Weiny wrote:
-> > On Wed, Apr 15, 2020 at 02:00:02PM +0200, Jan Kara wrote:
-> > > On Mon 13-04-20 21:00:24, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > Verity and DAX are incompatible.  Changing the DAX mode due to a verity
-> > > > flag change is wrong without a corresponding address_space_operations
-> > > > update.
-> > > > 
-> > > > Make the 2 options mutually exclusive by returning an error if DAX was
-> > > > set first.
-> > > > 
-> > > > (Setting DAX is already disabled if Verity is set first.)
-> > > > 
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > > ---
-> > > >  fs/ext4/verity.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-> > > > index dc5ec724d889..ce3f9a198d3b 100644
-> > > > --- a/fs/ext4/verity.c
-> > > > +++ b/fs/ext4/verity.c
-> > > > @@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
-> > > >  	handle_t *handle;
-> > > >  	int err;
-> > > >  
-> > > > +	if (WARN_ON_ONCE(IS_DAX(inode)))
-> > > > +		return -EINVAL;
-> > > > +
-> > > 
-> > > Hum, one question, is there a reason for WARN_ON_ONCE()? If I understand
-> > > correctly, user could normally trigger this, couldn't he?
-> > 
-> > Ok.  I did not think this through but I did think about this.  I was following
-> > the code from the encryption side which issues a warning and was thinking that
-> > would be a good way to alert the user they are doing something wrong...
-> > 
-> > I think you are right about both of them but we also need to put something in
-> > the verity, dax, and ...  (I can't find a file in Documentation which talks
-> > about encryption right off) documentation files....  For verity something like.
-> > 
-> > <quote>
-> > Verity and DAX
-> > --------------
-> > 
-> > Verity and DAX are not compatible and attempts to set both of these flags on a
-> > file will fail.
-> > </quote>
-> > 
-> > And the same thing in the DAX doc?
-> > 
-> > And where would be appropriate for the encrypt doc?
-> > 
-> 
-> Documentation/filesystems/fscrypt.rst mentions that DAX isn't supported on
-> encrypted files, but it doesn't say what happens if someone tries to do it
-> anyway.  Feel free to improve the documentation.
+On Wed, Apr 15, 2020 at 11:36 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Apr 13, 2020 at 8:14 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+> >
+> > The spreadtrum platform uses a special set/clear method to update
+> > registers' bits, which can remove the race of updating the global
+> > registers between the multiple subsystems. Thus we can register
+> > a physical regmap bus into syscon core to support this.
+> >
+> > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+>
+> I'd hope to avoid complicating the syscon driver further for this.
+> Have you tried to use something other than syscon here to
+> provide the regmap?
 
-Thanks for pointing this out!
+I did not figure out other better solutions, since we still want to
+use the common syscon driver with related APIs and node properties.
 
-Ira
+Otherwise, I am afraid I should copy the common syscon driver into the
+Spreadtrum SoC syscon driver with providing a new regmap bus, and
+invent other similar APIs for users, but I think this is not good. We
+still want to use the standard syscon APIs to keep consistent.
 
+>
+> > +#define SPRD_REG_SET_OFFSET    0x1000
+> > +#define SPRD_REG_CLR_OFFSET    0x2000
+> > +
+> > +/*
+> > + * The Spreadtrum platform defines a special set/clear method to update
+> > + * registers' bits, which means it can write values to the register's SET
+> > + * address (offset is 0x1000) to set bits, and write values to the register's
+> > + * CLEAR address (offset is 0x2000) to clear bits.
+> > + *
+> > + * This set/clear method can help to remove the race of accessing the global
+> > + * registers between the multiple subsystems instead of using hardware
+> > + * spinlocks.
+> > + */
+> > +static int sprd_syscon_update_bits(void *context, unsigned int reg,
+> > +                                  unsigned int mask, unsigned int val)
+> > +{
+> > +       void __iomem *base = context;
+> > +       unsigned int set, clr;
+> > +
+> > +       set = val & mask;
+> > +       clr = ~set & mask;
+> > +
+> > +       if (set)
+> > +               writel(set, base + reg + SPRD_REG_SET_OFFSET);
+> > +
+> > +       if (clr)
+> > +               writel(clr, base + reg + SPRD_REG_CLR_OFFSET);
+> > +
+> > +       return 0;
+> > +}
+>
+> Regarding the implementation: Doesn't this introduce a new race
+> between setting and clearing bits if you do both at the same time?
+>
+> This may not be a problem if you never do.
+
+I think this is not a issue, we just make sure the set bits updating
+and clear bits updating both are atomic operation, which is safe to
+update bits, right?
+If user want to protect a series of bits updating operation between
+the multiple subsystems, ( such as including several bits setting and
+bit clearing operations), you still need use hwlocks. But that's
+another topic, which is not set/clr method can solve.
+
+> > +static int sprd_syscon_init(void)
+> > +{
+> > +       syscon_register_phys_regmap_bus(&sprd_syscon_regmap);
+> > +
+> > +       return 0;
+> > +}
+> > +core_initcall_sync(sprd_syscon_init);
+>
+> I don't think this part can be done at all: If you load the module on a
+> generic kernel running on a random other platform, it will break as
+> there is no check at all to ensure the platform is compatible.
+>
+> The same thing happens on a platform that may have multiple
+> syscon nodes, when not all of them use the same register layout.
+>
+> The only sane way that I can see would be to do it based on
+> properties of the syscon node itself.
+
+OK, so what about adding a new property for the syscon node? and we
+can check if need to register a new physical regmap bus from the
+syscon node.
+
+if (of_property_read_bool(np, "physical-regmap-bus") && syscon_phy_regmap_bus)
+        regmap = regmap_init(NULL, syscon_phy_regmap_bus, base, &syscon_config);
+else
+        regmap = regmap_init_mmio(NULL, base, &syscon_config);
+
+-- 
+Baolin Wang
