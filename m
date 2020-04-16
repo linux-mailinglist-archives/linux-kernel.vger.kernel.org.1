@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9651AC352
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CFE1AC6D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897602AbgDPNlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44062 "EHLO mail.kernel.org"
+        id S2394559AbgDPOpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896556AbgDPNcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:32:54 -0400
+        id S2898883AbgDPN7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:59:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D020221F9;
-        Thu, 16 Apr 2020 13:31:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2325217D8;
+        Thu, 16 Apr 2020 13:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043896;
-        bh=ZvkWGyVyXoU3fn/f085zajaeF163Rb5c896Mue3TRZA=;
+        s=default; t=1587045586;
+        bh=7Cy+Z5k2LepY15IBrx2bepvfp44ohwzM436i7z1/ZDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HaeZY9qF50Gu2Y+GaoKq4KFknUI9wJocwRt4VWLnV34eJr9Vg9UN8PD6VPJp+qwpm
-         at92FmXSL4fRUKnprB8FKwB2CVZxnSQa2nf4f9dZynwrBJpuJEUFn7ByYT26sJbOsw
-         aonmo/BgZ0JVLbLQOASv6eMgISaIIgMq1Isgd4/I=
+        b=G3SIyytfbr+1dV6oLGM0QIY3Fu31AH2E2/EyQjiaR3mj9OO5Lekqfpa6xv/KeOehO
+         7vmuhmGDRES+Etc4/o15sjn00oSmjM469Y7XNrRFvVplB6+Q7OmcOXnr6OMXGaAvFW
+         A7Iq64y8ntmLryrQlEgPSM1jDQHJ3+OlsgdRLJp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Scott Wood <oss@buserror.net>,
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Leonardo Bras <leonardo@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 144/146] powerpc/fsl_booke: Avoid creating duplicate tlb1 entry
+        Shuah Khan <shuah@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 196/254] selftests/vm: fix map_hugetlb length used for testing read and write
 Date:   Thu, 16 Apr 2020 15:24:45 +0200
-Message-Id: <20200416131302.052157709@linuxfoundation.org>
+Message-Id: <20200416131350.710084080@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,80 +47,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-[ Upstream commit aa4113340ae6c2811e046f08c2bc21011d20a072 ]
+commit cabc30da10e677c67ab9a136b1478175734715c5 upstream.
 
-In the current implementation, the call to loadcam_multi() is wrapped
-between switch_to_as1() and restore_to_as0() calls so, when it tries
-to create its own temporary AS=1 TLB1 entry, it ends up duplicating
-the existing one created by switch_to_as1(). Add a check to skip
-creating the temporary entry if already running in AS=1.
+Commit fa7b9a805c79 ("tools/selftest/vm: allow choosing mem size and page
+size in map_hugetlb") added the possibility to change the size of memory
+mapped for the test, but left the read and write test using the default
+value.  This is unnoticed when mapping a length greater than the default
+one, but segfaults otherwise.
 
-Fixes: d9e1831a4202 ("powerpc/85xx: Load all early TLB entries at once")
-Cc: stable@vger.kernel.org # v4.4+
-Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Acked-by: Scott Wood <oss@buserror.net>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200123111914.2565-1-laurentiu.tudor@nxp.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix read_bytes() and write_bytes() by giving them the real length.
+
+Also fix the call to munmap().
+
+Fixes: fa7b9a805c79 ("tools/selftest/vm: allow choosing mem size and page size in map_hugetlb")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Leonardo Bras <leonardo@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/9a404a13c871c4bd0ba9ede68f69a1225180dd7e.1580978385.git.christophe.leroy@c-s.fr
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/powerpc/mm/tlb_nohash_low.S | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tools/testing/selftests/vm/map_hugetlb.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/powerpc/mm/tlb_nohash_low.S b/arch/powerpc/mm/tlb_nohash_low.S
-index e066a658acac6..56f58a362ea56 100644
---- a/arch/powerpc/mm/tlb_nohash_low.S
-+++ b/arch/powerpc/mm/tlb_nohash_low.S
-@@ -402,7 +402,7 @@ _GLOBAL(set_context)
-  * extern void loadcam_entry(unsigned int index)
-  *
-  * Load TLBCAM[index] entry in to the L2 CAM MMU
-- * Must preserve r7, r8, r9, and r10
-+ * Must preserve r7, r8, r9, r10 and r11
-  */
- _GLOBAL(loadcam_entry)
- 	mflr	r5
-@@ -438,6 +438,10 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
-  */
- _GLOBAL(loadcam_multi)
- 	mflr	r8
-+	/* Don't switch to AS=1 if already there */
-+	mfmsr	r11
-+	andi.	r11,r11,MSR_IS
-+	bne	10f
+--- a/tools/testing/selftests/vm/map_hugetlb.c
++++ b/tools/testing/selftests/vm/map_hugetlb.c
+@@ -45,20 +45,20 @@ static void check_bytes(char *addr)
+ 	printf("First hex is %x\n", *((unsigned int *)addr));
+ }
  
- 	/*
- 	 * Set up temporary TLB entry that is the same as what we're
-@@ -463,6 +467,7 @@ _GLOBAL(loadcam_multi)
- 	mtmsr	r6
- 	isync
+-static void write_bytes(char *addr)
++static void write_bytes(char *addr, size_t length)
+ {
+ 	unsigned long i;
  
-+10:
- 	mr	r9,r3
- 	add	r10,r3,r4
- 2:	bl	loadcam_entry
-@@ -471,6 +476,10 @@ _GLOBAL(loadcam_multi)
- 	mr	r3,r9
- 	blt	2b
+-	for (i = 0; i < LENGTH; i++)
++	for (i = 0; i < length; i++)
+ 		*(addr + i) = (char)i;
+ }
  
-+	/* Don't return to AS=0 if we were in AS=1 at function start */
-+	andi.	r11,r11,MSR_IS
-+	bne	3f
-+
- 	/* Return to AS=0 and clear the temporary entry */
- 	mfmsr	r6
- 	rlwinm.	r6,r6,0,~(MSR_IS|MSR_DS)
-@@ -486,6 +495,7 @@ _GLOBAL(loadcam_multi)
- 	tlbwe
- 	isync
+-static int read_bytes(char *addr)
++static int read_bytes(char *addr, size_t length)
+ {
+ 	unsigned long i;
  
-+3:
- 	mtlr	r8
- 	blr
- #endif
--- 
-2.20.1
-
+ 	check_bytes(addr);
+-	for (i = 0; i < LENGTH; i++)
++	for (i = 0; i < length; i++)
+ 		if (*(addr + i) != (char)i) {
+ 			printf("Mismatch at %lu\n", i);
+ 			return 1;
+@@ -96,11 +96,11 @@ int main(int argc, char **argv)
+ 
+ 	printf("Returned address is %p\n", addr);
+ 	check_bytes(addr);
+-	write_bytes(addr);
+-	ret = read_bytes(addr);
++	write_bytes(addr, length);
++	ret = read_bytes(addr, length);
+ 
+ 	/* munmap() length of MAP_HUGETLB memory must be hugepage aligned */
+-	if (munmap(addr, LENGTH)) {
++	if (munmap(addr, length)) {
+ 		perror("munmap");
+ 		exit(1);
+ 	}
 
 
