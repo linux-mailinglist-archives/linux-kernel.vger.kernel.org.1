@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FA61AC93E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FF21ACAB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgDPPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33190 "EHLO mail.kernel.org"
+        id S2395360AbgDPPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898646AbgDPNrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:08 -0400
+        id S2897789AbgDPNjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:39:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09A6E21974;
-        Thu, 16 Apr 2020 13:47:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CA9822203;
+        Thu, 16 Apr 2020 13:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044828;
-        bh=fiGMzYdcKj1wMdAjWB8tpXxgYUTFGPSDkacsRCk08pA=;
+        s=default; t=1587044340;
+        bh=ZrHzyFlGKUss73Jc+wNUE+fZkpYQLAwarN1zR6GzVN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WLK8mUpeMsSiQs1i+Zki7isH5VjGgT+BkO+ztS4N6+GptfwTMuggcHmVKrv6gdP2B
-         LM8Ya2oS0gXvDAO9fQmqs+mXbtf4Cn+aUjqiuKgPD82TiG2+XqovN6P86wnDL9ERuT
-         6X/oUzWMzj/cD7b4qp8ZDNySs0EPV3NEqCxOlk2c=
+        b=N97JfX5VpLh9VroROYJjg5P+GfJAMbIf66KBijuCn+69PuB099ZLaN1X/0CQWuU8J
+         ECpvcfJ160uQhMTlE4MrkJ5lfCVxJ4BPztyy10Do/Jk7wYhmhpol0FveLS+r/ISyjs
+         oe9p2XY0V1vOQcn00gJJ7WuX3XQ6Jox7mhmO3ibQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 117/232] PM: sleep: wakeup: Skip wakeup_source_sysfs_remove() if device is not there
-Date:   Thu, 16 Apr 2020 15:23:31 +0200
-Message-Id: <20200416131329.749926451@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.5 161/257] btrfs: set update the uuid generation as soon as possible
+Date:   Thu, 16 Apr 2020 15:23:32 +0200
+Message-Id: <20200416131346.690964572@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 87de6594dc45dbf6819f3e0ef92f9331c5a9444c upstream.
+commit 75ec1db8717a8f0a9d9c8d033e542fdaa7b73898 upstream.
 
-Skip wakeup_source_sysfs_remove() to fix a NULL pinter dereference via
-ws->dev, if the wakeup source is unregistered before registering the
-wakeup class from device_add().
+In my EIO stress testing I noticed I was getting forced to rescan the
+uuid tree pretty often, which was weird.  This is because my error
+injection stuff would sometimes inject an error after log replay but
+before we loaded the UUID tree.  If log replay committed the transaction
+it wouldn't have updated the uuid tree generation, but the tree was
+valid and didn't change, so there's no reason to not update the
+generation here.
 
-Fixes: 2ca3d1ecb8c4 ("PM / wakeup: Register wakeup class kobj after device is added")
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
-[ rjw: Subject & changelog, white space ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fix this by setting the BTRFS_FS_UPDATE_UUID_TREE_GEN bit immediately
+after reading all the fs roots if the uuid tree generation matches the
+fs generation.  Then any transaction commits that happen during mount
+won't screw up our uuid tree state, forcing us to do needless uuid
+rescans.
+
+Fixes: 70f801754728 ("Btrfs: check UUID tree during mount if required")
+CC: stable@vger.kernel.org # 4.19+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/power/wakeup.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/disk-io.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/drivers/base/power/wakeup.c
-+++ b/drivers/base/power/wakeup.c
-@@ -241,7 +241,9 @@ void wakeup_source_unregister(struct wak
- {
- 	if (ws) {
- 		wakeup_source_remove(ws);
--		wakeup_source_sysfs_remove(ws);
-+		if (ws->dev)
-+			wakeup_source_sysfs_remove(ws);
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3054,6 +3054,18 @@ int __cold open_ctree(struct super_block
+ 	if (ret)
+ 		goto fail_tree_roots;
+ 
++	/*
++	 * If we have a uuid root and we're not being told to rescan we need to
++	 * check the generation here so we can set the
++	 * BTRFS_FS_UPDATE_UUID_TREE_GEN bit.  Otherwise we could commit the
++	 * transaction during a balance or the log replay without updating the
++	 * uuid generation, and then if we crash we would rescan the uuid tree,
++	 * even though it was perfectly fine.
++	 */
++	if (fs_info->uuid_root && !btrfs_test_opt(fs_info, RESCAN_UUID_TREE) &&
++	    fs_info->generation == btrfs_super_uuid_tree_generation(disk_super))
++		set_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags);
 +
- 		wakeup_source_destroy(ws);
+ 	ret = btrfs_verify_dev_extents(fs_info);
+ 	if (ret) {
+ 		btrfs_err(fs_info,
+@@ -3284,8 +3296,6 @@ int __cold open_ctree(struct super_block
+ 			close_ctree(fs_info);
+ 			return ret;
+ 		}
+-	} else {
+-		set_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags);
  	}
- }
+ 	set_bit(BTRFS_FS_OPEN, &fs_info->flags);
+ 
 
 
