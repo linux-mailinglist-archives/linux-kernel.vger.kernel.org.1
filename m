@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400181AC841
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B921AC567
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439169AbgDPPFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38820 "EHLO mail.kernel.org"
+        id S2442299AbgDPOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:18:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439055AbgDPNwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:52:31 -0400
+        id S2408909AbgDPNw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:52:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 815EB2063A;
-        Thu, 16 Apr 2020 13:52:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BEAC2063A;
+        Thu, 16 Apr 2020 13:52:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045149;
-        bh=UNXYY5nHx1oKv7D1DvC75seHCoQHrTodEf3J7c6UTf8=;
+        s=default; t=1587045176;
+        bh=idCS/o2KJWKLuG5YYj/PRV53FPx4L/x7Hh2m9+2AenI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lS9dSr/b/i3J2vgmC3K32V0RnmWRltsBBnWgI0uHtA0n7z13KZSEMTx+VRsqPVDzd
-         1lyet9dEbkWZlAzzi+QzRGA+tPFFG8Oybp3VbfyQg65EANHD/9zMGreWSGNxMUIZf2
-         CMdvZ2aFRHBk1AVa8C6wWzk1f2MhDcrulnriB7wA=
+        b=jpoyoZV3zEkOixiCuM/SAx7QUjkuBtmNF9EnR5lyVwOay7cHLx/ma99HQNPCCXRdX
+         ij45iw9jtRpxmg1qfOvnzbKVPX6JBVrAhgJmRzYiTEVOCt41cddSh45ULRmsiQhGWO
+         H5+wUxwKhvFCyyQIUfPmE9Fvi0S0SExpdXUv9xF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wojciech Zabolotny <wzab01@gmail.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 009/254] media: staging: rkisp1: isp: do not set invalid mbus code for pad
-Date:   Thu, 16 Apr 2020 15:21:38 +0200
-Message-Id: <20200416131326.924635898@linuxfoundation.org>
+Subject: [PATCH 5.6 010/254] media: venus: hfi_parser: Ignore HEVC encoding for V1
+Date:   Thu, 16 Apr 2020 15:21:39 +0200
+Message-Id: <20200416131327.050273746@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
 References: <20200416131325.804095985@linuxfoundation.org>
@@ -46,46 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helen Koike <helen.koike@collabora.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 100f720aabab3d5f58f67c508186041b3c797a9b ]
+[ Upstream commit c50cc6dc6c48300af63a6fbc71b647053c15fc80 ]
 
-When setting source pad, check if the given mbus code is indeed valid
-for source pad, if not, then set the default code.
-Same for sink pad.
+Some older MSM8916 Venus firmware versions also seem to indicate
+support for encoding HEVC, even though they really can't.
+This will lead to errors later because hfi_session_init() fails
+in this case.
 
-Fixes: d65dd85281fb ("media: staging: rkisp1: add Rockchip ISP1 base driver")
-Reported-by: Wojciech Zabolotny <wzab01@gmail.com>
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+HEVC is already ignored for "dec_codecs", so add the same for
+"enc_codecs" to make these old firmware versions work correctly.
+
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/rkisp1/rkisp1-isp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/qcom/venus/hfi_parser.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/media/rkisp1/rkisp1-isp.c b/drivers/staging/media/rkisp1/rkisp1-isp.c
-index 328c7ea609717..db892620a5675 100644
---- a/drivers/staging/media/rkisp1/rkisp1-isp.c
-+++ b/drivers/staging/media/rkisp1/rkisp1-isp.c
-@@ -683,7 +683,7 @@ static void rkisp1_isp_set_src_fmt(struct rkisp1_isp *isp,
+diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
+index 2293d936e49ca..7f515a4b9bd12 100644
+--- a/drivers/media/platform/qcom/venus/hfi_parser.c
++++ b/drivers/media/platform/qcom/venus/hfi_parser.c
+@@ -181,6 +181,7 @@ static void parse_codecs(struct venus_core *core, void *data)
+ 	if (IS_V1(core)) {
+ 		core->dec_codecs &= ~HFI_VIDEO_CODEC_HEVC;
+ 		core->dec_codecs &= ~HFI_VIDEO_CODEC_SPARK;
++		core->enc_codecs &= ~HFI_VIDEO_CODEC_HEVC;
+ 	}
+ }
  
- 	src_fmt->code = format->code;
- 	mbus_info = rkisp1_isp_mbus_info_get(src_fmt->code);
--	if (!mbus_info) {
-+	if (!mbus_info || !(mbus_info->direction & RKISP1_DIR_SRC)) {
- 		src_fmt->code = RKISP1_DEF_SRC_PAD_FMT;
- 		mbus_info = rkisp1_isp_mbus_info_get(src_fmt->code);
- 	}
-@@ -767,7 +767,7 @@ static void rkisp1_isp_set_sink_fmt(struct rkisp1_isp *isp,
- 					  which);
- 	sink_fmt->code = format->code;
- 	mbus_info = rkisp1_isp_mbus_info_get(sink_fmt->code);
--	if (!mbus_info) {
-+	if (!mbus_info || !(mbus_info->direction & RKISP1_DIR_SINK)) {
- 		sink_fmt->code = RKISP1_DEF_SINK_PAD_FMT;
- 		mbus_info = rkisp1_isp_mbus_info_get(sink_fmt->code);
- 	}
 -- 
 2.20.1
 
