@@ -2,59 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E861AB999
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A19E1AB9BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438697AbgDPHTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:19:05 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2339 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2438104AbgDPHSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:18:55 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A6DA45EE4167EB0AB608;
-        Thu, 16 Apr 2020 15:18:53 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 16 Apr
- 2020 15:18:49 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: introduce sysfs/data_io_flag to attach
- REQ_META/FUA
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-References: <20200403161249.68385-1-jaegeuk@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <ded76be6-236e-4367-9cde-7b46dbd96087@huawei.com>
-Date:   Thu, 16 Apr 2020 15:18:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S2439219AbgDPHVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2438790AbgDPHVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:21:03 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E22C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:21:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jQJpyv9mWOGvWWLLrQIG1lSOaT4yQcrtTLgVAFWtcqo=; b=K/+1a/v9SCQ2y8fy5FWyuyEPVX
+        4zhtejMmGej+qnrrNoHsMs6hBRkLRNsx+4pqhz9ZmST/bJZhlDO0gzbeY8RqQZHlCijOdk8Ml83Ar
+        2zpPzLRgLkd9d/BoRctfN3whBLULQV8i3d1Ww4S3KuAhayVlPDcQVzJI1dAJRZ5+pvWk0gS1iFCpE
+        T6sGLeKvWhuW+evqLWUJaU6orM+KKlrarvLQ2BSoDvDXmXvUgL53cQHwNTf473zDA+/KaI4BDcCjx
+        xm4vEGACkbV3g7BMwN2OyEUp2FXWg6numvtEcYVPdkZVd3cbKH0dX570XcROdwPVo72+WeX51TMn+
+        8nDmAw8w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOyow-0006TI-TH; Thu, 16 Apr 2020 07:20:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26D7630477A;
+        Thu, 16 Apr 2020 09:20:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 741A62B0DB54A; Thu, 16 Apr 2020 09:20:17 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 09:20:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Doug Smythies <dsmythies@telus.net>,
+        Like Xu <like.xu@linux.intel.com>,
+        Neil Rickert <nwr10cst-oslnx@yahoo.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [PATCH 0/4] Frequency invariance fixes for x86
+Message-ID: <20200416072017.GJ20730@hirez.programming.kicks-ass.net>
+References: <20200416054745.740-1-ggherdovich@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200403161249.68385-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416054745.740-1-ggherdovich@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/4 0:12, Jaegeuk Kim wrote:
-> This patch introduces a way to attach REQ_META/FUA explicitly
-> to all the data writes given temperature.
+On Thu, Apr 16, 2020 at 07:47:41AM +0200, Giovanni Gherdovich wrote:
+> Patches 1-3 address bugs in the current frequency invariance support for x86,
+> including the incompatibility with cpu0 hotplug reported by Chris Wilson at
+> https://lore.kernel.org/lkml/158556634294.3228.4889951961483021094@build.alporthouse.com/
+> and the issue with CPUs that have less than 4 cores pointed out earlier
+> today by Like Xu at
+> https://lore.kernel.org/lkml/20200416021210.170736-1-like.xu@linux.intel.com/ 
 > 
-> -> attach REQ_FUA to Hot Data writes
+> Patch 4 is a minor code reorganization.
 > 
-> -> attach REQ_FUA to Hot|Warm Data writes
+> Giovanni Gherdovich (3):
+>   x86, sched: Bail out of frequency invariance if base frequency is
+>     unknown
+>   x86, sched: Account for CPUs with less than 4 cores in freq.
+>     invariance
+>   x86, sched: Move check for CPU type to caller function
 > 
-> -> attach REQ_FUA to Hot|Warm|Cold Data writes
+> Peter Zijlstra (Intel) (1):
+>   x86, sched: Don't enable static key when starting secondary CPUs
 > 
-> -> attach REQ_FUA to Hot|Warm|Cold Data writes as well as
->           REQ_META to Hot Data writes
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>  arch/x86/kernel/smpboot.c | 47 +++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 33 insertions(+), 14 deletions(-)
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-
-Thanks,
-
+Thanks!
