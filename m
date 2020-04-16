@@ -2,89 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1CD1ABFE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ED21ABFFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633880AbgDPLnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:43:49 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:53970 "EHLO inva021.nxp.com"
+        id S2506577AbgDPLpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:45:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:59306 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2633981AbgDPLn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:43:29 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C6AF6200C9A;
-        Thu, 16 Apr 2020 13:43:27 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AAE83200306;
-        Thu, 16 Apr 2020 13:43:24 +0200 (CEST)
-Received: from lsv03124.swis.in-blr01.nxp.com (lsv03124.swis.in-blr01.nxp.com [92.120.146.121])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5DDF3402FB;
-        Thu, 16 Apr 2020 19:43:20 +0800 (SGT)
-From:   Ashish Kumar <Ashish.Kumar@nxp.com>
-To:     broonie@kernel.org, boris.brezillon@collabora.com,
-        frieder.schrempf@kontron.de
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Ashish Kumar <Ashish.kumar@nxp.com>
-Subject: [PATCH v3] spi: spi-fsl-qspi: Reduce devm_ioremap size to 4 times AHB buffer size
-Date:   Thu, 16 Apr 2020 17:13:19 +0530
-Message-Id: <1587037399-18672-1-git-send-email-Ashish.Kumar@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2634046AbgDPLoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:44:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE53DC14;
+        Thu, 16 Apr 2020 04:44:01 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A31B73F73D;
+        Thu, 16 Apr 2020 04:44:00 -0700 (PDT)
+References: <20200415210512.805-1-valentin.schneider@arm.com> <20200415210512.805-7-valentin.schneider@arm.com> <CAKfTPtA5-S_EyzZMDMr9SuVQmWZNdLXOVSLMAMTD+6Bow4jJBQ@mail.gmail.com> <20200416104725.GM20730@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 6/9] sched: Kill select_task_rq()'s sd_flag parameter
+In-reply-to: <20200416104725.GM20730@hirez.programming.kicks-ass.net>
+Date:   Thu, 16 Apr 2020 12:43:54 +0100
+Message-ID: <jhjwo6f7j0l.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce devm_ioremap size to (4 * AHB_BUFER_SIZE) rather than mapping
-complete QSPI-Memmory as driver is now independent of flash size.
-Flash of any size can be accessed.
 
-Issue was reported on platform where devm_ioremap failure is observed
-with size > 256M.
-Error log on LS1021ATWR :
- fsl-quadspi 1550000.spi: ioremap failed for resource [mem 0x40000000-0x7fffffff]
- fsl-quadspi 1550000.spi: Freescale QuadSPI probe failed
- fsl-quadspi: probe of 1550000.spi failed with error -12
+On 16/04/20 11:47, Peter Zijlstra wrote:
+> On Thu, Apr 16, 2020 at 09:42:36AM +0200, Vincent Guittot wrote:
+>> On Wed, 15 Apr 2020 at 23:05, Valentin Schneider
+>> > @@ -6622,13 +6622,25 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>> >   * preempt must be disabled.
+>> >   */
+>> >  static int
+>> > +select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+>> >  {
+>> > +       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
+>> >         struct sched_domain *tmp, *sd = NULL;
+>> >         int cpu = smp_processor_id();
+>> >         int new_cpu = prev_cpu;
+>> >         int want_affine = 0;
+>> > -       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
+>> > +       int sd_flag;
+>> > +
+>> > +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
+>>
+>> You remove a function parameter, which was directly set with the right
+>> flag, but then you add a switch case to recreate this sd_flag
+>> internally. Not sure we can say that it's real benefit
+>>
+>> > +       case WF_TTWU:
+>> > +               sd_flag = SD_BALANCE_WAKE;
+>> > +               break;
+>> > +       case WF_FORK:
+>> > +               sd_flag = SD_BALANCE_FORK;
+>> > +               break;
+>> > +       default:
+>> > +               sd_flag = SD_BALANCE_EXEC;
+>> > +       }
+>
+> Agreed, that's a bit yuck, how about something like so instead:
+>
 
-This change was also suggested previously:
-https://patchwork.kernel.org/patch/10508753/#22166385
+Aligning the SD_* and WF_* flags sure makes it simpler, I just wasn't
+daring enough to do that. I suppose we'll want some BUILD_BUG_ON() checks
+just for good measure.
 
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-Signed-off-by: Ashish Kumar <Ashish.kumar@nxp.com>
----
-v3: 
-Update comment
-v2:
-Add Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-Incorrporate review comments from Frieder
- drivers/spi/spi-fsl-qspi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Also, it doesn't directly solve the switch case of 9/9, but I may get out
+of it with some hackery such as what I suggested in my reply to Vincent.
 
-diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
-index 63c9f7e..8b95e2f 100644
---- a/drivers/spi/spi-fsl-qspi.c
-+++ b/drivers/spi/spi-fsl-qspi.c
-@@ -859,14 +859,15 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 					"QuadSPI-memory");
--	q->ahb_addr = devm_ioremap_resource(dev, res);
-+	q->memmap_phy = res->start;
-+	/* Since there are 4 cs, map size required is 4 times ahb_buf_size */
-+	q->ahb_addr = devm_ioremap(dev, q->memmap_phy,
-+				   (q->devtype_data->ahb_buf_size * 4));
- 	if (IS_ERR(q->ahb_addr)) {
- 		ret = PTR_ERR(q->ahb_addr);
- 		goto err_put_ctrl;
- 	}
- 
--	q->memmap_phy = res->start;
--
- 	/* find the clocks */
- 	q->clk_en = devm_clk_get(dev, "qspi_en");
- 	if (IS_ERR(q->clk_en)) {
--- 
-2.7.4
-
+>
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -11,10 +11,12 @@
+>   */
+>  #ifdef CONFIG_SMP
+>
+> +/* First nibble of SD_flag is shared with WF_flag */
+>  #define SD_BALANCE_NEWIDLE	0x0001	/* Balance when about to become idle */
+>  #define SD_BALANCE_EXEC		0x0002	/* Balance on exec */
+>  #define SD_BALANCE_FORK		0x0004	/* Balance on fork, clone */
+>  #define SD_BALANCE_WAKE		0x0008  /* Balance on wakeup */
+> +
+>  #define SD_WAKE_AFFINE		0x0010	/* Wake task to waking CPU */
+>  #define SD_ASYM_CPUCAPACITY	0x0020  /* Domain members have different CPU capacities */
+>  #define SD_SHARE_CPUCAPACITY	0x0040	/* Domain members share CPU capacity */
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6635,16 +6635,8 @@ select_task_rq_fair(struct task_struct *
+>       int want_affine = 0;
+>       int sd_flag;
+>
+> -	switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
+> -	case WF_TTWU:
+> -		sd_flag = SD_BALANCE_WAKE;
+> -		break;
+> -	case WF_FORK:
+> -		sd_flag = SD_BALANCE_FORK;
+> -		break;
+> -	default:
+> -		sd_flag = SD_BALANCE_EXEC;
+> -	}
+> +	/* SD_flags and WF_flags share the first nibble */
+> +	sd_flag = wake_flags & 0xf;
+>
+>       if (sd_flag & SD_BALANCE_WAKE) {
+>               record_wakee(p);
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1685,11 +1685,12 @@ static inline int task_on_rq_migrating(s
+>  /*
+>   * Wake flags
+>   */
+> -#define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
+> -#define WF_TTWU                 0x02            /* Regular task wakeup */
+> -#define WF_FORK			0x04		/* Child wakeup after fork */
+> -#define WF_EXEC			0x08		/* "Fake" wakeup at exec */
+> -#define WF_MIGRATED		0x10		/* Internal use, task got migrated */
+> +#define WF_EXEC			0x02	/* SD_BALANCE_EXEC */
+> +#define WF_FORK			0x04	/* SD_BALANCE_FORK */
+> +#define WF_TTWU			0x08	/* SD_BALANCE_WAKE */
+> +
+> +#define WF_SYNC			0x10	/* Waker goes to sleep after wakeup */
+> +#define WF_MIGRATED		0x20	/* Internal use, task got migrated */
+>
+>  /*
+>   * To aid in avoiding the subversion of "niceness" due to uneven distribution
