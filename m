@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E241AB55C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A031AB562
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730537AbgDPBSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:18:55 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2333 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730752AbgDPBSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:18:09 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 35B945A0308DF2F16736;
-        Thu, 16 Apr 2020 09:18:04 +0800 (CST)
-Received: from [127.0.0.1] (10.173.222.27) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Apr 2020
- 09:17:55 +0800
-Subject: Re: [PATCH 2/2] KVM: arm64: vgic-its: Fix memory leak on the error
- path of vgic_add_lpi()
-To:     <kvmarm@lists.cs.columbia.edu>
-CC:     <maz@kernel.org>, <james.morse@arm.com>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200414030349.625-1-yuzenghui@huawei.com>
- <20200414030349.625-3-yuzenghui@huawei.com>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <610f2195-f85d-4beb-b711-47d63bb393d0@huawei.com>
-Date:   Thu, 16 Apr 2020 09:17:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1731195AbgDPBUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:20:35 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:60950 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbgDPBU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 21:20:27 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 24038200D5DA;
+        Thu, 16 Apr 2020 09:20:23 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6mCbu48kRy7F; Thu, 16 Apr 2020 09:20:23 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id F258F200D9AC;
+        Thu, 16 Apr 2020 09:20:22 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id E3D8FC019EC;
+        Thu, 16 Apr 2020 09:20:22 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id BA926201602; Thu, 16 Apr 2020 09:20:22 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     chris.ruehl@gtsys.com.hk
+Cc:     devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Richard Fontana <rfontana@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] iio: patch set ltc2632
+Date:   Thu, 16 Apr 2020 09:20:08 +0800
+Message-Id: <20200416012016.21422-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200414030349.625-3-yuzenghui@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.222.27]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/14 11:03, Zenghui Yu wrote:
-> If we're going to fail out the vgic_add_lpi(), let's make sure the
-> allocated vgic_irq memory is also freed. Though it seems that both
-> cases are unlikely to fail.
-> 
-> Cc: Zengruan Ye <yezengruan@huawei.com>
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
->   virt/kvm/arm/vgic/vgic-its.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/virt/kvm/arm/vgic/vgic-its.c b/virt/kvm/arm/vgic/vgic-its.c
-> index d53d34a33e35..3c3b6a0f2dce 100644
-> --- a/virt/kvm/arm/vgic/vgic-its.c
-> +++ b/virt/kvm/arm/vgic/vgic-its.c
-> @@ -98,12 +98,16 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
->   	 * the respective config data from memory here upon mapping the LPI.
->   	 */
->   	ret = update_lpi_config(kvm, irq, NULL, false);
-> -	if (ret)
-> +	if (ret) {
-> +		kfree(irq);
->   		return ERR_PTR(ret);
-> +	}
->   
->   	ret = vgic_v3_lpi_sync_pending_status(kvm, irq);
-> -	if (ret)
-> +	if (ret) {
-> +		kfree(irq);
->   		return ERR_PTR(ret);
-> +	}
+Patchset to extend ltc2632 spi driver to support the similar chip set
+ltc2634.
+* Patch v2 1/3 update documentation struct ltc2632_chip_info
+* Patch v2 2/3 patch ltc2632.c,Kconfig,ltc2632.txt(devtree)
+* Patch v2 3/3 convert ltc2632.txt to yaml format named lltc,ltc2632.yaml
 
-Looking at it again, I realized that this error handling is still not
-complete. Maybe we should use a vgic_put_irq() instead so that we can
-also properly delete the vgic_irq from lpi_list.
+* Patch v3 2/3 : correct help text
 
-Marc, what do you think? Could you please help to fix it, or I can
-resend it.
+* Patch v4 1/3 : correct spelling in commit
+           */3  hide change history below --- 
 
-
-Thanks,
-Zenghui
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+---
 
