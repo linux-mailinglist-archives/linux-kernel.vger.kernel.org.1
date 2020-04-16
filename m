@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED131AC6BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077741AC53A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394561AbgDPOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:44:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
+        id S2442210AbgDPOO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:14:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392596AbgDPOAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:00:18 -0400
+        id S1732673AbgDPNuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BED5720732;
-        Thu, 16 Apr 2020 14:00:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E3FC2078B;
+        Thu, 16 Apr 2020 13:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045618;
-        bh=Uw/LefC3XCr1iMFhfr8Ok7AVKDELhZBCxDGahLsTOoY=;
+        s=default; t=1587045035;
+        bh=SoVqO3bK3jHNnFnqoHbBV+IZFxZYUJeXCaLy+Ihncvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qj2HNngwVJAffWY24z6qtfz7vxGznR2vqjjl6wnrsoBd/9/oYDjHwjNmhNzLFj5MV
-         BRJgsBYK3pKQ/Z4hiTFANuf5tH5rLqwOtygRjPzXvjYrLN7tk+FQVKOxtfzFFEI4fp
-         RTO9TeIHdgg9fknARs9YIjqo0yJNcDSscl8MFlRw=
+        b=cZlZZNE42wDifE3HxD0bUQfdG1hPfUcFISsrcF07BipIPJORRarveAz86Jf6YorOC
+         vcgTGOjhAuYs3ZTl3YNiJ6cu5PdTcc+7HUNic53Kjz0AFrP2qyEJBNNqjxT2C2Is+J
+         VNdvBjDq/E1oguEtMdmAUhaFzohKEYv0+GLUfeZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.6 208/254] drm/prime: fix extracting of the DMA addresses from a scatterlist
+        stable@vger.kernel.org, Simon Gander <simon@tuxera.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 203/232] hfsplus: fix crash and filesystem corruption when deleting files
 Date:   Thu, 16 Apr 2020 15:24:57 +0200
-Message-Id: <20200416131352.071141403@linuxfoundation.org>
+Message-Id: <20200416131340.665541457@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Simon Gander <simon@tuxera.com>
 
-commit c0f83d164fb8f3a2b7bc379a6c1e27d1123a9eab upstream.
+commit 25efb2ffdf991177e740b2f63e92b4ec7d310a92 upstream.
 
-Scatterlist elements contains both pages and DMA addresses, but one
-should not assume 1:1 relation between them. The sg->length is the size
-of the physical memory chunk described by the sg->page, while
-sg_dma_len(sg) is the size of the DMA (IO virtual) chunk described by
-the sg_dma_address(sg).
+When removing files containing extended attributes, the hfsplus driver may
+remove the wrong entries from the attributes b-tree, causing major
+filesystem damage and in some cases even kernel crashes.
 
-The proper way of extracting both: pages and DMA addresses of the whole
-buffer described by a scatterlist it to iterate independently over the
-sg->pages/sg->length and sg_dma_address(sg)/sg_dma_len(sg) entries.
+To remove a file, all its extended attributes have to be removed as well.
+The driver does this by looking up all keys in the attributes b-tree with
+the cnid of the file.  Each of these entries then gets deleted using the
+key used for searching, which doesn't contain the attribute's name when it
+should.  Since the key doesn't contain the name, the deletion routine will
+not find the correct entry and instead remove the one in front of it.  If
+parent nodes have to be modified, these become corrupt as well.  This
+causes invalid links and unsorted entries that not even macOS's fsck_hfs
+is able to fix.
 
-Fixes: 42e67b479eab ("drm/prime: use dma length macro when mapping sg")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200327162126.29705-1-m.szyprowski@samsung.com
-Cc: stable@vger.kernel.org
+To fix this, modify the search key before an entry is deleted from the
+attributes b-tree by copying the found entry's key into the search key,
+therefore ensuring that the correct entry gets removed from the tree.
+
+Signed-off-by: Simon Gander <simon@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327155541.1521-1-simon@tuxera.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/drm_prime.c |   37 +++++++++++++++++++++++++------------
- 1 file changed, 25 insertions(+), 12 deletions(-)
+ fs/hfsplus/attributes.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -962,27 +962,40 @@ int drm_prime_sg_to_page_addr_arrays(str
- 	unsigned count;
- 	struct scatterlist *sg;
- 	struct page *page;
--	u32 len, index;
-+	u32 page_len, page_index;
- 	dma_addr_t addr;
-+	u32 dma_len, dma_index;
- 
--	index = 0;
-+	/*
-+	 * Scatterlist elements contains both pages and DMA addresses, but
-+	 * one shoud not assume 1:1 relation between them. The sg->length is
-+	 * the size of the physical memory chunk described by the sg->page,
-+	 * while sg_dma_len(sg) is the size of the DMA (IO virtual) chunk
-+	 * described by the sg_dma_address(sg).
-+	 */
-+	page_index = 0;
-+	dma_index = 0;
- 	for_each_sg(sgt->sgl, sg, sgt->nents, count) {
--		len = sg_dma_len(sg);
-+		page_len = sg->length;
- 		page = sg_page(sg);
-+		dma_len = sg_dma_len(sg);
- 		addr = sg_dma_address(sg);
- 
--		while (len > 0) {
--			if (WARN_ON(index >= max_entries))
-+		while (pages && page_len > 0) {
-+			if (WARN_ON(page_index >= max_entries))
- 				return -1;
--			if (pages)
--				pages[index] = page;
--			if (addrs)
--				addrs[index] = addr;
--
-+			pages[page_index] = page;
- 			page++;
-+			page_len -= PAGE_SIZE;
-+			page_index++;
-+		}
-+		while (addrs && dma_len > 0) {
-+			if (WARN_ON(dma_index >= max_entries))
-+				return -1;
-+			addrs[dma_index] = addr;
- 			addr += PAGE_SIZE;
--			len -= PAGE_SIZE;
--			index++;
-+			dma_len -= PAGE_SIZE;
-+			dma_index++;
- 		}
+--- a/fs/hfsplus/attributes.c
++++ b/fs/hfsplus/attributes.c
+@@ -292,6 +292,10 @@ static int __hfsplus_delete_attr(struct
+ 		return -ENOENT;
  	}
- 	return 0;
+ 
++	/* Avoid btree corruption */
++	hfs_bnode_read(fd->bnode, fd->search_key,
++			fd->keyoffset, fd->keylength);
++
+ 	err = hfs_brec_remove(fd);
+ 	if (err)
+ 		return err;
 
 
