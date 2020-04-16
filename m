@@ -2,62 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB131ABF8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E321ABEBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506473AbgDPLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:37:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:58854 "EHLO foss.arm.com"
+        id S2506115AbgDPLGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:06:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42564 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505814AbgDPLCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:02:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0B761063;
-        Thu, 16 Apr 2020 04:02:54 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E4393F73D;
-        Thu, 16 Apr 2020 04:02:53 -0700 (PDT)
-References: <20200415210512.805-1-valentin.schneider@arm.com> <20200416105828.GN20730@hirez.programming.kicks-ass.net> <20200416110056.GT20760@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v3 0/9] sched: Streamline select_task_rq() & select_task_rq_fair()
-In-reply-to: <20200416110056.GT20760@hirez.programming.kicks-ass.net>
-Date:   Thu, 16 Apr 2020 12:02:51 +0100
-Message-ID: <jhj3693puas.mognet@arm.com>
+        id S2506004AbgDPLDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:03:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 83812AC52;
+        Thu, 16 Apr 2020 11:03:00 +0000 (UTC)
+Message-ID: <69b79028764dcdfc9f550a5f95752afb491005f0.camel@suse.de>
+Subject: Re: [PATCH 0/4] of: property: fw_devlink misc fixes
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 16 Apr 2020 13:02:59 +0200
+In-Reply-To: <CAGETcx-=E-6sg=B2Rr+V51eCxiBjNWPnOvvq6K=o9Sr-qLDvOg@mail.gmail.com>
+References: <20200415150550.28156-1-nsaenzjulienne@suse.de>
+         <CAGETcx-=E-6sg=B2Rr+V51eCxiBjNWPnOvvq6K=o9Sr-qLDvOg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-U0A1alyAP1S30q95YmNu"
+User-Agent: Evolution 3.34.2 
 MIME-Version: 1.0
-Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 16/04/20 12:00, Peter Zijlstra wrote:
-> On Thu, Apr 16, 2020 at 12:58:28PM +0200, Peter Zijlstra wrote:
->> On Wed, Apr 15, 2020 at 10:05:03PM +0100, Valentin Schneider wrote:
->> > Valentin Schneider (9):
->> >   sched/fair: find_idlest_group(): Remove unused sd_flag parameter
->> >   sched/debug: Make sd->flags sysctl read-only
->> >   sched: Remove checks against SD_LOAD_BALANCE
->> >   sched/topology: Kill SD_LOAD_BALANCE
->> >   sched: Add WF_TTWU, WF_EXEC wakeup flags
->>
->> How about I queue two first 5, and you rework these last few?
->
-> Argh, 4 ofcourse, that 5th patch doesn't make much sense if we have to
-> rework those flags like I proposed.
->
+--=-U0A1alyAP1S30q95YmNu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Was about to comment on that :) Sounds good to me!
+On Wed, 2020-04-15 at 11:17 -0700, Saravana Kannan wrote:
+> On Wed, Apr 15, 2020 at 8:06 AM Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> > As I'm interested in using this feature to fine-tune Raspberry Pi 4's
+>=20
+> You've made my day! Finally another user outside of Android. :) If
+> this does improve the boot time, I'd be super interested to see the
+> numbers.
 
->> >   sched: Kill select_task_rq()'s sd_flag parameter
->> >   sched/fair: Dissociate wakeup decisions from SD flag value
->> >   sched/fair: Split select_task_rq_fair want_affine logic
->> >   sched/topology: Define and use shortcut pointers for wakeup sd_flag scan
->>
->>
+Actually making the boot time faster isn't my main objective just a nice
+possible side-effect. I'll give you some numbers nonetheless :).
+
+I have two things in mind:
+ - Exploring if fw_devlink=3Don can help us solve a rather convoluted devic=
+e
+   initialization depency we're seeing in RPi4. It could potentially preven=
+t us
+   from adding nasty platform specific driver code.
+ - See if we can use all this information to fine-tune initrd generation on
+   smaller arm devices with limited i/o speeds.
+
+Do you have any plans in moving the default behavior to fw_devlink=3Don? If=
+ so
+what is blocking us?
+
+Also do you think it'd be reasonable to add a DT binding to set the desired
+fw_devlink level? Something like a 'linux,fw_devlink' property under the
+/chosen node.
+
+> > device probe dependencies, I tried to get the board to boot with
+> > fw_devlink=3Don. As of today's linux-next the board won't boot with tha=
+t
+> > option. I tried to address the underlying issues.
+>=20
+> I'll review the patches. Apologies in advance if my explanations
+> aren't thorough. A bit swamped right now.
+
+They were pretty clear!
+
+Thanks,
+Nicolas
+
+
+--=-U0A1alyAP1S30q95YmNu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6YO2MACgkQlfZmHno8
+x/666wf/VylFMUp6RLlJhIXSGCFQ/cPOJJTYI73tBsxzqgAsq9hWHbuH6fYDBxCU
+5AnrhT8W1qkUUEMk4bBN4jUSK0mQJYI1T9pRpHUe6o83pxSeWPEK/kkQMRfLr0UI
+LxDzhO290djKF7rw9ndeTfV6iEXjNfMuqBzHJkE+22VIkEWQuNiMduE7p5Drfv5a
+a5CXIkMmUoNJsVRS104xH+lxdg+IFFDrHN9tEhLAua6OMwfClptUKWryeiGqFi6S
+TV8BvdStbPRPjfQpLnESs/SYp/l5LQVSl/L60q9Rsq7mxXLvmR6UDMRmzbabH4mV
+ZtR6LwbQkqD8dzPnvpY4i/pmr8xgHg==
+=SdVL
+-----END PGP SIGNATURE-----
+
+--=-U0A1alyAP1S30q95YmNu--
+
