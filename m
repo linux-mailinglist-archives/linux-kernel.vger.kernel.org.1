@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0FD1AC28A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4921AC92B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896062AbgDPN3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:29:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36186 "EHLO mail.kernel.org"
+        id S2442425AbgDPPTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:19:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895544AbgDPN1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:27:39 -0400
+        id S2898716AbgDPNrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:47:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C94FE217D8;
-        Thu, 16 Apr 2020 13:27:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA02121734;
+        Thu, 16 Apr 2020 13:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043659;
-        bh=kZ0NiSTwCEI9iWhJHS4nvEjEPhJyU7VAc4ik70TAT4w=;
+        s=default; t=1587044872;
+        bh=wgY92Up2hqj3U3bxEm7of4dFDNE/XdwTMo46DQJ7BiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V8UG/K1w+QkIJNhXxcEiziMyijACf9A/sER+/wW+u/5jzNJzJChCMzLuz1mgt4Mab
-         epSoFBy8dgBkoJFe55jpq6TvsFINn1qoREhPZAGtoTB1aYGzAF+71I/kWHKy02TxL9
-         8iKuDpsOb/eo3nWWP5Fi552zl9SfsfABmFcQMvsE=
+        b=SNJ1aOqdsVNmJ8ezySs7RTfuPLjHZ5BBj/ZHoFpMgLrqxRVu214Y4wFRQRKdFP6Lo
+         1Bb2TFMG1wALK/P1/aH5voevginFS1hINSar0M5CuLjSpCKr/L/Vvq4TLuesHaI/BR
+         JD9KlyWkrhtJQpRZ6M0GpCX553fhVv1Z74AoF4uk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.19 048/146] usb: gadget: f_fs: Fix use after free issue as part of queue failure
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.4 095/232] thermal: devfreq_cooling: inline all stubs for CONFIG_DEVFREQ_THERMAL=n
 Date:   Thu, 16 Apr 2020 15:23:09 +0200
-Message-Id: <20200416131249.422964259@linuxfoundation.org>
+Message-Id: <20200416131326.865094161@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriharsha Allenki <sallenki@codeaurora.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-commit f63ec55ff904b2f2e126884fcad93175f16ab4bb upstream.
+commit 3f5b9959041e0db6dacbea80bb833bff5900999f upstream.
 
-In AIO case, the request is freed up if ep_queue fails.
-However, io_data->req still has the reference to this freed
-request. In the case of this failure if there is aio_cancel
-call on this io_data it will lead to an invalid dequeue
-operation and a potential use after free issue.
-Fix this by setting the io_data->req to NULL when the request
-is freed as part of queue failure.
+When CONFIG_DEVFREQ_THERMAL is disabled all functions except
+of_devfreq_cooling_register_power() were already inlined. Also inline
+the last function to avoid compile errors when multiple drivers call
+of_devfreq_cooling_register_power() when CONFIG_DEVFREQ_THERMAL is not
+set. Compilation failed with the following message:
+  multiple definition of `of_devfreq_cooling_register_power'
+(which then lists all usages of of_devfreq_cooling_register_power())
 
-Fixes: 2e4c7553cd6f ("usb: gadget: f_fs: add aio support")
-Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
-CC: stable <stable@vger.kernel.org>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20200326115620.12571-1-sallenki@codeaurora.org
+Thomas Zimmermann reported this problem [0] on a kernel config with
+CONFIG_DRM_LIMA={m,y}, CONFIG_DRM_PANFROST={m,y} and
+CONFIG_DEVFREQ_THERMAL=n after both, the lima and panfrost drivers
+gained devfreq cooling support.
+
+[0] https://www.spinics.net/lists/dri-devel/msg252825.html
+
+Fixes: a76caf55e5b356 ("thermal: Add devfreq cooling")
+Cc: stable@vger.kernel.org
+Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200403205133.1101808-1-martin.blumenstingl@googlemail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/function/f_fs.c |    1 +
- 1 file changed, 1 insertion(+)
+ include/linux/devfreq_cooling.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -1036,6 +1036,7 @@ static ssize_t ffs_epfile_io(struct file
+--- a/include/linux/devfreq_cooling.h
++++ b/include/linux/devfreq_cooling.h
+@@ -75,7 +75,7 @@ void devfreq_cooling_unregister(struct t
  
- 		ret = usb_ep_queue(ep->ep, req, GFP_ATOMIC);
- 		if (unlikely(ret)) {
-+			io_data->req = NULL;
- 			usb_ep_free_request(ep->ep, req);
- 			goto error_lock;
- 		}
+ #else /* !CONFIG_DEVFREQ_THERMAL */
+ 
+-struct thermal_cooling_device *
++static inline struct thermal_cooling_device *
+ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+ 				  struct devfreq_cooling_power *dfc_power)
+ {
 
 
