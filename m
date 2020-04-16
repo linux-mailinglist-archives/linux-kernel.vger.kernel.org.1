@@ -2,458 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECA41AC636
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C739E1AC63D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394277AbgDPOfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:35:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43685 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728856AbgDPOfl (ORCPT
+        id S2391402AbgDPOgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:36:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41976 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728386AbgDPOgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:35:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587047738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mOJ9kmDKiVnV3a7Y16W/iKQ6cpMDxJKcLsNdQiBKNwM=;
-        b=ah1Inv9KswGWkDjGK0DoTQcU45ugbkw5qsuTOh/VcMHW4sVex05j5AL7jQMHQD74zWXqwH
-        W+m28oxrQqYvDHPK8Iu+kCeQF9ceVm+S9YbJko7CPVSxeeMyQwF55xsLfHSmbxdhzDseBl
-        8LV8Wpv/Gt3wqrclCHrUQerpRzJT9IU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-Dc9WD1JQMbGOsjd5t1-aJg-1; Thu, 16 Apr 2020 10:35:37 -0400
-X-MC-Unique: Dc9WD1JQMbGOsjd5t1-aJg-1
-Received: by mail-wr1-f71.google.com with SMTP id r11so1787527wrx.21
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:35:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mOJ9kmDKiVnV3a7Y16W/iKQ6cpMDxJKcLsNdQiBKNwM=;
-        b=mc5VQuYeqnKZvmaNsmRgzNJdKSmnilszWVGoXlUpcQzvCDW8WgL8lq7gVbpYJ+dA8e
-         uXWe+gOrWCNota3zHSk1d1Vc8cHNPqSaInk/sE9fRMSAB8mTzwp8AcFFhVueXES6M88C
-         dfsdEDsF0pakV066qOgMpUGPxRahICEV12IpyX5Y7mvZXHEW1d2fB2mzl3zlCxZog94S
-         5NzO0KcUy7cBwn7ktYLvk7nl0MNe9Dw2nmMfmMmutPQIjoYqKvCnGivl08Zb8uuM+A+1
-         3kwGANH/YzyxkUsnMjVYCxtSvaEOO6Evf8mw2JjSaTUs3RUmWpT27dfNBYTwqwc7/PkS
-         8MEA==
-X-Gm-Message-State: AGi0PuaGlKI0TGvJdrZ6OVN1wASyd1KHh/bU0vJpSZ7voXAqy9Z/ymhs
-        7ftLxLEOKh0j6c88G8O7wWn5/TOb3Rnzwx+FoSBU8JV+WOI6ogTK7KUfqxm1TJliTD5vqmCv/zC
-        Uavt9hETCLzlSc5f9jka0j1n4
-X-Received: by 2002:a1c:5ac4:: with SMTP id o187mr5449263wmb.79.1587047735533;
-        Thu, 16 Apr 2020 07:35:35 -0700 (PDT)
-X-Google-Smtp-Source: APiQypILmvXZjHsEMyYfTHeL5GkyREpiFhTmsQOFgCr1ncefGwfzylEh2GRXdLWY3CGLbRVw/F37fA==
-X-Received: by 2002:a1c:5ac4:: with SMTP id o187mr5449215wmb.79.1587047735024;
-        Thu, 16 Apr 2020 07:35:35 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-212-96-48-140.catv.broadband.hu. [212.96.48.140])
-        by smtp.gmail.com with ESMTPSA id 1sm4057533wmi.0.2020.04.16.07.35.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 07:35:34 -0700 (PDT)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>
-Subject: [PATCH] vfs: add faccessat2 syscall
-Date:   Thu, 16 Apr 2020 16:35:32 +0200
-Message-Id: <20200416143532.11743-1-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.21.1
+        Thu, 16 Apr 2020 10:36:13 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GEY9Ow119503;
+        Thu, 16 Apr 2020 10:35:51 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30er1uat0n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 10:35:51 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03GEYInN120080;
+        Thu, 16 Apr 2020 10:35:51 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30er1uat09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 10:35:51 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03GEZ9R6014158;
+        Thu, 16 Apr 2020 14:35:50 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03wdc.us.ibm.com with ESMTP id 30b5h6tv09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 14:35:50 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03GEZniB44827120
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 14:35:49 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 506E6112061;
+        Thu, 16 Apr 2020 14:35:48 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBF8A112062;
+        Thu, 16 Apr 2020 14:35:47 +0000 (GMT)
+Received: from cpe-172-100-172-46.stny.res.rr.com (unknown [9.85.128.208])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 16 Apr 2020 14:35:47 +0000 (GMT)
+Subject: Re: [PATCH v7 03/15] s390/zcrypt: driver callback to indicate
+ resource in use
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pmorel@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
+References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
+ <20200407192015.19887-4-akrowiak@linux.ibm.com>
+ <20200414140838.54f777b8.cohuck@redhat.com>
+ <0f193571-1ff6-08f3-d02d-b4f40d2930c8@linux.ibm.com>
+ <20200416120544.053b38d8.cohuck@redhat.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <78116a88-7571-1ac9-40e1-6c1081c81467@linux.ibm.com>
+Date:   Thu, 16 Apr 2020 10:35:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200416120544.053b38d8.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-16_05:2020-04-14,2020-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ suspectscore=11 spamscore=0 mlxlogscore=999 impostorscore=0 adultscore=0
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004160101
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POSIX defines faccessat() as having a fourth "flags" argument, while the
-linux syscall doesn't have it.  Glibc tries to emulate AT_EACCESS and
-AT_SYMLINK_NOFOLLOW, but AT_EACCESS emulation is broken.
 
-Add a new faccessat(2) syscall with the added flags argument and implement
-both flags.
 
-The value of AT_EACCESS is defined in glibc headers to be the same as
-AT_REMOVEDIR.  Use this value for the kernel interface as well, together
-with the explanatory comment.
+On 4/16/20 6:05 AM, Cornelia Huck wrote:
+> On Wed, 15 Apr 2020 13:10:18 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> On 4/14/20 8:08 AM, Cornelia Huck wrote:
+>>> On Tue,  7 Apr 2020 15:20:03 -0400
+>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>> @@ -995,9 +996,11 @@ int ap_parse_mask_str(const char *str,
+>>>>    	newmap = kmalloc(size, GFP_KERNEL);
+>>>>    	if (!newmap)
+>>>>    		return -ENOMEM;
+>>>> -	if (mutex_lock_interruptible(lock)) {
+>>>> -		kfree(newmap);
+>>>> -		return -ERESTARTSYS;
+>>>> +	if (lock) {
+>>>> +		if (mutex_lock_interruptible(lock)) {
+>>>> +			kfree(newmap);
+>>>> +			return -ERESTARTSYS;
+>>>> +		}
+>>> This whole function is a bit odd. It seems all masks we want to
+>>> manipulate are always guarded by the ap_perms_mutex, and the need for
+>>> allowing lock == NULL comes from wanting to call this function with the
+>>> ap_perms_mutex already held.
+>>>
+>>> That would argue for a locked/unlocked version of this function... but
+>>> looking at it, why do we lock the way we do? The one thing this
+>>> function (prior to this patch) does outside of the holding of the mutex
+>>> is the allocation and freeing of newmap. But with this patch, we do the
+>>> allocation and freeing of newmap while holding the mutex. Something
+>>> seems a bit weird here.
+>> Note that the ap_parse_mask function copies the newmap
+>> to the bitmap passed in as a parameter to the function.
+>> Prior to the introduction of this patch, the calling functions - i.e.,
+>> apmask_store(), aqmask_store() and ap_perms_init() - passed
+>> in the actual bitmap (i.e., ap_perms.apm or ap_perms aqm),
+>> so the ap_perms were changed directly by this function.
+>>
+>> With this patch, the apmask_store() and aqmask_store()
+>> functions now pass in a copy of those bitmaps. This is so
+>> we can verify that any APQNs being removed are not
+>> in use by the vfio_ap device driver before committing the
+>> change to ap_perms. Consequently, it is now necessary
+>> to take the lock for the until the changes are committed.
+> Yes, but every caller actually takes the mutex before calling this
+> function already :)
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- arch/alpha/kernel/syscalls/syscall.tbl      |  1 +
- arch/arm/tools/syscall.tbl                  |  1 +
- arch/arm64/include/asm/unistd.h             |  2 +-
- arch/arm64/include/asm/unistd32.h           |  2 +
- arch/ia64/kernel/syscalls/syscall.tbl       |  1 +
- arch/m68k/kernel/syscalls/syscall.tbl       |  1 +
- arch/microblaze/kernel/syscalls/syscall.tbl |  1 +
- arch/mips/kernel/syscalls/syscall_n32.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_n64.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_o32.tbl   |  1 +
- arch/parisc/kernel/syscalls/syscall.tbl     |  1 +
- arch/powerpc/kernel/syscalls/syscall.tbl    |  1 +
- arch/s390/kernel/syscalls/syscall.tbl       |  1 +
- arch/sh/kernel/syscalls/syscall.tbl         |  1 +
- arch/sparc/kernel/syscalls/syscall.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_32.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_64.tbl      |  1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     |  1 +
- fs/internal.h                               |  1 -
- fs/open.c                                   | 56 ++++++++++++++++-----
- include/linux/syscalls.h                    |  7 ++-
- include/uapi/asm-generic/unistd.h           |  4 +-
- include/uapi/linux/fcntl.h                  | 10 ++++
- 23 files changed, 80 insertions(+), 18 deletions(-)
+That is not a true statement, the ap_perms_init() function
+does not take the mutex prior to calling this function. Keep in
+mind, the ap_parse_mask function is not static and is exported,
+I was precluded from removing the lock parameter from the function
+definition.
 
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index 36d42da7466a..5ddd128d4b7a 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -477,3 +477,4 @@
- # 545 reserved for clone3
- 547	common	openat2				sys_openat2
- 548	common	pidfd_getfd			sys_pidfd_getfd
-+549	common	faccessat2			sys_faccessat2
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index 4d1cf74a2caa..d5cae5ffede0 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -451,3 +451,4 @@
- 435	common	clone3				sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 803039d504de..3b859596840d 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		439
-+#define __NR_compat_syscalls		440
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index c1c61635f89c..6d95d0c8bf2f 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -883,6 +883,8 @@ __SYSCALL(__NR_clone3, sys_clone3)
- __SYSCALL(__NR_openat2, sys_openat2)
- #define __NR_pidfd_getfd 438
- __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-+#define __NR_faccessat2 439
-+__SYSCALL(__NR_faccessat2, sys_faccessat2)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index 042911e670b8..49e325b604b3 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -358,3 +358,4 @@
- # 435 reserved for clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index f4f49fcb76d0..f71b1bbcc198 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -437,3 +437,4 @@
- 435	common	clone3				__sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index 4c67b11f9c9e..edacc4561f2b 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -443,3 +443,4 @@
- 435	common	clone3				sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index 1f9e8ad636cc..f777141f5256 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -376,3 +376,4 @@
- 435	n32	clone3				__sys_clone3
- 437	n32	openat2				sys_openat2
- 438	n32	pidfd_getfd			sys_pidfd_getfd
-+439	n32	faccessat2			sys_faccessat2
-diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
-index c0b9d802dbf6..da8c76394e17 100644
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@ -352,3 +352,4 @@
- 435	n64	clone3				__sys_clone3
- 437	n64	openat2				sys_openat2
- 438	n64	pidfd_getfd			sys_pidfd_getfd
-+439	n64	faccessat2			sys_faccessat2
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index ac586774c980..13280625d312 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -425,3 +425,4 @@
- 435	o32	clone3				__sys_clone3
- 437	o32	openat2				sys_openat2
- 438	o32	pidfd_getfd			sys_pidfd_getfd
-+439	o32	faccessat2			sys_faccessat2
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index 52a15f5cd130..5a758fa6ec52 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -435,3 +435,4 @@
- 435	common	clone3				sys_clone3_wrapper
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index 220ae11555f2..f833a3190822 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -527,3 +527,4 @@
- 435	spu	clone3				sys_ni_syscall
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index bd7bd3581a0f..bfdcb7633957 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -440,3 +440,4 @@
- 435  common	clone3			sys_clone3			sys_clone3
- 437  common	openat2			sys_openat2			sys_openat2
- 438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
-+439  common	faccessat2		sys_faccessat2			sys_faccessat2
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index c7a30fcd135f..acc35daa1b79 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -440,3 +440,4 @@
- # 435 reserved for clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index f13615ecdecc..8004a276cb74 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -483,3 +483,4 @@
- # 435 reserved for clone3
- 437	common	openat2			sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 54581ac671b4..d8f8a1a69ed1 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -442,3 +442,4 @@
- 435	i386	clone3			sys_clone3
- 437	i386	openat2			sys_openat2
- 438	i386	pidfd_getfd		sys_pidfd_getfd
-+439	i386	faccessat2		sys_faccessat2
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 37b844f839bc..78847b32e137 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -359,6 +359,7 @@
- 435	common	clone3			sys_clone3
- 437	common	openat2			sys_openat2
- 438	common	pidfd_getfd		sys_pidfd_getfd
-+439	common	faccessat2		sys_faccessat2
- 
- #
- # x32-specific system call numbers start at 512 to avoid cache impact
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 85a9ab1bc04d..69d0d73876b3 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -408,3 +408,4 @@
- 435	common	clone3				sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/fs/internal.h b/fs/internal.h
-index aa5d45524e87..0d467e32dd7e 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -126,7 +126,6 @@ extern struct open_how build_open_how(int flags, umode_t mode);
- extern int build_open_flags(const struct open_how *how, struct open_flags *op);
- 
- long do_sys_ftruncate(unsigned int fd, loff_t length, int small);
--long do_faccessat(int dfd, const char __user *filename, int mode);
- int do_fchmodat(int dfd, const char __user *filename, umode_t mode);
- int do_fchownat(int dfd, const char __user *filename, uid_t user, gid_t group,
- 		int flag);
-diff --git a/fs/open.c b/fs/open.c
-index 719b320ede52..f30cd5d46ac1 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -345,21 +345,14 @@ SYSCALL_DEFINE4(fallocate, int, fd, int, mode, loff_t, offset, loff_t, len)
-  * We do this by temporarily clearing all FS-related capabilities and
-  * switching the fsuid/fsgid around to the real ones.
-  */
--long do_faccessat(int dfd, const char __user *filename, int mode)
-+static const struct cred *access_override_creds(void)
- {
- 	const struct cred *old_cred;
- 	struct cred *override_cred;
--	struct path path;
--	struct inode *inode;
--	int res;
--	unsigned int lookup_flags = LOOKUP_FOLLOW;
--
--	if (mode & ~S_IRWXO)	/* where's F_OK, X_OK, W_OK, R_OK? */
--		return -EINVAL;
- 
- 	override_cred = prepare_creds();
- 	if (!override_cred)
--		return -ENOMEM;
-+		return NULL;
- 
- 	override_cred->fsuid = override_cred->uid;
- 	override_cred->fsgid = override_cred->gid;
-@@ -394,6 +387,36 @@ long do_faccessat(int dfd, const char __user *filename, int mode)
- 	override_cred->non_rcu = 1;
- 
- 	old_cred = override_creds(override_cred);
-+
-+	/* override_cred() gets its own ref */
-+	put_cred(override_cred);
-+
-+	return old_cred;
-+}
-+
-+long do_faccessat(int dfd, const char __user *filename, int mode, int flags)
-+{
-+	const struct cred *old_cred = NULL;
-+	struct path path;
-+	struct inode *inode;
-+	int res;
-+	unsigned int lookup_flags = LOOKUP_FOLLOW;
-+
-+	if (mode & ~S_IRWXO)	/* where's F_OK, X_OK, W_OK, R_OK? */
-+		return -EINVAL;
-+
-+	if (flags & ~(AT_EACCESS | AT_SYMLINK_NOFOLLOW))
-+		return -EINVAL;
-+
-+	if (flags & AT_SYMLINK_NOFOLLOW)
-+		lookup_flags &= ~LOOKUP_FOLLOW;
-+
-+	if (!(flags & AT_EACCESS)) {
-+		old_cred = access_override_creds();
-+		if (!old_cred)
-+			return -ENOMEM;
-+	}
-+
- retry:
- 	res = user_path_at(dfd, filename, lookup_flags, &path);
- 	if (res)
-@@ -435,19 +458,26 @@ long do_faccessat(int dfd, const char __user *filename, int mode)
- 		goto retry;
- 	}
- out:
--	revert_creds(old_cred);
--	put_cred(override_cred);
-+	if (old_cred)
-+		revert_creds(old_cred);
-+
- 	return res;
- }
- 
- SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
- {
--	return do_faccessat(dfd, filename, mode);
-+	return do_faccessat(dfd, filename, mode, 0);
-+}
-+
-+SYSCALL_DEFINE4(faccessat2, int, dfd, const char __user *, filename, int, mode,
-+		int, flags)
-+{
-+	return do_faccessat(dfd, filename, mode, flags);
- }
- 
- SYSCALL_DEFINE2(access, const char __user *, filename, int, mode)
- {
--	return do_faccessat(AT_FDCWD, filename, mode);
-+	return do_faccessat(AT_FDCWD, filename, mode, 0);
- }
- 
- int ksys_chdir(const char __user *filename)
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 1815065d52f3..baec24782301 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -428,6 +428,8 @@ asmlinkage long sys_ftruncate64(unsigned int fd, loff_t length);
- #endif
- asmlinkage long sys_fallocate(int fd, int mode, loff_t offset, loff_t len);
- asmlinkage long sys_faccessat(int dfd, const char __user *filename, int mode);
-+asmlinkage long sys_faccessat2(int dfd, const char __user *filename, int mode,
-+			       int flags);
- asmlinkage long sys_chdir(const char __user *filename);
- asmlinkage long sys_fchdir(unsigned int fd);
- asmlinkage long sys_chroot(const char __user *filename);
-@@ -1333,11 +1335,12 @@ static inline int ksys_chmod(const char __user *filename, umode_t mode)
- 	return do_fchmodat(AT_FDCWD, filename, mode);
- }
- 
--extern long do_faccessat(int dfd, const char __user *filename, int mode);
-+extern long do_faccessat(int dfd, const char __user *filename, int mode,
-+			 int flags);
- 
- static inline long ksys_access(const char __user *filename, int mode)
- {
--	return do_faccessat(AT_FDCWD, filename, mode);
-+	return do_faccessat(AT_FDCWD, filename, mode, 0);
- }
- 
- extern int do_fchownat(int dfd, const char __user *filename, uid_t user,
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 3a3201e4618e..f4a01305d9a6 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -855,9 +855,11 @@ __SYSCALL(__NR_clone3, sys_clone3)
- __SYSCALL(__NR_openat2, sys_openat2)
- #define __NR_pidfd_getfd 438
- __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-+#define __NR_faccessat2 439
-+__SYSCALL(__NR_faccessat2, sys_faccessat2)
- 
- #undef __NR_syscalls
--#define __NR_syscalls 439
-+#define __NR_syscalls 440
- 
- /*
-  * 32 bit systems traditionally used different
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index ca88b7bce553..2f86b2ad6d7e 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -84,10 +84,20 @@
- #define DN_ATTRIB	0x00000020	/* File changed attibutes */
- #define DN_MULTISHOT	0x80000000	/* Don't remove notifier */
- 
-+/*
-+ * The constants AT_REMOVEDIR and AT_EACCESS have the same value.  AT_EACCESS is
-+ * meaningful only to faccessat, while AT_REMOVEDIR is meaningful only to
-+ * unlinkat.  The two functions do completely different things and therefore,
-+ * the flags can be allowed to overlap.  For example, passing AT_REMOVEDIR to
-+ * faccessat would be undefined behavior and thus treating it equivalent to
-+ * AT_EACCESS is valid undefined behavior.
-+ */
- #define AT_FDCWD		-100    /* Special value used to indicate
-                                            openat should use the current
-                                            working directory. */
- #define AT_SYMLINK_NOFOLLOW	0x100   /* Do not follow symbolic links.  */
-+#define AT_EACCESS		0x200	/* Test access permitted for
-+                                           effective IDs, not real IDs.  */
- #define AT_REMOVEDIR		0x200   /* Remove directory instead of
-                                            unlinking file.  */
- #define AT_SYMLINK_FOLLOW	0x400   /* Follow symbolic links.  */
--- 
-2.21.1
+>
+>> Having explained that, you make a valid argument that
+>> this calls for a locked/unlocked version of this function, so
+>> I will modify this patch to that effect.
+> Ok.
+>
+> The other thing I found weird is that the function does
+> alloc newmap -> grab mutex -> do manipulation -> release mutex -> free newmap
+> while the new callers do
+> (mutex already held) -> alloc newmap
+>
+> so why grab/release the mutex the way the function does now? IOW, why
+> not have an unlocked __ap_parse_mask_string() and do
+
+In my last comment above, I agreed to create an unlocked version
+of this function. Your example below is similar to what I
+implemented after responding to your comment yesterday.
+
+>
+> int ap_parse_mask_string(...)
+> {
+> 	int rc;
+>
+> 	if (mutex_lock_interruptible(&ap_perms_mutex))
+> 		return -ERESTARTSYS;
+> 	rc = __ap_parse_mask_string(...);
+>          mutex_unlock(&ap_perms_mutex);
+> 	return rc;
+> }
 
