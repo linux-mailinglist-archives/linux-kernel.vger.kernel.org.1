@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9A41AC869
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3021AC8B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407986AbgDPPIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:08:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:63742 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441872AbgDPPHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:07:52 -0400
-IronPort-SDR: CRhiPWPlSDDWiEGWg66HjxGlQNN/Ma26T12do60+1eiLeXlQVDjQxMtUcIMw3AiSKtZ9Z3SkXi
- 8EtfiGGhvjAA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 08:07:50 -0700
-IronPort-SDR: o5iUjlKVYAkiSQVPwxHxIkIYdjmBCXuTBBpdTwXmAecBBvW1C+zOu8iK1KaQu3UOTksj0n79i9
- Gz3Rqojkq5Bw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="278018877"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Apr 2020 08:07:49 -0700
-Date:   Thu, 16 Apr 2020 08:07:49 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: Re: [PATCH v2 00/10] KVM: VMX: Unionize vcpu_vmx.exit_reason
-Message-ID: <20200416150749.GA12170@linux.intel.com>
-References: <20200415175519.14230-1-sean.j.christopherson@intel.com>
- <a77ca940-afe4-a94a-2698-6cda0f95ba5c@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a77ca940-afe4-a94a-2698-6cda0f95ba5c@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S2395106AbgDPPMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729914AbgDPPM2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:12:28 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FE1C0610D6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-Id:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=LsVp9g60MKfk7ryW4q0HIe7K/ddM+Pems4kp0GQK70U=; b=IJoM4vYQ5wKB1Y075Ha4+wmc2i
+        k6uFvNeMeGEhNXLuStb8tKAr3+l9czSLwKL1lsUBsPmw+7fYmxD8bmwEgjlYnsbcQRyA0ZZXW6sz2
+        1gAQ4wJ+2bDi4McjHGBlX42yBILZdkzilBzmQS3KWoiOb/9wOfpi/cAhMwNa6hP6dzCIo3bbT2eIH
+        4IrWjQB8AJQOqzC7znzE3gc/jHn3f6nL4JazYj6YIIAhiPXSt7JT44Ftjjuvv+PlyNWLWK94366GE
+        4BnNk8chhxgVsTr30PAOBaaso3lXGACVb2JhPEiPqcu12LDTsibv3n7N2qX514v6Brs1s3bX7IV+f
+        oum1WxiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP6BH-00046e-Lf; Thu, 16 Apr 2020 15:11:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CA88304D2B;
+        Thu, 16 Apr 2020 17:11:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id EF7C52B0DE4BB; Thu, 16 Apr 2020 17:11:53 +0200 (CEST)
+Message-Id: <20200416150752.569029800@infradead.org>
+User-Agent: quilt/0.65
+Date:   Thu, 16 Apr 2020 17:07:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
+Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
+        tglx@linutronix.de, x86@kernel.org, peterz@infradead.org
+Subject: [RFC][PATCH 0/7] objtool vs retpoline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 03:44:06PM +0200, Paolo Bonzini wrote:
-> On 15/04/20 19:55, Sean Christopherson wrote:
-> For now I committed only patches 1-9, just to limit the conflicts with
-> the other series.  I would like to understand how you think the
-> conflicts should be fixed with the union.
+Hi!
 
-Pushed a branch.  Basically, take the union code and then make sure there
-aren't any vmcs_read32(VM_EXIT_INTR_INFO) or vmcs_readl(EXIT_QUALIFICATION)
-calls outside of the caching accessors or dump_vmcs().
+Based on Alexandre's patches, here's a few patches that apply on top of my
+other series:
 
-  https://github.com/sean-jc/linux for_paolo_merge_union_cache 
+  https://lkml.kernel.org/r/20200416114706.625340212@infradead.org
+
+which seems to build a clean defconfig without ANNOTATE_NOSPEC_ALTERNATIVE on.
+
+I've not tried to boot the thing, I'll leave that to the robots.
+
