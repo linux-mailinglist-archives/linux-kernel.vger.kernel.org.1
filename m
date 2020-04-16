@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE991ABBC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726A81ABBD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503018AbgDPIzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S2503058AbgDPI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502965AbgDPIvi (ORCPT
+        with ESMTP id S2502961AbgDPIx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:51:38 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2787C0610D5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:51:34 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d77so3687973wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aQURq1REwHEPMxWj0A/UhXFxGHBPx1Zt6Uxv60umXok=;
-        b=iTUUxmnxUoqM1iP5zj7BbzhwKQK2NqYbdVMK0rIh0CiAAy9/it6DIt1DL4Ooif9/bE
-         Pul6F77qct+LdTVwj/1QFZe9JzU7U365RE9K2ngJq6+qZ15SxAPXTQR3XQRAdySjswRR
-         9JYky000loQpUPX3wnZRvPFFa45uhJxKiqbju2/rslkJy7h3NmXl0ZIYzg2ZbfnCQ5dc
-         AsNg7kMa9TiJe/4kUyOORB8GNBgxQrV21VfhsiPqvwyuyliDY3hqDbicfevTFn5hB8rm
-         ++qfzQ5FGFbm9rT/GFdYCl8cOGCJR7Yj/AL+Xc5pcZgU+6DZeOb6aSyklfhfqZMu9KiT
-         XbEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aQURq1REwHEPMxWj0A/UhXFxGHBPx1Zt6Uxv60umXok=;
-        b=cTOzUW0d4tX243Vqq1TTceCBwt8UlBhimJIFBJFJhNdHlLQe12bQUFkfMfs0sJ0OVc
-         1j4Vj3vVBGisISp8bjkPf94M7eIY7bvrgITTy3SNiddqUiDkDLqbsbjT9Rf16F/+adxU
-         OpXOQP7PYtojFVNYUJ70mXIc+Of0aX22qFZn1UkqY+SA6KCsmpG/owv+6i47uWgZHCnV
-         pP9O2zveKFK93aR2T/FdXvU28t0QemZNLf54nldG+hrq5F4DgzFMgJlGRyAF6v9M72lb
-         pduukDvSHLMxlrCXUxH2w3xnf4HH4OQdFKqFF/4WseEymJmK0u7X3z+GSxzrgoZebzN5
-         9+0w==
-X-Gm-Message-State: AGi0PuYgYJfvHBpJZTucToyCs8wZV7+N6DtkPLoqtXlZMTMAhqS7oPOr
-        qhL1D2peCTZD6kpGiG0z/INUxA==
-X-Google-Smtp-Source: APiQypKU3qRZVCXuxnBOouk3e3DEAX4zubXTv+zywdpux61f+2SAQwvIpImS075eYrYQxApgGH0znw==
-X-Received: by 2002:a7b:c147:: with SMTP id z7mr4036229wmi.52.1587027093347;
-        Thu, 16 Apr 2020 01:51:33 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id q8sm2740501wmg.22.2020.04.16.01.51.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 01:51:32 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 09:52:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Josef Friedl <josef.friedl@speed.at>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ran Bi <ran.bi@mediatek.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Subject: Re: [PATCH v12 2/6] mfd: mt6397: Trim probe function to support
- different chips more cleanly
-Message-ID: <20200416085233.GY2167633@dell>
-References: <1586333531-21641-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1586333531-21641-3-git-send-email-hsin-hsiung.wang@mediatek.com>
+        Thu, 16 Apr 2020 04:53:29 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0EDC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9+zb5lOcLNsdGEIiZVneJyZa5T7eObObpHMI11tV4t8=; b=NKOHMxJCg9d1kbkGnKRxNQtJGz
+        aOxmEsHEBe0neyXzFYrXKEr5VS4EW70w98HmVO0/Z4gEFgCpJumbE2fNZHhseyBGBaKM/tBl/0WZl
+        2n3Gpa9N6mEe7hImlNeOABNoy7DfL7O/gi7ETvOe6hqSwdah15x2IhlpFH4J9u0J+T4ZkQoaEfjUb
+        /CeKnK6aa0PAad8y7vXP/t3BJUF3T06VxTCq/SmxUu+X/FA0hqolzQrqpzaEnsorj6K4n6YRR+e5r
+        AOqsy+5w9ZnEWNTlaqLeHtKVK8qTMNcvXZEG5rSvn77lzpudoOoSFR7ubeHPqzSuyKJaQbec1oDhR
+        EVkjogBw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP0GS-0001bN-PE; Thu, 16 Apr 2020 08:52:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E52E83006E0;
+        Thu, 16 Apr 2020 10:52:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF9762B0DB555; Thu, 16 Apr 2020 10:52:49 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 10:52:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] exit: Move preemption fixup up, move blocking
+ operations down
+Message-ID: <20200416085249.GL20730@hirez.programming.kicks-ass.net>
+References: <20200305220657.46800-1-jannh@google.com>
+ <CAG48ez2qd6r6FfDBHbqpoqKFU1oA64Usx86Ps33wHjCZmxYmbA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1586333531-21641-3-git-send-email-hsin-hsiung.wang@mediatek.com>
+In-Reply-To: <CAG48ez2qd6r6FfDBHbqpoqKFU1oA64Usx86Ps33wHjCZmxYmbA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Apr 2020, Hsin-Hsiung Wang wrote:
-
-> Add new struct members for mfd-cells and irq initial function, so we can
-> call devm_mfd_add_devices() only once.
+On Tue, Mar 24, 2020 at 10:30:02AM +0100, Jann Horn wrote:
+> On Thu, Mar 5, 2020 at 11:07 PM Jann Horn <jannh@google.com> wrote:
+> > With CONFIG_DEBUG_ATOMIC_SLEEP=y and CONFIG_CGROUPS=y, kernel oopses in
+> > non-preemptible context look untidy; after the main oops, the kernel prints
+> > a "sleeping function called from invalid context" report because
+> > exit_signals() -> cgroup_threadgroup_change_begin() -> percpu_down_read()
+> > can sleep, and that happens before the preempt_count_set(PREEMPT_ENABLED)
+> > fixup.
+> >
+> > It looks like the same thing applies to profile_task_exit() and
+> > kcov_task_exit().
+> >
+> > Fix it by moving the preemption fixup up and the calls to
+> > profile_task_exit() and kcov_task_exit() down.
+> >
+> > Fixes: 1dc0fffc48af ("sched/core: Robustify preemption leak checks")
+> > Signed-off-by: Jann Horn <jannh@google.com>
+> > ---
+> > As so often, I have no idea which tree this should go through. tip? mm?
 > 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
->  drivers/mfd/mt6397-core.c | 35 ++++++++++++++---------------------
->  1 file changed, 14 insertions(+), 21 deletions(-)
+> Do the tip folks want to take this, since it's vaguely locking-related
+> and the fixed commit also came that way? Or should it go through
+> akpm's tree?
 
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I've picked it up, as it seems to be languishing. Thanks!
