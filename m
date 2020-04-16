@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B581ABAE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F043F1ABCA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441223AbgDPIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441085AbgDPIFd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:05:33 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1944DC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:05:33 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a81so3732596wmf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DTVGiSK03P6onmyASsObJNfq8+3T4lgM4B2+WW6QaCY=;
-        b=drsDOG2NcJ/inBonm+c5W3bUUMqyD+e/xq4Nn2bd7g31XzVFAblp1LeH9CAM+mVxRq
-         OOhDG/FVL+Nqx3BYBQ0gAy45kbWORkgeXfcocWTrccEjMYoHaa773bp4VcS55dW6EYxn
-         0yuOVkST5dYZ8AhvsJKyoRJ/sBSfC5siAV2pFgQPVbQSr1LQBML/iMDQ8DDR8tmp6caw
-         JqSTBKu+6pffnSns91off5WEl8VZf1Gq65Kkt5BUfT05hGqF3lTExP+6Ya0g+kmRn1Ym
-         DJMJliKq6u/l+8idfmmu4s6BcZXM6JkKlLkUV28/DmLFNGURuMhagF8Kl2Lp7JdBqlu+
-         wiBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DTVGiSK03P6onmyASsObJNfq8+3T4lgM4B2+WW6QaCY=;
-        b=AmTMDJuO6oBM3IDJQFycd4HBT9aNlvMPcK4D3VrL8qV8BP11RHXS617mCE3j7i0QqL
-         V1wQTR5Z5hHQAxIuCqlsBVgjX3HaHAz00n5vyJJ9Ne9rhuZnAwjYKQs81s6EYdc/ihh3
-         vSa1ahTwaiwS48TeYB/5nJVYdlGj3xhRao80odu0Pah7J74NXMGpNbZMvRH/6OipCdmk
-         dveTpYjennYfwMGTXdnrXrEvTYRkPfqPUALeToustVuTIiYvkxRyFK2E1tbDBcduVDfw
-         +bg8W373Th2AJKTQ/jh86uQ7CGOq/p5/RewN2ljSqQVt/YiVApcnHW2ooD5DVptXnStX
-         adTQ==
-X-Gm-Message-State: AGi0PubFBP9DGTMYPaINP40XF7CyzpwK5OY9itHHHnl679t9h3IJxeyT
-        EqHsQbYm/50S2ueFPXLHRnSSI05P2NA=
-X-Google-Smtp-Source: APiQypJIeFvIypgtJ2FKxu3qCheY3/cc/NBCP8LP2sh5UGGw4ZWmK1SSxzEBq6xItYvS2vj95A/WaQ==
-X-Received: by 2002:a1c:e284:: with SMTP id z126mr3721230wmg.32.1587024331115;
-        Thu, 16 Apr 2020 01:05:31 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id t67sm2686116wmg.40.2020.04.16.01.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 01:05:30 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 09:06:31 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Support Opensource <support.opensource@diasemi.com>
-Subject: Re: [RESEND v2 PATCH 2/2] mfd: da9063: Add support for latest DA
- silicon revision
-Message-ID: <20200416080631.GV2167633@dell>
-References: <cover.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
- <f468a3c56496edf3641b41cbd7797b344c8a99dc.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
+        id S2392100AbgDPJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:17:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441116AbgDPIHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:07:15 -0400
+Received: from localhost (unknown [223.235.195.235])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69F85206E9;
+        Thu, 16 Apr 2020 08:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587024434;
+        bh=6kwbxJH2RDveXqsZesbfmy1W3FzqE56YVY6CxJmBpFo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O1d6NWlKFfnyKMYlp3FSfoZyP6WL58llnMOPAcukWE4NK15IAgUmTc9Oy1CJfBrQJ
+         FzFh77ntmk81ok6QNhBa7Fsxt0mRWxySPBmmQLISyBFjZXKruM2zAQoNUgGwtCZMXr
+         hATzQxclu6p7VFesf/GI28sOVbjEiU4zdOe4G2WA=
+Date:   Thu, 16 Apr 2020 13:37:10 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
+Message-ID: <20200416080710.GI72691@vkoul-mobl>
+References: <20200416005549.9683-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f468a3c56496edf3641b41cbd7797b344c8a99dc.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Apr 2020, Adam Thomson wrote:
-
-> This update adds new regmap tables to support the latest DA silicon
-> which will automatically be selected based on the chip and variant
-> information read from the device.
+On 15-04-20, 19:55, Rob Herring wrote:
+> Fix various inconsistencies in schema indentation. Most of these are
+> list indentation which should be 2 spaces more than the start of the
+> enclosing keyword. This doesn't matter functionally, but affects running
+> scripts which do transforms on the schema files.
 > 
-> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/mfd/da9063-i2c.c        | 91 ++++++++++++++++++++++++++++++++++++-----
->  include/linux/mfd/da9063/core.h |  1 +
->  2 files changed, 82 insertions(+), 10 deletions(-)
+>  .../devicetree/bindings/arm/altera.yaml       |  6 +-
+>  .../amlogic/amlogic,meson-gx-ao-secure.yaml   |  2 +-
+>  .../devicetree/bindings/arm/bitmain.yaml      |  2 +-
+>  .../devicetree/bindings/arm/nxp/lpc32xx.yaml  |  9 ++-
+>  .../bindings/arm/socionext/uniphier.yaml      | 26 ++++----
+>  .../bindings/arm/stm32/st,mlahb.yaml          |  2 +-
+>  .../bindings/arm/stm32/st,stm32-syscon.yaml   |  6 +-
+>  .../bindings/ata/faraday,ftide010.yaml        |  4 +-
+>  .../bindings/bus/allwinner,sun8i-a23-rsb.yaml |  4 +-
+>  .../clock/allwinner,sun4i-a10-gates-clk.yaml  |  8 +--
+>  .../devicetree/bindings/clock/fsl,plldig.yaml | 17 +++--
+>  .../devicetree/bindings/clock/qcom,mmcc.yaml  | 16 ++---
+>  .../bindings/connector/usb-connector.yaml     |  6 +-
+>  .../crypto/allwinner,sun4i-a10-crypto.yaml    | 14 ++--
+>  .../bindings/crypto/allwinner,sun8i-ce.yaml   | 16 ++---
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml   |  2 +-
+>  .../display/allwinner,sun4i-a10-hdmi.yaml     | 40 ++++++------
+>  .../display/allwinner,sun4i-a10-tcon.yaml     | 58 ++++++++---------
+>  .../display/allwinner,sun6i-a31-mipi-dsi.yaml | 28 ++++----
+>  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml | 10 +--
+>  .../bindings/display/bridge/lvds-codec.yaml   | 18 +++---
+>  .../display/panel/sony,acx424akp.yaml         |  2 +-
+>  .../display/panel/xinpeng,xpp055c272.yaml     |  4 +-
+>  .../bindings/display/renesas,cmm.yaml         | 16 ++---
+>  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  8 +--
 
-Can this patch be applied on its own?
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+~Vinod
