@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92701AC46F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FC71AC346
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897667AbgDPN7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
+        id S2898151AbgDPNki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:40:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896335AbgDPNkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:10 -0400
+        id S2896304AbgDPNat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2932920732;
-        Thu, 16 Apr 2020 13:40:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C708C208E4;
+        Thu, 16 Apr 2020 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044409;
-        bh=mXmldqJE/IfGSyxwgX4d/vi1/B5euc2LVrh7OmYTZyc=;
+        s=default; t=1587043849;
+        bh=sPrl9R+yoAc0NrziY7jtHcAjfyMMgN98O+1GI2m295k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nPB7KtPz6ycoj3IBf82Fi1Wtqxol1kECbx8nfViwnaoDQbRDoxxpuPRHE5jWgUZND
-         qWPXlMB0DvSW2+CyOdNLJBOLwwFar7TETDOmudMopMUXY2IL2wmDTtRv8L41R6AT5a
-         i+JVUuZ71Pk36Fmi/515xiW6MK28VYErPztcTemo=
+        b=hCT+5IK6qLY1v6AJbD3k9xnadXfpvbRAcz3gMK0GAjGJKKwO/eT0kw/9A71IikKB3
+         x9+ElEzi05ks4KyBX8vjEOZsj3X9JGwuZy/lwuAqHFEAs1clcolqdfvOHicf2NJIk4
+         aXr17cRNfOaT/r2geKyYVU1k2ycar+Ot8YkjIa34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robbie Ko <robbieko@synology.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.5 165/257] btrfs: fix missing semaphore unlock in btrfs_sync_file
+        stable@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 4.19 075/146] MIPS: OCTEON: irq: Fix potential NULL pointer dereference
 Date:   Thu, 16 Apr 2020 15:23:36 +0200
-Message-Id: <20200416131347.137167039@linuxfoundation.org>
+Message-Id: <20200416131253.199088941@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robbie Ko <robbieko@synology.com>
+From: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-commit 6ff06729c22ec0b7498d900d79cc88cfb8aceaeb upstream.
+commit 792a402c2840054533ef56279c212ef6da87d811 upstream.
 
-Ordered ops are started twice in sync file, once outside of inode mutex
-and once inside, taking the dio semaphore. There was one error path
-missing the semaphore unlock.
+There is a potential NULL pointer dereference in case kzalloc()
+fails and returns NULL.
 
-Fixes: aab15e8ec2576 ("Btrfs: fix rare chances for data loss when doing a fast fsync")
-CC: stable@vger.kernel.org # 4.19+
-Signed-off-by: Robbie Ko <robbieko@synology.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-[ add changelog ]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fix this by adding a NULL check on *cd*
+
+This bug was detected with the help of Coccinelle.
+
+Fixes: 64b139f97c01 ("MIPS: OCTEON: irq: add CIB and other fixes")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/file.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/cavium-octeon/octeon-irq.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2135,6 +2135,7 @@ int btrfs_sync_file(struct file *file, l
- 	 */
- 	ret = start_ordered_ops(inode, start, end);
- 	if (ret) {
-+		up_write(&BTRFS_I(inode)->dio_sem);
- 		inode_unlock(inode);
- 		goto out;
+--- a/arch/mips/cavium-octeon/octeon-irq.c
++++ b/arch/mips/cavium-octeon/octeon-irq.c
+@@ -2199,6 +2199,9 @@ static int octeon_irq_cib_map(struct irq
  	}
+ 
+ 	cd = kzalloc(sizeof(*cd), GFP_KERNEL);
++	if (!cd)
++		return -ENOMEM;
++
+ 	cd->host_data = host_data;
+ 	cd->bit = hw;
+ 
 
 
