@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A911AD1A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7931AD1A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgDPU6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:58:04 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8859 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727983AbgDPU6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:58:00 -0400
-IronPort-SDR: dVOww/gUG3nahn+hxtXmDfRwDIGJZBxE2pIZUtg7nxcRPyTtIB2lEXgHh6YXq/vPJ+Gv14OuE1
- xi5yHl4W9R+g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 13:57:56 -0700
-IronPort-SDR: EapNLMT0sdeJVT8AAYK4BgkWIX1d4l15yqiyzp8Ss1n6DvQ0E1XYZ4Eu+Q8M/6WHAP3v0zXtfG
- JxQzMn3uLqHQ==
-X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
-   d="scan'208";a="427982534"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 13:57:55 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Tony Luck <tony.luck@intel.com>, Ingo Molnar <mingo@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [PATCH 3/3] x86/split_lock: Add Tremont family CPU models
-Date:   Thu, 16 Apr 2020 13:57:54 -0700
-Message-Id: <20200416205754.21177-4-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200416205754.21177-1-tony.luck@intel.com>
-References: <20200416205754.21177-1-tony.luck@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729237AbgDPU6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727983AbgDPU6I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 16:58:08 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28786C061A0C;
+        Thu, 16 Apr 2020 13:58:07 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x3so2223163pfp.7;
+        Thu, 16 Apr 2020 13:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Sas/tGiFl0s7XZ0zL4ohjomf4TSfEGYFHbj6ThxC/Q8=;
+        b=Lwu9UDtNMgAoUxxVC9TsbsE7mMgDb72Z7+nXg04RHG4hPJ0N7N7FE5lNMo60+lpWWa
+         4Eazfitgo+CVVK+5Drb42fPHtYo+SzQ0f8hzYGgX5r3AShWZt3dme+hi/rCOBoYazyEm
+         +/Doa7WIUyLFDB3q7j+zeQ1WAq1+BgKZ6bRT5ctUZt7QWlw+7tyWlf6ln1MOu89rSfEB
+         foIeYMaplyuyuD/qrEC3StiHCpSKQDPr24nzua+dPJeMbvjyjmEpDJRtiTlj6o4FSaUh
+         Nf5iUmtFzKLlcDs/YQXLIJx6grp4KCbEseUWSV2V6dTyuxfQmI2+qaa7aKVcQQMsgL0v
+         WZlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=Sas/tGiFl0s7XZ0zL4ohjomf4TSfEGYFHbj6ThxC/Q8=;
+        b=CmG2gD3MVgM0QAT0idMzQOHw+LN74iZQuPQi0jHtYKEa4P7i1LSjpT6KShcRa1iO67
+         NOo4cIJl2ZcOZk52UCVTSY7IpDkvXFnobNIbD19QutGxGjasyJcBWSY61V2UuaaWnOZ0
+         nEewVDJjxtBaVCBnKUfcgryiMnpquLw8jYl8gq+jGSCcf2Yocg3m00E7VDzpaWi8zRX8
+         pEKiigM/tenKm4k5TaxN3qYZnKp+7p0pLgWoSr7SeLqcHIGut2XG4CD4FeEq6Wvl3PS1
+         Xweo0doUZjnvouu/QOm7Rtai3eMPU46DyIrd+YRVjjrUFBzlhEnklryXedwzd/KRkl4K
+         SYgA==
+X-Gm-Message-State: AGi0Pua2j6wPfuDy0n82OU4mAsADKj40vlbteBBiugtMX6pgdHp7rWhr
+        JQ+HH34khDypwdmqq8fkjhg=
+X-Google-Smtp-Source: APiQypJ66yxVorklC/JNOIkrKD7QfHRAWlyj41i1m6VUlUr28zjVb28QuWVDrtMRRkQ16U+7sRSMXg==
+X-Received: by 2002:a63:ca41:: with SMTP id o1mr34533711pgi.419.1587070686555;
+        Thu, 16 Apr 2020 13:58:06 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g12sm2886932pfm.129.2020.04.16.13.58.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 13:58:05 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Eric Anholt <eric@anholt.net>
+Cc:     linux-rpi-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: bcm283x: Disable dsi0 node
+Date:   Thu, 16 Apr 2020 13:58:04 -0700
+Message-Id: <20200416205804.4640-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200415144233.23274-1-nsaenzjulienne@suse.de>
+References: <20200415144233.23274-1-nsaenzjulienne@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tremont CPUs support IA32_CORE_CAPABILITIES bits to indicate
-whether speciifc SKUs have support for split lock detection.
+On Wed, 15 Apr 2020 16:42:33 +0200, Nicolas Saenz Julienne <nsaenzjulienne@suse.de> wrote:
+> Since its inception the module was meant to be disabled by default, but
+> the original commit failed to add the relevant property.
+> 
+> Fixes: 4aba4cf82054 ("ARM: dts: bcm2835: Add the DSI module nodes and clocks")
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> ---
 
-Fixes: 6650cdd9a8cc ("x86/split_lock: Enable split lock detection by kernel")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/intel.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 3b43b2c91054..d559481b54a6 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -1130,6 +1130,9 @@ void switch_to_sld(unsigned long tifn)
- static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,           0),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,           0),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	1),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	1),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	1),
- 	{}
- };
- 
--- 
-2.21.1
-
+Applied to devicetree/fixes, thanks!
+--
+Florian
