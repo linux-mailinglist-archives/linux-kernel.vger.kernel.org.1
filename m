@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17D51AC5CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9571ACA6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409778AbgDPO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:28:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47062 "EHLO mail.kernel.org"
+        id S2395291AbgDPPey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:34:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728635AbgDPOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:00:01 -0400
+        id S2898187AbgDPNkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:40:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 787B2217D8;
-        Thu, 16 Apr 2020 14:00:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56A27218AC;
+        Thu, 16 Apr 2020 13:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045600;
-        bh=VZ39YWwP05qYCay5b0xukEXzfT7EKSUhftLU/x7SAco=;
+        s=default; t=1587044446;
+        bh=GMCeEdBjC+Mv67Ici8GialvdPUryQ4WJJTJWdXnnZhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sKSQOdA6vlcU/3I6S3Fl41ge9LYvCc75MF7TOzMJCkcFuJoc6azoCk8Kgtv7/YEcB
-         XmE8Ip648l3NNrKhG4eMSSBMyx9WIkjwyUxNqjGQ/aiY1856PY5lzhOxqmg6uBoTND
-         qVmSoSJwW/5kpcte279iZ28WypM71HUb0k+fSTDY=
+        b=M2sDBZgGAaU4f+Df9W1DFkxPK1LcSciMllcndxjH4pfQyxFQw6q+CcvHx7RdIY7G6
+         91AhZWecxXteFP/IEwhv9MteylxJy018wECjVhu+ZpP6zbcG8BSA4J2Zs9xMX6d/x0
+         ameqVB3hi5tVZ8tY+nKsfHUaiCJ6teL7n9eRiGlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrei Botila <andrei.botila@nxp.com>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.6 184/254] crypto: caam - update xts sector size for large input length
+        stable@vger.kernel.org, Changwei Ge <chge@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.5 222/257] ocfs2: no need try to truncate file beyond i_size
 Date:   Thu, 16 Apr 2020 15:24:33 +0200
-Message-Id: <20200416131349.381275941@linuxfoundation.org>
+Message-Id: <20200416131353.671263826@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +50,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrei Botila <andrei.botila@nxp.com>
+From: Changwei Ge <chge@linux.alibaba.com>
 
-commit 3f142b6a7b573bde6cff926f246da05652c61eb4 upstream.
+commit 783fda856e1034dee90a873f7654c418212d12d7 upstream.
 
-Since in the software implementation of XTS-AES there is
-no notion of sector every input length is processed the same way.
-CAAM implementation has the notion of sector which causes different
-results between the software implementation and the one in CAAM
-for input lengths bigger than 512 bytes.
-Increase sector size to maximum value on 16 bits.
+Linux fallocate(2) with FALLOC_FL_PUNCH_HOLE mode set, its offset can
+exceed the inode size.  Ocfs2 now doesn't allow that offset beyond inode
+size.  This restriction is not necessary and violates fallocate(2)
+semantics.
 
-Fixes: c6415a6016bf ("crypto: caam - add support for acipher xts(aes)")
-Cc: <stable@vger.kernel.org> # v4.12+
-Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
-Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+If fallocate(2) offset is beyond inode size, just return success and do
+nothing further.
+
+Otherwise, ocfs2 will crash the kernel.
+
+  kernel BUG at fs/ocfs2//alloc.c:7264!
+   ocfs2_truncate_inline+0x20f/0x360 [ocfs2]
+   ocfs2_remove_inode_range+0x23c/0xcb0 [ocfs2]
+   __ocfs2_change_file_space+0x4a5/0x650 [ocfs2]
+   ocfs2_fallocate+0x83/0xa0 [ocfs2]
+   vfs_fallocate+0x148/0x230
+   SyS_fallocate+0x48/0x80
+   do_syscall_64+0x79/0x170
+
+Signed-off-by: Changwei Ge <chge@linux.alibaba.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200407082754.17565-1-chge@linux.alibaba.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/caam/caamalg_desc.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ fs/ocfs2/alloc.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/crypto/caam/caamalg_desc.c
-+++ b/drivers/crypto/caam/caamalg_desc.c
-@@ -1524,7 +1524,13 @@ EXPORT_SYMBOL(cnstr_shdsc_skcipher_decap
-  */
- void cnstr_shdsc_xts_skcipher_encap(u32 * const desc, struct alginfo *cdata)
- {
--	__be64 sector_size = cpu_to_be64(512);
-+	/*
-+	 * Set sector size to a big value, practically disabling
-+	 * sector size segmentation in xts implementation. We cannot
-+	 * take full advantage of this HW feature with existing
-+	 * crypto API / dm-crypt SW architecture.
-+	 */
-+	__be64 sector_size = cpu_to_be64(BIT(15));
- 	u32 *key_jump_cmd;
+--- a/fs/ocfs2/alloc.c
++++ b/fs/ocfs2/alloc.c
+@@ -7403,6 +7403,10 @@ int ocfs2_truncate_inline(struct inode *
+ 	struct ocfs2_dinode *di = (struct ocfs2_dinode *)di_bh->b_data;
+ 	struct ocfs2_inline_data *idata = &di->id2.i_data;
  
- 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
-@@ -1577,7 +1583,13 @@ EXPORT_SYMBOL(cnstr_shdsc_xts_skcipher_e
-  */
- void cnstr_shdsc_xts_skcipher_decap(u32 * const desc, struct alginfo *cdata)
- {
--	__be64 sector_size = cpu_to_be64(512);
-+	/*
-+	 * Set sector size to a big value, practically disabling
-+	 * sector size segmentation in xts implementation. We cannot
-+	 * take full advantage of this HW feature with existing
-+	 * crypto API / dm-crypt SW architecture.
-+	 */
-+	__be64 sector_size = cpu_to_be64(BIT(15));
- 	u32 *key_jump_cmd;
++	/* No need to punch hole beyond i_size. */
++	if (start >= i_size_read(inode))
++		return 0;
++
+ 	if (end > i_size_read(inode))
+ 		end = i_size_read(inode);
  
- 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
 
 
