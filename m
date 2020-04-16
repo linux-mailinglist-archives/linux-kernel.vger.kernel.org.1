@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7AD1AB55D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012AA1AB557
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 03:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbgDPBTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 21:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730899AbgDPBRg (ORCPT
+        id S1731072AbgDPBR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 21:17:56 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:43729 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730752AbgDPBRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 21:17:36 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49B1C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:17:32 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id e127so4008889iof.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 18:17:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/NNMh3S+UlylnusIMrRyM4zMHQpXid5UmqdCRWxVJQ=;
-        b=FuZadO+K7xiMVzw5uhUh0nWYawBf/MBxNjqycqBAO+AUo21JAiu9lozfi8+z0ptpWb
-         SrE9fmWXhL5nMgNZG4NKKQ44+issHx+CfvlCa3hRKphUgNySnjBm/bpLOPKdqUZhewSn
-         o01cC+h0jj5vXFxk1tSj6Rt6Nz/0GNEJx6X8iCdUy58ouMIDsb1r/w5GUkvrO7I62dR4
-         xjnIemsq4Ll2J5IjTalvGT401jRdPke4Pfu01Z1btUXtVNj4BmYfOX2ok7zgeLuL0U10
-         Mk/gephvJAWN/OQAd/qMco6ROzvdrVkT6RiMJ0JOPMlqXByN68OtLedQugCQVU6VWIXu
-         ZDBA==
+        Wed, 15 Apr 2020 21:17:07 -0400
+Received: by mail-pl1-f196.google.com with SMTP id z6so723382plk.10;
+        Wed, 15 Apr 2020 18:17:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/NNMh3S+UlylnusIMrRyM4zMHQpXid5UmqdCRWxVJQ=;
-        b=IsU6WlQ+GTuZ3EG3wkgdu6HPEZ2EGCk1VYCFvBeX6YFdXhmpDXXXi8FGrlyN/Fv+vl
-         07pZw+XWlXca8ibo0mqgo8wiYKeWvxlSSpavEYwXHVm6H7k3TjrtZWJxhz2Sq/MEK4kj
-         cTcMsnGGPjh/z657qIdmBTPC4wh4MIfrWWHJUBHzLwAbWmnkw6xV/UziRWgclAvBN+fu
-         DgDCDLsGcMUMTQvCi/QY11RzJCJ15Hdk+700Dnb6kkCIg3hAJnl/2PmrZpDMr0HkYHHw
-         8i5G9cf6PHWGwD1bnEx2o9k1VJIfA4pOGBfXgEg4KLgHLoE/TO9h8kQaEJCPu2iXsJ4X
-         1g2Q==
-X-Gm-Message-State: AGi0PuYVBXyjNBz0Bs1Ef2eAhZxUClIJuqFqgH/FnYKTLlKIFONPRt73
-        TIazFCtDxjFWWqgJBZHaf5n9AR5NNA29DyTJTUSqtg==
-X-Google-Smtp-Source: APiQypIdZIs8g0HEIIkvAARM7OhOKjnbWsyhK2vZ3LovZssJQvOw2yoa9ARU7lknyz/GRnxaLbxcWoeqRiGHDjdP0Eo=
-X-Received: by 2002:a05:6602:22c3:: with SMTP id e3mr28961266ioe.75.1586999852049;
- Wed, 15 Apr 2020 18:17:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WR6dS8sppVhsHDqaOLN6r5u6vSBUIRk19qqS7mXyQHc=;
+        b=TLo7dUqc8BaE8ldndA2REWP2b3LtqVk8fTTZxT0X047322Rb5bK1y2QMU3jYFbrepb
+         wWukpetp7UHdwOYwXERzPs+1PKVCWvKjeXTPjvmMw1zHYFPN1AP+/QS4ozrVJh5u8UBL
+         Kg9lcH3asjIb0IvK6wW6GjL77LEAwCpe7fWV50AZn0Hdb9F3mNpLXQHYTbOU7XqGDPt8
+         VfuRu3SxnoX86qnJ8DIG5BSfcSWvLXSL4CuFa+2k7eUSr7rw2Enp2Asj1DGQ2PkWxe3D
+         tmX9GT2dpe5FMuVFAlRVJ1P2Xkf8Bw7teex8Icc3PNafjn80ARYtN56l6zUWWuDJ8obQ
+         BNkw==
+X-Gm-Message-State: AGi0Puae75KNUcFiI0C2M1EYydHKh6VOU1q+IerRUR1OGB/iqVEyMRJw
+        dMWa0dKo4e9cmepG00fPW5o=
+X-Google-Smtp-Source: APiQypLfsZVuN4sYX8KfJSMniabfDLJgj3Rsrj4/IDbZiZZSHXaIrSBXDqfPp8TpiuntbH07OtI37g==
+X-Received: by 2002:a17:90b:4c8f:: with SMTP id my15mr2146114pjb.63.1586999824688;
+        Wed, 15 Apr 2020 18:17:04 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id o11sm8556031pgd.58.2020.04.15.18.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 18:17:03 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id AEA6B40277; Thu, 16 Apr 2020 01:17:02 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 01:17:02 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
+        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
+        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org,
+        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 3/5] blktrace: refcount the request_queue during ioctl
+Message-ID: <20200416011702.GC11244@42.do-not-panic.com>
+References: <20200414041902.16769-1-mcgrof@kernel.org>
+ <20200414041902.16769-4-mcgrof@kernel.org>
+ <20200414154044.GB25765@infradead.org>
+ <20200415061649.GS11244@42.do-not-panic.com>
+ <49bfcbe0-2630-5c82-f305-fcee489ac9ea@acm.org>
 MIME-Version: 1.0
-References: <a5b07aa9-96ea-a9b5-13db-e5dcbd7760e6@intel.com>
- <BEA3CCB8-5127-4E6A-9696-E293C00BFA82@amacapital.net> <CABV8kRxqcCmPKtX3DDOf+47Re1hO1gMeUPhCd6HtDP0-SpcSBw@mail.gmail.com>
- <CALCETrVmsWZ+w6C4RV50DWoL0Qaiy+S6BtXr=QKQEg3MYgAc6w@mail.gmail.com>
- <CABV8kRxfMNxzy8r2P4GKj-22i+GMj=VDfPWAZB-VSgfrsQsjCA@mail.gmail.com>
- <CALCETrWTDrcynTwpWZ6u6JXRL1rz6_vakLK7=BqMjCPCkQ+9dg@mail.gmail.com> <CABV8kRzbGgF4Uc9+VyzBUiH-kGfMALd8tDtjE3hjyE2Z5VD3-g@mail.gmail.com>
-In-Reply-To: <CABV8kRzbGgF4Uc9+VyzBUiH-kGfMALd8tDtjE3hjyE2Z5VD3-g@mail.gmail.com>
-From:   Keno Fischer <keno@juliacomputing.com>
-Date:   Wed, 15 Apr 2020 21:16:56 -0400
-Message-ID: <CABV8kRz0nxSu=Nr-ViGamKd=vZ5-v6=+CFRC19hB+CdQ28C4yg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0 per-thread
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kyle Huey <khuey@kylehuey.com>,
-        "Robert O'Callahan" <robert@ocallahan.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49bfcbe0-2630-5c82-f305-fcee489ac9ea@acm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 9:14 PM Keno Fischer <keno@juliacomputing.com> wrote:
->
-> > Would it make matters easier if tasks with nonstandard XCR0 were not
-> > allowed to use ptrace() at all?  And if ARCH_SET_XCR0 were disallowed
-> > if the caller is tracing anyone?
->
-> That would be fine by me (as long as you're still allowed to ptrace them of
-> course).
+On Wed, Apr 15, 2020 at 07:45:18AM -0700, Bart Van Assche wrote:
+> On 2020-04-14 23:16, Luis Chamberlain wrote:
+> > On Tue, Apr 14, 2020 at 08:40:44AM -0700, Christoph Hellwig wrote:
+> >> Hmm, where exactly does the race come in so that it can only happen
+> >> after where you take the reference, but not before it?  I'm probably
+> >> missing something, but that just means it needs to be explained a little
+> >> better :)
+> > 
+> >>From the trace on patch 2/5:
+> > 
+> >     BLKTRACE_SETUP(loop0) #2
+> >     [   13.933961] == blk_trace_ioctl(2, BLKTRACESETUP) start
+> >     [   13.936758] === do_blk_trace_setup(2) start
+> >     [   13.938944] === do_blk_trace_setup(2) creating directory
+> >     [   13.941029] === do_blk_trace_setup(2) using what debugfs_lookup() gave
+> >     
+> >     ---> From LOOP_CTL_DEL(loop0) #2
+> >     [   13.971046] === blk_trace_cleanup(7) end
+> >     [   13.973175] == __blk_trace_remove(7) end
+> >     [   13.975352] == blk_trace_shutdown(7) end
+> >     [   13.977415] = __blk_release_queue(7) calling blk_mq_debugfs_unregister()
+> >     [   13.980645] ==== blk_mq_debugfs_unregister(7) begin
+> >     [   13.980696] ==== blk_mq_debugfs_unregister(7) debugfs_remove_recursive(q->debugfs_dir)
+> >     [   13.983118] ==== blk_mq_debugfs_unregister(7) end q->debugfs_dir is NULL
+> >     [   13.986945] = __blk_release_queue(7) blk_mq_debugfs_unregister() end
+> >     [   13.993155] = __blk_release_queue(7) end
+> >     
+> >     ---> From BLKTRACE_SETUP(loop0) #2
+> >     [   13.995928] === do_blk_trace_setup(2) end with ret: 0
+> >     [   13.997623] == blk_trace_ioctl(2, BLKTRACESETUP) end
+> > 
+> > The BLKTRACESETUP above works on request_queue which later
+> > LOOP_CTL_DEL races on and sweeps the debugfs dir underneath us.
+> > If you use this commit alone though, this doesn't fix the race issue
+> > however, and that's because of both still the debugfs_lookup() use
+> > and that we're still using asynchronous removal at this point.
+> > 
+> > refcounting will just ensure we don't take the request_queue underneath
+> > our noses.
+> 
+> I think the above trace reveals a bug in the loop driver. The loop
+> driver shouldn't allow the associated request queue to disappear while
+> the loop device is open.
 
-Sorry, I realized after I had hit send that this wording may not be clear.
-What I meant was that it would need to be able to have an external ptracer
-(with unmodified XCR0) attach to the task, even if it had modified its XCR0.
-I don't think you were suggesting that that wouldn't be possible,
-but I just wanted to make sure.
+The bug was *not* in the driver, the bug was in that deferal of removal
+was allowed to be asynchronous, therefore the removal from a userspace
+perspective *finishes*, but its not actually really done. Back when
+the removal was synchronous, the loop driver waited on cleanup, and
+didn't return to userspace until it was really removed.
+
+This is why I annotated that the move to asynch removal turns out to
+actually be a userspace API regression.
+
+> One may want to have a look at sd_open() in the
+> sd driver. The scsi_disk_get() call in that function not only increases
+> the reference count of the SCSI disk but also of the underlying SCSI device.
+
+Are you saying to use this as a template for what a driver should do or
+do you suspect there is a bug there? Not sure what you mean here.
+
+  Luis
