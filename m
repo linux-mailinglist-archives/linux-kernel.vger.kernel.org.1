@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4D11AC766
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506501AC2BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405412AbgDPOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43782 "EHLO mail.kernel.org"
+        id S2895760AbgDPNcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409205AbgDPN4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:56:48 -0400
+        id S2895787AbgDPN2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:28:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40E6821927;
-        Thu, 16 Apr 2020 13:56:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B638E21BE5;
+        Thu, 16 Apr 2020 13:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045405;
-        bh=09i/G7vgg7ev+ycjxbWmSImW9u6UHZ0WjClF6ojJ5Bk=;
+        s=default; t=1587043715;
+        bh=BamNKXhfNiFIPXsfMP57heTe3HPRT8zjnwY/cjSBLY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDZAWBZAOvTmS719BljEkoPGYdxvwp6N0CPvAz6WempmEtfqkA+8z98EOW5sof6/t
-         OjwJ/nZ4YzQJNhhfkXTdVMN8fdd2fPbT9sh/txLrVWPJ9nhnsgguKNvzd0FmOe7AOd
-         VwV0hzrJDcW3pD3qOoSNL7V1HEqXwE81UDZBzPSU=
+        b=WetpIXFKwaiSu7+XE0mjzYC4cSsw1Q3ixukp6vPaP0am5ekr2bRSS+UXHUsThhEOc
+         AiUCRqeh3CFwRl6LGuXaQ4HNGNVDK6z1Y4/yUu+/l9FCTzDg9n4ctFexQLYDyIN4aV
+         l+NVzwjTg/xgL9f5VY95Ma+toF4Oppwbvf2JuvuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@st.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.6 121/254] PM / Domains: Allow no domain-idle-states DT property in genpd when parsing
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH 4.19 069/146] tpm: tpm1_bios_measurements_next should increase position index
 Date:   Thu, 16 Apr 2020 15:23:30 +0200
-Message-Id: <20200416131341.461369727@linuxfoundation.org>
+Message-Id: <20200416131252.401580845@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 56cb26891ea4180121265dc6b596015772c4a4b8 upstream.
+commit d7a47b96ed1102551eb7325f97937e276fb91045 upstream.
 
-Commit 2c361684803e ("PM / Domains: Don't treat zero found compatible idle
-states as an error"), moved of_genpd_parse_idle_states() towards allowing
-none compatible idle state to be found for the device node, rather than
-returning an error code.
+If .next function does not change position index,
+following .show function will repeat output related
+to current position index.
 
-However, it didn't consider that the "domain-idle-states" DT property may
-be missing as it's optional, which makes of_count_phandle_with_args() to
-return -ENOENT. Let's fix this to make the behaviour consistent.
+In case of /sys/kernel/security/tpm0/ascii_bios_measurements
+and binary_bios_measurements:
+1) read after lseek beyound end of file generates whole last line.
+2) read after lseek to middle of last line generates
+expected end of last line and unexpected whole last line once again.
 
-Fixes: 2c361684803e ("PM / Domains: Don't treat zero found compatible idle states as an error")
-Reported-by: Benjamin Gaignard <benjamin.gaignard@st.com>
-Cc: 4.20+ <stable@vger.kernel.org> # 4.20+
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: stable@vger.kernel.org # 4.19.x
+Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code ...")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206283
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/power/domain.c |    2 +-
+ drivers/char/tpm/eventlog/tpm1.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2653,7 +2653,7 @@ static int genpd_iterate_idle_states(str
+--- a/drivers/char/tpm/eventlog/tpm1.c
++++ b/drivers/char/tpm/eventlog/tpm1.c
+@@ -129,6 +129,7 @@ static void *tpm1_bios_measurements_next
+ 	u32 converted_event_size;
+ 	u32 converted_event_type;
  
- 	ret = of_count_phandle_with_args(dn, "domain-idle-states", NULL);
- 	if (ret <= 0)
--		return ret;
-+		return ret == -ENOENT ? 0 : ret;
++	(*pos)++;
+ 	converted_event_size = do_endian_conversion(event->event_size);
  
- 	/* Loop over the phandles until all the requested entry is found */
- 	of_for_each_phandle(&it, ret, dn, "domain-idle-states", NULL, 0) {
+ 	v += sizeof(struct tcpa_event) + converted_event_size;
+@@ -146,7 +147,6 @@ static void *tpm1_bios_measurements_next
+ 	    ((v + sizeof(struct tcpa_event) + converted_event_size) >= limit))
+ 		return NULL;
+ 
+-	(*pos)++;
+ 	return v;
+ }
+ 
 
 
