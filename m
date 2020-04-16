@@ -2,141 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68ED21ABFFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9D81AC05A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506577AbgDPLpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:45:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:59306 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2634046AbgDPLoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:44:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE53DC14;
-        Thu, 16 Apr 2020 04:44:01 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A31B73F73D;
-        Thu, 16 Apr 2020 04:44:00 -0700 (PDT)
-References: <20200415210512.805-1-valentin.schneider@arm.com> <20200415210512.805-7-valentin.schneider@arm.com> <CAKfTPtA5-S_EyzZMDMr9SuVQmWZNdLXOVSLMAMTD+6Bow4jJBQ@mail.gmail.com> <20200416104725.GM20730@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v3 6/9] sched: Kill select_task_rq()'s sd_flag parameter
-In-reply-to: <20200416104725.GM20730@hirez.programming.kicks-ass.net>
-Date:   Thu, 16 Apr 2020 12:43:54 +0100
-Message-ID: <jhjwo6f7j0l.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S2634357AbgDPLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633922AbgDPLwx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:52:53 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77C7C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-Id:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ERVnhrOAMNmB+Ir478MINnn9jvj4hJPxpbmAuuBvSY8=; b=kxfvQXrYVh/ws3JzQAnHBpjt0O
+        qhOGpK9pjpWWOxC+SNzMJ4rVY97hG8NevfdQ86//aTaFbNoUIWFxTW04MyoR9TpbtO7ssHaYLegrj
+        bFNBGC51HnovOawHu3z4dcdu/iwutdiHIdDJ1dsTe/ci6ZGYJUC0Uih5KjmWF6RVcUys6zmRY3rUU
+        8Ma/Q7+D79Z5GlBR7DOaXF+/HHPk/iBuN9OjohJi3Kc4qGUmC2NX7+sKatGfh+mx1Z5nsW6JA+2D1
+        ShWJubwjX7K52pBfgjxvG3vZ2/cxPrEwgws7cCjm6ra41wK01XSmAodARRJeFWN3vWBHBKOMPQT48
+        RcVhJQbQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP34F-0006jN-C5; Thu, 16 Apr 2020 11:52:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2A40C304C22;
+        Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 1B60D2B0DE4C1; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
+Message-Id: <20200416114706.625340212@infradead.org>
+User-Agent: quilt/0.65
+Date:   Thu, 16 Apr 2020 13:47:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, jpoimboe@redhat.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, peterz@infradead.org,
+        mhiramat@kernel.org, mbenes@suse.cz, jthierry@redhat.com,
+        alexandre.chartre@oracle.com
+Subject: [PATCH v5 00/17] objtool: vmlinux.o and noinstr validation
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As should be familiar by now; these patches implement the noinstr
+(no-instrument) validation in objtool as requested by Thomas, to ensure
+critical code (entry for now, idle later) run no unexpected code.
 
-On 16/04/20 11:47, Peter Zijlstra wrote:
-> On Thu, Apr 16, 2020 at 09:42:36AM +0200, Vincent Guittot wrote:
->> On Wed, 15 Apr 2020 at 23:05, Valentin Schneider
->> > @@ -6622,13 +6622,25 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->> >   * preempt must be disabled.
->> >   */
->> >  static int
->> > +select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->> >  {
->> > +       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
->> >         struct sched_domain *tmp, *sd = NULL;
->> >         int cpu = smp_processor_id();
->> >         int new_cpu = prev_cpu;
->> >         int want_affine = 0;
->> > -       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
->> > +       int sd_flag;
->> > +
->> > +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
->>
->> You remove a function parameter, which was directly set with the right
->> flag, but then you add a switch case to recreate this sd_flag
->> internally. Not sure we can say that it's real benefit
->>
->> > +       case WF_TTWU:
->> > +               sd_flag = SD_BALANCE_WAKE;
->> > +               break;
->> > +       case WF_FORK:
->> > +               sd_flag = SD_BALANCE_FORK;
->> > +               break;
->> > +       default:
->> > +               sd_flag = SD_BALANCE_EXEC;
->> > +       }
->
-> Agreed, that's a bit yuck, how about something like so instead:
->
+Functions are marked with: noinstr, which implies notrace, noinline and sticks
+things in the .noinstr.text section. Such functions can then use instr_begin()
+and instr_end() to allow calls to code outside of this section in sanctioned
+areas.
 
-Aligning the SD_* and WF_* flags sure makes it simpler, I just wasn't
-daring enough to do that. I suppose we'll want some BUILD_BUG_ON() checks
-just for good measure.
+On the way of getting there, it also fixes the x86/ftrace trampiline ORC
+unwind.
 
-Also, it doesn't directly solve the switch case of 9/9, but I may get out
-of it with some hackery such as what I suggested in my reply to Vincent.
 
->
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -11,10 +11,12 @@
->   */
->  #ifdef CONFIG_SMP
->
-> +/* First nibble of SD_flag is shared with WF_flag */
->  #define SD_BALANCE_NEWIDLE	0x0001	/* Balance when about to become idle */
->  #define SD_BALANCE_EXEC		0x0002	/* Balance on exec */
->  #define SD_BALANCE_FORK		0x0004	/* Balance on fork, clone */
->  #define SD_BALANCE_WAKE		0x0008  /* Balance on wakeup */
-> +
->  #define SD_WAKE_AFFINE		0x0010	/* Wake task to waking CPU */
->  #define SD_ASYM_CPUCAPACITY	0x0020  /* Domain members have different CPU capacities */
->  #define SD_SHARE_CPUCAPACITY	0x0040	/* Domain members share CPU capacity */
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6635,16 +6635,8 @@ select_task_rq_fair(struct task_struct *
->       int want_affine = 0;
->       int sd_flag;
->
-> -	switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
-> -	case WF_TTWU:
-> -		sd_flag = SD_BALANCE_WAKE;
-> -		break;
-> -	case WF_FORK:
-> -		sd_flag = SD_BALANCE_FORK;
-> -		break;
-> -	default:
-> -		sd_flag = SD_BALANCE_EXEC;
-> -	}
-> +	/* SD_flags and WF_flags share the first nibble */
-> +	sd_flag = wake_flags & 0xf;
->
->       if (sd_flag & SD_BALANCE_WAKE) {
->               record_wakee(p);
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1685,11 +1685,12 @@ static inline int task_on_rq_migrating(s
->  /*
->   * Wake flags
->   */
-> -#define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
-> -#define WF_TTWU                 0x02            /* Regular task wakeup */
-> -#define WF_FORK			0x04		/* Child wakeup after fork */
-> -#define WF_EXEC			0x08		/* "Fake" wakeup at exec */
-> -#define WF_MIGRATED		0x10		/* Internal use, task got migrated */
-> +#define WF_EXEC			0x02	/* SD_BALANCE_EXEC */
-> +#define WF_FORK			0x04	/* SD_BALANCE_FORK */
-> +#define WF_TTWU			0x08	/* SD_BALANCE_WAKE */
-> +
-> +#define WF_SYNC			0x10	/* Waker goes to sleep after wakeup */
-> +#define WF_MIGRATED		0x20	/* Internal use, task got migrated */
->
->  /*
->   * To aid in avoiding the subversion of "niceness" due to uneven distribution
