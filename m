@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC991AB98B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804A81AB990
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439009AbgDPHQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:16:48 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2380 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2438717AbgDPHQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:16:00 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9916B9C4B29A166B4B0F;
-        Thu, 16 Apr 2020 15:15:57 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 16 Apr
- 2020 15:15:52 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix quota_sync failure due to
- f2fs_lock_op
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-References: <20200409173056.229855-1-jaegeuk@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <77e9f2e6-f3f3-8ca9-e6b5-3d57c4d2acc5@huawei.com>
-Date:   Thu, 16 Apr 2020 15:15:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S2439096AbgDPHRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2438104AbgDPHRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:17:38 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B0DC061A10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:17:36 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f13so3484679wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wxbpA+gkMQzP49NMDgYKzmcFDKrFFfhXbq9DHHrnuNU=;
+        b=LJXSpv4KpEVnkUH8WFCBWBaib2J9uL1w43yQ2BA7ThHLLvSV9NKeh+SoX9WTHLiwa5
+         1sM9bpENrVAgMyEhNzNSWe7bv2T6VIXjXtdYhTWj+pnD2UauH6Sb9D8y3bGXpUGP6Adr
+         611auVtBf5IclwqCjtLvu+19UUYwIl25KMATsGFHrae8OzX7tsUtofGOt6Mxa2Y8QGSb
+         jXPsXYtGRIpObdQMxjwBmi/XSQWjfsBiOnRJbDxONdfeEnSoEEIYCIiXObkBNtrZ+80D
+         ddVaftTGpbpJpfqCEq8P5gjYLFFSUW6PkWzaeyBKQFplWqRAzX45rXPwTv4Be3UNu4Bc
+         Whag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wxbpA+gkMQzP49NMDgYKzmcFDKrFFfhXbq9DHHrnuNU=;
+        b=un6lb6jzkjcBz00/EjRaGzwilqCXPxhI24xx94k2CtmDSXwDKdWTjvSFrFzfluRfb0
+         ZMDPbVU2RInQDIcVsqx/3RF3PtbX2xm9RTud6eor/pXQifKBEvzZUi1Gdkn71b2gUEqG
+         yvicPvpcwTyY2hnWDn62/yLIl4dGsl2Svrt6Vv5CHMvp6cp9yFmaHK2cE6sq8u7eixdn
+         4xpYwysu3skzQDu1qlbH2VmY+XjYmpbv89jNP7LpTHAX8Nj5KUfGDys8etw/ROLvMUp7
+         a3vB1pvozEP59dVLyAogrD88B/fsGX5qHrN52CdN29Uk/dDmepAd9NUSpqMqElRCyk57
+         wh7A==
+X-Gm-Message-State: AGi0PuZvL05Xm5YJJIRJc1gjBQNAhN1nSxLZHwuAbA+FNlf2Jdm6EHZ8
+        8Sfr391WKdOtINDIH5As63o9hQ==
+X-Google-Smtp-Source: APiQypJZ6oLLqIKvsbJo/X2R5PGU1Kjo53h8hr94MPus2CWNL1NzO6VzQpwajJvKPdifJbTZsraJOg==
+X-Received: by 2002:a05:6000:192:: with SMTP id p18mr34168071wrx.398.1587021455171;
+        Thu, 16 Apr 2020 00:17:35 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id h1sm2565341wme.42.2020.04.16.00.17.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 00:17:34 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 08:18:35 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dilip Kota <eswara.kota@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kishon@ti.com, robh@kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
+        qi-ming.wu@intel.com, yixin.zhu@intel.com
+Subject: Re: [PATCH v5 1/4] mfd: syscon: Add fwnode_to_regmap
+Message-ID: <20200416071835.GR2167633@dell>
+References: <cover.1585103753.git.eswara.kota@linux.intel.com>
+ <9953bb25281397553cb87b09d641c968d8432dd9.1585103753.git.eswara.kota@linux.intel.com>
+ <20200415093116.GH2167633@dell>
+ <0adafade-7228-58d3-3db0-b06325712468@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200409173056.229855-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0adafade-7228-58d3-3db0-b06325712468@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/10 1:30, Jaegeuk Kim wrote:
-> f2fs_quota_sync() uses f2fs_lock_op() before flushing dirty pages, but
-> f2fs_write_data_page() returns EAGAIN.
-> Likewise dentry blocks, we can just bypass getting the lock, since quota
-> blocks are also maintained by checkpoint.
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->  fs/f2fs/data.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 358c5f0bd6346..1139d8cf4b8d1 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2707,8 +2707,8 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
->  			f2fs_available_free_memory(sbi, BASE_CHECK))))
->  		goto redirty_out;
->  
-> -	/* Dentry blocks are controlled by checkpoint */
-> -	if (S_ISDIR(inode->i_mode)) {
-> +	/* Dentry/quota blocks are controlled by checkpoint */
-> +	if (S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) {
+On Thu, 16 Apr 2020, Dilip Kota wrote:
 
-Should cover multipage write path, in the case of normal quota file
-(such as /quota.user or /quota.group) is set as compressed.
-
-Thanks,
-
->  		fio.need_lock = LOCK_DONE;
->  		err = f2fs_do_write_data_page(&fio);
->  		goto done;
 > 
+> On 4/15/2020 5:31 PM, Lee Jones wrote:
+> > On Wed, 25 Mar 2020, Dilip Kota wrote:
+> > 
+> > > Traverse regmap handle entry from firmware node handle.
+> > > 
+> > > Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+> > > ---
+> > > Changes on v5:
+> > >    No changes
+> > > 
+> > > Changes on v4:
+> > >    No changes
+> > > 
+> > >   drivers/mfd/syscon.c       | 8 ++++++++
+> > >   include/linux/mfd/syscon.h | 6 ++++++
+> > >   2 files changed, 14 insertions(+)
+> > I think you'll find it very difficult to have a patch merged if you do
+> > not send it to any Maintainers of the associated subsystem(s).
+> Sorry, i completely missed adding the system configuration Maintainers. I
+> was completely thinking about the PHY driver( in doing changes and upgrades)
+> while sending the patches.
+> I have noticed it, and already sent v6 patch series by adding you and
+> arnd@arndb.de
+> 
+> "[RESEND PATCH v6 0/4] Add Intel ComboPhy driver"
+> Snippet from the mail.
+> 
+> "Re-sending the patches v6 by adding the system configuration Maintainers,
+> which i missed to add them."
+
+I have it now.  Thanks.
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
