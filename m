@@ -2,97 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6C61AB682
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2201AB680
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgDPEH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 00:07:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24243 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726409AbgDPEHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 00:07:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587010070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OTMaR92SihjV5ChuxWQeel8tadAmxm943VhVpwb3Ti0=;
-        b=NxyQqYmpAqE6rAjeeEtC3AGYqvBD1Z/7vAK+uIOzRDKXBzLXrfcu3u1llbA+hFEfNON6vq
-        9W5cJnBcAom54uPiYrNSxsfR3a1qqYCaLdG+ifang6JT7BSQgHxTwjYG0Uzuzc+FSFtGRy
-        q+c/Mk51ck3BC5+vgObHfgB7LKTwTuA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-7eV2h5M0OHOPzkEfEcYyJw-1; Thu, 16 Apr 2020 00:07:44 -0400
-X-MC-Unique: 7eV2h5M0OHOPzkEfEcYyJw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726401AbgDPEHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 00:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725298AbgDPEH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 00:07:28 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67ACC800D5C;
-        Thu, 16 Apr 2020 04:07:13 +0000 (UTC)
-Received: from [10.72.13.240] (ovpn-13-240.pek2.redhat.com [10.72.13.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 480FFD7664;
-        Thu, 16 Apr 2020 04:07:07 +0000 (UTC)
-Subject: Re: linux-next: Tree for Apr 15 (vdpa)
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org
-References: <20200415152240.2422e06c@canb.auug.org.au>
- <620e1646-5899-a077-b9de-95443887364d@infradead.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <33e4922f-d2b5-f3fa-4d32-a5db5a177238@redhat.com>
-Date:   Thu, 16 Apr 2020 12:07:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <620e1646-5899-a077-b9de-95443887364d@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Content-Transfer-Encoding: quoted-printable
+        by mail.kernel.org (Postfix) with ESMTPSA id 69C3020767;
+        Thu, 16 Apr 2020 04:07:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587010048;
+        bh=5Js663jCMQnnanixbXGlT1h0jEUb3V5uU1s+WTiHyYE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FtmA36invyFrgzCq2vyJyaVOVMJLXulhRWuGbEv5CxK6N+hgNugmwsZ1VMlompByA
+         yAwdUfOrIn+BgK1fZm2N86xYmiVtyGBc/hgOmqr2OdWBfPqVzTNJ9c+EsB0/u1kxwe
+         tY2h4XDhpoDeHiUCHaoJ8kPbncRCBGlM+zmNfv9Y=
+Date:   Wed, 15 Apr 2020 21:07:27 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] proc: rename "catch" function argument
+Message-Id: <20200415210727.c0cf80b5a981292bb15d9858@linux-foundation.org>
+In-Reply-To: <20200331210905.GA31680@avx2>
+References: <20200331210905.GA31680@avx2>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 1 Apr 2020 00:09:05 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
 
-On 2020/4/16 =E4=B8=8A=E5=8D=8812:16, Randy Dunlap wrote:
-> On 4/14/20 10:22 PM, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20200414:
->>
-> on x86_64:
->
-> ERROR: modpost: "vringh_set_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim.ko] =
-undefined!
-> ERROR: modpost: "vringh_init_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim.ko]=
- undefined!
-> ERROR: modpost: "vringh_iov_push_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim=
-.ko] undefined!
-> ERROR: modpost: "vringh_iov_pull_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim=
-.ko] undefined!
-> ERROR: modpost: "vringh_complete_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim=
-.ko] undefined!
-> ERROR: modpost: "vringh_getdesc_iotlb" [drivers/vdpa/vdpa_sim/vdpa_sim.=
-ko] undefined!
->
->
-> Full randconfig file is attached.
->
+> "catch" is reserved keyword in C++, rename it to something
+> both gcc and g++ accept.
 
-The config has
+Why? Is someone compiling the kernel with g++?
 
-CONFIG_VHOST_IOTLB=3Dm
-CONFIG_VHOST_RING=3Dy
+> Rename "ign" for symmetry.
+> 
+> Signed-off-by: _Z6Alexeyv <adobriyan@gmail.com>
 
-But we don't select VHOST_IOTLB in VHOST_RING after commit=20
-e6faeaa128417("vhost: drop vring dependency on iotlb"). Which seems wrong=
-.
-
-Thanks
-
+Was this intentional?
