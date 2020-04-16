@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAC41ACE93
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6101ACE97
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387856AbgDPRW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 13:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729373AbgDPRWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 13:22:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A9C12076D;
-        Thu, 16 Apr 2020 17:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587057743;
-        bh=t7y5LQKxiCKr8DRWNT37PQt/NonhVq+IuIpLAI7CGNY=;
+        id S2390070AbgDPRW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 13:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388338AbgDPRW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 13:22:56 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B72C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 10:22:56 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3145897D;
+        Thu, 16 Apr 2020 19:22:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1587057775;
+        bh=bTfJZ+75ndQOARxqXeuOxJFXyYt8RzIOrx7gvZeGM5M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wpp+zpP6mhxhMOmcPCPPYkGqhwpQA/5yIVAiB3hrZWBduZauZdmRQul0Waov+B7ub
-         BgdHyB364tqIRAH8myC7Bw2wehHDyzXRNFI8y2hDySwVrkAvV3CcRX4L+htZWbsM3z
-         sNBirLgOuXsEd0Rohk7aoOde/9DzVNNH4MvfGJGk=
-Date:   Thu, 16 Apr 2020 18:22:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hui Wang <hui.wang@canonical.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: linux-next: build failures after merge of the sound-asoc tree
-Message-ID: <20200416172219.GO5354@sirena.org.uk>
-References: <20200415121521.3e40b591@canb.auug.org.au>
- <f73485eb-c0c8-c557-7491-5daabce4d3de@linux.intel.com>
+        b=UhIfmKrRUNzc0klYEFAND1I5BO8RI0zq5GjDoZW2tHzP9cxwLQYneLPVCYJ6bl+02
+         XVgqihJFaXzbRtD0iNQStH+CzDk+kbln0wVmmiI0D6U496AnHN2pJmiKOEEsagB50g
+         PBTy+E/IcEX3vmXwbUlbFLnp1q9O0VQPqx3NMc+I=
+Date:   Thu, 16 Apr 2020 20:22:43 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 2/7] drm/bridge_connector: Set default status
+ connected for eDP connectors
+Message-ID: <20200416172243.GL4796@pendragon.ideasonboard.com>
+References: <20200416155720.2360443-1-enric.balletbo@collabora.com>
+ <20200416155720.2360443-3-enric.balletbo@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1bhFRg6vL9BT9osV"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f73485eb-c0c8-c557-7491-5daabce4d3de@linux.intel.com>
-X-Cookie: Tempt me with a spoon!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200416155720.2360443-3-enric.balletbo@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Enric,
 
---1bhFRg6vL9BT9osV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you for the patch.
 
-On Tue, Apr 14, 2020 at 10:28:10PM -0500, Pierre-Louis Bossart wrote:
-> On 4/14/20 9:15 PM, Stephen Rothwell wrote:
+On Thu, Apr 16, 2020 at 05:57:14PM +0200, Enric Balletbo i Serra wrote:
+> In an eDP application, HPD is not required and on most bridge chips
+> useless. If HPD is not used, we need to set initial status as connected,
+> otherwise the connector created by the drm_bridge_connector API remains
+> in an unknown state.
+> 
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-> > drivers/soundwire/intel.c:676:8: error: 'struct snd_soc_pcm_runtime' has no member named 'codec_dais'
-> >    676 |     rtd->codec_dais[i]->name);
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> Bard, can you take care of the SoundWire change - this needs to change to
-> asoc_rtd_to_codec(rtd, i)
+> ---
+> 
+> Changes in v2: None
+> 
+>  drivers/gpu/drm/drm_bridge_connector.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
+> index c6994fe673f3..a58cbde59c34 100644
+> --- a/drivers/gpu/drm/drm_bridge_connector.c
+> +++ b/drivers/gpu/drm/drm_bridge_connector.c
+> @@ -187,6 +187,7 @@ drm_bridge_connector_detect(struct drm_connector *connector, bool force)
+>  		case DRM_MODE_CONNECTOR_DPI:
+>  		case DRM_MODE_CONNECTOR_LVDS:
+>  		case DRM_MODE_CONNECTOR_DSI:
+> +		case DRM_MODE_CONNECTOR_eDP:
+>  			status = connector_status_connected;
+>  			break;
+>  		default:
 
-Bard?
+-- 
+Regards,
 
---1bhFRg6vL9BT9osV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6YlEoACgkQJNaLcl1U
-h9ASpwf/YKfh8U5CWkgqK8mGVOeRPjf4UcTyV1hxcI3CylFyvakIeaXm6aavw032
-LIZ/HFTZo/wz1agTpb3dQRHE0wFr9EctnaQ6EpYguyKovvHXP058YmAMi0nxCwap
-O4Yf1vXpHOKAHNQhPNf54kQykd7wxiwLEEfFLNZdWPYKWKsC3R75pKEskA/ehWZ6
-HRQsKS5UYhLnRQAQzxkm9YJ72Mr8H9vtFhAzjF9crlFs7yxKogk06pIUYnQPPPg1
-BWjsTFLoamtbHYQQPftd4riX2w1/omBSIfvVCzmyHAJCJqUfFpdhtqq0QBepgQRP
-nJ3SeFpBKaM3lXw/vgJS42QILOOUUw==
-=fr8X
------END PGP SIGNATURE-----
-
---1bhFRg6vL9BT9osV--
+Laurent Pinchart
