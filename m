@@ -2,124 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590021AB6C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEBC1AB6D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 06:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404155AbgDPEZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 00:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403897AbgDPEZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 00:25:48 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2F7C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 21:25:48 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id z9so830336pjd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 21:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=rKdwxJq97I01y7ryQhSihbE5DvwLxtqugoVKkJX3ixQ=;
-        b=wydQ1wV/OhVMd3QRFRKKNzkbsnXsrk7VwwEFQLbqM5ghK2myZ3rUwtN43+86ag5Yt2
-         TOVAOmy3v83wlL5xBTadZIUPf+hW0tBsAuWepalWfrbGXhvYreeXUsNypMLEaIpgpwvr
-         PdXGZjbSqpgXelubvmrELN3048hxl5mUCg3NnN2b4krIxxmP0EodZKg13/EFYF9wHYZu
-         th6OcVEd1GYkAlpaK0/CDS+PavGH/YJhb9gM6FMd2Hn30UAhBpPttl/yVOnQckXFs1+9
-         ByjKBlDgOAaMd4fSyIWUuB3lXPe1GalgZBYhX0Jk2ev8iAwwfXtj7rBzBsG2jmmx/old
-         tBew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rKdwxJq97I01y7ryQhSihbE5DvwLxtqugoVKkJX3ixQ=;
-        b=ecuUcDQfvc0fSgHz3lFOTuZwe8iioSm9Zlw6sUJGriNXILk4AXwNrh96Tppm3nK/l6
-         yxDgpF3NI3bR8eI3kBBSYVT6yo5ydVUQ1wnhwlXOakjeZiKLg2I8607rsN8NgQo4V6GC
-         U2J0GuAVcvbGzBQ1WQ6Fn617qOzU1a3bIcuo+pXwr0m00bHKpteBR5VX5UnODyKJ8QYq
-         2Xoad7jCW3HvX+eZIemLiVrIQ55DWnNsVxYH9vclYf9iuFppgXDkWb18vNDxJXbx8WB+
-         mA2+vXumBY7z+ODgBVbnWbS5Y2q4MNpfuAjD4f6Ddv7EZA7cn57oo7o97DKTMmB5Ykh+
-         fWGg==
-X-Gm-Message-State: AGi0PuY9xirsB3dzejiAP8jOJcBO32DvCzf1O2At7kpavk1QvX4KHP7v
-        Mq4/UQdH2rU1xsm+tD4k6smhIA==
-X-Google-Smtp-Source: APiQypIcBT/ktZ74DASZLCa7QPuT/QUI+4S8qRnrlE/V9pcUl97OuPwTBQpFJ7Cl/s+5dnZ05jLWvw==
-X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr2650982pjb.96.1587011147553;
-        Wed, 15 Apr 2020 21:25:47 -0700 (PDT)
-Received: from [10.129.0.126] ([45.135.186.84])
-        by smtp.gmail.com with ESMTPSA id e29sm10568241pgn.57.2020.04.15.21.25.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 21:25:47 -0700 (PDT)
-Subject: Re: [PATCH v11 00/13] SMMUv3 Nested Stage Setup (IOMMU part)
-To:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com
-Cc:     jean-philippe@linaro.org, shameerali.kolothum.thodi@huawei.com,
-        alex.williamson@redhat.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, peter.maydell@linaro.org, tn@semihalf.com,
-        bbhushan2@marvell.com
-References: <20200414150607.28488-1-eric.auger@redhat.com>
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <eb27f625-ad7a-fcb5-2185-5471e4666f09@linaro.org>
-Date:   Thu, 16 Apr 2020 12:25:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200414150607.28488-1-eric.auger@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S2403897AbgDPEed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 00:34:33 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:54912 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388533AbgDPEe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 00:34:29 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3D0DF200B6C;
+        Thu, 16 Apr 2020 06:34:26 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C5BE3200B60;
+        Thu, 16 Apr 2020 06:34:19 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2D88C402FC;
+        Thu, 16 Apr 2020 12:34:12 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/5] dt-bindings: clock: Convert i.MX6Q clock to json-schema
+Date:   Thu, 16 Apr 2020 12:26:07 +0800
+Message-Id: <1587011171-24532-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the i.MX6Q clock binding to DT schema format using json-schema.
 
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/clock/imx6q-clock.txt      | 41 -------------
+ .../devicetree/bindings/clock/imx6q-clock.yaml     | 69 ++++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/imx6q-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/imx6q-clock.yaml
 
-On 2020/4/14 下午11:05, Eric Auger wrote:
-> This version fixes an issue observed by Shameer on an SMMU 3.2,
-> when moving from dual stage config to stage 1 only config.
-> The 2 high 64b of the STE now get reset. Otherwise, leaving the
-> S2TTB set may cause a C_BAD_STE error.
->
-> This series can be found at:
-> https://github.com/eauger/linux/tree/v5.6-2stage-v11_10.1
-> (including the VFIO part)
-> The QEMU fellow series still can be found at:
-> https://github.com/eauger/qemu/tree/v4.2.0-2stage-rfcv6
->
-> Users have expressed interest in that work and tested v9/v10:
-> - https://patchwork.kernel.org/cover/11039995/#23012381
-> - https://patchwork.kernel.org/cover/11039995/#23197235
->
-> Background:
->
-> This series brings the IOMMU part of HW nested paging support
-> in the SMMUv3. The VFIO part is submitted separately.
->
-> The IOMMU API is extended to support 2 new API functionalities:
-> 1) pass the guest stage 1 configuration
-> 2) pass stage 1 MSI bindings
->
-> Then those capabilities gets implemented in the SMMUv3 driver.
->
-> The virtualizer passes information through the VFIO user API
-> which cascades them to the iommu subsystem. This allows the guest
-> to own stage 1 tables and context descriptors (so-called PASID
-> table) while the host owns stage 2 tables and main configuration
-> structures (STE).
->
->
+diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.txt b/Documentation/devicetree/bindings/clock/imx6q-clock.txt
+deleted file mode 100644
+index 13d36d4..0000000
+--- a/Documentation/devicetree/bindings/clock/imx6q-clock.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-* Clock bindings for Freescale i.MX6 Quad
+-
+-Required properties:
+-- compatible: Should be "fsl,imx6q-ccm"
+-- reg: Address and length of the register set
+-- interrupts: Should contain CCM interrupt
+-- #clock-cells: Should be <1>
+-
+-Optional properties:
+-- fsl,pmic-stby-poweroff: Configure CCM to assert PMIC_STBY_REQ signal
+-  on power off.
+-  Use this property if the SoC should be powered off by external power
+-  management IC (PMIC) triggered via PMIC_STBY_REQ signal.
+-  Boards that are designed to initiate poweroff on PMIC_ON_REQ signal should
+-  be using "syscon-poweroff" driver instead.
+-- clocks: list of clock specifiers, must contain an entry for each entry
+-          in clock-names
+-- clock-names: valid names are "osc", "ckil", "ckih1", "anaclk1" and "anaclk2"
+-
+-The clock consumer should specify the desired clock by having the clock
+-ID in its "clocks" phandle cell.  See include/dt-bindings/clock/imx6qdl-clock.h
+-for the full list of i.MX6 Quad and DualLite clock IDs.
+-
+-Examples:
+-
+-#include <dt-bindings/clock/imx6qdl-clock.h>
+-
+-clks: ccm@20c4000 {
+-	compatible = "fsl,imx6q-ccm";
+-	reg = <0x020c4000 0x4000>;
+-	interrupts = <0 87 0x04 0 88 0x04>;
+-	#clock-cells = <1>;
+-};
+-
+-uart1: serial@2020000 {
+-	compatible = "fsl,imx6q-uart", "fsl,imx21-uart";
+-	reg = <0x02020000 0x4000>;
+-	interrupts = <0 26 0x04>;
+-	clocks = <&clks IMX6QDL_CLK_UART_IPG>, <&clks IMX6QDL_CLK_UART_SERIAL>;
+-	clock-names = "ipg", "per";
+-};
+diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+new file mode 100644
+index 0000000..084d4f0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/imx6q-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Clock bindings for Freescale i.MX6 Quad
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++properties:
++  compatible:
++    const: fsl,imx6q-ccm
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 2
++
++  '#clock-cells':
++    const: 1
++
++  clocks:
++    items:
++      - description: 24m osc
++      - description: 32k osc
++      - description: ckih1 clock input
++      - description: anaclk1 clock input
++      - description: anaclk2 clock input
++
++  clock-names:
++    items:
++      - const: osc
++      - const: ckil
++      - const: ckih1
++      - const: anaclk1
++      - const: anaclk2
++
++  fsl,pmic-stby-poweroff:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      Use this property if the SoC should be powered off by external power
++      management IC (PMIC) triggered via PMIC_STBY_REQ signal.
++      Boards that are designed to initiate poweroff on PMIC_ON_REQ signal should
++      be using "syscon-poweroff" driver instead.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - '#clock-cells'
++
++examples:
++  # Clock Control Module node:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    clks: clock-controller@20c4000 {
++        compatible = "fsl,imx6q-ccm";
++        reg = <0x020c4000 0x4000>;
++        interrupts = <0 87 IRQ_TYPE_LEVEL_HIGH>,
++                     <0 88 IRQ_TYPE_LEVEL_HIGH>;
++        #clock-cells = <1>;
++    };
++
++...
+-- 
+2.7.4
 
-Thanks Eric
-
-Tested v11 on Hisilicon kunpeng920 board via hardware zip accelerator.
-1. no-sva works, where guest app directly use physical address via ioctl.
-2. vSVA still not work, same as v10,
-3.  the v10 issue reported by Shameer has been solved,  first start qemu 
-with  iommu=smmuv3, then start qemu without  iommu=smmuv3
-4. no-sva also works without  iommu=smmuv3
-
-Test details in https://docs.qq.com/doc/DRU5oR1NtUERseFNL
-
-Thanks
