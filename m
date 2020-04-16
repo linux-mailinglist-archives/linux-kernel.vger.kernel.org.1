@@ -2,147 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6139F1AC0B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2711AC0BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634991AbgDPMHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:07:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40712 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2634831AbgDPMHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:07:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 475AEAC6D;
-        Thu, 16 Apr 2020 12:06:59 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6CFFC1E1250; Thu, 16 Apr 2020 14:06:59 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 14:06:59 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, gregkh@linuxfoundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/8] bdi: simplify bdi_alloc
-Message-ID: <20200416120659.GL23739@quack2.suse.cz>
-References: <20200416071519.807660-1-hch@lst.de>
- <20200416071519.807660-8-hch@lst.de>
+        id S2635040AbgDPMIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:08:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38952 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2634744AbgDPMIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:08:10 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 0B70046E24AE8485149C;
+        Thu, 16 Apr 2020 20:08:06 +0800 (CST)
+Received: from [127.0.0.1] (10.142.68.147) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Apr 2020
+ 20:07:55 +0800
+Subject: Re: [PATCH] KVM: handle the right RAS SEA(Synchronous External Abort)
+ type
+To:     James Morse <james.morse@arm.com>
+CC:     <maz@kernel.org>, <julien.thierry.kdev@gmail.com>,
+        <suzuki.poulose@arm.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        <zhengxiang9@huawei.com>, <tanxiaofei@huawei.com>,
+        <linuxarm@huawei.com>
+References: <20200411121740.37615-1-gengdongjiu@huawei.com>
+ <0fa259ab-0e2f-a8b3-783d-24a725b4cc5d@arm.com>
+From:   gengdongjiu <gengdongjiu@huawei.com>
+Message-ID: <65414dc5-1cd7-003d-7c6a-5da62c6a4a1d@huawei.com>
+Date:   Thu, 16 Apr 2020 20:07:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416071519.807660-8-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0fa259ab-0e2f-a8b3-783d-24a725b4cc5d@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.142.68.147]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 16-04-20 09:15:18, Christoph Hellwig wrote:
-> Merge the _node vs normal version and drop the superflous gfp_t argument.
+Hi James
+
+On 2020/4/14 20:18, James Morse wrote:
+> Hi Geng,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  block/blk-core.c            | 2 +-
->  drivers/mtd/mtdcore.c       | 2 +-
->  fs/super.c                  | 2 +-
->  include/linux/backing-dev.h | 6 +-----
->  mm/backing-dev.c            | 7 +++----
->  5 files changed, 7 insertions(+), 12 deletions(-)
+> On 11/04/2020 13:17, Dongjiu Geng wrote:
+>> When the RAS Extension is implemented, b0b011000, 0b011100,
+>> 0b011101, 0b011110, and 0b011111, are not used and reserved
+>> to the DFSC[5:0] of ESR_ELx, but the code still checks these
+>> unused bits, so remove them.
 > 
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 7e4a1da0715e..ab87f2833ab2 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -484,7 +484,7 @@ struct request_queue *__blk_alloc_queue(int node_id)
->  	if (ret)
->  		goto fail_id;
->  
-> -	q->backing_dev_info = bdi_alloc_node(GFP_KERNEL, node_id);
-> +	q->backing_dev_info = bdi_alloc(node_id);
->  	if (!q->backing_dev_info)
->  		goto fail_split;
->  
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 2916674208b3..39ec563d9a14 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -2036,7 +2036,7 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
->  	struct backing_dev_info *bdi;
->  	int ret;
->  
-> -	bdi = bdi_alloc(GFP_KERNEL);
-> +	bdi = bdi_alloc(NUMA_NO_NODE);
->  	if (!bdi)
->  		return ERR_PTR(-ENOMEM);
->  
-> diff --git a/fs/super.c b/fs/super.c
-> index cd352530eca9..dd28fcd706ff 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -1598,7 +1598,7 @@ int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
->  	int err;
->  	va_list args;
->  
-> -	bdi = bdi_alloc(GFP_KERNEL);
-> +	bdi = bdi_alloc(NUMA_NO_NODE);
->  	if (!bdi)
->  		return -ENOMEM;
->  
-> diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-> index 4098ed6ba6b4..6b3504bf7a42 100644
-> --- a/include/linux/backing-dev.h
-> +++ b/include/linux/backing-dev.h
-> @@ -36,11 +36,7 @@ int bdi_register_va(struct backing_dev_info *bdi, const char *fmt,
->  void bdi_set_owner(struct backing_dev_info *bdi, struct device *owner);
->  void bdi_unregister(struct backing_dev_info *bdi);
->  
-> -struct backing_dev_info *bdi_alloc_node(gfp_t gfp_mask, int node_id);
-> -static inline struct backing_dev_info *bdi_alloc(gfp_t gfp_mask)
-> -{
-> -	return bdi_alloc_node(gfp_mask, NUMA_NO_NODE);
-> -}
-> +struct backing_dev_info *bdi_alloc(int node_id);
->  
->  void wb_start_background_writeback(struct bdi_writeback *wb);
->  void wb_workfn(struct work_struct *work);
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 1ba9a7b30933..119a41650833 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -865,12 +865,11 @@ static int bdi_init(struct backing_dev_info *bdi)
->  	return ret;
->  }
->  
-> -struct backing_dev_info *bdi_alloc_node(gfp_t gfp_mask, int node_id)
-> +struct backing_dev_info *bdi_alloc(int node_id)
->  {
->  	struct backing_dev_info *bdi;
->  
-> -	bdi = kmalloc_node(sizeof(struct backing_dev_info),
-> -			   gfp_mask | __GFP_ZERO, node_id);
-> +	bdi = kzalloc_node(sizeof(*bdi), GFP_KERNEL, node_id);
->  	if (!bdi)
->  		return NULL;
->  
-> @@ -880,7 +879,7 @@ struct backing_dev_info *bdi_alloc_node(gfp_t gfp_mask, int node_id)
->  	}
->  	return bdi;
->  }
-> -EXPORT_SYMBOL(bdi_alloc_node);
-> +EXPORT_SYMBOL(bdi_alloc);
->  
->  static struct rb_node **bdi_lookup_rb_node(u64 id, struct rb_node **parentp)
->  {
-> -- 
-> 2.25.1
+> They aren't unused: CPUs without the RAS extensions may still generate these.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> kvm_handle_guest_abort() wants to know if this is an external abort.
+> KVM doesn't really care if the CPU has the RAS extensions or not, its the arch code's job
+> to sort all that out.
+
+No, handle_guest_sea() ---> ghes_notify_sea  ---> apei driver
+
+If it is an  external abort, it will call apei driver to handle it, but it should be only SEA will call the apei driver.
+other type of external abort should not call apei driver.
+I am not see arch code sort all that out.
+
+        /* Synchronous External Abort? */
+        if (kvm_vcpu_dabt_isextabt(vcpu)) {
+                /*
+                 * For RAS the host kernel may handle this abort.
+                 * There is no need to pass the error into the guest.
+                 */
+                if (!handle_guest_sea(fault_ipa, kvm_vcpu_get_hsr(vcpu)))
+                        return 1;
+         }
+
+> 
+> 
+>> If the handling of guest ras data error fails, it should
+>> inject data instead of SError to let the guest recover as
+>> much as possible.
+
+In some hardware platform, it supports RAS, but the RAS error address will be not recorded, so it is better to inject a data abort instead of SError for thtat platform.
+because guest will try to do recovery for the Synchronous data abort, such as kill the error application. But for SError, guest will be panic.
+
+> 
+> (I don't quite follow your point here).
+> 
+> If KVM injected a synchronous external abort due to a RAS error here, then you wouldn't be
+> able to support firmware-first RAS with Qemu. I don't think this is what you want.
+> 
+> 
+> The handling is (and should be) decoupled.
+> 
+> KVM guests aren't special. Whatever happens for a normal user-space process is what should
+> happen here. KVM is just doing the plumbing:
+> 
+> When the hypervisor takes an external abort due to the guest, it should plumb the error
+> into the arch code to be handled. This is what would happen for a normal EL0 process.
+> This is what do_sea() and kvm_handle_guest_sea() do with apei_claim_sea().
+> 
+> If the RAS code says it handled this error, then we can continue. For user-space, we
+> return to user-space. For a guest, we return to the guest. (for user-space this piece is
+> not quite complete in mainline, see:
+> https://lore.kernel.org/linux-acpi/20200228174817.74278-4-james.morse@arm.com/ )
+> 
+> This first part happens even if the errors are notified by IRQs, or found in a polled buffer.
+> 
+> The RAS code may have 'handled' the memory by unmapping it, and marking the corresponding
+> page as HWPOISONed. If user-space tries to access this, it will be give an
+> SIGBUS:MCEERR_AR. If a guest tries to do this, the same things happens. (The signal goes
+> to Qemu).
+> (See do_page_fault()s use of the MCEERR si_code's, and kvm_send_hwpoison_signal)
+> 
+> This second part is the same regardless of how the kernel discovered the RAS error in the
+> first place.
+> 
+> 
+> If the RAS code says it did not handle this error, it means it wasn't a RAS error, or your
+> platform doesn't support RAS. For an external-abort there is very little the hypervisor
+> can do in this situation. It does what KVM has always done: inject an asynchronous
+> external abort.
+> This should only happen if the host has failed to handle the error. KVM's use of
+> asynchronous abort is the simplest one size fits all.
+> 
+> Are you seeing this happen? If so, what are the circumstances. Did the host handle the
+> error? (if not: why not!)
+
+Yes, some platform supports RAS but will not record the error address, so the host has failed to handle the error.
+
+> 
+> 
+> Thanks,
+> 
+> James
+> .
+> 
+
