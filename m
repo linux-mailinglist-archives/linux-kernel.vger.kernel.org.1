@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3F91ABA24
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50151ABA2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439536AbgDPHko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2439257AbgDPHkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:40:36 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DD9C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:40:35 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id j3so6263835ljg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/vK0t1CeFnmzHdgV/edRSsR0Xg8bPdUElYkVOWjizyQ=;
-        b=yBKQklaBBof8noCP4t3aOXQhmuV0x8tl82n8KD6avGbKMt5AU3JJqG2jA3+I1YGBbN
-         uMnavUM0BlsEPtF5/Zg329kbYvWn8dWlOkDIr5bpKFoJV/oi40m28aOQG4E+f5MIMd+n
-         R5Gj1OoxCn5Vd4ZR1Gg/aBasA7YTNKWVxNd/DqAawxq0uPziPp0rOgSB70esqprrT3/S
-         By93R3tV0pZ3Ix/pQOsUIM886pC8H6NhUxXpHESSMlNmmGasdPFyOQxyRkT5ziuIalKi
-         Hf9oPU9TAWlHmdTc5J/0D8XYCL7ponQuYaP3io1dpaccUxQCHwGCuA7n/MJcyXlwO0hh
-         IweQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/vK0t1CeFnmzHdgV/edRSsR0Xg8bPdUElYkVOWjizyQ=;
-        b=a0agzQdtfxe1TkujGYvPPu/hqkRFfcUV7jpcm2y25loYp5Za/XBNXJtPZXHYcO6WVp
-         U49YdrrOiKHq5FBR6q/fysfY3v4yKCz3cPwpaAgpnZB0HSY4fRQfsmJHKuwG8tiplXHy
-         IbiwC8YOYKAMO0xnpq4ZAd8+fajZjLLOODM6TPN9XryPUuIo8k1FdDEhPuFPbsi4uQ6A
-         4i6yRWx2UzSdSQITqWrRu856GddIs65Ph7Sq2+iz+UYA96zkXKkDv/e/lDSO1W8zkgL/
-         gGoGOPc7mYa9JKb4ASItTbk+Avct1vrLq3GGWAt8+lQYCdPnd++IpQFBWj/7DYx6zMhL
-         0+cA==
-X-Gm-Message-State: AGi0PuakzRrLGafrJwMsN39yUNcMew6duihUGD44gl4gK1bQvAH4uZbO
-        DZtJ6n3xHLfmeEzd6fxDv7dcxVOWCrxRaZneJJdw36yO
-X-Google-Smtp-Source: APiQypLjiwIz85ndoP02JEFzC6OGmP2VbovPd0aEDhYLLIbUv4hPBoVf+s3S6P6hepcFjvglT0g3bAvXbUKJNC0hZaE=
-X-Received: by 2002:a2e:800a:: with SMTP id j10mr5688029ljg.65.1587022834016;
- Thu, 16 Apr 2020 00:40:34 -0700 (PDT)
+        id S2439586AbgDPHlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:41:53 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37066 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439413AbgDPHl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:41:26 -0400
+IronPort-SDR: z3C7Jh3oSXE2UbVzbF6hYFbOEhsbKHASqaZ2c3Zkywq8u29eG6ZyQGpOGhNrTXEXgOaNJnnDTI
+ r73VasWlGW8A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 00:41:26 -0700
+IronPort-SDR: 9gMtqRjRYcECo8zZS2jw2o7HXakW8rbvZ1z1uJDT8Tl2nZQO8Ninm2iuy2YLkbGx9swTpe4d+6
+ XBFg6izq0KTQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="363906708"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Apr 2020 00:41:22 -0700
+Subject: Re: [PATCH 3/7] mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Suneel Garapati <suneel.garapati@xilinx.com>,
+        Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <eb105eedaa387ced14bb687e38d3aa33d4fcf70a.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <67dc68ce-d8ec-4486-f4f9-3fb2580d2675@intel.com>
+ <20200415160302.GB19897@qmqm.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a49b6a25-14f5-ca1b-b493-e40ec4984b04@intel.com>
+Date:   Thu, 16 Apr 2020 10:40:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200415210512.805-1-valentin.schneider@arm.com> <20200415210512.805-2-valentin.schneider@arm.com>
-In-Reply-To: <20200415210512.805-2-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 16 Apr 2020 09:40:22 +0200
-Message-ID: <CAKfTPtCn+NkJ+UWJQ_KJkQjSVY9vOrS36xzbPn6-15xTHKPznQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/9] sched/fair: find_idlest_group(): Remove unused
- sd_flag parameter
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200415160302.GB19897@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 at 23:05, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> The last use of that parameter was removed by commit
->
->   57abff067a08 ("sched/fair: Rework find_idlest_group()")
->
-> Get rid of the parameter.
->
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+On 15/04/20 7:03 pm, Micha³ Miros³aw wrote:
+> On Wed, Apr 15, 2020 at 04:06:02PM +0300, Adrian Hunter wrote:
+>> On 2/04/20 2:54 pm, Micha³ Miros³aw wrote:
+>>> Fix returned clock rate for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN case.
+>>
+>> Does this change anything, because it looks the same to me?
+> 
+> The value of real_div is fixed this way. With previous code after
+> applying the quirk you would have real_div = 1 instead of real_div = 2.
 
-This patch is not directly related to others
+That kind of thing should be in the commit message.  Please also explain
+what effect this has (the actual clock value will be too high, but also what
+problems does that manifest) and what hardware is affected.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> 
+> Best Regards,
+> Micha³ Miros³aw
+> 
+>>
+>>>
+>>> Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+>>> Cc: stable@kernel.vger.org
+>>> Fixes: d1955c3a9a1d ("mmc: sdhci: add quirk SDHCI_QUIRK_CLOCK_DIV_ZERO_BROKEN")
+>>> ---
+>>>  drivers/mmc/host/sdhci.c | 10 +++++-----
+>>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+>>> index b2dc4f1cfa5c..a043bf5e3565 100644
+>>> --- a/drivers/mmc/host/sdhci.c
+>>> +++ b/drivers/mmc/host/sdhci.c
+>>> @@ -1807,9 +1807,12 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>>>  
+>>>  		if (!host->clk_mul || switch_base_clk) {
+>>>  			/* Version 3.00 divisors must be a multiple of 2. */
+>>> -			if (host->max_clk <= clock)
+>>> +			if (host->max_clk <= clock) {
+>>>  				div = 1;
+>>> -			else {
+>>> +				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+>>> +					&& host->max_clk <= 25000000)
+>>> +					div = 2;
+>>> +			} else {
+>>>  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
+>>>  				     div += 2) {
+>>>  					if ((host->max_clk / div) <= clock)
+>>> @@ -1818,9 +1821,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>>>  			}
+>>>  			real_div = div;
+>>>  			div >>= 1;
+>>> -			if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+>>> -				&& !div && host->max_clk <= 25000000)
+>>> -				div = 1;
+>>>  		}
+>>>  	} else {
+>>>  		/* Version 2.00 divisors must be a power of 2. */
+>>>
+>>
 
-> ---
->  kernel/sched/fair.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 02f323b85b6d..98321d8dde7e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5821,8 +5821,7 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
->  }
->
->  static struct sched_group *
-> -find_idlest_group(struct sched_domain *sd, struct task_struct *p,
-> -                 int this_cpu, int sd_flag);
-> +find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu);
->
->  /*
->   * find_idlest_group_cpu - find the idlest CPU among the CPUs in the group.
-> @@ -5905,7 +5904,7 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
->                         continue;
->                 }
->
-> -               group = find_idlest_group(sd, p, cpu, sd_flag);
-> +               group = find_idlest_group(sd, p, cpu);
->                 if (!group) {
->                         sd = sd->child;
->                         continue;
-> @@ -8677,8 +8676,7 @@ static bool update_pick_idlest(struct sched_group *idlest,
->   * Assumes p is allowed on at least one CPU in sd.
->   */
->  static struct sched_group *
-> -find_idlest_group(struct sched_domain *sd, struct task_struct *p,
-> -                 int this_cpu, int sd_flag)
-> +find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
->  {
->         struct sched_group *idlest = NULL, *local = NULL, *group = sd->groups;
->         struct sg_lb_stats local_sgs, tmp_sgs;
-> --
-> 2.24.0
->
