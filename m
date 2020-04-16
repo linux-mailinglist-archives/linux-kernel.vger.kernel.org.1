@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C671AC42E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEBD1AC961
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392536AbgDPNze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50858 "EHLO mail.kernel.org"
+        id S2409485AbgDPPWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897689AbgDPNiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:24 -0400
+        id S2898525AbgDPNpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:45:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 617FC22203;
-        Thu, 16 Apr 2020 13:38:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5649E21734;
+        Thu, 16 Apr 2020 13:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044303;
-        bh=6H1V2cPpME8yyZYSE40VWtVW+9eZQ/zpTdh4A8UwM1s=;
+        s=default; t=1587044737;
+        bh=UqFZh/1eEoluZP1qvKMPPJGO87tS/2gzODxY+9ZVkYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhdM0fdH7rygOpl4+EqTJCDVPCA2ZP3Bx3ATafVZXF02vXJm0Y+1aqZxeV2gxNqSX
-         T4Ty6CxCVoKjDkp0FJE6rQ5vQIMUHYfHxhdtjDB1GhaqZujUOHZyqVqy2YIa7bRUjm
-         nfdw9OJdmqA83J/pUvz6KOZ0LeWMTeQqhRUFnZOk=
+        b=FYEI/bHiRMfiUhyBueeYQiXIeguOxP2NRKIpQfADleL6grE9fBWPwhcdxXsjTuTqi
+         MwtRVFelm34S/BvgBb2zSKO+FBeV6k01r1ZDdyO9BaR+al9wtEWsgcQCaXAPnlm7zK
+         FMuGtVzaUVYak+9bW+cI2jnsbTS9ONk/blDZEoMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 5.5 122/257] tpm: tpm2_bios_measurements_next should increase position index
-Date:   Thu, 16 Apr 2020 15:22:53 +0200
-Message-Id: <20200416131341.565617325@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 080/232] ALSA: hda/realtek: Enable mute LED on an HP system
+Date:   Thu, 16 Apr 2020 15:22:54 +0200
+Message-Id: <20200416131325.144976076@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit f9bf8adb55cd5a357b247a16aafddf8c97b276e0 upstream.
+commit f5a88b0accc24c4a9021247d7a3124f90aa4c586 upstream.
 
-If .next function does not change position index,
-following .show function will repeat output related
-to current position index.
+The system in question uses ALC285, and it uses GPIO 0x04 to control its
+mute LED.
 
-For /sys/kernel/security/tpm0/binary_bios_measurements:
-1) read after lseek beyound end of file generates whole last line.
-2) read after lseek to middle of last line generates
-expected end of last line and unexpected whole last line once again.
+The mic mute LED can be controlled by GPIO 0x01, however the system uses
+DMIC so we should use that to control mic mute LED.
 
-Cc: stable@vger.kernel.org # 4.19.x
-Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code ...")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206283
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200327044626.29582-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/tpm/eventlog/tpm2.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/char/tpm/eventlog/tpm2.c
-+++ b/drivers/char/tpm/eventlog/tpm2.c
-@@ -94,6 +94,7 @@ static void *tpm2_bios_measurements_next
- 	size_t event_size;
- 	void *marker;
- 
-+	(*pos)++;
- 	event_header = log->bios_event_log;
- 
- 	if (v == SEQ_START_TOKEN) {
-@@ -118,7 +119,6 @@ static void *tpm2_bios_measurements_next
- 	if (((v + event_size) >= limit) || (event_size == 0))
- 		return NULL;
- 
--	(*pos)++;
- 	return v;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4008,6 +4008,12 @@ static void alc269_fixup_hp_gpio_led(str
+ 	alc_fixup_hp_gpio_led(codec, action, 0x08, 0x10);
  }
  
++static void alc285_fixup_hp_gpio_led(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	alc_fixup_hp_gpio_led(codec, action, 0x04, 0x00);
++}
++
+ static void alc286_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -5923,6 +5929,7 @@ enum {
+ 	ALC294_FIXUP_ASUS_DUAL_SPK,
+ 	ALC285_FIXUP_THINKPAD_HEADSET_JACK,
+ 	ALC294_FIXUP_ASUS_HPE,
++	ALC285_FIXUP_HP_GPIO_LED,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7061,6 +7068,10 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
+ 	},
++	[ALC285_FIXUP_HP_GPIO_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_hp_gpio_led,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7208,6 +7219,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 
 
