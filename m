@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150781AC7A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A61B1AC58D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437319AbgDPNzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:55:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50884 "EHLO mail.kernel.org"
+        id S2393111AbgDPOVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897693AbgDPNi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:27 -0400
+        id S2392485AbgDPNzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:55:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD1A920732;
-        Thu, 16 Apr 2020 13:38:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F8D42078B;
+        Thu, 16 Apr 2020 13:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044306;
-        bh=ESA2Q8qNEyYMT9qiYnzTb8YCAnx8roVpY6pxsaqV8pw=;
+        s=default; t=1587045320;
+        bh=ZIcAg89D5twlHgvCRgZyM3HhzVVvVDgs3ml5dsPPPn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ITNuYaKTM9xsP2Q85qa0GZK5pa6Gs2sEN9q5vjg7jiWXPuSJyx2WIMuW05uK2AQIG
-         EbXflS1hNoJCdm6ZvP3bujUonnZAVPb8Xlw5TXW09BhgODOv/POqhJH42xbAbD/tBD
-         htBqVUcicjybsuSr6jSNcK0dIbTVAd5I2tLvPESc=
+        b=szs7hDau0LR67QIexXmN7fip/dnk07Vi+MPWpdGXhJbBncmGzIz3F4w+2Wu7rpyt5
+         EDML3Rou3ys7397RT7dxy5q7SqvOEzRGnb3vKxTScwT0vX50jSK1bilzOAAXa2qZDJ
+         U/NpIJhV2P/UcSQBihT+yqfapBVPwcX5+toWulDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
-        Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 5.5 123/257] KEYS: reaching the keys quotas correctly
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.6 085/254] media: venus: firmware: Ignore secure call error on first resume
 Date:   Thu, 16 Apr 2020 15:22:54 +0200
-Message-Id: <20200416131341.705090440@linuxfoundation.org>
+Message-Id: <20200416131336.543667686@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+From: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-commit 2e356101e72ab1361821b3af024d64877d9a798d upstream.
+commit 2632e7b618a7730969f9782593c29ca53553aa22 upstream.
 
-Currently, when we add a new user key, the calltrace as below:
+With the latest cleanup in qcom scm driver the secure monitor
+call for setting the remote processor state returns EINVAL when
+it is called for the first time and after another scm call
+auth_and_reset. The error returned from scm call could be ignored
+because the state transition is already done in auth_and_reset.
 
-add_key()
-  key_create_or_update()
-    key_alloc()
-    __key_instantiate_and_link
-      generic_key_instantiate
-        key_payload_reserve
-          ......
-
-Since commit a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly"),
-we can reach max bytes/keys in key_alloc, but we forget to remove this
-limit when we reserver space for payload in key_payload_reserve. So we
-can only reach max keys but not max bytes when having delta between plen
-and type->def_datalen. Remove this limit when instantiating the key, so we
-can keep consistent with key_alloc.
-
-Also, fix the similar problem in keyctl_chown_key().
-
-Fixes: 0b77f5bfb45c ("keys: make the keyring quotas controllable through /proc/sys")
-Fixes: a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly")
-Cc: stable@vger.kernel.org # 5.0.x
-Cc: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/keys/key.c    |    2 +-
- security/keys/keyctl.c |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/media/platform/qcom/venus/firmware.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -381,7 +381,7 @@ int key_payload_reserve(struct key *key,
- 		spin_lock(&key->user->lock);
+--- a/drivers/media/platform/qcom/venus/firmware.c
++++ b/drivers/media/platform/qcom/venus/firmware.c
+@@ -44,8 +44,14 @@ static void venus_reset_cpu(struct venus
  
- 		if (delta > 0 &&
--		    (key->user->qnbytes + delta >= maxbytes ||
-+		    (key->user->qnbytes + delta > maxbytes ||
- 		     key->user->qnbytes + delta < key->user->qnbytes)) {
- 			ret = -EDQUOT;
- 		}
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -937,8 +937,8 @@ long keyctl_chown_key(key_serial_t id, u
- 				key_quota_root_maxbytes : key_quota_maxbytes;
+ int venus_set_hw_state(struct venus_core *core, bool resume)
+ {
+-	if (core->use_tz)
+-		return qcom_scm_set_remote_state(resume, 0);
++	int ret;
++
++	if (core->use_tz) {
++		ret = qcom_scm_set_remote_state(resume, 0);
++		if (resume && ret == -EINVAL)
++			ret = 0;
++		return ret;
++	}
  
- 			spin_lock(&newowner->lock);
--			if (newowner->qnkeys + 1 >= maxkeys ||
--			    newowner->qnbytes + key->quotalen >= maxbytes ||
-+			if (newowner->qnkeys + 1 > maxkeys ||
-+			    newowner->qnbytes + key->quotalen > maxbytes ||
- 			    newowner->qnbytes + key->quotalen <
- 			    newowner->qnbytes)
- 				goto quota_overrun;
+ 	if (resume)
+ 		venus_reset_cpu(core);
 
 
