@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FB31AD298
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 00:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327D91AD2C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 00:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgDPWLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 18:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727907AbgDPWLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 18:11:32 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843DCC061A0C;
-        Thu, 16 Apr 2020 15:11:32 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 493D2n0WrDz9sRN;
-        Fri, 17 Apr 2020 08:11:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587075089;
-        bh=VJQOIPeZ81lNy7b0NapTCZmWfQv490gF0GlRsKb4sxU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=f0wYM3NpK0wwg14iVvI27NoxVuEqNyxVotL5UIqCFVaRAAdVKp7nfaLP+VJ96gQL6
-         VRSMYu9OnqAtgFFWJsNgHFLawWF7MpA0VjtWHGLv6GSwQffNB4SUK7fDFxPZlln1HO
-         qPzveMpS6X2f+Vl6RuQyWSWtyR4d6Uh4QnpQ5DcDe/VVCA6k8xU9LaBZQj6BHKWmLo
-         iap/a9/O8lWMJPGkaNXN+kOcXMrrchiL3XcWOfe0/U+YgAQwNclx9jQBM2UZqF2BhC
-         yGDqu8SlFIjbFwfrCLbBi8cS8QTFToxJ9+wCdH73L4p257YrsmJCo85qzPt3hvRpjO
-         maTGgTPjtWMIA==
-Date:   Fri, 17 Apr 2020 08:11:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: linux-next: Fixes tag needs some work in the devicetree-fixes tree
-Message-ID: <20200417081122.59d9a417@canb.auug.org.au>
+        id S1729067AbgDPWWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 18:22:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:33211 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728842AbgDPWWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 18:22:12 -0400
+IronPort-SDR: MmFF4Tq8SNfxceDdd3Wz9RcZEg1lxnLP4m6MLeQsDGa1ekbKg97dvAkl8y9KrRBt0NgcEhdp5j
+ KaWj5CGDomRQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 15:22:08 -0700
+IronPort-SDR: LUu+P/YXcM5WENDHKF6o+pp4tD+Jid2CSFsujp8cMYNQ9xFFZEwJVrsSdcbAt+tJX7QcL0weLo
+ WU/iEZhc9aAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
+   d="scan'208";a="454501925"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Apr 2020 15:22:03 -0700
+Date:   Thu, 16 Apr 2020 18:12:26 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     "Lu, Baolu" <baolu.lu@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>
+Subject: Re: [PATCH v1 0/2] vfio/pci: expose device's PASID capability to VMs
+Message-ID: <20200416221224.GA16688@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <1584880394-11184-1-git-send-email-yi.l.liu@intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D801252@SHSMSX104.ccr.corp.intel.com>
+ <ce615f64-a19b-a365-8f8e-ca29f69cc6c0@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ktjri6D2Sa0tO3JW4t=H.Mq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce615f64-a19b-a365-8f8e-ca29f69cc6c0@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ktjri6D2Sa0tO3JW4t=H.Mq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Mar 31, 2020 at 03:08:25PM +0800, Lu, Baolu wrote:
+> On 2020/3/31 14:35, Tian, Kevin wrote:
+> >> From: Liu, Yi L<yi.l.liu@intel.com>
+> >> Sent: Sunday, March 22, 2020 8:33 PM
+> >>
+> >> From: Liu Yi L<yi.l.liu@intel.com>
+> >>
+> >> Shared Virtual Addressing (SVA), a.k.a, Shared Virtual Memory (SVM) on
+> >> Intel platforms allows address space sharing between device DMA and
+> >> applications. SVA can reduce programming complexity and enhance security.
+> >>
+> >> To enable SVA, device needs to have PASID capability, which is a key
+> >> capability for SVA. This patchset exposes the device's PASID capability
+> >> to guest instead of hiding it from guest.
+> >>
+> >> The second patch emulates PASID capability for VFs (Virtual Function) since
+> >> VFs don't implement such capability per PCIe spec. This patch emulates such
+> >> capability and expose to VM if the capability is enabled in PF (Physical
+> >> Function).
+> >>
+> >> However, there is an open for PASID emulation. If PF driver disables PASID
+> >> capability at runtime, then it may be an issue. e.g. PF should not disable
+> >> PASID capability if there is guest using this capability on any VF related
+> >> to this PF. To solve it, may need to introduce a generic communication
+> >> framework between vfio-pci driver and PF drivers. Please feel free to give
+> >> your suggestions on it.
+> > I'm not sure how this is addressed on bate metal today, i.e. between normal
+> > kernel PF and VF drivers. I look at pasid enable/disable code in intel-iommu.c.
+> > There is no check on PF/VF dependency so far. The cap is toggled when
+> > attaching/detaching the PF to its domain. Let's see how IOMMU guys
+> > respond, and if there is a way for VF driver to block PF driver from disabling
+> > the pasid cap when it's being actively used by VF driver, then we may
+> > leverage the same trick in VFIO when emulation is provided to guest.
+> 
+> IOMMU subsystem doesn't expose any APIs for pasid enabling/disabling.
+> The PCI subsystem does. It handles VF/PF like below.
+> 
+> /**
+>   * pci_enable_pasid - Enable the PASID capability
+>   * @pdev: PCI device structure
+>   * @features: Features to enable
+>   *
+>   * Returns 0 on success, negative value on error. This function checks
+>   * whether the features are actually supported by the device and returns
+>   * an error if not.
+>   */
+> int pci_enable_pasid(struct pci_dev *pdev, int features)
+> {
+>          u16 control, supported;
+>          int pasid = pdev->pasid_cap;
+> 
+>          /*
+>           * VFs must not implement the PASID Capability, but if a PF
+>           * supports PASID, its VFs share the PF PASID configuration.
+>           */
+>          if (pdev->is_virtfn) {
+>                  if (pci_physfn(pdev)->pasid_enabled)
+>                          return 0;
+>                  return -EINVAL;
+>          }
+> 
+> /**
+>   * pci_disable_pasid - Disable the PASID capability
+>   * @pdev: PCI device structure
+>   */
+> void pci_disable_pasid(struct pci_dev *pdev)
+> {
+>          u16 control = 0;
+>          int pasid = pdev->pasid_cap;
+> 
+>          /* VFs share the PF PASID configuration */
+>          if (pdev->is_virtfn)
+>                  return;
+> 
+> 
+> It doesn't block disabling PASID on PF even VFs are possibly using it.
+>
+hi
+I'm not sure, but is it possible for pci_enable_pasid() and
+pci_disable_pasid() to do the same thing as pdev->driver->sriov_configure,
+e.g. pci_sriov_configure_simple() below.
 
-Hi all,
+It checks whether there are VFs are assigned in pci_vfs_assigned(dev).
+and we can set the VF in assigned status if vfio_pci_open() is performed
+on the VF.
 
-In commit
 
-  acca9cd4a084 ("dt-bindings: iio: dac: AD5570R fix bindings errors")
+int pci_sriov_configure_simple(struct pci_dev *dev, int nr_virtfn)
+{
+        int rc;
 
-Fixes tag
+        might_sleep();
 
-  Fixes: ea52c21268e6 ("iio: dac: ad5770r: Add AD5770R support")
+        if (!dev->is_physfn)
+                return -ENODEV;
 
-has these problem(s):
+        if (pci_vfs_assigned(dev)) {
+                pci_warn(dev, "Cannot modify SR-IOV while VFs are assigned\n");
+                return -EPERM;
+        }
 
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
+        if (nr_virtfn == 0) {
+                sriov_disable(dev);
+                return 0;
+        }
 
-Did you mean
+        rc = sriov_enable(dev, nr_virtfn);
+        if (rc < 0)
+                return rc;
 
-Fixes: ea52c21268e6 ("dt-bindings: iio: dac: Add docs for AD5770R DAC")
+        return nr_virtfn;
+}
 
-or
-
-Fixes: cbbb819837f6 ("iio: dac: ad5770r: Add AD5770R support")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ktjri6D2Sa0tO3JW4t=H.Mq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6Y2AoACgkQAVBC80lX
-0GzbhAf+MRFSvrA/kgQ0RYPgajc5ZPzd9XfNevRpCqmliTISzHErrgA2RJGc2YpI
-q3Q1zWMdNOee6VJZrCMQ6rNbx0wJI4vXQSSHH78E0+eYHh+Mb1AHoK32fHrN/crn
-vzsLt0VgRBzyOI3RvIK65UPrVAeDqfGUWnU1g2W2FZL1GFuGjY5cvRwBcydymvru
-JjpeQ77wiSWKF6wPjM5S6LYRWOAH81y8Gg1lt9V6OvY9Eju1ZA/K2CY+zuTV0C7C
-T0//lC/eJzIG73yIcSO5r8N2c/J58MwxEikanj6TC6MiB/XP8SG5IAlsNq/I2LXj
-FetPyqR96ZAhxnzC0UXuv1L1xWobTw==
-=EYYg
------END PGP SIGNATURE-----
-
---Sig_/ktjri6D2Sa0tO3JW4t=H.Mq--
+Thanks
+Yan
