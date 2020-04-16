@@ -2,199 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A3F1AC607
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F04E1AC60B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410236AbgDPOcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2503979AbgDPOCo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:02:44 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EAFC061A0C;
-        Thu, 16 Apr 2020 07:02:43 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c195so2617105wme.1;
-        Thu, 16 Apr 2020 07:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NHqfdeNveULnM7vQAbJglacV+XZ4nJdoryqrPGPSWH0=;
-        b=joAdCPp1vLkSbqtIwf3+wLlZtkPXrnifqtZ7/pDNKHE5OT01834YQYcWRvCorRphmA
-         310gNbj+A8S3oahU7wcGkJiCOoBzmwTlZTl7uT+gehWEXbQHl3HJ/QnWzYMrKU1qjg3e
-         zxGQD6Lc4IdSrNdSiAyKW4NKk3A/glK+jt3xv5gClHrFMfhDrmGOYSOzEmzxki3SWVpA
-         MubOA85JiEnSOZBdfdWDSsudvebrjpXqzDY0fSvczrFXBRH6Y5aM5kZyO9zURhRH408N
-         W7ZkmLOTf5gcVncU6pvW7GEFIETnpmo2r/utHGnjS4flkxmwX4hruSPYDXbuRADMQua5
-         UTgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NHqfdeNveULnM7vQAbJglacV+XZ4nJdoryqrPGPSWH0=;
-        b=ERMelN433tbcElDIGgZNXQXnsQkrmmgMh3CGNvwElOrnPApg6mOZthba3jJm5AV6wW
-         aQzIvh1+kRlBHqdmU/azFrV8JBYRjjuMCFixxkJ6R/2HqlKOdclH+XuoSo3JNjvdwPek
-         y5bYAYCSs5Oi7bjTxJyk/822zoBg/LkkINbwwS5Uh+LohRHkaBLLN8GNar/14DM1vqCQ
-         mYjOMDDqhm5zzlOyk/dd3NO00QZsIc2LEg2VOeBINT9zC+lrIml8i4vcRHEwT98cDQqY
-         BFqQCrnFS6o0dUv3sKw7a0g7aMvDv8FGVN8L8Oki+1EDbOJBOa9zcf1AAI97PHjzZ1PJ
-         O4ng==
-X-Gm-Message-State: AGi0PuaYTrDKu3E3JwgRioCl3s/7GQHzvphsFZeQHju9C1FnkUwFYzgV
-        NXktowfjlayNapFb46sNdvI=
-X-Google-Smtp-Source: APiQypJV2H42TwzOHO9PsPVCAA/RA8bXt0qbCwFdMXRNN2D2+xQOY5NEhSB4Y23QQTB8V/rxI3S6Yg==
-X-Received: by 2002:a05:600c:2194:: with SMTP id e20mr5049382wme.22.1587045761652;
-        Thu, 16 Apr 2020 07:02:41 -0700 (PDT)
-Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id p10sm26933094wrm.6.2020.04.16.07.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 07:02:40 -0700 (PDT)
-Subject: Re: [PATCH 2/4] arm64: dts: rockchip: Add RGA support to the PX30
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hansverk@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
- <20200416115047.233720-3-paul.kocialkowski@bootlin.com>
- <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
- <20200416132442.GI125838@aptenodytes>
- <f4ad8ea4-7904-1458-e564-2d20c87ed417@gmail.com>
- <20200416135519.GJ125838@aptenodytes>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <f97d7661-834d-3fbf-2cd9-0b37c487e8f7@gmail.com>
-Date:   Thu, 16 Apr 2020 16:02:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2438760AbgDPOcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:32:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393005AbgDPOEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:04:37 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FE5B2063A;
+        Thu, 16 Apr 2020 14:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587045876;
+        bh=2YXh/XKJI3YxS1o4ALaiH+LPf7d7D4uam3AFzOV80bQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wsNql+K5TJYxNfJ2BkKZPxv5pVE57QGTWKEpi1WnmT83+GOehaIagRtib+9RflqBq
+         9GBSjyXHxCWSk5d7R3YiUkuOQGPjSMKPqR6CJ1G1HawJoI7aUp0XBLgwUjHAwQ1Vk7
+         9a3axNOyPxwZra1XjQ/ZN466RPdZTgqQmymh1Eik=
+Date:   Thu, 16 Apr 2020 15:04:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Multiple regulators for one device [was drm/panfrost: add
+ devfreq regulator support]
+Message-ID: <20200416140434.GL5354@sirena.org.uk>
+References: <CAJiuCcegkNGQ7j4jcT1rBpSLqG1c-nb8g0wq+Nbvt-dGj7am2Q@mail.gmail.com>
+ <CAJiuCceU662o7QGJ=mmT3pzVWK7uJUN=6+NKQnZ=Cfj9c2nw7A@mail.gmail.com>
+ <d6465e7e-8e05-8b7d-16bd-f40877969089@arm.com>
+ <CAJiuCccv2XPLY6sjcgvvrG5a8ONYHa_xn9i-YUDKUDK5a0DY=A@mail.gmail.com>
+ <CAJiuCcfa9ro1V4nBzfD48cCuHpEsLaNA5P0bb-tQ3hcWUCtpkA@mail.gmail.com>
+ <000f26f4-3640-797f-c7f6-4b31a5e2669e@arm.com>
+ <CAJiuCccF3tmbmMWNh0nC5WRJ1_iPdj6f1oH1zYMSue_pFrXsPQ@mail.gmail.com>
+ <20200414185523.GO5412@sirena.org.uk>
+ <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
+ <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200416135519.GJ125838@aptenodytes>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="m+jEI8cDoTn6Mu9E"
+Content-Disposition: inline
+In-Reply-To: <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com>
+X-Cookie: Tempt me with a spoon!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/20 3:55 PM, Paul Kocialkowski wrote:
-> Hi,
-> 
-> On Thu 16 Apr 20, 15:44, Johan Jonker wrote:
->> On 4/16/20 3:24 PM, Paul Kocialkowski wrote:
->>> Hi,
->>>
->>> On Thu 16 Apr 20, 15:02, Johan Jonker wrote:
->>>> Hi Paul,
->>>>
->>>> The conversion of rockchip-rga.txt to rockchip-rga.yaml by myself just
->>>> has been approved by robh.
->>>
->>> Huh, I looked around for ongoing related work but missed it.
->>> I'll definitely rebase on top of your series and use the yaml description
->>> instead. Thanks!
->>>
->>>> Maybe place dts patches at the end of a patch serie.
->>>> Could you include a &rga patch if your device is supported in mainline,
->>>> so we can test with:
->>>> make ARCH=arm64 dtbs_check
->>>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-rga.yaml
->>>
->>> I tested with the PX30 EVB so I can surely add a node there if that turns
->>> out necessary (see below).
->>>
->>>> Johan
->>>>
->>>> On 4/16/20 1:50 PM, Paul Kocialkowski wrote:
->>>>> The PX30 features a RGA block: add the necessary node to support it.
->>>>>
->>>>> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
->>>>> ---
->>>>>  arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
->>>>>  1 file changed, 11 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
->>>>> index 75908c587511..4bfbee9d4123 100644
->>>>> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
->>>>> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
->>>>> @@ -1104,6 +1104,17 @@ vopl_mmu: iommu@ff470f00 {
->>>>>  		status = "disabled";
->>>>>  	};
->>>>>  
->>>>> +	rga: rga@ff480000 {
->>>>> +		compatible = "rockchip,px30-rga";
->>>>> +		reg = <0x0 0xff480000 0x0 0x10000>;
->>>>> +		interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
->>>>> +		clocks = <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE>;
->>>>> +		clock-names = "aclk", "hclk", "sclk";
->>>>> +		resets = <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
->>>>> +		reset-names = "core", "axi", "ahb";
->>>>> +		power-domains = <&power PX30_PD_VO>;
->>>>
->>>> 		status = "disabled";
->>>
->>> As of 5.6, the rk3399 has the node enabled by default. Did that change?
->>
->> 'status' disappeared during review for rk3399 between v2 and v3, but
->> doesn't mention the reason. If someone can give more info here?
->>
->> https://lore.kernel.org/lkml/1500101920-24039-5-git-send-email-jacob-chen@iotwrt.com/
->>
->> https://lore.kernel.org/lkml/1501470460-12014-5-git-send-email-jacob-chen@iotwrt.com/
->>
->>>
->>> Since it's a standalone block that has no I/O dependency, I don't really see
->>> the point of disabling it by default.
->>
->> Vop, hdmi and other video devices are also disabled.
->> Follow the rest I think...
-> 
-> Well, these blocks do have related I/O ports so it makes sense not to enable
-> them by default because of pinmux, or because there might be no connector
-> populated/routed.
-> 
-> For a memory to memory internal block, I don't see any reason why.
-> It's definitely not board-specific and having to add these nodes for every board
-> that has them is kind of a pain and might be overlooked. This will easily result
-> in the feature not being available for end users without having to change the
-> dt.
-> 
-> Also, the vpu node is always enabled on rockchip (and sunxi) platforms.
-> I think these are better examples to follow.
 
-From PX30 TRM-Part1:
+--m+jEI8cDoTn6Mu9E
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Power domain is shared by vop and dsi.
-It's up to the user what blocks he/she enables and what power it uses.
+On Thu, Apr 16, 2020 at 02:42:13PM +0100, Steven Price wrote:
+> On 14/04/2020 20:16, Cl=E9ment P=E9ron wrote:
 
-PD_VO: VOP_M, VOP_S, RGA and DSI
+> > That's can be reworked and Panfrost can only probe regulator if there
+> > is no opp-table.
 
-> 
-> Cheers,
-> 
-> Paul
-> 
->>>
->>> What do you think?
->>>
->>> Cheers,
->>>
->>> Paul
->>>
->>>>> +	};
->>>>> +
->>>>>  	qos_gmac: qos@ff518000 {
->>>>>  		compatible = "syscon";
->>>>>  		reg = <0x0 0xff518000 0x0 0x20>;
->>>>>
->>>>
->>>
->>
-> 
+> This is what I was thinking about looking at. But it may make sense inste=
+ad
+> to extend the regulator API to allow multiple regualtor_get() calls for a
+> single device. I haven't had time to dig into how difficult this would be.
 
+To repeat what I said before we don't actively stop this, it's just not
+something that seems particularly tasteful and the warning does find
+actual errors.  I definitely don't think it's a good idea to extend the
+API for this.
+
+> Ideally calling regulator_get a second time for the same device would sim=
+ply
+> return the same struct regulator object (with a reference count increment=
+).
+
+One of the goals with the distinct struct regulator is to make sure that
+we track all the user's activity together - if we mix multiple users in
+there it becomes harder to tell if something is going wrong.
+
+--m+jEI8cDoTn6Mu9E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6YZfEACgkQJNaLcl1U
+h9C/nQf/QCLo1rj6iRwBLPShJ84GFlBcvRlBij0IwxL5iMTtg6XkxiDm8/SLBixS
+S1Bc/Wf6eNsaPSItFuhdGG7O7X1q8CEH4QRw7mb/GEOBOxkeSmBaYw+KGiatWVE6
+wwK6H+GjDONuqkUTxsW5aOWtXdo8DHFsE+wzpJVGaaG3Dha4rnT+U9928gpNArK8
+EUXfsezFxHayhWWMkb4Dq/lzlI8iXZDdLypZ8reuR20X+44sHIGlsm6OdAHg+6oM
+AGal/xBKzemEoM7wqGDtcaRuEJd9FuRdKz1nAMGh0l9p4gpWljqr1oPeS4zh4D+M
+3cENMO5/EQRQvTWYLgxIMLDqhdFmvw==
+=8v7v
+-----END PGP SIGNATURE-----
+
+--m+jEI8cDoTn6Mu9E--
