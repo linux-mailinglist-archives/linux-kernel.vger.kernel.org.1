@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476B81AC92E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26101ACAA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501981AbgDPPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
+        id S2897851AbgDPNjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:39:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898696AbgDPNrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:40 -0400
+        id S2896274AbgDPNap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A825921734;
-        Thu, 16 Apr 2020 13:47:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C714F208E4;
+        Thu, 16 Apr 2020 13:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044860;
-        bh=EJt1zxE3Dw7U70czLT6GAlEXQmogHRnm8l2IKKSPbVs=;
+        s=default; t=1587043844;
+        bh=4WmZeTUyeAqntnHxv7Qm2vNvcaXBe85221U2KvsrKXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g5z444mWIHgGNLO1tR44T9FOJht36r+3ACQSnHP/rSmxxhiP+S5wpyl3JKNWPXXBX
-         QmUs9vOZGJyPSyNCWIN2vwCXOYD666S2DFJ9Rauyi60JaAF/23cmhC2ZsLTh1cSsSZ
-         qSynKaOsjE0EPsO8jmy5V8tXnfv48Exmi3BSfKvA=
+        b=xeay12ssKUiE8Sm4C8gfU/wWBl35EF34K+g2k4Zbd41TllsjtgQgNkOBpogNPtpQs
+         FlEYNWOu2ossZIrg3GEXFUPJTsAK4tW8jGoqoxkyN+4/cOWybqwxnXrEAOVHzbDIww
+         djmnaxzvgAjQiKeNFebn5xQYMxA1pd/YvGwe1igM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 129/232] KVM: VMX: Always VMCLEAR in-use VMCSes during crash with kexec support
-Date:   Thu, 16 Apr 2020 15:23:43 +0200
-Message-Id: <20200416131331.181618025@linuxfoundation.org>
+Subject: [PATCH 4.19 083/146] KVM: VMX: Always VMCLEAR in-use VMCSes during crash with kexec support
+Date:   Thu, 16 Apr 2020 15:23:44 +0200
+Message-Id: <20200416131254.186306698@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -98,12 +98,12 @@ Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx/vmx.c |   67 +++++++++++--------------------------------------
+ arch/x86/kvm/vmx.c |   67 ++++++++++++-----------------------------------------
  1 file changed, 16 insertions(+), 51 deletions(-)
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -648,43 +648,15 @@ void loaded_vmcs_init(struct loaded_vmcs
+--- a/arch/x86/kvm/vmx.c
++++ b/arch/x86/kvm/vmx.c
+@@ -2156,43 +2156,15 @@ static void vmcs_load(struct vmcs *vmcs)
  }
  
  #ifdef CONFIG_KEXEC_CORE
@@ -147,7 +147,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #endif /* CONFIG_KEXEC_CORE */
  
  static void __loaded_vmcs_clear(void *arg)
-@@ -696,19 +668,24 @@ static void __loaded_vmcs_clear(void *ar
+@@ -2204,19 +2176,24 @@ static void __loaded_vmcs_clear(void *ar
  		return; /* vcpu migration can race with cpu offline */
  	if (per_cpu(current_vmcs, cpu) == loaded_vmcs->vmcs)
  		per_cpu(current_vmcs, cpu) = NULL;
@@ -178,8 +178,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 +	loaded_vmcs->launched = 0;
  }
  
- void loaded_vmcs_clear(struct loaded_vmcs *loaded_vmcs)
-@@ -1317,18 +1294,17 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu
+ static void loaded_vmcs_clear(struct loaded_vmcs *loaded_vmcs)
+@@ -3067,18 +3044,17 @@ static void vmx_vcpu_load(struct kvm_vcp
  	if (!already_loaded) {
  		loaded_vmcs_clear(vmx->loaded_vmcs);
  		local_irq_disable();
@@ -202,7 +202,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		local_irq_enable();
  	}
  
-@@ -2256,17 +2232,6 @@ static int hardware_enable(void)
+@@ -4426,17 +4402,6 @@ static int hardware_enable(void)
  	INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
  	spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
  
