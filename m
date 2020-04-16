@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4C11AC6ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3F61AC91D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392917AbgDPOqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:46:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
+        id S2442416AbgDPPTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:19:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506797AbgDPN71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:59:27 -0400
+        id S2392304AbgDPNsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D2B922203;
-        Thu, 16 Apr 2020 13:59:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 417E2208E4;
+        Thu, 16 Apr 2020 13:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045566;
-        bh=W1TFNcL6d7PTuFQZwdR3ie9JKMjHoYNZuPHRwD0bY2A=;
+        s=default; t=1587044884;
+        bh=0CSh/3iuY/hLOBpsWWHw2RMNg5o9HoNcm5Ux17DNj/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yhsGDobPb8TlPbGN2dKuZspQlGsb8kp4Omjft0LRdLYOwI0EXEt0nagqDMiKR3ex0
-         Ac12JaooHktqudy0Rx1yZElVYEoWzwMedpo3jl6TnHsfzvb8424k6SVgEDE0ftw8iL
-         poXlrP9i4SDA2S1llpqr/bOvE+s/DeKlXXqRs564=
+        b=FIn3utZs4QmF1v7FLH6Iv6X5UQf7TZvOpGAYsfNGeXC72fdRRIeQ7Yg9vbPfFpSLR
+         LP2S5zkjRt2x4ooWnj3FekNbuBpJeWZpQSKvc2oaB/J+5sJjSmxw6g33oUcIfU3xA6
+         FCcBT42juApaTTtTt+UOfDWMshtCKvNdyJ8hbjSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Piotr Sroka <piotrs@cadence.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.6 146/254] mtd: rawnand: cadence: reinit completion before executing a new command
-Date:   Thu, 16 Apr 2020 15:23:55 +0200
-Message-Id: <20200416131344.795701960@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 142/232] btrfs: fix missing file extent item for hole after ranged fsync
+Date:   Thu, 16 Apr 2020 15:23:56 +0200
+Message-Id: <20200416131332.736666825@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +44,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piotr Sroka <piotrs@cadence.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 0d7d6c8183aadb1dcc13f415941404a7913b46b3 upstream.
+commit 95418ed1d10774cd9a49af6f39e216c1256f1eeb upstream.
 
-Reing the completion object before executing CDMA command to make sure
-the 'done' flag is OK.
+When doing a fast fsync for a range that starts at an offset greater than
+zero, we can end up with a log that when replayed causes the respective
+inode miss a file extent item representing a hole if we are not using the
+NO_HOLES feature. This is because for fast fsyncs we don't log any extents
+that cover a range different from the one requested in the fsync.
 
-Fixes: ec4ba01e894d ("mtd: rawnand: Add new Cadence NAND driver to MTD subsystem")
-Cc: stable@vger.kernel.org
-Signed-off-by: Piotr Sroka <piotrs@cadence.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/1581328530-29966-4-git-send-email-piotrs@cadence.com
+Example scenario to trigger it:
+
+  $ mkfs.btrfs -O ^no-holes -f /dev/sdd
+  $ mount /dev/sdd /mnt
+
+  # Create a file with a single 256K and fsync it to clear to full sync
+  # bit in the inode - we want the msync below to trigger a fast fsync.
+  $ xfs_io -f -c "pwrite -S 0xab 0 256K" -c "fsync" /mnt/foo
+
+  # Force a transaction commit and wipe out the log tree.
+  $ sync
+
+  # Dirty 768K of data, increasing the file size to 1Mb, and flush only
+  # the range from 256K to 512K without updating the log tree
+  # (sync_file_range() does not trigger fsync, it only starts writeback
+  # and waits for it to finish).
+
+  $ xfs_io -c "pwrite -S 0xcd 256K 768K" /mnt/foo
+  $ xfs_io -c "sync_range -abw 256K 256K" /mnt/foo
+
+  # Now dirty the range from 768K to 1M again and sync that range.
+  $ xfs_io -c "mmap -w 768K 256K"        \
+           -c "mwrite -S 0xef 768K 256K" \
+           -c "msync -s 768K 256K"       \
+           -c "munmap"                   \
+           /mnt/foo
+
+  <power fail>
+
+  # Mount to replay the log.
+  $ mount /dev/sdd /mnt
+  $ umount /mnt
+
+  $ btrfs check /dev/sdd
+  Opening filesystem to check...
+  Checking filesystem on /dev/sdd
+  UUID: 482fb574-b288-478e-a190-a9c44a78fca6
+  [1/7] checking root items
+  [2/7] checking extents
+  [3/7] checking free space cache
+  [4/7] checking fs roots
+  root 5 inode 257 errors 100, file extent discount
+  Found file extent holes:
+       start: 262144, len: 524288
+  ERROR: errors found in fs roots
+  found 720896 bytes used, error(s) found
+  total csum bytes: 512
+  total tree bytes: 131072
+  total fs tree bytes: 32768
+  total extent tree bytes: 16384
+  btree space waste bytes: 123514
+  file data blocks allocated: 589824
+    referenced 589824
+
+Fix this issue by setting the range to full (0 to LLONG_MAX) when the
+NO_HOLES feature is not enabled. This results in extra work being done
+but it gives the guarantee we don't end up with missing holes after
+replaying the log.
+
+CC: stable@vger.kernel.org # 4.19+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/cadence-nand-controller.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/file.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -997,6 +997,7 @@ static int cadence_nand_cdma_send(struct
- 		return status;
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2074,6 +2074,16 @@ int btrfs_sync_file(struct file *file, l
+ 	btrfs_init_log_ctx(&ctx, inode);
  
- 	cadence_nand_reset_irq(cdns_ctrl);
-+	reinit_completion(&cdns_ctrl->complete);
- 
- 	writel_relaxed((u32)cdns_ctrl->dma_cdma_desc,
- 		       cdns_ctrl->reg + CMD_REG2);
+ 	/*
++	 * Set the range to full if the NO_HOLES feature is not enabled.
++	 * This is to avoid missing file extent items representing holes after
++	 * replaying the log.
++	 */
++	if (!btrfs_fs_incompat(fs_info, NO_HOLES)) {
++		start = 0;
++		end = LLONG_MAX;
++	}
++
++	/*
+ 	 * We write the dirty pages in the range and wait until they complete
+ 	 * out of the ->i_mutex. If so, we can flush the dirty pages by
+ 	 * multi-task, and make the performance up.  See
 
 
