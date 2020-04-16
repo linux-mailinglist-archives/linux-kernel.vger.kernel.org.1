@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7CC1AC71A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1551AC721
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731543AbgDPOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:49:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45586 "EHLO mail.kernel.org"
+        id S2392726AbgDPOuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:50:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409375AbgDPN6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:36 -0400
+        id S1729205AbgDPN6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB2A520786;
-        Thu, 16 Apr 2020 13:58:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6839C21734;
+        Thu, 16 Apr 2020 13:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045515;
-        bh=BSa93prsmqtl3l+Nd2NXht7SlPxTZO8IC0eMwwLaAMk=;
+        s=default; t=1587045517;
+        bh=79z7BDql8stYOus3GTROCiSx/mTNrMJNRyoDBHRU8TQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LsDgMuynCQ+Wgz8u9hZJ5aZdbfN7nk58kr85OHtWZszh7NcvjYkwxQsYpDkdzk3wf
-         ZheaAQNmPLHelBVPLfXVTE0NQO+NRxBvM6bYLFL0k3JS17jB0ZPJpgW92K95+uszPL
-         j9mCk0jnIoiKM3grqvhpK+++e/VpguI3cZ5oHaQg=
+        b=TBRW4KAuPJkfxRXfTUv++DHJzRmllVS/jwNsye5rWxw58IKmPfgyRqifdqqQZo2UQ
+         x9TNf3QF4Yc54DrpOAApfgRsXGFgVolVMAZnm/M2Y1ic2W3b5LrGTLovn4gL446K4E
+         6AWuy9VAEr3U7s54kV3dB/oSAqTRCee54igVHfb8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.6 166/254] scsi: mpt3sas: Fix kernel panic observed on soft HBA unplug
-Date:   Thu, 16 Apr 2020 15:24:15 +0200
-Message-Id: <20200416131347.298335124@linuxfoundation.org>
+        stable@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
+        Anssi Hannula <anssi.hannula@bitwise.fi>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.6 167/254] tools: gpio: Fix out-of-tree build regression
+Date:   Thu, 16 Apr 2020 15:24:16 +0200
+Message-Id: <20200416131347.403973078@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
 References: <20200416131325.804095985@linuxfoundation.org>
@@ -45,77 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-commit cc41f11a21a51d6869d71e525a7264c748d7c0d7 upstream.
+commit 82f04bfe2aff428b063eefd234679b2d693228ed upstream.
 
-Generic protection fault type kernel panic is observed when user performs
-soft (ordered) HBA unplug operation while IOs are running on drives
-connected to HBA.
+Commit 0161a94e2d1c7 ("tools: gpio: Correctly add make dependencies for
+gpio_utils") added a make rule for gpio-utils-in.o but used $(output)
+instead of the correct $(OUTPUT) for the output directory, breaking
+out-of-tree build (O=xx) with the following error:
 
-When user performs ordered HBA removal operation, the kernel calls PCI
-device's .remove() call back function where driver is flushing out all the
-outstanding SCSI IO commands with DID_NO_CONNECT host byte and also unmaps
-sg buffers allocated for these IO commands.
+  No rule to make target 'out/tools/gpio/gpio-utils-in.o', needed by 'out/tools/gpio/lsgpio-in.o'.  Stop.
 
-However, in the ordered HBA removal case (unlike of real HBA hot removal),
-HBA device is still alive and hence HBA hardware is performing the DMA
-operations to those buffers on the system memory which are already unmapped
-while flushing out the outstanding SCSI IO commands and this leads to
-kernel panic.
+Fix that.
 
-Don't flush out the outstanding IOs from .remove() path in case of ordered
-removal since HBA will be still alive in this case and it can complete the
-outstanding IOs. Flush out the outstanding IOs only in case of 'physical
-HBA hot unplug' where there won't be any communication with the HBA.
-
-During shutdown also it is possible that HBA hardware can perform DMA
-operations on those outstanding IO buffers which are completed with
-DID_NO_CONNECT by the driver from .shutdown(). So same above fix is applied
-in shutdown path as well.
-
-It is safe to drop the outstanding commands when HBA is inaccessible such
-as when permanent PCI failure happens, when HBA is in non-operational
-state, or when someone does a real HBA hot unplug operation. Since driver
-knows that HBA is inaccessible during these cases, it is safe to drop the
-outstanding commands instead of waiting for SCSI error recovery to kick in
-and clear these outstanding commands.
-
-Link: https://lore.kernel.org/r/1585302763-23007-1-git-send-email-sreekanth.reddy@broadcom.com
-Fixes: c666d3be99c0 ("scsi: mpt3sas: wait for and flush running commands on shutdown/unload")
-Cc: stable@vger.kernel.org #v4.14.174+
-Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 0161a94e2d1c ("tools: gpio: Correctly add make dependencies for gpio_utils")
+Cc: <stable@vger.kernel.org>
+Cc: Laura Abbott <labbott@redhat.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Link: https://lore.kernel.org/r/20200325103154.32235-1-anssi.hannula@bitwise.fi
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/gpio/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -9908,8 +9908,8 @@ static void scsih_remove(struct pci_dev
+--- a/tools/gpio/Makefile
++++ b/tools/gpio/Makefile
+@@ -35,7 +35,7 @@ $(OUTPUT)include/linux/gpio.h: ../../inc
  
- 	ioc->remove_host = 1;
+ prepare: $(OUTPUT)include/linux/gpio.h
  
--	mpt3sas_wait_for_commands_to_complete(ioc);
--	_scsih_flush_running_cmds(ioc);
-+	if (!pci_device_is_present(pdev))
-+		_scsih_flush_running_cmds(ioc);
- 
- 	_scsih_fw_event_cleanup_queue(ioc);
- 
-@@ -9992,8 +9992,8 @@ scsih_shutdown(struct pci_dev *pdev)
- 
- 	ioc->remove_host = 1;
- 
--	mpt3sas_wait_for_commands_to_complete(ioc);
--	_scsih_flush_running_cmds(ioc);
-+	if (!pci_device_is_present(pdev))
-+		_scsih_flush_running_cmds(ioc);
- 
- 	_scsih_fw_event_cleanup_queue(ioc);
+-GPIO_UTILS_IN := $(output)gpio-utils-in.o
++GPIO_UTILS_IN := $(OUTPUT)gpio-utils-in.o
+ $(GPIO_UTILS_IN): prepare FORCE
+ 	$(Q)$(MAKE) $(build)=gpio-utils
  
 
 
