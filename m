@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E321ACC7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FB11AC958
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636376AbgDPQAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:00:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35302 "EHLO mail.kernel.org"
+        id S1730603AbgDPPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:22:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895352AbgDPN1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:27:02 -0400
+        id S2898558AbgDPNqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:46:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6C5521BE5;
-        Thu, 16 Apr 2020 13:26:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6674121744;
+        Thu, 16 Apr 2020 13:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043620;
-        bh=SXAong0dK9Zt1RqkvYCfwsNxtQBl+WYaOrbAXLIv3TA=;
+        s=default; t=1587044764;
+        bh=Ikc0AYvLKTZZv4VYpqWl7cUBvSOW5ZMNjoOQKDLh2aA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ItrGqxf5lbj7nehZCrfbqxHcXJCZ5zxnhigTeqHzTyCKfJC4MPew24f3HO/4PT+8
-         i6j8Y7k5GLGwQlK5UOdvjSr3+tf7IE4BtQ2iPUDyl/Ww5+BdHszl56bzQ4bFMo1TEq
-         V+/p370Ss+SLScHhiixi0hCKV8FF096LDF1rKfqU=
+        b=Y/OM43+5DhfkQd4bvo2LdnHTOi8q370U7dP3tnWmx7GUdMFN9B8TrJV34sZutQ3HT
+         yi3gNO0TLeD8lacGYG0SUEJm1RZL5QD2FlI9DGREc6JALJUP8G0x/RwUBtD1SG1yij
+         3/pb+sruzKCSu4wxm023xGvH6sdvIFeKXKS8iPyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 005/146] hinic: fix a bug of waitting for IO stopped
+Subject: [PATCH 5.4 052/232] cpufreq: imx6q: fix error handling
 Date:   Thu, 16 Apr 2020 15:22:26 +0200
-Message-Id: <20200416131243.187874522@linuxfoundation.org>
+Message-Id: <20200416131322.175397525@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,90 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
+From: Peng Fan <peng.fan@nxp.com>
 
-[ Upstream commit 96758117dc528e6d84bd23d205e8cf7f31eda029 ]
+[ Upstream commit 3646f50a3838c5949a89ecbdb868497cdc05b8fd ]
 
-it's unreliable for fw to check whether IO is stopped, so driver
-wait for enough time to ensure IO process is done in hw before
-freeing resources
+When speed checking failed, direclty jumping to put_node label
+is not correct. Need jump to out_free_opp to avoid resources leak.
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2733fb0d0699 ("cpufreq: imx6q: read OCOTP through nvmem for imx6ul/imx6ull")
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/huawei/hinic/hinic_hw_dev.c  | 51 +------------------
- 1 file changed, 2 insertions(+), 49 deletions(-)
+ drivers/cpufreq/imx6q-cpufreq.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-index 9deec13d98e93..4c91c8ceac5f9 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-@@ -370,50 +370,6 @@ static int wait_for_db_state(struct hinic_hwdev *hwdev)
- 	return -EFAULT;
- }
- 
--static int wait_for_io_stopped(struct hinic_hwdev *hwdev)
--{
--	struct hinic_cmd_io_status cmd_io_status;
--	struct hinic_hwif *hwif = hwdev->hwif;
--	struct pci_dev *pdev = hwif->pdev;
--	struct hinic_pfhwdev *pfhwdev;
--	unsigned long end;
--	u16 out_size;
--	int err;
--
--	if (!HINIC_IS_PF(hwif) && !HINIC_IS_PPF(hwif)) {
--		dev_err(&pdev->dev, "Unsupported PCI Function type\n");
--		return -EINVAL;
--	}
--
--	pfhwdev = container_of(hwdev, struct hinic_pfhwdev, hwdev);
--
--	cmd_io_status.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
--
--	end = jiffies + msecs_to_jiffies(IO_STATUS_TIMEOUT);
--	do {
--		err = hinic_msg_to_mgmt(&pfhwdev->pf_to_mgmt, HINIC_MOD_COMM,
--					HINIC_COMM_CMD_IO_STATUS_GET,
--					&cmd_io_status, sizeof(cmd_io_status),
--					&cmd_io_status, &out_size,
--					HINIC_MGMT_MSG_SYNC);
--		if ((err) || (out_size != sizeof(cmd_io_status))) {
--			dev_err(&pdev->dev, "Failed to get IO status, ret = %d\n",
--				err);
--			return err;
--		}
--
--		if (cmd_io_status.status == IO_STOPPED) {
--			dev_info(&pdev->dev, "IO stopped\n");
--			return 0;
--		}
--
--		msleep(20);
--	} while (time_before(jiffies, end));
--
--	dev_err(&pdev->dev, "Wait for IO stopped - Timeout\n");
--	return -ETIMEDOUT;
--}
--
- /**
-  * clear_io_resource - set the IO resources as not active in the NIC
-  * @hwdev: the NIC HW device
-@@ -433,11 +389,8 @@ static int clear_io_resources(struct hinic_hwdev *hwdev)
- 		return -EINVAL;
+diff --git a/drivers/cpufreq/imx6q-cpufreq.c b/drivers/cpufreq/imx6q-cpufreq.c
+index 1fcbbd53a48a2..edef3399c9794 100644
+--- a/drivers/cpufreq/imx6q-cpufreq.c
++++ b/drivers/cpufreq/imx6q-cpufreq.c
+@@ -381,23 +381,24 @@ static int imx6q_cpufreq_probe(struct platform_device *pdev)
+ 		goto put_reg;
  	}
  
--	err = wait_for_io_stopped(hwdev);
--	if (err) {
--		dev_err(&pdev->dev, "IO has not stopped yet\n");
--		return err;
--	}
-+	/* sleep 100ms to wait for firmware stopping I/O */
-+	msleep(100);
++	/* Because we have added the OPPs here, we must free them */
++	free_opp = true;
++
+ 	if (of_machine_is_compatible("fsl,imx6ul") ||
+ 	    of_machine_is_compatible("fsl,imx6ull")) {
+ 		ret = imx6ul_opp_check_speed_grading(cpu_dev);
+ 		if (ret) {
+ 			if (ret == -EPROBE_DEFER)
+-				goto put_node;
++				goto out_free_opp;
  
- 	cmd_clear_io_res.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
+ 			dev_err(cpu_dev, "failed to read ocotp: %d\n",
+ 				ret);
+-			goto put_node;
++			goto out_free_opp;
+ 		}
+ 	} else {
+ 		imx6q_opp_check_speed_grading(cpu_dev);
+ 	}
  
+-	/* Because we have added the OPPs here, we must free them */
+-	free_opp = true;
+ 	num = dev_pm_opp_get_opp_count(cpu_dev);
+ 	if (num < 0) {
+ 		ret = num;
 -- 
 2.20.1
 
