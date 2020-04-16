@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3601AC4E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15AD1AC272
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409671AbgDPOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:06:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57780 "EHLO mail.kernel.org"
+        id S2895733AbgDPN2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:28:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898436AbgDPNoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:44:32 -0400
+        id S2895411AbgDPN1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:27:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB9A120732;
-        Thu, 16 Apr 2020 13:44:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EC13206E9;
+        Thu, 16 Apr 2020 13:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044671;
-        bh=skWxrDeaTk6+jv+cXjW6TzCDWVjh/oty9QB9S9uiJkE=;
+        s=default; t=1587043630;
+        bh=fSNbiy2el5P90GKHtiHlis5ld66ekToXznPAUl6Zzjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U/LD2LvsTFdRrink/P7TTwV56fMBy40gyv1Am2ZUxmaVZM7MTaBRQ3r4SCoqfQt8b
-         1QJ6TsufhQj6XgPKCxM52+FiDb2hNurTYFxuySPIwa3Rp6uelUCdZ3vYNeFsu6sFgc
-         G9+Avuj++lNp1hLUUbMb2V9gGyUzn294BFmF7/mU=
+        b=JZ7EgjJN0kBL6p1CI0bOzbkxlKpncEzSsgVKgUCytSfjjQqSmR+J6NFO7RanO6gJR
+         1GAEEhTy6iKuY3yx9L2AzBxAogmef8XNCJYscRFp+NyV+SzXjKPmtBTOTaNiqIL6gb
+         dz1zPaLftiupQK3YRgL3Nokj9PBFY9k+Y+nIBhGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org, Alain Volmat <avolmat@me.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/232] genirq/irqdomain: Check pointer in irq_domain_alloc_irqs_hierarchy()
-Date:   Thu, 16 Apr 2020 15:22:29 +0200
-Message-Id: <20200416131322.479917119@linuxfoundation.org>
+Subject: [PATCH 4.19 009/146] i2c: st: fix missing struct parameter description
+Date:   Thu, 16 Apr 2020 15:22:30 +0200
+Message-Id: <20200416131243.801663383@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,64 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+From: Alain Volmat <avolmat@me.com>
 
-[ Upstream commit 87f2d1c662fa1761359fdf558246f97e484d177a ]
+[ Upstream commit f491c6687332920e296d0209e366fe2ca7eab1c6 ]
 
-irq_domain_alloc_irqs_hierarchy() has 3 call sites in the compilation unit
-but only one of them checks for the pointer which is being dereferenced
-inside the called function. Move the check into the function. This allows
-for catching the error instead of the following crash:
+Fix a missing struct parameter description to allow
+warning free W=1 compilation.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-PC is at 0x0
-LR is at gpiochip_hierarchy_irq_domain_alloc+0x11f/0x140
-...
-[<c06c23ff>] (gpiochip_hierarchy_irq_domain_alloc)
-[<c0462a89>] (__irq_domain_alloc_irqs)
-[<c0462dad>] (irq_create_fwspec_mapping)
-[<c06c2251>] (gpiochip_to_irq)
-[<c06c1c9b>] (gpiod_to_irq)
-[<bf973073>] (gpio_irqs_init [gpio_irqs])
-[<bf974048>] (gpio_irqs_exit+0xecc/0xe84 [gpio_irqs])
-Code: bad PC value
-
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200306174720.82604-1-alexander.sverdlin@nokia.com
+Signed-off-by: Alain Volmat <avolmat@me.com>
+Reviewed-by: Patrice Chotard <patrice.chotard@st.com>
+Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/irq/irqdomain.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-st.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 480df36597206..c776b8e86fbcc 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -1293,6 +1293,11 @@ int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
- 				    unsigned int irq_base,
- 				    unsigned int nr_irqs, void *arg)
- {
-+	if (!domain->ops->alloc) {
-+		pr_debug("domain->ops->alloc() is NULL\n");
-+		return -ENOSYS;
-+	}
-+
- 	return domain->ops->alloc(domain, irq_base, nr_irqs, arg);
- }
- 
-@@ -1330,11 +1335,6 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
- 			return -EINVAL;
- 	}
- 
--	if (!domain->ops->alloc) {
--		pr_debug("domain->ops->alloc() is NULL\n");
--		return -ENOSYS;
--	}
--
- 	if (realloc && irq_base >= 0) {
- 		virq = irq_base;
- 	} else {
+diff --git a/drivers/i2c/busses/i2c-st.c b/drivers/i2c/busses/i2c-st.c
+index 9e62f893958aa..81158ae8bfe36 100644
+--- a/drivers/i2c/busses/i2c-st.c
++++ b/drivers/i2c/busses/i2c-st.c
+@@ -437,6 +437,7 @@ static void st_i2c_wr_fill_tx_fifo(struct st_i2c_dev *i2c_dev)
+ /**
+  * st_i2c_rd_fill_tx_fifo() - Fill the Tx FIFO in read mode
+  * @i2c_dev: Controller's private data
++ * @max: Maximum amount of data to fill into the Tx FIFO
+  *
+  * This functions fills the Tx FIFO with fixed pattern when
+  * in read mode to trigger clock.
 -- 
 2.20.1
 
