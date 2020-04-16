@@ -2,112 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010C51ABD5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB131ABD0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504422AbgDPJyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:54:15 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:51350 "EHLO inva021.nxp.com"
+        id S2503824AbgDPJk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504124AbgDPJyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:54:06 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A7BB4200C79;
-        Thu, 16 Apr 2020 11:54:01 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E42CA200C66;
-        Thu, 16 Apr 2020 11:53:58 +0200 (CEST)
-Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 295EC402A8;
-        Thu, 16 Apr 2020 17:53:55 +0800 (SGT)
-From:   Yuantian Tang <andy.tang@nxp.com>
-To:     rui.zhang@intel.com, edubezval@gmail.com, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuantian Tang <andy.tang@nxp.com>
-Subject: [PATCH v2] thermal: qoriq: Update the settings for TMUv2
-Date:   Thu, 16 Apr 2020 17:39:40 +0800
-Message-Id: <20200416093940.34371-1-andy.tang@nxp.com>
-X-Mailer: git-send-email 2.9.5
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2503645AbgDPJkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:40:31 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4CCB2072D;
+        Thu, 16 Apr 2020 09:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587030028;
+        bh=Rv7XrR5lXHMCHVxYItGbbEukoFm73yigisZjMw3dUOQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=D1GK1/2p4K/IlHV7XscyBTuvzsfpMiyppPZAC3JppayORw5Mzri5wPo2tmjnTSR49
+         5mRNgs+FmymLeYYp8iSgR6iT6+Eue70lYDU+oK5GwGwEHeCNQmLCeYxU5loaqv3PW1
+         g/ZqjRsf7xW3Ci7DLYYurbJcCyHwkhbXVI0ZWGNM=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jP10V-003mjD-2A; Thu, 16 Apr 2020 10:40:27 +0100
+Date:   Thu, 16 Apr 2020 10:40:25 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH] irqchip/meson-gpio: Fix HARDIRQ-safe -> HARDIRQ-unsafe
+ lock order
+Message-ID: <20200416104025.5a22c228@why>
+In-Reply-To: <1jeesqt686.fsf@starbuckisacylon.baylibre.com>
+References: <20200407144658.829246-1-maz@kernel.org>
+        <20200414142018.6e7e5ec3@why>
+        <1jeesqt686.fsf@starbuckisacylon.baylibre.com>
+Organization: Approximate
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, khilman@baylibre.com, martin.blumenstingl@googlemail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For TMU v2, TMSAR registers need to be set properly to get the
-accurate temperature values.
-Also temperature reading needs to convert to degree Celsius
-since it is in degrees Kelvin.
+On Tue, 14 Apr 2020 17:52:25 +0200
+Jerome Brunet <jbrunet@baylibre.com> wrote:
 
-Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
----
-v2:
-	- change the temp in millicelsius
+Hi Jerome,
 
- drivers/thermal/qoriq_thermal.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+> On Tue 14 Apr 2020 at 15:20, Marc Zyngier <maz@kernel.org> wrote:
+> 
+> > On Tue,  7 Apr 2020 15:46:58 +0100
+> > Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > +Jerome, Martin,
+> >  
+> >> Running a lockedp-enabled kernel on a vim3l board (Amlogic SM1)
+> >> leads to the following splat:
+> >> 
+> >> [   13.557138] WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+> >> [   13.587485] ip/456 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+> >> [   13.625922] ffff000059908cf0 (&irq_desc_lock_class){-.-.}-{2:2}, at: __setup_irq+0xf8/0x8d8
+> >> [   13.632273] which would create a new lock dependency:
+> >> [   13.637272]  (&irq_desc_lock_class){-.-.}-{2:2} -> (&ctl->lock){+.+.}-{2:2}
+> >> [   13.644209]
+> >> [   13.644209] but this new dependency connects a HARDIRQ-irq-safe lock:
+> >> [   13.654122]  (&irq_desc_lock_class){-.-.}-{2:2}
+> >> [   13.654125]
+> >> [   13.654125] ... which became HARDIRQ-irq-safe at:
+> >> [   13.664759]   lock_acquire+0xec/0x368
+> >> [   13.666926]   _raw_spin_lock+0x60/0x88
+> >> [   13.669979]   handle_fasteoi_irq+0x30/0x178
+> >> [   13.674082]   generic_handle_irq+0x38/0x50
+> >> [   13.678098]   __handle_domain_irq+0x6c/0xc8
+> >> [   13.682209]   gic_handle_irq+0x5c/0xb0
+> >> [   13.685872]   el1_irq+0xd0/0x180
+> >> [   13.689010]   arch_cpu_idle+0x40/0x220
+> >> [   13.692732]   default_idle_call+0x54/0x60
+> >> [   13.696677]   do_idle+0x23c/0x2e8
+> >> [   13.699903]   cpu_startup_entry+0x30/0x50
+> >> [   13.703852]   rest_init+0x1e0/0x2b4
+> >> [   13.707301]   arch_call_rest_init+0x18/0x24
+> >> [   13.711449]   start_kernel+0x4ec/0x51c
+> >> [   13.715167]
+> >> [   13.715167] to a HARDIRQ-irq-unsafe lock:
+> >> [   13.722426]  (&ctl->lock){+.+.}-{2:2}
+> >> [   13.722430]
+> >> [   13.722430] ... which became HARDIRQ-irq-unsafe at:
+> >> [   13.732319] ...
+> >> [   13.732324]   lock_acquire+0xec/0x368
+> >> [   13.735985]   _raw_spin_lock+0x60/0x88
+> >> [   13.739452]   meson_gpio_irq_domain_alloc+0xcc/0x290
+> >> [   13.744392]   irq_domain_alloc_irqs_hierarchy+0x24/0x60
+> >> [   13.749586]   __irq_domain_alloc_irqs+0x160/0x2f0
+> >> [   13.754254]   irq_create_fwspec_mapping+0x118/0x320
+> >> [   13.759073]   irq_create_of_mapping+0x78/0xa0
+> >> [   13.763360]   of_irq_get+0x6c/0x80
+> >> [   13.766701]   of_mdiobus_register_phy+0x10c/0x238 [of_mdio]
+> >> [   13.772227]   of_mdiobus_register+0x158/0x380 [of_mdio]
+> >> [   13.777388]   mdio_mux_init+0x180/0x2e8 [mdio_mux]
+> >> [   13.782128]   g12a_mdio_mux_probe+0x290/0x398 [mdio_mux_meson_g12a]
+> >> [   13.788349]   platform_drv_probe+0x5c/0xb0
+> >> [   13.792379]   really_probe+0xe4/0x448
+> >> [   13.795979]   driver_probe_device+0xe8/0x140
+> >> [   13.800189]   __device_attach_driver+0x94/0x120
+> >> [   13.804639]   bus_for_each_drv+0x84/0xd8
+> >> [   13.808474]   __device_attach+0xe4/0x168
+> >> [   13.812361]   device_initial_probe+0x1c/0x28
+> >> [   13.816592]   bus_probe_device+0xa4/0xb0
+> >> [   13.820430]   deferred_probe_work_func+0xa8/0x100
+> >> [   13.825064]   process_one_work+0x264/0x688
+> >> [   13.829088]   worker_thread+0x4c/0x458
+> >> [   13.832768]   kthread+0x154/0x158
+> >> [   13.836018]   ret_from_fork+0x10/0x18
+> >> [   13.839612]
+> >> [   13.839612] other info that might help us debug this:
+> >> [   13.839612]
+> >> [   13.850354]  Possible interrupt unsafe locking scenario:
+> >> [   13.850354]
+> >> [   13.855720]        CPU0                    CPU1
+> >> [   13.858774]        ----                    ----
+> >> [   13.863242]   lock(&ctl->lock);
+> >> [   13.866330]                                local_irq_disable();
+> >> [   13.872233]                                lock(&irq_desc_lock_class);
+> >> [   13.878705]                                lock(&ctl->lock);
+> >> [   13.884297]   <Interrupt>
+> >> [   13.886857]     lock(&irq_desc_lock_class);
+> >> [   13.891014]
+> >> [   13.891014]  *** DEADLOCK ***
+> >> 
+> >> The issue can occur when CPU1 is doing something like irq_set_type()
+> >> and CPU0 performing an interrupt allocation, for example. Taking
+> >> an interrupt (like the one being reconfigured) would lead to a
+> >> deadlock.  
+> 
+> Just to make sure I understand
+> * the 1st trace is a CPU getting interrupted while setting the irq type
+> * the 2nd trace is another CPU trying to allocate an irq for network PHY.
 
-diff --git a/drivers/thermal/qoriq_thermal.c b/drivers/thermal/qoriq_thermal.c
-index 028a6bbf75dc..f6371127f707 100644
---- a/drivers/thermal/qoriq_thermal.c
-+++ b/drivers/thermal/qoriq_thermal.c
-@@ -23,6 +23,7 @@
- #define TMTMIR_DEFAULT	0x0000000f
- #define TIER_DISABLE	0x0
- #define TEUMR0_V2		0x51009c00
-+#define TMSARA_V2		0xe
- #define TMU_VER1		0x1
- #define TMU_VER2		0x2
- 
-@@ -50,6 +51,9 @@
- 					    * Site Register
- 					    */
- #define TRITSR_V	BIT(31)
-+#define REGS_V2_TMSAR(n)	(0x304 + 16 * (n))	/* TMU monitoring
-+						* site adjustment register
-+						*/
- #define REGS_TTRnCR(n)	(0xf10 + 4 * (n)) /* Temperature Range n
- 					   * Control Register
- 					   */
-@@ -100,7 +104,11 @@ static int tmu_get_temp(void *p, int *temp)
- 				     10 * USEC_PER_MSEC))
- 		return -ENODATA;
- 
--	*temp = (val & 0xff) * 1000;
-+	/* For TMUv2, temperature reading in degrees Kelvin */
-+	if (qdata->ver == TMU_VER1)
-+		*temp = (val & 0xff) * 1000;
-+	else
-+		*temp = ((val & 0x1ff) - 273) * 1000;
- 
- 	return 0;
- }
-@@ -192,6 +200,8 @@ static int qoriq_tmu_calibration(struct device *dev,
- 
- static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
- {
-+	int i;
-+
- 	/* Disable interrupt, using polling instead */
- 	regmap_write(data->regmap, REGS_TIER, TIER_DISABLE);
- 
-@@ -202,6 +212,8 @@ static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
- 	} else {
- 		regmap_write(data->regmap, REGS_V2_TMTMIR, TMTMIR_DEFAULT);
- 		regmap_write(data->regmap, REGS_V2_TEUMR(0), TEUMR0_V2);
-+		for (i = 0; i < 7; i++)
-+			regmap_write(data->regmap, REGS_V2_TMSAR(i), TMSARA_V2);
- 	}
- 
- 	/* Disable monitoring */
-@@ -212,6 +224,7 @@ static const struct regmap_range qoriq_yes_ranges[] = {
- 	regmap_reg_range(REGS_TMR, REGS_TSCFGR),
- 	regmap_reg_range(REGS_TTRnCR(0), REGS_TTRnCR(3)),
- 	regmap_reg_range(REGS_V2_TEUMR(0), REGS_V2_TEUMR(2)),
-+	regmap_reg_range(REGS_V2_TMSAR(0), REGS_V2_TMSAR(15)),
- 	regmap_reg_range(REGS_IPBRR(0), REGS_IPBRR(1)),
- 	/* Read only registers below */
- 	regmap_reg_range(REGS_TRITSR(0), REGS_TRITSR(15)),
+The traces are only what lockdep sees as a dangerous behaviour, not
+necessarily what actually leads to a deadlock. The deadlock scenario is
+the one outlined just before "*** DEADLOCK ***", and a way to get there
+is my interpretation just above.
+
+> >> 
+> >> A solution to this is:
+> >> 
+> >> - Reorder the locking so that meson_gpio_irq_update_bits takes the lock
+> >>   itself at all times, instead of relying on the caller to lock or not,
+> >>   hence making the RMW sequence atomic,
+> >> 
+> >> - Rework the critical section in meson_gpio_irq_request_channel to only
+> >>   cover the allocation itself, and let the gpio_irq_sel_pin callback
+> >>   deal with its own locking if required,
+> >> 
+> >> - Take the private spin-lock with interrupts disabled at all times  
+> 
+> Looks like the only safe path if I understand correctly.
+> The patch below looks good to me.
+> 
+> >> 
+> >> Signed-off-by: Marc Zyngier <maz@kernel.org>  
+> 
+> Thanks for the fix Marc.
+> 
+> Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+
+Thanks,
+
+	M.
 -- 
-2.17.1
-
+Jazz is not dead. It just smells funny...
