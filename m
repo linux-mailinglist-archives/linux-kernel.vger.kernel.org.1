@@ -2,144 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6261AC1D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEDD1AC1D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894499AbgDPMyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:54:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56523 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894377AbgDPMyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:54:20 -0400
-IronPort-SDR: FojiQLcyoHzbKNpbMoGB+kduzJnxfbIk+mw2YWYxSoFaEse2ZJf30vOr/bj/XJIFYQtFrJvHW7
- /3nUaOxKhthw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 05:54:17 -0700
-IronPort-SDR: 2TWSUvSo2BpQ7WsbpwBWIS7QOg1aMl494NOtDrQ0w9oEj0roNF0ut0BpZBlr0jyuB+BJyENMYL
- TB/ez5YBnYOA==
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="400659843"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.170.42]) ([10.249.170.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 05:54:15 -0700
-Subject: Re: [PATCH] x86, smpboot: Disable frequency invariance when it's
- unsupported
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200416020700.167294-1-like.xu@linux.intel.com>
- <1587017284.32139.20.camel@suse.cz>
- <bf43772d-48e5-01d4-dd03-330110e487fa@linux.intel.com>
- <1587026430.32139.29.camel@suse.cz>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <a2a0dc7a-2b9c-1cb3-677d-1e9e77ad5f15@linux.intel.com>
-Date:   Thu, 16 Apr 2020 20:54:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2894568AbgDPMzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:55:13 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:53131 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894377AbgDPMzE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:55:04 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MqK2d-1ivFKg0nSd-00nRFg for <linux-kernel@vger.kernel.org>; Thu, 16 Apr
+ 2020 14:55:01 +0200
+Received: by mail-lj1-f169.google.com with SMTP id u6so6077799ljl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 05:55:01 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYoJbYh1+QdfJCPWxDTAhhqPNs93z4IaxRpe9WXRyonkHQK9ewN
+        X6CkUoiXnPl0lYe/ipetl9dvHA30wodPvzEu+qE=
+X-Google-Smtp-Source: APiQypIAIEVik5FsrgFmEvkjQhsTYhTh1nhITMoegpu8C+90ArmDd1XwwhW1JwxW5ljfYlKAIROZLp0BMRHis8jM//o=
+X-Received: by 2002:a2e:b888:: with SMTP id r8mr6519458ljp.128.1587041700605;
+ Thu, 16 Apr 2020 05:55:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1587026430.32139.29.camel@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1586757922.git.baolin.wang7@gmail.com> <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
+ <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com> <CADBw62r06X6mMTx3eLY1iU5KLOK644d1vA49Kp9JXzUtm2CpCw@mail.gmail.com>
+In-Reply-To: <CADBw62r06X6mMTx3eLY1iU5KLOK644d1vA49Kp9JXzUtm2CpCw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 16 Apr 2020 14:54:43 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3jnpRDjWwAOJa1EmbMzu+vKXmG3DBzhjHtVFz8NHfP8A@mail.gmail.com>
+Message-ID: <CAK8P3a3jnpRDjWwAOJa1EmbMzu+vKXmG3DBzhjHtVFz8NHfP8A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] soc: sprd: Add Spreadtrum special bits
+ updating support
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:S1VtNc0DQCU/+cVc+TCwgsKYeCbevWEURuBZxK0Tlt+mt15qaJK
+ OlW0YRgu2fpv8CW8HZNdBUYd+uBop5DXtFN7k0oViy4kC0KnLWqcgAIDNSFNfeSzRmivhyZ
+ JLp8AnMb/6B6p6MFe5Ye1BvKsMcZ+8uXEQTwdGFOIZfGt1YpAQPnvdnykuNG5CnN9WA1u7a
+ S41eDD+175zL1BMMp6V5A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UMFHcJWeNR8=:JaI9i+eoUrTXfKTENVCInm
+ msVbcGqfmgtx62y1+holZCui7i0rJUywhVO1LIkV5QIYSfmPc9kkeMmiVKRBKKIwSmvFDBTbL
+ IcHw7f+cQYYIaxko1Sad/JkJ8kCsTZDOvm9KQ78W4nN3uqb0CemKEeLLsozD7BuLXIsibS0L2
+ nycrdoePaGfxT8ZNIpG42dXSpoBsMGCmgp9spDCxS2sc1OASJqcW+buvntUtuWfZvoEno6mvT
+ doBghwBmjBd6VfNhaOEqBra/Pbl0+30tuNf+RdNjYz4UQtxrqtV7K1r3ePt+Wswo1dTMHJljL
+ X12RSSsKaMjao6fmsv8UV1hJ4xlsSCbDBr3G1ATD0Oc/qlhmYOtDEWumfCKD+iOhvj+OPkpXv
+ 5qBghSv0A+0lVWXwqsuCewuyvvDk6FM87aGPw9vNchJ6yET4wUNphDqmLx1FCpvSz2LO0I2vY
+ 6h9WXRdnxqKJRS5FEkfcR5ne4qtkE/SnNBucx8qTXVL5zCw3TOKCzjlXQ94ZreQm6v4FRz9yU
+ 7r22brBcwnEgM/qEj4O8nBFgnn6BWtuIzN9ouRYY16AeN6J5odtzPJQLPoW7u7kl6iXIPfWCd
+ TPnE4vopJv+4MwTKvsQwgBIZpwHjroM2fINgC5P25nTJoMKmF/WYY20PWTHngK7v0WhX3AHtw
+ RzKlg4jFeSZq63rEikytz5PYH1NnaQfJJfu1hlZC9bNr2nbTd6NSawVMyrclbnC031Sm3/bSA
+ /btYP+mk2YoPYWs8fdmxQK7LVAsouO3oMdBYWKzx9SGNeLtV8vYrNBEt2BNBMtKCUwz/CRgM1
+ KbzqlOTeIJ/jmqjgaowB5uURWeZ6xKYM3zjYeSbaxA/ZnhWnAk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/16 16:40, Giovanni Gherdovich wrote:
-> On Thu, 2020-04-16 at 15:01 +0800, Like Xu wrote:
->> On 2020/4/16 14:08, Giovanni Gherdovich wrote:
->>> [...]
->>> I've just sent fixes for these two problems here:
->>> https://lore.kernel.org/lkml/20200416054745.740-1-ggherdovich@suse.cz/
->>
->> Hence the "less than 4 cores" comment is weird for C6562
->> but the use of "1C turbo" looks good to me.
-> 
-> Right, your C6562 has 24 cores, (I think) it doesn't support turbo at all,
-> declares 1C turbo equal to the base frequency and all other turbo ratios (2C,
-> 4C etc) as zero.
-> 
-> The commit message of the fix I sent doesn't describe exactly your situation
-> but the patch addresses your case nonetheless. Some more comments below.
-> 
-> On Thu, 2020-04-16 at 15:01 +0800, Like Xu wrote:
->> On 2020/4/16 14:08, Giovanni Gherdovich wrote:
->>> [...]
->>> Hello Like Xu,
->>>
->>> thanks for reporting this and for the patch. My preferred solution for when
->>> the 4 cores turbo freq is detected as zero would be to look for the 1 core turbo
->>> frequency, as we're likely on a machine with less than 4 cores. Is that the
->>> case on your Atom C6562? I couldn't find it on ark.intel.com.
->>
->> The Atom C6562 is "24 cores" based on
->> https://www.intel.com/content/dam/www/public/us/en/documents/product-briefs/atom-p5900-product-brief.pdf
->>
->> #define MSR_PLATFORM_INFO		0x000000ce
->>
->> the value for this msr is 80820f9801600
->>
->> #define MSR_TURBO_RATIO_LIMIT		0x000001ad
->>
->> the value for this msr is 16
->>
->> I know you didn't test your feature on this platform,
->> but combinations of other various values are also possible
->> (unless it's made clear in the specification).
-> 
-> That's an interesting CPU; let me indulge in a couple of comments/questions
-> for my own curiosity.
->>From the document you link, the product name in the Intel catalogue seems to
-> be Atom P5962B. Apparently it belongs to the "P Series" just launched:
-> https://ark.intel.com/content/www/us/en/ark/products/series/202693/intel-atom-processor-p-series.html
-> and your product brief suggests it's meant for installation in 5G base stations.
-> 
-> 1) Can you share the output of "turbostat --interval 1 sleep 0"? I'm
->     interested in the headers of the output, where all the various pm-related
->     MSRs are decoded.
-> 
+On Thu, Apr 16, 2020 at 5:49 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+>
+> On Wed, Apr 15, 2020 at 11:36 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Mon, Apr 13, 2020 at 8:14 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+> > >
+> > > The spreadtrum platform uses a special set/clear method to update
+> > > registers' bits, which can remove the race of updating the global
+> > > registers between the multiple subsystems. Thus we can register
+> > > a physical regmap bus into syscon core to support this.
+> > >
+> > > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+> >
+> > I'd hope to avoid complicating the syscon driver further for this.
+> > Have you tried to use something other than syscon here to
+> > provide the regmap?
+>
+> I did not figure out other better solutions, since we still want to
+> use the common syscon driver with related APIs and node properties.
+>
+> Otherwise, I am afraid I should copy the common syscon driver into the
+> Spreadtrum SoC syscon driver with providing a new regmap bus, and
+> invent other similar APIs for users, but I think this is not good. We
+> still want to use the standard syscon APIs to keep consistent.
 
-I couldn't disclose more information about this.
+Right, that is certainly a problem.
 
-> 2) Despite not being in the Intel SDM, I was under the assumption that all
->     Intel CPUs declare the "all-cores turbo" frequency, but it's not the case
->     for this one. Eg: if you have 24 cores, somewhere in your MSRs I'd expect
->     to find "24C turbo" (or even "30C turbo", anything greater or equal than 24).
->     My understanding from
->     https://ark.intel.com/content/www/us/en/ark/products/202682/intel-atom-processor-p5962b-27m-cache-2-20-ghz.html
->     is that this CPU doesn't support turbo boost at all; in other CPUs without
->     turbo I've seen MSRs saying the all-cores turbo freq is equal to the base
->     freq (for compatibility I suppose). Here MSR_TURBO_RATIO_LIMIT says that 1C
->     turbo is the same as base frequency (2.2GHz), but turbo for larger sets of
->     cores is declared as zero, which I find a little odd.
+One option would be modifying the syscon driver itself, making it support
+the spreadtrum specific update_bits function natively when a matching
+syscon node is used and CONFIG_ARCH_SPRD is enabled.
 
-That's odd and we could only rely on the Intel specification
-about the assumption "Intel CPUs declare the all-cores turbo frequency"
-and I may report this issue if something does mismatch.
+We do support endianess properties and hwspinlocksin syscon, so adding
+another variant of regmap there isn't too much of a stretch.
 
-> 
-> 3) The parsing of MSRs in the frequency invariance code is modeled after
->     turbostat, and classifies CPUs in 5 groups: Atom up to Goldmont, Atom from
->     Goldmont onwards, Xeon Phi, Xeon Scalable Processors onwards and "generic
->     Core". As you've already found out from where your panic happens, your Atom
->     falls into the "generic Core" category (function core_set_max_freq_ratio()),
->     but given that it's an Atom and it's been released this very quarter I'd
->     have guessed it to behave like a Goldmont. Something for me to keep in mind.
+> > > +       void __iomem *base = context;
+> > > +       unsigned int set, clr;
+> > > +
+> > > +       set = val & mask;
+> > > +       clr = ~set & mask;
+> > > +
+> > > +       if (set)
+> > > +               writel(set, base + reg + SPRD_REG_SET_OFFSET);
+> > > +
+> > > +       if (clr)
+> > > +               writel(clr, base + reg + SPRD_REG_CLR_OFFSET);
+> > > +
+> > > +       return 0;
+> > > +}
+> >
+> > Regarding the implementation: Doesn't this introduce a new race
+> > between setting and clearing bits if you do both at the same time?
+> >
+> > This may not be a problem if you never do.
+>
+> I think this is not a issue, we just make sure the set bits updating
+> and clear bits updating both are atomic operation, which is safe to
+> update bits, right?
+> If user want to protect a series of bits updating operation between
+> the multiple subsystems, ( such as including several bits setting and
+> bit clearing operations), you still need use hwlocks. But that's
+> another topic, which is not set/clr method can solve.
 
-It's INTEL_FAM6_ATOM_TREMONT or INTEL_FAM6_ATOM_TREMONT_D.
+One thing that breaks is setting a multi-bit field atomically. We have
+other drivers doing for instance
 
-Thanks,
-Like Xu
+static void cdce925_clk_set_pdiv(struct clk_cdce925_output *data, u16 pdiv)
+{
+        switch (data->index) {
+        case 0:
+                regmap_update_bits(data->chip->regmap,
+                        CDCE925_REG_Y1SPIPDIVH,
+                        0x03, (pdiv >> 8) & 0x03);
+                regmap_write(data->chip->regmap, 0x03, pdiv & 0xFF);
+                break;
+        case 1:
+                regmap_update_bits(data->chip->regmap, 0x16, 0x7F, pdiv);
+                break;
+        case 2:
+                regmap_update_bits(data->chip->regmap, 0x17, 0x7F, pdiv);
+                break;
+        case 3:
+                regmap_update_bits(data->chip->regmap, 0x26, 0x7F, pdiv);
+                break;
+...
+}
 
-> 
-> 
-> Thanks,
-> Giovanni Gherdovich
-> 
+This works with the read-modify-write method under a lock, but
+it would risk setting a dangerous (i.e. crashing the system or
+damaging the hardware) clock divider value if we first enable some
+bits and then disable some others.
 
+Hardware registers only have bits you set or clear independently
+it is not a problem.
+
+> > > +static int sprd_syscon_init(void)
+> > > +{
+> > > +       syscon_register_phys_regmap_bus(&sprd_syscon_regmap);
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +core_initcall_sync(sprd_syscon_init);
+> >
+> > I don't think this part can be done at all: If you load the module on a
+> > generic kernel running on a random other platform, it will break as
+> > there is no check at all to ensure the platform is compatible.
+> >
+> > The same thing happens on a platform that may have multiple
+> > syscon nodes, when not all of them use the same register layout.
+> >
+> > The only sane way that I can see would be to do it based on
+> > properties of the syscon node itself.
+>
+> OK, so what about adding a new property for the syscon node? and we
+> can check if need to register a new physical regmap bus from the
+> syscon node.
+>
+> if (of_property_read_bool(np, "physical-regmap-bus") && syscon_phy_regmap_bus)
+>         regmap = regmap_init(NULL, syscon_phy_regmap_bus, base, &syscon_config);
+> else
+>         regmap = regmap_init_mmio(NULL, base, &syscon_config);
+
+The property also needs to encode which implementation is used,
+either describing the way that spreadtrum does the bit set/clear,
+or just naming it something with spreadtrum.
+
+This could be either in the compatible string as a more specific
+identifier, or it could be a separate property.
+
+          Arnd
