@@ -2,141 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF9F1AC676
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430D51AC6BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393261AbgDPOjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:39:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60584 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405776AbgDPOjc (ORCPT
+        id S2394550AbgDPOn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:43:56 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29637 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730302AbgDPOnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:39:32 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GEc1Gj127181;
-        Thu, 16 Apr 2020 14:38:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=k7Izfo/QNElByY6sB7IwedfWSbgNNCCpEV2qFXzdMog=;
- b=DUEtWuzoYwcnv0EAW44aTm50bOMZT/HTUnOwhsptQ0ztQqxSq49KwW/FmrB0V4LuZu8k
- +hkEi7qjLkAuFl7MDpiSb9FrOQUKHBZhf+qQYLrspSscXDXs6CdF0waMn1KA/X8/4U4K
- jIQEEUVpLEZrrqGkJPti1a/YLBtISy6BskkgRNJSltnmy/SgLb+MKVingFoqQqfwbZX8
- LiKNiXxNeFufO9mZXMS4LBCnk3YdnS1/HrNIrj3YgFMqzrt7+YD7IfbSRm9C8fgTWe3c
- cqIfinWnq+aYKE46B6VInwmRVpVvxkHm4wv5Tk/XYWtKuVC2bDHPw9CgsZCtQ257xvu2 Rg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30emejhker-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 14:38:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GEc1qu078177;
-        Thu, 16 Apr 2020 14:38:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30dynyv93c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 14:38:46 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GEciwI017010;
-        Thu, 16 Apr 2020 14:38:44 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Apr 2020 07:38:43 -0700
-Subject: Re: [PATCH V3 6/9] objtool: Report inconsistent stack changes in
- alternative
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-References: <20200414103618.12657-1-alexandre.chartre@oracle.com>
- <20200414103618.12657-7-alexandre.chartre@oracle.com>
- <20200416141843.GP20730@hirez.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <806684aa-dcba-644e-540a-c88055b0d936@oracle.com>
-Date:   Thu, 16 Apr 2020 16:43:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 16 Apr 2020 10:43:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587048229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MWF7qeFYGcwjfe4u/XIKlxtmBa+zuBoTmVw0MA2bPLk=;
+        b=Kj33VeBHwI8PgzJfC4J+BOyht29ICVvsdy/GgOtSkS6uB+ACWBSIB3GpP4kXF7uVc0sljv
+        eMK9JROD7C0+ZVdZFgXimAAKwDdEWjzpo2xYcNjxkvA9QrZR8zRtaAB6eIUVuGRE+Nprxn
+        O8MQCfNS+y8F2DC7378ONAzmBSmTYWc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-94-wJELbwD0OO2EOCILcZJ6Yg-1; Thu, 16 Apr 2020 10:43:45 -0400
+X-MC-Unique: wJELbwD0OO2EOCILcZJ6Yg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AD988017FD;
+        Thu, 16 Apr 2020 14:43:44 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-198.ams2.redhat.com [10.36.113.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A07A95D9E2;
+        Thu, 16 Apr 2020 14:43:42 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: [PATCH] vfs: add faccessat2 syscall
+References: <20200416143532.11743-1-mszeredi@redhat.com>
+Date:   Thu, 16 Apr 2020 16:43:40 +0200
+In-Reply-To: <20200416143532.11743-1-mszeredi@redhat.com> (Miklos Szeredi's
+        message of "Thu, 16 Apr 2020 16:35:32 +0200")
+Message-ID: <87a73bcwyr.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20200416141843.GP20730@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- mlxscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 adultscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004160106
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Miklos Szeredi:
 
-On 4/16/20 4:18 PM, Peter Zijlstra wrote:
-> On Tue, Apr 14, 2020 at 12:36:15PM +0200, Alexandre Chartre wrote:
->> To allow a valid stack unwinding, an alternative should have code
->> where the same stack changes happens at the same places as in the
->> original code. Add a check in objtool to validate that stack changes
->> in alternative are effectively consitent with the original code.
-> 
-> This thing is completely buggered, it warns all over the place, even for
-> obviously correct alternatives like:
-> 
-> 0000000000000310 <return_to_handler>:
->   310:   48 83 ec 18             sub    $0x18,%rsp
->   314:   48 89 04 24             mov    %rax,(%rsp)
->   318:   48 89 54 24 08          mov    %rdx,0x8(%rsp)
->   31d:   48 89 ef                mov    %rbp,%rdi
->   320:   e8 00 00 00 00          callq  325 <return_to_handler+0x15>
->                          321: R_X86_64_PLT32     ftrace_return_to_handler-0x4
->   325:   48 89 c7                mov    %rax,%rdi
->   328:   48 8b 54 24 08          mov    0x8(%rsp),%rdx
->   32d:   48 8b 04 24             mov    (%rsp),%rax
->   331:   48 83 c4 18             add    $0x18,%rsp
->   335:   ff e7                   jmpq   *%rdi
->   337:   90                      nop
->   338:   90                      nop
->   339:   90                      nop
-> 
-> 
-> Where 335 has two alternatives:
-> 
->     0:   e9 00 00 00 00          jmpq   5 <.altinstr_replacement+0x5>
->                          1: R_X86_64_PLT32       __x86_retpoline_rdi-0x4
-> 
-> and
-> 
->     5:   0f ae e8                lfence
->     8:   ff e7                   jmpq   *%rdi
-> 
-> 
-> And it then comes back with:
-> 
->    defconfig-build/arch/x86/kernel/ftrace_64.o: warning: objtool: .entry.text+0x335: error in alternative
->    defconfig-build/arch/x86/kernel/ftrace_64.o: warning: objtool: .altinstr_replacement+0x5: in alternative 2
->    defconfig-build/arch/x86/kernel/ftrace_64.o: warning: objtool: .altinstr_replacement+0x8: misaligned alternative state change
-> 
-> which is just utter crap, JMP has no (CFI) state change.
+> POSIX defines faccessat() as having a fourth "flags" argument, while the
+> linux syscall doesn't have it.  Glibc tries to emulate AT_EACCESS and
+> AT_SYMLINK_NOFOLLOW, but AT_EACCESS emulation is broken.
+>
+> Add a new faccessat(2) syscall with the added flags argument and implement
+> both flags.
+>
+> The value of AT_EACCESS is defined in glibc headers to be the same as
+> AT_REMOVEDIR.  Use this value for the kernel interface as well, together
+> with the explanatory comment.
 
-I think that's because the original nop instructions are not reached, so
-they probably have an undefined stack state. Hence there's a different
-stack state between 335 (jmpq *%rdi) and 337 (nop).
+Thanks a lot for this!
 
-With the alternative, we have:
+> +long do_faccessat(int dfd, const char __user *filename, int mode, int flags)
+> +{
+> +	const struct cred *old_cred = NULL;
+> +	struct path path;
+> +	struct inode *inode;
+> +	int res;
+> +	unsigned int lookup_flags = LOOKUP_FOLLOW;
+> +
+> +	if (mode & ~S_IRWXO)	/* where's F_OK, X_OK, W_OK, R_OK? */
+> +		return -EINVAL;
+> +
+> +	if (flags & ~(AT_EACCESS | AT_SYMLINK_NOFOLLOW))
+> +		return -EINVAL;
 
-335:         lfence
-338:         jmpq *%rdi
+Should this accept AT_EMPTY_PATH as well?
 
-So now instruction 338 is reached with the stack state we had at 335
-which is different from the original stack state at 338 (undefined)
-with the unreached instruction.
+(I can't comment on the rest of the logic of the patch.)
 
-Don't we have a state change recorded at 337 because the instruction
-is seen as not reached?
+> diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+> index ca88b7bce553..2f86b2ad6d7e 100644
+> --- a/include/uapi/linux/fcntl.h
+> +++ b/include/uapi/linux/fcntl.h
+> @@ -84,10 +84,20 @@
+>  #define DN_ATTRIB	0x00000020	/* File changed attibutes */
+>  #define DN_MULTISHOT	0x80000000	/* Don't remove notifier */
+>  
+> +/*
+> + * The constants AT_REMOVEDIR and AT_EACCESS have the same value.  AT_EACCESS is
+> + * meaningful only to faccessat, while AT_REMOVEDIR is meaningful only to
+> + * unlinkat.  The two functions do completely different things and therefore,
+> + * the flags can be allowed to overlap.  For example, passing AT_REMOVEDIR to
+> + * faccessat would be undefined behavior and thus treating it equivalent to
+> + * AT_EACCESS is valid undefined behavior.
+> + */
+>  #define AT_FDCWD		-100    /* Special value used to indicate
+>                                             openat should use the current
+>                                             working directory. */
+>  #define AT_SYMLINK_NOFOLLOW	0x100   /* Do not follow symbolic links.  */
+> +#define AT_EACCESS		0x200	/* Test access permitted for
+> +                                           effective IDs, not real IDs.  */
+>  #define AT_REMOVEDIR		0x200   /* Remove directory instead of
+>                                             unlinking file.  */
+>  #define AT_SYMLINK_FOLLOW	0x400   /* Follow symbolic links.  */
 
+I can confirm that this is what glibc does, ofr better or worse.
 
-alex.
+Thanks,
+Florian
+
