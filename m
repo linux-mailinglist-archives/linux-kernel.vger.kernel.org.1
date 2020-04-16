@@ -2,105 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838301AC477
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDAB1AC48D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392604AbgDPOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895979AbgDPNkQ (ORCPT
+        id S2392800AbgDPOBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:01:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:43404 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2898166AbgDPNko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:40:16 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AAFC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:40:16 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id q17so16064189qtp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:40:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vQ85kk+e5kLMqfj1rRbLwyKAs7ixIlJ9Ovt4gHCLOZM=;
-        b=iHqKNAsxPEqnI8xcUZ6uXkxSDGBlBbB8WKdi9dw84yatIflHS8NXbm2DOgxhTdyIIK
-         9qwus4vbY5T8VjMDtwKpZp4ihk5NUwBLghA4F2peLYCHTj+MJN3MozHoK+D7oDg43oKd
-         4sjL1CO7osXGVqm3iaJySUqaMQwaksZH3MBT7l0BJ17e7wrnaTdIgRdmydnLSZpq1Y7Z
-         0+tk/Zy72nYSTJxBYOMDOiD6xxy0D6dI6nVfkSREmLKEhGmn5y53CM8K2aC5h2EBXudS
-         z5mRX1RQSo68nJ+o1yQ5Brin1GzY1UmOm9PcTcUvTjgU7IY8f6UVm2IlRWlCHsVEHg2S
-         O4KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vQ85kk+e5kLMqfj1rRbLwyKAs7ixIlJ9Ovt4gHCLOZM=;
-        b=hHCila0nY01bkMhNKeUXeBg7svtz1LveDu15vd1RBBBdI2xqahBjVsCGQWN4P5Z1Qm
-         GVuVd/7R99E2PU9+H3CRHZZdAOTCLhmRm/V8lv1RES98eN58L+2NOtlsmlINBpWMR/iW
-         ISOSALDl5/FCvsdEVlkq0rAREHNfblqdOmUj3BkKeafkbu6mlZoPK3l8a25WLvgG09vP
-         gRUAO0vZc+/N+qlmyItL5LNOLGn15gPfQqgPBA8/VKsVGaEu+wzdt35EfEY1NpeGVrHp
-         yOM7719VBdlz3cUIfGvl0C5Nx0ydnmAUjq3T4kUqnNIxpkrEdGuP3EOxwIDQ4Ha6d1VZ
-         UVBQ==
-X-Gm-Message-State: AGi0PuaCcUAeDGmvYQIvkDgQsC+tX175EAE31WXvEZUB7FQ9m8K4ai/c
-        tuKOxioCYeqwT9Y8nh2UAQsfNw==
-X-Google-Smtp-Source: APiQypKLs9TewfDa6pgGm0Dcy3RXiiLr4P9Ch5H5VYYpmX81kKNvHNKJWoPar0UvooyVFERzu0hzDg==
-X-Received: by 2002:ac8:39e5:: with SMTP id v92mr26385594qte.224.1587044415233;
-        Thu, 16 Apr 2020 06:40:15 -0700 (PDT)
-Received: from [192.168.1.92] (pool-71-255-246-27.washdc.fios.verizon.net. [71.255.246.27])
-        by smtp.gmail.com with ESMTPSA id a62sm14859102qkb.134.2020.04.16.06.40.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 06:40:14 -0700 (PDT)
-Subject: Re: [Patch v10 0/9] Introduce Thermal Pressure
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, ionela.voinescu@arm.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rui.zhang@intel.com, qperret@google.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, rostedt@goodmis.org, will@kernel.org,
-        catalin.marinas@arm.com, sudeep.holla@arm.com,
-        juri.lelli@redhat.com, Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, amit.kachhap@gmail.com,
-        javi.merino@kernel.org, amit.kucheria@verdurent.com
-References: <20200222005213.3873-1-thara.gopinath@linaro.org>
- <CAP=VYLqWfqOZT6ec9cKyKOsOhu7HhVn2f_eU+ca006i4CV8R-w@mail.gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <51cdde9e-f124-8e19-693c-4accc6f2e948@linaro.org>
-Date:   Thu, 16 Apr 2020 09:40:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <CAP=VYLqWfqOZT6ec9cKyKOsOhu7HhVn2f_eU+ca006i4CV8R-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 16 Apr 2020 09:40:44 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GDcKwv084649;
+        Thu, 16 Apr 2020 13:40:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=+FwckwE718nnFr/35g3gcj/92E89oTBl1ZMCTR5KEIM=;
+ b=iqUrY2H9ib6Tqb8czeWAPq4BibUWiDCpkkPRWOnjSVYxuYoossgOsmNXjtBStklxsrN/
+ BOrP9qPYV44t2frUqNHruNf9bA99+R1qP05U+WRC7YzNrDD4UzCq2QgGT4EAt3bshHe6
+ uvecHlGvvSUAozs7pESH75q4v9OcVMlmTfFEh0f+eEkP2GqqF+jBS5y6ULF4Gts0ilKP
+ UQfVBSJ7cQ7MzwTlxH2YR1ArDYswN+/zbvf8AinEnvTOh0UOv/IUc/kzXkl9LS1QrkrD
+ UccoJqRh/62a5sd4sXPR5SXu9rhd4Vp7QE2zsD71SkinXrPHQBHbDi4LQL4ew9aox85j 2Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30dn95sfm5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 13:40:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GDc55R134095;
+        Thu, 16 Apr 2020 13:40:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 30dynyqbr5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 13:40:33 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GDeWWD019065;
+        Thu, 16 Apr 2020 13:40:32 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Apr 2020 06:40:32 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: What's a good default TTL for DNS keys in the kernel
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <128769.1587032833@warthog.procyon.org.uk>
+Date:   Thu, 16 Apr 2020 09:40:30 -0400
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-cifs@vger.kernel.org, linux-afs@lists.infradead.org,
+        ceph-devel@vger.kernel.org, keyrings@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8DC44895-E904-4155-B7B8-B109A777F23C@oracle.com>
+References: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
+ <3865908.1586874010@warthog.procyon.org.uk>
+ <128769.1587032833@warthog.procyon.org.uk>
+To:     David Howells <dhowells@redhat.com>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi David-
+
+> On Apr 16, 2020, at 6:27 AM, David Howells <dhowells@redhat.com> =
+wrote:
+>=20
+> Florian Weimer <fweimer@redhat.com> wrote:
+>=20
+>> You can get the real TTL if you do a DNS resolution on the name and
+>> match the addresses against what you get out of the NSS functions.  =
+If
+>> they match, you can use the TTL from DNS.  Hackish, but it does give =
+you
+>> *some* TTL value.
+>=20
+> I guess I'd have to do that in parallel.  Would calling something like
+> res_mkquery() use local DNS caching?
+>=20
+>> The question remains what the expected impact of TTL expiry is.  Will
+>> the kernel just perform a new DNS query if it needs one?  Or would =
+you
+>> expect that (say) the NFS client rechecks the addresses after TTL =
+expiry
+>> and if they change, reconnect to a new NFS server?
+>=20
+> It depends on the filesystem.
+
+Agreed. For example:
+
+The Linux NFS client won't connect to a new server when the server's
+DNS information changes. A fresh mount operation would be needed for
+the client to recognize and make use of it.
+
+There are mechanisms in the NFSv4 protocol to collect server IP =
+addresses
+from the server itself (fs_locations) and then try those locations if =
+the
+current server fails to respond. But currently that is not implemented =
+in
+Linux (and servers would need to be ready to provide that kind of =
+update).
 
 
-On 4/14/20 11:57 AM, Paul Gortmaker wrote:
-> On Fri, Feb 21, 2020 at 7:52 PM Thara Gopinath <thara.gopinath@linaro.org>
-> wrote:
-> 
->> Thermal governors can respond to an overheat event of a cpu by
->> capping the cpu's maximum possible frequency. This in turn
->> means that the maximum available compute capacity of the
->> cpu is restricted. But today in the kernel, task scheduler is
->> not notified of capping of maximum frequency of a cpu.
->> In other words, scheduler is unaware of maximum capacity
->> restrictions placed on a cpu due to thermal activity.
->> This patch series attempts to address this issue.
->>
-> 
-> I'm just seeing this now via -rc1 and "make oldconfig".
-> 
-> I'd suggest taking some of the above info and using it to
-> create a Kconfig help text for the new option that was added.
-Hi Paul,
+> AFS keeps track of the expiration on the record and will issue a new =
+lookup
+> when the data expires, but NFS doesn't make use of this information.  =
+The
+> keyring subsystem will itself dispose of dns_resolver keys that expire =
+and
+> request_key() will only upcall again if the key has expired.
 
-I will send a patch adding some details to the Kconfig text.
+Our NFS colleagues working on Solaris have noted that handling the =
+expiry
+of DNS information can be tricky. It is usually desirable to continue =
+using
+expired information when a new DNS query fails temporarily (times out, =
+or
+the network is partitioned, etc). That makes for a more robust network =
+file
+service.
 
--- 
-Warm Regards
-Thara
+
+> The problem for NFS is that the host IP address is the primary key for =
+the
+> superblock (see nfs_compare_super_address()).
+
+I thought that NFSv4.1 and newer have server-provided unique information
+that might be used in place of the server's IP address. This information
+is supposed to be independent of a server's network addresses.
+
+
+> CIFS also doesn't make direct use of the TTL, and again this may be =
+because it
+> uses the server address as part of the primary key for the superblock =
+(see
+> cifs_match_super()).
+
+--
+Chuck Lever
+
+
+
