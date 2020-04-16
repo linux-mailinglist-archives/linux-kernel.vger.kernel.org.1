@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0307C1AC772
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272FF1ACC4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394753AbgDPOz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43642 "EHLO mail.kernel.org"
+        id S2442885AbgDPP5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:57:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441805AbgDPN4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:56:34 -0400
+        id S2895756AbgDPN2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:28:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1649A20786;
-        Thu, 16 Apr 2020 13:56:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88E99206E9;
+        Thu, 16 Apr 2020 13:28:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045393;
-        bh=s/3kHi8il/W5VDn7fjf0NkJJm/Hn4ruaFDq8kuwR8lA=;
+        s=default; t=1587043703;
+        bh=QSkXV98D3bYlOYnTg+eURXDtc02pydxmQZRaKXYxric=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=In0sonq0goaPJfUgC+cBAIESVZXRXBE1NIVMLgQmMDukE8NCr+ZFKRJ/B3chtjl5p
-         0jvJpgSNb5X7c5ugKRY7wb47s/8BWqaHWif4Xk8YxbrBd20GJj6Q8ippm1pT/Dqf1c
-         Wyi+L9BPlyyyb4MIXmuNQtPdbydy9Rr/2F5rk6rw=
+        b=C4ZIymjfONuANs7GBkA5r8d94gBNefghUcmaL626DZQ0vqn9ox8GfLiktRrupJc6j
+         dNwuBLbXH39Mr5xMuD8L1oyxNeNA7YOWwjmPAhEKIVo60tXR0058V6PCXqy4ovYntU
+         tHnfHCtJa+J6vViKUIdsQBJpEeCqeFp0Kmpda6Bc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 116/254] io_uring: remove bogus RLIMIT_NOFILE check in file registration
+        stable@vger.kernel.org, David Hoyer <David.Hoyer@netapp.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Keith Busch <kbusch@kernel.org>
+Subject: [PATCH 4.19 064/146] PCI: pciehp: Fix indefinite wait on sysfs requests
 Date:   Thu, 16 Apr 2020 15:23:25 +0200
-Message-Id: <20200416131340.746421182@linuxfoundation.org>
+Message-Id: <20200416131251.645432763@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +45,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit c336e992cb1cb1db9ee608dfb30342ae781057ab upstream.
+commit 3e487d2e4aa466decd226353755c9d423e8fbacc upstream.
 
-We already checked this limit when the file was opened, and we keep it
-open in the file table. Hence when we added unit_inflight to the count
-we want to register, we're doubly accounting these files. This results
-in -EMFILE for file registration, if we're at half the limit.
+David Hoyer reports that powering pciehp slots up or down via sysfs may
+hang:  The call to wait_event() in pciehp_sysfs_enable_slot() and
+_disable_slot() does not return because ctrl->ist_running remains true.
 
-Cc: stable@vger.kernel.org # v5.1+
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This flag, which was introduced by commit 157c1062fcd8 ("PCI: pciehp: Avoid
+returning prematurely from sysfs requests"), signifies that the IRQ thread
+pciehp_ist() is running.  It is set to true at the top of pciehp_ist() and
+reset to false at the end.  However there are two additional return
+statements in pciehp_ist() before which the commit neglected to reset the
+flag to false and wake up waiters for the flag.
+
+That omission opens up the following race when powering up the slot:
+
+* pciehp_ist() runs because a PCI_EXP_SLTSTA_PDC event was requested
+  by pciehp_sysfs_enable_slot()
+
+* pciehp_ist() turns on slot power via the following call stack:
+  pciehp_handle_presence_or_link_change() -> pciehp_enable_slot() ->
+  __pciehp_enable_slot() -> board_added() -> pciehp_power_on_slot()
+
+* after slot power is turned on, the link comes up, resulting in a
+  PCI_EXP_SLTSTA_DLLSC event
+
+* the IRQ handler pciehp_isr() stores the event in ctrl->pending_events
+  and returns IRQ_WAKE_THREAD
+
+* the IRQ thread is already woken (it's bringing up the slot), but the
+  genirq code remembers to re-run the IRQ thread after it has finished
+  (such that it can deal with the new event) by setting IRQTF_RUNTHREAD
+  via __handle_irq_event_percpu() -> __irq_wake_thread()
+
+* the IRQ thread removes PCI_EXP_SLTSTA_DLLSC from ctrl->pending_events
+  via board_added() -> pciehp_check_link_status() in order to deal with
+  presence and link flaps per commit 6c35a1ac3da6 ("PCI: pciehp:
+  Tolerate initially unstable link")
+
+* after pciehp_ist() has successfully brought up the slot, it resets
+  ctrl->ist_running to false and wakes up the sysfs requester
+
+* the genirq code re-runs pciehp_ist(), which sets ctrl->ist_running
+  to true but then returns with IRQ_NONE because ctrl->pending_events
+  is empty
+
+* pciehp_sysfs_enable_slot() is finally woken but notices that
+  ctrl->ist_running is true, hence continues waiting
+
+The only way to get the hung task going again is to trigger a hotplug
+event which brings down the slot, e.g. by yanking out the card.
+
+The same race exists when powering down the slot because remove_board()
+likewise clears link or presence changes in ctrl->pending_events per commit
+3943af9d01e9 ("PCI: pciehp: Ignore Link State Changes after powering off a
+slot") and thereby may cause a re-run of pciehp_ist() which returns with
+IRQ_NONE without resetting ctrl->ist_running to false.
+
+Fix by adding a goto label before the teardown steps at the end of
+pciehp_ist() and jumping to that label from the two return statements which
+currently neglect to reset the ctrl->ist_running flag.
+
+Fixes: 157c1062fcd8 ("PCI: pciehp: Avoid returning prematurely from sysfs requests")
+Link: https://lore.kernel.org/r/cca1effa488065cb055120aa01b65719094bdcb5.1584530321.git.lukas@wunner.de
+Reported-by: David Hoyer <David.Hoyer@netapp.com>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Cc: stable@vger.kernel.org	# v4.19+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    7 -------
- 1 file changed, 7 deletions(-)
+ drivers/pci/hotplug/pciehp_hpc.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5426,13 +5426,6 @@ static int __io_sqe_files_scm(struct io_
- 	struct sk_buff *skb;
- 	int i, nr_files;
+--- a/drivers/pci/hotplug/pciehp_hpc.c
++++ b/drivers/pci/hotplug/pciehp_hpc.c
+@@ -627,17 +627,15 @@ static irqreturn_t pciehp_ist(int irq, v
+ 	if (atomic_fetch_and(~RERUN_ISR, &ctrl->pending_events) & RERUN_ISR) {
+ 		ret = pciehp_isr(irq, dev_id);
+ 		enable_irq(irq);
+-		if (ret != IRQ_WAKE_THREAD) {
+-			pci_config_pm_runtime_put(pdev);
+-			return ret;
+-		}
++		if (ret != IRQ_WAKE_THREAD)
++			goto out;
+ 	}
  
--	if (!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN)) {
--		unsigned long inflight = ctx->user->unix_inflight + nr;
--
--		if (inflight > task_rlimit(current, RLIMIT_NOFILE))
--			return -EMFILE;
--	}
--
- 	fpl = kzalloc(sizeof(*fpl), GFP_KERNEL);
- 	if (!fpl)
- 		return -ENOMEM;
+ 	synchronize_hardirq(irq);
+ 	events = atomic_xchg(&ctrl->pending_events, 0);
+ 	if (!events) {
+-		pci_config_pm_runtime_put(pdev);
+-		return IRQ_NONE;
++		ret = IRQ_NONE;
++		goto out;
+ 	}
+ 
+ 	/* Check Attention Button Pressed */
+@@ -666,10 +664,12 @@ static irqreturn_t pciehp_ist(int irq, v
+ 		pciehp_handle_presence_or_link_change(slot, events);
+ 	up_read(&ctrl->reset_lock);
+ 
++	ret = IRQ_HANDLED;
++out:
+ 	pci_config_pm_runtime_put(pdev);
+ 	ctrl->ist_running = false;
+ 	wake_up(&ctrl->requester);
+-	return IRQ_HANDLED;
++	return ret;
+ }
+ 
+ static int pciehp_poll(void *data)
 
 
