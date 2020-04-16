@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821C11AC644
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A571AC669
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394368AbgDPOgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:36:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732436AbgDPOgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:36:38 -0400
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCC712220A;
-        Thu, 16 Apr 2020 14:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587047798;
-        bh=PYTwFrTrtoxecR9b9yLkbn2rNqR1ub19DHPDT5x72ME=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CRJDhvzdFLmI1uoXUxDuFr2eV6PI9NP0xP+7Uszi9UdUwIotblemb2vQd/iYubdgJ
-         nd6C26pFAwiDhMqxUuL+NTdehy+Bwz+t6f6OqYg777IjU0CBfVX1RtxQVRGpgCr/EE
-         3jaVKuiYBkcBH7TGHTGHYbLSoyvwq26mdYu/eNzc=
-Received: by mail-io1-f43.google.com with SMTP id f3so21298190ioj.1;
-        Thu, 16 Apr 2020 07:36:37 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZED3M963PLCOlB/QDxOf3kzG+xG/pft5K4bfxGa6pnZ2AGLDQr
-        PVlJsolS8fnG+y76pzGRoYq9eeeEqdkY5khhEks=
-X-Google-Smtp-Source: APiQypJP93oCECQtutJ31AuOSoB19HwPbIbakrt9SmlbEm/P8Y1a2FMHgiNs5L9YeZ+2lg0fv9WrETeA4RdQ4WRIliY=
-X-Received: by 2002:a02:6a1e:: with SMTP id l30mr29737450jac.98.1587047797309;
- Thu, 16 Apr 2020 07:36:37 -0700 (PDT)
+        id S2392861AbgDPOi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:38:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:34155 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732580AbgDPOiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:38:51 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MKbTo-1jfVWG3kB2-00KxGH for <linux-kernel@vger.kernel.org>; Thu, 16 Apr
+ 2020 16:38:49 +0200
+Received: by mail-qt1-f172.google.com with SMTP id w29so16128436qtv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:38:48 -0700 (PDT)
+X-Gm-Message-State: AGi0PubxvvZNa9v1HqkW4O1DPrl4b/ItjBgYc8o2bT9OnuQt8l87x1fK
+        wuI0AGmyhIfhIQ1ClQsK6VfUkeMQxxs7sgBMnK4=
+X-Google-Smtp-Source: APiQypJqoo+1YOH8+oD0uoPKYpCZrmu3MnpzPZdEK0zTPXl6sPogVi+91etn3KKCDHnoj/lu3Amws5JqCt4BpnbxgJI=
+X-Received: by 2002:ac8:296f:: with SMTP id z44mr24605980qtz.18.1587047927805;
+ Thu, 16 Apr 2020 07:38:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <eb0d88d0-879e-c500-261e-69c76fb68a89@linux.intel.com>
-In-Reply-To: <eb0d88d0-879e-c500-261e-69c76fb68a89@linux.intel.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 16 Apr 2020 16:36:25 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGGdwuP6X5jvbqmjsP2+bZ7CoJKZ5-WVoPYEjq9HTjuDA@mail.gmail.com>
-Message-ID: <CAMj1kXGGdwuP6X5jvbqmjsP2+bZ7CoJKZ5-WVoPYEjq9HTjuDA@mail.gmail.com>
-Subject: Re: Regression with commit 0a67361dcdaa
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <cover.1586757922.git.baolin.wang7@gmail.com> <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
+ <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com>
+ <CADBw62r06X6mMTx3eLY1iU5KLOK644d1vA49Kp9JXzUtm2CpCw@mail.gmail.com>
+ <CAK8P3a3jnpRDjWwAOJa1EmbMzu+vKXmG3DBzhjHtVFz8NHfP8A@mail.gmail.com> <CADBw62oNApMo_rCz1W6_tG8Z72ENjrAtHkWZ1Z4NsN0qWFctXg@mail.gmail.com>
+In-Reply-To: <CADBw62oNApMo_rCz1W6_tG8Z72ENjrAtHkWZ1Z4NsN0qWFctXg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 16 Apr 2020 16:38:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a07n=5X5Cv7crAu_XCzoLA=o1wZjmO5r6=bwdGr2nHSwQ@mail.gmail.com>
+Message-ID: <CAK8P3a07n=5X5Cv7crAu_XCzoLA=o1wZjmO5r6=bwdGr2nHSwQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] soc: sprd: Add Spreadtrum special bits
+ updating support
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:u8MUkaFRBnn+Lh0FCWK5uE3WsHRFKrzXU/QFJKoRktJgghEzUug
+ 21Bguzy20iAF47/PfCadC8wWzQnEpwO8bKWLb1SYG5LK1y62zbRPfdQhS98MH3Fb9hZcGtZ
+ LHJtsm7tCPfNFt8VeDyafEAwxqZhsxXgCU5Jg/p1qLDi9PK8mJ+Ct4gr3MhLLUOKjAmpJ1L
+ L7iksVCsbawZadAivta7w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kO7/9jTZSIA=:KEDcyi4N67of5W1DkUlfJS
+ 5LCkVVYTRlWDHaV/opCaKfEBcd2KB8Ke9woSarVpCzZQ5oEoOKje8Z6eQWRRPwxMjfGiO1fOJ
+ 9fdjddmJMA6CYInhyShpdFVNjCP6BCNiO7zRZCVqQGSs8eKpFc1/01WSYk0tO7g/48lgQbBQz
+ tTxMI9W1Fl4rdcjPPrC3LoyfyvknqJlgV8EaCn3KOhBKlYLpIOlgEPaQpxgsbnHGK9uF4Aw/Q
+ 8dRana6vkwTkZVQCXuki3LERksSim/LEL703PklqiZIPC8iFWosc/VWgsCHJMlh5BH7YNxRWs
+ JRSi+Myustp/xHeQ/zHnhCKJCoPlpdOlsWzeIptQLKgkkx3JJOqMVRMkWIjjEqNBdMEGWprm7
+ ljb7GfFtkqiWGSsKzjs0Fq+it7cVOgx2vibebNGo7lU0WNw7cKUOihILxzC7zisE7LaQn3ZE7
+ nBlKQCkJ/RqVlT0inYNtKlNOtk2fFC06O1ItSrT3p+jPJQRRMJaX2qxHvbxWZXRS6ydevtZNH
+ xCmBfcDifd9IXCaSgkPDm/0LhOTnI9esy6P2dpTlQE6iuOY1QCNRSAanDcyuwVNLIPJMeUP4r
+ sbcdN8qZSiCPi/Je0OQlhR5Nq4PiXD6uRxAhTF5HbD1EPVOSG3OOQ2Z3/vlfcmGUc2GemVrCc
+ kxQYBNKPQbxBxgQNBpquMPTv9PA54M/3bCNUnCUQxVMw1rjU6YoMS4QWQc1cCfKhU8EJVObrT
+ qcUwiyXRGNILDfwWUkKBffUwEq6zNjrJ5OUFcMFSPjcwFWmriflJHkDJtT/1q2uZamPkVWE4A
+ FjiX3ErNhEYTz9ZlrjTvBqrOHGeSSriGr66nNx7zkzgaerPMqY=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 at 16:35, Jarkko Nikula
-<jarkko.nikula@linux.intel.com> wrote:
->
-> Hi
->
-> v5.7-rc1 hangs in early boot on an Intel Atom based prototype hardware
-> while v5.6 boots fine. I bisected the regression into 0a67361dcdaa
-> ("efi/x86: Remove runtime table address from kexec EFI setup data").
->
-> v5.7-rc1 caused a reboot loop on another Intel Core based prototype HW.
-> Reboots also on top of 0a67361dcdaa but boots fine with that commit
-> reverted.
->
-> Our test system uses kexec to boot the test kernel. These two machines
-> got regression with v5.7-rc1. We have also others that boot fine.
->
+On Thu, Apr 16, 2020 at 3:49 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
 
-This should already be fixed in Linus's tree. Please report back
-whether that solves your problem or not.
+>
+> OK, I think adding a Spreadtrum compatible string will be an easy and
+> clear way, so what about below sample code?
+>
+> DT:
+> ap_ahb_regs: syscon@20210000 {
+>          compatible = "sprd,sc9860-syscon", "syscon";
+>          reg = <0 0x20210000 0 0x10000>;
+> };
+>
+> /* The Spreadtrum syscon need register a real physical regmap bus with
+> new bits updating method. */
+> if (of_device_is_compatible(np, "sprd,sc9860-syscon") && syscon_phy_regmap_bus)
+>        regmap = regmap_init(NULL, syscon_phy_regmap_bus, base, &syscon_config);
+> else
+>        regmap = regmap_init_mmio(NULL, base, &syscon_config);
+
+Ok, sounds good. Maybe also define another compatible string that
+is more generic than "sprd,sc9860-syscon" (but less generic than
+"syscon") so you can still identify the chip specific syscon area if
+necessary, while not having to list each future chip individually.
+
+Something like
+
+compatible = "sprd,sc9860-syscon", "sprd,atomic-syscon", "syscon";
+
+Also I'd add an IS_ENABLED() check so it gets the 'else' path
+at compile-time when CONFIG_ARCH_SPRD is disabled.
+
+        Arnd
