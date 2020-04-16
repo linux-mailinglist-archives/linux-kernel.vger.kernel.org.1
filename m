@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61EF1ACC2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131861ACA84
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442840AbgDPP4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:56:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38084 "EHLO mail.kernel.org"
+        id S2506301AbgDPPfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:35:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895879AbgDPN2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:28:51 -0400
+        id S2898063AbgDPNkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:40:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6271E206E9;
-        Thu, 16 Apr 2020 13:28:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2650218AC;
+        Thu, 16 Apr 2020 13:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043729;
-        bh=0kYo+Ygoz8g+mwJNSuGqdJSweqANX1YCeMGUlk4MmN8=;
+        s=default; t=1587044407;
+        bh=T4BN4e03GBFcEvPAPYiVqCCxujczy7T1jTuFHTAa5a0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n34dG3ztWMgVyOTsYclzAingEhblf7dGD1KuzpnJkGBWKr+ylZF85ilfMDn75wDS6
-         xetSoYLC2etxHZDX0Vzgot0sheCOyQC6/iTgGgPz1dmBmQ2eLQYHTMLaE/HGDz8ONm
-         aI1i99bghyHlRQw3fUWBpY+QGD8MafRV3vuBP+uQ=
+        b=TxqWCa3qcLWfT1WI8OqCw1kknwBAyBSfxM7FeAveGSxGiSbDih8hw/9n3s/ZxMs72
+         Mnf2n6MGOB3DHrQTYn4cFprVHyhM6vIKoF505Fu+TMFsfQ/+Dxu16nqCPYPFaJilfj
+         cK7UbW2l8t36odz/UC9MZ4B8MLV3zwaTgoHnV8vM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pei Huang <huangpei@loongson.cn>,
-        Huacai Chen <chenhc@lemote.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 4.19 074/146] MIPS/tlbex: Fix LDDIR usage in setup_pw() for Loongson-3
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.5 164/257] btrfs: unset reloc control if we fail to recover
 Date:   Thu, 16 Apr 2020 15:23:35 +0200
-Message-Id: <20200416131253.069150894@linuxfoundation.org>
+Message-Id: <20200416131347.032136250@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit d191aaffe3687d1e73e644c185f5f0550ec242b5 upstream.
+commit fb2d83eefef4e1c717205bac71cb1941edf8ae11 upstream.
 
-LDDIR/LDPTE is Loongson-3's acceleration for Page Table Walking. If BD
-(Base Directory, the 4th page directory) is not enabled, then GDOffset
-is biased by BadVAddr[63:62]. So, if GDOffset (aka. BadVAddr[47:36] for
-Loongson-3) is big enough, "0b11(BadVAddr[63:62])|BadVAddr[47:36]|...."
-can far beyond pg_swapper_dir. This means the pg_swapper_dir may NOT be
-accessed by LDDIR correctly, so fix it by set PWDirExt in CP0_PWCtl.
+If we fail to load an fs root, or fail to start a transaction we can
+bail without unsetting the reloc control, which leads to problems later
+when we free the reloc control but still have it attached to the file
+system.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Pei Huang <huangpei@loongson.cn>
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+In the normal path we'll end up calling unset_reloc_control() twice, but
+all it does is set fs_info->reloc_control = NULL, and we can only have
+one balance at a time so it's not racey.
+
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/mm/tlbex.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -1479,6 +1479,7 @@ static void build_r4000_tlb_refill_handl
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4581,9 +4581,8 @@ int btrfs_recover_relocation(struct btrf
  
- static void setup_pw(void)
- {
-+	unsigned int pwctl;
- 	unsigned long pgd_i, pgd_w;
- #ifndef __PAGETABLE_PMD_FOLDED
- 	unsigned long pmd_i, pmd_w;
-@@ -1505,6 +1506,7 @@ static void setup_pw(void)
+ 	trans = btrfs_join_transaction(rc->extent_root);
+ 	if (IS_ERR(trans)) {
+-		unset_reloc_control(rc);
+ 		err = PTR_ERR(trans);
+-		goto out_free;
++		goto out_unset;
+ 	}
  
- 	pte_i = ilog2(_PAGE_GLOBAL);
- 	pte_w = 0;
-+	pwctl = 1 << 30; /* Set PWDirExt */
+ 	rc->merge_reloc_tree = 1;
+@@ -4603,7 +4602,7 @@ int btrfs_recover_relocation(struct btrf
+ 		if (IS_ERR(fs_root)) {
+ 			err = PTR_ERR(fs_root);
+ 			list_add_tail(&reloc_root->root_list, &reloc_roots);
+-			goto out_free;
++			goto out_unset;
+ 		}
  
- #ifndef __PAGETABLE_PMD_FOLDED
- 	write_c0_pwfield(pgd_i << 24 | pmd_i << 12 | pt_i << 6 | pte_i);
-@@ -1515,8 +1517,9 @@ static void setup_pw(void)
- #endif
+ 		err = __add_reloc_root(reloc_root);
+@@ -4613,7 +4612,7 @@ int btrfs_recover_relocation(struct btrf
  
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
--	write_c0_pwctl(1 << 6 | psn);
-+	pwctl |= (1 << 6 | psn);
- #endif
-+	write_c0_pwctl(pwctl);
- 	write_c0_kpgd((long)swapper_pg_dir);
- 	kscratch_used_mask |= (1 << 7); /* KScratch6 is used for KPGD */
- }
+ 	err = btrfs_commit_transaction(trans);
+ 	if (err)
+-		goto out_free;
++		goto out_unset;
+ 
+ 	merge_reloc_roots(rc);
+ 
+@@ -4629,7 +4628,8 @@ out_clean:
+ 	ret = clean_dirty_subvols(rc);
+ 	if (ret < 0 && !err)
+ 		err = ret;
+-out_free:
++out_unset:
++	unset_reloc_control(rc);
+ 	kfree(rc);
+ out:
+ 	if (!list_empty(&reloc_roots))
 
 
