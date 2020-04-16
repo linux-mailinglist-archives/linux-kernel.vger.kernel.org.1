@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E571AC87B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC181AC6A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441811AbgDPPJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:09:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
+        id S2394496AbgDPOmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:42:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408700AbgDPNvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:51:03 -0400
+        id S2392656AbgDPOAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:00:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40DA92063A;
-        Thu, 16 Apr 2020 13:51:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4031A2078B;
+        Thu, 16 Apr 2020 14:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045062;
-        bh=/lUnU82i9NCKa7Nb5n2dmWvwoPHTtDhXL68RLJzcs/I=;
+        s=default; t=1587045647;
+        bh=I0O0ffcTQDLvbIA9cqZLny6cy4vZJ+L0A/xovm88QmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zrk1VlL2onMn7B2qu550fay1Caw8dBgCfXtkOoLtQAXFPom2Cl7VqIdrc5Bh1U02C
-         dGMoObD/UuSvZLFOGVn2Km475kvsovR4kapJOWH5DRSieR/XSMM/909hBjNzqfkosJ
-         W1n3B7lT5g0TrLYRxSuHaOuunRlJ5cjHqaAwDh2c=
+        b=LIFTSmK2LK30HH3Ev1Ek39UboBrgNtAAUgWjhtbY3nY/uJNF65yW9eS4qqAe47GZy
+         x7mhPsmtwxPiL0UFOaSbhGhPA4vFUUuyfwnf1eSrSezzApY3U+qJYKDfmlFReWLlAC
+         b0XbonVXxI++mG97FGHr04K+mJTs2rNfr1Zl1A1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 213/232] powerpc/kprobes: Ignore traps that happened in real mode
-Date:   Thu, 16 Apr 2020 15:25:07 +0200
-Message-Id: <20200416131342.089125464@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Willard <mwillard@izotope.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 219/254] ASoC: cs4270: pull reset GPIO low then high
+Date:   Thu, 16 Apr 2020 15:25:08 +0200
+Message-Id: <20200416131353.339943848@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +43,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+From: Mike Willard <mwillard@izotope.com>
 
-commit 21f8b2fa3ca5b01f7a2b51b89ce97a3705a15aa0 upstream.
+commit ccfc531695f3a4aada042f6bdb33ac6be24e1aec upstream.
 
-When a program check exception happens while MMU translation is
-disabled, following Oops happens in kprobe_handler() in the following
-code:
+Pull the RST line low then high when initializing the driver,
+in order to force a reset of the chip.
+Previously, the line was not pulled low, which could result in
+the chip registers not resetting to their default values on boot.
 
-	} else if (*addr != BREAKPOINT_INSTRUCTION) {
-
-  BUG: Unable to handle kernel data access on read at 0x0000e268
-  Faulting instruction address: 0xc000ec34
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  BE PAGE_SIZE=16K PREEMPT CMPC885
-  Modules linked in:
-  CPU: 0 PID: 429 Comm: cat Not tainted 5.6.0-rc1-s3k-dev-00824-g84195dc6c58a #3267
-  NIP:  c000ec34 LR: c000ecd8 CTR: c019cab8
-  REGS: ca4d3b58 TRAP: 0300   Not tainted  (5.6.0-rc1-s3k-dev-00824-g84195dc6c58a)
-  MSR:  00001032 <ME,IR,DR,RI>  CR: 2a4d3c52  XER: 00000000
-  DAR: 0000e268 DSISR: c0000000
-  GPR00: c000b09c ca4d3c10 c66d0620 00000000 ca4d3c60 00000000 00009032 00000000
-  GPR08: 00020000 00000000 c087de44 c000afe0 c66d0ad0 100d3dd6 fffffff3 00000000
-  GPR16: 00000000 00000041 00000000 ca4d3d70 00000000 00000000 0000416d 00000000
-  GPR24: 00000004 c53b6128 00000000 0000e268 00000000 c07c0000 c07bb6fc ca4d3c60
-  NIP [c000ec34] kprobe_handler+0x128/0x290
-  LR [c000ecd8] kprobe_handler+0x1cc/0x290
-  Call Trace:
-  [ca4d3c30] [c000b09c] program_check_exception+0xbc/0x6fc
-  [ca4d3c50] [c000e43c] ret_from_except_full+0x0/0x4
-  --- interrupt: 700 at 0xe268
-  Instruction dump:
-  913e0008 81220000 38600001 3929ffff 91220000 80010024 bb410008 7c0803a6
-  38210020 4e800020 38600000 4e800020 <813b0000> 6d2a7fe0 2f8a0008 419e0154
-  ---[ end trace 5b9152d4cdadd06d ]---
-
-kprobe is not prepared to handle events in real mode and functions
-running in real mode should have been blacklisted, so kprobe_handler()
-can safely bail out telling 'this trap is not mine' for any trap that
-happened while in real-mode.
-
-If the trap happened with MSR_IR or MSR_DR cleared, return 0
-immediately.
-
-Reported-by: Larry Finger <Larry.Finger@lwfinger.net>
-Fixes: 6cc89bad60a6 ("powerpc/kprobes: Invoke handlers directly")
-Cc: stable@vger.kernel.org # v4.10+
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/424331e2006e7291a1bfe40e7f3fa58825f565e1.1582054578.git.christophe.leroy@c-s.fr
+Signed-off-by: Mike Willard <mwillard@izotope.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200401205454.79792-1-mwillard@izotope.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/kprobes.c |    3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/cs4270.c |   40 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -264,6 +264,9 @@ int kprobe_handler(struct pt_regs *regs)
- 	if (user_mode(regs))
- 		return 0;
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -137,6 +137,9 @@ struct cs4270_private {
  
-+	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
-+		return 0;
+ 	/* power domain regulators */
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
 +
- 	/*
- 	 * We don't want to be preempted for the entire
- 	 * duration of kprobe processing
++	/* reset gpio */
++	struct gpio_desc *reset_gpio;
+ };
+ 
+ static const struct snd_soc_dapm_widget cs4270_dapm_widgets[] = {
+@@ -649,6 +652,22 @@ static const struct regmap_config cs4270
+ };
+ 
+ /**
++ * cs4270_i2c_remove - deinitialize the I2C interface of the CS4270
++ * @i2c_client: the I2C client object
++ *
++ * This function puts the chip into low power mode when the i2c device
++ * is removed.
++ */
++static int cs4270_i2c_remove(struct i2c_client *i2c_client)
++{
++	struct cs4270_private *cs4270 = i2c_get_clientdata(i2c_client);
++
++	gpiod_set_value_cansleep(cs4270->reset_gpio, 0);
++
++	return 0;
++}
++
++/**
+  * cs4270_i2c_probe - initialize the I2C interface of the CS4270
+  * @i2c_client: the I2C client object
+  * @id: the I2C device ID (ignored)
+@@ -660,7 +679,6 @@ static int cs4270_i2c_probe(struct i2c_c
+ 	const struct i2c_device_id *id)
+ {
+ 	struct cs4270_private *cs4270;
+-	struct gpio_desc *reset_gpiod;
+ 	unsigned int val;
+ 	int ret, i;
+ 
+@@ -679,10 +697,21 @@ static int cs4270_i2c_probe(struct i2c_c
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	reset_gpiod = devm_gpiod_get_optional(&i2c_client->dev, "reset",
+-					      GPIOD_OUT_HIGH);
+-	if (PTR_ERR(reset_gpiod) == -EPROBE_DEFER)
+-		return -EPROBE_DEFER;
++	/* reset the device */
++	cs4270->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev, "reset",
++						     GPIOD_OUT_LOW);
++	if (IS_ERR(cs4270->reset_gpio)) {
++		dev_dbg(&i2c_client->dev, "Error getting CS4270 reset GPIO\n");
++		return PTR_ERR(cs4270->reset_gpio);
++	}
++
++	if (cs4270->reset_gpio) {
++		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
++		gpiod_set_value_cansleep(cs4270->reset_gpio, 1);
++	}
++
++	/* Sleep 500ns before i2c communications */
++	ndelay(500);
+ 
+ 	cs4270->regmap = devm_regmap_init_i2c(i2c_client, &cs4270_regmap);
+ 	if (IS_ERR(cs4270->regmap))
+@@ -735,6 +764,7 @@ static struct i2c_driver cs4270_i2c_driv
+ 	},
+ 	.id_table = cs4270_id,
+ 	.probe = cs4270_i2c_probe,
++	.remove = cs4270_i2c_remove,
+ };
+ 
+ module_i2c_driver(cs4270_i2c_driver);
 
 
