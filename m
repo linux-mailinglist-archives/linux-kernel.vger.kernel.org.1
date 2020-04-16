@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1181AC516
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7478B1AC5A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393631AbgDPOLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33270 "EHLO mail.kernel.org"
+        id S1730399AbgDPOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:23:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898640AbgDPNrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:14 -0400
+        id S2409234AbgDPN4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:56:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9F93208E4;
-        Thu, 16 Apr 2020 13:47:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84F6B20732;
+        Thu, 16 Apr 2020 13:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044833;
-        bh=WsPvyAgLDHB8KLDroBxGzEFBWKT26bKps4QR2TV7kVE=;
+        s=default; t=1587045413;
+        bh=dOADrGFjZ/rXCi+5xfhr7DK9w3epKFzRh782rc/iFgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f6+ERuvlJwXHUKaQzUwgwnI8sIHsQ6o7116ykzeZaJG0exJH8CGqfp89PmBkzaSqB
-         DqcidMMh/quAoMLNrzIi8MBK3YEhR+zHxAd4MjBAiHKg84Bkrb7hYIpTZGP2Gf6422
-         d1uwp0bDIA+8uqJsT3/ZX+SjBCIEnVAViq7qgeW4=
+        b=BcfFVp62XfGL6tYjILljpO9WtuX6T2c+UyWhHC/xJrt3rN0e282GA84JGcCCxGqZH
+         ocWcC5vGqaxGLMIBRkI2saOOVWtZ77ihhzzNX7TbJiGv6FxImVtGUEJvsuNF9+Qlu7
+         Q2O2nUmJ2eYp0AZEo/iZ3FbTN5iRy7nv1FxtuyQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.4 119/232] signal: Extend exec_id to 64bits
+Subject: [PATCH 5.6 124/254] signal: Extend exec_id to 64bits
 Date:   Thu, 16 Apr 2020 15:23:33 +0200
-Message-Id: <20200416131329.996663780@linuxfoundation.org>
+Message-Id: <20200416131341.888514502@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -86,7 +86,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/exec.c
 +++ b/fs/exec.c
-@@ -1383,7 +1383,7 @@ void setup_new_exec(struct linux_binprm
+@@ -1386,7 +1386,7 @@ void setup_new_exec(struct linux_binprm
  
  	/* An exec changes our domain. We are no longer part of the thread
  	   group */
@@ -97,7 +97,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  EXPORT_SYMBOL(setup_new_exec);
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -934,8 +934,8 @@ struct task_struct {
+@@ -939,8 +939,8 @@ struct task_struct {
  	struct seccomp			seccomp;
  
  	/* Thread group tracking: */
