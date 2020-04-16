@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F90D1AB782
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 07:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400951AB789
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 07:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407195AbgDPFs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 01:48:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38484 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406845AbgDPFsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 01:48:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6AC73AEF5;
-        Thu, 16 Apr 2020 05:48:10 +0000 (UTC)
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     x86@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Doug Smythies <dsmythies@telus.net>,
-        Like Xu <like.xu@linux.intel.com>,
-        Neil Rickert <nwr10cst-oslnx@yahoo.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [PATCH 4/4] x86, sched: Move check for CPU type to caller function
-Date:   Thu, 16 Apr 2020 07:47:45 +0200
-Message-Id: <20200416054745.740-5-ggherdovich@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200416054745.740-1-ggherdovich@suse.cz>
-References: <20200416054745.740-1-ggherdovich@suse.cz>
+        id S2407253AbgDPFss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 01:48:48 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36590 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407169AbgDPFsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 01:48:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587016097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ae5ly7M/OETZeDnJohKJkBFZBczMSVWSQhC8QwiJPZs=;
+        b=BbnMDIAHKp7abEuFM5DPZp0zIXuxamuWfj/Zidk2jC+d2j205dGPAkVrQJjJQUXcNBQuGH
+        SeG2YqUNXhzSggQvN+rNQyTYkMw8vLA+6YKdRyGaK2aL2PnF4LrpItorLRhGkk3345Qlxa
+        ydQA9AlpHpY/5/FF+SSZxZhCJSZxNmI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-y0juUd9SPm6Dr1B_bF4zJA-1; Thu, 16 Apr 2020 01:48:13 -0400
+X-MC-Unique: y0juUd9SPm6Dr1B_bF4zJA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09D7B801A09;
+        Thu, 16 Apr 2020 05:48:11 +0000 (UTC)
+Received: from T590 (ovpn-8-29.pek2.redhat.com [10.72.8.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id ED6405C1C5;
+        Thu, 16 Apr 2020 05:47:55 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 13:47:50 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, nstange@suse.de, akpm@linux-foundation.org,
+        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
+Subject: Re: [PATCH 2/5] blktrace: fix debugfs use after free
+Message-ID: <20200416054750.GA2723777@T590>
+References: <20200414041902.16769-1-mcgrof@kernel.org>
+ <20200414041902.16769-3-mcgrof@kernel.org>
+ <20200416021036.GA2717677@T590>
+ <20200416052524.GH11244@42.do-not-panic.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416052524.GH11244@42.do-not-panic.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve readability of the function intel_set_max_freq_ratio() by moving
-the check for KNL CPUs there, together with checks for GLM and SKX.
+On Thu, Apr 16, 2020 at 05:25:24AM +0000, Luis Chamberlain wrote:
+> On Thu, Apr 16, 2020 at 10:10:36AM +0800, Ming Lei wrote:
+> > In theory, multiple partitions can be traced concurrently, but looks
+> > it never works, so it won't cause trouble for multiple partition trace.
+> > 
+> > One userspace visible change is that blktrace debugfs dir name is switched 
+> > to disk name from partition name in case of partition trace, will it
+> > break some utilities?
+> 
+> How is this possible, its not clear to me, we go from:
+> 
+> -	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
+> -					    blk_debugfs_root);
+> 
+> To this:
+> 
+> +	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
+> +					    blk_debugfs_root);
+> 
+> 
+> Maybe I am overlooking something.
 
-Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
----
- arch/x86/kernel/smpboot.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Your patch removes the blktrace debugfs dir:
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index dd8e15f648bc..8c89e4d9ad28 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1877,9 +1877,6 @@ static bool knl_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq,
- 	int err, i;
- 	u64 msr;
- 
--	if (!x86_match_cpu(has_knl_turbo_ratio_limits))
--		return false;
+do_blk_trace_setup()
+
+-       dir = debugfs_lookup(buts->name, blk_debugfs_root);
+-       if (!dir)
+-               bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
 -
- 	err = rdmsrl_safe(MSR_PLATFORM_INFO, base_freq);
- 	if (err)
- 		return false;
-@@ -1977,7 +1974,8 @@ static bool intel_set_max_freq_ratio(void)
- 	    skx_set_max_freq_ratio(&base_freq, &turbo_freq, 1))
- 		goto out;
- 
--	if (knl_set_max_freq_ratio(&base_freq, &turbo_freq, 1))
-+	if (x86_match_cpu(has_knl_turbo_ratio_limits) &&
-+	    knl_set_max_freq_ratio(&base_freq, &turbo_freq, 1))
- 		goto out;
- 
- 	if (x86_match_cpu(has_skx_turbo_ratio_limits) &&
--- 
-2.16.4
+
+Then create blktrace attributes under the dir of q->debugfs_dir.
+
+However, buts->name could be one partition device name, but
+q->debugfs_dir has to be disk name.
+
+This change is visible to blktrace utilities.
+
+Thanks,
+Ming
 
