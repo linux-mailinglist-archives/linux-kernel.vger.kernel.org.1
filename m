@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874BA1ABB6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAD51ABB6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441365AbgDPIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:37:21 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2381 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2502445AbgDPIe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:34:28 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D4369D718DC70E64E64B;
-        Thu, 16 Apr 2020 16:34:17 +0800 (CST)
-Received: from [10.166.215.172] (10.166.215.172) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Apr 2020 16:34:14 +0800
-Subject: Re: [PATCH 3/8] bdi: add a ->dev_name field to struct
- backing_dev_info
-To:     Christoph Hellwig <hch@lst.de>, <axboe@kernel.dk>
-CC:     <tj@kernel.org>, <jack@suse.cz>, <bvanassche@acm.org>,
-        <tytso@mit.edu>, <gregkh@linuxfoundation.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200416071519.807660-1-hch@lst.de>
- <20200416071519.807660-4-hch@lst.de>
-From:   Yufen Yu <yuyufen@huawei.com>
-Message-ID: <5bfcd35a-2463-3769-be93-911c4e3c38bb@huawei.com>
-Date:   Thu, 16 Apr 2020 16:34:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S2502443AbgDPIhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502387AbgDPIfB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:35:01 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABD6C03C1AB
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:34:35 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h25so6848364lja.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MyKtvenZZySMWZjgRLJbDJOPHGIrfVrSPfr0WfI/VtA=;
+        b=fYkiVyjy7eOsJYWlAiTayzWjGkE+e1mUldI0Bx/CxoO/uRzO5h5zkKeWvLWyT4wIVq
+         y4Um/zqK1i/EUxtP/cB7m2yiCfOAVbucsbSvm9uAIBdUy5w/NyEgZas2SerPH26kjihk
+         NJ5qrlR6KCeUheLOqsfKpP2vrUVQYBdC/lh6Iy4lvDXzlo9F10OICHSA8GRZxV9vIwgG
+         g+fgaQUuLBOTvaOt4crwBP5OOZe7ophOecfwpbiaskT4jEC1w1TFXKcnvnYX+N2JBeWE
+         dUyc5WtmVr5a+KeD8IdGTWSudzyYEY/vdzcMmFi1Gbr8mYPVC1ncjFXy4g01wQx0gT9E
+         vWBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MyKtvenZZySMWZjgRLJbDJOPHGIrfVrSPfr0WfI/VtA=;
+        b=OwKpdj2cmlV3kJGZj0A+Uu20U4/Kih/HKfwiaqfmac9M//agoijI38S8qjzAwWFZge
+         Zb7jPLLo4IBo6lZh8pnPzzJ8fwMc8YgjHmUtU2NtIJYR3jKezZTQEVvzVQmLS0ROu44r
+         E8KPVEhHyBxK5SpYQ5GmQ3N2kRNka+NkgiADk7FVGJXndpkGDeTHqWfQunCEnNxvPfko
+         I6nhDEXiVhY3f4wPtSFLaVsh3pflSkfj9ufRVRoArMhjeUk/uhTfKsX/6yN7Dw0yNOZQ
+         GP5zB/u/aSS/pxIXYNKZD1ERDdKgST7cMZVhvsAKHI4hL13iFciVt8uxezxBeWZAGUP0
+         Zrpw==
+X-Gm-Message-State: AGi0PubPyE+kwa1IvcN8gNK0GYKCmdptK3w5E9FtIyrQ1wJk81KpiRdo
+        voS5mo+p+08TTvpcg5JleMwOzsP+Uv3t/ExNTULK4A==
+X-Google-Smtp-Source: APiQypKpg4Qo0k4IoZG1lD0aQ14OtbNSt7M01nnNL2FnfHvo9Iw7EPQxYDZAVptV9fOJpu5zJ470WV5Vz4uxzy+rmRs=
+X-Received: by 2002:a2e:8805:: with SMTP id x5mr2229929ljh.223.1587026074289;
+ Thu, 16 Apr 2020 01:34:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200416071519.807660-4-hch@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.172]
-X-CFilter-Loop: Reflected
+References: <20200402203656.27047-1-michael@walle.cc> <20200402203656.27047-12-michael@walle.cc>
+In-Reply-To: <20200402203656.27047-12-michael@walle.cc>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Apr 2020 10:34:23 +0200
+Message-ID: <CACRpkdbANL_W3gcTwue5VUCWT95boMXjFSqTeFDZvJ6iSeNpJg@mail.gmail.com>
+Subject: Re: [PATCH v2 11/16] gpio: add support for the sl28cpld GPIO controller
+To:     Michael Walle <michael@walle.cc>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Michael,
 
-On 2020/4/16 15:15, Christoph Hellwig wrote:
-> Cache a copy of the name for the life time of the backing_dev_info
-> structure so that we can reference it even after unregistering.
-> 
-> Fixes: 68f23b89067f ("memcg: fix a crash in wb_workfn when a device disappears")
-> Reported-by: Yufen Yu <yuyufen@huawei.com>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   include/linux/backing-dev-defs.h |  1 +
->   mm/backing-dev.c                 | 13 ++++++++++---
->   2 files changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-> index 4fc87dee005a..249590bcccf7 100644
-> --- a/include/linux/backing-dev-defs.h
-> +++ b/include/linux/backing-dev-defs.h
-> @@ -220,6 +220,7 @@ struct backing_dev_info {
->   	wait_queue_head_t wb_waitq;
->   
->   	struct device *dev;
-> +	const char *dev_name;
->   	struct device *owner;
->   
->   	struct timer_list laptop_mode_wb_timer;
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index c2c44c89ee5d..4f6c05df72f9 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -938,9 +938,15 @@ int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
->   	if (bdi->dev)	/* The driver needs to use separate queues per device */
->   		return 0;
->   
-> -	dev = device_create_vargs(bdi_class, NULL, MKDEV(0, 0), bdi, fmt, args);
-> -	if (IS_ERR(dev))
-> +	bdi->dev_name = kvasprintf(GFP_KERNEL, fmt, args);
-> +	if (!bdi->dev_name)
-> +		return -ENOMEM;
-> +
-> +	dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, bdi->dev_name);
-> +	if (IS_ERR(dev)) {
-> +		kfree(bdi->dev_name);
->   		return PTR_ERR(dev);
-> +	}
->   
->   	cgwb_bdi_register(bdi);
->   	bdi->dev = dev;
-> @@ -1034,6 +1040,7 @@ static void release_bdi(struct kref *ref)
->   	WARN_ON_ONCE(bdi->dev);
->   	wb_exit(&bdi->wb);
->   	cgwb_bdi_exit(bdi);
-> +	kfree(bdi->dev_name);
->   	kfree(bdi);
->   }
+this is looking good provided we can get the generic GPIO regmap
+helper reviewed and merged. Thanks!
 
+On Thu, Apr 2, 2020 at 10:37 PM Michael Walle <michael@walle.cc> wrote:
 
-When driver try to to re-register bdi but without release_bdi(), the old dev_name
-will be cover directly by the newer in bdi_register_va(). So, I am not sure whether
-it can cause memory leak for bdi->dev_name.
+> This adds support for the GPIO controller of the sl28 board management
+> controller. This driver is part of a multi-function device.
+>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Thanks,
-Yufen
+> +       depends on MFD_SL28CPLD
 
->   
-> @@ -1047,7 +1054,7 @@ const char *bdi_dev_name(struct backing_dev_info *bdi)
->   {
->   	if (!bdi || !bdi->dev)
->   		return bdi_unknown_name;
-> -	return dev_name(bdi->dev);
-> +	return bdi->dev_name;
->   }
->   EXPORT_SYMBOL_GPL(bdi_dev_name);
+Apart from this depends it seems the patch is compile-time
+independent of the other patches so I'd suggest we just merge
+the generic regmap driver and this driver to the GPIO tree once
+we feel finished with them, optimistically assuming that the MFD
+driver will land and that we will not need any fundamental
+changes in the GPIO driver.
 
+Worst case we have to revert the driver and that is no disaster.
 
-
-
+Yours,
+Linus Walleij
