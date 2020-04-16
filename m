@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F341AC82E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92261AC4D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394938AbgDPPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39446 "EHLO mail.kernel.org"
+        id S2405440AbgDPOFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:05:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441716AbgDPNxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:53:06 -0400
+        id S2441617AbgDPNnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:43:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 487FB20786;
-        Thu, 16 Apr 2020 13:53:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA6DF2222C;
+        Thu, 16 Apr 2020 13:43:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045185;
-        bh=+tVkHlpjfi2FdI+R1g0HWl2/qGo+Rc7EYvcZTCZ7d7s=;
+        s=default; t=1587044602;
+        bh=Kxg+6mNL0fU0Qz97sBuOPhNXN09NkF4B2vPqrXgEL0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eai/2iwuLyKlf7SQzjB+fkUfRmzssVyw0sTGge6SFJ7WYdoyVuc0AIPmDNm4sh8r9
-         TqM/ansYSe4xGB0OmZa8zucXxaY5gvyjXkItMyICAAdeW+kdEsAHvOR2GlpKKQH+uS
-         l3VdBAv2JtXPxsw/3YPnneg+RVR99RvkO69hDOdU=
+        b=PaIq/PfLUeMh76xuvfNZQhgCO2eyc+37MPkJWTpZaDj9Io5dLfyYeKuCCIt//eARf
+         j/xIXEGgLFZ0DVt21uEYi52GZDQvr5NO+ZxnH1yTsrELYO8ejH25QHLvbQGOtrZR5Q
+         y1+DW1J7RTOmduzImVXsbQl2qdeLzrowLmM1//oc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Ajay Singh <ajay.kathat@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 031/254] spi: spi-fsl-dspi: Avoid NULL pointer in dspi_slave_abort for non-DMA mode
+Subject: [PATCH 5.4 026/232] staging: wilc1000: avoid double unlocking of wilc->hif_cs mutex
 Date:   Thu, 16 Apr 2020 15:22:00 +0200
-Message-Id: <20200416131329.754688943@linuxfoundation.org>
+Message-Id: <20200416131319.485120134@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Ajay Singh <ajay.kathat@microchip.com>
 
-[ Upstream commit 3d6224e63be39ff26cf416492cb3923cd3d07dd0 ]
+[ Upstream commit 6c411581caef6e3b2c286871641018364c6db50a ]
 
-The driver does not create the dspi->dma structure unless operating in
-DSPI_DMA_MODE, so it makes sense to check for that.
+Possible double unlocking of 'wilc->hif_cs' mutex was identified by
+smatch [1]. Removed the extra call to release_bus() in
+wilc_wlan_handle_txq() which was missed in earlier commit fdc2ac1aafc6
+("staging: wilc1000: support suspend/resume functionality").
 
-Fixes: f4b323905d8b ("spi: Introduce dspi_slave_abort() function for NXP's dspi SPI driver")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Tested-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20200318001603.9650-8-olteanv@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[1]. https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/NOEVW7C3GV74EWXJO3XX6VT2NKVB2HMT/
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
+Link: https://lore.kernel.org/r/20200221170120.15739-1-ajay.kathat@microchip.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsl-dspi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/staging/wilc1000/wilc_wlan.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 6ec2dcb8c57a6..2ce65edf16b66 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1021,8 +1021,10 @@ static int dspi_slave_abort(struct spi_master *master)
- 	 * Terminate all pending DMA transactions for the SPI working
- 	 * in SLAVE mode.
- 	 */
--	dmaengine_terminate_sync(dspi->dma->chan_rx);
--	dmaengine_terminate_sync(dspi->dma->chan_tx);
-+	if (dspi->devtype_data->trans_mode == DSPI_DMA_MODE) {
-+		dmaengine_terminate_sync(dspi->dma->chan_rx);
-+		dmaengine_terminate_sync(dspi->dma->chan_tx);
-+	}
- 
- 	/* Clear the internal DSPI RX and TX FIFO buffers */
- 	regmap_update_bits(dspi->regmap, SPI_MCR,
+diff --git a/drivers/staging/wilc1000/wilc_wlan.c b/drivers/staging/wilc1000/wilc_wlan.c
+index 771d8cb68dc17..02f551536e18b 100644
+--- a/drivers/staging/wilc1000/wilc_wlan.c
++++ b/drivers/staging/wilc1000/wilc_wlan.c
+@@ -578,7 +578,6 @@ int wilc_wlan_handle_txq(struct wilc *wilc, u32 *txq_count)
+ 				entries = ((reg >> 3) & 0x3f);
+ 				break;
+ 			}
+-			release_bus(wilc, WILC_BUS_RELEASE_ALLOW_SLEEP);
+ 		} while (--timeout);
+ 		if (timeout <= 0) {
+ 			ret = func->hif_write_reg(wilc, WILC_HOST_VMM_CTL, 0x0);
 -- 
 2.20.1
 
