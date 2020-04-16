@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167881AC95E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC49B1AC2D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441569AbgDPPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:22:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59486 "EHLO mail.kernel.org"
+        id S2896804AbgDPNdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:33:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441625AbgDPNpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:45:51 -0400
+        id S2895906AbgDPN2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:28:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4BCA21744;
-        Thu, 16 Apr 2020 13:45:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E0BC21D79;
+        Thu, 16 Apr 2020 13:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044750;
-        bh=GC7P3y7Dy+E6t3Dg2e24lsZ2vsRQWKY2LNgLclPIFq8=;
+        s=default; t=1587043734;
+        bh=V6i+rRCFuRpIC/euPkiZ8Bkck/inPy4q/Edpec0w4JE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o5+snebEog2yzhWMc0uAh1fJMfk78g29RstlKvoYyJUud4CGHTCz+flUnsiUNdQT6
-         uddSFmZXTsNsBZbxrXdBBhtYl3USHzwmua7tROaSvfE6pVBU9DN54IZhaCcA1Yzkm2
-         8uPVoYe7wRlh2y9NYA9GP+MbGOt0AR/cdcEhvq2Y=
+        b=bsWoQX4O4O0Sz8QaR6AxUf00mdANL0IvxHf+IrAtYnylItzdXVS+vB7A7S9uRoloC
+         DShj94l0OG/VZMw4zNh+xNvimyRRFwEa9CAoX4hk1fIqyS60HU5QGzupPEF/hKUqSd
+         Qv1F2cCMP2rs3ibxZEbxxBEdAV93LKz94xBdJhkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 084/232] ALSA: hda/realtek - Remove now-unnecessary XPS 13 headphone noise fixups
+        stable@vger.kernel.org, Paolo Valente <paolo.valente@linaro.org>,
+        Wang Wang <wangwang2@huawei.com>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Feilong Lin <linfeilong@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 037/146] block, bfq: fix use-after-free in bfq_idle_slice_timer_body
 Date:   Thu, 16 Apr 2020 15:22:58 +0200
-Message-Id: <20200416131325.562559458@linuxfoundation.org>
+Message-Id: <20200416131247.560457942@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,142 +46,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
 
-commit f36938aa7440f46a0a365f1cfde5f5985af2bef3 upstream.
+[ Upstream commit 2f95fa5c955d0a9987ffdc3a095e2f4e62c5f2a9 ]
 
-patch_realtek.c has historically failed to properly configure the PC
-Beep Hidden Register for the ALC256 codec (among others). Depending on
-your kernel version, symptoms of this misconfiguration can range from
-chassis noise, picked up by a poorly-shielded PCBEEP trace, getting
-amplified and played on your internal speaker and/or headphones to loud
-feedback, which responds to the "Headphone Mic Boost" ALSA control,
-getting played through your headphones. For details of the problem, see
-the patch in this series titled "ALSA: hda/realtek - Set principled PC
-Beep configuration for ALC256", which fixes the configuration.
+In bfq_idle_slice_timer func, bfqq = bfqd->in_service_queue is
+not in bfqd-lock critical section. The bfqq, which is not
+equal to NULL in bfq_idle_slice_timer, may be freed after passing
+to bfq_idle_slice_timer_body. So we will access the freed memory.
 
-These symptoms have been most noticed on the Dell XPS 13 9350 and 9360,
-popular laptops that use the ALC256. As a result, several model-specific
-fixups have been introduced to try and fix the problem, the most
-egregious of which locks the "Headphone Mic Boost" control as a hack to
-minimize noise from a feedback loop that shouldn't have been there in
-the first place.
+In addition, considering the bfqq may be in race, we should
+firstly check whether bfqq is in service before doing something
+on it in bfq_idle_slice_timer_body func. If the bfqq in race is
+not in service, it means the bfqq has been expired through
+__bfq_bfqq_expire func, and wait_request flags has been cleared in
+__bfq_bfqd_reset_in_service func. So we do not need to re-clear the
+wait_request of bfqq which is not in service.
 
-Now that the underlying issue has been fixed, remove all these fixups.
-Remaining fixups needed by the XPS 13 are all picked up by existing pin
-quirks.
+KASAN log is given as follows:
+[13058.354613] ==================================================================
+[13058.354640] BUG: KASAN: use-after-free in bfq_idle_slice_timer+0xac/0x290
+[13058.354644] Read of size 8 at addr ffffa02cf3e63f78 by task fork13/19767
+[13058.354646]
+[13058.354655] CPU: 96 PID: 19767 Comm: fork13
+[13058.354661] Call trace:
+[13058.354667]  dump_backtrace+0x0/0x310
+[13058.354672]  show_stack+0x28/0x38
+[13058.354681]  dump_stack+0xd8/0x108
+[13058.354687]  print_address_description+0x68/0x2d0
+[13058.354690]  kasan_report+0x124/0x2e0
+[13058.354697]  __asan_load8+0x88/0xb0
+[13058.354702]  bfq_idle_slice_timer+0xac/0x290
+[13058.354707]  __hrtimer_run_queues+0x298/0x8b8
+[13058.354710]  hrtimer_interrupt+0x1b8/0x678
+[13058.354716]  arch_timer_handler_phys+0x4c/0x78
+[13058.354722]  handle_percpu_devid_irq+0xf0/0x558
+[13058.354731]  generic_handle_irq+0x50/0x70
+[13058.354735]  __handle_domain_irq+0x94/0x110
+[13058.354739]  gic_handle_irq+0x8c/0x1b0
+[13058.354742]  el1_irq+0xb8/0x140
+[13058.354748]  do_wp_page+0x260/0xe28
+[13058.354752]  __handle_mm_fault+0x8ec/0x9b0
+[13058.354756]  handle_mm_fault+0x280/0x460
+[13058.354762]  do_page_fault+0x3ec/0x890
+[13058.354765]  do_mem_abort+0xc0/0x1b0
+[13058.354768]  el0_da+0x24/0x28
+[13058.354770]
+[13058.354773] Allocated by task 19731:
+[13058.354780]  kasan_kmalloc+0xe0/0x190
+[13058.354784]  kasan_slab_alloc+0x14/0x20
+[13058.354788]  kmem_cache_alloc_node+0x130/0x440
+[13058.354793]  bfq_get_queue+0x138/0x858
+[13058.354797]  bfq_get_bfqq_handle_split+0xd4/0x328
+[13058.354801]  bfq_init_rq+0x1f4/0x1180
+[13058.354806]  bfq_insert_requests+0x264/0x1c98
+[13058.354811]  blk_mq_sched_insert_requests+0x1c4/0x488
+[13058.354818]  blk_mq_flush_plug_list+0x2d4/0x6e0
+[13058.354826]  blk_flush_plug_list+0x230/0x548
+[13058.354830]  blk_finish_plug+0x60/0x80
+[13058.354838]  read_pages+0xec/0x2c0
+[13058.354842]  __do_page_cache_readahead+0x374/0x438
+[13058.354846]  ondemand_readahead+0x24c/0x6b0
+[13058.354851]  page_cache_sync_readahead+0x17c/0x2f8
+[13058.354858]  generic_file_buffered_read+0x588/0xc58
+[13058.354862]  generic_file_read_iter+0x1b4/0x278
+[13058.354965]  ext4_file_read_iter+0xa8/0x1d8 [ext4]
+[13058.354972]  __vfs_read+0x238/0x320
+[13058.354976]  vfs_read+0xbc/0x1c0
+[13058.354980]  ksys_read+0xdc/0x1b8
+[13058.354984]  __arm64_sys_read+0x50/0x60
+[13058.354990]  el0_svc_common+0xb4/0x1d8
+[13058.354994]  el0_svc_handler+0x50/0xa8
+[13058.354998]  el0_svc+0x8/0xc
+[13058.354999]
+[13058.355001] Freed by task 19731:
+[13058.355007]  __kasan_slab_free+0x120/0x228
+[13058.355010]  kasan_slab_free+0x10/0x18
+[13058.355014]  kmem_cache_free+0x288/0x3f0
+[13058.355018]  bfq_put_queue+0x134/0x208
+[13058.355022]  bfq_exit_icq_bfqq+0x164/0x348
+[13058.355026]  bfq_exit_icq+0x28/0x40
+[13058.355030]  ioc_exit_icq+0xa0/0x150
+[13058.355035]  put_io_context_active+0x250/0x438
+[13058.355038]  exit_io_context+0xd0/0x138
+[13058.355045]  do_exit+0x734/0xc58
+[13058.355050]  do_group_exit+0x78/0x220
+[13058.355054]  __wake_up_parent+0x0/0x50
+[13058.355058]  el0_svc_common+0xb4/0x1d8
+[13058.355062]  el0_svc_handler+0x50/0xa8
+[13058.355066]  el0_svc+0x8/0xc
+[13058.355067]
+[13058.355071] The buggy address belongs to the object at ffffa02cf3e63e70#012 which belongs to the cache bfq_queue of size 464
+[13058.355075] The buggy address is located 264 bytes inside of#012 464-byte region [ffffa02cf3e63e70, ffffa02cf3e64040)
+[13058.355077] The buggy address belongs to the page:
+[13058.355083] page:ffff7e80b3cf9800 count:1 mapcount:0 mapping:ffff802db5c90780 index:0xffffa02cf3e606f0 compound_mapcount: 0
+[13058.366175] flags: 0x2ffffe0000008100(slab|head)
+[13058.370781] raw: 2ffffe0000008100 ffff7e80b53b1408 ffffa02d730c1c90 ffff802db5c90780
+[13058.370787] raw: ffffa02cf3e606f0 0000000000370023 00000001ffffffff 0000000000000000
+[13058.370789] page dumped because: kasan: bad access detected
+[13058.370791]
+[13058.370792] Memory state around the buggy address:
+[13058.370797]  ffffa02cf3e63e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fb fb
+[13058.370801]  ffffa02cf3e63e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[13058.370805] >ffffa02cf3e63f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[13058.370808]                                                                 ^
+[13058.370811]  ffffa02cf3e63f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[13058.370815]  ffffa02cf3e64000: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[13058.370817] ==================================================================
+[13058.370820] Disabling lock debugging due to kernel taint
 
-This change should, for the XPS 13 9350/9360
+Here, we directly pass the bfqd to bfq_idle_slice_timer_body func.
+--
+V2->V3: rewrite the comment as suggested by Paolo Valente
+V1->V2: add one comment, and add Fixes and Reported-by tag.
 
- - Significantly increase volume and audio quality on headphones
- - Eliminate headphone popping on suspend/resume
- - Allow "Headphone Mic Boost" to be set again, making the headphone
-   jack fully usable as a microphone jack too.
-
-Fixes: 8c69729b4439 ("ALSA: hda - Fix headphone noise after Dell XPS 13 resume back from S3")
-Fixes: 423cd785619a ("ALSA: hda - Fix headphone noise on Dell XPS 13 9360")
-Fixes: e4c9fd10eb21 ("ALSA: hda - Apply headphone noise quirk for another Dell XPS 13 variant")
-Fixes: 1099f48457d0 ("ALSA: hda/realtek: Reduce the Headphone static noise on XPS 9350/9360")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Link: https://lore.kernel.org/r/b649a00edfde150cf6eebbb4390e15e0c2deb39a.1585584498.git.tommyhebb@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: aee69d78d ("block, bfq: introduce the BFQ-v0 I/O scheduler as an extra scheduler")
+Acked-by: Paolo Valente <paolo.valente@linaro.org>
+Reported-by: Wang Wang <wangwang2@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/sound/hd-audio/models.rst |    2 -
- sound/pci/hda/patch_realtek.c           |   34 --------------------------------
- 2 files changed, 36 deletions(-)
+ block/bfq-iosched.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/Documentation/sound/hd-audio/models.rst
-+++ b/Documentation/sound/hd-audio/models.rst
-@@ -216,8 +216,6 @@ alc298-dell-aio
-     ALC298 fixups on Dell AIO machines
- alc275-dell-xps
-     ALC275 fixups on Dell XPS models
--alc256-dell-xps13
--    ALC256 fixups on Dell XPS13
- lenovo-spk-noise
-     Workaround for speaker noise on Lenovo machines
- lenovo-hotkey
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5491,17 +5491,6 @@ static void alc271_hp_gate_mic_jack(stru
- 	}
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 66b1ebc21ce4f..5198ed1b36690 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -5156,20 +5156,28 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
+ 	return bfqq;
  }
  
--static void alc256_fixup_dell_xps_13_headphone_noise2(struct hda_codec *codec,
--						      const struct hda_fixup *fix,
--						      int action)
--{
--	if (action != HDA_FIXUP_ACT_PRE_PROBE)
--		return;
--
--	snd_hda_codec_amp_stereo(codec, 0x1a, HDA_INPUT, 0, HDA_AMP_VOLMASK, 1);
--	snd_hda_override_wcaps(codec, 0x1a, get_wcaps(codec, 0x1a) & ~AC_WCAP_IN_AMP);
--}
--
- static void alc269_fixup_limit_int_mic_boost(struct hda_codec *codec,
- 					     const struct hda_fixup *fix,
- 					     int action)
-@@ -5916,8 +5905,6 @@ enum {
- 	ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE,
- 	ALC275_FIXUP_DELL_XPS,
--	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
--	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE2,
- 	ALC293_FIXUP_LENOVO_SPK_NOISE,
- 	ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY,
- 	ALC255_FIXUP_DELL_SPK_NOISE,
-@@ -6658,23 +6645,6 @@ static const struct hda_fixup alc269_fix
- 			{}
- 		}
- 	},
--	[ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = (const struct hda_verb[]) {
--			/* Disable pass-through path for FRONT 14h */
--			{0x20, AC_VERB_SET_COEF_INDEX, 0x36},
--			{0x20, AC_VERB_SET_PROC_COEF, 0x1737},
--			{}
--		},
--		.chained = true,
--		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
--	},
--	[ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE2] = {
--		.type = HDA_FIXUP_FUNC,
--		.v.func = alc256_fixup_dell_xps_13_headphone_noise2,
--		.chained = true,
--		.chain_id = ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE
--	},
- 	[ALC293_FIXUP_LENOVO_SPK_NOISE] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_disable_aamix,
-@@ -7172,17 +7142,14 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1028, 0x06de, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
- 	SND_PCI_QUIRK(0x1028, 0x06df, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
- 	SND_PCI_QUIRK(0x1028, 0x06e0, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
--	SND_PCI_QUIRK(0x1028, 0x0704, "Dell XPS 13 9350", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE2),
- 	SND_PCI_QUIRK(0x1028, 0x0706, "Dell Inspiron 7559", ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER),
- 	SND_PCI_QUIRK(0x1028, 0x0725, "Dell Inspiron 3162", ALC255_FIXUP_DELL_SPK_NOISE),
- 	SND_PCI_QUIRK(0x1028, 0x0738, "Dell Precision 5820", ALC269_FIXUP_NO_SHUTUP),
--	SND_PCI_QUIRK(0x1028, 0x075b, "Dell XPS 13 9360", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE2),
- 	SND_PCI_QUIRK(0x1028, 0x075c, "Dell XPS 27 7760", ALC298_FIXUP_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x1028, 0x075d, "Dell AIO", ALC298_FIXUP_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x1028, 0x07b0, "Dell Precision 7520", ALC295_FIXUP_DISABLE_DAC3),
- 	SND_PCI_QUIRK(0x1028, 0x0798, "Dell Inspiron 17 7000 Gaming", ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER),
- 	SND_PCI_QUIRK(0x1028, 0x080c, "Dell WYSE", ALC225_FIXUP_DELL_WYSE_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x082a, "Dell XPS 13 9360", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE2),
- 	SND_PCI_QUIRK(0x1028, 0x084b, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB),
- 	SND_PCI_QUIRK(0x1028, 0x084e, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB),
- 	SND_PCI_QUIRK(0x1028, 0x0871, "Dell Precision 3630", ALC255_FIXUP_DELL_HEADSET_MIC),
-@@ -7536,7 +7503,6 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC298_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "alc298-dell1"},
- 	{.id = ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE, .name = "alc298-dell-aio"},
- 	{.id = ALC275_FIXUP_DELL_XPS, .name = "alc275-dell-xps"},
--	{.id = ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE, .name = "alc256-dell-xps13"},
- 	{.id = ALC293_FIXUP_LENOVO_SPK_NOISE, .name = "lenovo-spk-noise"},
- 	{.id = ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY, .name = "lenovo-hotkey"},
- 	{.id = ALC255_FIXUP_DELL_SPK_NOISE, .name = "dell-spk-noise"},
+-static void bfq_idle_slice_timer_body(struct bfq_queue *bfqq)
++static void
++bfq_idle_slice_timer_body(struct bfq_data *bfqd, struct bfq_queue *bfqq)
+ {
+-	struct bfq_data *bfqd = bfqq->bfqd;
+ 	enum bfqq_expiration reason;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&bfqd->lock, flags);
+-	bfq_clear_bfqq_wait_request(bfqq);
+ 
++	/*
++	 * Considering that bfqq may be in race, we should firstly check
++	 * whether bfqq is in service before doing something on it. If
++	 * the bfqq in race is not in service, it has already been expired
++	 * through __bfq_bfqq_expire func and its wait_request flags has
++	 * been cleared in __bfq_bfqd_reset_in_service func.
++	 */
+ 	if (bfqq != bfqd->in_service_queue) {
+ 		spin_unlock_irqrestore(&bfqd->lock, flags);
+ 		return;
+ 	}
+ 
++	bfq_clear_bfqq_wait_request(bfqq);
++
+ 	if (bfq_bfqq_budget_timeout(bfqq))
+ 		/*
+ 		 * Also here the queue can be safely expired
+@@ -5214,7 +5222,7 @@ static enum hrtimer_restart bfq_idle_slice_timer(struct hrtimer *timer)
+ 	 * early.
+ 	 */
+ 	if (bfqq)
+-		bfq_idle_slice_timer_body(bfqq);
++		bfq_idle_slice_timer_body(bfqd, bfqq);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+-- 
+2.20.1
+
 
 
