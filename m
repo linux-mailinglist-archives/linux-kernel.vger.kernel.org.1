@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A4B1AC56E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD00F1AC9F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442372AbgDPOTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:19:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40032 "EHLO mail.kernel.org"
+        id S2395182AbgDPP3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503837AbgDPNxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:53:33 -0400
+        id S2897824AbgDPNnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:43:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 192B720732;
-        Thu, 16 Apr 2020 13:53:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFBA620732;
+        Thu, 16 Apr 2020 13:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045212;
-        bh=MnuWYLFkdb1YHimhXS6d0CxSVI1WAlx/FlXUz917YfU=;
+        s=default; t=1587044629;
+        bh=4bivpDyeSrRjIegv2VxT7NaQn8LF0IPGydFQ8umUCrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rDOsbKTZ3N2+sdUVSzzm1zktlRUlkxAVhvbKjIUdLcNc+8JiwYyMD4ckpdKtaWS5M
-         zt3GX3HlBE3un9/HIjHwhuXF/8pQFprlx4UU0P+7rwUCohx3PqmssNWB4mlWFF0AkS
-         KxoPx+DU78k9NL8IoPhwzKlEWDjwD88ecOD7jzMM=
+        b=Z4NpfEuwkn2+GXDcqMJnCehAPWh4NYpTqe3KYev+BxybwnuuGYQ5fPrQ4T9/bhDUY
+         GaDwMiL+TquZPS6jPz6HNFu72Alr7NEv+ERYwr0qSLON595poiCdmICm5Aj1BDtx+L
+         3uxqSxMWIto/LT9ZuIcgiZwzXCow8BautHbe34wE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, rdunlap@infradead.org,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Thomas Hellstrom <thellstrom@vmware.com>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 041/254] media: i2c: video-i2c: fix build errors due to imply hwmon
+Subject: [PATCH 5.4 036/232] x86: Dont let pgprot_modify() change the page encryption bit
 Date:   Thu, 16 Apr 2020 15:22:10 +0200
-Message-Id: <20200416131330.993957329@linuxfoundation.org>
+Message-Id: <20200416131320.457335103@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +46,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Ranostay <matt.ranostay@konsulko.com>
+From: Thomas Hellstrom <thellstrom@vmware.com>
 
-[ Upstream commit 64d4fc9926f09861a35d8f0f7d81f056e6d5af7b ]
+[ Upstream commit 6db73f17c5f155dbcfd5e48e621c706270b84df0 ]
 
-Fix build fault when CONFIG_HWMON is a module, and CONFIG_VIDEO_I2C
-as builtin. This is due to 'imply hwmon' in the respective Kconfig.
+When SEV or SME is enabled and active, vm_get_page_prot() typically
+returns with the encryption bit set. This means that users of
+pgprot_modify(, vm_get_page_prot()) (mprotect_fixup(), do_mmap()) end up
+with a value of vma->vm_pg_prot that is not consistent with the intended
+protection of the PTEs.
 
-Issue build log:
+This is also important for fault handlers that rely on the VMA
+vm_page_prot to set the page protection. Fix this by not allowing
+pgprot_modify() to change the encryption bit, similar to how it's done
+for PAT bits.
 
-ld: drivers/media/i2c/video-i2c.o: in function `amg88xx_hwmon_init':
-video-i2c.c:(.text+0x2e1): undefined reference to `devm_hwmon_device_register_with_info
-
-Cc: rdunlap@infradead.org
-Fixes: acbea6798955 (media: video-i2c: add hwmon support for amg88xx)
-Signed-off-by: Matt Ranostay <matt.ranostay@konsulko.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20200304114527.3636-2-thomas_os@shipmail.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/video-i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/pgtable.h       | 7 +++++--
+ arch/x86/include/asm/pgtable_types.h | 2 +-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
-index 078141712c887..0b977e73ceb29 100644
---- a/drivers/media/i2c/video-i2c.c
-+++ b/drivers/media/i2c/video-i2c.c
-@@ -255,7 +255,7 @@ static int amg88xx_set_power(struct video_i2c_data *data, bool on)
- 	return amg88xx_set_power_off(data);
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 0bc530c4eb134..1e6bb4c253342 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -624,12 +624,15 @@ static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
+ 	return __pmd(val);
  }
  
--#if IS_ENABLED(CONFIG_HWMON)
-+#if IS_REACHABLE(CONFIG_HWMON)
+-/* mprotect needs to preserve PAT bits when updating vm_page_prot */
++/*
++ * mprotect needs to preserve PAT and encryption bits when updating
++ * vm_page_prot
++ */
+ #define pgprot_modify pgprot_modify
+ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
+ {
+ 	pgprotval_t preservebits = pgprot_val(oldprot) & _PAGE_CHG_MASK;
+-	pgprotval_t addbits = pgprot_val(newprot);
++	pgprotval_t addbits = pgprot_val(newprot) & ~_PAGE_CHG_MASK;
+ 	return __pgprot(preservebits | addbits);
+ }
  
- static const u32 amg88xx_temp_config[] = {
- 	HWMON_T_INPUT,
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index b5e49e6bac635..8267dd426b152 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -123,7 +123,7 @@
+  */
+ #define _PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |		\
+ 			 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY |	\
+-			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP)
++			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP | _PAGE_ENC)
+ #define _HPAGE_CHG_MASK (_PAGE_CHG_MASK | _PAGE_PSE)
+ 
+ /*
 -- 
 2.20.1
 
