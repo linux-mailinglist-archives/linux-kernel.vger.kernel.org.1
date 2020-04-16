@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB281AD193
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FC21AD908
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgDPUz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727952AbgDPUzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:55:25 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7763BC061A0C;
-        Thu, 16 Apr 2020 13:55:25 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g6so2203384pgs.9;
-        Thu, 16 Apr 2020 13:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tRp4sksgDku5T1RHONV+cHmwg4VeG23KppLeZFt7ais=;
-        b=OOoCdSRUwaAYiBhJa6PT3YEctiEoqdhPlElRmYMDKKMbBeuk01GkiGtDiFL2gll5R+
-         PyRTmPEtmmMT80RUx6x0V1QX+xYCxducVthmOBZRcVjhCbn38YePvR482/y5QAUqBUcG
-         pqPKMDvJOp8bc92uIlfTJMIj4h4h7d+6B1xngK1q4ER7sqUXhKcJtCi7i1heNLJeitmY
-         kG+6QB39al+TS0eQT2J1lfL5Om60QtihOTuHJ71sZ1SmzdDcIYjyWf0EzA+k/IR+i1Wg
-         UyHAO9Q+1UAcODvkzPm3Sptw8pEycAt2wzvPCjGRvJePaf/c9RCwaSHfgzRPH16psE61
-         Mq/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tRp4sksgDku5T1RHONV+cHmwg4VeG23KppLeZFt7ais=;
-        b=TxbhuxoK1+flFF8zHdoPgYu2wTHSIfJ57YbSU7TcbBNqXArt69mb30tndQDq4QKWzp
-         6co+610TKCKNRj2RRAe8yjvPs83EfwEdH9qN1gVehz3DT1REsm5p7weTDpSTVXCArvGl
-         8G6Iv9OW5dn83+P7opA/8dDS3TJeuIu5I9W0WctiXuj8LZV0wyPUgMGjjzamRPg7SkKW
-         f3alEoorsvl/B6tOn1pAYLt+jjfdZ/nILXCR53O6Ti5NypVx9o8dtSg7lHMGAtY3Yt/1
-         rx3gEOw/4SReNjapd95AOY0RWTUjUwAswvQkN55Bb3wVzR5DSFj7W5bDcCY6lV9lHMvC
-         rGFQ==
-X-Gm-Message-State: AGi0PuY0ttS1tRBCbIh/MyJQnhP9JGOpQ1YiJAF8nSfO7HMU1zKdzAlR
-        4DssWadehORr80H6IWMBr6DfpBlV
-X-Google-Smtp-Source: APiQypIcH5Hx6ZnsZmvuRfWbTPXfSA0gVMA650+jd9c+8exLd5z1RJGE3UdSg6iZkVcjuzoeu5B/tQ==
-X-Received: by 2002:a62:7656:: with SMTP id r83mr3542746pfc.71.1587070524332;
-        Thu, 16 Apr 2020 13:55:24 -0700 (PDT)
-Received: from [10.230.188.26] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id ml24sm3210343pjb.48.2020.04.16.13.55.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 13:55:22 -0700 (PDT)
-Subject: Re: [Patch 1/9] spi: bcm-qspi: Handle clock probe deferral
-To:     Mark Brown <broonie@kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200416174309.34044-1-kdasu.kdev@gmail.com>
- <20200416174932.GP5354@sirena.org.uk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7b2db6ed-1aab-4c61-e519-a73d9e3af454@gmail.com>
-Date:   Thu, 16 Apr 2020 13:55:21 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200416174932.GP5354@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729990AbgDQIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:50:38 -0400
+Received: from mga09.intel.com ([134.134.136.24]:7443 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729965AbgDQIuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:50:37 -0400
+IronPort-SDR: /ukP6EB27WsMt9V3bKfW58zcenxvHYspDFgPmcQ583wNi+LEtI3tZhHbD1XfUe5bMdt+M8Plfr
+ z6AC57Lo6Svw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 01:50:36 -0700
+IronPort-SDR: gfOsYFLTybkPRyrNv0LcZc8ObkXbC0NWu4yG6cCK6Ebtn8V7eHtEW5UAm9rxoSnlPAClz8FHCk
+ xZMHp0/p72Cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,394,1580803200"; 
+   d="scan'208";a="454661457"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Apr 2020 01:50:32 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        slawomir.blauciak@intel.com, mengdong.lin@intel.com
+Subject: [RFC 2/5] soundwire: master: use device node pointer from master device
+Date:   Fri, 17 Apr 2020 04:55:21 +0800
+Message-Id: <20200416205524.2043-3-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200416205524.2043-1-yung-chuan.liao@linux.intel.com>
+References: <20200416205524.2043-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+device_node pointer is required for scanning slave devices, update
+it from the master device.
 
-On 4/16/2020 10:49 AM, Mark Brown wrote:
-> On Thu, Apr 16, 2020 at 01:43:01PM -0400, Kamal Dasu wrote:
->> The clock provider may not be ready by the time spi-bcm-qspi gets
->> probed, handle probe deferral using devm_clk_get_optional().
->>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> 
-> Did Florian author this patch or you?  The signoffs look like it was
-> him.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/master.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I believe I did author that one ;)
+diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
+index 094518817601..c930c871caae 100644
+--- a/drivers/soundwire/master.c
++++ b/drivers/soundwire/master.c
+@@ -49,6 +49,7 @@ struct sdw_master_device
+ 	md->link_ops = link_ops;
+ 
+ 	md->dev.parent = parent;
++	md->dev.of_node = parent->of_node;
+ 	md->dev.fwnode = fwnode;
+ 	md->dev.bus = &sdw_bus_type;
+ 	md->dev.type = &sdw_master_type;
 -- 
-Florian
+2.17.1
+
