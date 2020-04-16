@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762761AB7A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C62E1AB7A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407607AbgDPGDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:03:06 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:41096 "EHLO fornost.hmeau.com"
+        id S2407418AbgDPGCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407219AbgDPGDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:03:03 -0400
-Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1jOxai-0004JT-Ro; Thu, 16 Apr 2020 16:01:37 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Apr 2020 16:01:36 +1000
-Date:   Thu, 16 Apr 2020 16:01:36 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     davem@davemloft.net, ebiggers@kernel.org, ebiggers@google.com,
-        pvanleeuwen@rambus.com, zohar@linux.ibm.com, gilad@benyossef.com,
-        jarkko.sakkinen@linux.intel.com, dmitry.kasatkin@intel.com,
-        nicstange@gmail.com, tadeusz.struk@intel.com, jmorris@namei.org,
-        serge@hallyn.com, zhang.jia@linux.alibaba.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] crpyto: introduce OSCCA certificate and SM2
- asymmetric algorithm
-Message-ID: <20200416060136.GA19149@gondor.apana.org.au>
-References: <20200402123504.84628-1-tianjia.zhang@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402123504.84628-1-tianjia.zhang@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2407165AbgDPGCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:02:13 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94EEA2076A;
+        Thu, 16 Apr 2020 06:02:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587016932;
+        bh=H95Q/syDnIOT80mK9pLWTpk+EblpARC2OaGNoxyxAiw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oAet7vuPUBRUElKdTjJcmSJ6ELXSNTpWsbnm60yn9+4UnifDG+l8n2NPbSf5FPtZ9
+         1U6C6/MVqik5+/djGWSe2Gf8hwEr3OSdXNxzP4vdiAMdlgq8bCnXuMOQOsVn9YKbXY
+         JgtPw4hu85/iVYpCPrhhtkGX5tA//9IcGEWs4BTw=
+Date:   Thu, 16 Apr 2020 15:02:06 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v2 0/3] support setting sysctl parameters from kernel
+ command line
+Message-Id: <20200416150206.d3e103a1a5497b3518d4359c@kernel.org>
+In-Reply-To: <20200415063041.GT11244@42.do-not-panic.com>
+References: <20200414113222.16959-1-vbabka@suse.cz>
+        <20200415122359.939364e2c54c389c6b3f6457@kernel.org>
+        <20200415063041.GT11244@42.do-not-panic.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 08:34:57PM +0800, Tianjia Zhang wrote:
-> Hello all,
-> 
-> This new module implement the OSCCA certificate and SM2 public key
-> algorithm. It was published by State Encryption Management Bureau, China.
-> List of specifications for OSCCA certificate and SM2 elliptic curve
-> public key cryptography:
-> 
-> * GM/T 0003.1-2012
-> * GM/T 0003.2-2012
-> * GM/T 0003.3-2012
-> * GM/T 0003.4-2012
-> * GM/T 0003.5-2012
-> * GM/T 0015-2012
-> * GM/T 0009-2012 
-> 
-> IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
-> oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
-> scctc: http://www.gmbz.org.cn/main/bzlb.html
-> 
-> These patchs add the OID object identifier defined by OSCCA. The
-> x509 certificate supports sm2-with-sm3 type certificate parsing
-> and verification.
+Hi Luis,
 
-I don't have any objections to the crypto API bits, but obviously
-this is contingent on the x509 bits getting accepted since that's
-the only in-kernel user.  So can I see some acks on that please?
+On Wed, 15 Apr 2020 06:30:41 +0000
+Luis Chamberlain <mcgrof@kernel.org> wrote:
+> Currently the maximum config size size is 32KB and the total key-words
+> (not     key-value entries) must be under 1024 nodes.  Note: this is not
+> the number of entries but nodes, an entry must consume more than 2 nodes
+> (a key-word and a value). So theoretically, it will be up to 512
+> key-value pairs. If keys contains 3 words in average, it can contain 256
+> key-value pairs. In most cases, the number of config items will be under
+> 100 entries and smaller than 8KB, so it would be enough.  If the node
+> number exceeds 1024, parser returns an error even if the file       size
+> is smaller than 32KB.  Anyway, since bootconfig command verifies it when
+> appending a boot config       to initrd image, user can notice it before
+> boot.  
+> ```
+> *recommending* bootconfig due to the limitation of cmdline seems
+> sensible, however if we advise that.. wouldn't the space for 512
+> theoretical entries full up rather fast?
 
-Thanks,
+Yeah, I think it is easier to hit the node number limitation rather
+than fill up the space. However, since the bootconfig supports comments,
+if user writes enough readable config file, I think it's probably the
+right balance :)
+If you think the 512 entries is too small, it is easy to expand it
+upto 32K (64K nodes). But it may consume 512KB memory only for the
+node (meta) data. Current 1024 nodes consumes 8KB (8bytes/node), so
+compared with the max data size (32KB), I think it is a better balance.
+
+Thank you,
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Masami Hiramatsu <mhiramat@kernel.org>
