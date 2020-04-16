@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362B41AC082
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A8B1AC092
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634675AbgDPL6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634515AbgDPL5Q (ORCPT
+        id S2634774AbgDPMAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:00:33 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:41931 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2634588AbgDPL6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:57:16 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E91C061A0C;
-        Thu, 16 Apr 2020 04:57:16 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0630D2A0A54;
-        Thu, 16 Apr 2020 12:57:13 +0100 (BST)
-Date:   Thu, 16 Apr 2020 13:57:11 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        anders.roxell@linaro.org, andriy.shevchenko@intel.com,
-        arnd@arndb.de, brendanhiggins@google.com, cheol.yong.kim@intel.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, masonccyang@mxic.com.tw,
-        miquel.raynal@bootlin.com, piotrs@cadence.com,
-        qi-ming.wu@intel.com, richard@nod.at, robh+dt@kernel.org,
-        tglx@linutronix.de, vigneshr@ti.com
-Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200416135711.039ba85c@collabora.com>
-In-Reply-To: <de9f50b8-9215-d294-9914-e49701552185@linux.intel.com>
-References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-        <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
-        <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
-        <20200416113822.2ef326cb@collabora.com>
-        <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
-        <20200416122619.2c481792@collabora.com>
-        <d3e137fa-54a0-b4ec-eb24-3984eab2a247@linux.intel.com>
-        <20200416131725.51259573@collabora.com>
-        <de9f50b8-9215-d294-9914-e49701552185@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 16 Apr 2020 07:58:19 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id P39mjcdN97xncP39pj7Yw1; Thu, 16 Apr 2020 13:58:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1587038296; bh=pgULbLNuPDuvkt/ZE7BTxpxzQCy1rEQZOEHhfHg1VsM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qjJyOjHdFOjLwbBE5AMGl7i/o5lLp0YJqVH5ujUzEQNe8Xt3PSeNOeupqZto1YFuW
+         1zfq7YnpoeW8afpHrSYzbQSe8iBC3azo6Uxb6qsBAt0zV+NPGaKtNoRfw4mh+irm/C
+         cK4qk7i7a19AnPLv0EmYn8EuIz6IJDOs+aiYMmuaEUZGKLHngVpwy3Mtn2wp6nhBbC
+         FsE70o5599zP/V2uzhyxjS/ra95EzJUEW4p/rsJ8EEgyWh3qGLyy7D7iijvZ4j7hjc
+         wXCsRTpX/+ViygxDP+AunKH8K/njPSwTGz6YWJ22p2MnWHVUglxSNVQJOZLmbwVUQ5
+         mbSM0G0jboTmg==
+Subject: Re: [PATCH 3/4] media: rockchip: rga: Add support for the PX30
+ compatible
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hansverk@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+ <20200416115047.233720-4-paul.kocialkowski@bootlin.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <cd224bf8-5b0a-46e5-1657-4b40c6d3915e@xs4all.nl>
+Date:   Thu, 16 Apr 2020 13:58:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200416115047.233720-4-paul.kocialkowski@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfEmG96rhmgcqUobz4xw4DTPU7o17Xmvi5xmN9E10YvKe1uRWAQ34IA/UrD5J42lmTdsyo8ey/yTPTMkxY2TjqV+ryE32yZ58s/zhufVN+JCBqYB8YTqd
+ JTP8ANJFV7SYHFjqgYiARvpouqE3LcP5EponpFIyRknmpRa6MsYPuLssOMDS5mIlBLAvbslArMg3knyFzFb0jgcck7Ive6XVEP5dJaWJtLyZv1enArMbBVjZ
+ h/5ph52twVpt8aTe5KonGJzlYYJba1aMWxyyeNZc7HIVoyx75CzB0Qt4qG0hUXyTiBZ1O3KOafO0dxnLJDPKsJP1HpLQRFPM9LhiRlXlMxKwX/qBh5dFQrck
+ +LH3aa4HIf/N8VHqLzB0Zvm5xGv8MmXazHJ6zsPELgIG38jezZPZBpCDF5f85lDUFRXNVG6LvmyXQzAy5SChrPFC4ZwKZ7lY5K86KXA83D8fe+JGaZDUgpPp
+ ybVpQUhRRnBahgWe/qwFfjWGCbk2dUXTkqi8x5jU4ufWFOtDFTrcYZ9U/+UYUQ49zXeGZrqt//ITrVC9MSUWB8K98nu0w6qvxeQeSvyj5jgJ0tPQkthejEg2
+ E1V739v7VepB0WyJwMLOROH0Ch7pm6H009lDEyYBGjTS5MPX7v0drTfYmVDGQHDVdvjYUIT55hyQeDmFLkS2FGys
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 19:38:03 +0800
-"Ramuthevar, Vadivel MuruganX"
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-
-> On 16/4/2020 7:17 pm, Boris Brezillon wrote:
-> > On Thu, 16 Apr 2020 18:40:53 +0800
-> > "Ramuthevar, Vadivel MuruganX"
-> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-> >  
-> >>>>> we'll be happy to have one more of the existing driver converted to  
-> >>>>> ->exec_op() ;-).  
-> >>>> I have completely adapted to ->exec_op() hook up to replace the legacy
-> >>>> call-back.  
-> >>> I suspect porting what you've done to the xway driver shouldn't be too
-> >>> complicated.  
-> >> Not ported from xway_nand.c driver , we have developed from the scratch
-> >> to make it work on
-> >> Intel LGM SoC , it's new x86 ATOM based SoC, IP itself completely
-> >> different and most of the registers won't match.
-> >> if we port then it would be ugly and also what are the problem may occur
-> >> we do not know.  
-> > Sorry but IMO they look similar enough to try to merge them.  
+On 16/04/2020 13:50, Paul Kocialkowski wrote:
+> The PX30 SoC has a RGA block, so add the associated compatible to
+> support it.
 > 
-> Thanks! Boris, need suggestion from you since you are maintainer and 
-> also expertise on mtd-subsystem.
-
-I *was* the maintainer :).
-
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  drivers/media/platform/rockchip/rga/rga.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> There are different features involved and lines of code is more, if we 
-> add new driver patches over xway-nand driver
+> diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
+> index e9ff12b6b5bb..0ebeb9b4c14a 100644
+> --- a/drivers/media/platform/rockchip/rga/rga.c
+> +++ b/drivers/media/platform/rockchip/rga/rga.c
+> @@ -880,7 +880,6 @@ static int rga_probe(struct platform_device *pdev)
+>  	rga->cmdbuf_virt = dma_alloc_attrs(rga->dev, RGA_CMDBUF_SIZE,
+>  					   &rga->cmdbuf_phy, GFP_KERNEL,
+>  					   DMA_ATTR_WRITE_COMBINE);
+> -
 
-How about retro-fitting the xway logic into your driver then? I mean,
-adding a 100 lines of code to your driver to get rid of the 500+ lines
-we have in xway_nand.c is still a win.
+Spurious change?
 
+Regards,
+
+	Hans
+
+>  	rga->src_mmu_pages =
+>  		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
+>  	rga->dst_mmu_pages =
+> @@ -955,6 +954,9 @@ static const struct dev_pm_ops rga_pm = {
+>  };
+>  
+>  static const struct of_device_id rockchip_rga_match[] = {
+> +	{
+> +		.compatible = "rockchip,px30-rga",
+> +	},
+>  	{
+>  		.compatible = "rockchip,rk3288-rga",
+>  	},
 > 
-> is completely looks ugly and it may disturb the existing functionality 
-> as well since we don't have platform to validate:'(.
 
-How ugly? Can you show us? Maybe we can come with a solution to make it
-less ugly.
-
-As for the testing part, there are 4 scenarios:
-
-1/ Your changes work perfectly fine on older platforms. Yay \o/!
-2/ You break the xway driver and existing users notice it before this
-   series gets merged. Now you found someone to validate your changes.
-3/ You break the xway driver and none of the existing users notice it
-   before the driver is merged, but they notice it afterwards. Too bad
-   this happened after we've merged the driver, but now you've found
-   someone to help you fix the problem :P.
-4/ You break things for old platforms but no one ever complains about
-   it, either because there's no users left or because they never
-   update their kernels. In any case, that's no longer your problem.
-   Someone will remove those old platforms one day and get rid of the
-   unneeded code in the NAND driver.
-
-What's more likely to happen is #3 or #4, and I think the NAND
-maintainer would be fine with both.
-
-Note that the NAND subsystem is full of unmaintained legacy drivers, so
-every time we see someone who could help us get rid or update one of
-them we have to take this opportunity.
