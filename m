@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980991ABB5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34191ABC7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441410AbgDPIg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S2502645AbgDPJNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502371AbgDPIb7 (ORCPT
+        with ESMTP id S2502300AbgDPIbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:31:59 -0400
+        Thu, 16 Apr 2020 04:31:37 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A1AC025488;
-        Thu, 16 Apr 2020 01:31:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10559C03C1AD;
+        Thu, 16 Apr 2020 01:31:35 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jOzvj-0000na-19; Thu, 16 Apr 2020 10:31:27 +0200
+        id 1jOzvj-0000oL-TX; Thu, 16 Apr 2020 10:31:28 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 955D21C001F;
-        Thu, 16 Apr 2020 10:31:26 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 08:31:26 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7E4571C0481;
+        Thu, 16 Apr 2020 10:31:27 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 08:31:27 -0000
 From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] tools headers kvm: Sync linux/kvm.h with the
+Subject: [tip: perf/urgent] tools include UAPI: Sync linux/vhost.h with the
  kernel sources
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Jay Zhou <jianjay.zhou@huawei.com>,
         Jiri Olsa <jolsa@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
+        Tiwei Bie <tiwei.bie@intel.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158702588620.28353.7524713636970098758.tip-bot2@tip-bot2>
+Message-ID: <158702588715.28353.6580556963314135830.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -56,127 +53,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     b8fc22803e594dee6597de4c81ccab5b37abecbb
-Gitweb:        https://git.kernel.org/tip/b8fc22803e594dee6597de4c81ccab5b37abecbb
+Commit-ID:     3df4d4bf3c6cf3b7509ff11d7b02b64603b43d24
+Gitweb:        https://git.kernel.org/tip/3df4d4bf3c6cf3b7509ff11d7b02b64603b43d24
 Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
-AuthorDate:    Tue, 14 Apr 2020 09:21:56 -03:00
+AuthorDate:    Tue, 14 Apr 2020 09:12:55 -03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Tue, 14 Apr 2020 11:02:52 -03:00
+CommitterDate: Tue, 14 Apr 2020 11:02:46 -03:00
 
-tools headers kvm: Sync linux/kvm.h with the kernel sources
+tools include UAPI: Sync linux/vhost.h with the kernel sources
 
-To pick up the changes from:
+To get the changes in:
 
-  9a5788c615f5 ("KVM: PPC: Book3S HV: Add a capability for enabling secure guests")
-  3c9bd4006bfc ("KVM: x86: enable dirty log gradually in small chunks")
-  13da9ae1cdbf ("KVM: s390: protvirt: introduce and enable KVM_CAP_S390_PROTECTED")
-  e0d2773d487c ("KVM: s390: protvirt: UV calls in support of diag308 0, 1")
-  19e122776886 ("KVM: S390: protvirt: Introduce instruction data area bounce buffer")
-  29b40f105ec8 ("KVM: s390: protvirt: Add initial vm and cpu lifecycle handling")
+  4c8cf31885f6 ("vhost: introduce vDPA-based backend")
 
-So far we're ignoring those arch specific ioctls, we need to revisit
-this at some time to have arch specific tables, etc:
+Silencing this perf build warning:
 
-  $ grep S390 tools/perf/trace/beauty/kvm_ioctl.sh
-      egrep -v " ((ARM|PPC|S390)_|[GS]ET_(DEBUGREGS|PIT2|XSAVE|TSC_KHZ)|CREATE_SPAPR_TCE_64)" | \
+  Warning: Kernel ABI header at 'tools/include/uapi/linux/vhost.h' differs from latest version at 'include/uapi/linux/vhost.h'
+  diff -u tools/include/uapi/linux/vhost.h include/uapi/linux/vhost.h
+
+This automatically picks these new ioctls, making tools such as 'perf
+trace' aware of them and possibly allowing to use the strings in
+filters, etc:
+
+  $ tools/perf/trace/beauty/vhost_virtio_ioctl.sh > before
+  $ cp include/uapi/linux/vhost.h tools/include/uapi/linux/vhost.h
+  $ tools/perf/trace/beauty/vhost_virtio_ioctl.sh > after
+  $ diff -u before after
+  --- before	2020-04-14 09:12:28.559748968 -0300
+  +++ after	2020-04-14 09:12:38.781696242 -0300
+  @@ -24,9 +24,16 @@
+   	[0x44] = "SCSI_GET_EVENTS_MISSED",
+   	[0x60] = "VSOCK_SET_GUEST_CID",
+   	[0x61] = "VSOCK_SET_RUNNING",
+  +	[0x72] = "VDPA_SET_STATUS",
+  +	[0x74] = "VDPA_SET_CONFIG",
+  +	[0x75] = "VDPA_SET_VRING_ENABLE",
+   };
+   static const char *vhost_virtio_ioctl_read_cmds[] = {
+   	[0x00] = "GET_FEATURES",
+   	[0x12] = "GET_VRING_BASE",
+   	[0x26] = "GET_BACKEND_FEATURES",
+  +	[0x70] = "VDPA_GET_DEVICE_ID",
+  +	[0x71] = "VDPA_GET_STATUS",
+  +	[0x73] = "VDPA_GET_CONFIG",
+  +	[0x76] = "VDPA_GET_VRING_NUM",
+   };
   $
 
-This addresses these tools/perf build warnings:
-
-  Warning: Kernel ABI header at 'tools/arch/arm/include/uapi/asm/kvm.h' differs from latest version at 'arch/arm/include/uapi/asm/kvm.h'
-  diff -u tools/arch/arm/include/uapi/asm/kvm.h arch/arm/include/uapi/asm/kvm.h
-
 Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Janosch Frank <frankja@linux.ibm.com>
-Cc: Jay Zhou <jianjay.zhou@huawei.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Michael S. Tsirkin <mst@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Paul Mackerras <paulus@ozlabs.org>
+Cc: Tiwei Bie <tiwei.bie@intel.com>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/include/uapi/linux/kvm.h | 47 +++++++++++++++++++++++++++++++--
- 1 file changed, 45 insertions(+), 2 deletions(-)
+ tools/include/uapi/linux/vhost.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
-index 4b95f9a..428c7dd 100644
---- a/tools/include/uapi/linux/kvm.h
-+++ b/tools/include/uapi/linux/kvm.h
-@@ -474,12 +474,17 @@ struct kvm_s390_mem_op {
- 	__u32 size;		/* amount of bytes */
- 	__u32 op;		/* type of operation */
- 	__u64 buf;		/* buffer in userspace */
--	__u8 ar;		/* the access register number */
--	__u8 reserved[31];	/* should be set to 0 */
-+	union {
-+		__u8 ar;	/* the access register number */
-+		__u32 sida_offset; /* offset into the sida */
-+		__u8 reserved[32]; /* should be set to 0 */
-+	};
- };
- /* types for kvm_s390_mem_op->op */
- #define KVM_S390_MEMOP_LOGICAL_READ	0
- #define KVM_S390_MEMOP_LOGICAL_WRITE	1
-+#define KVM_S390_MEMOP_SIDA_READ	2
-+#define KVM_S390_MEMOP_SIDA_WRITE	3
- /* flags for kvm_s390_mem_op->flags */
- #define KVM_S390_MEMOP_F_CHECK_ONLY		(1ULL << 0)
- #define KVM_S390_MEMOP_F_INJECT_EXCEPTION	(1ULL << 1)
-@@ -1010,6 +1015,8 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_ARM_NISV_TO_USER 177
- #define KVM_CAP_ARM_INJECT_EXT_DABT 178
- #define KVM_CAP_S390_VCPU_RESETS 179
-+#define KVM_CAP_S390_PROTECTED 180
-+#define KVM_CAP_PPC_SECURE_GUEST 181
+diff --git a/tools/include/uapi/linux/vhost.h b/tools/include/uapi/linux/vhost.h
+index 40d028e..9fe72e4 100644
+--- a/tools/include/uapi/linux/vhost.h
++++ b/tools/include/uapi/linux/vhost.h
+@@ -116,4 +116,28 @@
+ #define VHOST_VSOCK_SET_GUEST_CID	_IOW(VHOST_VIRTIO, 0x60, __u64)
+ #define VHOST_VSOCK_SET_RUNNING		_IOW(VHOST_VIRTIO, 0x61, int)
  
- #ifdef KVM_CAP_IRQ_ROUTING
- 
-@@ -1478,6 +1485,39 @@ struct kvm_enc_region {
- #define KVM_S390_NORMAL_RESET	_IO(KVMIO,   0xc3)
- #define KVM_S390_CLEAR_RESET	_IO(KVMIO,   0xc4)
- 
-+struct kvm_s390_pv_sec_parm {
-+	__u64 origin;
-+	__u64 length;
-+};
++/* VHOST_VDPA specific defines */
 +
-+struct kvm_s390_pv_unp {
-+	__u64 addr;
-+	__u64 size;
-+	__u64 tweak;
-+};
++/* Get the device id. The device ids follow the same definition of
++ * the device id defined in virtio-spec.
++ */
++#define VHOST_VDPA_GET_DEVICE_ID	_IOR(VHOST_VIRTIO, 0x70, __u32)
++/* Get and set the status. The status bits follow the same definition
++ * of the device status defined in virtio-spec.
++ */
++#define VHOST_VDPA_GET_STATUS		_IOR(VHOST_VIRTIO, 0x71, __u8)
++#define VHOST_VDPA_SET_STATUS		_IOW(VHOST_VIRTIO, 0x72, __u8)
++/* Get and set the device config. The device config follows the same
++ * definition of the device config defined in virtio-spec.
++ */
++#define VHOST_VDPA_GET_CONFIG		_IOR(VHOST_VIRTIO, 0x73, \
++					     struct vhost_vdpa_config)
++#define VHOST_VDPA_SET_CONFIG		_IOW(VHOST_VIRTIO, 0x74, \
++					     struct vhost_vdpa_config)
++/* Enable/disable the ring. */
++#define VHOST_VDPA_SET_VRING_ENABLE	_IOW(VHOST_VIRTIO, 0x75, \
++					     struct vhost_vring_state)
++/* Get the max ring size. */
++#define VHOST_VDPA_GET_VRING_NUM	_IOR(VHOST_VIRTIO, 0x76, __u16)
 +
-+enum pv_cmd_id {
-+	KVM_PV_ENABLE,
-+	KVM_PV_DISABLE,
-+	KVM_PV_SET_SEC_PARMS,
-+	KVM_PV_UNPACK,
-+	KVM_PV_VERIFY,
-+	KVM_PV_PREP_RESET,
-+	KVM_PV_UNSHARE_ALL,
-+};
-+
-+struct kvm_pv_cmd {
-+	__u32 cmd;	/* Command to be executed */
-+	__u16 rc;	/* Ultravisor return code */
-+	__u16 rrc;	/* Ultravisor return reason code */
-+	__u64 data;	/* Data or address */
-+	__u32 flags;    /* flags for future extensions. Must be 0 for now */
-+	__u32 reserved[3];
-+};
-+
-+/* Available with KVM_CAP_S390_PROTECTED */
-+#define KVM_S390_PV_COMMAND		_IOWR(KVMIO, 0xc5, struct kvm_pv_cmd)
-+
- /* Secure Encrypted Virtualization command */
- enum sev_cmd_id {
- 	/* Guest initialization commands */
-@@ -1628,4 +1668,7 @@ struct kvm_hyperv_eventfd {
- #define KVM_HYPERV_CONN_ID_MASK		0x00ffffff
- #define KVM_HYPERV_EVENTFD_DEASSIGN	(1 << 0)
- 
-+#define KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE    (1 << 0)
-+#define KVM_DIRTY_LOG_INITIALLY_SET            (1 << 1)
-+
- #endif /* __LINUX_KVM_H */
+ #endif
