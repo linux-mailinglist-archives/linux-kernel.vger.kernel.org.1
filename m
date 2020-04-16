@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CCC1AC9E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA4D1AC7FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898410AbgDPNn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45310 "EHLO mail.kernel.org"
+        id S2394780AbgDPPCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:02:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896812AbgDPNdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:33:55 -0400
+        id S2898793AbgDPNyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:54:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98C70208E4;
-        Thu, 16 Apr 2020 13:33:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5FDA20732;
+        Thu, 16 Apr 2020 13:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044035;
-        bh=vDbC//cFoiarsCOyRPOI0FBifzs1I3USmWge+kKgjaU=;
+        s=default; t=1587045249;
+        bh=qnKjeRFljIsmqkFccDcOzXGYVkd2gtcV3xBaAQ+3WqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=km6pxHocaBuWhgdBW1uwEBMYnbibr4VwD8/Ftyb6TIrnAWYwpWh0BVO0gycCzUJ9E
-         FJ8apNZDHTGej5MbgDO3elxudV83GdRNmFHd9OvC/tpNKsyiQzWy/eBWGW7qqNt81Z
-         FuYIzh5gRYYHcqcGtQ9znNTShCStwKdsQsuHhL2A=
+        b=PO55uwNR3wL0m17vha4JFGz5pk30l0QeS67hsI/2IHEbgxrnp/YQLKuTpuUAiBbm/
+         lHBxVpv4hf1TdpQRE92133M0NHVX+IodFaNXhrdwJUAnMPFrIyu6pE+Vf2SPaZQLM8
+         Lja/+SqMOPy8Bd22wRCPNErcf/vP/V/ny+vO3PPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 054/257] selftests/x86/ptrace_syscall_32: Fix no-vDSO segfault
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 016/254] iio: imu: st_lsm6dsx: check return value from st_lsm6dsx_sensor_set_enable
 Date:   Thu, 16 Apr 2020 15:21:45 +0200
-Message-Id: <20200416131332.728330316@linuxfoundation.org>
+Message-Id: <20200416131327.850290960@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 630b99ab60aa972052a4202a1ff96c7e45eb0054 ]
+[ Upstream commit f20dbe11e2e904547597ae7371c1f635e3be9cad ]
 
-If AT_SYSINFO is not present, don't try to call a NULL pointer.
+Add missing return value check in st_lsm6dsx_shub_read_oneshot disabling
+the slave device connected to the st_lsm6dsx i2c controller.
+The issue is reported by coverity with the following error:
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/faaf688265a7e1a5b944d6f8bc0f6368158306d3.1584052409.git.luto@kernel.org
+Unchecked return value:
+If the function returns an error value, the error value may be mistaken
+for a normal value.
+
+Addresses-Coverity-ID: 1456767 ("Unchecked return value")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/x86/ptrace_syscall.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/x86/ptrace_syscall.c b/tools/testing/selftests/x86/ptrace_syscall.c
-index 6f22238f32173..12aaa063196e7 100644
---- a/tools/testing/selftests/x86/ptrace_syscall.c
-+++ b/tools/testing/selftests/x86/ptrace_syscall.c
-@@ -414,8 +414,12 @@ int main()
+diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
+index eea555617d4aa..95ddd19d1aa7c 100644
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
+@@ -464,9 +464,10 @@ st_lsm6dsx_shub_read_oneshot(struct st_lsm6dsx_sensor *sensor,
  
- #if defined(__i386__) && (!defined(__GLIBC__) || __GLIBC__ > 2 || __GLIBC_MINOR__ >= 16)
- 	vsyscall32 = (void *)getauxval(AT_SYSINFO);
--	printf("[RUN]\tCheck AT_SYSINFO return regs\n");
--	test_sys32_regs(do_full_vsyscall32);
-+	if (vsyscall32) {
-+		printf("[RUN]\tCheck AT_SYSINFO return regs\n");
-+		test_sys32_regs(do_full_vsyscall32);
-+	} else {
-+		printf("[SKIP]\tAT_SYSINFO is not available\n");
-+	}
- #endif
+ 	len = min_t(int, sizeof(data), ch->scan_type.realbits >> 3);
+ 	err = st_lsm6dsx_shub_read(sensor, ch->address, data, len);
++	if (err < 0)
++		return err;
  
- 	test_ptrace_syscall_restart();
+-	st_lsm6dsx_shub_set_enable(sensor, false);
+-
++	err = st_lsm6dsx_shub_set_enable(sensor, false);
+ 	if (err < 0)
+ 		return err;
+ 
 -- 
 2.20.1
 
