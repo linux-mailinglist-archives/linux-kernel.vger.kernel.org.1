@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE591ACAC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5FF1AC519
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395457AbgDPPjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:39:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51106 "EHLO mail.kernel.org"
+        id S1731318AbgDPOLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897733AbgDPNij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:39 -0400
+        id S2898684AbgDPNrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:47:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 333B5221F4;
-        Thu, 16 Apr 2020 13:38:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC4BC21734;
+        Thu, 16 Apr 2020 13:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044318;
-        bh=YTCURO/wpL4mZgGhN38MtVtgTdD2kwxE6Zl9cpyaaFg=;
+        s=default; t=1587044855;
+        bh=kxAl/kLJfUsCpIvICM6QwVBnOzWBV/taZCwvMzq5wjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z8zviVTKJLA3IJ6JbVI2pgnHow/2pTLxXdTXOtHOqr3psxEEzn0bQKcrQvHkLN8K7
-         VzswmvgF32+4L1qnNsP69LQR35YVCQyXS5Vn7fwfCCxCwvAu1YGPJpYk0/VRwvE1Jn
-         iPzk/xoSSAT6cDPIT/GFQPPIU+N2fbFAd5OPsT4U=
+        b=E/lpXEontOLKqqnNq/4TzIBm9u2GHpGX0J1yFAhOcKLU4ObEC8NDicwiLhRX+8VH/
+         vm7N+2RiaTKkiv2GZODLhiYqvmgH/M3OjLdgYlo0jngEF5fA/vTc/RboHVuW0scy0Z
+         oAzK33vIIdkKYEz2cWKPsD2IFG8qDhAXn2IHFSmQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.5 170/257] crypto: rng - Fix a refcounting bug in crypto_rng_reset()
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH 5.4 127/232] KVM: s390: vsie: Fix delivery of addressing exceptions
 Date:   Thu, 16 Apr 2020 15:23:41 +0200
-Message-Id: <20200416131347.702586093@linuxfoundation.org>
+Message-Id: <20200416131330.937992601@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: David Hildenbrand <david@redhat.com>
 
-commit eed74b3eba9eda36d155c11a12b2b4b50c67c1d8 upstream.
+commit 4d4cee96fb7a3cc53702a9be8299bf525be4ee98 upstream.
 
-We need to decrement this refcounter on these error paths.
+Whenever we get an -EFAULT, we failed to read in guest 2 physical
+address space. Such addressing exceptions are reported via a program
+intercept to the nested hypervisor.
 
-Fixes: f7d76e05d058 ("crypto: user - fix use_after_free of struct xxx_request")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Neil Horman <nhorman@tuxdriver.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+We faked the intercept, we have to return to guest 2. Instead, right
+now we would be returning -EFAULT from the intercept handler, eventually
+crashing the VM.
+the correct thing to do is to return 1 as rc == 1 is the internal
+representation of "we have to go back into g2".
+
+Addressing exceptions can only happen if the g2->g3 page tables
+reference invalid g2 addresses (say, either a table or the final page is
+not accessible - so something that basically never happens in sane
+environments.
+
+Identified by manual code inspection.
+
+Fixes: a3508fbe9dc6 ("KVM: s390: vsie: initial support for nested virtualization")
+Cc: <stable@vger.kernel.org> # v4.8+
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200403153050.20569-3-david@redhat.com
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+[borntraeger@de.ibm.com: fix patch description]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/rng.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/s390/kvm/vsie.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/crypto/rng.c
-+++ b/crypto/rng.c
-@@ -37,12 +37,16 @@ int crypto_rng_reset(struct crypto_rng *
- 	crypto_stats_get(alg);
- 	if (!seed && slen) {
- 		buf = kmalloc(slen, GFP_KERNEL);
--		if (!buf)
-+		if (!buf) {
-+			crypto_alg_put(alg);
- 			return -ENOMEM;
-+		}
- 
- 		err = get_random_bytes_wait(buf, slen);
--		if (err)
-+		if (err) {
-+			crypto_alg_put(alg);
- 			goto out;
-+		}
- 		seed = buf;
+--- a/arch/s390/kvm/vsie.c
++++ b/arch/s390/kvm/vsie.c
+@@ -1202,6 +1202,7 @@ static int vsie_run(struct kvm_vcpu *vcp
+ 		scb_s->iprcc = PGM_ADDRESSING;
+ 		scb_s->pgmilc = 4;
+ 		scb_s->gpsw.addr = __rewind_psw(scb_s->gpsw, 4);
++		rc = 1;
  	}
- 
+ 	return rc;
+ }
 
 
