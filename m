@@ -2,77 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EBA1ABF49
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30BB1ABF39
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633352AbgDPLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506173AbgDPLJH (ORCPT
+        id S2633301AbgDPLbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:31:19 -0400
+Received: from zimbra2.kalray.eu ([92.103.151.219]:45000 "EHLO
+        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505763AbgDPLJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:09:07 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5244AC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:08:41 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id e25so853376ljg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S7CeX1goNiTzCPux7yhtQx3G78bwWhEvP9iEt87hwXc=;
-        b=qKxcdlQR1dTo+AB/xd6XeJOvWM5JtcmUcG0asrp4xQZZTFGvsNcxlAo4cAiDq2Ihh8
-         X0k/1k/NuBHLCe/ZkTNPbWdmeukTv1kibYjJN12a4aQR7nf4rPHevnprS2CYjIysd2yo
-         h/Nzh0SpL2/5qH4YhnlN+pAOGyGcFEU3y9eoIF16fKUVyUlj6hUEGv2bfwhNF27GIN1k
-         4biIi3ltBB7CxbkwkPneMzkoo8jHswOZUvamC9jQ85kgGM5mEFb9dq5W08golrvXMVE3
-         nxdG6yZnLXvmAsKyDstuD1ut4kOem/KVVBF32bAgeUHs+3ZJ+NkQqpulz5RxcOf70vkY
-         54SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S7CeX1goNiTzCPux7yhtQx3G78bwWhEvP9iEt87hwXc=;
-        b=tgd756x6y4xqM35tAZHvjIem8iS/NGpVnj0h4St/Sydrf/ohga4zgTE8BX+bpuOt39
-         KssZjgCFwGloBF3q+ybGRKR1jzvVIIjZZQxNDPKfWkG0fKi2VyQ2t7MnziAIIj5t6TNi
-         ryjw24xgr+PRziA69mo2utsUUeLQiZU3J2wsUTCEGaIdkh/D8KMhlZ2UIr+TRmiIcT8t
-         9Lk0813mslugMmFR9hTeRY6anCHS2sD9akkrWWLK5GkgBJCy7ganfZ7izjRLLqLMxoXI
-         rsWG1CYugAEYF/vmpIoLu+69E5xnFVIQ6pyiYqrmSOD9ZtlTVOKeMfvm518wjS7/nOjM
-         nZBg==
-X-Gm-Message-State: AGi0PuY1R+xWgLfzI4w1NJHE/qy1RV2JZWipnKB9A8Mz9JdcqCSsT1NC
-        hOVExnHRzG+drMnwXv2Zv23qlxiJdmf5NENiEgVj2g==
-X-Google-Smtp-Source: APiQypJCs3GDOnmZgOUbr1CKEadpgsOSo5WsfLaAn86lNQu9ACAgMT5KinznWfgnuk9HrE4sBT+105fBLfjw+mUzLmc=
-X-Received: by 2002:a2e:9ad9:: with SMTP id p25mr6268989ljj.39.1587035319801;
- Thu, 16 Apr 2020 04:08:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200412213937.5287-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20200412213937.5287-1-christophe.jaillet@wanadoo.fr>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Apr 2020 13:08:28 +0200
-Message-ID: <CACRpkdZMLec8gXSJo-SpNXa3bBne2gDCRT3M_BEz21EtMXUAMw@mail.gmail.com>
-Subject: Re: [PATCH] Input: dlink-dir685-touchkeys: Fix a typo in driver name
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Linux Input <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 16 Apr 2020 07:09:27 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 33C9627E0BD7;
+        Thu, 16 Apr 2020 13:09:26 +0200 (CEST)
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id xjj4Iru9kw1A; Thu, 16 Apr 2020 13:09:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id B938D27E0B48;
+        Thu, 16 Apr 2020 13:09:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu B938D27E0B48
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
+        s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1587035365;
+        bh=/9ozp0KDY399qvVyuU0yqqBXwrfUSqHKw0SZnUo0Q9U=;
+        h=From:To:Date:Message-Id;
+        b=H5OHYSPBp/LiWVVmJQ7U2HkcSlFzBvz5BvLwI27H19YKRCmNMjJ4aMHWH9VkQHHkS
+         YRrmeVE6Fyns2B7bSwLu7WJyLZDN7pWeE972GDDhr36Gn16YMfKLxsFqWhaq8p/n2S
+         a592HBHzWCUznn9uqwq0XUapMZWH1nRUGU8W2H78=
+X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id JKONN3b7rFMU; Thu, 16 Apr 2020 13:09:25 +0200 (CEST)
+Received: from triton.lin.mbt.kalray.eu (unknown [192.168.37.25])
+        by zimbra2.kalray.eu (Postfix) with ESMTPSA id 9C5F127E02FA;
+        Thu, 16 Apr 2020 13:09:25 +0200 (CEST)
+From:   Clement Leger <cleger@kalray.eu>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Clement Leger <cleger@kalray.eu>
+Subject: [PATCH 1/2] spi: dw: remove unused dw_spi_chip handling
+Date:   Thu, 16 Apr 2020 13:09:15 +0200
+Message-Id: <20200416110916.22633-1-cleger@kalray.eu>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200416110823.22565-1-cleger@kalray.eu>
+References: <20200416110823.22565-1-cleger@kalray.eu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 11:39 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
+The path of code using this struct is unused since there is no more user
+of this. Remove code and struct definition.
 
-> According to the file name and Kconfig, a 'k' is missing in this driver
-> name. It should be "dlink-dir685-touchkeys".
->
-> Fixes: 131b3de7016b ("Input: add D-Link DIR-685 touchkeys driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Clement Leger <cleger@kalray.eu>
+---
+ drivers/spi/spi-dw.c | 16 ----------------
+ drivers/spi/spi-dw.h | 12 ------------
+ 2 files changed, 28 deletions(-)
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+index 31e3f866d11a..fda8d433a769 100644
+--- a/drivers/spi/spi-dw.c
++++ b/drivers/spi/spi-dw.c
+@@ -399,7 +399,6 @@ static void dw_spi_handle_err(struct spi_controller *master,
+ /* This may be called twice for each spi dev */
+ static int dw_spi_setup(struct spi_device *spi)
+ {
+-	struct dw_spi_chip *chip_info = NULL;
+ 	struct chip_data *chip;
+ 
+ 	/* Only alloc on first setup */
+@@ -411,21 +410,6 @@ static int dw_spi_setup(struct spi_device *spi)
+ 		spi_set_ctldata(spi, chip);
+ 	}
+ 
+-	/*
+-	 * Protocol drivers may change the chip settings, so...
+-	 * if chip_info exists, use it
+-	 */
+-	chip_info = spi->controller_data;
+-
+-	/* chip_info doesn't always exist */
+-	if (chip_info) {
+-		if (chip_info->cs_control)
+-			chip->cs_control = chip_info->cs_control;
+-
+-		chip->poll_mode = chip_info->poll_mode;
+-		chip->type = chip_info->type;
+-	}
+-
+ 	chip->tmode = SPI_TMOD_TR;
+ 
+ 	return 0;
+diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
+index 1bf5713e047d..44ef18187c15 100644
+--- a/drivers/spi/spi-dw.h
++++ b/drivers/spi/spi-dw.h
+@@ -235,18 +235,6 @@ static inline void spi_shutdown_chip(struct dw_spi *dws)
+ 	spi_set_clk(dws, 0);
+ }
+ 
+-/*
+- * Each SPI slave device to work with dw_api controller should
+- * has such a structure claiming its working mode (poll or PIO/DMA),
+- * which can be save in the "controller_data" member of the
+- * struct spi_device.
+- */
+-struct dw_spi_chip {
+-	u8 poll_mode;	/* 1 for controller polling mode */
+-	u8 type;	/* SPI/SSP/MicroWire */
+-	void (*cs_control)(u32 command);
+-};
+-
+ extern void dw_spi_set_cs(struct spi_device *spi, bool enable);
+ extern int dw_spi_add_host(struct device *dev, struct dw_spi *dws);
+ extern void dw_spi_remove_host(struct dw_spi *dws);
+-- 
+2.17.1
 
-Yours,
-Linus Walleij
