@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F321AC8F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDA91AC326
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442026AbgDPPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34908 "EHLO mail.kernel.org"
+        id S2897771AbgDPNiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:38:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897910AbgDPNtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:49:00 -0400
+        id S2895633AbgDPNa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F19421974;
-        Thu, 16 Apr 2020 13:48:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12F1C208E4;
+        Thu, 16 Apr 2020 13:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044938;
-        bh=sx45Uwi9HL8SOXQQ+SHRVo3vX2MTBnunEBdM1KHUGpM=;
+        s=default; t=1587043829;
+        bh=fL9fnzJr3b736mjTeKAqS6MF9bED42tZ1GIzikhz2JQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I4j1tlaZqPLk951VoP4/xlwJYJ73cbDBKk1BG/qzrcgZU4fkTRefQvfmkM9dE9wFa
-         MLbyVJAR37U+kyVaJppNcFR01J3gsplQhHNtyeLFRtYzMDc9IcTb/Qlh1+eoBwCBWl
-         DKbqNY7LTEeP49mUV6yejWyI6RtjUhGrPzFsVxSM=
+        b=Wv0qrypnUtjgd0xIue0djId+0ADfVialnJB9bPLZO8ysyC54+2ivB3j2iDflQJPFG
+         p0g7cJ2syBCSduheqxJH+j74HxJG1ulxADCMJjBSavYOJfdOeZadUd+UoRh4C6ifhr
+         IQqSx3bQBMmUsIC7VOhlBAU1oFJZLNoFzSWO1Rnk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 162/232] dm integrity: fix a crash with unusually large tag size
+        stable@vger.kernel.org, Michael Mueller <mimu@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.19 115/146] s390/diag: fix display of diagnose call statistics
 Date:   Thu, 16 Apr 2020 15:24:16 +0200
-Message-Id: <20200416131335.281116424@linuxfoundation.org>
+Message-Id: <20200416131258.360244061@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Michael Mueller <mimu@linux.ibm.com>
 
-commit b93b6643e9b5a7f260b931e97f56ffa3fa65e26d upstream.
+commit 6c7c851f1b666a8a455678a0b480b9162de86052 upstream.
 
-If the user specifies tag size larger than HASH_MAX_DIGESTSIZE,
-there's a crash in integrity_metadata().
+Show the full diag statistic table and not just parts of it.
 
+The issue surfaced in a KVM guest with a number of vcpus
+defined smaller than NR_DIAG_STAT.
+
+Fixes: 1ec2772e0c3c ("s390/diag: add a statistic for diagnose calls")
 Cc: stable@vger.kernel.org
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Michael Mueller <mimu@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-integrity.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/s390/kernel/diag.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -1514,7 +1514,7 @@ static void integrity_metadata(struct wo
- 		struct bio *bio = dm_bio_from_per_bio_data(dio, sizeof(struct dm_integrity_io));
- 		char *checksums;
- 		unsigned extra_space = unlikely(digest_size > ic->tag_size) ? digest_size - ic->tag_size : 0;
--		char checksums_onstack[HASH_MAX_DIGESTSIZE];
-+		char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
- 		unsigned sectors_to_process = dio->range.n_sectors;
- 		sector_t sector = dio->range.logical_sector;
+--- a/arch/s390/kernel/diag.c
++++ b/arch/s390/kernel/diag.c
+@@ -79,7 +79,7 @@ static int show_diag_stat(struct seq_fil
  
-@@ -1743,7 +1743,7 @@ retry_kmap:
- 				} while (++s < ic->sectors_per_block);
- #ifdef INTERNAL_VERIFY
- 				if (ic->internal_hash) {
--					char checksums_onstack[max(HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
-+					char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+ static void *show_diag_stat_start(struct seq_file *m, loff_t *pos)
+ {
+-	return *pos <= nr_cpu_ids ? (void *)((unsigned long) *pos + 1) : NULL;
++	return *pos <= NR_DIAG_STAT ? (void *)((unsigned long) *pos + 1) : NULL;
+ }
  
- 					integrity_sector_checksum(ic, logical_sector, mem + bv.bv_offset, checksums_onstack);
- 					if (unlikely(memcmp(checksums_onstack, journal_entry_tag(ic, je), ic->tag_size))) {
+ static void *show_diag_stat_next(struct seq_file *m, void *v, loff_t *pos)
 
 
