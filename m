@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820601AC582
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96DD1AC97A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390190AbgDPOVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:21:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41566 "EHLO mail.kernel.org"
+        id S1728724AbgDPPX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409081AbgDPNy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:54:58 -0400
+        id S2898493AbgDPNpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:45:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82B5320732;
-        Thu, 16 Apr 2020 13:54:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4514520732;
+        Thu, 16 Apr 2020 13:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045298;
-        bh=UqFZh/1eEoluZP1qvKMPPJGO87tS/2gzODxY+9ZVkYo=;
+        s=default; t=1587044715;
+        bh=g0JPxNPuqoHUzF/vEU+fleh3hf32aKcWMVB7AZyvb9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mixw5EFX79Cit44w4n2Z1CafOBaFLV7YmSR22z8QD0pKlb8Sx1lkiGBkzo8BOUzx5
-         zDRLnHMJpsLOHMPAmuYcIw12+sv/r/9Ch05vwAPflMAKmeMRYmoM8byC+iPJ7rPl40
-         OiizfYUzkMSe71ZY7Xd7wlkamxRjEdr9Ra78FkTY=
+        b=mWjbGoEVVBD8bokRg0uVjQtUOAGXnaqWGYmKPwZybpRuWw3iNwekfcOxYfs5EkAAm
+         qy9Uo6RW0999I7imNpjZnjj2BxbVIJpjwh2z+FgZr9mZZ/6m2Glg2nsxhiTkX2LpSa
+         6nu5871dZ1tpzg7zyQmbs6OVwd5nSMHp7UmNOUk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 077/254] ALSA: hda/realtek: Enable mute LED on an HP system
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 072/232] ASoC: topology: use name_prefix for new kcontrol
 Date:   Thu, 16 Apr 2020 15:22:46 +0200
-Message-Id: <20200416131335.532388407@linuxfoundation.org>
+Message-Id: <20200416131324.327680106@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: 이경택 <gt82.lee@samsung.com>
 
-commit f5a88b0accc24c4a9021247d7a3124f90aa4c586 upstream.
+commit abca9e4a04fbe9c6df4d48ca7517e1611812af25 upstream.
 
-The system in question uses ALC285, and it uses GPIO 0x04 to control its
-mute LED.
+Current topology doesn't add prefix of component to new kcontrol.
 
-The mic mute LED can be controlled by GPIO 0x01, however the system uses
-DMIC so we should use that to control mic mute LED.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200327044626.29582-1-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/009b01d60804$ae25c2d0$0a714870$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/soc-topology.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4008,6 +4008,12 @@ static void alc269_fixup_hp_gpio_led(str
- 	alc_fixup_hp_gpio_led(codec, action, 0x08, 0x10);
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -362,7 +362,7 @@ static int soc_tplg_add_kcontrol(struct
+ 	struct snd_soc_component *comp = tplg->comp;
+ 
+ 	return soc_tplg_add_dcontrol(comp->card->snd_card,
+-				comp->dev, k, NULL, comp, kcontrol);
++				comp->dev, k, comp->name_prefix, comp, kcontrol);
  }
  
-+static void alc285_fixup_hp_gpio_led(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+	alc_fixup_hp_gpio_led(codec, action, 0x04, 0x00);
-+}
-+
- static void alc286_fixup_hp_gpio_led(struct hda_codec *codec,
- 				const struct hda_fixup *fix, int action)
- {
-@@ -5923,6 +5929,7 @@ enum {
- 	ALC294_FIXUP_ASUS_DUAL_SPK,
- 	ALC285_FIXUP_THINKPAD_HEADSET_JACK,
- 	ALC294_FIXUP_ASUS_HPE,
-+	ALC285_FIXUP_HP_GPIO_LED,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7061,6 +7068,10 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
- 	},
-+	[ALC285_FIXUP_HP_GPIO_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc285_fixup_hp_gpio_led,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7208,6 +7219,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
-+	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ /* remove a mixer kcontrol */
 
 
