@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3F01AD189
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658761AD18C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728469AbgDPUwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726725AbgDPUwx (ORCPT
+        id S1728278AbgDPUye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:54:34 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:37049 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgDPUyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:52:53 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477DAC061A0C;
-        Thu, 16 Apr 2020 13:52:53 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5B8E3118F0C0B;
-        Thu, 16 Apr 2020 13:52:52 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 13:52:51 -0700 (PDT)
-Message-Id: <20200416.135251.336715127059562428.davem@davemloft.net>
-To:     yanaijie@huawei.com
-Cc:     isdn@linux-pingi.de, yuehaibing@huawei.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        wangkefeng.wang@huawei.com, elfring@users.sourceforge.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hulkci@huawei.com
-Subject: Re: [PATCH] mISDN: make dmril and dmrim static
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200415084226.23971-1-yanaijie@huawei.com>
-References: <20200415084226.23971-1-yanaijie@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 16 Apr 2020 13:52:52 -0700 (PDT)
+        Thu, 16 Apr 2020 16:54:33 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id D6FAFFF804;
+        Thu, 16 Apr 2020 20:54:30 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 0/2] iio: adc: ti-ads8344: driver improvements
+Date:   Thu, 16 Apr 2020 22:54:26 +0200
+Message-Id: <20200416205428.437503-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.25.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Yan <yanaijie@huawei.com>
-Date: Wed, 15 Apr 2020 16:42:26 +0800
 
-> Fix the following sparse warning:
-> 
-> drivers/isdn/hardware/mISDN/mISDNisar.c:746:12: warning: symbol 'dmril'
-> was not declared. Should it be static?
-> drivers/isdn/hardware/mISDN/mISDNisar.c:749:12: warning: symbol 'dmrim'
-> was not declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Hello,
 
-Applied, thank you.
+This series improves the ads8344 driver.
+
+The first patch is a fix and can be backported.
+
+The last one is improving power consumption by shutting down the ADC
+while it is not used.
+
+Changes in v2:
+ - keep the SPI buffer in the driver data structure as suggested by Lars.
+
+Alexandre Belloni (2):
+  iio: adc: ti-ads8344: properly byte swap value
+  iio: adc: ti-ads8344: optimize consumption
+
+ drivers/iio/adc/ti-ads8344.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+-- 
+2.25.2
+
