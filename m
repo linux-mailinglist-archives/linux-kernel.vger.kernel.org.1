@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAC61AC253
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9570E1ACB01
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895421AbgDPN1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:27:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34390 "EHLO mail.kernel.org"
+        id S2504591AbgDPPm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:42:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895058AbgDPN0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:26:35 -0400
+        id S2897280AbgDPNgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:36:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5833721D93;
-        Thu, 16 Apr 2020 13:26:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CED29221F4;
+        Thu, 16 Apr 2020 13:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043583;
-        bh=vSXvfk+ZBHDHOnvNignHEMR/sPicw9FxaumxDke6jfU=;
+        s=default; t=1587044168;
+        bh=lmkka/v+e0LVHKZ2vvrySdat1p0yz6685QOOxkl6kLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fcu6aw9hc6BN+R3G6bruTPPt4BRwhoqanwtT5wXr651Bf2flkpugHlCHkDjmSS8jx
-         RyGNnq6t9wBIHHJdWgBph8908Ld+0ZpRDw/MMUdV/kD8WWkBgdGGj+SB3fg/LXUXhq
-         3jRjRJ2+RJGKOJrFz1CHSImUnn6TSnCAt8kScg2Y=
+        b=Sp0o5gegMFIHzpzEeJ/7vvtRUfoRDcGRBjWQVNn2zcs3fSIHfNnc87TV3kMHkUdTB
+         Nv+lciryOSKCJRpI+o87uKkYxSC0jJVEZ7+OsFUfo7y+Sx+zMJLojeEZxQ0QhzquJf
+         5BgmmLl7z50KaINiVT+Qbrc7V2iTbHnE1RemUyi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hellstrom <thellstrom@vmware.com>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 017/146] x86: Dont let pgprot_modify() change the page encryption bit
+        stable@vger.kernel.org,
+        =?UTF-8?q?Ond=C5=99ej=20Caletka?= <ondrej@caletka.cz>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.5 107/257] ACPICA: Allow acpi_any_gpe_status_set() to skip one GPE
 Date:   Thu, 16 Apr 2020 15:22:38 +0200
-Message-Id: <20200416131244.884838189@linuxfoundation.org>
+Message-Id: <20200416131339.556308465@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,69 +44,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hellstrom <thellstrom@vmware.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 6db73f17c5f155dbcfd5e48e621c706270b84df0 ]
+commit 0ce792d660bda990c675eaf14ce09594a9b85cbf upstream.
 
-When SEV or SME is enabled and active, vm_get_page_prot() typically
-returns with the encryption bit set. This means that users of
-pgprot_modify(, vm_get_page_prot()) (mprotect_fixup(), do_mmap()) end up
-with a value of vma->vm_pg_prot that is not consistent with the intended
-protection of the PTEs.
+The check carried out by acpi_any_gpe_status_set() is not precise enough
+for the suspend-to-idle implementation in Linux and in some cases it is
+necessary make it skip one GPE (specifically, the EC GPE) from the check
+to prevent a race condition leading to a premature system resume from
+occurring.
 
-This is also important for fault handlers that rely on the VMA
-vm_page_prot to set the page protection. Fix this by not allowing
-pgprot_modify() to change the encryption bit, similar to how it's done
-for PAT bits.
+For this reason, redefine acpi_any_gpe_status_set() to take the number
+of a GPE to skip as an argument.
 
-Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lkml.kernel.org/r/20200304114527.3636-2-thomas_os@shipmail.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206629
+Tested-by: Ondřej Caletka <ondrej@caletka.cz>
+Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/x86/include/asm/pgtable.h       | 7 +++++--
- arch/x86/include/asm/pgtable_types.h | 2 +-
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/acpi/acpica/achware.h |    2 -
+ drivers/acpi/acpica/evxfgpe.c |   17 ++++++++++-----
+ drivers/acpi/acpica/hwgpe.c   |   47 +++++++++++++++++++++++++++++++++---------
+ drivers/acpi/sleep.c          |    2 -
+ include/acpi/acpixf.h         |    2 -
+ 5 files changed, 53 insertions(+), 17 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 690c0307afed0..2e1ed12c65f82 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -608,12 +608,15 @@ static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
- 	return __pmd(val);
- }
+--- a/drivers/acpi/acpica/achware.h
++++ b/drivers/acpi/acpica/achware.h
+@@ -101,7 +101,7 @@ acpi_status acpi_hw_enable_all_runtime_g
  
--/* mprotect needs to preserve PAT bits when updating vm_page_prot */
-+/*
-+ * mprotect needs to preserve PAT and encryption bits when updating
-+ * vm_page_prot
-+ */
- #define pgprot_modify pgprot_modify
- static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
+ acpi_status acpi_hw_enable_all_wakeup_gpes(void);
+ 
+-u8 acpi_hw_check_all_gpes(void);
++u8 acpi_hw_check_all_gpes(acpi_handle gpe_skip_device, u32 gpe_skip_number);
+ 
+ acpi_status
+ acpi_hw_enable_runtime_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
+--- a/drivers/acpi/acpica/evxfgpe.c
++++ b/drivers/acpi/acpica/evxfgpe.c
+@@ -799,17 +799,19 @@ ACPI_EXPORT_SYMBOL(acpi_enable_all_wakeu
+  *
+  * FUNCTION:    acpi_any_gpe_status_set
+  *
+- * PARAMETERS:  None
++ * PARAMETERS:  gpe_skip_number      - Number of the GPE to skip
+  *
+  * RETURN:      Whether or not the status bit is set for any GPE
+  *
+- * DESCRIPTION: Check the status bits of all enabled GPEs and return TRUE if any
+- *              of them is set or FALSE otherwise.
++ * DESCRIPTION: Check the status bits of all enabled GPEs, except for the one
++ *              represented by the "skip" argument, and return TRUE if any of
++ *              them is set or FALSE otherwise.
+  *
+  ******************************************************************************/
+-u32 acpi_any_gpe_status_set(void)
++u32 acpi_any_gpe_status_set(u32 gpe_skip_number)
  {
- 	pgprotval_t preservebits = pgprot_val(oldprot) & _PAGE_CHG_MASK;
--	pgprotval_t addbits = pgprot_val(newprot);
-+	pgprotval_t addbits = pgprot_val(newprot) & ~_PAGE_CHG_MASK;
- 	return __pgprot(preservebits | addbits);
+ 	acpi_status status;
++	acpi_handle gpe_device;
+ 	u8 ret;
+ 
+ 	ACPI_FUNCTION_TRACE(acpi_any_gpe_status_set);
+@@ -819,7 +821,12 @@ u32 acpi_any_gpe_status_set(void)
+ 		return (FALSE);
+ 	}
+ 
+-	ret = acpi_hw_check_all_gpes();
++	status = acpi_get_gpe_device(gpe_skip_number, &gpe_device);
++	if (ACPI_FAILURE(status)) {
++		gpe_device = NULL;
++	}
++
++	ret = acpi_hw_check_all_gpes(gpe_device, gpe_skip_number);
+ 	(void)acpi_ut_release_mutex(ACPI_MTX_EVENTS);
+ 
+ 	return (ret);
+--- a/drivers/acpi/acpica/hwgpe.c
++++ b/drivers/acpi/acpica/hwgpe.c
+@@ -444,12 +444,19 @@ acpi_hw_enable_wakeup_gpe_block(struct a
+ 	return (AE_OK);
  }
  
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 106b7d0e2dae5..71ea49e7db747 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -124,7 +124,7 @@
-  */
- #define _PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |		\
- 			 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY |	\
--			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP)
-+			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP | _PAGE_ENC)
- #define _HPAGE_CHG_MASK (_PAGE_CHG_MASK | _PAGE_PSE)
++struct acpi_gpe_block_status_context {
++	struct acpi_gpe_register_info *gpe_skip_register_info;
++	u8 gpe_skip_mask;
++	u8 retval;
++};
++
+ /******************************************************************************
+  *
+  * FUNCTION:    acpi_hw_get_gpe_block_status
+  *
+  * PARAMETERS:  gpe_xrupt_info      - GPE Interrupt info
+  *              gpe_block           - Gpe Block info
++ *              context             - GPE list walk context data
+  *
+  * RETURN:      Success
+  *
+@@ -460,12 +467,13 @@ acpi_hw_enable_wakeup_gpe_block(struct a
+ static acpi_status
+ acpi_hw_get_gpe_block_status(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
+ 			     struct acpi_gpe_block_info *gpe_block,
+-			     void *ret_ptr)
++			     void *context)
+ {
++	struct acpi_gpe_block_status_context *c = context;
+ 	struct acpi_gpe_register_info *gpe_register_info;
+ 	u64 in_enable, in_status;
+ 	acpi_status status;
+-	u8 *ret = ret_ptr;
++	u8 ret_mask;
+ 	u32 i;
  
- /*
--- 
-2.20.1
-
+ 	/* Examine each GPE Register within the block */
+@@ -485,7 +493,11 @@ acpi_hw_get_gpe_block_status(struct acpi
+ 			continue;
+ 		}
+ 
+-		*ret |= in_enable & in_status;
++		ret_mask = in_enable & in_status;
++		if (ret_mask && c->gpe_skip_register_info == gpe_register_info) {
++			ret_mask &= ~c->gpe_skip_mask;
++		}
++		c->retval |= ret_mask;
+ 	}
+ 
+ 	return (AE_OK);
+@@ -561,24 +573,41 @@ acpi_status acpi_hw_enable_all_wakeup_gp
+  *
+  * FUNCTION:    acpi_hw_check_all_gpes
+  *
+- * PARAMETERS:  None
++ * PARAMETERS:  gpe_skip_device      - GPE devoce of the GPE to skip
++ *              gpe_skip_number      - Number of the GPE to skip
+  *
+  * RETURN:      Combined status of all GPEs
+  *
+- * DESCRIPTION: Check all enabled GPEs in all GPE blocks and return TRUE if the
++ * DESCRIPTION: Check all enabled GPEs in all GPE blocks, except for the one
++ *              represented by the "skip" arguments, and return TRUE if the
+  *              status bit is set for at least one of them of FALSE otherwise.
+  *
+  ******************************************************************************/
+ 
+-u8 acpi_hw_check_all_gpes(void)
++u8 acpi_hw_check_all_gpes(acpi_handle gpe_skip_device, u32 gpe_skip_number)
+ {
+-	u8 ret = 0;
++	struct acpi_gpe_block_status_context context = {
++		.gpe_skip_register_info = NULL,
++		.retval = 0,
++	};
++	struct acpi_gpe_event_info *gpe_event_info;
++	acpi_cpu_flags flags;
+ 
+ 	ACPI_FUNCTION_TRACE(acpi_hw_check_all_gpes);
+ 
+-	(void)acpi_ev_walk_gpe_list(acpi_hw_get_gpe_block_status, &ret);
++	flags = acpi_os_acquire_lock(acpi_gbl_gpe_lock);
++
++	gpe_event_info = acpi_ev_get_gpe_event_info(gpe_skip_device,
++						    gpe_skip_number);
++	if (gpe_event_info) {
++		context.gpe_skip_register_info = gpe_event_info->register_info;
++		context.gpe_skip_mask = acpi_hw_get_gpe_register_bit(gpe_event_info);
++	}
++
++	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
+ 
+-	return (ret != 0);
++	(void)acpi_ev_walk_gpe_list(acpi_hw_get_gpe_block_status, &context);
++	return (context.retval != 0);
+ }
+ 
+ #endif				/* !ACPI_REDUCED_HARDWARE */
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -1023,7 +1023,7 @@ static bool acpi_s2idle_wake(void)
+ 		 * status bit from unset to set between the checks with the
+ 		 * status bits of all the other GPEs unset.
+ 		 */
+-		if (acpi_any_gpe_status_set() && !acpi_ec_dispatch_gpe())
++		if (acpi_any_gpe_status_set(U32_MAX) && !acpi_ec_dispatch_gpe())
+ 			return true;
+ 
+ 		/*
+--- a/include/acpi/acpixf.h
++++ b/include/acpi/acpixf.h
+@@ -752,7 +752,7 @@ ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi
+ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_disable_all_gpes(void))
+ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enable_all_runtime_gpes(void))
+ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enable_all_wakeup_gpes(void))
+-ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi_any_gpe_status_set(void))
++ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi_any_gpe_status_set(u32 gpe_skip_number))
+ ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi_any_fixed_event_status_set(void))
+ 
+ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 
 
