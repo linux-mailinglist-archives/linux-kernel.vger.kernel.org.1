@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1520E1ABD0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010C51ABD5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503875AbgDPJkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2503645AbgDPJjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:39:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBEFC061A41
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:39:42 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1jP0zd-0002ad-L6; Thu, 16 Apr 2020 11:39:33 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1jP0zc-0008A1-NM; Thu, 16 Apr 2020 11:39:32 +0200
-Date:   Thu, 16 Apr 2020 11:39:32 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Linux-imx@nxp.com
-Subject: Re: [PATCH V2 1/5] dt-bindings: clock: Convert i.MX6Q clock to
- json-schema
-Message-ID: <20200416093932.2mkcyv4rs6v6a24a@pengutronix.de>
-References: <1587019158-12143-1-git-send-email-Anson.Huang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587019158-12143-1-git-send-email-Anson.Huang@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:37:20 up 153 days, 55 min, 168 users,  load average: 0.00, 0.06,
- 0.07
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S2504422AbgDPJyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:54:15 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51350 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504124AbgDPJyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:54:06 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A7BB4200C79;
+        Thu, 16 Apr 2020 11:54:01 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E42CA200C66;
+        Thu, 16 Apr 2020 11:53:58 +0200 (CEST)
+Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 295EC402A8;
+        Thu, 16 Apr 2020 17:53:55 +0800 (SGT)
+From:   Yuantian Tang <andy.tang@nxp.com>
+To:     rui.zhang@intel.com, edubezval@gmail.com, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuantian Tang <andy.tang@nxp.com>
+Subject: [PATCH v2] thermal: qoriq: Update the settings for TMUv2
+Date:   Thu, 16 Apr 2020 17:39:40 +0800
+Message-Id: <20200416093940.34371-1-andy.tang@nxp.com>
+X-Mailer: git-send-email 2.9.5
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anson,
+For TMU v2, TMSAR registers need to be set properly to get the
+accurate temperature values.
+Also temperature reading needs to convert to degree Celsius
+since it is in degrees Kelvin.
 
-On 20-04-16 14:39, Anson Huang wrote:
+Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
+---
+v2:
+	- change the temp in millicelsius
 
-...
+ drivers/thermal/qoriq_thermal.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-> diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
-> new file mode 100644
-> index 0000000..1c6e600
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/imx6q-clock.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Clock bindings for Freescale i.MX6 Quad
-> +
-> +maintainers:
-> +  - Anson Huang <Anson.Huang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: fsl,imx6q-ccm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 2
+diff --git a/drivers/thermal/qoriq_thermal.c b/drivers/thermal/qoriq_thermal.c
+index 028a6bbf75dc..f6371127f707 100644
+--- a/drivers/thermal/qoriq_thermal.c
++++ b/drivers/thermal/qoriq_thermal.c
+@@ -23,6 +23,7 @@
+ #define TMTMIR_DEFAULT	0x0000000f
+ #define TIER_DISABLE	0x0
+ #define TEUMR0_V2		0x51009c00
++#define TMSARA_V2		0xe
+ #define TMU_VER1		0x1
+ #define TMU_VER2		0x2
+ 
+@@ -50,6 +51,9 @@
+ 					    * Site Register
+ 					    */
+ #define TRITSR_V	BIT(31)
++#define REGS_V2_TMSAR(n)	(0x304 + 16 * (n))	/* TMU monitoring
++						* site adjustment register
++						*/
+ #define REGS_TTRnCR(n)	(0xf10 + 4 * (n)) /* Temperature Range n
+ 					   * Control Register
+ 					   */
+@@ -100,7 +104,11 @@ static int tmu_get_temp(void *p, int *temp)
+ 				     10 * USEC_PER_MSEC))
+ 		return -ENODATA;
+ 
+-	*temp = (val & 0xff) * 1000;
++	/* For TMUv2, temperature reading in degrees Kelvin */
++	if (qdata->ver == TMU_VER1)
++		*temp = (val & 0xff) * 1000;
++	else
++		*temp = ((val & 0x1ff) - 273) * 1000;
+ 
+ 	return 0;
+ }
+@@ -192,6 +200,8 @@ static int qoriq_tmu_calibration(struct device *dev,
+ 
+ static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
+ {
++	int i;
++
+ 	/* Disable interrupt, using polling instead */
+ 	regmap_write(data->regmap, REGS_TIER, TIER_DISABLE);
+ 
+@@ -202,6 +212,8 @@ static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
+ 	} else {
+ 		regmap_write(data->regmap, REGS_V2_TMTMIR, TMTMIR_DEFAULT);
+ 		regmap_write(data->regmap, REGS_V2_TEUMR(0), TEUMR0_V2);
++		for (i = 0; i < 7; i++)
++			regmap_write(data->regmap, REGS_V2_TMSAR(i), TMSARA_V2);
+ 	}
+ 
+ 	/* Disable monitoring */
+@@ -212,6 +224,7 @@ static const struct regmap_range qoriq_yes_ranges[] = {
+ 	regmap_reg_range(REGS_TMR, REGS_TSCFGR),
+ 	regmap_reg_range(REGS_TTRnCR(0), REGS_TTRnCR(3)),
+ 	regmap_reg_range(REGS_V2_TEUMR(0), REGS_V2_TEUMR(2)),
++	regmap_reg_range(REGS_V2_TMSAR(0), REGS_V2_TMSAR(15)),
+ 	regmap_reg_range(REGS_IPBRR(0), REGS_IPBRR(1)),
+ 	/* Read only registers below */
+ 	regmap_reg_range(REGS_TRITSR(0), REGS_TRITSR(15)),
+-- 
+2.17.1
 
-IMHO I would force them to have exactly two so we need
-minItems: 2 too here.
-
-Regards,
-  Marco
