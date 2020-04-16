@@ -2,102 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D541ABE09
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B011ABE64
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505127AbgDPKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:36:06 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42849 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505072AbgDPKdm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:33:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587033221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wSOHFT9tJQ3WMUJpzqJBLiS8QZ3BM+HLY6292xvXFZM=;
-        b=DuAiR70AkTLxvA/rK7PsFcNZGWdjqBd8BtZy5tk7QANjZlp3r28/2gyWuprA/f5aV3HfCi
-        bJAeN3BvIl7SWiZjkLiY29dCK/pc0Z6fY5oDPvRB/3LGLcOECjcrWNqw9e7FPfJbqGUkkr
-        lDDNfmSN2tqkSJgn0o2GCBeUG9b9fBQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-mRLDz9gnN72cnltf895Q4Q-1; Thu, 16 Apr 2020 06:33:39 -0400
-X-MC-Unique: mRLDz9gnN72cnltf895Q4Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26B2513F9;
-        Thu, 16 Apr 2020 10:33:38 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-114-61.ams2.redhat.com [10.36.114.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 178D194B40;
-        Thu, 16 Apr 2020 10:33:35 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        keyrings@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: What's a good default TTL for DNS keys in the kernel
-References: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
-        <3865908.1586874010@warthog.procyon.org.uk>
-        <128769.1587032833@warthog.procyon.org.uk>
-Date:   Thu, 16 Apr 2020 12:33:34 +0200
-In-Reply-To: <128769.1587032833@warthog.procyon.org.uk> (David Howells's
-        message of "Thu, 16 Apr 2020 11:27:13 +0100")
-Message-ID: <87v9lzu3cx.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S2505324AbgDPKsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:48:10 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:51691 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505052AbgDPKgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:36:46 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 492wd560Khz9v1KF;
+        Thu, 16 Apr 2020 12:36:41 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=Q1mfZRzd; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id gjgErL3lbfTm; Thu, 16 Apr 2020 12:36:41 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 492wd54vTKz9v1KC;
+        Thu, 16 Apr 2020 12:36:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1587033401; bh=l5FwhWsZFKoNYPFvSBrPZm1J3No4Lds1oXRu+U6EyzE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Q1mfZRzdVTVLZ9spIAcjumqoNKfKtAXMhqqu72UQK2qqOHAgzcyZ93dCPB4Z9HBDb
+         eUTezV8zEsorpEL5x5DoxpQ1KoJ4kzp5DqP3jd5KDzneZxqh06kk6xhlxU4YVc9Zbm
+         iebw9fw1oWps8adcEcDcgg+pOfjnMtWRYxvJ/Pmc=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29BEB8BBF0;
+        Thu, 16 Apr 2020 12:36:43 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id UL0sASDHqyWS; Thu, 16 Apr 2020 12:36:43 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 991E18B99F;
+        Thu, 16 Apr 2020 12:36:42 +0200 (CEST)
+Subject: Re: [PATCH v3,0/4] drivers: uio: new driver uio_fsl_85xx_cache_sram
+To:     =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        oss@buserror.net, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com
+References: <AIgAKQBlCIqtPx5U5P0kFqpr.3.1587029369636.Hmail.wenhu.wang@vivo.com>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <a3032813-ba1e-101a-0b73-cc477d702aac@c-s.fr>
+Date:   Thu, 16 Apr 2020 12:36:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <AIgAKQBlCIqtPx5U5P0kFqpr.3.1587029369636.Hmail.wenhu.wang@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* David Howells:
 
-> Florian Weimer <fweimer@redhat.com> wrote:
->
->> You can get the real TTL if you do a DNS resolution on the name and
->> match the addresses against what you get out of the NSS functions.  If
->> they match, you can use the TTL from DNS.  Hackish, but it does give you
->> *some* TTL value.
->
-> I guess I'd have to do that in parallel.
 
-Not necessary.  You can do the getaddrinfo lookup first and then perform
-the query.
+Le 16/04/2020 à 11:29, 王文虎 a écrit :
+> Hi,
+> Seems there is something wrong with the server that multiple dumplications
+> of the v3 patches were sent out, please ignore the rest and take this newest
+> series as formal count.
 
-> Would calling something like res_mkquery() use local DNS caching?
+Which series ?
 
-Yes (but res_mkquery builds a packet, it does not send it).
+It seems you sent 3 times, at 9:29, 9:41 and 9:49 (Paris Time)
 
->> The question remains what the expected impact of TTL expiry is.  Will
->> the kernel just perform a new DNS query if it needs one?  Or would you
->> expect that (say) the NFS client rechecks the addresses after TTL expiry
->> and if they change, reconnect to a new NFS server?
->
-> It depends on the filesystem.
->
-> AFS keeps track of the expiration on the record and will issue a new lookup
-> when the data expires, but NFS doesn't make use of this information.
+ From the series of 9:29, I received patches 0 to 3
+ From the series of 9:41, I received patches 0 to 3
+ From the series of 9:49, I received patches 0 and 4.
 
-And it will switch servers at that point?  Or only if the existing
-server association fails/times out?
+Looks like powerpc patchwork 
+(https://patchwork.ozlabs.org/project/linuxppc-dev/list/?submitter=78320) 
+got:
+ From the series of 9:29, I received patches 0 to 4
+ From the series of 9:41, I received patches 1 to 4
+ From the series of 9:49, I received patches 1 to 4
 
-> The keyring subsystem will itself dispose of dns_resolver keys that
-> expire and request_key() will only upcall again if the key has
-> expired.
+So this seems to be something wrong somewhere.
 
-What's are higher-level effects of that?
+Christophe
 
-I'm still not convinced that the kernel *needs* accurate TTL
-information.  The benefit from upcall avoidance likely vanishes quickly
-after the in-kernel TTL increases beyond 5 or so.  That's just my guess,
-though.
 
-Thanks,
-Florian
-
+> 
+> Thanks,
+> Wenhu
+> 
+> From: Wang Wenhu <wenhu.wang@vivo.com>
+> Date: 2020-04-16 15:49:14
+> To:  gregkh@linuxfoundation.org,linux-kernel@vger.kernel.org,oss@buserror.net,christophe.leroy@c-s.fr,linuxppc-dev@lists.ozlabs.org
+> Cc:  kernel@vivo.com,Wang Wenhu <wenhu.wang@vivo.com>
+> Subject: [PATCH v3,0/4] drivers: uio: new driver uio_fsl_85xx_cache_sram>This series add a new uio driver for freescale 85xx platforms to
+>> access the Cache-Sram form user level. This is extremely helpful
+>> for the user-space applications that require high performance memory
+>> accesses.
+>>
+>> It fixes the compile errors and warning of the hardware level drivers
+>> and implements the uio driver in uio_fsl_85xx_cache_sram.c.
+>>
+>> Changes since v1:
+>> * Addressed comments from Greg K-H
+>> * Moved kfree(info->name) into uio_info_free_internal()
+>>
+>> Changes since v2:
+>> * Drop the patch that modifies Kconfigs of arch/powerpc/platforms
+>>    and modified the sequence of patches:
+>>     01:dropped, 02->03, 03->02, 04->01, 05->04
+>> * Addressed comments from Greg, Scott and Christophe
+>> * Use "uiomem->internal_addr" as if condition for sram memory free,
+>>    and memset the uiomem entry
+>> * Modified of_match_table make the driver apart from Cache-Sram HW info
+>>    which belong to the HW level driver fsl_85xx_cache_sram to match
+>> * Use roundup_pow_of_two for align calc(really learned a lot from Christophe)
+>> * Remove useless clear block of uiomem entries.
+>> * Use UIO_INFO_VER micro for info->version, and define it as
+>>    "devicetree,pseudo", meaning this is pseudo device and probed from
+>>    device tree configuration
+>> * Select FSL_85XX_CACHE_SRAM rather than depends on it
+>>
+>> Wang Wenhu (4):
+>>   powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+>>   powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+>>   powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
+>>   drivers: uio: new driver for fsl_85xx_cache_sram
+>>
+>> arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
+>> arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
+>> drivers/uio/Kconfig                       |   9 ++
+>> drivers/uio/Makefile                      |   1 +
+>> drivers/uio/uio_fsl_85xx_cache_sram.c     | 158 ++++++++++++++++++++++
+>> 5 files changed, 171 insertions(+), 1 deletion(-)
+>> create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+>>
+>> -- 
+>> 2.17.1
+>>
+> 
+> 
