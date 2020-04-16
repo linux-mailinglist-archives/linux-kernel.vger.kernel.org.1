@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923E41AC4F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722511ACC8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393209AbgDPOIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:08:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58840 "EHLO mail.kernel.org"
+        id S2636607AbgDPQCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898505AbgDPNpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:45:23 -0400
+        id S2895309AbgDPN0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:26:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BDD620732;
-        Thu, 16 Apr 2020 13:45:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E975206E9;
+        Thu, 16 Apr 2020 13:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044723;
-        bh=RlPp1iaNAIZtXV/7DCpgYxXxtz24O5yn7VLRupqjAtw=;
+        s=default; t=1587043610;
+        bh=Gv4oa5x5E7YXqPDsRigVE4FB0OcWbjPy/wOZslMaZx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=geL4oxBB5Su+U22c5SBXYgiU+L8YMKgut2tGXeqL5w2qM4l8H7wrDuEGYxSogtrOs
-         zgzIFxaGVAGpMlS0mKzzWkQLa2jHv6N04p7dju4dMX3c+FVMV865Wky2LHV16A2YbQ
-         jV3ScxW+ecuHzEpFZ8Kx2MEwbiufRJg7fGW6C3Zs=
+        b=MRAek1kIYuCibq46zD/U27ypBlCdtOEqG4BOk2I4PpkPMKk20xrhUpN1dyG9gEy5z
+         D6ljOoj3IPlQQ0LqrljeEHIEsXg01X52PUCxxxSdzo8qD6WLFnJtJAeZd8ZU2kra9n
+         fiXZFlD5oGBy0R1G3cRewuvEs2quG4JEDR5WTzTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 074/232] usb: gadget: composite: Inform controller driver of self-powered
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 027/146] x86/boot: Use unsigned comparison for addresses
 Date:   Thu, 16 Apr 2020 15:22:48 +0200
-Message-Id: <20200416131324.532258700@linuxfoundation.org>
+Message-Id: <20200416131246.160098417@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-commit 5e5caf4fa8d3039140b4548b6ab23dd17fce9b2c upstream.
+[ Upstream commit 81a34892c2c7c809f9c4e22c5ac936ae673fb9a2 ]
 
-Different configuration/condition may draw different power. Inform the
-controller driver of the change so it can respond properly (e.g.
-GET_STATUS request). This fixes an issue with setting MaxPower from
-configfs. The composite driver doesn't check this value when setting
-self-powered.
+The load address is compared with LOAD_PHYSICAL_ADDR using a signed
+comparison currently (using jge instruction).
 
-Cc: stable@vger.kernel.org
-Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When loading a 64-bit kernel using the new efi32_pe_entry() point added by:
 
+  97aa276579b2 ("efi/x86: Add true mixed mode entry point into .compat section")
+
+using Qemu with -m 3072, the firmware actually loads us above 2Gb,
+resulting in a very early crash.
+
+Use the JAE instruction to perform a unsigned comparison instead, as physical
+addresses should be considered unsigned.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200301230436.2246909-6-nivedita@alum.mit.edu
+Link: https://lore.kernel.org/r/20200308080859.21568-14-ardb@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/composite.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/x86/boot/compressed/head_32.S | 2 +-
+ arch/x86/boot/compressed/head_64.S | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -861,6 +861,11 @@ static int set_config(struct usb_composi
- 	else
- 		power = min(power, 900U);
- done:
-+	if (power <= USB_SELF_POWER_VBUS_MAX_DRAW)
-+		usb_gadget_set_selfpowered(gadget);
-+	else
-+		usb_gadget_clear_selfpowered(gadget);
-+
- 	usb_gadget_vbus_draw(gadget, power);
- 	if (result >= 0 && cdev->delayed_status)
- 		result = USB_GADGET_DELAYED_STATUS;
-@@ -2279,6 +2284,7 @@ void composite_suspend(struct usb_gadget
- 
- 	cdev->suspended = 1;
- 
-+	usb_gadget_set_selfpowered(gadget);
- 	usb_gadget_vbus_draw(gadget, 2);
- }
- 
-@@ -2307,6 +2313,9 @@ void composite_resume(struct usb_gadget
- 		else
- 			maxpower = min(maxpower, 900U);
- 
-+		if (maxpower > USB_SELF_POWER_VBUS_MAX_DRAW)
-+			usb_gadget_clear_selfpowered(gadget);
-+
- 		usb_gadget_vbus_draw(gadget, maxpower);
- 	}
- 
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index 37380c0d59996..01d628ea34024 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -106,7 +106,7 @@ ENTRY(startup_32)
+ 	notl	%eax
+ 	andl    %eax, %ebx
+ 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+-	jge	1f
++	jae	1f
+ #endif
+ 	movl	$LOAD_PHYSICAL_ADDR, %ebx
+ 1:
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 4eaa724afce34..9fa644c62839f 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -106,7 +106,7 @@ ENTRY(startup_32)
+ 	notl	%eax
+ 	andl	%eax, %ebx
+ 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+-	jge	1f
++	jae	1f
+ #endif
+ 	movl	$LOAD_PHYSICAL_ADDR, %ebx
+ 1:
+@@ -297,7 +297,7 @@ ENTRY(startup_64)
+ 	notq	%rax
+ 	andq	%rax, %rbp
+ 	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
+-	jge	1f
++	jae	1f
+ #endif
+ 	movq	$LOAD_PHYSICAL_ADDR, %rbp
+ 1:
+-- 
+2.20.1
+
 
 
