@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2101AC3C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16EC1AC99B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898733AbgDPNsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
+        id S2504039AbgDPPZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896279AbgDPNf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:35:59 -0400
+        id S1732331AbgDPNor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:44:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13E67208E4;
-        Thu, 16 Apr 2020 13:35:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D691F208E4;
+        Thu, 16 Apr 2020 13:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044158;
-        bh=7optjhFEa+3PEcCmGs68rGHltQp375AoRvT4kjo1PUQ=;
+        s=default; t=1587044686;
+        bh=lb20TAWB1L8o9R9POCRdfn3ZTAVt4zIsBHpavNxlDo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wUIBeUp3VK31/GTUNauamZET+MILtLuolDb2L1YGNOrb6JrlI1lz5QMBEQjSdu7ok
-         duYSArIST9U7GrwRx7DnbpTgMtbWYi357hV/8DaxV+bKLnOOa27XJ2eLcMzBwL52bz
-         2U6CZ79C64J1haPhygPi4DO2lbk24PZxcncRL3B0=
+        b=hVzcfInvWxCscX6EGtOweKN3Y12I2CPaDdh5omjjjuDqiAx8kpRA8y47iDDtltpmV
+         bXv/PufLWVVkEGrPBebHGSMB9fu7naSWDFZ58gqNt7UdwNZkWR4qagOpBZTNMzyU2J
+         zrGVjBFnvbAhQFAwuD2dNpRQJo0gXeH6eeDEFquY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benoit Parrot <bparrot@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.5 103/257] media: ti-vpe: cal: fix a kernel oops when unloading module
-Date:   Thu, 16 Apr 2020 15:22:34 +0200
-Message-Id: <20200416131339.006439948@linuxfoundation.org>
+        stable@vger.kernel.org, Junyong Sun <sunjunyong@xiaomi.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 061/232] firmware: fix a double abort case with fw_load_sysfs_fallback
+Date:   Thu, 16 Apr 2020 15:22:35 +0200
+Message-Id: <20200416131323.089997778@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +44,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benoit Parrot <bparrot@ti.com>
+From: Junyong Sun <sunjy516@gmail.com>
 
-commit 80264809ea0a3fd2ee8251f31a9eb85d2c3fc77e upstream.
+[ Upstream commit bcfbd3523f3c6eea51a74d217a8ebc5463bcb7f4 ]
 
-After the switch to use v4l2_async_notifier_add_subdev() and
-v4l2_async_notifier_cleanup(), unloading the ti_cal module would cause a
-kernel oops.
+fw_sysfs_wait_timeout may return err with -ENOENT
+at fw_load_sysfs_fallback and firmware is already
+in abort status, no need to abort again, so skip it.
 
-This was root cause to the fact that v4l2_async_notifier_cleanup() tries
-to kfree the asd pointer passed into v4l2_async_notifier_add_subdev().
+This issue is caused by concurrent situation like below:
+when thread 1# wait firmware loading, thread 2# may write
+-1 to abort loading and wakeup thread 1# before it timeout.
+so wait_for_completion_killable_timeout of thread 1# would
+return remaining time which is != 0 with fw_st->status
+FW_STATUS_ABORTED.And the results would be converted into
+err -ENOENT in __fw_state_wait_common and transfered to
+fw_load_sysfs_fallback in thread 1#.
+The -ENOENT means firmware status is already at ABORTED,
+so fw_load_sysfs_fallback no need to get mutex to abort again.
+-----------------------------
+thread 1#,wait for loading
+fw_load_sysfs_fallback
+ ->fw_sysfs_wait_timeout
+    ->__fw_state_wait_common
+       ->wait_for_completion_killable_timeout
 
-In our case the asd reference was from a statically allocated struct.
-So in effect v4l2_async_notifier_cleanup() was trying to free a pointer
-that was not kalloc.
+in __fw_state_wait_common,
+...
+93    ret = wait_for_completion_killable_timeout(&fw_st->completion, timeout);
+94    if (ret != 0 && fw_st->status == FW_STATUS_ABORTED)
+95       return -ENOENT;
+96    if (!ret)
+97	 return -ETIMEDOUT;
+98
+99    return ret < 0 ? ret : 0;
+-----------------------------
+thread 2#, write -1 to abort loading
+firmware_loading_store
+ ->fw_load_abort
+   ->__fw_load_abort
+     ->fw_state_aborted
+       ->__fw_state_set
+         ->complete_all
 
-So here we switch to using a kzalloc struct instead of a static one.
-To achieve this we re-order some of the calls to prevent asd allocation
-from leaking.
+in __fw_state_set,
+...
+111    if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED)
+112       complete_all(&fw_st->completion);
+-------------------------------------------
+BTW,the double abort issue would not cause kernel panic or create an issue,
+but slow down it sometimes.The change is just a minor optimization.
 
-Fixes: d079f94c9046 ("media: platform: Switch to v4l2_async_notifier_add_subdev")
-Cc: stable@vger.kernel.org
-Signed-off-by: Benoit Parrot <bparrot@ti.com>
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Junyong Sun <sunjunyong@xiaomi.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/1583202968-28792-1-git-send-email-sunjunyong@xiaomi.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/ti-vpe/cal.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/base/firmware_loader/fallback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/platform/ti-vpe/cal.c
-+++ b/drivers/media/platform/ti-vpe/cal.c
-@@ -266,8 +266,6 @@ struct cal_ctx {
- 	struct v4l2_subdev	*sensor;
- 	struct v4l2_fwnode_endpoint	endpoint;
- 
--	struct v4l2_async_subdev asd;
--
- 	struct v4l2_fh		fh;
- 	struct cal_dev		*dev;
- 	struct cc_data		*cc;
-@@ -1648,7 +1646,6 @@ static int of_cal_create_instance(struct
- 
- 	parent = pdev->dev.of_node;
- 
--	asd = &ctx->asd;
- 	endpoint = &ctx->endpoint;
- 
- 	ep_node = NULL;
-@@ -1695,8 +1692,6 @@ static int of_cal_create_instance(struct
- 		ctx_dbg(3, ctx, "can't get remote parent\n");
- 		goto cleanup_exit;
- 	}
--	asd->match_type = V4L2_ASYNC_MATCH_FWNODE;
--	asd->match.fwnode = of_fwnode_handle(sensor_node);
- 
- 	v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep_node), endpoint);
- 
-@@ -1726,9 +1721,17 @@ static int of_cal_create_instance(struct
- 
- 	v4l2_async_notifier_init(&ctx->notifier);
- 
-+	asd = kzalloc(sizeof(*asd), GFP_KERNEL);
-+	if (!asd)
-+		goto cleanup_exit;
-+
-+	asd->match_type = V4L2_ASYNC_MATCH_FWNODE;
-+	asd->match.fwnode = of_fwnode_handle(sensor_node);
-+
- 	ret = v4l2_async_notifier_add_subdev(&ctx->notifier, asd);
- 	if (ret) {
- 		ctx_err(ctx, "Error adding asd\n");
-+		kfree(asd);
- 		goto cleanup_exit;
+diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+index 62ee90b4db56e..70efbb22dfc30 100644
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -525,7 +525,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs,
  	}
  
+ 	retval = fw_sysfs_wait_timeout(fw_priv, timeout);
+-	if (retval < 0) {
++	if (retval < 0 && retval != -ENOENT) {
+ 		mutex_lock(&fw_lock);
+ 		fw_load_abort(fw_sysfs);
+ 		mutex_unlock(&fw_lock);
+-- 
+2.20.1
+
 
 
