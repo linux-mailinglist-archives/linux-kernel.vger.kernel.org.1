@@ -2,61 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F6A1ACB38
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97891ACB3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436652AbgDPPpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:45:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52184 "EHLO mail.kernel.org"
+        id S2442545AbgDPPpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:45:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2633653AbgDPPow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:44:52 -0400
+        id S2395512AbgDPPpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:45:04 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B382A20732;
-        Thu, 16 Apr 2020 15:44:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E06521D91;
+        Thu, 16 Apr 2020 15:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587051892;
-        bh=X9AeWYGILDr+vIqgFqvmc+ZvOyiF/SVk4CiVuC6R8Nc=;
+        s=default; t=1587051904;
+        bh=uEzT4afH5aAvqU9GRUEUOIDgK+mWSReRCNYeDa+GX54=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=K7tOTLZiUW/77AV0LYGh+9QHxqaeu9b+fkTxqVApjFoc5o4GHdLZrGpYKXNimulDl
-         UQCTeVStN7Z4K0r6chRIiJBV/unuJwI+ODv/NizaAgGa18sEf7BPW2Tt5kdEJWuZFa
-         xIJtjzi6Xl96Bfhx/rMWK+z7GlxZSzCUN03Db4D0=
-Date:   Thu, 16 Apr 2020 16:44:49 +0100
+        b=pcpz6ct4+maiiBtZd9rtrSScBUwuNgkpbamj//4pqaThgCwa0dSZd/zmWQvxvCsfV
+         RUQLLXo3E1W4BwlUALnGCD0TatfyNXlKArys+HNonhkcuogXDJYnW32hGvnB1VRJei
+         17ozwOeaEnJrH+S9jb9dJ176cvZXOo5GU7EQOPbU=
+Date:   Thu, 16 Apr 2020 16:45:01 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     frieder.schrempf@kontron.de, Ashish Kumar <Ashish.Kumar@nxp.com>,
-        boris.brezillon@collabora.com
-Cc:     Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Ashish Kumar <Ashish.kumar@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-In-Reply-To: <1587037399-18672-1-git-send-email-Ashish.Kumar@nxp.com>
-References: <1587037399-18672-1-git-send-email-Ashish.Kumar@nxp.com>
-Subject: Re: [PATCH v3] spi: spi-fsl-qspi: Reduce devm_ioremap size to 4 times AHB buffer size
-Message-Id: <158705187475.53607.18120556140108669367.b4-ty@kernel.org>
+To:     Colin King <colin.king@canonical.com>, linux-spi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <20200410122315.17523-1-colin.king@canonical.com>
+References: <20200410122315.17523-1-colin.king@canonical.com>
+Subject: Re: [PATCH] spi: remove redundant assignment to variable ms
+Message-Id: <158705187474.53607.10568254080085770802.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 17:13:19 +0530, Ashish Kumar wrote:
-> Reduce devm_ioremap size to (4 * AHB_BUFER_SIZE) rather than mapping
-> complete QSPI-Memmory as driver is now independent of flash size.
-> Flash of any size can be accessed.
+On Fri, 10 Apr 2020 13:23:15 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Issue was reported on platform where devm_ioremap failure is observed
-> with size > 256M.
-> Error log on LS1021ATWR :
->  fsl-quadspi 1550000.spi: ioremap failed for resource [mem 0x40000000-0x7fffffff]
->  fsl-quadspi 1550000.spi: Freescale QuadSPI probe failed
->  fsl-quadspi: probe of 1550000.spi failed with error -12
+> The variable ms is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Addresses-Coverity: ("Unused value")
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] spi: spi-fsl-qspi: Reduce devm_ioremap size to 4 times AHB buffer size
-      commit: 858e26a515c28df3ef542d9c09493b54a329d6cf
+[1/1] spi: remove redundant assignment to variable ms
+      commit: 49686df5b874e5ed6249bc622b73ad9a9e71cd99
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
