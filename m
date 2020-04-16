@@ -2,243 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7391AC088
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302F81AC097
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634784AbgDPL7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:59:19 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:58726 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2634579AbgDPL6J (ORCPT
+        id S2634835AbgDPMAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:00:45 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:53135 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634711AbgDPMAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:58:09 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GBqVpT019700;
-        Thu, 16 Apr 2020 07:58:09 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 30dn9adgm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Apr 2020 07:58:08 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 03GBw7aZ016574
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 16 Apr 2020 07:58:07 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 16 Apr
- 2020 07:58:06 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 16 Apr 2020 07:58:06 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03GBw2DY013213;
-        Thu, 16 Apr 2020 07:58:05 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <jic23@kernel.org>, <robh+dt@kernel.org>
-Subject: [PATCH v2 2/2] dt-bindings: iio: dac: AD5570R fix bindings errors
-Date:   Thu, 16 Apr 2020 14:58:48 +0300
-Message-ID: <20200416115848.56156-3-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200416115848.56156-1-alexandru.tachici@analog.com>
-References: <20200416115848.56156-1-alexandru.tachici@analog.com>
+        Thu, 16 Apr 2020 08:00:34 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 254D41C001F;
+        Thu, 16 Apr 2020 12:00:26 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 14:00:25 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hansverk@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 3/4] media: rockchip: rga: Add support for the PX30
+ compatible
+Message-ID: <20200416120025.GF125838@aptenodytes>
+References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+ <20200416115047.233720-4-paul.kocialkowski@bootlin.com>
+ <cd224bf8-5b0a-46e5-1657-4b40c6d3915e@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-16_03:2020-04-14,2020-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015
- mlxscore=0 priorityscore=1501 suspectscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160084
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yRA+Bmk8aPhU85Qt"
+Content-Disposition: inline
+In-Reply-To: <cd224bf8-5b0a-46e5-1657-4b40c6d3915e@xs4all.nl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Replaced num property with reg property, fixed errors
-reported by dt-binding-check.
+--yRA+Bmk8aPhU85Qt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: ea52c21268e6 ("iio: dac: ad5770r: Add AD5770R support")
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- .../bindings/iio/dac/adi,ad5770r.yaml         | 82 +++++++++----------
- 1 file changed, 39 insertions(+), 43 deletions(-)
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5770r.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5770r.yaml
-index d9c25cf4b92f..87e9b2802013 100644
---- a/Documentation/devicetree/bindings/iio/dac/adi,ad5770r.yaml
-+++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5770r.yaml
-@@ -2,7 +2,7 @@
- # Copyright 2020 Analog Devices Inc.
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/bindings/iio/dac/adi,ad5770r.yaml#
-+$id: http://devicetree.org/schemas/iio/dac/adi,ad5770r.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
- title: Analog Devices AD5770R DAC device driver
-@@ -49,83 +49,77 @@ properties:
-       asserted during driver probe.
-     maxItems: 1
- 
--  channel0:
-+  channel@0:
-     description: Represents an external channel which are
-       connected to the DAC. Channel 0 can act both as a current
-       source and sink.
-     type: object
- 
-     properties:
--      num:
-+      reg:
-         description: This represents the channel number.
--        items:
--          const: 0
-+        const: 0
- 
-       adi,range-microamp:
-           description: Output range of the channel.
-           oneOf:
--            - $ref: /schemas/types.yaml#/definitions/int32-array
-             - items:
--                - enum: [0 300000]
--                - enum: [-60000 0]
--                - enum: [-60000 300000]
-+                - const: 0
-+                - const: 300000
-+            - items:
-+                - const: -60000
-+                - const: 0
-+            - items:
-+                - const: -60000
-+                - const: 300000
- 
--  channel1:
-+  channel@1:
-     description: Represents an external channel which are
-       connected to the DAC.
-     type: object
- 
-     properties:
--      num:
-+      reg:
-         description: This represents the channel number.
--        items:
--          const: 1
-+        const: 1
- 
-       adi,range-microamp:
-           description: Output range of the channel.
--          oneOf:
--            - $ref: /schemas/types.yaml#/definitions/uint32-array
--            - items:
--                - enum: [0 140000]
--                - enum: [0 250000]
-+          items:
-+            - const: 0
-+            - enum: [ 140000, 250000 ]
- 
--  channel2:
-+  channel@2:
-     description: Represents an external channel which are
-       connected to the DAC.
-     type: object
- 
-     properties:
--      num:
-+      reg:
-         description: This represents the channel number.
--        items:
--          const: 2
-+        const: 2
- 
-       adi,range-microamp:
-           description: Output range of the channel.
--          oneOf:
--            - $ref: /schemas/types.yaml#/definitions/uint32-array
--            - items:
--                - enum: [0 140000]
--                - enum: [0 250000]
-+          items:
-+            - const: 0
-+            - enum: [ 55000, 150000 ]
- 
- patternProperties:
-   "^channel@([3-5])$":
-     type: object
-     description: Represents the external channels which are connected to the DAC.
-     properties:
--      num:
-+      reg:
-         description: This represents the channel number.
--        items:
--          minimum: 3
--          maximum: 5
-+        minimum: 3
-+        maximum: 5
- 
-       adi,range-microamp:
-           description: Output range of the channel.
--          oneOf:
--            - $ref: /schemas/types.yaml#/definitions/uint32-array
--            - items:
--                - enum: [0 45000]
--                - enum: [0 100000]
-+          items:
-+            - const: 0
-+            - enum: [ 45000, 100000 ]
- 
- required:
- - reg
-@@ -150,34 +144,36 @@ examples:
-                         vref-supply = <&vref>;
-                         adi,external-resistor;
-                         reset-gpios = <&gpio 22 0>;
-+                        #address-cells = <1>;
-+                        #size-cells = <0>;
- 
-                         channel@0 {
--                                num = <0>;
--                                adi,range-microamp = <(-60000) 300000>;
-+                                reg = <0>;
-+                                adi,range-microamp = <0 300000>;
-                         };
- 
-                         channel@1 {
--                                num = <1>;
-+                                reg = <1>;
-                                 adi,range-microamp = <0 140000>;
-                         };
- 
-                         channel@2 {
--                                num = <2>;
-+                                reg = <2>;
-                                 adi,range-microamp = <0 55000>;
-                         };
- 
-                         channel@3 {
--                                num = <3>;
-+                                reg = <3>;
-                                 adi,range-microamp = <0 45000>;
-                         };
- 
-                         channel@4 {
--                                num = <4>;
-+                                reg = <4>;
-                                 adi,range-microamp = <0 45000>;
-                         };
- 
-                         channel@5 {
--                                num = <5>;
-+                                reg = <5>;
-                                 adi,range-microamp = <0 45000>;
-                         };
-                 };
--- 
-2.20.1
+On Thu 16 Apr 20, 13:58, Hans Verkuil wrote:
+> On 16/04/2020 13:50, Paul Kocialkowski wrote:
+> > The PX30 SoC has a RGA block, so add the associated compatible to
+> > support it.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  drivers/media/platform/rockchip/rga/rga.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/=
+platform/rockchip/rga/rga.c
+> > index e9ff12b6b5bb..0ebeb9b4c14a 100644
+> > --- a/drivers/media/platform/rockchip/rga/rga.c
+> > +++ b/drivers/media/platform/rockchip/rga/rga.c
+> > @@ -880,7 +880,6 @@ static int rga_probe(struct platform_device *pdev)
+> >  	rga->cmdbuf_virt =3D dma_alloc_attrs(rga->dev, RGA_CMDBUF_SIZE,
+> >  					   &rga->cmdbuf_phy, GFP_KERNEL,
+> >  					   DMA_ATTR_WRITE_COMBINE);
+> > -
+>=20
+> Spurious change?
 
+Ah sorry about that. Will fix in v2.
+
+Cheers,
+
+Paul
+
+> Regards,
+>=20
+> 	Hans
+>=20
+> >  	rga->src_mmu_pages =3D
+> >  		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
+> >  	rga->dst_mmu_pages =3D
+> > @@ -955,6 +954,9 @@ static const struct dev_pm_ops rga_pm =3D {
+> >  };
+> > =20
+> >  static const struct of_device_id rockchip_rga_match[] =3D {
+> > +	{
+> > +		.compatible =3D "rockchip,px30-rga",
+> > +	},
+> >  	{
+> >  		.compatible =3D "rockchip,rk3288-rga",
+> >  	},
+> >=20
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--yRA+Bmk8aPhU85Qt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6YSNkACgkQ3cLmz3+f
+v9HcIwf/SaOTWWzEOe0dZG4yxmCG1gZdhPpc/T2J0x3X4fh6wY1AQ5SojDHUl0Qg
+eUMyWPA+vb5dxmGDgY8W9uIE0/yEI/mvPhhvYDw3kcn7O7KyeqrL0Jet3K15/iJ4
+AzZUCb8tBJ+CYVeevmlklRwlYsjjxEwqhfxFDud4aI0hP3spuP8rQebtgyTTAEYI
+6r36v0557kcmjUyFy2oKsF1iJ2ifCOVIFhBvTYMhgYBZILoHb8NBIJUq9Ys2XwvL
+BVCMZHMWYKysP7pjoL3ulQp3AoM3K951fL/YYu4gNZaXNIJC02DYboIm1xpIF1iy
+0fFdRNBEynGwtsc2yLefFg2d1YeXow==
+=JROB
+-----END PGP SIGNATURE-----
+
+--yRA+Bmk8aPhU85Qt--
