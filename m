@@ -2,161 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F6B1AC611
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2018C1AC60F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394355AbgDPOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436806AbgDPOMK (ORCPT
+        id S2394336AbgDPOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:32:41 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:46015 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407224AbgDPOML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:12:10 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E0DC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:12:09 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d77so4752373wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Aq3yCWYFY7wHOrarhjqlc9bx2dHHg6e1wr/Ld66Bgk=;
-        b=qj8hoC1SDgxFYAOGk71xzeMxtQHSHIwu8PjiwZmBwGsSYm8IihfCJCrxSJQXtgl/X5
-         c+vj6s/DYv24YDqAcfxP0rDCEsTpYk4GBQPzggmvav5urfiGyH1ZRJGVr7ex09wkDSg9
-         UkAqo5nXwdI70dkW1gu71uyo+FBwMZgwCr+VDW/vG8iaXlKniFv853cJ2Ij1oYbQv24B
-         iywACOyCQlFVLtOUXLo0UZnJ070gUMqihP5hdPy/x198yIny7nL2RQuqmfhp0yFtwfoT
-         1gdOARsCdOIIa13ccLMoiyMMGWvR2W6vc02+JH3e/jjWGKUKYJbro6D36gYa7n5glZ/e
-         0zMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Aq3yCWYFY7wHOrarhjqlc9bx2dHHg6e1wr/Ld66Bgk=;
-        b=K1FtiYWk024M/RuR7G56v/jIY3gjBt7PvI7KfoP0Aa3g+5q6zUKazqMP2utGEJCWRM
-         VFXspwq0TV56bBEfyR85NEoC/yCBQtUks3VOI628LjzqqrsoT5K3CxKzcbFOCpEdEMDp
-         /sMlpmKSDDq2atEfLP3gSSYWG84sp4r2ZFYt2KnvUF4TOpUMYpD+3pvH0iF9bxIuL+7k
-         Fep1iNi6s59AlMJrkSiUFJ88P/iVoB0ntZ7r/lIVvMP/rrnAfWN74gVUjCrdLFluc2pO
-         zUXmYjL6KRNOQwYBM1pI5friWAzhLH/aoyyk5BCOnvvJn17/CvkWoldR+Z9U7DAQDg9E
-         4hzQ==
-X-Gm-Message-State: AGi0PuZ5LKApTPjovQhnATAbT83BF05k7jfDuAeFTRK1pQPRyIb/2nXM
-        BMRDRWfb9NLQ+rpMvW+7qHnxZjioOQ+Uo9xObgI=
-X-Google-Smtp-Source: APiQypIdWsKrNQFF3dbcu9dwh9adYCneRxwMvuzjpcjrEw5XcBXEAlvWpyxBcdkIEMdK28QlkmPrguTfgw0bFBIiK48=
-X-Received: by 2002:a1c:7f91:: with SMTP id a139mr4858422wmd.164.1587046327780;
- Thu, 16 Apr 2020 07:12:07 -0700 (PDT)
+        Thu, 16 Apr 2020 10:12:11 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 7DB971C001E;
+        Thu, 16 Apr 2020 14:12:05 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 16:12:05 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hansverk@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/4] arm64: dts: rockchip: Add RGA support to the PX30
+Message-ID: <20200416141205.GK125838@aptenodytes>
+References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+ <20200416115047.233720-3-paul.kocialkowski@bootlin.com>
+ <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
+ <20200416132442.GI125838@aptenodytes>
+ <f4ad8ea4-7904-1458-e564-2d20c87ed417@gmail.com>
+ <20200416135519.GJ125838@aptenodytes>
+ <f97d7661-834d-3fbf-2cd9-0b37c487e8f7@gmail.com>
 MIME-Version: 1.0
-References: <20200416104707.20219-1-david@redhat.com> <20200416104707.20219-2-david@redhat.com>
-In-Reply-To: <20200416104707.20219-2-david@redhat.com>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Thu, 16 Apr 2020 16:11:56 +0200
-Message-ID: <CAM9Jb+iBAHr+UjxZBUGugQ_+9Z0a6CPAp8gXWorE57_rOQ9xqA@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] mm/memory_hotplug: no need to init new pgdat with node_start_pfn
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IA03tywDYuoVKXrw"
+Content-Disposition: inline
+In-Reply-To: <f97d7661-834d-3fbf-2cd9-0b37c487e8f7@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> A hotadded node/pgdat will span no pages at all, until memory is moved to
-> the zone/node via move_pfn_range_to_zone() -> resize_pgdat_range - e.g.,
-> when onlining memory blocks. We don't have to initialize the
-> node_start_pfn to the memory we are adding.
->
-> Note: we'll also end up with pgdat->node_start_pfn == 0 when offlined the
-> last memory block belonging to a node (via remove_pfn_range_from_zone()->
-> update_pgdat_span()).
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/memory_hotplug.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
->
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 47cf6036eb31..9b15ce465be2 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -866,10 +866,9 @@ static void reset_node_present_pages(pg_data_t *pgdat)
->  }
->
->  /* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG */
-> -static pg_data_t __ref *hotadd_new_pgdat(int nid, u64 start)
-> +static pg_data_t __ref *hotadd_new_pgdat(int nid)
->  {
->         struct pglist_data *pgdat;
-> -       unsigned long start_pfn = PFN_DOWN(start);
->
->         pgdat = NODE_DATA(nid);
->         if (!pgdat) {
-> @@ -899,9 +898,8 @@ static pg_data_t __ref *hotadd_new_pgdat(int nid, u64 start)
->         }
->
->         /* we can use NODE_DATA(nid) from here */
-> -
->         pgdat->node_id = nid;
-> -       pgdat->node_start_pfn = start_pfn;
-> +       pgdat->node_start_pfn = 0;
->
->         /* init node's zones as empty zones, we don't have any present pages.*/
->         free_area_init_core_hotplug(nid);
-> @@ -936,7 +934,6 @@ static void rollback_node_hotadd(int nid)
->  /**
->   * try_online_node - online a node if offlined
->   * @nid: the node ID
-> - * @start: start addr of the node
->   * @set_node_online: Whether we want to online the node
->   * called by cpu_up() to online a node without onlined memory.
->   *
-> @@ -945,7 +942,7 @@ static void rollback_node_hotadd(int nid)
->   * 0 -> the node is already online
->   * -ENOMEM -> the node could not be allocated
->   */
-> -static int __try_online_node(int nid, u64 start, bool set_node_online)
-> +static int __try_online_node(int nid, bool set_node_online)
->  {
->         pg_data_t *pgdat;
->         int ret = 1;
-> @@ -953,7 +950,7 @@ static int __try_online_node(int nid, u64 start, bool set_node_online)
->         if (node_online(nid))
->                 return 0;
->
-> -       pgdat = hotadd_new_pgdat(nid, start);
-> +       pgdat = hotadd_new_pgdat(nid);
->         if (!pgdat) {
->                 pr_err("Cannot online node %d due to NULL pgdat\n", nid);
->                 ret = -ENOMEM;
-> @@ -977,7 +974,7 @@ int try_online_node(int nid)
->         int ret;
->
->         mem_hotplug_begin();
-> -       ret =  __try_online_node(nid, 0, true);
-> +       ret =  __try_online_node(nid, true);
->         mem_hotplug_done();
->         return ret;
->  }
-> @@ -1031,7 +1028,7 @@ int __ref add_memory_resource(int nid, struct resource *res)
->          */
->         memblock_add_node(start, size, nid);
->
-> -       ret = __try_online_node(nid, start, false);
-> +       ret = __try_online_node(nid, false);
->         if (ret < 0)
->                 goto error;
->         new_node = ret;
-> --
 
-Looks right thing to me. Will wait for others to comment.
+--IA03tywDYuoVKXrw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+On Thu 16 Apr 20, 16:02, Johan Jonker wrote:
+> On 4/16/20 3:55 PM, Paul Kocialkowski wrote:
+> > Hi,
+> >=20
+> > On Thu 16 Apr 20, 15:44, Johan Jonker wrote:
+> >> On 4/16/20 3:24 PM, Paul Kocialkowski wrote:
+> >>> Hi,
+> >>>
+> >>> On Thu 16 Apr 20, 15:02, Johan Jonker wrote:
+> >>>> Hi Paul,
+> >>>>
+> >>>> The conversion of rockchip-rga.txt to rockchip-rga.yaml by myself ju=
+st
+> >>>> has been approved by robh.
+> >>>
+> >>> Huh, I looked around for ongoing related work but missed it.
+> >>> I'll definitely rebase on top of your series and use the yaml descrip=
+tion
+> >>> instead. Thanks!
+> >>>
+> >>>> Maybe place dts patches at the end of a patch serie.
+> >>>> Could you include a &rga patch if your device is supported in mainli=
+ne,
+> >>>> so we can test with:
+> >>>> make ARCH=3Darm64 dtbs_check
+> >>>> DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/media/rockchip-r=
+ga.yaml
+> >>>
+> >>> I tested with the PX30 EVB so I can surely add a node there if that t=
+urns
+> >>> out necessary (see below).
+> >>>
+> >>>> Johan
+> >>>>
+> >>>> On 4/16/20 1:50 PM, Paul Kocialkowski wrote:
+> >>>>> The PX30 features a RGA block: add the necessary node to support it.
+> >>>>>
+> >>>>> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> >>>>> ---
+> >>>>>  arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
+> >>>>>  1 file changed, 11 insertions(+)
+> >>>>>
+> >>>>> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/bo=
+ot/dts/rockchip/px30.dtsi
+> >>>>> index 75908c587511..4bfbee9d4123 100644
+> >>>>> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
+> >>>>> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+> >>>>> @@ -1104,6 +1104,17 @@ vopl_mmu: iommu@ff470f00 {
+> >>>>>  		status =3D "disabled";
+> >>>>>  	};
+> >>>>> =20
+> >>>>> +	rga: rga@ff480000 {
+> >>>>> +		compatible =3D "rockchip,px30-rga";
+> >>>>> +		reg =3D <0x0 0xff480000 0x0 0x10000>;
+> >>>>> +		interrupts =3D <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
+> >>>>> +		clocks =3D <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE=
+>;
+> >>>>> +		clock-names =3D "aclk", "hclk", "sclk";
+> >>>>> +		resets =3D <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
+> >>>>> +		reset-names =3D "core", "axi", "ahb";
+> >>>>> +		power-domains =3D <&power PX30_PD_VO>;
+> >>>>
+> >>>> 		status =3D "disabled";
+> >>>
+> >>> As of 5.6, the rk3399 has the node enabled by default. Did that chang=
+e?
+> >>
+> >> 'status' disappeared during review for rk3399 between v2 and v3, but
+> >> doesn't mention the reason. If someone can give more info here?
+> >>
+> >> https://lore.kernel.org/lkml/1500101920-24039-5-git-send-email-jacob-c=
+hen@iotwrt.com/
+> >>
+> >> https://lore.kernel.org/lkml/1501470460-12014-5-git-send-email-jacob-c=
+hen@iotwrt.com/
+> >>
+> >>>
+> >>> Since it's a standalone block that has no I/O dependency, I don't rea=
+lly see
+> >>> the point of disabling it by default.
+> >>
+> >> Vop, hdmi and other video devices are also disabled.
+> >> Follow the rest I think...
+> >=20
+> > Well, these blocks do have related I/O ports so it makes sense not to e=
+nable
+> > them by default because of pinmux, or because there might be no connect=
+or
+> > populated/routed.
+> >=20
+> > For a memory to memory internal block, I don't see any reason why.
+> > It's definitely not board-specific and having to add these nodes for ev=
+ery board
+> > that has them is kind of a pain and might be overlooked. This will easi=
+ly result
+> > in the feature not being available for end users without having to chan=
+ge the
+> > dt.
+> >=20
+> > Also, the vpu node is always enabled on rockchip (and sunxi) platforms.
+> > I think these are better examples to follow.
+>=20
+> From PX30 TRM-Part1:
+>=20
+> Power domain is shared by vop and dsi.
+> It's up to the user what blocks he/she enables and what power it uses.
+>=20
+> PD_VO: VOP_M, VOP_S, RGA and DSI
 
-> 2.25.1
->
+Hum, there is no direct correlation between "node is enabled in dt" and "re=
+lated
+hardware block consumes power". And removing nodes from dt is certainly not=
+ an
+appropriate way to do power management! Device-tree is a way to represent t=
+he
+hardware, not a configuration interface (well, besides the /chosen node).
+
+Besides, the RGA driver seems to have good runtime pm support, so be assured
+that its clocks will be off when unused.
+
+Cheers,
+
+Paul
+
+> >=20
+> > Cheers,
+> >=20
+> > Paul
+> >=20
+> >>>
+> >>> What do you think?
+> >>>
+> >>> Cheers,
+> >>>
+> >>> Paul
+> >>>
+> >>>>> +	};
+> >>>>> +
+> >>>>>  	qos_gmac: qos@ff518000 {
+> >>>>>  		compatible =3D "syscon";
+> >>>>>  		reg =3D <0x0 0xff518000 0x0 0x20>;
+> >>>>>
+> >>>>
+> >>>
+> >>
+> >=20
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--IA03tywDYuoVKXrw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6YZ7UACgkQ3cLmz3+f
+v9H7Bwf/dxe/z672mfjqt4PR187hrwSZUxb8QrJrY0H31hOL2NOEFEufOKHPlA8y
+U+xPF95tT1SWwB+/6cjzhYGy9CF8EvmR0FDkBf2RVSXxbNvWSUMOFAVCA6bchQ5R
+7iuxNcsjeQuEBGu6ljByelGcBFBTrk6MUQEmEKuAaH7F22lfnKTW53SlSXPvsnpD
+CAexlBFsLxN9VKECnc2QZ5qUjpNqRozzOexjDewJWm3BlPg4buAAkSKOQKlwd7q0
+h7hYNx79PY6aFfp2EpdVy7XnbJOGRyRvwWbWsMFnKQo4wSYNtKWD3vMO3y6rX8ag
+JSRQ0iYXDgYz2uvtpi37rQb4y5Z0pg==
+=u/wC
+-----END PGP SIGNATURE-----
+
+--IA03tywDYuoVKXrw--
