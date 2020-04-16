@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F17F1AC5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148D21AC4AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410035AbgDPO2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:28:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
+        id S1732719AbgDPOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:02:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389268AbgDPOAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:00:13 -0400
+        id S2389073AbgDPNlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:41:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCDC321734;
-        Thu, 16 Apr 2020 14:00:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 032422223E;
+        Thu, 16 Apr 2020 13:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045613;
-        bh=dKLE2DEaAkzukeVvjhm9zg671Tf8W6M20xZ5qET7fBk=;
+        s=default; t=1587044510;
+        bh=mDp69Lb0S9CHcaaZ0egFJJ01Dml5CiR2KtDUpVg1cCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zHZmT/fMDA8yiRakhxxglEwFzbs+wbW7PJPSBhGrDd3MQezvs/ENSFkUyqqrEevdB
-         0y6Vi8NmaKfztYjf8EvaD+JpbAL9AxT8MACWmAjJy8EMGB7FXjULFz320/y+BdPs7K
-         589mW3CH5eJNUgO84uS2YQZBznhSFU2lBOTd2Ebw=
+        b=Jbn2uPwD8XHh/5Xa8HhIsEHsmSJktJqKzMQ9nXFRhS2LlnZrLN/FGSRhp1H6gKDOk
+         F5+7Mc15xpMSthE4zPC+IdGVAkabihh6bBeUn8CIglXhfduHrXR+wXawJAOA/YoSoK
+         mcaEfbWLtkzH9ApY/q18eHMMgwQOYvtnSfiEZbbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Liu <aaron.liu@amd.com>,
-        Yuxian Dai <Yuxian.Dai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH 5.6 206/254] drm/amdgpu: unify fw_write_wait for new gfx9 asics
-Date:   Thu, 16 Apr 2020 15:24:55 +0200
-Message-Id: <20200416131351.819382596@linuxfoundation.org>
+        stable@vger.kernel.org, Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.5 245/257] arm64: Always force a branch protection mode when the compiler has one
+Date:   Thu, 16 Apr 2020 15:24:56 +0200
+Message-Id: <20200416131356.363859412@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Liu <aaron.liu@amd.com>
+From: Mark Brown <broonie@kernel.org>
 
-commit 2960758cce2310774de60bbbd8d6841d436c54d9 upstream.
+commit b8fdef311a0bd9223f10754f94fdcf1a594a3457 upstream.
 
-Make the fw_write_wait default case true since presumably all new
-gfx9 asics will have updated firmware. That is using unique WAIT_REG_MEM
-packet with opration=1.
+Compilers with branch protection support can be configured to enable it by
+default, it is likely that distributions will do this as part of deploying
+branch protection system wide. As well as the slight overhead from having
+some extra NOPs for unused branch protection features this can cause more
+serious problems when the kernel is providing pointer authentication to
+userspace but not built for pointer authentication itself. In that case our
+switching of keys for userspace can affect the kernel unexpectedly, causing
+pointer authentication instructions in the kernel to corrupt addresses.
 
-Signed-off-by: Aaron Liu <aaron.liu@amd.com>
-Tested-by: Aaron Liu <aaron.liu@amd.com>
-Tested-by: Yuxian Dai <Yuxian.Dai@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Acked-by: Huang Rui <ray.huang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+To ensure that we get consistent and reliable behaviour always explicitly
+initialise the branch protection mode, ensuring that the kernel is built
+the same way regardless of the compiler defaults.
+
+[This is a reworked version of b8fdef311a0bd9223f1075 ("arm64: Always
+force a branch protection mode when the compiler has one") for backport.
+Kernels prior to 74afda4016a7 ("arm64: compile the kernel with ptrauth
+return address signing") don't have any Makefile machinery for forcing
+on pointer auth but still have issues if the compiler defaults it on so
+need this reworked version. -- broonie]
+
+Fixes: 7503197562567 (arm64: add basic pointer authentication support)
+Reported-by: Szabolcs Nagy <szabolcs.nagy@arm.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
+[catalin.marinas@arm.com: remove Kconfig option in favour of Makefile check]
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/Makefile |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -1158,6 +1158,8 @@ static void gfx_v9_0_check_fw_write_wait
- 			adev->gfx.mec_fw_write_wait = true;
- 		break;
- 	default:
-+		adev->gfx.me_fw_write_wait = true;
-+		adev->gfx.mec_fw_write_wait = true;
- 		break;
- 	}
- }
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -72,6 +72,10 @@ stack_protector_prepare: prepare0
+ 					include/generated/asm-offsets.h))
+ endif
+ 
++# Ensure that if the compiler supports branch protection we default it
++# off.
++KBUILD_CFLAGS += $(call cc-option,-mbranch-protection=none)
++
+ ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
+ KBUILD_CPPFLAGS	+= -mbig-endian
+ CHECKFLAGS	+= -D__AARCH64EB__
 
 
