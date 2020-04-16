@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F181AC2A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859F71AC2AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896332AbgDPNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:30:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36954 "EHLO mail.kernel.org"
+        id S2896367AbgDPNbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:31:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895679AbgDPN2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:28:08 -0400
+        id S2895689AbgDPN2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:28:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE569206E9;
-        Thu, 16 Apr 2020 13:28:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 539F721BE5;
+        Thu, 16 Apr 2020 13:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043688;
-        bh=klwZoOuNPCfhdbzMWgDKw96yntXOh3QGWA0AoC+8d5A=;
+        s=default; t=1587043690;
+        bh=AbhXf+q4XJyK/m9srmt09+PwS5h3X9ucgvLiH3zxmQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yE+XBKdY33HKOL0zTj/dtdIR3Oi9mfEhExQ3k37ISuodpO0HdM7fn3vdL/c6OIftf
-         9s3dB7zGBO8JaTQRg7jl76rFSYSWXuROf8p/m475qr/TdWQ2t95TJHoGt3XXl0tfdA
-         ac8+DjTFzyVjxFAv122AkwQiGvWf2tbuEoHRCtLg=
+        b=h1YAXIzUXBxuh7A/jJfcW0WxFaZFWRllNtAo6/u9Ml6YpD1rtlMJdPfnEC84ro+J/
+         4srWSHwDwpAOzu4ahLFeneEXwtziFd/xuo4bVZvAwDqPh3SW6zEznzKkEFFM2qlS+a
+         N5HP4HRacUudWnuu5cV/8CSzYSPG8PeHHPNmUWEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 059/146] media: ti-vpe: cal: fix disable_irqs to only the intended target
-Date:   Thu, 16 Apr 2020 15:23:20 +0200
-Message-Id: <20200416131250.971337378@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 060/146] acpi/x86: ignore unspecified bit positions in the ACPI global lock field
+Date:   Thu, 16 Apr 2020 15:23:21 +0200
+Message-Id: <20200416131251.119400098@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
 References: <20200416131242.353444678@linuxfoundation.org>
@@ -44,49 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benoit Parrot <bparrot@ti.com>
+From: Jan Engelhardt <jengelh@inai.de>
 
-commit 1db56284b9da9056093681f28db48a09a243274b upstream.
+commit ecb9c790999fd6c5af0f44783bd0217f0b89ec2b upstream.
 
-disable_irqs() was mistakenly disabling all interrupts when called.
-This cause all port stream to stop even if only stopping one of them.
+The value in "new" is constructed from "old" such that all bits defined
+as reserved by the ACPI spec[1] are left untouched. But if those bits
+do not happen to be all zero, "new < 3" will not evaluate to true.
 
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Benoit Parrot <bparrot@ti.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The firmware of the laptop(s) Medion MD63490 / Akoya P15648 comes with
+garbage inside the "FACS" ACPI table. The starting value is
+old=0x4944454d, therefore new=0x4944454e, which is >= 3. Mask off
+the reserved bits.
+
+[1] https://uefi.org/sites/default/files/resources/ACPI_6_2.pdf
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206553
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/platform/ti-vpe/cal.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/x86/kernel/acpi/boot.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/platform/ti-vpe/cal.c
-+++ b/drivers/media/platform/ti-vpe/cal.c
-@@ -541,16 +541,16 @@ static void enable_irqs(struct cal_ctx *
- 
- static void disable_irqs(struct cal_ctx *ctx)
- {
-+	u32 val;
-+
- 	/* Disable IRQ_WDMA_END 0/1 */
--	reg_write_field(ctx->dev,
--			CAL_HL_IRQENABLE_CLR(2),
--			CAL_HL_IRQ_CLEAR,
--			CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	val = 0;
-+	set_field(&val, CAL_HL_IRQ_CLEAR, CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	reg_write(ctx->dev, CAL_HL_IRQENABLE_CLR(2), val);
- 	/* Disable IRQ_WDMA_START 0/1 */
--	reg_write_field(ctx->dev,
--			CAL_HL_IRQENABLE_CLR(3),
--			CAL_HL_IRQ_CLEAR,
--			CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	val = 0;
-+	set_field(&val, CAL_HL_IRQ_CLEAR, CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	reg_write(ctx->dev, CAL_HL_IRQENABLE_CLR(3), val);
- 	/* Todo: Add VC_IRQ and CSI2_COMPLEXIO_IRQ handling */
- 	reg_write(ctx->dev, CAL_CSI2_VC_IRQENABLE(1), 0);
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -1752,7 +1752,7 @@ int __acpi_acquire_global_lock(unsigned
+ 		new = (((old & ~0x3) + 2) + ((old >> 1) & 0x1));
+ 		val = cmpxchg(lock, old, new);
+ 	} while (unlikely (val != old));
+-	return (new < 3) ? -1 : 0;
++	return ((new & 0x3) < 3) ? -1 : 0;
  }
+ 
+ int __acpi_release_global_lock(unsigned int *lock)
 
 
