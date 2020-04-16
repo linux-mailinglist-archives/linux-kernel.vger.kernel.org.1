@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69551AC8F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A7F1ACA50
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441809AbgDPPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35048 "EHLO mail.kernel.org"
+        id S2634657AbgDPPdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:33:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898808AbgDPNtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:49:01 -0400
+        id S2898283AbgDPNlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:41:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95AFD22275;
-        Thu, 16 Apr 2020 13:49:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0C5B2076D;
+        Thu, 16 Apr 2020 13:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044941;
-        bh=jMsruKGjjFKM1+jVEVDnynaeTh0Q77G9inJ3ExDcGzQ=;
+        s=default; t=1587044476;
+        bh=cj9k2hAYAxhpwnoNJGeoddNVllBSWZVfbFc0dQYDt/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JUtGO1vfOJtqaQM6bluE/tkhkB+Bk1stYY4Zi0N7r/1VepsZhqx2pbO2YWaI6pn02
-         tqN2g/cROd+0/l7cQEgo1/f4EvojSZNtDBFRC7d1kpSDGg26Y0RbB8zdd/KpFGDQun
-         7UDn+axFJsuTqhbv7LkVKLHUFQenaQfODTnu8+zA=
+        b=vf2LNXkFe5ZQ3XudJq52LiYLEWKnKW9REbWep05E3pG498uqcI8/UssWflM/GA8GV
+         DLGfRSLp8hih5Pss2rcSwAE2Wz6ILubBZ4zelQNo8TxsKMm79ok84PABYOYz4kReOE
+         4knCM628HbMIn8apaZsrcTA/9FggH+oPNkYEIbPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harshini Shetty <harshini.x.shetty@sony.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 163/232] dm verity fec: fix memory leak in verity_fec_dtr
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH 5.5 206/257] vfio: platform: Switch to platform_get_irq_optional()
 Date:   Thu, 16 Apr 2020 15:24:17 +0200
-Message-Id: <20200416131335.414898097@linuxfoundation.org>
+Message-Id: <20200416131351.833164111@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shetty, Harshini X (EXT-Sony Mobile) <Harshini.X.Shetty@sony.com>
+From: Eric Auger <eric.auger@redhat.com>
 
-commit 75fa601934fda23d2f15bf44b09c2401942d8e15 upstream.
+commit 723fe298ad85ad1278bd2312469ad14738953cc6 upstream.
 
-Fix below kmemleak detected in verity_fec_ctr. output_pool is
-allocated for each dm-verity-fec device. But it is not freed when
-dm-table for the verity target is removed. Hence free the output
-mempool in destructor function verity_fec_dtr.
+Since commit 7723f4c5ecdb ("driver core: platform: Add an error
+message to platform_get_irq*()"), platform_get_irq() calls dev_err()
+on an error. As we enumerate all interrupts until platform_get_irq()
+fails, we now systematically get a message such as:
+"vfio-platform fff51000.ethernet: IRQ index 3 not found" which is
+a false positive.
 
-unreferenced object 0xffffffffa574d000 (size 4096):
-  comm "init", pid 1667, jiffies 4294894890 (age 307.168s)
-  hex dump (first 32 bytes):
-    8e 36 00 98 66 a8 0b 9b 00 00 00 00 00 00 00 00  .6..f...........
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000060e82407>] __kmalloc+0x2b4/0x340
-    [<00000000dd99488f>] mempool_kmalloc+0x18/0x20
-    [<000000002560172b>] mempool_init_node+0x98/0x118
-    [<000000006c3574d2>] mempool_init+0x14/0x20
-    [<0000000008cb266e>] verity_fec_ctr+0x388/0x3b0
-    [<000000000887261b>] verity_ctr+0x87c/0x8d0
-    [<000000002b1e1c62>] dm_table_add_target+0x174/0x348
-    [<000000002ad89eda>] table_load+0xe4/0x328
-    [<000000001f06f5e9>] dm_ctl_ioctl+0x3b4/0x5a0
-    [<00000000bee5fbb7>] do_vfs_ioctl+0x5dc/0x928
-    [<00000000b475b8f5>] __arm64_sys_ioctl+0x70/0x98
-    [<000000005361e2e8>] el0_svc_common+0xa0/0x158
-    [<000000001374818f>] el0_svc_handler+0x6c/0x88
-    [<000000003364e9f4>] el0_svc+0x8/0xc
-    [<000000009d84cec9>] 0xffffffffffffffff
+Let's use platform_get_irq_optional() instead.
 
-Fixes: a739ff3f543af ("dm verity: add support for forward error correction")
-Depends-on: 6f1c819c219f7 ("dm: convert to bioset_init()/mempool_init()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Harshini Shetty <harshini.x.shetty@sony.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Cc: stable@vger.kernel.org # v5.3+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+Tested-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-verity-fec.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/vfio/platform/vfio_platform.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm-verity-fec.c
-+++ b/drivers/md/dm-verity-fec.c
-@@ -551,6 +551,7 @@ void verity_fec_dtr(struct dm_verity *v)
- 	mempool_exit(&f->rs_pool);
- 	mempool_exit(&f->prealloc_pool);
- 	mempool_exit(&f->extra_pool);
-+	mempool_exit(&f->output_pool);
- 	kmem_cache_destroy(f->cache);
+--- a/drivers/vfio/platform/vfio_platform.c
++++ b/drivers/vfio/platform/vfio_platform.c
+@@ -44,7 +44,7 @@ static int get_platform_irq(struct vfio_
+ {
+ 	struct platform_device *pdev = (struct platform_device *) vdev->opaque;
  
- 	if (f->data_bufio)
+-	return platform_get_irq(pdev, i);
++	return platform_get_irq_optional(pdev, i);
+ }
+ 
+ static int vfio_platform_probe(struct platform_device *pdev)
 
 
