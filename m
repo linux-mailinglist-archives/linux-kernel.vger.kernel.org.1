@@ -2,91 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62E1AB7A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC101AB7A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407418AbgDPGCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407165AbgDPGCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:02:13 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94EEA2076A;
-        Thu, 16 Apr 2020 06:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587016932;
-        bh=H95Q/syDnIOT80mK9pLWTpk+EblpARC2OaGNoxyxAiw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oAet7vuPUBRUElKdTjJcmSJ6ELXSNTpWsbnm60yn9+4UnifDG+l8n2NPbSf5FPtZ9
-         1U6C6/MVqik5+/djGWSe2Gf8hwEr3OSdXNxzP4vdiAMdlgq8bCnXuMOQOsVn9YKbXY
-         JgtPw4hu85/iVYpCPrhhtkGX5tA//9IcGEWs4BTw=
-Date:   Thu, 16 Apr 2020 15:02:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v2 0/3] support setting sysctl parameters from kernel
- command line
-Message-Id: <20200416150206.d3e103a1a5497b3518d4359c@kernel.org>
-In-Reply-To: <20200415063041.GT11244@42.do-not-panic.com>
-References: <20200414113222.16959-1-vbabka@suse.cz>
-        <20200415122359.939364e2c54c389c6b3f6457@kernel.org>
-        <20200415063041.GT11244@42.do-not-panic.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2407291AbgDPGDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:03:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33228 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407608AbgDPGDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:03:07 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03G5XR5b118796;
+        Thu, 16 Apr 2020 02:02:45 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30eh1ch1kc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 02:02:45 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03G5pA8j014757;
+        Thu, 16 Apr 2020 02:02:44 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30eh1ch1jd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 02:02:44 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03G608BK018772;
+        Thu, 16 Apr 2020 06:02:43 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03dal.us.ibm.com with ESMTP id 30b5h7a28v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Apr 2020 06:02:43 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03G62g7Y58720548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 06:02:42 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFCBD6E052;
+        Thu, 16 Apr 2020 06:02:41 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 31CA46E04C;
+        Thu, 16 Apr 2020 06:02:41 +0000 (GMT)
+Received: from [9.70.82.143] (unknown [9.70.82.143])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 16 Apr 2020 06:02:41 +0000 (GMT)
+Subject: [PATCH v11 06/14] powerpc/vas: Take reference to PID and mm for
+ user space windows
+From:   Haren Myneni <haren@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     mikey@neuling.org, srikar@linux.vnet.ibm.com,
+        frederic.barrat@fr.ibm.com, linux-kernel@vger.kernel.org,
+        npiggin@gmail.com, hch@infradead.org, oohall@gmail.com,
+        clg@kaod.org, herbert@gondor.apana.org.au,
+        sukadev@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        ajd@linux.ibm.com
+In-Reply-To: <1587016214.2275.1036.camel@hbabu-laptop>
+References: <1587016214.2275.1036.camel@hbabu-laptop>
+Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 15 Apr 2020 23:02:16 -0700
+Message-ID: <1587016936.2275.1057.camel@hbabu-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Mailer: Evolution 2.28.3 
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-16_01:2020-04-14,2020-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 phishscore=0 mlxscore=0 suspectscore=3 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160033
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luis,
 
-On Wed, 15 Apr 2020 06:30:41 +0000
-Luis Chamberlain <mcgrof@kernel.org> wrote:
-> Currently the maximum config size size is 32KB and the total key-words
-> (not     key-value entries) must be under 1024 nodes.  Note: this is not
-> the number of entries but nodes, an entry must consume more than 2 nodes
-> (a key-word and a value). So theoretically, it will be up to 512
-> key-value pairs. If keys contains 3 words in average, it can contain 256
-> key-value pairs. In most cases, the number of config items will be under
-> 100 entries and smaller than 8KB, so it would be enough.  If the node
-> number exceeds 1024, parser returns an error even if the file       size
-> is smaller than 32KB.  Anyway, since bootconfig command verifies it when
-> appending a boot config       to initrd image, user can notice it before
-> boot.  
-> ```
-> *recommending* bootconfig due to the limitation of cmdline seems
-> sensible, however if we advise that.. wouldn't the space for 512
-> theoretical entries full up rather fast?
+When process opens a window, its pid and tgid will be saved in the
+vas_window struct. This window will be closed when the process exits.
+The kernel handles NX faults by updating CSB or send SEGV signal to pid
+of the process if the userspace csb addr is invalid.
 
-Yeah, I think it is easier to hit the node number limitation rather
-than fill up the space. However, since the bootconfig supports comments,
-if user writes enough readable config file, I think it's probably the
-right balance :)
-If you think the 512 entries is too small, it is easy to expand it
-upto 32K (64K nodes). But it may consume 512KB memory only for the
-node (meta) data. Current 1024 nodes consumes 8KB (8bytes/node), so
-compared with the max data size (32KB), I think it is a better balance.
+In multi-thread applications, a window can be opened by a child thread,
+but it will not be closed when this thread exits. It is expected that
+the parent will clean up all resources including NX windows opened by
+child threads. A child thread can send NX requests using this window
+and could be killed before completion is reported. If the pid assigned
+to this thread is reused while requests are pending, a failure SEGV
+would be directed to the wrong place.
 
-Thank you,
+To prevent reusing the pid, take references to pid and mm when the window
+is opened and release them when when the window is closed. Then if child
+thread is not running, SEGV signal will be sent to thread group leader
+(tgid).
 
+Signed-off-by: Haren Myneni <haren@linux.ibm.com>
+---
+ arch/powerpc/platforms/powernv/vas-debug.c  |  2 +-
+ arch/powerpc/platforms/powernv/vas-window.c | 50 ++++++++++++++++++++++++++---
+ arch/powerpc/platforms/powernv/vas.h        |  9 +++++-
+ 3 files changed, 55 insertions(+), 6 deletions(-)
+
+diff --git a/arch/powerpc/platforms/powernv/vas-debug.c b/arch/powerpc/platforms/powernv/vas-debug.c
+index 09e63df..ef9a717 100644
+--- a/arch/powerpc/platforms/powernv/vas-debug.c
++++ b/arch/powerpc/platforms/powernv/vas-debug.c
+@@ -38,7 +38,7 @@ static int info_show(struct seq_file *s, void *private)
+ 
+ 	seq_printf(s, "Type: %s, %s\n", cop_to_str(window->cop),
+ 					window->tx_win ? "Send" : "Receive");
+-	seq_printf(s, "Pid : %d\n", window->pid);
++	seq_printf(s, "Pid : %d\n", vas_window_pid(window));
+ 
+ unlock:
+ 	mutex_unlock(&vas_mutex);
+diff --git a/arch/powerpc/platforms/powernv/vas-window.c b/arch/powerpc/platforms/powernv/vas-window.c
+index dc46bf6..063cda2 100644
+--- a/arch/powerpc/platforms/powernv/vas-window.c
++++ b/arch/powerpc/platforms/powernv/vas-window.c
+@@ -12,6 +12,8 @@
+ #include <linux/log2.h>
+ #include <linux/rcupdate.h>
+ #include <linux/cred.h>
++#include <linux/sched/mm.h>
++#include <linux/mmu_context.h>
+ #include <asm/switch_to.h>
+ #include <asm/ppc-opcode.h>
+ #include "vas.h"
+@@ -876,8 +878,6 @@ struct vas_window *vas_rx_win_open(int vasid, enum vas_cop_type cop,
+ 	rxwin->user_win = rxattr->user_win;
+ 	rxwin->cop = cop;
+ 	rxwin->wcreds_max = rxattr->wcreds_max ?: VAS_WCREDS_DEFAULT;
+-	if (rxattr->user_win)
+-		rxwin->pid = task_pid_vnr(current);
+ 
+ 	init_winctx_for_rxwin(rxwin, rxattr, &winctx);
+ 	init_winctx_regs(rxwin, &winctx);
+@@ -1027,7 +1027,6 @@ struct vas_window *vas_tx_win_open(int vasid, enum vas_cop_type cop,
+ 	txwin->tx_win = 1;
+ 	txwin->rxwin = rxwin;
+ 	txwin->nx_win = txwin->rxwin->nx_win;
+-	txwin->pid = attr->pid;
+ 	txwin->user_win = attr->user_win;
+ 	txwin->wcreds_max = attr->wcreds_max ?: VAS_WCREDS_DEFAULT;
+ 
+@@ -1057,6 +1056,40 @@ struct vas_window *vas_tx_win_open(int vasid, enum vas_cop_type cop,
+ 		rc = set_thread_uses_vas();
+ 		if (rc)
+ 			goto free_window;
++
++		/*
++		 * Window opened by a child thread may not be closed when
++		 * it exits. So take reference to its pid and release it
++		 * when the window is free by parent thread.
++		 * Acquire a reference to the task's pid to make sure
++		 * pid will not be re-used - needed only for multithread
++		 * applications.
++		 */
++		txwin->pid = get_task_pid(current, PIDTYPE_PID);
++		/*
++		 * Acquire a reference to the task's mm.
++		 */
++		txwin->mm = get_task_mm(current);
++
++		if (!txwin->mm) {
++			put_pid(txwin->pid);
++			pr_err("VAS: pid(%d): mm_struct is not found\n",
++					current->pid);
++			rc = -EPERM;
++			goto free_window;
++		}
++
++		mmgrab(txwin->mm);
++		mmput(txwin->mm);
++		mm_context_add_copro(txwin->mm);
++		/*
++		 * Process closes window during exit. In the case of
++		 * multithread application, the child thread can open
++		 * window and can exit without closing it. Expects parent
++		 * thread to use and close the window. So do not need
++		 * to take pid reference for parent thread.
++		 */
++		txwin->tgid = find_get_pid(task_tgid_vnr(current));
+ 	}
+ 
+ 	set_vinst_win(vinst, txwin);
+@@ -1257,8 +1290,17 @@ int vas_win_close(struct vas_window *window)
+ 	poll_window_castout(window);
+ 
+ 	/* if send window, drop reference to matching receive window */
+-	if (window->tx_win)
++	if (window->tx_win) {
++		if (window->user_win) {
++			/* Drop references to pid and mm */
++			put_pid(window->pid);
++			if (window->mm) {
++				mm_context_remove_copro(window->mm);
++				mmdrop(window->mm);
++			}
++		}
+ 		put_rx_win(window->rxwin);
++	}
+ 
+ 	vas_window_free(window);
+ 
+diff --git a/arch/powerpc/platforms/powernv/vas.h b/arch/powerpc/platforms/powernv/vas.h
+index 88d084d..2a04072 100644
+--- a/arch/powerpc/platforms/powernv/vas.h
++++ b/arch/powerpc/platforms/powernv/vas.h
+@@ -355,7 +355,9 @@ struct vas_window {
+ 	bool user_win;		/* True if user space window */
+ 	void *hvwc_map;		/* HV window context */
+ 	void *uwc_map;		/* OS/User window context */
+-	pid_t pid;		/* Linux process id of owner */
++	struct pid *pid;	/* Linux process id of owner */
++	struct pid *tgid;	/* Thread group ID of owner */
++	struct mm_struct *mm;	/* Linux process mm_struct */
+ 	int wcreds_max;		/* Window credits */
+ 
+ 	char *dbgname;
+@@ -430,6 +432,11 @@ struct vas_winctx {
+ extern void vas_window_free_dbgdir(struct vas_window *win);
+ extern int vas_setup_fault_window(struct vas_instance *vinst);
+ 
++static inline int vas_window_pid(struct vas_window *window)
++{
++	return pid_vnr(window->pid);
++}
++
+ static inline void vas_log_write(struct vas_window *win, char *name,
+ 			void *regptr, u64 val)
+ {
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+1.8.3.1
+
+
+
