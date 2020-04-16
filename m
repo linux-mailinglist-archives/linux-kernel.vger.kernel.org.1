@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B77E1AC2E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22DA1AC91A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896992AbgDPNer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S1730569AbgDPPSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:18:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895952AbgDPN3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:29:09 -0400
+        id S2898735AbgDPNsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB40721D79;
-        Thu, 16 Apr 2020 13:29:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE451208E4;
+        Thu, 16 Apr 2020 13:48:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043749;
-        bh=jU2NGxoZVfqGEeV789O2fBDa8eNmaSTF3BTMq0ydWxI=;
+        s=default; t=1587044904;
+        bh=CfFYK8HKsSziDiyv5GQeH9EIp3kJJXHUxQl9wqm714Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bvYc46qRBpPM+/I2TOvC5FDWN57abOAyWvlKLP7W2zeZDijjzRoYmCR/d/NA0TYI4
-         LNeuNuUIIsQsjzk429YwkCBRvtM+vKkqYyoLTAYourgc4BdP0DBBIWfqfYrBuCSh4f
-         EjbQe+Hz5Gkheyp7bhFgY60iRkFYX1xjNGawcaPo=
+        b=yLjiBDACmxnuPEuyL7IuC+HEWQJhFv/iBJAfruEVywevcbYo5aRnP8hdz66YIYccw
+         giwDCtCrtkvSxAoK6m8vFr4RCKI9FyqsLRi7lofI28rGLnwxvlskrmS8wd/so3pDAW
+         DxeYBwZNhuli9p9XXURJse/11NFpkLEyv/gvAUrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 085/146] KVM: VMX: fix crash cleanup when KVM wasnt used
+Subject: [PATCH 5.4 132/232] KVM: VMX: fix crash cleanup when KVM wasnt used
 Date:   Thu, 16 Apr 2020 15:23:46 +0200
-Message-Id: <20200416131254.426476528@linuxfoundation.org>
+Message-Id: <20200416131331.524850864@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,12 +76,12 @@ Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx.c |   12 +++++++-----
+ arch/x86/kvm/vmx/vmx.c |   12 +++++++-----
  1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kvm/vmx.c
-+++ b/arch/x86/kvm/vmx.c
-@@ -4398,10 +4398,6 @@ static int hardware_enable(void)
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2228,10 +2228,6 @@ static int hardware_enable(void)
  	    !hv_get_vp_assist_page(cpu))
  		return -EFAULT;
  
@@ -92,7 +92,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	rdmsrl(MSR_IA32_FEATURE_CONTROL, old);
  
  	test_bits = FEATURE_CONTROL_LOCKED;
-@@ -14554,7 +14550,7 @@ module_exit(vmx_exit);
+@@ -7996,7 +7992,7 @@ module_exit(vmx_exit);
  
  static int __init vmx_init(void)
  {
@@ -101,8 +101,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  #if IS_ENABLED(CONFIG_HYPERV)
  	/*
-@@ -14605,6 +14601,12 @@ static int __init vmx_init(void)
- 		}
+@@ -8050,6 +8046,12 @@ static int __init vmx_init(void)
+ 		return r;
  	}
  
 +	for_each_possible_cpu(cpu) {
