@@ -2,219 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB001AC038
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D90F1AC06B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506695AbgDPLv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:51:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23910 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506677AbgDPLvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:51:16 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03GBYmNt076720
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:51:14 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30ep2b9eg1-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:51:14 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
-        Thu, 16 Apr 2020 12:50:29 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 16 Apr 2020 12:50:23 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03GBp4on61276366
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 11:51:04 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D3D8A5204E;
-        Thu, 16 Apr 2020 11:51:04 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.0.99])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 121C25204F;
-        Thu, 16 Apr 2020 11:51:04 +0000 (GMT)
-Date:   Thu, 16 Apr 2020 13:51:01 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-next@vger.kernel.org, akpm@linux-foundation.org,
-        jack@suse.cz, kirill@shutemov.name,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, borntraeger@de.ibm.com,
-        david@redhat.com, aarcange@redhat.com, linux-mm@kvack.org,
-        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v4 2/2] mm/gup/writeback: add callbacks for inaccessible
- pages
-In-Reply-To: <3ae46945-0c7b-03cd-700a-a6fe8003c6ab@intel.com>
-References: <20200306132537.783769-1-imbrenda@linux.ibm.com>
-        <20200306132537.783769-3-imbrenda@linux.ibm.com>
-        <3ae46945-0c7b-03cd-700a-a6fe8003c6ab@intel.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2634099AbgDPL4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2634140AbgDPLxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:53:53 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3819221D7F;
+        Thu, 16 Apr 2020 11:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587038032;
+        bh=0mpxLSIOs3tq2gfBo7MJk3NNjMvIOABD4VUjv69CESM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oCqjLq2W5XYIiSSVO2KE0QKiNjuGCtb5Ex8H0ZZdRq3LQoHTd2bP8ewMSsmQeIwqq
+         mJVyQEl8WTXSxlDKofHHmrLMVE8SgZ/X49eFy3V712/en9UsSFjDE5EqhQWd0rKObH
+         mZcywS+Y8Tzz1YG0vKKcvGjUK1+QeM6W5XSt2W0U=
+Date:   Thu, 16 Apr 2020 12:53:46 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@android.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v3 05/12] arm64: csum: Disable KASAN for do_csum()
+Message-ID: <20200416115342.GA32443@willie-the-truck>
+References: <20200415165218.20251-1-will@kernel.org>
+ <20200415165218.20251-6-will@kernel.org>
+ <20200415172813.GA2272@lakrids.cambridge.arm.com>
+ <20200415192605.GA21804@willie-the-truck>
+ <20200416093106.GB4987@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041611-0020-0000-0000-000003C8DB3B
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041611-0021-0000-0000-00002221C1C7
-Message-Id: <20200416135101.0a15dd2e@p-imbrenda>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-16_03:2020-04-14,2020-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- adultscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160078
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416093106.GB4987@lakrids.cambridge.arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 14:52:31 -0700
-Dave Hansen <dave.hansen@intel.com> wrote:
-
-> On 3/6/20 5:25 AM, Claudio Imbrenda wrote:
-> > +	/*
-> > +	 * We need to make the page accessible if and only if we
-> > are going
-> > +	 * to access its content (the FOLL_PIN case).  Please see
-> > +	 * Documentation/core-api/pin_user_pages.rst for details.
-> > +	 */
-> > +	if (flags & FOLL_PIN) {
-> > +		ret = arch_make_page_accessible(page);
-> > +		if (ret) {
-> > +			unpin_user_page(page);
-> > +			page = ERR_PTR(ret);
-> > +			goto out;
-> > +		}
-> > +	}  
+On Thu, Apr 16, 2020 at 10:31:06AM +0100, Mark Rutland wrote:
+> On Wed, Apr 15, 2020 at 08:26:05PM +0100, Will Deacon wrote:
+> > I think abusing a relaxed concurrency primitive for this is
+> > not the right thing to do, particularly when the __no_sanitize_address
+> > annotation is available. I fact, it's almost an argument in favour
+> > of removing READ_ONCE_NOCHECK() so that people use the annotation instead!
 > 
-> Thanks, Claudio, for a really thorough refresher on this in private
-> mail.
+> Arguably we *are* using it as a relaxed concurrency primitive, to get a
+> snapshot of a varaible undergoing concurrent modification.
+
+That's fair, so it's only the checksum code that was abusing this, which
+I've fixed.
+
+> FWIW, for the arm64 unwind code we could add a helper to snapshot the
+> frame record, and mark that as __no_sanitize_address, e.g.
 > 
-> But, I think this mechanism probably hooks into the wrong place.  I
-> don't doubt that it *functions* on s390, but I think these calls are
-> misplaced.  I think the end result is that no other architecture will
-> have a chance to use the same hooks.  They're far too s390-specific
-> even for a concept that's not limited to s390.
+> /*
+>  * Get a snapshot of a frame record that might be undergoing concurrent
+>  * modification (and hence we must also avoid a KASAN splat).
+>  */
+> static __no_sanitize_address snapshot_frame(struct stackframe *frame,
+> 					    unsigned long fp)
+> {
+> 	frame->fp = READ_ONCE(*(unsigned long *)(fp));
+> 	frame->pc = READ_ONCE(*(unsigned long *)(fp + 8));
+> }
 > 
-> get_user_pages(FOLL_PIN) does *not* mean "the kernel will access this
-> page's contents".  The kmap() family is really what we use for that.
-
-it means that _something_ _might_ access the content of the
-physical page. be it kernel or device, and the device can access the
-page through DMA or through other means (and yes on s390 many devices
-read and write directly from/to memory without using DMA... it's
-complicated)
-
-also, not all architectures use kmap (e.g. s390 doesn't)
-
-> kmap()s are often *preceded* by get_user_pages(), which is probably
-> why this works for you, though.
+> ... we'd need to do likewied in a few bits of unwind code:
 > 
-> Yes, the docs do say that FOLL_PIN is for accessing the pages.  But,
-> there's a crucial thing that it leaves out: *WHO* will be accessing
+> arch/s390/kernel/unwind_bc.c:	       READ_ONCE_NOCHECK(regs->psw.mask) & PSW_MASK_PSTATE;
+> arch/s390/kernel/unwind_bc.c:		ip = READ_ONCE_NOCHECK(sf->gprs[8]);
+> arch/s390/kernel/unwind_bc.c:		sp = READ_ONCE_NOCHECK(sf->back_chain);
+> arch/s390/kernel/unwind_bc.c:			ip = READ_ONCE_NOCHECK(sf->gprs[8]);
+> arch/s390/kernel/unwind_bc.c:			ip = READ_ONCE_NOCHECK(regs->psw.addr);
+> arch/s390/kernel/unwind_bc.c:			sp = READ_ONCE_NOCHECK(regs->gprs[15]);
+> arch/s390/kernel/unwind_bc.c:		ip = READ_ONCE_NOCHECK(sf->gprs[8]);
+> arch/x86/include/asm/atomic.h:	 * Note for KASAN: we deliberately don't use READ_ONCE_NOCHECK() here,
+> arch/x86/include/asm/unwind.h:		val = READ_ONCE_NOCHECK(x);		\
+> arch/x86/kernel/dumpstack.c:			unsigned long addr = READ_ONCE_NOCHECK(*stack);
+> arch/x86/kernel/process.c:	fp = READ_ONCE_NOCHECK(((struct inactive_task_frame *)sp)->bp);
+> arch/x86/kernel/process.c:		ip = READ_ONCE_NOCHECK(*(unsigned long *)(fp + sizeof(unsigned long)));
+> arch/x86/kernel/process.c:		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
+> arch/x86/kernel/unwind_frame.c:			word = READ_ONCE_NOCHECK(*sp);
+> arch/x86/kernel/unwind_guess.c:	addr = READ_ONCE_NOCHECK(*state->sp);
+> arch/x86/kernel/unwind_guess.c:			unsigned long addr = READ_ONCE_NOCHECK(*state->sp);
+> arch/x86/kernel/unwind_orc.c:	*val = READ_ONCE_NOCHECK(*(unsigned long *)addr);
+> arch/x86/kernel/unwind_orc.c:		state->bp = READ_ONCE_NOCHECK(frame->bp);
+> arch/x86/kernel/unwind_orc.c:		state->ip = READ_ONCE_NOCHECK(frame->ret_addr);
+> include/linux/compiler.h: * Use READ_ONCE_NOCHECK() instead of READ_ONCE() if you need
+> include/linux/compiler.h:#define READ_ONCE_NOCHECK(x) __READ_ONCE(x, 0)
+> kernel/trace/trace_stack.c:			 * The READ_ONCE_NOCHECK is used to let KASAN know that
+> kernel/trace/trace_stack.c:			if ((READ_ONCE_NOCHECK(*p)) == stack_dump_trace[i]) {
 
-exactly
+Indeed. For now, I'm going to keep this simple with the change below, but
+I'll revisit this later on because I have another series removing
+smp_read_barrier_depends() which makes this a lot simpler.
 
-> the pages.  For Direct IO, for instance, the CPU isn't touching the
-> page at all.  It's always a device.  Also, crucially, the page
+Will
 
-exactly. and that is the one case we need to protect ourselves from.
+--->8
 
-letting a device touch directly a protected page causes an
-unrecoverable error state in the device, potentially bringing down the
-whole system. and this would be triggerable by userspace.
-
-> contents are *not* accessible from the CPU's perspective after a gup.
-
-depends on the architecture, I think
-
->  They're not accessible until a kmap().  They're also not even
-> accessible for *devices* after a gup.  There's a _separate_ mapping
-
-also depends on the architecture
-
-> process that's requires to make them accessible to the CPU.
-> 
-> > --- a/mm/page-writeback.c
-> > +++ b/mm/page-writeback.c
-> > @@ -2764,7 +2764,7 @@ int test_clear_page_writeback(struct page
-> > *page) int __test_set_page_writeback(struct page *page, bool
-> > keep_write) {
-> >  	struct address_space *mapping = page_mapping(page);
-> > -	int ret;
-> > +	int ret, access_ret;
-> >  
-> >  	lock_page_memcg(page);
-> >  	if (mapping && mapping_use_writeback_tags(mapping)) {
-> > @@ -2807,6 +2807,13 @@ int __test_set_page_writeback(struct page
-> > *page, bool keep_write) inc_zone_page_state(page,
-> > NR_ZONE_WRITE_PENDING); }
-> >  	unlock_page_memcg(page);
-> > +	access_ret = arch_make_page_accessible(page);
-> > +	/*
-> > +	 * If writeback has been triggered on a page that cannot
-> > be made
-> > +	 * accessible, it is too late to recover here.
-> > +	 */
-> > +	VM_BUG_ON_PAGE(access_ret != 0, page);
-> > +
-> >  	return ret;
-> >  
-> >  }  
-> 
-> I think this one really shows the cracks in the approach.  Pages being
-> swapped *don't* have get_user_pages() done on them since we've already
-> got the physical page at the time writeback and aren't looking at
-> PTEs.
-
-correct. that's why we are doing it when setting the writeback bit. 
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index 00a68063d9d5..c363d8debc43 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -212,18 +212,12 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ 	(typeof(x))__x;							\
+ })
  
-> They're read by I/O devices sending them out to storage, but also by
-> the CPU if you're doing something like zswap.  But, again, critically,
-> accessing page contents won't be done until kmap().
-
-is kmap called for direct I/O too? 
+-/*
+- * Use READ_ONCE_NOCHECK() instead of READ_ONCE() if you need
+- * to hide memory access from KASAN.
+- */
+-#define READ_ONCE_NOCHECK(x)						\
++#define READ_ONCE(x)							\
+ ({									\
+ 	compiletime_assert_rwonce_type(x);				\
+ 	__READ_ONCE_SCALAR(x);						\
+ })
  
-> I suspect you saw crashes underneath __swap_writepage()->submit_bio()
-> and looked a few lines up to the set_page_writeback() and decided to
-> hook in there.  I think a better spot, again, is to hook into kmap()
-> which is called in the block layer.
-
-making a page accessible is a potentially long operation (e.g. on s390
-requires the hardware to encrypt the page and do some other expensive
-operations), while kmap is a nop.
-
-> Why do I care?
-> 
-> I was looking at AMD's SEV (Secure Encrypted Virtualization) code
-> which is in the kernel which shares some implementation details with
-> the not-in-the-tree Intel MKTME.  SEV currently has a concept of
-> guest pages being encrypted and being gibberish to the host, plus a
-> handshake to share guest-selected pages.  Some of the side-effects of
-> exposing the gibberish to the host aren't great (I think it can break
-> cache coherency if a stray write occurs) and it would be nice to get
-> better behavior.
-> 
-> But, to get better behavior, the host kernel might need to remove
-> pages from its direct map, making them inaccessible.  I was hoping to
-> reuse arch_make_page_accessible() for obvious reasons.  But,
-
-we are talking about physical pages being inaccessible, not mappings.
-you can have the page correctly mapped and still inaccessible.
-
-> get_user_pages() is not the right spot to map pages because they
-> might not *ever* be accessed by the CPU, only devices.
-> 
-> Anyway, I know it's late feedback, but I'd hate to have core code like
-> this that has no hope of ever getting reused.
-
+-#define READ_ONCE(x)	READ_ONCE_NOCHECK(x)
+-
+ #define __WRITE_ONCE(x, val)				\
+ do {							\
+ 	*(volatile typeof(x) *)&(x) = (val);		\
+@@ -247,6 +241,24 @@ do {							\
+ # define __no_kasan_or_inline __always_inline
+ #endif
+ 
++static __no_kasan_or_inline
++unsigned long __read_once_word_nocheck(const void *addr)
++{
++	return __READ_ONCE(*(unsigned long *)addr);
++}
++
++/*
++ * Use READ_ONCE_NOCHECK() instead of READ_ONCE() if you need to load a
++ * word from memory atomically but without telling KASAN. This is usually
++ * used by unwinding code when walking the stack of a running process.
++ */
++#define READ_ONCE_NOCHECK(x)						\
++({									\
++	unsigned long __x = __read_once_word_nocheck(&(x));		\
++	smp_read_barrier_depends();					\
++	__x;								\
++})
++
+ static __no_kasan_or_inline
+ unsigned long read_word_at_a_time(const void *addr)
+ {
