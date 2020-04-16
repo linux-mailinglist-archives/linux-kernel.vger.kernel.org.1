@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C4F1AC76E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379431AC777
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405082AbgDPOzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:55:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408393AbgDPOyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:54:53 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 526A5206A2;
-        Thu, 16 Apr 2020 14:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587048891;
-        bh=vAtU5Xx99QfFj3XxBnnRT4MOmEgZ5p5mlNaETRiv7Lg=;
-        h=Date:From:To:Subject:From;
-        b=OFO9EfiT7kIcb3KhYvOZ1HgyGMRStA1+iVDnobHikOYr1ArMZWAOj4lOFcd8Q7CV9
-         wULy62pmoEiouml3XE4+l/XyQVCPgvPXdtTwLdqn4b1pGTCzEW/58nPjypcmsX5TlG
-         M7v28Mv1R5M6LaLXngHhOj/ActcLXwQoBawxlCms=
-Date:   Thu, 16 Apr 2020 16:54:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] debugfs: remove return value of debugfs_create_u32()
-Message-ID: <20200416145448.GA1380878@kroah.com>
+        id S2394759AbgDPOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387683AbgDPOzO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:55:14 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4303C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:55:13 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id m14so16792680oic.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:55:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ApXDAryjVZ1NhYOMhZ0mJPFGTTxjNrpKZ3hMH5Wk1rI=;
+        b=kpXBeRuMgKb9LePzXmq5+Q2/HlepHeCz+xauCU2QEg6c2e/xDJcEUohgjmYjscEq1J
+         XKWfkcaXqYCvVdTswUZjrfdAcu8Kcxm7Hpgxdwuw+TsstUrs8lJHeSWA1OvS6ZGmMueo
+         WHEia2smDdJ3WMRRjy0tsJP47OYlOKiFxEPNMJOoKKOifDUiB7fT72vxt9O8YR2W4sxL
+         2YpZhvGh+Gu1yJXf9iA1Oj2Z4Ethgac1sdAND647J6BbqvIwoACZQDi9IKZkhRLblixF
+         XfiFDU6+x3BDGPfNrEjWEXBOZ+ndTFzmE0U5E9NQl+TosuHwYdlqAFg/+rII+3Qs1M4Y
+         NMRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ApXDAryjVZ1NhYOMhZ0mJPFGTTxjNrpKZ3hMH5Wk1rI=;
+        b=fVfXiSSHyTyaYFZj7cahdQEY4T5ytm73dK3bgXjKpQ8HTQf/KCG9SS3fx3s+3Fm0Q7
+         opbUeWJpril9kBot1Lyzbveybg9cNVgx8230lac3yW3To5QxGV2xvQrYgxN3VAeNukY2
+         ZKxu07ZhoJV8D1th04Se/NSd0bDeD0pha1DF8QeEFZTkvxFYNM7q0n0pDIMXNqCOzZpC
+         rahPPrRMrxic0uW44qxZ1EkY2E81jthTbQX3xhzcFTwNCLxjd3q0QjgSF1uQTqxOe+G+
+         dGhc/1Bg9B/6MWx5ysynUZSyLYrVVj22gjhEq4RsupU0vht2DkXdP4gO6kNaSDV1ydSV
+         fcCg==
+X-Gm-Message-State: AGi0PuavwkTcY1rJVZAPbJqk05m7GrkYYKCGsOQv667k/UdCyC1MZ0Lw
+        RPN6qoWBcALutjjcHhxNasEPWD6OdokRayP8/cg=
+X-Google-Smtp-Source: APiQypLCtSncMsxPH2cCTJRXm5LeJw8H8IJylLVXO7vXh/4Tfb4DcpcxBoTRyE5JutCoMEGfnxOSoxdCQWnhPttFh2I=
+X-Received: by 2002:aca:f1c6:: with SMTP id p189mr3237696oih.5.1587048913230;
+ Thu, 16 Apr 2020 07:55:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20200406160914.14698-1-rminnich@google.com> <CACRpkdYVwFiCf5MJGLEyhxL8omxr9Tav=8Le_zEX-D89SXjV1Q@mail.gmail.com>
+In-Reply-To: <CACRpkdYVwFiCf5MJGLEyhxL8omxr9Tav=8Le_zEX-D89SXjV1Q@mail.gmail.com>
+From:   ron minnich <rminnich@gmail.com>
+Date:   Thu, 16 Apr 2020 07:55:01 -0700
+Message-ID: <CAP6exY+pDg8rAi4RZw5s5jZh1awtWg6_Q5=tm6RYC4c+XZz+cQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: parsers: Support '[]' for id in mtdparts
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+        Ronald Minnich <rminnich@google.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No one checks the return value of debugfs_create_u32(), as it's not
-needed, so make the return value void, so that no one tries to do so in
-the future.
+On Thu, Apr 16, 2020 at 2:51 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- Documentation/filesystems/debugfs.rst |  4 ++--
- fs/debugfs/file.c                     | 15 +++------------
- include/linux/debugfs.h               | 12 ++++--------
- 3 files changed, 9 insertions(+), 22 deletions(-)
+> I suppose the use case is using PCI-based MTD devices for testing
+> something android images on desktops? I'm surprised it didn't
+> come up earlier.
 
-diff --git a/Documentation/filesystems/debugfs.rst b/Documentation/filesystems/debugfs.rst
-index db9ea0854040..6c032db235a5 100644
---- a/Documentation/filesystems/debugfs.rst
-+++ b/Documentation/filesystems/debugfs.rst
-@@ -79,8 +79,8 @@ created with any of::
- 			   struct dentry *parent, u8 *value);
-     void debugfs_create_u16(const char *name, umode_t mode,
- 			    struct dentry *parent, u16 *value);
--    struct dentry *debugfs_create_u32(const char *name, umode_t mode,
--				      struct dentry *parent, u32 *value);
-+    void debugfs_create_u32(const char *name, umode_t mode,
-+			    struct dentry *parent, u32 *value);
-     void debugfs_create_u64(const char *name, umode_t mode,
- 			    struct dentry *parent, u64 *value);
- 
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 2d357680094c..ae49a55bda00 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -506,20 +506,11 @@ DEFINE_DEBUGFS_ATTRIBUTE(fops_u32_wo, NULL, debugfs_u32_set, "%llu\n");
-  * This function creates a file in debugfs with the given name that
-  * contains the value of the variable @value.  If the @mode variable is so
-  * set, it can be read from, and written to.
-- *
-- * This function will return a pointer to a dentry if it succeeds.  This
-- * pointer must be passed to the debugfs_remove() function when the file is
-- * to be removed (no automatic cleanup happens if your module is unloaded,
-- * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-- * returned.
-- *
-- * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
-- * be returned.
-  */
--struct dentry *debugfs_create_u32(const char *name, umode_t mode,
--				 struct dentry *parent, u32 *value)
-+void debugfs_create_u32(const char *name, umode_t mode, struct dentry *parent,
-+			u32 *value)
- {
--	return debugfs_create_mode_unsafe(name, mode, parent, value, &fops_u32,
-+	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_u32,
- 				   &fops_u32_ro, &fops_u32_wo);
- }
- EXPORT_SYMBOL_GPL(debugfs_create_u32);
-diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
-index a274d95fa66e..63cb3606dea7 100644
---- a/include/linux/debugfs.h
-+++ b/include/linux/debugfs.h
-@@ -103,8 +103,8 @@ void debugfs_create_u8(const char *name, umode_t mode, struct dentry *parent,
- 		       u8 *value);
- void debugfs_create_u16(const char *name, umode_t mode, struct dentry *parent,
- 			u16 *value);
--struct dentry *debugfs_create_u32(const char *name, umode_t mode,
--				  struct dentry *parent, u32 *value);
-+void debugfs_create_u32(const char *name, umode_t mode, struct dentry *parent,
-+			u32 *value);
- void debugfs_create_u64(const char *name, umode_t mode, struct dentry *parent,
- 			u64 *value);
- struct dentry *debugfs_create_ulong(const char *name, umode_t mode,
-@@ -250,12 +250,8 @@ static inline void debugfs_create_u8(const char *name, umode_t mode,
- static inline void debugfs_create_u16(const char *name, umode_t mode,
- 				      struct dentry *parent, u16 *value) { }
- 
--static inline struct dentry *debugfs_create_u32(const char *name, umode_t mode,
--						struct dentry *parent,
--						u32 *value)
--{
--	return ERR_PTR(-ENODEV);
--}
-+static inline void debugfs_create_u32(const char *name, umode_t mode,
-+				      struct dentry *parent, u32 *value) { }
- 
- static inline void debugfs_create_u64(const char *name, umode_t mode,
- 				      struct dentry *parent, u64 *value) { }
--- 
-2.26.1
+Thanks. In this case it's for systems that companies are deploying
+into their data centers, using linuxboot (linuxboot.org) and Intel
+chipsets. On Intel  chipsets, there is a 64 MiB SPI part, but only 16
+MiB is directly addressable.
 
+Linux goes in the memory-addressable part of the SPI, and UEFI loads
+it into RAM, since to UEFI the kernel is just another UEFI driver --
+in fact in most cases we replace the UEFI shell with Linux.
+
+But we need a file system, and with the huge amount of drivers that
+come with UEFI there's not much room in the top 16M. (we're working to
+fix that glitch, a process we call DXE-ectomy, but it takes time).
+
+We wish to place a file system in the low 48 MiB -- lots of room there.
+
+So what one can do is put a squashfs-formatted file system in that low
+part of SPI, and, using this mtdparts capability, point the kernel at
+it ("root=/dev/mtd1 mtdparts=[a:b.c]etc.etc"). It's a lifesaver for
+those of us using u-root for our userland.
+
+ron
