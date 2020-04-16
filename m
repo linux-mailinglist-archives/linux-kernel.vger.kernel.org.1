@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF521ACAA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DF61AC303
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410431AbgDPPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:37:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51800 "EHLO mail.kernel.org"
+        id S2897355AbgDPNgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897955AbgDPNj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:26 -0400
+        id S2896067AbgDPN3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:29:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 172D62063A;
-        Thu, 16 Apr 2020 13:39:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41441217D8;
+        Thu, 16 Apr 2020 13:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044365;
-        bh=0t/oLzkgFXhjX5DcSYiAxTJvv2saLqLGZ+qwSaWFEk8=;
+        s=default; t=1587043785;
+        bh=nLk72JFj+2vX8XnZrO5sy89nEwKxWMogbtUOdGa0KEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHvjlFE5ZAb8dWaDmPvQIcpIFOgjjWLWADV7QSo+AKFLH7LsJDZtRkVHVC5vTZyjo
-         kcC/k1mAg6hNUcdLYPflIqW3g/1YfvYfn1al+yunemQGt/hl4WG5FgZ4TRS8S7u48T
-         OnBfXcfPwFzp5nKf1urdTxo38RBoN+k5BKpfPx5c=
+        b=E3DSmEWGvphcXQhabx8mo1GL/PJsxVZrsbBoRrjYEX7tyTQcPZvTsCSd4QfVx7uJE
+         Fy+rZFSog7xbTZUdESX9BnugyXVZO7ztHXGa7kPv9grhxpVpGZ/sfYBvsiF44XS1VD
+         JkKMDtIjglXqiJznYYHfVVf/QZ7EpDbsyjg8eqsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 5.5 188/257] XArray: Fix xas_pause for large multi-index entries
-Date:   Thu, 16 Apr 2020 15:23:59 +0200
-Message-Id: <20200416131349.783449444@linuxfoundation.org>
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 099/146] mm: Use fixed constant in page_frag_alloc instead of size + 1
+Date:   Thu, 16 Apr 2020 15:24:00 +0200
+Message-Id: <20200416131256.290378274@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-commit c36d451ad386b34f452fc3c8621ff14b9eaa31a6 upstream.
+commit 8644772637deb121f7ac2df690cbf83fa63d3b70 upstream.
 
-Inspired by the recent Coverity report, I looked for other places where
-the offset wasn't being converted to an unsigned long before being
-shifted, and I found one in xas_pause() when the entry being paused is
-of order >32.
+This patch replaces the size + 1 value introduced with the recent fix for 1
+byte allocs with a constant value.
 
-Fixes: b803b42823d0 ("xarray: Add XArray iterators")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: stable@vger.kernel.org
+The idea here is to reduce code overhead as the previous logic would have
+to read size into a register, then increment it, and write it back to
+whatever field was being used. By using a constant we can avoid those
+memory reads and arithmetic operations in favor of just encoding the
+maximum value into the operation itself.
+
+Fixes: 2c2ade81741c ("mm: page_alloc: fix ref bias in page_frag_alloc() for 1-byte allocs")
+Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/test_xarray.c |   37 +++++++++++++++++++++++++++++++++++++
- lib/xarray.c      |    2 +-
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ mm/page_alloc.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/lib/test_xarray.c
-+++ b/lib/test_xarray.c
-@@ -1156,6 +1156,42 @@ static noinline void check_find_entry(st
- 	XA_BUG_ON(xa, !xa_empty(xa));
- }
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4537,11 +4537,11 @@ refill:
+ 		/* Even if we own the page, we do not use atomic_set().
+ 		 * This would break get_page_unless_zero() users.
+ 		 */
+-		page_ref_add(page, size);
++		page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
  
-+static noinline void check_pause(struct xarray *xa)
-+{
-+	XA_STATE(xas, xa, 0);
-+	void *entry;
-+	unsigned int order;
-+	unsigned long index = 1;
-+	unsigned int count = 0;
-+
-+	for (order = 0; order < order_limit; order++) {
-+		XA_BUG_ON(xa, xa_store_order(xa, index, order,
-+					xa_mk_index(index), GFP_KERNEL));
-+		index += 1UL << order;
-+	}
-+
-+	rcu_read_lock();
-+	xas_for_each(&xas, entry, ULONG_MAX) {
-+		XA_BUG_ON(xa, entry != xa_mk_index(1UL << count));
-+		count++;
-+	}
-+	rcu_read_unlock();
-+	XA_BUG_ON(xa, count != order_limit);
-+
-+	count = 0;
-+	xas_set(&xas, 0);
-+	rcu_read_lock();
-+	xas_for_each(&xas, entry, ULONG_MAX) {
-+		XA_BUG_ON(xa, entry != xa_mk_index(1UL << count));
-+		count++;
-+		xas_pause(&xas);
-+	}
-+	rcu_read_unlock();
-+	XA_BUG_ON(xa, count != order_limit);
-+
-+	xa_destroy(xa);
-+}
-+
- static noinline void check_move_tiny(struct xarray *xa)
- {
- 	XA_STATE(xas, xa, 0);
-@@ -1664,6 +1700,7 @@ static int xarray_checks(void)
- 	check_xa_alloc();
- 	check_find(&array);
- 	check_find_entry(&array);
-+	check_pause(&array);
- 	check_account(&array);
- 	check_destroy(&array);
- 	check_move(&array);
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -970,7 +970,7 @@ void xas_pause(struct xa_state *xas)
+ 		/* reset page count bias and offset to start of new frag */
+ 		nc->pfmemalloc = page_is_pfmemalloc(page);
+-		nc->pagecnt_bias = size + 1;
++		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
+ 		nc->offset = size;
+ 	}
  
- 	xas->xa_node = XAS_RESTART;
- 	if (node) {
--		unsigned int offset = xas->xa_offset;
-+		unsigned long offset = xas->xa_offset;
- 		while (++offset < XA_CHUNK_SIZE) {
- 			if (!xa_is_sibling(xa_entry(xas->xa, node, offset)))
- 				break;
+@@ -4557,10 +4557,10 @@ refill:
+ 		size = nc->size;
+ #endif
+ 		/* OK, page count is 0, we can safely set it */
+-		set_page_count(page, size + 1);
++		set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
+ 
+ 		/* reset page count bias and offset to start of new frag */
+-		nc->pagecnt_bias = size + 1;
++		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
+ 		offset = size - fragsz;
+ 	}
+ 
 
 
