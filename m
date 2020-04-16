@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D351AC717
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6F1AC8F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394790AbgDPOtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:49:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45776 "EHLO mail.kernel.org"
+        id S2441705AbgDPPRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:17:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409396AbgDPN6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:48 -0400
+        id S2898810AbgDPNtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:49:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B174221927;
-        Thu, 16 Apr 2020 13:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18EB120732;
+        Thu, 16 Apr 2020 13:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045525;
-        bh=rXkh2aRrbIIG14idHHtgzlWycyi8V8ynYJ10c0RNDbc=;
+        s=default; t=1587044943;
+        bh=auqJTuhnImmvDb6H+sMUIzlvMxOs3HGqAdeRAdKYAU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfWiQtbhwJgJdQiPUo05hKmJBWcQtlsJofCswyXaNeD+xmV8v4gsbm7lhwlMzl54R
-         lbar+qxDbNkEXseyoM3zdmsFoW3suC4c6k3FFn6XYLfqgptTQQQrbdKPLpgX55htGe
-         ZvyrSB4rqWnHey/UVuTRfg/2+q9exM/DdkHo/p9w=
+        b=EmwCnnChByk15E/xLhyDfiC/99mAvwYknOHsQ/6G8xuDSDsIlbJLmmf6xg2gAlIDA
+         E9IBfbyVnyPskJHXmb4FEqGJjWPmYpo8heDaVM5OkvP6Qw6V/BJbaEW0Zq6SoGwRO6
+         n26ZUKdXnbc83W6yCXqYS1CXjHIid45ELkwSII+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.6 169/254] arm64: dts: allwinner: h6: Fix PMU compatible
+        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 164/232] dm clone: Add overflow check for number of regions
 Date:   Thu, 16 Apr 2020 15:24:18 +0200
-Message-Id: <20200416131347.657042268@linuxfoundation.org>
+Message-Id: <20200416131335.527671917@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Nikos Tsironis <ntsironis@arrikto.com>
 
-commit 4c7eeb9af3e41ae7d840977119c58f3bbb3f4f59 upstream.
+commit cd481c12269b4d276f1a52eda0ebd419079bfe3a upstream.
 
-The commit 7aa9b9eb7d6a ("arm64: dts: allwinner: H6: Add PMU mode")
-introduced support for the PMU found on the Allwinner H6. However, the
-binding only allows for a single compatible, while the patch was adding
-two.
+Add overflow check for clone->nr_regions variable, which holds the
+number of regions of the target.
 
-Make sure we follow the binding.
+The overflow can occur with sufficiently large devices, if BITS_PER_LONG
+== 32. E.g., if the region size is 8 sectors (4K), the overflow would
+occur for device sizes > 34359738360 sectors (~16TB).
 
-Fixes: 7aa9b9eb7d6a ("arm64: dts: allwinner: H6: Add PMU mode")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Cc: Guenter Roeck <linux@roeck-us.net>
+This could result in multiple device sectors wrongly mapping to the same
+region number, due to the truncation from 64 bits to 32 bits, which
+would lead to data corruption.
+
+Fixes: 7431b7835f55 ("dm: add clone target")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/md/dm-clone-target.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -70,8 +70,7 @@
- 	};
+--- a/drivers/md/dm-clone-target.c
++++ b/drivers/md/dm-clone-target.c
+@@ -1775,6 +1775,7 @@ error:
+ static int clone_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ {
+ 	int r;
++	sector_t nr_regions;
+ 	struct clone *clone;
+ 	struct dm_arg_set as;
  
- 	pmu {
--		compatible = "arm,cortex-a53-pmu",
--			     "arm,armv8-pmuv3";
-+		compatible = "arm,cortex-a53-pmu";
- 		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
+@@ -1816,7 +1817,16 @@ static int clone_ctr(struct dm_target *t
+ 		goto out_with_source_dev;
+ 
+ 	clone->region_shift = __ffs(clone->region_size);
+-	clone->nr_regions = dm_sector_div_up(ti->len, clone->region_size);
++	nr_regions = dm_sector_div_up(ti->len, clone->region_size);
++
++	/* Check for overflow */
++	if (nr_regions != (unsigned long)nr_regions) {
++		ti->error = "Too many regions. Consider increasing the region size";
++		r = -EOVERFLOW;
++		goto out_with_source_dev;
++	}
++
++	clone->nr_regions = nr_regions;
+ 
+ 	r = validate_nr_regions(clone->nr_regions, &ti->error);
+ 	if (r)
 
 
