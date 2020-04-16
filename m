@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547DF1AC5B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A411AC90B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731099AbgDPOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:25:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45128 "EHLO mail.kernel.org"
+        id S2442369AbgDPPSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441867AbgDPN6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:16 -0400
+        id S2898753AbgDPNsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A4D02078B;
-        Thu, 16 Apr 2020 13:58:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C68520732;
+        Thu, 16 Apr 2020 13:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045495;
-        bh=oK4EUs+DRClyG/3rKXZm1ZxXK0l4/9QJpxPizuGmNhw=;
+        s=default; t=1587044916;
+        bh=17Azc/50V9kor3Bv5Su4JnoYQl5Ar9qKw0dpbNAFj3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DtS5JsZl4LSoFJxzGKlAkolwjdEJevdaKvWKKLXfxF5IHnL7qp1td04XXpmUbV2m9
-         +kIxTOJaTd+HOuQWmnZB8sXcR606Y3Z6oA3I0pz8r2/NF5kXCUQOMok8GdvpXYRjXw
-         nKh8eAtZUcAifQZCow/QMHul+py+94/I9ErIN2MA=
+        b=vXmYyVPUlsF6gqcY5o92c2Xz/+qu3yWzCuLByh8WizI8UxLtTDYvOkPOmauyG9so+
+         MTxU5/ULVRCiJZIwWU7E2H5AYK3VlhVxevg6tviTpzxNz23+EOsLpBD/UJnpFPE6Xt
+         uluqu9BHzPoSB9eq5pQNWuhwZVtLQCttCOXIqNYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH 5.6 158/254] remoteproc: qcom_q6v5_mss: Dont reassign mpss region on shutdown
-Date:   Thu, 16 Apr 2020 15:24:07 +0200
-Message-Id: <20200416131346.381431027@linuxfoundation.org>
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.4 154/232] powerpc/pseries: Drop pointless static qualifier in vpa_debugfs_init()
+Date:   Thu, 16 Apr 2020 15:24:08 +0200
+Message-Id: <20200416131334.282926388@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,100 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit 900fc60df22748dbc28e4970838e8f7b8f1013ce upstream.
+commit 11dd34f3eae5a468013bb161a1dcf1fecd2ca321 upstream.
 
-Trying to reclaim mpss memory while the mba is not running causes the
-system to crash on devices with security fuses blown, so leave it
-assigned to the remote on shutdown and recover it on a subsequent boot.
+There is no need to have the 'struct dentry *vpa_dir' variable static
+since new value always be assigned before use it.
 
-Fixes: 6c5a9dc2481b ("remoteproc: qcom: Make secure world call for mem ownership switch")
-Cc: stable@vger.kernel.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200304194729.27979-2-sibis@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: c6c26fb55e8e ("powerpc/pseries: Export raw per-CPU VPA data via debugfs")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20190218125644.87448-1-yuehaibing@huawei.com
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/qcom_q6v5_mss.c |   35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ arch/powerpc/platforms/pseries/lpar.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -1001,11 +1001,6 @@ static void q6v5_mba_reclaim(struct q6v5
- 		writel(val, qproc->reg_base + QDSP6SS_PWR_CTL_REG);
- 	}
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -1992,7 +1992,7 @@ static int __init vpa_debugfs_init(void)
+ {
+ 	char name[16];
+ 	long i;
+-	static struct dentry *vpa_dir;
++	struct dentry *vpa_dir;
  
--	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
--				      false, qproc->mpss_phys,
--				      qproc->mpss_size);
--	WARN_ON(ret);
--
- 	q6v5_reset_assert(qproc);
- 
- 	q6v5_clk_disable(qproc->dev, qproc->reset_clks,
-@@ -1095,6 +1090,14 @@ static int q6v5_mpss_load(struct q6v5 *q
- 			max_addr = ALIGN(phdr->p_paddr + phdr->p_memsz, SZ_4K);
- 	}
- 
-+	/**
-+	 * In case of a modem subsystem restart on secure devices, the modem
-+	 * memory can be reclaimed only after MBA is loaded. For modem cold
-+	 * boot this will be a nop
-+	 */
-+	q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false,
-+				qproc->mpss_phys, qproc->mpss_size);
-+
- 	mpss_reloc = relocate ? min_addr : qproc->mpss_phys;
- 	qproc->mpss_reloc = mpss_reloc;
- 	/* Load firmware segments */
-@@ -1184,8 +1187,16 @@ static void qcom_q6v5_dump_segment(struc
- 	void *ptr = rproc_da_to_va(rproc, segment->da, segment->size);
- 
- 	/* Unlock mba before copying segments */
--	if (!qproc->dump_mba_loaded)
-+	if (!qproc->dump_mba_loaded) {
- 		ret = q6v5_mba_load(qproc);
-+		if (!ret) {
-+			/* Reset ownership back to Linux to copy segments */
-+			ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
-+						      false,
-+						      qproc->mpss_phys,
-+						      qproc->mpss_size);
-+		}
-+	}
- 
- 	if (!ptr || ret)
- 		memset(dest, 0xff, segment->size);
-@@ -1196,8 +1207,14 @@ static void qcom_q6v5_dump_segment(struc
- 
- 	/* Reclaim mba after copying segments */
- 	if (qproc->dump_segment_mask == qproc->dump_complete_mask) {
--		if (qproc->dump_mba_loaded)
-+		if (qproc->dump_mba_loaded) {
-+			/* Try to reset ownership back to Q6 */
-+			q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
-+						true,
-+						qproc->mpss_phys,
-+						qproc->mpss_size);
- 			q6v5_mba_reclaim(qproc);
-+		}
- 	}
- }
- 
-@@ -1237,10 +1254,6 @@ static int q6v5_start(struct rproc *rpro
- 	return 0;
- 
- reclaim_mpss:
--	xfermemop_ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
--						false, qproc->mpss_phys,
--						qproc->mpss_size);
--	WARN_ON(xfermemop_ret);
- 	q6v5_mba_reclaim(qproc);
- 
- 	return ret;
+ 	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
+ 		return 0;
 
 
