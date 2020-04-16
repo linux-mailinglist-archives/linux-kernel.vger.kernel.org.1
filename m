@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230271ABE01
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D541ABE09
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504835AbgDPKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:34:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56282 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505042AbgDPKc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:32:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0F955AA55;
-        Thu, 16 Apr 2020 10:32:27 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E39E41E1250; Thu, 16 Apr 2020 12:32:26 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 12:32:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200416103226.GE23739@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-5-ira.weiny@intel.com>
- <20200415120846.GG6126@quack2.suse.cz>
- <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
+        id S2505127AbgDPKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:36:06 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42849 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2505072AbgDPKdm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:33:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587033221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wSOHFT9tJQ3WMUJpzqJBLiS8QZ3BM+HLY6292xvXFZM=;
+        b=DuAiR70AkTLxvA/rK7PsFcNZGWdjqBd8BtZy5tk7QANjZlp3r28/2gyWuprA/f5aV3HfCi
+        bJAeN3BvIl7SWiZjkLiY29dCK/pc0Z6fY5oDPvRB/3LGLcOECjcrWNqw9e7FPfJbqGUkkr
+        lDDNfmSN2tqkSJgn0o2GCBeUG9b9fBQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-mRLDz9gnN72cnltf895Q4Q-1; Thu, 16 Apr 2020 06:33:39 -0400
+X-MC-Unique: mRLDz9gnN72cnltf895Q4Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26B2513F9;
+        Thu, 16 Apr 2020 10:33:38 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-114-61.ams2.redhat.com [10.36.114.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 178D194B40;
+        Thu, 16 Apr 2020 10:33:35 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        keyrings@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: What's a good default TTL for DNS keys in the kernel
+References: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
+        <3865908.1586874010@warthog.procyon.org.uk>
+        <128769.1587032833@warthog.procyon.org.uk>
+Date:   Thu, 16 Apr 2020 12:33:34 +0200
+In-Reply-To: <128769.1587032833@warthog.procyon.org.uk> (David Howells's
+        message of "Thu, 16 Apr 2020 11:27:13 +0100")
+Message-ID: <87v9lzu3cx.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15-04-20 13:39:25, Ira Weiny wrote:
-> > > @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
-> > >  	return error;
-> > >  }
-> > >  
-> > > +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
-> > > +{
-> > > +	struct ext4_inode_info *ei = EXT4_I(inode);
-> > > +
-> > > +	if (S_ISDIR(inode->i_mode))
-> > > +		return;
-> > > +
-> > > +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
-> > > +		inode->i_state |= I_DONTCACHE;
-> > > +}
-> > > +
-> > 
-> > You probably want to use the function you've introduced in the XFS series
-> > here...
-> 
-> you mean:
-> 
-> flag_inode_dontcache()
-> ???
+* David Howells:
 
-Yeah, that's what I meant.
+> Florian Weimer <fweimer@redhat.com> wrote:
+>
+>> You can get the real TTL if you do a DNS resolution on the name and
+>> match the addresses against what you get out of the NSS functions.  If
+>> they match, you can use the TTL from DNS.  Hackish, but it does give you
+>> *some* TTL value.
+>
+> I guess I'd have to do that in parallel.
 
-> Yes that is done.  I sent this prior to v8 (where that was added) of the other
-> series...
+Not necessary.  You can do the getaddrinfo lookup first and then perform
+the query.
 
-Yep, I thought that was the case but I wanted to mention it as a reminder.
+> Would calling something like res_mkquery() use local DNS caching?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Yes (but res_mkquery builds a packet, it does not send it).
+
+>> The question remains what the expected impact of TTL expiry is.  Will
+>> the kernel just perform a new DNS query if it needs one?  Or would you
+>> expect that (say) the NFS client rechecks the addresses after TTL expiry
+>> and if they change, reconnect to a new NFS server?
+>
+> It depends on the filesystem.
+>
+> AFS keeps track of the expiration on the record and will issue a new lookup
+> when the data expires, but NFS doesn't make use of this information.
+
+And it will switch servers at that point?  Or only if the existing
+server association fails/times out?
+
+> The keyring subsystem will itself dispose of dns_resolver keys that
+> expire and request_key() will only upcall again if the key has
+> expired.
+
+What's are higher-level effects of that?
+
+I'm still not convinced that the kernel *needs* accurate TTL
+information.  The benefit from upcall avoidance likely vanishes quickly
+after the in-kernel TTL increases beyond 5 or so.  That's just my guess,
+though.
+
+Thanks,
+Florian
+
