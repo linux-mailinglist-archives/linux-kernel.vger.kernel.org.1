@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815741AC558
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AF71ACB8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393940AbgDPORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38564 "EHLO mail.kernel.org"
+        id S2409828AbgDPPsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392461AbgDPNwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:52:18 -0400
+        id S2896712AbgDPNd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:33:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B17A20732;
-        Thu, 16 Apr 2020 13:52:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 567AE21D91;
+        Thu, 16 Apr 2020 13:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045136;
-        bh=dJFglhfHc6uw1MvFL015uE8KnyDBVoyTg7s0lOxDLDQ=;
+        s=default; t=1587044005;
+        bh=Gs1eguIB+STlCGpdeVeI2MCI/YDexRL4AJkRKfer9Ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GJOi4tNHZDfa/BF66wWU/8WS0KknyFQ3ehzX/Yap2C+4+eOH30b1X68AjYoLpHdQr
-         ipKum12/M/XpKio5laIh3LQ9uxTQQU72yzzrwiwnnhoQ7smpY8q9Bec8ObpAjtOspz
-         8aXzz77w6Fvb1UXF9apWbIPQCehWptSn8DB4Mvxk=
+        b=PeeKLvCM1D7qsEeOVkprgOV5qaZzJuVT+vrBRUkU18E8OMVS+lFeRhjk8mTVcVkdw
+         K5cNyCFFLpVYzqy5gDqBqY5dpueR+uKA5bbX1fi/kTrTBlwCb728u+Mfz32ExLjvrJ
+         UFbScpuuPrF21MPk7Fr4FUImCDB8NG7aoS9tttrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ajay Gupta <ajayg@nvidia.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 004/254] usb: ucsi: ccg: disable runtime pm during fw flashing
-Date:   Thu, 16 Apr 2020 15:21:33 +0200
-Message-Id: <20200416131326.301522216@linuxfoundation.org>
+Subject: [PATCH 5.5 043/257] ACPI: EC: Do not clear boot_ec_is_ecdt in acpi_ec_add()
+Date:   Thu, 16 Apr 2020 15:21:34 +0200
+Message-Id: <20200416131331.318536376@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Gupta <ajayg@nvidia.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 57a5e5f936be583d2c6cef3661c169e3ea4bf922 ]
+[ Upstream commit 65a691f5f8f0bb63d6a82eec7b0ffd193d8d8a5f ]
 
-Ucsi ppm is unregistered during fw flashing so disable
-runtime pm also and reenable after fw flashing is completed
-and ppm is re-registered.
+The reason for clearing boot_ec_is_ecdt in acpi_ec_add() (if a
+PNP0C09 device object matching the ECDT boot EC had been found in
+the namespace) was to cause acpi_ec_ecdt_start() to return early,
+but since the latter does not look at boot_ec_is_ecdt any more,
+acpi_ec_add() need not clear it.
 
-Signed-off-by: Ajay Gupta <ajayg@nvidia.com>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20200217144913.55330-3-heikki.krogerus@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Moreover, doing that may be confusing as it may cause "DSDT" to be
+printed instead of "ECDT" in the EC initialization completion
+message, so stop doing it.
+
+While at it, split the EC initialization completion message into
+two messages, one regarding the boot EC and another one printed
+regardless of whether or not the EC at hand is the boot one.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/ucsi/ucsi_ccg.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/acpi/ec.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_ccg.c b/drivers/usb/typec/ucsi/ucsi_ccg.c
-index a5b8530490dba..2658cda5da116 100644
---- a/drivers/usb/typec/ucsi/ucsi_ccg.c
-+++ b/drivers/usb/typec/ucsi/ucsi_ccg.c
-@@ -1219,6 +1219,7 @@ static int ccg_restart(struct ucsi_ccg *uc)
- 		return status;
- 	}
+diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+index bd74c78366759..f351d0711e495 100644
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -1649,7 +1649,6 @@ static int acpi_ec_add(struct acpi_device *device)
  
-+	pm_runtime_enable(uc->dev);
- 	return 0;
- }
+ 		if (boot_ec && ec->command_addr == boot_ec->command_addr &&
+ 		    ec->data_addr == boot_ec->data_addr) {
+-			boot_ec_is_ecdt = false;
+ 			/*
+ 			 * Trust PNP0C09 namespace location rather than
+ 			 * ECDT ID. But trust ECDT GPE rather than _GPE
+@@ -1669,9 +1668,12 @@ static int acpi_ec_add(struct acpi_device *device)
  
-@@ -1234,6 +1235,7 @@ static void ccg_update_firmware(struct work_struct *work)
+ 	if (ec == boot_ec)
+ 		acpi_handle_info(boot_ec->handle,
+-				 "Boot %s EC used to handle transactions and events\n",
++				 "Boot %s EC initialization complete\n",
+ 				 boot_ec_is_ecdt ? "ECDT" : "DSDT");
  
- 	if (flash_mode != FLASH_NOT_NEEDED) {
- 		ucsi_unregister(uc->ucsi);
-+		pm_runtime_disable(uc->dev);
- 		free_irq(uc->irq, uc);
++	acpi_handle_info(ec->handle,
++			 "EC: Used to handle transactions and events\n");
++
+ 	device->driver_data = ec;
  
- 		ccg_fw_update(uc, flash_mode);
+ 	ret = !!request_region(ec->data_addr, 1, "EC data");
 -- 
 2.20.1
 
