@@ -2,179 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1295C1ABA39
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E599E1ABB6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439594AbgDPHrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2439413AbgDPHrA (ORCPT
+        id S2502511AbgDPIh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:37:59 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:8303 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441103AbgDPIfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:47:00 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB19C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:46:59 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id h6so4877947lfc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 00:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wrT4kliUhkcTWbKvDU2s1BB4QC4IAQbCP0rRmXI2zns=;
-        b=w+lrxWq9ee6NX3P73IlpYIptRYrDT9aYkMXMjYkDs/nWk0mcsc9jqinrTp9mIKeOtB
-         L7PP921kukRkCKsMORjD3NIIKNsHXyep/M1HoTPVD8DXqJ2Tv2AlUGvJEH9OcGniRlhw
-         SDIrjW9HjvTfyd4HfBy23pH+fvfsVgpucSwMVgRcVcG7VZWKOHdzMlGCKeR1i127zPYt
-         wn7SyzHrTdZK2MSKhWe3YRp2delTL8Baek/0dELOa5kDBZdVYVr/lmrVvMdU4WB+zZVw
-         4N2m/+aezN7ONDyR0hiVBwi3TuEPq5efIG3Mi+RzJz7iGUJsFUWnTYGeLLYSYG1Ll2In
-         hLnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wrT4kliUhkcTWbKvDU2s1BB4QC4IAQbCP0rRmXI2zns=;
-        b=Ub8/5jYKeSGImjZXIXqNrJO5JuKKZzCb9dNH+ezuMrMO3sB6qUMUvjzo+GgPtKqlcz
-         KDqQgMcn/1bjY05fUyDH4GeqSwTcSWyHyBh9SLG7SNENe+DlM7zk2LJ+VpW4U/QdKWOb
-         pFGD5AUbv5yc+vyLvscbync3Pmp14n1/5wwp/aHUGx8VGlfcuWWd4+bn2bnEphscr7t2
-         g5P+oAnkKqks6WB/+D2crR/ZYa/otpwW+ZLZKktNv6RixkqXJmR9QmrnQQWIJhtpMgNL
-         pa4valURckfgrrbNyxywOyGhHY+MvDaSmUOUtxwfYmcdq+M/Xhm/zzq/HXHS1Q8moM6b
-         AqaQ==
-X-Gm-Message-State: AGi0PuaTbRCcaugY8060Ey5NjiCtO9qGxY/C9bvJxhYVv27jBInF8192
-        K6nAa8gtN7t427mMjTtrEbqoq6/XP7XtFg2KnA/sTw==
-X-Google-Smtp-Source: APiQypIU91uSSug7jGlF8EyXy6RrOeGt2+nXwBTwBTyAYl/5kVv/qIRiwCNDp4l/daTYYOOmlGzHx1Ke4pJHOcvafVg=
-X-Received: by 2002:a19:c7d8:: with SMTP id x207mr5204452lff.190.1587023218195;
- Thu, 16 Apr 2020 00:46:58 -0700 (PDT)
+        Thu, 16 Apr 2020 04:35:17 -0400
+Received: from ubuntu.localdomain (unknown [58.251.74.226])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 1F3624E47E6;
+        Thu, 16 Apr 2020 15:49:29 +0800 (CST)
+From:   Wang Wenhu <wenhu.wang@vivo.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        oss@buserror.net, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>
+Subject: [PATCH v3,0/4] drivers: uio: new driver uio_fsl_85xx_cache_sram
+Date:   Thu, 16 Apr 2020 00:49:14 -0700
+Message-Id: <20200416074918.3617-1-wenhu.wang@vivo.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200415152442.122873-1-wenhu.wang@vivo.com>
+References: <20200415152442.122873-1-wenhu.wang@vivo.com>
 MIME-Version: 1.0
-References: <20200415210512.805-1-valentin.schneider@arm.com> <20200415210512.805-10-valentin.schneider@arm.com>
-In-Reply-To: <20200415210512.805-10-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 16 Apr 2020 09:46:46 +0200
-Message-ID: <CAKfTPtBDGzrvG=YhjBZBEgfx5EtM-rTC-dWX5phqh4bOY5XqgA@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] sched/topology: Define and use shortcut pointers
- for wakeup sd_flag scan
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVCTkNLS0tKQ0hKS05PTFlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhQ6Ohw6CzgrQwghHRM5MzgY
+        DiMwCihVSlVKTkNMS0lISExKTktKVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUhKSks3Bg++
+X-HM-Tid: 0a7181f6d4a19376kuws1f3624e47e6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 at 23:05, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> Reworking select_task_rq_fair()'s domain walk exposed that !want_affine
-> wakeups only look for highest sched_domain with the required sd_flag
-> set. This is something we can cache at sched domain build time to slightly
-> optimize select_task_rq_fair(). Note that this isn't a "free" optimization:
-> it costs us 3 pointers per CPU.
->
-> Add cached per-CPU pointers for the highest domains with SD_BALANCE_WAKE,
-> SD_BALANCE_EXEC and SD_BALANCE_FORK. Use them in select_task_rq_fair().
->
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/fair.c     | 25 +++++++++++++------------
->  kernel/sched/sched.h    |  3 +++
->  kernel/sched/topology.c | 12 ++++++++++++
->  3 files changed, 28 insertions(+), 12 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6f8cdb99f4a0..db4fb29a88d9 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6631,17 +6631,6 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->         int want_affine = 0;
->         int sd_flag;
->
-> -       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
-> -       case WF_TTWU:
-> -               sd_flag = SD_BALANCE_WAKE;
-> -               break;
-> -       case WF_FORK:
-> -               sd_flag = SD_BALANCE_FORK;
-> -               break;
-> -       default:
-> -               sd_flag = SD_BALANCE_EXEC;
-> -       }
-> -
->         if (wake_flags & WF_TTWU) {
->                 record_wakee(p);
->
-> @@ -6657,7 +6646,19 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->
->         rcu_read_lock();
->
-> -       sd = highest_flag_domain(cpu, sd_flag);
-> +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
-> +       case WF_TTWU:
-> +               sd_flag = SD_BALANCE_WAKE;
-> +               sd = rcu_dereference(per_cpu(sd_balance_wake, cpu));
+This series add a new uio driver for freescale 85xx platforms to
+access the Cache-Sram form user level. This is extremely helpful
+for the user-space applications that require high performance memory
+accesses.
 
-It's worth having a direct pointer for the fast path which we always
-try to keep short but the other paths are already slow and will not
-get any benefit of this per cpu pointer.
-We should keep the loop for the slow paths
+It fixes the compile errors and warning of the hardware level drivers
+and implements the uio driver in uio_fsl_85xx_cache_sram.c.
 
-> +               break;
-> +       case WF_FORK:
-> +               sd_flag = SD_BALANCE_FORK;
-> +               sd = rcu_dereference(per_cpu(sd_balance_fork, cpu));
-> +               break;
-> +       default:
-> +               sd_flag = SD_BALANCE_EXEC;
-> +               sd = rcu_dereference(per_cpu(sd_balance_exec, cpu));
-> +       }
->
->         /*
->          * If !want_affine, we just look for the highest domain where
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 448f5d630544..4b014103affb 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1423,6 +1423,9 @@ DECLARE_PER_CPU(int, sd_llc_size);
->  DECLARE_PER_CPU(int, sd_llc_id);
->  DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
-> +DECLARE_PER_CPU(struct sched_domain __rcu *, sd_balance_wake);
-> +DECLARE_PER_CPU(struct sched_domain __rcu *, sd_balance_fork);
-> +DECLARE_PER_CPU(struct sched_domain __rcu *, sd_balance_exec);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
->  extern struct static_key_false sched_asym_cpucapacity;
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 1d7b446fac7d..66763c539bbd 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -618,6 +618,9 @@ DEFINE_PER_CPU(int, sd_llc_size);
->  DEFINE_PER_CPU(int, sd_llc_id);
->  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
-> +DEFINE_PER_CPU(struct sched_domain __rcu *, sd_balance_wake);
-> +DEFINE_PER_CPU(struct sched_domain __rcu *, sd_balance_fork);
-> +DEFINE_PER_CPU(struct sched_domain __rcu *, sd_balance_exec);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
->  DEFINE_STATIC_KEY_FALSE(sched_asym_cpucapacity);
-> @@ -644,6 +647,15 @@ static void update_top_cache_domain(int cpu)
->         sd = lowest_flag_domain(cpu, SD_NUMA);
->         rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
->
-> +       sd = highest_flag_domain(cpu, SD_BALANCE_WAKE);
-> +       rcu_assign_pointer(per_cpu(sd_balance_wake, cpu), sd);
-> +
-> +       sd = highest_flag_domain(cpu, SD_BALANCE_FORK);
-> +       rcu_assign_pointer(per_cpu(sd_balance_fork, cpu), sd);
-> +
-> +       sd = highest_flag_domain(cpu, SD_BALANCE_EXEC);
-> +       rcu_assign_pointer(per_cpu(sd_balance_exec, cpu), sd);
-> +
->         sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
->         rcu_assign_pointer(per_cpu(sd_asym_packing, cpu), sd);
->
-> --
-> 2.24.0
->
+Changes since v1:
+ * Addressed comments from Greg K-H
+ * Moved kfree(info->name) into uio_info_free_internal()
+
+Changes since v2:
+ * Drop the patch that modifies Kconfigs of arch/powerpc/platforms
+   and modified the sequence of patches:
+    01:dropped, 02->03, 03->02, 04->01, 05->04
+ * Addressed comments from Greg, Scott and Christophe
+ * Use "uiomem->internal_addr" as if condition for sram memory free,
+   and memset the uiomem entry
+ * Modified of_match_table make the driver apart from Cache-Sram HW info
+   which belong to the HW level driver fsl_85xx_cache_sram to match
+ * Use roundup_pow_of_two for align calc(really learned a lot from Christophe)
+ * Remove useless clear block of uiomem entries.
+ * Use UIO_INFO_VER micro for info->version, and define it as
+   "devicetree,pseudo", meaning this is pseudo device and probed from
+   device tree configuration
+ * Select FSL_85XX_CACHE_SRAM rather than depends on it
+
+Wang Wenhu (4):
+  powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+  powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
+  powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
+  drivers: uio: new driver for fsl_85xx_cache_sram
+
+ arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
+ arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
+ drivers/uio/Kconfig                       |   9 ++
+ drivers/uio/Makefile                      |   1 +
+ drivers/uio/uio_fsl_85xx_cache_sram.c     | 158 ++++++++++++++++++++++
+ 5 files changed, 171 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+
+-- 
+2.17.1
+
