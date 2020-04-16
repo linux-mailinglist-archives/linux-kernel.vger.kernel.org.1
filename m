@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FADB1AC04E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4691B1AC04B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634121AbgDPLxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S2634055AbgDPLx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506637AbgDPLwe (ORCPT
+        with ESMTP id S2506707AbgDPLwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:52:34 -0400
+        Thu, 16 Apr 2020 07:52:39 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CC4C061A41
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7F1C03C1A6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=kg55YtsJ6gD5kHbkXXyPvvIFeLGzwYJ6nx3S8CezmJ4=; b=fo2PvDOGCfomuFAnKF5v6F9ZBQ
-        dMKRMt98A/sDpO5rzfVTJ98SwRHGR1ggBY8w0fGKNmEpVGwmTHs+w8LSJNEWF8B3D272tc4+cbyFG
-        lU1CPjmhKR2xQ7d0zRt9Ns6sZF5ikmEJvSVvy2nfExiKhvaynBAbcqzFrH5ID1cuasmfgv65RF/1r
-        WD/ddLc4axPL+kaanBaO4dBEHfE73NeJ3L9nfynxe0IZTYHWIM8se08f20Kwfi0usv2bAojzOdERj
-        MiwjLZniIwWIRIV8V/y1f/Gn5m3FVN+mYdfvEf59TWC8Igemof61fm331TzVBOFCjQ24+q+dM+Dxy
-        +CaW1UIg==;
+        bh=+/Xl9QZxuCUp81LzYaZ7P1/ZN4KYWh4fZr7Ht4W81L4=; b=W2deN1OUs+OKjS4F/w/VFS9Za2
+        RZjIUtGQjKxjZhL7a+CbdH4fn0jttN+rkzHGhRZqR3oMDgNnWa4OQwf1DLz4HCG/6f3YZv2K+nwZj
+        KBJRvu9ioEe09xEhpeTR1YLupkDUlCeaMfJNeMy9MZigy7YfzykeB59sQ8cwbbR0gGyT+a5iOnSpg
+        nA5utnBj7GJObaf4Xm1OJdiP/6kz2BI22p55d4maYBUvPtkFc4WoJd19/ggBKBLb3cv95I9IgTOwv
+        lM+ki2tVBb9zsxO9vfWDUeYP2y1U6V+rA1bz24F1QtgIq2wIakRAFrE6sNm89DZb/n8ZX0godwbJJ
+        ExCecrog==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP34H-0004sV-1E; Thu, 16 Apr 2020 11:52:29 +0000
+        id 1jP34F-0004sD-NQ; Thu, 16 Apr 2020 11:52:27 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5902A307456;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 590F2307479;
         Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 34F882B0DE4C7; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
-Message-Id: <20200416115118.926738768@infradead.org>
+        id 39F0D2B0DE4C8; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
+Message-Id: <20200416115118.986441913@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 16 Apr 2020 13:47:13 +0200
+Date:   Thu, 16 Apr 2020 13:47:14 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, jpoimboe@redhat.com
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, peterz@infradead.org,
         mhiramat@kernel.org, mbenes@suse.cz, jthierry@redhat.com,
         alexandre.chartre@oracle.com
-Subject: [PATCH v5 07/17] objtool: Remove SAVE/RESTORE hints
+Subject: [PATCH v5 08/17] objtool: Rename struct cfi_state
 References: <20200416114706.625340212@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,141 +52,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SAVE/RESTORE hints are now unused; remove them.
+There's going to be a new struct cfi_state, rename this one to make
+place.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/x86/include/asm/orc_types.h       |    4 ---
- arch/x86/include/asm/unwind_hints.h    |   13 ----------
- tools/arch/x86/include/asm/orc_types.h |    4 ---
- tools/objtool/check.c                  |   42 ++-------------------------------
- tools/objtool/check.h                  |    2 -
- 5 files changed, 7 insertions(+), 58 deletions(-)
+ tools/objtool/arch.h            |    2 +-
+ tools/objtool/arch/x86/decode.c |    2 +-
+ tools/objtool/cfi.h             |    2 +-
+ tools/objtool/check.c           |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/arch/x86/include/asm/orc_types.h
-+++ b/arch/x86/include/asm/orc_types.h
-@@ -58,9 +58,7 @@
- #define ORC_TYPE_CALL			0
- #define ORC_TYPE_REGS			1
- #define ORC_TYPE_REGS_IRET		2
--#define UNWIND_HINT_TYPE_SAVE		3
--#define UNWIND_HINT_TYPE_RESTORE	4
--#define UNWIND_HINT_TYPE_RET_OFFSET	5
-+#define UNWIND_HINT_TYPE_RET_OFFSET	3
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -68,7 +68,7 @@ struct stack_op {
+ 	struct list_head list;
+ };
  
- #ifndef __ASSEMBLY__
- /*
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -86,15 +86,6 @@
- 	UNWIND_HINT sp_offset=\sp_offset
- .endm
+-void arch_initial_func_cfi_state(struct cfi_state *state);
++void arch_initial_func_cfi_state(struct cfi_init_state *state);
  
--.macro UNWIND_HINT_SAVE
--	UNWIND_HINT type=UNWIND_HINT_TYPE_SAVE
--.endm
--
--.macro UNWIND_HINT_RESTORE
--	UNWIND_HINT type=UNWIND_HINT_TYPE_RESTORE
--.endm
--
--
- /*
-  * RET_OFFSET: Used on instructions that terminate a function; mostly RETURN
-  * and sibling calls. On these, sp_offset denotes the expected offset from
-@@ -118,9 +109,7 @@
- 	".balign 4 \n\t"					\
- 	".popsection\n\t"
+ int arch_decode_instruction(struct elf *elf, struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -501,7 +501,7 @@ int arch_decode_instruction(struct elf *
+ 	return 0;
+ }
  
--#define UNWIND_HINT_SAVE UNWIND_HINT(0, 0, UNWIND_HINT_TYPE_SAVE, 0)
--
--#define UNWIND_HINT_RESTORE UNWIND_HINT(0, 0, UNWIND_HINT_TYPE_RESTORE, 0)
-+#define UNWIND_HINT_RET_OFFSET(offset) UNWIND_HINT(0, (offset), UNWIND_HINT_TYPE_RET_OFFSET, 0)
+-void arch_initial_func_cfi_state(struct cfi_state *state)
++void arch_initial_func_cfi_state(struct cfi_init_state *state)
+ {
+ 	int i;
  
- #endif /* __ASSEMBLY__ */
+--- a/tools/objtool/cfi.h
++++ b/tools/objtool/cfi.h
+@@ -35,7 +35,7 @@ struct cfi_reg {
+ 	int offset;
+ };
  
---- a/tools/arch/x86/include/asm/orc_types.h
-+++ b/tools/arch/x86/include/asm/orc_types.h
-@@ -58,9 +58,7 @@
- #define ORC_TYPE_CALL			0
- #define ORC_TYPE_REGS			1
- #define ORC_TYPE_REGS_IRET		2
--#define UNWIND_HINT_TYPE_SAVE		3
--#define UNWIND_HINT_TYPE_RESTORE	4
--#define UNWIND_HINT_TYPE_RET_OFFSET	5
-+#define UNWIND_HINT_TYPE_RET_OFFSET	3
- 
- #ifndef __ASSEMBLY__
- /*
+-struct cfi_state {
++struct cfi_init_state {
+ 	struct cfi_reg cfa;
+ 	struct cfi_reg regs[CFI_NUM_REGS];
+ };
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1246,15 +1246,7 @@ static int read_unwind_hints(struct objt
+@@ -27,7 +27,7 @@ struct alternative {
+ };
  
- 		cfa = &insn->state.cfa;
+ const char *objname;
+-struct cfi_state initial_func_cfi;
++struct cfi_init_state initial_func_cfi;
  
--		if (hint->type == UNWIND_HINT_TYPE_SAVE) {
--			insn->save = true;
--			continue;
--
--		} else if (hint->type == UNWIND_HINT_TYPE_RESTORE) {
--			insn->restore = true;
--			insn->hint = true;
--
--		} else if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
-+		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
- 			insn->ret_offset = hint->sp_offset;
- 			continue;
- 		}
-@@ -2070,37 +2062,9 @@ static int validate_branch(struct objtoo
- 				return 0;
- 		}
- 
--		if (insn->hint) {
--			if (insn->restore) {
--				struct instruction *save_insn, *i;
--
--				i = insn;
--				save_insn = NULL;
--				sym_for_each_insn_continue_reverse(file, func, i) {
--					if (i->save) {
--						save_insn = i;
--						break;
--					}
--				}
--
--				if (!save_insn) {
--					WARN_FUNC("no corresponding CFI save for CFI restore",
--						  sec, insn->offset);
--					return 1;
--				}
--
--				if (!save_insn->visited) {
--					WARN_FUNC("objtool isn't smart enough to handle this CFI save/restore combo",
--						  sec, insn->offset);
--					return 1;
--				}
--
--				insn->state = save_insn->state;
--			}
--
-+		if (insn->hint)
- 			state = insn->state;
--
--		} else
-+		else
- 			insn->state = state;
- 
- 		insn->visited |= visited;
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -34,7 +34,7 @@ struct instruction {
- 	enum insn_type type;
- 	unsigned long immediate;
- 	bool alt_group, dead_end, ignore, ignore_alts;
--	bool hint, save, restore;
-+	bool hint;
- 	bool retpoline_safe;
- 	u8 visited;
- 	u8 ret_offset;
+ struct instruction *find_insn(struct objtool_file *file,
+ 			      struct section *sec, unsigned long offset)
 
 
