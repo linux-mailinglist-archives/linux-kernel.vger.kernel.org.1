@@ -2,400 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7971AC993
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E7C1AC9AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503266AbgDPPYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:24:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57646 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395194AbgDPPY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:24:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 21D76AB5C;
-        Thu, 16 Apr 2020 15:24:26 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DD2B81E0E5A; Thu, 16 Apr 2020 17:24:25 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 17:24:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2 V3] MM: Discard NR_UNSTABLE_NFS, use NR_WRITEBACK
- instead.
-Message-ID: <20200416152425.GR23739@quack2.suse.cz>
-References: <87tv2b7q72.fsf@notabene.neil.brown.name>
- <87v9miydai.fsf@notabene.neil.brown.name>
- <87ftdgw58w.fsf@notabene.neil.brown.name>
- <87wo6gs26e.fsf@notabene.neil.brown.name>
- <87r1wos23k.fsf@notabene.neil.brown.name>
+        id S2392278AbgDPPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504260AbgDPPZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:25:07 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09709C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:25:06 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id u13so5345276wrp.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MC9RC4OOYOTP32+3XNp7wtNFT17uV5Ek7QfI8e7TLeo=;
+        b=av4SWgmAtX8p7gi1AsSSRhSkIO8kXiG7Gc5yAUoDxLuQLFB2+YyPCpAsF+UiXwGO16
+         +RTClbCkA+GdD940Ag1J2VIJ8Bt6Qhq1jnTdieVlr1Fg+D1baxB/12zCvOR13kOJBNrx
+         qSOGs5Gu064uzBGBaxMahp1GaKPBHga6AIJ/uGx0dNi6xBArRg+RYZUFJVyh+b+5/hkO
+         qBDaeo7vY3BUYTQSMikC0l55Cj3qUnOcmRbe/2/+XiiHMyghqaydmsbwbht3//6eiT2F
+         d7EE7b+troPC5AmV+nhY8ocQcqrZkq4kHsfNdDdLWWh/kHtibBYV7qNsTV4iHzymk9cM
+         4h6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MC9RC4OOYOTP32+3XNp7wtNFT17uV5Ek7QfI8e7TLeo=;
+        b=dTNlv5mh7FnQSAOssU6gol0FTcXnDXQJ5TbGoVjaLsgQUzaU2Y6QRwzkQ2vTtHHA2C
+         wJV9JA0nrxQ8Dt1p3L63qqMj41t/k1JNX5e2VlS+ExITgidSMUySDA/zgIZ7Oc60y2tW
+         P6v24gsXMAYnqhXlIhraiIa/CSvlO0rv0X9iF16HGdedI/TBl1CrXmo68QTZrDjuKbgZ
+         qPppGNkqXDVdDMtB/8i1HYec/LH8lJ0Tr2oPgFsRfqqYjQuSbeaZTAtTM9FWXCWxKsdt
+         UdkXM0dM7olF/nehY7N4dYqQxwU7vmkkQI28gE0sNk8/V4JWl7WPz5wnMlvXQWP9iPmG
+         eb3g==
+X-Gm-Message-State: AGi0Pub/iyE5XD/eVBmEYJHMwnY13d7T32f58fLlsqppWGWnHLcE3Zmv
+        ub56eOBHKzh0DMt9KGIsMZMf2Np43di9jg==
+X-Google-Smtp-Source: APiQypIl+0gLXQFH0DVOclNzoYwFPgHGOgZCv5kErtoHhYcJAHaQM8n7WhFcobA+2fZkAQ6FkWe+2A==
+X-Received: by 2002:adf:ed46:: with SMTP id u6mr7635635wro.327.1587050704557;
+        Thu, 16 Apr 2020 08:25:04 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
+        by smtp.gmail.com with ESMTPSA id i17sm18019489wru.39.2020.04.16.08.25.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 08:25:03 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     daniel@ffwll.ch, dri-devel@lists.freedesktop.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/8] drm/meson: add support for Amlogic Video FBC
+Date:   Thu, 16 Apr 2020 17:24:52 +0200
+Message-Id: <20200416152500.29429-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1wos23k.fsf@notabene.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 16-04-20 10:31:27, NeilBrown wrote:
-> 
-> After an NFS page has been written it is considered "unstable" until a
-> COMMIT request succeeds.  If the COMMIT fails, the page will be
-> re-written.
-> 
-> These "unstable" pages are currently accounted as "reclaimable", either
-> in WB_RECLAIMABLE, or in NR_UNSTABLE_NFS which is included in a
-> 'reclaimable' count.  This might have made sense when sending the COMMIT
-> required a separate action by the VFS/MM (e.g.  releasepage() used to
-> send a COMMIT).  However now that all writes generated by ->writepages()
-> will automatically be followed by a COMMIT (since commit 919e3bd9a875
-> ("NFS: Ensure we commit after writeback is complete")) it makes more
-> sense to treat them as writeback pages.
-> 
-> So this patch removes NR_UNSTABLE_NFS and accounts unstable pages in
-> NR_WRITEBACK and WB_WRITEBACK.
-> 
-> A particular effect of this change is that when
-> wb_check_background_flush() calls wb_over_bg_threshold(), the latter
-> will report 'true' a lot less often as the 'unstable' pages are no
-> longer considered 'dirty' (as there is nothing that writeback can do
-> about them anyway).
-> 
-> Currently wb_check_background_flush() will trigger writeback to NFS even
-> when there are relatively few dirty pages (if there are lots of unstable
-> pages), this can result in small writes going to the server (10s of
-> Kilobytes rather than a Megabyte) which hurts throughput.
-> With this patch, there are fewer writes which are each larger on average.
-> 
-> Where the NR_UNSTABLE_NFS count was included in statistics
-> virtual-files, the entry is retained, but the value is hard-coded as
-> zero.  static trace points and warning printks which mentioned this
-> counter no longer report it.
-> 
-> Acked-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-> Acked-by: Michal Hocko <mhocko@suse.com> # for MM parts
-> Signed-off-by: NeilBrown <neilb@suse.de>
+Amlogic uses a proprietary lossless image compression protocol and format
+for their hardware video codec accelerators, either video decoders or
+video input encoders.
 
-This looks good to me. You can add:
+It considerably reduces memory bandwidth while writing and reading
+frames in memory.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+The underlying storage is considered to be 3 components, 8bit or 10-bit
+per component, YCbCr 420, single plane :
+- DRM_FORMAT_YUV420_8BIT
+- DRM_FORMAT_YUV420_10BIT
 
-BTW I prefer the comment style Christoph wants but I don't insist...
+This modifier will be notably added to DMA-BUF frames imported from the V4L2
+Amlogic VDEC decoder.
 
-								Honza
+At least two layout are supported :
+- Basic: composed of a body and a header
+- Scatter: the buffer is filled with a IOMMU scatter table referring
+  to the encoder current memory layout. This mode if more efficient in terms
+  of memory allocation but frames are not dumpable and only valid during until
+  the buffer is freed and back in control of the encoder
 
-> ---
->  Documentation/filesystems/proc.rst |  4 ++--
->  drivers/base/node.c                |  2 +-
->  fs/fs-writeback.c                  |  1 -
->  fs/nfs/internal.h                  | 10 +++++++---
->  fs/nfs/write.c                     |  4 ++--
->  fs/proc/meminfo.c                  |  3 +--
->  include/linux/mmzone.h             |  1 -
->  include/trace/events/writeback.h   |  5 +----
->  mm/memcontrol.c                    |  1 -
->  mm/page-writeback.c                | 17 ++++-------------
->  mm/page_alloc.c                    |  5 +----
->  mm/vmstat.c                        | 11 +++++++++--
->  12 files changed, 28 insertions(+), 36 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 38b606991065..092b7b44d158 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -1042,8 +1042,8 @@ PageTables
->                amount of memory dedicated to the lowest level of page
->                tables.
->  NFS_Unstable
-> -              NFS pages sent to the server, but not yet committed to stable
-> -	      storage
-> +              Always zero. Previous counted pages which had been written to
-> +              the server, but has not been committed to stable storage.
->  Bounce
->                Memory used for block device "bounce buffers"
->  WritebackTmp
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 10d7e818e118..15f5ed6a8830 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -439,7 +439,7 @@ static ssize_t node_read_meminfo(struct device *dev,
->  		       nid, K(i.sharedram),
->  		       nid, sum_zone_node_page_state(nid, NR_KERNEL_STACK_KB),
->  		       nid, K(sum_zone_node_page_state(nid, NR_PAGETABLE)),
-> -		       nid, K(node_page_state(pgdat, NR_UNSTABLE_NFS)),
-> +		       nid, 0,
->  		       nid, K(sum_zone_node_page_state(nid, NR_BOUNCE)),
->  		       nid, K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
->  		       nid, K(sreclaimable +
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 76ac9c7d32ec..c5bdf46e3b4b 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -1070,7 +1070,6 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
->  static unsigned long get_nr_dirty_pages(void)
->  {
->  	return global_node_page_state(NR_FILE_DIRTY) +
-> -		global_node_page_state(NR_UNSTABLE_NFS) +
->  		get_nr_dirty_inodes();
->  }
->  
-> diff --git a/fs/nfs/internal.h b/fs/nfs/internal.h
-> index 1f32a9fbfdaf..6673a77884d9 100644
-> --- a/fs/nfs/internal.h
-> +++ b/fs/nfs/internal.h
-> @@ -668,7 +668,8 @@ void nfs_super_set_maxbytes(struct super_block *sb, __u64 maxfilesize)
->  }
->  
->  /*
-> - * Record the page as unstable and mark its inode as dirty.
-> + * Record the page as unstable (an extra writeback period) and mark its
-> + * inode as dirty.
->   */
->  static inline
->  void nfs_mark_page_unstable(struct page *page, struct nfs_commit_info *cinfo)
-> @@ -676,8 +677,11 @@ void nfs_mark_page_unstable(struct page *page, struct nfs_commit_info *cinfo)
->  	if (!cinfo->dreq) {
->  		struct inode *inode = page_file_mapping(page)->host;
->  
-> -		inc_node_page_state(page, NR_UNSTABLE_NFS);
-> -		inc_wb_stat(&inode_to_bdi(inode)->wb, WB_RECLAIMABLE);
-> +		/* This page is really still in write-back - just that the
-> +		 * writeback is happening on the server now.
-> +		 */
-> +		inc_node_page_state(page, NR_WRITEBACK);
-> +		inc_wb_stat(&inode_to_bdi(inode)->wb, WB_WRITEBACK);
->  		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
->  	}
->  }
-> diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-> index df4b87c30ac9..d9ea824accb7 100644
-> --- a/fs/nfs/write.c
-> +++ b/fs/nfs/write.c
-> @@ -946,9 +946,9 @@ nfs_mark_request_commit(struct nfs_page *req, struct pnfs_layout_segment *lseg,
->  static void
->  nfs_clear_page_commit(struct page *page)
->  {
-> -	dec_node_page_state(page, NR_UNSTABLE_NFS);
-> +	dec_node_page_state(page, NR_WRITEBACK);
->  	dec_wb_stat(&inode_to_bdi(page_file_mapping(page)->host)->wb,
-> -		    WB_RECLAIMABLE);
-> +		    WB_WRITEBACK);
->  }
->  
->  /* Called holding the request lock on @req */
-> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> index 8c1f1bb1a5ce..9bd94b5a9658 100644
-> --- a/fs/proc/meminfo.c
-> +++ b/fs/proc/meminfo.c
-> @@ -106,8 +106,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  	show_val_kb(m, "PageTables:     ",
->  		    global_zone_page_state(NR_PAGETABLE));
->  
-> -	show_val_kb(m, "NFS_Unstable:   ",
-> -		    global_node_page_state(NR_UNSTABLE_NFS));
-> +	show_val_kb(m, "NFS_Unstable:   ", 0);
->  	show_val_kb(m, "Bounce:         ",
->  		    global_zone_page_state(NR_BOUNCE));
->  	show_val_kb(m, "WritebackTmp:   ",
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 1b9de7d220fb..a89f47515eb1 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -193,7 +193,6 @@ enum node_stat_item {
->  	NR_FILE_THPS,
->  	NR_FILE_PMDMAPPED,
->  	NR_ANON_THPS,
-> -	NR_UNSTABLE_NFS,	/* NFS unstable pages */
->  	NR_VMSCAN_WRITE,
->  	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
->  	NR_DIRTIED,		/* page dirtyings since bootup */
-> diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-> index d94def25e4dc..45b5fbdb1f62 100644
-> --- a/include/trace/events/writeback.h
-> +++ b/include/trace/events/writeback.h
-> @@ -542,7 +542,6 @@ TRACE_EVENT(global_dirty_state,
->  	TP_STRUCT__entry(
->  		__field(unsigned long,	nr_dirty)
->  		__field(unsigned long,	nr_writeback)
-> -		__field(unsigned long,	nr_unstable)
->  		__field(unsigned long,	background_thresh)
->  		__field(unsigned long,	dirty_thresh)
->  		__field(unsigned long,	dirty_limit)
-> @@ -553,7 +552,6 @@ TRACE_EVENT(global_dirty_state,
->  	TP_fast_assign(
->  		__entry->nr_dirty	= global_node_page_state(NR_FILE_DIRTY);
->  		__entry->nr_writeback	= global_node_page_state(NR_WRITEBACK);
-> -		__entry->nr_unstable	= global_node_page_state(NR_UNSTABLE_NFS);
->  		__entry->nr_dirtied	= global_node_page_state(NR_DIRTIED);
->  		__entry->nr_written	= global_node_page_state(NR_WRITTEN);
->  		__entry->background_thresh = background_thresh;
-> @@ -561,12 +559,11 @@ TRACE_EVENT(global_dirty_state,
->  		__entry->dirty_limit	= global_wb_domain.dirty_limit;
->  	),
->  
-> -	TP_printk("dirty=%lu writeback=%lu unstable=%lu "
-> +	TP_printk("dirty=%lu writeback=%lu "
->  		  "bg_thresh=%lu thresh=%lu limit=%lu "
->  		  "dirtied=%lu written=%lu",
->  		  __entry->nr_dirty,
->  		  __entry->nr_writeback,
-> -		  __entry->nr_unstable,
->  		  __entry->background_thresh,
->  		  __entry->dirty_thresh,
->  		  __entry->dirty_limit,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5beea03dd58a..2db5bbcfc17a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4330,7 +4330,6 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
->  
->  	*pdirty = memcg_exact_page_state(memcg, NR_FILE_DIRTY);
->  
-> -	/* this should eventually include NR_UNSTABLE_NFS */
->  	*pwriteback = memcg_exact_page_state(memcg, NR_WRITEBACK);
->  	*pfilepages = memcg_exact_page_state(memcg, NR_INACTIVE_FILE) +
->  			memcg_exact_page_state(memcg, NR_ACTIVE_FILE);
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 9692c553526b..b3b08de01d12 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -504,7 +504,6 @@ bool node_dirty_ok(struct pglist_data *pgdat)
->  	unsigned long nr_pages = 0;
->  
->  	nr_pages += node_page_state(pgdat, NR_FILE_DIRTY);
-> -	nr_pages += node_page_state(pgdat, NR_UNSTABLE_NFS);
->  	nr_pages += node_page_state(pgdat, NR_WRITEBACK);
->  
->  	return nr_pages <= limit;
-> @@ -758,7 +757,7 @@ static void mdtc_calc_avail(struct dirty_throttle_control *mdtc,
->   * bounded by the bdi->min_ratio and/or bdi->max_ratio parameters, if set.
->   *
->   * Return: @wb's dirty limit in pages. The term "dirty" in the context of
-> - * dirty balancing includes all PG_dirty, PG_writeback and NFS unstable pages.
-> + * dirty balancing includes all PG_dirty and PG_writeback pages.
->   */
->  static unsigned long __wb_calc_thresh(struct dirty_throttle_control *dtc)
->  {
-> @@ -1566,7 +1565,7 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
->  	struct dirty_throttle_control * const mdtc = mdtc_valid(&mdtc_stor) ?
->  						     &mdtc_stor : NULL;
->  	struct dirty_throttle_control *sdtc;
-> -	unsigned long nr_reclaimable;	/* = file_dirty + unstable_nfs */
-> +	unsigned long nr_reclaimable;	/* = file_dirty */
->  	long period;
->  	long pause;
->  	long max_pause;
-> @@ -1586,14 +1585,7 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
->  		unsigned long m_thresh = 0;
->  		unsigned long m_bg_thresh = 0;
->  
-> -		/*
-> -		 * Unstable writes are a feature of certain networked
-> -		 * filesystems (i.e. NFS) in which data may have been
-> -		 * written to the server's write cache, but has not yet
-> -		 * been flushed to permanent storage.
-> -		 */
-> -		nr_reclaimable = global_node_page_state(NR_FILE_DIRTY) +
-> -					global_node_page_state(NR_UNSTABLE_NFS);
-> +		nr_reclaimable = global_node_page_state(NR_FILE_DIRTY);
->  		gdtc->avail = global_dirtyable_memory();
->  		gdtc->dirty = nr_reclaimable + global_node_page_state(NR_WRITEBACK);
->  
-> @@ -1948,8 +1940,7 @@ bool wb_over_bg_thresh(struct bdi_writeback *wb)
->  	 * as we're trying to decide whether to put more under writeback.
->  	 */
->  	gdtc->avail = global_dirtyable_memory();
-> -	gdtc->dirty = global_node_page_state(NR_FILE_DIRTY) +
-> -		      global_node_page_state(NR_UNSTABLE_NFS);
-> +	gdtc->dirty = global_node_page_state(NR_FILE_DIRTY);
->  	domain_dirty_limits(gdtc);
->  
->  	if (gdtc->dirty > gdtc->bg_thresh)
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 69827d4fa052..238b5518f3c5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5310,7 +5310,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
->  
->  	printk("active_anon:%lu inactive_anon:%lu isolated_anon:%lu\n"
->  		" active_file:%lu inactive_file:%lu isolated_file:%lu\n"
-> -		" unevictable:%lu dirty:%lu writeback:%lu unstable:%lu\n"
-> +		" unevictable:%lu dirty:%lu writeback:%lu\n"
->  		" slab_reclaimable:%lu slab_unreclaimable:%lu\n"
->  		" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n"
->  		" free:%lu free_pcp:%lu free_cma:%lu\n",
-> @@ -5323,7 +5323,6 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
->  		global_node_page_state(NR_UNEVICTABLE),
->  		global_node_page_state(NR_FILE_DIRTY),
->  		global_node_page_state(NR_WRITEBACK),
-> -		global_node_page_state(NR_UNSTABLE_NFS),
->  		global_node_page_state(NR_SLAB_RECLAIMABLE),
->  		global_node_page_state(NR_SLAB_UNRECLAIMABLE),
->  		global_node_page_state(NR_FILE_MAPPED),
-> @@ -5356,7 +5355,6 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
->  			" anon_thp: %lukB"
->  #endif
->  			" writeback_tmp:%lukB"
-> -			" unstable:%lukB"
->  			" all_unreclaimable? %s"
->  			"\n",
->  			pgdat->node_id,
-> @@ -5378,7 +5376,6 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
->  			K(node_page_state(pgdat, NR_ANON_THPS) * HPAGE_PMD_NR),
->  #endif
->  			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
-> -			K(node_page_state(pgdat, NR_UNSTABLE_NFS)),
->  			pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES ?
->  				"yes" : "no");
->  	}
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 96d21a792b57..6c719f184843 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1108,7 +1108,7 @@ int fragmentation_index(struct zone *zone, unsigned int order)
->  					TEXT_FOR_HIGHMEM(xx) xx "_movable",
->  
->  const char * const vmstat_text[] = {
-> -	/* enum zone_stat_item countes */
-> +	/* enum zone_stat_item counters */
->  	"nr_free_pages",
->  	"nr_zone_inactive_anon",
->  	"nr_zone_active_anon",
-> @@ -1162,7 +1162,6 @@ const char * const vmstat_text[] = {
->  	"nr_file_hugepages",
->  	"nr_file_pmdmapped",
->  	"nr_anon_transparent_hugepages",
-> -	"nr_unstable",
->  	"nr_vmscan_write",
->  	"nr_vmscan_immediate_reclaim",
->  	"nr_dirtied",
-> @@ -1723,6 +1722,14 @@ static int vmstat_show(struct seq_file *m, void *arg)
->  	seq_puts(m, vmstat_text[off]);
->  	seq_put_decimal_ull(m, " ", *l);
->  	seq_putc(m, '\n');
-> +
-> +	if (off == NR_VMSTAT_ITEMS - 1) {
-> +		/* We've come to the end - add any deprecated counters
-> +		 * to avoid breaking userspace which might depend on
-> +		 * them being present.
-> +		 */
-> +		seq_puts(m, "nr_unstable 0\n");
-> +	}
->  	return 0;
->  }
->  
-> -- 
-> 2.26.0
-> 
+At least two options are supported :
+- Memory saving: when the pixel bpp is 8b, the size of the superblock can
+  be reduced, thus saving memory.
 
+This serie adds the missing register, updated the FBC decoder registers
+content to be committed by the crtc code.
+
+The Amlogic FBC has been tested with compressed content from the Amlogic
+HW VP9 decoder on S905X (GXL), S905D2 (G12A) and S905X3 (SM1) in 8bit
+(Scatter+Mem Saving on G12A/SM1, Mem Saving on GXL) and 10bit
+(Scatter on G12A/SM1, default on GXL).
+
+It's expected to work as-is on GXM and G12B SoCs.
+
+Changes since v4 at [4]:
+- added layout and options mask
+- cosmetic changes in fourcc.h
+- fixed mod check using the masks
+- fixed plane apply using the masks
+
+Changes since v3 at [3]:
+- added dropped fourcc patch for scatter
+- fixed build of last patch
+
+Changes since v2 at [2]:
+- Added "BASIC" layout and moved the SCATTER mode as layout, making
+  BASIC and SCATTER layout exclusives
+- Moved the Memory Saving at bit 8 for options fields
+- Split fourcc and overlay patch to introduce basic, mem saving and then
+  scatter in separate patches
+- Added comment about "transferability" of the buffers
+
+Changes since v1 at [1]:
+- s/VD1_AXI_SEL_AFB/VD1_AXI_SEL_AFBC/ into meson_registers.h
+
+[1] https://patchwork.freedesktop.org/series/73722/#rev1
+[2] https://patchwork.freedesktop.org/series/73722/#rev2
+[3] https://patchwork.freedesktop.org/series/73722/#rev3
+[4] https://patchwork.freedesktop.org/series/73722/#rev4
+
+Neil Armstrong (8):
+  drm/fourcc: Add modifier definitions for describing Amlogic Video
+    Framebuffer Compression
+  drm/meson: add Amlogic Video FBC registers
+  drm/meson: overlay: setup overlay for Amlogic FBC
+  drm/meson: crtc: handle commit of Amlogic FBC frames
+  drm/fourcc: amlogic: Add modifier definitions for Memory Saving option
+  drm/meson: overlay: setup overlay for Amlogic FBC Memory Saving mode
+  drm/fourcc: amlogic: Add modifier definitions for the Scatter layout
+  drm/meson: overlay: setup overlay for Amlogic FBC Scatter Memory
+    layout
+
+ drivers/gpu/drm/meson/meson_crtc.c      | 118 +++++++---
+ drivers/gpu/drm/meson/meson_drv.h       |  16 ++
+ drivers/gpu/drm/meson/meson_overlay.c   | 289 +++++++++++++++++++++++-
+ drivers/gpu/drm/meson/meson_registers.h |  22 ++
+ include/uapi/drm/drm_fourcc.h           |  68 ++++++
+ 5 files changed, 475 insertions(+), 38 deletions(-)
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.22.0
+
