@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30121ACAE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8691ACBDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395411AbgDPPkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49856 "EHLO mail.kernel.org"
+        id S2896247AbgDPNa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897482AbgDPNhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:37:35 -0400
+        id S2895633AbgDPN15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:27:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE93D21BE5;
-        Thu, 16 Apr 2020 13:37:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3FE821BE5;
+        Thu, 16 Apr 2020 13:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044254;
-        bh=JF2OLf0h1q2oa0DCJdkNYASXC1znLkDnKr0VR0oU0w8=;
+        s=default; t=1587043676;
+        bh=4m1dUXBUV9k6o18wlvbkSZoGbZqakAwYAzHfc90hGU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VUM8/Ozy84d5W3FXeixvH2rCBrdo/eHI4TGHjugB6LUDtLUc0jmUALQ3m5NE7ggwa
-         TDpr9Rif1rVYvJtdvV5lQy4tUNH0GCtm8uYEn99zsN1mhx8+xREXRc3QxHfQMTnsWj
-         s4geZICAFdAoono2RM5WyPptuvrhsDyY/G0v3nsU=
+        b=KHCLCkQaWvVUM9AvMY5qxDTlE+gOZDLikeWL1eLA9IZde4oGusr1JyaD3fV3zK/D0
+         qx7eAcfDDXO55HbX7Ztfr+T497Q2YcjrhlDIi9c5zFndmhoaTHcCvp0Ul6VoZh/asc
+         bEocfvA4LCv5tkbVlly5D00RETCfg2K8e0LD+DOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liran Alon <liran.alon@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.5 143/257] KVM: nVMX: Properly handle userspace interrupt window request
-Date:   Thu, 16 Apr 2020 15:23:14 +0200
-Message-Id: <20200416131344.298948472@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Jari Ruusu <jari.ruusu@gmail.com>
+Subject: [PATCH 4.19 054/146] ALSA: pcm: oss: Fix regression by buffer overflow fix
+Date:   Thu, 16 Apr 2020 15:23:15 +0200
+Message-Id: <20200416131250.292527083@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,163 +43,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit a1c77abb8d93381e25a8d2df3a917388244ba776 upstream.
+commit ae769d3556644888c964635179ef192995f40793 upstream.
 
-Return true for vmx_interrupt_allowed() if the vCPU is in L2 and L1 has
-external interrupt exiting enabled.  IRQs are never blocked in hardware
-if the CPU is in the guest (L2 from L1's perspective) when IRQs trigger
-VM-Exit.
+The recent fix for the OOB access in PCM OSS plugins (commit
+f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
+regression on OSS applications.  The patch introduced the size check
+in client and slave size calculations to limit to each plugin's buffer
+size, but I overlooked that some code paths call those without
+allocating the buffer but just for estimation.
 
-The new check percolates up to kvm_vcpu_ready_for_interrupt_injection()
-and thus vcpu_run(), and so KVM will exit to userspace if userspace has
-requested an interrupt window (to inject an IRQ into L1).
+This patch fixes the bug by skipping the size check for those code
+paths while keeping checking in the actual transfer calls.
 
-Remove the @external_intr param from vmx_check_nested_events(), which is
-actually an indicator that userspace wants an interrupt window, e.g.
-it's named @req_int_win further up the stack.  Injecting a VM-Exit into
-L1 to try and bounce out to L0 userspace is all kinds of broken and is
-no longer necessary.
-
-Remove the hack in nested_vmx_vmexit() that attempted to workaround the
-breakage in vmx_check_nested_events() by only filling interrupt info if
-there's an actual interrupt pending.  The hack actually made things
-worse because it caused KVM to _never_ fill interrupt info when the
-LAPIC resides in userspace (kvm_cpu_has_interrupt() queries
-interrupt.injected, which is always cleared by prepare_vmcs12() before
-reaching the hack in nested_vmx_vmexit()).
-
-Fixes: 6550c4df7e50 ("KVM: nVMX: Fix interrupt window request with "Acknowledge interrupt on exit"")
-Cc: stable@vger.kernel.org
-Cc: Liran Alon <liran.alon@oracle.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
+Tested-and-reported-by: Jari Ruusu <jari.ruusu@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200403072515.25539-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/kvm_host.h |    2 +-
- arch/x86/kvm/vmx/nested.c       |   18 ++++--------------
- arch/x86/kvm/vmx/vmx.c          |    9 +++++++--
- arch/x86/kvm/x86.c              |   10 +++++-----
- 4 files changed, 17 insertions(+), 22 deletions(-)
+ sound/core/oss/pcm_plugin.c |   32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1147,7 +1147,7 @@ struct kvm_x86_ops {
- 	bool (*pt_supported)(void);
- 	bool (*pku_supported)(void);
- 
--	int (*check_nested_events)(struct kvm_vcpu *vcpu, bool external_intr);
-+	int (*check_nested_events)(struct kvm_vcpu *vcpu);
- 	void (*request_immediate_exit)(struct kvm_vcpu *vcpu);
- 
- 	void (*sched_in)(struct kvm_vcpu *kvm, int cpu);
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3611,7 +3611,7 @@ static void nested_vmx_update_pending_db
- 			    vcpu->arch.exception.payload);
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -196,7 +196,9 @@ int snd_pcm_plugin_free(struct snd_pcm_p
+ 	return 0;
  }
  
--static int vmx_check_nested_events(struct kvm_vcpu *vcpu, bool external_intr)
-+static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
+-snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
++static snd_pcm_sframes_t plug_client_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t drv_frames,
++					  bool check_size)
  {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long exit_qual;
-@@ -3660,8 +3660,7 @@ static int vmx_check_nested_events(struc
- 		return 0;
- 	}
- 
--	if ((kvm_cpu_has_interrupt(vcpu) || external_intr) &&
--	    nested_exit_on_intr(vcpu)) {
-+	if (kvm_cpu_has_interrupt(vcpu) && nested_exit_on_intr(vcpu)) {
- 		if (block_nested_events)
- 			return -EBUSY;
- 		nested_vmx_vmexit(vcpu, EXIT_REASON_EXTERNAL_INTERRUPT, 0, 0);
-@@ -4309,17 +4308,8 @@ void nested_vmx_vmexit(struct kvm_vcpu *
- 	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
- 
- 	if (likely(!vmx->fail)) {
--		/*
--		 * TODO: SDM says that with acknowledge interrupt on
--		 * exit, bit 31 of the VM-exit interrupt information
--		 * (valid interrupt) is always set to 1 on
--		 * EXIT_REASON_EXTERNAL_INTERRUPT, so we shouldn't
--		 * need kvm_cpu_has_interrupt().  See the commit
--		 * message for details.
--		 */
--		if (nested_exit_intr_ack_set(vcpu) &&
--		    exit_reason == EXIT_REASON_EXTERNAL_INTERRUPT &&
--		    kvm_cpu_has_interrupt(vcpu)) {
-+		if (exit_reason == EXIT_REASON_EXTERNAL_INTERRUPT &&
-+		    nested_exit_intr_ack_set(vcpu)) {
- 			int irq = kvm_cpu_get_interrupt(vcpu);
- 			WARN_ON(irq < 0);
- 			vmcs12->vm_exit_intr_info = irq |
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4485,8 +4485,13 @@ static int vmx_nmi_allowed(struct kvm_vc
- 
- static int vmx_interrupt_allowed(struct kvm_vcpu *vcpu)
- {
--	return (!to_vmx(vcpu)->nested.nested_run_pending &&
--		vmcs_readl(GUEST_RFLAGS) & X86_EFLAGS_IF) &&
-+	if (to_vmx(vcpu)->nested.nested_run_pending)
-+		return false;
-+
-+	if (is_guest_mode(vcpu) && nested_exit_on_intr(vcpu))
-+		return true;
-+
-+	return (vmcs_readl(GUEST_RFLAGS) & X86_EFLAGS_IF) &&
- 		!(vmcs_read32(GUEST_INTERRUPTIBILITY_INFO) &
- 			(GUEST_INTR_STATE_STI | GUEST_INTR_STATE_MOV_SS));
- }
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7572,7 +7572,7 @@ static void update_cr8_intercept(struct
- 	kvm_x86_ops->update_cr8_intercept(vcpu, tpr, max_irr);
- }
- 
--static int inject_pending_event(struct kvm_vcpu *vcpu, bool req_int_win)
-+static int inject_pending_event(struct kvm_vcpu *vcpu)
- {
- 	int r;
- 
-@@ -7608,7 +7608,7 @@ static int inject_pending_event(struct k
- 	 * from L2 to L1.
- 	 */
- 	if (is_guest_mode(vcpu) && kvm_x86_ops->check_nested_events) {
--		r = kvm_x86_ops->check_nested_events(vcpu, req_int_win);
-+		r = kvm_x86_ops->check_nested_events(vcpu);
- 		if (r != 0)
- 			return r;
- 	}
-@@ -7670,7 +7670,7 @@ static int inject_pending_event(struct k
- 		 * KVM_REQ_EVENT only on certain events and not unconditionally?
- 		 */
- 		if (is_guest_mode(vcpu) && kvm_x86_ops->check_nested_events) {
--			r = kvm_x86_ops->check_nested_events(vcpu, req_int_win);
-+			r = kvm_x86_ops->check_nested_events(vcpu);
- 			if (r != 0)
- 				return r;
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	int stream;
+@@ -209,7 +211,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+@@ -222,7 +224,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 			plugin_next = plugin->next;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
  		}
-@@ -8159,7 +8159,7 @@ static int vcpu_enter_guest(struct kvm_v
- 			goto out;
- 		}
+@@ -231,7 +233,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 	return drv_frames;
+ }
  
--		if (inject_pending_event(vcpu, req_int_win) != 0)
-+		if (inject_pending_event(vcpu) != 0)
- 			req_immediate_exit = true;
- 		else {
- 			/* Enable SMI/NMI/IRQ window open exits if needed.
-@@ -8389,7 +8389,7 @@ static inline int vcpu_block(struct kvm
- static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
+-snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t clt_frames)
++static snd_pcm_sframes_t plug_slave_size(struct snd_pcm_substream *plug,
++					 snd_pcm_uframes_t clt_frames,
++					 bool check_size)
  {
- 	if (is_guest_mode(vcpu) && kvm_x86_ops->check_nested_events)
--		kvm_x86_ops->check_nested_events(vcpu, false);
-+		kvm_x86_ops->check_nested_events(vcpu);
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	snd_pcm_sframes_t frames;
+@@ -252,14 +256,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
+ 				if (frames < 0)
+ 					return frames;
+ 			}
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+@@ -274,6 +278,18 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
+ 	return frames;
+ }
  
- 	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
- 		!vcpu->arch.apf.halted);
++snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug,
++					   snd_pcm_uframes_t drv_frames)
++{
++	return plug_client_size(plug, drv_frames, false);
++}
++
++snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t clt_frames)
++{
++	return plug_slave_size(plug, clt_frames, false);
++}
++
+ static int snd_pcm_plug_formats(const struct snd_mask *mask,
+ 				snd_pcm_format_t format)
+ {
+@@ -630,7 +646,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_tra
+ 		src_channels = dst_channels;
+ 		plugin = next;
+ 	}
+-	return snd_pcm_plug_client_size(plug, frames);
++	return plug_client_size(plug, frames, true);
+ }
+ 
+ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
+@@ -640,7 +656,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_tran
+ 	snd_pcm_sframes_t frames = size;
+ 	int err;
+ 
+-	frames = snd_pcm_plug_slave_size(plug, frames);
++	frames = plug_slave_size(plug, frames, true);
+ 	if (frames < 0)
+ 		return frames;
+ 
 
 
