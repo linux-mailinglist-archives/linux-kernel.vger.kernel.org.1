@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98BB1AC72C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE401AC8ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394779AbgDPOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:50:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45230 "EHLO mail.kernel.org"
+        id S2503900AbgDPPQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:16:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506781AbgDPN6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:14 -0400
+        id S2441377AbgDPNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9E7820786;
-        Thu, 16 Apr 2020 13:58:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF763217D8;
+        Thu, 16 Apr 2020 13:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045493;
-        bh=zvjR35mQ9hoJty1PjO1v66adUfRK6NLfWHAp4HgerOU=;
+        s=default; t=1587044970;
+        bh=TFXnfxHugoSP3Q7WZCuT3ZsZo+7q/qP8JgVFHiV9l8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/J2TCVd/Ox7R90W/+XPXbjRY51+rryu7PdJ/1yBw9VdifjbWgUZCNIxz8SdA2BZz
-         HFLl1iQ5esTat928oOKfrvUl8pGv8FoZFY2rQfXrIoDNeFmRsohEFpY4r0AUQ9zKKU
-         y2l91oTj7ZPIeuCYqh3W7/JMo1cTqZ7nl9qm3F4c=
+        b=EMQqW2YOeM58uqXzkbAPVP9xYwJE+5x9cu3slGF5Ld4k2UtkU9h5qB5etMnXEYhUV
+         3vZCnHtaidqNkaiDAseKrTbYA8ctsYSNHU9/25pi5TUY/NNaFbQiiQrm2SpNfD6Xmd
+         l4ZsmFLH2rXzuOtn95UJnw+/TRyDAvOehwrmBHyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yilu Lin <linyilu@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>
-Subject: [PATCH 5.6 140/254] CIFS: Fix bug which the return value by asynchronous read is error
+        stable@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.4 135/232] mtd: spinand: Stop using spinand->oobbuf for buffering bad block markers
 Date:   Thu, 16 Apr 2020 15:23:49 +0200
-Message-Id: <20200416131343.984048431@linuxfoundation.org>
+Message-Id: <20200416131331.864786637@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +45,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yilu Lin <linyilu@huawei.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-commit 97adda8b3ab703de8e4c8d27646ddd54fe22879c upstream.
+commit 2148937501ee3d663e0010e519a553fea67ad103 upstream.
 
-This patch is used to fix the bug in collect_uncached_read_data()
-that rc is automatically converted from a signed number to an
-unsigned number when the CIFS asynchronous read fails.
-It will cause ctx->rc is error.
+For reading and writing the bad block markers, spinand->oobbuf is
+currently used as a buffer for the marker bytes. During the
+underlying read and write operations to actually get/set the content
+of the OOB area, the content of spinand->oobbuf is reused and changed
+by accessing it through spinand->oobbuf and/or spinand->databuf.
 
-Example:
-Share a directory and create a file on the Windows OS.
-Mount the directory to the Linux OS using CIFS.
-On the CIFS client of the Linux OS, invoke the pread interface to
-deliver the read request.
+This is a flaw in the original design of the SPI NAND core and at the
+latest from 13c15e07eedf ("mtd: spinand: Handle the case where
+PROGRAM LOAD does not reset the cache") on, it results in not having
+the bad block marker written at all, as the spinand->oobbuf is
+cleared to 0xff after setting the marker bytes to zero.
 
-The size of the read length plus offset of the read request is greater
-than the maximum file size.
+To fix it, we now just store the two bytes for the marker on the
+stack and let the read/write operations copy it from/to the page
+buffer later.
 
-In this case, the CIFS server on the Windows OS returns a failure
-message (for example, the return value of
-smb2.nt_status is STATUS_INVALID_PARAMETER).
-
-After receiving the response message, the CIFS client parses
-smb2.nt_status to STATUS_INVALID_PARAMETER
-and converts it to the Linux error code (rdata->result=-22).
-
-Then the CIFS client invokes the collect_uncached_read_data function to
-assign the value of rdata->result to rc, that is, rc=rdata->result=-22.
-
-The type of the ctx->total_len variable is unsigned integer,
-the type of the rc variable is integer, and the type of
-the ctx->rc variable is ssize_t.
-
-Therefore, during the ternary operation, the value of rc is
-automatically converted to an unsigned number. The final result is
-ctx->rc=4294967274. However, the expected result is ctx->rc=-22.
-
-Signed-off-by: Yilu Lin <linyilu@huawei.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-CC: Stable <stable@vger.kernel.org>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200218100432.32433-2-frieder.schrempf@kontron.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/file.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/spi/core.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -3841,7 +3841,7 @@ again:
- 	if (rc == -ENODATA)
- 		rc = 0;
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -568,18 +568,18 @@ static int spinand_mtd_write(struct mtd_
+ static bool spinand_isbad(struct nand_device *nand, const struct nand_pos *pos)
+ {
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
++	u8 marker[2] = { };
+ 	struct nand_page_io_req req = {
+ 		.pos = *pos,
+-		.ooblen = 2,
++		.ooblen = sizeof(marker),
+ 		.ooboffs = 0,
+-		.oobbuf.in = spinand->oobbuf,
++		.oobbuf.in = marker,
+ 		.mode = MTD_OPS_RAW,
+ 	};
  
--	ctx->rc = (rc == 0) ? ctx->total_len : rc;
-+	ctx->rc = (rc == 0) ? (ssize_t)ctx->total_len : rc;
+-	memset(spinand->oobbuf, 0, 2);
+ 	spinand_select_target(spinand, pos->target);
+ 	spinand_read_page(spinand, &req, false);
+-	if (spinand->oobbuf[0] != 0xff || spinand->oobbuf[1] != 0xff)
++	if (marker[0] != 0xff || marker[1] != 0xff)
+ 		return true;
  
- 	mutex_unlock(&ctx->aio_mutex);
+ 	return false;
+@@ -603,11 +603,12 @@ static int spinand_mtd_block_isbad(struc
+ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+ {
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
++	u8 marker[2] = { };
+ 	struct nand_page_io_req req = {
+ 		.pos = *pos,
+ 		.ooboffs = 0,
+-		.ooblen = 2,
+-		.oobbuf.out = spinand->oobbuf,
++		.ooblen = sizeof(marker),
++		.oobbuf.out = marker,
+ 	};
+ 	int ret;
+ 
+@@ -622,7 +623,6 @@ static int spinand_markbad(struct nand_d
+ 
+ 	spinand_erase_op(spinand, pos);
+ 
+-	memset(spinand->oobbuf, 0, 2);
+ 	return spinand_write_page(spinand, &req);
+ }
  
 
 
