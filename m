@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D712E1AC063
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33DD1AC042
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634423AbgDPLzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        id S2506717AbgDPLwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633981AbgDPLwx (ORCPT
+        with ESMTP id S2506607AbgDPLwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:52:53 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7594FC0610D5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:53 -0700 (PDT)
+        Thu, 16 Apr 2020 07:52:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8D9C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:52:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=j0vVLpAsgisOvtLlJu5Oc9txbLzNwPvNwKAnEr4oqLg=; b=18gIha6Pp+8MbzmQi6FRpSvFA5
-        bvx0HPAZFL+zfBdJEqqYkjN+cB0LkA7zOz5Y/lnk/le2cTkmB0QonmTpPF7JZ+NplXGJT+HkN1Jmc
-        0r+bNcNwwFt4ltYPTovxMkPaR2yR3fWSpYUMaD1OLHtRjRRX7YfT8fhXkeL6usNNf3hvn66M5nrwr
-        5VUXbwGtSh6YoUbTpE76eXaaLS2//JUcq47GIYWbD4uCzZTOioOPddLqbqsNaawchSfRpdOk6uXqt
-        +QfqLr1s/a1Jg1xHYuT/wMwqWCcUkPMWgVk9oc5d5aoatpQ3ynf01w2QiJc4dhFfm1GLcvrOWMdns
-        8sBDSUeg==;
+        bh=G/IT5o5In5AGOz06+jfEzC8PQ8Kd4Ep3f9IxN39kWXA=; b=dXn6N6t4t0WizqWWlqvudqLZv2
+        clLbnutnCzbrp2o1+y64LygEe4ow6WwnV1yKQXy6LFXKM6lz/HOomIrtxPkToR0Dd9QIslVjer8bS
+        0vjDLxZvTtkmg1jIPRdGu/4YDa6r7O3BoeQso/A2sJhIrmLw8Ud1Zp5HKawfwpQ/14fVfFYQseNcp
+        VCYVLmzWlWgnmIBF3UEqlz0V4tMfWggvsOlznQ6mvkcHGo7PuxsU0Nwb4RFPz3nwf9x4+P1iJSHOR
+        yBeGMRNoCnqD/Mp8IoW4zJ7dqeFYnR7hYB76pTKu9uHasKcLh9IOaCsJFiuabBfgbDHyEfH/UayIg
+        S9tqv/fw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP34F-0006jL-2Z; Thu, 16 Apr 2020 11:52:27 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP34D-0004rz-Ti; Thu, 16 Apr 2020 11:52:26 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3CB6F307016;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E8B03071D5;
         Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 272692B0DE4C4; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
-Message-Id: <20200416115118.690601403@infradead.org>
+        id 2A02F2B0DE4C3; Thu, 16 Apr 2020 13:52:24 +0200 (CEST)
+Message-Id: <20200416115118.749606694@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 16 Apr 2020 13:47:09 +0200
+Date:   Thu, 16 Apr 2020 13:47:10 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, jpoimboe@redhat.com
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, peterz@infradead.org,
         mhiramat@kernel.org, mbenes@suse.cz, jthierry@redhat.com,
         alexandre.chartre@oracle.com
-Subject: [PATCH v5 03/17] objtool: Introduce HINT_RET_OFFSET
+Subject: [PATCH v5 04/17] x86,ftrace: Fix ftrace_regs_caller() unwind
 References: <20200416114706.625340212@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,142 +52,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normally objtool ensures a function keeps the stack layout invariant.
-But there is a useful exception, it is possible to stuff the return
-stack in order to 'inject' a 'call':
+The ftrace_regs_caller() trampoline does something 'funny' when there
+is a direct-caller present. In that case it stuffs the 'direct-caller'
+address on the return stack and then exits the function. This then
+results in 'returning' to the direct-caller with the exact registers
+we came in with -- an indirect tail-call without using a register.
 
-	push $fun
-	ret
+This however (rightfully) confuses objtool because the function shares
+a few instruction in order to have a single exit path, but the stack
+layout is different for them, depending through which path we came
+there.
 
-In this case the invariant mentioned above is violated.
+This is currently cludged by forcing the stack state to the non-direct
+case, but this generates actively wrong (ORC) unwind information for
+the direct case, leading to potential broken unwinds.
 
-Add an objtool HINT to annotate this and allow a function exit with a
-modified stack frame.
+Fix this issue by fully separating the exit paths. This results in
+having to poke a second RET into the trampoline copy, see
+ftrace_regs_caller_ret.
+
+This brings us to a second objtool problem, in order for it to
+perceive the 'jmp ftrace_epilogue' as a function exit, it needs to be
+recognised as a tail call. In order to make that happen,
+ftrace_epilogue needs to be the start of an STT_FUNC, so re-arrange
+code to make this so.
+
+Finally, a third issue is that objtool requires functions to exit with
+the same stack layout they started with, which is obviously violated
+in the direct case, employ the new HINT_RET_OFFSET to tell objtool
+this is an expected exception.
+
+Together, this results in generating correct ORC unwind information
+for the ftrace_regs_caller() function and it's trampoline copies.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/orc_types.h       |    1 +
- arch/x86/include/asm/unwind_hints.h    |   10 ++++++++++
- tools/arch/x86/include/asm/orc_types.h |    1 +
- tools/objtool/check.c                  |   24 ++++++++++++++++--------
- tools/objtool/check.h                  |    4 +++-
- 5 files changed, 31 insertions(+), 9 deletions(-)
+ arch/x86/kernel/ftrace.c    |   12 ++++++++++--
+ arch/x86/kernel/ftrace_64.S |   32 +++++++++++++++-----------------
+ 2 files changed, 25 insertions(+), 19 deletions(-)
 
---- a/arch/x86/include/asm/orc_types.h
-+++ b/arch/x86/include/asm/orc_types.h
-@@ -60,6 +60,7 @@
- #define ORC_TYPE_REGS_IRET		2
- #define UNWIND_HINT_TYPE_SAVE		3
- #define UNWIND_HINT_TYPE_RESTORE	4
-+#define UNWIND_HINT_TYPE_RET_OFFSET	5
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -282,7 +282,8 @@ static inline void tramp_free(void *tram
  
- #ifndef __ASSEMBLY__
- /*
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -94,6 +94,16 @@
- 	UNWIND_HINT type=UNWIND_HINT_TYPE_RESTORE
- .endm
+ /* Defined as markers to the end of the ftrace default trampolines */
+ extern void ftrace_regs_caller_end(void);
+-extern void ftrace_epilogue(void);
++extern void ftrace_regs_caller_ret(void);
++extern void ftrace_caller_end(void);
+ extern void ftrace_caller_op_ptr(void);
+ extern void ftrace_regs_caller_op_ptr(void);
  
-+
-+/*
-+ * RET_OFFSET: Used on instructions that terminate a function; mostly RETURN
-+ * and sibling calls. On these, sp_offset denotes the expected offset from
-+ * initial_func_cfi.
-+ */
-+.macro UNWIND_HINT_RET_OFFSET sp_offset=8
-+	UNWIND_HINT type=UNWIND_HINT_TYPE_RET_OFFSET sp_offset=\sp_offset
-+.endm
-+
- #else /* !__ASSEMBLY__ */
- 
- #define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
---- a/tools/arch/x86/include/asm/orc_types.h
-+++ b/tools/arch/x86/include/asm/orc_types.h
-@@ -60,6 +60,7 @@
- #define ORC_TYPE_REGS_IRET		2
- #define UNWIND_HINT_TYPE_SAVE		3
- #define UNWIND_HINT_TYPE_RESTORE	4
-+#define UNWIND_HINT_TYPE_RET_OFFSET	5
- 
- #ifndef __ASSEMBLY__
- /*
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1253,6 +1253,9 @@ static int read_unwind_hints(struct objt
- 		} else if (hint->type == UNWIND_HINT_TYPE_RESTORE) {
- 			insn->restore = true;
- 			insn->hint = true;
-+
-+		} else if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
-+			insn->ret_offset = hint->sp_offset;
- 			continue;
- 		}
- 
-@@ -1416,20 +1419,25 @@ static bool is_fentry_call(struct instru
- 	return false;
- }
- 
--static bool has_modified_stack_frame(struct insn_state *state)
-+static bool has_modified_stack_frame(struct instruction *insn, struct insn_state *state)
- {
-+	u8 ret_offset = insn->ret_offset;
- 	int i;
- 
--	if (state->cfa.base != initial_func_cfi.cfa.base ||
--	    state->cfa.offset != initial_func_cfi.cfa.offset ||
--	    state->stack_size != initial_func_cfi.cfa.offset ||
--	    state->drap)
-+	if (state->cfa.base != initial_func_cfi.cfa.base || state->drap)
-+		return true;
-+
-+	if (state->cfa.offset != initial_func_cfi.cfa.offset + ret_offset)
- 		return true;
- 
--	for (i = 0; i < CFI_NUM_REGS; i++)
-+	if (state->stack_size != initial_func_cfi.cfa.offset + ret_offset)
-+		return true;
-+
-+	for (i = 0; i < CFI_NUM_REGS; i++) {
- 		if (state->regs[i].base != initial_func_cfi.regs[i].base ||
- 		    state->regs[i].offset != initial_func_cfi.regs[i].offset)
- 			return true;
-+	}
- 
- 	return false;
- }
-@@ -1971,7 +1979,7 @@ static int validate_call(struct instruct
- 
- static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
- {
--	if (has_modified_stack_frame(state)) {
-+	if (has_modified_stack_frame(insn, state)) {
- 		WARN_FUNC("sibling call from callable instruction with modified stack frame",
- 				insn->sec, insn->offset);
- 		return 1;
-@@ -2000,7 +2008,7 @@ static int validate_return(struct symbol
- 		return 1;
+@@ -334,7 +335,7 @@ create_trampoline(struct ftrace_ops *ops
+ 		call_offset = (unsigned long)ftrace_regs_call;
+ 	} else {
+ 		start_offset = (unsigned long)ftrace_caller;
+-		end_offset = (unsigned long)ftrace_epilogue;
++		end_offset = (unsigned long)ftrace_caller_end;
+ 		op_offset = (unsigned long)ftrace_caller_op_ptr;
+ 		call_offset = (unsigned long)ftrace_call;
  	}
+@@ -366,6 +367,13 @@ create_trampoline(struct ftrace_ops *ops
+ 	if (WARN_ON(ret < 0))
+ 		goto fail;
  
--	if (func && has_modified_stack_frame(state)) {
-+	if (func && has_modified_stack_frame(insn, state)) {
- 		WARN_FUNC("return with modified stack frame",
- 			  insn->sec, insn->offset);
- 		return 1;
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -33,9 +33,11 @@ struct instruction {
- 	unsigned int len;
- 	enum insn_type type;
- 	unsigned long immediate;
--	bool alt_group, dead_end, ignore, hint, save, restore, ignore_alts;
-+	bool alt_group, dead_end, ignore, ignore_alts;
-+	bool hint, save, restore;
- 	bool retpoline_safe;
- 	u8 visited;
-+	u8 ret_offset;
- 	struct symbol *call_dest;
- 	struct instruction *jump_dest;
- 	struct instruction *first_jump_src;
++	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
++		ip = trampoline + (ftrace_regs_caller_ret - ftrace_regs_caller);
++		ret = probe_kernel_read(ip, (void *)retq, RET_SIZE);
++		if (WARN_ON(ret < 0))
++			goto fail;
++	}
++
+ 	/*
+ 	 * The address of the ftrace_ops that is used for this trampoline
+ 	 * is stored at the end of the trampoline. This will be used to
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -157,8 +157,12 @@ SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBA
+ 	 * think twice before adding any new code or changing the
+ 	 * layout here.
+ 	 */
+-SYM_INNER_LABEL(ftrace_epilogue, SYM_L_GLOBAL)
++SYM_INNER_LABEL(ftrace_caller_end, SYM_L_GLOBAL)
+ 
++	jmp ftrace_epilogue
++SYM_FUNC_END(ftrace_caller);
++
++SYM_FUNC_START(ftrace_epilogue)
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL)
+ 	jmp ftrace_stub
+@@ -170,14 +174,12 @@ SYM_INNER_LABEL(ftrace_graph_call, SYM_L
+  */
+ SYM_INNER_LABEL_ALIGN(ftrace_stub, SYM_L_WEAK)
+ 	retq
+-SYM_FUNC_END(ftrace_caller)
++SYM_FUNC_END(ftrace_epilogue)
+ 
+ SYM_FUNC_START(ftrace_regs_caller)
+ 	/* Save the current flags before any operations that can change them */
+ 	pushfq
+ 
+-	UNWIND_HINT_SAVE
+-
+ 	/* added 8 bytes to save flags */
+ 	save_mcount_regs 8
+ 	/* save_mcount_regs fills in first two parameters */
+@@ -233,7 +235,10 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+ 	movq ORIG_RAX(%rsp), %rax
+ 	movq %rax, MCOUNT_REG_SIZE-8(%rsp)
+ 
+-	/* If ORIG_RAX is anything but zero, make this a call to that */
++	/*
++	 * If ORIG_RAX is anything but zero, make this a call to that.
++	 * See arch_ftrace_set_direct_caller().
++	 */
+ 	movq ORIG_RAX(%rsp), %rax
+ 	cmpq	$0, %rax
+ 	je	1f
+@@ -244,20 +249,14 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+ 	movq %rax, MCOUNT_REG_SIZE(%rsp)
+ 
+ 	restore_mcount_regs 8
++	/* Restore flags */
++	popfq
+ 
+-	jmp	2f
++SYM_INNER_LABEL(ftrace_regs_caller_ret, SYM_L_GLOBAL);
++	UNWIND_HINT_RET_OFFSET
++	jmp	ftrace_epilogue
+ 
+ 1:	restore_mcount_regs
+-
+-
+-2:
+-	/*
+-	 * The stack layout is nondetermistic here, depending on which path was
+-	 * taken.  This confuses objtool and ORC, rightfully so.  For now,
+-	 * pretend the stack always looks like the non-direct case.
+-	 */
+-	UNWIND_HINT_RESTORE
+-
+ 	/* Restore flags */
+ 	popfq
+ 
+@@ -268,7 +267,6 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+ 	 * to the return.
+ 	 */
+ SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
+-
+ 	jmp ftrace_epilogue
+ 
+ SYM_FUNC_END(ftrace_regs_caller)
 
 
