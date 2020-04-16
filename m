@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586191ACB0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2411AC9CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395565AbgDPPnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:43:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
+        id S2393038AbgDPP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897217AbgDPNfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:35:51 -0400
+        id S2898459AbgDPNoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:44:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87CE2221F4;
-        Thu, 16 Apr 2020 13:35:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71E2421744;
+        Thu, 16 Apr 2020 13:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044151;
-        bh=W2NX7RUrjeSGIxVbUNcuOSZnXLYhBIfIG0GMm8GFxD4=;
+        s=default; t=1587044678;
+        bh=CbXVf1X13Fq5Weg0NUfcTRtDQk8jJn0eg2TMZC0+J5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CA3YU1ROTMzSRFyWYgmhts0fxlJBr5pMZT4lSv8CLqA/AS9xEcXLsa4HPnkeXErQr
-         W/EPtslVcyZGB/dUnHB3IHIvgCFASGfzn0uQPQ2KUGxR/MpoD24B/dEzKC/U9ZE35M
-         SSXE7At9I5GbKysL6v+haUvU/wqPszGspsX9A1nM=
+        b=rygkh93nZBoB05dFHAAB7WDECddhGegypvZRm0jELlbta3MjacKFZbaqCH8KpTSa1
+         i2/xFh8ID4ZtA5uupoZkmP7GlP0WjUvee48EzL90uG82KjaqYz+1AoJeK6wiMunze4
+         zTv06a5uxR6AZJYbGVvHmxE78z0Y/dtf6lv6dvdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.5 101/257] media: hantro: Read be32 words starting at every fourth byte
+        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
+        Jianxin Pan <jianxin.pan@amlogic.com>,
+        Thinh Nguyen <thinhn@synopsys.com>,
+        Jun Li <lijun.kernel@gmail.com>, Tim <elatllat@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 058/232] usb: dwc3: core: add support for disabling SS instances in park mode
 Date:   Thu, 16 Apr 2020 15:22:32 +0200
-Message-Id: <20200416131338.718932179@linuxfoundation.org>
+Message-Id: <20200416131322.786013320@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,72 +48,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit e34bca49e4953e5c2afc0425303199a5fd515f82 upstream.
+[ Upstream commit 7ba6b09fda5e0cb741ee56f3264665e0edc64822 ]
 
-Since (luma/chroma)_qtable is an array of unsigned char, indexing it
-returns consecutive byte locations, but we are supposed to read the arrays
-in four-byte words. Consequently, we should be pointing
-get_unaligned_be32() at consecutive word locations instead.
+In certain circumstances, the XHCI SuperSpeed instance in park mode
+can fail to recover, thus on Amlogic G12A/G12B/SM1 SoCs when there is high
+load on the single XHCI SuperSpeed instance, the controller can crash like:
+ xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command.
+ xhci-hcd xhci-hcd.0.auto: Host halt failed, -110
+ xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
+ xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command.
+ hub 2-1.1:1.0: hub_ext_port_status failed (err = -22)
+ xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
+ usb 2-1.1-port1: cannot reset (err = -22)
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Tested-by: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: stable@vger.kernel.org
-Fixes: 00c30f42c7595f "media: rockchip vpu: remove some unused vars"
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Setting the PARKMODE_DISABLE_SS bit in the DWC3_USB3_GUCTL1 mitigates
+the issue. The bit is described as :
+"When this bit is set to '1' all SS bus instances in park mode are disabled"
 
+Synopsys explains:
+The GUCTL1.PARKMODE_DISABLE_SS is only available in
+dwc_usb3 controller running in host mode.
+This should not be set for other IPs.
+This can be disabled by default based on IP, but I recommend to have a
+property to enable this feature for devices that need this.
+
+CC: Dongjin Kim <tobetter@gmail.com>
+Cc: Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: Thinh Nguyen <thinhn@synopsys.com>
+Cc: Jun Li <lijun.kernel@gmail.com>
+Reported-by: Tim <elatllat@gmail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/hantro/hantro_h1_jpeg_enc.c     |    9 +++++++--
- drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c |    9 +++++++--
- 2 files changed, 14 insertions(+), 4 deletions(-)
+ drivers/usb/dwc3/core.c | 5 +++++
+ drivers/usb/dwc3/core.h | 4 ++++
+ 2 files changed, 9 insertions(+)
 
---- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-+++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-@@ -67,12 +67,17 @@ hantro_h1_jpeg_enc_set_qtable(struct han
- 			      unsigned char *chroma_qtable)
- {
- 	u32 reg, i;
-+	__be32 *luma_qtable_p;
-+	__be32 *chroma_qtable_p;
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index cede7a8e36055..526c275ad0bc5 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -992,6 +992,9 @@ static int dwc3_core_init(struct dwc3 *dwc)
+ 		if (dwc->dis_tx_ipgap_linecheck_quirk)
+ 			reg |= DWC3_GUCTL1_TX_IPGAP_LINECHECK_DIS;
+ 
++		if (dwc->parkmode_disable_ss_quirk)
++			reg |= DWC3_GUCTL1_PARKMODE_DISABLE_SS;
 +
-+	luma_qtable_p = (__be32 *)luma_qtable;
-+	chroma_qtable_p = (__be32 *)chroma_qtable;
- 
- 	for (i = 0; i < H1_JPEG_QUANT_TABLE_COUNT; i++) {
--		reg = get_unaligned_be32(&luma_qtable[i]);
-+		reg = get_unaligned_be32(&luma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_LUMA_QUAT(i));
- 
--		reg = get_unaligned_be32(&chroma_qtable[i]);
-+		reg = get_unaligned_be32(&chroma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_CHROMA_QUAT(i));
+ 		dwc3_writel(dwc->regs, DWC3_GUCTL1, reg);
  	}
- }
---- a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
-+++ b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
-@@ -98,12 +98,17 @@ rk3399_vpu_jpeg_enc_set_qtable(struct ha
- 			       unsigned char *chroma_qtable)
- {
- 	u32 reg, i;
-+	__be32 *luma_qtable_p;
-+	__be32 *chroma_qtable_p;
-+
-+	luma_qtable_p = (__be32 *)luma_qtable;
-+	chroma_qtable_p = (__be32 *)chroma_qtable;
  
- 	for (i = 0; i < VEPU_JPEG_QUANT_TABLE_COUNT; i++) {
--		reg = get_unaligned_be32(&luma_qtable[i]);
-+		reg = get_unaligned_be32(&luma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_LUMA_QUAT(i));
+@@ -1305,6 +1308,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+ 				"snps,dis-del-phy-power-chg-quirk");
+ 	dwc->dis_tx_ipgap_linecheck_quirk = device_property_read_bool(dev,
+ 				"snps,dis-tx-ipgap-linecheck-quirk");
++	dwc->parkmode_disable_ss_quirk = device_property_read_bool(dev,
++				"snps,parkmode-disable-ss-quirk");
  
--		reg = get_unaligned_be32(&chroma_qtable[i]);
-+		reg = get_unaligned_be32(&chroma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_CHROMA_QUAT(i));
- 	}
- }
+ 	dwc->tx_de_emphasis_quirk = device_property_read_bool(dev,
+ 				"snps,tx_de_emphasis_quirk");
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 77c4a9abe3652..3ecc69c5b150f 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -249,6 +249,7 @@
+ #define DWC3_GUCTL_HSTINAUTORETRY	BIT(14)
+ 
+ /* Global User Control 1 Register */
++#define DWC3_GUCTL1_PARKMODE_DISABLE_SS	BIT(17)
+ #define DWC3_GUCTL1_TX_IPGAP_LINECHECK_DIS	BIT(28)
+ #define DWC3_GUCTL1_DEV_L1_EXIT_BY_HW	BIT(24)
+ 
+@@ -1024,6 +1025,8 @@ struct dwc3_scratchpad_array {
+  *			change quirk.
+  * @dis_tx_ipgap_linecheck_quirk: set if we disable u2mac linestate
+  *			check during HS transmit.
++ * @parkmode_disable_ss_quirk: set if we need to disable all SuperSpeed
++ *			instances in park mode.
+  * @tx_de_emphasis_quirk: set if we enable Tx de-emphasis quirk
+  * @tx_de_emphasis: Tx de-emphasis value
+  * 	0	- -6dB de-emphasis
+@@ -1215,6 +1218,7 @@ struct dwc3 {
+ 	unsigned		dis_u2_freeclk_exists_quirk:1;
+ 	unsigned		dis_del_phy_power_chg_quirk:1;
+ 	unsigned		dis_tx_ipgap_linecheck_quirk:1;
++	unsigned		parkmode_disable_ss_quirk:1;
+ 
+ 	unsigned		tx_de_emphasis_quirk:1;
+ 	unsigned		tx_de_emphasis:2;
+-- 
+2.20.1
+
 
 
