@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5071AC552
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73A41AC66D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387981AbgDPOQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:16:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38252 "EHLO mail.kernel.org"
+        id S2394408AbgDPOjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408804AbgDPNv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:51:59 -0400
+        id S2405605AbgDPOCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:02:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD6A42078B;
-        Thu, 16 Apr 2020 13:51:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEB882078B;
+        Thu, 16 Apr 2020 14:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045119;
-        bh=oK6sP62fE4Cer2WwbYd0Xghp/X4kMCZ2SKG/puDV+5E=;
+        s=default; t=1587045741;
+        bh=SoVqO3bK3jHNnFnqoHbBV+IZFxZYUJeXCaLy+Ihncvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/7Hsa4A4/mT1xJJRkxG2YvIp5mzAm2w+B7Y2qkl2KFGg5hE0WlGvhqg6wzsQbtT+
-         MtTLgD/FkiDYSD5427a9853G/9gIv7fbW25yGAgplhj1cmS/7qUzG852QoD2sYEc1n
-         GKcVfgMX3rvwwzq4qpnA7KsPjD5XO9LVcmyy2w6c=
+        b=TJNfRKub5Hujh2S1Y3vDelb/d53f4SpKpZAaaiDckQvrIJcwoGhk2WNgtLQgVrsZe
+         5/4WZnyU2+J7uuUZrD0fn0xehEivourie+fMMrA4Tx+/yV8Sk9K72JVGArYQv40LrI
+         e9XnGksTnVp5QVPgxMZTxur6Wsu2KdB3X7pkJw3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 224/232] scsi: lpfc: Fix configuration of BB credit recovery in service parameters
-Date:   Thu, 16 Apr 2020 15:25:18 +0200
-Message-Id: <20200416131343.537318853@linuxfoundation.org>
+        stable@vger.kernel.org, Simon Gander <simon@tuxera.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 230/254] hfsplus: fix crash and filesystem corruption when deleting files
+Date:   Thu, 16 Apr 2020 15:25:19 +0200
+Message-Id: <20200416131354.420861781@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Simon Gander <simon@tuxera.com>
 
-[ Upstream commit 6bfb1620829825c01e1dcdd63b6a7700352babd9 ]
+commit 25efb2ffdf991177e740b2f63e92b4ec7d310a92 upstream.
 
-The driver today is reading service parameters from the firmware and then
-overwriting the firmware-provided values with values of its own.  There are
-some switch features that require preliminary FLOGI's that are
-switch-specific and done prior to the actual fabric FLOGI for traffic.  The
-fw will perform those FLOGIs and will revise the service parameters for the
-features configured. As the driver later overwrites those values with its
-own values, it misconfigures things like BBSCN use by doing so.
+When removing files containing extended attributes, the hfsplus driver may
+remove the wrong entries from the attributes b-tree, causing major
+filesystem damage and in some cases even kernel crashes.
 
-Correct by eliminating the driver-overwrite of firmware values. The driver
-correctly re-reads the service parameters after each link up to obtain the
-latest values from firmware.
+To remove a file, all its extended attributes have to be removed as well.
+The driver does this by looking up all keys in the attributes b-tree with
+the cnid of the file.  Each of these entries then gets deleted using the
+key used for searching, which doesn't contain the attribute's name when it
+should.  Since the key doesn't contain the name, the deletion routine will
+not find the correct entry and instead remove the one in front of it.  If
+parent nodes have to be modified, these become corrupt as well.  This
+causes invalid links and unsorted entries that not even macOS's fsck_hfs
+is able to fix.
 
-Link: https://lore.kernel.org/r/20191105005708.7399-3-jsmart2021@gmail.com
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+To fix this, modify the search key before an entry is deleted from the
+attributes b-tree by copying the found entry's key into the search key,
+therefore ensuring that the correct entry gets removed from the tree.
+
+Signed-off-by: Simon Gander <simon@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327155541.1521-1-simon@tuxera.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/lpfc/lpfc_hbadisc.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ fs/hfsplus/attributes.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
-index 39ca541935342..3f7df471106e9 100644
---- a/drivers/scsi/lpfc/lpfc_hbadisc.c
-+++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
-@@ -1139,7 +1139,6 @@ void
- lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- {
- 	struct lpfc_vport *vport = pmb->vport;
--	uint8_t bbscn = 0;
+--- a/fs/hfsplus/attributes.c
++++ b/fs/hfsplus/attributes.c
+@@ -292,6 +292,10 @@ static int __hfsplus_delete_attr(struct
+ 		return -ENOENT;
+ 	}
  
- 	if (pmb->u.mb.mbxStatus)
- 		goto out;
-@@ -1166,17 +1165,11 @@ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
- 	/* Start discovery by sending a FLOGI. port_state is identically
- 	 * LPFC_FLOGI while waiting for FLOGI cmpl
- 	 */
--	if (vport->port_state != LPFC_FLOGI) {
--		if (phba->bbcredit_support && phba->cfg_enable_bbcr) {
--			bbscn = bf_get(lpfc_bbscn_def,
--				       &phba->sli4_hba.bbscn_params);
--			vport->fc_sparam.cmn.bbRcvSizeMsb &= 0xf;
--			vport->fc_sparam.cmn.bbRcvSizeMsb |= (bbscn << 4);
--		}
-+	if (vport->port_state != LPFC_FLOGI)
- 		lpfc_initial_flogi(vport);
--	} else if (vport->fc_flag & FC_PT2PT) {
-+	else if (vport->fc_flag & FC_PT2PT)
- 		lpfc_disc_start(vport);
--	}
++	/* Avoid btree corruption */
++	hfs_bnode_read(fd->bnode, fd->search_key,
++			fd->keyoffset, fd->keylength);
 +
- 	return;
- 
- out:
--- 
-2.20.1
-
+ 	err = hfs_brec_remove(fd);
+ 	if (err)
+ 		return err;
 
 
