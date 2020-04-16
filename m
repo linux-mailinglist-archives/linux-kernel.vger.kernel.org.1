@@ -2,89 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D4C1AB8D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E49D1AB8DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437785AbgDPG5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:57:33 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6493 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437733AbgDPG5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:57:21 -0400
-IronPort-SDR: +Wv6HHtlVkWnxRXH8fIrJlhvYdens/L3RkKikIN4oApRMStU7G+ONyjiy6idPL8ATVQgYTEYmC
- crZYvxWxd4Cg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 23:57:20 -0700
-IronPort-SDR: cl4aemAJ34kAwBAz6G19L8mgX7CcTBJHKqHNEBgRKlva0yxQ0IzbXFTQeUTdjMLI6xlBV9Kn8k
- 7ltNEdAcyz0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
-   d="scan'208";a="245901134"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 23:57:20 -0700
-Received: from [10.213.149.31] (ekotax-mobl.gar.corp.intel.com [10.213.149.31])
-        by linux.intel.com (Postfix) with ESMTP id D725F5802C9;
-        Wed, 15 Apr 2020 23:57:17 -0700 (PDT)
-Subject: Re: [PATCH v5 1/4] mfd: syscon: Add fwnode_to_regmap
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kishon@ti.com, robh@kernel.org, andriy.shevchenko@intel.com,
-        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
-        qi-ming.wu@intel.com, yixin.zhu@intel.com
-References: <cover.1585103753.git.eswara.kota@linux.intel.com>
- <9953bb25281397553cb87b09d641c968d8432dd9.1585103753.git.eswara.kota@linux.intel.com>
- <20200415093116.GH2167633@dell>
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-Message-ID: <0adafade-7228-58d3-3db0-b06325712468@linux.intel.com>
-Date:   Thu, 16 Apr 2020 14:57:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2437809AbgDPG6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:58:11 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:45661 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437733AbgDPG6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:58:03 -0400
+Received: by mail-io1-f72.google.com with SMTP id y4so18679228ioy.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Apr 2020 23:58:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=+GQulpXu2Zt/P9Hq8wYFo5idVVKpKyslYLuc6L5PFmk=;
+        b=mm9p+FMK13nuCdxJ1YUKqeRAKz2o7PdM+jWtdSwvzl4pDvqmkQfw70pNnQUkH68Vgp
+         +3kNuIyp1rzay3Ogjk2ixoFYXWvctOwnOXtUpgguu+kNl9+jxDotUSCyc90qoPbSk2WU
+         ZPbxXyIJeohMRxGXQbYokjvIUk1+UiA16u6HoO5GRr59rg4/3j9VJcGcDHFXVKGR8+ZB
+         wV9L9o8dR90mzm3iosqEqUfMzJsKo7GZ1KYR9NFKbpxOs6Sjq9623F/3TaJ9u8ZFqMZC
+         tZ+PhcyimovhewqwCUyT6j0/4gehdIANMLFi/Grf90ZXZFtCe8FWvOc8GTz61X9314Ie
+         Iu/w==
+X-Gm-Message-State: AGi0Pubn/zaTLWYGjPd2qRCItuSlYOty3ZB8XqbupUYNLRjX6TskdJnP
+        wyoIqlVP2M1PKeXcH0zfqgJJUdhfvTJ67dVqHJdikKwfI9Hu
+X-Google-Smtp-Source: APiQypLXL68tRkrOK+4lHNQRvcpYhVNSNYSIiu34JiJTrQQDojKK9Zbqotwo9YF4xSkTEnnlxk7Hc5LvjRkE0SYDyayPpqFTZQlC
 MIME-Version: 1.0
-In-Reply-To: <20200415093116.GH2167633@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a92:a103:: with SMTP id v3mr9309533ili.194.1587020282361;
+ Wed, 15 Apr 2020 23:58:02 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 23:58:02 -0700
+In-Reply-To: <CAHbLzkqeNLyzP21m3iL4KxE8O0MPZW_vkYozwdLCaVKNp_idnA@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002e7e1505a362f4c3@google.com>
+Subject: Re: possible deadlock in shmem_mfill_atomic_pte
+From:   syzbot <syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, hughd@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        shy828301@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 4/15/2020 5:31 PM, Lee Jones wrote:
-> On Wed, 25 Mar 2020, Dilip Kota wrote:
->
->> Traverse regmap handle entry from firmware node handle.
->>
->> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
->> ---
->> Changes on v5:
->>    No changes
->>
->> Changes on v4:
->>    No changes
->>
->>   drivers/mfd/syscon.c       | 8 ++++++++
->>   include/linux/mfd/syscon.h | 6 ++++++
->>   2 files changed, 14 insertions(+)
-> I think you'll find it very difficult to have a patch merged if you do
-> not send it to any Maintainers of the associated subsystem(s).
-Sorry, i completely missed adding the system configuration Maintainers. 
-I was completely thinking about the PHY driver( in doing changes and 
-upgrades) while sending the patches.
-I have noticed it, and already sent v6 patch series by adding you and 
-arnd@arndb.de
+syzbot has tested the proposed patch and the reproducer did not trigger crash:
 
-"[RESEND PATCH v6 0/4] Add Intel ComboPhy driver"
-Snippet from the mail.
+Reported-and-tested-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
 
-"Re-sending the patches v6 by adding the system configuration Maintainers,
-which i missed to add them."
+Tested on:
 
-Regards,
-Dilip
+commit:         8f9c86c9 mm: shmem: disable interrupt when acquiring info-..
+git tree:       https://github.com/yang-shi/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=11f10cc27c63cade
+dashboard link: https://syzkaller.appspot.com/bug?extid=e27980339d305f2dbfd9
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
->
-> Did you use `scripts/get_maintainer.pl` at all?
->
+Note: testing is done by a robot and is best-effort only.
