@@ -2,311 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254951ABA6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EA41ABA67
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440206AbgDPHya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 03:54:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33718 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2439714AbgDPHyD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:54:03 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03G7X3gF113903
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:54:01 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ek11rmu1-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:54:01 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <psampat@linux.ibm.com>;
-        Thu, 16 Apr 2020 08:53:28 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 16 Apr 2020 08:53:25 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03G7rrBe65011882
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 07:53:53 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 012AC42042;
-        Thu, 16 Apr 2020 07:53:53 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2055542041;
-        Thu, 16 Apr 2020 07:53:51 +0000 (GMT)
-Received: from pratiks-thinkpad.ibmuc.com (unknown [9.79.182.109])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Apr 2020 07:53:50 +0000 (GMT)
-From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-        mpe@ellerman.id.au, skiboot@lists.ozlabs.org, oohall@gmail.com,
-        ego@linux.vnet.ibm.com, linuxram@us.ibm.com,
-        pratik.r.sampat@gmail.com, psampat@linux.ibm.com
-Subject: [PATCH v7 4/4] Advertise the self-save and self-restore attributes in the device tree
-Date:   Thu, 16 Apr 2020 13:23:41 +0530
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200416075341.75268-1-psampat@linux.ibm.com>
-References: <20200416075341.75268-1-psampat@linux.ibm.com>
+        id S2440129AbgDPHx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:53:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439413AbgDPHxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:53:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A44420771;
+        Thu, 16 Apr 2020 07:53:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587023627;
+        bh=2mO4W183quN8A/qSOci2cOeeilx0Nn/1SJDwnEaLI+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2dnQ+Gcruh+xqOntinWp47U2G3kjfROZ5hfPBOKfPgZ03N5r74gn4zbNTzTYC2TD9
+         UVHaBcq560WnLn2ZN4CPNBFbyRme6XUdDvIw7jXlUQC4VLLdOgiEdDeVtOeqBhGS3D
+         osShDsMT/f2rKhGsKteBEsJA45g9Ug0w1k/wHx4Q=
+Date:   Thu, 16 Apr 2020 09:53:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     axboe@kernel.dk, yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
+        bvanassche@acm.org, tytso@mit.edu, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] bdi: remove bdi_register_owner
+Message-ID: <20200416075345.GF376871@kroah.com>
+References: <20200416071519.807660-1-hch@lst.de>
+ <20200416071519.807660-7-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041607-0008-0000-0000-000003719D95
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041607-0009-0000-0000-00004A93546A
-Message-Id: <20200416075341.75268-5-psampat@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-16_02:2020-04-14,2020-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- adultscore=0 clxscore=1015 impostorscore=0 priorityscore=1501
- malwarescore=0 mlxscore=0 suspectscore=2 bulkscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416071519.807660-7-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for self save and self restore interface is advertised in the
-device tree, along with the list of SPRs it supports for each.
+On Thu, Apr 16, 2020 at 09:15:17AM +0200, Christoph Hellwig wrote:
+> Split out a new bdi_set_owner helper to set the owner, and move the policy
+> for creating the bdi name back into genhd.c, where it belongs.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-The Special Purpose Register identification is encoded in a 2048 bitmask
-structure, where each bit signifies the identification key of that SPR
-which is consistent with that of the POWER architecture set for that
-register.
-
-Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
----
- .../ibm,opal/power-mgt/self-restore.rst       |  27 ++++
- .../ibm,opal/power-mgt/self-save.rst          |  27 ++++
- hw/slw.c                                      | 118 ++++++++++++++++++
- include/skiboot.h                             |   1 +
- 4 files changed, 173 insertions(+)
- create mode 100644 doc/device-tree/ibm,opal/power-mgt/self-restore.rst
- create mode 100644 doc/device-tree/ibm,opal/power-mgt/self-save.rst
-
-diff --git a/doc/device-tree/ibm,opal/power-mgt/self-restore.rst b/doc/device-tree/ibm,opal/power-mgt/self-restore.rst
-new file mode 100644
-index 00000000..2a2269f7
---- /dev/null
-+++ b/doc/device-tree/ibm,opal/power-mgt/self-restore.rst
-@@ -0,0 +1,27 @@
-+ibm,opal/power-mgt/self-restore device tree entries
-+===================================================
-+
-+This node exports the bitmask representing the special purpose registers that
-+the self-restore API currently supports.
-+
-+Example:
-+
-+.. code-block:: dts
-+
-+  self-restore {
-+        sprn-bitmask = <0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x42010000 0x0 0x0
-+                        0x20000 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x0 0x100000 0x900000 0x0 0x0 0x530000 0x0 0x0 0x0
-+                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x10000>;
-+        phandle = <0x1c7>;
-+  };
-+
-+sprn-bitmask
-+------------
-+
-+This property is a bitmask of of all the existing SPRs and if the SPR is
-+supported, the corresponding bit of the SPR number is set to 1.
-+The representation of the bits are left-right, i.e the MSB of the first
-+doubleword represants the 0th bit.
-diff --git a/doc/device-tree/ibm,opal/power-mgt/self-save.rst b/doc/device-tree/ibm,opal/power-mgt/self-save.rst
-new file mode 100644
-index 00000000..c367720e
---- /dev/null
-+++ b/doc/device-tree/ibm,opal/power-mgt/self-save.rst
-@@ -0,0 +1,27 @@
-+ibm,opal/power-mgt/self-save device tree entries
-+===================================================
-+
-+This node exports the bitmask representing the special purpose registers that
-+the self-save API currently supports.
-+
-+Example:
-+
-+.. code-block:: dts
-+
-+  self-save {
-+        sprn-bitmask = <0x0 0x0 0x0 0x0 0x100000 0x0 0x0 0x0 0x42010000 0x0 0x0
-+                        0x20000 0x0 0x0 0x0 0x10000 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x0 0x0 0x100000 0x840000 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
-+                        0x0 0x10000>;
-+        phandle = <0x1c8>;
-+  };
-+
-+sprn-bitmask
-+------------
-+
-+This property is a bitmask of of all the existing SPRs and if the SPR is
-+supported, the corresponding bit of the SPR number is set to 1.
-+The representation of the bits are left-right, i.e the MSB of the first
-+doubleword represants the 0th bit.
-diff --git a/hw/slw.c b/hw/slw.c
-index 9751c04f..fb14bd0c 100644
---- a/hw/slw.c
-+++ b/hw/slw.c
-@@ -29,6 +29,7 @@
- #include <sbe_xip_image.h>
- 
- static uint32_t slw_saved_reset[0x100];
-+#define SPR_BITMAP_LENGTH	2048
- 
- static bool slw_current_le = false;
- 
-@@ -750,6 +751,121 @@ static void slw_late_init_p9(struct proc_chip *chip)
- 	}
- }
- 
-+/* Add device tree properties to determine self-save | restore */
-+void add_cpu_self_save_restore_properties(void)
-+{
-+	struct dt_node *self_restore, *self_save, *power_mgt;
-+	uint64_t *self_save_mask, *self_restore_mask;
-+	bool self_save_supported = true;
-+	uint64_t compVector = -1;
-+	struct proc_chip *chip;
-+	int i, rc;
-+
-+	const uint64_t self_restore_regs[] = {
-+		P8_SPR_HRMOR,
-+		P8_SPR_HMEER,
-+		P8_SPR_PMICR,
-+		P8_SPR_PMCR,
-+		P8_SPR_HID0,
-+		P8_SPR_HID1,
-+		P8_SPR_HID4,
-+		P8_SPR_HID5,
-+		P8_SPR_HSPRG0,
-+		P8_SPR_LPCR,
-+		P8_MSR_MSR
-+	};
-+
-+	const uint64_t self_save_regs[] = {
-+		P9_STOP_SPR_DAWR,
-+		P9_STOP_SPR_HSPRG0,
-+		P9_STOP_SPR_LDBAR,
-+		P9_STOP_SPR_LPCR,
-+		P9_STOP_SPR_PSSCR,
-+		P9_STOP_SPR_MSR,
-+		P9_STOP_SPR_HRMOR,
-+		P9_STOP_SPR_HMEER,
-+		P9_STOP_SPR_PMCR,
-+		P9_STOP_SPR_PTCR
-+	};
-+
-+	chip = next_chip(NULL);
-+	assert(chip);
-+	rc = proc_stop_api_discover_capability((void *) chip->homer_base,
-+					       &compVector);
-+	if (rc == STOP_SAVE_ARG_INVALID_IMG) {
-+		prlog(PR_DEBUG, "HOMER BASE INVALID\n");
-+		return;
-+	} else if (rc == STOP_SAVE_API_IMG_INCOMPATIBLE) {
-+		prlog(PR_DEBUG, "STOP API running incompatible versions\n");
-+		if ((compVector & SELF_RESTORE_VER_MISMATCH) == 0) {
-+			prlog(PR_DEBUG, "Self-save API unsupported\n");
-+			self_save_supported = false;
-+		}
-+	}
-+
-+	power_mgt = dt_find_by_path(dt_root, "/ibm,opal/power-mgt");
-+	if (!power_mgt) {
-+		prerror("SLW: dt node /ibm,opal/power-mgt not found\n");
-+		return;
-+	}
-+
-+	self_restore = dt_new(power_mgt, "self-restore");
-+	if (!self_restore) {
-+		prerror("SLW: Failed to create self restore node");
-+		return;
-+	}
-+
-+	self_restore_mask = zalloc(SPR_BITMAP_LENGTH / 8);
-+	if (!self_restore_mask)
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(self_restore_regs); i++) {
-+		int bitmask_idx = self_restore_regs[i] / 64;
-+		uint64_t bitmask_pos = self_restore_regs[i] % 64;
-+		self_restore_mask[bitmask_idx] |= 1ul << bitmask_pos;
-+	}
-+
-+	for (i = 0; i < (SPR_BITMAP_LENGTH / 64); i++) {
-+		self_restore_mask[i] = cpu_to_be64(self_restore_mask[i]);
-+	}
-+
-+	dt_add_property(self_restore, "sprn-bitmask", self_restore_mask,
-+			SPR_BITMAP_LENGTH / 8);
-+	dt_add_property_string(self_restore, "compatible",
-+			       "ibm,opal-self-restore");
-+	free(self_restore_mask);
-+
-+	if (proc_gen != proc_gen_p9 || !self_save_supported) {
-+		prlog(PR_INFO, "SLW: self-save not supported on this platform");
-+		return;
-+	}
-+
-+	self_save = dt_new(power_mgt, "self-save");
-+	if (!self_save) {
-+		prerror("SLW: Failed to create self save node");
-+		return;
-+	}
-+
-+	self_save_mask = zalloc(SPR_BITMAP_LENGTH / 8);
-+	if (!self_save_mask)
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(self_save_regs); i++) {
-+		int bitmask_idx = self_save_regs[i] / 64;
-+		uint64_t bitmask_pos = self_save_regs[i] % 64;
-+		self_save_mask[bitmask_idx] |= 1ul << bitmask_pos;
-+	}
-+
-+	for (i = 0; i < (SPR_BITMAP_LENGTH / 64); i++) {
-+		self_save_mask[i] = cpu_to_be64(self_save_mask[i]);
-+	}
-+
-+	dt_add_property(self_save, "sprn-bitmask", self_save_mask,
-+			SPR_BITMAP_LENGTH / 8);
-+	dt_add_property_string(self_save, "compatible", "ibm,opal-self-save");
-+	free(self_save_mask);
-+}
-+
- /* Add device tree properties to describe idle states */
- void add_cpu_idle_state_properties(void)
- {
-@@ -1563,4 +1679,6 @@ void slw_init(void)
- 		}
- 	}
- 	add_cpu_idle_state_properties();
-+	if (has_deep_states)
-+		add_cpu_self_save_restore_properties();
- }
-diff --git a/include/skiboot.h b/include/skiboot.h
-index 9ced240e..d3631dea 100644
---- a/include/skiboot.h
-+++ b/include/skiboot.h
-@@ -209,6 +209,7 @@ extern void early_uart_init(void);
- extern void homer_init(void);
- extern void slw_init(void);
- extern void add_cpu_idle_state_properties(void);
-+extern void add_cpu_self_save_restore_properties(void);
- extern void lpc_rtc_init(void);
- 
- /* flash support */
--- 
-2.25.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
