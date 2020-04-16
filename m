@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F37F1ABBEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A651ABBF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503042AbgDPI7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:59:14 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:38605 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502875AbgDPI4D (ORCPT
+        id S2502967AbgDPI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503036AbgDPI4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:56:03 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id E19F222F53;
-        Thu, 16 Apr 2020 10:55:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1587027354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6knnTYd0SD0a2gjJU3xQbFJUgo1WzPpSFmhjfIQyUcY=;
-        b=M9q2RMUFDQVW4SbouNkFNdJPzvQSvOQC+FhQtrDgr+5/mkydRI7TAhGXO0tbJzmPNNyyHX
-        L7gLiTb5PDKWNrrSnrCdEZyt6jYVPk3HsLMtzmSAX0AXDADeVgSzEhGLRf7b5MFNZM8a6g
-        TAZ0ODC6jxTAJEZd8Mh17RprqqBe0Lw=
+        Thu, 16 Apr 2020 04:56:01 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE216C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:56:00 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id k21so2465842otl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:56:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aCt/25bZqDvJVBbS2T/nSkaf4i35Ayu5fc8C9w+DSHs=;
+        b=ZB0SB3T3b/D2aou2Jlt1WAGRUEG6DPFL8ORrU5aJDGvS4RRldCBtGq2u7ipF43i5+e
+         m/n8V+goLmrO0pw+8cjm6JNzoJXnwPETMIFcZ+HOgQKONpKf2OP/Px6JmiJdtlW6Sikt
+         E3E3/GJMs9fYI7obYF+mrWBKiHyFnQ20T5a6caWaCncQ5gNuRPc+kBFKK/F10B5w47KA
+         XAe6XDI71mypF0rmtCrEAH5exDprf+LakqHYHxw/kMhdR3F1XHquGELfQY2VnTq3M5x/
+         f0+zXtyA5UD23Mhql3kdSSsqXZ4unrLQGx8xVdKvGxAjOycZ13qziMAOsaemXu4l2ASR
+         QbiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aCt/25bZqDvJVBbS2T/nSkaf4i35Ayu5fc8C9w+DSHs=;
+        b=F/LzjCRQUeKRob1oTxVw3fplOLqRCD8+2dO6D48wrc66BpokSQ4dDGJbYwrjpWcN9S
+         9qS5Ux1AasfpamQ47lW+siG3ibPeoEzPcmv/mYqxv3C0TPcSUnKBcGXAmf1CJA5+V7mm
+         hruFltiNHWNQvA0XDB2LjuElbW69T1hv3ENvi3i5JUXP4XxrcP3p/XFA/2BxBkUBn3/C
+         haGvCbKZgRPcsiHTy5J819wuiPXmbmDWCKabcJ9+AMasGfVtbrtwkrX93z47YkaLZCF6
+         Iaq91gMEAm3PDJkDSk0oF2B4GZq/vndLkHAOq8KHW4vGz4HvDxc149IRP71RfFCjJUJZ
+         e5Cw==
+X-Gm-Message-State: AGi0PuaU+GxaQ9vXOeZoNhGFcvDYcLgkwOgyolqUnl+MPF0n+XI/5Ae6
+        w4odyQLACE+WYBASeDa0cfDxJLAqpJgdOoTuKz5wTw==
+X-Google-Smtp-Source: APiQypL2lhwIWiAZBB0Q4t1XxMP5gwqrnEPMEO5qsx7kwPdeLMRsCyvcU6J1wF1QmqGUwY3+rdRxCitBqx9DG5FCrOM=
+X-Received: by 2002:a05:6830:1f39:: with SMTP id e25mr26276595oth.135.1587027360244;
+ Thu, 16 Apr 2020 01:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Apr 2020 10:55:46 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 11/16] gpio: add support for the sl28cpld GPIO
- controller
-In-Reply-To: <CACRpkdbANL_W3gcTwue5VUCWT95boMXjFSqTeFDZvJ6iSeNpJg@mail.gmail.com>
-References: <20200402203656.27047-1-michael@walle.cc>
- <20200402203656.27047-12-michael@walle.cc>
- <CACRpkdbANL_W3gcTwue5VUCWT95boMXjFSqTeFDZvJ6iSeNpJg@mail.gmail.com>
-Message-ID: <46eb76699a76b3feedccc70f1d1da1de@walle.cc>
-X-Sender: michael@walle.cc
-User-Agent: Roundcube Webmail/1.3.10
-X-Spamd-Bar: +
-X-Spam-Level: *
-X-Rspamd-Server: web
-X-Spam-Status: No, score=1.40
-X-Spam-Score: 1.40
-X-Rspamd-Queue-Id: E19F222F53
-X-Spamd-Result: default: False [1.40 / 15.00];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         NEURAL_HAM(-0.00)[-0.402];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,baylibre.com,kernel.org,suse.com,roeck-us.net,linaro.org,gmail.com,pengutronix.de,linux-watchdog.org,nxp.com,linutronix.de,lakedaemon.net,linuxfoundation.org];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
+References: <20200414143743.32677-1-peter.maydell@linaro.org> <20200415151132.03cad507@lwn.net>
+In-Reply-To: <20200415151132.03cad507@lwn.net>
+From:   Peter Maydell <peter.maydell@linaro.org>
+Date:   Thu, 16 Apr 2020 09:55:49 +0100
+Message-ID: <CAFEAcA8igL7L8D16shd6KoVH8Yvu0SwyxcShKoGFgLmDhnSrNA@mail.gmail.com>
+Subject: Re: [PATCH] scripts/kernel-doc: Add missing close-paren in c:function directives
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 15 Apr 2020 at 22:11, Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> On Tue, 14 Apr 2020 15:37:43 +0100
+> Peter Maydell <peter.maydell@linaro.org> wrote:
+> > When kernel-doc generates a 'c:function' directive for a function
+> > one of whose arguments is a function pointer, it fails to print
+> > the close-paren after the argument list of the function pointer
+> > argument. For instance:
+> >
+> >  long work_on_cpu(int cpu, long (*fn) (void *, void * arg)
 
-Hi Linus,
+> Interesting.  This appears to have affected well over 100 function
+> definitions in the docs, and nobody ever noticed.  Good to know we're all
+> reading it closely :)
 
-Am 2020-04-16 10:34, schrieb Linus Walleij:
-> Hi Michael,
-> 
-> this is looking good provided we can get the generic GPIO regmap
-> helper reviewed and merged. Thanks!
-> 
-> On Thu, Apr 2, 2020 at 10:37 PM Michael Walle <michael@walle.cc> wrote:
-> 
->> This adds support for the GPIO controller of the sl28 board management
->> controller. This driver is part of a multi-function device.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
-> 
->> +       depends on MFD_SL28CPLD
-> 
-> Apart from this depends it seems the patch is compile-time
-> independent of the other patches
+Heh; I think my conclusion is "function signatures for APIs which
+don't provide and use a typedef for function-pointer-arguments are
+sufficiently hard to read that people don't notice simple errors
+in them", but then I prefer the with-typedef style to start with :-)
 
-correct. There are no common mfd headers or something like that.
-
-> so I'd suggest we just merge
-> the generic regmap driver and this driver to the GPIO tree once
-> we feel finished with them, optimistically assuming that the MFD
-> driver will land and that we will not need any fundamental
-> changes in the GPIO driver.
-> 
-> Worst case we have to revert the driver and that is no disaster.
-
-Sure. One major thing I'm waiting for is the decision/new ideas on
-how to handle the "register is not set or zero" problem, see the
-other thread on the generic regmap gpio. Then I'd respin an update
-of this whole series.
-
--michael
+thanks
+-- PMM
