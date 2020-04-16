@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8B61ABFF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC1E1ABFE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505749AbgDPLpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634025AbgDPLny (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:43:54 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DACC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:43:54 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id r11so1550261wrx.21
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 04:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=/kCl4Qp/HWFb3bfjnVpgsPir2dBStE2GQr6w0WtQly4=;
-        b=LoPHn4aWZllHhakXzK28hq0gYhdoPqjIUb5q8/9LUlHog4lr4YMsmhmr8PmtJTdMav
-         xM6ygCdhcmyyvfd/mJ8DK3mdTAY9KsDJy6ksfNFP+kPKzedwwKjmPRVSb0f5b538c2G5
-         WHSBeN5XustfBv4quIIiTSQDddY1iixE9KDr/fqmBHTmJPz+uP4AOB9efp28tE+mDE2P
-         /fQ6mz3ZOi+SukgXRg232QEAxg43TB7bzsLQC7GHociU8BZGVw/bquOFTGonDwSou/m2
-         Zkj3TJJbNndy9201si0eQbdT0J8AABk0pWCg+ZCj2/Nn0u/qS3iOlZuFfuGZbGyYAEFU
-         RQrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=/kCl4Qp/HWFb3bfjnVpgsPir2dBStE2GQr6w0WtQly4=;
-        b=Lj7ZOtiF7vJaYa9pMn2SvORGbVYt+dud/MpSLHPuIdrPc69ubVVabQVQRKK2bVmaBm
-         M6B/vYoBa1CI5c8Z4O454UZ6a5T5sdl9qLl0esn3VvLXfDwEp5uwlTauQ9kxF5EIigK5
-         U8Lcd6diejfIt2xb0TsjdwId4CYzXUrDsk/A10qEm91N+NqfGIWRIfUM1EYCbNLTP/8q
-         bhU06Vi5FiX+GFB/PR6hWmVxrcIPUb7HOPd2kLQvadw5Vlf5Y+HtvBWvhSraHOQaYZUQ
-         uLuk/P5GzdGBUzUPDeHCbA1BWOVbVeH33GNWzY0mHyXvzv/8/zO1GKL9vRM3lDkW0/wA
-         QS6g==
-X-Gm-Message-State: AGi0PuZkV0u0a1IV4ahUGEwMNi6hVkLFkYHs0dKabeYgDsv4tXfywt/H
-        vTaQFQwA11UOJKPVCPfatDLyPCOOmg==
-X-Google-Smtp-Source: APiQypLbJHPjUQ2RlNkAM2mV95H3x40l/9Wm7yqr0AuKQvBVjKLGdfbybl/iUwu5f7bkVTRNSwWM4kQfuA==
-X-Received: by 2002:a5d:404a:: with SMTP id w10mr7562452wrp.397.1587037432601;
- Thu, 16 Apr 2020 04:43:52 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 13:42:57 +0200
-Message-Id: <20200416114256.226329-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-Subject: [PATCH] kunit: Add missing newline in summary message
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        alan.maguire@oracle.com, frank.rowand@sony.com,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+        id S2633983AbgDPLn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:43:28 -0400
+Received: from ozlabs.org ([203.11.71.1]:34513 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505947AbgDPLm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:42:58 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 492y5V2GZKz9sR4;
+        Thu, 16 Apr 2020 21:42:53 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1587037375;
+        bh=t4CnpKi/1cWNveFL503UiUpa0nOioFN2uGWTVXoAKYo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=F6msH8q4pMopBVokSfSDN6OBQ2S/Eb32uVgHlQ0T511IzSGtYtiaPIYwl/WVqwAzB
+         pl3QBuU5QbsXoXyFXmZ21FGYq7sWMmuonMX+4+FRxfwvwDpTakIsA64FlIELXls/Fk
+         iBWCoCwbM3fY2tIz6olJLuRfOd3prB0QUwORjf0UHyg5D0cXZN1n2479owrKo8mb2H
+         4Z9qCObz2+YH64TdrgA0v1on7J/TO5im0Sp37K7tv9tXlYJHD2zvBgJiPJGgTe5v36
+         ucqbz3InfjaVmg95tQi4nJj8dJYQ4sEzmpGlNqQ4eO6FheHkpmQ39ZsOyKv/JzFSDC
+         IOvVLxgMc6YPA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        "christophe.leroy\@c-s.fr" <christophe.leroy@c-s.fr>,
+        "paulus\@samba.org" <paulus@samba.org>,
+        "benh\@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "oss\@buserror.net" <oss@buserror.net>,
+        "tglx\@linutronix.de" <tglx@linutronix.de>
+Cc:     "linuxppc-dev\@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+Subject: Re: [PATCH v2] powerpc/setup_64: Set cache-line-size based on cache-block-size
+In-Reply-To: <343c0e8b01ab74481e0b8dfbe588b1c84127a487.camel@alliedtelesis.co.nz>
+References: <dd342c71e03e654a8786302d82f9662004418c6e.camel@alliedtelesis.co.nz> <20200325031854.7625-1-chris.packham@alliedtelesis.co.nz> <343c0e8b01ab74481e0b8dfbe588b1c84127a487.camel@alliedtelesis.co.nz>
+Date:   Thu, 16 Apr 2020 21:43:04 +1000
+Message-ID: <87tv1jirlj.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing newline, as otherwise flushing of the final summary message
-to the console log can be delayed.
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> writes:
+> Hi All,
+>
+> On Wed, 2020-03-25 at 16:18 +1300, Chris Packham wrote:
+>> If {i,d}-cache-block-size is set and {i,d}-cache-line-size is not,
+>> use
+>> the block-size value for both. Per the devicetree spec cache-line-
+>> size
+>> is only needed if it differs from the block size.
+>> 
+>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+>> ---
+>> It looks as though the bsizep = lsizep is not required per the spec
+>> but it's
+>> probably safer to retain it.
+>> 
+>> Changes in v2:
+>> - Scott pointed out that u-boot should be filling in the cache
+>> properties
+>>   (which it does). But it does not specify a cache-line-size because
+>> it
+>>   provides a cache-block-size and the spec says you don't have to if
+>> they are
+>>   the same. So the error is in the parsing not in the devicetree
+>> itself.
+>> 
+>
+> Ping? This thread went kind of quiet.
 
-Fixes: e2219db280e3 ("kunit: add debugfs /sys/kernel/debug/kunit/<suite>/results display")
-Signed-off-by: Marco Elver <elver@google.com>
----
- lib/kunit/test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I replied in the other thread:
 
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 7a6430a7fca0..ccb2ffad8dcf 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -93,7 +93,7 @@ static void kunit_print_ok_not_ok(void *test_or_suite,
- 	 * representation.
- 	 */
- 	if (suite)
--		pr_info("%s %zd - %s",
-+		pr_info("%s %zd - %s\n",
- 			kunit_status_to_string(is_ok),
- 			test_number, description);
- 	else
--- 
-2.26.1.301.g55bc3eb7cb9-goog
+  https://lore.kernel.org/linuxppc-dev/87369xx99u.fsf@mpe.ellerman.id.au/
 
+But then the merge window happened which is a busy time.
+
+What I'd really like is a v3 that incorporates the info I wrote in the
+other thread and a Fixes tag.
+
+If you feel like doing that, that would be great. Otherwise I'll do it
+tomorrow.
+
+cheers
