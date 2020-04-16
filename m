@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350E91ABCE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704661ABCEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503606AbgDPJer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:34:47 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:55287 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503587AbgDPJee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:34:34 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 135AA22F53;
-        Thu, 16 Apr 2020 11:34:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1587029666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wl0AyceV1HH2Bd5JaxMdDxBcxIXT6A+UuSLy9IcpOs4=;
-        b=fdSgq9LvNOGqIy0gUfMq93deaPw6BZqZHdv+a38XnNPqqltZFNASH8ql6fitG2O9ld7Fhd
-        89CCvLeW9VQPPWsn6QhIAbe2kDBbC8GjtJta3+KazM2VUze0Fpwb1G7AZsv7C/L7/DB79C
-        HBuO5V1WWdBRNC5k1tGvQI1iyeMkQhA=
+        id S2503859AbgDPJfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:35:43 -0400
+Received: from mga12.intel.com ([192.55.52.136]:43263 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503787AbgDPJfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:35:33 -0400
+IronPort-SDR: FaOqx3gjHusiIA7aLJig4pR7+mOB0+oesPCHSTLjldh5LEUDLnD37H5S3l1Gs/de7oyTpQA57F
+ 9p/Bk4HRrcew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 02:35:32 -0700
+IronPort-SDR: xTBdCFZ+AyNj7x+sI6oWf2cORZqbOuteXGFH1D7+A8fhQKnjpK5phcfYqEG1bS0ATPkjdpf+ub
+ aTAjF3ZJiA6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="242595587"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 16 Apr 2020 02:35:32 -0700
+Received: from [10.255.154.239] (vramuthx-MOBL1.gar.corp.intel.com [10.255.154.239])
+        by linux.intel.com (Postfix) with ESMTP id 3F5C05803E3;
+        Thu, 16 Apr 2020 02:35:28 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     anders.roxell@linaro.org, andriy.shevchenko@intel.com,
+        arnd@arndb.de, boris.brezillon@collabora.com,
+        brendanhiggins@google.com, cheol.yong.kim@intel.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, masonccyang@mxic.com.tw,
+        miquel.raynal@bootlin.com, piotrs@cadence.com,
+        qi-ming.wu@intel.com, richard@nod.at, robh+dt@kernel.org,
+        tglx@linutronix.de, vigneshr@ti.com
+References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
+Date:   Thu, 16 Apr 2020 17:35:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Apr 2020 11:34:26 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 10/16] gpio: add a reusable generic gpio_chip using
- regmap
-In-Reply-To: <CACRpkdZPZ4nFQ6B3tGG9wvceoTWqAkfY0r1UKs2pf_c=ZNBG=w@mail.gmail.com>
-References: <20200402203656.27047-1-michael@walle.cc>
- <20200402203656.27047-11-michael@walle.cc>
- <CAMpxmJVE3PgVCxkQ-ryc5=KSrKcpdmk1cnJUxJBz9QFCx-e_+A@mail.gmail.com>
- <80bd8661ec8a1f5eda3f09a267846eaa@walle.cc>
- <CAMpxmJVC7e9JnHzBo-h8M1+KmcA32=Rvxo7+znH=-kAbcCr_LQ@mail.gmail.com>
- <e0388a2137e23d76b2415a7549c01dd1@walle.cc>
- <CAMpxmJW1x4Orh1BZ4TUoCsYeaAAZ4NBUNvoMG9JgP0iLvXTOtg@mail.gmail.com>
- <62d157198a75a59ada15c496deeab49b@walle.cc>
- <eab972adf53bbac20b5a9e613fcfb5b0@walle.cc>
- <CACRpkdZPZ4nFQ6B3tGG9wvceoTWqAkfY0r1UKs2pf_c=ZNBG=w@mail.gmail.com>
-Message-ID: <576a6244fa3b996327c49023fe953215@walle.cc>
-X-Sender: michael@walle.cc
-User-Agent: Roundcube Webmail/1.3.10
-X-Spamd-Bar: +
-X-Spam-Level: *
-X-Rspamd-Server: web
-X-Spam-Status: No, score=1.40
-X-Spam-Score: 1.40
-X-Rspamd-Queue-Id: 135AA22F53
-X-Spamd-Result: default: False [1.40 / 15.00];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         NEURAL_HAM(-0.00)[-0.404];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[baylibre.com,vger.kernel.org,lists.infradead.org,kernel.org,suse.com,roeck-us.net,linaro.org,gmail.com,pengutronix.de,linux-watchdog.org,nxp.com,linutronix.de,lakedaemon.net,linuxfoundation.org];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
+In-Reply-To: <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-04-16 11:20, schrieb Linus Walleij:
-> On Tue, Apr 14, 2020 at 9:57 PM Michael Walle <michael@walle.cc> wrote:
-> 
->> So what about the following:
->> 
->> #define GPIO_REGMAP_ADDR_ZERO (unsigned int)(-1)
-> 
-> Yeah with regmap explicitly using int I guess we can't use
-> S32_MAX, so that is fair.
-> 
->> So this way the user might assign the base addresses the normal way
->> except when he wants to use zero, in that case he has to use
->> 
->>    ->base_adr = GPIO_REGMAP_ADDR_ZERO;
->> 
->> gpio-regmap.c could use then:
->> 
->> if (base_addr)
->>    something_useful(gpio_regmap_addr(base_addr));
->> 
->> unsigned int gpio_regmap_addr(unsigned int addr)
->> {
->>    return (addr == GPIO_REGMAP_ADDR_ZERO) ? 0 : addr;
->> }
-> 
-> That's reasonably clean.
+Hi Martin,
 
-Ok, at least on that side. For my sl28 gpio driver I then have
-the problem that depending on 'base' I might have to use
-GPIO_REGMAP_ADDR_ZERO:
+     Thank you so much for review comments and your time...
 
-   #define GPIO_REG_DIR 0
-   config.reg_dir_out_base = base + GPIO_REG_DIR;
+On 16/4/2020 6:05 am, Martin Blumenstingl wrote:
+> Hi,
+>
+> first of all: thank you for working on upstreaming this.
+> Especially since you are going to use the new exec_op style in v2 as
+> Boris suggested.
+>
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>>
+>> This patch adds the new IP of Nand Flash Controller(NFC) support
+>> on Intel's Lightning Mountain(LGM) SoC.
+>>
+>> DMA is used for burst data transfer operation, also DMA HW supports
+>> aligned 32bit memory address and aligned data access by default.
+>> DMA burst of 8 supported. Data register used to support the read/write
+>> operation from/to device.
+> I am wondering how this new hardware is different from the Lantiq NAND
+> controller IP - for which there is already a driver in mainline (it's
+> in drivers/mtd/nand/raw/xway_nand.c).
+> The CON and WAIT registers look suspiciously similar.
+>
+> As far as I understand the "old" SoCs (VRX200 and earlier) don't have
+> a built-in ECC engine. This seems to have changed with ARX300 though
+> (again, AFAIK).
+>
+> A bit of lineage on these SoCs (initially these were developed by
+> Infineon. Lantiq then started as an Infineon spin-off in 2009 and
+> was then acquired by Intel in 2015):
+> - Danube
+> - ARX100 from 2008/2009
+> - VRX200 from 2009/2010
+> - ARX300 from 2014
+> - GRX350 from 2015/2016
+> - GRX550 from 2017
+> - and now finally: LGM from 2020 (est.)
+>
+> The existing xway_nand driver supports the Danube, ARX100 and VRX200
+> SoCs.
+Lantiq upstreamed a driver for an older version of this IP core 8 years 
+ago, see here:
+https://elixir.bootlin.com/linux/v5.5.6/source/drivers/mtd/nand/raw/xway_nand.c 
+It does not support DMA and ECC.
+This upstream driver works with the xrx200, I do not know how well it 
+works with other SoCs.
 
-So there is still a convenience macro:
-   #define GPIO_REGMAP_ADDR(addr) ((addr) ? addr : GPIO_REGMAP_ADDR_ZERO)
-
-which you can use if you can't be sure that the address is not non-zero.
-So the code in my sl28 gpio driver looks like:
-
-  config.reg_dir_out_base = GPIO_REGMAP_ADDR(base + GPIO_REG_DIR);
-
-I'll respin the patch with the current remarks.
-
--michael
+Regards
+Vadivel
+>
+>
+> Best regards,
+> Martin
