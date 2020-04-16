@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACD31AC259
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1953B1AC88F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895470AbgDPN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:27:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34476 "EHLO mail.kernel.org"
+        id S2392357AbgDPNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:50:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895268AbgDPN0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:26:34 -0400
+        id S2897322AbgDPNgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:36:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04764221F6;
-        Thu, 16 Apr 2020 13:26:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C3922222C;
+        Thu, 16 Apr 2020 13:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043593;
-        bh=vDbC//cFoiarsCOyRPOI0FBifzs1I3USmWge+kKgjaU=;
+        s=default; t=1587044183;
+        bh=1jzhNCiKswhoIJTfB2OLMsRckfeRXXkCNaRRwVljCGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zLg0eTwKC7DV431gCgXINQ1RI0XppHkL+R5FN2eECDEpxJYHkWwDXv0hkjZmvnKhV
-         exQ5Ctp9WTEadQeo8/i4wN2iPfy/e3ocIJiwZrbevOl8VcRVYy5RTwQUkRbunyaKdW
-         AG9n3kjRsuneGsj7FzhKK5oDAmwNDM4SAFFl0/JY=
+        b=xNdITB3IziSyyMzSOcwd7Tyi/Xji7ozxG5wVSvPYZGGGwBe3ufkWm87jAgGA+Af79
+         o8Be2+epqy+yDb5qqXQ9fG/OibHktcyrao/cX8mE8aT9iPUKplTauei3XSKl/aqk0D
+         APu9POsSBIO9T+jcCUlxeSHRmwYl6kcQrVAgsaeA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 021/146] selftests/x86/ptrace_syscall_32: Fix no-vDSO segfault
-Date:   Thu, 16 Apr 2020 15:22:42 +0200
-Message-Id: <20200416131245.400616517@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-efi@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Hildenbrand <david@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 5.5 112/257] efi/x86: Add TPM related EFI tables to unencrypted mapping checks
+Date:   Thu, 16 Apr 2020 15:22:43 +0200
+Message-Id: <20200416131340.248264441@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +47,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-[ Upstream commit 630b99ab60aa972052a4202a1ff96c7e45eb0054 ]
+commit f10e80a19b07b58fc2adad7945f8313b01503bae upstream.
 
-If AT_SYSINFO is not present, don't try to call a NULL pointer.
+When booting with SME active, EFI tables must be mapped unencrypted since
+they were built by UEFI in unencrypted memory. Update the list of tables
+to be checked during early_memremap() processing to account for the EFI
+TPM tables.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/faaf688265a7e1a5b944d6f8bc0f6368158306d3.1584052409.git.luto@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This fixes a bug where an EFI TPM log table has been created by UEFI, but
+it lives in memory that has been marked as usable rather than reserved.
+
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: linux-efi@vger.kernel.org
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc: <stable@vger.kernel.org> # v5.4+
+Link: https://lore.kernel.org/r/4144cd813f113c20cdfa511cf59500a64e6015be.1582662842.git.thomas.lendacky@amd.com
+Link: https://lore.kernel.org/r/20200228121408.9075-2-ardb@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/x86/ptrace_syscall.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/x86/platform/efi/efi.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/ptrace_syscall.c b/tools/testing/selftests/x86/ptrace_syscall.c
-index 6f22238f32173..12aaa063196e7 100644
---- a/tools/testing/selftests/x86/ptrace_syscall.c
-+++ b/tools/testing/selftests/x86/ptrace_syscall.c
-@@ -414,8 +414,12 @@ int main()
- 
- #if defined(__i386__) && (!defined(__GLIBC__) || __GLIBC__ > 2 || __GLIBC_MINOR__ >= 16)
- 	vsyscall32 = (void *)getauxval(AT_SYSINFO);
--	printf("[RUN]\tCheck AT_SYSINFO return regs\n");
--	test_sys32_regs(do_full_vsyscall32);
-+	if (vsyscall32) {
-+		printf("[RUN]\tCheck AT_SYSINFO return regs\n");
-+		test_sys32_regs(do_full_vsyscall32);
-+	} else {
-+		printf("[SKIP]\tAT_SYSINFO is not available\n");
-+	}
+--- a/arch/x86/platform/efi/efi.c
++++ b/arch/x86/platform/efi/efi.c
+@@ -85,6 +85,8 @@ static const unsigned long * const efi_t
+ #ifdef CONFIG_EFI_RCI2_TABLE
+ 	&rci2_table_phys,
  #endif
++	&efi.tpm_log,
++	&efi.tpm_final_log,
+ };
  
- 	test_ptrace_syscall_restart();
--- 
-2.20.1
-
+ u64 efi_setup;		/* efi setup_data physical address */
 
 
