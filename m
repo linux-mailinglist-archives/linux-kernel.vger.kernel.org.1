@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F701ACBCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5E71AC8C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437799AbgDPPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44088 "EHLO mail.kernel.org"
+        id S2407425AbgDPPOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896577AbgDPNc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:32:56 -0400
+        id S2441657AbgDPNuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 552C222201;
-        Thu, 16 Apr 2020 13:31:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C82122203;
+        Thu, 16 Apr 2020 13:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043917;
-        bh=OJB7ifqTpyz9Z9d17YM+NNYGXYpJLfrKjFl0+S1ikmE=;
+        s=default; t=1587044985;
+        bh=MkPs644BC6fRZVf3njDdZwqWGc69xsas9A4iun9REXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xw94aZ/IInk+SnZRoFGX+Nfn/zA1r4opztF0Fvm9BO4xeKFJ9sOfuQlvLFLoHrrjC
-         sIE4Uw+9/K+fBUeSPuoBc5a5TojYBu+zfiv1Fg8QBeI1jZvl6Fgv5+HbtIhVUdJDEL
-         MHfQpqWbBjwjHJcFRYcEebeztmW/dsCEFs2q+Yzk=
+        b=eBPhTbx026teCN88iMpPZ09z8Mj9VpyzI1ZLGQmtu2MWcuvCJkD3u3QWnCELL+7ZC
+         dyPGwGISeZq/r70ssXjJyDwmKLwBwzpUOm7UvxeVzCzdouQXd+DwSU4I4SctswQaDO
+         sis6DpLsLo0jHFNPlTTswlgdj6qmTMvulChvKilg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Gibson <david@gibson.dropbear.id.au>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 127/146] powerpc/xive: Use XIVE_BAD_IRQ instead of zero to catch non configured IPIs
-Date:   Thu, 16 Apr 2020 15:24:28 +0200
-Message-Id: <20200416131259.858718186@linuxfoundation.org>
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 175/232] scsi: lpfc: Fix lpfc_io_buf resource leak in lpfc_get_scsi_buf_s4 error path
+Date:   Thu, 16 Apr 2020 15:24:29 +0200
+Message-Id: <20200416131336.938168479@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,133 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: James Smart <jsmart2021@gmail.com>
 
-commit b1a504a6500df50e83b701b7946b34fce27ad8a3 upstream.
+commit 0ab384a49c548baf132ccef249f78d9c6c506380 upstream.
 
-When a CPU is brought up, an IPI number is allocated and recorded
-under the XIVE CPU structure. Invalid IPI numbers are tracked with
-interrupt number 0x0.
+If a call to lpfc_get_cmd_rsp_buf_per_hdwq returns NULL (memory allocation
+failure), a previously allocated lpfc_io_buf resource is leaked.
 
-On the PowerNV platform, the interrupt number space starts at 0x10 and
-this works fine. However, on the sPAPR platform, it is possible to
-allocate the interrupt number 0x0 and this raises an issue when CPU 0
-is unplugged. The XIVE spapr driver tracks allocated interrupt numbers
-in a bitmask and it is not correctly updated when interrupt number 0x0
-is freed. It stays allocated and it is then impossible to reallocate.
+Fix by releasing the lpfc_io_buf resource in the failure path.
 
-Fix by using the XIVE_BAD_IRQ value instead of zero on both platforms.
-
-Reported-by: David Gibson <david@gibson.dropbear.id.au>
-Fixes: eac1e731b59e ("powerpc/xive: guest exploitation of the XIVE interrupt controller")
-Cc: stable@vger.kernel.org # v4.14+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
-Tested-by: David Gibson <david@gibson.dropbear.id.au>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200306150143.5551-2-clg@kaod.org
+Fixes: d79c9e9d4b3d ("scsi: lpfc: Support dynamic unbounded SGL lists on G7 hardware.")
+Cc: <stable@vger.kernel.org> # v5.4+
+Link: https://lore.kernel.org/r/20200128002312.16346-3-jsmart2021@gmail.com
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/sysdev/xive/common.c        |   12 +++---------
- arch/powerpc/sysdev/xive/native.c        |    4 ++--
- arch/powerpc/sysdev/xive/spapr.c         |    4 ++--
- arch/powerpc/sysdev/xive/xive-internal.h |    7 +++++++
- 4 files changed, 14 insertions(+), 13 deletions(-)
+ drivers/scsi/lpfc/lpfc_scsi.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -72,13 +72,6 @@ static u32 xive_ipi_irq;
- /* Xive state for each CPU */
- static DEFINE_PER_CPU(struct xive_cpu *, xive_cpu);
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -671,8 +671,10 @@ lpfc_get_scsi_buf_s4(struct lpfc_hba *ph
+ 	lpfc_cmd->prot_data_type = 0;
+ #endif
+ 	tmp = lpfc_get_cmd_rsp_buf_per_hdwq(phba, lpfc_cmd);
+-	if (!tmp)
++	if (!tmp) {
++		lpfc_release_io_buf(phba, lpfc_cmd, lpfc_cmd->hdwq);
+ 		return NULL;
++	}
  
--/*
-- * A "disabled" interrupt should never fire, to catch problems
-- * we set its logical number to this
-- */
--#define XIVE_BAD_IRQ		0x7fffffff
--#define XIVE_MAX_IRQ		(XIVE_BAD_IRQ - 1)
--
- /* An invalid CPU target */
- #define XIVE_INVALID_TARGET	(-1)
- 
-@@ -1074,7 +1067,7 @@ static int xive_setup_cpu_ipi(unsigned i
- 	xc = per_cpu(xive_cpu, cpu);
- 
- 	/* Check if we are already setup */
--	if (xc->hw_ipi != 0)
-+	if (xc->hw_ipi != XIVE_BAD_IRQ)
- 		return 0;
- 
- 	/* Grab an IPI from the backend, this will populate xc->hw_ipi */
-@@ -1111,7 +1104,7 @@ static void xive_cleanup_cpu_ipi(unsigne
- 	/* Disable the IPI and free the IRQ data */
- 
- 	/* Already cleaned up ? */
--	if (xc->hw_ipi == 0)
-+	if (xc->hw_ipi == XIVE_BAD_IRQ)
- 		return;
- 
- 	/* Mask the IPI */
-@@ -1267,6 +1260,7 @@ static int xive_prepare_cpu(unsigned int
- 		if (np)
- 			xc->chip_id = of_get_ibm_chip_id(np);
- 		of_node_put(np);
-+		xc->hw_ipi = XIVE_BAD_IRQ;
- 
- 		per_cpu(xive_cpu, cpu) = xc;
- 	}
---- a/arch/powerpc/sysdev/xive/native.c
-+++ b/arch/powerpc/sysdev/xive/native.c
-@@ -311,7 +311,7 @@ static void xive_native_put_ipi(unsigned
- 	s64 rc;
- 
- 	/* Free the IPI */
--	if (!xc->hw_ipi)
-+	if (xc->hw_ipi == XIVE_BAD_IRQ)
- 		return;
- 	for (;;) {
- 		rc = opal_xive_free_irq(xc->hw_ipi);
-@@ -319,7 +319,7 @@ static void xive_native_put_ipi(unsigned
- 			msleep(OPAL_BUSY_DELAY_MS);
- 			continue;
- 		}
--		xc->hw_ipi = 0;
-+		xc->hw_ipi = XIVE_BAD_IRQ;
- 		break;
- 	}
- }
---- a/arch/powerpc/sysdev/xive/spapr.c
-+++ b/arch/powerpc/sysdev/xive/spapr.c
-@@ -509,11 +509,11 @@ static int xive_spapr_get_ipi(unsigned i
- 
- static void xive_spapr_put_ipi(unsigned int cpu, struct xive_cpu *xc)
- {
--	if (!xc->hw_ipi)
-+	if (xc->hw_ipi == XIVE_BAD_IRQ)
- 		return;
- 
- 	xive_irq_bitmap_free(xc->hw_ipi);
--	xc->hw_ipi = 0;
-+	xc->hw_ipi = XIVE_BAD_IRQ;
- }
- #endif /* CONFIG_SMP */
- 
---- a/arch/powerpc/sysdev/xive/xive-internal.h
-+++ b/arch/powerpc/sysdev/xive/xive-internal.h
-@@ -9,6 +9,13 @@
- #ifndef __XIVE_INTERNAL_H
- #define __XIVE_INTERNAL_H
- 
-+/*
-+ * A "disabled" interrupt should never fire, to catch problems
-+ * we set its logical number to this
-+ */
-+#define XIVE_BAD_IRQ		0x7fffffff
-+#define XIVE_MAX_IRQ		(XIVE_BAD_IRQ - 1)
-+
- /* Each CPU carry one of these with various per-CPU state */
- struct xive_cpu {
- #ifdef CONFIG_SMP
+ 	lpfc_cmd->fcp_cmnd = tmp->fcp_cmnd;
+ 	lpfc_cmd->fcp_rsp = tmp->fcp_rsp;
 
 
