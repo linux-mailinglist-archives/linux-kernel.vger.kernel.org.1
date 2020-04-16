@@ -2,55 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7340B1ABDC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618791ABDD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504748AbgDPKSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:18:47 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45834 "EHLO mga01.intel.com"
+        id S2504836AbgDPKZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:25:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:58462 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441495AbgDPKRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:17:53 -0400
-IronPort-SDR: AwA41n4JgjKZuuNgZRCP6UHT3UZ1/Za8i4jvp+2iuw24g9JtB0A34lTmesKM6GH21CTwW6R8I8
- 0TXBR3vVAKnA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 03:17:42 -0700
-IronPort-SDR: PabvyhK/GDPyBjaf0paWWd5oAAbGpqHHyicWhdVU0osJ1cJkrEV/y2jitUhatIDlUFj03yE+KQ
- +MY52IYzL9ng==
-X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
-   d="scan'208";a="400622555"
-Received: from ellenfax-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.44.122])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 03:17:34 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "narmstrong\@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy\@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart\@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "leon\@kernel.org" <leon@kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "linux-renesas-soc\@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nico\@fluxnic.net" <nico@fluxnic.net>,
-        "linux-rdma\@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kieran.bingham+renesas\@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "a.hajda\@samsung.com" <a.hajda@samsung.com>,
-        "jonas\@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied\@linux.ie" <airlied@linux.ie>,
-        "jgg\@ziepe.ca" <jgg@ziepe.ca>,
-        "jernej.skrabec\@siol.net" <jernej.skrabec@siol.net>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-In-Reply-To: <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr> <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com> <20200408224224.GD11886@ziepe.ca> <87k12pgifv.fsf@intel.com> <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com> <20200410171320.GN11886@ziepe.ca> <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com> <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com> <20200414152312.GF5100@ziepe.ca> <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com> <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com> <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com> <834c7606743424c64951dd2193ca15e29799bf18.camel@mellanox.com> <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com>
-Date:   Thu, 16 Apr 2020 13:17:32 +0300
-Message-ID: <874ktj4tvn.fsf@intel.com>
+        id S2504821AbgDPKYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:24:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A63C1C14;
+        Thu, 16 Apr 2020 03:24:16 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 865253F73D;
+        Thu, 16 Apr 2020 03:24:15 -0700 (PDT)
+References: <20200415210512.805-1-valentin.schneider@arm.com> <20200415210512.805-7-valentin.schneider@arm.com> <CAKfTPtA5-S_EyzZMDMr9SuVQmWZNdLXOVSLMAMTD+6Bow4jJBQ@mail.gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 6/9] sched: Kill select_task_rq()'s sd_flag parameter
+In-reply-to: <CAKfTPtA5-S_EyzZMDMr9SuVQmWZNdLXOVSLMAMTD+6Bow4jJBQ@mail.gmail.com>
+Date:   Thu, 16 Apr 2020 11:24:08 +0100
+Message-ID: <jhj5zdzpw3b.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -58,35 +39,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Apr 16, 2020 at 5:25 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
->> BTW how about adding a new Kconfig option to hide the details of
->> ( BAR || !BAR) ? as Jason already explained and suggested, this will
->> make it easier for the users and developers to understand the actual
->> meaning behind this tristate weird condition.
->>
->> e.g have a new keyword:
->>      reach VXLAN
->> which will be equivalent to:
->>      depends on VXLAN && !VXLAN
+
+Hi Vincent,
+
+Thanks for taking a look at this.
+
+On 16/04/20 08:42, Vincent Guittot wrote:
+>> @@ -6622,13 +6622,25 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>>   * preempt must be disabled.
+>>   */
+>>  static int
+>> -select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_flags)
+>> +select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+>>  {
+>> +       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
+>>         struct sched_domain *tmp, *sd = NULL;
+>>         int cpu = smp_processor_id();
+>>         int new_cpu = prev_cpu;
+>>         int want_affine = 0;
+>> -       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
+>> +       int sd_flag;
+>> +
+>> +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
 >
-> I'd love to see that, but I'm not sure what keyword is best. For your
-> suggestion of "reach", that would probably do the job, but I'm not
-> sure if this ends up being more or less confusing than what we have
-> today.
+> You remove a function parameter, which was directly set with the right
+> flag, but then you add a switch case to recreate this sd_flag
+> internally. Not sure we can say that it's real benefit
+>
 
-Ah, perfect bikeshedding topic!
+It is indeed the contentious point of this series (IMO). Still, it has a
+few things going for it:
 
-Perhaps "uses"? If the dependency is enabled it gets used as a
-dependency.
+1) only CFS is helped by that extra parameter
 
-Of course, this is all just talk until someone(tm) posts a patch
-actually making the change. I've looked at the kconfig tool sources
-before; not going to make the same mistake again.
+2) with patch 9, I need a control flow to pick up the right cached pointer
+   anyway; the alternative would be to do something like the unsavoury:
 
-BR,
-Jani.
+DEFINE_PER_CPU(struct sched_domain __rcu *, sd_balance_flags[3]);
+...
+update_top_cache_domain()
+{
+        per_cpu(sd_balance_flags[0], cpu) = highest_flag_domain(cpu, SD_BALANCE_EXEC);
+        per_cpu(sd_balance_flags[1], cpu) = highest_flag_domain(cpu, SD_BALANCE_FORK);
+        per_cpu(sd_balance_flags[2], cpu) = highest_flag_domain(cpu, SD_BALANCE_WAKE);
+}
+...
+select_task_rq_fair()
+{
+        // Whatever sort of shady constant time conversion you can think of
+        int index = !!(wake_flags & WF_FORK) + 2 * !!(wake_flags & WF_TTWU)
+        sd_flag = SD_BALANCE_EXEC << index;
+        sd = per_cpu(sd_balance_flags[index], cpu);
+}
 
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+>> +       case WF_TTWU:
+>> +               sd_flag = SD_BALANCE_WAKE;
+>> +               break;
+>> +       case WF_FORK:
+>> +               sd_flag = SD_BALANCE_FORK;
+>> +               break;
+>> +       default:
+>> +               sd_flag = SD_BALANCE_EXEC;
+>> +       }
+>>
+>>         if (sd_flag & SD_BALANCE_WAKE) {
+>>                 record_wakee(p);
