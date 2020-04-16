@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45171ACA46
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32C31ACA7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898317AbgDPNl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:41:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42824 "EHLO mail.kernel.org"
+        id S2506144AbgDPPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896558AbgDPNcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:32:55 -0400
+        id S2897379AbgDPNk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:40:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98B692224F;
-        Thu, 16 Apr 2020 13:31:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0623D20732;
+        Thu, 16 Apr 2020 13:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043908;
-        bh=T9Q/+8y+10RHMimFMocEtiqH524D6C047MMtaJaMqCU=;
+        s=default; t=1587044427;
+        bh=iGAvezQIXpomV+U2h6LGXS5TodfnQCAsqZ5z6i5QdVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PjNz5n2RDKaRm9+DmdhvQCmL2scBlam6SurYDyQHPEZHO+Ew+slQUvJoUcOW7uZ1H
-         vQ8YSe9qIbEMFQRcuQrWPh8k5HWGIq3UYUHeLwi4Q2faMOmhw9Ho1cL2Iq16ibM4MO
-         8655NdbP5l+5MPYUisiEKq657P4COK+KwDXsbCA4=
+        b=AIF5VgD6s0iUghEfTSXpb85szNDXKN5P7+s3naHo33rNdDoE2eKr2pZxd1JFUw/Z1
+         +D9Bbwykcd0TCqMlNPCVNmp/PadiAE6AVqvclGl+fbnG85BuqqF9mQOd3DSkxrUzYU
+         6YMLqXJbqlhWUpjqp0YyOcRBC/OdojFnN0NVJLYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
-Subject: [PATCH 4.19 123/146] xen/blkfront: fix memory allocation flags in blkfront_setup_indirect()
-Date:   Thu, 16 Apr 2020 15:24:24 +0200
-Message-Id: <20200416131259.388834579@linuxfoundation.org>
+        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.cz>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.5 214/257] powerpc/pseries: Avoid NULL pointer dereference when drmem is unavailable
+Date:   Thu, 16 Apr 2020 15:24:25 +0200
+Message-Id: <20200416131352.769866052@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,100 +44,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Libor Pechacek <lpechacek@suse.cz>
 
-commit 3a169c0be75b59dd85d159493634870cdec6d3c4 upstream.
+commit a83836dbc53e96f13fec248ecc201d18e1e3111d upstream.
 
-Commit 1d5c76e664333 ("xen-blkfront: switch kcalloc to kvcalloc for
-large array allocation") didn't fix the issue it was meant to, as the
-flags for allocating the memory are GFP_NOIO, which will lead the
-memory allocation falling back to kmalloc().
+In guests without hotplugagble memory drmem structure is only zero
+initialized. Trying to manipulate DLPAR parameters results in a crash.
 
-So instead of GFP_NOIO use GFP_KERNEL and do all the memory allocation
-in blkfront_setup_indirect() in a memalloc_noio_{save,restore} section.
+  $ echo "memory add count 1" > /sys/kernel/dlpar
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+  ...
+  NIP:  c0000000000ff294 LR: c0000000000ff248 CTR: 0000000000000000
+  REGS: c0000000fb9d3880 TRAP: 0300   Tainted: G            E      (5.5.0-rc6-2-default)
+  MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28242428  XER: 20000000
+  CFAR: c0000000009a6c10 DAR: 0000000000000010 DSISR: 40000000 IRQMASK: 0
+  ...
+  NIP dlpar_memory+0x6e4/0xd00
+  LR  dlpar_memory+0x698/0xd00
+  Call Trace:
+    dlpar_memory+0x698/0xd00 (unreliable)
+    handle_dlpar_errorlog+0xc0/0x190
+    dlpar_store+0x198/0x4a0
+    kobj_attr_store+0x30/0x50
+    sysfs_kf_write+0x64/0x90
+    kernfs_fop_write+0x1b0/0x290
+    __vfs_write+0x3c/0x70
+    vfs_write+0xd0/0x260
+    ksys_write+0xdc/0x130
+    system_call+0x5c/0x68
 
-Fixes: 1d5c76e664333 ("xen-blkfront: switch kcalloc to kvcalloc for large array allocation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Acked-by: Roger Pau Monné <roger.pau@citrix.com>
-Link: https://lore.kernel.org/r/20200403090034.8753-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Taking closer look at the code, I can see that for_each_drmem_lmb is a
+macro expanding into `for (lmb = &drmem_info->lmbs[0]; lmb <=
+&drmem_info->lmbs[drmem_info->n_lmbs - 1]; lmb++)`. When drmem_info->lmbs
+is NULL, the loop would iterate through the whole address range if it
+weren't stopped by the NULL pointer dereference on the next line.
+
+This patch aligns for_each_drmem_lmb and for_each_drmem_lmb_in_range
+macro behavior with the common C semantics, where the end marker does
+not belong to the scanned range, and alters get_lmb_range() semantics.
+As a side effect, the wraparound observed in the crash is prevented.
+
+Fixes: 6c6ea53725b3 ("powerpc/mm: Separate ibm, dynamic-memory data from DT format")
+Cc: stable@vger.kernel.org # v4.16+
+Signed-off-by: Libor Pechacek <lpechacek@suse.cz>
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200131132829.10281-1-msuchanek@suse.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/block/xen-blkfront.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ arch/powerpc/include/asm/drmem.h                |    4 ++--
+ arch/powerpc/platforms/pseries/hotplug-memory.c |    8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/block/xen-blkfront.c
-+++ b/drivers/block/xen-blkfront.c
-@@ -47,6 +47,7 @@
- #include <linux/bitmap.h>
- #include <linux/list.h>
- #include <linux/workqueue.h>
-+#include <linux/sched/mm.h>
+--- a/arch/powerpc/include/asm/drmem.h
++++ b/arch/powerpc/include/asm/drmem.h
+@@ -27,12 +27,12 @@ struct drmem_lmb_info {
+ extern struct drmem_lmb_info *drmem_info;
  
- #include <xen/xen.h>
- #include <xen/xenbus.h>
-@@ -2188,10 +2189,12 @@ static void blkfront_setup_discard(struc
+ #define for_each_drmem_lmb_in_range(lmb, start, end)		\
+-	for ((lmb) = (start); (lmb) <= (end); (lmb)++)
++	for ((lmb) = (start); (lmb) < (end); (lmb)++)
  
- static int blkfront_setup_indirect(struct blkfront_ring_info *rinfo)
+ #define for_each_drmem_lmb(lmb)					\
+ 	for_each_drmem_lmb_in_range((lmb),			\
+ 		&drmem_info->lmbs[0],				\
+-		&drmem_info->lmbs[drmem_info->n_lmbs - 1])
++		&drmem_info->lmbs[drmem_info->n_lmbs])
+ 
+ /*
+  * The of_drconf_cell_v1 struct defines the layout of the LMB data
+--- a/arch/powerpc/platforms/pseries/hotplug-memory.c
++++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+@@ -223,7 +223,7 @@ static int get_lmb_range(u32 drc_index,
+ 			 struct drmem_lmb **end_lmb)
  {
--	unsigned int psegs, grants;
-+	unsigned int psegs, grants, memflags;
- 	int err, i;
- 	struct blkfront_info *info = rinfo->dev_info;
+ 	struct drmem_lmb *lmb, *start, *end;
+-	struct drmem_lmb *last_lmb;
++	struct drmem_lmb *limit;
  
-+	memflags = memalloc_noio_save();
-+
- 	if (info->max_indirect_segments == 0) {
- 		if (!HAS_EXTRA_REQ)
- 			grants = BLKIF_MAX_SEGMENTS_PER_REQUEST;
-@@ -2223,7 +2226,7 @@ static int blkfront_setup_indirect(struc
+ 	start = NULL;
+ 	for_each_drmem_lmb(lmb) {
+@@ -236,10 +236,10 @@ static int get_lmb_range(u32 drc_index,
+ 	if (!start)
+ 		return -EINVAL;
  
- 		BUG_ON(!list_empty(&rinfo->indirect_pages));
- 		for (i = 0; i < num; i++) {
--			struct page *indirect_page = alloc_page(GFP_NOIO);
-+			struct page *indirect_page = alloc_page(GFP_KERNEL);
- 			if (!indirect_page)
- 				goto out_of_memory;
- 			list_add(&indirect_page->lru, &rinfo->indirect_pages);
-@@ -2234,15 +2237,15 @@ static int blkfront_setup_indirect(struc
- 		rinfo->shadow[i].grants_used =
- 			kvcalloc(grants,
- 				 sizeof(rinfo->shadow[i].grants_used[0]),
--				 GFP_NOIO);
-+				 GFP_KERNEL);
- 		rinfo->shadow[i].sg = kvcalloc(psegs,
- 					       sizeof(rinfo->shadow[i].sg[0]),
--					       GFP_NOIO);
-+					       GFP_KERNEL);
- 		if (info->max_indirect_segments)
- 			rinfo->shadow[i].indirect_grants =
- 				kvcalloc(INDIRECT_GREFS(grants),
- 					 sizeof(rinfo->shadow[i].indirect_grants[0]),
--					 GFP_NOIO);
-+					 GFP_KERNEL);
- 		if ((rinfo->shadow[i].grants_used == NULL) ||
- 			(rinfo->shadow[i].sg == NULL) ||
- 		     (info->max_indirect_segments &&
-@@ -2251,6 +2254,7 @@ static int blkfront_setup_indirect(struc
- 		sg_init_table(rinfo->shadow[i].sg, psegs);
- 	}
+-	end = &start[n_lmbs - 1];
++	end = &start[n_lmbs];
  
-+	memalloc_noio_restore(memflags);
+-	last_lmb = &drmem_info->lmbs[drmem_info->n_lmbs - 1];
+-	if (end > last_lmb)
++	limit = &drmem_info->lmbs[drmem_info->n_lmbs];
++	if (end > limit)
+ 		return -EINVAL;
  
- 	return 0;
- 
-@@ -2270,6 +2274,9 @@ out_of_memory:
- 			__free_page(indirect_page);
- 		}
- 	}
-+
-+	memalloc_noio_restore(memflags);
-+
- 	return -ENOMEM;
- }
- 
+ 	*start_lmb = start;
 
 
