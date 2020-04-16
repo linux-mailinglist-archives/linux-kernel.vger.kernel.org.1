@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC7D1AB5C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 04:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD751AB5C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 04:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731654AbgDPCP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 22:15:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:24224 "EHLO mga11.intel.com"
+        id S1731626AbgDPCMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 22:12:35 -0400
+Received: from mga01.intel.com ([192.55.52.88]:20682 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728397AbgDPCPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 22:15:25 -0400
-IronPort-SDR: 5kUEnbAvK/Mx1yZRyTG6Q2TETDkYNkp+4Jc6PS4ZVc6s/PfyQahzaHIJgcs1WYvgJlcP7QVnne
- w3DGibsAAfXQ==
+        id S1731407AbgDPCMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 22:12:30 -0400
+IronPort-SDR: 8mGLUT/4SaB8AsMc5GOv+brypk4a3x6EP57p0QeW/E9ip031U3o0DWYfebj4mV70OInmgaJ7wW
+ 0KTy96t5yyHw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 19:15:24 -0700
-IronPort-SDR: NKlEa2tHbkW20Gfo3x7x+9Z+3A45Evl4V9/jfkTylSugrhsAx4kodqRLxGM+K9ve0DiT+boOEV
- 5FX8N7/4lYmA==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 19:12:30 -0700
+IronPort-SDR: q3hLULqDtfpxH+QDcFiAQ6zuroNMCHhoiahSIbgbXUV1+hEpmQWFpazK47KGvDPv8pY/9OXoHv
+ LngJ5mHV+QHA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="245851601"
-Received: from sqa-gate.sh.intel.com (HELO clx-ap-likexu.tsp.org) ([10.239.48.212])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 19:15:23 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Subject: [PATCH] x86, smpboot: Disable frequency invariance when it's unsupported
-Date:   Thu, 16 Apr 2020 10:12:10 +0800
-Message-Id: <20200416021210.170736-1-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.21.1
+   d="scan'208";a="271922934"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.29.241]) ([10.255.29.241])
+  by orsmga002.jf.intel.com with ESMTP; 15 Apr 2020 19:12:27 -0700
+Subject: Re: [PATCH v8 4/4] kvm: vmx: virtualize split lock detection
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+References: <20200414063129.133630-1-xiaoyao.li@intel.com>
+ <20200414063129.133630-5-xiaoyao.li@intel.com>
+ <87y2qwmszt.fsf@nanos.tec.linutronix.de>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <906dd919-3ae5-5279-b706-168e509ce953@intel.com>
+Date:   Thu, 16 Apr 2020 10:12:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87y2qwmszt.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the Intel SNR processors such as "Intel Atom(R) C6562", the
-turbo_freq for 4C turbo may be zero which causes a divide by zero
-exception and blocks the boot process when arch_scale_freq_tick().
+On 4/16/2020 3:47 AM, Thomas Gleixner wrote:
+> Xiaoyao Li <xiaoyao.li@intel.com> writes:
+> 
+>> Due to the fact that TEST_CTRL MSR is per-core scope, i.e., the sibling
+>> threads in the same physical CPU core share the same MSR, only
+>> advertising feature split lock detection to guest when SMT is disabled
+>> or unsupported, for simplicitly.
+> 
+> That's not for simplicity. It's for correctness because you cannot
+> provide consistent state to a guest.
+> 
 
-When one of the preset base_freq or turbo_freq is meaningless,
-we may disable frequency invariance.
+I'll correct it.
 
-Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/kernel/smpboot.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index fe3ab9632f3b..741367ce4d14 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1958,6 +1958,9 @@ static bool core_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
- 	*base_freq = (*base_freq >> 8) & 0xFF;      /* max P state */
- 	*turbo_freq = (*turbo_freq >> 24) & 0xFF;   /* 4C turbo    */
- 
-+	if (*turbo_freq == 0 || *base_freq == 0)
-+		return false;
-+
- 	return true;
- }
- 
--- 
-2.21.1
+Thanks!
+-Xiaoyao
 
