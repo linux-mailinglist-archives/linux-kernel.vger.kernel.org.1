@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CFD1AD10A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4111AD0EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgDPUYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 16:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727870AbgDPUYr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:24:47 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1383AC03C1A7;
-        Thu, 16 Apr 2020 13:15:31 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id q31so2719321qvf.11;
-        Thu, 16 Apr 2020 13:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RrhoCocMui3bsFc5qkdYNErfeCVARryDRP7TYadbG5M=;
-        b=QfKW6F7xCXl6+vxdlzAiOL5ivPMy1SHP4U5CM8CVeegJchb5+KDPwsbTufj449g+u4
-         SD8E5bdY6BjaDM0KbK7iKkgwtLkedOn6so4ibg1BTWRdPCngH3jq4GS1rAXU0x3tqAW+
-         +Z+52kZuoEnBLuNVBNWfPaISsumvknew1jf03TvmuKfwG9QZs3ABAS2cvd1he0XhnLDQ
-         aeKzpcLxXOlZl4GkR6FTBIMSIghnearpfUmTipNkoasRCwGXVJ76zE+VYDzzcJFVV3tu
-         IXG/BpW9slI84n6+qwgUnA2Ga9rgXPyqvF4yPDwBPGswDWoEGlWhip+xHunJQ8F1C6C2
-         YMLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RrhoCocMui3bsFc5qkdYNErfeCVARryDRP7TYadbG5M=;
-        b=TxR6pCTybx7DLqPkCXvASkTm+yOx7i0dc6NJmog2VSZj+3AGhajz9sgFok9ha1iUXs
-         RtT2iDxh3ZWF8/XcGuTUN+kKdFAEm90L/1rlx6IrsnTMFO0Qv20vZ9XtqQoTgLbOcXNv
-         ReYUVdLLb+VKp33KS6OJAZbvEDnXKJS3EeiT/CrGYLagMlgnnfEGN8n8nRcmbGgsENNk
-         HjXmyHiGSpuymfx8FbXewudisdAEjGXDzMQjxwJBqEVOJfVeN7cbWWZG2700+FumEDhr
-         rOLDPfZz3SFZc7R5zyD6SQrv3VuVrLygedOMnm6iF/wV1JKF3tZQMhPJzUR4xcT/4ftO
-         RHYA==
-X-Gm-Message-State: AGi0PuYjXvJ5m3N8DRwcO/SOeJu8RuwbMRSZeGADg46s/CBi+9z2qZir
-        MggCqmTbmvvtLqneYfyo1rdgbmBa/sW2+mIjYFqyq3ycFoE=
-X-Google-Smtp-Source: APiQypLEw9l7W2hSliB15jHFogvAHufSRGn0ZYH76LQ8VoeRoID9myxCgGr4Pn9PvD87gHrPUOj8sgZxasNifp8qNh4=
-X-Received: by 2002:a0c:f748:: with SMTP id e8mr11834286qvo.237.1587068130311;
- Thu, 16 Apr 2020 13:15:30 -0700 (PDT)
+        id S1728651AbgDPUPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726523AbgDPUPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 16:15:31 -0400
+Received: from pobox.suse.cz (prg-ext-pat.suse.com [213.151.95.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DBCE2076D;
+        Thu, 16 Apr 2020 20:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587068130;
+        bh=D1k4FGZwtqhoI1ElVs5JDDEH95csH4x4jdsRBKIrsUI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=pb1Aidbcr89YNzTHVpk+AyNMZbTkFc8vyI3afURRbjXDvFwV15/ymxbzA+qyRv2Yz
+         zkt3XEVweYahiTnIo3Fe5Z27TgbaQy1wyQI+t7pmfTd25UUanPeCULpZddV5Ht6h6E
+         mnFBpqnuRzUXcgTpoCGGyvNva9RmPVcpUddIvrBM=
+Date:   Thu, 16 Apr 2020 22:15:27 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Rishi Gupta <gupt21@gmail.com>
+cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        benjamin.tissoires@redhat.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH 1/1] HID: mcp2221: add GPIO functionality support
+In-Reply-To: <1586882894-19905-1-git-send-email-gupt21@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2004162212080.19713@cbobk.fhfr.pm>
+References: <1586882894-19905-1-git-send-email-gupt21@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200414151955.311949-1-adrian.ratiu@collabora.com>
- <20200414151955.311949-2-adrian.ratiu@collabora.com> <CAFqH_52eKB4jtmn5e4HQubv8ijOPqDqncp1dRGahhU3NOorJMQ@mail.gmail.com>
- <87lfmvjmt5.fsf@collabora.com>
-In-Reply-To: <87lfmvjmt5.fsf@collabora.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Thu, 16 Apr 2020 22:15:19 +0200
-Message-ID: <CAFqH_513KB+En_xbpXSBG6Q38kYxWCgw0KO3NVxCb6fqHDaKBA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/8] drm: bridge: dw_mipi_dsi: add initial regmap infrastructure
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Adrian Pop <pop.adrian61@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-        linux-imx@nxp.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+On Tue, 14 Apr 2020, Rishi Gupta wrote:
 
-[snip]
+> MCP2221 has 4 pins that can be used as GPIO or configured
+> for alternate functionality such as clock generation and
+> IRQ detection. This patch adds support for GPIO functionality.
+> 
+> To set direction of a pin or to toggle its state after it
+> has been configured as GPIO, driver sends command to mcp2221
+> and parses response received from mcp2221. Based on this
+> response either 0 or appropriate error code is returned to
+> GPIO framework.
+> 
+> To get the direction or current state of a pin, driver
+> sends command and read response from the device. Based on
+> the response received from device direction or value
+> is sent to the GPIO framework.
+> 
+> Command from driver to mcp2221 device are output report.
+> Response received from mcp2221 is input report.
+> 
+> Datasheet (page 45-48) contains details about how to decode
+> the response received from device:
+> http://ww1.microchip.com/downloads/en/DeviceDoc/20005565B.pdf
+> 
+> Signed-off-by: Rishi Gupta <gupt21@gmail.com>
+> ---
+>  drivers/hid/hid-mcp2221.c | 169 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
 
-> >>
-> >> +static void dw_mipi_dsi_get_hw_version(struct dw_mipi_dsi
-> >> *dsi) +{ +       regmap_read(dsi->regs, DSI_VERSION,
-> >> &dsi->hw_version); +       dsi->hw_version &= VERSION; +
-> >> if (!dsi->hw_version) +               dev_err(dsi->dev, "Failed
-> >> to read DSI hw version register\n");
-> >
-> > Is this an error that should be ignored? If you can't get the HW
-> > version, probably, there is something wrong with your hardware
-> > so, don't you need to return an error?
-> >
->
-> After thinking a bit more about it, that error should be a
-> warning.
->
-> I added it because in some cases (for eg. if the peripheral clock
-> is disabled) the reads can return 0 which is obviously an invalid
-> version and the bridge will error in the next step when not
-> finding a layout.
->
+Applied, thanks.
 
-If you'll error anyway, why wait? IIUC at this point the clock *must*
-be enabled, and if not, something is wrong with the driver, I don't
-see any advantage on delay the error. do you have a use case where
-this is called and peripheral clock disabled?
+-- 
+Jiri Kosina
+SUSE Labs
 
-> So I'll make this a warning in v7 and explicitely mention that
-> reads version == 0 can be caused by a disabled pclk.
->
-
--- Enric
