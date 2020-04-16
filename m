@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730171AC5DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946DC1AC8A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394229AbgDPO3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
+        id S2394989AbgDPPLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731940AbgDPOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:01:12 -0400
+        id S2441668AbgDPNuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A88DF2078B;
-        Thu, 16 Apr 2020 14:01:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E037822246;
+        Thu, 16 Apr 2020 13:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045672;
-        bh=94cz29se5LLA8ncjoWOVfAgIgJ6gJN3JLCLKs+vL0ag=;
+        s=default; t=1587044992;
+        bh=L9lth55zY+g3wY1fwvqUWhIhM+ZwE7TuD4VmdPiqPjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IiLAI08Y2IIf99KMUXilBxJDQA7tfPuypOgI/7BK2wCc2LpB9gwfY7uPLeso366UN
-         r0Q8sOo8Jzvngh0cyYUhpRwmvE2PxBJxcFezDmMJl2W9Xepw0/ZR9hdH7RTKoU+grB
-         cK9t4oAwHWmcjNVTe1OVbC5FSh5CIvttQVDBCqAI=
+        b=z4cidiq0j/Smp7Pcq6BXCKWwUcVJJDU/QR/scz+kTiDdv+8tWYJrsGIUMO2E8gwuX
+         dIgiuIRibqAdPiSUQxvrtU5bbxUkrqWCY7iiW/GDAZM99yR8FJybO31Eley17KdM51
+         1AdvQryMDrCXd8adVzzl0nZNIGyF3ytE4ZyK1DXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.6 191/254] scsi: lpfc: Fix broken Credit Recovery after driver load
+        stable@vger.kernel.org, Yuxian Dai <Yuxian.Dai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Kevin Wang <Kevin1.Wang@amd.com>
+Subject: [PATCH 5.4 186/232] drm/amdgpu/powerplay: using the FCLK DPM table to set the MCLK
 Date:   Thu, 16 Apr 2020 15:24:40 +0200
-Message-Id: <20200416131350.178570156@linuxfoundation.org>
+Message-Id: <20200416131338.376317121@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,146 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Yuxian Dai <Yuxian.Dai@amd.com>
 
-commit 835214f5d5f516a38069bc077c879c7da00d6108 upstream.
+commit 022ac4c9c55be35a2d1f71019a931324c51b0dab upstream.
 
-When driver is set to enable bb credit recovery, the switch displayed the
-setting as inactive.  If the link bounces, it switches to Active.
+1.Using the FCLK DPM table to set the MCLK for DPM states consist of
+three entities:
+ FCLK
+ UCLK
+ MEMCLK
+All these three clk change together, MEMCLK from FCLK, so use the fclk
+frequency.
+2.we should show the current working clock freqency from clock table metric
 
-During link up processing, the driver currently does a MBX_READ_SPARAM
-followed by a MBX_CONFIG_LINK. These mbox commands are queued to be
-executed, one at a time and the completion is processed by the worker
-thread.  Since the MBX_READ_SPARAM is done BEFORE the MBX_CONFIG_LINK, the
-BB_SC_N bit is never set the the returned values. BB Credit recovery status
-only gets set after the driver requests the feature in CONFIG_LINK, which
-is done after the link up. Thus the ordering of READ_SPARAM needs to follow
-the CONFIG_LINK.
-
-Fix by reordering so that READ_SPARAM is done after CONFIG_LINK.  Added a
-HBA_DEFER_FLOGI flag so that any FLOGI handling waits until after the
-READ_SPARAM is done so that the proper BB credit value is set in the FLOGI
-payload.
-
-Fixes: 6bfb16208298 ("scsi: lpfc: Fix configuration of BB credit recovery in service parameters")
-Cc: <stable@vger.kernel.org> # v5.4+
-Link: https://lore.kernel.org/r/20200128002312.16346-4-jsmart2021@gmail.com
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Yuxian Dai <Yuxian.Dai@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Reviewed-by: Kevin Wang <Kevin1.Wang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/lpfc/lpfc.h         |    1 
- drivers/scsi/lpfc/lpfc_hbadisc.c |   59 +++++++++++++++++++++++++--------------
- 2 files changed, 40 insertions(+), 20 deletions(-)
+ drivers/gpu/drm/amd/powerplay/renoir_ppt.c |    6 ++++++
+ drivers/gpu/drm/amd/powerplay/renoir_ppt.h |    2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/scsi/lpfc/lpfc.h
-+++ b/drivers/scsi/lpfc/lpfc.h
-@@ -749,6 +749,7 @@ struct lpfc_hba {
- 					 * capability
- 					 */
- #define HBA_FLOGI_ISSUED	0x100000 /* FLOGI was issued */
-+#define HBA_DEFER_FLOGI		0x800000 /* Defer FLOGI till read_sparm cmpl */
+--- a/drivers/gpu/drm/amd/powerplay/renoir_ppt.c
++++ b/drivers/gpu/drm/amd/powerplay/renoir_ppt.c
+@@ -184,6 +184,7 @@ static int renoir_print_clk_levels(struc
+ 	uint32_t cur_value = 0, value = 0, count = 0, min = 0, max = 0;
+ 	DpmClocks_t *clk_table = smu->smu_table.clocks_table;
+ 	SmuMetrics_t metrics;
++	bool cur_value_match_level = false;
  
- 	uint32_t fcp_ring_in_use; /* When polling test if intr-hndlr active*/
- 	struct lpfc_dmabuf slim2p;
---- a/drivers/scsi/lpfc/lpfc_hbadisc.c
-+++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
-@@ -1163,13 +1163,16 @@ lpfc_mbx_cmpl_local_config_link(struct l
+ 	if (!clk_table || clk_type >= SMU_CLK_COUNT)
+ 		return -EINVAL;
+@@ -243,8 +244,13 @@ static int renoir_print_clk_levels(struc
+ 		GET_DPM_CUR_FREQ(clk_table, clk_type, i, value);
+ 		size += sprintf(buf + size, "%d: %uMhz %s\n", i, value,
+ 				cur_value == value ? "*" : "");
++		if (cur_value == value)
++			cur_value_match_level = true;
  	}
  
- 	/* Start discovery by sending a FLOGI. port_state is identically
--	 * LPFC_FLOGI while waiting for FLOGI cmpl
-+	 * LPFC_FLOGI while waiting for FLOGI cmpl. Check if sending
-+	 * the FLOGI is being deferred till after MBX_READ_SPARAM completes.
- 	 */
--	if (vport->port_state != LPFC_FLOGI)
--		lpfc_initial_flogi(vport);
--	else if (vport->fc_flag & FC_PT2PT)
--		lpfc_disc_start(vport);
--
-+	if (vport->port_state != LPFC_FLOGI) {
-+		if (!(phba->hba_flag & HBA_DEFER_FLOGI))
-+			lpfc_initial_flogi(vport);
-+	} else {
-+		if (vport->fc_flag & FC_PT2PT)
-+			lpfc_disc_start(vport);
-+	}
- 	return;
- 
- out:
-@@ -3094,6 +3097,14 @@ lpfc_mbx_cmpl_read_sparam(struct lpfc_hb
- 	lpfc_mbuf_free(phba, mp->virt, mp->phys);
- 	kfree(mp);
- 	mempool_free(pmb, phba->mbox_mem_pool);
++	if (!cur_value_match_level)
++		size += sprintf(buf + size, "   %uMhz *\n", cur_value);
 +
-+	/* Check if sending the FLOGI is being deferred to after we get
-+	 * up to date CSPs from MBX_READ_SPARAM.
-+	 */
-+	if (phba->hba_flag & HBA_DEFER_FLOGI) {
-+		lpfc_initial_flogi(vport);
-+		phba->hba_flag &= ~HBA_DEFER_FLOGI;
-+	}
- 	return;
+ 	return size;
+ }
  
- out:
-@@ -3224,6 +3235,23 @@ lpfc_mbx_process_link_up(struct lpfc_hba
- 	}
- 
- 	lpfc_linkup(phba);
-+	sparam_mbox = NULL;
-+
-+	if (!(phba->hba_flag & HBA_FCOE_MODE)) {
-+		cfglink_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
-+		if (!cfglink_mbox)
-+			goto out;
-+		vport->port_state = LPFC_LOCAL_CFG_LINK;
-+		lpfc_config_link(phba, cfglink_mbox);
-+		cfglink_mbox->vport = vport;
-+		cfglink_mbox->mbox_cmpl = lpfc_mbx_cmpl_local_config_link;
-+		rc = lpfc_sli_issue_mbox(phba, cfglink_mbox, MBX_NOWAIT);
-+		if (rc == MBX_NOT_FINISHED) {
-+			mempool_free(cfglink_mbox, phba->mbox_mem_pool);
-+			goto out;
-+		}
-+	}
-+
- 	sparam_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
- 	if (!sparam_mbox)
- 		goto out;
-@@ -3244,20 +3272,7 @@ lpfc_mbx_process_link_up(struct lpfc_hba
- 		goto out;
- 	}
- 
--	if (!(phba->hba_flag & HBA_FCOE_MODE)) {
--		cfglink_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
--		if (!cfglink_mbox)
--			goto out;
--		vport->port_state = LPFC_LOCAL_CFG_LINK;
--		lpfc_config_link(phba, cfglink_mbox);
--		cfglink_mbox->vport = vport;
--		cfglink_mbox->mbox_cmpl = lpfc_mbx_cmpl_local_config_link;
--		rc = lpfc_sli_issue_mbox(phba, cfglink_mbox, MBX_NOWAIT);
--		if (rc == MBX_NOT_FINISHED) {
--			mempool_free(cfglink_mbox, phba->mbox_mem_pool);
--			goto out;
--		}
--	} else {
-+	if (phba->hba_flag & HBA_FCOE_MODE) {
- 		vport->port_state = LPFC_VPORT_UNKNOWN;
- 		/*
- 		 * Add the driver's default FCF record at FCF index 0 now. This
-@@ -3314,6 +3329,10 @@ lpfc_mbx_process_link_up(struct lpfc_hba
- 		}
- 		/* Reset FCF roundrobin bmask for new discovery */
- 		lpfc_sli4_clear_fcf_rr_bmask(phba);
-+	} else {
-+		if (phba->bbcredit_support && phba->cfg_enable_bbcr &&
-+		    !(phba->link_flag & LS_LOOPBACK_MODE))
-+			phba->hba_flag |= HBA_DEFER_FLOGI;
- 	}
- 
- 	/* Prepare for LINK up registrations */
+--- a/drivers/gpu/drm/amd/powerplay/renoir_ppt.h
++++ b/drivers/gpu/drm/amd/powerplay/renoir_ppt.h
+@@ -37,7 +37,7 @@ extern void renoir_set_ppt_funcs(struct
+ 			freq = table->SocClocks[dpm_level].Freq;	\
+ 			break;						\
+ 		case SMU_MCLK:						\
+-			freq = table->MemClocks[dpm_level].Freq;	\
++			freq = table->FClocks[dpm_level].Freq;	\
+ 			break;						\
+ 		case SMU_DCEFCLK:					\
+ 			freq = table->DcfClocks[dpm_level].Freq;	\
 
 
