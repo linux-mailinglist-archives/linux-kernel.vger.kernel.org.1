@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65201AC785
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F171AC792
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394477AbgDPO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:56:12 -0400
-Received: from mail.manjaro.org ([176.9.38.148]:33370 "EHLO mail.manjaro.org"
+        id S2404732AbgDPO4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:56:49 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7588 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394833AbgDPO4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:56:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 735653702995;
-        Thu, 16 Apr 2020 16:55:59 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Erx_frVr7CfS; Thu, 16 Apr 2020 16:55:57 +0200 (CEST)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH] arm64: dts: rockchip: add micro SD card regulator to rockpro64
-Date:   Thu, 16 Apr 2020 16:55:34 +0200
-Message-Id: <20200416145534.1263575-1-t.schramm@manjaro.org>
+        id S2409182AbgDPO4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:56:41 -0400
+IronPort-SDR: s8YkELX1IbRRK2DsNPzM2BtwZjK5310yHKkRIn75auguFMjRyW/FBz5KtFndcvcC8XWdJYpv31
+ QoP3iQIoSUUQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 07:56:40 -0700
+IronPort-SDR: uLbV3hxQRXypLeaOz3XOjU4fzbZM2N0R9vWON9psEM7DrROpZqt+eYG7CGc2dwHondC2MgtJMy
+ O3nzONKtczOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
+   d="scan'208";a="332865081"
+Received: from mylly.fi.intel.com (HELO [10.237.72.51]) ([10.237.72.51])
+  by orsmga001.jf.intel.com with ESMTP; 16 Apr 2020 07:56:38 -0700
+Subject: Re: Regression with commit 0a67361dcdaa
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <eb0d88d0-879e-c500-261e-69c76fb68a89@linux.intel.com>
+ <CAMj1kXGGdwuP6X5jvbqmjsP2+bZ7CoJKZ5-WVoPYEjq9HTjuDA@mail.gmail.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <9ae0c751-5024-6eda-ca78-80cfd1ed066f@linux.intel.com>
+Date:   Thu, 16 Apr 2020 17:56:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMj1kXGGdwuP6X5jvbqmjsP2+bZ7CoJKZ5-WVoPYEjq9HTjuDA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the RockPro64's micro SD card regulator to the
-RockPro64 dtsi. The regulator is present on all revisions of the
-device.
-Previously the regular was missing, resulting in unreliable boot
-behaviour when booting from SD card.
+On 4/16/20 5:36 PM, Ard Biesheuvel wrote:
+> On Thu, 16 Apr 2020 at 16:35, Jarkko Nikula
+> <jarkko.nikula@linux.intel.com> wrote:
+>>
+>> Hi
+>>
+>> v5.7-rc1 hangs in early boot on an Intel Atom based prototype hardware
+>> while v5.6 boots fine. I bisected the regression into 0a67361dcdaa
+>> ("efi/x86: Remove runtime table address from kexec EFI setup data").
+>>
+>> v5.7-rc1 caused a reboot loop on another Intel Core based prototype HW.
+>> Reboots also on top of 0a67361dcdaa but boots fine with that commit
+>> reverted.
+>>
+>> Our test system uses kexec to boot the test kernel. These two machines
+>> got regression with v5.7-rc1. We have also others that boot fine.
+>>
+> 
+> This should already be fixed in Linus's tree. Please report back
+> whether that solves your problem or not.
+> 
+Ah, I forgot to pull & test before bisecting...
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Yes, both machines boot fine with the HEAD 00086336a8d9 ("Merge tag 
+'efi-urgent-2020-04-15' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip").
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index 9bca25801260..6788ab28f89a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -96,6 +96,24 @@ vcc1v8_s3: vcca1v8_s3: vcc1v8-s3 {
- 		vin-supply = <&vcc_1v8>;
- 	};
- 
-+	/* micro SD card power */
-+	vcc3v0_sd: vcc3v0-sd {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sdmmc0_pwr_h>;
-+		regulator-name = "vcc3v0_sd";
-+		regulator-always-on;
-+		regulator-min-microvolt = <3000000>;
-+		regulator-max-microvolt = <3000000>;
-+		vin-supply = <&vcc3v3_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+
- 	vcc3v3_pcie: vcc3v3-pcie-regulator {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
-@@ -603,6 +621,13 @@ vsel2_gpio: vsel2-gpio {
- 		};
- 	};
- 
-+	sdcard {
-+		sdmmc0_pwr_h: sdmmc0-pwr-h {
-+			rockchip,pins = <0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+	};
-+
- 	sdio-pwrseq {
- 		wifi_enable_h: wifi-enable-h {
- 			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
-@@ -661,6 +686,8 @@ &sdmmc {
- 	max-frequency = <150000000>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_bus4>;
-+	vmmc-supply = <&vcc3v0_sd>;
-+	vqmmc-supply = <&vcc_sdio>;
- 	status = "okay";
- };
- 
 -- 
-2.26.0
-
+Jarkko
