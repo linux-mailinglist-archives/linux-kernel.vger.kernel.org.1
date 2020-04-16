@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265161AC860
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507181AC5FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441344AbgDPPHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:07:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37734 "EHLO mail.kernel.org"
+        id S2410227AbgDPOb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392378AbgDPNvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:51:35 -0400
+        id S2437792AbgDPOC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:02:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DE9220732;
-        Thu, 16 Apr 2020 13:51:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12D91217D8;
+        Thu, 16 Apr 2020 14:02:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045094;
-        bh=aAgtDJfouiR+lyQpEyW4ul/VAJiRI3p/7EDAKDsDfLQ=;
+        s=default; t=1587045748;
+        bh=DE/MUp+D9xEnl5fSXNOQCd3Xb0ffRixuxH0Cb4zLX7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NuaHn/oGBIMiHskix+pDjSN0j2NCczEIKw4HDsl79g78YDULEeLvxTh1vgGdYBry7
-         rk0cRDA489KkLWcjIhsrd2dqJ30U1zdLuER99GHiLr9iKETF7S6I1vYnN42PXpfYnr
-         TIP8DergtyzTeE3mpQs/RpnqiPbkF6uRQx9AmpgI=
+        b=Sx4y+mj5WoaW/KhhJymDQdVXZTro686vMCm9dx37aWQk5UZZIRQcvwUIBJhzS06Cy
+         xrZysRmqklrku+0McXnsBFa2pIS3k1hdrmXbg55kQqG7FGtVHDicVJgCHDIaFfcSG6
+         zM8+/z1SOjVrPVx9FnAuX+iN12pNjANhAvYIALHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prike Liang <Prike.Liang@amd.com>,
-        Mengbing Wang <Mengbing.Wang@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 228/232] drm/amdgpu: fix gfx hang during suspend with video playback (v2)
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
+Subject: [PATCH 5.6 233/254] xen/blkfront: fix memory allocation flags in blkfront_setup_indirect()
 Date:   Thu, 16 Apr 2020 15:25:22 +0200
-Message-Id: <20200416131344.027336225@linuxfoundation.org>
+Message-Id: <20200416131354.732182370@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prike Liang <Prike.Liang@amd.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 487eca11a321ef33bcf4ca5adb3c0c4954db1b58 ]
+commit 3a169c0be75b59dd85d159493634870cdec6d3c4 upstream.
 
-The system will be hang up during S3 suspend because of SMU is pending
-for GC not respose the register CP_HQD_ACTIVE access request.This issue
-root cause of accessing the GC register under enter GFX CGGPG and can
-be fixed by disable GFX CGPG before perform suspend.
+Commit 1d5c76e664333 ("xen-blkfront: switch kcalloc to kvcalloc for
+large array allocation") didn't fix the issue it was meant to, as the
+flags for allocating the memory are GFP_NOIO, which will lead the
+memory allocation falling back to kmalloc().
 
-v2: Use disable the GFX CGPG instead of RLC safe mode guard.
+So instead of GFP_NOIO use GFP_KERNEL and do all the memory allocation
+in blkfront_setup_indirect() in a memalloc_noio_{save,restore} section.
 
-Signed-off-by: Prike Liang <Prike.Liang@amd.com>
-Tested-by: Mengbing Wang <Mengbing.Wang@amd.com>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 1d5c76e664333 ("xen-blkfront: switch kcalloc to kvcalloc for large array allocation")
 Cc: stable@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+Link: https://lore.kernel.org/r/20200403090034.8753-1-jgross@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 13694d5eba474..f423b53847051 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -2176,8 +2176,6 @@ static int amdgpu_device_ip_suspend_phase1(struct amdgpu_device *adev)
+---
+ drivers/block/xen-blkfront.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -47,6 +47,7 @@
+ #include <linux/bitmap.h>
+ #include <linux/list.h>
+ #include <linux/workqueue.h>
++#include <linux/sched/mm.h>
+ 
+ #include <xen/xen.h>
+ #include <xen/xenbus.h>
+@@ -2189,10 +2190,12 @@ static void blkfront_setup_discard(struc
+ 
+ static int blkfront_setup_indirect(struct blkfront_ring_info *rinfo)
  {
- 	int i, r;
+-	unsigned int psegs, grants;
++	unsigned int psegs, grants, memflags;
+ 	int err, i;
+ 	struct blkfront_info *info = rinfo->dev_info;
  
--	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
--	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
++	memflags = memalloc_noio_save();
++
+ 	if (info->max_indirect_segments == 0) {
+ 		if (!HAS_EXTRA_REQ)
+ 			grants = BLKIF_MAX_SEGMENTS_PER_REQUEST;
+@@ -2224,7 +2227,7 @@ static int blkfront_setup_indirect(struc
  
- 	for (i = adev->num_ip_blocks - 1; i >= 0; i--) {
- 		if (!adev->ip_blocks[i].status.valid)
-@@ -3070,6 +3068,9 @@ int amdgpu_device_suspend(struct drm_device *dev, bool suspend, bool fbcon)
- 		}
+ 		BUG_ON(!list_empty(&rinfo->indirect_pages));
+ 		for (i = 0; i < num; i++) {
+-			struct page *indirect_page = alloc_page(GFP_NOIO);
++			struct page *indirect_page = alloc_page(GFP_KERNEL);
+ 			if (!indirect_page)
+ 				goto out_of_memory;
+ 			list_add(&indirect_page->lru, &rinfo->indirect_pages);
+@@ -2235,15 +2238,15 @@ static int blkfront_setup_indirect(struc
+ 		rinfo->shadow[i].grants_used =
+ 			kvcalloc(grants,
+ 				 sizeof(rinfo->shadow[i].grants_used[0]),
+-				 GFP_NOIO);
++				 GFP_KERNEL);
+ 		rinfo->shadow[i].sg = kvcalloc(psegs,
+ 					       sizeof(rinfo->shadow[i].sg[0]),
+-					       GFP_NOIO);
++					       GFP_KERNEL);
+ 		if (info->max_indirect_segments)
+ 			rinfo->shadow[i].indirect_grants =
+ 				kvcalloc(INDIRECT_GREFS(grants),
+ 					 sizeof(rinfo->shadow[i].indirect_grants[0]),
+-					 GFP_NOIO);
++					 GFP_KERNEL);
+ 		if ((rinfo->shadow[i].grants_used == NULL) ||
+ 			(rinfo->shadow[i].sg == NULL) ||
+ 		     (info->max_indirect_segments &&
+@@ -2252,6 +2255,7 @@ static int blkfront_setup_indirect(struc
+ 		sg_init_table(rinfo->shadow[i].sg, psegs);
  	}
  
-+	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
-+	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
-+
- 	amdgpu_amdkfd_suspend(adev);
++	memalloc_noio_restore(memflags);
  
- 	amdgpu_ras_suspend(adev);
--- 
-2.20.1
-
+ 	return 0;
+ 
+@@ -2271,6 +2275,9 @@ out_of_memory:
+ 			__free_page(indirect_page);
+ 		}
+ 	}
++
++	memalloc_noio_restore(memflags);
++
+ 	return -ENOMEM;
+ }
+ 
 
 
