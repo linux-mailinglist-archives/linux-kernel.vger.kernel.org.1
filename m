@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530DE1AC72B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EB71ACC16
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394599AbgDPOuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45284 "EHLO mail.kernel.org"
+        id S1732587AbgDPPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502589AbgDPN6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:18 -0400
+        id S2896173AbgDPNaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:30:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFBE721744;
-        Thu, 16 Apr 2020 13:58:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47AC520767;
+        Thu, 16 Apr 2020 13:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045498;
-        bh=CHZCDzVZtTmPQ15/Y7IU5HMGBNokPes40qIBuCXVNVk=;
+        s=default; t=1587043807;
+        bh=WkXY0LvbZ6B5eSUJfLAJMi3CfuZU3QVoW7/wf+YKG74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x4L4dn9KTv1ves8WGL20iSoTv5UROGEqiDt8mXrH4LhbSndVGq/As0tQ/llfOi0uc
-         kTOohZ0QenBFkPIUGr3XCgtelo8QsBeZP6mAfufTpn2iycZv5Vy7uPBKB4adRNd9Xb
-         ZcEpD3Va4aan68cRCgj5fFLwtVyICq4dIOmMQVoA=
+        b=X1c2LXcp1Ng7mV9vzz3cVz8k9hkgww1cwksoqBLVpCRLS8D7SZ7qVvv/arBP5rJx6
+         bRFV1UB9y45PRu34+IZxHfNNbEaEGdH0OsyLNLoswZen9vTNEro6EftQgBfZa6iYcR
+         8TKAtZuY6PRdAUUyVghIVMPipPTcN7L/c/4BFm5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.6 159/254] remoteproc: qcom_q6v5_mss: Reload the mba region on coredump
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 4.19 107/146] rtc: omap: Use define directive for PIN_CONFIG_ACTIVE_HIGH
 Date:   Thu, 16 Apr 2020 15:24:08 +0200
-Message-Id: <20200416131346.503860271@linuxfoundation.org>
+Message-Id: <20200416131257.326103788@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sibi Sankar <sibis@codeaurora.org>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit d96f2571dc84d128cacf1944f4ecc87834c779a6 upstream.
+commit c50156526a2f7176b50134e3e5fb108ba09791b2 upstream.
 
-On secure devices after a wdog/fatal interrupt, the mba region has to be
-refreshed in order to prevent the following errors during mba load.
+Clang warns when one enumerated type is implicitly converted to another:
 
-Err Logs:
-remoteproc remoteproc2: stopped remote processor 4080000.remoteproc
-qcom-q6v5-mss 4080000.remoteproc: PBL returned unexpected status -284031232
-qcom-q6v5-mss 4080000.remoteproc: PBL returned unexpected status -284031232
-....
-qcom-q6v5-mss 4080000.remoteproc: PBL returned unexpected status -284031232
-qcom-q6v5-mss 4080000.remoteproc: MBA booted, loading mpss
+drivers/rtc/rtc-omap.c:574:21: warning: implicit conversion from
+enumeration type 'enum rtc_pin_config_param' to different enumeration
+type 'enum pin_config_param' [-Wenum-conversion]
+        {"ti,active-high", PIN_CONFIG_ACTIVE_HIGH, 0},
+        ~                  ^~~~~~~~~~~~~~~~~~~~~~
+drivers/rtc/rtc-omap.c:579:12: warning: implicit conversion from
+enumeration type 'enum rtc_pin_config_param' to different enumeration
+type 'enum pin_config_param' [-Wenum-conversion]
+        PCONFDUMP(PIN_CONFIG_ACTIVE_HIGH, "input active high", NULL, false),
+        ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./include/linux/pinctrl/pinconf-generic.h:163:11: note: expanded from
+macro 'PCONFDUMP'
+        .param = a, .display = b, .format = c, .has_arg = d     \
+                 ^
+2 warnings generated.
 
-Fixes: 7dd8ade24dc2a ("remoteproc: qcom: q6v5-mss: Add custom dump function for modem")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200304194729.27979-4-sibis@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+It is expected that pinctrl drivers can extend pin_config_param because
+of the gap between PIN_CONFIG_END and PIN_CONFIG_MAX so this conversion
+isn't an issue. Most drivers that take advantage of this define the
+PIN_CONFIG variables as constants, rather than enumerated values. Do the
+same thing here so that Clang no longer warns.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/144
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/qcom_q6v5_mss.c |   19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/rtc/rtc-omap.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -1030,6 +1030,23 @@ static void q6v5_mba_reclaim(struct q6v5
- 	}
- }
+--- a/drivers/rtc/rtc-omap.c
++++ b/drivers/rtc/rtc-omap.c
+@@ -561,9 +561,7 @@ static const struct pinctrl_ops rtc_pinc
+ 	.dt_free_map = pinconf_generic_dt_free_map,
+ };
  
-+static int q6v5_reload_mba(struct rproc *rproc)
-+{
-+	struct q6v5 *qproc = rproc->priv;
-+	const struct firmware *fw;
-+	int ret;
-+
-+	ret = request_firmware(&fw, rproc->firmware, qproc->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	q6v5_load(rproc, fw);
-+	ret = q6v5_mba_load(qproc);
-+	release_firmware(fw);
-+
-+	return ret;
-+}
-+
- static int q6v5_mpss_load(struct q6v5 *qproc)
- {
- 	const struct elf32_phdr *phdrs;
-@@ -1188,7 +1205,7 @@ static void qcom_q6v5_dump_segment(struc
+-enum rtc_pin_config_param {
+-	PIN_CONFIG_ACTIVE_HIGH = PIN_CONFIG_END + 1,
+-};
++#define PIN_CONFIG_ACTIVE_HIGH		(PIN_CONFIG_END + 1)
  
- 	/* Unlock mba before copying segments */
- 	if (!qproc->dump_mba_loaded) {
--		ret = q6v5_mba_load(qproc);
-+		ret = q6v5_reload_mba(rproc);
- 		if (!ret) {
- 			/* Reset ownership back to Linux to copy segments */
- 			ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
+ static const struct pinconf_generic_params rtc_params[] = {
+ 	{"ti,active-high", PIN_CONFIG_ACTIVE_HIGH, 0},
 
 
