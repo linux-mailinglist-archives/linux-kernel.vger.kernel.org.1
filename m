@@ -2,93 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336FD1ACA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00BE1ACA7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391005AbgDPPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730236AbgDPPed (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:34:33 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C44DC061A0C;
-        Thu, 16 Apr 2020 08:34:33 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id nu11so1522511pjb.1;
-        Thu, 16 Apr 2020 08:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jsditFk3QKLKaKpu5zzpEVcrt2IGRFih4NDFzQtyXXs=;
-        b=nPBqXI8RiRZdfS2zVTNjKBcFjW1AiNA5GXKlCRD34qCrxOunxJDlcKSBtTdBkx6LaO
-         3kiYSF4SvFi1mAc85MycEMHgdDdf6UhULXycpoUNdccUqkntP9dMagf8d76xDPmXKbHn
-         5YHzNTQNT5pvW2CkY28qT/FVpsWqEu+1yJfzFoS6ye616yzbWocIlqVOmyvJ2HRI1Rm6
-         dDJ0gq95XZ3IckajpWuAr/2rIuYp3da+APc4yMjPY42rRrbLfGts4cqcr82J+6qW0YZ9
-         NYpY0tWmByLIT2EqOg68uaMX3KBDbSx7l19DNhKh2utV0DLkYcg5MfYPj8fo0XonnZGy
-         LAXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jsditFk3QKLKaKpu5zzpEVcrt2IGRFih4NDFzQtyXXs=;
-        b=Jei8QuvZJX1RyfOt0dBEadtx/Z4gq+z5NwWnqDZLfNWG7ehJAVnhl7Ai5fITfCE44t
-         YDecjAyGVQchVHcyqaVPxURAY1jiRgGU9167zpeBM4BiDeEcViULzjbfSn0BiSg++u1r
-         NZVWT9odTt7JnEccwGr/QIr5br4pj7BvofBS+raEZNHs5CzgginfhdMdHqSky38m3Bto
-         oE3iS1ZFain16qNAtu9OzRzn3s7nxPAmrn0XErVfmE/iy+rVjS2iw2+AkwKpLvI9SSV4
-         2tOnzuNN0DfRbU69rpwFkFY4p4LpnLNcoSpxutJg2rLPYpUZzb1tesg/UJSiXFpRyNmp
-         S2nQ==
-X-Gm-Message-State: AGi0PuYY7uchaComsIo7C+qK6rhNMoo7O+mU4l0gESoaYk4c8B7Y0Xeq
-        +6QYXEbkajGRUdKHtF+epxw=
-X-Google-Smtp-Source: APiQypIT7t86j5DQnRvr72mtBhKlm/8M5gvrfLGHQgJQXMiJ6n+DxQ1J8xQce7uQ5l2gqo1m2++oXA==
-X-Received: by 2002:a17:90a:c24a:: with SMTP id d10mr5756020pjx.5.1587051272906;
-        Thu, 16 Apr 2020 08:34:32 -0700 (PDT)
-Received: from localhost ([89.208.244.140])
-        by smtp.gmail.com with ESMTPSA id u15sm2897957pjm.47.2020.04.16.08.34.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Apr 2020 08:34:32 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 23:34:28 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Shah Nehal-Bakulchandra <Nehal-bakulchandra.Shah@amd.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: i2c: img-scb: remove duplicate dev_err()
-Message-ID: <20200416153428.GA23125@nuc8i5>
-References: <08564c03-3bbd-5518-1a9d-a40b8ca09f48@web.de>
- <20200415025426.GB14300@nuc8i5>
- <b5db65f5-f236-9e22-98df-07629a827738@web.de>
- <20200415152115.GA17519@nuc8i5>
- <668fe4da-56f2-8abe-1113-fa180f307524@web.de>
+        id S2505780AbgDPPfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:35:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437135AbgDPPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:35:06 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C6A921927;
+        Thu, 16 Apr 2020 15:35:04 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 11:35:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/cpuacct: Fix charge cpuacct.usage_sys
+ incorrently.
+Message-ID: <20200416113502.53b33a1c@gandalf.local.home>
+In-Reply-To: <20200416141833.50663-1-songmuchun@bytedance.com>
+References: <20200416141833.50663-1-songmuchun@bytedance.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <668fe4da-56f2-8abe-1113-fa180f307524@web.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 06:24:09PM +0200, Markus Elfring wrote:
-> >> Would you like to take another look at corresponding change possibilities?
-> >>
-> > yes, I want to do it and thanks for your info.
+On Thu, 16 Apr 2020 22:18:33 +0800
+Muchun Song <songmuchun@bytedance.com> wrote:
+
+> The user_mode(task_pt_regs(tsk)) always return true for
+> user thread, and false for kernel thread. So it means that
+> the cpuacct.usage_sys is the time that kernel thread uses
+> not the time that thread uses in the kernel mode. We can
+> use get_irq_regs() instead of task_pt_regs() to fix it.
 > 
-> This positive feedback can lead to corresponding software development opportunities.
-> Which directions would you like try out next?
->
-May be related to usb, ethernet and pcie. My current job is related to
-these. Thanks!
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  kernel/sched/cpuacct.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
+> index 6448b0438ffb2..edfc62554648e 100644
+> --- a/kernel/sched/cpuacct.c
+> +++ b/kernel/sched/cpuacct.c
+> @@ -5,6 +5,7 @@
+>   * Based on the work by Paul Menage (menage@google.com) and Balbir Singh
+>   * (balbir@in.ibm.com).
+>   */
+> +#include <asm/irq_regs.h>
+>  #include "sched.h"
+>  
+>  /* Time spent by the tasks of the CPU accounting group executing in ... */
+> @@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
+>  {
+>  	struct cpuacct *ca;
+>  	int index = CPUACCT_STAT_SYSTEM;
+> -	struct pt_regs *regs = task_pt_regs(tsk);
+> +	struct pt_regs *regs = get_irq_regs();
 
-BR,
-Dejin
+But get_irq_regs() is only available from interrupt context. This will be
+NULL most the time, whereas the original way will have regs existing for
+the task.
 
-> Regards,
-> Markus
+>  
+>  	if (regs && user_mode(regs))
+>  		index = CPUACCT_STAT_USER;
+
+To show this, I applied your patch then did the following:
+
+ # echo 'p:cpuacct cpuacct_charge+0x36 regs=%ax' > /sys/kernel/tracing/kprobe_events
+
+Where I found that the test of 'regs' is %rax at offset 0x36.
+
+ # trace-cmd start -p function -l cpuacct_charge -e kprobes
+ # trace-cmd show
+# tracer: function
+#
+# entries-in-buffer/entries-written: 70664/70664   #P:8
+#
+#                              _-----=> irqs-off
+#                             / _----=> need-resched
+#                            | / _---=> hardirq/softirq
+#                            || / _--=> preempt-depth
+#                            ||| /     delay
+#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+#              | |       |   ||||       |         |
+           <...>-1720  [002] d..2   306.430302: cpuacct_charge <-update_curr
+           <...>-1720  [002] d..3   306.430306: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+           <...>-1720  [002] dN.2   306.430321: cpuacct_charge <-update_curr
+           <...>-1720  [002] dN.3   306.430322: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+           <...>-1720  [002] d..2   306.430355: cpuacct_charge <-update_curr
+           <...>-1720  [002] d..3   306.430357: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+            bash-1652  [006] d.h2   306.430799: cpuacct_charge <-update_curr
+            bash-1652  [006] d.h3   306.430802: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0xffffaf34012abdd8
+           <...>-199   [005] d.h2   306.430806: cpuacct_charge <-update_curr
+           <...>-199   [005] d.h3   306.430809: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0xffffaf3400347c38
+           <...>-16    [001] d..2   306.430873: cpuacct_charge <-update_curr
+           <...>-16    [001] d..3   306.430875: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+           <...>-199   [005] d..2   306.430936: cpuacct_charge <-update_curr
+           <...>-199   [005] d..3   306.430937: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+            bash-1652  [006] d..2   306.430944: cpuacct_charge <-update_curr
+            bash-1652  [006] d..3   306.430946: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+            sshd-1649  [000] d..2   306.430990: cpuacct_charge <-update_curr
+            sshd-1649  [000] d..3   306.430992: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     rcu_preempt-10    [006] d..2   306.432844: cpuacct_charge <-update_curr
+     rcu_preempt-10    [006] d..3   306.432846: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     rcu_preempt-10    [006] d..2   306.436848: cpuacct_charge <-update_curr
+     rcu_preempt-10    [006] d..3   306.436850: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     rcu_preempt-10    [006] d..2   306.440868: cpuacct_charge <-update_curr
+     rcu_preempt-10    [006] d..3   306.440871: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     rcu_preempt-10    [006] d..2   306.444867: cpuacct_charge <-update_curr
+     rcu_preempt-10    [006] d..3   306.444870: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     kworker/2:1-127   [002] d..2   306.446925: cpuacct_charge <-update_curr
+     kworker/2:1-127   [002] d..3   306.446928: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     rcu_preempt-10    [006] d..2   306.448868: cpuacct_charge <-update_curr
+     rcu_preempt-10    [006] d..3   306.448870: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+     rcu_preempt-10    [006] d..2   306.452869: cpuacct_charge <-update_curr
+     rcu_preempt-10    [006] d..3   306.452872: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+
+The only times regs has content is from the the interrupt handler (seen as
+the 'h' in the status portion of the trace.
+
+-- Steve
