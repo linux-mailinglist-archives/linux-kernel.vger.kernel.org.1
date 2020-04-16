@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F9B1ACCE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CB91ACCF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392983AbgDPQLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:11:49 -0400
-Received: from mga02.intel.com ([134.134.136.20]:59774 "EHLO mga02.intel.com"
+        id S2410202AbgDPQMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729590AbgDPQLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:11:45 -0400
-IronPort-SDR: GDEFM96pkWk7SITHruncP6SCCHuoCEc4+tNp9fBWpTAU/C1tpfYG72y1Yw7Mkp3VlXsHk7ubIr
- zQfHV1RD5GyA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 09:11:44 -0700
-IronPort-SDR: q5OWoPoACa6Z3qbloJMXeX+bcgoLmhw37ndlmffyLuRUZLNvt/iYRC/1fjvi6j0MpupWgYVHQd
- c0dpwSj3rnfQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="272118808"
-Received: from otazetdi-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.42.128])
-  by orsmga002.jf.intel.com with ESMTP; 16 Apr 2020 09:11:42 -0700
-Date:   Thu, 16 Apr 2020 19:11:41 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "zhang.jia@linux.alibaba.com" <zhang.jia@linux.alibaba.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
-Subject: Re: [PATCH] tpm: fix wrong return value in tpm_pcr_extend
-Message-ID: <20200416161141.GA181141@linux.intel.com>
-References: <20200414114226.96691-1-tianjia.zhang@linux.alibaba.com>
- <76d46ffbad294a6385779c29c4e5cafd@huawei.com>
- <20200414193542.GB13000@linux.intel.com>
- <20200414202615.stnurisucqxblenj@cantor>
+        id S1728873AbgDPQM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 12:12:29 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29CBC206B9;
+        Thu, 16 Apr 2020 16:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587053548;
+        bh=UBXmzFhBpFgoY6vyEgZDx/G29gEPaaN/4bc/3OJtawE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VIZX6WdXWGiQrMeDr2VMTqHBvMeh3c2VpUcozveNJsTJeaH7EW4QSN7gl+a5FZuLB
+         6trTiRAk9+2FGitd9VrRmDcoYphRYgEFrXs2+/AZMTrMjueRSQwPhx4k43Rxh1xLQ/
+         idLywQ7FmJEwBUTYf+Cb8idVbattvmERHkTFWLwk=
+Date:   Thu, 16 Apr 2020 17:12:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/7] ASoC: txx9: don't work around too small
+ resource_size_t
+Message-ID: <20200416161226.GN5354@sirena.org.uk>
+References: <20200416150011.820984-1-hch@lst.de>
+ <20200416150011.820984-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NJSRbAqOy4NeGDns"
 Content-Disposition: inline
-In-Reply-To: <20200414202615.stnurisucqxblenj@cantor>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200416150011.820984-2-hch@lst.de>
+X-Cookie: Tempt me with a spoon!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 01:26:15PM -0700, Jerry Snitselaar wrote:
-> On Tue Apr 14 20, Jarkko Sakkinen wrote:
-> > On Tue, Apr 14, 2020 at 11:55:43AM +0000, Roberto Sassu wrote:
-> > > > -----Original Message-----
-> > > > From: linux-integrity-owner@vger.kernel.org [mailto:linux-integrity-
-> > > > owner@vger.kernel.org] On Behalf Of Tianjia Zhang
-> > > > Sent: Tuesday, April 14, 2020 1:42 PM
-> > > > To: peterhuewe@gmx.de; jarkko.sakkinen@linux.intel.com; jgg@ziepe.ca;
-> > > > arnd@arndb.de; gregkh@linuxfoundation.org; zhang.jia@linux.alibaba.com
-> > > > Cc: linux-integrity@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > > > tianjia.zhang@linux.alibaba.com
-> > > > Subject: [PATCH] tpm: fix wrong return value in tpm_pcr_extend
-> > > >
-> > > > For the algorithm that does not match the bank, a positive
-> > > > value EINVAL is returned here. I think this is a typo error.
-> > > > It is necessary to return an error value.
-> > > 
-> > > Yes, thanks.
-> > > 
-> > > Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Happen to have the commit ID at hand for fixes?
-> > 
-> > Thanks.
-> > 
-> > /Jarkko
-> > 
-> 
-> 9f75c8224631 ("KEYS: trusted: correctly initialize digests and fix locking issue")
 
-Thanks.
+--NJSRbAqOy4NeGDns
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also added:
+On Thu, Apr 16, 2020 at 05:00:05PM +0200, Christoph Hellwig wrote:
+> The txx9 sound driver deends on HAS_TXX9_ACLC, which is only set for
+> three tx49xx SOCs, and thus always has a 64-bit phys_addr_t and
+> resource_size_t.  Instead of poking into ioremap internals to work
+> around a potentially too small resource_size_t just add a BUILD_BUG_ON
+> to catch such a case.
 
-Cc: stable@vger.kernel.org # 5.4.x
+Acked-by: Mark Brown <broonie@kernel.org>
 
-/Jarkko
+or can I just apply this independently of the rest of the series?
+
+--NJSRbAqOy4NeGDns
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6Yg+kACgkQJNaLcl1U
+h9DEbgf+JwzZc2jhXpAP4FvODQGQv1h0Vc/XAbA4UGDH2HWoKz9NJ+pIUCfuCnOw
+DAysKMiHzprQKBvLH5LmrsMjHlzCGa8tzGqf3FjRxRTEcTZwwzlHk/1+e12JctPK
+QZsERfcmkEvJcJajNoafnFi9DbHHzJvY2hd32zbrY97sgAXhqy7XhkFgvXKJBXZI
+sGrWoQS+vxQeQUzLToCWwNLo8akrKGmBX0oSvOf+9vgeqg3PF5ShpxjOyJs74nOc
+32mw8r9AB5A+K7QKVIe3Q4x9irWxv5kxQ7O09gqJ/PQZTeaJZ3XqnJ0uMMs5SadH
+gV4+DtvO63MROj2M0JdqnVWDPMjvjw==
+=uLa8
+-----END PGP SIGNATURE-----
+
+--NJSRbAqOy4NeGDns--
