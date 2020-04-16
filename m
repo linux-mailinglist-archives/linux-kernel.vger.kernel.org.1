@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06FE1ACA32
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BDB1AC547
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgDPPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S2409471AbgDPOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441405AbgDPNma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:30 -0400
+        id S2408690AbgDPNvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:51:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73F822076D;
-        Thu, 16 Apr 2020 13:42:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D37642078B;
+        Thu, 16 Apr 2020 13:50:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044549;
-        bh=7+c6pVLMVKpK+K5KTRWeQ5J/R2s6GfTYxOoxi9ddTZQ=;
+        s=default; t=1587045060;
+        bh=QXDIIPH8GK3Ux1ynVTxNG6RvRhtHCDyClAcTXjsslm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iKK5agGL+ci4jHiLYk9m8fM/SKrA65/m/0x7P/r59afpszUq8LYhlfoq3jR7Sajxn
-         PK48V0f3L3l7gDu8M6GjY+oFAyge1gNWWNXiD2o/j5jS8WXv17k40EywC0DYtw2kfT
-         bXODl0Dvonhnl/x5zqQPasJp2NHtpuaiC+8dFjNQ=
+        b=BFBwl/tdeKdlRPmvCynDzv6MyN+qcJmUqVCyVQL+5weoUIyRHejjoAXstBfIRckDr
+         MAWlVTZzYw4KzPYWB4sHezVIreAnsqs2ns/jxGSXdemHFmd+k0UoE6Wslg4jx9hnDu
+         sB0wVM8BAHhZulOpegYA73H6LMyyW3LkNf0qbaJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 254/257] perf/core: Remove struct sched_in_data
-Date:   Thu, 16 Apr 2020 15:25:05 +0200
-Message-Id: <20200416131357.280092911@linuxfoundation.org>
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Greg Kurz <groug@kaod.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 212/232] powerpc/xive: Fix xmon support on the PowerNV platform
+Date:   Thu, 16 Apr 2020 15:25:06 +0200
+Message-Id: <20200416131341.950407994@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,104 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Cédric Le Goater <clg@kaod.org>
 
-[ Upstream commit 2c2366c7548ecee65adfd264517ddf50f9e2d029 ]
+commit 97ef275077932c65b1b8ec5022abd737a9fbf3e0 upstream.
 
-We can deduce the ctx and cpuctx from the event, no need to pass them
-along. Remove the structure and pass in can_add_hw directly.
+The PowerNV platform has multiple IRQ chips and the xmon command
+dumping the state of the XIVE interrupt should only operate on the
+XIVE IRQ chip.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 5896163f7f91 ("powerpc/xmon: Improve output of XIVE interrupts")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+Reviewed-by: Greg Kurz <groug@kaod.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200306150143.5551-3-clg@kaod.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/events/core.c | 36 +++++++++++-------------------------
- 1 file changed, 11 insertions(+), 25 deletions(-)
+ arch/powerpc/sysdev/xive/common.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 8d8e52a0922f4..78068b57cbba2 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -3437,17 +3437,11 @@ static int visit_groups_merge(struct perf_event_groups *groups, int cpu,
- 	return 0;
- }
+--- a/arch/powerpc/sysdev/xive/common.c
++++ b/arch/powerpc/sysdev/xive/common.c
+@@ -258,11 +258,15 @@ notrace void xmon_xive_do_dump(int cpu)
  
--struct sched_in_data {
--	struct perf_event_context *ctx;
--	struct perf_cpu_context *cpuctx;
--	int can_add_hw;
--};
--
- static int merge_sched_in(struct perf_event *event, void *data)
+ int xmon_xive_get_irq_config(u32 hw_irq, struct irq_data *d)
  {
--	struct sched_in_data *sid = data;
--
--	WARN_ON_ONCE(event->ctx != sid->ctx);
-+	struct perf_event_context *ctx = event->ctx;
-+	struct perf_cpu_context *cpuctx = __get_cpu_context(ctx);
-+	int *can_add_hw = data;
++	struct irq_chip *chip = irq_data_get_irq_chip(d);
+ 	int rc;
+ 	u32 target;
+ 	u8 prio;
+ 	u32 lirq;
  
- 	if (event->state <= PERF_EVENT_STATE_OFF)
- 		return 0;
-@@ -3455,8 +3449,8 @@ static int merge_sched_in(struct perf_event *event, void *data)
- 	if (!event_filter_match(event))
- 		return 0;
- 
--	if (group_can_go_on(event, sid->cpuctx, sid->can_add_hw)) {
--		if (!group_sched_in(event, sid->cpuctx, sid->ctx))
-+	if (group_can_go_on(event, cpuctx, *can_add_hw)) {
-+		if (!group_sched_in(event, cpuctx, ctx))
- 			list_add_tail(&event->active_list, get_event_list(event));
- 	}
- 
-@@ -3466,8 +3460,8 @@ static int merge_sched_in(struct perf_event *event, void *data)
- 			perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
- 		}
- 
--		sid->can_add_hw = 0;
--		sid->ctx->rotate_necessary = 1;
-+		*can_add_hw = 0;
-+		ctx->rotate_necessary = 1;
- 	}
- 
- 	return 0;
-@@ -3477,30 +3471,22 @@ static void
- ctx_pinned_sched_in(struct perf_event_context *ctx,
- 		    struct perf_cpu_context *cpuctx)
- {
--	struct sched_in_data sid = {
--		.ctx = ctx,
--		.cpuctx = cpuctx,
--		.can_add_hw = 1,
--	};
-+	int can_add_hw = 1;
- 
- 	visit_groups_merge(&ctx->pinned_groups,
- 			   smp_processor_id(),
--			   merge_sched_in, &sid);
-+			   merge_sched_in, &can_add_hw);
- }
- 
- static void
- ctx_flexible_sched_in(struct perf_event_context *ctx,
- 		      struct perf_cpu_context *cpuctx)
- {
--	struct sched_in_data sid = {
--		.ctx = ctx,
--		.cpuctx = cpuctx,
--		.can_add_hw = 1,
--	};
-+	int can_add_hw = 1;
- 
- 	visit_groups_merge(&ctx->flexible_groups,
- 			   smp_processor_id(),
--			   merge_sched_in, &sid);
-+			   merge_sched_in, &can_add_hw);
- }
- 
- static void
--- 
-2.20.1
-
++	if (!is_xive_irq(chip))
++		return -EINVAL;
++
+ 	rc = xive_ops->get_irq_config(hw_irq, &target, &prio, &lirq);
+ 	if (rc) {
+ 		xmon_printf("IRQ 0x%08x : no config rc=%d\n", hw_irq, rc);
 
 
