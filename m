@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E71B1AC7DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503CD1ACCA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388890AbgDPPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41072 "EHLO mail.kernel.org"
+        id S1728149AbgDPQDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898842AbgDPNy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:54:29 -0400
+        id S2895255AbgDPN0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:26:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3797620732;
-        Thu, 16 Apr 2020 13:54:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 142E121D7F;
+        Thu, 16 Apr 2020 13:26:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045268;
-        bh=ANSD2u3/K3xPERFTROi+5GI/z9ygn+ET+7Z0B9/Zw8E=;
+        s=default; t=1587043576;
+        bh=NxJmxBFM/dLNxv4o9zmDD2dXHVxsxW8x7R2phYHfe1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zhlHmoFug+oH/Hi12AcrhPBN0cIjiUNBNhtlFI2Yeng4gG0NVKh141XGTDhfD2F+e
-         ePom69FFSB4RkdyWLLO2RgqXbm/Aw5n+qSRRa1SLcgP6qa0NEBx0AP3AbL1qlNjqLq
-         dqXqpF9H38Kr6FJeZ6zutGRnoqxPFjEPMgVvJ3r8=
+        b=fV8ukBByT0gZxeK4gIaLXCsXprcGFsv3BwPOXQ5PdhscsCIjmxLLXjT6GoDUFHpiN
+         CtElQK4KKyH2+aMLfvcBHErgKa3tne+lbxsJR70nKmplkuDRFrLZE/t334yZRgUECB
+         MLj78Fd/UkIAc+3JApzyoUGZ6bKxOk0bCOcO6MsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.6 066/254] ASoC: fix regwmask
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 014/146] null_blk: Handle null_add_dev() failures properly
 Date:   Thu, 16 Apr 2020 15:22:35 +0200
-Message-Id: <20200416131334.157769601@linuxfoundation.org>
+Message-Id: <20200416131244.463107215@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +48,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 이경택 <gt82.lee@samsung.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-commit 0ab070917afdc93670c2d0ea02ab6defb6246a7c upstream.
+[ Upstream commit 9b03b713082a31a5b90e0a893c72aa620e255c26 ]
 
-If regwshift is 32 and the selected architecture compiles '<<' operator
-for signed int literal into rotating shift, '1<<regwshift' became 1 and
-it makes regwmask to 0x0.
-The literal is set to unsigned long to get intended regwmask.
+If null_add_dev() fails then null_del_dev() is called with a NULL argument.
+Make null_del_dev() handle this scenario correctly. This patch fixes the
+following KASAN complaint:
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Link: https://lore.kernel.org/r/001001d60665$db7af3e0$9270dba0$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+null-ptr-deref in null_del_dev+0x28/0x280 [null_blk]
+Read of size 8 at addr 0000000000000000 by task find/1062
 
+Call Trace:
+ dump_stack+0xa5/0xe6
+ __kasan_report.cold+0x65/0x99
+ kasan_report+0x16/0x20
+ __asan_load8+0x58/0x90
+ null_del_dev+0x28/0x280 [null_blk]
+ nullb_group_drop_item+0x7e/0xa0 [null_blk]
+ client_drop_item+0x53/0x80 [configfs]
+ configfs_rmdir+0x395/0x4e0 [configfs]
+ vfs_rmdir+0xb6/0x220
+ do_rmdir+0x238/0x2c0
+ __x64_sys_unlinkat+0x75/0x90
+ do_syscall_64+0x6f/0x2f0
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc: Johannes Thumshirn <jth@kernel.org>
+Cc: Hannes Reinecke <hare@suse.com>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-ops.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/null_blk_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -825,7 +825,7 @@ int snd_soc_get_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long min = mc->min;
-@@ -874,7 +874,7 @@ int snd_soc_put_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long max = mc->max;
+diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
+index 002072429290e..78355a0e61db6 100644
+--- a/drivers/block/null_blk_main.c
++++ b/drivers/block/null_blk_main.c
+@@ -1480,7 +1480,12 @@ static void cleanup_queues(struct nullb *nullb)
+ 
+ static void null_del_dev(struct nullb *nullb)
+ {
+-	struct nullb_device *dev = nullb->dev;
++	struct nullb_device *dev;
++
++	if (!nullb)
++		return;
++
++	dev = nullb->dev;
+ 
+ 	ida_simple_remove(&nullb_indexes, nullb->index);
+ 
+-- 
+2.20.1
+
 
 
