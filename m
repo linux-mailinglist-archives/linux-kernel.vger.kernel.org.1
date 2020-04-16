@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C08E1ABDDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289B51AC007
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504879AbgDPK2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:28:05 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38016 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504681AbgDPK00 (ORCPT
+        id S2506622AbgDPLqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:46:50 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:38255 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2504857AbgDPK0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:26:26 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 16 Apr 2020 06:26:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587032793; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7e7yje6Jk92q2KWOzUZdbFCXe9Taa4CbqlpJEFe/hWg=;
+ b=pBNYSv1opwwNWkriETMzldswAcDR1LsnGCkke6wQRxF6NYHI/9SP6hTK2Lz64Z7qeJ1dba8y
+ EzaAVRgt5Nn03C11y7H7oXOZ1AwNmRhRvq9jKPC0J+Qs6o5M07JapcAkmDJk07qkH4C2NRZS
+ 0rFMY0PzVY3vR71l9ZITBj3yVLs=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9832d6.7ff68f8d8490-smtp-out-n02;
+ Thu, 16 Apr 2020 10:26:30 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 41C33C44788; Thu, 16 Apr 2020 10:26:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7C98B2A1375;
-        Thu, 16 Apr 2020 11:26:23 +0100 (BST)
-Date:   Thu, 16 Apr 2020 12:26:19 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        anders.roxell@linaro.org, andriy.shevchenko@intel.com,
-        arnd@arndb.de, brendanhiggins@google.com, cheol.yong.kim@intel.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, masonccyang@mxic.com.tw,
-        miquel.raynal@bootlin.com, piotrs@cadence.com,
-        qi-ming.wu@intel.com, richard@nod.at, robh+dt@kernel.org,
-        tglx@linutronix.de, vigneshr@ti.com
-Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200416122619.2c481792@collabora.com>
-In-Reply-To: <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
-References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-        <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
-        <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
-        <20200416113822.2ef326cb@collabora.com>
-        <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BE44C433F2;
+        Thu, 16 Apr 2020 10:26:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 16 Apr 2020 15:56:28 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Doug Anderson <dianders@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 0/8] Relax sanity checking for mismatched AArch32 EL1
+In-Reply-To: <a86108a91975cacf94adc2a2101fba1b@codeaurora.org>
+References: <20200414213114.2378-1-will@kernel.org>
+ <a86108a91975cacf94adc2a2101fba1b@codeaurora.org>
+Message-ID: <e801954c0a14bf9483c084845c18dbfd@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 17:45:49 +0800
-"Ramuthevar, Vadivel MuruganX"
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-
-> >>>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> >>>>
-> >>>> This patch adds the new IP of Nand Flash Controller(NFC) support
-> >>>> on Intel's Lightning Mountain(LGM) SoC.
-> >>>>
-> >>>> DMA is used for burst data transfer operation, also DMA HW supports
-> >>>> aligned 32bit memory address and aligned data access by default.
-> >>>> DMA burst of 8 supported. Data register used to support the read/write
-> >>>> operation from/to device.  
-> >>> I am wondering how this new hardware is different from the Lantiq NAND
-> >>> controller IP - for which there is already a driver in mainline (it's
-> >>> in drivers/mtd/nand/raw/xway_nand.c).
-> >>> The CON and WAIT registers look suspiciously similar.
-> >>>
-> >>> As far as I understand the "old" SoCs (VRX200 and earlier) don't have
-> >>> a built-in ECC engine. This seems to have changed with ARX300 though
-> >>> (again, AFAIK).
-> >>>
-> >>> A bit of lineage on these SoCs (initially these were developed by
-> >>> Infineon. Lantiq then started as an Infineon spin-off in 2009 and
-> >>> was then acquired by Intel in 2015):
-> >>> - Danube
-> >>> - ARX100 from 2008/2009
-> >>> - VRX200 from 2009/2010
-> >>> - ARX300 from 2014
-> >>> - GRX350 from 2015/2016
-> >>> - GRX550 from 2017
-> >>> - and now finally: LGM from 2020 (est.)
-> >>>
-> >>> The existing xway_nand driver supports the Danube, ARX100 and VRX200
-> >>> SoCs.  
-> >> Lantiq upstreamed a driver for an older version of this IP core 8 years
-> >> ago, see here:
-> >> https://elixir.bootlin.com/linux/v5.5.6/source/drivers/mtd/nand/raw/xway_nand.c
-> >> It does not support DMA and ECC.  
-> > Then let's just extend this driver to support the new features. Plus,  
-> We do not have the platform to test also it's very old legacy driver .
-
-Well, if it's similar enough, we want to have one driver.
-
-> > we'll be happy to have one more of the existing driver converted to  
-> > ->exec_op() ;-).  
+On 2020-04-16 14:09, Sai Prakash Ranjan wrote:
+> On 2020-04-15 03:01, Will Deacon wrote:
+>> Hi all,
+>> 
+>> For better or worse, there are SoCs in production where some, but not
+>> all of the CPUs, support AArch32 at EL1 and above. Right now, that
+>> results in "SANITY CHECK" warnings during boot and an unconditional
+>> kernel taint.
+>> 
+>> This patch series tries to do a bit better: the only time we care 
+>> about
+>> AArch32 at EL1 is for KVM, so rather than throw our toys out of the
+>> pram, we can instead just disable support for 32-bit guests on these
+>> systems. In the unlikely scenario of a late CPU hotplug being the 
+>> first
+>> time we notice that AArch32 is not available, then we fail the hotplug
+>> (right now we let the thing come online, which leads to hilarious
+>> results for any pre-existing 32-bit guests).
+>> 
+>> Feedback welcome,
+>> 
+>> Will
+>> 
 > 
-> I have completely adapted to ->exec_op() hook up to replace the legacy 
-> call-back.
+> Thanks Will, tested this series on QCOM SC7180 and SM8150 SoCs.
+> 
+> For the entire series,
+> 
+> Tested-by: saiprakash.ranjan@codeaurora.org
+> 
 
-I suspect porting what you've done to the xway driver shouldn't be too
-complicated.
+Urgh sorry, it should be
+
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+
+-Sai
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
