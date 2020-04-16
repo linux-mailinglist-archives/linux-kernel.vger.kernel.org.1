@@ -2,158 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C71C1AC69E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D691AC68E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731755AbgDPOmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:42:24 -0400
-Received: from mga05.intel.com ([192.55.52.43]:39396 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728522AbgDPOmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:42:01 -0400
-IronPort-SDR: eywTvYHzDjkPog1u8P4uJqRr5jKt82OHoCEjbA8JMknfgCMRDRpIrv6ptyC34Pp/2XHpGRXzmf
- Cs1CcbFwUjGg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 07:42:00 -0700
-IronPort-SDR: lvEpJOC50Hm1QMcKm0qilThYshi+I5TJTmGGWAwOLMchzbZnR3x0Ld8AXoUhQhceEgHmn6XE/y
- ODRLedmDsamA==
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="427852877"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.170.42]) ([10.249.170.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 07:41:58 -0700
-Subject: Re: [PATCH v2] KVM: x86/pmu: Reduce counter period change overhead
- and delay the effective time
-From:   Like Xu <like.xu@linux.intel.com>
-To:     pbonzini@redhat.com
-Cc:     ehankland@google.com, jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wanpengli@tencent.com
-References: <20200317075315.70933-1-like.xu@linux.intel.com>
- <20200317081458.88714-1-like.xu@linux.intel.com>
- <1528e1b4-3dee-161b-9463-57471263b5a8@linux.intel.com>
- <6a57b701-99a2-3917-3879-bc8141dca9d4@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <c5e4723a-3136-e017-5997-77f56c4c27c1@linux.intel.com>
-Date:   Thu, 16 Apr 2020 22:41:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2394447AbgDPOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:41:25 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:3502 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394437AbgDPOlJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:41:09 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15e986e74448-87478; Thu, 16 Apr 2020 22:40:57 +0800 (CST)
+X-RM-TRANSID: 2ee15e986e74448-87478
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.1.173.7])
+        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45e986e750b1-26b7b;
+        Thu, 16 Apr 2020 22:40:57 +0800 (CST)
+X-RM-TRANSID: 2ee45e986e750b1-26b7b
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     thierry.reding@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        jonathanh@nvidia.com
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] drm/tegra: dc: Use devm_platform_ioremap_resource() to simplify code
+Date:   Thu, 16 Apr 2020 22:42:40 +0800
+Message-Id: <20200416144240.20184-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-In-Reply-To: <6a57b701-99a2-3917-3879-bc8141dca9d4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.
+Use devm_platform_ioremap_resource() instead of 
+platform_get_resource()+ devm_ioremap_resource().
 
-On 2020/4/8 22:04, Like Xu wrote:
-> Hi Paolo,
->
-> Could you please take a look at this patch?
-> If there is anything needs to be improved, please let me know.
->
-> Thanks,
-> Like Xu
->
-> On 2020/3/26 20:47, Like Xu wrote:
->> Anyone to help review this change?
->>
->> Thanks,
->> Like Xu
->>
->> On 2020/3/17 16:14, Like Xu wrote:
->>> The cost of perf_event_period() is unstable, and when the guest samples
->>> multiple events, the overhead increases dramatically (5378 ns on E5-2699).
->>>
->>> For a non-running counter, the effective time of the new period is when
->>> its corresponding enable bit is enabled. Calling perf_event_period()
->>> in advance is superfluous. For a running counter, it's safe to delay the
->>> effective time until the KVM_REQ_PMU event is handled. If there are
->>> multiple perf_event_period() calls before handling KVM_REQ_PMU,
->>> it helps to reduce the total cost.
->>>
->>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
->>> ---
->>>   arch/x86/kvm/pmu.c           | 11 -----------
->>>   arch/x86/kvm/pmu.h           | 11 +++++++++++
->>>   arch/x86/kvm/vmx/pmu_intel.c | 10 ++++------
->>>   3 files changed, 15 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
->>> index d1f8ca57d354..527a8bb85080 100644
->>> --- a/arch/x86/kvm/pmu.c
->>> +++ b/arch/x86/kvm/pmu.c
->>> @@ -437,17 +437,6 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
->>>       kvm_pmu_refresh(vcpu);
->>>   }
->>> -static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
->>> -{
->>> -    struct kvm_pmu *pmu = pmc_to_pmu(pmc);
->>> -
->>> -    if (pmc_is_fixed(pmc))
->>> -        return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->>> -            pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
->>> -
->>> -    return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
->>> -}
->>> -
->>>   /* Release perf_events for vPMCs that have been unused for a full 
->>> time slice.  */
->>>   void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
->>>   {
->>> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
->>> index d7da2b9e0755..cd112e825d2c 100644
->>> --- a/arch/x86/kvm/pmu.h
->>> +++ b/arch/x86/kvm/pmu.h
->>> @@ -138,6 +138,17 @@ static inline u64 get_sample_period(struct kvm_pmc 
->>> *pmc, u64 counter_value)
->>>       return sample_period;
->>>   }
->>> +static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
->>> +{
->>> +    struct kvm_pmu *pmu = pmc_to_pmu(pmc);
->>> +
->>> +    if (pmc_is_fixed(pmc))
->>> +        return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->>> +            pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
->>> +
->>> +    return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
->>> +}
->>> +
->>>   void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel);
->>>   void reprogram_fixed_counter(struct kvm_pmc *pmc, u8 ctrl, int 
->>> fixed_idx);
->>>   void reprogram_counter(struct kvm_pmu *pmu, int pmc_idx);
->>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->>> index 7c857737b438..20f654a0c09b 100644
->>> --- a/arch/x86/kvm/vmx/pmu_intel.c
->>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->>> @@ -263,15 +263,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu 
->>> *vcpu, struct msr_data *msr_info)
->>>               if (!msr_info->host_initiated)
->>>                   data = (s64)(s32)data;
->>>               pmc->counter += data - pmc_read_counter(pmc);
->>> -            if (pmc->perf_event)
->>> -                perf_event_period(pmc->perf_event,
->>> -                          get_sample_period(pmc, data));
->>> +            if (pmc_speculative_in_use(pmc))
->>> +                kvm_make_request(KVM_REQ_PMU, vcpu);
->>>               return 0;
->>>           } else if ((pmc = get_fixed_pmc(pmu, msr))) {
->>>               pmc->counter += data - pmc_read_counter(pmc);
->>> -            if (pmc->perf_event)
->>> -                perf_event_period(pmc->perf_event,
->>> -                          get_sample_period(pmc, data));
->>> +            if (pmc_speculative_in_use(pmc))
->>> +                kvm_make_request(KVM_REQ_PMU, vcpu);
->>>               return 0;
->>>           } else if ((pmc = get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0))) {
->>>               if (data == pmc->eventsel)
->>>
->>
->
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/gpu/drm/tegra/dc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index d26fb16d6..72c952b1a 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -2503,7 +2503,6 @@ static int tegra_dc_couple(struct tegra_dc *dc)
+ 
+ static int tegra_dc_probe(struct platform_device *pdev)
+ {
+-	struct resource *regs;
+ 	struct tegra_dc *dc;
+ 	int err;
+ 
+@@ -2560,8 +2559,7 @@ static int tegra_dc_probe(struct platform_device *pdev)
+ 		tegra_powergate_power_off(dc->powergate);
+ 	}
+ 
+-	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	dc->regs = devm_ioremap_resource(&pdev->dev, regs);
++	dc->regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(dc->regs))
+ 		return PTR_ERR(dc->regs);
+ 
+-- 
+2.20.1.windows.1
+
+
 
