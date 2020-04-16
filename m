@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA201AC7DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E401AC9AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394873AbgDPPAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:00:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
+        id S2409208AbgDPPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:25:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898839AbgDPNy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:54:28 -0400
+        id S1731456AbgDPNoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:44:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C281F2076D;
-        Thu, 16 Apr 2020 13:54:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CA0C20732;
+        Thu, 16 Apr 2020 13:44:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045266;
-        bh=KaRnqimdJK2+YakApchmRvSrJLlaObdWFeRaxC/MGBo=;
+        s=default; t=1587044683;
+        bh=EkOBFVCYfHMSHV79LZ+glFm4WQ53lVX1OwA+34TvyF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WFamU6cbRBTvZdRZijjpJ9F676j387PqAa2QB3Mfg1/1ViW9v3Ps4fVLaU42rjaUI
-         d0XDC+VfUiFN73kIO4qj3qRqxfN4M1xy5Koj8Inf8e81eRcS+umsc60Lurg/ZZg+2t
-         oTUNXK5ZLhuykjbGj9H0RfOmrlNiDdVXDbB4GMIc=
+        b=ITe8tmpXsRSLonWi8KLGRDTH1I8bvuZ0OWgj2g74lSMCT650f99fkBb/68+hMG0en
+         JzwJTZBWdtB0dYaS6+rdc6s5sA3OcOwZABHNHToHEWIKJ9SYR/JLE9l2HNhFVNo92z
+         k+NXaF7KqpdYJQYkwNNFaH2L4Ixr8HGVj5EWVwsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 065/254] btrfs: track reloc roots based on their commit root bytenr
+Subject: [PATCH 5.4 060/232] md: check arrays is suspended in mddev_detach before call quiesce operations
 Date:   Thu, 16 Apr 2020 15:22:34 +0200
-Message-Id: <20200416131334.029587084@linuxfoundation.org>
+Message-Id: <20200416131322.988212325@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,119 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-[ Upstream commit ea287ab157c2816bf12aad4cece41372f9d146b4 ]
+[ Upstream commit 6b40bec3b13278d21fa6c1ae7a0bdf2e550eed5f ]
 
-We always search the commit root of the extent tree for looking up back
-references, however we track the reloc roots based on their current
-bytenr.
+Don't call quiesce(1) and quiesce(0) if array is already suspended,
+otherwise in level_store, the array is writable after mddev_detach
+in below part though the intention is to make array writable after
+resume.
 
-This is wrong, if we commit the transaction between relocating tree
-blocks we could end up in this code in build_backref_tree
+	mddev_suspend(mddev);
+	mddev_detach(mddev);
+	...
+	mddev_resume(mddev);
 
-  if (key.objectid == key.offset) {
-	  /*
-	   * Only root blocks of reloc trees use backref
-	   * pointing to itself.
-	   */
-	  root = find_reloc_root(rc, cur->bytenr);
-	  ASSERT(root);
-	  cur->root = root;
-	  break;
-  }
+And it also causes calltrace as follows in [1].
 
-find_reloc_root() is looking based on the bytenr we had in the commit
-root, but if we've COWed this reloc root we will not find that bytenr,
-and we will trip over the ASSERT(root).
+[48005.653834] WARNING: CPU: 1 PID: 45380 at kernel/kthread.c:510 kthread_park+0x77/0x90
+[...]
+[48005.653976] CPU: 1 PID: 45380 Comm: mdadm Tainted: G           OE     5.4.10-arch1-1 #1
+[48005.653979] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./J4105-ITX, BIOS P1.40 08/06/2018
+[48005.653984] RIP: 0010:kthread_park+0x77/0x90
+[48005.654015] Call Trace:
+[48005.654039]  r5l_quiesce+0x3c/0x70 [raid456]
+[48005.654052]  raid5_quiesce+0x228/0x2e0 [raid456]
+[48005.654073]  mddev_detach+0x30/0x70 [md_mod]
+[48005.654090]  level_store+0x202/0x670 [md_mod]
+[48005.654099]  ? security_capable+0x40/0x60
+[48005.654114]  md_attr_store+0x7b/0xc0 [md_mod]
+[48005.654123]  kernfs_fop_write+0xce/0x1b0
+[48005.654132]  vfs_write+0xb6/0x1a0
+[48005.654138]  ksys_write+0x67/0xe0
+[48005.654146]  do_syscall_64+0x4e/0x140
+[48005.654155]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[48005.654161] RIP: 0033:0x7fa0c8737497
 
-Fix this by using the commit_root->start bytenr for indexing the commit
-root.  Then we change the __update_reloc_root() caller to be used when
-we switch the commit root for the reloc root during commit.
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=206161
 
-This fixes the panic I was seeing when we started throttling relocation
-for delayed refs.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ drivers/md/md.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index d7e8839048d71..8e86934a17c35 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1298,7 +1298,7 @@ static int __must_check __add_reloc_root(struct btrfs_root *root)
- 	if (!node)
- 		return -ENOMEM;
- 
--	node->bytenr = root->node->start;
-+	node->bytenr = root->commit_root->start;
- 	node->data = root;
- 
- 	spin_lock(&rc->reloc_root_tree.lock);
-@@ -1329,10 +1329,11 @@ static void __del_reloc_root(struct btrfs_root *root)
- 	if (rc && root->node) {
- 		spin_lock(&rc->reloc_root_tree.lock);
- 		rb_node = tree_search(&rc->reloc_root_tree.rb_root,
--				      root->node->start);
-+				      root->commit_root->start);
- 		if (rb_node) {
- 			node = rb_entry(rb_node, struct mapping_node, rb_node);
- 			rb_erase(&node->rb_node, &rc->reloc_root_tree.rb_root);
-+			RB_CLEAR_NODE(&node->rb_node);
- 		}
- 		spin_unlock(&rc->reloc_root_tree.lock);
- 		if (!node)
-@@ -1350,7 +1351,7 @@ static void __del_reloc_root(struct btrfs_root *root)
-  * helper to update the 'address of tree root -> reloc tree'
-  * mapping
-  */
--static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
-+static int __update_reloc_root(struct btrfs_root *root)
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 4e7c9f398bc66..6b69a12ca2d80 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -6040,7 +6040,7 @@ EXPORT_SYMBOL_GPL(md_stop_writes);
+ static void mddev_detach(struct mddev *mddev)
  {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct rb_node *rb_node;
-@@ -1359,7 +1360,7 @@ static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
- 
- 	spin_lock(&rc->reloc_root_tree.lock);
- 	rb_node = tree_search(&rc->reloc_root_tree.rb_root,
--			      root->node->start);
-+			      root->commit_root->start);
- 	if (rb_node) {
- 		node = rb_entry(rb_node, struct mapping_node, rb_node);
- 		rb_erase(&node->rb_node, &rc->reloc_root_tree.rb_root);
-@@ -1371,7 +1372,7 @@ static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
- 	BUG_ON((struct btrfs_root *)node->data != root);
- 
- 	spin_lock(&rc->reloc_root_tree.lock);
--	node->bytenr = new_bytenr;
-+	node->bytenr = root->node->start;
- 	rb_node = tree_insert(&rc->reloc_root_tree.rb_root,
- 			      node->bytenr, &node->rb_node);
- 	spin_unlock(&rc->reloc_root_tree.lock);
-@@ -1529,6 +1530,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
+ 	md_bitmap_wait_behind_writes(mddev);
+-	if (mddev->pers && mddev->pers->quiesce) {
++	if (mddev->pers && mddev->pers->quiesce && !mddev->suspended) {
+ 		mddev->pers->quiesce(mddev, 1);
+ 		mddev->pers->quiesce(mddev, 0);
  	}
- 
- 	if (reloc_root->commit_root != reloc_root->node) {
-+		__update_reloc_root(reloc_root);
- 		btrfs_set_root_node(root_item, reloc_root->node);
- 		free_extent_buffer(reloc_root->commit_root);
- 		reloc_root->commit_root = btrfs_root_node(reloc_root);
-@@ -4727,11 +4729,6 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
- 	BUG_ON(rc->stage == UPDATE_DATA_PTRS &&
- 	       root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID);
- 
--	if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) {
--		if (buf == root->node)
--			__update_reloc_root(root, cow->start);
--	}
--
- 	level = btrfs_header_level(buf);
- 	if (btrfs_header_generation(buf) <=
- 	    btrfs_root_last_snapshot(&root->root_item))
 -- 
 2.20.1
 
