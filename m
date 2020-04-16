@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FEB1AC9D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08AF1AC4EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgDPP2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:28:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47947 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2898442AbgDPNo2 (ORCPT
+        id S2441689AbgDPOHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2898433AbgDPNoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:44:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587044666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VNwYgeif6SS8pR2Shi4E6mQu99cc3aS7IJK5cTr/jMU=;
-        b=Y31rxYOX6a5ie4Vcllyg+ubkQekwhnPQbcta1uZXhI+eqVtzyPxOmvsKVwppDFMCpwkknU
-        Ni9OSMvNVexBYOve4bc4J9Ji3ZQNAs0QVSPLBTqWt57OywnbnIajaaRNnArvLALZ+r2i4m
-        ZaBy8dWdpLBXuNEztEfKtQc3CLbzZ0M=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-9eDRhbKIOHyWmyAlGo8qgg-1; Thu, 16 Apr 2020 09:44:09 -0400
-X-MC-Unique: 9eDRhbKIOHyWmyAlGo8qgg-1
-Received: by mail-wr1-f71.google.com with SMTP id f2so1732581wrm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:44:09 -0700 (PDT)
+        Thu, 16 Apr 2020 09:44:30 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B064C061A0C;
+        Thu, 16 Apr 2020 06:44:30 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id v8so2574131wma.0;
+        Thu, 16 Apr 2020 06:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WnOLlJGWjKKU4l6KU86petvNf/KeuBQfP8LASQRqnt8=;
+        b=NKaFl00peRLsJRd1TCpOYzHetW8sbRA+/HJn6nXHcphRgYoHcE2As4Skpd/c5OOtl3
+         aAJP6GhSIoz0w4NCFbSZJ6HKcTBmEX7IXKjNWRGHscVFHFO40s7l2Oij2g2owDoID0a5
+         7/75cQ6pZ1aQ52kQoT65AaH1sagq0kwsSQQsKV6iAsy2BwSQXEQu+AZUDJEATTyjsEvW
+         /dQmoQ710BctBOzQRsQWEq7qIyYJgrGIrl24rfwI89EL6oev6W3DzRYRUHoGWtgMTglM
+         5DlQjWI5n+jybhbO+jO01+JAbMYihB8YdAnzppfOgx7wop42LLUkMnTRf0PV4zxzyq5i
+         zrVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VNwYgeif6SS8pR2Shi4E6mQu99cc3aS7IJK5cTr/jMU=;
-        b=HyBDvEcihdarhppNJJnco55JIYHaz3o94q/W2jpRLlgiMCYSoqaUOej885tzMd6ASR
-         bFNJHyDlOVNX+U8GQZ2oQhI+fFxbeXVVj98eMNA297buoXM87oijzk61/JSdYfXWJppB
-         0VByS6sWOpCVRMpwWmiQBLomL6BLtVpgCPBzcoztaV3IOlPnGcVHDkg7nkDY96f59kFs
-         Z/Q1f9qG24tu2OvMcOB1upzvKH0h/cUiXxxu629h7CI6WMeYKjMLOv44BwfFYBGl+BA7
-         V7hS5nO1u0B9BfgUekSp2hT7yUIMkxwUwFrsHRbLZck/vxPR5ueFuv85M714zTeBYtdv
-         jaLw==
-X-Gm-Message-State: AGi0PuYSiy8kXVlFX+WsAN/WDn/+Gi6yM6hPI98dm4+YvcdPJPumrik+
-        YsCCPRcgLAOIBm7I5UmdfJIk0YSf91tSfvIhWe4IQnAwMP52RhNHAhYDfxB9Z0VwGnUouQW5Zjw
-        SzhPfML4MGSiJ1pOLODvDIskl
-X-Received: by 2002:a1c:9e42:: with SMTP id h63mr4711036wme.115.1587044648698;
-        Thu, 16 Apr 2020 06:44:08 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJbJo3jezBS7NrZjbC7U3OMTYgi+dwQqgaUpndr48EWx/XnTEuvdzSDmjn7g2cPMV+vyM9+Dg==
-X-Received: by 2002:a1c:9e42:: with SMTP id h63mr4711010wme.115.1587044648389;
-        Thu, 16 Apr 2020 06:44:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:399d:3ef7:647c:b12d? ([2001:b07:6468:f312:399d:3ef7:647c:b12d])
-        by smtp.gmail.com with ESMTPSA id s24sm3860611wmj.28.2020.04.16.06.44.07
+        bh=WnOLlJGWjKKU4l6KU86petvNf/KeuBQfP8LASQRqnt8=;
+        b=lEubnyQ/cp6fLEeDfiOQMbHMzZiBd3aDNoa+AcT1Fi9XTQjA+d3zE0t/guRpbmmNTx
+         kSXsmk8Kx7bqIYOjbFROmQ7OPLW2BBRpLkOYLJ8Wqmcfhxv4cG5NKieOqYZ92cj2ikpJ
+         RDzdKktUhiLFywVL4st851X2HA+5/ao6KcioXMDfoXyFYmo7ZM5fHDuy73sjmNPLM6KP
+         VF8EV6p7p8nic8l0X9Qn1S2GrUIZfXadFv0wXjONHLNcmsdIt8sjT0rUv1b1LcalBWrK
+         l6ptRSPUQhERa6rPCoiM3+2MgygRR8Ojjau05E7PN1oHLx+cuHNsrsRTDJlP7dhV/QZ0
+         sIBA==
+X-Gm-Message-State: AGi0PuYh6giViBV7jL1UZxPwjcpeMX3S/xDX6bqsMWEOdI+qWbLzcQQl
+        dTyjG5FaeklVpRtO63ZRcHs=
+X-Google-Smtp-Source: APiQypKHstkks+d7QKXlK1Kx2K4FOqpUNOov9QzJnGobXCUEc76Hs0tyB7U8aK6EB9CSGnwIDUH4vw==
+X-Received: by 2002:a7b:cd10:: with SMTP id f16mr5171636wmj.21.1587044668689;
+        Thu, 16 Apr 2020 06:44:28 -0700 (PDT)
+Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id z18sm21457242wrw.41.2020.04.16.06.44.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 06:44:07 -0700 (PDT)
-Subject: Re: [PATCH v2 00/10] KVM: VMX: Unionize vcpu_vmx.exit_reason
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
-References: <20200415175519.14230-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a77ca940-afe4-a94a-2698-6cda0f95ba5c@redhat.com>
-Date:   Thu, 16 Apr 2020 15:44:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 16 Apr 2020 06:44:27 -0700 (PDT)
+Subject: Re: [PATCH 2/4] arm64: dts: rockchip: Add RGA support to the PX30
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hansverk@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+ <20200416115047.233720-3-paul.kocialkowski@bootlin.com>
+ <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
+ <20200416132442.GI125838@aptenodytes>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <f4ad8ea4-7904-1458-e564-2d20c87ed417@gmail.com>
+Date:   Thu, 16 Apr 2020 15:44:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200415175519.14230-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200416132442.GI125838@aptenodytes>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -75,54 +81,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/20 19:55, Sean Christopherson wrote:
-> Convert the exit_reason field in struct vcpu_vmx from a vanilla u32 to a
-> union, (ab)using the union to provide access to the basic exit reason and
-> flags.
+On 4/16/20 3:24 PM, Paul Kocialkowski wrote:
+> Hi,
 > 
-> There is a fairly substantial delta relative to v1, as I ran with Vitaly's
-> suggestion to split nested_vmx_exit_reflected() into VM-Fail, "L0 wants"
-> and "L1 wants", and move the tracepoint into nested_vmx_reflect_vmexit().
-> IMO, this yields cleaner and more understandable code overall, and helps
-> eliminate caching the basic exit reason (see below) by avoiding large
-> functions that repeatedly query the basic exit reason.  The refactoring
-> isn't strictly related to making exit_reason a union, but the code would
-> conflict horribly and the end code nicely demonstrates the value of using
-> a union for the exit reason.
+> On Thu 16 Apr 20, 15:02, Johan Jonker wrote:
+>> Hi Paul,
+>>
+>> The conversion of rockchip-rga.txt to rockchip-rga.yaml by myself just
+>> has been approved by robh.
 > 
-> There are three motivating factors for making exit_reason a union:
+> Huh, I looked around for ongoing related work but missed it.
+> I'll definitely rebase on top of your series and use the yaml description
+> instead. Thanks!
 > 
->   - Help avoid bugs where a basic exit reason is compared against the full
->     exit reason, e.g. there have been two bugs where MCE_DURING_VMENTRY
->     was incorrectly compared against the full exit reason.
+>> Maybe place dts patches at the end of a patch serie.
+>> Could you include a &rga patch if your device is supported in mainline,
+>> so we can test with:
+>> make ARCH=arm64 dtbs_check
+>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-rga.yaml
 > 
->   - Clarify the intent of related flows, e.g. exit_reason is used for both
->     "basic exit reason" and "full exit reason", and it's not always clear
->     which of the two is intended without a fair bit of digging.
+> I tested with the PX30 EVB so I can surely add a node there if that turns
+> out necessary (see below).
 > 
->   - Prepare for future Intel features, e.g. SGX, that add new exit flags
->     that are less restricted than FAILED_VMENTRY, i.e. can be set on what
->     is otherwise a standard VM-Exit.
+>> Johan
+>>
+>> On 4/16/20 1:50 PM, Paul Kocialkowski wrote:
+>>> The PX30 features a RGA block: add the necessary node to support it.
+>>>
+>>> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+>>> ---
+>>>  arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
+>>>  1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
+>>> index 75908c587511..4bfbee9d4123 100644
+>>> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
+>>> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+>>> @@ -1104,6 +1104,17 @@ vopl_mmu: iommu@ff470f00 {
+>>>  		status = "disabled";
+>>>  	};
+>>>  
+>>> +	rga: rga@ff480000 {
+>>> +		compatible = "rockchip,px30-rga";
+>>> +		reg = <0x0 0xff480000 0x0 0x10000>;
+>>> +		interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
+>>> +		clocks = <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE>;
+>>> +		clock-names = "aclk", "hclk", "sclk";
+>>> +		resets = <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
+>>> +		reset-names = "core", "axi", "ahb";
+>>> +		power-domains = <&power PX30_PD_VO>;
+>>
+>> 		status = "disabled";
 > 
-> v2:
->   - Don't snapshot the basic exit reason, i.e. either use vmx->exit_reason
->     directly or snapshot the whole thing.  The resulting code is similar
->     to Xiaoyao's original patch, e.g. vmx_handle_exit() now uses
->     "exit_reason.basic" instead of "exit_reason" to reference the basic
->     exit reason.
->   - Split nested_vmx_exit_reflected() into VM-Fail, "L0 wants" and "L1
->     wants", and move the tracepoint into nested_vmx_reflect_vmexit().
->     [Vitaly]
->   - Use a "union vmx_exit_reason exit_reason" to handle a consistency
->     check VM-Exit on VM-Enter in nested_vmx_enter_non_root_mode() to avoid
->     some implicit casting shenanigans. [Vitaly]
->   - Collect tags. [Vitaly]
-> 
-> v1: https://lkml.kernel.org/r/20200312184521.24579-1-sean.j.christopherson@intel.com
+> As of 5.6, the rk3399 has the node enabled by default. Did that change?
 
-For now I committed only patches 1-9, just to limit the conflicts with
-the other series.  I would like to understand how you think the
-conflicts should be fixed with the union.
+'status' disappeared during review for rk3399 between v2 and v3, but
+doesn't mention the reason. If someone can give more info here?
 
-Paolo
+https://lore.kernel.org/lkml/1500101920-24039-5-git-send-email-jacob-chen@iotwrt.com/
+
+https://lore.kernel.org/lkml/1501470460-12014-5-git-send-email-jacob-chen@iotwrt.com/
+
+> 
+> Since it's a standalone block that has no I/O dependency, I don't really see
+> the point of disabling it by default.
+
+Vop, hdmi and other video devices are also disabled.
+Follow the rest I think...
+
+> 
+> What do you think?
+> 
+> Cheers,
+> 
+> Paul
+> 
+>>> +	};
+>>> +
+>>>  	qos_gmac: qos@ff518000 {
+>>>  		compatible = "syscon";
+>>>  		reg = <0x0 0xff518000 0x0 0x20>;
+>>>
+>>
+> 
 
