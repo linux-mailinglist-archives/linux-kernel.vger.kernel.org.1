@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A591AC7D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31761ACC9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394865AbgDPO7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:59:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41256 "EHLO mail.kernel.org"
+        id S2636647AbgDPQCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898862AbgDPNyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:54:39 -0400
+        id S2895264AbgDPN0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:26:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E9B52076D;
-        Thu, 16 Apr 2020 13:54:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C100C21D94;
+        Thu, 16 Apr 2020 13:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045278;
-        bh=Zdg/vgCZtVzpvtzNd6vjcd/5iwmO3Je1o3bPcCol/5I=;
+        s=default; t=1587043586;
+        bh=0dCjT5nFRePwKB1f0perCjVU+KxOZ4mV+cUHzcKpO9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jXGoCA7RWXJj/L/Ebdhy8wCD4tNXAR4mtfF+CjxLYKQcpZgdqxbfM8SfWSuvW1LY/
-         3tJjIcfOAXReQsniYCFZrx32/6mJFY8vsrk0IXXijQ+dWi7VF5BMC4GvsVuv4cs8S0
-         /RqeqIa5Pn06wtjkM7/MlU5Hac7+AZRLCgySDVIw=
+        b=esQmO9hGlxbp+UR/reyNqb62RauyXI+lxONZhe01NNRGP/bTWXjOY71pv0Z/p8/bw
+         7lF1Gq8WMmqzIN/bPunPXfaWR2b3DuqHmFgvHYqOt5gcOJHR8iYsrDHK1OfcTBv3cD
+         ZlxqAECl5B0xotxfV7ODq5DdoR4J3AUBcG9T0AW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 5.6 070/254] usb: gadget: f_fs: Fix use after free issue as part of queue failure
+        stable@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Bob Liu <bob.liu@oracle.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 018/146] block: keep bdi->io_pages in sync with max_sectors_kb for stacked devices
 Date:   Thu, 16 Apr 2020 15:22:39 +0200
-Message-Id: <20200416131334.633937817@linuxfoundation.org>
+Message-Id: <20200416131245.009435547@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriharsha Allenki <sallenki@codeaurora.org>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-commit f63ec55ff904b2f2e126884fcad93175f16ab4bb upstream.
+[ Upstream commit e74d93e96d721c4297f2a900ad0191890d2fc2b0 ]
 
-In AIO case, the request is freed up if ep_queue fails.
-However, io_data->req still has the reference to this freed
-request. In the case of this failure if there is aio_cancel
-call on this io_data it will lead to an invalid dequeue
-operation and a potential use after free issue.
-Fix this by setting the io_data->req to NULL when the request
-is freed as part of queue failure.
+Field bdi->io_pages added in commit 9491ae4aade6 ("mm: don't cap request
+size based on read-ahead setting") removes unneeded split of read requests.
 
-Fixes: 2e4c7553cd6f ("usb: gadget: f_fs: add aio support")
-Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
-CC: stable <stable@vger.kernel.org>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20200326115620.12571-1-sallenki@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Stacked drivers do not call blk_queue_max_hw_sectors(). Instead they set
+limits of their devices by blk_set_stacking_limits() + disk_stack_limits().
+Field bio->io_pages stays zero until user set max_sectors_kb via sysfs.
 
+This patch updates io_pages after merging limits in disk_stack_limits().
+
+Commit c6d6e9b0f6b4 ("dm: do not allow readahead to limit IO size") fixed
+the same problem for device-mapper devices, this one fixes MD RAIDs.
+
+Fixes: 9491ae4aade6 ("mm: don't cap request size based on read-ahead setting")
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Reviewed-by: Bob Liu <bob.liu@oracle.com>
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_fs.c |    1 +
- 1 file changed, 1 insertion(+)
+ block/blk-settings.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -1120,6 +1120,7 @@ static ssize_t ffs_epfile_io(struct file
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index be9b39caadbd2..01093b8f3e624 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -717,6 +717,9 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
+ 		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
+ 		       top, bottom);
+ 	}
++
++	t->backing_dev_info->io_pages =
++		t->limits.max_sectors >> (PAGE_SHIFT - 9);
+ }
+ EXPORT_SYMBOL(disk_stack_limits);
  
- 		ret = usb_ep_queue(ep->ep, req, GFP_ATOMIC);
- 		if (unlikely(ret)) {
-+			io_data->req = NULL;
- 			usb_ep_free_request(ep->ep, req);
- 			goto error_lock;
- 		}
+-- 
+2.20.1
+
 
 
