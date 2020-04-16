@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7A41AC8EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB851AC708
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503791AbgDPPQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
+        id S2394713AbgDPOr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441637AbgDPNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:50:02 -0400
+        id S2506794AbgDPN7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:59:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2190E2223F;
-        Thu, 16 Apr 2020 13:49:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F56A20786;
+        Thu, 16 Apr 2020 13:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044960;
-        bh=VmVN60V25JspsZ14eGwB7Xo4/VC6TrWzh+uz3z2ASuA=;
+        s=default; t=1587045539;
+        bh=jMsruKGjjFKM1+jVEVDnynaeTh0Q77G9inJ3ExDcGzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aNpvQQk/jcMLMdXwkMur12w2GRR/N9HqcS/6PZJ/LaX8jwJKFdWyyL6owh5Afr85q
-         7OChxm0jFKzOqTlwAnenadwL49pqJocUy/qcvHsxeUxra6zyE3fwOkwqOd1xn3Qeu0
-         1gDcuyT61WmUzqzZePBPRWuBO3h6e6c8KKrOFcbw=
+        b=WMkkHXFhAA3q/MgifeT0zAvyS2xw8uXNT2/Bp090LgWCkri3Qkz018XRPiPmCVfQL
+         v74eqC2KV2NHuAD/KVbuc2Ho0fTuITEEpRRENNQHPUwUInxaAtezPVEWqlCB/sCW2F
+         xCGJ8ohpvMB/PXwvo0ylKPB8sQis2P/oFMqEFjLI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 170/232] crypto: ccree - protect against empty or NULL scatterlists
+        Harshini Shetty <harshini.x.shetty@sony.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.6 175/254] dm verity fec: fix memory leak in verity_fec_dtr
 Date:   Thu, 16 Apr 2020 15:24:24 +0200
-Message-Id: <20200416131336.274627879@linuxfoundation.org>
+Message-Id: <20200416131348.306619538@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,163 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gilad Ben-Yossef <gilad@benyossef.com>
+From: Shetty, Harshini X (EXT-Sony Mobile) <Harshini.X.Shetty@sony.com>
 
-commit ce0fc6db38decf0d2919bfe783de6d6b76e421a9 upstream.
+commit 75fa601934fda23d2f15bf44b09c2401942d8e15 upstream.
 
-Deal gracefully with a NULL or empty scatterlist which can happen
-if both cryptlen and assoclen are zero and we're doing in-place
-AEAD encryption.
+Fix below kmemleak detected in verity_fec_ctr. output_pool is
+allocated for each dm-verity-fec device. But it is not freed when
+dm-table for the verity target is removed. Hence free the output
+mempool in destructor function verity_fec_dtr.
 
-This fixes a crash when this causes us to try and map a NULL page,
-at least with some platforms / DMA mapping configs.
+unreferenced object 0xffffffffa574d000 (size 4096):
+  comm "init", pid 1667, jiffies 4294894890 (age 307.168s)
+  hex dump (first 32 bytes):
+    8e 36 00 98 66 a8 0b 9b 00 00 00 00 00 00 00 00  .6..f...........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000060e82407>] __kmalloc+0x2b4/0x340
+    [<00000000dd99488f>] mempool_kmalloc+0x18/0x20
+    [<000000002560172b>] mempool_init_node+0x98/0x118
+    [<000000006c3574d2>] mempool_init+0x14/0x20
+    [<0000000008cb266e>] verity_fec_ctr+0x388/0x3b0
+    [<000000000887261b>] verity_ctr+0x87c/0x8d0
+    [<000000002b1e1c62>] dm_table_add_target+0x174/0x348
+    [<000000002ad89eda>] table_load+0xe4/0x328
+    [<000000001f06f5e9>] dm_ctl_ioctl+0x3b4/0x5a0
+    [<00000000bee5fbb7>] do_vfs_ioctl+0x5dc/0x928
+    [<00000000b475b8f5>] __arm64_sys_ioctl+0x70/0x98
+    [<000000005361e2e8>] el0_svc_common+0xa0/0x158
+    [<000000001374818f>] el0_svc_handler+0x6c/0x88
+    [<000000003364e9f4>] el0_svc+0x8/0xc
+    [<000000009d84cec9>] 0xffffffffffffffff
 
-Cc: stable@vger.kernel.org # v4.19+
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: a739ff3f543af ("dm verity: add support for forward error correction")
+Depends-on: 6f1c819c219f7 ("dm: convert to bioset_init()/mempool_init()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Harshini Shetty <harshini.x.shetty@sony.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/ccree/cc_buffer_mgr.c |   62 +++++++++++++++--------------------
- drivers/crypto/ccree/cc_buffer_mgr.h |    1 
- 2 files changed, 28 insertions(+), 35 deletions(-)
+ drivers/md/dm-verity-fec.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/crypto/ccree/cc_buffer_mgr.c
-+++ b/drivers/crypto/ccree/cc_buffer_mgr.c
-@@ -87,6 +87,8 @@ static unsigned int cc_get_sgl_nents(str
- {
- 	unsigned int nents = 0;
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -551,6 +551,7 @@ void verity_fec_dtr(struct dm_verity *v)
+ 	mempool_exit(&f->rs_pool);
+ 	mempool_exit(&f->prealloc_pool);
+ 	mempool_exit(&f->extra_pool);
++	mempool_exit(&f->output_pool);
+ 	kmem_cache_destroy(f->cache);
  
-+	*lbytes = 0;
-+
- 	while (nbytes && sg_list) {
- 		nents++;
- 		/* get the number of bytes in the last entry */
-@@ -95,6 +97,7 @@ static unsigned int cc_get_sgl_nents(str
- 				nbytes : sg_list->length;
- 		sg_list = sg_next(sg_list);
- 	}
-+
- 	dev_dbg(dev, "nents %d last bytes %d\n", nents, *lbytes);
- 	return nents;
- }
-@@ -290,37 +293,25 @@ static int cc_map_sg(struct device *dev,
- 		     unsigned int nbytes, int direction, u32 *nents,
- 		     u32 max_sg_nents, u32 *lbytes, u32 *mapped_nents)
- {
--	if (sg_is_last(sg)) {
--		/* One entry only case -set to DLLI */
--		if (dma_map_sg(dev, sg, 1, direction) != 1) {
--			dev_err(dev, "dma_map_sg() single buffer failed\n");
--			return -ENOMEM;
--		}
--		dev_dbg(dev, "Mapped sg: dma_address=%pad page=%p addr=%pK offset=%u length=%u\n",
--			&sg_dma_address(sg), sg_page(sg), sg_virt(sg),
--			sg->offset, sg->length);
--		*lbytes = nbytes;
--		*nents = 1;
--		*mapped_nents = 1;
--	} else {  /*sg_is_last*/
--		*nents = cc_get_sgl_nents(dev, sg, nbytes, lbytes);
--		if (*nents > max_sg_nents) {
--			*nents = 0;
--			dev_err(dev, "Too many fragments. current %d max %d\n",
--				*nents, max_sg_nents);
--			return -ENOMEM;
--		}
--		/* In case of mmu the number of mapped nents might
--		 * be changed from the original sgl nents
--		 */
--		*mapped_nents = dma_map_sg(dev, sg, *nents, direction);
--		if (*mapped_nents == 0) {
--			*nents = 0;
--			dev_err(dev, "dma_map_sg() sg buffer failed\n");
--			return -ENOMEM;
--		}
-+	int ret = 0;
-+
-+	*nents = cc_get_sgl_nents(dev, sg, nbytes, lbytes);
-+	if (*nents > max_sg_nents) {
-+		*nents = 0;
-+		dev_err(dev, "Too many fragments. current %d max %d\n",
-+			*nents, max_sg_nents);
-+		return -ENOMEM;
- 	}
- 
-+	ret = dma_map_sg(dev, sg, *nents, direction);
-+	if (dma_mapping_error(dev, ret)) {
-+		*nents = 0;
-+		dev_err(dev, "dma_map_sg() sg buffer failed %d\n", ret);
-+		return -ENOMEM;
-+	}
-+
-+	*mapped_nents = ret;
-+
- 	return 0;
- }
- 
-@@ -555,11 +546,12 @@ void cc_unmap_aead_request(struct device
- 		sg_virt(req->src), areq_ctx->src.nents, areq_ctx->assoc.nents,
- 		areq_ctx->assoclen, req->cryptlen);
- 
--	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_BIDIRECTIONAL);
-+	dma_unmap_sg(dev, req->src, areq_ctx->src.mapped_nents,
-+		     DMA_BIDIRECTIONAL);
- 	if (req->src != req->dst) {
- 		dev_dbg(dev, "Unmapping dst sgl: req->dst=%pK\n",
- 			sg_virt(req->dst));
--		dma_unmap_sg(dev, req->dst, sg_nents(req->dst),
-+		dma_unmap_sg(dev, req->dst, areq_ctx->dst.mapped_nents,
- 			     DMA_BIDIRECTIONAL);
- 	}
- 	if (drvdata->coherent &&
-@@ -881,7 +873,7 @@ static int cc_aead_chain_data(struct cc_
- 					    &src_last_bytes);
- 	sg_index = areq_ctx->src_sgl->length;
- 	//check where the data starts
--	while (sg_index <= size_to_skip) {
-+	while (src_mapped_nents && (sg_index <= size_to_skip)) {
- 		src_mapped_nents--;
- 		offset -= areq_ctx->src_sgl->length;
- 		sgl = sg_next(areq_ctx->src_sgl);
-@@ -908,7 +900,7 @@ static int cc_aead_chain_data(struct cc_
- 			size_for_map += crypto_aead_ivsize(tfm);
- 
- 		rc = cc_map_sg(dev, req->dst, size_for_map, DMA_BIDIRECTIONAL,
--			       &areq_ctx->dst.nents,
-+			       &areq_ctx->dst.mapped_nents,
- 			       LLI_MAX_NUM_OF_DATA_ENTRIES, &dst_last_bytes,
- 			       &dst_mapped_nents);
- 		if (rc)
-@@ -921,7 +913,7 @@ static int cc_aead_chain_data(struct cc_
- 	offset = size_to_skip;
- 
- 	//check where the data starts
--	while (sg_index <= size_to_skip) {
-+	while (dst_mapped_nents && sg_index <= size_to_skip) {
- 		dst_mapped_nents--;
- 		offset -= areq_ctx->dst_sgl->length;
- 		sgl = sg_next(areq_ctx->dst_sgl);
-@@ -1123,7 +1115,7 @@ int cc_map_aead_request(struct cc_drvdat
- 	if (is_gcm4543)
- 		size_to_map += crypto_aead_ivsize(tfm);
- 	rc = cc_map_sg(dev, req->src, size_to_map, DMA_BIDIRECTIONAL,
--		       &areq_ctx->src.nents,
-+		       &areq_ctx->src.mapped_nents,
- 		       (LLI_MAX_NUM_OF_ASSOC_DATA_ENTRIES +
- 			LLI_MAX_NUM_OF_DATA_ENTRIES),
- 		       &dummy, &mapped_nents);
---- a/drivers/crypto/ccree/cc_buffer_mgr.h
-+++ b/drivers/crypto/ccree/cc_buffer_mgr.h
-@@ -25,6 +25,7 @@ enum cc_sg_cpy_direct {
- 
- struct cc_mlli {
- 	cc_sram_addr_t sram_addr;
-+	unsigned int mapped_nents;
- 	unsigned int nents; //sg nents
- 	unsigned int mlli_nents; //mlli nents might be different than the above
- };
+ 	if (f->data_bufio)
 
 
