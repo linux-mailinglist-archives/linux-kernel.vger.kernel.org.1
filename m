@@ -2,54 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B980E1ACF28
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1731ACF2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 19:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390919AbgDPRzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 13:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731913AbgDPRzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 13:55:23 -0400
-Subject: Re: [GIT PULL] SELinux fixes for v5.7 (#1)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587059723;
-        bh=p7COsR3/YEVYo3WksfwDu7k9RVu980i5r+jUbutGp10=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gvPCsN12d88EIWYC/heWBqSeZyFB7ZGUoC7IrQfFB5U6vObRY80/EzgHI4jiVSNUk
-         7TU2TpPHyM+zBypSSCYpzCfCJNwK1akJJtFQr8Uq1L8osqn/WEzEXS+MZeB+L/uXjV
-         grLSasg7mbHxioE3fBEkx8N/12+PJdnK/vRHEE+8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAHC9VhRNYDwZttwD0Pc3JctBg7puvc+UsuZG082CdPVrarQoDg@mail.gmail.com>
-References: <CAHC9VhRNYDwZttwD0Pc3JctBg7puvc+UsuZG082CdPVrarQoDg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAHC9VhRNYDwZttwD0Pc3JctBg7puvc+UsuZG082CdPVrarQoDg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
- tags/selinux-pr-20200416
-X-PR-Tracked-Commit-Id: af15f14c8cfcee515f4e9078889045ad63efefe3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9786cab674574239b04df638f825ee0e7d76a48c
-Message-Id: <158705972330.30027.7167816407601724293.pr-tracker-bot@kernel.org>
-Date:   Thu, 16 Apr 2020 17:55:23 +0000
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S2393804AbgDPRz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 13:55:56 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:37671 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728445AbgDPRzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 13:55:54 -0400
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 16 Apr 2020 10:55:28 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 16 Apr 2020 10:55:28 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id DD0574C5E; Thu, 16 Apr 2020 10:55:27 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 10:55:27 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v12 09/11] backlight: pwm_bl: Use 64-bit division function
+Message-ID: <20200416175527.GA21388@codeaurora.org>
+References: <cover.1586414867.git.gurus@codeaurora.org>
+ <e2139a83008e9f301889f9384487c55de475a6a2.1586414867.git.gurus@codeaurora.org>
+ <20200416094420.GB2167633@dell>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416094420.GB2167633@dell>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 16 Apr 2020 13:43:55 -0400:
+On Thu, Apr 16, 2020 at 10:44:20AM +0100, Lee Jones wrote:
+> On Wed, 08 Apr 2020, Guru Das Srinagesh wrote:
+> 
+> > Since the PWM framework is switching struct pwm_state.period's datatype
+> > to u64, prepare for this transition by using div_u64 to handle a 64-bit
+> > dividend instead of a straight division operation.
+> > 
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> > Cc: Jingoo Han <jingoohan1@gmail.com>
+> > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> > Cc: linux-pwm@vger.kernel.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-fbdev@vger.kernel.org
+> > 
+> > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > ---
+> >  drivers/video/backlight/pwm_bl.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> I see that this is part of a large set, but the remainder of the
+> patches have been hidden from me.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20200416
+Sorry about that, the full series is here: [1].
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9786cab674574239b04df638f825ee0e7d76a48c
+> Does this mean I can apply this patch on its own?
 
-Thank you!
+I'll defer to Uwe on this point as I am not sure of the implications of
+taking in this single patch and not the entire series.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Thank you.
+
+Guru Das.
+
+[1] https://www.spinics.net/lists/linux-pwm/msg12131.html
