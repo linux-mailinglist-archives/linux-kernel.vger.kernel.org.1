@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8B91AC466
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE551AC52E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896225AbgDPN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:59:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52458 "EHLO mail.kernel.org"
+        id S2441926AbgDPONK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:13:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898029AbgDPNj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:57 -0400
+        id S2633435AbgDPNsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA5DF218AC;
-        Thu, 16 Apr 2020 13:39:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 016872222D;
+        Thu, 16 Apr 2020 13:48:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044397;
-        bh=IFWJtKO8b6hb9xBju8DtQHaiyO8+G0f/3xvR3wpJ/4I=;
+        s=default; t=1587044921;
+        bh=aBs0U7UDsdXOR98ZbF/DFAx8LAlxF0lzVvph7LALPJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cHYVQCth3xyMVRXxTodAtOKUhDqGFIqYC6ffgcvMUuBLPtlMHluRNvZE8gfw8Mq8w
-         2WlEiWKIQ2L7uWzeUqAHaTEjtnRtQ7mp8V9LvckcodINJjADwXDsB9/glf4+Ll/HS6
-         NWcS6pbf4sHP4YzVYQ9T2OL68jAsCiajSON1krHo=
+        b=htVR+alqBX/oiDa51QHy2MGYgI6iSrvRYa0hcnfdnkae+Sdm8moHmHbZhak6aEALk
+         h7bcFZdU98bbCqERKxe1SNGXwskiSjQph2sAtBHmDurxuPGZo2UpqdGbrJfCro5b6F
+         Z7pS+AHjn7o1kFjCFcPHfCXAOYnmHgLJXR8XLicE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.5 199/257] ARM: dts: exynos: Fix polarity of the LCD SPI bus on UniversalC210 board
+        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Alex Elder <elder@linaro.org>
+Subject: [PATCH 5.4 156/232] net: qualcomm: rmnet: Allow configuration updates to existing devices
 Date:   Thu, 16 Apr 2020 15:24:10 +0200
-Message-Id: <20200416131350.996178690@linuxfoundation.org>
+Message-Id: <20200416131334.525581286@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +46,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
 
-commit 32a1671ff8e84f0dfff3a50d4b2091d25e91f5e2 upstream.
+commit 2abb5792387eb188b12051337d5dcd2cba615cb0 upstream.
 
-Recent changes in the SPI core and the SPI-GPIO driver revealed that the
-GPIO lines for the LD9040 LCD controller on the UniversalC210 board are
-defined incorrectly. Fix the polarity for those lines to match the old
-behavior and hardware requirements to fix LCD panel operation with
-recent kernels.
+This allows the changelink operation to succeed if the mux_id was
+specified as an argument. Note that the mux_id must match the
+existing mux_id of the rmnet device or should be an unused mux_id.
 
-Cc: <stable@vger.kernel.org> # 5.0.x
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: 1dc49e9d164c ("net: rmnet: do not allow to change mux id if mux id is duplicated")
+Reported-and-tested-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Sean Tranchetti <stranche@codeaurora.org>
+Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/exynos4210-universal_c210.dts |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c |   31 ++++++++++++---------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
---- a/arch/arm/boot/dts/exynos4210-universal_c210.dts
-+++ b/arch/arm/boot/dts/exynos4210-universal_c210.dts
-@@ -115,7 +115,7 @@
- 		gpio-sck = <&gpy3 1 GPIO_ACTIVE_HIGH>;
- 		gpio-mosi = <&gpy3 3 GPIO_ACTIVE_HIGH>;
- 		num-chipselects = <1>;
--		cs-gpios = <&gpy4 3 GPIO_ACTIVE_HIGH>;
-+		cs-gpios = <&gpy4 3 GPIO_ACTIVE_LOW>;
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+@@ -279,7 +279,6 @@ static int rmnet_changelink(struct net_d
+ {
+ 	struct rmnet_priv *priv = netdev_priv(dev);
+ 	struct net_device *real_dev;
+-	struct rmnet_endpoint *ep;
+ 	struct rmnet_port *port;
+ 	u16 mux_id;
  
- 		lcd@0 {
- 			compatible = "samsung,ld9040";
-@@ -124,8 +124,6 @@
- 			vci-supply = <&ldo17_reg>;
- 			reset-gpios = <&gpy4 5 GPIO_ACTIVE_HIGH>;
- 			spi-max-frequency = <1200000>;
--			spi-cpol;
--			spi-cpha;
- 			power-on-delay = <10>;
- 			reset-delay = <10>;
- 			panel-width-mm = <90>;
+@@ -294,19 +293,27 @@ static int rmnet_changelink(struct net_d
+ 
+ 	if (data[IFLA_RMNET_MUX_ID]) {
+ 		mux_id = nla_get_u16(data[IFLA_RMNET_MUX_ID]);
+-		if (rmnet_get_endpoint(port, mux_id)) {
+-			NL_SET_ERR_MSG_MOD(extack, "MUX ID already exists");
+-			return -EINVAL;
+-		}
+-		ep = rmnet_get_endpoint(port, priv->mux_id);
+-		if (!ep)
+-			return -ENODEV;
+ 
+-		hlist_del_init_rcu(&ep->hlnode);
+-		hlist_add_head_rcu(&ep->hlnode, &port->muxed_ep[mux_id]);
++		if (mux_id != priv->mux_id) {
++			struct rmnet_endpoint *ep;
++
++			ep = rmnet_get_endpoint(port, priv->mux_id);
++			if (!ep)
++				return -ENODEV;
++
++			if (rmnet_get_endpoint(port, mux_id)) {
++				NL_SET_ERR_MSG_MOD(extack,
++						   "MUX ID already exists");
++				return -EINVAL;
++			}
++
++			hlist_del_init_rcu(&ep->hlnode);
++			hlist_add_head_rcu(&ep->hlnode,
++					   &port->muxed_ep[mux_id]);
+ 
+-		ep->mux_id = mux_id;
+-		priv->mux_id = mux_id;
++			ep->mux_id = mux_id;
++			priv->mux_id = mux_id;
++		}
+ 	}
+ 
+ 	if (data[IFLA_RMNET_FLAGS]) {
 
 
