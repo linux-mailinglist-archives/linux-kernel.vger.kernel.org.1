@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8340D1AC308
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACE51AC734
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897391AbgDPNg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:36:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39868 "EHLO mail.kernel.org"
+        id S2394462AbgDPOv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:51:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896093AbgDPN3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:29:50 -0400
+        id S2633214AbgDPN6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2848821D91;
-        Thu, 16 Apr 2020 13:29:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A739520732;
+        Thu, 16 Apr 2020 13:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043790;
-        bh=rXkh2aRrbIIG14idHHtgzlWycyi8V8ynYJ10c0RNDbc=;
+        s=default; t=1587045481;
+        bh=zIhIZGj24O1o982in8b2nseAv+Soag+2J7fvks+6GeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Ov3kO5HRcjAJg3s9dXN8SFZ+UYtYVsIb+XuvUBv+q2WJpOWffKXY3kq2H3XzOAHU
-         CnenPiZnyc2DhLVEp7nJAeBIbWSmLqauFTKj4W39qnie6bnuaGqgybhI65bJMx6mdM
-         ojyt5sbO2fUa3IYaP2c0HnPkjoTTFDcV/PGd3iIk=
+        b=nwBlYvk4BEE4qcp++xKHATHa92543dAaBXF/EfRaI/qDdSFCRpUp+Y+EpT89HKuNp
+         A847QA6/sq70yzB0IUuHyj11h+e9voEDCO1TF+weWOz9gX/Y7n+r1HYvuiXR8JFJD8
+         e+xUTI443yo8XjU1xcH4crqfQfWwkZ5IB7auJBbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.19 101/146] arm64: dts: allwinner: h6: Fix PMU compatible
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.6 153/254] btrfs: drop block from cache on error in relocation
 Date:   Thu, 16 Apr 2020 15:24:02 +0200
-Message-Id: <20200416131256.549627724@linuxfoundation.org>
+Message-Id: <20200416131345.744802375@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 4c7eeb9af3e41ae7d840977119c58f3bbb3f4f59 upstream.
+commit 8e19c9732ad1d127b5575a10f4fbcacf740500ff upstream.
 
-The commit 7aa9b9eb7d6a ("arm64: dts: allwinner: H6: Add PMU mode")
-introduced support for the PMU found on the Allwinner H6. However, the
-binding only allows for a single compatible, while the patch was adding
-two.
+If we have an error while building the backref tree in relocation we'll
+process all the pending edges and then free the node.  However if we
+integrated some edges into the cache we'll lose our link to those edges
+by simply freeing this node, which means we'll leak memory and
+references to any roots that we've found.
 
-Make sure we follow the binding.
+Instead we need to use remove_backref_node(), which walks through all of
+the edges that are still linked to this node and free's them up and
+drops any root references we may be holding.
 
-Fixes: 7aa9b9eb7d6a ("arm64: dts: allwinner: H6: Add PMU mode")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Cc: Guenter Roeck <linux@roeck-us.net>
+CC: stable@vger.kernel.org # 4.9+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/relocation.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -70,8 +70,7 @@
- 	};
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1186,7 +1186,7 @@ out:
+ 			free_backref_node(cache, lower);
+ 		}
  
- 	pmu {
--		compatible = "arm,cortex-a53-pmu",
--			     "arm,armv8-pmuv3";
-+		compatible = "arm,cortex-a53-pmu";
- 		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
+-		free_backref_node(cache, node);
++		remove_backref_node(cache, node);
+ 		return ERR_PTR(err);
+ 	}
+ 	ASSERT(!node || !node->detached);
 
 
