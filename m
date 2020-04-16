@@ -2,289 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3F21AC178
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D9E1AC180
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635896AbgDPMkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:40:21 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:31654 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2635884AbgDPMjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:39:46 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 492zM31wLCz9v022;
-        Thu, 16 Apr 2020 14:39:43 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=BLFjUWPZ; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id wi4-alZI2dRt; Thu, 16 Apr 2020 14:39:43 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 492zM30rm9z9v01y;
-        Thu, 16 Apr 2020 14:39:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1587040783; bh=n/YFvHLWWAn+H8kR/18v+2wmgtYzNZc7lNNHfA4JHrI=;
-        h=From:Subject:To:Cc:Date:From;
-        b=BLFjUWPZT5pSjWf05aFIZx6F/IzislhXuP/v4zlhsPRFdnj8VpyBl8o6lLsAWQVJs
-         Fb/obuzuydVhDLQ+X0YuRRFcfLCFWl42a5gm0CdaZBlPF/wXho89ZpCCdU7Fs98jXc
-         Xz+cennJNwKZaPMBm8gBXvnfSFi12kEZ2GnxrCE4=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B63FA8BC16;
-        Thu, 16 Apr 2020 14:39:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id bZ3bskYdMqxI; Thu, 16 Apr 2020 14:39:44 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 20D958BC11;
-        Thu, 16 Apr 2020 14:39:44 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id E390765798; Thu, 16 Apr 2020 12:39:43 +0000 (UTC)
-Message-Id: <97616f62f22f113dd6f1e67771adbce71b830ed3.1587040745.git.christophe.leroy@c-s.fr>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH v3] powerpc/uaccess: Implement unsafe_put_user() using 'asm
- goto'
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        segher@kernel.crashing.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 16 Apr 2020 12:39:43 +0000 (UTC)
+        id S2635930AbgDPMlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2635883AbgDPMkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:40:46 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE5C061A0C;
+        Thu, 16 Apr 2020 05:40:43 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 750ED2A20B2;
+        Thu, 16 Apr 2020 13:40:40 +0100 (BST)
+Date:   Thu, 16 Apr 2020 14:40:36 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andriy Shevchenko <andriy.shevchenko@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        cheol.yong.kim@intel.com, devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+        masonccyang@mxic.com.tw, Miquel Raynal <miquel.raynal@bootlin.com>,
+        piotrs@cadence.com, qi-ming.wu@intel.com,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>, Vignesh R <vigneshr@ti.com>
+Subject: Re: [PATCH v1 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200416144036.3ce8432f@collabora.com>
+In-Reply-To: <CAHp75Vcpb-556imBuhsY-asrKqx7LjvQbq+P-ysK-+ii91YpWQ@mail.gmail.com>
+References: <20200414022433.36622-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200415220533.733834-1-martin.blumenstingl@googlemail.com>
+        <c33c8653-16a2-5bcd-97a9-511d958b755a@linux.intel.com>
+        <20200416113822.2ef326cb@collabora.com>
+        <18568cf6-2955-472e-7b68-eb35e654a906@linux.intel.com>
+        <20200416122619.2c481792@collabora.com>
+        <d3e137fa-54a0-b4ec-eb24-3984eab2a247@linux.intel.com>
+        <20200416131725.51259573@collabora.com>
+        <de9f50b8-9215-d294-9914-e49701552185@linux.intel.com>
+        <20200416135711.039ba85c@collabora.com>
+        <CAHp75Vcpb-556imBuhsY-asrKqx7LjvQbq+P-ysK-+ii91YpWQ@mail.gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-unsafe_put_user() is designed to take benefit of 'asm goto'.
+On Thu, 16 Apr 2020 15:26:51 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Instead of using the standard __put_user() approach and branch
-based on the returned error, use 'asm goto' and make the
-exception code branch directly to the error label. There is
-no code anymore in the fixup section.
+> On Thu, Apr 16, 2020 at 3:03 PM Boris Brezillon
+> <boris.brezillon@collabora.com> wrote:
+> > On Thu, 16 Apr 2020 19:38:03 +0800
+> > "Ramuthevar, Vadivel MuruganX"
+> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:  
+> > > On 16/4/2020 7:17 pm, Boris Brezillon wrote:  
+> > > > On Thu, 16 Apr 2020 18:40:53 +0800
+> > > > "Ramuthevar, Vadivel MuruganX"
+> > > > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:  
+> 
+> ...
+> 
+> > > There are different features involved and lines of code is more, if we
+> > > add new driver patches over xway-nand driver  
+> >
+> > How about retro-fitting the xway logic into your driver then? I mean,
+> > adding a 100 lines of code to your driver to get rid of the 500+ lines
+> > we have in xway_nand.c is still a win.
+> >  
+> > >
+> > > is completely looks ugly and it may disturb the existing functionality
+> > > as well since we don't have platform to validate:'(.  
+> >
+> > How ugly? Can you show us? Maybe we can come with a solution to make it
+> > less ugly.
+> >
+> > As for the testing part, there are 4 scenarios:
+> >
+> > 1/ Your changes work perfectly fine on older platforms. Yay \o/!
+> > 2/ You break the xway driver and existing users notice it before this
+> >    series gets merged. Now you found someone to validate your changes.
+> > 3/ You break the xway driver and none of the existing users notice it
+> >    before the driver is merged, but they notice it afterwards. Too bad
+> >    this happened after we've merged the driver, but now you've found
+> >    someone to help you fix the problem :P.
+> > 4/ You break things for old platforms but no one ever complains about
+> >    it, either because there's no users left or because they never
+> >    update their kernels. In any case, that's no longer your problem.
+> >    Someone will remove those old platforms one day and get rid of the
+> >    unneeded code in the NAND driver.
+> >
+> > What's more likely to happen is #3 or #4, and I think the NAND
+> > maintainer would be fine with both.
+> >
+> > Note that the NAND subsystem is full of unmaintained legacy drivers, so
+> > every time we see someone who could help us get rid or update one of
+> > them we have to take this opportunity.  
+> 
+> Don't we rather insist to have a MAINTAINERS record for new code to
+> avoid (or delay at least) the fate of the legacy drivers?
+> 
 
-This change significantly simplifies functions using
-unsafe_put_user()
+Well, that's what we do for new drivers, but the xway driver has been
+added in 2012 and the policy was not enforced at that time. BTW, that
+goes for most of the legacy drivers in have in the NAND subsystems
+(some of them even predate the git era).
 
-Small exemple of the benefit with the following code:
-
-struct test {
-	u32 item1;
-	u16 item2;
-	u8 item3;
-	u64 item4;
-};
-
-int set_test_to_user(struct test __user *test, u32 item1, u16 item2, u8 item3, u64 item4)
-{
-	unsafe_put_user(item1, &test->item1, failed);
-	unsafe_put_user(item2, &test->item2, failed);
-	unsafe_put_user(item3, &test->item3, failed);
-	unsafe_put_user(item4, &test->item4, failed);
-	return 0;
-failed:
-	return -EFAULT;
-}
-
-Before the patch:
-
-00000be8 <set_test_to_user>:
- be8:	39 20 00 00 	li      r9,0
- bec:	90 83 00 00 	stw     r4,0(r3)
- bf0:	2f 89 00 00 	cmpwi   cr7,r9,0
- bf4:	40 9e 00 38 	bne     cr7,c2c <set_test_to_user+0x44>
- bf8:	b0 a3 00 04 	sth     r5,4(r3)
- bfc:	2f 89 00 00 	cmpwi   cr7,r9,0
- c00:	40 9e 00 2c 	bne     cr7,c2c <set_test_to_user+0x44>
- c04:	98 c3 00 06 	stb     r6,6(r3)
- c08:	2f 89 00 00 	cmpwi   cr7,r9,0
- c0c:	40 9e 00 20 	bne     cr7,c2c <set_test_to_user+0x44>
- c10:	90 e3 00 08 	stw     r7,8(r3)
- c14:	91 03 00 0c 	stw     r8,12(r3)
- c18:	21 29 00 00 	subfic  r9,r9,0
- c1c:	7d 29 49 10 	subfe   r9,r9,r9
- c20:	38 60 ff f2 	li      r3,-14
- c24:	7d 23 18 38 	and     r3,r9,r3
- c28:	4e 80 00 20 	blr
- c2c:	38 60 ff f2 	li      r3,-14
- c30:	4e 80 00 20 	blr
-
-00000000 <.fixup>:
-	...
-  b8:	39 20 ff f2 	li      r9,-14
-  bc:	48 00 00 00 	b       bc <.fixup+0xbc>
-			bc: R_PPC_REL24	.text+0xbf0
-  c0:	39 20 ff f2 	li      r9,-14
-  c4:	48 00 00 00 	b       c4 <.fixup+0xc4>
-			c4: R_PPC_REL24	.text+0xbfc
-  c8:	39 20 ff f2 	li      r9,-14
-  cc:	48 00 00 00 	b       cc <.fixup+0xcc>
-			cc: R_PPC_REL24	.text+0xc08
-  d0:	39 20 ff f2 	li      r9,-14
-  d4:	48 00 00 00 	b       d4 <.fixup+0xd4>
-			d4: R_PPC_REL24	.text+0xc18
-
-00000000 <__ex_table>:
-	...
-			a0: R_PPC_REL32	.text+0xbec
-			a4: R_PPC_REL32	.fixup+0xb8
-			a8: R_PPC_REL32	.text+0xbf8
-			ac: R_PPC_REL32	.fixup+0xc0
-			b0: R_PPC_REL32	.text+0xc04
-			b4: R_PPC_REL32	.fixup+0xc8
-			b8: R_PPC_REL32	.text+0xc10
-			bc: R_PPC_REL32	.fixup+0xd0
-			c0: R_PPC_REL32	.text+0xc14
-			c4: R_PPC_REL32	.fixup+0xd0
-
-After the patch:
-
-00000be8 <set_test_to_user>:
- be8:	90 83 00 00 	stw     r4,0(r3)
- bec:	b0 a3 00 04 	sth     r5,4(r3)
- bf0:	98 c3 00 06 	stb     r6,6(r3)
- bf4:	90 e3 00 08 	stw     r7,8(r3)
- bf8:	91 03 00 0c 	stw     r8,12(r3)
- bfc:	38 60 00 00 	li      r3,0
- c00:	4e 80 00 20 	blr
- c04:	38 60 ff f2 	li      r3,-14
- c08:	4e 80 00 20 	blr
-
-00000000 <__ex_table>:
-	...
-			a0: R_PPC_REL32	.text+0xbe8
-			a4: R_PPC_REL32	.text+0xc04
-			a8: R_PPC_REL32	.text+0xbec
-			ac: R_PPC_REL32	.text+0xc04
-			b0: R_PPC_REL32	.text+0xbf0
-			b4: R_PPC_REL32	.text+0xc04
-			b8: R_PPC_REL32	.text+0xbf4
-			bc: R_PPC_REL32	.text+0xc04
-			c0: R_PPC_REL32	.text+0xbf8
-			c4: R_PPC_REL32	.text+0xc04
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
----
-v3:
-- Added <> modifier to __put_user_asm_goto()
-- Removed %U1 modifier to __put_user_asm2_goto()
-
-v2:
-- Grouped most __goto() macros together
-- Removed stuff in .fixup section, referencing the error label
-directly from the extable
-- Using more flexible addressing in asm.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
----
- arch/powerpc/include/asm/uaccess.h | 61 +++++++++++++++++++++++++-----
- 1 file changed, 52 insertions(+), 9 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
-index 2f500debae21..7c811442b607 100644
---- a/arch/powerpc/include/asm/uaccess.h
-+++ b/arch/powerpc/include/asm/uaccess.h
-@@ -93,12 +93,12 @@ static inline int __access_ok(unsigned long addr, unsigned long size,
- #define __get_user(x, ptr) \
- 	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), true)
- #define __put_user(x, ptr) \
--	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), true)
-+	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
-+#define __put_user_goto(x, ptr, label) \
-+	__put_user_nocheck_goto((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), label)
- 
- #define __get_user_allowed(x, ptr) \
- 	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
--#define __put_user_allowed(x, ptr) \
--	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), false)
- 
- #define __get_user_inatomic(x, ptr) \
- 	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
-@@ -162,17 +162,14 @@ do {								\
- 	prevent_write_to_user(ptr, size);			\
- } while (0)
- 
--#define __put_user_nocheck(x, ptr, size, do_allow)			\
-+#define __put_user_nocheck(x, ptr, size)			\
- ({								\
- 	long __pu_err;						\
- 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
- 	if (!is_kernel_addr((unsigned long)__pu_addr))		\
- 		might_fault();					\
- 	__chk_user_ptr(ptr);					\
--	if (do_allow)								\
--		__put_user_size((x), __pu_addr, (size), __pu_err);		\
--	else									\
--		__put_user_size_allowed((x), __pu_addr, (size), __pu_err);	\
-+	__put_user_size((x), __pu_addr, (size), __pu_err);		\
- 	__pu_err;						\
- })
- 
-@@ -196,6 +193,52 @@ do {								\
- })
- 
- 
-+#define __put_user_asm_goto(x, addr, label, op)			\
-+	asm volatile goto(					\
-+		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
-+		EX_TABLE(1b, %l2)				\
-+		:						\
-+		: "r" (x), "m<>" (*addr)				\
-+		:						\
-+		: label)
-+
-+#ifdef __powerpc64__
-+#define __put_user_asm2_goto(x, ptr, label)			\
-+	__put_user_asm_goto(x, ptr, label, "std")
-+#else /* __powerpc64__ */
-+#define __put_user_asm2_goto(x, addr, label)			\
-+	asm volatile goto(					\
-+		"1:	stw%X1 %0, %1\n"			\
-+		"2:	stw%X1 %L0, %L1\n"			\
-+		EX_TABLE(1b, %l2)				\
-+		EX_TABLE(2b, %l2)				\
-+		:						\
-+		: "r" (x), "m" (*addr)				\
-+		:						\
-+		: label)
-+#endif /* __powerpc64__ */
-+
-+#define __put_user_size_goto(x, ptr, size, label)		\
-+do {								\
-+	switch (size) {						\
-+	case 1: __put_user_asm_goto(x, ptr, label, "stb"); break;	\
-+	case 2: __put_user_asm_goto(x, ptr, label, "sth"); break;	\
-+	case 4: __put_user_asm_goto(x, ptr, label, "stw"); break;	\
-+	case 8: __put_user_asm2_goto(x, ptr, label); break;	\
-+	default: __put_user_bad();				\
-+	}							\
-+} while (0)
-+
-+#define __put_user_nocheck_goto(x, ptr, size, label)		\
-+do {								\
-+	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
-+	if (!is_kernel_addr((unsigned long)__pu_addr))		\
-+		might_fault();					\
-+	__chk_user_ptr(ptr);					\
-+	__put_user_size_goto((x), __pu_addr, (size), label);	\
-+} while (0)
-+
-+
- extern long __get_user_bad(void);
- 
- /*
-@@ -470,7 +513,7 @@ static __must_check inline bool user_access_begin(const void __user *ptr, size_t
- 
- #define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
- #define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
--#define unsafe_put_user(x, p, e) unsafe_op_wrap(__put_user_allowed(x, p), e)
-+#define unsafe_put_user(x, p, e) __put_user_goto(x, p, e)
- #define unsafe_copy_to_user(d, s, l, e) \
- 	unsafe_op_wrap(raw_copy_to_user_allowed(d, s, l), e)
- 
--- 
-2.25.0
-
+To be clear, I just checked and there's no official maintainer for this
+driver. Best option would be to Cc the original author and contributors
+who proposed functional changes to the code, as well as the MIPS
+maintainers (Xway is a MIPS platform).
