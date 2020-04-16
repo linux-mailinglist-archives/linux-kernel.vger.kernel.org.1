@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F5B1ACB1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628F51AC4D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636349AbgDPPoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:44:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47410 "EHLO mail.kernel.org"
+        id S2636333AbgDPOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:05:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897142AbgDPNf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:35:27 -0400
+        id S2896672AbgDPNnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:43:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B36AC221EB;
-        Thu, 16 Apr 2020 13:35:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECD0C20732;
+        Thu, 16 Apr 2020 13:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044126;
-        bh=ZZEvwv/7QaI1Z8uPWGtyRONbxofPAuVPX/Mue39BQYI=;
+        s=default; t=1587044619;
+        bh=zkoCdeQNCnljh/Pk2J3iQ5iD97vNPeJM7BkIKOX2p88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HCXe+sjIxdzJpRZCAhYkNAT5hzENznOLuw51v5HIZkey646Bu9i5AalF4HVJNKkrR
-         05Ww031zoUraL26w5rVO024OmcLx+nBqH8fHwmF+LUQv9TbkuaOYWy7bKPmAiXjfVu
-         3cVm48ode80stQGQYB1d87+XxI9muvxJzHrF1biM=
+        b=bR5rM0e5vZELl5W7V0KSOlnTs73f/8dpiUGnZCRmc5gBKpn154jkYU/kHAzcX4Fj+
+         XTm/nYmVoQwqFaTYemxNWqo+HD74gDygM3Vfi0UBdvX2pFxrY61ktrNCRLIIKUW43N
+         jRV7QW6Sne0aaQKETpXuvQI+ZfN2tep9GvTmFcI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 074/257] spi: spi-fsl-dspi: Replace interruptible wait queue with a simple completion
-Date:   Thu, 16 Apr 2020 15:22:05 +0200
-Message-Id: <20200416131335.198353278@linuxfoundation.org>
+Subject: [PATCH 5.4 032/232] media: imx: imx7_mipi_csis: Power off the source when stopping streaming
+Date:   Thu, 16 Apr 2020 15:22:06 +0200
+Message-Id: <20200416131320.066530017@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,174 +47,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit 4f5ee75ea1718a09149460b3df993f389a67b56a ]
+[ Upstream commit 770cbf89f90b0663499dbb3f03aa81b3322757ec ]
 
-Currently the driver puts the process in interruptible sleep waiting for
-the interrupt train to finish transfer to/from the tx_buf and rx_buf.
+The .s_stream() implementation incorrectly powers on the source when
+stopping the stream. Power it off instead.
 
-But exiting the process with ctrl-c may make the kernel panic: the
-wait_event_interruptible call will return -ERESTARTSYS, which a proper
-driver implementation is perhaps supposed to handle, but nonetheless
-this one doesn't, and aborts the transfer altogether.
-
-Actually when the task is interrupted, there is still a high chance that
-the dspi_interrupt is still triggering. And if dspi_transfer_one_message
-returns execution all the way to the spi_device driver, that can free
-the spi_message and spi_transfer structures, leaving the interrupts to
-access a freed tx_buf and rx_buf.
-
-hexdump -C /dev/mtd0
-00000000  00 75 68 75 0a ff ff ff  ff ff ff ff ff ff ff ff
-|.uhu............|
-00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-|................|
-*
-^C[   38.495955] fsl-dspi 2120000.spi: Waiting for transfer to complete failed!
-[   38.503097] spi_master spi2: failed to transfer one message from queue
-[   38.509729] Unable to handle kernel paging request at virtual address ffff800095ab3377
-[   38.517676] Mem abort info:
-[   38.520474]   ESR = 0x96000045
-[   38.523533]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   38.528861]   SET = 0, FnV = 0
-[   38.531921]   EA = 0, S1PTW = 0
-[   38.535067] Data abort info:
-[   38.537952]   ISV = 0, ISS = 0x00000045
-[   38.541797]   CM = 0, WnR = 1
-[   38.544771] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000082621000
-[   38.551494] [ffff800095ab3377] pgd=00000020fffff003, p4d=00000020fffff003, pud=0000000000000000
-[   38.560229] Internal error: Oops: 96000045 [#1] PREEMPT SMP
-[   38.565819] Modules linked in:
-[   38.568882] CPU: 0 PID: 2729 Comm: hexdump Not tainted 5.6.0-rc4-next-20200306-00052-gd8730cdc8a0b-dirty #193
-[   38.578834] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-[   38.587129] pstate: 20000085 (nzCv daIf -PAN -UAO)
-[   38.591941] pc : ktime_get_real_ts64+0x3c/0x110
-[   38.596487] lr : spi_take_timestamp_pre+0x40/0x90
-[   38.601203] sp : ffff800010003d90
-[   38.604525] x29: ffff800010003d90 x28: ffff80001200e000
-[   38.609854] x27: ffff800011da9000 x26: ffff002079c40400
-[   38.615184] x25: ffff8000117fe018 x24: ffff800011daa1a0
-[   38.620513] x23: ffff800015ab3860 x22: ffff800095ab3377
-[   38.625841] x21: 000000000000146e x20: ffff8000120c3000
-[   38.631170] x19: ffff0020795f6e80 x18: ffff800011da9948
-[   38.636498] x17: 0000000000000000 x16: 0000000000000000
-[   38.641826] x15: ffff800095ab3377 x14: 0720072007200720
-[   38.647155] x13: 0720072007200765 x12: 0775076507750771
-[   38.652483] x11: 0720076d076f0772 x10: 0000000000000040
-[   38.657812] x9 : ffff8000108e2100 x8 : ffff800011dcabe8
-[   38.663139] x7 : 0000000000000000 x6 : ffff800015ab3a60
-[   38.668468] x5 : 0000000007200720 x4 : ffff800095ab3377
-[   38.673796] x3 : 0000000000000000 x2 : 0000000000000ab0
-[   38.679125] x1 : ffff800011daa000 x0 : 0000000000000026
-[   38.684454] Call trace:
-[   38.686905]  ktime_get_real_ts64+0x3c/0x110
-[   38.691100]  spi_take_timestamp_pre+0x40/0x90
-[   38.695470]  dspi_fifo_write+0x58/0x2c0
-[   38.699315]  dspi_interrupt+0xbc/0xd0
-[   38.702987]  __handle_irq_event_percpu+0x78/0x2c0
-[   38.707706]  handle_irq_event_percpu+0x3c/0x90
-[   38.712161]  handle_irq_event+0x4c/0xd0
-[   38.716008]  handle_fasteoi_irq+0xbc/0x170
-[   38.720115]  generic_handle_irq+0x2c/0x40
-[   38.724135]  __handle_domain_irq+0x68/0xc0
-[   38.728243]  gic_handle_irq+0xc8/0x160
-[   38.732000]  el1_irq+0xb8/0x180
-[   38.735149]  spi_nor_spimem_read_data+0xe0/0x140
-[   38.739779]  spi_nor_read+0xc4/0x120
-[   38.743364]  mtd_read_oob+0xa8/0xc0
-[   38.746860]  mtd_read+0x4c/0x80
-[   38.750007]  mtdchar_read+0x108/0x2a0
-[   38.753679]  __vfs_read+0x20/0x50
-[   38.757002]  vfs_read+0xa4/0x190
-[   38.760237]  ksys_read+0x6c/0xf0
-[   38.763471]  __arm64_sys_read+0x20/0x30
-[   38.767319]  el0_svc_common.constprop.3+0x90/0x160
-[   38.772125]  do_el0_svc+0x28/0x90
-[   38.775449]  el0_sync_handler+0x118/0x190
-[   38.779468]  el0_sync+0x140/0x180
-[   38.782793] Code: 91000294 1400000f d50339bf f9405e80 (f90002c0)
-[   38.788910] ---[ end trace 55da560db4d6bef7 ]---
-[   38.793540] Kernel panic - not syncing: Fatal exception in interrupt
-[   38.799914] SMP: stopping secondary CPUs
-[   38.803849] Kernel Offset: disabled
-[   38.807344] CPU features: 0x10002,20006008
-[   38.811451] Memory Limit: none
-[   38.814513] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
-
-So it is clear that the "interruptible" part isn't handled correctly.
-When the process receives a signal, one could either attempt a clean
-abort (which appears to be difficult with this hardware) or just keep
-restarting the sleep until the wait queue really completes. But checking
-in a loop for -ERESTARTSYS is a bit too complicated for this driver, so
-just make the sleep uninterruptible, to avoid all that nonsense.
-
-The wait queue was actually restructured as a completion, after polling
-other drivers for the most "popular" approach.
-
-Fixes: 349ad66c0ab0 ("spi:Add Freescale DSPI driver for Vybrid VF610 platform")
-Reported-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Tested-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20200318001603.9650-7-olteanv@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 7807063b862b ("media: staging/imx7: add MIPI CSI-2 receiver subdev for i.MX7")
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsl-dspi.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/staging/media/imx/imx7-mipi-csis.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index a534b8af27b8d..f9d44bb1040f8 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -196,8 +196,7 @@ struct fsl_dspi {
- 	u8					bytes_per_word;
- 	const struct fsl_dspi_devtype_data	*devtype_data;
- 
--	wait_queue_head_t			waitq;
--	u32					waitflags;
-+	struct completion			xfer_done;
- 
- 	struct fsl_dspi_dma			*dma;
- };
-@@ -714,10 +713,8 @@ static irqreturn_t dspi_interrupt(int irq, void *dev_id)
- 	if (!(spi_sr & SPI_SR_EOQF))
- 		return IRQ_NONE;
- 
--	if (dspi_rxtx(dspi) == 0) {
--		dspi->waitflags = 1;
--		wake_up_interruptible(&dspi->waitq);
--	}
-+	if (dspi_rxtx(dspi) == 0)
-+		complete(&dspi->xfer_done);
- 
- 	return IRQ_HANDLED;
- }
-@@ -815,13 +812,9 @@ static int dspi_transfer_one_message(struct spi_controller *ctlr,
- 				status = dspi_poll(dspi);
- 			} while (status == -EINPROGRESS);
- 		} else if (trans_mode != DSPI_DMA_MODE) {
--			status = wait_event_interruptible(dspi->waitq,
--							  dspi->waitflags);
--			dspi->waitflags = 0;
-+			wait_for_completion(&dspi->xfer_done);
-+			reinit_completion(&dspi->xfer_done);
- 		}
--		if (status)
--			dev_err(&dspi->pdev->dev,
--				"Waiting for transfer to complete failed!\n");
- 
- 		spi_transfer_delay_exec(transfer);
- 	}
-@@ -1161,7 +1154,7 @@ static int dspi_probe(struct platform_device *pdev)
- 		goto out_clk_put;
- 	}
- 
--	init_waitqueue_head(&dspi->waitq);
-+	init_completion(&dspi->xfer_done);
- 
- poll_mode:
- 
+diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
+index e50b1f88e25b5..6f628195c4daa 100644
+--- a/drivers/staging/media/imx/imx7-mipi-csis.c
++++ b/drivers/staging/media/imx/imx7-mipi-csis.c
+@@ -579,7 +579,7 @@ static int mipi_csis_s_stream(struct v4l2_subdev *mipi_sd, int enable)
+ 		state->flags |= ST_STREAMING;
+ 	} else {
+ 		v4l2_subdev_call(state->src_sd, video, s_stream, 0);
+-		ret = v4l2_subdev_call(state->src_sd, core, s_power, 1);
++		ret = v4l2_subdev_call(state->src_sd, core, s_power, 0);
+ 		mipi_csis_stop_stream(state);
+ 		state->flags &= ~ST_STREAMING;
+ 		if (state->debug)
 -- 
 2.20.1
 
