@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E851ACC0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D351AC717
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896841AbgDPPyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40794 "EHLO mail.kernel.org"
+        id S2394790AbgDPOtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:49:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896257AbgDPNac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:30:32 -0400
+        id S2409396AbgDPN6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7946C208E4;
-        Thu, 16 Apr 2020 13:30:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B174221927;
+        Thu, 16 Apr 2020 13:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043832;
-        bh=ipGa19nKKTFXIKRlrk5uJWMpFfYkR2QvtOVETI2Td8s=;
+        s=default; t=1587045525;
+        bh=rXkh2aRrbIIG14idHHtgzlWycyi8V8ynYJ10c0RNDbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sSzqyAJ/A7jDUdZ0oTw7nE6bBabaDrxemejK0Zs/vi52OK1EezgA7YdlQlV8xmHS0
-         53FeXBapyOW7yxjMEUSLpKw9zyIm0EGgxiK5tOj/1BwGkSqj50uCrMYxJn4kXFy6NR
-         9hVzBHh5NVNkCctJGTUw1gBfjr+qwrqRppbECc8Y=
+        b=qfWiQtbhwJgJdQiPUo05hKmJBWcQtlsJofCswyXaNeD+xmV8v4gsbm7lhwlMzl54R
+         lbar+qxDbNkEXseyoM3zdmsFoW3suC4c6k3FFn6XYLfqgptTQQQrbdKPLpgX55htGe
+         ZvyrSB4rqWnHey/UVuTRfg/2+q9exM/DdkHo/p9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.19 116/146] Input: i8042 - add Acer Aspire 5738z to nomux list
-Date:   Thu, 16 Apr 2020 15:24:17 +0200
-Message-Id: <20200416131258.486011689@linuxfoundation.org>
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.6 169/254] arm64: dts: allwinner: h6: Fix PMU compatible
+Date:   Thu, 16 Apr 2020 15:24:18 +0200
+Message-Id: <20200416131347.657042268@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit ebc68cedec4aead47d8d11623d013cca9bf8e825 upstream.
+commit 4c7eeb9af3e41ae7d840977119c58f3bbb3f4f59 upstream.
 
-The Acer Aspire 5738z has a button to disable (and re-enable) the
-touchpad next to the touchpad.
+The commit 7aa9b9eb7d6a ("arm64: dts: allwinner: H6: Add PMU mode")
+introduced support for the PMU found on the Allwinner H6. However, the
+binding only allows for a single compatible, while the patch was adding
+two.
 
-When this button is pressed a LED underneath indicates that the touchpad
-is disabled (and an event is send to userspace and GNOME shows its
-touchpad enabled / disable OSD thingie).
+Make sure we follow the binding.
 
-So far so good, but after re-enabling the touchpad it no longer works.
-
-The laptop does not have an external ps2 port, so mux mode is not needed
-and disabling mux mode fixes the touchpad no longer working after toggling
-it off and back on again, so lets add this laptop model to the nomux list.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200331123947.318908-1-hdegoede@redhat.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 7aa9b9eb7d6a ("arm64: dts: allwinner: H6: Add PMU mode")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042-x86ia64io.h |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -534,6 +534,17 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo LaVie Z"),
- 		},
- 	},
-+	{
-+		/*
-+		 * Acer Aspire 5738z
-+		 * Touchpad stops working in mux mode when dis- + re-enabled
-+		 * with the touchpad enable/disable toggle hotkey
-+		 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
-+		},
-+	},
- 	{ }
- };
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -70,8 +70,7 @@
+ 	};
  
+ 	pmu {
+-		compatible = "arm,cortex-a53-pmu",
+-			     "arm,armv8-pmuv3";
++		compatible = "arm,cortex-a53-pmu";
+ 		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
 
 
