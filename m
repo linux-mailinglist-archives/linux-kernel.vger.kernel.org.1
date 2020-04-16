@@ -2,151 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9443B1AC4FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0994F1AC245
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393353AbgDPOJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:09:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897190AbgDPNqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:46:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7704621744;
-        Thu, 16 Apr 2020 13:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044759;
-        bh=Gv1blBVWcIK/uI0Db68QmL3UwA9eP1qgRn/wp2cF4Pw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCrn+SPJug0/xIVSq8nJpRkGfcALfbG87qFgsruVWcDgtk4qiBX+IH8BtfiNaf82P
-         jxXmAGrTVoR58AZfGt8nq4imy2iuWnCULeQU2kivedVgDbvw3l4vky2QXUxPd/ShFS
-         4UGlLBdFcWHlEr16dlpaf92anmLEf0vXKHeg2Zic=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 050/232] gfs2: Do log_flush in gfs2_ail_empty_gl even if ail list is empty
-Date:   Thu, 16 Apr 2020 15:22:24 +0200
-Message-Id: <20200416131321.967071796@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2895107AbgDPNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2895194AbgDPNXj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:23:39 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31751C061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:22:53 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 198so5570985lfo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5ghI5WBqdl870WOE8SE5UO5Yl3nEjaDEWsi+NZM23pY=;
+        b=wL7Q0gPf1pOG5mpwohfKkO+zHQJzeFIgDMOlXgthXC9kCDgo3A7DD5pysOL3BHoeod
+         9XSu8hDaxyyuh7eoujNL7pHKDV5/1LuFvn2pDWwWZ4jc6neNJ8uKftpodRcTX67KUlsx
+         fexJIz75CoqVryD54Bsk8MrFrBwykj61Qb8mG4kNMDVQ6FRzkxckoxDdAu/ami5maQeV
+         c5Uba+Lu/rQG7nrGTdwIukGU4NevTWa2wQxjDbrZBOeeWlug+8NVsPwTpTRyofKSwXoY
+         qpK1Bzc6r7+rQqoSa1wuwKVOL3bQXczAy72GWXvV5vrM16D2iGMDg7xTX41johkrwoo/
+         JeHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5ghI5WBqdl870WOE8SE5UO5Yl3nEjaDEWsi+NZM23pY=;
+        b=YIuJ+MDEJRRr6cxVkDi7ZM3LYXFHwFM1INW3+SCC7r/hV+6N4yuXBGPANav5CL59SO
+         wHuSUCGIBGzdO+G/ygv+r2BugBn+xM2T0YM/JZT/bukip31nFT/epFeByEIsPAPV05so
+         dQl6i2tOH+40E3RchxcvcU40aNo/S7X13FnuxQoGj0YR0A8tv8/eT3ZqVYzXtWKolbt4
+         WLSmQaTsT39uLH3dIRY8zgKPEj+MLBXD1/UnBY4AblSEcM0lmmKIpHC2tAVT3vbEms+F
+         0lUWuUDFefBt+CudANlj5bwlXloAqG8SfcMV6TpDavgXwSPBYWlnFCHofGP0fbQY+dQu
+         IL4Q==
+X-Gm-Message-State: AGi0PuYtXQsxZuXFEMEpwws3kD5UCnAqlWMc1ljLAfr9OwjwX6FrMfWq
+        C1I9tZkV+m567dZTkuHFhI+GBgoIKf/6lRVJ7KbMyhPT
+X-Google-Smtp-Source: APiQypI8lGR85RQI+rU+pCf9V2Sn5n7Mvg4Ykbb7nhe56xJbWhdmIJaMewqk1OlOrMbaRXyV8387wTS3UaZFas2e/P8=
+X-Received: by 2002:ac2:5dc6:: with SMTP id x6mr6011166lfq.108.1587043371445;
+ Thu, 16 Apr 2020 06:22:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200415222312.236431-1-jannh@google.com> <20200416030232.15680-1-hdanton@sina.com>
+In-Reply-To: <20200416030232.15680-1-hdanton@sina.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 16 Apr 2020 15:22:24 +0200
+Message-ID: <CAG48ez2TPqUnDpuQOmmTw7WeMH3+zOJWG=zYzExEb8yPYQQ3uQ@mail.gmail.com>
+Subject: Re: [PATCH] vmalloc: Fix remap_vmalloc_range() bounds checks
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+On Thu, Apr 16, 2020 at 7:02 AM Hillf Danton <hdanton@sina.com> wrote:
+> On Thu, 16 Apr 2020 00:23:12 +0200 Jann Horn wrote:
+> > remap_vmalloc_range() has had various issues with the bounds checks it
+> > promises to perform ("This function checks that addr is a valid vmalloc'ed
+> > area, and that it is big enough to cover the vma") over time, e.g.:
+[...]
+> > @@ -3082,8 +3090,10 @@ int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
+> >       if (!(area->flags & (VM_USERMAP | VM_DMA_COHERENT)))
+> >               return -EINVAL;
+> >
+> The current kaddr is checked valid by finding area with it despite
+> there is room for adding change in checking its boundary in a valid
+> area.
 
-[ Upstream commit 9ff78289356af640941bbb0dd3f46af2063f0046 ]
-
-Before this patch, if gfs2_ail_empty_gl saw there was nothing on
-the ail list, it would return and not flush the log. The problem
-is that there could still be a revoke for the rgrp sitting on the
-sd_log_le_revoke list that's been recently taken off the ail list.
-But that revoke still needs to be written, and the rgrp_go_inval
-still needs to call log_flush_wait to ensure the revokes are all
-properly written to the journal before we relinquish control of
-the glock to another node. If we give the glock to another node
-before we have this knowledge, the node might crash and its journal
-replayed, in which case the missing revoke would allow the journal
-replay to replay the rgrp over top of the rgrp we already gave to
-another node, thus overwriting its changes and corrupting the
-file system.
-
-This patch makes gfs2_ail_empty_gl still call gfs2_log_flush rather
-than returning.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/gfs2/glops.c | 27 ++++++++++++++++++++++++++-
- fs/gfs2/log.c   |  2 +-
- fs/gfs2/log.h   |  1 +
- 3 files changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/fs/gfs2/glops.c b/fs/gfs2/glops.c
-index ff213690e3648..83cf64da474cb 100644
---- a/fs/gfs2/glops.c
-+++ b/fs/gfs2/glops.c
-@@ -89,8 +89,32 @@ static void gfs2_ail_empty_gl(struct gfs2_glock *gl)
- 	INIT_LIST_HEAD(&tr.tr_databuf);
- 	tr.tr_revokes = atomic_read(&gl->gl_ail_count);
- 
--	if (!tr.tr_revokes)
-+	if (!tr.tr_revokes) {
-+		bool have_revokes;
-+		bool log_in_flight;
-+
-+		/*
-+		 * We have nothing on the ail, but there could be revokes on
-+		 * the sdp revoke queue, in which case, we still want to flush
-+		 * the log and wait for it to finish.
-+		 *
-+		 * If the sdp revoke list is empty too, we might still have an
-+		 * io outstanding for writing revokes, so we should wait for
-+		 * it before returning.
-+		 *
-+		 * If none of these conditions are true, our revokes are all
-+		 * flushed and we can return.
-+		 */
-+		gfs2_log_lock(sdp);
-+		have_revokes = !list_empty(&sdp->sd_log_revokes);
-+		log_in_flight = atomic_read(&sdp->sd_log_in_flight);
-+		gfs2_log_unlock(sdp);
-+		if (have_revokes)
-+			goto flush;
-+		if (log_in_flight)
-+			log_flush_wait(sdp);
- 		return;
-+	}
- 
- 	/* A shortened, inline version of gfs2_trans_begin()
-          * tr->alloced is not set since the transaction structure is
-@@ -105,6 +129,7 @@ static void gfs2_ail_empty_gl(struct gfs2_glock *gl)
- 	__gfs2_ail_flush(gl, 0, tr.tr_revokes);
- 
- 	gfs2_trans_end(sdp);
-+flush:
- 	gfs2_log_flush(sdp, NULL, GFS2_LOG_HEAD_FLUSH_NORMAL |
- 		       GFS2_LFC_AIL_EMPTY_GL);
- }
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 2aed73666a657..47bc27d4169e6 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -513,7 +513,7 @@ static void log_pull_tail(struct gfs2_sbd *sdp, unsigned int new_tail)
- }
- 
- 
--static void log_flush_wait(struct gfs2_sbd *sdp)
-+void log_flush_wait(struct gfs2_sbd *sdp)
- {
- 	DEFINE_WAIT(wait);
- 
-diff --git a/fs/gfs2/log.h b/fs/gfs2/log.h
-index c762da4945468..52b9bf27e918f 100644
---- a/fs/gfs2/log.h
-+++ b/fs/gfs2/log.h
-@@ -73,6 +73,7 @@ extern void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl,
- 			   u32 type);
- extern void gfs2_log_commit(struct gfs2_sbd *sdp, struct gfs2_trans *trans);
- extern void gfs2_ail1_flush(struct gfs2_sbd *sdp, struct writeback_control *wbc);
-+extern void log_flush_wait(struct gfs2_sbd *sdp);
- 
- extern void gfs2_log_shutdown(struct gfs2_sbd *sdp);
- extern int gfs2_logd(void *data);
--- 
-2.20.1
-
-
-
+I have no idea what you're trying to say. Could you rephrase, please?
