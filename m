@@ -2,139 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668E01AC73C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436A51AC746
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgDPOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:52:05 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40968 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728543AbgDPOvn (ORCPT
+        id S2394668AbgDPOwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2393214AbgDPOwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:51:43 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 00BA52A21ED
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 4C63F4800F7; Thu, 16 Apr 2020 16:51:38 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Ian Ray <ian.ray@ge.com>,
-        Samu Nuutamo <samu.nuutamo@vincit.fi>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH] ARM: dts: imx53: ppd: alarm LEDs use kernel LED interface
-Date:   Thu, 16 Apr 2020 16:51:23 +0200
-Message-Id: <20200416145123.73039-1-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 16 Apr 2020 10:52:37 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673B9C061A10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:52:37 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 20so13473080qkl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HCXSa5JOI0JuZixlWcSp9z9oFtd4hHMjntnKd7qnQdg=;
+        b=D6q+HnWVLikot324F3seZu21QdKF1g0V5vDIQC90dGvb8GyvIIY9zhU6NqmwvyAEk0
+         FckWdwe17Do6/HDwHmKwADXS4xTWcxpaA0Jh2Tn/hrGasbJXGfNc9DRt9UC2Wx9Bf18w
+         jhcJi9wsgjNNJqTohK2bxvwrFZXcttFNaJAQrTkildLM0oDkbtoz26OkVcfRbU3WWOlj
+         BqcdeBgCqxJWp7BIXvuN/RwKLCtTvkIS6uxA0GcuFdIsXlUTAzYbU7GYa6nj2eVzx8aH
+         yGAukV9zW4gevdDx7bcEfam4rO8/sxjDT96zs8GY1Ew1HYpBT9WXTPh5e1xdiKqQubP1
+         qvfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HCXSa5JOI0JuZixlWcSp9z9oFtd4hHMjntnKd7qnQdg=;
+        b=cYCicKHQ2/oCR7buwKLouHNjP/u7xNnBy54TbvWQbYqrQkss+UPfjjRD5sF5Tkux7E
+         rvBpTlg3s+u6eom4w52Kze5XxZGDdBlK2dfm/toWRjJYsGBr8xcmwOcwV0VY1O0GTeWI
+         SlJA/YKK25PCuhDXaDZiU8m2SdZIovUaaSYavPCs+9dqwp0X06zMF4G5NavEu425z7j7
+         a3YQMuDucQM/QDOBqKVS8xjHqe4NWCDpt2jFpOlCiC0d0oBRzQiYXcQ5f0TtXD3NXEct
+         r5vKZu5wF8I8CaBxiXnZC75yZ2aVBzKfvjVMqgbILkIlYJjbZGkN8WEyvIhI50R2r1Vm
+         DhiA==
+X-Gm-Message-State: AGi0PuYPu1fxJIGBvWDfRd8c2IoeST2PQw35GoNtD4YaYtCSQHWPRd3S
+        sHUtZ/KDrvmTdP6dCV8xy2o+FQ==
+X-Google-Smtp-Source: APiQypLQA2/bBUlk05pIMttoOYkQG4MHIWDLVjipXM3ESI2Uz2kPuVtpZdrkk1rBc69aWjfHtIAwKw==
+X-Received: by 2002:a05:620a:1289:: with SMTP id w9mr15971965qki.263.1587048756521;
+        Thu, 16 Apr 2020 07:52:36 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id d85sm8046890qkc.99.2020.04.16.07.52.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 Apr 2020 07:52:35 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jP5sZ-0003xG-6O; Thu, 16 Apr 2020 11:52:35 -0300
+Date:   Thu, 16 Apr 2020 11:52:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nico@fluxnic.net" <nico@fluxnic.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
+Message-ID: <20200416145235.GR5100@ziepe.ca>
+References: <20200414132900.GD5100@ziepe.ca>
+ <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
+ <20200414152312.GF5100@ziepe.ca>
+ <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
+ <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
+ <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
+ <834c7606743424c64951dd2193ca15e29799bf18.camel@mellanox.com>
+ <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com>
+ <874ktj4tvn.fsf@intel.com>
+ <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Ray <ian.ray@ge.com>
+On Thu, Apr 16, 2020 at 02:38:50PM +0200, Arnd Bergmann wrote:
+> On Thu, Apr 16, 2020 at 12:17 PM Jani Nikula
+> <jani.nikula@linux.intel.com> wrote:
+> >
+> > On Thu, 16 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Thu, Apr 16, 2020 at 5:25 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
+> > >> BTW how about adding a new Kconfig option to hide the details of
+> > >> ( BAR || !BAR) ? as Jason already explained and suggested, this will
+> > >> make it easier for the users and developers to understand the actual
+> > >> meaning behind this tristate weird condition.
+> > >>
+> > >> e.g have a new keyword:
+> > >>      reach VXLAN
+> > >> which will be equivalent to:
+> > >>      depends on VXLAN && !VXLAN
+> > >
+> > > I'd love to see that, but I'm not sure what keyword is best. For your
+> > > suggestion of "reach", that would probably do the job, but I'm not
+> > > sure if this ends up being more or less confusing than what we have
+> > > today.
+> >
+> > Ah, perfect bikeshedding topic!
+> >
+> > Perhaps "uses"? If the dependency is enabled it gets used as a
+> > dependency.
+> 
+> That seems to be the best naming suggestion so far
 
-Use kernel LED interface for the alarm LEDs.
+Uses also  makes sense to me.
 
-Signed-off-by: Ian Ray <ian.ray@ge.com>
-[Rebased]
-Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
-[Rebased]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm/boot/dts/imx53-ppd.dts | 49 +++++++++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 9 deletions(-)
+> > Of course, this is all just talk until someone(tm) posts a patch
+> > actually making the change. I've looked at the kconfig tool sources
+> > before; not going to make the same mistake again.
+> 
+> Right. OTOH whoever implements it gets to pick the color of the
+> bikeshed. ;-)
 
-diff --git a/arch/arm/boot/dts/imx53-ppd.dts b/arch/arm/boot/dts/imx53-ppd.dts
-index 5ff9a179c83c..34ce41600098 100644
---- a/arch/arm/boot/dts/imx53-ppd.dts
-+++ b/arch/arm/boot/dts/imx53-ppd.dts
-@@ -176,7 +176,7 @@ pwm_bl: backlight {
- 		power-supply = <&reg_3v3_lcd>;
- 	};
- 
--	leds {
-+	leds-brightness {
- 		compatible = "pwm-leds";
- 
- 		alarm-brightness {
-@@ -185,6 +185,32 @@ alarm-brightness {
- 		};
- 	};
- 
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_alarmled_pins>;
-+
-+		alarm1 {
-+			label = "alarm:red";
-+			gpios = <&gpio7 3 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm2 {
-+			label = "alarm:yellow";
-+			gpios = <&gpio7 7 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm3 {
-+			label = "alarm:blue";
-+			gpios = <&gpio7 8 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm4 {
-+			label = "alarm:silenced";
-+			gpios = <&gpio7 13 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
- 	gpio-poweroff {
- 		compatible = "gpio-poweroff";
- 		gpios = <&gpio3 9 GPIO_ACTIVE_HIGH>;
-@@ -909,18 +935,10 @@ MX53_PAD_NANDF_CS2__GPIO6_15		0x0
- 			MX53_PAD_NANDF_CS3__GPIO6_16		0x0
- 			/* POWER_AND_BOOT_STATUS_INDICATOR */
- 			MX53_PAD_PATA_INTRQ__GPIO7_2		0x1e4
--			/* ACTIVATE_ALARM_LIGHT_RED */
--			MX53_PAD_PATA_DIOR__GPIO7_3		0x0
--			/* ACTIVATE_ALARM_LIGHT_YELLOW */
--			MX53_PAD_PATA_DA_1__GPIO7_7		0x0
--			/* ACTIVATE_ALARM_LIGHT_CYAN */
--			MX53_PAD_PATA_DA_2__GPIO7_8		0x0
- 			/* RUNNING_ON_BATTERY_INDICATOR_GREEN */
- 			MX53_PAD_GPIO_16__GPIO7_11		0x0
- 			/* BATTERY_STATUS_INDICATOR_AMBER */
- 			MX53_PAD_GPIO_17__GPIO7_12		0x0
--			/* AUDIO_ALARMS_SILENCED_INDICATOR */
--			MX53_PAD_GPIO_18__GPIO7_13		0x0
- 		>;
- 	};
- 
-@@ -1080,4 +1098,17 @@ pinctrl_usb_otg: usbotggrp {
- 			MX53_PAD_KEY_COL4__USBOH3_USBOTG_OC	0x180
- 		>;
- 	};
-+
-+	pinctrl_alarmled_pins: qmx6alarmledgrp {
-+		fsl,pins = <
-+			/* ACTIVATE_ALARM_LIGHT_RED */
-+			MX53_PAD_PATA_DIOR__GPIO7_3		0x0
-+			/* ACTIVATE_ALARM_LIGHT_YELLOW */
-+			MX53_PAD_PATA_DA_1__GPIO7_7		0x0
-+			/* ACTIVATE_ALARM_LIGHT_CYAN */
-+			MX53_PAD_PATA_DA_2__GPIO7_8		0x0
-+			/* AUDIO_ALARMS_SILENCED_INDICATOR */
-+			MX53_PAD_GPIO_18__GPIO7_13		0x0
-+		>;
-+	};
- };
--- 
-2.25.1
+I hope someone takes it up, especially now that imply, which
+apparently used to do this, doesn't any more :)
 
+Jason
