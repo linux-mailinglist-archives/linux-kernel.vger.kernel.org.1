@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD471AC58B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C7A1AC963
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393984AbgDPOVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:21:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41956 "EHLO mail.kernel.org"
+        id S2409771AbgDPPWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:22:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392497AbgDPNzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:55:22 -0400
+        id S2898528AbgDPNpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:45:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14ED221734;
-        Thu, 16 Apr 2020 13:55:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD24821974;
+        Thu, 16 Apr 2020 13:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045322;
-        bh=W2NX7RUrjeSGIxVbUNcuOSZnXLYhBIfIG0GMm8GFxD4=;
+        s=default; t=1587044740;
+        bh=QacHWWHP2ypjKPjprKD6bhOij6cFw/F0WEMxr8v+1t4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ihjbL9ASNV13k6r/s/cIiJ1Ee3F0rVPep0H0FbLYsO6a/I5QNdHj8ARB0a1PDqz9b
-         1wk5Fs0y2UO+hz1Dxr6uI+wduIiCvwNGng0wZrvc9d7RkX+JDlWYtsE0qbX4FgF92T
-         +1RLNhfxV6LOTwiiItkRjXgQneHV01+QqtF5GBSk=
+        b=E1dZAO2RP2w0C9rHYP5YJx3f0LSFpTLUisVfTe1QbNwwNU1LvCWRkcgDHn+jnBrza
+         x18scnjtCZW8306ThM4F1pUHUrV2VgZUJ6jnUd/5uVRGmLeRCfSPAaVcQo5wmjdWVJ
+         IcCQnPgOAHtUYeTENOrjbrQpxNu353hkaV4aRwU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.6 086/254] media: hantro: Read be32 words starting at every fourth byte
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 081/232] ALSA: hda/realtek - a fake key event is triggered by running shutup
 Date:   Thu, 16 Apr 2020 15:22:55 +0200
-Message-Id: <20200416131336.676371735@linuxfoundation.org>
+Message-Id: <20200416131325.247882068@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,72 +43,248 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit e34bca49e4953e5c2afc0425303199a5fd515f82 upstream.
+commit 476c02e0b4fd9071d158f6a1a1dfea1d36ee0ffd upstream.
 
-Since (luma/chroma)_qtable is an array of unsigned char, indexing it
-returns consecutive byte locations, but we are supposed to read the arrays
-in four-byte words. Consequently, we should be pointing
-get_unaligned_be32() at consecutive word locations instead.
+On the Lenovo X1C7 machines, after we plug the headset, the rt_resume()
+and rt_suspend() of the codec driver will be called periodically, the
+driver can't stay in the rt_suspend state even users doen't use the
+sound card.
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Tested-by: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: stable@vger.kernel.org
-Fixes: 00c30f42c7595f "media: rockchip vpu: remove some unused vars"
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Through debugging, I found  when running rt_suspend(), it will call
+alc225_shutup(), in this function, it will change 3k pull down control
+by alc_update_coef_idx(codec, 0x4a, 0, 3 << 10), this will trigger a
+fake key event and that event will resume the codec, when codec
+suspend agin, it will trigger the fake key event one more time, this
+process will repeat.
+
+If disable the key event before changing the pull down control, it
+will not trigger fake key event. It also needs to restore the pull
+down control and re-enable the key event, otherwise the system can't
+get key event when codec is in rt_suspend state.
+
+Also move some functions ahead of alc225_shutup(), this can save the
+function declaration.
+
+Fixes: 76f7dec08fd6 (ALSA: hda/realtek - Add Headset Button supported for ThinkPad X1)
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20200329082018.20486-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/media/hantro/hantro_h1_jpeg_enc.c     |    9 +++++++--
- drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c |    9 +++++++--
- 2 files changed, 14 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_realtek.c |  170 ++++++++++++++++++++++++++----------------
+ 1 file changed, 107 insertions(+), 63 deletions(-)
 
---- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-+++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-@@ -67,12 +67,17 @@ hantro_h1_jpeg_enc_set_qtable(struct han
- 			      unsigned char *chroma_qtable)
- {
- 	u32 reg, i;
-+	__be32 *luma_qtable_p;
-+	__be32 *chroma_qtable_p;
-+
-+	luma_qtable_p = (__be32 *)luma_qtable;
-+	chroma_qtable_p = (__be32 *)chroma_qtable;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -107,6 +107,7 @@ struct alc_spec {
+ 	unsigned int done_hp_init:1;
+ 	unsigned int no_shutup_pins:1;
+ 	unsigned int ultra_low_power:1;
++	unsigned int has_hs_key:1;
  
- 	for (i = 0; i < H1_JPEG_QUANT_TABLE_COUNT; i++) {
--		reg = get_unaligned_be32(&luma_qtable[i]);
-+		reg = get_unaligned_be32(&luma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_LUMA_QUAT(i));
- 
--		reg = get_unaligned_be32(&chroma_qtable[i]);
-+		reg = get_unaligned_be32(&chroma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_CHROMA_QUAT(i));
- 	}
+ 	/* for PLL fix */
+ 	hda_nid_t pll_nid;
+@@ -2982,6 +2983,107 @@ static int alc269_parse_auto_config(stru
+ 	return alc_parse_auto_config(codec, alc269_ignore, ssids);
  }
---- a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
-+++ b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
-@@ -98,12 +98,17 @@ rk3399_vpu_jpeg_enc_set_qtable(struct ha
- 			       unsigned char *chroma_qtable)
- {
- 	u32 reg, i;
-+	__be32 *luma_qtable_p;
-+	__be32 *chroma_qtable_p;
+ 
++static const struct hda_jack_keymap alc_headset_btn_keymap[] = {
++	{ SND_JACK_BTN_0, KEY_PLAYPAUSE },
++	{ SND_JACK_BTN_1, KEY_VOICECOMMAND },
++	{ SND_JACK_BTN_2, KEY_VOLUMEUP },
++	{ SND_JACK_BTN_3, KEY_VOLUMEDOWN },
++	{}
++};
 +
-+	luma_qtable_p = (__be32 *)luma_qtable;
-+	chroma_qtable_p = (__be32 *)chroma_qtable;
++static void alc_headset_btn_callback(struct hda_codec *codec,
++				     struct hda_jack_callback *jack)
++{
++	int report = 0;
++
++	if (jack->unsol_res & (7 << 13))
++		report |= SND_JACK_BTN_0;
++
++	if (jack->unsol_res  & (1 << 16 | 3 << 8))
++		report |= SND_JACK_BTN_1;
++
++	/* Volume up key */
++	if (jack->unsol_res & (7 << 23))
++		report |= SND_JACK_BTN_2;
++
++	/* Volume down key */
++	if (jack->unsol_res & (7 << 10))
++		report |= SND_JACK_BTN_3;
++
++	jack->jack->button_state = report;
++}
++
++static void alc_disable_headset_jack_key(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (!spec->has_hs_key)
++		return;
++
++	switch (codec->core.vendor_id) {
++	case 0x10ec0215:
++	case 0x10ec0225:
++	case 0x10ec0285:
++	case 0x10ec0295:
++	case 0x10ec0289:
++	case 0x10ec0299:
++		alc_write_coef_idx(codec, 0x48, 0x0);
++		alc_update_coef_idx(codec, 0x49, 0x0045, 0x0);
++		alc_update_coef_idx(codec, 0x44, 0x0045 << 8, 0x0);
++		break;
++	case 0x10ec0236:
++	case 0x10ec0256:
++		alc_write_coef_idx(codec, 0x48, 0x0);
++		alc_update_coef_idx(codec, 0x49, 0x0045, 0x0);
++		break;
++	}
++}
++
++static void alc_enable_headset_jack_key(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (!spec->has_hs_key)
++		return;
++
++	switch (codec->core.vendor_id) {
++	case 0x10ec0215:
++	case 0x10ec0225:
++	case 0x10ec0285:
++	case 0x10ec0295:
++	case 0x10ec0289:
++	case 0x10ec0299:
++		alc_write_coef_idx(codec, 0x48, 0xd011);
++		alc_update_coef_idx(codec, 0x49, 0x007f, 0x0045);
++		alc_update_coef_idx(codec, 0x44, 0x007f << 8, 0x0045 << 8);
++		break;
++	case 0x10ec0236:
++	case 0x10ec0256:
++		alc_write_coef_idx(codec, 0x48, 0xd011);
++		alc_update_coef_idx(codec, 0x49, 0x007f, 0x0045);
++		break;
++	}
++}
++
++static void alc_fixup_headset_jack(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		spec->has_hs_key = 1;
++		snd_hda_jack_detect_enable_callback(codec, 0x55,
++						    alc_headset_btn_callback);
++		snd_hda_jack_add_kctl(codec, 0x55, "Headset Jack", false,
++				      SND_JACK_HEADSET, alc_headset_btn_keymap);
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		alc_enable_headset_jack_key(codec);
++		break;
++	}
++}
++
+ static void alc269vb_toggle_power_output(struct hda_codec *codec, int power_up)
+ {
+ 	alc_update_coef_idx(codec, 0x04, 1 << 11, power_up ? (1 << 11) : 0);
+@@ -3372,6 +3474,8 @@ static void alc225_shutup(struct hda_cod
  
- 	for (i = 0; i < VEPU_JPEG_QUANT_TABLE_COUNT; i++) {
--		reg = get_unaligned_be32(&luma_qtable[i]);
-+		reg = get_unaligned_be32(&luma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_LUMA_QUAT(i));
+ 	if (!hp_pin)
+ 		hp_pin = 0x21;
++
++	alc_disable_headset_jack_key(codec);
+ 	/* 3k pull low control for Headset jack. */
+ 	alc_update_coef_idx(codec, 0x4a, 0, 3 << 10);
  
--		reg = get_unaligned_be32(&chroma_qtable[i]);
-+		reg = get_unaligned_be32(&chroma_qtable_p[i]);
- 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_CHROMA_QUAT(i));
+@@ -3411,6 +3515,9 @@ static void alc225_shutup(struct hda_cod
+ 		alc_update_coef_idx(codec, 0x4a, 3<<4, 2<<4);
+ 		msleep(30);
  	}
++
++	alc_update_coef_idx(codec, 0x4a, 3 << 10, 0);
++	alc_enable_headset_jack_key(codec);
  }
+ 
+ static void alc_default_init(struct hda_codec *codec)
+@@ -5668,69 +5775,6 @@ static void alc285_fixup_invalidate_dacs
+ 	snd_hda_override_wcaps(codec, 0x03, 0);
+ }
+ 
+-static const struct hda_jack_keymap alc_headset_btn_keymap[] = {
+-	{ SND_JACK_BTN_0, KEY_PLAYPAUSE },
+-	{ SND_JACK_BTN_1, KEY_VOICECOMMAND },
+-	{ SND_JACK_BTN_2, KEY_VOLUMEUP },
+-	{ SND_JACK_BTN_3, KEY_VOLUMEDOWN },
+-	{}
+-};
+-
+-static void alc_headset_btn_callback(struct hda_codec *codec,
+-				     struct hda_jack_callback *jack)
+-{
+-	int report = 0;
+-
+-	if (jack->unsol_res & (7 << 13))
+-		report |= SND_JACK_BTN_0;
+-
+-	if (jack->unsol_res  & (1 << 16 | 3 << 8))
+-		report |= SND_JACK_BTN_1;
+-
+-	/* Volume up key */
+-	if (jack->unsol_res & (7 << 23))
+-		report |= SND_JACK_BTN_2;
+-
+-	/* Volume down key */
+-	if (jack->unsol_res & (7 << 10))
+-		report |= SND_JACK_BTN_3;
+-
+-	jack->jack->button_state = report;
+-}
+-
+-static void alc_fixup_headset_jack(struct hda_codec *codec,
+-				    const struct hda_fixup *fix, int action)
+-{
+-
+-	switch (action) {
+-	case HDA_FIXUP_ACT_PRE_PROBE:
+-		snd_hda_jack_detect_enable_callback(codec, 0x55,
+-						    alc_headset_btn_callback);
+-		snd_hda_jack_add_kctl(codec, 0x55, "Headset Jack", false,
+-				      SND_JACK_HEADSET, alc_headset_btn_keymap);
+-		break;
+-	case HDA_FIXUP_ACT_INIT:
+-		switch (codec->core.vendor_id) {
+-		case 0x10ec0215:
+-		case 0x10ec0225:
+-		case 0x10ec0285:
+-		case 0x10ec0295:
+-		case 0x10ec0289:
+-		case 0x10ec0299:
+-			alc_write_coef_idx(codec, 0x48, 0xd011);
+-			alc_update_coef_idx(codec, 0x49, 0x007f, 0x0045);
+-			alc_update_coef_idx(codec, 0x44, 0x007f << 8, 0x0045 << 8);
+-			break;
+-		case 0x10ec0236:
+-		case 0x10ec0256:
+-			alc_write_coef_idx(codec, 0x48, 0xd011);
+-			alc_update_coef_idx(codec, 0x49, 0x007f, 0x0045);
+-			break;
+-		}
+-		break;
+-	}
+-}
+-
+ static void alc295_fixup_chromebook(struct hda_codec *codec,
+ 				    const struct hda_fixup *fix, int action)
+ {
 
 
