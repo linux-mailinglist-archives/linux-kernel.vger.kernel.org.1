@@ -2,152 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE331ABE7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C1B1ABEE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505618AbgDPKxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:53:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28836 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2505437AbgDPKuC (ORCPT
+        id S2506259AbgDPLLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506032AbgDPLEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:50:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587034201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nfpjA4Z9KH1cEGlN2CGAspzLvogXdOWrRg0QkkSUUkM=;
-        b=byFJYkqoanIv3EavmLc4aAPFt1A+hqFclzGGREfiMqPRqReY4iU6ucVBOiNC01nndbmfYI
-        6+nFw70MLeKy30cN7GQa2tLoe62Nmj3aQbKTfZXUv0+JM1W1/exRhuwPo5wS+1D8ISdQg2
-        aTXhZnQfPRPl3CJAm/XofZukZVWSZcw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-uk7XGjooNvuOMtWoppfoxQ-1; Thu, 16 Apr 2020 06:47:19 -0400
-X-MC-Unique: uk7XGjooNvuOMtWoppfoxQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0EC5D8018A2;
-        Thu, 16 Apr 2020 10:47:18 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-9.ams2.redhat.com [10.36.114.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CFC641036D03;
-        Thu, 16 Apr 2020 10:47:15 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH RFC 2/2] mm/memory_hotplug: handle memblocks only with CONFIG_ARCH_KEEP_MEMBLOCK
-Date:   Thu, 16 Apr 2020 12:47:07 +0200
-Message-Id: <20200416104707.20219-3-david@redhat.com>
-In-Reply-To: <20200416104707.20219-1-david@redhat.com>
-References: <20200416104707.20219-1-david@redhat.com>
+        Thu, 16 Apr 2020 07:04:47 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926FDC03C1A9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uT2ucy3qx5aL2WVYyVl5nm3yhCGAKoXW4NTEdyzjdRI=; b=yhehKYnstqda4PzxJiK7i/0lWu
+        FF4DXLsczqcjq6INSj8GeFF/bI1by+iDATbLPlhasSlC/i2I1U979VDslg9hen6Upv4wpp8krz1dV
+        +Y6thdzQnF+5m3sKbJCGZYdgwe9zXByT161HaFQp20VHeOiNOAcRohajcWBxATtD/DIEpBF46pGh5
+        q4CQIZXdqBY/PwC2QeMWQ1SDg5PaqouC24SXFtL6t6g/RUTLtx7+M3F2qJnxhoCL+kvwZc/ZV4fSc
+        UgiulBR+vG07XElyQmY3D2ghaMHRDQiZ0vMd2RITGXIRdAnnXk29KDm79Fv6sUMs7Kzx0qV556R8b
+        G7tat/MA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP23N-0005D0-HG; Thu, 16 Apr 2020 10:47:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13440307005;
+        Thu, 16 Apr 2020 12:47:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E597B2B0DC738; Thu, 16 Apr 2020 12:47:25 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 12:47:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 6/9] sched: Kill select_task_rq()'s sd_flag parameter
+Message-ID: <20200416104725.GM20730@hirez.programming.kicks-ass.net>
+References: <20200415210512.805-1-valentin.schneider@arm.com>
+ <20200415210512.805-7-valentin.schneider@arm.com>
+ <CAKfTPtA5-S_EyzZMDMr9SuVQmWZNdLXOVSLMAMTD+6Bow4jJBQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtA5-S_EyzZMDMr9SuVQmWZNdLXOVSLMAMTD+6Bow4jJBQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The comment in add_memory_resource() is stale: hotadd_new_pgdat() will
-no longer call get_pfn_range_for_nid(), as a hotadded pgdat will simply
-span no pages at all, until memory is moved to the zone/node via
-move_pfn_range_to_zone() - e.g., when onlining memory blocks.
+On Thu, Apr 16, 2020 at 09:42:36AM +0200, Vincent Guittot wrote:
+> On Wed, 15 Apr 2020 at 23:05, Valentin Schneider
+> > @@ -6622,13 +6622,25 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+> >   * preempt must be disabled.
+> >   */
+> >  static int
+> > +select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+> >  {
+> > +       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
+> >         struct sched_domain *tmp, *sd = NULL;
+> >         int cpu = smp_processor_id();
+> >         int new_cpu = prev_cpu;
+> >         int want_affine = 0;
+> > -       int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
+> > +       int sd_flag;
+> > +
+> > +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
+> 
+> You remove a function parameter, which was directly set with the right
+> flag, but then you add a switch case to recreate this sd_flag
+> internally. Not sure we can say that it's real benefit
+> 
+> > +       case WF_TTWU:
+> > +               sd_flag = SD_BALANCE_WAKE;
+> > +               break;
+> > +       case WF_FORK:
+> > +               sd_flag = SD_BALANCE_FORK;
+> > +               break;
+> > +       default:
+> > +               sd_flag = SD_BALANCE_EXEC;
+> > +       }
 
-The only archs that care about memblocks for hotplugged memory (either
-for iterating over all system RAM or testing for memory validity) are
-arm64, s390x, and powerpc - due to CONFIG_ARCH_KEEP_MEMBLOCK. Without
-CONFIG_ARCH_KEEP_MEMBLOCK, we can simply stop messing with memblocks.
+Agreed, that's a bit yuck, how about something like so instead:
 
-For s390x, it seems to be fairly easy to avoid CONFIG_ARCH_KEEP_MEMBLOCK.
-arm64 could rework most code (esp., pfn_valid(), valid_phys_addr_range()
-and kexec_file_load()) to not require memblocks for hotplugged
-memory. E.g., as hotplugged memory has no holes and can be identified
-using !early_section(), arm64's variant of pfn_valid() could be reworked
-fairly easily to not require memblocks for hotadded memory. powerpc might
-be more involed.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/Kconfig          |  3 +++
- mm/memory_hotplug.c | 13 +++++++------
- 2 files changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/mm/Kconfig b/mm/Kconfig
-index c1acc34c1c35..a063fd9cdff4 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -136,6 +136,9 @@ config HAVE_FAST_GUP
- 	depends on MMU
- 	bool
-=20
-+# Don't discard allocated memory used to track "memory" and "reserved" m=
-emblocks
-+# after early boot, so it can still be used to test for validity of memo=
-ry.
-+# Also, memblocks are updated with memory hot(un)plug.
- config ARCH_KEEP_MEMBLOCK
- 	bool
-=20
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 9b15ce465be2..104285ee9ae8 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1020,13 +1020,9 @@ int __ref add_memory_resource(int nid, struct reso=
-urce *res)
-=20
- 	mem_hotplug_begin();
-=20
--	/*
--	 * Add new range to memblock so that when hotadd_new_pgdat() is called
--	 * to allocate new pgdat, get_pfn_range_for_nid() will be able to find
--	 * this new range and calculate total pages correctly.  The range will
--	 * be removed at hot-remove time.
--	 */
-+#ifdef CONFIG_ARCH_KEEP_MEMBLOCK
- 	memblock_add_node(start, size, nid);
-+#endif
-=20
- 	ret =3D __try_online_node(nid, false);
- 	if (ret < 0)
-@@ -1075,7 +1071,9 @@ int __ref add_memory_resource(int nid, struct resou=
-rce *res)
- 	/* rollback pgdat allocation and others */
- 	if (new_node)
- 		rollback_node_hotadd(nid);
-+#ifdef CONFIG_ARCH_KEEP_MEMBLOCK
- 	memblock_remove(start, size);
-+#endif
- 	mem_hotplug_done();
- 	return ret;
- }
-@@ -1751,8 +1749,11 @@ static int __ref try_remove_memory(int nid, u64 st=
-art, u64 size)
- 	mem_hotplug_begin();
-=20
- 	arch_remove_memory(nid, start, size, NULL);
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -11,10 +11,12 @@
+  */
+ #ifdef CONFIG_SMP
+ 
++/* First nibble of SD_flag is shared with WF_flag */
+ #define SD_BALANCE_NEWIDLE	0x0001	/* Balance when about to become idle */
+ #define SD_BALANCE_EXEC		0x0002	/* Balance on exec */
+ #define SD_BALANCE_FORK		0x0004	/* Balance on fork, clone */
+ #define SD_BALANCE_WAKE		0x0008  /* Balance on wakeup */
 +
-+#ifdef CONFIG_ARCH_KEEP_MEMBLOCK
- 	memblock_free(start, size);
- 	memblock_remove(start, size);
-+#endif
- 	__release_memory_resource(start, size);
-=20
- 	try_offline_node(nid);
---=20
-2.25.1
-
+ #define SD_WAKE_AFFINE		0x0010	/* Wake task to waking CPU */
+ #define SD_ASYM_CPUCAPACITY	0x0020  /* Domain members have different CPU capacities */
+ #define SD_SHARE_CPUCAPACITY	0x0040	/* Domain members share CPU capacity */
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6635,16 +6635,8 @@ select_task_rq_fair(struct task_struct *
+ 	int want_affine = 0;
+ 	int sd_flag;
+ 
+-	switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
+-	case WF_TTWU:
+-		sd_flag = SD_BALANCE_WAKE;
+-		break;
+-	case WF_FORK:
+-		sd_flag = SD_BALANCE_FORK;
+-		break;
+-	default:
+-		sd_flag = SD_BALANCE_EXEC;
+-	}
++	/* SD_flags and WF_flags share the first nibble */
++	sd_flag = wake_flags & 0xf;
+ 
+ 	if (sd_flag & SD_BALANCE_WAKE) {
+ 		record_wakee(p);
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1685,11 +1685,12 @@ static inline int task_on_rq_migrating(s
+ /*
+  * Wake flags
+  */
+-#define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
+-#define WF_TTWU                 0x02            /* Regular task wakeup */
+-#define WF_FORK			0x04		/* Child wakeup after fork */
+-#define WF_EXEC			0x08		/* "Fake" wakeup at exec */
+-#define WF_MIGRATED		0x10		/* Internal use, task got migrated */
++#define WF_EXEC			0x02	/* SD_BALANCE_EXEC */
++#define WF_FORK			0x04	/* SD_BALANCE_FORK */
++#define WF_TTWU			0x08	/* SD_BALANCE_WAKE */
++
++#define WF_SYNC			0x10	/* Waker goes to sleep after wakeup */
++#define WF_MIGRATED		0x20	/* Internal use, task got migrated */
+ 
+ /*
+  * To aid in avoiding the subversion of "niceness" due to uneven distribution
