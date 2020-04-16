@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55FC1ABD5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D221ABD46
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504383AbgDPJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:53:14 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35600 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503852AbgDPJxD (ORCPT
+        id S2504218AbgDPJvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504038AbgDPJuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:53:03 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03G9mLw6079677;
-        Thu, 16 Apr 2020 09:52:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=ORNkJh0El/FiFaNrBZ35C8htJjikUv/QO8+cVqgjYns=;
- b=TMxuolbgxTh7AfZ1jZZNYK/K8B4EvLKcEvSHnOoKKE3pd1UpDP4SogboxBc+mCqK7hZY
- 70Ou+a/w2oeJ4XEf8CoIOK8aEmlQWrm1qaJFgp9rBKNNlhJYoZvru1FAtbcMpcO2lHLR
- jxYqtLx5vQ7eOy/ZKyzQkYa48fJQEJUf4bmDBNPRLdWTtJZeXgiZWuQj1HEqH3b4QjhA
- NI/dNbj5qNPYvvpA97aypERJf8lY7k112u8pn1YL2OU1CWz9xBLn5UztR93BPKzOjj9i
- IrdT4l/61lPvXDqZO+UZQybyNvoHFPloHpVc6oDTm8pmQ4wotBQSCgNiDnRLjkT+ovmn hA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 30e0aa5x1b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 09:52:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03G9l5h3106098;
-        Thu, 16 Apr 2020 09:50:30 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30ememjd48-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 09:50:30 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03G9oAKA028024;
-        Thu, 16 Apr 2020 09:50:10 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Apr 2020 02:50:10 -0700
-Date:   Thu, 16 Apr 2020 12:49:56 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>
-Cc:     devel@driverdev.osuosl.org, nd@arm.com,
-        Todd Kjos <tkjos@android.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        john.stultz@linaro.org, anders.pedersen@arm.com,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Darren Hart (VMware)" <dvhart@infradead.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] staging: android: ion: Skip sync if not mapped
-Message-ID: <20200416094955.GM1163@kadam>
-References: <20200414134629.54567-1-orjan.eide@arm.com>
- <20200414141849.55654-1-orjan.eide@arm.com>
+        Thu, 16 Apr 2020 05:50:54 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01985C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:50:53 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:fd83:81bb:c1d7:433d])
+        by michel.telenet-ops.be with bizsmtp
+        id TMqr220064dKHqf06Mqrzy; Thu, 16 Apr 2020 11:50:51 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jP1AZ-00013K-2g; Thu, 16 Apr 2020 11:50:51 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jP1AZ-0003N5-0d; Thu, 16 Apr 2020 11:50:51 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] virtchnl: Add missing explicit padding to structures
+Date:   Thu, 16 Apr 2020 11:50:49 +0200
+Message-Id: <20200416095049.12917-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200414141849.55654-1-orjan.eide@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004160067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- impostorscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160067
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 04:18:47PM +0200, �rjan Eide wrote:
-> @@ -238,6 +242,10 @@ static void ion_unmap_dma_buf(struct dma_buf_attachment *attachment,
->  			      struct sg_table *table,
->  			      enum dma_data_direction direction)
->  {
-> +	struct ion_dma_buf_attachment *a = attachment->priv;
-> +
-> +	a->mapped = false;
+On e.g. m68k, the alignment of 32-bit values is only 2 bytes, leading
+to:
 
-Possibly a stupid question but here we're not holding a lock.  Is
-concurrency an issue?
+    ./include/linux/avf/virtchnl.h:147:36: warning: division by zero [-Wdiv-by-zero]
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+					^
+    ./include/linux/avf/virtchnl.h:577:1: note: in expansion of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+     VIRTCHNL_CHECK_STRUCT_LEN(272, virtchnl_filter);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:577:32: error: enumerator value for ‘virtchnl_static_assert_virtchnl_filter’ is not an integer constant
+     VIRTCHNL_CHECK_STRUCT_LEN(272, virtchnl_filter);
+				    ^~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:147:53: note: in definition of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+							 ^
+    ./include/linux/avf/virtchnl.h:147:36: warning: division by zero [-Wdiv-by-zero]
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+					^
+    ./include/linux/avf/virtchnl.h:619:1: note: in expansion of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+     VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_pf_event);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:619:31: error: enumerator value for ‘virtchnl_static_assert_virtchnl_pf_event’ is not an integer constant
+     VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_pf_event);
+				   ^~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:147:53: note: in definition of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+							 ^
+    ./include/linux/avf/virtchnl.h:147:36: warning: division by zero [-Wdiv-by-zero]
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+					^
+    ./include/linux/avf/virtchnl.h:640:1: note: in expansion of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+     VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_iwarp_qv_info);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:640:31: error: enumerator value for ‘virtchnl_static_assert_virtchnl_iwarp_qv_info’ is not an integer constant
+     VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_iwarp_qv_info);
+				   ^~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:147:53: note: in definition of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+							 ^
+    ./include/linux/avf/virtchnl.h:147:36: warning: division by zero [-Wdiv-by-zero]
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+					^
+    ./include/linux/avf/virtchnl.h:647:1: note: in expansion of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+     VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_iwarp_qvlist_info);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:647:31: error: enumerator value for ‘virtchnl_static_assert_virtchnl_iwarp_qvlist_info’ is not an integer constant
+     VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_iwarp_qvlist_info);
+				   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/avf/virtchnl.h:147:53: note: in definition of macro ‘VIRTCHNL_CHECK_STRUCT_LEN’
+      { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+							 ^
 
-> +
->  	dma_unmap_sg(attachment->dev, table->sgl, table->nents, direction);
->  }
->  
-> @@ -297,6 +305,8 @@ static int ion_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
->  
->  	mutex_lock(&buffer->lock);
->  	list_for_each_entry(a, &buffer->attachments, list) {
-> +		if (!a->mapped)
-> +			continue;
->  		dma_sync_sg_for_cpu(a->dev, a->table->sgl, a->table->nents,
->  				    direction);
->  	}
+Fix this by adding explicit padding to structures with holes.
 
-regards,
-dan carpenter
+Reported-by: noreply@ellerman.id.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Exposed by the "select PCI" in commit 4be5e8648b0c287a ("media: move CEC
+platform drivers to a separate directory").
+---
+ include/linux/avf/virtchnl.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index ca956b672ac0f759..40bad71865ea7628 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -476,6 +476,7 @@ struct virtchnl_rss_key {
+ 	u16 vsi_id;
+ 	u16 key_len;
+ 	u8 key[1];         /* RSS hash key, packed bytes */
++	u8 pad[1];
+ };
+ 
+ VIRTCHNL_CHECK_STRUCT_LEN(6, virtchnl_rss_key);
+@@ -484,6 +485,7 @@ struct virtchnl_rss_lut {
+ 	u16 vsi_id;
+ 	u16 lut_entries;
+ 	u8 lut[1];        /* RSS lookup table */
++	u8 pad[1];
+ };
+ 
+ VIRTCHNL_CHECK_STRUCT_LEN(6, virtchnl_rss_lut);
+@@ -572,6 +574,7 @@ struct virtchnl_filter {
+ 	enum	virtchnl_action action;
+ 	u32	action_meta;
+ 	u8	field_flags;
++	u8	pad[3];
+ };
+ 
+ VIRTCHNL_CHECK_STRUCT_LEN(272, virtchnl_filter);
+@@ -610,6 +613,7 @@ struct virtchnl_pf_event {
+ 			/* link_speed provided in Mbps */
+ 			u32 link_speed;
+ 			u8 link_status;
++			u8 pad[3];
+ 		} link_event_adv;
+ 	} event_data;
+ 
+@@ -635,6 +639,7 @@ struct virtchnl_iwarp_qv_info {
+ 	u16 ceq_idx;
+ 	u16 aeq_idx;
+ 	u8 itr_idx;
++	u8 pad[3];
+ };
+ 
+ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_iwarp_qv_info);
+-- 
+2.17.1
 
