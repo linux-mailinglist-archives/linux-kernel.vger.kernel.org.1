@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A7E1AC6B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A011AC542
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394542AbgDPOnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:43:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47472 "EHLO mail.kernel.org"
+        id S1729041AbgDPOOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:14:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392606AbgDPOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:00:23 -0400
+        id S2438768AbgDPNuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAF5A20786;
-        Thu, 16 Apr 2020 14:00:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA95E2063A;
+        Thu, 16 Apr 2020 13:50:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045623;
-        bh=iGAvezQIXpomV+U2h6LGXS5TodfnQCAsqZ5z6i5QdVU=;
+        s=default; t=1587045043;
+        bh=i3zx+4WLCt2PaKtbV9eh4PlRhi+Y/XRaPc37JJ0qiGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sgd9EQe6dUZaZLzFHKJGznnK8YBtR7DahVcw35bgZE0vdjFNeHntuVRNeZ29vUWH7
-         iuuK59MSEN+n9DSzgfcJbg4PCkcrUW3UZrVhdjXH1x4nRFa66n0gRNuSqwwUj1psF7
-         ze4FpMWTMIusrlSADZYCpRAvLKD9upPUCR+kZ4ds=
+        b=X7UrAVG2HGTfgcuEuxUFtR/IhTIepIkZoXZS08ccEd3J0s5BNM0mQN9QIYtQ/TB3O
+         sEC45WpOK+AUIEebk+S5ZuSPS4r2esdbf31ffQfZyKdXDKvXssJuY/IYEbIBeC3mad
+         1kEnYf1vrUFdU8nB4PdPbVG2wZGkpc4BzenpLS1k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.cz>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.6 210/254] powerpc/pseries: Avoid NULL pointer dereference when drmem is unavailable
+        stable@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>,
+        Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
+        openipmi-developer@lists.sourceforge.net,
+        Corey Minyard <cminyard@mvista.com>
+Subject: [PATCH 5.4 205/232] ipmi: fix hung processes in __get_guid()
 Date:   Thu, 16 Apr 2020 15:24:59 +0200
-Message-Id: <20200416131352.322391634@linuxfoundation.org>
+Message-Id: <20200416131340.952051016@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,101 +45,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Libor Pechacek <lpechacek@suse.cz>
+From: Wen Yang <wenyang@linux.alibaba.com>
 
-commit a83836dbc53e96f13fec248ecc201d18e1e3111d upstream.
+commit 32830a0534700f86366f371b150b17f0f0d140d7 upstream.
 
-In guests without hotplugagble memory drmem structure is only zero
-initialized. Trying to manipulate DLPAR parameters results in a crash.
+The wait_event() function is used to detect command completion.
+When send_guid_cmd() returns an error, smi_send() has not been
+called to send data. Therefore, wait_event() should not be used
+on the error path, otherwise it will cause the following warning:
 
-  $ echo "memory add count 1" > /sys/kernel/dlpar
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-  ...
-  NIP:  c0000000000ff294 LR: c0000000000ff248 CTR: 0000000000000000
-  REGS: c0000000fb9d3880 TRAP: 0300   Tainted: G            E      (5.5.0-rc6-2-default)
-  MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28242428  XER: 20000000
-  CFAR: c0000000009a6c10 DAR: 0000000000000010 DSISR: 40000000 IRQMASK: 0
-  ...
-  NIP dlpar_memory+0x6e4/0xd00
-  LR  dlpar_memory+0x698/0xd00
-  Call Trace:
-    dlpar_memory+0x698/0xd00 (unreliable)
-    handle_dlpar_errorlog+0xc0/0x190
-    dlpar_store+0x198/0x4a0
-    kobj_attr_store+0x30/0x50
-    sysfs_kf_write+0x64/0x90
-    kernfs_fop_write+0x1b0/0x290
-    __vfs_write+0x3c/0x70
-    vfs_write+0xd0/0x260
-    ksys_write+0xdc/0x130
-    system_call+0x5c/0x68
+[ 1361.588808] systemd-udevd   D    0  1501   1436 0x00000004
+[ 1361.588813]  ffff883f4b1298c0 0000000000000000 ffff883f4b188000 ffff887f7e3d9f40
+[ 1361.677952]  ffff887f64bd4280 ffffc90037297a68 ffffffff8173ca3b ffffc90000000010
+[ 1361.767077]  00ffc90037297ad0 ffff887f7e3d9f40 0000000000000286 ffff883f4b188000
+[ 1361.856199] Call Trace:
+[ 1361.885578]  [<ffffffff8173ca3b>] ? __schedule+0x23b/0x780
+[ 1361.951406]  [<ffffffff8173cfb6>] schedule+0x36/0x80
+[ 1362.010979]  [<ffffffffa071f178>] get_guid+0x118/0x150 [ipmi_msghandler]
+[ 1362.091281]  [<ffffffff810d5350>] ? prepare_to_wait_event+0x100/0x100
+[ 1362.168533]  [<ffffffffa071f755>] ipmi_register_smi+0x405/0x940 [ipmi_msghandler]
+[ 1362.258337]  [<ffffffffa0230ae9>] try_smi_init+0x529/0x950 [ipmi_si]
+[ 1362.334521]  [<ffffffffa022f350>] ? std_irq_setup+0xd0/0xd0 [ipmi_si]
+[ 1362.411701]  [<ffffffffa0232bd2>] init_ipmi_si+0x492/0x9e0 [ipmi_si]
+[ 1362.487917]  [<ffffffffa0232740>] ? ipmi_pci_probe+0x280/0x280 [ipmi_si]
+[ 1362.568219]  [<ffffffff810021a0>] do_one_initcall+0x50/0x180
+[ 1362.636109]  [<ffffffff812231b2>] ? kmem_cache_alloc_trace+0x142/0x190
+[ 1362.714330]  [<ffffffff811b2ae1>] do_init_module+0x5f/0x200
+[ 1362.781208]  [<ffffffff81123ca8>] load_module+0x1898/0x1de0
+[ 1362.848069]  [<ffffffff811202e0>] ? __symbol_put+0x60/0x60
+[ 1362.913886]  [<ffffffff8130696b>] ? security_kernel_post_read_file+0x6b/0x80
+[ 1362.998514]  [<ffffffff81124465>] SYSC_finit_module+0xe5/0x120
+[ 1363.068463]  [<ffffffff81124465>] ? SYSC_finit_module+0xe5/0x120
+[ 1363.140513]  [<ffffffff811244be>] SyS_finit_module+0xe/0x10
+[ 1363.207364]  [<ffffffff81003c04>] do_syscall_64+0x74/0x180
 
-Taking closer look at the code, I can see that for_each_drmem_lmb is a
-macro expanding into `for (lmb = &drmem_info->lmbs[0]; lmb <=
-&drmem_info->lmbs[drmem_info->n_lmbs - 1]; lmb++)`. When drmem_info->lmbs
-is NULL, the loop would iterate through the whole address range if it
-weren't stopped by the NULL pointer dereference on the next line.
-
-This patch aligns for_each_drmem_lmb and for_each_drmem_lmb_in_range
-macro behavior with the common C semantics, where the end marker does
-not belong to the scanned range, and alters get_lmb_range() semantics.
-As a side effect, the wraparound observed in the crash is prevented.
-
-Fixes: 6c6ea53725b3 ("powerpc/mm: Separate ibm, dynamic-memory data from DT format")
-Cc: stable@vger.kernel.org # v4.16+
-Signed-off-by: Libor Pechacek <lpechacek@suse.cz>
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200131132829.10281-1-msuchanek@suse.de
+Fixes: 50c812b2b951 ("[PATCH] ipmi: add full sysfs support")
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Corey Minyard <minyard@acm.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: openipmi-developer@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org # 2.6.17-
+Message-Id: <20200403090408.58745-1-wenyang@linux.alibaba.com>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/drmem.h                |    4 ++--
- arch/powerpc/platforms/pseries/hotplug-memory.c |    8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/char/ipmi/ipmi_msghandler.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/include/asm/drmem.h
-+++ b/arch/powerpc/include/asm/drmem.h
-@@ -27,12 +27,12 @@ struct drmem_lmb_info {
- extern struct drmem_lmb_info *drmem_info;
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -3207,8 +3207,8 @@ static void __get_guid(struct ipmi_smi *
+ 	if (rv)
+ 		/* Send failed, no GUID available. */
+ 		bmc->dyn_guid_set = 0;
+-
+-	wait_event(intf->waitq, bmc->dyn_guid_set != 2);
++	else
++		wait_event(intf->waitq, bmc->dyn_guid_set != 2);
  
- #define for_each_drmem_lmb_in_range(lmb, start, end)		\
--	for ((lmb) = (start); (lmb) <= (end); (lmb)++)
-+	for ((lmb) = (start); (lmb) < (end); (lmb)++)
- 
- #define for_each_drmem_lmb(lmb)					\
- 	for_each_drmem_lmb_in_range((lmb),			\
- 		&drmem_info->lmbs[0],				\
--		&drmem_info->lmbs[drmem_info->n_lmbs - 1])
-+		&drmem_info->lmbs[drmem_info->n_lmbs])
- 
- /*
-  * The of_drconf_cell_v1 struct defines the layout of the LMB data
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -223,7 +223,7 @@ static int get_lmb_range(u32 drc_index,
- 			 struct drmem_lmb **end_lmb)
- {
- 	struct drmem_lmb *lmb, *start, *end;
--	struct drmem_lmb *last_lmb;
-+	struct drmem_lmb *limit;
- 
- 	start = NULL;
- 	for_each_drmem_lmb(lmb) {
-@@ -236,10 +236,10 @@ static int get_lmb_range(u32 drc_index,
- 	if (!start)
- 		return -EINVAL;
- 
--	end = &start[n_lmbs - 1];
-+	end = &start[n_lmbs];
- 
--	last_lmb = &drmem_info->lmbs[drmem_info->n_lmbs - 1];
--	if (end > last_lmb)
-+	limit = &drmem_info->lmbs[drmem_info->n_lmbs];
-+	if (end > limit)
- 		return -EINVAL;
- 
- 	*start_lmb = start;
+ 	/* dyn_guid_set makes the guid data available. */
+ 	smp_rmb();
 
 
