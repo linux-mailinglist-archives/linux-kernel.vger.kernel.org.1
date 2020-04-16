@@ -2,174 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D91AD2C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 00:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689161AD299
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 00:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729067AbgDPWWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 18:22:13 -0400
-Received: from mga06.intel.com ([134.134.136.31]:33211 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728842AbgDPWWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 18:22:12 -0400
-IronPort-SDR: MmFF4Tq8SNfxceDdd3Wz9RcZEg1lxnLP4m6MLeQsDGa1ekbKg97dvAkl8y9KrRBt0NgcEhdp5j
- KaWj5CGDomRQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 15:22:08 -0700
-IronPort-SDR: LUu+P/YXcM5WENDHKF6o+pp4tD+Jid2CSFsujp8cMYNQ9xFFZEwJVrsSdcbAt+tJX7QcL0weLo
- WU/iEZhc9aAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
-   d="scan'208";a="454501925"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Apr 2020 15:22:03 -0700
-Date:   Thu, 16 Apr 2020 18:12:26 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     "Lu, Baolu" <baolu.lu@intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>
-Subject: Re: [PATCH v1 0/2] vfio/pci: expose device's PASID capability to VMs
-Message-ID: <20200416221224.GA16688@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <1584880394-11184-1-git-send-email-yi.l.liu@intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D801252@SHSMSX104.ccr.corp.intel.com>
- <ce615f64-a19b-a365-8f8e-ca29f69cc6c0@intel.com>
+        id S1728874AbgDPWMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 18:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727907AbgDPWMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 18:12:43 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77729C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 15:12:41 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id f8so72210lfe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 15:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sZgj1ZrAXOwHlYXwg4Ycg+watpXpPbWmk7DvmzwiL7Q=;
+        b=fcE8vIY8L6o7x6PldEOOEQPNtQTjivyAw3L2B4x4MzMl9Tg2VzAG3xdaKSISAHU6va
+         wPR0onErB0FkjoXPoFyUMxrVZO4+ZHvqVxQIBHyM/8KiymM0OsM96Tos6mcZUEAPqMj2
+         GgPbDLhcZmqiCUlTN34qY9K7TZKZGd7NXEZ3QY1ZsJ7xbhPkPPYrvcmNia8gJqhjhHQw
+         Q0mtrkIJwfLN0MiinnIMkRREvaiKFQ5OiZhU5eoq8ztZeFqkxvlMFCnDeoIyrCuEB7Vo
+         LNFLwL7vJYoFmaElmf5XXx0XEI5Qs26St3CA8r4t7+W8NidsFOcbIiFme2IMlLnLe77W
+         S1rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sZgj1ZrAXOwHlYXwg4Ycg+watpXpPbWmk7DvmzwiL7Q=;
+        b=s6xnMiMURc8HZp3RIeTq7MElv8qiXUFdkleebcQM2Luh6eAIstdrMwWFeEwAOSclu2
+         vYFisIIweExVlaeHThJRP/TeteEqbBB43zsMkF1cpfIqfhiq/jzXo+M1r5/zmdtazIzj
+         RT7nUkWVCcy4e/UiFT6NOpl/Xc1q9E5byo86RP49Qo9f0GDEsbZyYeHRVFr5xCl0KIUO
+         qlYKsvlV/ddtkYEvSYrJiksUgU5x6CxBDhxJktIGSFfwjcTE1gAdiEls1uOxI+YJLfxw
+         hYj+W/AeA3CUTPW787K70vHogZLBsoIBcpd1ZoKycvYIFJB6SeiJ1Pi/5ImpB6KL5lWL
+         0Ubg==
+X-Gm-Message-State: AGi0Pub4Tq/Q/ynsd71nMcGncm7xrQ/O0B6oRY1eJx8rtC1fIj64r46E
+        huRDENJ2Jfxq2LqXaaKUR1m1Bw==
+X-Google-Smtp-Source: APiQypJupD5xGPoTaxQXKBQ5fQv+cLHXCuBt2Nbg5dUyDPftkhL/VpApq64jbgk26cIddcN8vWWpYg==
+X-Received: by 2002:a19:550a:: with SMTP id n10mr7367lfe.143.1587075159959;
+        Thu, 16 Apr 2020 15:12:39 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b9sm19480499lfp.27.2020.04.16.15.12.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 15:12:38 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id D52C3102EA9; Fri, 17 Apr 2020 01:12:38 +0300 (+03)
+Date:   Fri, 17 Apr 2020 01:12:38 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH, RFC] x86/mm/pat: Restore large pages after fragmentation
+Message-ID: <20200416221238.qrkaajbe3m6ca2h2@box>
+References: <20200416213229.19174-1-kirill.shutemov@linux.intel.com>
+ <bf3e6e77-b812-992c-9916-76f19ae5c94a@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ce615f64-a19b-a365-8f8e-ca29f69cc6c0@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <bf3e6e77-b812-992c-9916-76f19ae5c94a@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 03:08:25PM +0800, Lu, Baolu wrote:
-> On 2020/3/31 14:35, Tian, Kevin wrote:
-> >> From: Liu, Yi L<yi.l.liu@intel.com>
-> >> Sent: Sunday, March 22, 2020 8:33 PM
-> >>
-> >> From: Liu Yi L<yi.l.liu@intel.com>
-> >>
-> >> Shared Virtual Addressing (SVA), a.k.a, Shared Virtual Memory (SVM) on
-> >> Intel platforms allows address space sharing between device DMA and
-> >> applications. SVA can reduce programming complexity and enhance security.
-> >>
-> >> To enable SVA, device needs to have PASID capability, which is a key
-> >> capability for SVA. This patchset exposes the device's PASID capability
-> >> to guest instead of hiding it from guest.
-> >>
-> >> The second patch emulates PASID capability for VFs (Virtual Function) since
-> >> VFs don't implement such capability per PCIe spec. This patch emulates such
-> >> capability and expose to VM if the capability is enabled in PF (Physical
-> >> Function).
-> >>
-> >> However, there is an open for PASID emulation. If PF driver disables PASID
-> >> capability at runtime, then it may be an issue. e.g. PF should not disable
-> >> PASID capability if there is guest using this capability on any VF related
-> >> to this PF. To solve it, may need to introduce a generic communication
-> >> framework between vfio-pci driver and PF drivers. Please feel free to give
-> >> your suggestions on it.
-> > I'm not sure how this is addressed on bate metal today, i.e. between normal
-> > kernel PF and VF drivers. I look at pasid enable/disable code in intel-iommu.c.
-> > There is no check on PF/VF dependency so far. The cap is toggled when
-> > attaching/detaching the PF to its domain. Let's see how IOMMU guys
-> > respond, and if there is a way for VF driver to block PF driver from disabling
-> > the pasid cap when it's being actively used by VF driver, then we may
-> > leverage the same trick in VFIO when emulation is provided to guest.
+On Thu, Apr 16, 2020 at 03:03:12PM -0700, Dave Hansen wrote:
+> On 4/16/20 2:32 PM, Kirill A. Shutemov wrote:
+> > With current code it's one way road: kernel tries to avoid splitting
+> > large pages, but it doesn't restore them back even if page attributes
+> > got compatible again.
 > 
-> IOMMU subsystem doesn't expose any APIs for pasid enabling/disabling.
-> The PCI subsystem does. It handles VF/PF like below.
+> Looks pretty sane to me, and sounds like something we've needed for a
+> long time.
 > 
-> /**
->   * pci_enable_pasid - Enable the PASID capability
->   * @pdev: PCI device structure
->   * @features: Features to enable
->   *
->   * Returns 0 on success, negative value on error. This function checks
->   * whether the features are actually supported by the device and returns
->   * an error if not.
->   */
-> int pci_enable_pasid(struct pci_dev *pdev, int features)
-> {
->          u16 control, supported;
->          int pasid = pdev->pasid_cap;
+> I'd having doubts in my ability to find nasty corner cases in this code,
+> though.  Could you rig up some tests to poke at this thing further?  Maybe:
 > 
->          /*
->           * VFs must not implement the PASID Capability, but if a PF
->           * supports PASID, its VFs share the PF PASID configuration.
->           */
->          if (pdev->is_virtfn) {
->                  if (pci_physfn(pdev)->pasid_enabled)
->                          return 0;
->                  return -EINVAL;
->          }
+> Record what the direct map looks like (even from userspace).  Then,
+> allocate some memory, including odd-sized and aligned ranges.  Try to do
+> things >4M like the hugetlbfs code does.  Make the allocation (or a
+> piece of it) not-present (or whatever), which usually fractures some
+> large pages.  Then put it back the way it was.  All the large pages
+> should come back.
 > 
-> /**
->   * pci_disable_pasid - Disable the PASID capability
->   * @pdev: PCI device structure
->   */
-> void pci_disable_pasid(struct pci_dev *pdev)
-> {
->          u16 control = 0;
->          int pasid = pdev->pasid_cap;
-> 
->          /* VFs share the PF PASID configuration */
->          if (pdev->is_virtfn)
->                  return;
-> 
-> 
-> It doesn't block disabling PASID on PF even VFs are possibly using it.
->
-hi
-I'm not sure, but is it possible for pci_enable_pasid() and
-pci_disable_pasid() to do the same thing as pdev->driver->sriov_configure,
-e.g. pci_sriov_configure_simple() below.
+> If it survives that for an hour or two, it should be pretty good to go.
+>  Basically, fuzz it.
 
-It checks whether there are VFs are assigned in pci_vfs_assigned(dev).
-and we can set the VF in assigned status if vfio_pci_open() is performed
-on the VF.
+We already have it in kernel: CONFIG_CPA_DEBUG. It messes up with the
+mapping every 30 seconds. It is pretty good for the change too. It
+produces a lot of 2M/1G pages to be restored. I run it over night in my
+setup and it survives.
 
-
-int pci_sriov_configure_simple(struct pci_dev *dev, int nr_virtfn)
-{
-        int rc;
-
-        might_sleep();
-
-        if (!dev->is_physfn)
-                return -ENODEV;
-
-        if (pci_vfs_assigned(dev)) {
-                pci_warn(dev, "Cannot modify SR-IOV while VFs are assigned\n");
-                return -EPERM;
-        }
-
-        if (nr_virtfn == 0) {
-                sriov_disable(dev);
-                return 0;
-        }
-
-        rc = sriov_enable(dev, nr_virtfn);
-        if (rc < 0)
-                return rc;
-
-        return nr_virtfn;
-}
-
-Thanks
-Yan
+-- 
+ Kirill A. Shutemov
