@@ -2,129 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD27B1AC76D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ECA1AC7E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408926AbgDPOzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:55:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:34760 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408363AbgDPOyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:54:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DF521FB;
-        Thu, 16 Apr 2020 07:54:51 -0700 (PDT)
-Received: from [10.37.12.32] (unknown [10.37.12.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0AEE3F237;
-        Thu, 16 Apr 2020 07:54:48 -0700 (PDT)
-Subject: Re: [PATCH 8/8] arm64: cpufeature: Add an overview comment for the
- cpufeature framework
-To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu
-Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
-        kernel-team@android.com
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-9-will@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <96dd797d-ccfe-c867-0a70-65eccacde3cd@arm.com>
-Date:   Thu, 16 Apr 2020 15:59:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S2404010AbgDPPA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388235AbgDPPAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:00:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993F1C061A0C;
+        Thu, 16 Apr 2020 08:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=uYntwwOxHl+eWmrggy0D1lZ6buzvACNOsmvvl0lx4SM=; b=nYkexzPURS/EEaBQzLNs6ZJPtY
+        iXXeif5/EFTvuipZKQz0BouVV3czxminJPIipTRWE+1tuUi/189SxUUAIXh+sMh1wE/AMHQuQhCLa
+        wFYwxEplgeD16FEvzoPHa6ClGQ9ZK/lcHBr/wKiIYTFTwBYcbWmyCjfA5wAEpmDx1hjBN4Ke48VTI
+        FVSQ48dRRq+fZWRGREvz+o/oEt4q2IrPWYh1DLPvCBPJb6QlCzuSz7qQojJXH6J7j6sucJumsagVP
+        9EFeSRjp/5S4kgcB43Q9ag7iqI2D9LhbhvheItZ9PTRz6xXRXnZFT6OUTM6P3MZ8wTGzfngQoVLhQ
+        tywJXWRA==;
+Received: from [2001:4bb8:184:4aa1:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jP5zx-0001nv-Jg; Thu, 16 Apr 2020 15:00:14 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: MIPS ioremap cleanups v2
+Date:   Thu, 16 Apr 2020 17:00:04 +0200
+Message-Id: <20200416150011.820984-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200414213114.2378-9-will@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+Hi Thomas,
 
-On 04/14/2020 10:31 PM, Will Deacon wrote:
-> Now that Suzuki isn't within throwing distance, I thought I'd better add
-> a rough overview comment to cpufeature.c so that it doesn't take me days
-> to remember how it works next time.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->   arch/arm64/kernel/cpufeature.c | 43 ++++++++++++++++++++++++++++++++++
->   1 file changed, 43 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 680a453ca8c4..421ca99dc8fc 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -3,6 +3,49 @@
->    * Contains CPU feature definitions
->    *
->    * Copyright (C) 2015 ARM Ltd.
-> + *
-> + * A note for the weary kernel hacker: the code here is confusing and hard to
-> + * follow! That's partly because it's solving a nasty problem, but also because
-> + * there's a little bit of over-abstraction that tends to obscure what's going
-> + * on behind a maze of helper functions and macros.
+below is a bunch of cleanups for the MIPS ioremap code.  Compile tested
+only.
 
-Thanks for writing this up !
-
-> + *
-> + * The basic problem is that hardware folks have started gluing together CPUs
-> + * with distinct architectural features; in some cases even creating SoCs where
-> + * user-visible instructions are available only on a subset of the available
-> + * cores. We try to address this by snapshotting the feature registers of the
-> + * boot CPU and comparing these with the feature registers of each secondary
-> + * CPU when bringing them up. If there is a mismatch, then we update the
-> + * snapshot state to indicate the lowest-common denominator of the feature,
-> + * known as the "safe" value. This snapshot state can be queried to view the
-
-I am not sure if the following is implied above.
-
-   1) Against the "snapshot" state, where mismatches triggers updating
-      the "snapshot" state to reflect the "safe" value.
-
-   2) Compared against the CPU feature registers of *the boot CPU* for
-     "FTR_STRICT" fields and any mismatch triggers TAINT_CPU_OUT_OF_SPEC.
-      This makes sure that warning is generated for each OUT_OF_SPEC
-      secondary CPU.
-
-> + * "sanitised" value of a feature register.
-> + *
-> + * The sanitised register values are used to decide which capabilities we
-> + * have in the system. These may be in the form of traditional "hwcaps"
-> + * advertised to userspace or internal "cpucaps" which are used to configure
-> + * things like alternative patching and static keys. While a feature mismatch
-> + * may result in a TAINT_CPU_OUT_OF_SPEC kernel taint, a capability mismatch
-> + * may prevent a CPU from being onlined at all.
-> + *
-> + * Some implementation details worth remembering:
-> + *
-> + * - Mismatched features are *always* sanitised to a "safe" value, which
-> + *   usually indicates that the feature is not supported.
-> + *
-> + * - A mismatched feature marked with FTR_STRICT will cause a "SANITY CHECK"
-> + *   warning when onlining an offending CPU and the kernel will be tainted
-> + *   with TAINT_CPU_OUT_OF_SPEC.
-
-As mentioned above, this check is against that of the "boot CPU"
-register state, which may not be implicit from the statement.
-
-> + *
-> + * - Features marked as FTR_VISIBLE have their sanitised value visible to
-> + *   userspace. FTR_VISIBLE features in registers that are only visible
-> + *   to EL0 by trapping *must* have a corresponding HWCAP so that late
-> + *   onlining of CPUs cannot lead to features disappearing at runtime.
-> + *
-
-As you mentioned in the other response we could add information about
-the guest view, something like :
-
-       - KVM exposes the sanitised value of the feature registers to the
-	guests and is not affected by the FTR_VISIBLE. However,
-	depending on the individual feature support in the hypervisor,
-	some of the fields may be capped/limited.
-
-Cheers
-Suzuki
+Changes since v1:
+ - don't remove cpu_has_64bit_gp_regs
+ - add a new prep patch to stop txx9aclc-ac97 from poking into ioremap
+   internals
