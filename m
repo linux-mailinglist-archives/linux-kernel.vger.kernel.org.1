@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9929E1ABEB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A611ABEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505976AbgDPLAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505958AbgDPK7v (ORCPT
+        id S2632977AbgDPLUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:20:32 -0400
+Received: from sonic312-20.consmr.mail.bf2.yahoo.com ([74.6.128.82]:41632 "EHLO
+        sonic312-20.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2632844AbgDPLTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:59:51 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE321C03C1AA
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:52:19 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id e25so802116ljg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YqF+/z+LBaU8X8GuG/beRb7kQZb2oP+PKGTiqRFntc4=;
-        b=O61jTEnjgd/MFLC0C7gD3v1f1K7hyNHbLJ95BLTIPmXhpMdq8JPWImgV01LKxrHzWm
-         igTpaZEUPXh7MExhOaBMX5tEjxpldqlveCYsKibvzkrPDDL06Ziieaj1qJ7z+ZUrqp4i
-         uCjsUClcCcMwMaVHft8rA5XJkEcLdYMkYvKfZMSVYCDsQdNkPVGCCxjxIUv8h0nKSeJm
-         Uk69cVP7q6OIVern4CJxyHsctCSRUd7O8kNGCbCe7tflbdhqHJwibVNgjk7z6H6Uhf9M
-         hYPA9tDCf6KamVuL+lF+bE9gSfx38ZsvU3mkfA6aWhuQxlie52caYXgMBN7Vg0SIRZn+
-         uJoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YqF+/z+LBaU8X8GuG/beRb7kQZb2oP+PKGTiqRFntc4=;
-        b=rsKO2tN5Vo9XZLgnQT1giHY4rT5f5Su1iWZj7so86AMAaKfjnViSJaCs+NeHDKGNC2
-         +e4OFlkxtZso+SvhjqgtJLdh4T4LIHFyaBDnn6JnpFD/8PdmYVHEOmb4vuscCg42OGRV
-         rEMo9f7i/xBjfPNOp0sprP/jXjcj+4YQHKJxW53CxbW96uHF+x/wrvKBmNpngzcTapr4
-         SyDg1HUQgags9ktykuCHPdfoWvLo1sgg7U7+Tu3olmfUTqNICdyKUngKINKKawhzmuV4
-         VQy7pyLzucjdsHOwNiD8+LaW7CxsFgYlTIJUYMkX1fQ+sd0Fdjydc3oY1FFZBKDvpWMF
-         Nf+g==
-X-Gm-Message-State: AGi0PuYaoeCOgW4iBZhkuWfzUybL3Nrgqbk/Z0kLzI5tG9vdIOUUqMwr
-        8Lu9N+er0WYJi6bgDXBBezIX5WpFM51O5ZUMM6sR1qJl
-X-Google-Smtp-Source: APiQypJDV4zLPL0CbEVbqxkKUu4/iTCpV9lW81D7Y7R39PbjZq6AW9MqfediIKTHTI1HTYan1cmCNF4yfqCv5rHzELk=
-X-Received: by 2002:a2e:8805:: with SMTP id x5mr2581058ljh.223.1587034338213;
- Thu, 16 Apr 2020 03:52:18 -0700 (PDT)
+        Thu, 16 Apr 2020 07:19:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587035934; bh=85FejEn00gIkX4TgTiJo2MrF+4KusxIBycp5MFD4a0Q=; h=Date:From:Reply-To:Subject:References:From:Subject; b=BqkB/vBZ98OAwAxOsZqWTMw2zuBGxmnVMnB5CsCu5lP6W8qF4Qqds5Oaqdds3+6RRxJQ0PLKGbbEhDC9Y7kzZI0w0h35IsTBqCDxbrThB8vjFdtvL8gmtt9Fcx4ZWq0elN5o9guvfwJnu1K48laqfi5LfZMFGh8gFiHS2Ffh2FYm6JyhBrUX4zocLVVWQdOhaS7AdxjDeZfHqize1oisk7Lx2NGcxoB/69gvyi7ZDUYqNzlRtEOe/mqmRWMfE//SyqjZZHoTc+vm1iYcWlTRP6hNKsceMF1YL9AK+xv8+sfPk+dBNbvUCSwFKgndTbyDAFRqximEvbsoVQToll3Sgw==
+X-YMail-OSG: 3QP1XIEVM1mjcZ1ixmJZr7ejTNX8FH8JomIgjcfnWbHjRdp.Ld2pm50e5.AD8.K
+ lIjIgjIUu80xtsNJvx7AlMOhmN2O.YOykQ84DJS0SXg6ifAZR_KAcYG3T7qRLbP8mNyDnw1_2wgq
+ 3h6j0MkGX50cdtXB3_tRVC4oH9siEjyjrtZstgDcJvffNF0HKew0huj.kehTMQSxXvCe4hek.m9q
+ .U2k.jfCuC3eN5098Jh3y4Gnmj9JIkA__6VPq7e41PV3OR_nZqsQXgAE2vO9P7i.mMvz7XwEUmz5
+ HirWZM7Ulvws5aGE1JvAgMPPJMoaslrWKyXIsovy6Tu4PNVNzQkgqLozQkEfSgO57stER8B1ZsS1
+ 5.BkvoF3z5tmZJJwXQxQtOhmvKAjbq3XDvc4t2GCRqqSafq2mjpEbt5oOjUZV8_.JWVmz.AT6Bwz
+ s.7WMQpUOtjS3W6dGlvRDkE5ERei7ZLBhYMlfLoeySsJrvyl7hExOiAlEr5z4uTSzKvOdG.G4IP_
+ r4yixBqkgpl9Xpa7Rn8TQp.i2YhV0GB.Bb133xGBFpgikUJg0V9eIbWNc3l9GXeY_Sm3ITPURZzV
+ HcGQe.SAPHc0Si7sV.2O7IU1QGmTKF1cYZ1ZW.dG0uMmYieYB_VuBvQX85VXWxS362Fbjc23FyS4
+ vTrERV_aQB2gW92dUF9BfdOT0D3C.2dP7L3LhY2oBEj0SRJI4R7CXJxF5pE4m4GH7NsN9yZPJl7A
+ Nm9cBT0gIXGWbuDLjC9M3OWWsNNAo5VoeFWhh3sWgv4Ax4ezXbWG3KXsb8Jp7EaYh_vRErvQPxqc
+ JS8HqgzP081fzfYg.MTLIclwP3XrlyVYJGo3OOLCTWNZvW0E6A5MsugmbC9t7H8Ih326tLCAozD0
+ OP0Pn8MZjNc9GwdQE9Afp_PTUZKgPISQ4FH2Yp.F7XvwSq3Bc7C5_c0B0eIilCYnkHXkEaEBDuQE
+ OIZFh0T_xvrbee9a1whm_1PH2hnqTghh4jE9Yo4cyaZ4o7s15cKVRTMuEBRVsY12CDFSnLOn.xSR
+ Tt8UMtuBip8f1CdoHdyr.Vw90P288thFnScVXq30wPNvMa3Ie7LYVO6.7bJutSCyCf.XQJr5EXGh
+ xl4wJEZ7c2m2NqzV7Df2eU82Cc2AzHtiikyULP6xXeGHBjURtFo.4HkjvgNWSJEQoOIMeoXljZ7h
+ GYqHzX1jS06Imb_xcP.JZUftqvKc6axPct0NKKH2x1X_zJU8mBoY.gILyhcYGI4c5VjOf6njV55L
+ mQQFVvQgIEqv6uNTyKIUI8lPuG0F2ppZHhQzJT2DcIbkxxuQCVJU7.EThXGx35EWGPk_adcRWNe9
+ 4S8wyFiQJZZXBe2ejxJGGyxxuu6OHD6kik3ogZfh5HP45fx4aYK00Ygc-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Thu, 16 Apr 2020 11:18:54 +0000
+Date:   Thu, 16 Apr 2020 10:56:52 +0000 (UTC)
+From:   Lisa Mikerriding <lisamikerriding8@gmail.com>
+Reply-To: lisamikerriding8@gmail.com
+Message-ID: <939866598.976795.1587034612271@mail.yahoo.com>
+Subject: DEAR: FRIEND.
 MIME-Version: 1.0
-References: <cover.1586359676.git.mchehab+huawei@kernel.org> <d8b0656cb3f1eacb10ca6168babb235d59a853a1.1586359676.git.mchehab+huawei@kernel.org>
-In-Reply-To: <d8b0656cb3f1eacb10ca6168babb235d59a853a1.1586359676.git.mchehab+huawei@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Apr 2020 12:52:07 +0200
-Message-ID: <CACRpkda+5VET+dyyQZk4GKjKCDNDYMP43VXL=0u5FOhEd0C=ww@mail.gmail.com>
-Subject: Re: [PATCH 29/35] MAINTAINERS: dt: fix pointers for ARM Integrator,
- Versatile and RealView
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <939866598.976795.1587034612271.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15651 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 5:46 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
 
-> There's a conversion from a plain text binding file into 4 yaml ones.
-> The old file got removed, causing this new warning:
->
->         Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/arm/arm-boards
->
-> Address it by replacing the old reference by the new ones
->
-> Fixes: 2d483550b6d2 ("dt-bindings: arm: Drop the non-YAML bindings")
-> Fixes: 33fbfb3eaf4e ("dt-bindings: arm: Add Integrator YAML schema")
-> Fixes: 4b900070d50d ("dt-bindings: arm: Add Versatile YAML schema")
-> Fixes: 7db625b9fa75 ("dt-bindings: arm: Add RealView YAML schema")
-> Fixes: 4fb00d9066c1 ("dt-bindings: arm: Add Versatile Express and Juno YAML schema")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+DEAR: FRIEND.
 
-Yours,
-Linus Walleij
+My name is Lisa Mikerriding I am sending this brief letter to solicit your support and partnership to transfer $10.5 million US Dollars. This money belongs to my late father Mike Riddering, my father and my mother were among those that were killed on 2016 terrorist attack at Splendid Hotel Ouagadougou Burkina Faso, my mother did not die instantly but she later gave up at the hospital.
+
+we are from USA but reside in Burkina Faso, my father is an American missionary, before my father died with my mother at Splendid hotel,
+
+Check out the web; (https://www.bbc.com/news/world-africa-35332792) for more understanding, I shall send you more information and the bank details when I receive positive response from you to follow up.
+Contact me through this my private e-mail
+ lisamikerriding8@gmail.com
+
+Thanks
+
+Ms.Lisa Mikerriding
