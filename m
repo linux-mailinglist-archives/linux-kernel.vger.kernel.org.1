@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D2D1ACADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A634B1AC78C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730445AbgDPPkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:40:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
+        id S2408608AbgDPO4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896923AbgDPNhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:37:38 -0400
+        id S1727909AbgDPN4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:56:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50C42221F7;
-        Thu, 16 Apr 2020 13:37:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 245D420786;
+        Thu, 16 Apr 2020 13:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044256;
-        bh=YT2uPu+CvbKPtXH7NT0G3Z7bnBFybUw4cBTirjFdyIA=;
+        s=default; t=1587045366;
+        bh=HdXtnSDiFfxfTy6EzlLlUY/QDpdHEh4TrJnt8XaWZyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cab/oIekxOJ/NfZEOT0mbrXdRUzbwglGeEgkr/VqzXgqf+ITeQCy2DaevdlRJTbFt
-         YExFSZ8Jad9YKQdyb34H9QkU3jUY7GWuPuL8gKJgmzqOoNKkgBuDa/Ig/8MpuMmFbV
-         LqJiyp1BpUhva3A0lRN5nJtRO6yoZlzINP3WGo0Q=
+        b=tyofWH/z+Z3EpyW7DhNjyfqQ8W9RUH3hDKkrTRCBXT/hqB4YYg77PgmGKOuzpecCC
+         at370i15H4Gy0igkms6/e1wPXbHX4MHapBaDCyh4dxQ5/gptYimyPDVCglsbWexi9v
+         BnA4wB0tUTotA52kbboyEd6yAhS/YsBAmoahv+f8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 5.5 144/257] KVM: s390: vsie: Fix region 1 ASCE sanity shadow address checks
+        stable@vger.kernel.org,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH 5.6 106/254] tpm: Dont make log failures fatal
 Date:   Thu, 16 Apr 2020 15:23:15 +0200
-Message-Id: <20200416131344.430635326@linuxfoundation.org>
+Message-Id: <20200416131339.353262951@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +45,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Matthew Garrett <matthewgarrett@google.com>
 
-commit a1d032a49522cb5368e5dfb945a85899b4c74f65 upstream.
+commit 805fa88e0780b7ce1cc9b649dd91a0a7164c6eb4 upstream.
 
-In case we have a region 1 the following calculation
-(31 + ((gmap->asce & _ASCE_TYPE_MASK) >> 2)*11)
-results in 64. As shifts beyond the size are undefined the compiler is
-free to use instructions like sllg. sllg will only use 6 bits of the
-shift value (here 64) resulting in no shift at all. That means that ALL
-addresses will be rejected.
+If a TPM is in disabled state, it's reasonable for it to have an empty
+log. Bailing out of probe in this case means that the PPI interface
+isn't available, so there's no way to then enable the TPM from the OS.
+In general it seems reasonable to ignore log errors - they shouldn't
+interfere with any other TPM functionality.
 
-The can result in endless loops, e.g. when prefix cannot get mapped.
-
-Fixes: 4be130a08420 ("s390/mm: add shadow gmap support")
-Tested-by: Janosch Frank <frankja@linux.ibm.com>
-Reported-by: Janosch Frank <frankja@linux.ibm.com>
-Cc: <stable@vger.kernel.org> # v4.8+
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Link: https://lore.kernel.org/r/20200403153050.20569-2-david@redhat.com
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-[borntraeger@de.ibm.com: fix patch description, remove WARN_ON_ONCE]
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Matthew Garrett <matthewgarrett@google.com>
+Cc: stable@vger.kernel.org # 4.19.x
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/mm/gmap.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/char/tpm/eventlog/common.c |   12 ++++--------
+ drivers/char/tpm/tpm-chip.c        |    4 +---
+ drivers/char/tpm/tpm.h             |    2 +-
+ 3 files changed, 6 insertions(+), 12 deletions(-)
 
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -787,14 +787,18 @@ static void gmap_call_notifier(struct gm
- static inline unsigned long *gmap_table_walk(struct gmap *gmap,
- 					     unsigned long gaddr, int level)
+--- a/drivers/char/tpm/eventlog/common.c
++++ b/drivers/char/tpm/eventlog/common.c
+@@ -99,11 +99,8 @@ static int tpm_read_log(struct tpm_chip
+  *
+  * If an event log is found then the securityfs files are setup to
+  * export it to userspace, otherwise nothing is done.
+- *
+- * Returns -ENODEV if the firmware has no event log or securityfs is not
+- * supported.
+  */
+-int tpm_bios_log_setup(struct tpm_chip *chip)
++void tpm_bios_log_setup(struct tpm_chip *chip)
  {
-+	const int asce_type = gmap->asce & _ASCE_TYPE_MASK;
- 	unsigned long *table;
+ 	const char *name = dev_name(&chip->dev);
+ 	unsigned int cnt;
+@@ -112,7 +109,7 @@ int tpm_bios_log_setup(struct tpm_chip *
  
- 	if ((gmap->asce & _ASCE_TYPE_MASK) + 4 < (level * 4))
- 		return NULL;
- 	if (gmap_is_shadow(gmap) && gmap->removed)
- 		return NULL;
--	if (gaddr & (-1UL << (31 + ((gmap->asce & _ASCE_TYPE_MASK) >> 2)*11)))
-+
-+	if (asce_type != _ASCE_TYPE_REGION1 &&
-+	    gaddr & (-1UL << (31 + (asce_type >> 2) * 11)))
- 		return NULL;
-+
- 	table = gmap->table;
- 	switch (gmap->asce & _ASCE_TYPE_MASK) {
- 	case _ASCE_TYPE_REGION1:
+ 	rc = tpm_read_log(chip);
+ 	if (rc < 0)
+-		return rc;
++		return;
+ 	log_version = rc;
+ 
+ 	cnt = 0;
+@@ -158,13 +155,12 @@ int tpm_bios_log_setup(struct tpm_chip *
+ 		cnt++;
+ 	}
+ 
+-	return 0;
++	return;
+ 
+ err:
+-	rc = PTR_ERR(chip->bios_dir[cnt]);
+ 	chip->bios_dir[cnt] = NULL;
+ 	tpm_bios_log_teardown(chip);
+-	return rc;
++	return;
+ }
+ 
+ void tpm_bios_log_teardown(struct tpm_chip *chip)
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -596,9 +596,7 @@ int tpm_chip_register(struct tpm_chip *c
+ 
+ 	tpm_sysfs_add_device(chip);
+ 
+-	rc = tpm_bios_log_setup(chip);
+-	if (rc != 0 && rc != -ENODEV)
+-		return rc;
++	tpm_bios_log_setup(chip);
+ 
+ 	tpm_add_ppi(chip);
+ 
+--- a/drivers/char/tpm/tpm.h
++++ b/drivers/char/tpm/tpm.h
+@@ -235,7 +235,7 @@ int tpm2_prepare_space(struct tpm_chip *
+ int tpm2_commit_space(struct tpm_chip *chip, struct tpm_space *space, void *buf,
+ 		      size_t *bufsiz);
+ 
+-int tpm_bios_log_setup(struct tpm_chip *chip);
++void tpm_bios_log_setup(struct tpm_chip *chip);
+ void tpm_bios_log_teardown(struct tpm_chip *chip);
+ int tpm_dev_common_init(void);
+ void tpm_dev_common_exit(void);
 
 
