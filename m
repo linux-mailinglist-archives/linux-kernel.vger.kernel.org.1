@@ -2,80 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C92F1AC6F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0693D1AC70E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394687AbgDPOr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2394668AbgDPOrK (ORCPT
+        id S2394712AbgDPOsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:48:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52765 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2394733AbgDPOsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:47:10 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11B2C061A0C;
-        Thu, 16 Apr 2020 07:47:09 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id w12so3210324otm.13;
-        Thu, 16 Apr 2020 07:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=SzZBIJ1vFMB5OIxa5Nui2vPMLFwAMxv68r5Gb9P72a4=;
-        b=ajCfJ1M6r2pZxJFBvjyDS8dD2joULw4EAc5H0mUZ34t9TrnLn82hTVK4ipAPhoLJ3g
-         H6Wpxu5xO09esKSA678AUobqdfxkPv+4G2L5gLqxZOc3w9idnRf2OW19iCOkJ4RXl4Q1
-         XNiOX/I3JPJlp3dUju+l1JTdKbcI3CNOIJGMAcJjKxEsBV9tJv2pdzgEuUuFerEK0mHq
-         CDNHbUGp93DHYehQeGHMdBDIaj+40uajAF8xsfwo8u3p9SKulj+82I+z+LFTZ9PZgNOH
-         SoB5Bqg4Pgt6gR2OralSQexTeQ3UbkYiwFmJRSDru20gyW0b6J8xWXSZqBf4qQuE2D4e
-         2bgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=SzZBIJ1vFMB5OIxa5Nui2vPMLFwAMxv68r5Gb9P72a4=;
-        b=G8N3SlkVrImm+abMSKvWrclAvW4wHjgPbSMCGekCyZ4GLyvezUS8S91yLmYSVJ8aAz
-         5ixieeWM2O0vtJ4j9cYvQgTilTSww5XKtAZdFeEeucvFT8IpizQZDc9q8Q3PSACDc0lH
-         pqVEg5D8xUPvB8jncnVehlz7Ax3E3tVVYbLCcGNKhuEwVMTehy5FJ3zkwHRqIreGoit1
-         lw3CC81lT5T13oQ51qVLrbzmNVwNqZOyiKz1JJZ6qM5lyFwRErIn79dxgLeo76GgTqgE
-         18UfwZZiKwis/ibP2VdGYLVsgNnrDVGe3mwzAO7Sx50j5mEvlua4ZISicZLHVAxy4bRi
-         nwuQ==
-X-Gm-Message-State: AGi0PuYcQ8GA2mGYYV4wTqiPPI7blaPFi7FpLQ509jnyNMRnRBYyunWM
-        ktN+nHrZSg76VdKKiD7i/cJMCsO0UZ4lQhtfuzg=
-X-Google-Smtp-Source: APiQypLdEbF3+t9LzDqALjNDG7plEaTTms/SfdlHEm65gdxa0jPdwNRVRRoUCOFXZeveNmrPK2qn+MtBebHlL6rUyeQ=
-X-Received: by 2002:a9d:12f6:: with SMTP id g109mr10158623otg.0.1587048429098;
- Thu, 16 Apr 2020 07:47:09 -0700 (PDT)
+        Thu, 16 Apr 2020 10:48:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587048517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mMOcvd8rqB/SDYGbEUATBrqiayoKdChDgtyzI2z56+k=;
+        b=Krne45FAuGtE+nCqLRJI2urtG1H855rkgdOygzUb8CAk6ntjUqaWou8CFiRuOxy0wASgJ/
+        C/Fzc1ng1e8/UbQ1keRubk8PqXJ3lg7BVydY4DnhvDi/fl+jZXxSZ/xn8YcLjIEm7B5FO6
+        P56j/AN6g8y6ZoIy2E4Kh+ESDb1bKaI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-Le46VK3hP4KmFRFu2epPvQ-1; Thu, 16 Apr 2020 10:48:29 -0400
+X-MC-Unique: Le46VK3hP4KmFRFu2epPvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5360E85EE81;
+        Thu, 16 Apr 2020 14:48:12 +0000 (UTC)
+Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CDFE5C1C5;
+        Thu, 16 Apr 2020 14:48:11 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 08:48:11 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>, "Wu, Hao" <hao.wu@intel.com>
+Subject: Re: [PATCH v1 7/8] vfio/type1: Add VFIO_IOMMU_CACHE_INVALIDATE
+Message-ID: <20200416084811.5acf4424@w520.home>
+In-Reply-To: <20200416084031.7266ad40@w520.home>
+References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
+        <1584880325-10561-8-git-send-email-yi.l.liu@intel.com>
+        <20200402142428.2901432e@w520.home>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D807C4A@SHSMSX104.ccr.corp.intel.com>
+        <20200403093436.094b1928@w520.home>
+        <A2975661238FB949B60364EF0F2C25743A231BAA@SHSMSX104.ccr.corp.intel.com>
+        <20200416084031.7266ad40@w520.home>
 MIME-Version: 1.0
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 16 Apr 2020 10:46:58 -0400
-Message-ID: <CAGngYiVa9v9jGPNu4W+KHUnvemKU-BVE89-XNLcWOmoZjAPMTg@mail.gmail.com>
-Subject: [Q] devicetree overlays
-To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pantelis, Frank,
+On Thu, 16 Apr 2020 08:40:31 -0600
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-A quick question about the state of devicetree overlays. There don't seem to
-be many in-kernel overlay users (rcar and fpga only?). Does it make sense for
-new projects to use them?
+> On Thu, 16 Apr 2020 10:40:03 +0000
+> "Liu, Yi L" <yi.l.liu@intel.com> wrote:
+> 
+> > Hi Alex,
+> > Still have a direction question with you. Better get agreement with you
+> > before heading forward.
+> >   
+> > > From: Alex Williamson <alex.williamson@redhat.com>
+> > > Sent: Friday, April 3, 2020 11:35 PM    
+> > [...]  
+> > > > > > + *
+> > > > > > + * returns: 0 on success, -errno on failure.
+> > > > > > + */
+> > > > > > +struct vfio_iommu_type1_cache_invalidate {
+> > > > > > +	__u32   argsz;
+> > > > > > +	__u32   flags;
+> > > > > > +	struct	iommu_cache_invalidate_info cache_info;
+> > > > > > +};
+> > > > > > +#define VFIO_IOMMU_CACHE_INVALIDATE      _IO(VFIO_TYPE,    
+> > > VFIO_BASE    
+> > > > > + 24)
+> > > > >
+> > > > > The future extension capabilities of this ioctl worry me, I wonder if
+> > > > > we should do another data[] with flag defining that data as CACHE_INFO.    
+> > > >
+> > > > Can you elaborate? Does it mean with this way we don't rely on iommu
+> > > > driver to provide version_to_size conversion and instead we just pass
+> > > > data[] to iommu driver for further audit?    
+> > > 
+> > > No, my concern is that this ioctl has a single function, strictly tied
+> > > to the iommu uapi.  If we replace cache_info with data[] then we can
+> > > define a flag to specify that data[] is struct
+> > > iommu_cache_invalidate_info, and if we need to, a different flag to
+> > > identify data[] as something else.  For example if we get stuck
+> > > expanding cache_info to meet new demands and develop a new uapi to
+> > > solve that, how would we expand this ioctl to support it rather than
+> > > also create a new ioctl?  There's also a trade-off in making the ioctl
+> > > usage more difficult for the user.  I'd still expect the vfio layer to
+> > > check the flag and interpret data[] as indicated by the flag rather
+> > > than just passing a blob of opaque data to the iommu layer though.
+> > > Thanks,    
+> > 
+> > Based on your comments about defining a single ioctl and a unified
+> > vfio structure (with a @data[] field) for pasid_alloc/free, bind/
+> > unbind_gpasid, cache_inv. After some offline trying, I think it would
+> > be good for bind/unbind_gpasid and cache_inv as both of them use the
+> > iommu uapi definition. While the pasid alloc/free operation doesn't.
+> > It would be weird to put all of them together. So pasid alloc/free
+> > may have a separate ioctl. It would look as below. Does this direction
+> > look good per your opinion?
+> > 
+> > ioctl #22: VFIO_IOMMU_PASID_REQUEST
+> > /**
+> >   * @pasid: used to return the pasid alloc result when flags == ALLOC_PASID
+> >   *         specify a pasid to be freed when flags == FREE_PASID
+> >   * @range: specify the allocation range when flags == ALLOC_PASID
+> >   */
+> > struct vfio_iommu_pasid_request {
+> > 	__u32	argsz;
+> > #define VFIO_IOMMU_ALLOC_PASID	(1 << 0)
+> > #define VFIO_IOMMU_FREE_PASID	(1 << 1)
+> > 	__u32	flags;
+> > 	__u32	pasid;
+> > 	struct {
+> > 		__u32	min;
+> > 		__u32	max;
+> > 	} range;
+> > };  
+> 
+> Can't the ioctl return the pasid valid on alloc (like GET_DEVICE_FD)?
 
-My situation is this: I have hardware which consists of several modules.
-Knowledge about the type and location of these modules is located in an
-on-board eeprom.
+s/valid/value/
 
-So now I need to assemble a devicetree, by puzzling various 'blobs' together.
-This could be done in the bootloader, but also by a rcar-like driver, which
-queries the eeprom and inserts devicetree fragments/overlays into a live kernel.
+> Would it be useful to support freeing a range of pasids?  If so then we
+> could simply use range for both, ie. allocate a pasid from this range
+> and return it, or free all pasids in this range?  vfio already needs to
+> track pasids to free them on release, so presumably this is something
+> we could support easily.
+>  
+> > ioctl #23: VFIO_IOMMU_NESTING_OP
+> > struct vfio_iommu_type1_nesting_op {
+> > 	__u32	argsz;
+> > 	__u32	flags;
+> > 	__u32	op;
+> > 	__u8	data[];
+> > };  
+> 
+> data only has 4-byte alignment, I think we really want it at an 8-byte
+> alignment.  This is why I embedded the "op" into the flag for
+> DEVICE_FEATURE.  Thanks,
+> 
+> Alex
+> 
+> > 
+> > /* Nesting Ops */
+> > #define VFIO_IOMMU_NESTING_OP_BIND_PGTBL        0
+> > #define VFIO_IOMMU_NESTING_OP_UNBIND_PGTBL      1
+> > #define VFIO_IOMMU_NESTING_OP_CACHE_INVLD       2
+> >  
+> > Thanks,
+> > Yi Liu
+> >   
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
 
-A couple of questions:
-- are devicetree overlays here to stay? (given that there are 2 in-kernel users)
-- does it make sense to solve the modular devicetree problem in a rcar-like
-  fashion?
-- is there perhaps a more canonical / idiomatic way to solve this?
-
-Sven
