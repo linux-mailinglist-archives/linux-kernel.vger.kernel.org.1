@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE93C1ABF4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352C41ABF51
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633498AbgDPLdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:33:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56020 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506097AbgDPLco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:32:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 068B9AC64;
-        Thu, 16 Apr 2020 11:32:41 +0000 (UTC)
-Message-ID: <096375407b15960b93f8511f0ba79618af7804e2.camel@suse.de>
-Subject: Re: [PATCH 1/4] of: property: Fix create device links for all
- child-supplier dependencies
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 16 Apr 2020 13:32:40 +0200
-In-Reply-To: <CAGETcx_+i9=+a4OEY-rySY4vNDg1jt4160zAMPR7U-UG38Ysww@mail.gmail.com>
-References: <20200415150550.28156-1-nsaenzjulienne@suse.de>
-         <20200415150550.28156-2-nsaenzjulienne@suse.de>
-         <CAGETcx_+i9=+a4OEY-rySY4vNDg1jt4160zAMPR7U-UG38Ysww@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-o8zR7/3qQoOvLtsIlcam"
-User-Agent: Evolution 3.34.2 
+        id S2633607AbgDPLdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633448AbgDPLcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 07:32:55 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912ECC061A0C;
+        Thu, 16 Apr 2020 04:32:53 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x26so1496992pgc.10;
+        Thu, 16 Apr 2020 04:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=73G/tYBPsY7Yumk7mWov9Hec1mGGxgp9HY4KcukxdJk=;
+        b=W0IGsdm+ACN3UO/Jo0nd+PFHgkmBMXkb3+UjlCb2MUZNnpWE2c0Srt8wlfJrux16No
+         55tOI1PdSYIqK+t6kOiy9gqnRnEQE0HnP4cICNOeuDQL82IOiVKpcRke4iQEnvrFvHmh
+         pj5S9eQEugeAbYsuDllp01Y+LyCUWgpVsNrKvwEvWbgu79wYOpEiMcp/pkCKPp2I573F
+         84IauxJyP3NqAYcyu3dYmbyW/oZQrSKdRzgKMlxSpuqM8ZuA+DHkIthKUpnLI+WK8sqj
+         fDXNeKeK9RtrqqJ3Jj2sQbWnU9Tp9+vEOdtae05A33NhtDVJ3fmR+XpYxmbk6b9QnZz2
+         qL7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=73G/tYBPsY7Yumk7mWov9Hec1mGGxgp9HY4KcukxdJk=;
+        b=b9MncRHlBFIhtavphH83o34YGOx74nqSh5VOscJ6KeQamyHpyNTLmuFN6ym8+FbZWr
+         +BU4pL83wmsltI9yg4CaQfe/6mQSKfCc3+SWIgR1EfkK9FyKW96WMVJwccMFGS9jWXgw
+         PP4w9AxtrExTgt6m/gV9F1sSjnjCHRNQvpV5gX63IuKXRK5O2nbsjmLHqaoRELdJwaRf
+         mgCJfaD1FdxemU6BP8l3mv3G0Z+SwNT3q/CgliJzGI0h6GUDeqmndulknoemhtNhduW6
+         7S5TWzEf3/flF3FWf71q+enUSilZiBvFw0UjLfThgP/KaLHleBxup7vncaiQkfkyACU8
+         fpQg==
+X-Gm-Message-State: AGi0PuaizA6nq1hLXAj+CCCLBD810xt/Wm9whJ0eHSWZoAtj/bo/fZ+E
+        8avNTMMKu4fOMzIVQ1t1oz8=
+X-Google-Smtp-Source: APiQypKzID1pPKYdKYh039MvmszprZ+oT+Eo9hNJzwnQiIO4oU4+niTGf8czeKJIbqDEZzyjhgdirQ==
+X-Received: by 2002:a63:6c83:: with SMTP id h125mr21113825pgc.168.1587036772993;
+        Thu, 16 Apr 2020 04:32:52 -0700 (PDT)
+Received: from localhost (181.56.30.125.dy.iij4u.or.jp. [125.30.56.181])
+        by smtp.gmail.com with ESMTPSA id h11sm16533490pfn.125.2020.04.16.04.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 04:32:51 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Thu, 16 Apr 2020 20:32:49 +0900
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] media: v4l2-ctrls: add more NULL pointer checks
+Message-ID: <20200416113249.GG30641@jagdpanzerIV.localdomain>
+References: <20200410103501.1083-1-sergey.senozhatsky@gmail.com>
+ <c83c137b-b801-a06b-e324-09dd3bbc9daf@xs4all.nl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c83c137b-b801-a06b-e324-09dd3bbc9daf@xs4all.nl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/04/16 10:53), Hans Verkuil wrote:
+[..]
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> > @@ -2869,6 +2869,9 @@ EXPORT_SYMBOL(v4l2_ctrl_add_handler);
+> >  
+> >  bool v4l2_ctrl_radio_filter(const struct v4l2_ctrl *ctrl)
+> >  {
+> > +	if (WARN_ON(!ctrl))
+> > +		return false;
+> > +
+> >  	if (V4L2_CTRL_ID2WHICH(ctrl->id) == V4L2_CTRL_CLASS_FM_TX)
+> >  		return true;
+> >  	if (V4L2_CTRL_ID2WHICH(ctrl->id) == V4L2_CTRL_CLASS_FM_RX)
+> > @@ -3794,7 +3797,9 @@ s32 v4l2_ctrl_g_ctrl(struct v4l2_ctrl *ctrl)
+> >  	struct v4l2_ext_control c;
+> >  
+> >  	/* It's a driver bug if this happens. */
+> > -	WARN_ON(!ctrl->is_int);
+> > +	if (WARN_ON(!ctrl || !ctrl->is_int))
+> > +		return -EINVAL;
+> 
+> Just return 0 here. The return value is the control's value, not an error code.
+> So all you can do here is return 0 in the absence of anything better.
 
---=-o8zR7/3qQoOvLtsIlcam
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+OK.
 
-On Wed, 2020-04-15 at 11:22 -0700, Saravana Kannan wrote:
-> Actually a few more nits about the commit text.
->=20
-> On Wed, Apr 15, 2020 at 8:06 AM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > Upon adding a new platform device we scan its properties and its
->=20
-> This code runs for all devices created from a DT node. Not just
-> platform devices. So fix this paragraph appropriately?
->=20
-> Upon adding a new device from a DT node, we scan... ?
+> > +
+> >  	c.value = 0;
+> >  	get_ctrl(ctrl, &c);
+> >  	return c.value;
+> > @@ -4212,6 +4217,9 @@ EXPORT_SYMBOL(v4l2_s_ctrl);
+> >  
+> >  int __v4l2_ctrl_s_ctrl(struct v4l2_ctrl *ctrl, s32 val)
+> >  {
+> > +	if (!ctrl)
+> 
+> Change this to 'if (WARN_ON(!ctrl))'
+> 
+> I don't think NULL pointers should be silently ignored: it really
+> indicates a driver bug. It it certainly a good idea to WARN instead.
 
-Noted.
+Should WARN_ON() be only in unlocked versions of ctrl API? It probably
+would make sense to add WARNs to both - e.g. to v4l2_ctrl_s_ctrl() and
+to __v4l2_ctrl_s_ctrl(). By the way, why don't locked and unlocked
+versions live together in v4l2-ctrls.c file? Any reason for, e.g.,
+v4l2_ctrl_s_ctrl() to be in header and __v4l2_ctrl_s_ctrl() to be C-file?
 
-Regards,
-Nicolas
+> The same is true for the functions below.
 
+OK.
 
---=-o8zR7/3qQoOvLtsIlcam
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6YQlgACgkQlfZmHno8
-x/522wf8Cl2aGiFtYYqXEYWScQzi9HK5/l8eZnRUjn1jAH4bhP8AdKJY6LTC7g0t
-TnY8ux5Hbj6psHREIZWz6w8E/IRHXtyiOl4fWXE9Ai+azgJCuxhZyvhkjclQl6Vv
-D3xeimHvWtXC5QtboMLXomVBpSpGx2F+aBj1ESj2Iq/CWjJT/FLSO85m4Aj9NQmq
-hVaWxOGDp4USMrUeDIzs2JLy9r3KCpgRSsv3cMmIQ1pEUfGdUjBy/qdyhem1/uBr
-gR4A0AFwoO5tRKsREMjkmf06DV/yvMXpUgfCKYIfAUvdiYyVqBymDFYtdCRKx4If
-7wOtx1ftvFBq2sttpA/5ioadNzuD1A==
-=MowF
------END PGP SIGNATURE-----
-
---=-o8zR7/3qQoOvLtsIlcam--
-
+	-ss
