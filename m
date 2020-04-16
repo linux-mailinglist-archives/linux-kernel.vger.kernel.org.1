@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848971AC977
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3733B1AC3AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442473AbgDPPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:23:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
+        id S2898632AbgDPNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898496AbgDPNpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:45:18 -0400
+        id S2895984AbgDPNfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:35:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B27272076D;
-        Thu, 16 Apr 2020 13:45:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 561D420732;
+        Thu, 16 Apr 2020 13:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044718;
-        bh=HeFoJtQMHA3FTTcjMfTXMgiQSyrQtjY1Nu2+TAJH6kg=;
+        s=default; t=1587044118;
+        bh=Ccx5IMb0hrnaC5537dtoCxBIqyonxRrmjubp0SWGv5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djTw6UyzykWygimxM2aWepTkSE3hX3Dyd+Pb8/GhiCBgJLi225913ISbmBLe06XVO
-         vxlrACz4P9yhlSKXXBALyk/UGhBdok8Dl1IwX3Ia51rAFWfH13F0tBbilzV+QG5vEM
-         MGYohtH8fj4iqlJK4MWvNEnXzoig3ACLBY3ToMXo=
+        b=yx/9meMjizZ3N5cAYP9j9jIbNjgk7FPIHyENHyziBYfNkilNOLJxipmkiD9NCLzqF
+         pvg+9m0oKzpsshRF4ejN0b070xBEYPSNfi+0cSmnq/5DztozAOnQb4u44dxL16tUcN
+         wRj3xBv7r7da08iqmK0T3w+C/ddbTwdc0Gg7vMGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, cki-project@redhat.com,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/232] block, bfq: move forward the getting of an extra ref in bfq_bfqq_move
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.5 089/257] ALSA: hda: Fix potential access overflow in beep helper
 Date:   Thu, 16 Apr 2020 15:22:20 +0200
-Message-Id: <20200416131321.543285467@linuxfoundation.org>
+Message-Id: <20200416131337.097785990@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Valente <paolo.valente@linaro.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit fd1bb3ae54a9a2e0c42709de861c69aa146b8955 ]
+commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a upstream.
 
-Commit ecedd3d7e199 ("block, bfq: get extra ref to prevent a queue
-from being freed during a group move") gets an extra reference to a
-bfq_queue before possibly deactivating it (temporarily), in
-bfq_bfqq_move(). This prevents the bfq_queue from disappearing before
-being reactivated in its new group.
+The beep control helper function blindly stores the values in two
+stereo channels no matter whether the actual control is mono or
+stereo.  This is practically harmless, but it annoys the recently
+introduced sanity check, resulting in an error when the checker is
+enabled.
 
-Yet, the bfq_queue may also be expired (i.e., its service may be
-stopped) before the bfq_queue is deactivated. And also an expiration
-may lead to a premature freeing. This commit fixes this issue by
-simply moving forward the getting of the extra reference already
-introduced by commit ecedd3d7e199 ("block, bfq: get extra ref to
-prevent a queue from being freed during a group move").
+This patch corrects the behavior to store only on the defined array
+member.
 
-Reported-by: cki-project@redhat.com
-Tested-by: cki-project@redhat.com
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- block/bfq-cgroup.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/pci/hda/hda_beep.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 86cd718e0380b..5611769e15690 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -625,6 +625,12 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+--- a/sound/pci/hda/hda_beep.c
++++ b/sound/pci/hda/hda_beep.c
+@@ -290,8 +290,12 @@ int snd_hda_mixer_amp_switch_get_beep(st
  {
- 	struct bfq_entity *entity = &bfqq->entity;
- 
-+	/*
-+	 * Get extra reference to prevent bfqq from being freed in
-+	 * next possible expire or deactivate.
-+	 */
-+	bfqq->ref++;
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct hda_beep *beep = codec->beep;
++	int chs = get_amp_channels(kcontrol);
 +
- 	/* If bfqq is empty, then bfq_bfqq_expire also invokes
- 	 * bfq_del_bfqq_busy, thereby removing bfqq and its entity
- 	 * from data structures related to current group. Otherwise we
-@@ -635,12 +641,6 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 		bfq_bfqq_expire(bfqd, bfqd->in_service_queue,
- 				false, BFQQE_PREEMPTED);
- 
--	/*
--	 * get extra reference to prevent bfqq from being freed in
--	 * next possible deactivate
--	 */
--	bfqq->ref++;
--
- 	if (bfq_bfqq_busy(bfqq))
- 		bfq_deactivate_bfqq(bfqd, bfqq, false, false);
- 	else if (entity->on_st)
-@@ -660,7 +660,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 
- 	if (!bfqd->in_service_queue && !bfqd->rq_in_driver)
- 		bfq_schedule_dispatch(bfqd);
--	/* release extra ref taken above */
-+	/* release extra ref taken above, bfqq may happen to be freed now */
- 	bfq_put_queue(bfqq);
- }
- 
--- 
-2.20.1
-
+ 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
+-		ucontrol->value.integer.value[0] =
++		if (chs & 1)
++			ucontrol->value.integer.value[0] = beep->enabled;
++		if (chs & 2)
+ 			ucontrol->value.integer.value[1] = beep->enabled;
+ 		return 0;
+ 	}
 
 
