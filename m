@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA321AC2C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB231AC3F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896543AbgDPNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37792 "EHLO mail.kernel.org"
+        id S2408767AbgDPNwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895801AbgDPN2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:28:41 -0400
+        id S2896445AbgDPNgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:36:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D542217D8;
-        Thu, 16 Apr 2020 13:28:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 142B7208E4;
+        Thu, 16 Apr 2020 13:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043720;
-        bh=ZcpYVsCP/XLAJuphgVNQRaUYJF/lasso5Ft3WcK6x/0=;
+        s=default; t=1587044207;
+        bh=WEjbj32u1Jb4ntTAzOpTsIfb0FsieTcI5zbiUUeeuy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tn0LqvGjiF+T2sYs5sedC5WBWmeYsfVGpjudgBQkefwdHlAtcmIEeu4ZbC1TG32jt
-         /w0Q2ejAulFXdLiKeugw2lwLLc4FJp4H8tJQw9+AXIaQt0rmXSe6Ps8Z5qt1hq4Aqu
-         uDCDCO97Hs/toLNm6EGzOccZnJyCTBpzDV9dEfA4=
+        b=KMRjSWHEbi/Io/qN2QPDO3Mkc5WB5Ro2Hjb5cdzn5ws39XR9PU3CrfCfCe0Oy4Bgp
+         q01EwlbcXyOhC2RV5peFyD/Vpa9e3VauWi688MYtXRD/7v2e6UL7i/zXoBULyKXLPJ
+         RE37Fn4M9J5Q3Etjizu/DGA/O6yfAl/CDcpEnrGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junyong Sun <sunjunyong@xiaomi.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 035/146] firmware: fix a double abort case with fw_load_sysfs_fallback
+        stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5.5 125/257] rcu: Make rcu_barrier() account for offline no-CBs CPUs
 Date:   Thu, 16 Apr 2020 15:22:56 +0200
-Message-Id: <20200416131247.315233535@linuxfoundation.org>
+Message-Id: <20200416131341.998176100@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +42,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junyong Sun <sunjy516@gmail.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit bcfbd3523f3c6eea51a74d217a8ebc5463bcb7f4 ]
+commit 127e29815b4b2206c0a97ac1d83f92ffc0e25c34 upstream.
 
-fw_sysfs_wait_timeout may return err with -ENOENT
-at fw_load_sysfs_fallback and firmware is already
-in abort status, no need to abort again, so skip it.
+Currently, rcu_barrier() ignores offline CPUs,  However, it is possible
+for an offline no-CBs CPU to have callbacks queued, and rcu_barrier()
+must wait for those callbacks.  This commit therefore makes rcu_barrier()
+directly invoke the rcu_barrier_func() with interrupts disabled for such
+CPUs.  This requires passing the CPU number into this function so that
+it can entrain the rcu_barrier() callback onto the correct CPU's callback
+list, given that the code must instead execute on the current CPU.
 
-This issue is caused by concurrent situation like below:
-when thread 1# wait firmware loading, thread 2# may write
--1 to abort loading and wakeup thread 1# before it timeout.
-so wait_for_completion_killable_timeout of thread 1# would
-return remaining time which is != 0 with fw_st->status
-FW_STATUS_ABORTED.And the results would be converted into
-err -ENOENT in __fw_state_wait_common and transfered to
-fw_load_sysfs_fallback in thread 1#.
-The -ENOENT means firmware status is already at ABORTED,
-so fw_load_sysfs_fallback no need to get mutex to abort again.
------------------------------
-thread 1#,wait for loading
-fw_load_sysfs_fallback
- ->fw_sysfs_wait_timeout
-    ->__fw_state_wait_common
-       ->wait_for_completion_killable_timeout
+While in the area, this commit fixes a bug where the first CPU's callback
+might have been invoked before rcu_segcblist_entrain() returned, which
+would also result in an early wakeup.
 
-in __fw_state_wait_common,
-...
-93    ret = wait_for_completion_killable_timeout(&fw_st->completion, timeout);
-94    if (ret != 0 && fw_st->status == FW_STATUS_ABORTED)
-95       return -ENOENT;
-96    if (!ret)
-97	 return -ETIMEDOUT;
-98
-99    return ret < 0 ? ret : 0;
------------------------------
-thread 2#, write -1 to abort loading
-firmware_loading_store
- ->fw_load_abort
-   ->__fw_load_abort
-     ->fw_state_aborted
-       ->__fw_state_set
-         ->complete_all
-
-in __fw_state_set,
-...
-111    if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED)
-112       complete_all(&fw_st->completion);
--------------------------------------------
-BTW,the double abort issue would not cause kernel panic or create an issue,
-but slow down it sometimes.The change is just a minor optimization.
-
-Signed-off-by: Junyong Sun <sunjunyong@xiaomi.com>
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Link: https://lore.kernel.org/r/1583202968-28792-1-git-send-email-sunjunyong@xiaomi.com
+Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+[ paulmck: Apply optimization feedback from Boqun Feng. ]
+Cc: <stable@vger.kernel.org> # 5.5.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/base/firmware_loader/fallback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/trace/events/rcu.h |    1 +
+ kernel/rcu/tree.c          |   36 ++++++++++++++++++++++++------------
+ 2 files changed, 25 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-index 818d8c37d70a9..3b7b748c4d4f2 100644
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -572,7 +572,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs,
- 	}
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -720,6 +720,7 @@ TRACE_EVENT_RCU(rcu_torture_read,
+  *	"Begin": rcu_barrier() started.
+  *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
+  *	"Inc1": rcu_barrier() piggyback check counter incremented.
++ *	"OfflineNoCBQ": rcu_barrier() found offline no-CBs CPU with callbacks.
+  *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
+  *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
+  *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2888,9 +2888,10 @@ static void rcu_barrier_callback(struct
+ /*
+  * Called with preemption disabled, and from cross-cpu IRQ context.
+  */
+-static void rcu_barrier_func(void *unused)
++static void rcu_barrier_func(void *cpu_in)
+ {
+-	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
++	uintptr_t cpu = (uintptr_t)cpu_in;
++	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
  
- 	retval = fw_sysfs_wait_timeout(fw_priv, timeout);
--	if (retval < 0) {
-+	if (retval < 0 && retval != -ENOENT) {
- 		mutex_lock(&fw_lock);
- 		fw_load_abort(fw_sysfs);
- 		mutex_unlock(&fw_lock);
--- 
-2.20.1
-
+ 	rcu_barrier_trace(TPS("IRQ"), -1, rcu_state.barrier_sequence);
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+@@ -2917,7 +2918,7 @@ static void rcu_barrier_func(void *unuse
+  */
+ void rcu_barrier(void)
+ {
+-	int cpu;
++	uintptr_t cpu;
+ 	struct rcu_data *rdp;
+ 	unsigned long s = rcu_seq_snap(&rcu_state.barrier_sequence);
+ 
+@@ -2940,13 +2941,14 @@ void rcu_barrier(void)
+ 	rcu_barrier_trace(TPS("Inc1"), -1, rcu_state.barrier_sequence);
+ 
+ 	/*
+-	 * Initialize the count to one rather than to zero in order to
+-	 * avoid a too-soon return to zero in case of a short grace period
+-	 * (or preemption of this task).  Exclude CPU-hotplug operations
+-	 * to ensure that no offline CPU has callbacks queued.
++	 * Initialize the count to two rather than to zero in order
++	 * to avoid a too-soon return to zero in case of an immediate
++	 * invocation of the just-enqueued callback (or preemption of
++	 * this task).  Exclude CPU-hotplug operations to ensure that no
++	 * offline non-offloaded CPU has callbacks queued.
+ 	 */
+ 	init_completion(&rcu_state.barrier_completion);
+-	atomic_set(&rcu_state.barrier_cpu_count, 1);
++	atomic_set(&rcu_state.barrier_cpu_count, 2);
+ 	get_online_cpus();
+ 
+ 	/*
+@@ -2956,13 +2958,23 @@ void rcu_barrier(void)
+ 	 */
+ 	for_each_possible_cpu(cpu) {
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+-		if (!cpu_online(cpu) &&
++		if (cpu_is_offline(cpu) &&
+ 		    !rcu_segcblist_is_offloaded(&rdp->cblist))
+ 			continue;
+-		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
++		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+ 			rcu_barrier_trace(TPS("OnlineQ"), cpu,
+ 					  rcu_state.barrier_sequence);
+-			smp_call_function_single(cpu, rcu_barrier_func, NULL, 1);
++			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
++		} else if (rcu_segcblist_n_cbs(&rdp->cblist) &&
++			   cpu_is_offline(cpu)) {
++			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
++					  rcu_state.barrier_sequence);
++			local_irq_disable();
++			rcu_barrier_func((void *)cpu);
++			local_irq_enable();
++		} else if (cpu_is_offline(cpu)) {
++			rcu_barrier_trace(TPS("OfflineNoCBNoQ"), cpu,
++					  rcu_state.barrier_sequence);
+ 		} else {
+ 			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
+ 					  rcu_state.barrier_sequence);
+@@ -2974,7 +2986,7 @@ void rcu_barrier(void)
+ 	 * Now that we have an rcu_barrier_callback() callback on each
+ 	 * CPU, and thus each counted, remove the initial count.
+ 	 */
+-	if (atomic_dec_and_test(&rcu_state.barrier_cpu_count))
++	if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
+ 		complete(&rcu_state.barrier_completion);
+ 
+ 	/* Wait for all rcu_barrier_callback() callbacks to be invoked. */
 
 
