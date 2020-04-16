@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8E11AC5D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD131AC4C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410125AbgDPO2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:28:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47498 "EHLO mail.kernel.org"
+        id S2392866AbgDPODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392616AbgDPOA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:00:26 -0400
+        id S1726610AbgDPNmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:42:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2377E2078B;
-        Thu, 16 Apr 2020 14:00:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 101AB2222C;
+        Thu, 16 Apr 2020 13:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045625;
-        bh=5Ty25x7/siPUKilRYHMcLb7XfHJHNLiTxo6srGlszyA=;
+        s=default; t=1587044537;
+        bh=540FkIF1U3MT9lP7hXMO8AP9c7LsRRoUqes2KkktgT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vdKTqqczONFc3RVoZ10diS9n5Kgs7k5mO4Pdvfg++ml5KAM2M4AMOUH874rKM9C7A
-         5arFalu3JoquMG4im7pl+NBvUXm4m6XdI2+h1T2F6/e1fTVh/9KHYZYSAnvJo6xxmR
-         5L1C5L3R99Cc88TMOBoZtTgmVx6J7E5rKbIiazWI=
+        b=G4bTYmF4VAIj9EWjd14Sa9VLRCHBo5t8imjM3rPiWh8SxCBa9/WN5Nwpkxm6hH0k/
+         LNQo31BsBUIUtuOgTCuKBm+4P/xSJIGW9qyP6Dz7Vpl3NXAkebgcQBb944OLYRFKTc
+         3CV9oKddPEzG1MawbZrfV8bbBtrhnIFfpgzjn49E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.6 211/254] drm/vboxvideo: Add missing remove_conflicting_pci_framebuffers call, v2
+        stable@vger.kernel.org, Prike Liang <Prike.Liang@amd.com>,
+        Mengbing Wang <Mengbing.Wang@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.5 249/257] drm/amdgpu: fix gfx hang during suspend with video playback (v2)
 Date:   Thu, 16 Apr 2020 15:25:00 +0200
-Message-Id: <20200416131352.447471577@linuxfoundation.org>
+Message-Id: <20200416131356.749679456@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Prike Liang <Prike.Liang@amd.com>
 
-commit a65a97b48694d34248195eb89bf3687403261056 upstream.
+[ Upstream commit 487eca11a321ef33bcf4ca5adb3c0c4954db1b58 ]
 
-The vboxvideo driver is missing a call to remove conflicting framebuffers.
+The system will be hang up during S3 suspend because of SMU is pending
+for GC not respose the register CP_HQD_ACTIVE access request.This issue
+root cause of accessing the GC register under enter GFX CGGPG and can
+be fixed by disable GFX CGPG before perform suspend.
 
-Surprisingly, when using legacy BIOS booting this does not really cause
-any issues. But when using UEFI to boot the VM then plymouth will draw
-on both the efifb /dev/fb0 and /dev/drm/card0 (which has registered
-/dev/fb1 as fbdev emulation).
+v2: Use disable the GFX CGPG instead of RLC safe mode guard.
 
-VirtualBox will actual display the output of both devices (I guess it is
-showing whatever was drawn last), this causes weird artifacts because of
-pitch issues in the efifb when the VM window is not sized at 1024x768
-(the window will resize to its last size once the vboxvideo driver loads,
-changing the pitch).
-
-Adding the missing drm_fb_helper_remove_conflicting_pci_framebuffers()
-call fixes this.
-
-Changes in v2:
--Make the drm_fb_helper_remove_conflicting_pci_framebuffers() call one of
- the first things we do in our probe() method
-
+Signed-off-by: Prike Liang <Prike.Liang@amd.com>
+Tested-by: Mengbing Wang <Mengbing.Wang@amd.com>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Fixes: 2695eae1f6d3 ("drm/vboxvideo: Switch to generic fbdev emulation")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200325144310.36779-1-hdegoede@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vboxvideo/vbox_drv.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-@@ -41,6 +41,10 @@ static int vbox_pci_probe(struct pci_dev
- 	if (!vbox_check_supported(VBE_DISPI_ID_HGSMI))
- 		return -ENODEV;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 9a8a1c6ca3210..7d340c9ec3037 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -2259,8 +2259,6 @@ static int amdgpu_device_ip_suspend_phase1(struct amdgpu_device *adev)
+ {
+ 	int i, r;
  
-+	ret = drm_fb_helper_remove_conflicting_pci_framebuffers(pdev, "vboxvideodrmfb");
-+	if (ret)
-+		return ret;
+-	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
+-	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
+ 
+ 	for (i = adev->num_ip_blocks - 1; i >= 0; i--) {
+ 		if (!adev->ip_blocks[i].status.valid)
+@@ -3242,6 +3240,9 @@ int amdgpu_device_suspend(struct drm_device *dev, bool suspend, bool fbcon)
+ 		}
+ 	}
+ 
++	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
++	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
 +
- 	vbox = kzalloc(sizeof(*vbox), GFP_KERNEL);
- 	if (!vbox)
- 		return -ENOMEM;
+ 	amdgpu_amdkfd_suspend(adev);
+ 
+ 	amdgpu_ras_suspend(adev);
+-- 
+2.20.1
+
 
 
