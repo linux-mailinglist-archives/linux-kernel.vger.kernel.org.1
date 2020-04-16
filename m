@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68081AC28E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20C61AC4FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896083AbgDPN3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:29:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36222 "EHLO mail.kernel.org"
+        id S2393492AbgDPOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895561AbgDPN1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:27:42 -0400
+        id S2439547AbgDPNqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:46:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D0FB206E9;
-        Thu, 16 Apr 2020 13:27:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2F5C21744;
+        Thu, 16 Apr 2020 13:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043661;
-        bh=Ldv/NJjXofzhti8uNHL/ou24Ity42qDaHmmg10Dk09I=;
+        s=default; t=1587044772;
+        bh=i/WQ4zp2hHzop+pFU2DiVs4dApyLMmZBX3q6djS2+kI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pg1lN2+l7kdWaiTMSpT9cdvmimpL2BcyAfrhrYPG6C93BsfzP0PGk5C+K6tZVLGbe
-         tX3D63ZOL/6m4aj8alyWb8TS3pun+zk4rXuAn8NsNkS2begpCeY1mmSxChsxabwxcf
-         ilVU+jKWKPmTyF8x+5jHNTiDR4AiBvtsKqzASQB0=
+        b=ZIlUQcEcq/3Nc8GkkNMRs+EHKlAz2XqrgyXzSVHTynF2Yd8i51RfCuoLiNBQ9OAL8
+         B8v0EBIeQUoB5kl6mUV0JcW5gReVxYOZbApejlRvPj6x5/OMuQnr83LE/1itsiQFXJ
+         O8vShyoxdfgEud5rp2aQfVTOiRoLm5ejViKgJazE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.19 049/146] usb: gadget: composite: Inform controller driver of self-powered
+        stable@vger.kernel.org, Wenhua Liu <liuw@vmware.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>
+Subject: [PATCH 5.4 096/232] nvmet-tcp: fix maxh2cdata icresp parameter
 Date:   Thu, 16 Apr 2020 15:23:10 +0200
-Message-Id: <20200416131249.594458723@linuxfoundation.org>
+Message-Id: <20200416131326.982034058@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
-References: <20200416131242.353444678@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit 5e5caf4fa8d3039140b4548b6ab23dd17fce9b2c upstream.
+commit 9cda34e37489244a8c8628617e24b2dbc8a8edad upstream.
 
-Different configuration/condition may draw different power. Inform the
-controller driver of the change so it can respond properly (e.g.
-GET_STATUS request). This fixes an issue with setting MaxPower from
-configfs. The composite driver doesn't check this value when setting
-self-powered.
+MAXH2CDATA is not zero based. Also no reason to limit ourselves to
+1M transfers as we can do more easily. Make this an arbitrary limit
+of 16M.
 
-Cc: stable@vger.kernel.org
-Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Reported-by: Wenhua Liu <liuw@vmware.com>
+Cc: stable@vger.kernel.org # v5.0+
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/composite.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/nvme/target/tcp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -847,6 +847,11 @@ static int set_config(struct usb_composi
- 	else
- 		power = min(power, 900U);
- done:
-+	if (power <= USB_SELF_POWER_VBUS_MAX_DRAW)
-+		usb_gadget_set_selfpowered(gadget);
-+	else
-+		usb_gadget_clear_selfpowered(gadget);
-+
- 	usb_gadget_vbus_draw(gadget, power);
- 	if (result >= 0 && cdev->delayed_status)
- 		result = USB_GADGET_DELAYED_STATUS;
-@@ -2265,6 +2270,7 @@ void composite_suspend(struct usb_gadget
- 
- 	cdev->suspended = 1;
- 
-+	usb_gadget_set_selfpowered(gadget);
- 	usb_gadget_vbus_draw(gadget, 2);
- }
- 
-@@ -2293,6 +2299,9 @@ void composite_resume(struct usb_gadget
- 		else
- 			maxpower = min(maxpower, 900U);
- 
-+		if (maxpower > USB_SELF_POWER_VBUS_MAX_DRAW)
-+			usb_gadget_clear_selfpowered(gadget);
-+
- 		usb_gadget_vbus_draw(gadget, maxpower);
- 	}
- 
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -794,7 +794,7 @@ static int nvmet_tcp_handle_icreq(struct
+ 	icresp->hdr.pdo = 0;
+ 	icresp->hdr.plen = cpu_to_le32(icresp->hdr.hlen);
+ 	icresp->pfv = cpu_to_le16(NVME_TCP_PFV_1_0);
+-	icresp->maxdata = cpu_to_le32(0xffff); /* FIXME: support r2t */
++	icresp->maxdata = cpu_to_le32(0x400000); /* 16M arbitrary limit */
+ 	icresp->cpda = 0;
+ 	if (queue->hdr_digest)
+ 		icresp->digest |= NVME_TCP_HDR_DIGEST_ENABLE;
 
 
