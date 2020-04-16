@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1A41AC81D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9A41AC869
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394886AbgDPPDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:03:38 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:44667 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441866AbgDPPDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:03:22 -0400
-Received: by mail-ot1-f68.google.com with SMTP id j4so3279909otr.11;
-        Thu, 16 Apr 2020 08:03:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NhtvBsFZKdhQx8mKpVCXLThI3U9c+Uba7tx4ykyajRs=;
-        b=TjWUJ5zAuCMKV/+9WBC7+fgsepgjKJGw5BNJxKstk4dvwFxvrezwHpHP2pgqF9g1Sa
-         ykQ3P98d/lzrc792jcX+/73oqFW4l3p6lxRewsKMMKX2cbwnRdLfQP+GgSLhNCm+Yv9p
-         Y47OJ4yCIQQCMuDvjINUbPOZlbHVLhS7sr6EwfnB64StesHwecxn+xMl+o+laC3/LC1h
-         CrrnmcxxOWgKztvfIb6M4c+sscwI7/gkqjXBFzREVHpUFQTlwvClpm2fx/2I7ha5nQwT
-         VPVK0eBGvihSBNUBAvLmUgtcI143osl9ypIkhFYFZasG4bNE6zt4vOB9HiA0ONmXpa8d
-         IDAw==
-X-Gm-Message-State: AGi0PuYJKqmpcKDs1zNoaXVrxJBDUJY9BsBpw9EV/4sBm432My/+F8t4
-        lC1onZKu7x8/SHEQdgDpVF1gYQtzO+YqvTy8/kI=
-X-Google-Smtp-Source: APiQypLc72efPpd7dodFB4nuqP83ZjD9NEcQPJztmkP3OAt5POv/APtHv3UB3jo4tqdUx+X1Km+yjqmHUlsSbehRlls=
-X-Received: by 2002:a9d:1d07:: with SMTP id m7mr25695278otm.167.1587049401160;
- Thu, 16 Apr 2020 08:03:21 -0700 (PDT)
+        id S2407986AbgDPPIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:08:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:63742 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441872AbgDPPHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:07:52 -0400
+IronPort-SDR: CRhiPWPlSDDWiEGWg66HjxGlQNN/Ma26T12do60+1eiLeXlQVDjQxMtUcIMw3AiSKtZ9Z3SkXi
+ 8EtfiGGhvjAA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 08:07:50 -0700
+IronPort-SDR: o5iUjlKVYAkiSQVPwxHxIkIYdjmBCXuTBBpdTwXmAecBBvW1C+zOu8iK1KaQu3UOTksj0n79i9
+ Gz3Rqojkq5Bw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
+   d="scan'208";a="278018877"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Apr 2020 08:07:49 -0700
+Date:   Thu, 16 Apr 2020 08:07:49 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [PATCH v2 00/10] KVM: VMX: Unionize vcpu_vmx.exit_reason
+Message-ID: <20200416150749.GA12170@linux.intel.com>
+References: <20200415175519.14230-1-sean.j.christopherson@intel.com>
+ <a77ca940-afe4-a94a-2698-6cda0f95ba5c@redhat.com>
 MIME-Version: 1.0
-References: <20200408160905.12101-1-andriy.shevchenko@linux.intel.com> <20200416141730.GE185537@smile.fi.intel.com>
-In-Reply-To: <20200416141730.GE185537@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 16 Apr 2020 17:03:06 +0200
-Message-ID: <CAJZ5v0ihzD4knW=pKFmcsW0Q9c5rfyJMFh2ChiePe5SWO6G_TQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] platform/x86: intel_cht_int33fe: clean up series
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a77ca940-afe4-a94a-2698-6cda0f95ba5c@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 4:17 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Apr 08, 2020 at 07:09:00PM +0300, Andy Shevchenko wrote:
-> > When I started looking into the intel_cht_int33fe driver for an example of use
-> > software node API, I have noticed that it's hard to get and code a bit messy.
-> > Here is a clean up, main part of which is to introduce node groups and API to
-> > register and unregister them. This and some pre-existing APIs can be used in
-> > the driver.
-> >
-> > So, because of cross-subsystem nature of this series, I may recommend to create
-> > myself the immutable branch which can be pulled to Rafael's and Greg's trees
-> > respectively. I'm also open for other proposals how to proceed.
->
-> Greg, Rafael,
-> any suggestion how to proceed with this series?
->
-> (It has been reviewed and tested).
+On Thu, Apr 16, 2020 at 03:44:06PM +0200, Paolo Bonzini wrote:
+> On 15/04/20 19:55, Sean Christopherson wrote:
+> For now I committed only patches 1-9, just to limit the conflicts with
+> the other series.  I would like to understand how you think the
+> conflicts should be fixed with the union.
 
-You can merge them through platform/x86 as far as I'm concerned, or
-please let me know if you want me to pick them up.
+Pushed a branch.  Basically, take the union code and then make sure there
+aren't any vmcs_read32(VM_EXIT_INTR_INFO) or vmcs_readl(EXIT_QUALIFICATION)
+calls outside of the caching accessors or dump_vmcs().
 
-Cheers!
+  https://github.com/sean-jc/linux for_paolo_merge_union_cache 
