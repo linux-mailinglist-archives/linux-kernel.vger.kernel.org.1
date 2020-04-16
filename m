@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5A51AC929
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421F81AC94F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442421AbgDPPTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:19:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53094 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389903AbgDPPTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:19:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 110BDAD1E;
-        Thu, 16 Apr 2020 15:19:07 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EC4091E0E5A; Thu, 16 Apr 2020 17:19:06 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 17:19:06 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2 V3] MM: replace PF_LESS_THROTTLE with
- PF_LOCAL_THROTTLE
-Message-ID: <20200416151906.GQ23739@quack2.suse.cz>
-References: <87tv2b7q72.fsf@notabene.neil.brown.name>
- <87v9miydai.fsf@notabene.neil.brown.name>
- <87ftdgw58w.fsf@notabene.neil.brown.name>
- <87wo6gs26e.fsf@notabene.neil.brown.name>
- <87tv1ks24t.fsf@notabene.neil.brown.name>
+        id S2409027AbgDPPVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2408935AbgDPPVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 11:21:23 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F5BC061A0C;
+        Thu, 16 Apr 2020 08:21:23 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r4so1791133pgg.4;
+        Thu, 16 Apr 2020 08:21:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PqhlYvcZrmCM70l8lqNpCrbISzWwKQ5w1U1k6I8jKZA=;
+        b=hKnRbOBsCft+ZCJ3dOvl2hctclPsJj4Mm+JVYqlNJxl8IHZr4V0qPXZZM+ivEpKEr3
+         SiN+TJT7MwvBlrUZGKKnHLyuM09g2LTZ5sFEPYO2Bre9v1C57e3OEQzt+kQMlPAAU7bL
+         jT0KyN96EsaQH2rinKl69nFDw/sZWH5DDkU/O4cF2UmDzXP9sncAFR8MLi/sIqWHacV1
+         58Fu08H460YfxgFvw+eku5Xt1o1O02wzOt2uvW4l497UWGzwVRSjjjN32yjTL4x8Hb6/
+         yTs+chUep9thohSNFC3EA5qoHgYo1fuIHABHIVuWXuQQUGEAO5L/w7IuMCsfcBrVTRll
+         V8sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PqhlYvcZrmCM70l8lqNpCrbISzWwKQ5w1U1k6I8jKZA=;
+        b=Hzj7qJu9xBwq6KI+wckzFF1oSuRKCOwKOlT3ldv9A+dLzE4mdM08YNYwcRAB4/XhP8
+         M3J2QmOGr2McDKNmWL5wo1Swx1ddTu2K45hMyBqlGRGOXq5mKuHaLzZf7hd580BThJSZ
+         cRUx1q3o4tlmmv6bQCbMKXABtW1zROXuXCz3WppJp7nrj/2ikvJ+0dwi3XBHtIjiIrRB
+         O6rM0X/w5SrkTPK5QycWmroJUM0yftqrP0fL5KGbpRShJbJFZvzWJS1qWMe8nwnDjfqv
+         AHUQjFa1ur1BJ+Hqf5lDOxcA+CWhhyY6qA8c5/Ry+dk1/gXtB4nH54oPfdj+nYIm0wjS
+         31Cw==
+X-Gm-Message-State: AGi0PuZi1v5vaJuVNC+l5Xn46p3yWQkit2uxylndkxp5uneXSYDNnBHx
+        4hkIeG3KZHN0uNhXFiAyOucYisPH+mh/aB86HJ8=
+X-Google-Smtp-Source: APiQypL4QpTvQB0/qCwH/MWZ7VIatjMX02cplXwC/TTrnIKMzbV6jUInWZ+z6zydE0IKy2JVTEJ6y3JIo/biM4hFQT4=
+X-Received: by 2002:a63:5511:: with SMTP id j17mr15897581pgb.4.1587050482349;
+ Thu, 16 Apr 2020 08:21:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tv1ks24t.fsf@notabene.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200408160905.12101-1-andriy.shevchenko@linux.intel.com>
+ <20200416141730.GE185537@smile.fi.intel.com> <CAJZ5v0ihzD4knW=pKFmcsW0Q9c5rfyJMFh2ChiePe5SWO6G_TQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ihzD4knW=pKFmcsW0Q9c5rfyJMFh2ChiePe5SWO6G_TQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 16 Apr 2020 18:21:15 +0300
+Message-ID: <CAHp75Vf6MT1AFacUkRUP3760nv=3V5kzF2AHWJG64tr5yZ2=dg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] platform/x86: intel_cht_int33fe: clean up series
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Darren Hart <dvhart@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 16-04-20 10:30:42, NeilBrown wrote:
-> 
-> PF_LESS_THROTTLE exists for loop-back nfsd (and a similar need in the
-> loop block driver and callers of prctl(PR_SET_IO_FLUSHER)), where a
-> daemon needs to write to one bdi (the final bdi) in order to free up
-> writes queued to another bdi (the client bdi).
-> 
-> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dirty
-> pages, so that it can still dirty pages after other processses have been
-> throttled.
-> 
-> This approach was designed when all threads were blocked equally,
-> independently on which device they were writing to, or how fast it was.
-> Since that time the writeback algorithm has changed substantially with
-> different threads getting different allowances based on non-trivial
-> heuristics.  This means the simple "add 25%" heuristic is no longer
-> reliable.
-> 
-> The important issue is not that the daemon needs a *larger* dirty page
-> allowance, but that it needs a *private* dirty page allowance, so that
-> dirty pages for the "client" bdi that it is helping to clear (the bdi for
-> an NFS filesystem or loop block device etc) do not affect the throttling
-> of the deamon writing to the "final" bdi.
-> 
-> This patch changes the heuristic so that the task is only throttled if
-> *both* the global threshhold *and* the per-wb threshold are exceeded.
-> This is similar to the effect of BDI_CAP_STRICTLIMIT which causes the
-> global limits to be ignored, but it isn't as strict.  A PF_LOCAL_THROTTLE
-> task will be allowed to proceed unthrottled if the global threshold is
-> not exceeded or if the local threshold is not exceeded.  They need to
-> both be exceeded before PF_LOCAL_THROTTLE tasks are throttled.
-> 
-> This approach of "only throttle when target bdi is busy" is consistent
-> with the other use of PF_LESS_THROTTLE in current_may_throttle(), were
-> it causes attention to be focussed only on the target bdi.
-> 
-> So this patch
->  - renames PF_LESS_THROTTLE to PF_LOCAL_THROTTLE,
->  - removes the 25% bonus that that flag gives, and
->  - If PF_LOCAL_THROTTLE is set, don't delay at all unless both
->    thresholds are exceeded.
-> 
-> Note that previously realtime threads were treated the same as
-> PF_LESS_THROTTLE threads.  This patch does *not* change the behvaiour for
-> real-time threads, so it is now different from the behaviour of nfsd and
-> loop tasks.  I don't know what is wanted for realtime.
-> 
-> Acked-by: Chuck Lever <chuck.lever@oracle.com>
-> Signed-off-by: NeilBrown <neilb@suse.de>
+On Thu, Apr 16, 2020 at 6:05 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Apr 16, 2020 at 4:17 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Wed, Apr 08, 2020 at 07:09:00PM +0300, Andy Shevchenko wrote:
+> > > When I started looking into the intel_cht_int33fe driver for an example of use
+> > > software node API, I have noticed that it's hard to get and code a bit messy.
+> > > Here is a clean up, main part of which is to introduce node groups and API to
+> > > register and unregister them. This and some pre-existing APIs can be used in
+> > > the driver.
+> > >
+> > > So, because of cross-subsystem nature of this series, I may recommend to create
+> > > myself the immutable branch which can be pulled to Rafael's and Greg's trees
+> > > respectively. I'm also open for other proposals how to proceed.
+> >
+> > Greg, Rafael,
+> > any suggestion how to proceed with this series?
+> >
+> > (It has been reviewed and tested).
+>
+> You can merge them through platform/x86 as far as I'm concerned, or
+> please let me know if you want me to pick them up.
 
-...
+Works for me, but I would like to ask for formal Ack tag.
+Thanks!
 
-> @@ -1700,6 +1699,17 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
->  				sdtc = mdtc;
->  		}
->  
-> +		if (current->flags & PF_LOCAL_THROTTLE)
-> +			/* This task must only be throttled based on the bdi
-> +			 * it is writing to - dirty pages for other bdis might
-> +			 * be pages this task is trying to write out.  So it
-> +			 * gets a free pass unless both global and local
-> +			 * thresholds are exceeded.  i.e unless
-> +			 * "dirty_exceeded".
-> +			 */
-> +			if (!dirty_exceeded)
-> +				break;
-> +
->  		if (dirty_exceeded && !wb->dirty_exceeded)
->  			wb->dirty_exceeded = 1;
-
-Ok, but note that this will have one sideeffect you maybe didn't realize:
-Currently we try to throttle tasks softly - the heuristic rougly works like
-this: If dirty < (thresh + bg_thresh)/2, leave the task alone.
-(thresh+bg_thresh)/2 is called "freerun ceiling". If dirty is greater than
-this, we delay the task somewhat (the aim is to delay the task as long as
-it would take to write back the pages task has dirtied) in
-balance_dirty_pages() so ideally 'thresh' is never hit. Only if the
-heuristic consistently underestimates the time to writeback pages, we hit
-'thresh' and then block the task as long as it takes flush worker to clean
-enough pages to get below 'thresh'. This all leads to task being usually
-gradually slowed down in balance_dirty_pages() which generally leads to
-smoother overall system behavior.
-
-What you did makes PF_LOCAL_THROTTLE tasks ignore any limits and then when
-local bdi limit is exceeded, they'll suddently hit the wall and be blocked
-for a long time in balance_dirty_pages().
-
-So I like what you suggest in principle, just I think the implementation
-has undesirable sideeffects. I think it would be better to modify
-wb_position_ratio() to take PF_LOCAL_THROTTLE into account. It will be
-probably similar to how BDI_CAP_STRICTLIMIT is handled but different in
-some ways because BDI_CAP_STRICTLIMIT takes minimum from wb_pos_ratio and
-global pos_ratio, you rather want to take wb_pos_ratio only. Also there are
-some early bail out conditions when we are over global dirty limit which
-you need to handle differently for PF_LOCAL_THROTTLE. And then, when you
-have appropriate pos_ratio computed based on your policy, you can let the
-task wait for appropriate amount of time and things should just work (TM) ;).
-Thinking about it, you probably also want to add 'freerun' condition for
-PF_LOCAL_THROTTLE tasks like:
-
-	if ((current->flags & PF_LOCAL_THROTTLE) &&
-	    wb_dirty <= dirty_freerun_ceiling(wb_thresh, wb_bg_thresh))
-		go the freerun path...
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
