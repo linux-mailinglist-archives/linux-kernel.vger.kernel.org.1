@@ -2,89 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5F61ABDFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192D71ABDE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 12:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505082AbgDPKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 06:33:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27613 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2504890AbgDPK1Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:27:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587032842;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DM6k/0BvmOX6t724NGkINWqm7Df0IRyLKBF1DXuH/q0=;
-        b=g1VX12aIx+6Ib+AoiKvvR6MHClI5YNY4n9RkXCVQOzbFK5L0i2cs6Nryr9SrVlzVvGKW5G
-        DOrLx8WCm9cPbbj9EQmpdDdfjFBYHysCg5aoq5YHtVEwjnW6FSSot6jzuKPRseBK7TZcCR
-        fagfvdfck0JvoMT4shCsQqRp1pIfVgo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-LzQOBPtSNCKB7AltKEzm1A-1; Thu, 16 Apr 2020 06:27:17 -0400
-X-MC-Unique: LzQOBPtSNCKB7AltKEzm1A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2505021AbgDPKaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 06:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504976AbgDPK3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 06:29:10 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDC918017F6;
-        Thu, 16 Apr 2020 10:27:15 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A7C87E7C1;
-        Thu, 16 Apr 2020 10:27:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <874ktl2ide.fsf@oldenburg2.str.redhat.com>
-References: <874ktl2ide.fsf@oldenburg2.str.redhat.com> <3865908.1586874010@warthog.procyon.org.uk>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     dhowells@redhat.com, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-afs@lists.infradead.org,
-        ceph-devel@vger.kernel.org, keyrings@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: What's a good default TTL for DNS keys in the kernel
+        by mail.kernel.org (Postfix) with ESMTPSA id 265482192A;
+        Thu, 16 Apr 2020 10:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587032950;
+        bh=OssfVZy2Gtzt3T7P0reeqZMpIV9JxrCPL2xhmitTd9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0azUCD7j9RcZZiV9fqaX3mrmQxuFB5X+uVyL8ub/d/3Jq5rCsvrD/6RQAKxkop2lS
+         j4FUnBxx+wMRujUOfJqV1bhPGXblv7c1o0DoGeu8Fr243fX6VxwL6R/Ign9lW35kSB
+         /FIInuhbq4/sC5RnrupM6QhJ5cvYAf99B4nQjIAE=
+Date:   Thu, 16 Apr 2020 12:29:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Carlos Guerrero =?iso-8859-1?Q?=C1lvarez?= 
+        <carlosteniswarrior@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: Comedi: Drivers: das08: Fixed some coding style
+ issues
+Message-ID: <20200416102908.GC820251@kroah.com>
+References: <20200413080555.29267-1-carlosteniswarrior@gmail.com>
+ <20200413125140.GC3077651@kroah.com>
+ <CAB_Ssx7B13Lm-twHuEOzP4EODQ7kqd5jA0mxZS5SnpqxJ65XBg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <128768.1587032833.1@warthog.procyon.org.uk>
-Date:   Thu, 16 Apr 2020 11:27:13 +0100
-Message-ID: <128769.1587032833@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB_Ssx7B13Lm-twHuEOzP4EODQ7kqd5jA0mxZS5SnpqxJ65XBg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian Weimer <fweimer@redhat.com> wrote:
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-> You can get the real TTL if you do a DNS resolution on the name and
-> match the addresses against what you get out of the NSS functions.  If
-> they match, you can use the TTL from DNS.  Hackish, but it does give you
-> *some* TTL value.
+A: No.
+Q: Should I include quotations after my reply?
 
-I guess I'd have to do that in parallel.  Would calling something like
-res_mkquery() use local DNS caching?
+http://daringfireball.net/2007/07/on_top
 
-> The question remains what the expected impact of TTL expiry is.  Will
-> the kernel just perform a new DNS query if it needs one?  Or would you
-> expect that (say) the NFS client rechecks the addresses after TTL expiry
-> and if they change, reconnect to a new NFS server?
+On Mon, Apr 13, 2020 at 04:55:08PM +0200, Carlos Guerrero Álvarez wrote:
+> What do you mean with the From line?
 
-It depends on the filesystem.
+Look at the patch you sent, the "From:" line on your email does not have
+your name, only your email address.  Please fix that up when you resend
+any future patches.
 
-AFS keeps track of the expiration on the record and will issue a new lookup
-when the data expires, but NFS doesn't make use of this information.  The
-keyring subsystem will itself dispose of dns_resolver keys that expire and
-request_key() will only upcall again if the key has expired.
+thanks,
 
-The problem for NFS is that the host IP address is the primary key for the
-superblock (see nfs_compare_super_address()).
-
-CIFS also doesn't make direct use of the TTL, and again this may be because it
-uses the server address as part of the primary key for the superblock (see
-cifs_match_super()).
-
-David
-
+greg k-h
