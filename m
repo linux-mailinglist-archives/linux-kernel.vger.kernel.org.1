@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEC81AC422
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0307C1AC772
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391503AbgDPNyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:54:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50430 "EHLO mail.kernel.org"
+        id S2394753AbgDPOz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897606AbgDPNiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:02 -0400
+        id S2441805AbgDPN4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:56:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAEB721BE5;
-        Thu, 16 Apr 2020 13:38:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1649A20786;
+        Thu, 16 Apr 2020 13:56:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044281;
-        bh=TFXnfxHugoSP3Q7WZCuT3ZsZo+7q/qP8JgVFHiV9l8U=;
+        s=default; t=1587045393;
+        bh=s/3kHi8il/W5VDn7fjf0NkJJm/Hn4ruaFDq8kuwR8lA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d+XKXZ/jWDiNwoYigYtimCnFTVFpdcAuVdKfTVo3b03m/86tEu9fI39E7Y/PWegmh
-         pfLsJX2kzfnV0IB9zNt3xOyl8dRGrWDpUsW1LbQTnG/cEJkHNLUVIY/QdvQ60R99r3
-         ilGWX1QREoufvrkjcOVqO7WPX45qkF/ccqU8a1sA=
+        b=In0sonq0goaPJfUgC+cBAIESVZXRXBE1NIVMLgQmMDukE8NCr+ZFKRJ/B3chtjl5p
+         0jvJpgSNb5X7c5ugKRY7wb47s/8BWqaHWif4Xk8YxbrBd20GJj6Q8ippm1pT/Dqf1c
+         Wyi+L9BPlyyyb4MIXmuNQtPdbydy9Rr/2F5rk6rw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.5 153/257] mtd: spinand: Stop using spinand->oobbuf for buffering bad block markers
-Date:   Thu, 16 Apr 2020 15:23:24 +0200
-Message-Id: <20200416131345.705698143@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.6 116/254] io_uring: remove bogus RLIMIT_NOFILE check in file registration
+Date:   Thu, 16 Apr 2020 15:23:25 +0200
+Message-Id: <20200416131340.746421182@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,85 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 2148937501ee3d663e0010e519a553fea67ad103 upstream.
+commit c336e992cb1cb1db9ee608dfb30342ae781057ab upstream.
 
-For reading and writing the bad block markers, spinand->oobbuf is
-currently used as a buffer for the marker bytes. During the
-underlying read and write operations to actually get/set the content
-of the OOB area, the content of spinand->oobbuf is reused and changed
-by accessing it through spinand->oobbuf and/or spinand->databuf.
+We already checked this limit when the file was opened, and we keep it
+open in the file table. Hence when we added unit_inflight to the count
+we want to register, we're doubly accounting these files. This results
+in -EMFILE for file registration, if we're at half the limit.
 
-This is a flaw in the original design of the SPI NAND core and at the
-latest from 13c15e07eedf ("mtd: spinand: Handle the case where
-PROGRAM LOAD does not reset the cache") on, it results in not having
-the bad block marker written at all, as the spinand->oobbuf is
-cleared to 0xff after setting the marker bytes to zero.
-
-To fix it, we now just store the two bytes for the marker on the
-stack and let the read/write operations copy it from/to the page
-buffer later.
-
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200218100432.32433-2-frieder.schrempf@kontron.de
+Cc: stable@vger.kernel.org # v5.1+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/spi/core.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/io_uring.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -568,18 +568,18 @@ static int spinand_mtd_write(struct mtd_
- static bool spinand_isbad(struct nand_device *nand, const struct nand_pos *pos)
- {
- 	struct spinand_device *spinand = nand_to_spinand(nand);
-+	u8 marker[2] = { };
- 	struct nand_page_io_req req = {
- 		.pos = *pos,
--		.ooblen = 2,
-+		.ooblen = sizeof(marker),
- 		.ooboffs = 0,
--		.oobbuf.in = spinand->oobbuf,
-+		.oobbuf.in = marker,
- 		.mode = MTD_OPS_RAW,
- 	};
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5426,13 +5426,6 @@ static int __io_sqe_files_scm(struct io_
+ 	struct sk_buff *skb;
+ 	int i, nr_files;
  
--	memset(spinand->oobbuf, 0, 2);
- 	spinand_select_target(spinand, pos->target);
- 	spinand_read_page(spinand, &req, false);
--	if (spinand->oobbuf[0] != 0xff || spinand->oobbuf[1] != 0xff)
-+	if (marker[0] != 0xff || marker[1] != 0xff)
- 		return true;
- 
- 	return false;
-@@ -603,11 +603,12 @@ static int spinand_mtd_block_isbad(struc
- static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
- {
- 	struct spinand_device *spinand = nand_to_spinand(nand);
-+	u8 marker[2] = { };
- 	struct nand_page_io_req req = {
- 		.pos = *pos,
- 		.ooboffs = 0,
--		.ooblen = 2,
--		.oobbuf.out = spinand->oobbuf,
-+		.ooblen = sizeof(marker),
-+		.oobbuf.out = marker,
- 	};
- 	int ret;
- 
-@@ -622,7 +623,6 @@ static int spinand_markbad(struct nand_d
- 
- 	spinand_erase_op(spinand, pos);
- 
--	memset(spinand->oobbuf, 0, 2);
- 	return spinand_write_page(spinand, &req);
- }
- 
+-	if (!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN)) {
+-		unsigned long inflight = ctx->user->unix_inflight + nr;
+-
+-		if (inflight > task_rlimit(current, RLIMIT_NOFILE))
+-			return -EMFILE;
+-	}
+-
+ 	fpl = kzalloc(sizeof(*fpl), GFP_KERNEL);
+ 	if (!fpl)
+ 		return -ENOMEM;
 
 
