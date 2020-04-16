@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5091AC402
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838301AC477
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392303AbgDPNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S2392604AbgDPOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2897376AbgDPNhC (ORCPT
+        by vger.kernel.org with ESMTP id S2895979AbgDPNkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:37:02 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158AEC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:37:00 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id t11so5604760lfe.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:36:59 -0700 (PDT)
+        Thu, 16 Apr 2020 09:40:16 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AAFC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:40:16 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id q17so16064189qtp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 06:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KwBByiAv3HXmeAVixqGHcJ2QpuSnLZEjcGbMG0rBWiQ=;
-        b=nKlcSTBO8GkCKIkCf8/N+OMHUq2yJYsqJGYD/0xJeirmiL64DS1GL7ARltujhYVJCj
-         dUcAkGooLg9w7Fuy+DNQJD2FFRtk0QD57uBCP94rYqxGvIPCvKR1dw+XyStjOb2YoAIl
-         PwdoynVoOS9JWj3oNz4rDpHm2mwiLLDuy0685MPer49Pl2VzWtr5+7AHZ0owr7GSU2Vw
-         Dx4+edpy7ydLHo4deZyEk3HcgSrgU4jl57t7L1kVq6AvvsEqujV7hZOY0EHmgzsbwUir
-         KvceFCIP5jh/EonIzK2rfMaLEHcFLOao5FM/mJFsc+ZypqihrCRzBvizg+3e1qUDVRwt
-         1Aew==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vQ85kk+e5kLMqfj1rRbLwyKAs7ixIlJ9Ovt4gHCLOZM=;
+        b=iHqKNAsxPEqnI8xcUZ6uXkxSDGBlBbB8WKdi9dw84yatIflHS8NXbm2DOgxhTdyIIK
+         9qwus4vbY5T8VjMDtwKpZp4ihk5NUwBLghA4F2peLYCHTj+MJN3MozHoK+D7oDg43oKd
+         4sjL1CO7osXGVqm3iaJySUqaMQwaksZH3MBT7l0BJ17e7wrnaTdIgRdmydnLSZpq1Y7Z
+         0+tk/Zy72nYSTJxBYOMDOiD6xxy0D6dI6nVfkSREmLKEhGmn5y53CM8K2aC5h2EBXudS
+         z5mRX1RQSo68nJ+o1yQ5Brin1GzY1UmOm9PcTcUvTjgU7IY8f6UVm2IlRWlCHsVEHg2S
+         O4KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KwBByiAv3HXmeAVixqGHcJ2QpuSnLZEjcGbMG0rBWiQ=;
-        b=aNqX6bL24G3rGLgDvRXtzDgK/UeVjH3Nf7p76xSeNct71zgsgkhIwksY16bU+s4lMh
-         am9pyiKnpXeMVlWDrS/KTfGvL6Yyuys38w6vhVxh3Dqz2INLKydzUzNzfwbxOnMb0H/5
-         LG8QWoTw8jJjzsW2DJnhXHkQkAgYB/gJxR7lKUigG6sr7jMcFM0K7DdDxRRNSk/J6L5i
-         NVj5fYmJ9cL7CkKr2KUXmePD9xwcRGAAZIRDo8i2WxRBtgYv4hjGFZJCtQOub9+l8hNY
-         sw08OnThW+aEa5ksqp3kPhtftaAD619xc5LItO4iE4dRyqRoBeV0SJcotS+kdA/6NImi
-         CRGA==
-X-Gm-Message-State: AGi0PuYi2cRJkDH0NPnr2RH3VMKAEJVJ9zWTTR5IWILRjOU0PXsCbv3L
-        qOk7EEo4B3R/1uI7uHhKT8JumRwz9yO2XIZHriXteQ==
-X-Google-Smtp-Source: APiQypLmaDu06MvhRiFlvEJ/ov7gw/I0ZklH5i188LmiqNllxsyeo5Ed3VdGtvtxCNaWeQh4QttNyhq118LSIysiZXQ=
-X-Received: by 2002:ac2:51c9:: with SMTP id u9mr6422380lfm.184.1587044218400;
- Thu, 16 Apr 2020 06:36:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vQ85kk+e5kLMqfj1rRbLwyKAs7ixIlJ9Ovt4gHCLOZM=;
+        b=hHCila0nY01bkMhNKeUXeBg7svtz1LveDu15vd1RBBBdI2xqahBjVsCGQWN4P5Z1Qm
+         GVuVd/7R99E2PU9+H3CRHZZdAOTCLhmRm/V8lv1RES98eN58L+2NOtlsmlINBpWMR/iW
+         ISOSALDl5/FCvsdEVlkq0rAREHNfblqdOmUj3BkKeafkbu6mlZoPK3l8a25WLvgG09vP
+         gRUAO0vZc+/N+qlmyItL5LNOLGn15gPfQqgPBA8/VKsVGaEu+wzdt35EfEY1NpeGVrHp
+         yOM7719VBdlz3cUIfGvl0C5Nx0ydnmAUjq3T4kUqnNIxpkrEdGuP3EOxwIDQ4Ha6d1VZ
+         UVBQ==
+X-Gm-Message-State: AGi0PuaCcUAeDGmvYQIvkDgQsC+tX175EAE31WXvEZUB7FQ9m8K4ai/c
+        tuKOxioCYeqwT9Y8nh2UAQsfNw==
+X-Google-Smtp-Source: APiQypKLs9TewfDa6pgGm0Dcy3RXiiLr4P9Ch5H5VYYpmX81kKNvHNKJWoPar0UvooyVFERzu0hzDg==
+X-Received: by 2002:ac8:39e5:: with SMTP id v92mr26385594qte.224.1587044415233;
+        Thu, 16 Apr 2020 06:40:15 -0700 (PDT)
+Received: from [192.168.1.92] (pool-71-255-246-27.washdc.fios.verizon.net. [71.255.246.27])
+        by smtp.gmail.com with ESMTPSA id a62sm14859102qkb.134.2020.04.16.06.40.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 06:40:14 -0700 (PDT)
+Subject: Re: [Patch v10 0/9] Introduce Thermal Pressure
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, ionela.voinescu@arm.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rui.zhang@intel.com, qperret@google.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, rostedt@goodmis.org, will@kernel.org,
+        catalin.marinas@arm.com, sudeep.holla@arm.com,
+        juri.lelli@redhat.com, Jonathan Corbet <corbet@lwn.net>,
+        LKML <linux-kernel@vger.kernel.org>, amit.kachhap@gmail.com,
+        javi.merino@kernel.org, amit.kucheria@verdurent.com
+References: <20200222005213.3873-1-thara.gopinath@linaro.org>
+ <CAP=VYLqWfqOZT6ec9cKyKOsOhu7HhVn2f_eU+ca006i4CV8R-w@mail.gmail.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <51cdde9e-f124-8e19-693c-4accc6f2e948@linaro.org>
+Date:   Thu, 16 Apr 2020 09:40:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200415210512.805-1-valentin.schneider@arm.com>
- <20200415210512.805-10-valentin.schneider@arm.com> <CAKfTPtBDGzrvG=YhjBZBEgfx5EtM-rTC-dWX5phqh4bOY5XqgA@mail.gmail.com>
- <jhj4ktjpw2z.mognet@arm.com> <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com>
-In-Reply-To: <d508a6a5-c04f-087f-8767-6fb397b70055@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 16 Apr 2020 15:36:46 +0200
-Message-ID: <CAKfTPtD5x_NQ1KfHhTiAR3eNA85+k13nfSR-9_PKLp6FgVu08A@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] sched/topology: Define and use shortcut pointers
- for wakeup sd_flag scan
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAP=VYLqWfqOZT6ec9cKyKOsOhu7HhVn2f_eU+ca006i4CV8R-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 at 15:04, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 16.04.20 12:24, Valentin Schneider wrote:
-> >
-> > On 16/04/20 08:46, Vincent Guittot wrote:
-> >>> @@ -6657,7 +6646,19 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
-> >>>
-> >>>         rcu_read_lock();
-> >>>
-> >>> -       sd = highest_flag_domain(cpu, sd_flag);
-> >>> +       switch (wake_flags & (WF_TTWU | WF_FORK | WF_EXEC)) {
-> >>> +       case WF_TTWU:
-> >>> +               sd_flag = SD_BALANCE_WAKE;
-> >>> +               sd = rcu_dereference(per_cpu(sd_balance_wake, cpu));
-> >>
-> >> It's worth having a direct pointer for the fast path which we always
-> >> try to keep short but the other paths are already slow and will not
-> >> get any benefit of this per cpu pointer.
-> >> We should keep the loop for the slow paths
-> >>
-> >
-> > Which fast/slow paths are you referring to here? want_affine vs
-> > !want_affine? If so, do you then mean that we should do the switch case
-> > only when !want_affine, and otherwise look for the domain via the
-> > for_each_domain() loop?
->
-> Coming back to the v2 discussion on this patch
->
-> https://lore.kernel.org/r/20200311181601.18314-10-valentin.schneider@arm.com
->
-> SD_BALANCE_WAKE is not used in mainline anymore, so wakeups are always
-> fast today.
->
-> I.e. you wouldn't need a per_cpu(sd_balance_wake, cpu) since it's always
-> NULL.
->
-> I.e. want_affine logic and the 'for_each_domain(cpu, tmp)' isn't needed
-> anymore.
->
-> This will dramatically simplify the code in select_task_rq_fair().
->
-> But I guess Vincent wants to keep the functionality so we're able to
-> enable SD_BALANCE_WAKE on certain sd's?
 
-I looked too quickly what was done by this patch. I thought that it
-was adding a per_cpu pointer for all cases including the fast path
-with wake affine but it only skips the for_each_domain loop for the
-slow paths which don't need it because they are already slow.
 
-It would be better to keep the for_each_domain loop for slow paths and
-to use a per_cpu pointer for fast_path/wake affine. Regarding the
-wake_affine path, we don't really care about looping all domains and
-we could directly use the highest domain because wake_affine() that is
-used in the loop, only uses the imbalance_pct of the sched domain for
-wake_affine_weight() and it should not harm to use only the highest
-domain and then select_idle_sibling doesn't use it but the llc or
-asym_capacity pointer instead.
+On 4/14/20 11:57 AM, Paul Gortmaker wrote:
+> On Fri, Feb 21, 2020 at 7:52 PM Thara Gopinath <thara.gopinath@linaro.org>
+> wrote:
+> 
+>> Thermal governors can respond to an overheat event of a cpu by
+>> capping the cpu's maximum possible frequency. This in turn
+>> means that the maximum available compute capacity of the
+>> cpu is restricted. But today in the kernel, task scheduler is
+>> not notified of capping of maximum frequency of a cpu.
+>> In other words, scheduler is unaware of maximum capacity
+>> restrictions placed on a cpu due to thermal activity.
+>> This patch series attempts to address this issue.
+>>
+> 
+> I'm just seeing this now via -rc1 and "make oldconfig".
+> 
+> I'd suggest taking some of the above info and using it to
+> create a Kconfig help text for the new option that was added.
+Hi Paul,
+
+I will send a patch adding some details to the Kconfig text.
+
+-- 
+Warm Regards
+Thara
