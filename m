@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543611AC530
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1105F1AC43F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441942AbgDPONR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34818 "EHLO mail.kernel.org"
+        id S2409246AbgDPN4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:56:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898745AbgDPNsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:48:51 -0400
+        id S2897778AbgDPNi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:38:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAAD521974;
-        Thu, 16 Apr 2020 13:48:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BB49221F9;
+        Thu, 16 Apr 2020 13:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044931;
-        bh=BTrJCJjuOs3aKRghzcA2v0wxKBlJaf92GOTS2GDdKQ4=;
+        s=default; t=1587044336;
+        bh=DnhV3xz/x4XRsC1XfxRUhWiPOn2zTkhzOVSi4IXhi2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4WMX06wgbNAxxMzRD2IYpb5safNwhalFcDBsKonVrD9ElSDqsgixzBoWjQHtC5p7
-         SI1Dy4jHcVKT7E3ZDnuyYib+Ym/POE4Br2+KTPJmFNEBfupf84ROOwBUjIrFtAOHd/
-         swi7XSZj0ypUb5s3i1/94xOXNQYD5FWel6ywzpFE=
+        b=kKUxYjtpAiyYaBlcj/RX8lG+lWiMf87GePB12/ie/9o7pP6KD4Cny/Qo053vxbHJJ
+         UTMuxbDn6cJzpH2rivZyFHMhgJaJ8W6reGueJQ27pP1UETbv3WTSH1SGQvP4Kv7Zql
+         +Ze66ljLBLdcw3fIO8/3q2x4Dk2PF5TAWdy5pAl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.4 133/232] smb3: fix performance regression with setting mtime
-Date:   Thu, 16 Apr 2020 15:23:47 +0200
-Message-Id: <20200416131331.637991856@linuxfoundation.org>
+        stable@vger.kernel.org, Scott Wood <swood@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.5 177/257] sched/core: Remove duplicate assignment in sched_tick_remote()
+Date:   Thu, 16 Apr 2020 15:23:48 +0200
+Message-Id: <20200416131348.502394737@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Scott Wood <swood@redhat.com>
 
-commit cf5371ae460eb8e484e4884747af270c86c3c469 upstream.
+commit 82e0516ce3a147365a5dd2a9bedd5ba43a18663d upstream.
 
-There are cases when we don't want to send the SMB2 flush operation
-(e.g. when user specifies mount parm "nostrictsync") and it can be
-a very expensive operation on the server.  In most cases in order
-to set mtime, we simply need to flush (write) the dirtry pages from
-the client and send the writes to the server not also send a flush
-protocol operation to the server.
+A redundant "curr = rq->curr" was added; remove it.
 
-Fixes: aa081859b10c ("cifs: flush before set-info if we have writeable handles")
-CC: Stable <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Fixes: ebc0f83c78a2 ("timers/nohz: Update NOHZ load in remote tick")
+Signed-off-by: Scott Wood <swood@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/1580776558-12882-1-git-send-email-swood@redhat.com
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/inode.c |   23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ kernel/sched/core.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -2454,25 +2454,26 @@ cifs_setattr_nounix(struct dentry *diren
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3677,7 +3677,6 @@ static void sched_tick_remote(struct wor
+ 	if (cpu_is_offline(cpu))
+ 		goto out_unlock;
  
- 	/*
- 	 * Attempt to flush data before changing attributes. We need to do
--	 * this for ATTR_SIZE and ATTR_MTIME for sure, and if we change the
--	 * ownership or mode then we may also need to do this. Here, we take
--	 * the safe way out and just do the flush on all setattr requests. If
--	 * the flush returns error, store it to report later and continue.
-+	 * this for ATTR_SIZE and ATTR_MTIME.  If the flush of the data
-+	 * returns error, store it to report later and continue.
- 	 *
- 	 * BB: This should be smarter. Why bother flushing pages that
- 	 * will be truncated anyway? Also, should we error out here if
--	 * the flush returns error?
-+	 * the flush returns error? Do we need to check for ATTR_MTIME_SET flag?
- 	 */
--	rc = filemap_write_and_wait(inode->i_mapping);
--	if (is_interrupt_error(rc)) {
--		rc = -ERESTARTSYS;
--		goto cifs_setattr_exit;
-+	if (attrs->ia_valid & (ATTR_MTIME | ATTR_SIZE | ATTR_CTIME)) {
-+		rc = filemap_write_and_wait(inode->i_mapping);
-+		if (is_interrupt_error(rc)) {
-+			rc = -ERESTARTSYS;
-+			goto cifs_setattr_exit;
-+		}
-+		mapping_set_error(inode->i_mapping, rc);
- 	}
+-	curr = rq->curr;
+ 	update_rq_clock(rq);
  
--	mapping_set_error(inode->i_mapping, rc);
- 	rc = 0;
- 
--	if (attrs->ia_valid & ATTR_MTIME) {
-+	if ((attrs->ia_valid & ATTR_MTIME) &&
-+	    !(cifs_sb->mnt_cifs_flags & CIFS_MOUNT_NOSSYNC)) {
- 		rc = cifs_get_writable_file(cifsInode, FIND_WR_ANY, &wfile);
- 		if (!rc) {
- 			tcon = tlink_tcon(wfile->tlink);
+ 	if (!is_idle_task(curr)) {
 
 
