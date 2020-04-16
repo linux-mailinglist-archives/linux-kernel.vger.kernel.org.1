@@ -2,104 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE641ACC0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E841ACC28
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506850AbgDPPy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2506841AbgDPPyW (ORCPT
+        id S2442826AbgDPP4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:56:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59613 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2442746AbgDPP4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:54:22 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED225C061A0C;
-        Thu, 16 Apr 2020 08:54:21 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id da9so2246783qvb.3;
-        Thu, 16 Apr 2020 08:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=06igGIcA/H4ph8vvfbTG6rW0CuRmF7Et2FUQ0fy+gEM=;
-        b=DfWDV60hyZMIyGS0zblXGs2jigtxTirnH7OvPNmvDmU4eEssi/kaFlj1hOPIe0ZPxv
-         aeWqJLp6b0S7hOwRXOF5zvji5IWS4j+CCvmwXkncfxw0EhoqZKAIH0RWANCrCdT3XNMK
-         efRpthmeCFQ5+bkJAIDv+vLjS1f6s1VoGRNsCXI6I9onRuSAwWsZwi7LpZFFHbJo1hVA
-         9FuqxDE45uhFUfwA5Qq03RqhWVP5SctfeNAcASifSHFQhT6FoifvUn/P4KKJ77CpArdt
-         PWQkmr3ZsPCjfA1+IiAVDR7Smr7utPfiZCuAwAmM4LZAThyIcqseEltkHhrUnNcFHpUE
-         E02Q==
+        Thu, 16 Apr 2020 11:56:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587052561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nvu+MW6oZUAc4Rt+d0KHMjWiSPVqXx7NpVhFclBCSuA=;
+        b=ID5DZtvH9sTXEpFaffj3HRg4lfpKkzt5Eql5S3WZluccUKLn/MODDhQWE18HIm5N2+o4W6
+        asQly0N2VAinsyOyxwMOkrAU2pfROdRYIjOTof9z9sYOK4B87LKnuPmwemuOcnsvGp8xcS
+        DnzXGw1KxO02JWd4zJwfczZdXbSCFPY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-Zc0gFejYOlal_U7CHfHI0w-1; Thu, 16 Apr 2020 11:55:59 -0400
+X-MC-Unique: Zc0gFejYOlal_U7CHfHI0w-1
+Received: by mail-wr1-f70.google.com with SMTP id s11so1944920wru.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:55:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=06igGIcA/H4ph8vvfbTG6rW0CuRmF7Et2FUQ0fy+gEM=;
-        b=Ub2aRgHzdBSOslk6VxvLmJZE2kOO08buq8sEZURFC7yeMz++gjKRM475PPDouUPU37
-         b5GBWOMWKB4sWklfmqDC0kwpNZgsHSZ5g9teN++JiHktbr6M68Q3oakCguQOQ7JVhmUk
-         UrpIvytBRu4XPqkuJD7fawrvc9E1W5KwTZovkSQO7m2Jj7oY0c8ON6bynN9UOVYfZis2
-         0Qfl9LmfTuMaM9rUJsaRsQ/RHEhWrlkDBhneln9HzsZTwoUWqKjNTH1lBvO0ht5Dbtwi
-         0byG6DLmr9HOcZXGlg+x17LTrDQcZFyF2d12u/jXksvLmYQBhku5wRXpJFoLcdeHH6jz
-         6YbA==
-X-Gm-Message-State: AGi0PubeMkGgvDwtl6apJZsyuNPCoFb6b+BpUWgotY8mPkv8AaOYdLcA
-        Kp/aEmdoIrIIm4j256CtiLwcY3zMS3Y=
-X-Google-Smtp-Source: APiQypKL4DlMArGAv/3DiI025InEC28GZ34i4YaFvPQLxlkkQR3N8qR9VobjJ5bgiUDD1KmgLJULgw==
-X-Received: by 2002:a0c:b790:: with SMTP id l16mr10618122qve.244.1587052461177;
-        Thu, 16 Apr 2020 08:54:21 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id y21sm14861483qka.37.2020.04.16.08.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 08:54:20 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EDD57409A3; Thu, 16 Apr 2020 12:54:17 -0300 (-03)
-Date:   Thu, 16 Apr 2020 12:54:17 -0300
-To:     Daniel Stone <daniels@collabora.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Lyude Paul <lyude@redhat.com>
-Subject: Re: [PATCH 11/15] tools headers UAPI: Update tools's copy of drm.h
- headers
-Message-ID: <20200416155417.GF2650@kernel.org>
-References: <20200414164854.26026-1-acme@kernel.org>
- <20200414164854.26026-12-acme@kernel.org>
- <dc0b22308659f29d6b9e237d353ca651d34d183b.camel@collabora.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nvu+MW6oZUAc4Rt+d0KHMjWiSPVqXx7NpVhFclBCSuA=;
+        b=bYdNGt/Nc8XstAMOxr+ITvh8rpAg7enoOBy5jeI3mNQbCJDe73fvh2hG05rmgp+iln
+         97xVPK5uNS62SbGMvJJic1LvmAEzrigp1R7fm/Inwuw95aYAR7UCvGhoxSV2sV5rPey2
+         E9NAPaWYU7TkXSniKUcla4/Zfk8C+/ou9RPb2m81sjDFsbj2A5FrFNNP0iH9LjbDgcOU
+         +vkAshsAqexLA0+9MZ3VsQnNzXNcq8cUT38d9f8QyjHfT9p5BTyOzNPHJfrlVC+Ndklk
+         /hJWeEOW1scg384s7YjKFD9DJNmm8tmXPH5JjOf4FzoMqrbadTBdcwUvLKPt//aalg42
+         5HEQ==
+X-Gm-Message-State: AGi0PuZR7wBQy9zzbiuvvNz3uhJ/Ph/A+VEDYk8CDKOKLxBDHmeYhroE
+        INW3UHzc1fbVbTGwuE4isSkFBskZII2Bydaeq0siodl64AMnpH7mW8CnBztAQEbFYvS0F/AkB0O
+        KULNaMS7/ONTs6KwmDyGmmXP9
+X-Received: by 2002:a5d:4442:: with SMTP id x2mr18151632wrr.101.1587052558411;
+        Thu, 16 Apr 2020 08:55:58 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIL1Ng21KPZXq7/mqYvYnYksD3lb24Jyd1BsaIZ28zHv5VGpa6h6z5Fa+Khf5lPYqGvRQv9/g==
+X-Received: by 2002:a5d:4442:: with SMTP id x2mr18151609wrr.101.1587052558056;
+        Thu, 16 Apr 2020 08:55:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:399d:3ef7:647c:b12d? ([2001:b07:6468:f312:399d:3ef7:647c:b12d])
+        by smtp.gmail.com with ESMTPSA id 5sm4231405wmg.34.2020.04.16.08.55.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 08:55:57 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in
+ small chunks
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Keqian Zhu <zhukeqian1@huawei.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jay Zhou <jianjay.zhou@huawei.com>, wanghaibin.wang@huawei.com
+References: <20200413122023.52583-1-zhukeqian1@huawei.com>
+ <be45ec89-2bdb-454b-d20a-c08898e26024@redhat.com>
+ <20200416160939.7e9c1621@why>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <442f288e-2934-120c-4994-5357e3e9216b@redhat.com>
+Date:   Thu, 16 Apr 2020 17:55:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc0b22308659f29d6b9e237d353ca651d34d183b.camel@collabora.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200416160939.7e9c1621@why>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 14, 2020 at 05:56:59PM +0100, Daniel Stone escreveu:
-> On Tue, 2020-04-14 at 13:48 -0300, Arnaldo Carvalho de Melo wrote:
-> > Picking the changes from:
-> > 
-> >   455e00f1412f ("drm: Add getfb2 ioctl")
-> > 
-> > Silencing these perf build warnings:
-> > 
-> >   Warning: Kernel ABI header at 'tools/include/uapi/drm/drm.h'
-> > differs from latest version at 'include/uapi/drm/drm.h'
-> >   diff -u tools/include/uapi/drm/drm.h include/uapi/drm/drm.h
-> > 
-> > Now 'perf trace' and other code that might use the
-> > tools/perf/trace/beauty autogenerated tables will be able to
-> > translate
-> > this new ioctl code into a string:
-> > 
-> >   [...]
+On 16/04/20 17:09, Marc Zyngier wrote:
+> On Wed, 15 Apr 2020 18:13:56 +0200
+> Paolo Bonzini <pbonzini@redhat.com> wrote:
 > 
-> Acked-by: Daniel Stone <daniels@collabora.com>
+>> On 13/04/20 14:20, Keqian Zhu wrote:
+>>> There is already support of enabling dirty log graually in small chunks
+>>> for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
+>>> small chunks"). This adds support for arm64.
+>>>
+>>> x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
+>>> is eanbled. However, for arm64, both huge pages and normal pages can be
+>>> write protected gradually by userspace.
+>>>
+>>> Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
+>>> Linux VMs with different page size. The memory pressure is 127G in each
+>>> case. The time taken of memory_global_dirty_log_start in QEMU is listed
+>>> below:
+>>>
+>>> Page Size      Before    After Optimization
+>>>   4K            650ms         1.8ms
+>>>   2M             4ms          1.8ms
+>>>   1G             2ms          1.8ms
+>>>
+>>> Besides the time reduction, the biggest income is that we will minimize
+>>> the performance side effect (because of dissloving huge pages and marking
+>>> memslots dirty) on guest after enabling dirty log.
+>>>
+>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>>> ---
+>>>  Documentation/virt/kvm/api.rst    |  2 +-
+>>>  arch/arm64/include/asm/kvm_host.h |  3 +++
+>>>  virt/kvm/arm/mmu.c                | 12 ++++++++++--
+>>>  3 files changed, 14 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>>> index efbbe570aa9b..0017f63fa44f 100644
+>>> --- a/Documentation/virt/kvm/api.rst
+>>> +++ b/Documentation/virt/kvm/api.rst
+>>> @@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
+>>>  dirty logging can be enabled gradually in small chunks on the first call
+>>>  to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
+>>>  KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
+>>> -x86 for now).
+>>> +x86 and arm64 for now).
+>>>  
+>>>  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
+>>>  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
+>>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>>> index 32c8a675e5a4..a723f84fab83 100644
+>>> --- a/arch/arm64/include/asm/kvm_host.h
+>>> +++ b/arch/arm64/include/asm/kvm_host.h
+>>> @@ -46,6 +46,9 @@
+>>>  #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
+>>>  #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+>>>  
+>>> +#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
+>>> +				     KVM_DIRTY_LOG_INITIALLY_SET)
+>>> +
+>>>  DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
+>>>  
+>>>  extern unsigned int kvm_sve_max_vl;
+>>> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+>>> index e3b9ee268823..1077f653a611 100644
+>>> --- a/virt/kvm/arm/mmu.c
+>>> +++ b/virt/kvm/arm/mmu.c
+>>> @@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>>>  	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
+>>>  	 * memory slot is write protected.
+>>>  	 */
+>>> -	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
+>>> -		kvm_mmu_wp_memory_region(kvm, mem->slot);
+>>> +	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+>>> +		/*
+>>> +		 * If we're with initial-all-set, we don't need to write
+>>> +		 * protect any pages because they're all reported as dirty.
+>>> +		 * Huge pages and normal pages will be write protect gradually.
+>>> +		 */
+>>> +		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+>>> +			kvm_mmu_wp_memory_region(kvm, mem->slot);
+>>> +		}
+>>> +	}
+>>>  }
+>>>  
+>>>  int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>>>   
+>>
+>> Marc, what is the status of this patch?
+> 
+> I just had a look at it. Is there any urgency for merging it?
 
-Thanks!
+No, I thought I was still replying to the v1.
 
-- Arnaldo
+Paolo
+
