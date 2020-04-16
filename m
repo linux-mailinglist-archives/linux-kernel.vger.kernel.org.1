@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C431ABB88
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A0F1ABB57
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502767AbgDPIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:44:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32007 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2501961AbgDPIdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:33:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587025983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x6uigvF/bqZ4XEJh+/Tp1y2eX448wtyf+x6UNwQLqPY=;
-        b=SO7VsIzB47+T1G+5I1oHNdbrD6NB4ZG+PgZkF/JKzT0vqErjBgZVPvXb8m0BP0GLTBlY8U
-        9DtjrjvJx6hdHCNrf+1R8GJ+Vgd2lAmXBwpOqjoWcexOINRbz7gt8aMUJZtBJQeUD6EGAX
-        MJ+vB4QEepOtQu2MpNaKwTonm1AhOXk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-IrgZkNNJM023eKiYKLtW2A-1; Thu, 16 Apr 2020 04:24:28 -0400
-X-MC-Unique: IrgZkNNJM023eKiYKLtW2A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1A5310CE780;
-        Thu, 16 Apr 2020 08:24:26 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A80E119DED;
-        Thu, 16 Apr 2020 08:24:24 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 03G8ONMg008685;
-        Thu, 16 Apr 2020 04:24:23 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 03G8OKM4008681;
-        Thu, 16 Apr 2020 04:24:21 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Thu, 16 Apr 2020 04:24:20 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Dan Williams <dan.j.williams@intel.com>
-cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>
-Subject: Re: [PATCH] memcpy_flushcache: use cache flusing for larger
- lengths
-In-Reply-To: <alpine.LRH.2.02.2004090612320.27517@file01.intranet.prod.int.rdu2.redhat.com>
-Message-ID: <alpine.LRH.2.02.2004160411460.7833@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2004071029270.8662@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4goJ2jbXNVZbMUKtRUominhuMhuTKrMh=fnhrfvC4jyjw@mail.gmail.com> <alpine.LRH.2.02.2004081439080.13932@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4grNHvyYEc4W6PkymhEJvLb17tXbC3JZdqvtFxmMZ8DCQ@mail.gmail.com> <alpine.LRH.2.02.2004090612320.27517@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S2502452AbgDPIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:34:21 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18301 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502185AbgDPIbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:31:24 -0400
+IronPort-SDR: P6Li/rzeg7v+8Iq4r+KkGeBe8q5WmkA12swj9pwUEeDBaGl/NkPWmTS9X7MAX6XZHP5pPWrpVo
+ A5QDu7/H8E7w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 01:27:34 -0700
+IronPort-SDR: qG0NwaN6qsBa8hWHeVRPyQlV8nKbWjYEmpdj2pT06VRmTIx5tQnNTR9poWjqA0wOvSO2aHApsT
+ FIEW39hl3jEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
+   d="scan'208";a="363917386"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Apr 2020 01:27:30 -0700
+Subject: Re: [PATCH 1/7] mmc: sdhci: fix base clock usage in preset value
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <23c3fe72b0ff0eabdbf3a45023a76da1b18a7e90.1585827904.git.mirq-linux@rere.qmqm.pl>
+ <218dd61b-48cc-a161-240f-b3823e8f48cb@intel.com>
+ <20200415162839.GD19897@qmqm.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <57b494b8-cae9-df10-2a4d-db02e7212f23@intel.com>
+Date:   Thu, 16 Apr 2020 11:26:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200415162839.GD19897@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Thu, 9 Apr 2020, Mikulas Patocka wrote:
-
-> With dm-writecache on emulated pmem (with the memmap argument), we get
+On 15/04/20 7:28 pm, Micha³ Miros³aw wrote:
+> On Wed, Apr 15, 2020 at 03:25:52PM +0300, Adrian Hunter wrote:
+>> On 2/04/20 2:54 pm, Micha³ Miros³aw wrote:
+>>> Fixed commit added an unnecessary read of CLOCK_CONTROL. The value read
+>>> is overwritten for programmable clock preset, but is carried over for
+>>> divided clock preset. This can confuse sdhci_enable_clk() if the register
+>>> has enable bits set for some reason at time time of clock calculation.
+>>> value to be ORed with enable flags. Remove the read.
+>>
+>> The read is not needed, but drivers usually manage the enable bits,
+>> especially disabling the clock before changing the frequency.  What driver
+>> is it?
 > 
-> With the original kernel:
-> 8508 - 11378
-> real    0m4.960s
-> user    0m0.638s
-> sys     0m4.312s
-> 
-> With dm-writecache hacked to use cached writes + clflushopt:
-> 8505 - 11378
-> real    0m4.151s
-> user    0m0.560s
-> sys     0m3.582s
+> Hopefully no driver requires this. It's just removing a trap.
 
-I did some multithreaded tests: 
-http://people.redhat.com/~mpatocka/testcases/pmem/microbenchmarks/pmem-multithreaded.txt
-
-And it turns out that for singlethreaded access, write+clwb performs 
-better, while for multithreaded access, non-temporal stores perform 
-better.
-
-1       sequential write-nt 8 bytes             1.3 GB/s
-2       sequential write-nt 8 bytes             2.5 GB/s
-3       sequential write-nt 8 bytes             2.8 GB/s
-4       sequential write-nt 8 bytes             2.8 GB/s
-5       sequential write-nt 8 bytes             2.5 GB/s
-
-1       sequential write 8 bytes + clwb         1.6 GB/s
-2       sequential write 8 bytes + clwb         2.4 GB/s
-3       sequential write 8 bytes + clwb         1.7 GB/s
-4       sequential write 8 bytes + clwb         1.2 GB/s
-5       sequential write 8 bytes + clwb         0.8 GB/s
-
-For one thread, we can see that write-nt 8 bytes has 1.3 GB/s and write 
-8+clwb has 1.6 GB/s, but for multiple threads, write-nt has better 
-throughput.
-
-The dm-writecache target is singlethreaded (all the copying is done while 
-holding the writecache lock), so it benefits from clwb.
-
-Should memcpy_flushcache be changed to write+clwb? Or are there some 
-multithreaded users of memcpy_flushcache that would be hurt by this 
-change?
-
-Mikulas
-
+The only driver that looks like it would benefit is sdhci-brcmstb because it
+does not clear enable bits in sdhci_brcmstb_set_clock().  Adding Al Cooper.
+Al, can you ack this?
