@@ -2,152 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40231AC8B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58951AC8BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395138AbgDPPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:13:18 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37786 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395081AbgDPPMe (ORCPT
+        id S2392367AbgDPPNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:13:34 -0400
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:56192 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395088AbgDPPNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:12:34 -0400
-Received: by mail-qt1-f194.google.com with SMTP id q17so16354754qtp.4;
-        Thu, 16 Apr 2020 08:12:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KisqXFX2ulNUKz2440gS97HInTPJUxOKPLXnv3/3XBo=;
-        b=ONRHzk98M6o5zKTEZKdr85THO+LJ157tF5YoA7aP/p4JUeasZdCWInDFMXFnNxf8JS
-         iRmKGq2nLN23XqkspShEATxbh3cWf3ij7oaRqnQjNJPEDnmOlh4OpirHcwNJNZMKKiqz
-         7+RAxXc4aMCJYDS9tycQi2aKT4eJyVFJPxUPOU1b5VLYFTfcOy0r1F4ZHiAcUnWZPqkn
-         uap0IQM8QmCNWX0z/Rg4+tbiyCtdGlSmC/Po6OJZrPTPvT//Q0GzZ/LQdy4AB3b34EUs
-         2O6n4ibrihLncMIb5QL2TY0XLnvChVU4/hf1Ltn20zPtXMq6cpc1Q9H/YLnZgrfQlYPB
-         8qZw==
-X-Gm-Message-State: AGi0PuZxq2Tx2hDsIGhpf4FjyGOdafqIdIbqEutFRie0VpyztAd4gdtX
-        o0TtbiInIzVo8ssnIK9iXrg=
-X-Google-Smtp-Source: APiQypIPRk5qt0xhHpWYN1+m32Md8N9+UiGMBo0eavOhuXfsoMRtmHqYSc4JoAekFfMxinNmOUXvzg==
-X-Received: by 2002:ac8:6d2c:: with SMTP id r12mr19506468qtu.355.1587049952304;
-        Thu, 16 Apr 2020 08:12:32 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id c207sm15252197qkb.7.2020.04.16.08.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 08:12:31 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] efi: Kill __efistub_global
-Date:   Thu, 16 Apr 2020 11:12:27 -0400
-Message-Id: <20200416151227.3360778-4-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.25.3
-In-Reply-To: <20200415221520.2692512-1-nivedita@alum.mit.edu>
-References: <20200415221520.2692512-1-nivedita@alum.mit.edu>
+        Thu, 16 Apr 2020 11:13:05 -0400
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 2C30CCCAF9;
+        Thu, 16 Apr 2020 11:13:02 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=EmCc83cGpH1PK+OmfXhUEjWC8ds=; b=aVQ7ou
+        3WqM0s3ghVtQuQ+FnbxizM2oeosiePh15ekPxSOpZ5O+u89PgTaFwE+kQfwwhh25
+        emmYOPZ6Wl2UWxq/FnmZHkgixpcMfM6nOkqGfWOK7E2x/KQGpJCzjT/f3Yl3zVqH
+        Yb1epFuCEAxlCdVNqp5xcJA8BnxfM0KCv8YBk=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 22606CCAF8;
+        Thu, 16 Apr 2020 11:13:02 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=ODtNsYZK2kcwPIZiYkxRnX/rGfukkhVwPZgiIX9m3Hc=; b=mhOwPOrLVNViEQcT6ZxueaJIaNS2OOL5Q6V5kVOJqurB2pQbu5SYf5agaBqzZzQgkrZS/H5Ymql18PTg+aPX++qwbVDZvTgLZvgJmFfIRVcrVkcryFpWoLdgyWxZkfPSOHs95eV/gNPMNi3xlcU4RtrraEQdGL7yRh3CzutY8jM=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id D99EDCCAF3;
+        Thu, 16 Apr 2020 11:12:58 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 09BC42DA0D32;
+        Thu, 16 Apr 2020 11:12:57 -0400 (EDT)
+Date:   Thu, 16 Apr 2020 11:12:56 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Arnd Bergmann <arnd@arndb.de>
+cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
+In-Reply-To: <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
+Message-ID: <nycvar.YSQ.7.76.2004161106140.2671@knanqh.ubzr>
+References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr> <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com> <20200408224224.GD11886@ziepe.ca> <87k12pgifv.fsf@intel.com>
+ <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com> <20200410171320.GN11886@ziepe.ca> <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com> <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
+ <20200414152312.GF5100@ziepe.ca> <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com> <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com> <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
+ <834c7606743424c64951dd2193ca15e29799bf18.camel@mellanox.com> <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com> <874ktj4tvn.fsf@intel.com> <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: C1D878A0-7FF4-11EA-9E0A-B0405B776F7B-78420484!pb-smtp20.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that both arm and x86 are using the linker script to place the EFI
-stub's global variables in the correct section, remove __efistub_global.
+On Thu, 16 Apr 2020, Arnd Bergmann wrote:
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/libstub/arm-stub.c        |  4 ++--
- drivers/firmware/efi/libstub/efi-stub-helper.c | 15 +++++++--------
- drivers/firmware/efi/libstub/efistub.h         |  2 --
- drivers/firmware/efi/libstub/gop.c             |  2 +-
- drivers/firmware/efi/libstub/x86-stub.c        |  2 +-
- 5 files changed, 11 insertions(+), 14 deletions(-)
+> On Thu, Apr 16, 2020 at 12:17 PM Jani Nikula
+> <jani.nikula@linux.intel.com> wrote:
+> >
+> > On Thu, 16 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Thu, Apr 16, 2020 at 5:25 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
+> > >> BTW how about adding a new Kconfig option to hide the details of
+> > >> ( BAR || !BAR) ? as Jason already explained and suggested, this will
+> > >> make it easier for the users and developers to understand the actual
+> > >> meaning behind this tristate weird condition.
+> > >>
+> > >> e.g have a new keyword:
+> > >>      reach VXLAN
+> > >> which will be equivalent to:
+> > >>      depends on VXLAN && !VXLAN
+> > >
+> > > I'd love to see that, but I'm not sure what keyword is best. For your
+> > > suggestion of "reach", that would probably do the job, but I'm not
+> > > sure if this ends up being more or less confusing than what we have
+> > > today.
+> >
+> > Ah, perfect bikeshedding topic!
+> >
+> > Perhaps "uses"? If the dependency is enabled it gets used as a
+> > dependency.
+> 
+> That seems to be the best naming suggestion so far
 
-diff --git a/drivers/firmware/efi/libstub/arm-stub.c b/drivers/firmware/efi/libstub/arm-stub.c
-index 99a5cde7c2d8..bf42d6c742a8 100644
---- a/drivers/firmware/efi/libstub/arm-stub.c
-+++ b/drivers/firmware/efi/libstub/arm-stub.c
-@@ -36,9 +36,9 @@
- #endif
- 
- static u64 virtmap_base = EFI_RT_VIRTUAL_BASE;
--static bool __efistub_global flat_va_mapping;
-+static bool flat_va_mapping;
- 
--static efi_system_table_t *__efistub_global sys_table;
-+static efi_system_table_t *sys_table;
- 
- __pure efi_system_table_t *efi_system_table(void)
- {
-diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-index c6092b6038cf..14e56a64f208 100644
---- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-+++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -12,14 +12,13 @@
- 
- #include "efistub.h"
- 
--static bool __efistub_global efi_nochunk;
--static bool __efistub_global efi_nokaslr;
--static bool __efistub_global efi_noinitrd;
--static bool __efistub_global efi_quiet;
--static bool __efistub_global efi_novamap;
--static bool __efistub_global efi_nosoftreserve;
--static bool __efistub_global efi_disable_pci_dma =
--					IS_ENABLED(CONFIG_EFI_DISABLE_PCI_DMA);
-+static bool efi_nochunk;
-+static bool efi_nokaslr;
-+static bool efi_noinitrd;
-+static bool efi_quiet;
-+static bool efi_novamap;
-+static bool efi_nosoftreserve;
-+static bool efi_disable_pci_dma = IS_ENABLED(CONFIG_EFI_DISABLE_PCI_DMA);
- 
- bool __pure nochunk(void)
- {
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index 49651e20bb9f..f96c56596034 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -25,8 +25,6 @@
- #define EFI_ALLOC_ALIGN		EFI_PAGE_SIZE
- #endif
- 
--#define __efistub_global
--
- extern bool __pure nochunk(void);
- extern bool __pure nokaslr(void);
- extern bool __pure noinitrd(void);
-diff --git a/drivers/firmware/efi/libstub/gop.c b/drivers/firmware/efi/libstub/gop.c
-index fa05a0b0adfd..216327d0b034 100644
---- a/drivers/firmware/efi/libstub/gop.c
-+++ b/drivers/firmware/efi/libstub/gop.c
-@@ -32,7 +32,7 @@ static struct {
- 			u8 depth;
- 		} res;
- 	};
--} cmdline __efistub_global = { .option = EFI_CMDLINE_NONE };
-+} cmdline = { .option = EFI_CMDLINE_NONE };
- 
- static bool parse_modenum(char *option, char **next)
- {
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 7583e908852f..aedac3af4b5c 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -20,7 +20,7 @@
- /* Maximum physical address for 64-bit kernel with 4-level paging */
- #define MAXMEM_X86_64_4LEVEL (1ull << 46)
- 
--static efi_system_table_t *sys_table __efistub_global;
-+static efi_system_table_t *sys_table;
- extern const bool efi_is64;
- extern u32 image_offset;
- 
--- 
-2.25.3
+What I don't like about "uses" is that it doesn't convey the conditional 
+dependency. It could be mistaken as being synonymous to "select".
 
+What about "depends_if" ? The rationale is that this is actually a 
+dependency, but only if the related symbol is set (i.e. not n or empty).
+
+> Right. OTOH whoever implements it gets to pick the color of the
+> bikeshed. ;-)
+
+Absolutely. But some brainstorming can't hurt.
+
+
+Nicolas
