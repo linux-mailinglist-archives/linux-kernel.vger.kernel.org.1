@@ -2,112 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2B31AC116
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBAA1AC11E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 14:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635533AbgDPMVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 08:21:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31857 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2635473AbgDPMVR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:21:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587039675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vqyaUkx8GR3JwQKbW/npDJYm+9ZLhBx+EmB8q5JLS1g=;
-        b=IWLMuW4sMqd1ybm2oqTmh62lqLQHvaYkDE0ZNgDODq/A/R7443rMSXCzBXn1jXPNTU/sbe
-        X9F3sjia92aD3QJq1joi5XcgZkD3lG0IBsj8fg6OIDfqcL/sNrD0MI2MhnGWuvGQsJDmsJ
-        BCd/lCKJQdDlvdCp4N2cqBBP5tUxusI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-a-kyZDoHP2eJd_9KW0C3kQ-1; Thu, 16 Apr 2020 08:20:55 -0400
-X-MC-Unique: a-kyZDoHP2eJd_9KW0C3kQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A93C107B765;
-        Thu, 16 Apr 2020 12:20:54 +0000 (UTC)
-Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9A7951001902;
-        Thu, 16 Apr 2020 12:20:53 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 07:20:51 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
- module_disable_ro()
-Message-ID: <20200416122051.p3dk5i7h6ty4cwuc@treble>
-References: <cover.1586881704.git.jpoimboe@redhat.com>
- <20200414182726.GF2483@worktop.programming.kicks-ass.net>
- <20200414190814.glra2gceqgy34iyx@treble>
- <alpine.LSU.2.21.2004161136340.10475@pobox.suse.cz>
+        id S2635553AbgDPMWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 08:22:50 -0400
+Received: from verein.lst.de ([213.95.11.211]:51261 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2635305AbgDPMWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 08:22:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2883668BEB; Thu, 16 Apr 2020 14:22:36 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 14:22:35 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Yufen Yu <yuyufen@huawei.com>, Christoph Hellwig <hch@lst.de>,
+        axboe@kernel.dk, tj@kernel.org, bvanassche@acm.org, tytso@mit.edu,
+        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] bdi: add a ->dev_name field to struct
+ backing_dev_info
+Message-ID: <20200416122235.GA26982@lst.de>
+References: <20200416071519.807660-1-hch@lst.de> <20200416071519.807660-4-hch@lst.de> <5bfcd35a-2463-3769-be93-911c4e3c38bb@huawei.com> <20200416120223.GI23739@quack2.suse.cz> <20200416121901.GA26483@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2004161136340.10475@pobox.suse.cz>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200416121901.GA26483@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 11:45:05AM +0200, Miroslav Benes wrote:
-> On Tue, 14 Apr 2020, Josh Poimboeuf wrote:
+On Thu, Apr 16, 2020 at 02:19:01PM +0200, Christoph Hellwig wrote:
+> On Thu, Apr 16, 2020 at 02:02:23PM +0200, Jan Kara wrote:
+> > Yes, that can indeed happen. E.g. I remember that drivers/scsi/sd.c calls
+> > device_add_disk() + del_gendisk() repeatedly for one request_queue and that
+> > would result in leaking the name (and possibly cause use-after-free
+> > issues).
 > 
-> > On Tue, Apr 14, 2020 at 08:27:26PM +0200, Peter Zijlstra wrote:
-> > > On Tue, Apr 14, 2020 at 11:28:36AM -0500, Josh Poimboeuf wrote:
-> > > > Better late than never, these patches add simplifications and
-> > > > improvements for some issues Peter found six months ago, as part of his
-> > > > non-writable text code (W^X) cleanups.
-> > > 
-> > > Excellent stuff, thanks!!
-> > >
-> > > I'll go brush up these two patches then:
-> > > 
-> > >   https://lkml.kernel.org/r/20191018074634.801435443@infradead.org
-> > >   https://lkml.kernel.org/r/20191018074634.858645375@infradead.org
-> > 
-> > Ah right, I meant to bring that up.  I actually played around with those
-> > patches.  While it would be nice to figure out a way to converge the
-> > ftrace module init, I didn't really like the first patch.
-> > 
-> > It bothers me that both the notifiers and the module init() both see the
-> > same MODULE_STATE_COMING state, but only in the former case is the text
-> > writable.
-> > 
-> > I think it's cognitively simpler if MODULE_STATE_COMING always means the
-> > same thing, like the comments imply, "fully formed" and thus
-> > not-writable:
-> > 
-> > enum module_state {
-> > 	MODULE_STATE_LIVE,	/* Normal state. */
-> > 	MODULE_STATE_COMING,	/* Full formed, running module_init. */
-> > 	MODULE_STATE_GOING,	/* Going away. */
-> > 	MODULE_STATE_UNFORMED,	/* Still setting it up. */
-> > };
-> > 
-> > And, it keeps tighter constraints on what a notifier can do, which is a
-> > good thing if we can get away with it.
+> Sd calls device_add_disk once in ->probe, and del_gendisk once in
+> sd_remove.  Note that sd_probe allocates a new scsi_disk structure and
+> a new gendisk everytime, but it does indeed reuse the request_queue
+> and thus bdi.
 > 
-> Agreed.
+> > I think dev_name has to be just a static array inside
+> > backing_dev_info which gets overwritten on reregistration. The question is
+> > how big should be this array... Some grepping shows that 40 bytes should be
+> > enough for everybody except fs/vboxsf/super.c which puts 'fc->source' into
+> > the name which can be presumably rather large. Anyway, I'd make it 40 and
+> > just truncate it case in case it does not fit. bdi_dev_name() is used for
+> > informational purposes anyway...
 > 
-> On the other hand, the first patch would remove the tiny race window when 
-> a module state is still UNFORMED, but the protections are (being) set up. 
-> Patches 4/7 and 5/7 allow to use memcpy in that case, because it is early. 
-> But it is in fact not already. I haven't checked yet if it really matters 
-> somewhere (a race with livepatch running klp_module_coming while another 
-> module is being loaded or anything like that).
+> We could just make it a variable sized array at the end of the structure
+> and size it based on the len.
 
-Maybe I'm missing your point, but I don't see any races here.
-
-apply_relocate_add() only writes to the patch module's text, so there
-can't be races with other modules.
-
--- 
-Josh
-
+Which doesn't always work as the size might not always be the same.
+But I think the fundamental problem is that we are trying to re-register
+previous unregistered bdis.  We really should not have bdi_alloc
+separate from bdi_register and solve this properly.
