@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F8C1ABEF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7811ABEFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632884AbgDPLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:19:37 -0400
-Received: from m177134.mail.qiye.163.com ([123.58.177.134]:26141 "EHLO
-        m177134.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2632778AbgDPLOP (ORCPT
+        id S2632953AbgDPLUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2632775AbgDPLOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:14:15 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by m142-177.yeah.net (Hmail) with ESMTP id A02FA644127;
-        Thu, 16 Apr 2020 19:14:04 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ACkApgCwCA0t2DnjWhnYYKqI.3.1587035644639.Hmail.wenhu.wang@vivo.com>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        oss@buserror.net, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2MywwLzRdIGRyaXZlcnM6IHVpbzogbmV3IGRyaXZlciB1aW9fZnNsXzg1eHhfY2FjaGVfc3JhbQ==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
-In-Reply-To: <a3032813-ba1e-101a-0b73-cc477d702aac@c-s.fr>
+        Thu, 16 Apr 2020 07:14:10 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBEDC061A0C;
+        Thu, 16 Apr 2020 04:14:10 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id i10so4309631wrv.10;
+        Thu, 16 Apr 2020 04:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yrEAo/Qlbfc9GeX5Dwif5D5gCiJZ0+6j0nBqBeNFgGI=;
+        b=pjd0p1TG20XK+VM3xpl2elbHjVE8BdV/MM3NVaDdeZ84c0vMPxIOgiExN8sG4Rbl/N
+         1J2GsvesXPUCjUkWiKuALhwm7M4E5YeabuXrWhCih8+zLmXArmEw3HUnjI4NcImef+Hv
+         T4dYMeFfSHccJQefBSDA+gy5VR/7P+/UprrQt/RmTixRftDa5RUpkqukwMaHbw0FxqYR
+         w4HhlT0/oae6x+Sr7gFfy+YwSzUOgFXhV6OBrOc7jdr3gwtctDvWfndGdjBY3RpDn6we
+         Sn41PQEgDBdWFTYTeTgah/R2IWBPUR1nUizhY+x6Dx725W9gi2NxwZLSENCkEota1qX6
+         ta8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yrEAo/Qlbfc9GeX5Dwif5D5gCiJZ0+6j0nBqBeNFgGI=;
+        b=uiNtfnCTNnBh9p84T0mHHsTKkcKPeSBAqYQvDwf40cC2MxD6bXtez2Hvx1BCCc/Owt
+         bRK+vl3xPp5V7rYGarF2pTRE4d3zP+ebII0l3wz+FhFw8XiDvZb+Z20FrDGonrtwvFoS
+         gU8gZQXNiNQn4x361WtMCIhWwhBpzYsBdeL9neNSZC/uenxagJyzV4Y0RNFZlwqeB6dA
+         H5qVDlRkyOjYEL663zsrQRcvBNU9pooCdsL/T2Uvx65DqsN6s0Gzcv7wxhVBZxU3Xd6W
+         GU01GTjOkZU7uajXO8A5OiFP9budIyG8XqDmJoTwMowBXjQbNtLI0A/CaVyYot2oTFXz
+         BvWQ==
+X-Gm-Message-State: AGi0PuZviedjg1ne1FeyJ91aUuF0UwUuuGdXRZqowZOI6i6l8kQzqvzR
+        r4j0VH+6iMd0ggpzVMefi4BR//sO
+X-Google-Smtp-Source: APiQypKlpX5AGWI2ULeMFPLHN2hX3xxdXqKWj54FI3XYhx3TrUtU6ZlctXL11THJp2P6bmZfWiPxaQ==
+X-Received: by 2002:adf:eccb:: with SMTP id s11mr24435059wro.138.1587035648543;
+        Thu, 16 Apr 2020 04:14:08 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2482:101:3351:6160:8173:cc31? ([2001:a61:2482:101:3351:6160:8173:cc31])
+        by smtp.gmail.com with ESMTPSA id y20sm27927051wra.79.2020.04.16.04.14.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 04:14:08 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, linux-mips@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] getauxval.3: MIPS, AT_BASE_PLATFORM passes ISA level
+To:     YunQiang Su <syq@debian.org>
+References: <20200322095527.397716-1-syq@debian.org>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <74dc42c8-d249-828e-7cc8-54e63d5e92a8@gmail.com>
+Date:   Thu, 16 Apr 2020 13:14:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 16 Apr 2020 19:14:04 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date:   Thu, 16 Apr 2020 19:14:04 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUlXWQgYFAkeWUFZTVVJSU1LS0tIS0NCQktPQ1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSU1OTk1KT0lPN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6OBA6Cxw4DDg6Sw9JPxURLBMVIiIwCjJVSFVKTkNMS0hOTU9CTElMVTMWGhIXVQweFRMOVQwa
-        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUxKSEg3Bg++
-X-HM-Tid: 0a7182b222f56473kursa02fa644127
+In-Reply-To: <20200322095527.397716-1-syq@debian.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIApGcm9tOiBDaHJpc3RvcGhlIExlcm95IDxjaHJpc3RvcGhlLmxlcm95QGMtcy5mcj4KIERh
-dGU6IDIwMjAtMDQtMTYgMTg6MzY6MzgKVG86IueOi+aWh+iZjiIgPHdlbmh1LndhbmdAdml2by5j
-b20+CiBjYzogZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmcsbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZyxvc3NAYnVzZXJyb3IubmV0LGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnLGtl
-cm5lbEB2aXZvLmNvbQpTdWJqZWN0OiBSZTogW1BBVENIIHYzLDAvNF0gZHJpdmVyczogdWlvOiBu
-ZXcgZHJpdmVyIHVpb19mc2xfODV4eF9jYWNoZV9zcmFtPgo+Cj5MZSAxNi8wNC8yMDIwIMOgIDEx
-OjI5LCDnjovmlofomY4gYSDDqWNyaXTCoDoKPj4gSGksCj4+IFNlZW1zIHRoZXJlIGlzIHNvbWV0
-aGluZyB3cm9uZyB3aXRoIHRoZSBzZXJ2ZXIgdGhhdCBtdWx0aXBsZSBkdW1wbGljYXRpb25zCj4+
-IG9mIHRoZSB2MyBwYXRjaGVzIHdlcmUgc2VudCBvdXQsIHBsZWFzZSBpZ25vcmUgdGhlIHJlc3Qg
-YW5kIHRha2UgdGhpcyBuZXdlc3QKPj4gc2VyaWVzIGFzIGZvcm1hbCBjb3VudC4KPgo+V2hpY2gg
-c2VyaWVzID8KPgo+SXQgc2VlbXMgeW91IHNlbnQgMyB0aW1lcywgYXQgOToyOSwgOTo0MSBhbmQg
-OTo0OSAoUGFyaXMgVGltZSkKPgo+IEZyb20gdGhlIHNlcmllcyBvZiA5OjI5LCBJIHJlY2VpdmVk
-IHBhdGNoZXMgMCB0byAzCj4gRnJvbSB0aGUgc2VyaWVzIG9mIDk6NDEsIEkgcmVjZWl2ZWQgcGF0
-Y2hlcyAwIHRvIDMKPiBGcm9tIHRoZSBzZXJpZXMgb2YgOTo0OSwgSSByZWNlaXZlZCBwYXRjaGVz
-IDAgYW5kIDQuCj4KPkxvb2tzIGxpa2UgcG93ZXJwYyBwYXRjaHdvcmsgCj4oaHR0cHM6Ly9wYXRj
-aHdvcmsub3psYWJzLm9yZy9wcm9qZWN0L2xpbnV4cHBjLWRldi9saXN0Lz9zdWJtaXR0ZXI9Nzgz
-MjApIAo+Z290Ogo+IEZyb20gdGhlIHNlcmllcyBvZiA5OjI5LCBJIHJlY2VpdmVkIHBhdGNoZXMg
-MCB0byA0Cj4gRnJvbSB0aGUgc2VyaWVzIG9mIDk6NDEsIEkgcmVjZWl2ZWQgcGF0Y2hlcyAxIHRv
-IDQKPiBGcm9tIHRoZSBzZXJpZXMgb2YgOTo0OSwgSSByZWNlaXZlZCBwYXRjaGVzIDEgdG8gNAo+
-Cj5TbyB0aGlzIHNlZW1zIHRvIGJlIHNvbWV0aGluZyB3cm9uZyBzb21ld2hlcmUuCj4KPkNocmlz
-dG9waGUKPgoKSGkgQ2hyaXN0b3BoZSwKU29ycnkgYWdhaW4sIGFuZCBJIGRvbid0IGtub3cgd2hp
-Y2ggYmVzdCBmaXQgeW91IGFsbC4gSSBndWVzcyBhIFJFU0VORCB0YWcgbWlnaHQgaGVscC4KU28g
-SSB3aWxsIHNlbmQgYW5vdGhlciBzZXJpZXMgd2l0aCBSRVNFTkQgdGFnLCBwbGVhc2UganVzdCBk
-cm9wIGFsbCB0aGlzIHRocmVlLgoKSG9wZSB0aGF0IHJlbGx5IHdvbid0IHRyb3VibGUgeW91IHll
-bGxpbmcsIGFuZCBob3BlIHRoZSBtYWlsIHNlcnZlciB3b3VsZCB3b3JrIHdlbGwuCgpUaGFua3Ms
-Cldlbmh1Cj4+IAo+PiBGcm9tOiBXYW5nIFdlbmh1IDx3ZW5odS53YW5nQHZpdm8uY29tPgo+PiBE
-YXRlOiAyMDIwLTA0LTE2IDE1OjQ5OjE0Cj4+IFRvOiAgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5v
-cmcsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyxvc3NAYnVzZXJyb3IubmV0LGNocmlzdG9w
-aGUubGVyb3lAYy1zLmZyLGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCj4+IENjOiAga2Vy
-bmVsQHZpdm8uY29tLFdhbmcgV2VuaHUgPHdlbmh1LndhbmdAdml2by5jb20+Cj4+IFN1YmplY3Q6
-IFtQQVRDSCB2MywwLzRdIGRyaXZlcnM6IHVpbzogbmV3IGRyaXZlciB1aW9fZnNsXzg1eHhfY2Fj
-aGVfc3JhbT5UaGlzIHNlcmllcyBhZGQgYSBuZXcgdWlvIGRyaXZlciBmb3IgZnJlZXNjYWxlIDg1
-eHggcGxhdGZvcm1zIHRvCj4+PiBhY2Nlc3MgdGhlIENhY2hlLVNyYW0gZm9ybSB1c2VyIGxldmVs
-LiBUaGlzIGlzIGV4dHJlbWVseSBoZWxwZnVsCj4+PiBmb3IgdGhlIHVzZXItc3BhY2UgYXBwbGlj
-YXRpb25zIHRoYXQgcmVxdWlyZSBoaWdoIHBlcmZvcm1hbmNlIG1lbW9yeQo+Pj4gYWNjZXNzZXMu
-Cj4+Pgo+Pj4gSXQgZml4ZXMgdGhlIGNvbXBpbGUgZXJyb3JzIGFuZCB3YXJuaW5nIG9mIHRoZSBo
-YXJkd2FyZSBsZXZlbCBkcml2ZXJzCj4+PiBhbmQgaW1wbGVtZW50cyB0aGUgdWlvIGRyaXZlciBp
-biB1aW9fZnNsXzg1eHhfY2FjaGVfc3JhbS5jLgo+Pj4KPj4+IENoYW5nZXMgc2luY2UgdjE6Cj4+
-PiAqIEFkZHJlc3NlZCBjb21tZW50cyBmcm9tIEdyZWcgSy1ICj4+PiAqIE1vdmVkIGtmcmVlKGlu
-Zm8tPm5hbWUpIGludG8gdWlvX2luZm9fZnJlZV9pbnRlcm5hbCgpCj4+Pgo+Pj4gQ2hhbmdlcyBz
-aW5jZSB2MjoKPj4+ICogRHJvcCB0aGUgcGF0Y2ggdGhhdCBtb2RpZmllcyBLY29uZmlncyBvZiBh
-cmNoL3Bvd2VycGMvcGxhdGZvcm1zCj4+PiAgICBhbmQgbW9kaWZpZWQgdGhlIHNlcXVlbmNlIG9m
-IHBhdGNoZXM6Cj4+PiAgICAgMDE6ZHJvcHBlZCwgMDItPjAzLCAwMy0+MDIsIDA0LT4wMSwgMDUt
-PjA0Cj4+PiAqIEFkZHJlc3NlZCBjb21tZW50cyBmcm9tIEdyZWcsIFNjb3R0IGFuZCBDaHJpc3Rv
-cGhlCj4+PiAqIFVzZSAidWlvbWVtLT5pbnRlcm5hbF9hZGRyIiBhcyBpZiBjb25kaXRpb24gZm9y
-IHNyYW0gbWVtb3J5IGZyZWUsCj4+PiAgICBhbmQgbWVtc2V0IHRoZSB1aW9tZW0gZW50cnkKPj4+
-ICogTW9kaWZpZWQgb2ZfbWF0Y2hfdGFibGUgbWFrZSB0aGUgZHJpdmVyIGFwYXJ0IGZyb20gQ2Fj
-aGUtU3JhbSBIVyBpbmZvCj4+PiAgICB3aGljaCBiZWxvbmcgdG8gdGhlIEhXIGxldmVsIGRyaXZl
-ciBmc2xfODV4eF9jYWNoZV9zcmFtIHRvIG1hdGNoCj4+PiAqIFVzZSByb3VuZHVwX3Bvd19vZl90
-d28gZm9yIGFsaWduIGNhbGMocmVhbGx5IGxlYXJuZWQgYSBsb3QgZnJvbSBDaHJpc3RvcGhlKQo+
-Pj4gKiBSZW1vdmUgdXNlbGVzcyBjbGVhciBibG9jayBvZiB1aW9tZW0gZW50cmllcy4KPj4+ICog
-VXNlIFVJT19JTkZPX1ZFUiBtaWNybyBmb3IgaW5mby0+dmVyc2lvbiwgYW5kIGRlZmluZSBpdCBh
-cwo+Pj4gICAgImRldmljZXRyZWUscHNldWRvIiwgbWVhbmluZyB0aGlzIGlzIHBzZXVkbyBkZXZp
-Y2UgYW5kIHByb2JlZCBmcm9tCj4+PiAgICBkZXZpY2UgdHJlZSBjb25maWd1cmF0aW9uCj4+PiAq
-IFNlbGVjdCBGU0xfODVYWF9DQUNIRV9TUkFNIHJhdGhlciB0aGFuIGRlcGVuZHMgb24gaXQKPj4+
-Cj4+PiBXYW5nIFdlbmh1ICg0KToKPj4+ICAgcG93ZXJwYzogc3lzZGV2OiBmaXggY29tcGlsZSBl
-cnJvciBmb3IgZnNsXzg1eHhfbDJjdGxyCj4+PiAgIHBvd2VycGM6IHN5c2RldjogZml4IGNvbXBp
-bGUgZXJyb3IgZm9yIGZzbF84NXh4X2NhY2hlX3NyYW0KPj4+ICAgcG93ZXJwYzogc3lzZGV2OiBm
-aXggY29tcGlsZSB3YXJuaW5nIGZvciBmc2xfODV4eF9jYWNoZV9zcmFtCj4+PiAgIGRyaXZlcnM6
-IHVpbzogbmV3IGRyaXZlciBmb3IgZnNsXzg1eHhfY2FjaGVfc3JhbQo+Pj4KPj4+IGFyY2gvcG93
-ZXJwYy9zeXNkZXYvZnNsXzg1eHhfY2FjaGVfc3JhbS5jIHwgICAzICstCj4+PiBhcmNoL3Bvd2Vy
-cGMvc3lzZGV2L2ZzbF84NXh4X2wyY3Rsci5jICAgICB8ICAgMSArCj4+PiBkcml2ZXJzL3Vpby9L
-Y29uZmlnICAgICAgICAgICAgICAgICAgICAgICB8ICAgOSArKwo+Pj4gZHJpdmVycy91aW8vTWFr
-ZWZpbGUgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+Pj4gZHJpdmVycy91aW8vdWlvX2Zz
-bF84NXh4X2NhY2hlX3NyYW0uYyAgICAgfCAxNTggKysrKysrKysrKysrKysrKysrKysrKwo+Pj4g
-NSBmaWxlcyBjaGFuZ2VkLCAxNzEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Pj4gY3Jl
-YXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvdWlvL3Vpb19mc2xfODV4eF9jYWNoZV9zcmFtLmMKPj4+
-Cj4+PiAtLSAKPj4+IDIuMTcuMQo+Pj4KPj4gCj4+IAoNCg0K
+On 3/22/20 10:55 AM, YunQiang Su wrote:
+> Since Linux 5.7, on MIPS, we use AT_BASE_PLATFORM to pass ISA level.
+> The values may be:
+>   mips2, mips3, mips4, mips5,
+>   mips32, mips32r2, mips32r6,
+>   mips64, mips64r2, mips64r6.
+> 
+> This behavior is different with PowerPC.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=e585b768da111f2c2d413de6214e83bbdfee8f22
+> Signed-off-by: YunQiang Su <syq@debian.org>
+
+Hello YunQiang Su,
+
+Thank you. I've applied your patch.
+
+Cheers,
+
+Michael
+
+> 
+> ----
+> v1 -> v2: fix typo
+> ---
+>  man3/getauxval.3 | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/man3/getauxval.3 b/man3/getauxval.3
+> index 456371c6a..bcc116dd2 100644
+> --- a/man3/getauxval.3
+> +++ b/man3/getauxval.3
+> @@ -60,9 +60,10 @@ values are present on all architectures.
+>  The base address of the program interpreter (usually, the dynamic linker).
+>  .TP
+>  .BR AT_BASE_PLATFORM
+> -A pointer to a string identifying the real platform; may differ from
+> -.BR AT_PLATFORM
+> -(PowerPC only).
+> +A pointer to a string (PowerPC and MIPS only).
+> +On PowerPC, this identifies the real platform; may differ from
+> +.BR AT_PLATFORM "."
+> +On MIPS, this identifies the ISA level (Since 5.7).
+>  .TP
+>  .BR AT_CLKTCK
+>  The frequency with which
+> 
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
