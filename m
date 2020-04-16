@@ -2,126 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFFE1ACD89
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9F41ACD93
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437501AbgDPQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:21:40 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24257 "EHLO mga17.intel.com"
+        id S2409958AbgDPQXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:23:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405707AbgDPQVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:21:30 -0400
-IronPort-SDR: cx837X40+qVtFt2KbdS4sifpGIp2faYRbVnEscVncFFntOrBkB1Zk8vXvvXc5xv64LZhVcloVm
- Aw3sgkphw7/Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 09:21:29 -0700
-IronPort-SDR: MUpfP6odjF0JmE7yBQEnKYqWp82J/1I5DsHVtGe9n3He3T/wGVi+0+UwRr1IN3OuEuXhHv2/A3
- OoBv5VZQjNIQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="253915577"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga003.jf.intel.com with ESMTP; 16 Apr 2020 09:21:29 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 5FC583018C4; Thu, 16 Apr 2020 09:21:29 -0700 (PDT)
-From:   Andi Kleen <andi@firstfloor.org>
-To:     acme@kernel.org
-Cc:     jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH v1] perf parse: Avoid false uncore matches
-Date:   Thu, 16 Apr 2020 09:21:19 -0700
-Message-Id: <20200416162119.619956-1-andi@firstfloor.org>
-X-Mailer: git-send-email 2.24.1
+        id S1729633AbgDPQXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 12:23:06 -0400
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A03322250;
+        Thu, 16 Apr 2020 16:23:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587054185;
+        bh=dYe0L8knPjq4V+e3C0CynMr68uvk2h/61C1ujyYiF70=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m92+j7PyJJqSdIZDHDYxGpMk1MSTdEN3OfxmyZ5uDz3gYONFBBkjqZfnO2V19s6L3
+         uWSFke5h6gqhJSuJUX/v4SaHaHZp1FcOjeDRIRraalXi9n50/SXBviV2xU4LGfnrd5
+         Ek5R1e51qljTWjy8yVonj+VDn0jnnD+E/Zrj+BWE=
+Received: by mail-ej1-f41.google.com with SMTP id s9so1713435eju.1;
+        Thu, 16 Apr 2020 09:23:05 -0700 (PDT)
+X-Gm-Message-State: AGi0Pub+htmOBUicEH+5GKsykiMe17NI6O3zbKw5fJhuoYhKKWaSnVMl
+        iiyvH0OSeZ6gsKPZPhfJWdV5hJ+GlP/+Qprujw==
+X-Google-Smtp-Source: APiQypJY17+s5/o0+wlz0famZC0WrI5UI7Klts8JPoOZRnB9zgY8QO2uzy/FBMWzeg9CvxriYGO6Q1j1IF4pKi5aPZw=
+X-Received: by 2002:a17:906:2ad4:: with SMTP id m20mr10975923eje.324.1587054183934;
+ Thu, 16 Apr 2020 09:23:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200311165322.1594233-1-enric.balletbo@collabora.com>
+ <20200311165322.1594233-5-enric.balletbo@collabora.com> <02290a21-7392-a2cf-576c-215091ec05e8@suse.com>
+ <1585177534.26117.4.camel@mtksdaap41> <f3c2926a-ef92-b004-9786-5be1645af497@suse.com>
+ <1585234277.12089.3.camel@mtksdaap41> <73ef0b8e-2802-a047-2a56-936b63d264cb@suse.com>
+In-Reply-To: <73ef0b8e-2802-a047-2a56-936b63d264cb@suse.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 17 Apr 2020 00:22:52 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__EV8PHau9CzSiA8up1QAmZxfK2QnaTid0WrNOsn2Xcag@mail.gmail.com>
+Message-ID: <CAAOTY__EV8PHau9CzSiA8up1QAmZxfK2QnaTid0WrNOsn2Xcag@mail.gmail.com>
+Subject: Re: [PATCH v12 4/5] soc / drm: mediatek: Move routing control to
+ mmsys device
+To:     Matthias Brugger <mbrugger@suse.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Mark Rutland <mark.rutland@arm.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Michael Turquette <mturquette@baylibre.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        ulrich.hecht+renesas@gmail.com,
+        Collabora Kernel ML <kernel@collabora.com>,
+        linux-clk@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>,
+        wens@csie.org, Allison Randal <allison@lohutok.net>,
+        mtk01761 <wendell.lin@mediatek.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Seiya Wang <seiya.wang@mediatek.com>, sean.wang@mediatek.com,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rdunlap@infradead.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, matthias.bgg@kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+Hi, Matthias:
 
-The PMU matching adds an implicit '*' to match multiple instances of PMUs.
-But this causes problems when the user specified an explicit number,
-in this case longer numbers with the same prefix could be matched too,
-which is not intended.
+Matthias Brugger <mbrugger@suse.com> =E6=96=BC 2020=E5=B9=B43=E6=9C=8826=E6=
+=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:45=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+>
+>
+> On 26/03/2020 15:51, CK Hu wrote:
+> > Hi, Matthias:
+> >
+> > On Thu, 2020-03-26 at 12:54 +0100, Matthias Brugger wrote:
+> >> Hi CK,
+> >>
+> >> On 26/03/2020 00:05, CK Hu wrote:
+> >>> Hi, Matthias:
+> >>>
+> >>> On Wed, 2020-03-25 at 17:16 +0100, Matthias Brugger wrote:
+> >>>>
+> >>>> On 11/03/2020 17:53, Enric Balletbo i Serra wrote:
+> >>>>> Provide a mtk_mmsys_ddp_connect() and mtk_mmsys_disconnect() functi=
+ons to
+> >>>>> replace mtk_ddp_add_comp_to_path() and mtk_ddp_remove_comp_from_pat=
+h().
+> >>>>> Those functions will allow DRM driver and others to control the dat=
+a
+> >>>>> path routing.
+> >>>>>
+> >>>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com=
+>
+> >>>>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> >>>>> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+> >>>>> Acked-by: CK Hu <ck.hu@mediatek.com>
+> >>>>
+> >>>> This patch does not apply against v5.6-rc1.
+> >>>> Please rebase as this is a quite big patch and it won't be easy to d=
+o that by hand.
+> >>>
+> >>> I think this patch depends on [1] which has been acked by me and I ha=
+ve
+> >>> not picked it. The simple way is that you pick [1] first and then pic=
+k
+> >>> this series.
+> >>>
+> >>> [1]
+> >>> https://patchwork.kernel.org/patch/11406227/
+> >>>
+> >>
+> >> You would need to provide a stable tag for me that I can merge into my=
+ tree. You
+> >> can also try to merge my for-next [1] which has the newest version fro=
+m Enric.
+> >> If you see any merge conflict, then we have to do something about it :=
+)
+> >>
+> >> Regards,
+> >> Matthias
+> >>
+> >> [1]
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git=
+/log/?h=3Dfor-next
+> >>
+> >
+> > You have applied this series, so I would not apply other patches which
+> > would conflict with this series. After this series land on main stream
+> > (wish it happen in this merge window), I would rebase other patch on
+> > main stream.
+> >
+>
+> I haven't (yet) send the pull request. If you want to bring in your patch=
+es in
+> v5.7 as well we can find a solution to that. Shall I provide you with a s=
+table
+> branch which you can merge? This way you can add all your patches in the =
+pull
+> request as well and we don't have to wait for v5.8 to get things into mai=
+nline.
+>
+> Let me know and I'll provide you with a stable branch.
 
-Check for the number case and avoid the extra wildcard.
+This series is in linux-next but does not in main stream. So would you
+please provide a stable branch so I could pull this series?
 
-Also this fixes a memory leak with the pattern match. We would not
-free the allocated pattern.
+Regards,
+Chun-Kuang.
 
-Before:
-
-$ perf stat --no-merge -e cha_1// -a sleep 1
-
- Performance counter stats for 'system wide':
-
-       698,393,431      uncore_cha_1//
-       698,395,491      uncore_cha_14//
-       698,393,873      uncore_cha_12//
-       698,392,975      uncore_cha_10//
-       698,391,167      uncore_cha_17//
-       698,390,371      uncore_cha_15//
-       698,389,007      uncore_cha_13//
-       698,388,069      uncore_cha_11//
-       698,386,991      uncore_cha_16//
-
-       1.001343184 seconds time elapsed
-
-After
-
-$ ./perf stat --no-merge -e cha_1// -a sleep 1
-
- Performance counter stats for 'system wide':
-
-       741,490,611      uncore_cha_1//
-
-       1.000847326 seconds time elapsed
-
-$
-
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/util/parse-events.y | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 94f8bcd83582..f38c90756476 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -286,7 +286,8 @@ PE_NAME opt_pmu_config
- 		parse_events_terms__delete(orig_terms);	\
- 		free(list);				\
- 		free($1);				\
--		free(pattern);				\
-+		if ($1 != pattern)			\
-+			free(pattern);			\
- 		YYABORT;				\
- 	} while(0)
- 
-@@ -303,7 +304,9 @@ PE_NAME opt_pmu_config
- 		struct perf_pmu *pmu = NULL;
- 		int ok = 0;
- 
--		if (asprintf(&pattern, "%s*", $1) < 0)
-+		if ($1[0] && isdigit($1[strlen($1) - 1]))
-+			pattern = $1;
-+		else if (asprintf(&pattern, "%s*", $1) < 0)
- 			CLEANUP_YYABORT;
- 
- 		while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-@@ -320,6 +323,8 @@ PE_NAME opt_pmu_config
- 				parse_events_terms__delete(terms);
- 			}
- 		}
-+		if ($1 != pattern)
-+			free(pattern);
- 
- 		if (!ok)
- 			CLEANUP_YYABORT;
--- 
-2.24.1
-
+>
+> Regards,
+> Matthias
+>
+> > Regards,
+> > CK
+> >
+> >>> Regards,
+> >>> CK
+> >>>
+> >>>>
+> >>>> Regards,
+> >>>> Matthias
+> >>>>
+> >>>>> ---
+> >>>>>
