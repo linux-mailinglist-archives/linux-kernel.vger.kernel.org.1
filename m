@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306501ABB43
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD9C1ABAF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502085AbgDPIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:31:15 -0400
-Received: from mga05.intel.com ([192.55.52.43]:18319 "EHLO mga05.intel.com"
+        id S2440963AbgDPISP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:18:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51567 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501895AbgDPIQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:16:37 -0400
-IronPort-SDR: Y8pGEpVyL5rtkzQ65WFa8LJBbVwpgDU0iSluK3prUhuBNYLXecvBfA5nl4QoEeU+chdReOyuNS
- gV5jaUcY2gyw==
+        id S2441252AbgDPIRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 04:17:04 -0400
+IronPort-SDR: 1pm9C2PAsrye+tldQlfx8T45hfj0JPnEH9i8jnDE0DQLGYdnYBPUTb3Tc8tarE9qG1dWXjCfCK
+ EtFwL1AO4teg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 01:16:03 -0700
-IronPort-SDR: +92X+K1IO0SrIbRLNu0fGGTKoiukqM2epgNMLhvKCJazdcvCQ6yebxtyGbWEvhKmDfVqJJ3OLB
- aKnhrMdcpKWg==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 01:16:06 -0700
+IronPort-SDR: nOi04+Ugix0xWM0yeylSVBNzMkSMIQ43p0f/oJg0Jt2sF2XFpCDVIBLglZN8JfF/PR2jZBro6D
+ QWq+3PVo2oLg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,390,1580803200"; 
-   d="scan'208";a="271999472"
+   d="scan'208";a="454241136"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 16 Apr 2020 01:15:59 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 16 Apr 2020 01:16:02 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id B23A5F20; Thu, 16 Apr 2020 11:15:53 +0300 (EEST)
+        id BD0B5EB1; Thu, 16 Apr 2020 11:15:53 +0300 (EEST)
 From:   Mika Westerberg <mika.westerberg@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Darren Hart <dvhart@infradead.org>,
@@ -41,9 +41,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 14/20] usb: typec: mux: Convert the Intel PMC Mux driver to use new SCU IPC API
-Date:   Thu, 16 Apr 2020 11:15:46 +0300
-Message-Id: <20200416081552.68083-15-mika.westerberg@linux.intel.com>
+Subject: [PATCH v9 15/20] platform/x86: intel_pmc_ipc: Drop intel_pmc_ipc_command()
+Date:   Thu, 16 Apr 2020 11:15:47 +0300
+Message-Id: <20200416081552.68083-16-mika.westerberg@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200416081552.68083-1-mika.westerberg@linux.intel.com>
 References: <20200416081552.68083-1-mika.westerberg@linux.intel.com>
@@ -54,76 +54,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Now that all callers have been converted over to the SCU IPC API we can
+drop intel_pmc_ipc_command().
 
-Convert the driver to use the new SCU IPC API. This allows us to get rid
-of the duplicate PMC IPC implementation which is now covered in SCU IPC
-driver.
-
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/usb/typec/mux/Kconfig         |  2 +-
- drivers/usb/typec/mux/intel_pmc_mux.c | 12 ++++++++----
- 2 files changed, 9 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/intel_pmc_ipc.h |  8 --------
+ drivers/platform/x86/intel_pmc_ipc.c | 20 --------------------
+ 2 files changed, 28 deletions(-)
 
-diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
-index 77eb97b2aa86..a4dbd11f8ee2 100644
---- a/drivers/usb/typec/mux/Kconfig
-+++ b/drivers/usb/typec/mux/Kconfig
-@@ -11,7 +11,7 @@ config TYPEC_MUX_PI3USB30532
+diff --git a/arch/x86/include/asm/intel_pmc_ipc.h b/arch/x86/include/asm/intel_pmc_ipc.h
+index ddc964b9c78c..22848df5faaf 100644
+--- a/arch/x86/include/asm/intel_pmc_ipc.h
++++ b/arch/x86/include/asm/intel_pmc_ipc.h
+@@ -27,19 +27,11 @@
  
- config TYPEC_MUX_INTEL_PMC
- 	tristate "Intel PMC mux control"
--	depends on INTEL_PMC_IPC
-+	depends on INTEL_SCU_IPC
- 	select USB_ROLE_SWITCH
- 	help
- 	  Driver for USB muxes controlled by Intel PMC FW. Intel PMC FW can
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index f5c5e0aef66f..fce255e28a00 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -15,7 +15,7 @@
- #include <linux/usb/typec_dp.h>
- #include <linux/usb/typec_tbt.h>
+ #if IS_ENABLED(CONFIG_INTEL_PMC_IPC)
  
--#include <asm/intel_pmc_ipc.h>
-+#include <asm/intel_scu_ipc.h>
+-int intel_pmc_ipc_command(u32 cmd, u32 sub, u8 *in, u32 inlen,
+-		u32 *out, u32 outlen);
+ int intel_pmc_s0ix_counter_read(u64 *data);
+ int intel_pmc_gcr_read64(u32 offset, u64 *data);
  
- #define PMC_USBC_CMD		0xa7
+ #else
  
-@@ -96,6 +96,7 @@ struct pmc_usb_port {
- struct pmc_usb {
- 	u8 num_ports;
- 	struct device *dev;
-+	struct intel_scu_ipc_dev *ipc;
- 	struct pmc_usb_port *port;
- };
- 
-@@ -107,9 +108,8 @@ static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
- 	 * Error bit will always be 0 with the USBC command.
- 	 * Status can be checked from the response message.
- 	 */
--	intel_pmc_ipc_command(PMC_USBC_CMD, 0, msg, len,
--			      (void *)response, 1);
+-static inline int intel_pmc_ipc_command(u32 cmd, u32 sub, u8 *in, u32 inlen,
+-		u32 *out, u32 outlen)
+-{
+-	return -EINVAL;
+-}
 -
-+	intel_scu_ipc_dev_command(port->pmc->ipc, PMC_USBC_CMD, 0, msg, len,
-+				  response, sizeof(response));
- 	if (response[2]) {
- 		if (response[2] & BIT(1))
- 			return -EIO;
-@@ -370,6 +370,10 @@ static int pmc_usb_probe(struct platform_device *pdev)
- 	if (!pmc->port)
- 		return -ENOMEM;
+ static inline int intel_pmc_s0ix_counter_read(u64 *data)
+ {
+ 	return -EINVAL;
+diff --git a/drivers/platform/x86/intel_pmc_ipc.c b/drivers/platform/x86/intel_pmc_ipc.c
+index 0558eadc2a14..e4110df24490 100644
+--- a/drivers/platform/x86/intel_pmc_ipc.c
++++ b/drivers/platform/x86/intel_pmc_ipc.c
+@@ -194,26 +194,6 @@ static int update_no_reboot_bit(void *priv, bool set)
+ 				    PMC_CFG_NO_REBOOT_MASK, value);
+ }
  
-+	pmc->ipc = devm_intel_scu_ipc_dev_get(&pdev->dev);
-+	if (!pmc->ipc)
-+		return -ENODEV;
-+
- 	pmc->dev = &pdev->dev;
- 
- 	/*
+-/**
+- * intel_pmc_ipc_command() -  IPC command with input/output data
+- * @cmd:	IPC command code.
+- * @sub:	IPC command sub type.
+- * @in:		input data of this IPC command.
+- * @inlen:	input data length in bytes.
+- * @out:	output data of this IPC command.
+- * @outlen:	output data length in dwords.
+- *
+- * Send an IPC command to PMC with input/output data.
+- *
+- * Return:	an IPC error code or 0 on success.
+- */
+-int intel_pmc_ipc_command(u32 cmd, u32 sub, u8 *in, u32 inlen,
+-			  u32 *out, u32 outlen)
+-{
+-	return intel_scu_ipc_dev_command(NULL, cmd, sub, in, inlen, out, outlen);
+-}
+-EXPORT_SYMBOL_GPL(intel_pmc_ipc_command);
+-
+ static int ipc_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ {
+ 	struct intel_pmc_ipc_dev *pmc = &ipcdev;
 -- 
 2.25.1
 
