@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ECF1ACC0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930C01ACBEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506829AbgDPPyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:54:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
+        id S2506264AbgDPPw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896263AbgDPNae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:30:34 -0400
+        id S2896564AbgDPNc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:32:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F24B621D94;
-        Thu, 16 Apr 2020 13:30:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96987208E4;
+        Thu, 16 Apr 2020 13:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587043834;
-        bh=/aB5ZQPjIvOzuahP2sOeMKjKwI7vTSL9/R8D2dpZKo4=;
+        s=default; t=1587043920;
+        bh=SJKfbcTMFH18rnumuVrFY/CSI7v7IEsH07v35ULM5S0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phyqzm6lXEgTumWKZI2YM54MBsSM6PN38JS40WLJ2EjoQ8g7K96NVSoy5LRKp/pTw
-         C3jbu9/jD7CaH5i92PIgnhrdtZHyQbVP0OTTFvXpskV6nO/tk7TKNjjQ1uikW+uX5Q
-         tH18huoUNAuYZwi4cyKxbSOZvwWy7l4U41r6NQ1o=
+        b=RY1lmPv5l/9kPOr0WzbkbMAGoU41f3QaChdqotfK/V31eCdNUCYxSZv1hY4G0m6rm
+         eTKuJJDygwQLBoxs/vi9gpSOeEQRAoM3AORz2OtwBI0Lt+yqKmADgt10bGxP7gmf1Z
+         ke36OOn8ejq5v4ghSsSHGzVOIaSamRXgQokn9Xgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        kbuild test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 4.19 117/146] clk: ingenic/jz4770: Exit with error if CGU init failed
-Date:   Thu, 16 Apr 2020 15:24:18 +0200
-Message-Id: <20200416131258.618318810@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Ben Hutchings <benh@debian.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 118/146] kmod: make request_module() return an error when autoloading is disabled
+Date:   Thu, 16 Apr 2020 15:24:19 +0200
+Message-Id: <20200416131258.731165940@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
 References: <20200416131242.353444678@linuxfoundation.org>
@@ -45,39 +51,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Eric Biggers <ebiggers@google.com>
 
-commit c067b46d731a764fc46ecc466c2967088c97089e upstream.
+commit d7d27cfc5cf0766a26a8f56868c5ad5434735126 upstream.
 
-Exit jz4770_cgu_init() if the 'cgu' pointer we get is NULL, since the
-pointer is passed as argument to functions later on.
+Patch series "module autoloading fixes and cleanups", v5.
 
-Fixes: 7a01c19007ad ("clk: Add Ingenic jz4770 CGU driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lkml.kernel.org/r/20200213161952.37460-1-paul@crapouillou.net
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+This series fixes a bug where request_module() was reporting success to
+kernel code when module autoloading had been completely disabled via
+'echo > /proc/sys/kernel/modprobe'.
+
+It also addresses the issues raised on the original thread
+(https://lkml.kernel.org/lkml/20200310223731.126894-1-ebiggers@kernel.org/T/#u)
+bydocumenting the modprobe sysctl, adding a self-test for the empty path
+case, and downgrading a user-reachable WARN_ONCE().
+
+This patch (of 4):
+
+It's long been possible to disable kernel module autoloading completely
+(while still allowing manual module insertion) by setting
+/proc/sys/kernel/modprobe to the empty string.
+
+This can be preferable to setting it to a nonexistent file since it
+avoids the overhead of an attempted execve(), avoids potential
+deadlocks, and avoids the call to security_kernel_module_request() and
+thus on SELinux-based systems eliminates the need to write SELinux rules
+to dontaudit module_request.
+
+However, when module autoloading is disabled in this way,
+request_module() returns 0.  This is broken because callers expect 0 to
+mean that the module was successfully loaded.
+
+Apparently this was never noticed because this method of disabling
+module autoloading isn't used much, and also most callers don't use the
+return value of request_module() since it's always necessary to check
+whether the module registered its functionality or not anyway.
+
+But improperly returning 0 can indeed confuse a few callers, for example
+get_fs_type() in fs/filesystems.c where it causes a WARNING to be hit:
+
+	if (!fs && (request_module("fs-%.*s", len, name) == 0)) {
+		fs = __get_fs_type(name, len);
+		WARN_ONCE(!fs, "request_module fs-%.*s succeeded, but still no fs?\n", len, name);
+	}
+
+This is easily reproduced with:
+
+	echo > /proc/sys/kernel/modprobe
+	mount -t NONEXISTENT none /
+
+It causes:
+
+	request_module fs-NONEXISTENT succeeded, but still no fs?
+	WARNING: CPU: 1 PID: 1106 at fs/filesystems.c:275 get_fs_type+0xd6/0xf0
+	[...]
+
+This should actually use pr_warn_once() rather than WARN_ONCE(), since
+it's also user-reachable if userspace immediately unloads the module.
+Regardless, request_module() should correctly return an error when it
+fails.  So let's make it return -ENOENT, which matches the error when
+the modprobe binary doesn't exist.
+
+I've also sent patches to document and test this case.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Jessica Yu <jeyu@kernel.org>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jeff Vander Stoep <jeffv@google.com>
+Cc: Ben Hutchings <benh@debian.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200310223731.126894-1-ebiggers@kernel.org
+Link: http://lkml.kernel.org/r/20200312202552.241885-1-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/ingenic/jz4770-cgu.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/kmod.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/clk/ingenic/jz4770-cgu.c
-+++ b/drivers/clk/ingenic/jz4770-cgu.c
-@@ -436,8 +436,10 @@ static void __init jz4770_cgu_init(struc
+--- a/kernel/kmod.c
++++ b/kernel/kmod.c
+@@ -120,7 +120,7 @@ out:
+  * invoke it.
+  *
+  * If module auto-loading support is disabled then this function
+- * becomes a no-operation.
++ * simply returns -ENOENT.
+  */
+ int __request_module(bool wait, const char *fmt, ...)
+ {
+@@ -137,7 +137,7 @@ int __request_module(bool wait, const ch
+ 	WARN_ON_ONCE(wait && current_is_async());
  
- 	cgu = ingenic_cgu_new(jz4770_cgu_clocks,
- 			      ARRAY_SIZE(jz4770_cgu_clocks), np);
--	if (!cgu)
-+	if (!cgu) {
- 		pr_err("%s: failed to initialise CGU\n", __func__);
-+		return;
-+	}
+ 	if (!modprobe_path[0])
+-		return 0;
++		return -ENOENT;
  
- 	retval = ingenic_cgu_register_clocks(cgu);
- 	if (retval)
+ 	va_start(args, fmt);
+ 	ret = vsnprintf(module_name, MODULE_NAME_LEN, fmt, args);
 
 
