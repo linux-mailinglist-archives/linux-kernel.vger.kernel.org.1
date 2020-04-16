@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05801AC520
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2C31AC40F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406576AbgDPOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:11:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33842 "EHLO mail.kernel.org"
+        id S2636319AbgDPNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898707AbgDPNrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:47:48 -0400
+        id S2897440AbgDPNhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:37:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9B09208E4;
-        Thu, 16 Apr 2020 13:47:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23400221EB;
+        Thu, 16 Apr 2020 13:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044867;
-        bh=1jTEOjbbqZqMDyQ2xOHIV16ONyyQQ+sGxmcnS/qIDE8=;
+        s=default; t=1587044239;
+        bh=vHr6g5MwzQjKMd6VRdS/hjjFnOfpLL/Nb7slM5ESHiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T9Cp3+GvPaPe98paaXh2wsjsG71Mr8xmvTAjsM5xnC29YzHzDvgRxGeE8KSkRYTK6
-         Or2KgVM0Nct4DADTA9ob+RA5ErXHSL+VKkMTSADKhQ43irC9rWs1S/0X3OXEddOvga
-         FeWSPSf9jWjgDdQsVyhCSVmm7QORmG6eapJmNd0c=
+        b=RruWCNQF5GOb2zW2bE5AGKKFQGRLsio4XazyG/CI7ZMFaYkqXGP4Qli/F6qSQ0GLe
+         e9kH8+GJebY22zP18i3j9UfHn6t5cd1dhDF8989dm9LlDDx07rbkHYgGNH+a+nbfU/
+         DoA80IdHW8yeRr0NvPVHhqOw2Tlvj1KWgDwaoS5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ond=C5=99ej=20Caletka?= <ondrej@caletka.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 093/232] ACPICA: Allow acpi_any_gpe_status_set() to skip one GPE
-Date:   Thu, 16 Apr 2020 15:23:07 +0200
-Message-Id: <20200416131326.620226064@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.5 137/257] x86/tsc_msr: Use named struct initializers
+Date:   Thu, 16 Apr 2020 15:23:08 +0200
+Message-Id: <20200416131343.577957826@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,204 +43,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 0ce792d660bda990c675eaf14ce09594a9b85cbf upstream.
+commit 812c2d7506fde7cdf83cb2532810a65782b51741 upstream.
 
-The check carried out by acpi_any_gpe_status_set() is not precise enough
-for the suspend-to-idle implementation in Linux and in some cases it is
-necessary make it skip one GPE (specifically, the EC GPE) from the check
-to prevent a race condition leading to a premature system resume from
-occurring.
+Use named struct initializers for the freq_desc struct-s initialization
+and change the "u8 msr_plat" to a "bool use_msr_plat" to make its meaning
+more clear instead of relying on a comment to explain it.
 
-For this reason, redefine acpi_any_gpe_status_set() to take the number
-of a GPE to skip as an argument.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206629
-Tested-by: Ondřej Caletka <ondrej@caletka.cz>
-Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20200223140610.59612-1-hdegoede@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/acpica/achware.h |    2 -
- drivers/acpi/acpica/evxfgpe.c |   17 ++++++++++-----
- drivers/acpi/acpica/hwgpe.c   |   47 +++++++++++++++++++++++++++++++++---------
- drivers/acpi/sleep.c          |    2 -
- include/acpi/acpixf.h         |    2 -
- 5 files changed, 53 insertions(+), 17 deletions(-)
+ arch/x86/kernel/tsc_msr.c |   28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
---- a/drivers/acpi/acpica/achware.h
-+++ b/drivers/acpi/acpica/achware.h
-@@ -101,7 +101,7 @@ acpi_status acpi_hw_enable_all_runtime_g
+--- a/arch/x86/kernel/tsc_msr.c
++++ b/arch/x86/kernel/tsc_msr.c
+@@ -22,10 +22,10 @@
+  * read in MSR_PLATFORM_ID[12:8], otherwise in MSR_PERF_STAT[44:40].
+  * Unfortunately some Intel Atom SoCs aren't quite compliant to this,
+  * so we need manually differentiate SoC families. This is what the
+- * field msr_plat does.
++ * field use_msr_plat does.
+  */
+ struct freq_desc {
+-	u8 msr_plat;	/* 1: use MSR_PLATFORM_INFO, 0: MSR_IA32_PERF_STATUS */
++	bool use_msr_plat;
+ 	u32 freqs[MAX_NUM_FREQS];
+ };
  
- acpi_status acpi_hw_enable_all_wakeup_gpes(void);
+@@ -35,31 +35,39 @@ struct freq_desc {
+  * by MSR based on SDM.
+  */
+ static const struct freq_desc freq_desc_pnw = {
+-	0, { 0, 0, 0, 0, 0, 99840, 0, 83200 }
++	.use_msr_plat = false,
++	.freqs = { 0, 0, 0, 0, 0, 99840, 0, 83200 },
+ };
  
--u8 acpi_hw_check_all_gpes(void);
-+u8 acpi_hw_check_all_gpes(acpi_handle gpe_skip_device, u32 gpe_skip_number);
+ static const struct freq_desc freq_desc_clv = {
+-	0, { 0, 133200, 0, 0, 0, 99840, 0, 83200 }
++	.use_msr_plat = false,
++	.freqs = { 0, 133200, 0, 0, 0, 99840, 0, 83200 },
+ };
  
- acpi_status
- acpi_hw_enable_runtime_gpe_block(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
---- a/drivers/acpi/acpica/evxfgpe.c
-+++ b/drivers/acpi/acpica/evxfgpe.c
-@@ -799,17 +799,19 @@ ACPI_EXPORT_SYMBOL(acpi_enable_all_wakeu
-  *
-  * FUNCTION:    acpi_any_gpe_status_set
-  *
-- * PARAMETERS:  None
-+ * PARAMETERS:  gpe_skip_number      - Number of the GPE to skip
-  *
-  * RETURN:      Whether or not the status bit is set for any GPE
-  *
-- * DESCRIPTION: Check the status bits of all enabled GPEs and return TRUE if any
-- *              of them is set or FALSE otherwise.
-+ * DESCRIPTION: Check the status bits of all enabled GPEs, except for the one
-+ *              represented by the "skip" argument, and return TRUE if any of
-+ *              them is set or FALSE otherwise.
-  *
-  ******************************************************************************/
--u32 acpi_any_gpe_status_set(void)
-+u32 acpi_any_gpe_status_set(u32 gpe_skip_number)
- {
- 	acpi_status status;
-+	acpi_handle gpe_device;
- 	u8 ret;
+ static const struct freq_desc freq_desc_byt = {
+-	1, { 83300, 100000, 133300, 116700, 80000, 0, 0, 0 }
++	.use_msr_plat = true,
++	.freqs = { 83300, 100000, 133300, 116700, 80000, 0, 0, 0 },
+ };
  
- 	ACPI_FUNCTION_TRACE(acpi_any_gpe_status_set);
-@@ -819,7 +821,12 @@ u32 acpi_any_gpe_status_set(void)
- 		return (FALSE);
- 	}
+ static const struct freq_desc freq_desc_cht = {
+-	1, { 83300, 100000, 133300, 116700, 80000, 93300, 90000, 88900, 87500 }
++	.use_msr_plat = true,
++	.freqs = { 83300, 100000, 133300, 116700, 80000, 93300, 90000,
++		   88900, 87500 },
+ };
  
--	ret = acpi_hw_check_all_gpes();
-+	status = acpi_get_gpe_device(gpe_skip_number, &gpe_device);
-+	if (ACPI_FAILURE(status)) {
-+		gpe_device = NULL;
-+	}
-+
-+	ret = acpi_hw_check_all_gpes(gpe_device, gpe_skip_number);
- 	(void)acpi_ut_release_mutex(ACPI_MTX_EVENTS);
+ static const struct freq_desc freq_desc_tng = {
+-	1, { 0, 100000, 133300, 0, 0, 0, 0, 0 }
++	.use_msr_plat = true,
++	.freqs = { 0, 100000, 133300, 0, 0, 0, 0, 0 },
+ };
  
- 	return (ret);
---- a/drivers/acpi/acpica/hwgpe.c
-+++ b/drivers/acpi/acpica/hwgpe.c
-@@ -444,12 +444,19 @@ acpi_hw_enable_wakeup_gpe_block(struct a
- 	return (AE_OK);
- }
+ static const struct freq_desc freq_desc_ann = {
+-	1, { 83300, 100000, 133300, 100000, 0, 0, 0, 0 }
++	.use_msr_plat = true,
++	.freqs = { 83300, 100000, 133300, 100000, 0, 0, 0, 0 },
+ };
  
-+struct acpi_gpe_block_status_context {
-+	struct acpi_gpe_register_info *gpe_skip_register_info;
-+	u8 gpe_skip_mask;
-+	u8 retval;
-+};
-+
- /******************************************************************************
-  *
-  * FUNCTION:    acpi_hw_get_gpe_block_status
-  *
-  * PARAMETERS:  gpe_xrupt_info      - GPE Interrupt info
-  *              gpe_block           - Gpe Block info
-+ *              context             - GPE list walk context data
-  *
-  * RETURN:      Success
-  *
-@@ -460,12 +467,13 @@ acpi_hw_enable_wakeup_gpe_block(struct a
- static acpi_status
- acpi_hw_get_gpe_block_status(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
- 			     struct acpi_gpe_block_info *gpe_block,
--			     void *ret_ptr)
-+			     void *context)
- {
-+	struct acpi_gpe_block_status_context *c = context;
- 	struct acpi_gpe_register_info *gpe_register_info;
- 	u64 in_enable, in_status;
- 	acpi_status status;
--	u8 *ret = ret_ptr;
-+	u8 ret_mask;
- 	u32 i;
+ static const struct freq_desc freq_desc_lgm = {
+-	1, { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 }
++	.use_msr_plat = true,
++	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 },
+ };
  
- 	/* Examine each GPE Register within the block */
-@@ -485,7 +493,11 @@ acpi_hw_get_gpe_block_status(struct acpi
- 			continue;
- 		}
+ static const struct x86_cpu_id tsc_msr_cpu_ids[] = {
+@@ -91,7 +99,7 @@ unsigned long cpu_khz_from_msr(void)
+ 		return 0;
  
--		*ret |= in_enable & in_status;
-+		ret_mask = in_enable & in_status;
-+		if (ret_mask && c->gpe_skip_register_info == gpe_register_info) {
-+			ret_mask &= ~c->gpe_skip_mask;
-+		}
-+		c->retval |= ret_mask;
- 	}
- 
- 	return (AE_OK);
-@@ -561,24 +573,41 @@ acpi_status acpi_hw_enable_all_wakeup_gp
-  *
-  * FUNCTION:    acpi_hw_check_all_gpes
-  *
-- * PARAMETERS:  None
-+ * PARAMETERS:  gpe_skip_device      - GPE devoce of the GPE to skip
-+ *              gpe_skip_number      - Number of the GPE to skip
-  *
-  * RETURN:      Combined status of all GPEs
-  *
-- * DESCRIPTION: Check all enabled GPEs in all GPE blocks and return TRUE if the
-+ * DESCRIPTION: Check all enabled GPEs in all GPE blocks, except for the one
-+ *              represented by the "skip" arguments, and return TRUE if the
-  *              status bit is set for at least one of them of FALSE otherwise.
-  *
-  ******************************************************************************/
- 
--u8 acpi_hw_check_all_gpes(void)
-+u8 acpi_hw_check_all_gpes(acpi_handle gpe_skip_device, u32 gpe_skip_number)
- {
--	u8 ret = 0;
-+	struct acpi_gpe_block_status_context context = {
-+		.gpe_skip_register_info = NULL,
-+		.retval = 0,
-+	};
-+	struct acpi_gpe_event_info *gpe_event_info;
-+	acpi_cpu_flags flags;
- 
- 	ACPI_FUNCTION_TRACE(acpi_hw_check_all_gpes);
- 
--	(void)acpi_ev_walk_gpe_list(acpi_hw_get_gpe_block_status, &ret);
-+	flags = acpi_os_acquire_lock(acpi_gbl_gpe_lock);
-+
-+	gpe_event_info = acpi_ev_get_gpe_event_info(gpe_skip_device,
-+						    gpe_skip_number);
-+	if (gpe_event_info) {
-+		context.gpe_skip_register_info = gpe_event_info->register_info;
-+		context.gpe_skip_mask = acpi_hw_get_gpe_register_bit(gpe_event_info);
-+	}
-+
-+	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
- 
--	return (ret != 0);
-+	(void)acpi_ev_walk_gpe_list(acpi_hw_get_gpe_block_status, &context);
-+	return (context.retval != 0);
- }
- 
- #endif				/* !ACPI_REDUCED_HARDWARE */
---- a/drivers/acpi/sleep.c
-+++ b/drivers/acpi/sleep.c
-@@ -1023,7 +1023,7 @@ static bool acpi_s2idle_wake(void)
- 		 * status bit from unset to set between the checks with the
- 		 * status bits of all the other GPEs unset.
- 		 */
--		if (acpi_any_gpe_status_set() && !acpi_ec_dispatch_gpe())
-+		if (acpi_any_gpe_status_set(U32_MAX) && !acpi_ec_dispatch_gpe())
- 			return true;
- 
- 		/*
---- a/include/acpi/acpixf.h
-+++ b/include/acpi/acpixf.h
-@@ -748,7 +748,7 @@ ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi
- ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_disable_all_gpes(void))
- ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enable_all_runtime_gpes(void))
- ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enable_all_wakeup_gpes(void))
--ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi_any_gpe_status_set(void))
-+ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi_any_gpe_status_set(u32 gpe_skip_number))
- ACPI_HW_DEPENDENT_RETURN_UINT32(u32 acpi_any_fixed_event_status_set(void))
- 
- ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+ 	freq_desc = (struct freq_desc *)id->driver_data;
+-	if (freq_desc->msr_plat) {
++	if (freq_desc->use_msr_plat) {
+ 		rdmsr(MSR_PLATFORM_INFO, lo, hi);
+ 		ratio = (lo >> 8) & 0xff;
+ 	} else {
 
 
