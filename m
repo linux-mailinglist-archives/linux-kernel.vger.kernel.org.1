@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518E51AC6B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A041AC543
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394528AbgDPOn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47616 "EHLO mail.kernel.org"
+        id S2442251AbgDPOOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:14:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392629AbgDPOAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:00:33 -0400
+        id S2408627AbgDPNuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E91520732;
-        Thu, 16 Apr 2020 14:00:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23CBE2063A;
+        Thu, 16 Apr 2020 13:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045632;
-        bh=7TCSdWKuzTv+3biIWXj1nC1I9NWCKG66xkzKdYXC158=;
+        s=default; t=1587045050;
+        bh=UCUtmq9O84OUYC+GZF7mjcM9yAlMLxS1lex7u964yK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c/yNgIiP9l4NWGnWbYG5CPZOJVrs9HRqM8A54iPB1xotp2qNot79y5Oz/LyK2NGx6
-         gwbMuJNN+yEpoHpVbfk/+Pk3ERtzfbfFHwM9Mb2yRVpvZ1q3IKqXw/0gKobeDrClzj
-         t72x6MtlmcOrYSJkeNzbfQhn+Cisf5frV2R9zpVI=
+        b=n5RGujE+fNX6kiMplq0hXlZhC9XcY5ldNQ9zVmW+COyIqgCQt5wQdptfArriRsFzb
+         4CSdQ46ctXrAiGNK8g0ToneW5dpoitJQWDg90REpx/I3xoonZHsSbNCurTe1V54Org
+         Y5ODS8H+6VVDkNxjbFUnOKqrjJFEZEc73pP9YI3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.6 213/254] NFS: Fix use-after-free issues in nfs_pageio_add_request()
+        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Scott Wood <oss@buserror.net>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 208/232] powerpc/fsl_booke: Avoid creating duplicate tlb1 entry
 Date:   Thu, 16 Apr 2020 15:25:02 +0200
-Message-Id: <20200416131352.681418494@linuxfoundation.org>
+Message-Id: <20200416131341.389410749@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-commit dc9dc2febb17f72e9878eb540ad3996f7984239a upstream.
+commit aa4113340ae6c2811e046f08c2bc21011d20a072 upstream.
 
-We need to ensure that we create the mirror requests before calling
-nfs_pageio_add_request_mirror() on the request we are adding.
-Otherwise, we can end up with a use-after-free if the call to
-nfs_pageio_add_request_mirror() triggers I/O.
+In the current implementation, the call to loadcam_multi() is wrapped
+between switch_to_as1() and restore_to_as0() calls so, when it tries
+to create its own temporary AS=1 TLB1 entry, it ends up duplicating
+the existing one created by switch_to_as1(). Add a check to skip
+creating the temporary entry if already running in AS=1.
 
-Fixes: c917cfaf9bbe ("NFS: Fix up NFS I/O subrequest creation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: d9e1831a4202 ("powerpc/85xx: Load all early TLB entries at once")
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Acked-by: Scott Wood <oss@buserror.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200123111914.2565-1-laurentiu.tudor@nxp.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/pagelist.c |   48 ++++++++++++++++++++++++------------------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ arch/powerpc/mm/nohash/tlb_low.S |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -1177,38 +1177,38 @@ int nfs_pageio_add_request(struct nfs_pa
- 	if (desc->pg_error < 0)
- 		goto out_failed;
+--- a/arch/powerpc/mm/nohash/tlb_low.S
++++ b/arch/powerpc/mm/nohash/tlb_low.S
+@@ -397,7 +397,7 @@ _GLOBAL(set_context)
+  * extern void loadcam_entry(unsigned int index)
+  *
+  * Load TLBCAM[index] entry in to the L2 CAM MMU
+- * Must preserve r7, r8, r9, and r10
++ * Must preserve r7, r8, r9, r10 and r11
+  */
+ _GLOBAL(loadcam_entry)
+ 	mflr	r5
+@@ -433,6 +433,10 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PH
+  */
+ _GLOBAL(loadcam_multi)
+ 	mflr	r8
++	/* Don't switch to AS=1 if already there */
++	mfmsr	r11
++	andi.	r11,r11,MSR_IS
++	bne	10f
  
--	for (midx = 0; midx < desc->pg_mirror_count; midx++) {
--		if (midx) {
--			nfs_page_group_lock(req);
--
--			/* find the last request */
--			for (lastreq = req->wb_head;
--			     lastreq->wb_this_page != req->wb_head;
--			     lastreq = lastreq->wb_this_page)
--				;
--
--			dupreq = nfs_create_subreq(req, lastreq,
--					pgbase, offset, bytes);
--
--			nfs_page_group_unlock(req);
--			if (IS_ERR(dupreq)) {
--				desc->pg_error = PTR_ERR(dupreq);
--				goto out_failed;
--			}
--		} else
--			dupreq = req;
-+	/* Create the mirror instances first, and fire them off */
-+	for (midx = 1; midx < desc->pg_mirror_count; midx++) {
-+		nfs_page_group_lock(req);
-+
-+		/* find the last request */
-+		for (lastreq = req->wb_head;
-+		     lastreq->wb_this_page != req->wb_head;
-+		     lastreq = lastreq->wb_this_page)
-+			;
-+
-+		dupreq = nfs_create_subreq(req, lastreq,
-+				pgbase, offset, bytes);
-+
-+		nfs_page_group_unlock(req);
-+		if (IS_ERR(dupreq)) {
-+			desc->pg_error = PTR_ERR(dupreq);
-+			goto out_failed;
-+		}
+ 	/*
+ 	 * Set up temporary TLB entry that is the same as what we're
+@@ -458,6 +462,7 @@ _GLOBAL(loadcam_multi)
+ 	mtmsr	r6
+ 	isync
  
--		if (nfs_pgio_has_mirroring(desc))
--			desc->pg_mirror_idx = midx;
-+		desc->pg_mirror_idx = midx;
- 		if (!nfs_pageio_add_request_mirror(desc, dupreq))
- 			goto out_cleanup_subreq;
- 	}
++10:
+ 	mr	r9,r3
+ 	add	r10,r3,r4
+ 2:	bl	loadcam_entry
+@@ -466,6 +471,10 @@ _GLOBAL(loadcam_multi)
+ 	mr	r3,r9
+ 	blt	2b
  
-+	desc->pg_mirror_idx = 0;
-+	if (!nfs_pageio_add_request_mirror(desc, req))
-+		goto out_failed;
++	/* Don't return to AS=0 if we were in AS=1 at function start */
++	andi.	r11,r11,MSR_IS
++	bne	3f
 +
- 	return 1;
+ 	/* Return to AS=0 and clear the temporary entry */
+ 	mfmsr	r6
+ 	rlwinm.	r6,r6,0,~(MSR_IS|MSR_DS)
+@@ -481,6 +490,7 @@ _GLOBAL(loadcam_multi)
+ 	tlbwe
+ 	isync
  
- out_cleanup_subreq:
--	if (req != dupreq)
--		nfs_pageio_cleanup_request(desc, dupreq);
-+	nfs_pageio_cleanup_request(desc, dupreq);
- out_failed:
- 	nfs_pageio_error_cleanup(desc);
- 	return 0;
++3:
+ 	mtlr	r8
+ 	blr
+ #endif
 
 
