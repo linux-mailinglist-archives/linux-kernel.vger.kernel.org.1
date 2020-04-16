@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894411AC8F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090AE1AC5BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404847AbgDPPQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:16:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
+        id S2407703AbgDPO0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:26:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729389AbgDPNtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:49:08 -0400
+        id S2438757AbgDPN6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04A5F208E4;
-        Thu, 16 Apr 2020 13:49:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9188E217D8;
+        Thu, 16 Apr 2020 13:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044948;
-        bh=0t/oLzkgFXhjX5DcSYiAxTJvv2saLqLGZ+qwSaWFEk8=;
+        s=default; t=1587045530;
+        bh=+N3wSGhx5xXf91VaNIjjGRA3BloWUmjGuMwb+iuBtpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YvOY3+tfG3vGYBDzCUqFci6xQMFAG1JrQXjYUlLRcorIT8hLzmOTaXYH7ECl6ilTW
-         +ZuviIksA7vT9WDzDEm4eoenRJ8vNuKYivG0FRvRjzAEXaFLM5dpWUdnaNVyaasIeS
-         Bu82hYvZnGuIOlm2xj9NAfkv+iPKJSMwxvgUCmnY=
+        b=qhWGuoeydSg8G112oJa30yIdkJ62z1BohimmBsrzs8yRZIvUH0xnXhLH5FjtZJowp
+         sO7m0Y/IiP9Sip63P6jHjsNRklyDwUrmuv+YMEm94PzAYfnZWwBN2BUv3S0PbkZpIE
+         XeDtv0LWL8eiT++b9nVInSCOlOBBySEoAzemruTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 5.4 166/232] XArray: Fix xas_pause for large multi-index entries
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.6 171/254] arm64: dts: allwinner: h5: Fix PMU compatible
 Date:   Thu, 16 Apr 2020 15:24:20 +0200
-Message-Id: <20200416131335.784038432@linuxfoundation.org>
+Message-Id: <20200416131347.864975556@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit c36d451ad386b34f452fc3c8621ff14b9eaa31a6 upstream.
+commit 4ae7a3c3d7d31260f690d8d658f0365f3eca67a2 upstream.
 
-Inspired by the recent Coverity report, I looked for other places where
-the offset wasn't being converted to an unsigned long before being
-shifted, and I found one in xas_pause() when the entry being paused is
-of order >32.
+The commit c35a516a4618 ("arm64: dts: allwinner: H5: Add PMU node")
+introduced support for the PMU found on the Allwinner H5. However, the
+binding only allows for a single compatible, while the patch was adding
+two.
 
-Fixes: b803b42823d0 ("xarray: Add XArray iterators")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: stable@vger.kernel.org
+Make sure we follow the binding.
+
+Fixes: c35a516a4618 ("arm64: dts: allwinner: H5: Add PMU node")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/test_xarray.c |   37 +++++++++++++++++++++++++++++++++++++
- lib/xarray.c      |    2 +-
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/lib/test_xarray.c
-+++ b/lib/test_xarray.c
-@@ -1156,6 +1156,42 @@ static noinline void check_find_entry(st
- 	XA_BUG_ON(xa, !xa_empty(xa));
- }
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
+@@ -38,8 +38,7 @@
+ 	};
  
-+static noinline void check_pause(struct xarray *xa)
-+{
-+	XA_STATE(xas, xa, 0);
-+	void *entry;
-+	unsigned int order;
-+	unsigned long index = 1;
-+	unsigned int count = 0;
-+
-+	for (order = 0; order < order_limit; order++) {
-+		XA_BUG_ON(xa, xa_store_order(xa, index, order,
-+					xa_mk_index(index), GFP_KERNEL));
-+		index += 1UL << order;
-+	}
-+
-+	rcu_read_lock();
-+	xas_for_each(&xas, entry, ULONG_MAX) {
-+		XA_BUG_ON(xa, entry != xa_mk_index(1UL << count));
-+		count++;
-+	}
-+	rcu_read_unlock();
-+	XA_BUG_ON(xa, count != order_limit);
-+
-+	count = 0;
-+	xas_set(&xas, 0);
-+	rcu_read_lock();
-+	xas_for_each(&xas, entry, ULONG_MAX) {
-+		XA_BUG_ON(xa, entry != xa_mk_index(1UL << count));
-+		count++;
-+		xas_pause(&xas);
-+	}
-+	rcu_read_unlock();
-+	XA_BUG_ON(xa, count != order_limit);
-+
-+	xa_destroy(xa);
-+}
-+
- static noinline void check_move_tiny(struct xarray *xa)
- {
- 	XA_STATE(xas, xa, 0);
-@@ -1664,6 +1700,7 @@ static int xarray_checks(void)
- 	check_xa_alloc();
- 	check_find(&array);
- 	check_find_entry(&array);
-+	check_pause(&array);
- 	check_account(&array);
- 	check_destroy(&array);
- 	check_move(&array);
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -970,7 +970,7 @@ void xas_pause(struct xa_state *xas)
- 
- 	xas->xa_node = XAS_RESTART;
- 	if (node) {
--		unsigned int offset = xas->xa_offset;
-+		unsigned long offset = xas->xa_offset;
- 		while (++offset < XA_CHUNK_SIZE) {
- 			if (!xa_is_sibling(xa_entry(xas->xa, node, offset)))
- 				break;
+ 	pmu {
+-		compatible = "arm,cortex-a53-pmu",
+-			     "arm,armv8-pmuv3";
++		compatible = "arm,cortex-a53-pmu";
+ 		interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
 
 
