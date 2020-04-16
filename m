@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB481AD210
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 23:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566741AD215
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 23:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgDPVos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 17:44:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S1728363AbgDPVpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 17:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725843AbgDPVoq (ORCPT
+        by vger.kernel.org with ESMTP id S1728112AbgDPVor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 17:44:46 -0400
+        Thu, 16 Apr 2020 17:44:47 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AEFC061A0C;
-        Thu, 16 Apr 2020 14:44:46 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id g74so250620qke.13;
-        Thu, 16 Apr 2020 14:44:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC3DC061A0C;
+        Thu, 16 Apr 2020 14:44:47 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id y3so288501qky.8;
+        Thu, 16 Apr 2020 14:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Wr8GZzoV2Cnz7mFH5kt1T9+qrdCylLR2WkcJ8cSy10A=;
-        b=bXvKSBSut0tyQ+ae2/DNyQzBAeYLw+GiS1ANlbDjPYDV1tJfM/lY64xNVxlIiP5vxq
-         5UGNYcm6Jov0xXnTxW1XamrYE49FWUw/lPHC5oo3jaHki9ml/C+CKgm9xT2kpHylSpX1
-         XxCQdcFIRHmT/q/BSyGKT9/ddGtf7izuaG3y19PyeBkTIxRbf4bJ54gECTtECfn9MhHp
-         2dTZLnOFkWa5gqVn/VYXIek/5hzkx+Th45JVE0CRYQ2GxEw9aXl3n4++4OCEGlHFm4oK
-         c0zKAZvB+ci2m6WlBWSMcjz2k9X81YwJswwqj6LWH/ZpapbZkH4SwIuVAkGd3IPoEa9H
-         ftsw==
+        bh=ri3GcCgI+is7U0tNUGQj9JVdWWpKjcSdhc08l7uOYfg=;
+        b=dLhuENUjstK3nPmJgrivkwfLR0PIutDeYo8GfNiU5JR3nmw8Xy6nrbxF/3Jm/wSv2f
+         iiA1VghcxRFdeoVnYlecj9fvz3BnCqIrS/E/DuoelUMOgW8HimzavT7PknL7X5Ntd+VS
+         ifN07keBZCpcG6kxft91OyZ7CrZMlPv9IUJEhkJiXOjTQHBfgcMpxO1eOXy8sfx1uBnI
+         28OU1UenxghWZDXclfLTI023PWghnNjT7Af9eYhRTWBghIo5aQzEvnkU29LR6wiDDOqr
+         aJhEjlBBZO7pZg9E+kiTpQv0Bp2p7nUmvV79n5ZGtvzkt/nzhoE/og9xm3Eli1ohtwG6
+         QgbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Wr8GZzoV2Cnz7mFH5kt1T9+qrdCylLR2WkcJ8cSy10A=;
-        b=cE7lKCvOsZYbcNH4ztwVH+nWKf+JxqbTsUvdsBqJRDVb4vR5JZGgZ8wCQB2YyN2NzB
-         72mUmP7yjSgbQoRGG8cIPepQu4YEJiJN+otD7gIEsrciwcRwrA/i9pPPskTJ5W/a1e+q
-         BZVFlp/voUKkBZsDCrzyt3XXnE4T6KV73w0xrkaNlF9PcMBlgLBEdI0U1aEvnF3SuNUF
-         iN0vW1ETTZ3byds2X6hBCfqUEzs1df2nsFDijd0ZwpghISv1B9kvryhR/A9SX0N4adxg
-         1DHAwnYsLqM+oYF32Q5e75Q94YctXyU4j0crZzi9rzgURGSrXjwsd83HKGga7v5XsY8e
-         C95w==
-X-Gm-Message-State: AGi0PuYguF6Obn8IQ/UGT1YdXLFbvaSiAbnrqeZeAhg8wKpobzVf3wGh
-        rpXi7vW/wFb6fSrjTn6JBGXK7i/1
-X-Google-Smtp-Source: APiQypJUSqu2xrd9x8TBoOp+QP2H10ctNK/QK050IRVHwhEuzj4v6F9jOcDtDLJY0X4T+BAIm5K1nA==
-X-Received: by 2002:a37:7a46:: with SMTP id v67mr111168qkc.87.1587073485769;
-        Thu, 16 Apr 2020 14:44:45 -0700 (PDT)
+        bh=ri3GcCgI+is7U0tNUGQj9JVdWWpKjcSdhc08l7uOYfg=;
+        b=nP17DMZj264vKlbps66A/cKqOeXRTDfze1fVJOEX2sbX3byUybm2LJyFttBQrg6/m0
+         E3FFrZb/tKQLBvR/RfKUDF6t0/3TMeT4nkYrakLgX43svPmoLM5I09+qpzQauvoUxQY/
+         9g36tq/a3F5tgVUVAD+XAoO/Wx+cSIKBqvV6Akm9+ROy+8tHKH+6XezKsmvL114x4J9U
+         6Y7vOt0kHlXIcMqqFX2Iai1w+4xYg25DoQfjwXZYrKLIdxUVPzjYyhBjPfXkLdcSg3Uu
+         U55ZulAuCB00ewKEh+tyDBXpxPYdJjxEo/sPrLVndrkWD0CnPmpDqq9113ddL2dzNcvo
+         sOwA==
+X-Gm-Message-State: AGi0PuasZ7+jC91oZKaf1ftkbdfRBQ5Da1ObH7HEyrehH7RtcyJFJ4bL
+        rNKYYPXk8vSSeeql/O3xwEs=
+X-Google-Smtp-Source: APiQypK5YPrgNfGWutFT5M7T6XGbyiU8Hyu8YP+4Buk3DQ0g671iwEqfk80lrw427qlDYbCtvIiSdA==
+X-Received: by 2002:a37:7302:: with SMTP id o2mr119945qkc.466.1587073486852;
+        Thu, 16 Apr 2020 14:44:46 -0700 (PDT)
 Received: from localhost.localdomain (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id z34sm3164141qth.43.2020.04.16.14.44.44
+        by smtp.gmail.com with ESMTPSA id z34sm3164141qth.43.2020.04.16.14.44.45
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Apr 2020 14:44:45 -0700 (PDT)
+        Thu, 16 Apr 2020 14:44:46 -0700 (PDT)
 From:   frowand.list@gmail.com
 To:     Rob Herring <robh+dt@kernel.org>, pantelis.antoniou@konsulko.com
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Erhard F." <erhard_f@mailbox.org>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Alan Tull <atull@kernel.org>
-Subject: [PATCH 2/5] of: unittest: kmemleak in of_unittest_platform_populate()
-Date:   Thu, 16 Apr 2020 16:42:47 -0500
-Message-Id: <1587073370-25963-3-git-send-email-frowand.list@gmail.com>
+Subject: [PATCH 3/5] of: unittest: kmemleak in of_unittest_overlay_high_level()
+Date:   Thu, 16 Apr 2020 16:42:48 -0500
+Message-Id: <1587073370-25963-4-git-send-email-frowand.list@gmail.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1587073370-25963-1-git-send-email-frowand.list@gmail.com>
 References: <1587073370-25963-1-git-send-email-frowand.list@gmail.com>
@@ -68,39 +68,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: Frank Rowand <frank.rowand@sony.com>
 
 kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 2 of 5.
+This is the fix for problem 3 of 5.
 
-of_unittest_platform_populate() left an elevated reference count for
-grandchild nodes (which are platform devices).  Fix the platform
-device reference counts so that the memory will be freed.
+of_unittest_overlay_high_level() failed to kfree the newly created
+property when the property named 'name' is skipped.
 
-Fixes: fb2caa50fbac ("of/selftest: add testcase for nodes with same name and address")
+Fixes: 39a751a4cb7e ("of: change overlay apply input data from unflattened to FDT")
 Reported-by: Erhard F. <erhard_f@mailbox.org>
 Signed-off-by: Frank Rowand <frank.rowand@sony.com>
 ---
- drivers/of/unittest.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/of/unittest.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 20ff2dfc3143..4c7818276857 100644
+index 4c7818276857..f238b7a3865d 100644
 --- a/drivers/of/unittest.c
 +++ b/drivers/of/unittest.c
-@@ -1247,10 +1247,13 @@ static void __init of_unittest_platform_populate(void)
- 
- 	of_platform_populate(np, match, NULL, &test_bus->dev);
- 	for_each_child_of_node(np, child) {
--		for_each_child_of_node(child, grandchild)
--			unittest(of_find_device_by_node(grandchild),
-+		for_each_child_of_node(child, grandchild) {
-+			pdev = of_find_device_by_node(grandchild);
-+			unittest(pdev,
- 				 "Could not create device for node '%pOFn'\n",
- 				 grandchild);
-+			of_dev_put(pdev);
-+		}
- 	}
- 
- 	of_platform_depopulate(&test_bus->dev);
+@@ -3094,8 +3094,11 @@ static __init void of_unittest_overlay_high_level(void)
+ 				goto err_unlock;
+ 			}
+ 			if (__of_add_property(of_symbols, new_prop)) {
++				kfree(new_prop->name);
++				kfree(new_prop->value);
++				kfree(new_prop);
+ 				/* "name" auto-generated by unflatten */
+-				if (!strcmp(new_prop->name, "name"))
++				if (!strcmp(prop->name, "name"))
+ 					continue;
+ 				unittest(0, "duplicate property '%s' in overlay_base node __symbols__",
+ 					 prop->name);
 -- 
 Frank Rowand <frank.rowand@sony.com>
 
