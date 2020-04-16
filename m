@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ABE1AC4C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAECC1AC6AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393006AbgDPOEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:04:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55406 "EHLO mail.kernel.org"
+        id S1729807AbgDPOnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405440AbgDPNmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:25 -0400
+        id S2392640AbgDPOAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:00:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72BAD218AC;
-        Thu, 16 Apr 2020 13:42:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B6A120732;
+        Thu, 16 Apr 2020 14:00:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044545;
-        bh=sM43j8+jjyYeXh9A6RDE8bPlJelQvkGDSH/i2ELAM/E=;
+        s=default; t=1587045637;
+        bh=20+WhrVt6rOuqY2+VFAix3C62pXVZPh2cqoTL8DX7PE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DPmWoVyg0zqu5MOHxH6qWZqzjVLzUihfxzz1U91JmUZPWsYawsN8r7///S7CQXr6+
-         ACHkq33aFD5s2wm/Wverm12Y8QxfDOSw4DwOlZBs1957Iidq/YPfIAzifvsXF3A7SP
-         iOZdpUvPCv0uXq+mQKs8UBI+7xDP5mvyyJf+CgxA=
+        b=Rxsf3KDcfC4bpYQ3ncFQ1IXTB9mJd4iAsxMYtptbpOt8THSAe6RackN37G+5nfKic
+         SnbF5705oHU4LyNv0O57W9sG++7sFqeMxJbv8sjRkzmr/gYDTGibStKQ28Ng0TVxa3
+         R9ESayLm68vRhLKziEfTymnVv0Uo3XkFi9FjLzQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 252/257] perf/core: Unify {pinned,flexible}_sched_in()
-Date:   Thu, 16 Apr 2020 15:25:03 +0200
-Message-Id: <20200416131357.043818675@linuxfoundation.org>
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.6 215/254] NFS: finish_automount() requires us to hold 2 refs to the mount record
+Date:   Thu, 16 Apr 2020 15:25:04 +0200
+Message-Id: <20200416131352.894907687@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,138 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit ab6f824cfdf7363b5e529621cbc72ae6519c78d1 ]
+commit 75da98586af75eb80664714a67a9895bf0a5517e upstream.
 
-Less is more; unify the two very nearly identical function.
+We must not return from nfs_d_automount() without holding 2 references
+to the mount record. Doing so, will trigger the BUG() in finish_automount().
+Also ensure that we don't try to reschedule the automount timer with
+a negative or zero timeout value.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 22a1ae9a93fb ("NFS: If nfs_mountpoint_expiry_timeout < 0, do not expire submounts")
+Cc: stable@vger.kernel.org # v5.5+
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/events/core.c | 58 ++++++++++++++++----------------------------
- 1 file changed, 21 insertions(+), 37 deletions(-)
+ fs/nfs/namespace.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index fdb7f7ef380c4..b3d4f485bcfa6 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1986,6 +1986,12 @@ static int perf_get_aux_event(struct perf_event *event,
- 	return 1;
+--- a/fs/nfs/namespace.c
++++ b/fs/nfs/namespace.c
+@@ -145,6 +145,7 @@ struct vfsmount *nfs_d_automount(struct
+ 	struct vfsmount *mnt = ERR_PTR(-ENOMEM);
+ 	struct nfs_server *server = NFS_SERVER(d_inode(path->dentry));
+ 	struct nfs_client *client = server->nfs_client;
++	int timeout = READ_ONCE(nfs_mountpoint_expiry_timeout);
+ 	int ret;
+ 
+ 	if (IS_ROOT(path->dentry))
+@@ -190,12 +191,12 @@ struct vfsmount *nfs_d_automount(struct
+ 	if (IS_ERR(mnt))
+ 		goto out_fc;
+ 
+-	if (nfs_mountpoint_expiry_timeout < 0)
++	mntget(mnt); /* prevent immediate expiration */
++	if (timeout <= 0)
+ 		goto out_fc;
+ 
+-	mntget(mnt); /* prevent immediate expiration */
+ 	mnt_set_expiry(mnt, &nfs_automount_list);
+-	schedule_delayed_work(&nfs_automount_task, nfs_mountpoint_expiry_timeout);
++	schedule_delayed_work(&nfs_automount_task, timeout);
+ 
+ out_fc:
+ 	put_fs_context(fc);
+@@ -233,10 +234,11 @@ const struct inode_operations nfs_referr
+ static void nfs_expire_automounts(struct work_struct *work)
+ {
+ 	struct list_head *list = &nfs_automount_list;
++	int timeout = READ_ONCE(nfs_mountpoint_expiry_timeout);
+ 
+ 	mark_mounts_for_expiry(list);
+-	if (!list_empty(list))
+-		schedule_delayed_work(&nfs_automount_task, nfs_mountpoint_expiry_timeout);
++	if (!list_empty(list) && timeout > 0)
++		schedule_delayed_work(&nfs_automount_task, timeout);
  }
  
-+static inline struct list_head *get_event_list(struct perf_event *event)
-+{
-+	struct perf_event_context *ctx = event->ctx;
-+	return event->attr.pinned ? &ctx->pinned_active : &ctx->flexible_active;
-+}
-+
- static void perf_group_detach(struct perf_event *event)
- {
- 	struct perf_event *sibling, *tmp;
-@@ -2028,12 +2034,8 @@ static void perf_group_detach(struct perf_event *event)
- 		if (!RB_EMPTY_NODE(&event->group_node)) {
- 			add_event_to_groups(sibling, event->ctx);
- 
--			if (sibling->state == PERF_EVENT_STATE_ACTIVE) {
--				struct list_head *list = sibling->attr.pinned ?
--					&ctx->pinned_active : &ctx->flexible_active;
--
--				list_add_tail(&sibling->active_list, list);
--			}
-+			if (sibling->state == PERF_EVENT_STATE_ACTIVE)
-+				list_add_tail(&sibling->active_list, get_event_list(sibling));
- 		}
- 
- 		WARN_ON_ONCE(sibling->ctx != event->ctx);
-@@ -2350,6 +2352,8 @@ event_sched_in(struct perf_event *event,
- {
- 	int ret = 0;
- 
-+	WARN_ON_ONCE(event->ctx != ctx);
-+
- 	lockdep_assert_held(&ctx->lock);
- 
- 	if (event->state <= PERF_EVENT_STATE_OFF)
-@@ -3425,10 +3429,12 @@ struct sched_in_data {
- 	int can_add_hw;
- };
- 
--static int pinned_sched_in(struct perf_event *event, void *data)
-+static int merge_sched_in(struct perf_event *event, void *data)
- {
- 	struct sched_in_data *sid = data;
- 
-+	WARN_ON_ONCE(event->ctx != sid->ctx);
-+
- 	if (event->state <= PERF_EVENT_STATE_OFF)
- 		return 0;
- 
-@@ -3437,37 +3443,15 @@ static int pinned_sched_in(struct perf_event *event, void *data)
- 
- 	if (group_can_go_on(event, sid->cpuctx, sid->can_add_hw)) {
- 		if (!group_sched_in(event, sid->cpuctx, sid->ctx))
--			list_add_tail(&event->active_list, &sid->ctx->pinned_active);
-+			list_add_tail(&event->active_list, get_event_list(event));
- 	}
- 
--	/*
--	 * If this pinned group hasn't been scheduled,
--	 * put it in error state.
--	 */
--	if (event->state == PERF_EVENT_STATE_INACTIVE)
--		perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
--
--	return 0;
--}
--
--static int flexible_sched_in(struct perf_event *event, void *data)
--{
--	struct sched_in_data *sid = data;
--
--	if (event->state <= PERF_EVENT_STATE_OFF)
--		return 0;
--
--	if (!event_filter_match(event))
--		return 0;
-+	if (event->state == PERF_EVENT_STATE_INACTIVE) {
-+		if (event->attr.pinned)
-+			perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
- 
--	if (group_can_go_on(event, sid->cpuctx, sid->can_add_hw)) {
--		int ret = group_sched_in(event, sid->cpuctx, sid->ctx);
--		if (ret) {
--			sid->can_add_hw = 0;
--			sid->ctx->rotate_necessary = 1;
--			return 0;
--		}
--		list_add_tail(&event->active_list, &sid->ctx->flexible_active);
-+		sid->can_add_hw = 0;
-+		sid->ctx->rotate_necessary = 1;
- 	}
- 
- 	return 0;
-@@ -3485,7 +3469,7 @@ ctx_pinned_sched_in(struct perf_event_context *ctx,
- 
- 	visit_groups_merge(&ctx->pinned_groups,
- 			   smp_processor_id(),
--			   pinned_sched_in, &sid);
-+			   merge_sched_in, &sid);
- }
- 
- static void
-@@ -3500,7 +3484,7 @@ ctx_flexible_sched_in(struct perf_event_context *ctx,
- 
- 	visit_groups_merge(&ctx->flexible_groups,
- 			   smp_processor_id(),
--			   flexible_sched_in, &sid);
-+			   merge_sched_in, &sid);
- }
- 
- static void
--- 
-2.20.1
-
+ void nfs_release_automount_timer(void)
 
 
