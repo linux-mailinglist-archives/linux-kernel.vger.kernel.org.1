@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FBC1AC798
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5471ACAE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409223AbgDPO45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43096 "EHLO mail.kernel.org"
+        id S2395510AbgDPPl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409143AbgDPN4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:56:02 -0400
+        id S2897420AbgDPNhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:37:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42C5221744;
-        Thu, 16 Apr 2020 13:56:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45682221F4;
+        Thu, 16 Apr 2020 13:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045361;
-        bh=i/WQ4zp2hHzop+pFU2DiVs4dApyLMmZBX3q6djS2+kI=;
+        s=default; t=1587044229;
+        bh=fiGMzYdcKj1wMdAjWB8tpXxgYUTFGPSDkacsRCk08pA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IpSF4T10z6CeKRjgjdRXBXTkliIkNeGbUIxNbKi4e+ItUY8QqPlbN5yF3FKOpZYRS
-         qdpzD5RsIVB0Au3x2ISMA+gAtBv9Hghbg8NKmpe+QDPbQ6COX94eK3HUaNdcYFkHeY
-         QrnmXaC6xQxxrn5NLur/9768W9Ck4+6JmaJ8hgsY=
+        b=dLVE9P2Ow+eJFiQjmAQSC/gZhG656HP1MxlOQ5zyNOBIjdm1944qINa64qA2GKWSB
+         w7Paoz3J7/8x8yWillvubEP2OgP7NY5fCU5xyIf18husAPZqtdvozM1ebvX9N217xk
+         IOoum/p2l8mCwHZUecIihbcCByKsJ3ilsZjltEE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenhua Liu <liuw@vmware.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>
-Subject: [PATCH 5.6 096/254] nvmet-tcp: fix maxh2cdata icresp parameter
+        stable@vger.kernel.org, Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.5 134/257] PM: sleep: wakeup: Skip wakeup_source_sysfs_remove() if device is not there
 Date:   Thu, 16 Apr 2020 15:23:05 +0200
-Message-Id: <20200416131337.973130294@linuxfoundation.org>
+Message-Id: <20200416131343.183028554@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-commit 9cda34e37489244a8c8628617e24b2dbc8a8edad upstream.
+commit 87de6594dc45dbf6819f3e0ef92f9331c5a9444c upstream.
 
-MAXH2CDATA is not zero based. Also no reason to limit ourselves to
-1M transfers as we can do more easily. Make this an arbitrary limit
-of 16M.
+Skip wakeup_source_sysfs_remove() to fix a NULL pinter dereference via
+ws->dev, if the wakeup source is unregistered before registering the
+wakeup class from device_add().
 
-Reported-by: Wenhua Liu <liuw@vmware.com>
-Cc: stable@vger.kernel.org # v5.0+
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Fixes: 2ca3d1ecb8c4 ("PM / wakeup: Register wakeup class kobj after device is added")
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+[ rjw: Subject & changelog, white space ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/nvme/target/tcp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/power/wakeup.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -794,7 +794,7 @@ static int nvmet_tcp_handle_icreq(struct
- 	icresp->hdr.pdo = 0;
- 	icresp->hdr.plen = cpu_to_le32(icresp->hdr.hlen);
- 	icresp->pfv = cpu_to_le16(NVME_TCP_PFV_1_0);
--	icresp->maxdata = cpu_to_le32(0xffff); /* FIXME: support r2t */
-+	icresp->maxdata = cpu_to_le32(0x400000); /* 16M arbitrary limit */
- 	icresp->cpda = 0;
- 	if (queue->hdr_digest)
- 		icresp->digest |= NVME_TCP_HDR_DIGEST_ENABLE;
+--- a/drivers/base/power/wakeup.c
++++ b/drivers/base/power/wakeup.c
+@@ -241,7 +241,9 @@ void wakeup_source_unregister(struct wak
+ {
+ 	if (ws) {
+ 		wakeup_source_remove(ws);
+-		wakeup_source_sysfs_remove(ws);
++		if (ws->dev)
++			wakeup_source_sysfs_remove(ws);
++
+ 		wakeup_source_destroy(ws);
+ 	}
+ }
 
 
