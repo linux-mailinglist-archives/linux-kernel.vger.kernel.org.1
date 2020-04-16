@@ -2,270 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73521ABB70
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669061ABA49
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 09:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502548AbgDPIiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:38:22 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:10059 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502504AbgDPIfk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:35:40 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id BB1484E24E9;
-        Thu, 16 Apr 2020 15:49:36 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        oss@buserror.net, christophe.leroy@c-s.fr,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v3,4/4] drivers: uio: new driver for fsl_85xx_cache_sram
-Date:   Thu, 16 Apr 2020 00:49:18 -0700
-Message-Id: <20200416074918.3617-5-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200416074918.3617-1-wenhu.wang@vivo.com>
-References: <20200415152442.122873-1-wenhu.wang@vivo.com>
- <20200416074918.3617-1-wenhu.wang@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVPTk9CQkJCSUhMS01LTllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTo6HBw5CDg0PAhODRwINx5M
-        GR0KCxhVSlVKTkNMS0lISExMSUpOVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUNLQ043Bg++
-X-HM-Tid: 0a7181f6f2999376kuwsbb1484e24e9
+        id S2439709AbgDPHuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 03:50:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439438AbgDPHut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 03:50:49 -0400
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134A52076A;
+        Thu, 16 Apr 2020 07:50:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587023449;
+        bh=OFHqz9GYYZNwc+I9swBEm5dzUhRk5QACD1V1CxcDFlo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KZcD59NIBi3fSTJa9R3dm9SUE41lbsKpYBdDP7DYKp2lCFhz+WVORehUZFIWPY6cj
+         0vgcsAVA8xIEXgiwx8uUO3ae0nXXWMHi0nDPOF8S5JPQCg391UW8ZSfOp4iYiysmLv
+         Xl/X7Mvexhs6KXq+jLXS8bmun/3zNDOV3gU6qZec=
+Received: by mail-il1-f177.google.com with SMTP id e4so6031637ils.4;
+        Thu, 16 Apr 2020 00:50:49 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZzqNK4DwGc65TDZeUaD8FldjrbRkB0xvDH0lS/QEleM/koTiyL
+        cIOiFGHBL+4NKfMUFLL83jfZJ0nlcVQUH3vVzSo=
+X-Google-Smtp-Source: APiQypI5ojUj0Vjwe5ylB1JFpUhtyPIygOqNmKrjZ41jxKYyJbInoum3YZtcRuho0AfeBevcdVTm443eRLyhFE/uFFQ=
+X-Received: by 2002:a92:aa0f:: with SMTP id j15mr9438871ili.211.1587023448452;
+ Thu, 16 Apr 2020 00:50:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200415221520.2692512-1-nivedita@alum.mit.edu> <20200415221520.2692512-2-nivedita@alum.mit.edu>
+In-Reply-To: <20200415221520.2692512-2-nivedita@alum.mit.edu>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 16 Apr 2020 09:50:36 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE7aNm5XWrB2PkEedXA02gGmpcPW7rjziAXeTSPL_786A@mail.gmail.com>
+Message-ID: <CAMj1kXE7aNm5XWrB2PkEedXA02gGmpcPW7rjziAXeTSPL_786A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] efi/arm: Remove __efistub_global annotation
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A driver for freescale 85xx platforms to access the Cache-Sram form
-user level. This is extremely helpful for some user-space applications
-that require high performance memory accesses.
+On Thu, 16 Apr 2020 at 00:15, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> Instead of using __efistub_global to force variables into the .data
+> section, leave them in the .bss but pull the EFI stub's .bss section
+> into .data in the linker script for the compressed kernel.
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Scott Wood <oss@buserror.net>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
----
-Changes since v1:
- * Addressed comments from Greg K-H
- * Moved kfree(info->name) into uio_info_free_internal()
-Changes since v2:
- * Addressed comments from Greg, Scott and Christophe
- * Use "uiomem->internal_addr" as if condition for sram memory free,
-   and memset the uiomem entry
- * Modified of_match_table make the driver apart from Cache-Sram HW info
-   which belong to the HW level driver fsl_85xx_cache_sram to match
- * Use roundup_pow_of_two for align calculation
- * Remove useless clear block of uiomem entries.
- * Use UIO_INFO_VER micro for info->version, and define it as
-   "devicetree,pseudo", meaning this is pseudo device and probed from
-   device tree configuration
- * Select FSL_85XX_CACHE_SRAM rather than depends on it
----
- drivers/uio/Kconfig                   |   9 ++
- drivers/uio/Makefile                  |   1 +
- drivers/uio/uio_fsl_85xx_cache_sram.c | 158 ++++++++++++++++++++++++++
- 3 files changed, 168 insertions(+)
- create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
-diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
-index 202ee81cfc2b..9c3b47461b71 100644
---- a/drivers/uio/Kconfig
-+++ b/drivers/uio/Kconfig
-@@ -105,6 +105,15 @@ config UIO_NETX
- 	  To compile this driver as a module, choose M here; the module
- 	  will be called uio_netx.
- 
-+config UIO_FSL_85XX_CACHE_SRAM
-+	tristate "Freescale 85xx Cache-Sram driver"
-+	depends on FSL_SOC_BOOKE && PPC32
-+	select FSL_85XX_CACHE_SRAM
-+	help
-+	  Generic driver for accessing the Cache-Sram form user level. This
-+	  is extremely helpful for some user-space applications that require
-+	  high performance memory accesses.
-+
- config UIO_FSL_ELBC_GPCM
- 	tristate "eLBC/GPCM driver"
- 	depends on FSL_LBC
-diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
-index c285dd2a4539..be2056cffc21 100644
---- a/drivers/uio/Makefile
-+++ b/drivers/uio/Makefile
-@@ -10,4 +10,5 @@ obj-$(CONFIG_UIO_NETX)	+= uio_netx.o
- obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
- obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
- obj-$(CONFIG_UIO_FSL_ELBC_GPCM)	+= uio_fsl_elbc_gpcm.o
-+obj-$(CONFIG_UIO_FSL_85XX_CACHE_SRAM)	+= uio_fsl_85xx_cache_sram.o
- obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
-diff --git a/drivers/uio/uio_fsl_85xx_cache_sram.c b/drivers/uio/uio_fsl_85xx_cache_sram.c
-new file mode 100644
-index 000000000000..8701df695307
---- /dev/null
-+++ b/drivers/uio/uio_fsl_85xx_cache_sram.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-+ * Copyright (C) 2020 Wang Wenhu <wenhu.wang@vivo.com>
-+ * All rights reserved.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/uio_driver.h>
-+#include <linux/stringify.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <asm/fsl_85xx_cache_sram.h>
-+
-+#define DRIVER_NAME	"uio_fsl_85xx_cache_sram"
-+#define UIO_INFO_VER	"devicetree,pseudo"
-+#define UIO_NAME	"uio_cache_sram"
-+
-+static void uio_info_free_internal(struct uio_info *info)
-+{
-+	struct uio_mem *uiomem = info->mem;
-+
-+	while (uiomem < &info->mem[MAX_UIO_MAPS]) {
-+		if (uiomem->internal_addr) {
-+			mpc85xx_cache_sram_free(uiomem->internal_addr);
-+			kfree(uiomem->name);
-+			memset(uiomem, 0, sizeof(*uiomem));
-+		}
-+		uiomem++;
-+	}
-+
-+	kfree(info->name);
-+}
-+
-+static int uio_fsl_85xx_cache_sram_probe(struct platform_device *pdev)
-+{
-+	struct device_node *parent = pdev->dev.of_node;
-+	struct device_node *node = NULL;
-+	struct uio_info *info;
-+	struct uio_mem *uiomem;
-+	const char *dt_name;
-+	u32 mem_size;
-+	int ret;
-+
-+	/* alloc uio_info for one device */
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	/* get optional uio name */
-+	if (of_property_read_string(parent, "uio_name", &dt_name))
-+		dt_name = UIO_NAME;
-+
-+	info->name = kstrdup(dt_name, GFP_KERNEL);
-+	if (!info->name) {
-+		ret = -ENOMEM;
-+		goto err_info_free;
-+	}
-+
-+	uiomem = info->mem;
-+	for_each_child_of_node(parent, node) {
-+		void *virt;
-+		phys_addr_t phys;
-+
-+		ret = of_property_read_u32(node, "cache-mem-size", &mem_size);
-+		if (ret) {
-+			ret = -EINVAL;
-+			goto err_info_free_internal;
-+		}
-+
-+		if (mem_size == 0) {
-+			dev_err(&pdev->dev, "cache-mem-size should not be 0\n");
-+			ret = -EINVAL;
-+			goto err_info_free_internal;
-+		}
-+
-+		virt = mpc85xx_cache_sram_alloc(mem_size,
-+						&phys,
-+						roundup_pow_of_two(mem_size));
-+		if (!virt) {
-+			/* mpc85xx_cache_sram_alloc to define the real cause */
-+			ret = -ENOMEM;
-+			goto err_info_free_internal;
-+		}
-+
-+		uiomem->memtype = UIO_MEM_PHYS;
-+		uiomem->addr = phys;
-+		uiomem->size = mem_size;
-+		uiomem->name = kstrdup(node->name, GFP_KERNEL);;
-+		uiomem->internal_addr = virt;
-+		uiomem++;
-+
-+		if (uiomem >= &info->mem[MAX_UIO_MAPS]) {
-+			dev_warn(&pdev->dev, "more than %d uio-maps for device.\n",
-+				 MAX_UIO_MAPS);
-+			break;
-+		}
-+	}
-+
-+	if (uiomem == info->mem) {
-+		dev_err(&pdev->dev, "error no valid uio-map configured\n");
-+		ret = -EINVAL;
-+		goto err_info_free_internal;
-+	}
-+
-+	info->version = UIO_INFO_VER;
-+
-+	/* register uio device */
-+	if (uio_register_device(&pdev->dev, info)) {
-+		dev_err(&pdev->dev, "uio registration failed\n");
-+		ret = -ENODEV;
-+		goto err_info_free_internal;
-+	}
-+
-+	platform_set_drvdata(pdev, info);
-+
-+	return 0;
-+err_info_free_internal:
-+	uio_info_free_internal(info);
-+err_info_free:
-+	kfree(info);
-+	return ret;
-+}
-+
-+static int uio_fsl_85xx_cache_sram_remove(struct platform_device *pdev)
-+{
-+	struct uio_info *info = platform_get_drvdata(pdev);
-+
-+	uio_unregister_device(info);
-+
-+	uio_info_free_internal(info);
-+
-+	kfree(info);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id uio_mpc85xx_l2ctlr_of_match[] = {
-+	{	.compatible = "uio,mpc85xx-cache-sram",	},
-+	{},
-+};
-+
-+static struct platform_driver uio_fsl_85xx_cache_sram = {
-+	.probe = uio_fsl_85xx_cache_sram_probe,
-+	.remove = uio_fsl_85xx_cache_sram_remove,
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table	= uio_mpc85xx_l2ctlr_of_match,
-+	},
-+};
-+
-+module_platform_driver(uio_fsl_85xx_cache_sram);
-+
-+MODULE_AUTHOR("Wang Wenhu <wenhu.wang@vivo.com>");
-+MODULE_DESCRIPTION("Freescale MPC85xx Cache-Sram UIO Platform Driver");
-+MODULE_ALIAS("platform:" DRIVER_NAME);
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
-
+> ---
+>  arch/arm/boot/compressed/vmlinux.lds.S | 2 +-
+>  drivers/firmware/efi/libstub/Makefile  | 7 ++++---
+>  drivers/firmware/efi/libstub/efistub.h | 2 +-
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
+> index b247f399de71..b6793c7932a9 100644
+> --- a/arch/arm/boot/compressed/vmlinux.lds.S
+> +++ b/arch/arm/boot/compressed/vmlinux.lds.S
+> @@ -78,7 +78,7 @@ SECTIONS
+>       * The EFI stub always executes from RAM, and runs strictly before the
+>       * decompressor, so we can make an exception for its r/w data, and keep it
+>       */
+> -    *(.data.efistub)
+> +    *(.data.efistub .bss.efistub)
+>      __pecoff_data_end = .;
+>
+>      /*
+> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> index 094eabdecfe6..45ffe0822df1 100644
+> --- a/drivers/firmware/efi/libstub/Makefile
+> +++ b/drivers/firmware/efi/libstub/Makefile
+> @@ -100,8 +100,9 @@ quiet_cmd_stubcopy = STUBCPY $@
+>
+>  #
+>  # ARM discards the .data section because it disallows r/w data in the
+> -# decompressor. So move our .data to .data.efistub, which is preserved
+> -# explicitly by the decompressor linker script.
+> +# decompressor. So move our .data to .data.efistub and .bss to .bss.efistub,
+> +# which are preserved explicitly by the decompressor linker script.
+>  #
+> -STUBCOPY_FLAGS-$(CONFIG_ARM)   += --rename-section .data=.data.efistub
+> +STUBCOPY_FLAGS-$(CONFIG_ARM)   += --rename-section .data=.data.efistub \
+> +                                  --rename-section .bss=.bss.efistub,load,alloc
+>  STUBCOPY_RELOC-$(CONFIG_ARM)   := R_ARM_ABS
+> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+> index bd0b86b63936..a92d42ffd9f7 100644
+> --- a/drivers/firmware/efi/libstub/efistub.h
+> +++ b/drivers/firmware/efi/libstub/efistub.h
+> @@ -25,7 +25,7 @@
+>  #define EFI_ALLOC_ALIGN                EFI_PAGE_SIZE
+>  #endif
+>
+> -#if defined(CONFIG_ARM) || defined(CONFIG_X86)
+> +#if defined(CONFIG_X86)
+>  #define __efistub_global       __section(.data)
+>  #else
+>  #define __efistub_global
+> --
+> 2.24.1
+>
