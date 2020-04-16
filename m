@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21001AD0B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810D21AD0E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 22:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729757AbgDPT7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 15:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727827AbgDPT7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 15:59:23 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5969C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 12:59:23 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id m13so4138507otf.6
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 12:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7WfBtoIVEC6/j56YyjZAfJnwgvU6tH//snMSSsZQdVE=;
-        b=H5k+RhY3rqGx6ykjoJzaZK21rQLgeYa3k6y8fbOlbi2WteJHRLJi5EP/kAjemUxPcx
-         9qwqpetBbT3EDhsDs8VkHDLV9VoNlGwqJlAHDoLRLm0olBD+RlI3SUK6C648J6kQpeGS
-         r271tkeq6UGk+XKTV947ChBjo3Ga+UCN45UY4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7WfBtoIVEC6/j56YyjZAfJnwgvU6tH//snMSSsZQdVE=;
-        b=ZKAasGGPYI0DxFjDoBA5WjLBhaBX9QAOrjCeOeXtNe7c/+C46qQzyHX8CDQ9sBgDPV
-         w0jfElbc1GmGGYwEFPUXIW8uMAN4JiQWbnmmLJEWJ8CAs7n0wNtTBd8L3hgHUALy6KKl
-         HgEe/tLgpjX4wQSahVp200nKPst2lmFE9e/l4CyZv2daj5hv2TA6To7SWbB2yPVCJ5uC
-         x6JWj3K/Um5tZOys1b8Bk4SDo0LigKqvxKQEF7SA3ScJ3FP/TNWL9fdkyJxPMZQvJc+K
-         1G/T+HRv6eJwDzkw8uZ5279lem9kUgRgbiQwps2gYoNuee+M2YiNx54mFsHo6+OeLRwF
-         289A==
-X-Gm-Message-State: AGi0PuY52nRkmZ5kroOAsG4W3AJP3UnFpjKYrM4MpRQXqAeJXuWXh8g8
-        IH1r61BI2QLJzQY8mCrOz4Kc0lt8rfziJM9ReiOfBQ==
-X-Google-Smtp-Source: APiQypI7UkXURQxQBK+fW+I4P8ZYrI0brlWeIvLukyl6Upjgw4+FXuKkVVtwPjZ7LItpYuWCdZIRAZSo2Qk6fSH4UHI=
-X-Received: by 2002:a05:6830:155a:: with SMTP id l26mr13773909otp.246.1587067162790;
- Thu, 16 Apr 2020 12:59:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1583332764.git.vpillai@digitalocean.com>
- <e942da7fd881977923463f19648085c1bfaa37f8.1583332765.git.vpillai@digitalocean.com>
- <20200416033804.GA5712@HP-G1>
-In-Reply-To: <20200416033804.GA5712@HP-G1>
-From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Date:   Thu, 16 Apr 2020 15:59:11 -0400
-Message-ID: <CANaguZC+yKkPNcb65hOWjbhmpdP3zp8SdXf0xuvDeV9kEeqnsw@mail.gmail.com>
-Subject: Re: [RFC PATCH 07/13] sched: Add core wide task selection and scheduling.
-To:     Chen Yu <yu.chen.surf@gmail.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>,
-        Long Cui <long.cui@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729804AbgDPUMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 16:12:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:9825 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726523AbgDPUMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 16:12:39 -0400
+IronPort-SDR: 6ZMKpcZC414a1BKAgO2Y1kEStRKkdheTB2pyluIjuy9/Wsq9vIwO4HtZd80EqTDcrcCQbwLyuP
+ 3rotnZAB3NGQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 13:12:39 -0700
+IronPort-SDR: r7Og5Oq2XCEbwNdn2DsqVN0NlTMRI+7z5XW0KToc2Tr/tmkoUXOe5tkG+DfeBCdZdzt5gajFsu
+ V5/GechOGFhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
+   d="scan'208";a="257345226"
+Received: from unknown (HELO nsgsw-wilsonpoint.lm.intel.com) ([10.232.116.102])
+  by orsmga006.jf.intel.com with ESMTP; 16 Apr 2020 13:12:38 -0700
+From:   Jon Derrick <jonathan.derrick@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Jon Derrick <jonathan.derrick@intel.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Sam Bobroff <sbobroff@linux.ibm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Olof Johansson <olof@lixom.net>,
+        Keith Busch <keith.busch@intel.com>,
+        Frederick Lawler <fred@fredlawl.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI/DPC: Allow Non-ACPI Native ports to use DPC
+Date:   Thu, 16 Apr 2020 13:59:15 -0600
+Message-Id: <1587067157-2291-1-git-send-email-jonathan.derrick@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi Vineeth,
-> An NULL pointer exception was found when testing V5 on top of stable
-> v5.6.2. And we tried the patch Peter suggested, the NULL pointer
-> was not found so far. We don't know if this change would help mitigate
-> the symptom, but it should do no harm to test with this fix applied.
->
+Some platforms have a mix of ports whose capabilities can be negotiated
+by _OSC, and some ports which are not described by ACPI and instead
+managed by Native drivers. The existing Firmware-First HEST model can
+incorrectly tag these Native, Non-ACPI ports as Firmware-First capable
+ports by advertising the HEST Global flag and specifying the type and
+class (aer_hest_parse).
 
-Thanks for the patch Chenyu!
+This ultimately can lead to bad situations if the BIOS or port firmware
+leaves DPC preconfigured and the Linux DPC driver is unable to bind to
+the port to handle DPC events.
 
-I was also looking into this as part of addressing Peter's comments. I
-shall include this patch in v6 along with addressing all the issues
-that Peter pointed out in this thread.
+This patch adds the check for Native DPC in the port's host bridge in
+order to allow DPC services to bind to the port.
 
-Thanks,
-Vineeth
+Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
+---
+ drivers/pci/pcie/dpc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+index 7621704..a1e355d 100644
+--- a/drivers/pci/pcie/dpc.c
++++ b/drivers/pci/pcie/dpc.c
+@@ -281,10 +281,12 @@ static int dpc_probe(struct pcie_device *dev)
+ {
+ 	struct pci_dev *pdev = dev->port;
+ 	struct device *device = &dev->device;
++	struct pci_host_bridge *host = pci_find_host_bridge(pdev->bus);
+ 	int status;
+ 	u16 ctl, cap;
+ 
+-	if (pcie_aer_get_firmware_first(pdev) && !pcie_ports_dpc_native)
++	if (pcie_aer_get_firmware_first(pdev) && !pcie_ports_dpc_native &&
++	    !host->native_dpc)
+ 		return -ENOTSUPP;
+ 
+ 	status = devm_request_threaded_irq(device, dev->irq, dpc_irq,
+-- 
+1.8.3.1
+
