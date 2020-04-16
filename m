@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605CB1AC3BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1DF1AC26E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898672AbgDPNrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
+        id S2895698AbgDPN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897160AbgDPNfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:35:41 -0400
+        id S2895347AbgDPN1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:27:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94962221EB;
-        Thu, 16 Apr 2020 13:35:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2687206E9;
+        Thu, 16 Apr 2020 13:27:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044141;
-        bh=S7nX239u2h/t/AEuMNtsW8RA5Xt1MqxgFCsb+8eKRNY=;
+        s=default; t=1587043625;
+        bh=8PpGL1xkqmeHJ2Vira44+EEkc2xrM5AF6XsNGJQaXU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BRRoYHkE39GwyS2xiAvtaFgZ4ZwQx0Yrl5S/05p85CXBKzyroDIh+krzxAu+oQlE+
-         EeBegvoEZ+JNrotZ0qDiWPL1taK9Ej/yGa1H9PbAuPg5VSw+/0GbpQcFwuRIUG8KiH
-         0ArSfMbjJhDB07d4giz8hweeFxyM6lJsDsLE7lHg=
+        b=EHsY3ZgYbacBT58OVUeQTP/5PI+73WXJp7u3i82LAq/qIqJQyHq8LsP1z/p08zQEs
+         0sNJUgobenWBcy6KfPrPBB9XSRqfLmo8TLajnXvxVMD5F83onBM9JkFlyNITBz9hiK
+         lWs9gHQyiUndNaOzW1qri+9oITszwPpAnh5TCchg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.5 097/257] ALSA: hda/realtek - Add quirk for Lenovo Carbon X1 8th gen
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 007/146] cxgb4/ptp: pass the sign of offset delta in FW CMD
 Date:   Thu, 16 Apr 2020 15:22:28 +0200
-Message-Id: <20200416131338.195503324@linuxfoundation.org>
+Message-Id: <20200416131243.507556526@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+References: <20200416131242.353444678@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Raju Rangoju <rajur@chelsio.com>
 
-commit ca707b3f00b4f31a6e1eb37e8ae99f15f2bb1fe5 upstream.
+[ Upstream commit 50e0d28d3808146cc19b0d5564ef4ba9e5bf3846 ]
 
-The audio setup on the Lenovo Carbon X1 8th gen is the same as that on
-the Lenovo Carbon X1 7th gen, as such it needs the same
-ALC285_FIXUP_THINKPAD_HEADSET_JACK quirk.
+cxgb4_ptp_fineadjtime() doesn't pass the signedness of offset delta
+in FW_PTP_CMD. Fix it by passing correct sign.
 
-This fixes volume control of the speaker not working among other things.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1820196
-Cc: stable@vger.kernel.org
-Suggested-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Link: https://lore.kernel.org/r/20200402174311.238614-1-hdegoede@redhat.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7325,6 +7325,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
- 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
-+	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+index 9f9d6cae39d55..758f2b8363282 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+@@ -246,6 +246,9 @@ static int  cxgb4_ptp_fineadjtime(struct adapter *adapter, s64 delta)
+ 			     FW_PTP_CMD_PORTID_V(0));
+ 	c.retval_len16 = cpu_to_be32(FW_CMD_LEN16_V(sizeof(c) / 16));
+ 	c.u.ts.sc = FW_PTP_SC_ADJ_FTIME;
++	c.u.ts.sign = (delta < 0) ? 1 : 0;
++	if (delta < 0)
++		delta = -delta;
+ 	c.u.ts.tm = cpu_to_be64(delta);
+ 
+ 	err = t4_wr_mbox(adapter, adapter->mbox, &c, sizeof(c), NULL);
+-- 
+2.20.1
+
 
 
