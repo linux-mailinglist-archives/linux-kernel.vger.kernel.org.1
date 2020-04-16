@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B6B1AC8F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2D61AC4AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441657AbgDPPRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
+        id S2506800AbgDPOCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898812AbgDPNtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:49:06 -0400
+        id S2898379AbgDPNlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:41:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C09A2222D;
-        Thu, 16 Apr 2020 13:49:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ED732076D;
+        Thu, 16 Apr 2020 13:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044946;
-        bh=3lMFglE0xuNtFVD+rE9EMBj52ZIUBKu2wEWZufizG9M=;
+        s=default; t=1587044513;
+        bh=7rP73lTWU6+Q7t9AJyrmnd9s5HX/5v+B3ctmotKKrpU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pYvf6sd0N1S6ZMoYDvW4a9hjC9HOttBLSOj1xJNIZZ/NB6V4CljFmNTskRTLRpdZE
-         dYbKG+yElTDemVbBs8is5ziT/vv/SVLE1aN6vcg17hTw7Zhz1ie+yom5/Ubi+MEYgD
-         sm4YmovHunj2QoWPCvD7i+ayDJyGWfUR94TS4Gkc=
+        b=mvTltQ0VccKQvvceFN301QAUr2DgmyU3jnTFGyytVYUITTCMyPHkij8np9sp2erqO
+         3jSVB3rZWE9EY1A2j3IOWU6lJV4XOWP5nuj05bSGKeYqLx1/0dg1GnbgfgZSHKKmp0
+         ySO5ea0mdeRNRdLrgap+N/qzXdcmrGEV7Ns1ougg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 165/232] dm clone metadata: Fix return type of dm_clone_nr_of_hydrated_regions()
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: [PATCH 5.5 208/257] drm/etnaviv: rework perfmon query infrastructure
 Date:   Thu, 16 Apr 2020 15:24:19 +0200
-Message-Id: <20200416131335.651692964@linuxfoundation.org>
+Message-Id: <20200416131352.073781570@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +44,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
 
-commit 81d5553d1288c2ec0390f02f84d71ca0f0f9f137 upstream.
+commit ed1dd899baa32d47d9a93d98336472da50564346 upstream.
 
-dm_clone_nr_of_hydrated_regions() returns the number of regions that
-have been hydrated so far. In order to do so it employs bitmap_weight().
+Report the correct perfmon domains and signals depending
+on the supported feature flags.
 
-Until now, the return type of dm_clone_nr_of_hydrated_regions() was
-unsigned long.
-
-Because bitmap_weight() returns an int, in case BITS_PER_LONG == 64 and
-the return value of bitmap_weight() is 2^31 (the maximum allowed number
-of regions for a device), the result is sign extended from 32 bits to 64
-bits and an incorrect value is displayed, in the status output of
-dm-clone, as the number of hydrated regions.
-
-Fix this by having dm_clone_nr_of_hydrated_regions() return an unsigned
-int.
-
-Fixes: 7431b7835f55 ("dm: add clone target")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 9e2c2e273012 ("drm/etnaviv: add infrastructure to query perf counter")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-clone-metadata.c |    2 +-
- drivers/md/dm-clone-metadata.h |    2 +-
- drivers/md/dm-clone-target.c   |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_perfmon.c |   59 ++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 7 deletions(-)
 
---- a/drivers/md/dm-clone-metadata.c
-+++ b/drivers/md/dm-clone-metadata.c
-@@ -656,7 +656,7 @@ bool dm_clone_is_range_hydrated(struct d
- 	return (bit >= (start + nr_regions));
- }
+--- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+@@ -32,6 +32,7 @@ struct etnaviv_pm_domain {
+ };
  
--unsigned long dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd)
-+unsigned int dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd)
+ struct etnaviv_pm_domain_meta {
++	unsigned int feature;
+ 	const struct etnaviv_pm_domain *domains;
+ 	u32 nr_domains;
+ };
+@@ -410,36 +411,78 @@ static const struct etnaviv_pm_domain do
+ 
+ static const struct etnaviv_pm_domain_meta doms_meta[] = {
+ 	{
++		.feature = chipFeatures_PIPE_3D,
+ 		.nr_domains = ARRAY_SIZE(doms_3d),
+ 		.domains = &doms_3d[0]
+ 	},
+ 	{
++		.feature = chipFeatures_PIPE_2D,
+ 		.nr_domains = ARRAY_SIZE(doms_2d),
+ 		.domains = &doms_2d[0]
+ 	},
+ 	{
++		.feature = chipFeatures_PIPE_VG,
+ 		.nr_domains = ARRAY_SIZE(doms_vg),
+ 		.domains = &doms_vg[0]
+ 	}
+ };
+ 
++static unsigned int num_pm_domains(const struct etnaviv_gpu *gpu)
++{
++	unsigned int num = 0, i;
++
++	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
++		const struct etnaviv_pm_domain_meta *meta = &doms_meta[i];
++
++		if (gpu->identity.features & meta->feature)
++			num += meta->nr_domains;
++	}
++
++	return num;
++}
++
++static const struct etnaviv_pm_domain *pm_domain(const struct etnaviv_gpu *gpu,
++	unsigned int index)
++{
++	const struct etnaviv_pm_domain *domain = NULL;
++	unsigned int offset = 0, i;
++
++	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
++		const struct etnaviv_pm_domain_meta *meta = &doms_meta[i];
++
++		if (!(gpu->identity.features & meta->feature))
++			continue;
++
++		if (meta->nr_domains < (index - offset)) {
++			offset += meta->nr_domains;
++			continue;
++		}
++
++		domain = meta->domains + (index - offset);
++	}
++
++	return domain;
++}
++
+ int etnaviv_pm_query_dom(struct etnaviv_gpu *gpu,
+ 	struct drm_etnaviv_pm_domain *domain)
  {
- 	return bitmap_weight(cmd->region_map, cmd->nr_regions);
- }
---- a/drivers/md/dm-clone-metadata.h
-+++ b/drivers/md/dm-clone-metadata.h
-@@ -154,7 +154,7 @@ bool dm_clone_is_range_hydrated(struct d
- /*
-  * Returns the number of hydrated regions.
-  */
--unsigned long dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd);
-+unsigned int dm_clone_nr_of_hydrated_regions(struct dm_clone_metadata *cmd);
+-	const struct etnaviv_pm_domain_meta *meta = &doms_meta[domain->pipe];
++	const unsigned int nr_domains = num_pm_domains(gpu);
+ 	const struct etnaviv_pm_domain *dom;
  
- /*
-  * Returns the first unhydrated region with region_nr >= @start
---- a/drivers/md/dm-clone-target.c
-+++ b/drivers/md/dm-clone-target.c
-@@ -1455,7 +1455,7 @@ static void clone_status(struct dm_targe
- 			goto error;
- 		}
+-	if (domain->iter >= meta->nr_domains)
++	if (domain->iter >= nr_domains)
+ 		return -EINVAL;
  
--		DMEMIT("%u %llu/%llu %llu %lu/%lu %u ",
-+		DMEMIT("%u %llu/%llu %llu %u/%lu %u ",
- 		       DM_CLONE_METADATA_BLOCK_SIZE,
- 		       (unsigned long long)(nr_metadata_blocks - nr_free_metadata_blocks),
- 		       (unsigned long long)nr_metadata_blocks,
+-	dom = meta->domains + domain->iter;
++	dom = pm_domain(gpu, domain->iter);
++	if (!dom)
++		return -EINVAL;
+ 
+ 	domain->id = domain->iter;
+ 	domain->nr_signals = dom->nr_signals;
+ 	strncpy(domain->name, dom->name, sizeof(domain->name));
+ 
+ 	domain->iter++;
+-	if (domain->iter == meta->nr_domains)
++	if (domain->iter == nr_domains)
+ 		domain->iter = 0xff;
+ 
+ 	return 0;
+@@ -448,14 +491,16 @@ int etnaviv_pm_query_dom(struct etnaviv_
+ int etnaviv_pm_query_sig(struct etnaviv_gpu *gpu,
+ 	struct drm_etnaviv_pm_signal *signal)
+ {
+-	const struct etnaviv_pm_domain_meta *meta = &doms_meta[signal->pipe];
++	const unsigned int nr_domains = num_pm_domains(gpu);
+ 	const struct etnaviv_pm_domain *dom;
+ 	const struct etnaviv_pm_signal *sig;
+ 
+-	if (signal->domain >= meta->nr_domains)
++	if (signal->domain >= nr_domains)
+ 		return -EINVAL;
+ 
+-	dom = meta->domains + signal->domain;
++	dom = pm_domain(gpu, signal->domain);
++	if (!dom)
++		return -EINVAL;
+ 
+ 	if (signal->iter >= dom->nr_signals)
+ 		return -EINVAL;
 
 
