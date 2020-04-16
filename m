@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC971ABD27
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7311ABD22
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504138AbgDPJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:45:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41080 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503578AbgDPJpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:45:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 08D91AE19;
-        Thu, 16 Apr 2020 09:45:06 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 11:45:05 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH 0/7] livepatch,module: Remove .klp.arch and
- module_disable_ro()
-In-Reply-To: <20200414190814.glra2gceqgy34iyx@treble>
-Message-ID: <alpine.LSU.2.21.2004161136340.10475@pobox.suse.cz>
-References: <cover.1586881704.git.jpoimboe@redhat.com> <20200414182726.GF2483@worktop.programming.kicks-ass.net> <20200414190814.glra2gceqgy34iyx@treble>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S2504081AbgDPJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2503597AbgDPJo0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 05:44:26 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6257DC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:44:26 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f13so3980511wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 02:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=eQoYM2pLQO1XrZmokhZkQFFYS9SMIAVF7rMVFneBkec=;
+        b=ehWs7uC292kKEl7gjluXQedNxfQJ7V1i2Gs7FeoOLiMr1/nAzMdwA36hsXNWyCuNog
+         qO4j0f7GHcgKG6F18w7u/wHuf5m0mcLS7duTHupaW0OTBH/+TlGWNrw608nEHl/KLQat
+         yFLuCBLPtJiuDKOkRP5ASkZinZKoC6c0dFPcJfcs0P5/QquqMca2qbKPbvVNUjSM+AFM
+         4HVRsHqmu+gDK5cblHSkyDwMBXzQAhyqtSv+EsDVESeZiHcSXkzxetI1mTAvGSYpYtrd
+         SssOs+srOQKDORPoMRtdjGtJlOE3tabBZOkfqdhQibS+i0SKqBe/C+wgC7Vzb7bn7BLk
+         MTlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=eQoYM2pLQO1XrZmokhZkQFFYS9SMIAVF7rMVFneBkec=;
+        b=s6j/mSUjWflm9s2chDWCKKELazU3hCyGoAWEEsdR5lDlylWH9KuIUGr8MT7JlccXPr
+         TshOHj40bg3LcOK5aEFhJhFLeV5+zkRxRZOlpZn1Cf7t6t4PxjFWAFnewUayfLms0dft
+         Q7VdpliPg4wAZq5ZeEao7M48vYdh5HcUP//M6fpy3BHjg2ea0ictg4H+0/oNNxc+7/g6
+         dJUJ5WVK/evb7ZzV+zqfgtqu/Ta/Dwer6r16znnKqiYB0Pl39l9lXqAUPb8sH3UJXfrt
+         AAvOAkOr34fKMACrR3ivKx/fxMAeZTcx4Hy+rOFRdejwObxWXbCALZX8LZjZAHQb9vGV
+         5Prw==
+X-Gm-Message-State: AGi0Puab/sULl2vaMf7NijqfIIqtk/x9UKamHIC+4jfQxNAndSn4XMkT
+        GTQG2dTyDNKTLjpCT+AMl1/UfCK2JII=
+X-Google-Smtp-Source: APiQypJ2YUsUUdUM/XrgPFwutQFkpFRJstjqY0JphX96phVZ7rvntEP6QlkjZL8xuc6XNcFK/09AKA==
+X-Received: by 2002:a5d:6646:: with SMTP id f6mr24132302wrw.318.1587030265162;
+        Thu, 16 Apr 2020 02:44:25 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id k17sm1789621wmi.10.2020.04.16.02.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 02:44:24 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 10:45:25 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mfd: stpmic1: Make stpmic1_regmap_config static
+Message-ID: <20200416094525.GC2167633@dell>
+References: <20200410115514.41916-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200410115514.41916-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020, Josh Poimboeuf wrote:
+On Fri, 10 Apr 2020, YueHaibing wrote:
 
-> On Tue, Apr 14, 2020 at 08:27:26PM +0200, Peter Zijlstra wrote:
-> > On Tue, Apr 14, 2020 at 11:28:36AM -0500, Josh Poimboeuf wrote:
-> > > Better late than never, these patches add simplifications and
-> > > improvements for some issues Peter found six months ago, as part of his
-> > > non-writable text code (W^X) cleanups.
-> > 
-> > Excellent stuff, thanks!!
-> >
-> > I'll go brush up these two patches then:
-> > 
-> >   https://lkml.kernel.org/r/20191018074634.801435443@infradead.org
-> >   https://lkml.kernel.org/r/20191018074634.858645375@infradead.org
+> Fix sparse warning:
 > 
-> Ah right, I meant to bring that up.  I actually played around with those
-> patches.  While it would be nice to figure out a way to converge the
-> ftrace module init, I didn't really like the first patch.
+> drivers/mfd/stpmic1.c:62:28: warning:
+>  symbol 'stpmic1_regmap_config' was not declared. Should it be static?
 > 
-> It bothers me that both the notifiers and the module init() both see the
-> same MODULE_STATE_COMING state, but only in the former case is the text
-> writable.
-> 
-> I think it's cognitively simpler if MODULE_STATE_COMING always means the
-> same thing, like the comments imply, "fully formed" and thus
-> not-writable:
-> 
-> enum module_state {
-> 	MODULE_STATE_LIVE,	/* Normal state. */
-> 	MODULE_STATE_COMING,	/* Full formed, running module_init. */
-> 	MODULE_STATE_GOING,	/* Going away. */
-> 	MODULE_STATE_UNFORMED,	/* Still setting it up. */
-> };
-> 
-> And, it keeps tighter constraints on what a notifier can do, which is a
-> good thing if we can get away with it.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/mfd/stpmic1.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Agreed.
+Applied, thanks.
 
-On the other hand, the first patch would remove the tiny race window when 
-a module state is still UNFORMED, but the protections are (being) set up. 
-Patches 4/7 and 5/7 allow to use memcpy in that case, because it is early. 
-But it is in fact not already. I haven't checked yet if it really matters 
-somewhere (a race with livepatch running klp_module_coming while another 
-module is being loaded or anything like that).
-
-Miroslav
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
