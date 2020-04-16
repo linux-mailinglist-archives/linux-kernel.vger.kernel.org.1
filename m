@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09321AC978
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0E71AC97C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505272AbgDPPXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
+        id S1729930AbgDPPXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2442465AbgDPPXG (ORCPT
+        by vger.kernel.org with ESMTP id S2392261AbgDPPX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 11:23:06 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E159C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 08:23:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M9wNHq+pJV/W7evRBOcE0MNL1FR2yu97YGtN2R1oU7o=; b=MWDvG5+H5FOuIDBVPwLMYaIisi
-        huR1f3hnuAS4/wljed0KyyLYKMVzwZIC0xASn0TjWKQyM2Qcvk1nck98+1w4hkfI50cd3jz2kSXk9
-        SKwDH8kZigK1n31z0kIUcKwfGhWfuaUN3mIkytP3GGZk5pTqeWCQwoEQMSwDlX4K3CuwT66XUc2OD
-        9uz5zrjYVLDKYgm2RJPtWuWy4nmlfI4tJmTsOxo1m861ebXIiAtbfVZD9rohf8lm9PN89D1s7kKSb
-        kT7dIKMAXhkHYEU/cezcS/+aWpoxvmWNWF2Z0DGtFzhXkRiDg3HaEmv+ZF2msCt4s9eSQCfkosBt0
-        KPehcKLQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jP6Ll-0004WQ-Iw; Thu, 16 Apr 2020 15:22:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECA9530746C;
-        Thu, 16 Apr 2020 17:22:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DA4B72B0DECD1; Thu, 16 Apr 2020 17:22:42 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 17:22:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
-Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de, x86@kernel.org
-Subject: Re: [RFC][PATCH 6/7] x86/retpoline: Out-of-line retpoline
-Message-ID: <20200416152242.GQ20730@hirez.programming.kicks-ass.net>
-References: <20200416150752.569029800@infradead.org>
- <20200416151025.064291444@infradead.org>
+        Thu, 16 Apr 2020 11:23:26 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E55C061A0C;
+        Thu, 16 Apr 2020 08:23:26 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id k21so3381056otl.5;
+        Thu, 16 Apr 2020 08:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sDKDxRsvr9/0tnocd3cnf/IOYw0smGMIaggntAhf7sA=;
+        b=qzuDzGpLCGu7BUgaNTFhhEejkw0MvAlN2DPmQLMrBqU1v4yWsiG1tEqyPbXbNvUjeo
+         bLcBrNKgxIgnQVm4Pew28MRBLZUTdZVShPop7K3izBQBymzxAxLjDf6pXZI5xRsDE7L5
+         DVkwvDK0nGVpckgYmdkRer8sDuQ5EMrmIx6eKhPKl4sCoDB7+KxvNX7MYKmPAjWWLCJ0
+         iIre7bCji+qEPwN41tTHgeU2eKhSv57vbXZhW06MIRJSa+wsQRo27LG+aJYSnQM3YJF9
+         26R5vq4zelVgz+BGRozeyaD1U/bEVK1Eq0pZrVtUTBjnxuO7kf4VDUqrvmuqMD08k6LF
+         8skg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sDKDxRsvr9/0tnocd3cnf/IOYw0smGMIaggntAhf7sA=;
+        b=M67WDtCELfvAqgpF53XJhtwjgbGH72wr0Rn4P05y8TAueRUNRIF3S+bC0BosjoZ/6B
+         XaeJ/VLRbU6gyzBb+5CEZWxKQAtKneegl5hyTHiBynById/61zJLVEk6aW7QxvAeYnFL
+         YQOqIcALQsmWfxqdrryVWUVyd0HmpRrCOgGQMndRbrUsXVUO1o6ki8JO7FpwKaHsvah7
+         lV0+y4SXVmAABr+4ZXBhptICQxuOBPRrAnY9rL+1VamHTp2o7gbFNFfhMW0+7kBJlJkX
+         LIdxmp3ZLJoCLgZXy6kIl0kIOpLmFtNR1KkSelgt+gRH1E14rwBo4wcPsheNSCgH9uG0
+         hurA==
+X-Gm-Message-State: AGi0PuaVOUK8kBQyNrmZ1RVlMzTPc8kkgx4Xu9mSBZZB8OoQ1LQqKUtL
+        W+OGeMkuz+xwYpZzKq7eQ/5+14LDd4X2MJpg/Ho=
+X-Google-Smtp-Source: APiQypJE2h+x6KBr6qqRxBMg3KHROW+KikW03R+TXV1d2SClZNdS7Dc8Qzpwvc2hixH/5z7JnCNbiVjdFOBVmuUm0oU=
+X-Received: by 2002:a9d:19ca:: with SMTP id k68mr27607601otk.232.1587050605773;
+ Thu, 16 Apr 2020 08:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416151025.064291444@infradead.org>
+References: <20200416001414.25746-1-TheSven73@gmail.com> <20200416001414.25746-2-TheSven73@gmail.com>
+ <20200416124239.GH5354@sirena.org.uk>
+In-Reply-To: <20200416124239.GH5354@sirena.org.uk>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Thu, 16 Apr 2020 11:23:14 -0400
+Message-ID: <CAGngYiVXk+1Qzs3yLwyne3X567_yvbuRfXkjihmGc0EigHo50A@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] ASoC: Add initial ZL38060 driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you Mark for the constructive feedback !
+A few follow-up questions below.
 
-Bah, chunks went missing, I'll make sure to push out a working version.
+On Thu, Apr 16, 2020 at 8:42 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> > +++ b/sound/soc/codecs/zl38060.c
+> > @@ -0,0 +1,643 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Codec driver for Microsemi ZL38060 Connected Home Audio Processor.
+> > + *
+>
+> Please make the entire comment a C++ one so things look more
+> intentional.
 
-On Thu, Apr 16, 2020 at 05:07:58PM +0200, Peter Zijlstra wrote:
-> --- a/arch/x86/lib/retpoline.S
-> +++ b/arch/x86/lib/retpoline.S
-> @@ -7,15 +7,30 @@
->  #include <asm/alternative-asm.h>
->  #include <asm/export.h>
->  #include <asm/nospec-branch.h>
-> +#include <asm/unwind_hints.h>
-> +#include <asm/frame.h>
->  
->  .macro THUNK reg
->  	.section .text.__x86.indirect_thunk
->  
-> +	.align 32
->  SYM_FUNC_START(__x86_indirect_thunk_\reg)
-> -	CFI_STARTPROC
-> -	JMP_NOSPEC %\reg
-> -	CFI_ENDPROC
-> +	JMP_NOSPEC \reg
->  SYM_FUNC_END(__x86_indirect_thunk_\reg)
-> +
-> +SYM_FUNC_START_NOALIGN(__x86_retpoline_\reg)
-> +	ANNOTATE_INTRA_FUNCTION_CALL
-> +	call	.Ldo_rop_\@
-> +.Lspec_trap_\@:
-	UNWIND_HINT_EMPTY
-> +	pause
-> +	lfence
-> +	jmp	.Lspec_trap_\@
-> +.Ldo_rop_\@:
-> +	mov	%\reg, (%_ASM_SP)
-> +	UNWIND_HINT_RET_OFFSET
-> +	ret
-> +SYM_FUNC_END(__x86_retpoline_\reg)
-> +
->  .endm
->  
->  /*
+The 'weird' combination of // SPDX and /* Description/copyright */ seems to
+be a kernel-wide standard (for C files, at least) ?
+
+E.g.:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/codecs/wm9090.c?h=v5.7-rc1#n2
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/codecs/wm8904.c?h=v5.7-rc1#n2
+
+Ok to keep?
+
+>
+> > +skip_setup:
+> > +     if (priv->amp_en_gpio && tx) {
+> > +             /* enable the external amplifier before playback starts */
+> > +             gpiod_set_value_cansleep(priv->amp_en_gpio, 1);
+> > +             if (priv->amp_startup_delay_ms)
+> > +                     msleep(priv->amp_startup_delay_ms);
+> > +     }
+>
+> This external amplifier support shouldn't be here, if there's other
+> devices in the system then they will have their own drivers and the
+> machine driver will take care of linking things together.
+
+In our application, the amp is a "dumb" class-D amp with a single enable line:
+https://www.onsemi.com/pub/Collateral/FAB3103-D.pdf
+
+I am not sure how I could make this more general. Could you point me to an
+example somewhere in the tree?
+
+>
+> > +     priv->regmap = devm_regmap_init(dev, &zl38_regmap_bus, spi,
+> > +                                     &zl38_regmap_conf);
+> > +     if (IS_ERR(priv->regmap))
+> > +             return PTR_ERR(priv->regmap);
+>
+> devm_regmap_init_spi()
+
+I wish !! This chip has complex SPI addressing, using an "address" which:
+- is variable length, depending on the page of the register being accessed;
+- contains a field with the length of the data to follow.
+
+Unfortunately, during firmware programming, multi-writes are mandatory
+(usually address header + 32 data bytes).
+
+Implementing my own regmap_bus looked like the only way out.
