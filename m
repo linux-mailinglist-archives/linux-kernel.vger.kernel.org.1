@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2D61AC4AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE271AC5BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506800AbgDPOCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:02:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54804 "EHLO mail.kernel.org"
+        id S2410097AbgDPO0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898379AbgDPNlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:41:53 -0400
+        id S2409399AbgDPN6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:58:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ED732076D;
-        Thu, 16 Apr 2020 13:41:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B28921734;
+        Thu, 16 Apr 2020 13:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044513;
-        bh=7rP73lTWU6+Q7t9AJyrmnd9s5HX/5v+B3ctmotKKrpU=;
+        s=default; t=1587045527;
+        bh=A/ZkzyYxdWbXzwjiIwFZHZCuIhtw4g1dykFh7jvlhjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mvTltQ0VccKQvvceFN301QAUr2DgmyU3jnTFGyytVYUITTCMyPHkij8np9sp2erqO
-         3jSVB3rZWE9EY1A2j3IOWU6lJV4XOWP5nuj05bSGKeYqLx1/0dg1GnbgfgZSHKKmp0
-         ySO5ea0mdeRNRdLrgap+N/qzXdcmrGEV7Ns1ougg=
+        b=wjxqgv2pNdxr3+DcdPJprvXuMursbHpB2NAw0Bevzm8xNPhJsL+MEK6dRfuSq87Bz
+         kkDownrSzvWBSbjJxmnGVPY7ytF/E7olfa6IcHukBTzcawPmYjKo2+P0i3z0ZBmhOw
+         Q/EQSfmtbq+XD2HSxWuFtw+pQw8A1mmkYDfoE2K0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: [PATCH 5.5 208/257] drm/etnaviv: rework perfmon query infrastructure
+        stable@vger.kernel.org, Scott Wood <swood@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.6 170/254] sched/core: Remove duplicate assignment in sched_tick_remote()
 Date:   Thu, 16 Apr 2020 15:24:19 +0200
-Message-Id: <20200416131352.073781570@linuxfoundation.org>
+Message-Id: <20200416131347.767245701@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,136 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Gmeiner <christian.gmeiner@gmail.com>
+From: Scott Wood <swood@redhat.com>
 
-commit ed1dd899baa32d47d9a93d98336472da50564346 upstream.
+commit 82e0516ce3a147365a5dd2a9bedd5ba43a18663d upstream.
 
-Report the correct perfmon domains and signals depending
-on the supported feature flags.
+A redundant "curr = rq->curr" was added; remove it.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 9e2c2e273012 ("drm/etnaviv: add infrastructure to query perf counter")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Fixes: ebc0f83c78a2 ("timers/nohz: Update NOHZ load in remote tick")
+Signed-off-by: Scott Wood <swood@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/1580776558-12882-1-git-send-email-swood@redhat.com
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/etnaviv/etnaviv_perfmon.c |   59 ++++++++++++++++++++++++++----
- 1 file changed, 52 insertions(+), 7 deletions(-)
+ kernel/sched/core.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-@@ -32,6 +32,7 @@ struct etnaviv_pm_domain {
- };
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3671,7 +3671,6 @@ static void sched_tick_remote(struct wor
+ 	if (cpu_is_offline(cpu))
+ 		goto out_unlock;
  
- struct etnaviv_pm_domain_meta {
-+	unsigned int feature;
- 	const struct etnaviv_pm_domain *domains;
- 	u32 nr_domains;
- };
-@@ -410,36 +411,78 @@ static const struct etnaviv_pm_domain do
+-	curr = rq->curr;
+ 	update_rq_clock(rq);
  
- static const struct etnaviv_pm_domain_meta doms_meta[] = {
- 	{
-+		.feature = chipFeatures_PIPE_3D,
- 		.nr_domains = ARRAY_SIZE(doms_3d),
- 		.domains = &doms_3d[0]
- 	},
- 	{
-+		.feature = chipFeatures_PIPE_2D,
- 		.nr_domains = ARRAY_SIZE(doms_2d),
- 		.domains = &doms_2d[0]
- 	},
- 	{
-+		.feature = chipFeatures_PIPE_VG,
- 		.nr_domains = ARRAY_SIZE(doms_vg),
- 		.domains = &doms_vg[0]
- 	}
- };
- 
-+static unsigned int num_pm_domains(const struct etnaviv_gpu *gpu)
-+{
-+	unsigned int num = 0, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
-+		const struct etnaviv_pm_domain_meta *meta = &doms_meta[i];
-+
-+		if (gpu->identity.features & meta->feature)
-+			num += meta->nr_domains;
-+	}
-+
-+	return num;
-+}
-+
-+static const struct etnaviv_pm_domain *pm_domain(const struct etnaviv_gpu *gpu,
-+	unsigned int index)
-+{
-+	const struct etnaviv_pm_domain *domain = NULL;
-+	unsigned int offset = 0, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
-+		const struct etnaviv_pm_domain_meta *meta = &doms_meta[i];
-+
-+		if (!(gpu->identity.features & meta->feature))
-+			continue;
-+
-+		if (meta->nr_domains < (index - offset)) {
-+			offset += meta->nr_domains;
-+			continue;
-+		}
-+
-+		domain = meta->domains + (index - offset);
-+	}
-+
-+	return domain;
-+}
-+
- int etnaviv_pm_query_dom(struct etnaviv_gpu *gpu,
- 	struct drm_etnaviv_pm_domain *domain)
- {
--	const struct etnaviv_pm_domain_meta *meta = &doms_meta[domain->pipe];
-+	const unsigned int nr_domains = num_pm_domains(gpu);
- 	const struct etnaviv_pm_domain *dom;
- 
--	if (domain->iter >= meta->nr_domains)
-+	if (domain->iter >= nr_domains)
- 		return -EINVAL;
- 
--	dom = meta->domains + domain->iter;
-+	dom = pm_domain(gpu, domain->iter);
-+	if (!dom)
-+		return -EINVAL;
- 
- 	domain->id = domain->iter;
- 	domain->nr_signals = dom->nr_signals;
- 	strncpy(domain->name, dom->name, sizeof(domain->name));
- 
- 	domain->iter++;
--	if (domain->iter == meta->nr_domains)
-+	if (domain->iter == nr_domains)
- 		domain->iter = 0xff;
- 
- 	return 0;
-@@ -448,14 +491,16 @@ int etnaviv_pm_query_dom(struct etnaviv_
- int etnaviv_pm_query_sig(struct etnaviv_gpu *gpu,
- 	struct drm_etnaviv_pm_signal *signal)
- {
--	const struct etnaviv_pm_domain_meta *meta = &doms_meta[signal->pipe];
-+	const unsigned int nr_domains = num_pm_domains(gpu);
- 	const struct etnaviv_pm_domain *dom;
- 	const struct etnaviv_pm_signal *sig;
- 
--	if (signal->domain >= meta->nr_domains)
-+	if (signal->domain >= nr_domains)
- 		return -EINVAL;
- 
--	dom = meta->domains + signal->domain;
-+	dom = pm_domain(gpu, signal->domain);
-+	if (!dom)
-+		return -EINVAL;
- 
- 	if (signal->iter >= dom->nr_signals)
- 		return -EINVAL;
+ 	if (!is_idle_task(curr)) {
 
 
