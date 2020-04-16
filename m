@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A8D1ACAB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D601AC5AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395384AbgDPPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51260 "EHLO mail.kernel.org"
+        id S2409848AbgDPOYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897762AbgDPNis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:38:48 -0400
+        id S2409333AbgDPN5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:57:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E0852224F;
-        Thu, 16 Apr 2020 13:38:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA5402076D;
+        Thu, 16 Apr 2020 13:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044328;
-        bh=79z7BDql8stYOus3GTROCiSx/mTNrMJNRyoDBHRU8TQ=;
+        s=default; t=1587045449;
+        bh=Mnur4y7Z3DG/U51267RRZUuGvk/ACYGL1HqBmKdp/bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gCWcUbeZ5M1qJQfd/PEzbOc1wLUSugDNQYvwU7WFX+3lLDrhc+UJ89xFtyf35emLG
-         9cXPaT6R/HE/YaE/xYAWKRGagwGv+zW0yvO/KxfczduXfuaxWX7ml8MmSk5lHC/9kN
-         vnvNixr+sFJUDnVWsMtkF5fiOYG7Jf2B84akLUUM=
+        b=MTcFhdsU33x9sTFej8QDcQr7KHT0YCDeCtjRIYtnHgU33myNWyqgCMr5Q7mpuvcyl
+         83K20eayS24SlWiPPuoGO1SxjgAUz1LbH/tfTMV0/A22TvdNiyoYASmUcWIPzb7EZL
+         sFMMe1JamRDJkbW+p8Tloue5BhXcnYOc8iTNX89c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
-        Anssi Hannula <anssi.hannula@bitwise.fi>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.5 174/257] tools: gpio: Fix out-of-tree build regression
-Date:   Thu, 16 Apr 2020 15:23:45 +0200
-Message-Id: <20200416131348.111146640@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.6 137/254] KVM: VMX: Add a trampoline to fix VMREAD error handling
+Date:   Thu, 16 Apr 2020 15:23:46 +0200
+Message-Id: <20200416131343.616193615@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +44,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 82f04bfe2aff428b063eefd234679b2d693228ed upstream.
+commit 842f4be95899df22b5843ba1a7c8cf37e831a6e8 upstream.
 
-Commit 0161a94e2d1c7 ("tools: gpio: Correctly add make dependencies for
-gpio_utils") added a make rule for gpio-utils-in.o but used $(output)
-instead of the correct $(OUTPUT) for the output directory, breaking
-out-of-tree build (O=xx) with the following error:
+Add a hand coded assembly trampoline to preserve volatile registers
+across vmread_error(), and to handle the calling convention differences
+between 64-bit and 32-bit due to asmlinkage on vmread_error().  Pass
+@field and @fault on the stack when invoking the trampoline to avoid
+clobbering volatile registers in the context of the inline assembly.
 
-  No rule to make target 'out/tools/gpio/gpio-utils-in.o', needed by 'out/tools/gpio/lsgpio-in.o'.  Stop.
+Calling vmread_error() directly from inline assembly is partially broken
+on 64-bit, and completely broken on 32-bit.  On 64-bit, it will clobber
+%rdi and %rsi (used to pass @field and @fault) and any volatile regs
+written by vmread_error().  On 32-bit, asmlinkage means vmread_error()
+expects the parameters to be passed on the stack, not via regs.
 
-Fix that.
+Opportunistically zero out the result in the trampoline to save a few
+bytes of code for every VMREAD.  A happy side effect of the trampoline
+is that the inline code footprint is reduced by three bytes on 64-bit
+due to PUSH/POP being more efficent (in terms of opcode bytes) than MOV.
 
-Fixes: 0161a94e2d1c ("tools: gpio: Correctly add make dependencies for gpio_utils")
-Cc: <stable@vger.kernel.org>
-Cc: Laura Abbott <labbott@redhat.com>
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Link: https://lore.kernel.org/r/20200325103154.32235-1-anssi.hannula@bitwise.fi
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 6e2020977e3e6 ("KVM: VMX: Add error handling to VMREAD helper")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200326160712.28803-1-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/gpio/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/vmx/ops.h     |   28 ++++++++++++++++-----
+ arch/x86/kvm/vmx/vmenter.S |   58 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 79 insertions(+), 7 deletions(-)
 
---- a/tools/gpio/Makefile
-+++ b/tools/gpio/Makefile
-@@ -35,7 +35,7 @@ $(OUTPUT)include/linux/gpio.h: ../../inc
+--- a/arch/x86/kvm/vmx/ops.h
++++ b/arch/x86/kvm/vmx/ops.h
+@@ -12,7 +12,8 @@
  
- prepare: $(OUTPUT)include/linux/gpio.h
+ #define __ex(x) __kvm_handle_fault_on_reboot(x)
  
--GPIO_UTILS_IN := $(output)gpio-utils-in.o
-+GPIO_UTILS_IN := $(OUTPUT)gpio-utils-in.o
- $(GPIO_UTILS_IN): prepare FORCE
- 	$(Q)$(MAKE) $(build)=gpio-utils
+-asmlinkage void vmread_error(unsigned long field, bool fault);
++__attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
++							 bool fault);
+ void vmwrite_error(unsigned long field, unsigned long value);
+ void vmclear_error(struct vmcs *vmcs, u64 phys_addr);
+ void vmptrld_error(struct vmcs *vmcs, u64 phys_addr);
+@@ -70,15 +71,28 @@ static __always_inline unsigned long __v
+ 	asm volatile("1: vmread %2, %1\n\t"
+ 		     ".byte 0x3e\n\t" /* branch taken hint */
+ 		     "ja 3f\n\t"
+-		     "mov %2, %%" _ASM_ARG1 "\n\t"
+-		     "xor %%" _ASM_ARG2 ", %%" _ASM_ARG2 "\n\t"
+-		     "2: call vmread_error\n\t"
+-		     "xor %k1, %k1\n\t"
++
++		     /*
++		      * VMREAD failed.  Push '0' for @fault, push the failing
++		      * @field, and bounce through the trampoline to preserve
++		      * volatile registers.
++		      */
++		     "push $0\n\t"
++		     "push %2\n\t"
++		     "2:call vmread_error_trampoline\n\t"
++
++		     /*
++		      * Unwind the stack.  Note, the trampoline zeros out the
++		      * memory for @fault so that the result is '0' on error.
++		      */
++		     "pop %2\n\t"
++		     "pop %1\n\t"
+ 		     "3:\n\t"
  
++		     /* VMREAD faulted.  As above, except push '1' for @fault. */
+ 		     ".pushsection .fixup, \"ax\"\n\t"
+-		     "4: mov %2, %%" _ASM_ARG1 "\n\t"
+-		     "mov $1, %%" _ASM_ARG2 "\n\t"
++		     "4: push $1\n\t"
++		     "push %2\n\t"
+ 		     "jmp 2b\n\t"
+ 		     ".popsection\n\t"
+ 		     _ASM_EXTABLE(1b, 4b)
+--- a/arch/x86/kvm/vmx/vmenter.S
++++ b/arch/x86/kvm/vmx/vmenter.S
+@@ -234,3 +234,61 @@ SYM_FUNC_START(__vmx_vcpu_run)
+ 2:	mov $1, %eax
+ 	jmp 1b
+ SYM_FUNC_END(__vmx_vcpu_run)
++
++/**
++ * vmread_error_trampoline - Trampoline from inline asm to vmread_error()
++ * @field:	VMCS field encoding that failed
++ * @fault:	%true if the VMREAD faulted, %false if it failed
++
++ * Save and restore volatile registers across a call to vmread_error().  Note,
++ * all parameters are passed on the stack.
++ */
++SYM_FUNC_START(vmread_error_trampoline)
++	push %_ASM_BP
++	mov  %_ASM_SP, %_ASM_BP
++
++	push %_ASM_AX
++	push %_ASM_CX
++	push %_ASM_DX
++#ifdef CONFIG_X86_64
++	push %rdi
++	push %rsi
++	push %r8
++	push %r9
++	push %r10
++	push %r11
++#endif
++#ifdef CONFIG_X86_64
++	/* Load @field and @fault to arg1 and arg2 respectively. */
++	mov 3*WORD_SIZE(%rbp), %_ASM_ARG2
++	mov 2*WORD_SIZE(%rbp), %_ASM_ARG1
++#else
++	/* Parameters are passed on the stack for 32-bit (see asmlinkage). */
++	push 3*WORD_SIZE(%ebp)
++	push 2*WORD_SIZE(%ebp)
++#endif
++
++	call vmread_error
++
++#ifndef CONFIG_X86_64
++	add $8, %esp
++#endif
++
++	/* Zero out @fault, which will be popped into the result register. */
++	_ASM_MOV $0, 3*WORD_SIZE(%_ASM_BP)
++
++#ifdef CONFIG_X86_64
++	pop %r11
++	pop %r10
++	pop %r9
++	pop %r8
++	pop %rsi
++	pop %rdi
++#endif
++	pop %_ASM_DX
++	pop %_ASM_CX
++	pop %_ASM_AX
++	pop %_ASM_BP
++
++	ret
++SYM_FUNC_END(vmread_error_trampoline)
 
 
