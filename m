@@ -2,113 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DD81AB7BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DD71AB7BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 08:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407756AbgDPGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 02:08:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407698AbgDPGIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:08:43 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2407404AbgDPGJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 02:09:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35848 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2407385AbgDPGJq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 02:09:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587017384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WSD44ootEBXyzkzNcdpXGbzlmx+BBRKBSaXWnZtwryM=;
+        b=ZKpmVZh8wM4HsQVjbYPbDw8hHARezeeWTbmghzTU52qvOGWQlUNTZDCBeyuGceqV3lXBqF
+        qqpPE3ytSHHqRtTxeEPi2RRT9XfgSWRs/EicWkqmp9ubylJiAD78+/TabbZKxJn3HimU9M
+        zDO4EMkmlL7VlXJ4vUke4GxsMppmn3Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-KtHJpBBfOye0jlhWDKwoow-1; Thu, 16 Apr 2020 02:09:41 -0400
+X-MC-Unique: KtHJpBBfOye0jlhWDKwoow-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 536E220771;
-        Thu, 16 Apr 2020 06:08:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587017322;
-        bh=UbzFaYMrN1j2xemeLV2+pIN8pGIBq/3wkSPSZQ0MtR8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=THaBoiDIZWZeYbTFzn3XI1UxvWKDapxdVa9hfmjcMgp6yvJyB8Vpqhj1C1/xUF0dq
-         c3ZGuaazxq2/KXG6A0IuYqjcqcBwrFANsoAmbz8WG0BkSMPueN5BFs0ub3dgvEH3Ls
-         UpmjWot9ZNZ4GzHl5LkioCVC6whAAcgaue5jLDPM=
-Date:   Thu, 16 Apr 2020 15:08:35 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECF3313F9;
+        Thu, 16 Apr 2020 06:09:38 +0000 (UTC)
+Received: from T590 (ovpn-8-29.pek2.redhat.com [10.72.8.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B7C2699E03;
+        Thu, 16 Apr 2020 06:09:26 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 14:09:21 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, nstange@suse.de, akpm@linux-foundation.org,
+        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
         Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v2 0/3] support setting sysctl parameters from kernel
- command line
-Message-Id: <20200416150835.13c0b13e406c694d63bdcd47@kernel.org>
-In-Reply-To: <3fc1303a-cb57-b96e-ce77-7ff6407ab538@suse.cz>
-References: <20200414113222.16959-1-vbabka@suse.cz>
-        <20200415122359.939364e2c54c389c6b3f6457@kernel.org>
-        <3fc1303a-cb57-b96e-ce77-7ff6407ab538@suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
+Subject: Re: [PATCH 2/5] blktrace: fix debugfs use after free
+Message-ID: <20200416060921.GB2723777@T590>
+References: <20200414041902.16769-1-mcgrof@kernel.org>
+ <20200414041902.16769-3-mcgrof@kernel.org>
+ <20200416021036.GA2717677@T590>
+ <20200416052524.GH11244@42.do-not-panic.com>
+ <20200416054750.GA2723777@T590>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416054750.GA2723777@T590>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 10:56:35 +0200
-Vlastimil Babka <vbabka@suse.cz> wrote:
-
-> On 4/15/20 5:23 AM, Masami Hiramatsu wrote:
-> > Hi Vlastimil,
+On Thu, Apr 16, 2020 at 01:47:50PM +0800, Ming Lei wrote:
+> On Thu, Apr 16, 2020 at 05:25:24AM +0000, Luis Chamberlain wrote:
+> > On Thu, Apr 16, 2020 at 10:10:36AM +0800, Ming Lei wrote:
+> > > In theory, multiple partitions can be traced concurrently, but looks
+> > > it never works, so it won't cause trouble for multiple partition trace.
+> > > 
+> > > One userspace visible change is that blktrace debugfs dir name is switched 
+> > > to disk name from partition name in case of partition trace, will it
+> > > break some utilities?
 > > 
-> > On Tue, 14 Apr 2020 13:32:19 +0200
-> > Vlastimil Babka <vbabka@suse.cz> wrote:
+> > How is this possible, its not clear to me, we go from:
 > > 
-> >> This series adds support for something that seems like many people always
-> >> wanted but nobody added it yet, so here's the ability to set sysctl parameters
-> >> via kernel command line options in the form of sysctl.vm.something=1
+> > -	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
+> > -					    blk_debugfs_root);
 > > 
-> > Sounds good. And would you consider to use the bootconfig instead of (or
-> > in addition to) the kernel command line, because it is too short to describe
-> > the sysctl options?
+> > To this:
+> > 
+> > +	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
+> > +					    blk_debugfs_root);
+> > 
+> > 
+> > Maybe I am overlooking something.
 > 
-> "Instead of" - no, as that would defeat the scenario of "I just want to set this
-> one sysctl in grub  (possibly interactively) and not update initrd for that". If
-> constructing bootconfig is of similar effort of loading sysctl.conf from initrd,
-> then I see little benefit?
+> Your patch removes the blktrace debugfs dir:
 > 
-> "in addition to" - sure! but I hoped that's what already happens as it seemed to
-> me that options from bootconfig are appended to the command line that's then
-> parsed by everyone else, no? But I'll try it to be sure.
-
-Yes, all configurations under "kernel" key are passed to kernel command line,
-so you don't need to change anything :)
-
-> > With the bootconfig, you can describe the sysctl parameters in an
-> > independent file as same as /etc/sysctl.conf. It is easy to convert
-> > form sysctl.conf to bootconfig because bootconfig format is simply
-> > enhanced structured sysctl.conf :). What we just need is;
-> > 
-> > (echo "sysctl {"; cat "/etc/sysctl.conf"; echo "}") >> sysctl.bconf
-> > bootconfig -a sysctl.bconf /boot/initrd.img
-> > 
-> > Even with only your patch, since bootconfig can pass the options which
-> > start with "kernel." prefix to kernel command line, so;
-> > 
-> > (echo "kernel.sysctl {"; cat "/etc/sysctl.conf"; echo "}") >> sysctl.bconf
-> > bootconfig -a sysctl.bconf /boot/initrd.img
+> do_blk_trace_setup()
 > 
-> Hmm I hope I figure out if the way virtme creates initrd on the fly supports
-> hooking a bootconfig addition :)
-
-Would you mean how to hook the mkinitrd to add /etc/bootconfig?
-
-Thank you,
-
+> -       dir = debugfs_lookup(buts->name, blk_debugfs_root);
+> -       if (!dir)
+> -               bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
+> -
 > 
+> Then create blktrace attributes under the dir of q->debugfs_dir.
+> 
+> However, buts->name could be one partition device name, but
+> q->debugfs_dir has to be disk name.
+> 
+> This change is visible to blktrace utilities.
+
+Just test the 1st two patches via "blktrace /dev/sda2", follows the
+result, so this way can't be accepted.
+
+[root@ktest-01 ~]# blktrace /dev/sda2
+Thread 0 failed open /sys/kernel/debug/block/sda2/trace0: 2/No such file or directory
+Thread 4 failed open /sys/kernel/debug/block/sda2/trace4: 2/No such file or directory
+Thread 1 failed open /sys/kernel/debug/block/sda2/trace1: 2/No such file or directory
+Thread 2 failed open /sys/kernel/debug/block/sda2/trace2: 2/No such file or directory
+Thread 5 failed open /sys/kernel/debug/block/sda2/trace5: 2/No such file or directory
+Thread 3 failed open /sys/kernel/debug/block/sda2/trace3: 2/No such file or directory
+Thread 6 failed open /sys/kernel/debug/block/sda2/trace6: 2/No such file or directory
+Thread 7 failed open /sys/kernel/debug/block/sda2/trace7: 2/No such file or directory
+FAILED to start thread on CPU 0: 1/Operation not permitted
+FAILED to start thread on CPU 1: 1/Operation not permitted
+FAILED to start thread on CPU 2: 1/Operation not permitted
+FAILED to start thread on CPU 3: 1/Operation not permitted
+FAILED to start thread on CPU 4: 1/Operation not permitted
+FAILED to start thread on CPU 5: 1/Operation not permitted
+FAILED to start thread on CPU 6: 1/Operation not permitted
+FAILED to start thread on CPU 7: 1/Operation not permitted
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks, 
+Ming
+
