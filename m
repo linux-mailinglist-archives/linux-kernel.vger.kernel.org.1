@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371931ACA97
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8187E1AC909
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395332AbgDPPgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52354 "EHLO mail.kernel.org"
+        id S2442118AbgDPPRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:17:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898005AbgDPNjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:53 -0400
+        id S2898758AbgDPNsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:48:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC4752222C;
-        Thu, 16 Apr 2020 13:39:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88A0D21744;
+        Thu, 16 Apr 2020 13:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044392;
-        bh=UNh0GgZ5iRahcSR9YwXtGHyMEu2+qInqjaAHe6Rzyf8=;
+        s=default; t=1587044919;
+        bh=79z7BDql8stYOus3GTROCiSx/mTNrMJNRyoDBHRU8TQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f0rWHkqW6JY9mqbuEUvP8onDk3JfIf1ielWo2DxBHf3Qn99od5b7yBNYSI3yP+t7z
-         vyRnICmAoOc2xgdMyO7UoNWuB7TffpL5nZlKqq5vqmCxkRzufb6G4xzLESr53aWGK1
-         F8Ux2PAztjhZyYmjVgJwiSI9QCmCVX+yb4WzbKgA=
+        b=KDGLRAtnlPtD4XFQE/+rfG+I04Q5N95Ub90j4kvLVUf2+wea8ZOr1kGPhFs+8LVap
+         6nbfLxqKMhZXgs0VpDGwHeHJHgVnlNn/uB1w1MexRdLkvtZRGSBFRkN0Sq8N5ei3ov
+         TVN4y8gprVY1ds4TnJNw43NvLlEauPe419fiRyWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.5 198/257] scsi: lpfc: Fix broken Credit Recovery after driver load
+        stable@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
+        Anssi Hannula <anssi.hannula@bitwise.fi>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.4 155/232] tools: gpio: Fix out-of-tree build regression
 Date:   Thu, 16 Apr 2020 15:24:09 +0200
-Message-Id: <20200416131350.895170770@linuxfoundation.org>
+Message-Id: <20200416131334.408829957@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,146 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-commit 835214f5d5f516a38069bc077c879c7da00d6108 upstream.
+commit 82f04bfe2aff428b063eefd234679b2d693228ed upstream.
 
-When driver is set to enable bb credit recovery, the switch displayed the
-setting as inactive.  If the link bounces, it switches to Active.
+Commit 0161a94e2d1c7 ("tools: gpio: Correctly add make dependencies for
+gpio_utils") added a make rule for gpio-utils-in.o but used $(output)
+instead of the correct $(OUTPUT) for the output directory, breaking
+out-of-tree build (O=xx) with the following error:
 
-During link up processing, the driver currently does a MBX_READ_SPARAM
-followed by a MBX_CONFIG_LINK. These mbox commands are queued to be
-executed, one at a time and the completion is processed by the worker
-thread.  Since the MBX_READ_SPARAM is done BEFORE the MBX_CONFIG_LINK, the
-BB_SC_N bit is never set the the returned values. BB Credit recovery status
-only gets set after the driver requests the feature in CONFIG_LINK, which
-is done after the link up. Thus the ordering of READ_SPARAM needs to follow
-the CONFIG_LINK.
+  No rule to make target 'out/tools/gpio/gpio-utils-in.o', needed by 'out/tools/gpio/lsgpio-in.o'.  Stop.
 
-Fix by reordering so that READ_SPARAM is done after CONFIG_LINK.  Added a
-HBA_DEFER_FLOGI flag so that any FLOGI handling waits until after the
-READ_SPARAM is done so that the proper BB credit value is set in the FLOGI
-payload.
+Fix that.
 
-Fixes: 6bfb16208298 ("scsi: lpfc: Fix configuration of BB credit recovery in service parameters")
-Cc: <stable@vger.kernel.org> # v5.4+
-Link: https://lore.kernel.org/r/20200128002312.16346-4-jsmart2021@gmail.com
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 0161a94e2d1c ("tools: gpio: Correctly add make dependencies for gpio_utils")
+Cc: <stable@vger.kernel.org>
+Cc: Laura Abbott <labbott@redhat.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Link: https://lore.kernel.org/r/20200325103154.32235-1-anssi.hannula@bitwise.fi
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/lpfc/lpfc.h         |    1 
- drivers/scsi/lpfc/lpfc_hbadisc.c |   59 +++++++++++++++++++++++++--------------
- 2 files changed, 40 insertions(+), 20 deletions(-)
+ tools/gpio/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/lpfc/lpfc.h
-+++ b/drivers/scsi/lpfc/lpfc.h
-@@ -749,6 +749,7 @@ struct lpfc_hba {
- 					 * capability
- 					 */
- #define HBA_FLOGI_ISSUED	0x100000 /* FLOGI was issued */
-+#define HBA_DEFER_FLOGI		0x800000 /* Defer FLOGI till read_sparm cmpl */
+--- a/tools/gpio/Makefile
++++ b/tools/gpio/Makefile
+@@ -35,7 +35,7 @@ $(OUTPUT)include/linux/gpio.h: ../../inc
  
- 	uint32_t fcp_ring_in_use; /* When polling test if intr-hndlr active*/
- 	struct lpfc_dmabuf slim2p;
---- a/drivers/scsi/lpfc/lpfc_hbadisc.c
-+++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
-@@ -1162,13 +1162,16 @@ lpfc_mbx_cmpl_local_config_link(struct l
- 	}
+ prepare: $(OUTPUT)include/linux/gpio.h
  
- 	/* Start discovery by sending a FLOGI. port_state is identically
--	 * LPFC_FLOGI while waiting for FLOGI cmpl
-+	 * LPFC_FLOGI while waiting for FLOGI cmpl. Check if sending
-+	 * the FLOGI is being deferred till after MBX_READ_SPARAM completes.
- 	 */
--	if (vport->port_state != LPFC_FLOGI)
--		lpfc_initial_flogi(vport);
--	else if (vport->fc_flag & FC_PT2PT)
--		lpfc_disc_start(vport);
--
-+	if (vport->port_state != LPFC_FLOGI) {
-+		if (!(phba->hba_flag & HBA_DEFER_FLOGI))
-+			lpfc_initial_flogi(vport);
-+	} else {
-+		if (vport->fc_flag & FC_PT2PT)
-+			lpfc_disc_start(vport);
-+	}
- 	return;
+-GPIO_UTILS_IN := $(output)gpio-utils-in.o
++GPIO_UTILS_IN := $(OUTPUT)gpio-utils-in.o
+ $(GPIO_UTILS_IN): prepare FORCE
+ 	$(Q)$(MAKE) $(build)=gpio-utils
  
- out:
-@@ -3093,6 +3096,14 @@ lpfc_mbx_cmpl_read_sparam(struct lpfc_hb
- 	lpfc_mbuf_free(phba, mp->virt, mp->phys);
- 	kfree(mp);
- 	mempool_free(pmb, phba->mbox_mem_pool);
-+
-+	/* Check if sending the FLOGI is being deferred to after we get
-+	 * up to date CSPs from MBX_READ_SPARAM.
-+	 */
-+	if (phba->hba_flag & HBA_DEFER_FLOGI) {
-+		lpfc_initial_flogi(vport);
-+		phba->hba_flag &= ~HBA_DEFER_FLOGI;
-+	}
- 	return;
- 
- out:
-@@ -3223,6 +3234,23 @@ lpfc_mbx_process_link_up(struct lpfc_hba
- 	}
- 
- 	lpfc_linkup(phba);
-+	sparam_mbox = NULL;
-+
-+	if (!(phba->hba_flag & HBA_FCOE_MODE)) {
-+		cfglink_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
-+		if (!cfglink_mbox)
-+			goto out;
-+		vport->port_state = LPFC_LOCAL_CFG_LINK;
-+		lpfc_config_link(phba, cfglink_mbox);
-+		cfglink_mbox->vport = vport;
-+		cfglink_mbox->mbox_cmpl = lpfc_mbx_cmpl_local_config_link;
-+		rc = lpfc_sli_issue_mbox(phba, cfglink_mbox, MBX_NOWAIT);
-+		if (rc == MBX_NOT_FINISHED) {
-+			mempool_free(cfglink_mbox, phba->mbox_mem_pool);
-+			goto out;
-+		}
-+	}
-+
- 	sparam_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
- 	if (!sparam_mbox)
- 		goto out;
-@@ -3243,20 +3271,7 @@ lpfc_mbx_process_link_up(struct lpfc_hba
- 		goto out;
- 	}
- 
--	if (!(phba->hba_flag & HBA_FCOE_MODE)) {
--		cfglink_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
--		if (!cfglink_mbox)
--			goto out;
--		vport->port_state = LPFC_LOCAL_CFG_LINK;
--		lpfc_config_link(phba, cfglink_mbox);
--		cfglink_mbox->vport = vport;
--		cfglink_mbox->mbox_cmpl = lpfc_mbx_cmpl_local_config_link;
--		rc = lpfc_sli_issue_mbox(phba, cfglink_mbox, MBX_NOWAIT);
--		if (rc == MBX_NOT_FINISHED) {
--			mempool_free(cfglink_mbox, phba->mbox_mem_pool);
--			goto out;
--		}
--	} else {
-+	if (phba->hba_flag & HBA_FCOE_MODE) {
- 		vport->port_state = LPFC_VPORT_UNKNOWN;
- 		/*
- 		 * Add the driver's default FCF record at FCF index 0 now. This
-@@ -3313,6 +3328,10 @@ lpfc_mbx_process_link_up(struct lpfc_hba
- 		}
- 		/* Reset FCF roundrobin bmask for new discovery */
- 		lpfc_sli4_clear_fcf_rr_bmask(phba);
-+	} else {
-+		if (phba->bbcredit_support && phba->cfg_enable_bbcr &&
-+		    !(phba->link_flag & LS_LOOPBACK_MODE))
-+			phba->hba_flag |= HBA_DEFER_FLOGI;
- 	}
- 
- 	return;
 
 
