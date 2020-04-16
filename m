@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0D41ACDF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC681ACE0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 18:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388025AbgDPQpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 12:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S1730323AbgDPQwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 12:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727800AbgDPQpM (ORCPT
+        by vger.kernel.org with ESMTP id S1728621AbgDPQwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:45:12 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B94C061A0C;
-        Thu, 16 Apr 2020 09:45:12 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jP7dW-00028A-7f; Thu, 16 Apr 2020 18:45:10 +0200
-Date:   Thu, 16 Apr 2020 18:45:10 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.6.4-rt3
-Message-ID: <20200416164510.kbrklqahdng5uhij@linutronix.de>
+        Thu, 16 Apr 2020 12:52:09 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3BAC061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:52:07 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r17so6134542lff.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 09:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=APUlN2SyohYE3TMZoo4vmSwQg+0t4tO+0TGNZ3bBlE0=;
+        b=n1UvzusNO2Rcn2bDf0NRYBXquabq4c/tHd3wR8FlPjMf0sYf/Qq0kmozER1LNg0R1J
+         qrsGcfC4HLWAVrxFA+PBk66Ge+L56/er9nJL9uxxBNTwdShYjTuS9kopK7Ej6czuRz7O
+         vWEfA9c3VNBqRmtI9NWJfhU8+dsHt09PrNhw9MlDRCTQ8BBFLtD4kD4kpY6XPRJQVsgd
+         lAf6UOorr4V5diQfeUJmCR01jHL6PtuMOwQrnI5MW4/hB5d86hnQ0PkIgf0Vt7/VL3c1
+         iq/QlChEsUzsEa7sRzyNZgXSIC2xjHWNU9QZ2IoDrxOM16mQPTm84LEa2uk8Y53g2RLf
+         nQUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=APUlN2SyohYE3TMZoo4vmSwQg+0t4tO+0TGNZ3bBlE0=;
+        b=Hlljk7kARcC5SMfIIWkd2N+HfQ4/xz5SPvxyefBd/XV7FxWsF1Mpmw5vrRMDSfSICO
+         INRF4AMlMiHfb6Eny+Vx59emM3SdGpOFSKtJcIU6SAHHdp5gK5zfISWWpl/n2eo9Xuu/
+         Y2KsEAm038blWKRUiy2CiQ9rl57/Gy+snu56TyJ3rQIh9LfkebiPXDHOTYrTmzO9DE9S
+         cfleSvT3gM0gkE1n4/EbY8bVOH7W/u+19p2GJzrPvuDcfwvrTzpRjaR+LM/Xu6q2LEjZ
+         yB0tpIvZyTjgelvPi+kHvb1V5i0ZWiAB+kQrbVVYAmzqSaoid1Zvz8u4vc0PGxvdgzIF
+         mdBw==
+X-Gm-Message-State: AGi0PuZvKabBqLg5GI2gEJjz9c6Fu4WqF+r77HWAi3B64Jb2U1AtyOEL
+        B7ZUDqEV5rYDknlX/6EITpLXj21nL2dbnSNg3TFdM/+5
+X-Google-Smtp-Source: APiQypLLy9khTrsHaSVXFll+8db9vcB9f6SRRtyCIku9mKZWZQNfAcSuyjm4xnTMgyMpunFu6XVe6Gs58zevIW3oU1g=
+X-Received: by 2002:a05:6512:685:: with SMTP id t5mr6408558lfe.47.1587055926080;
+ Thu, 16 Apr 2020 09:52:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20200414222713.32660-1-digetx@gmail.com> <CACRpkdY_J8e127etFFYkoxLDDkc334Xgg8ZbapdU36oGsaZ08g@mail.gmail.com>
+ <e08c487c-5c2a-3172-7c9c-0e7d2cd51769@gmail.com>
+In-Reply-To: <e08c487c-5c2a-3172-7c9c-0e7d2cd51769@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Apr 2020 18:51:54 +0200
+Message-ID: <CACRpkdbMF4=-g2ic_SKgOkd6kfgKJqZ2UxCRaoXJjq0EiEn+pw@mail.gmail.com>
+Subject: Re: [PATCH v1] iio: magnetometer: ak8974: Silence deferred-probe error
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Thu, Apr 16, 2020 at 4:45 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> 16.04.2020 14:33, Linus Walleij =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
 
-I'm pleased to announce the v5.6.4-rt3 patch set. 
+> > This misses some important aspects of dev_dbg(), notably this:
+> >
+> > #if defined(CONFIG_DYNAMIC_DEBUG)
+> > #define dev_dbg(dev, fmt, ...)                                         =
+ \
+> >         dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> > #elif defined(DEBUG)
+> > #define dev_dbg(dev, fmt, ...)                                         =
+ \
+> >         dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__)
+> > #else
+> > #define dev_dbg(dev, fmt, ...)                                         =
+ \
+> > ({                                                                     =
+ \
+> >         if (0)                                                         =
+ \
+> >                 dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__=
+); \
+> > })
+> > #endif
+> >
+> > If DEBUG is not defined the entire dev_dbg() message is enclodes in if =
+(0)
+> > and compiled out of the kernel, saving space. The above does not
+> > fulfil that.
+>
+> Hello Linus,
+>
+> After some recent discussions in regards to the EPROBE_DEFER handling,
+> Thierry Reding suggested the form which is used in my patch and we
+> started to use it recently in the Tegra DRM driver [1]. The reason is
+> that we don't want to miss any deferred-probe messages under any
+> circumstances, for example like in a case of a disabled DYNAMIC_DEBUG.
 
-Changes since v5.6.4-rt2:
+I have a hard time to accept this reasoning.
 
-  - The printk thread could schedule where it is not appropriate.
-    Affects only PREEMPT_VOLUNTARY. Reported by kernel test robot,
-    patched by John Ogness.
+Who doesn't feel that way about their subsystem? If you don't want
+to miss the message under any circumstances then use dev_info().
+Don't override the default behaviour of dev_dbg().
 
-  - The initialization of nohz_full_kick_work triggered a warning.
-    Reported by kbuild test robot.
+> The debug messages are usually disabled in a release-build and when not
+> a very experienced person hands you KMSG for diagnosing a problem, the
+> KMSG is pretty much useless if error is hidden silently.
 
-  - Patch by patch compilation could fail to compile in the fs/proc due
-    to a missing header file. Reported by kbuild test robot.
+So use dev_info().
 
-  - The cached signal struct could lead to a double free of another data
-    structure. Reported by Daniel Wagner, patch by Matt Fleming.
+> By moving the message to a debug level, we reduce the noise in the KMSG
+> because usually people look for a bold-red error messages. Secondly, we
+> don't introduce an additional overhead to the kernel size since the same
+> text is reused for all error conditions.
 
-Known issues
-     - It has been pointed out that due to changes to the printk code the
-       internal buffer representation changed. This is only an issue if tools
-       like `crash' are used to extract the printk buffer from a kernel memory
-       image.
+dev_info() is not supposed to be an error message, it is supposed to
+be information, so use that.
 
-The delta patch against v5.6.4-rt2 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.6/incr/patch-5.6.4-rt2-rt3.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.6.4-rt3
-
-The RT patch against v5.6.4 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.6/older/patch-5.6.4-rt3.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.6/older/patches-5.6.4-rt3.tar.xz
-
-Sebastian
-
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 8c2a84fc4986d..eb8285ca344f3 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -96,6 +96,7 @@
- #include <linux/posix-timers.h>
- #include <linux/time_namespace.h>
- #include <linux/resctrl.h>
-+#include <linux/swait.h>
- #include <trace/events/oom.h>
- #include "internal.h"
- #include "fd.h"
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 8821a8c2263ff..8bc683be08574 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2715,6 +2715,7 @@ static int printk_kthread_func(void *data)
- 			    &len, printk_time);
- 
- 		console_lock();
-+		console_may_schedule = 0;
- 		call_console_drivers(master_seq, ext_text, ext_len, text, len,
- 				     msg->level, msg->facility);
- 		if (len > 0 || ext_len > 0)
-diff --git a/kernel/signal.c b/kernel/signal.c
-index bfa9bcf27d3d7..75c82ecefdbb6 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -494,8 +494,8 @@ static void sigqueue_free_current(struct sigqueue *q)
- 
- 	up = q->user;
- 	if (rt_prio(current->normal_prio) && !put_task_cache(current, q)) {
--		atomic_dec(&up->sigpending);
--		free_uid(up);
-+		if (atomic_dec_and_test(&up->sigpending))
-+			free_uid(up);
- 	} else
- 		  __sigqueue_free(q);
- }
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index b568947dc90e5..fc62dcbed7429 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -245,7 +245,7 @@ static void nohz_full_kick_func(struct irq_work *work)
- 
- static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) = {
- 	.func = nohz_full_kick_func,
--	.flags = IRQ_WORK_HARD_IRQ,
-+	.flags = ATOMIC_INIT(IRQ_WORK_HARD_IRQ),
- };
- 
- /*
-diff --git a/localversion-rt b/localversion-rt
-index c3054d08a1129..1445cd65885cd 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt2
-+-rt3
+Yours,
+Linus Walleij
