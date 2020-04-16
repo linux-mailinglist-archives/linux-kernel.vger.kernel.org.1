@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F671ACFDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 20:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045671ACFE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 20:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732006AbgDPSnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 14:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728815AbgDPSnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 14:43:16 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D216AC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 11:43:16 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id w7so3536021ply.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 11:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=mC/qr0j7HUgGt77fxIftKjS5qqz0qPQen02hUmh1Dh8=;
-        b=CFPLLGPX4ctg78piDhgn3JbQBZ4NUQ5XOGuQiN/7vBRQR685triRRUALfmerg6W9xb
-         j17+dKXQTA3N2V71skyu4zTFuVB/4OZSOXSyyskfOa5GZcQt4xpXMOQ5n5GE5MlQPCkQ
-         1ZT3ut6wPZWf8D1dz63sAtr4+ZZSe1wtluo7mS5hgEVFNheTwFlMBnRW1WwxEpYbZ7ua
-         XDKaJoHGbdm/AHYIKimMrLcSP6KvyLTT43OvDxyfMe60DGjgycAsTONaibnbQmuRB/82
-         56FsiaOolzNptFQmMpl3CS8QBl6GBmGxjoAOyseLH1OgPbkueAOjEA0utBJPCWW3wD5F
-         nYEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=mC/qr0j7HUgGt77fxIftKjS5qqz0qPQen02hUmh1Dh8=;
-        b=tBCGUtTCctleQ6OGKbMTywY0+UBrRyL2AYmf0l7a3rWMh/gYO6cDrOT82IB/bhAYoD
-         +RLfSQUe3MH0Epdr/vgY5+qqYuRa7qPum26EHlQ/jz76Gptbww7vZLiBSoFJunNFxwhB
-         NXMeNFj8zC2Uh+CO9ZsxFhQotoCXEImmHqvfIYfRVHeyGfgaGcpkGOBJrHc8V8LJEWFg
-         a3sSKrwE018sBnpUWYXbb4g1Yg+gpa6cUBwaKR79mPFXHDfM11nibnPdTo+Q+z2xVfVy
-         eqbKAX0MXtKEgYVFUdP8innmZwUe/Qhq5xuv7SSwYxRtXOHIdSt93IvdY+GpHHKc9IU1
-         bTDg==
-X-Gm-Message-State: AGi0PubsWdhxiZfqbMHt/88dOHq44FN8Z93lz1HtCtaC0kfVcatjpOY9
-        qgE594Td2RSJYh6GwQSzSjZrNAWvY4JK8g==
-X-Google-Smtp-Source: APiQypKhTjvNBou9iWL+ZmFqhZSk6QlvKSXplfrNIv5dwwZO5la9jHmS99O/mXPKRy/qIQIJHfkgNvE17bDG8Q==
-X-Received: by 2002:a17:90a:65c8:: with SMTP id i8mr6679174pjs.156.1587062596155;
- Thu, 16 Apr 2020 11:43:16 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 11:42:54 -0700
-Message-Id: <20200416184254.248374-1-jcargill@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-Subject: [PATCH] kvm: Handle reads of SandyBridge RAPL PMU MSRs rather than
- injecting #GP
-From:   Jon Cargille <jcargill@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Venkatesh Srinivas <venkateshs@google.com>,
-        Jon Cargille <jcargill@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729410AbgDPSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 14:46:45 -0400
+Received: from muru.com ([72.249.23.125]:49822 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727962AbgDPSqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 14:46:43 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 933BC804F;
+        Thu, 16 Apr 2020 18:47:29 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 11:46:38 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Evgeniy Polyakov <zbr@ioremap.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        Adam Ford <aford173@gmail.com>,
+        "Andrew F . Davis" <afd@ti.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Vignesh R <vigneshr@ti.com>
+Subject: Re: [PATCHv3] w1: omap-hdq: Simplify driver with PM runtime
+ autosuspend
+Message-ID: <20200416184638.GI37466@atomide.com>
+References: <20191217004048.46298-1-tony@atomide.com>
+ <7B8C7DD9-095B-48FC-9642-695D07B79E97@goldelico.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7B8C7DD9-095B-48FC-9642-695D07B79E97@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkatesh Srinivas <venkateshs@google.com>
+* H. Nikolaus Schaller <hns@goldelico.com> [200416 15:04]:
+> Hi Tony,
+> it looks as if something with this patch is broken on GTA04. For v5.6 and v5.7-rc1.
+> 
+> HDQ battery access times out after ca. 15 seconds and I get temperature of -273.1°C...
+> 
+> Reverting this patch and everything is ok again.
 
-Linux 3.14 unconditionally reads the RAPL PMU MSRs on boot, without handling
-General Protection Faults on reading those MSRs. Rather than injecting a #GP,
-which prevents boot, handle the MSRs by returning 0 for their data. Zero was
-checked to be safe by code review of the RAPL PMU driver and in discussion
-with the original driver author (eranian@google.com).
+Hmm OK interesting.
 
-Signed-off-by: Venkatesh Srinivas <venkateshs@google.com>
-Signed-off-by: Jon Cargille <jcargill@google.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
----
- arch/x86/kvm/x86.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> What is "ti,mode" about? Do we have that (indirectly) in gta04.dtsi?
+> Or does this patch need some CONFIGs we do not happen to have?
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3cc3f673785c8..4f9b7dd687e3c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3060,6 +3060,17 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	case MSR_IA32_PERF_CTL:
- 	case MSR_AMD64_DC_CFG:
- 	case MSR_F15H_EX_CFG:
-+	/*
-+	 * Intel Sandy Bridge CPUs must support the RAPL (running average power
-+	 * limit) MSRs. Just return 0, as we do not want to expose the host
-+	 * data here. Do not conditionalize this on CPUID, as KVM does not do
-+	 * so for existing CPU-specific MSRs.
-+	 */
-+	case MSR_RAPL_POWER_UNIT:
-+	case MSR_PP0_ENERGY_STATUS:	/* Power plane 0 (core) */
-+	case MSR_PP1_ENERGY_STATUS:	/* Power plane 1 (graphics uncore) */
-+	case MSR_PKG_ENERGY_STATUS:	/* Total package */
-+	case MSR_DRAM_ENERGY_STATUS:	/* DRAM controller */
- 		msr_info->data = 0;
- 		break;
- 	case MSR_F15H_PERF_CTL0 ... MSR_F15H_PERF_CTR5:
--- 
-2.26.0.110.g2183baf09c-goog
+Sounds like you have things working though so there should be no
+need for having ti,mode = "1w" in the dts.
 
+> > 	pm_runtime_enable(&pdev->dev);
+> > +	pm_runtime_use_autosuspend(&pdev->dev);
+> > +	pm_runtime_set_autosuspend_delay(&pdev->dev, 300);
+
+Care to check if changing pm_runtime_set_autosuspend_delay value
+to -1 in probe makes the issue go away? Or change it manually
+to -1 via sysfs.
+
+If that helps, likely we have a missing pm_runtime_get_sync()
+somewhere in the driver.
+
+Regards,
+
+Tony
