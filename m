@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4A31AC86C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DBC1AC80F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408714AbgDPNvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:51:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        id S2441820AbgDPPDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:03:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897352AbgDPNgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:36:40 -0400
+        id S2438815AbgDPNxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:53:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1E0F20732;
-        Thu, 16 Apr 2020 13:36:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CF5D2076D;
+        Thu, 16 Apr 2020 13:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044200;
-        bh=ANSD2u3/K3xPERFTROi+5GI/z9ygn+ET+7Z0B9/Zw8E=;
+        s=default; t=1587045219;
+        bh=ILaFXLncLtlLJvpqxOT469RMpi89TpLFQOQJW2lRpX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NgnZrP5pM9rhKMLftk3veFVL7poeanA1eRQvV+IpoxvoLhvbVWJaP1V5WvdWmTiIA
-         C0XPzPrAVpQyYGry5jvhwbA0lbs3mkXXz2Nex2bokiwjwCcsjtdhh65QuiSziZ5Iju
-         3aAPLWvu+62Od4cq7/G0AJ8IiWWduH8/2hj7nSRo=
+        b=ybV/LIlddqhD5qf0sbJeiCc0X+bHShem2q69lqMtUJYryHFXG5bAkjogOBfTcrZ+U
+         av2r1t7gzFpOPUEnjQWDJpPOAw6OVoQOxcd+T5ybwNjN0co9GbvPSZeT/Jxy7fmlWE
+         RTe+hkcB5ISw+eGM+fZo8AiRGsdufaUHC9WC3mg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.5 081/257] ASoC: fix regwmask
-Date:   Thu, 16 Apr 2020 15:22:12 +0200
-Message-Id: <20200416131336.076576527@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 044/254] gfs2: Do log_flush in gfs2_ail_empty_gl even if ail list is empty
+Date:   Thu, 16 Apr 2020 15:22:13 +0200
+Message-Id: <20200416131331.401389752@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +44,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 이경택 <gt82.lee@samsung.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 0ab070917afdc93670c2d0ea02ab6defb6246a7c upstream.
+[ Upstream commit 9ff78289356af640941bbb0dd3f46af2063f0046 ]
 
-If regwshift is 32 and the selected architecture compiles '<<' operator
-for signed int literal into rotating shift, '1<<regwshift' became 1 and
-it makes regwmask to 0x0.
-The literal is set to unsigned long to get intended regwmask.
+Before this patch, if gfs2_ail_empty_gl saw there was nothing on
+the ail list, it would return and not flush the log. The problem
+is that there could still be a revoke for the rgrp sitting on the
+sd_log_le_revoke list that's been recently taken off the ail list.
+But that revoke still needs to be written, and the rgrp_go_inval
+still needs to call log_flush_wait to ensure the revokes are all
+properly written to the journal before we relinquish control of
+the glock to another node. If we give the glock to another node
+before we have this knowledge, the node might crash and its journal
+replayed, in which case the missing revoke would allow the journal
+replay to replay the rgrp over top of the rgrp we already gave to
+another node, thus overwriting its changes and corrupting the
+file system.
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Link: https://lore.kernel.org/r/001001d60665$db7af3e0$9270dba0$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch makes gfs2_ail_empty_gl still call gfs2_log_flush rather
+than returning.
 
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-ops.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/gfs2/glops.c | 27 ++++++++++++++++++++++++++-
+ fs/gfs2/log.c   |  2 +-
+ fs/gfs2/log.h   |  1 +
+ 3 files changed, 28 insertions(+), 2 deletions(-)
 
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -825,7 +825,7 @@ int snd_soc_get_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long min = mc->min;
-@@ -874,7 +874,7 @@ int snd_soc_put_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long max = mc->max;
+diff --git a/fs/gfs2/glops.c b/fs/gfs2/glops.c
+index 061d22e1ceb6e..efc899a3876b4 100644
+--- a/fs/gfs2/glops.c
++++ b/fs/gfs2/glops.c
+@@ -89,8 +89,32 @@ static void gfs2_ail_empty_gl(struct gfs2_glock *gl)
+ 	INIT_LIST_HEAD(&tr.tr_databuf);
+ 	tr.tr_revokes = atomic_read(&gl->gl_ail_count);
+ 
+-	if (!tr.tr_revokes)
++	if (!tr.tr_revokes) {
++		bool have_revokes;
++		bool log_in_flight;
++
++		/*
++		 * We have nothing on the ail, but there could be revokes on
++		 * the sdp revoke queue, in which case, we still want to flush
++		 * the log and wait for it to finish.
++		 *
++		 * If the sdp revoke list is empty too, we might still have an
++		 * io outstanding for writing revokes, so we should wait for
++		 * it before returning.
++		 *
++		 * If none of these conditions are true, our revokes are all
++		 * flushed and we can return.
++		 */
++		gfs2_log_lock(sdp);
++		have_revokes = !list_empty(&sdp->sd_log_revokes);
++		log_in_flight = atomic_read(&sdp->sd_log_in_flight);
++		gfs2_log_unlock(sdp);
++		if (have_revokes)
++			goto flush;
++		if (log_in_flight)
++			log_flush_wait(sdp);
+ 		return;
++	}
+ 
+ 	/* A shortened, inline version of gfs2_trans_begin()
+          * tr->alloced is not set since the transaction structure is
+@@ -105,6 +129,7 @@ static void gfs2_ail_empty_gl(struct gfs2_glock *gl)
+ 	__gfs2_ail_flush(gl, 0, tr.tr_revokes);
+ 
+ 	gfs2_trans_end(sdp);
++flush:
+ 	gfs2_log_flush(sdp, NULL, GFS2_LOG_HEAD_FLUSH_NORMAL |
+ 		       GFS2_LFC_AIL_EMPTY_GL);
+ }
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 00a2e721a374f..08dd6a4302344 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -512,7 +512,7 @@ static void log_pull_tail(struct gfs2_sbd *sdp, unsigned int new_tail)
+ }
+ 
+ 
+-static void log_flush_wait(struct gfs2_sbd *sdp)
++void log_flush_wait(struct gfs2_sbd *sdp)
+ {
+ 	DEFINE_WAIT(wait);
+ 
+diff --git a/fs/gfs2/log.h b/fs/gfs2/log.h
+index c0a65e5a126b6..c1cd6ae176597 100644
+--- a/fs/gfs2/log.h
++++ b/fs/gfs2/log.h
+@@ -73,6 +73,7 @@ extern void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl,
+ 			   u32 type);
+ extern void gfs2_log_commit(struct gfs2_sbd *sdp, struct gfs2_trans *trans);
+ extern void gfs2_ail1_flush(struct gfs2_sbd *sdp, struct writeback_control *wbc);
++extern void log_flush_wait(struct gfs2_sbd *sdp);
+ 
+ extern int gfs2_logd(void *data);
+ extern void gfs2_add_revoke(struct gfs2_sbd *sdp, struct gfs2_bufdata *bd);
+-- 
+2.20.1
+
 
 
