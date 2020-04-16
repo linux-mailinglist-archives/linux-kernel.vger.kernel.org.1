@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEF91AC50E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C941AC94A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392934AbgDPOKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60886 "EHLO mail.kernel.org"
+        id S2387452AbgDPPVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898623AbgDPNqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:46:45 -0400
+        id S2898627AbgDPNqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:46:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D9AF2076D;
-        Thu, 16 Apr 2020 13:46:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17F5C208E4;
+        Thu, 16 Apr 2020 13:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044804;
-        bh=ESA2Q8qNEyYMT9qiYnzTb8YCAnx8roVpY6pxsaqV8pw=;
+        s=default; t=1587044806;
+        bh=YvEO37qKCjWeczjWU6192GteB1w/O74tNl8rInnF+to=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j4qdNtmKwgw2qo4P7RxvBOlcj2dRdkRFLpeT6nr/pRuls/RTb9xAtTj65GRBF3wpj
-         q0ADhnSIFn0JCjlSSAwxs5UEeILYkJBndm15OIIWvhjrDCX+LC5A1HGYN04861H6bj
-         ItXO+Bes25i/bpfD5fhbc9xSIga0beSptJArWFK0=
+        b=b1nj8Rdabzv399htP5Gu8MUs/8t2uTpLWzogsQz8V33OpEtbXo5GEy0DdOrBSu61+
+         PYkUdAt0JvuEvzYz/rfgqdbs5ijfqq/ZrHmapQE5ZLQimgA9xLwZ9Y+gPW88WtC2Sh
+         A+VEYXApTRyBSrLf2d01FGnkZUHBpasgrFXYiDMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
-        Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 5.4 108/232] KEYS: reaching the keys quotas correctly
-Date:   Thu, 16 Apr 2020 15:23:22 +0200
-Message-Id: <20200416131328.658431947@linuxfoundation.org>
+        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Pavankumar Kondeti <pkondeti@codeaurora.org>
+Subject: [PATCH 5.4 109/232] cpu/hotplug: Ignore pm_wakeup_pending() for disable_nonboot_cpus()
+Date:   Thu, 16 Apr 2020 15:23:23 +0200
+Message-Id: <20200416131328.777564526@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
 References: <20200416131316.640996080@linuxfoundation.org>
@@ -44,67 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 2e356101e72ab1361821b3af024d64877d9a798d upstream.
+commit e98eac6ff1b45e4e73f2e6031b37c256ccb5d36b upstream.
 
-Currently, when we add a new user key, the calltrace as below:
+A recent change to freeze_secondary_cpus() which added an early abort if a
+wakeup is pending missed the fact that the function is also invoked for
+shutdown, reboot and kexec via disable_nonboot_cpus().
 
-add_key()
-  key_create_or_update()
-    key_alloc()
-    __key_instantiate_and_link
-      generic_key_instantiate
-        key_payload_reserve
-          ......
+In case of disable_nonboot_cpus() the wakeup event needs to be ignored as
+the purpose is to terminate the currently running kernel.
 
-Since commit a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly"),
-we can reach max bytes/keys in key_alloc, but we forget to remove this
-limit when we reserver space for payload in key_payload_reserve. So we
-can only reach max keys but not max bytes when having delta between plen
-and type->def_datalen. Remove this limit when instantiating the key, so we
-can keep consistent with key_alloc.
+Add a 'suspend' argument which is only set when the freeze is in context of
+a suspend operation. If not set then an eventually pending wakeup event is
+ignored.
 
-Also, fix the similar problem in keyctl_chown_key().
-
-Fixes: 0b77f5bfb45c ("keys: make the keyring quotas controllable through /proc/sys")
-Fixes: a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly")
-Cc: stable@vger.kernel.org # 5.0.x
-Cc: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Fixes: a66d955e910a ("cpu/hotplug: Abort disabling secondary CPUs if wakeup is pending")
+Reported-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Pavankumar Kondeti <pkondeti@codeaurora.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/874kuaxdiz.fsf@nanos.tec.linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/keys/key.c    |    2 +-
- security/keys/keyctl.c |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ include/linux/cpu.h |   12 +++++++++---
+ kernel/cpu.c        |    4 ++--
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -381,7 +381,7 @@ int key_payload_reserve(struct key *key,
- 		spin_lock(&key->user->lock);
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -138,12 +138,18 @@ static inline void get_online_cpus(void)
+ static inline void put_online_cpus(void) { cpus_read_unlock(); }
  
- 		if (delta > 0 &&
--		    (key->user->qnbytes + delta >= maxbytes ||
-+		    (key->user->qnbytes + delta > maxbytes ||
- 		     key->user->qnbytes + delta < key->user->qnbytes)) {
- 			ret = -EDQUOT;
- 		}
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -937,8 +937,8 @@ long keyctl_chown_key(key_serial_t id, u
- 				key_quota_root_maxbytes : key_quota_maxbytes;
+ #ifdef CONFIG_PM_SLEEP_SMP
+-extern int freeze_secondary_cpus(int primary);
++int __freeze_secondary_cpus(int primary, bool suspend);
++static inline int freeze_secondary_cpus(int primary)
++{
++	return __freeze_secondary_cpus(primary, true);
++}
++
+ static inline int disable_nonboot_cpus(void)
+ {
+-	return freeze_secondary_cpus(0);
++	return __freeze_secondary_cpus(0, false);
+ }
+-extern void enable_nonboot_cpus(void);
++
++void enable_nonboot_cpus(void);
  
- 			spin_lock(&newowner->lock);
--			if (newowner->qnkeys + 1 >= maxkeys ||
--			    newowner->qnbytes + key->quotalen >= maxbytes ||
-+			if (newowner->qnkeys + 1 > maxkeys ||
-+			    newowner->qnbytes + key->quotalen > maxbytes ||
- 			    newowner->qnbytes + key->quotalen <
- 			    newowner->qnbytes)
- 				goto quota_overrun;
+ static inline int suspend_disable_secondary_cpus(void)
+ {
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1212,7 +1212,7 @@ EXPORT_SYMBOL_GPL(cpu_up);
+ #ifdef CONFIG_PM_SLEEP_SMP
+ static cpumask_var_t frozen_cpus;
+ 
+-int freeze_secondary_cpus(int primary)
++int __freeze_secondary_cpus(int primary, bool suspend)
+ {
+ 	int cpu, error = 0;
+ 
+@@ -1237,7 +1237,7 @@ int freeze_secondary_cpus(int primary)
+ 		if (cpu == primary)
+ 			continue;
+ 
+-		if (pm_wakeup_pending()) {
++		if (suspend && pm_wakeup_pending()) {
+ 			pr_info("Wakeup pending. Abort CPU freeze\n");
+ 			error = -EBUSY;
+ 			break;
 
 
