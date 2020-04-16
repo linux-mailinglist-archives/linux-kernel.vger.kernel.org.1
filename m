@@ -2,204 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A891ABB0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAB41ABB31
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441179AbgDPIV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
+        id S2502108AbgDPIaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441314AbgDPITo (ORCPT
+        with ESMTP id S2441164AbgDPIW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:19:44 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40876C061A0C;
-        Thu, 16 Apr 2020 01:19:40 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x23so4921156lfq.1;
-        Thu, 16 Apr 2020 01:19:40 -0700 (PDT)
+        Thu, 16 Apr 2020 04:22:29 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6D0C0610D5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:21:42 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id j188so949208vkc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:21:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=W9MHtlxfWV5esFp8UKV1MC7UI06aVGBVOqmz4l0oTUE=;
-        b=ekIM/u0NoCzuOjB4d6swF8ik0SYVawZsVAjeK6ZOTzHDqRKmxUGGpbAQRb69YI57/7
-         YEqsZN10/mLKAn6BtkUdM1WK8dVWGAQdDpaQuO543EzMkkzJvviObNWiJ8/Ha/8HBkoy
-         ZAENdBwsq9LFQ5Ptrb6TNeh0GMtga64a8+JGMRNFlajv7ScuXbjNvTJStjTztaBsiaaZ
-         vChOMOsZys+sxL/SZpaBOCM58aOMNiPqHxYssLjPFvaVEhPC9dq9cIOv8j/6IrWjUQH1
-         P/qe5mJeR21JKRCD+xrzqOx5+hImvOv1sy2s2dtInXfyAh73EN9mdq1j4lbK+oKI4a9p
-         OLGQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T/reHgPggcZhG4lK1Xu2pV+incftSYy8GHcr4ZbUooE=;
+        b=rMq9OYF0LtRi5tqsKnHYSCyeulkSoKDcfn8p0e1GyLCQO7aQDmvujhuiuxSCotUJpO
+         MgcpejIgcrWsQjIAGIT8xIndxMOBXakoo5hUr4I8RJdsvQhbSd02BeZBdOGXXZeOgv0/
+         qbDUT6auHYmr5ilvgisBG0DiOK+tiMTN13fZpSiigctxIEAx4IRzpe/wHNiaiG6Ayv3K
+         PDlwjZllsp/D1bsQudWLnPYb+6erNIRkvwNjdCAstp5CN71wUMAYTd6oLck9geVlwtti
+         uMvymZ+MPmIxyHnnmQMMYo0nmwpt/R2lKoIMmyMBI5/M/m/Tx0fGeWscZNEUNDXY5pBN
+         bjKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=W9MHtlxfWV5esFp8UKV1MC7UI06aVGBVOqmz4l0oTUE=;
-        b=FxN9dw2mN7kgHf4h4QAslvVb9IinEeMXCfT3GoadnVZzHlE6C7e/nJBmvrqdSbV+sA
-         R6I3FFFzeoaPDTsol0/6CoJ0XaP+DZrbVDGjlTOzV0toYsmtbeGrOmIckX8y/cVc4SY9
-         80bMDLynONX1q/t01hR+ETX1snbGWqRPEkaMihu4W7NG13RcJGmUJQgXjWtHlyn1xDcs
-         kT4U2n3o0RBD01FflK81A75wK6aEAIqKZo3U6f4fUQvJm2d3u6RfrVEABCScRXvsiqKE
-         YLm4mqJLrgvnoMBfPHcdRp7ST4yHpteSsS093bin8VNT4u+NwC1MSEjnbP+61VAAPoTN
-         /jFA==
-X-Gm-Message-State: AGi0PubhyRio16Is1WvlSECSpLBQp8uIBOjtFvX8zZzYNY/CNYAvBq3b
-        OtoI8yOdOuPqFnaZEUMTUxn8FvVBaU4=
-X-Google-Smtp-Source: APiQypLK+ZBdTA6YWUvfPtEFGDAvT6JMxGw/IpftO7xZ2urY+CCasg81Mye5Zos0vqS/yhGnfr3f8A==
-X-Received: by 2002:ac2:5192:: with SMTP id u18mr5335277lfi.114.1587025178168;
-        Thu, 16 Apr 2020 01:19:38 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id o25sm14233941lfg.41.2020.04.16.01.19.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Apr 2020 01:19:37 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Josh Gao <jmgao@google.com>, YongQin Liu <yongqin.liu@linaro.org>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Yang Fei <fei.yang@intel.com>,
-        Thinh Nguyen <thinhn@synopsys.com>,
-        Tejas Joglekar <tejas.joglekar@synopsys.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jack Pham <jackp@codeaurora.org>, Todd Kjos <tkjos@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: More dwc3 gadget issues with adb
-In-Reply-To: <CALAqxLW2R4d=Zm=TKbFprN-uYrerL1oCYsVC3VedEKtW0gCsyA@mail.gmail.com>
-References: <CALAqxLW2R4d=Zm=TKbFprN-uYrerL1oCYsVC3VedEKtW0gCsyA@mail.gmail.com>
-Date:   Thu, 16 Apr 2020 11:19:27 +0300
-Message-ID: <877dyfsv00.fsf@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T/reHgPggcZhG4lK1Xu2pV+incftSYy8GHcr4ZbUooE=;
+        b=lNUM+WDFyYOYwW/TqseaoBC9RlMfA2wRHJNhk7Y7wmAC+862qftvOAb/+oHcOgfi1r
+         7ALaAX5YaguSuY5oXKFkL7Fi/7/YxdqZ0miLfbJCc0V6SWqfvDGQ2/Pf2LD37nocw5a+
+         YHH4P13DzyNyZexfKQK/UEVlRX+MWbJAlCabQ5Kkf75m71EW3whfkMP4g0Yx0RFOkOp5
+         Mdu7dV2to/iTpWqo7Xp9bbEIVkm5uOFH3/8X19sZ/EyLzHlFBaAA1dMa81Jtd7+hFVi7
+         vVvYu+enpSY69m0fCok6cb8M3DWOBYwINpkM2a/hUkIiqd3Mc1YBF2dDtLFh+TYtjQ60
+         vqHQ==
+X-Gm-Message-State: AGi0PuaxCzQkL5iHiLXNEdojQjNc4SAK8q57CRpHfQQt9pa01hcNBjA1
+        we68MbP9TwrGXIfsUUslIzcpj9T9uA/15ylgElkiBQ==
+X-Google-Smtp-Source: APiQypJGh7LR9CvqbpYIu/kxAYhVc8j+KRUnh92CtaIwyLqGZX2FRTHmGeHZiBIo3KhwWW7YiQZDha0chu+g8V/k4fo=
+X-Received: by 2002:a1f:aa48:: with SMTP id t69mr4609579vke.43.1587025301152;
+ Thu, 16 Apr 2020 01:21:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
+ <1586353607-32222-14-git-send-email-rnayak@codeaurora.org>
+ <CAPDyKFrOFOLCWHu8nE4i5t=d+Ei-kcJ15_42Ft3ROSUDe5jkpw@mail.gmail.com>
+ <3e5f8e78-7cd1-30fb-e005-78c1e7111794@codeaurora.org> <20200416033906.cl2v6wgbz3ch3clg@vireshk-i7>
+In-Reply-To: <20200416033906.cl2v6wgbz3ch3clg@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 16 Apr 2020 10:21:05 +0200
+Message-ID: <CAPDyKFptzgZqzFJYM4_mtu4BsmfNmF=OoSfAwy7vv0j6=gmGeA@mail.gmail.com>
+Subject: Re: [PATCH 13/21] mmc: sdhci-msm: Use OPP API to set clk/perf state
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pradeep P V K <ppvk@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Subhash Jadavani <subhashj@codeaurora.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-John Stultz <john.stultz@linaro.org> writes:
-> Hey Felipe,
->   Last week or so, a change[1] in AOSP to adbd seemingly uncovered
-> another issue with dwc3 gadget scatter-gather support on HiKey960.
+On Thu, 16 Apr 2020 at 05:39, Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> Interestingly it doesn't seem to affect the Dragonboard 845c, which
-> uses the same dwc3 driver and has had its own issues in the past.
+> On 15-04-20, 22:13, Rajendra Nayak wrote:
+> > As for the dependencies, its only PATCH 01/21 in this series and that's
+> > already been queued by Viresh [2]
 >
-> The behavior is the same as we saw last time around with both devices.
-> After booting the device, running "adb logcat -d" (or really any adb
-> command that transfers more than a trivial amount of data) on the host
-> will result in the adb output seeming to stall. Any further adb
-> invocations to the device will hang indefinitely.
->
-> I've captured trace events for before the change (works), after the
-> change (broken), and after the change with the sg_enabled flag turned
-> off (which works around the problem).
->
-> Let me know if there is anything else useful for me to share.
+> It must be part of v5.7-rc2
 
-First the obvious questions: Which kernel version is this? What does
-"before" and "after" refer to in our traces? What are first working and
-first failing versions? Can you run git bisect?
+Great, thanks!
 
-One thing I noticed is that we're missing a giveback on ep1out. Here's a
-working case:
-
-   UsbFfs-worker-580   [002] d..1    66.704886: dwc3_alloc_request: ep1out:=
- req 0000000011c55648 length 0/0 zsI =3D=3D> 0
-   UsbFfs-worker-580   [002] d..2    66.704889: dwc3_ep_queue: ep1out: req =
-0000000011c55648 length 0/16384 zsI =3D=3D> -115
-   UsbFfs-worker-580   [002] d..2    66.704892: dwc3_prepare_trb: ep1out: t=
-rb 000000003559c11c (E27:D7) buf 000000008843b000 size 16384 ctrl 00000819 =
-(HlcS:sC:normal)
-   UsbFfs-worker-580   [002] d..2    66.704897: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705053: dwc3_event: event (00006084=
-): ep1out: Transfer In Progress [0] (SIm)
-     irq/65-dwc3-522   [000] d..1    66.705054: dwc3_complete_trb: ep1out: =
-trb 000000008c350fb3 (E27:D8) buf 0000000089d6b000 size 16360 ctrl 00000818=
- (hlcS:sC:normal)
-     irq/65-dwc3-522   [000] d..1    66.705058: dwc3_gadget_giveback: ep1ou=
-t: req 0000000001b9ed3f length 24/16384 zsI =3D=3D> 0
-   kworker/u16:2-260   [001] ....    66.705097: dwc3_free_request: ep1out: =
-req 0000000001b9ed3f length 24/16384 zsI =3D=3D> 0
-
-and the failure point:
-
-   UsbFfs-worker-580   [002] d..1    66.705129: dwc3_alloc_request: ep1out:=
- req 0000000067a34de4 length 0/0 zsI =3D=3D> 0
-   UsbFfs-worker-580   [002] d..2    66.705131: dwc3_ep_queue: ep1out: req =
-0000000067a34de4 length 0/16384 zsI =3D=3D> -115
-   UsbFfs-worker-580   [002] d..2    66.705134: dwc3_prepare_trb: ep1out: t=
-rb 00000000f3db4076 (E28:D8) buf 000000008843f000 size 16384 ctrl 00000819 =
-(HlcS:sC:normal)
-   UsbFfs-worker-580   [002] d..2    66.705141: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705309: dwc3_event: event (00006084=
-): ep1out: Transfer In Progress [0] (SIm)
-     irq/65-dwc3-522   [000] d..1    66.705310: dwc3_complete_trb: ep1out: =
-trb 0000000092deef41 (E28:D9) buf 00000000ba8f1000 size 4072 ctrl 0000001c =
-(hlCS:sc:normal)
-     irq/65-dwc3-522   [000] d..1    66.705318: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705323: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705329: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705334: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705339: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705344: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705349: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-     irq/65-dwc3-522   [000] d..1    66.705354: dwc3_gadget_ep_cmd: ep1out:=
- cmd 'Update Transfer' [20007] params 00000000 00000000 00000000 --> status=
-: Successful
-
-One interesting thing is that TRB addresses are "odd". I can't find a
-proper lifetime for these TRBs. Do you have IOMMU enabled? Can you run
-without it? For example, nowhere in the log can I find the place where
-trb 0000000092deef41 was first enqueue. I'm assuming the log to be
-ordered, which means that trb is the same as 00000000f3db4076. But why
-are the addresses different?
-
-Another weird thing is that even though we CHN bit being set in
-0000000092deef41, we don't see where the second trb (the one its chained
-to) was prepared. It seems like it was *never* prepared, what gives?
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl6YFQ8ACgkQzL64meEa
-mQaIqxAA2vxUnm+Omf8K/N5jvZbIQHW5HcTdVXcznXApCA73acgUGZ6H599/XB2V
-LXwkb//ezD8QtY84tC12cDEXSqh2WrwLKyXef8Zhr8aeJ8YPyWIYr50Jx6qzAS2e
-PU9KZFtmU3SXhlImihGeWM1eYV0ojhYOpCNUNEWqQ3Hwlmcp5RzINUPCSqYNUVdz
-rLZsRllXS/68OEkQarvCRc87b/dJok3k2czcETy+6R69weLeHkJ1gUr+MRVoOUf7
-boLSjJX8nrb1xweRmSqD27gXmPw+5yAm+OD++KSM9aVDh67i0VHq1pF/X11ULVxt
-03hb6VcEkjUzFznfJrRD7ye7EuXiUwSxJwX+i6bRA0bBU83SoX7Kwb3i8gI3x9vT
-l3HvhaL9fUMEnacupHYLzKtHxRHFG0GyBBnbP6KGOgBQutbwQzX/IYWR8mdl4AmO
-myTiwgMCgQR54IhchmmrnCBeVvWTA9cyov983sjwhlkZt72+Y/TuLJGU73qWCamb
-babTgDZo1FRaRN2SawTJw/qpLGqGM9fOuCX8FW8qTlyG/rPyg0FRgjLMuO3v0F2X
-D0hbkSrlpKkCa8i4vdEEWIF9fw4BaYsyXCUCJIUEP3QOpMkIfNC+j8WRAcIdUsDR
-GWEK8eaPF4mJ07GBpPt8stsZeTgE1ADys75u/184GrMm5zkKUto=
-=mTHT
------END PGP SIGNATURE-----
---=-=-=--
+KInd regards
+Uffe
