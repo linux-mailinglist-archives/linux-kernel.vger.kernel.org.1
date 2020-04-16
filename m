@@ -2,158 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE261ABBB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7E41ABBAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 10:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502909AbgDPIvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 04:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S2502901AbgDPIuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 04:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502845AbgDPIqf (ORCPT
+        with ESMTP id S2502808AbgDPIqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 04:46:35 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4910C061A10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:45:53 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t14so3783289wrw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:45:53 -0700 (PDT)
+        Thu, 16 Apr 2020 04:46:12 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92869C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:45:52 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t14so3783207wrw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 01:45:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pG5pTBNnBkwwGuBlyrG6mcZI2ukqVqhCYbLD9sb/dDs=;
-        b=PSV2/WsivdzxHyL+seILBnveYYKP/4wX4u1AimJross2I1vrN6lmgubyZJ1UHGCwzB
-         vIjxzmsMFx/jCenXlHazkGZn8TPvR9IcYM9MRoe1zSZrCtAZM+HmFrPoBXUUaGgSsePV
-         kHgZDdW/wE1r/CqPoz0PDgnGKrqMVOlNqAe9dKLBio3Yynp+9s4AfJBLIrmCCb3iBdbW
-         Q6aGIp6OCDZVwtWpzqTOTSy5gbB/O6O/5X3nA3TSuBaTot9ntLaGxOWF1WMS+8thTuaQ
-         GaWfXI2y89ovDB2z90PFqu5c3VVTYscI/eLjBfCPZOdqxWSlRLKXI3M8AFDncBnNljMt
-         B+gA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7CCjqYtV5rZ1BPnB8xJbE2LOaBB1/4i0WAcySTW6iW4=;
+        b=itp8ed87fWGbopVCacBwE3FdVL41GEKkFYSZwG2nBvg1yeGIFZDWITbHGxX+ZIc4++
+         VIJYGeSbiOfjOQmSJI5J7y2+8QHmqlWFHnvdlAI1iJXxH6aJl09AvLpCHN72RC0/v73z
+         rPNW/RviGMAZUAEVu+bLyRzexUY3dg/QaXeotAFdcnexqly7yj+rXOq2Cx3d0VmkOyd8
+         Xv07Clm5SPK9NY+6HHuCKkw4sx/I9MwBANvuA1+yA3fE6mPbdtgxAL3obfE9Znh4IYPu
+         so+60k1dtngnXw/obk3frg1N9vfu8bFB1d/nO1kEQoiDni9gxWZUEzZopQOoOVisxda9
+         mwXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pG5pTBNnBkwwGuBlyrG6mcZI2ukqVqhCYbLD9sb/dDs=;
-        b=YfXZHp7yP14t1jpHBAE4TJ7zBBcNDhCCwEvgWCIJo/aiEOJIAT+52oX8LviI8k5kSs
-         qR8kcDiuaomuzI6+3haKG2R06JAyr+LYgiAOMrICURMoD2KlKEeIhuOvBgzXJeEHlLEV
-         4UyB8tZl0oILULwGpeYZoKnP2OdGBTwluaKoEyxdglhq900q1OPJ8n7I3WYVq33Pic2o
-         NrCTe1V24QfNX5lgyYkEI7xoddEAArmEWKo5U5yZmQj2DhAwNRO76ETM3IRV0e6fWJey
-         8UEZFpRDZLFS0lLh+Z6JJJx5shROhSi6F1ELdg19XcNDLCIy4/obwXnCpz9yjSGn8cd8
-         dXJA==
-X-Gm-Message-State: AGi0PuakO4h/wlhS4GOESaS4nam81ZrbcMzsecOcs98ptqMnStKK8s5p
-        tfz1g6rvdMA46P4H5wddXEJdmA==
-X-Google-Smtp-Source: APiQypKwRC3KxfWB2Nk1IWtYadWxsX71VLcHiZy6uWJqxMhTktoctHL6cUEMeSZQer7o3pIsf+GpYw==
-X-Received: by 2002:adf:ef51:: with SMTP id c17mr32971097wrp.130.1587026752266;
-        Thu, 16 Apr 2020 01:45:52 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56? ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
-        by smtp.gmail.com with ESMTPSA id o28sm12095874wra.84.2020.04.16.01.45.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7CCjqYtV5rZ1BPnB8xJbE2LOaBB1/4i0WAcySTW6iW4=;
+        b=AO9qpfziGtA/3NlsB3kK449eC9y/cy0j08VSRLF84bILB/wWi4bofigIiIOpvOoxNc
+         GJRB9xAdjTTNByyxNr9d9xxBzLA91kCYiUAL6T+wA3qsbLDY5NIgxF1wf6AeQiC7JD7i
+         X5eydgvwPqcodZjn+/g1FSXKRzU7vFBijbbLsx907wvTOSAoSOKIpNOdDX5oyJBzuyok
+         O5Z1vthib0unIDSpQp4EjSTH1s0roGPGwQI8lyoJF0V/ddrZ5uDU0q8MdAbx0H57kXLr
+         byzvmLXie2cXRmcp8Wo4VUXCLr/G89jt5+vF1fX+wLUQDjH/DCpv61zVcptDFGo9/bSh
+         70nA==
+X-Gm-Message-State: AGi0PubhKjgUDyqYdzGxJAoEzmniB9Q5FNKcQNe3VYwbPCtn6DKJAQ/v
+        Eik92FQYcobA/eO1roAXvnqs0A==
+X-Google-Smtp-Source: APiQypKwaGysG2hGUewJA7EWz2Xers7oN6ox2nLU1AuZfQ6/AeW4VTV34p40rICyZXOGugtKZ8RQdw==
+X-Received: by 2002:a5d:4712:: with SMTP id y18mr3148011wrq.306.1587026751319;
         Thu, 16 Apr 2020 01:45:51 -0700 (PDT)
-Subject: Re: [PATCH RFC v1 2/4] dt-bindings: power: meson-ee-pwrc: add support
- for the Meson GX SoCs
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     robh+dt@kernel.org, khilman@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20200414201457.229131-1-martin.blumenstingl@googlemail.com>
- <20200414201457.229131-3-martin.blumenstingl@googlemail.com>
- <907211b1-c8d5-39cd-5d2b-dd41efbdc7a7@baylibre.com>
- <CAFBinCCjHtSNigkeG_M4sVs27SemTMu0hUEQEHk53odAybm6sA@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <342d4083-783a-41ad-18a2-62b75cae5027@baylibre.com>
-Date:   Thu, 16 Apr 2020 10:45:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id n11sm28218236wrg.72.2020.04.16.01.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 01:45:50 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 09:46:51 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, vkoul@kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: stm32-timers: Use dma_request_chan() instead
+ dma_request_slave_channel()
+Message-ID: <20200416084651.GW2167633@dell>
+References: <20200107105959.18920-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCCjHtSNigkeG_M4sVs27SemTMu0hUEQEHk53odAybm6sA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200107105959.18920-1-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Tue, 07 Jan 2020, Peter Ujfalusi wrote:
 
-On 15/04/2020 20:31, Martin Blumenstingl wrote:
-> Hi Neil,
+> dma_request_slave_channel() is a wrapper on top of dma_request_chan()
+> eating up the error code.
 > 
-> On Wed, Apr 15, 2020 at 10:51 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-> [...]
->>> +            - const: dvin
-
-
-Yes I rechecked, and it's part of the VPU.
-
-> before I resend, can you please double-check this reset line?
-> it's the only difference compared to G12A so I thought it would make
-> sense to check if this is really related to the VPU when we're
-> switching from one binding to the other anyways (as now is the time to
-> sort out pending issues - in case there is an issue here)
+> By using dma_request_chan() directly the driver can support deferred
+> probing against DMA.
 > 
->>> +#define PWRC_GXBB_VPU_ID             0
->>> +#define PWRC_GXBB_ETH_ID             1
->>
->> Should be PWRC_GXBB_ETHERNET_MEM_ID like meson8 bindings.
-> I can do that, thank you for looking into this!
-
-Neil
-
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi,
 > 
+> Changes since v1:
+> - Fall back to PIO mode only in case of ENODEV and report all other errors
 > 
-> Martin
+> Regards,
+> Peter
 > 
+>  drivers/mfd/stm32-timers.c | 32 +++++++++++++++++++++++---------
+>  1 file changed, 23 insertions(+), 9 deletions(-)
 
+Apologies for not spotting this patch sooner, it had slipped through
+the net.  If this happens again, please just submit a [RESEND].
+
+> diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
+> index efcd4b980c94..add603359124 100644
+> --- a/drivers/mfd/stm32-timers.c
+> +++ b/drivers/mfd/stm32-timers.c
+> @@ -167,10 +167,11 @@ static void stm32_timers_get_arr_size(struct stm32_timers *ddata)
+>  	regmap_write(ddata->regmap, TIM_ARR, 0x0);
+>  }
+>  
+> -static void stm32_timers_dma_probe(struct device *dev,
+> +static int stm32_timers_dma_probe(struct device *dev,
+>  				   struct stm32_timers *ddata)
+>  {
+>  	int i;
+> +	int ret = 0;
+>  	char name[4];
+>  
+>  	init_completion(&ddata->dma.completion);
+> @@ -179,14 +180,23 @@ static void stm32_timers_dma_probe(struct device *dev,
+>  	/* Optional DMA support: get valid DMA channel(s) or NULL */
+>  	for (i = STM32_TIMERS_DMA_CH1; i <= STM32_TIMERS_DMA_CH4; i++) {
+>  		snprintf(name, ARRAY_SIZE(name), "ch%1d", i + 1);
+> -		ddata->dma.chans[i] = dma_request_slave_channel(dev, name);
+> +		ddata->dma.chans[i] = dma_request_chan(dev, name);
+>  	}
+> -	ddata->dma.chans[STM32_TIMERS_DMA_UP] =
+> -		dma_request_slave_channel(dev, "up");
+> -	ddata->dma.chans[STM32_TIMERS_DMA_TRIG] =
+> -		dma_request_slave_channel(dev, "trig");
+> -	ddata->dma.chans[STM32_TIMERS_DMA_COM] =
+> -		dma_request_slave_channel(dev, "com");
+> +	ddata->dma.chans[STM32_TIMERS_DMA_UP] = dma_request_chan(dev, "up");
+> +	ddata->dma.chans[STM32_TIMERS_DMA_TRIG] = dma_request_chan(dev, "trig");
+> +	ddata->dma.chans[STM32_TIMERS_DMA_COM] = dma_request_chan(dev, "com");
+> +
+> +	for (i = STM32_TIMERS_DMA_CH1; i < STM32_TIMERS_MAX_DMAS; i++) {
+> +		if (IS_ERR(ddata->dma.chans[i])) {
+> +			/* Save the first error code to return */
+> +			if (PTR_ERR(ddata->dma.chans[i]) != -ENODEV && !ret)
+> +				ret = PTR_ERR(ddata->dma.chans[i]);
+> +
+> +			ddata->dma.chans[i] = NULL;
+> +		}
+> +	}
+
+In my mind, it doesn't make sense to keep requesting channels if an
+error has occurred.  Please remove all of the added complexity caused
+by the for() loop and simply check the return value after each call to
+dma_request_chan(), returning immediately on error.
+
+> +	return ret;
+>  }
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
