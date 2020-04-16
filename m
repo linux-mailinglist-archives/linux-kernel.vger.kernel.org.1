@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849721AC44C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5991AC5CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506711AbgDPN5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 09:57:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
+        id S2405799AbgDPO1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:27:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897931AbgDPNjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:39:18 -0400
+        id S2898874AbgDPN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:59:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2AC421BE5;
-        Thu, 16 Apr 2020 13:39:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5F072223D;
+        Thu, 16 Apr 2020 13:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044358;
-        bh=rYEbbTZpOvYM3lyWTrWeTlys/rHzSaPGXH+mvSyaYi8=;
+        s=default; t=1587045569;
+        bh=bdSAx6aYzNsELWFGcYGhzgSpwLK7PjSAoIDJugtAde0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PRp9yvR+QbyQqA4XsLuEB8LdG4Hy47ey6TpbT9sGh/G7tYqQ+z0O0aaOkpbdD3mms
-         a56qJd2Ng/qDPn60rPOxn1PR3VPSDZlghzSu8+9ceGPQ2DBMsWcxnfz1hdLF6k9+K3
-         CYz5+XwN9r1sxK4kfNxaEe3VXdplCqqQaAL/T4D4=
+        b=hbd/HDGRaztpeZBmt1xnDIuB7G5BJE1UpD5qJ3PXjupqwcGMry79TqZqzJccjyvg0
+         VWZGrwrtk5XnJnvR5Bon89emLNuxciWPQjymW6qGqVcFKIiozIL0tbY0XpeqkW+ztE
+         X1b8/iC7MBqP2CBIeF/oLieG5uhA+Ye1Ku2hbDxo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.5 185/257] dm clone: Add overflow check for number of regions
+        stable@vger.kernel.org, Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Michal Mrozek <michal.mrozek@intel.com>,
+        Michal Mrozek <Michal.mrozek@intel.com>
+Subject: [PATCH 5.6 147/254] drm/i915/gen12: Disable preemption timeout
 Date:   Thu, 16 Apr 2020 15:23:56 +0200
-Message-Id: <20200416131349.450708706@linuxfoundation.org>
+Message-Id: <20200416131344.929475014@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
-References: <20200416131325.891903893@linuxfoundation.org>
+In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
+References: <20200416131325.804095985@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +46,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-commit cd481c12269b4d276f1a52eda0ebd419079bfe3a upstream.
+commit 07bcfd1291de77ffa9b627b4442783aba1335229 upstream.
 
-Add overflow check for clone->nr_regions variable, which holds the
-number of regions of the target.
+Allow super long OpenCL workloads which cannot be preempted within
+the default timeout to run out of the box.
 
-The overflow can occur with sufficiently large devices, if BITS_PER_LONG
-== 32. E.g., if the region size is 8 sectors (4K), the overflow would
-occur for device sizes > 34359738360 sectors (~16TB).
+v2:
+ * Make it stick out more and apply only to RCS. (Chris)
 
-This could result in multiple device sectors wrongly mapping to the same
-region number, due to the truncation from 64 bits to 32 bits, which
-would lead to data corruption.
+v3:
+ * Mention platform override in kconfig. (Joonas)
 
-Fixes: 7431b7835f55 ("dm: add clone target")
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Michal Mrozek <michal.mrozek@intel.com>
+Cc: <stable@vger.kernel.org> # v5.6+
+Acked-by: Chris Wilson <chris@chris-wilson.co.uk>
+Acked-by: Michal Mrozek <Michal.mrozek@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200312115748.29970-1-tvrtko.ursulin@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-clone-target.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/i915/Kconfig.profile      |    4 ++++
+ drivers/gpu/drm/i915/gt/intel_engine_cs.c |   13 +++++++++----
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
---- a/drivers/md/dm-clone-target.c
-+++ b/drivers/md/dm-clone-target.c
-@@ -1790,6 +1790,7 @@ error:
- static int clone_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+--- a/drivers/gpu/drm/i915/Kconfig.profile
++++ b/drivers/gpu/drm/i915/Kconfig.profile
+@@ -35,6 +35,10 @@ config DRM_I915_PREEMPT_TIMEOUT
+ 
+ 	  May be 0 to disable the timeout.
+ 
++	  The compiled in default may get overridden at driver probe time on
++	  certain platforms and certain engines which will be reflected in the
++	  sysfs control.
++
+ config DRM_I915_SPIN_REQUEST
+ 	int "Busywait for request completion (us)"
+ 	default 5 # microseconds
+--- a/drivers/gpu/drm/i915/gt/intel_engine_cs.c
++++ b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
+@@ -274,6 +274,7 @@ static void intel_engine_sanitize_mmio(s
+ static int intel_engine_setup(struct intel_gt *gt, enum intel_engine_id id)
  {
- 	int r;
-+	sector_t nr_regions;
- 	struct clone *clone;
- 	struct dm_arg_set as;
+ 	const struct engine_info *info = &intel_engines[id];
++	struct drm_i915_private *i915 = gt->i915;
+ 	struct intel_engine_cs *engine;
  
-@@ -1831,7 +1832,16 @@ static int clone_ctr(struct dm_target *t
- 		goto out_with_source_dev;
+ 	BUILD_BUG_ON(MAX_ENGINE_CLASS >= BIT(GEN11_ENGINE_CLASS_WIDTH));
+@@ -300,11 +301,11 @@ static int intel_engine_setup(struct int
+ 	engine->id = id;
+ 	engine->legacy_idx = INVALID_ENGINE;
+ 	engine->mask = BIT(id);
+-	engine->i915 = gt->i915;
++	engine->i915 = i915;
+ 	engine->gt = gt;
+ 	engine->uncore = gt->uncore;
+ 	engine->hw_id = engine->guc_id = info->hw_id;
+-	engine->mmio_base = __engine_mmio_base(gt->i915, info->mmio_bases);
++	engine->mmio_base = __engine_mmio_base(i915, info->mmio_bases);
  
- 	clone->region_shift = __ffs(clone->region_size);
--	clone->nr_regions = dm_sector_div_up(ti->len, clone->region_size);
-+	nr_regions = dm_sector_div_up(ti->len, clone->region_size);
+ 	engine->class = info->class;
+ 	engine->instance = info->instance;
+@@ -319,11 +320,15 @@ static int intel_engine_setup(struct int
+ 	engine->props.timeslice_duration_ms =
+ 		CONFIG_DRM_I915_TIMESLICE_DURATION;
+ 
++	/* Override to uninterruptible for OpenCL workloads. */
++	if (INTEL_GEN(i915) == 12 && engine->class == RENDER_CLASS)
++		engine->props.preempt_timeout_ms = 0;
 +
-+	/* Check for overflow */
-+	if (nr_regions != (unsigned long)nr_regions) {
-+		ti->error = "Too many regions. Consider increasing the region size";
-+		r = -EOVERFLOW;
-+		goto out_with_source_dev;
-+	}
-+
-+	clone->nr_regions = nr_regions;
+ 	engine->context_size = intel_engine_context_size(gt, engine->class);
+ 	if (WARN_ON(engine->context_size > BIT(20)))
+ 		engine->context_size = 0;
+ 	if (engine->context_size)
+-		DRIVER_CAPS(gt->i915)->has_logical_contexts = true;
++		DRIVER_CAPS(i915)->has_logical_contexts = true;
  
- 	r = validate_nr_regions(clone->nr_regions, &ti->error);
- 	if (r)
+ 	/* Nothing to do here, execute in order of dependencies */
+ 	engine->schedule = NULL;
+@@ -339,7 +344,7 @@ static int intel_engine_setup(struct int
+ 	gt->engine_class[info->class][info->instance] = engine;
+ 	gt->engine[id] = engine;
+ 
+-	gt->i915->engine[id] = engine;
++	i915->engine[id] = engine;
+ 
+ 	return 0;
+ }
 
 
