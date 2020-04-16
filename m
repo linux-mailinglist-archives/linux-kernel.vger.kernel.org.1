@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B701AC4C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20771ACA21
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392912AbgDPOD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:03:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:32874 "EHLO foss.arm.com"
+        id S2505864AbgDPPbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:31:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726627AbgDPNmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:42:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6F8C1FB;
-        Thu, 16 Apr 2020 06:42:17 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68A253F68F;
-        Thu, 16 Apr 2020 06:42:15 -0700 (PDT)
-Subject: Re: Multiple regulators for one device [was drm/panfrost: add devfreq
- regulator support]
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Nishanth Menon <nm@ti.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200411200632.4045-1-peron.clem@gmail.com>
- <20200411200632.4045-2-peron.clem@gmail.com>
- <c96f31a2-6ff4-31aa-aaac-2ce9eafb3bfe@arm.com>
- <CAJiuCcegkNGQ7j4jcT1rBpSLqG1c-nb8g0wq+Nbvt-dGj7am2Q@mail.gmail.com>
- <CAJiuCceU662o7QGJ=mmT3pzVWK7uJUN=6+NKQnZ=Cfj9c2nw7A@mail.gmail.com>
- <d6465e7e-8e05-8b7d-16bd-f40877969089@arm.com>
- <CAJiuCccv2XPLY6sjcgvvrG5a8ONYHa_xn9i-YUDKUDK5a0DY=A@mail.gmail.com>
- <CAJiuCcfa9ro1V4nBzfD48cCuHpEsLaNA5P0bb-tQ3hcWUCtpkA@mail.gmail.com>
- <000f26f4-3640-797f-c7f6-4b31a5e2669e@arm.com>
- <CAJiuCccF3tmbmMWNh0nC5WRJ1_iPdj6f1oH1zYMSue_pFrXsPQ@mail.gmail.com>
- <20200414185523.GO5412@sirena.org.uk>
- <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com>
-Date:   Thu, 16 Apr 2020 14:42:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        id S2392171AbgDPNm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:42:56 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5779720732;
+        Thu, 16 Apr 2020 13:42:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587044576;
+        bh=pKr2ODiezIbXVsIZUlYbDhELk4vhbLO4dwd5JanhVDs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DYDoeT+4hlWnZScNJWKzbPVJP6AmaxiEBcN9QaCMwpYR+ioBzx5PL3FhzIHC2+c/+
+         RtXULmJ+QUoHFlldeF7OO8+NpY0b6xRd4MEh28kb8NOorpCxOltXVb4oSb79+AIqvn
+         UMDWYBszSdyr4a5FPV5Dcb7rjUAOmOj9YorEfYTo=
+Date:   Thu, 16 Apr 2020 22:42:50 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "bibo,mao" <bibo.mao@intel.com>,
+        "Ziqian SUN (Zamir)" <zsun@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] kretprobe: Prevent triggering kretprobe from within
+ kprobe_flush_task
+Message-Id: <20200416224250.7a53fb581e50aa32df75a0cf@kernel.org>
+In-Reply-To: <20200416091320.GA322899@krava>
+References: <20200408164641.3299633-1-jolsa@kernel.org>
+        <20200409234101.8814f3cbead69337ac5a33fa@kernel.org>
+        <20200409184451.GG3309111@krava>
+        <20200409201336.GH3309111@krava>
+        <20200410093159.0d7000a08fd76c2eaf1398f8@kernel.org>
+        <20200414160338.GE208694@krava>
+        <20200415090507.GG208694@krava>
+        <20200416105506.904b7847a1b621b75463076d@kernel.org>
+        <20200416091320.GA322899@krava>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/2020 20:16, Clément Péron wrote:
-> Hi Mark,
+Hi Jiri,
+
+On Thu, 16 Apr 2020 11:13:20 +0200
+Jiri Olsa <jolsa@redhat.com> wrote:
+
+> On Thu, Apr 16, 2020 at 10:55:06AM +0900, Masami Hiramatsu wrote:
 > 
-> On Tue, 14 Apr 2020 at 20:55, Mark Brown <broonie@kernel.org> wrote:
->>
->> On Tue, Apr 14, 2020 at 08:20:23PM +0200, Clément Péron wrote:
->>> Hi Liam and Mark,
->>
->> You might want to flag stuff like this in the subject line, I very
->> nearly deleted this without opening it since most of the email I get
->> about panfrost appears to be coming from me having sent patches rather
->> than being relevant.
+> SNIP
 > 
-> Ok will do next time,
+> > >           trampoline_handler
+> > >             kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
+> > > 
+> > > Adding kprobe_busy_begin/end helpers that mark code with fake
+> > > probe installed to prevent triggering of another kprobe within
+> > > this code.
+> > > 
+> > > Using these helpers in kprobe_flush_task, so the probe recursion
+> > > protection check is hit and the probe is never set to prevent
+> > > above lockup.
+> > > 
+> > > Reported-by: "Ziqian SUN (Zamir)" <zsun@redhat.com>
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > 
+> > Thanks Jiri and Ziqian!
+> > 
+> > Looks good to me.
+> > 
+> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > BTW, this is a kind of bugfix. So should it add a Fixes tag?
+> > 
+> > Fixes: ef53d9c5e4da ('kprobes: improve kretprobe scalability with hashed locking')
+> > Cc: stable@vger.kernel.org
 > 
->>
->>> We are having an issue with Panfrost driver registering two times the
->>> same regulator and giving an error when trying to create the debugfs
->>> folder.
->>
->>> Could you clarify if it is allowed for a device to register two times
->>> the same regulator?
->>
->>> I check Documentation/power/regulator/regulator.rst but this point is
->>> not specified.
->>
->> We don't actively prevent it and I can't think what other than debugfs
->> might run into problems (and that's just a warning) but it does seem
->> like a weird thing to want to do and like it's pointing to some
->> confusion in your code with two different parts of the device
->> controlling the same supply independently.  What's the use case here?
+> ah right, do you want me to repost with those?
+
+Yeah, if you don't mind.
+
+Thank you,
+
 > 
-> Panfrost first probe clock, reset and regulator in device_init:
-> https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/gpu/drm/panfrost/panfrost_drv.c#L602
-> Then it probe for optional devfreq, devfreq will get opp tables and
-> also get regulator again.
-> https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/gpu/drm/panfrost/panfrost_drv.c#L609
+> thanks,
+> jirka
 > 
-> That's can be reworked and Panfrost can only probe regulator if there
-> is no opp-table.
 
-This is what I was thinking about looking at. But it may make sense 
-instead to extend the regulator API to allow multiple regualtor_get() 
-calls for a single device. I haven't had time to dig into how difficult 
-this would be.
 
-> But if multiple regulator is not an issue and as each request is logic.
-> The first in device_init assure to enable the regulator and the second
-> in OPP assure the voltage level.
-> 
-> Maybe we can just fix this warning?
-
- From what I can see in the code, just silencing the warning would lead 
-to 'odd' behaviour with debugfs. The first struct regulator Panfrost 
-acquires is the one that is used purely for turning the GPU on (no 
-voltage scaling). The second struct regulator is the one which is 
-obtained by the OPP framework. However the debugfs entries point into 
-the actual struct regulator, so it would be far more logical/useful if 
-those were pointing into the second struct regulator.
-
-Ideally calling regulator_get a second time for the same device would 
-simply return the same struct regulator object (with a reference count 
-increment).
-
-Perhaps a better approach would be for Panfrost to hand over the struct 
-regulator objects it has already got to the OPP framework. I.e. open 
-code dev_pm_opp_set_regulators(), but instead of calling 
-regulator_get_optional() simply populate the regulators we already have?
-
-The other benefit of that is it would provide a clear hand-over of 
-responsibility between Panfrost handling it's own regulators and the OPP 
-framework picking up the work. The disadvantage is that Panfrost would 
-have to track whether the regulators have been handed over or not.
-
-Steve
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
