@@ -2,139 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436A51AC746
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A8D1AC75F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394668AbgDPOwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2393214AbgDPOwh (ORCPT
+        id S2408032AbgDPOyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:54:13 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54697 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394837AbgDPOxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:52:37 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673B9C061A10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:52:37 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 20so13473080qkl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 07:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HCXSa5JOI0JuZixlWcSp9z9oFtd4hHMjntnKd7qnQdg=;
-        b=D6q+HnWVLikot324F3seZu21QdKF1g0V5vDIQC90dGvb8GyvIIY9zhU6NqmwvyAEk0
-         FckWdwe17Do6/HDwHmKwADXS4xTWcxpaA0Jh2Tn/hrGasbJXGfNc9DRt9UC2Wx9Bf18w
-         jhcJi9wsgjNNJqTohK2bxvwrFZXcttFNaJAQrTkildLM0oDkbtoz26OkVcfRbU3WWOlj
-         BqcdeBgCqxJWp7BIXvuN/RwKLCtTvkIS6uxA0GcuFdIsXlUTAzYbU7GYa6nj2eVzx8aH
-         yGAukV9zW4gevdDx7bcEfam4rO8/sxjDT96zs8GY1Ew1HYpBT9WXTPh5e1xdiKqQubP1
-         qvfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HCXSa5JOI0JuZixlWcSp9z9oFtd4hHMjntnKd7qnQdg=;
-        b=cYCicKHQ2/oCR7buwKLouHNjP/u7xNnBy54TbvWQbYqrQkss+UPfjjRD5sF5Tkux7E
-         rvBpTlg3s+u6eom4w52Kze5XxZGDdBlK2dfm/toWRjJYsGBr8xcmwOcwV0VY1O0GTeWI
-         SlJA/YKK25PCuhDXaDZiU8m2SdZIovUaaSYavPCs+9dqwp0X06zMF4G5NavEu425z7j7
-         a3YQMuDucQM/QDOBqKVS8xjHqe4NWCDpt2jFpOlCiC0d0oBRzQiYXcQ5f0TtXD3NXEct
-         r5vKZu5wF8I8CaBxiXnZC75yZ2aVBzKfvjVMqgbILkIlYJjbZGkN8WEyvIhI50R2r1Vm
-         DhiA==
-X-Gm-Message-State: AGi0PuYPu1fxJIGBvWDfRd8c2IoeST2PQw35GoNtD4YaYtCSQHWPRd3S
-        sHUtZ/KDrvmTdP6dCV8xy2o+FQ==
-X-Google-Smtp-Source: APiQypLQA2/bBUlk05pIMttoOYkQG4MHIWDLVjipXM3ESI2Uz2kPuVtpZdrkk1rBc69aWjfHtIAwKw==
-X-Received: by 2002:a05:620a:1289:: with SMTP id w9mr15971965qki.263.1587048756521;
-        Thu, 16 Apr 2020 07:52:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d85sm8046890qkc.99.2020.04.16.07.52.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Apr 2020 07:52:35 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jP5sZ-0003xG-6O; Thu, 16 Apr 2020 11:52:35 -0300
-Date:   Thu, 16 Apr 2020 11:52:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-Message-ID: <20200416145235.GR5100@ziepe.ca>
-References: <20200414132900.GD5100@ziepe.ca>
- <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
- <20200414152312.GF5100@ziepe.ca>
- <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
- <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
- <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
- <834c7606743424c64951dd2193ca15e29799bf18.camel@mellanox.com>
- <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com>
- <874ktj4tvn.fsf@intel.com>
- <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
+        Thu, 16 Apr 2020 10:53:21 -0400
+Received: from [88.147.80.45] (port=36640 helo=[192.168.77.62])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1jP5t7-00283A-Tv; Thu, 16 Apr 2020 16:53:10 +0200
+Subject: Re: [RFC PATCH v2 2/6] i2c: allow DT nodes without 'compatible'
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-i3c@lists.infradead.org,
+        Kieran Bingham <kieran@ksquared.org.uk>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+ <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
+ <11ca7487-ac07-f714-8573-20d1a0040212@lucaceresoli.net>
+ <20200415075911.GA1141@ninjato>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <e1791500-d7ca-f6d0-44ff-8d830de4bf58@lucaceresoli.net>
+Date:   Thu, 16 Apr 2020 16:53:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200415075911.GA1141@ninjato>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 02:38:50PM +0200, Arnd Bergmann wrote:
-> On Thu, Apr 16, 2020 at 12:17 PM Jani Nikula
-> <jani.nikula@linux.intel.com> wrote:
-> >
-> > On Thu, 16 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Thu, Apr 16, 2020 at 5:25 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
-> > >> BTW how about adding a new Kconfig option to hide the details of
-> > >> ( BAR || !BAR) ? as Jason already explained and suggested, this will
-> > >> make it easier for the users and developers to understand the actual
-> > >> meaning behind this tristate weird condition.
-> > >>
-> > >> e.g have a new keyword:
-> > >>      reach VXLAN
-> > >> which will be equivalent to:
-> > >>      depends on VXLAN && !VXLAN
-> > >
-> > > I'd love to see that, but I'm not sure what keyword is best. For your
-> > > suggestion of "reach", that would probably do the job, but I'm not
-> > > sure if this ends up being more or less confusing than what we have
-> > > today.
-> >
-> > Ah, perfect bikeshedding topic!
-> >
-> > Perhaps "uses"? If the dependency is enabled it gets used as a
-> > dependency.
+Hi,
+
+On 15/04/20 09:59, Wolfram Sang wrote:
 > 
-> That seems to be the best naming suggestion so far
-
-Uses also  makes sense to me.
-
-> > Of course, this is all just talk until someone(tm) posts a patch
-> > actually making the change. I've looked at the kconfig tool sources
-> > before; not going to make the same mistake again.
+>> As I said in the reply to v1, I think we should reserve addresses also
+>> when there is a compatible string but no matching driver, but this is
+>> another story and can be handled separately.
 > 
-> Right. OTOH whoever implements it gets to pick the color of the
-> bikeshed. ;-)
+> Unless I misunderstand you, I think they do already. Note that
+> only 'i2cdetect' shows a device as busy *IFF* there is a driver bound to
+> it. The internal 'i2c_check_addr_busy' does not care about a driver
+> being bound. You can check this by trying to use
+> i2c_new_ancillary_device() with an address which is already described in
+> DT but which driver is disabled.
+> 
 
-I hope someone takes it up, especially now that imply, which
-apparently used to do this, doesn't any more :)
+Ah, yes! I was assuming the opposite but I double checked and you're
+right of course.
 
-Jason
+Sorry for the noise.
+
+-- 
+Luca
