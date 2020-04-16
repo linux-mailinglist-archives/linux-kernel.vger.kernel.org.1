@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CAF1AC718
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75E81AC8E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392833AbgDPOtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45690 "EHLO mail.kernel.org"
+        id S2503577AbgDPPQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:16:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729446AbgDPN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:58:44 -0400
+        id S2441622AbgDPNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:50:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2BEE217D8;
-        Thu, 16 Apr 2020 13:58:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4809721927;
+        Thu, 16 Apr 2020 13:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587045520;
-        bh=oLa9ZCMXCNwNPdswBzANyD/1hXfKDvp9bSGTKy6lpvM=;
+        s=default; t=1587044972;
+        bh=shd0LP0Bg8wGz6s3YwEhALAbANLNDLZwnav84oEtfjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NSboMxJtAa6CMpKrGWGVDNCZXCiwoYAO8Oh10IyZcqpwGnjXLjMiWZtNbmjz3rzQ2
-         A5H4wgUuWHrmXwUf7phJ0JCXvzERfQO5TGgurs9uCyBXyi0uOskSUOkpoNCd+hih7U
-         Xy9R2TW4CxxD22xY/ZqhKaXzYOMXy5G+GK3MKnZA=
+        b=P1fUF88whAGy5wp6zMpfCTe5D6FcZovIUws5LM1ZmwusnBVVedGX2ZKohZK4R2N+o
+         Eoy5kuWZdpjfxhKXmUOfRJbTTwS16UueuKjmkmSEykdhABxqrMnFP8qUVREHSaS6di
+         VTgnUfbUQ+RWKCdSQ8ouUuL1H/jipOwxnRtqiWAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.6 141/254] CIFS: check new file size when extending file by fallocate
+        stable@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.4 136/232] mtd: spinand: Do not erase the block before writing a bad block marker
 Date:   Thu, 16 Apr 2020 15:23:50 +0200
-Message-Id: <20200416131344.104090672@linuxfoundation.org>
+Message-Id: <20200416131331.970575378@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-References: <20200416131325.804095985@linuxfoundation.org>
+In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
+References: <20200416131316.640996080@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Murphy Zhou <jencce.kernel@gmail.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-commit ef4a632ccc1c7d3fb71a5baae85b79af08b7f94b upstream.
+commit b645ad39d56846618704e463b24bb994c9585c7f upstream.
 
-xfstests generic/228 checks if fallocate respect RLIMIT_FSIZE.
-After fallocate mode 0 extending enabled, we can hit this failure.
-Fix this by check the new file size with vfs helper, return
-error if file size is larger then RLIMIT_FSIZE(ulimit -f).
+Currently when marking a block, we use spinand_erase_op() to erase
+the block before writing the marker to the OOB area. Doing so without
+waiting for the operation to finish can lead to the marking failing
+silently and no bad block marker being written to the flash.
 
-This patch has been tested by LTP/xfstests aginst samba and
-Windows server.
+In fact we don't need to do an erase at all before writing the BBM.
+The ECC is disabled for raw accesses to the OOB data and we don't
+need to work around any issues with chips reporting ECC errors as it
+is known to be the case for raw NAND.
 
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-CC: Stable <stable@vger.kernel.org>
+Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200218100432.32433-4-frieder.schrempf@kontron.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2ops.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/spi/core.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3248,6 +3248,10 @@ static long smb3_simple_falloc(struct fi
- 	 * Extending the file
- 	 */
- 	if ((keep_size == false) && i_size_read(inode) < off + len) {
-+		rc = inode_newsize_ok(inode, off + len);
-+		if (rc)
-+			goto out;
-+
- 		if ((cifsi->cifsAttrs & FILE_ATTRIBUTE_SPARSE_FILE) == 0)
- 			smb2_set_sparse(xid, tcon, cfile, inode, false);
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -612,7 +612,6 @@ static int spinand_markbad(struct nand_d
+ 	};
+ 	int ret;
+ 
+-	/* Erase block before marking it bad. */
+ 	ret = spinand_select_target(spinand, pos->target);
+ 	if (ret)
+ 		return ret;
+@@ -621,8 +620,6 @@ static int spinand_markbad(struct nand_d
+ 	if (ret)
+ 		return ret;
+ 
+-	spinand_erase_op(spinand, pos);
+-
+ 	return spinand_write_page(spinand, &req);
+ }
  
 
 
