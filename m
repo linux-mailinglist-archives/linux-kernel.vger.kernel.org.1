@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE801AC9CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605CB1AC3BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 15:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395239AbgDPP1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 11:27:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57734 "EHLO mail.kernel.org"
+        id S2898672AbgDPNrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 09:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898448AbgDPNo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:44:29 -0400
+        id S2897160AbgDPNfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:35:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B9812076D;
-        Thu, 16 Apr 2020 13:44:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94962221EB;
+        Thu, 16 Apr 2020 13:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044669;
-        bh=VYPYg6i/pKod6qF6y1lY09357dtCaYVNp3iKvoKFzC8=;
+        s=default; t=1587044141;
+        bh=S7nX239u2h/t/AEuMNtsW8RA5Xt1MqxgFCsb+8eKRNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bphs0LKd+f/7qhwOyo2uF+Kdskb662yWrw5GxK852kGQyYRy2DBVy1nkMOuaa6Gs0
-         8pp3oWm6Yh4LfUYavqfEjhVynRvl5g+Ht4zYgPuJFjfXywd1Hb7A7sIdFlwo6HZiFU
-         KvAwcqIUWq0/AUD/sglDGQL6ATHToNAKKI/Ibgfg=
+        b=BRRoYHkE39GwyS2xiAvtaFgZ4ZwQx0Yrl5S/05p85CXBKzyroDIh+krzxAu+oQlE+
+         EeBegvoEZ+JNrotZ0qDiWPL1taK9Ej/yGa1H9PbAuPg5VSw+/0GbpQcFwuRIUG8KiH
+         0ArSfMbjJhDB07d4giz8hweeFxyM6lJsDsLE7lHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 054/232] efi/x86: Ignore the memory attributes table on i386
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.5 097/257] ALSA: hda/realtek - Add quirk for Lenovo Carbon X1 8th gen
 Date:   Thu, 16 Apr 2020 15:22:28 +0200
-Message-Id: <20200416131322.379079652@linuxfoundation.org>
+Message-Id: <20200416131338.195503324@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit dd09fad9d2caad2325a39b766ce9e79cfc690184 ]
+commit ca707b3f00b4f31a6e1eb37e8ae99f15f2bb1fe5 upstream.
 
-Commit:
+The audio setup on the Lenovo Carbon X1 8th gen is the same as that on
+the Lenovo Carbon X1 7th gen, as such it needs the same
+ALC285_FIXUP_THINKPAD_HEADSET_JACK quirk.
 
-  3a6b6c6fb23667fa ("efi: Make EFI_MEMORY_ATTRIBUTES_TABLE initialization common across all architectures")
+This fixes volume control of the speaker not working among other things.
 
-moved the call to efi_memattr_init() from ARM specific to the generic
-EFI init code, in order to be able to apply the restricted permissions
-described in that table on x86 as well.
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1820196
+Cc: stable@vger.kernel.org
+Suggested-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Link: https://lore.kernel.org/r/20200402174311.238614-1-hdegoede@redhat.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-We never enabled this feature fully on i386, and so mapping and
-reserving this table is pointless. However, due to the early call to
-memblock_reserve(), the memory bookkeeping gets confused to the point
-where it produces the splat below when we try to map the memory later
-on:
-
-  ------------[ cut here ]------------
-  ioremap on RAM at 0x3f251000 - 0x3fa1afff
-  WARNING: CPU: 0 PID: 0 at arch/x86/mm/ioremap.c:166 __ioremap_caller ...
-  Modules linked in:
-  CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.20.0 #48
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-  EIP: __ioremap_caller.constprop.0+0x249/0x260
-  Code: 90 0f b7 05 4e 38 40 de 09 45 e0 e9 09 ff ff ff 90 8d 45 ec c6 05 ...
-  EAX: 00000029 EBX: 00000000 ECX: de59c228 EDX: 00000001
-  ESI: 3f250fff EDI: 00000000 EBP: de3edf20 ESP: de3edee0
-  DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00200296
-  CR0: 80050033 CR2: ffd17000 CR3: 1e58c000 CR4: 00040690
-  Call Trace:
-   ioremap_cache+0xd/0x10
-   ? old_map_region+0x72/0x9d
-   old_map_region+0x72/0x9d
-   efi_map_region+0x8/0xa
-   efi_enter_virtual_mode+0x260/0x43b
-   start_kernel+0x329/0x3aa
-   i386_start_kernel+0xa7/0xab
-   startup_32_smp+0x164/0x168
-  ---[ end trace e15ccf6b9f356833 ]---
-
-Let's work around this by disregarding the memory attributes table
-altogether on i386, which does not result in a loss of functionality
-or protection, given that we never consumed the contents.
-
-Fixes: 3a6b6c6fb23667fa ("efi: Make EFI_MEMORY_ATTRIBUTES_TABLE ... ")
-Tested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200304165917.5893-1-ardb@kernel.org
-Link: https://lore.kernel.org/r/20200308080859.21568-21-ardb@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/efi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index ad8a4bc074fbf..e3861d267d9aa 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -562,7 +562,7 @@ int __init efi_config_parse_tables(void *config_tables, int count, int sz,
- 		}
- 	}
- 
--	if (efi_enabled(EFI_MEMMAP))
-+	if (!IS_ENABLED(CONFIG_X86_32) && efi_enabled(EFI_MEMMAP))
- 		efi_memattr_init();
- 
- 	efi_tpm_eventlog_init();
--- 
-2.20.1
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7325,6 +7325,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
++	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
 
 
