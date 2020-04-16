@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7171ABD6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962F51ABD70
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 11:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504514AbgDPJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 05:56:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53878 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2504485AbgDPJ4H (ORCPT
+        id S2504543AbgDPJ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 05:57:07 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:47500 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504285AbgDPJ5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:56:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587030966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lc+yq/vS8URFnXpc64MoW39Z5tJ2hW9F4KCw+f7L+9Y=;
-        b=MYvkiXit4vyOFBpwCtXamuRL+nF4hnyC71La6wca05DoRk4e8cTLF8F7tJ+sPHJXjqR7Ap
-        GL2r60Wj3svOdwsmIXVuherpwLPFdVd38t5pPjIliwmuonxBoWWPZoMg6OlhDvQpc3dvPQ
-        0Fj8G6oYZX/lZF+EpJdTVbFEDiR7gqQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-e75isgY2Mlqqj38w2wFCoA-1; Thu, 16 Apr 2020 05:56:00 -0400
-X-MC-Unique: e75isgY2Mlqqj38w2wFCoA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B5238018A3;
-        Thu, 16 Apr 2020 09:55:57 +0000 (UTC)
-Received: from krava (unknown [10.40.195.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 206AE60BF3;
-        Thu, 16 Apr 2020 09:55:50 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 11:55:48 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v9 4/4] perf tools: add support for libpfm4
-Message-ID: <20200416095548.GD369437@krava>
-References: <20200416063551.47637-1-irogers@google.com>
- <20200416063551.47637-5-irogers@google.com>
+        Thu, 16 Apr 2020 05:57:05 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65e982ba37b9-8383c; Thu, 16 Apr 2020 17:55:48 +0800 (CST)
+X-RM-TRANSID: 2ee65e982ba37b9-8383c
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [172.20.145.111] (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea5e982ba3927-444bb;
+        Thu, 16 Apr 2020 17:55:47 +0800 (CST)
+X-RM-TRANSID: 2eea5e982ba3927-444bb
+Subject: Re: [PATCH] mfd:asic3:Delete redundant variable definition
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20200403042020.17452-1-tangbin@cmss.chinamobile.com>
+ <20200416070802.GQ2167633@dell>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <211e7521-639d-804c-f332-bfed0cf315df@cmss.chinamobile.com>
+Date:   Thu, 16 Apr 2020 17:57:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416063551.47637-5-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20200416070802.GQ2167633@dell>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 11:35:51PM -0700, Ian Rogers wrote:
+Hi, Lee:
 
-SNIP
+On 2020/4/16 15:08, Lee Jones wrote:
+> On Fri, 03 Apr 2020, Tang Bin wrote:
+>
+>> In this function, 'ret' is always assigned, even if 'pdata->leds'
+>> don't carry out,it has already been assigned a value in the above
+>> code, including '0',so it's redundant.
+> Which line initialises/assigns 'ret' before this one?
 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 1ab349abe904..80ac598f125b 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -43,6 +43,7 @@
->  #include "util/time-utils.h"
->  #include "util/units.h"
->  #include "util/bpf-event.h"
-> +#include "util/pfm.h"
->  #include "asm/bug.h"
->  #include "perf.h"
->  
-> @@ -64,6 +65,9 @@
->  #include <linux/zalloc.h>
->  #include <linux/bitmap.h>
->  
-> +
-> +
-> +
+     I think it maybe my fault before, because I treat get resource and 
+irq succeed. But now I have two questions  to ask you:
 
-extra new lines..
+     Q1: About asic3_mfd_probe()?
 
-jirka
+           In the function asic3_mfd_probe(), if get resource or irq 
+failed, the value returned just detected and dev_dbg() error message, 
+but there were no error return. What I think the modify should be as 
+follows:
 
->  struct switch_output {
->  	bool		 enabled;
->  	bool		 signal;
-> @@ -2421,6 +2425,11 @@ static struct option __record_options[] = {
->  #endif
->  	OPT_CALLBACK(0, "max-size", &record.output_max_size,
->  		     "size", "Limit the maximum size of the output file", parse_output_max_size),
-> +#ifdef HAVE_LIBPFM
-> +	OPT_CALLBACK(0, "pfm-events", &record.evlist, "event",
-> +		"libpfm4 event selector. use 'perf list' to list available events",
-> +		parse_libpfm_events_option),
-> +#endif
->  	OPT_END()
->  };
+     mem_sdio = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+     if (!mem_sdio) {
+         dev_dbg(asic->dev, "no SDIO MEM resource\n");
+         ret = -EINVAL;
+         goto out;
+     }
 
-SNIP
+     irq = platform_get_irq(pdev, 1);
+     if (irq < 0) {
+         dev_dbg(asic->dev, "no SDIO IRQ resource\n");
+         ret = irq;
+         goto out;
+     }
+
+     If the function do like this, the 'ret = 0' in line 993 maybe 
+redundant.
+
+
+    Q2: About asic3_probe()?
+
+           In the line 995, if the function asic3_irq_probe() failed, it 
+will print error message by the internally called function 
+platform_get_irq(), so the dev_err() in the line 997 is redundant, 
+should be delete.
+
+
+     I'll wait actively, and submit the corresponding patch according to 
+your reply.
+
+
+Thanks,
+
+Tang Bin
+
+
+
 
