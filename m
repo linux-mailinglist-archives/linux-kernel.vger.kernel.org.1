@@ -2,139 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2E91AB639
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 05:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCADF1AB641
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 05:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390990AbgDPD2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Apr 2020 23:28:21 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2336 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390005AbgDPD2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Apr 2020 23:28:16 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0020A7D09D55C0CCF71F;
-        Thu, 16 Apr 2020 11:28:09 +0800 (CST)
-Received: from [127.0.0.1] (10.173.221.230) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Apr 2020
- 11:27:59 +0800
-Subject: Re: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in
- small chunks
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>
-References: <20200413122023.52583-1-zhukeqian1@huawei.com>
-CC:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        "James Morse" <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jay Zhou <jianjay.zhou@huawei.com>,
-        <wanghaibin.wang@huawei.com>
-From:   zhukeqian <zhukeqian1@huawei.com>
-Message-ID: <e93e85b3-cdab-d293-6c68-c563fab46d94@huawei.com>
-Date:   Thu, 16 Apr 2020 11:27:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
-MIME-Version: 1.0
-In-Reply-To: <20200413122023.52583-1-zhukeqian1@huawei.com>
+        id S2391106AbgDPDf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Apr 2020 23:35:56 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:20296 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729325AbgDPDft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Apr 2020 23:35:49 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200416033545epoutp02bc1631fce06f4543889995d1bee90b62~GL4ATpYsM0782107821epoutp02-
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 03:35:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200416033545epoutp02bc1631fce06f4543889995d1bee90b62~GL4ATpYsM0782107821epoutp02-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1587008145;
+        bh=yWL2MFhV8L3OokKgPk9AaY1d1laWT5u9vlv+KNP6WrQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Rh6nALOY37FqhyG+kGvlee7yuTbmHcxa4qoD5gwm1XbyvAf+KIwy0+2I/aimRaC+m
+         1Z62vOltadRramR+reMI4/vODNhuvtNOxT75NZRw+aU9ySMLuJzI/3xe2UxSBYeAI5
+         C+hTqmfaqiBLFbwmlYnRP+5g3/woX9M6DF+S0nug=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200416033545epcas1p332be81e5610fcc56866971beec7c4049~GL3-sc_xq1083310833epcas1p3P;
+        Thu, 16 Apr 2020 03:35:45 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 492lHN0QgzzMqYlm; Thu, 16 Apr
+        2020 03:35:44 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AB.77.04402.F82D79E5; Thu, 16 Apr 2020 12:35:43 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200416033543epcas1p2b256bef770bb1310a9bf62bda80a976a~GL3_HNYXG0184601846epcas1p2T;
+        Thu, 16 Apr 2020 03:35:43 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200416033543epsmtrp17852f07d8d0bdc6afb12cb19348bea55~GL3_GS-NO2924629246epsmtrp1x;
+        Thu, 16 Apr 2020 03:35:43 +0000 (GMT)
+X-AuditID: b6c32a35-76bff70000001132-54-5e97d28f4d77
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A6.4D.04024.F82D79E5; Thu, 16 Apr 2020 12:35:43 +0900 (KST)
+Received: from jaewon-linux.10.32.193.11 (unknown [10.253.104.82]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200416033543epsmtip23022a73905f0710cb316026c6ce786fd~GL398wvwF0615006150epsmtip2A;
+        Thu, 16 Apr 2020 03:35:43 +0000 (GMT)
+From:   Jaewon Kim <jaewon31.kim@samsung.com>
+To:     minchan@kernel.org, mgorman@suse.de, m.szyprowski@samsung.com,
+        mina86@mina86.com, riel@redhat.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        jaewon31.kim@gmail.com, ytk.lee@samsung.com,
+        Jaewon Kim <jaewon31.kim@samsung.com>
+Subject: [PATCH] mm/vmscan: skip layzfree page on
+ reclaim_clean_pages_from_list
+Date:   Thu, 16 Apr 2020 12:35:14 +0900
+Message-Id: <20200416033514.6366-1-jaewon31.kim@samsung.com>
+X-Mailer: git-send-email 2.13.7
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdljTQLf/0vQ4g333rCzmrF/DZtG9eSaj
+        Re/7V0wWl3fNYbO4t+Y/q8XaI3fZLSa/e8ZoseB4C6vFsq/v2S3+XlnPYvF4PbcDt8fOWXfZ
+        PTat6mTz2PRpErvHiRm/WTzW/XnF5PF+31U2j74tqxg9Np+u9vi8SS6AMyrHJiM1MSW1SCE1
+        Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwfoWCWFssScUqBQQGJxsZK+
+        nU1RfmlJqkJGfnGJrVJqQUpOgaFBgV5xYm5xaV66XnJ+rpWhgYGRKVBlQk7G6u//WAp6xCt6
+        PwQ0MG4U7mLk5JAQMJGYf34FSxcjF4eQwA5GibvfF7OBJIQEPjFK/N0bApH4BpRYt4gJpuPI
+        51dQHXsZJV6fW8sI4XxnlNj3+StYO5uAtsT7BZNYQRIiAk2MEj83zwdrYRboYZS49mkC2Cxh
+        gUCJC/P+gXWwCKhKHNz0hxXE5hWwkThxYy5zFyMH0D55iYX/mUF6JQQOsEncfTiNHSLuInHs
+        YCDEScISr45vYYewpSRe9rexQ9Q3M0q8nbmZEcJpAXpiUy8jRJWxRG/PBbAFzAKaEut36UOE
+        FSV2/p4LVsIswCfx7msPK8QuXomONiGIEjWJlmdfWSFsGYm//55B2R4SjacusUPCLlZif/d0
+        xgmMsrMQFixgZFzFKJZaUJybnlpsWGCIHEubGMEpUMt0B+OUcz6HGAU4GJV4eA1eTosTYk0s
+        K67MPcQowcGsJMK7w396nBBvSmJlVWpRfnxRaU5q8SFGU2DgTWSWEk3OB6bnvJJ4Q1MjY2Nj
+        CxMzczNTYyVx3qnXc+KEBNITS1KzU1MLUotg+pg4OKUaGBPzLa5v2Fl3+Y/Wmz2O4ouviVu+
+        /tS6wO6c4JSQ+UvqPom1x3qeMlbufuVie+D80h+Lf9nkcR459r6yeJfJ+fiSoxxfvmutl+7c
+        e+v21HcuGdFrClUm1SvuWc6ePY3/oGVwjZva87/B2UueXLV+cf3wz926uyatVfux4NvunT01
+        TQu+J9hcOn9ciaU4I9FQi7moOBEAw3QLNZcDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrALMWRmVeSWpSXmKPExsWy7bCSvG7/pelxBqemSFjMWb+GzaJ780xG
+        i973r5gsLu+aw2Zxb81/Vou1R+6yW0x+94zRYsHxFlaLZV/fs1v8vbKexeLxem4Hbo+ds+6y
+        e2xa1cnmsenTJHaPEzN+s3is+/OKyeP9vqtsHn1bVjF6bD5d7fF5k1wAZxSXTUpqTmZZapG+
+        XQJXxurv/1gKesQrej8ENDBuFO5i5OSQEDCROPL5FUsXIxeHkMBuRomWi8eYIRIyEm/OPwVK
+        cADZwhKHDxdD1HxllJjxeCcTSA2bgLbE+wWTWEESIgJdjBIbrs8Hc5gFJjBKHJ84nRWkW1jA
+        X2L/fxuQBhYBVYmDm/6wgti8AjYSJ27MZYZYIC+x8D/zBEaeBYwMqxglUwuKc9Nziw0LDPNS
+        y/WKE3OLS/PS9ZLzczcxgsNRS3MH4+Ul8YcYBTgYlXh4DV5OixNiTSwrrsw9xCjBwawkwrvD
+        f3qcEG9KYmVValF+fFFpTmrxIUZpDhYlcd6neccihQTSE0tSs1NTC1KLYLJMHJxSDYz9My/4
+        iysuv7lybtYFG8fCdQx8a1c5dq8Ut+w7U/T57mGu/6ZPfgbw+974obrP7Y54+qlb84PMDxc2
+        qRx/WqLaa8sY8X5+2LOAxEdTUtQ/FT9bbv/talXM0/8Ke5r2hlfPVa/ePOfeRfvZQTGPlvU/
+        UWhZdiH29IvvfFN8ru7oeFiqH6pyIWurEktxRqKhFnNRcSIAfs62qEMCAAA=
+X-CMS-MailID: 20200416033543epcas1p2b256bef770bb1310a9bf62bda80a976a
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.221.230]
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200416033543epcas1p2b256bef770bb1310a9bf62bda80a976a
+References: <CGME20200416033543epcas1p2b256bef770bb1310a9bf62bda80a976a@epcas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+This patch fix nr_isolate_* mismatch problem between cma and dirty
+lazyfree page.
 
-In RFC patch, I still write protect huge pages when DIRTY_LOG_INITIALLY_ALL_SET
-is enabled by userspace. I find that both huge pages and normal pages can be
-write protected during log clear. So this formal patch is pretty simple now.
+If try_to_unmap_one is used for reclaim and it detects a dirty lazyfree
+page, then the lazyfree page is changed to a normal anon page having
+SwapBacked by commit 18863d3a3f59 ("mm: remove SWAP_DIRTY in ttu"). Even
+with the change, reclaim context correctly counts isolated files because
+it uses is_file_lru to distinguish file. And the change to anon is not
+happened if try_to_unmap_one is used for migration. So migration context
+like compaction also correctly counts isolated files even though it uses
+page_is_file_lru insted of is_file_lru. Recently page_is_file_cache was
+renamed to page_is_file_lru by commit 9de4f22a60f7 ("mm: code cleanup for
+MADV_FREE").
 
-Thanks,
-Keqian
+But the nr_isolate_* mismatch problem happens on cma alloc. There is
+reclaim_clean_pages_from_list which is being used only by cma. It was
+introduced by commit 02c6de8d757c ("mm: cma: discard clean pages during
+contiguous allocation instead of migration") to reclaim clean file pages
+without migration. The cma alloc uses both reclaim_clean_pages_from_list
+and migrate_pages, and it uses page_is_file_lru to count isolated
+files. If there are dirty lazyfree pages allocated from cma memory
+region, the pages are counted as isolated file at the beginging but are
+counted as isolated anon after finished.
 
-On 2020/4/13 20:20, Keqian Zhu wrote:
-> There is already support of enabling dirty log graually in small chunks
-> for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
-> small chunks"). This adds support for arm64.
-> 
-> x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
-> is eanbled. However, for arm64, both huge pages and normal pages can be
-> write protected gradually by userspace.
-> 
-> Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
-> Linux VMs with different page size. The memory pressure is 127G in each
-> case. The time taken of memory_global_dirty_log_start in QEMU is listed
-> below:
-> 
-> Page Size      Before    After Optimization
->   4K            650ms         1.8ms
->   2M             4ms          1.8ms
->   1G             2ms          1.8ms
-> 
-> Besides the time reduction, the biggest income is that we will minimize
-> the performance side effect (because of dissloving huge pages and marking
-> memslots dirty) on guest after enabling dirty log.
-> 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  Documentation/virt/kvm/api.rst    |  2 +-
->  arch/arm64/include/asm/kvm_host.h |  3 +++
->  virt/kvm/arm/mmu.c                | 12 ++++++++++--
->  3 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index efbbe570aa9b..0017f63fa44f 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
->  dirty logging can be enabled gradually in small chunks on the first call
->  to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
->  KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
-> -x86 for now).
-> +x86 and arm64 for now).
->  
->  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
->  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 32c8a675e5a4..a723f84fab83 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -46,6 +46,9 @@
->  #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
->  #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
->  
-> +#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
-> +				     KVM_DIRTY_LOG_INITIALLY_SET)
-> +
->  DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
->  
->  extern unsigned int kvm_sve_max_vl;
-> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-> index e3b9ee268823..1077f653a611 100644
-> --- a/virt/kvm/arm/mmu.c
-> +++ b/virt/kvm/arm/mmu.c
-> @@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
->  	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
->  	 * memory slot is write protected.
->  	 */
-> -	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
-> -		kvm_mmu_wp_memory_region(kvm, mem->slot);
-> +	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
-> +		/*
-> +		 * If we're with initial-all-set, we don't need to write
-> +		 * protect any pages because they're all reported as dirty.
-> +		 * Huge pages and normal pages will be write protect gradually.
-> +		 */
-> +		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-> +			kvm_mmu_wp_memory_region(kvm, mem->slot);
-> +		}
-> +	}
->  }
->  
->  int kvm_arch_prepare_memory_region(struct kvm *kvm,
-> 
+Mem-Info:
+Node 0 active_anon:3045904kB inactive_anon:611448kB active_file:14892kB inactive_file:205636kB unevictable:10416kB isolated(anon):0kB isolated(file):37664kB mapped:630216kB dirty:384kB writeback:0kB shmem:42576kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
+
+Like log above, there was too much isolated file, 37664kB, which
+triggers too_many_isolated in reclaim when there is no isolated file in
+system wide. It could be reproducible by running two programs, doing
+MADV_FREE, writing and doing cma alloc, respectively. Although isolated
+anon is 0, I found that the internal value of isolated anon was the
+negative value of isolated file.
+
+Fix this by skipping anon pages on reclaim_clean_pages_from_list. The
+lazyfree page can be checked by both PageAnon(page) and
+page_is_file_lru. But in this case, PageAnon is enough to skip all
+anon pages.
+
+Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
+Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
+---
+ mm/vmscan.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b06868fc4926..9380a18eef5e 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1497,6 +1497,9 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
+ 	LIST_HEAD(clean_pages);
+ 
+ 	list_for_each_entry_safe(page, next, page_list, lru) {
++		/* to avoid race with MADV_FREE anon page */
++		if (PageAnon(page))
++			continue;
+ 		if (page_is_file_lru(page) && !PageDirty(page) &&
+ 		    !__PageMovable(page) && !PageUnevictable(page)) {
+ 			ClearPageActive(page);
+-- 
+2.13.7
 
