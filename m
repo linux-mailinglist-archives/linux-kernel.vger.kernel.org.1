@@ -2,154 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C921ABF37
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E21F1ABEEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 13:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506161AbgDPLbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 07:31:08 -0400
-Received: from zimbra2.kalray.eu ([92.103.151.219]:45020 "EHLO
-        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505842AbgDPLJa (ORCPT
+        id S2632818AbgDPLP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 07:15:28 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:40531 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506125AbgDPLKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 07:09:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra2.kalray.eu (Postfix) with ESMTP id E483227E0BEB;
-        Thu, 16 Apr 2020 13:09:27 +0200 (CEST)
-Received: from zimbra2.kalray.eu ([127.0.0.1])
-        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Kl8XApNDOTIE; Thu, 16 Apr 2020 13:09:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra2.kalray.eu (Postfix) with ESMTP id 8437127E0B48;
-        Thu, 16 Apr 2020 13:09:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu 8437127E0B48
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
-        s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1587035367;
-        bh=BTeyNExfyxQjnOaSPJGAKwarwW1+gJT+EEBl7fj1eRk=;
-        h=From:To:Date:Message-Id;
-        b=Aqfdl3Bof+6vnT8DAxK7JRGpaIYA7auThwnIeG0tN+r09Xs4mk8wQZVhbwb0dMcOf
-         Zg0DGIG7nE6LR+LEp46uiwdIzZCoji/+yZ7dtyOC+l6Fxg3v8w79TrNdFWnse5AGp9
-         lNouqjIaCfFt/fvsgCnhylfkPHJ3TIpPmd30NTOg=
-X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
-Received: from zimbra2.kalray.eu ([127.0.0.1])
-        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qYJlB-6xkymO; Thu, 16 Apr 2020 13:09:27 +0200 (CEST)
-Received: from triton.lin.mbt.kalray.eu (unknown [192.168.37.25])
-        by zimbra2.kalray.eu (Postfix) with ESMTPSA id 7166827E02FA;
-        Thu, 16 Apr 2020 13:09:27 +0200 (CEST)
-From:   Clement Leger <cleger@kalray.eu>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Clement Leger <cleger@kalray.eu>
-Subject: [PATCH 2/2] spi: dw: remove cs_control and poll_mode members from chip_data
-Date:   Thu, 16 Apr 2020 13:09:16 +0200
-Message-Id: <20200416110916.22633-2-cleger@kalray.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200416110916.22633-1-cleger@kalray.eu>
-References: <20200416110823.22565-1-cleger@kalray.eu>
- <20200416110916.22633-1-cleger@kalray.eu>
+        Thu, 16 Apr 2020 07:10:50 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MLz3X-1jgyo13MSv-00Hzkr; Thu, 16 Apr 2020 13:10:37 +0200
+Received: by mail-qt1-f172.google.com with SMTP id q17so15700545qtp.4;
+        Thu, 16 Apr 2020 04:10:36 -0700 (PDT)
+X-Gm-Message-State: AGi0Publh/6A1ywhzJFXljY1iei2ApTYHDxrHvtwIUqAcPAotF8yROQ+
+        q1xzUFVjdnNi5WJySQLFnyo1y1tIhKA9ehA3AL0=
+X-Google-Smtp-Source: APiQypKTnCrAJKWmvxQPPtXXxzoAVa6UTCMFQ9ATB3ibHu7YaQVTiYtm10ABd1Vj8N7EIF+bQAx1sinndyRxZBuK7IM=
+X-Received: by 2002:ac8:296f:: with SMTP id z44mr23735521qtz.18.1587035435488;
+ Thu, 16 Apr 2020 04:10:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com> <1586937773-5836-12-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <1586937773-5836-12-git-send-email-abel.vesa@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 16 Apr 2020 13:10:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0fDJQvGLEtG0fxLkG08Fh9V7LEMPsx4AaS+2Ldo_xWxw@mail.gmail.com>
+Message-ID: <CAK8P3a0fDJQvGLEtG0fxLkG08Fh9V7LEMPsx4AaS+2Ldo_xWxw@mail.gmail.com>
+Subject: Re: [PATCH v3 11/13] dt-bindings: reset: imx8mp: Add ids for audiomix reset
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Anson Huang <anson.huang@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:KQ+T8D0HvWvxIDVOE8VSY51PYvng9yj5NHqSmIvlwfO7JKnO5+S
+ SyTDOtWMwBqH30u7KqZszvunI9Gy+oOeWkYtwLBdTaoVQCdSD7tXPTMQQzfbflEEvyZljL4
+ sKUgxwAN5/T7NVY1qV1j8z56OGqu8ONaJTqgOuKExuA1TH9AYwj/eHnkQw/bKR8luJjhHVr
+ 2PIG2FlBc9rAj+B8Ug9Ag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F6L9vopFEUo=:LqVBk8PtrZdoNV8X1XRXaz
+ bNSd4Es1iOJgq+MB61ogStg0FrWUFWRzO53jNw0J8sI8VnHK01dInOk0/jzlAAdM0yLKQpvcP
+ FP200WdBfSHjeewvHvJQP4ZwvBhGEcTfhN1/M1WmuxEYU6iEv0YB8yUprLxN4+h6awPn5e00y
+ DDURCXpt2xe8miGl8Td3eLWMFu9dUxhd7b+MIbsZpzY2dG9t/MomCF0lV9zhO03cz0ZEU7n1L
+ +OoASIpQkVflGCGRTJoAeAE76q3lZ5gmwbWpTrYaNXQlFHzjaDLwkHEVun6eemUupm3INKqWu
+ AVN/I5vOk7kjsUEgO4CFn2RVGeY8sPHnswV5kt9jD6v+7bBoGO09tbpFJxiAp3GpNURmo9VFV
+ 72US6hNy46Ngmv4yje+qytpO8PBfOpphu8Qg7Pnw1K+2CBcq7u0w5Uq3ZavN+jaYJFnzAqdxD
+ fZMlVQHsioUibV/RF7syAR5lSGyo/mUC+TzrFZDqXVeUUVMUG9stQ/wOR8ACD4zr6pJQUOWaR
+ ORadF8TzZHqPXYiYVcrxwnJkc8rkz11nub2q2Rfz6TzESWptjf4EpscRPyFv5Qlw/og+ixiIQ
+ 9Tk4MINlJTS23ogvmD0SfnUHELS5PPBEv4gFFpKugpDNFh9LaCAtO/gzL+kly2+8zzJcCtrL2
+ s/gQVITXhCYPPJcN1WZpDPKu/ID1tuRzgQ4vKWREpoBVx0NqrN86tZEY24GLQ3HzaBL9/9BjW
+ RtbOAR7/KruHaCn2R8gYSzXZRC4KWBt7F4haW2zsY6abTv6CkpS4FXSR2AhDitTCGclgmRl4G
+ G+ib1vdnPUFJi2E3cUIoRzmlgsMaiKqLAuvtc8shbSEGKYAKec=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since these members were initialized only with previous dw_spi_chip
-struct members and that there is no user anymore, remove them. Along
-this removal, remove code path which were using these members.
+On Wed, Apr 15, 2020 at 10:04 AM Abel Vesa <abel.vesa@nxp.com> wrote:
+>
+> Add all the reset ids for the audiomix reset.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>  include/dt-bindings/reset/imx-audiomix-reset.h | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 include/dt-bindings/reset/imx-audiomix-reset.h
+>
+> diff --git a/include/dt-bindings/reset/imx-audiomix-reset.h b/include/dt-bindings/reset/imx-audiomix-reset.h
+> new file mode 100644
+> index 00000000..67392c3
+> --- /dev/null
+> +++ b/include/dt-bindings/reset/imx-audiomix-reset.h
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright 2019 NXP.
+> + */
+> +
+> +#ifndef DT_BINDING_RESET_IMX_AUDIOMIX_H
+> +#define DT_BINDING_RESET_IMX_AUDIOMIX_H
+> +
+> +#define IMX_AUDIOMIX_EARC_RESET                0x0
+> +#define IMX_AUDIOMIX_EARC_PHY_RESET    0x1
+> +
+> +#define IMX_AUDIOMIX_RESET_NUM         2
+> +
 
-Signed-off-by: Clement Leger <cleger@kalray.eu>
----
- drivers/spi/spi-dw.c | 41 +----------------------------------------
- 1 file changed, 1 insertion(+), 40 deletions(-)
+This list doesn't seem necessary, as the number you pass ends up
+simply being the bit index in a single register.
 
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index fda8d433a769..2b79c5a983c0 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -24,11 +24,8 @@ struct chip_data {
- 	u8 tmode;		/* TR/TO/RO/EEPROM */
- 	u8 type;		/* SPI/SSP/MicroWire */
- 
--	u8 poll_mode;		/* 1 means use poll mode */
--
- 	u16 clk_div;		/* baud rate divider */
- 	u32 speed_hz;		/* baud rate */
--	void (*cs_control)(u32 command);
- };
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -127,11 +124,6 @@ static inline void dw_spi_debugfs_remove(struct dw_spi *dws)
- void dw_spi_set_cs(struct spi_device *spi, bool enable)
- {
- 	struct dw_spi *dws = spi_controller_get_devdata(spi->controller);
--	struct chip_data *chip = spi_get_ctldata(spi);
--
--	/* Chip select logic is inverted from spi_set_cs() */
--	if (chip && chip->cs_control)
--		chip->cs_control(!enable);
- 
- 	if (!enable)
- 		dw_writel(dws, DW_SPI_SER, BIT(spi->chip_select));
-@@ -265,18 +257,6 @@ static irqreturn_t dw_spi_irq(int irq, void *dev_id)
- 	return dws->transfer_handler(dws);
- }
- 
--/* Must be called inside pump_transfers() */
--static int poll_transfer(struct dw_spi *dws)
--{
--	do {
--		dw_writer(dws);
--		dw_reader(dws);
--		cpu_relax();
--	} while (dws->rx_end > dws->rx);
--
--	return 0;
--}
--
- static int dw_spi_transfer_one(struct spi_controller *master,
- 		struct spi_device *spi, struct spi_transfer *transfer)
- {
-@@ -324,22 +304,6 @@ static int dw_spi_transfer_one(struct spi_controller *master,
- 			(((spi->mode & SPI_LOOP) ? 1 : 0) << SPI_SRL_OFFSET))
- 		| (chip->tmode << SPI_TMOD_OFFSET);
- 
--	/*
--	 * Adjust transfer mode if necessary. Requires platform dependent
--	 * chipselect mechanism.
--	 */
--	if (chip->cs_control) {
--		if (dws->rx && dws->tx)
--			chip->tmode = SPI_TMOD_TR;
--		else if (dws->rx)
--			chip->tmode = SPI_TMOD_RO;
--		else
--			chip->tmode = SPI_TMOD_TO;
--
--		cr0 &= ~SPI_TMOD_MASK;
--		cr0 |= (chip->tmode << SPI_TMOD_OFFSET);
--	}
--
- 	dw_writel(dws, DW_SPI_CTRL0, cr0);
- 
- 	/* Check if current transfer is a DMA transaction */
-@@ -359,7 +323,7 @@ static int dw_spi_transfer_one(struct spi_controller *master,
- 			spi_enable_chip(dws, 1);
- 			return ret;
- 		}
--	} else if (!chip->poll_mode) {
-+	} else {
- 		txlevel = min_t(u16, dws->fifo_len / 2, dws->len / dws->n_bytes);
- 		dw_writel(dws, DW_SPI_TXFLTR, txlevel);
- 
-@@ -379,9 +343,6 @@ static int dw_spi_transfer_one(struct spi_controller *master,
- 			return ret;
- 	}
- 
--	if (chip->poll_mode)
--		return poll_transfer(dws);
--
- 	return 1;
- }
- 
--- 
-2.17.1
+In a case like this you should better not have macros at all, those
+are only needed when there is no easy way to the numbers in
+the DT into something the driver can make sense of.
 
+       Arnd
