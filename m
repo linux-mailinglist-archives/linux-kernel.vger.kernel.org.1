@@ -2,120 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44EA1AC61A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899BD1AC61C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394426AbgDPOd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:33:29 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28772 "EHLO mga18.intel.com"
+        id S2439567AbgDPOdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 10:33:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:33894 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391699AbgDPOUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 10:20:50 -0400
-IronPort-SDR: Yl/9Vwme6a2z4ZfinLTkn45Gx9ADKvcdn30GCYpXZR+4WdnDc64ageH4whe/UrYPbyxLvUZtST
- WoTSG/cJLAzA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 07:20:49 -0700
-IronPort-SDR: 4aXlHZMbhNG1je7pcHHUeeCakUi0Jtdz4mAIIAD/SttvwL4xTsvtfe3yBUnis54lyriFtIAJpN
- Rn8JSuP7HYrw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; 
-   d="scan'208";a="257231281"
-Received: from cchyder-mobl1.amr.corp.intel.com (HELO [10.254.70.41]) ([10.254.70.41])
-  by orsmga006.jf.intel.com with ESMTP; 16 Apr 2020 07:20:48 -0700
-Subject: Re: [PATCH v4 2/2] mm/gup/writeback: add callbacks for inaccessible
- pages
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, linux-next@vger.kernel.org,
-        akpm@linux-foundation.org, jack@suse.cz, kirill@shutemov.name,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        borntraeger@de.ibm.com, david@redhat.com, aarcange@redhat.com,
-        linux-mm@kvack.org, frankja@linux.ibm.com, sfr@canb.auug.org.au,
-        jhubbard@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Will Deacon <will@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-References: <20200306132537.783769-1-imbrenda@linux.ibm.com>
- <20200306132537.783769-3-imbrenda@linux.ibm.com>
- <3ae46945-0c7b-03cd-700a-a6fe8003c6ab@intel.com>
- <20200415221754.GM2483@worktop.programming.kicks-ass.net>
- <a7c2eb84-94c2-a608-4b04-a740fa9a389d@intel.com>
- <20200416141547.29be5ea0@p-imbrenda>
-From:   Dave Hansen <dave.hansen@intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- mQINBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABtEVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT6JAjgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lcuQINBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABiQIfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-Message-ID: <de56aa8e-9035-4b68-33cb-15682d073e26@intel.com>
-Date:   Thu, 16 Apr 2020 07:20:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S2409824AbgDPOYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:24:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3951E1FB;
+        Thu, 16 Apr 2020 07:24:09 -0700 (PDT)
+Received: from [10.57.59.184] (unknown [10.57.59.184])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 057F83F237;
+        Thu, 16 Apr 2020 07:24:06 -0700 (PDT)
+Subject: Re: [PATCH 2/4] arm64: dts: rockchip: Add RGA support to the PX30
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Hans Verkuil <hansverk@cisco.com>,
+        linux-rockchip@lists.infradead.org,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+References: <20200416115047.233720-1-paul.kocialkowski@bootlin.com>
+ <20200416115047.233720-3-paul.kocialkowski@bootlin.com>
+ <478f0a8b-f819-62f4-83b8-27918c4c2431@gmail.com>
+ <20200416132442.GI125838@aptenodytes>
+ <f4ad8ea4-7904-1458-e564-2d20c87ed417@gmail.com>
+ <20200416135519.GJ125838@aptenodytes>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <f5bc805a-64d4-ab36-6031-db3cf09c5fa3@arm.com>
+Date:   Thu, 16 Apr 2020 15:24:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200416141547.29be5ea0@p-imbrenda>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200416135519.GJ125838@aptenodytes>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/20 5:15 AM, Claudio Imbrenda wrote:
->> I assumed that this was all anonymous-only so it's always dirty before
->> writeback starts.
-> it could also be mmapped
+On 2020-04-16 2:55 pm, Paul Kocialkowski wrote:
+> Hi,
+> 
+> On Thu 16 Apr 20, 15:44, Johan Jonker wrote:
+>> On 4/16/20 3:24 PM, Paul Kocialkowski wrote:
+>>> Hi,
+>>>
+>>> On Thu 16 Apr 20, 15:02, Johan Jonker wrote:
+>>>> Hi Paul,
+>>>>
+>>>> The conversion of rockchip-rga.txt to rockchip-rga.yaml by myself just
+>>>> has been approved by robh.
+>>>
+>>> Huh, I looked around for ongoing related work but missed it.
+>>> I'll definitely rebase on top of your series and use the yaml description
+>>> instead. Thanks!
+>>>
+>>>> Maybe place dts patches at the end of a patch serie.
+>>>> Could you include a &rga patch if your device is supported in mainline,
+>>>> so we can test with:
+>>>> make ARCH=arm64 dtbs_check
+>>>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-rga.yaml
+>>>
+>>> I tested with the PX30 EVB so I can surely add a node there if that turns
+>>> out necessary (see below).
+>>>
+>>>> Johan
+>>>>
+>>>> On 4/16/20 1:50 PM, Paul Kocialkowski wrote:
+>>>>> The PX30 features a RGA block: add the necessary node to support it.
+>>>>>
+>>>>> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+>>>>> ---
+>>>>>   arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
+>>>>>   1 file changed, 11 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
+>>>>> index 75908c587511..4bfbee9d4123 100644
+>>>>> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
+>>>>> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+>>>>> @@ -1104,6 +1104,17 @@ vopl_mmu: iommu@ff470f00 {
+>>>>>   		status = "disabled";
+>>>>>   	};
+>>>>>   
+>>>>> +	rga: rga@ff480000 {
+>>>>> +		compatible = "rockchip,px30-rga";
+>>>>> +		reg = <0x0 0xff480000 0x0 0x10000>;
+>>>>> +		interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
+>>>>> +		clocks = <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE>;
+>>>>> +		clock-names = "aclk", "hclk", "sclk";
+>>>>> +		resets = <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
+>>>>> +		reset-names = "core", "axi", "ahb";
+>>>>> +		power-domains = <&power PX30_PD_VO>;
+>>>>
+>>>> 		status = "disabled";
+>>>
+>>> As of 5.6, the rk3399 has the node enabled by default. Did that change?
+>>
+>> 'status' disappeared during review for rk3399 between v2 and v3, but
+>> doesn't mention the reason. If someone can give more info here?
+>>
+>> https://lore.kernel.org/lkml/1500101920-24039-5-git-send-email-jacob-chen@iotwrt.com/
+>>
+>> https://lore.kernel.org/lkml/1501470460-12014-5-git-send-email-jacob-chen@iotwrt.com/
+>>
+>>>
+>>> Since it's a standalone block that has no I/O dependency, I don't really see
+>>> the point of disabling it by default.
+>>
+>> Vop, hdmi and other video devices are also disabled.
+>> Follow the rest I think...
+> 
+> Well, these blocks do have related I/O ports so it makes sense not to enable
+> them by default because of pinmux, or because there might be no connector
+> populated/routed.
+> 
+> For a memory to memory internal block, I don't see any reason why.
+> It's definitely not board-specific and having to add these nodes for every board
+> that has them is kind of a pain and might be overlooked. This will easily result
+> in the feature not being available for end users without having to change the
+> dt.
+> 
+> Also, the vpu node is always enabled on rockchip (and sunxi) platforms.
+> I think these are better examples to follow.
 
-Let's say you have a mmap()'d ramfs file.  Another process calls which
-doesn't have it mapped calls sys_write() and writes to the file.
+Yes, as far as I'm aware the general preference for things that are 
+entirely internal to the SoC and don't have any external dependencies 
+like regulators or pinctrl settings is to leave them enabled by default. 
+There's nothing to gain from disabling them, and in fact if the hardware 
+would otherwise just sit there idle in its out-of-reset state then 
+allowing a driver to bind and enable power management may be a distinct 
+benefit.
 
-This means that host host has to write to the physical page and must do
-arch_make_page_accessible() in the sys_write() path somewhere.
+Whether a board wires up video output or not is also largely orthogonal 
+to whether internal graphics/video accelerators are useful. Consider how 
+many people use their NAS box for media transcoding, vs. how many would 
+ever plug a display directly into said box if it even has a connector. 
+If the RGA can be wired into some software format 
+conversion/scaling/whatever pipeline then it's useful full stop.
 
-There is a get_user_pages() in that path, but it's on the _source_
-buffer, not the ramfs page because the ramfs page is not mapped.
-There's also no __test_set_page_writeback() because you can't write back
-ramfs.
-
-Where is the arch_make_page_accessible() in this case on the ramfs page?
+Robin.
