@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1441AC4CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 16:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D56C1ACB87
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Apr 2020 17:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393135AbgDPOEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 10:04:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S2410583AbgDPPr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 11:47:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392208AbgDPNnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 09:43:05 -0400
+        id S2896233AbgDPNdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 09:33:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28A7F2223E;
-        Thu, 16 Apr 2020 13:43:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D64522201;
+        Thu, 16 Apr 2020 13:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587044584;
-        bh=hFO4jLIKH+x5/7ssSNwRO2Wq0ZVgFPUvQpXBS26CSuE=;
+        s=default; t=1587044010;
+        bh=bLaYknW8xJkpruAeW9vzpZ0HesbH5LKBqP1T/qNO/0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yHtMoGqVFgTY1OyIW2skAqLoAqG2xG0izTP7PLVUJIDqkNZT8IHW0cdk/3Pc7Qf6T
-         jsFkEamm5YDwDULh9H3hCZ5hlqz8cRGR0gBG+XEcQEtOlhHg2HX1zSFrah9MV6i4g4
-         M9yc3RNmAKtchdKzIOjiFcsJlz3Gf6JYybkF/8kk=
+        b=q4OkRmp0QUJ3JGk70pbVqcBoemSoo01w/1Jv/8dsEneJnZluDPM/VKkOH5nLCcf4a
+         /WWy1iZY7EIGf8nk9+AxErfCLebz+Ct0ZKUAFlwFHOOoDDU36ps8AFSyPBVHchWE17
+         srZoMzAcTnB19VlVfZVQvkgwiTgWwSAaELVR2eiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Thomas Hellstrom <thellstrom@vmware.com>,
+        Borislav Petkov <bp@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 002/232] bus: sunxi-rsb: Return correct data when mixing 16-bit and 8-bit reads
+Subject: [PATCH 5.5 045/257] dma-mapping: Fix dma_pgprot() for unencrypted coherent pages
 Date:   Thu, 16 Apr 2020 15:21:36 +0200
-Message-Id: <20200416131316.920781685@linuxfoundation.org>
+Message-Id: <20200416131331.572758755@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200416131316.640996080@linuxfoundation.org>
-References: <20200416131316.640996080@linuxfoundation.org>
+In-Reply-To: <20200416131325.891903893@linuxfoundation.org>
+References: <20200416131325.891903893@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+From: Thomas Hellstrom <thellstrom@vmware.com>
 
-[ Upstream commit a43ab30dcd4a1abcdd0d2461bf1cf7c0817f6cd3 ]
+[ Upstream commit 17c4a2ae15a7aaefe84bdb271952678c5c9cd8e1 ]
 
-When doing a 16-bit read that returns data in the MSB byte, the
-RSB_DATA register will keep the MSB byte unchanged when doing
-the following 8-bit read. sunxi_rsb_read() will then return
-a result that contains high byte from 16-bit read mixed with
-the 8-bit result.
+When dma_mmap_coherent() sets up a mapping to unencrypted coherent memory
+under SEV encryption and sometimes under SME encryption, it will actually
+set up an encrypted mapping rather than an unencrypted, causing devices
+that DMAs from that memory to read encrypted contents. Fix this.
 
-The consequence is that after this happens the PMIC's regmap will
-look like this: (0x33 is the high byte from the 16-bit read)
+When force_dma_unencrypted() returns true, the linear kernel map of the
+coherent pages have had the encryption bit explicitly cleared and the
+page content is unencrypted. Make sure that any additional PTEs we set
+up to these pages also have the encryption bit cleared by having
+dma_pgprot() return a protection with the encryption bit cleared in this
+case.
 
-% cat /sys/kernel/debug/regmap/sunxi-rsb-3a3/registers
-00: 33
-01: 33
-02: 33
-03: 33
-04: 33
-05: 33
-06: 33
-07: 33
-08: 33
-09: 33
-0a: 33
-0b: 33
-0c: 33
-0d: 33
-0e: 33
-[snip]
-
-Fix this by masking the result of the read with the correct mask
-based on the size of the read. There are no 16-bit users in the
-mainline kernel, so this doesn't need to get into the stable tree.
-
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20200304114527.3636-3-thomas_os@shipmail.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/sunxi-rsb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/dma/mapping.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/bus/sunxi-rsb.c b/drivers/bus/sunxi-rsb.c
-index be79d6c6a4e45..1bb00a959c67f 100644
---- a/drivers/bus/sunxi-rsb.c
-+++ b/drivers/bus/sunxi-rsb.c
-@@ -345,7 +345,7 @@ static int sunxi_rsb_read(struct sunxi_rsb *rsb, u8 rtaddr, u8 addr,
- 	if (ret)
- 		goto unlock;
- 
--	*buf = readl(rsb->regs + RSB_DATA);
-+	*buf = readl(rsb->regs + RSB_DATA) & GENMASK(len * 8 - 1, 0);
- 
- unlock:
- 	mutex_unlock(&rsb->lock);
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 12ff766ec1fa3..98e3d873792ea 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -154,6 +154,8 @@ EXPORT_SYMBOL(dma_get_sgtable_attrs);
+  */
+ pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
+ {
++	if (force_dma_unencrypted(dev))
++		prot = pgprot_decrypted(prot);
+ 	if (dev_is_dma_coherent(dev) ||
+ 	    (IS_ENABLED(CONFIG_DMA_NONCOHERENT_CACHE_SYNC) &&
+              (attrs & DMA_ATTR_NON_CONSISTENT)))
 -- 
 2.20.1
 
