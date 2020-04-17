@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF981AE839
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 00:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C0F1AE811
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 00:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728902AbgDQW3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 18:29:16 -0400
-Received: from plaes.org ([188.166.43.21]:57506 "EHLO plaes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728496AbgDQW3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 18:29:16 -0400
-Received: from localhost (unknown [IPv6:2001:1530:1000:9d4d:940e:6b9e:3deb:4])
-        by plaes.org (Postfix) with ESMTPSA id C54B6412C2;
-        Fri, 17 Apr 2020 22:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=plaes.org; s=mail;
-        t=1587161878; bh=CuWTSWogL5JToClyKPKUHBYOUHXu6/mkEKPAV4YLbVw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZETRBcXeQXm8yzTNezI5LpsawhmT8InxOuYc/djy0Tr2ewY2eL3Q+CgV/M37HiTY
-         Ok5hFWQ1wLhPv9cQyKOStSWzVJECt3nCDoVnfLaJymnL7tNDHDfYUgofkRBISORYZX
-         YTGqG+6yh+QsHUxyvv2R9w5PGq758CdpEN2AxZ4WGZHJMSI4OZB8M4CEsCq7GoCUQZ
-         AO1JX/rsW7h7DA5GdvIV9JNnZHAVv3TMtr3uHtDi+M2WTvv99yvTs/NpqwaN3gMoHQ
-         wBSjctLImhQRE6JQ6TsAsjOKKEDxr9+Bm+T6QjHN8iIl30QWBRj6bovCWEtQLLTbqI
-         4gY/XgaRPPfmA==
-From:   Priit Laes <plaes@plaes.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
-Cc:     Priit Laes <plaes@plaes.org>
-Subject: [PATCH 4/4] ARM: dts: sun7i: Use syscon-based implementation for gmac
-Date:   Sat, 18 Apr 2020 01:17:30 +0300
-Message-Id: <20200417221730.555954-5-plaes@plaes.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200417221730.555954-1-plaes@plaes.org>
-References: <20200417221730.555954-1-plaes@plaes.org>
+        id S1728577AbgDQWSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 18:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728482AbgDQWST (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 18:18:19 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EB7C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 15:18:19 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jPZJJ-00082n-Uy; Sat, 18 Apr 2020 00:18:10 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 4A10B1025DB; Sat, 18 Apr 2020 00:18:09 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     "Luck\, Tony" <tony.luck@intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>,
+        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 2/3] x86/split_lock: Bits in IA32_CORE_CAPABILITIES are not architectural
+In-Reply-To: <20200417211930.GA24777@agluck-desk2.amr.corp.intel.com>
+References: <877dydzvml.fsf@nanos.tec.linutronix.de> <873691zuqu.fsf@nanos.tec.linutronix.de> <20200417211930.GA24777@agluck-desk2.amr.corp.intel.com>
+Date:   Sat, 18 Apr 2020 00:18:09 +0200
+Message-ID: <87zhb9ycwu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use syscon-based approach to access gmac clock configuration
-register, instead of relying on a custom clock driver.
+"Luck, Tony" <tony.luck@intel.com> writes:
+> On Fri, Apr 17, 2020 at 11:07:37PM +0200, Thomas Gleixner wrote:
+>> Thomas Gleixner <tglx@linutronix.de> writes:
+>> as I fear that the infinite wisdom of HW folks will add yet another
+>> variant in the foreseeable future, I used a switch() right away and
+>> tweaked the comments a bit.
+>> 
+>> Can you have a look, please?
+>
+> Looks like you are all ready for "case 2:" when Intel produces
+> a less sucky implementation of split lock detect. Don't hold your
+> breath waiting for that :-)
 
-As a bonus, we can now drop the custom clock implementation
-and dummy clocks making sun7i fully CCU-compatible.
+Surely not.
 
-Signed-off-by: Priit Laes <plaes@plaes.org>
----
- arch/arm/boot/dts/sun7i-a20.dtsi | 36 +++-----------------------------
- 1 file changed, 3 insertions(+), 33 deletions(-)
+I'm still hoping to see quirkless TSCs and timers, sane IRET semantics
+and the demise of non-maskable MSIs before my retirement. Not that I
+believe it will happen, it's just because hope dies last.
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index ffe1d10a1a84..750962a94fad 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -219,37 +219,6 @@ osc32k: clk-32k {
- 			clock-frequency = <32768>;
- 			clock-output-names = "osc32k";
- 		};
--
--		/*
--		 * The following two are dummy clocks, placeholders
--		 * used in the gmac_tx clock. The gmac driver will
--		 * choose one parent depending on the PHY interface
--		 * mode, using clk_set_rate auto-reparenting.
--		 *
--		 * The actual TX clock rate is not controlled by the
--		 * gmac_tx clock.
--		 */
--		mii_phy_tx_clk: clk-mii-phy-tx {
--			#clock-cells = <0>;
--			compatible = "fixed-clock";
--			clock-frequency = <25000000>;
--			clock-output-names = "mii_phy_tx";
--		};
--
--		gmac_int_tx_clk: clk-gmac-int-tx {
--			#clock-cells = <0>;
--			compatible = "fixed-clock";
--			clock-frequency = <125000000>;
--			clock-output-names = "gmac_int_tx";
--		};
--
--		gmac_tx_clk: clk@1c20164 {
--			#clock-cells = <0>;
--			compatible = "allwinner,sun7i-a20-gmac-clk";
--			reg = <0x01c20164 0x4>;
--			clocks = <&mii_phy_tx_clk>, <&gmac_int_tx_clk>;
--			clock-output-names = "gmac_tx";
--		};
- 	};
- 
- 
-@@ -1511,11 +1480,12 @@ mali: gpu@1c40000 {
- 
- 		gmac: ethernet@1c50000 {
- 			compatible = "allwinner,sun7i-a20-gmac";
-+			syscon = <&ccu>;
- 			reg = <0x01c50000 0x10000>;
- 			interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "macirq";
--			clocks = <&ccu CLK_AHB_GMAC>, <&gmac_tx_clk>;
--			clock-names = "stmmaceth", "allwinner_gmac_tx";
-+			clocks = <&ccu CLK_AHB_GMAC>;
-+			clock-names = "stmmaceth";
- 			snps,pbl = <2>;
- 			snps,fixed-burst;
- 			snps,force_sf_dma_mode;
--- 
-2.25.2
+> Looks good. Should be a useful template for any future
+> bits that show up in CORE_CAPABILITIES.
 
+Groan. No!
+
+Thanks,
+
+        tglx
