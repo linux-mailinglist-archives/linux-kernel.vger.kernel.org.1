@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7FA1AD6E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD801AD6F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgDQHG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:06:27 -0400
-Received: from verein.lst.de ([213.95.11.211]:56015 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728338AbgDQHG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:06:26 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6053468BFE; Fri, 17 Apr 2020 09:06:21 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 09:06:20 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Jon Grimm <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: Re: [patch 1/7] dma-remap: separate DMA atomic pools from direct
- remap code
-Message-ID: <20200417070620.GA19153@lst.de>
-References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com> <alpine.DEB.2.22.394.2004141703030.68516@chino.kir.corp.google.com>
+        id S1728509AbgDQHHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728181AbgDQHHh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:07:37 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C0FC061A10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 00:07:37 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id r4so682923pgg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 00:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qhJfbUeC4EGPGMNCAc6hIWc34vSeMK8YZ5XesZD7QMw=;
+        b=IBpsataWih4UMa/MPpIuCFZ3NwCO/Q2WO3CEezpUx97vUFHwJ054IMLqL2b9OZ/LIq
+         EdsvVy7PwTglM+wESZZrycP2i1pSajs9i1p+F+bkHHj2CntpuATfQ/nZHlI7naLVO2UZ
+         DjYFUfk2OMH6xC41SzORrJzmp2BHjh+jWrLEP9IKhkpDLOQ5zWIKiE4FdAuhipwv5ewC
+         cdevZNUGT6teQjxXdPeU6wdBRODD+2mgm+LIllVQY9us2iymVXrnqyxyanOtbnz66QYU
+         qynFqOAmhQ3Z2SPXckHLP6e/z3eocGRzcXS255R8HUQ9MB/6fwDRpWJ9IHLS5YWWbRF7
+         hBVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qhJfbUeC4EGPGMNCAc6hIWc34vSeMK8YZ5XesZD7QMw=;
+        b=r3nQwh5n1+bJdKi7pNIzBoypylAZohsjRmaPF/9vXuyp+oZa8vhBzQ3udnNzMMgbOV
+         aoYxaSu7OlCojJCQ9cN0+W+VZGlnOaEM+InbTk/Z84mFxcw5rmNDjk/f3l8a3URvox2v
+         wx+ZFD/C7jTuTl7t8jFsCGWWoMSh30L+stQOwJC6q0vtQv1nFKW1LmmoJuuYECalgOjv
+         mDwlVQhXlVyBNmszYXuxA2Vy0wH5gYp1UVV3s3JfTvZjctsImTF4oIo4P4Ag2UcCH7/J
+         JLxK2kOPQFiWsbrXHLYTZkZ6kKTPgHdBNUaaTjMWqq72xuikV3H/5kznS2MKCph8kTXW
+         2r8g==
+X-Gm-Message-State: AGi0Pubte2StCLTgx+KVkGD9DxqCbZChFkoeC5zzI9/gANjE8DcV6WVR
+        9r9syixuMuXVWo/VbpQ1fnBE1Q==
+X-Google-Smtp-Source: APiQypIwSAgtT5e9WT2GkKvkvSvFvRObHW2xLgNFhJuVFfaeaEpAdmKJY5FzP4LkWWJp01oSfRLm9g==
+X-Received: by 2002:a62:7a82:: with SMTP id v124mr1737521pfc.10.1587107256540;
+        Fri, 17 Apr 2020 00:07:36 -0700 (PDT)
+Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id f15sm18614987pfd.215.2020.04.17.00.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 00:07:35 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: db820c: Fix invalid pm8994 supplies
+Date:   Fri, 17 Apr 2020 00:07:12 -0700
+Message-Id: <20200417070712.1376355-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2004141703030.68516@chino.kir.corp.google.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 05:04:52PM -0700, David Rientjes wrote:
-> DMA atomic pools will be needed beyond only CONFIG_DMA_DIRECT_REMAP so
-> separate them out into their own file.
-> 
-> This also adds a new Kconfig option that can be subsequently used for
-> options, such as CONFIG_AMD_MEM_ENCRYPT, that will utilize the coherent
-> pools but do not have a dependency on direct remapping.
-> 
-> For this patch alone, there is no functional change introduced.
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: David Rientjes <rientjes@google.com>
-> ---
->  kernel/dma/Kconfig  |   6 ++-
->  kernel/dma/Makefile |   1 +
->  kernel/dma/pool.c   | 123 ++++++++++++++++++++++++++++++++++++++++++++
->  kernel/dma/remap.c  | 114 ----------------------------------------
->  4 files changed, 129 insertions(+), 115 deletions(-)
->  create mode 100644 kernel/dma/pool.c
-> 
-> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-> index 4c103a24e380..d006668c0027 100644
-> --- a/kernel/dma/Kconfig
-> +++ b/kernel/dma/Kconfig
-> @@ -79,10 +79,14 @@ config DMA_REMAP
->  	select DMA_NONCOHERENT_MMAP
->  	bool
->  
-> -config DMA_DIRECT_REMAP
-> +config DMA_COHERENT_POOL
->  	bool
->  	select DMA_REMAP
->  
-> +config DMA_DIRECT_REMAP
-> +	bool
-> +	select DMA_COHERENT_POOL
-> +
->  config DMA_CMA
->  	bool "DMA Contiguous Memory Allocator"
->  	depends on HAVE_DMA_CONTIGUOUS && CMA
-> diff --git a/kernel/dma/Makefile b/kernel/dma/Makefile
-> index d237cf3dc181..370f63344e9c 100644
-> --- a/kernel/dma/Makefile
-> +++ b/kernel/dma/Makefile
-> @@ -6,4 +6,5 @@ obj-$(CONFIG_DMA_DECLARE_COHERENT)	+= coherent.o
->  obj-$(CONFIG_DMA_VIRT_OPS)		+= virt.o
->  obj-$(CONFIG_DMA_API_DEBUG)		+= debug.o
->  obj-$(CONFIG_SWIOTLB)			+= swiotlb.o
-> +obj-$(CONFIG_DMA_COHERENT_POOL)		+= pool.o
->  obj-$(CONFIG_DMA_REMAP)			+= remap.o
-> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> new file mode 100644
-> index 000000000000..6612c2d51d3c
-> --- /dev/null
-> +++ b/kernel/dma/pool.c
-> @@ -0,0 +1,123 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 Google LLC
+It's uncertain where the "vreg_s8a_l3a_input" comes from, but the supply
+for VDD_L3_L11 on PM8994 should be VREG_S3A_1P3, so correct this - and
+drop the vreg_s8a_l3a_input.
 
-This now also lost the ARM copyright in addition to the Linuxfoundation
-one, but I can fix that up.  Otherwise it looks good to me.
+Fixes: 83d9ed4342a3 ("arm64: dts: qcom: db820c: Use regulator names from schematics")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+index 1baf41fbdf6e..46595fb95cce 100644
+--- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
++++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+@@ -117,16 +117,6 @@ vph_pwr: vph-pwr-regulator {
+ 		regulator-max-microvolt = <3700000>;
+ 	};
+ 
+-	vreg_s8a_l3a_input: vreg-s8a-l3a-input {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vreg_s8a_l3a_input";
+-		regulator-always-on;
+-		regulator-boot-on;
+-
+-		regulator-min-microvolt = <0>;
+-		regulator-max-microvolt = <0>;
+-	};
+-
+ 	wlan_en: wlan-en-1-8v {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&wlan_en_gpios>;
+@@ -720,7 +710,7 @@ pm8994-regulators {
+ 		vdd_s12-supply = <&vph_pwr>;
+ 		vdd_l1-supply = <&vreg_s1b_1p025>;
+ 		vdd_l2_l26_l28-supply = <&vreg_s3a_1p3>;
+-		vdd_l3_l11-supply = <&vreg_s8a_l3a_input>;
++		vdd_l3_l11-supply = <&vreg_s3a_1p3>;
+ 		vdd_l4_l27_l31-supply = <&vreg_s3a_1p3>;
+ 		vdd_l5_l7-supply = <&vreg_s5a_2p15>;
+ 		vdd_l6_l12_l32-supply = <&vreg_s5a_2p15>;
+@@ -731,7 +721,7 @@ pm8994-regulators {
+ 		vdd_l17_l29-supply = <&vph_pwr_bbyp>;
+ 		vdd_l20_l21-supply = <&vph_pwr_bbyp>;
+ 		vdd_l25-supply = <&vreg_s3a_1p3>;
+-		vdd_lvs1_2-supply = <&vreg_s4a_1p8>;
++		vdd_lvs1_lvs2-supply = <&vreg_s4a_1p8>;
+ 
+ 		vreg_s3a_1p3: s3 {
+ 			regulator-name = "vreg_s3a_1p3";
+-- 
+2.24.0
+
