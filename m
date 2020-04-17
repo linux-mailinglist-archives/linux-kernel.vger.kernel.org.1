@@ -2,119 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5D01AD97E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBD01AD985
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730180AbgDQJJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:09:17 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60974 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729920AbgDQJJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:09:16 -0400
-Received: from zn.tnic (p200300EC2F0DA8007D6645F2EFE7966D.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:a800:7d66:45f2:efe7:966d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 700A01EC0D3D;
-        Fri, 17 Apr 2020 11:09:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1587114554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=KofRMhS2HujTnfZn9TNmDLVzxb/tgBzRqrHpSR1K+Eg=;
-        b=FV6iwrNgNlOj8tX8gds27ZvyJEqp9SOETGK9iwy6Z2kywqG4VaPKjPWGy+CyREgw68N8+r
-        nu8ePaqY4y1jUNGE3MV5tawE+O/YG0O2a1BlPCXDvOJ+fTWtxDxzntyatEgqwHk0fIoVvk
-        AQ5+C1KE9x82MJ0S0ZD4vIcWBduFIa4=
-Date:   Fri, 17 Apr 2020 11:09:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jakub Jelinek <jakub@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        Michael Matz <matz@suse.de>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
-Message-ID: <20200417090909.GC7322@zn.tnic>
-References: <20200328084858.421444-1-slyfox@gentoo.org>
- <20200413163540.GD3772@zn.tnic>
- <alpine.LSU.2.21.2004141343370.11688@wotan.suse.de>
- <20200415074842.GA31016@zn.tnic>
- <alpine.LSU.2.21.2004151445520.11688@wotan.suse.de>
- <20200415231930.19755bc7@sf>
- <20200417075739.GA7322@zn.tnic>
- <20200417080726.GS2424@tucnak>
- <20200417084224.GB7322@zn.tnic>
- <20200417085859.GU2424@tucnak>
+        id S1730197AbgDQJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:10:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2397 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729987AbgDQJKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:10:17 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 2063C4944C6BE347FA91;
+        Fri, 17 Apr 2020 17:10:15 +0800 (CST)
+Received: from [127.0.0.1] (10.173.221.230) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 17:10:07 +0800
+Subject: Re: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in
+ small chunks
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>
+References: <20200413122023.52583-1-zhukeqian1@huawei.com>
+ <be45ec89-2bdb-454b-d20a-c08898e26024@redhat.com>
+ <20200416160939.7e9c1621@why>
+ <442f288e-2934-120c-4994-5357e3e9216b@redhat.com>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>,
+        "James Morse" <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jay Zhou <jianjay.zhou@huawei.com>,
+        <wanghaibin.wang@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <3e3ce7dd-af13-6daa-9ccf-747405d448cc@huawei.com>
+Date:   Fri, 17 Apr 2020 17:10:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200417085859.GU2424@tucnak>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <442f288e-2934-120c-4994-5357e3e9216b@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.221.230]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 10:58:59AM +0200, Jakub Jelinek wrote:
-> On Fri, Apr 17, 2020 at 10:42:24AM +0200, Borislav Petkov wrote:
-> > On Fri, Apr 17, 2020 at 10:07:26AM +0200, Jakub Jelinek wrote:
-> > > If you want minimal changes, you can as I said earlier either
-> > > mark cpu_startup_entry noreturn (in the declaration in some header so that
-> > > smpboot.c sees it), or you could add something after the cpu_startup_entry
-> > > call to ensure it is not tail call optimized (e.g. just
-> > > 	/* Prevent tail call to cpu_startup_entry because the stack
-> > > 	   protector guard has been changed in the middle of this function
-> > > 	   and must not be checked before tail calling another function.  */
-> > > 	asm ("");
-> > 
-> > That sounds ok-ish to me too.
-> > 
-> > I know you probably can't tell the future :) but what stops gcc from
-> > doing the tail-call optimization in the future?
-> > 
-> > Or are optimization decisions behind an inline asm a no-no and will
-> > pretty much always stay that way?
+Hi Paolo,
+
+On 2020/4/16 23:55, Paolo Bonzini wrote:
+> On 16/04/20 17:09, Marc Zyngier wrote:
+>> On Wed, 15 Apr 2020 18:13:56 +0200
+>> Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>>> On 13/04/20 14:20, Keqian Zhu wrote:
+>>>> There is already support of enabling dirty log graually in small chunks
+>>>> for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
+>>>> small chunks"). This adds support for arm64.
+>>>>
+>>>> x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
+>>>> is eanbled. However, for arm64, both huge pages and normal pages can be
+>>>> write protected gradually by userspace.
+>>>>
+>>>> Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
+>>>> Linux VMs with different page size. The memory pressure is 127G in each
+>>>> case. The time taken of memory_global_dirty_log_start in QEMU is listed
+>>>> below:
+>>>>
+>>>> Page Size      Before    After Optimization
+>>>>   4K            650ms         1.8ms
+>>>>   2M             4ms          1.8ms
+>>>>   1G             2ms          1.8ms
+>>>>
+>>>> Besides the time reduction, the biggest income is that we will minimize
+>>>> the performance side effect (because of dissloving huge pages and marking
+>>>> memslots dirty) on guest after enabling dirty log.
+>>>>
+>>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>>>> ---
+>>>>  Documentation/virt/kvm/api.rst    |  2 +-
+>>>>  arch/arm64/include/asm/kvm_host.h |  3 +++
+>>>>  virt/kvm/arm/mmu.c                | 12 ++++++++++--
+>>>>  3 files changed, 14 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>>>> index efbbe570aa9b..0017f63fa44f 100644
+>>>> --- a/Documentation/virt/kvm/api.rst
+>>>> +++ b/Documentation/virt/kvm/api.rst
+>>>> @@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
+>>>>  dirty logging can be enabled gradually in small chunks on the first call
+>>>>  to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
+>>>>  KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
+>>>> -x86 for now).
+>>>> +x86 and arm64 for now).
+>>>>  
+>>>>  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
+>>>>  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
+>>>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>>>> index 32c8a675e5a4..a723f84fab83 100644
+>>>> --- a/arch/arm64/include/asm/kvm_host.h
+>>>> +++ b/arch/arm64/include/asm/kvm_host.h
+>>>> @@ -46,6 +46,9 @@
+>>>>  #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
+>>>>  #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+>>>>  
+>>>> +#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
+>>>> +				     KVM_DIRTY_LOG_INITIALLY_SET)
+>>>> +
+>>>>  DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
+>>>>  
+>>>>  extern unsigned int kvm_sve_max_vl;
+>>>> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+>>>> index e3b9ee268823..1077f653a611 100644
+>>>> --- a/virt/kvm/arm/mmu.c
+>>>> +++ b/virt/kvm/arm/mmu.c
+>>>> @@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>>>>  	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
+>>>>  	 * memory slot is write protected.
+>>>>  	 */
+>>>> -	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
+>>>> -		kvm_mmu_wp_memory_region(kvm, mem->slot);
+>>>> +	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+>>>> +		/*
+>>>> +		 * If we're with initial-all-set, we don't need to write
+>>>> +		 * protect any pages because they're all reported as dirty.
+>>>> +		 * Huge pages and normal pages will be write protect gradually.
+>>>> +		 */
+>>>> +		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+>>>> +			kvm_mmu_wp_memory_region(kvm, mem->slot);
+>>>> +		}
+>>>> +	}
+>>>>  }
+>>>>  
+>>>>  int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>>>>   
+>>>
+>>> Marc, what is the status of this patch?
+>>
+>> I just had a look at it. Is there any urgency for merging it?
 > 
-> GCC intentionally treats asm as a black box, the only thing which it does
-> with it is: non-volatile asm (but asm without outputs is implicitly
-> volatile) can be CSEd, and if the compiler needs to estimate size, it
-> uses some heuristics by counting ; and newlines.
-> And it will stay this way.
+> No, I thought I was still replying to the v1.
+Sorry that patch v1 is dropped. Because I realized that stage2 page tables
+will be unmapped during VM reboot, or they are not established soon after
+migration, so stage2 page tables can not be used to decide whether a page
+is needed to migrate.
+
+Thanks,
+Keqian
+
 > 
-> > And I hope the clang folks don't come around and say, err, nope, we're
-> > much more aggressive here.
+> Paolo
 > 
-> Unlike GCC, I think clang uses the builtin assembler to parse the string,
-> but don't know if it still treats the asms more like black boxes or not.
-> Certainly there is a lot of code in the wild that uses inline asm
-> as optimization barriers, so if it doesn't, then it would cause a lot of
-> problems.
 > 
-> Or go with the for (;;);, I don't think any compiler optimizes those away;
-> GCC 10 for C++ can optimize away infinite loops that have some conditional
-> exit because the language guarantees forward progress, but the C language
-> rules are different and for unconditional infinite loops GCC doesn't
-> optimize them away even if explicitly asked to -ffinite-loops.
+> .
+> 
 
-Lemme add Nick for clang for an opinion:
-
-Nick, we're discussing what would be the cleanest and future-proof
-way to disable stack protector for the function in the kernel which
-generates the canary value as gcc10 ends up checking that value due to
-tail-call optimizing the last function called by start_secondary()...
-upthread are all the details.
-
-And question is, can Jakub's suggestions above prevent tail-call
-optimization on clang too and how reliable and future proof would that
-be if we end up going that way?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
