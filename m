@@ -2,102 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68E51ADA4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328881ADA55
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgDQJpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:45:35 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9684 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgDQJpe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:45:34 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e997a4e0000>; Fri, 17 Apr 2020 02:43:42 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 17 Apr 2020 02:45:33 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 17 Apr 2020 02:45:33 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
- 2020 09:45:33 +0000
-Received: from [10.26.73.163] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
- 2020 09:45:30 +0000
-Subject: Re: [PATCH 5.6 000/254] 5.6.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200416131325.804095985@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <7d8d7d76-54e6-c8e4-9e3b-d8d599c26be9@nvidia.com>
-Date:   Fri, 17 Apr 2020 10:45:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727925AbgDQJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:47:14 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2348 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725830AbgDQJrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:47:13 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D82F383C57B3FD2E2153;
+        Fri, 17 Apr 2020 17:47:10 +0800 (CST)
+Received: from [127.0.0.1] (10.173.221.230) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 17:47:00 +0800
+Subject: Re: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in
+ small chunks
+To:     Marc Zyngier <maz@kernel.org>
+References: <20200413122023.52583-1-zhukeqian1@huawei.com>
+ <20200416160833.728017e9@why>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        "Julien Thierry" <julien.thierry.kdev@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jay Zhou <jianjay.zhou@huawei.com>,
+        <wanghaibin.wang@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <44ce4553-5215-2290-5956-2e6c577d030b@huawei.com>
+Date:   Fri, 17 Apr 2020 17:46:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20200416131325.804095985@linuxfoundation.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20200416160833.728017e9@why>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587116622; bh=bLV+P+sFcEOhTJL8uuevydv/o2v4bzholXkxAyfmTg0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=mcBBPOLlg186vLZ+Q7M1+loiyxDyVzwSSqSTv2Sb1sseTnHe6gjIi5zCl/+AsMKja
-         lzAy5gkXTCXQToMuhGWU6KCwpMpOT4WldNQA/LH6uXlvt737UpD5WGsPvJp7340oB4
-         5Ui1fj7RzrZIg6UVAP9PQmib8dF/1Xh8apcY/kjYk2aotiW7ab3fKZ3pQWz2NOSNOm
-         WrxBxRU82fdc9gWEWnySA/KtBNkJ9qIQjFk7NBr9FGtOsNEs1FyVEveTo3HODxVy6V
-         QBpGofN98GquM0Fd58aWUePpFVN+IfZjn+UAghe9oRhH26AHt1JbDfjfJAKPJv5tA1
-         A8vI1d3AzYZjA==
+X-Originating-IP: [10.173.221.230]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
-On 16/04/2020 14:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.6.5 release.
-> There are 254 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2020/4/16 23:08, Marc Zyngier wrote:
+> On Mon, 13 Apr 2020 20:20:23 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
 > 
-> Responses should be made by Sat, 18 Apr 2020 13:11:20 +0000.
-> Anything received after that time might be too late.
+>> There is already support of enabling dirty log graually in small chunks
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> and the diffstat can be found below.
+> gradually
 > 
-> thanks,
+>> for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
+>> small chunks"). This adds support for arm64.
+>>
+>> x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
+>> is eanbled. However, for arm64, both huge pages and normal pages can be
 > 
-> greg k-h
+> enabled
+> 
+>> write protected gradually by userspace.
+>>
+>> Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
+>> Linux VMs with different page size. The memory pressure is 127G in each
+>> case. The time taken of memory_global_dirty_log_start in QEMU is listed
+>> below:
+>>
+>> Page Size      Before    After Optimization
+>>   4K            650ms         1.8ms
+>>   2M             4ms          1.8ms
+>>   1G             2ms          1.8ms
+> 
+> These numbers are different from what you have advertised before. What
+> changed?
+In patch RFC, the numbers is got when memory pressure is 100G, so the number
+is bigger here.
+> 
+>>
+>> Besides the time reduction, the biggest income is that we will minimize
+> 
+> s/income/improvement/
+> 
+>> the performance side effect (because of dissloving huge pages and marking
+> 
+> dissolving
+embarrassed for these misspell :(
+> 
+>> memslots dirty) on guest after enabling dirty log.
+>>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  Documentation/virt/kvm/api.rst    |  2 +-
+>>  arch/arm64/include/asm/kvm_host.h |  3 +++
+>>  virt/kvm/arm/mmu.c                | 12 ++++++++++--
+>>  3 files changed, 14 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index efbbe570aa9b..0017f63fa44f 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
+>>  dirty logging can be enabled gradually in small chunks on the first call
+>>  to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
+>>  KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
+>> -x86 for now).
+>> +x86 and arm64 for now).
+>>  
+>>  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
+>>  KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
+>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>> index 32c8a675e5a4..a723f84fab83 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -46,6 +46,9 @@
+>>  #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
+>>  #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+>>  
+>> +#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
+>> +				     KVM_DIRTY_LOG_INITIALLY_SET)
+>> +
+>>  DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
+>>  
+>>  extern unsigned int kvm_sve_max_vl;
+>> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+>> index e3b9ee268823..1077f653a611 100644
+>> --- a/virt/kvm/arm/mmu.c
+>> +++ b/virt/kvm/arm/mmu.c
+>> @@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>>  	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
+>>  	 * memory slot is write protected.
+>>  	 */
+>> -	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
+>> -		kvm_mmu_wp_memory_region(kvm, mem->slot);
+>> +	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+>> +		/*
+>> +		 * If we're with initial-all-set, we don't need to write
+>> +		 * protect any pages because they're all reported as dirty.
+>> +		 * Huge pages and normal pages will be write protect gradually.
+>> +		 */
+>> +		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+>> +			kvm_mmu_wp_memory_region(kvm, mem->slot);
+>> +		}
+>> +	}
+>>  }
+>>  
+>>  int kvm_arch_prepare_memory_region(struct kvm *kvm,
+> 
+> As it is, it is pretty good. The one thing that isn't clear to me is
+> why we have a difference in behaviour between x86 and arm64. What
+> prevents x86 from having the same behaviour as arm64?
+I am also not very clear about the difference. Maybe there is historic reason.
 
-All tests are passing for Tegra ...
+Before introducing DIRTY_LOG_INITIALLY_ALL_SET, all pages will be write
+protected when starting dirty log, but only normal pages are needed
+to be write protected again during dirty log sync, because huge pages will
+be dissolved to normal pages.
 
-Test results for stable-v5.6:
-    13 builds:	13 pass, 0 fail
-    24 boots:	24 pass, 0 fail
-    40 tests:	40 pass, 0 fail
+For that x86 uses different routine to write protect huge pages and normal pages,
+and arm64 uses same routine to do this, so arm64 still write protect all
+pages again during dirty log sync, but x86 didn't.
 
-Linux version:	5.6.5-rc1-g576aa353744c
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
+So I think that x86 can write protect huge pages gradually too, just need to add
+some code legs in dirty log sync.
 
-Cheers
-Jon
+Thanks,
+Keqian
+> 
+> Thanks,
+> 
+> 	M.
+> 
 
--- 
-nvpublic
