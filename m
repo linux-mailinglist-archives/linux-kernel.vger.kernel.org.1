@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676511AE7AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85B51AE7B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgDQVkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
+        id S1728281AbgDQVmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728087AbgDQVkB (ORCPT
+        by vger.kernel.org with ESMTP id S1727889AbgDQVmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:40:01 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A8BC061A0C;
-        Fri, 17 Apr 2020 14:40:01 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k11so4680411wrp.5;
-        Fri, 17 Apr 2020 14:40:01 -0700 (PDT)
+        Fri, 17 Apr 2020 17:42:37 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FBBC061A0C;
+        Fri, 17 Apr 2020 14:42:37 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id h11so1421906plr.11;
+        Fri, 17 Apr 2020 14:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=BX33Nlq2rNRQa3TPS+MKAJHFMMQ9tszkDs8MRHulQEo=;
-        b=mIHO9lYzoEk0nC+E43MFKDhIVzbEx/1UEXaDSzp1LhuwJzXr+DTJtyxGXdVUaBVgoK
-         y4mauhwmxJW0XVQMBmW0iZwPVb0wQuxD/zlGkqckFVt8rXcZiJufzFlRHNzDoTErptGj
-         R/y4gUO+Wfb77d3/W0ALeMx+7/Nz3mH9JOuQAkBCrA1L2tJd3J6W4qvC4OIlS3Z9QXaU
-         gsB1UwkhyCKnFHIt2NgwyMHPMlXP6pQzRBKsmpVMwaY8YhBotD8+dQBOFOIhWdOkE93m
-         78QmaNqLg/EdkZcF2gZwBs+7oNDoRtX/uer5H4PaqkOmOQb0V/r9bESDv6oBW2IjdUGE
-         eR4w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wJCxR0QUwLSKrpIugTVYPgkrEcw0H43/duFN1sQDZmw=;
+        b=WpXr8dmyOqM1OiiXf44f9ECwAEggig32ZlUa5KS0kLJctQwMiMXakngbqWv3LvsCnL
+         ThoPqdhlP2OtH2Nj0eqx0SSobKKMD5FGEXNnpfDZYoGNg/A7aoi2JrU2GtUKW5Dzk0HY
+         xj5KZvNO4DwjVCx9X31FjWnPVGybi1ruchRHhfYKO5NQPlBbFGPbckaT44zrjSn6/EE8
+         IR8CV8f3RDQyuNfvwS40M7qOqCpAWiy5D6p7/HFlj3vq8AbTJyF/H/AE2bnmLlN6bJGd
+         ukxvIvWRZFXlTQ5N3RidH7qO58cBKeNkvfZtSPUJH+YE6fOwqHBN0fgCRw0S3LoQnhUM
+         MFeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BX33Nlq2rNRQa3TPS+MKAJHFMMQ9tszkDs8MRHulQEo=;
-        b=e5jyhHRPcXrR++841p6VOCD8PYdLapnPPcbmF29l6+1dXkdlDY4e6NeYdIGTSgF06r
-         laRd5Ru4DJz3DtzAM0gZnz53DVGTdObIJ5L7L2dPc8F/fz8m+CM55T1MHsjrOfpgqwig
-         IE/v3re60S0cWJ4nAdXiylyhpFWucpXFe87w/eRnK47dsq8cXqUEs+ROUpUun2mk3ytw
-         5lnGqBQbdnndVrpaUn1UxZC2LQ8XdiHCx9JNTxlJGZeJChEZd3NLnujEeOoFELKu8d5r
-         XHIYYZcmBf0GdIv4qOFRJByacZHOSoDZ2eF6huJ88/nkQ9sg489UWWcovqorESdU66rn
-         UKMA==
-X-Gm-Message-State: AGi0Pua1Kz2igEahNeEYj/YSJtXwS71L7Y7Sm9ZwU5JurLgTwBwU9o1q
-        /lW7q+uNspgguZyq53A65m0=
-X-Google-Smtp-Source: APiQypIDbikGNvjS42cYjvWs56Usv6lW8ne0pCO96idfnwqixzfmMM1zaKYnbjC4rxFS0Om1yU67Fw==
-X-Received: by 2002:a05:6000:f:: with SMTP id h15mr5877118wrx.408.1587159599795;
-        Fri, 17 Apr 2020 14:39:59 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id v16sm9079325wml.30.2020.04.17.14.39.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Apr 2020 14:39:59 -0700 (PDT)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     paulmck@kernel.org, josh@joshtriplett.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH] rcu: simplify the calculation of rcu_state.ncpus
-Date:   Fri, 17 Apr 2020 21:39:51 +0000
-Message-Id: <20200417213951.29837-1-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wJCxR0QUwLSKrpIugTVYPgkrEcw0H43/duFN1sQDZmw=;
+        b=Yo/gmM6I4FyiKmDueRLvU9e4nXC+nsAsTMCZcyWD/WLxwhmDVXLDu0sJ94OlnMCuZQ
+         n88wHsTmSwq/cL8ZuPteo8iaY36y24R7DywEmsO4b1WddgpReb7Y0bcOWpg5gKQzaARa
+         iwYyR4WdwDT01Mdu1FPI5/pkXwKhpoCcYbX2AQWt6jgtY39qoUtJualQQF3lPFHV4gAn
+         ICmyerJF/ISX079xJ1uYxIKLDc7xtSsQdLkdoke8jCS+TeCyE9gHDK2fJbsSc1ZydmwW
+         HlHRIhxmxE5fWX431WRlleVuJS/bs85SIFKolYOud2XIk2Gi3gH+1bO95NCBt5vge0o7
+         839g==
+X-Gm-Message-State: AGi0Pub4I9p4NCIoyUhVFAdfBjXbubYl08me1Kf55paYXi0f1/XXp2gJ
+        bwLISua1Tb/kDxzKkRAeE9OZqN+6mnpcM4Lx5DY=
+X-Google-Smtp-Source: APiQypIBLm58Ay7O0Ceh4Ol6/asI7ebiv0F7ZyemYLRT2HLDFyyXpgyfg4snSkjpFzuEbCHSrSWbd39eL5uSDUagkos=
+X-Received: by 2002:a17:90a:224b:: with SMTP id c69mr6938323pje.8.1587159755973;
+ Fri, 17 Apr 2020 14:42:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200417202859.35427-1-contact@artur-rojek.eu>
+ <20200417202859.35427-3-contact@artur-rojek.eu> <CAHp75Vcwnu8tw92nMYc_5-x_iX+FY8_OhtaJkSYNehmNUDkHGQ@mail.gmail.com>
+ <3KAY8Q.NNI6X4F9QRIX1@crapouillou.net> <CAHp75VfxQFFnVMhGvv0GCb3gv5jTPLDqLyhihRVc2earY=aYcg@mail.gmail.com>
+ <86BY8Q.C5XO8D57M7BI1@crapouillou.net>
+In-Reply-To: <86BY8Q.C5XO8D57M7BI1@crapouillou.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 18 Apr 2020 00:42:23 +0300
+Message-ID: <CAHp75VfULLBpFx-W04z+jRFv-hGZkTt1k7T9+eMurW55Mdc=+g@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 3/5] IIO: Ingenic JZ47xx: Add touchscreen mode.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Artur Rojek <contact@artur-rojek.eu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-input <linux-input@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is only 1 bit set in mask, which means the difference between
-oldmask and the new one would be at the position where the bit is set in
-mask.
+On Sat, Apr 18, 2020 at 12:18 AM Paul Cercueil <paul@crapouillou.net> wrote=
+:
+> Le sam. 18 avril 2020 =C3=A0 0:13, Andy Shevchenko
+> <andy.shevchenko@gmail.com> a =C3=A9crit :
+> > On Sat, Apr 18, 2020 at 12:05 AM Paul Cercueil <paul@crapouillou.net>
+> > wrote:
+> >>  Le ven. 17 avril 2020 =C3=A0 23:59, Andy Shevchenko
+> >>  <andy.shevchenko@gmail.com> a =C3=A9crit :
+> >>  > On Fri, Apr 17, 2020 at 11:21 PM Artur Rojek
+> >> <contact@artur-rojek.eu>
+> >>  > wrote:
+> >
+> > ...
+> >
+> >>  >>  +       irq =3D platform_get_irq(pdev, 0);
+> >>  >
+> >>  > Before it worked w/o IRQ, here is a regression you introduced.
+> >>
+> >>  Before it simply did not need the IRQ, which is provided by the
+> >>  devicetree anyway. No regression here.
+> >
+> > Does it work without IRQ? Or it was a dead code till now?
+> > For me it's clear regression. Otherwise something is really wrong in a
+> > process of development of this driver.
+>
+> Nothing wrong here. The IRQ was not used by the driver for the
+> functionality it provided before. It is required now to support the
+> touchscreen channels.
 
-Based on this knowledge, rcu_state.ncpus could be calculated by checking
-whether mask is already set in oldmask.
+This is exactly what's wrong.
+Previous DTS for my (hypothetical) case has no IRQ defined. Everything
+works, right?
+Now, due to this change it breaks my setup. Don't you see the problem?
 
-BTW, the comment at the last of this line is mysterious. Not sure it
-could be removed or not.
+> >>  >>  +       if (irq < 0) {
+> >>  >
+> >>  >>  +               dev_err(dev, "Failed to get irq: %d\n", irq);
+> >>  >
+> >>  > Redundant message.
+> >>  >
+> >>  >>  +               return irq;
+> >>  >>  +       }
 
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
----
- kernel/rcu/tree.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d91c9156fab2..f0d9251fa663 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3364,7 +3364,6 @@ void rcu_cpu_starting(unsigned int cpu)
- {
- 	unsigned long flags;
- 	unsigned long mask;
--	int nbits;
- 	unsigned long oldmask;
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
-@@ -3381,10 +3380,9 @@ void rcu_cpu_starting(unsigned int cpu)
- 	rnp->qsmaskinitnext |= mask;
- 	oldmask = rnp->expmaskinitnext;
- 	rnp->expmaskinitnext |= mask;
--	oldmask ^= rnp->expmaskinitnext;
--	nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
- 	/* Allow lockless access for expedited grace periods. */
--	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
-+	if (!(oldmask & mask))
-+		smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + 1); /* ^^^ */
- 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
- 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
- 	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
--- 
-2.23.0
-
+--=20
+With Best Regards,
+Andy Shevchenko
