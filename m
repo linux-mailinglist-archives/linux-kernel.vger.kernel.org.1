@@ -2,263 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BE21AE35F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD931AE39A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgDQRLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 13:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728345AbgDQRLU (ORCPT
+        id S1729831AbgDQRRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 13:17:35 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:27205 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729089AbgDQRR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 13:11:20 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA07EC061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 10:11:20 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id p8so1405929pgi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 10:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MwZ5r02j5DDu60b1Yf9fovCXLqb5sheQ6pTSo/D8kaw=;
-        b=qqkD47l8byHNt7HvcF2YWHI8Ln1OLaurWVoh8ZPaayTt3kJndV4E6vQECtjPzxFfSW
-         X7VJJs7Vk775xW4hvTcgl22hvwy/7iauD3LJcPpkWR5VXnAoPkk8eqqEXKXBOXGzSD4L
-         FEcy3aKLz8b5lt3JdCyLOLIQOuVDjGfyxfQNLRB4uco6lzfWJjRpSXle+6COvQd9GGPK
-         GnqcdTMAMYCycNXQdX3ugEUBcvwd2s5p9wyKqgoo4caxt2KLoYpIqkxap6uZZfR19ijO
-         AdF0H/bRlEkoh4fGxGwC8pSAMeKN1Mc8c42RcIvV9bkluBMJYUwC4Mtao9DYbS8dzpyC
-         h6Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MwZ5r02j5DDu60b1Yf9fovCXLqb5sheQ6pTSo/D8kaw=;
-        b=Blp6SoMhswGBVWy16nC4PdVKzfxdfwL3D43Hj2hTu2Cy7/v7ON7tq3P/OxfgCH/I1g
-         RkyJYKTtMLmVNCbqx9azWu4Tz9S+FpPzphbHyFhIU7U0/yfaU4nYNqHKGq/ONisIkKb5
-         1zI2W4fZncKmrzKAL+o58K1NcjELAOiLM+Xe1rHXRpDV/dkiSnEwibwehaEcz6h0mUuG
-         H1JYIqIGhfBP/SGZGIKTnBVpOiOgLNsEBuGXHnTSJveipii6j8PlxvZ8d5hfslGAdsBL
-         9fWZQladOhjClsv0xt8L9B5aLK8IBqjKR4gCrInUS7J8CuokMm7uoKK1mHW2xg1iUWdX
-         PKtg==
-X-Gm-Message-State: AGi0PuZePkRUmQCvDF6OHmNRzuCrskUi4deonRk0/iCUH03MCpgShW9Z
-        9uAmmQZAdHHQfeksuPEy6QAiZrQpCLU=
-X-Google-Smtp-Source: APiQypIulTHG+RBBZXvWiEQM4Jv4FTSexWl0Z/vnVRTL12zNnihOWSGrnncl1pym0ocnUvjzdqetOw==
-X-Received: by 2002:a63:fc45:: with SMTP id r5mr2738667pgk.440.1587143479915;
-        Fri, 17 Apr 2020 10:11:19 -0700 (PDT)
-Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id o99sm6186906pjo.8.2020.04.17.10.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 10:11:19 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 10:11:16 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Loic PALLARDY <loic.pallardy@st.com>
-Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
-        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
-Subject: Re: [PATCH 2/3] remoteproc: Add inline coredump functionality
-Message-ID: <20200417171116.GE987656@yoga>
-References: <1587062312-4939-1-git-send-email-rishabhb@codeaurora.org>
- <1587062312-4939-2-git-send-email-rishabhb@codeaurora.org>
- <1b85229632dd44f198b3e0ff9414b458@SFHDAG7NODE2.st.com>
+        Fri, 17 Apr 2020 13:17:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1587143848; x=1618679848;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Z97YOUsyGakXRlsIeAgnyUr2EaXM9GuayVOBY7SPxZQ=;
+  b=CNNTU61mVIuFePxf0sgViSpdqguKUDYIxUp0RfORBS1WCjndc85mXJI7
+   EjcsmeDhF2eZf4fxcK+0f/UUpeFJLxBSnVt2r8wzVVzZ6BpXy1JdTuLzd
+   P/Kzl3VKK3jYM8FEG8ZQuT2kLOcwLB2+XawugfAmlDVrUk+ofs1kGNsZB
+   0BfjFskuttSRBmNKfrSS/tgSqYvHdDtNgWzuIvavu8m9V5LMxMEATXjtY
+   1CarkbDrqcKmuvP8kz8ZEV/+oh+D4IG98mjaUcYQZKJpOyFONyoYw4ChY
+   MwAVIlE6nI78uCuPYfBrUFTP6dnyPSluQ9ktFAxfsl3QMAYv0k26e8O+e
+   A==;
+IronPort-SDR: 2IIOiNY0TIQc5JY3syiYgx9veibgSIDFWqVrAw4gP5rQmScuOeqMwWeSQnU5PNv41NA3s7nLmT
+ N8uv3OkbkBi/1gpYfsEViAWgwvSEeouk8YbKj+fGplpShSgSDnu0kRLh1vDu8KTkoUULv3H6Ly
+ XSWx/5gOVUHMaWYVVLPfYL8Q/LZinTaV14+QBnzstDFhmx1Iazzs5dd+fEBE6x1lbRZqzF7KZo
+ qbGYDZsA9vu5fgoEQSg4wOoNDsa6QDTyCNWJtFM70j7lGzKGYM3MjjLf/WNZqFaPBvodYpkbRe
+ MKY=
+X-IronPort-AV: E=Sophos;i="5.72,395,1580799600"; 
+   d="scan'208";a="73717575"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Apr 2020 10:14:25 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 17 Apr 2020 10:14:04 -0700
+Received: from [10.171.246.39] (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Fri, 17 Apr 2020 10:14:20 -0700
+Subject: Re: [PATCH 4/5] net: macb: WoL support for GEM type of Ethernet
+ controller
+To:     <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
+        <harini.katakam@xilinx.com>, <f.fainelli@gmail.com>,
+        <linux@armlinux.org.uk>
+CC:     <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <pthombar@cadence.com>, <sergio.prado@e-labworks.com>,
+        <antoine.tenart@bootlin.com>, <andrew@lunn.ch>,
+        <michal.simek@xilinx.com>
+References: <cover.1587058078.git.nicolas.ferre@microchip.com>
+ <56bb7a742093cec160c4465c808778a14b2607e7.1587058078.git.nicolas.ferre@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <61762f4b-03fa-5484-334e-8515eed485e2@microchip.com>
+Date:   Fri, 17 Apr 2020 19:14:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b85229632dd44f198b3e0ff9414b458@SFHDAG7NODE2.st.com>
+In-Reply-To: <56bb7a742093cec160c4465c808778a14b2607e7.1587058078.git.nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17 Apr 00:52 PDT 2020, Loic PALLARDY wrote:
-
-> Hi Rishabh,
+On 16/04/2020 at 19:44, nicolas.ferre@microchip.com wrote:
+> From: Nicolas Ferre <nicolas.ferre@microchip.com>
 > 
-> > -----Original Message-----
-> > From: linux-remoteproc-owner@vger.kernel.org <linux-remoteproc-
-> > owner@vger.kernel.org> On Behalf Of Rishabh Bhatnagar
-> > Sent: jeudi 16 avril 2020 20:39
-> > To: linux-remoteproc@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Cc: bjorn.andersson@linaro.org; ohad@wizery.com;
-> > mathieu.poirier@linaro.org; tsoni@codeaurora.org;
-> > psodagud@codeaurora.org; sidgup@codeaurora.org; Rishabh Bhatnagar
-> > <rishabhb@codeaurora.org>
-> > Subject: [PATCH 2/3] remoteproc: Add inline coredump functionality
-> > 
-> > This patch adds the inline coredump functionality. The current
-> > coredump implementation uses vmalloc area to copy all the segments.
-> > But this might put a lot of strain on low memory targets as the
-> > firmware size sometimes is in ten's of MBs. The situation becomes
-> > worse if there are multiple remote processors  undergoing recovery
-> > at the same time. This patch directly copies the device memory to
-> > userspace buffer and avoids extra memory usage. This requires
-> > recovery to be halted until data is read by userspace and free
-> > function is called.
-> > 
-> > Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> > ---
-> >  drivers/remoteproc/remoteproc_coredump.c | 130
-> > +++++++++++++++++++++++++++++++
-> >  drivers/remoteproc/remoteproc_internal.h |  23 +++++-
-> >  include/linux/remoteproc.h               |   2 +
-> >  3 files changed, 153 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_coredump.c
-> > b/drivers/remoteproc/remoteproc_coredump.c
-> > index 9de0467..888b7dec91 100644
-> > --- a/drivers/remoteproc/remoteproc_coredump.c
-> > +++ b/drivers/remoteproc/remoteproc_coredump.c
-> > @@ -12,6 +12,84 @@
-> >  #include <linux/remoteproc.h>
-> >  #include "remoteproc_internal.h"
-> > 
-> > +static void rproc_free_dump(void *data)
-> > +{
-> > +	struct rproc_coredump_state *dump_state = data;
-> > +
-> > +	complete(&dump_state->dump_done);
-> > +}
-> > +
-> > +static unsigned long resolve_addr(loff_t user_offset,
-> > +				   struct list_head *segments,
-> > +				   unsigned long *data_left)
-> > +{
-> > +	struct rproc_dump_segment *segment;
-> > +
-> > +	list_for_each_entry(segment, segments, node) {
-> > +		if (user_offset >= segment->size)
-> > +			user_offset -= segment->size;
-> > +		else
-> > +			break;
-> > +	}
-> > +
-> > +	if (&segment->node == segments) {
-> > +		*data_left = 0;
-> > +		return 0;
-> > +	}
-> > +
-> > +	*data_left = segment->size - user_offset;
-> > +
-> > +	return segment->da + user_offset;
-> > +}
-> > +
-> > +static ssize_t rproc_read_dump(char *buffer, loff_t offset, size_t count,
-> > +				void *data, size_t header_size)
-> > +{
-> > +	void *device_mem;
-> > +	size_t data_left, copy_size, bytes_left = count;
-> > +	unsigned long addr;
-> > +	struct rproc_coredump_state *dump_state = data;
-> > +	struct rproc *rproc = dump_state->rproc;
-> > +	void *elfcore = dump_state->header;
-> > +
-> > +	/* Copy the header first */
-> > +	if (offset < header_size) {
-> > +		copy_size = header_size - offset;
-> > +		copy_size = min(copy_size, bytes_left);
-> > +
-> > +		memcpy(buffer, elfcore + offset, copy_size);
-> > +		offset += copy_size;
-> > +		bytes_left -= copy_size;
-> > +		buffer += copy_size;
-> > +	}
-> > +
-> > +	while (bytes_left) {
-> > +		addr = resolve_addr(offset - header_size,
-> > +				    &rproc->dump_segments, &data_left);
-> > +		/* EOF check */
-> > +		if (data_left == 0) {
-> > +			pr_info("Ramdump complete %lld bytes read",
-> > offset);
-> > +			break;
-> > +		}
-> > +
-> > +		copy_size = min_t(size_t, bytes_left, data_left);
-> > +
-> > +		device_mem = rproc->ops->da_to_va(rproc, addr,
-> > copy_size);
-> > +		if (!device_mem) {
-> > +			pr_err("Address:%lx with size %zd out of remoteproc
-> > carveout\n",
-> > +				addr, copy_size);
-> > +			return -ENOMEM;
-> > +		}
-> > +		memcpy(buffer, device_mem, copy_size);
-> > +
-> > +		offset += copy_size;
-> > +		buffer += copy_size;
-> > +		bytes_left -= copy_size;
-> > +	}
-> > +
-> > +	return count - bytes_left;
-> > +}
-> > +
-> >  static void create_elf_header(void *data, int phnum, struct rproc *rproc)
-> >  {
-> >  	struct elf32_phdr *phdr;
-> > @@ -55,6 +133,58 @@ static void create_elf_header(void *data, int phnum,
-> > struct rproc *rproc)
-> >  }
-> > 
-> >  /**
-> > + * rproc_inline_coredump() - perform synchronized coredump
-> > + * @rproc:	rproc handle
-> > + *
-> > + * This function will generate an ELF header for the registered segments
-> > + * and create a devcoredump device associated with rproc. This function
-> > + * directly copies the segments from device memory to userspace. The
-> > + * recovery is stalled until the enitire coredump is read. This approach
-> Typo entire -> entire
-> > + * avoids using extra vmalloc memory(which can be really large).
-> > + */
-> > +void rproc_inline_coredump(struct rproc *rproc)
-> > +{
-> > +	struct rproc_dump_segment *segment;
-> > +	struct elf32_phdr *phdr;
-> > +	struct elf32_hdr *ehdr;
-> > +	struct rproc_coredump_state *dump_state;
-> > +	size_t header_size;
-> > +	void *data;
-> > +	int phnum = 0;
-> > +
-> > +	if (list_empty(&rproc->dump_segments))
-> > +		return;
-> > +
-> > +	header_size = sizeof(*ehdr);
-> > +	list_for_each_entry(segment, &rproc->dump_segments, node) {
-> > +		header_size += sizeof(*phdr);
-> > +
-> > +		phnum++;
-> > +	}
-> > +
-> > +	data = vmalloc(header_size);
-> > +	if (!data)
-> > +		return;
-> > +
-> > +	ehdr = data;
-> > +	create_elf_header(data, phnum, rproc);
-> > +
-> > +	dump_state = kzalloc(sizeof(*dump_state), GFP_KERNEL);
-> > +	dump_state->rproc = rproc;
-> > +	dump_state->header = data;
-> > +	init_completion(&dump_state->dump_done);
-> > +
-> > +	dev_coredumpm(&rproc->dev, NULL, dump_state, header_size,
-> > GFP_KERNEL,
-> > +		      rproc_read_dump, rproc_free_dump);
-> > +
-> > +	/* Wait until the dump is read and free is called */
-> > +	wait_for_completion(&dump_state->dump_done);
+> Adapt the Wake-on-Lan feature to the Cadence GEM Ethernet controller.
+> This controller has different register layout and cannot be handled by
+> previous code.
+> We disable completely interrupts on all the queues but the queue 0.
+> Handling of WoL interrupt is done in another interrupt handler
+> positioned depending on the controller version used, just between
+> suspend() and resume() calls.
+> It allows to lower pressure on the generic interrupt hot path by
+> removing the need to handle 2 tests for each IRQ: the first figuring out
+> the controller revision, the second for actually knowing if the WoL bit
+> is set.
 > 
-> Maybe good to add a timeout with value programmable via debugfs?
+> Queue management in suspend()/resume() functions inspired from RFC patch
+> by Harini Katakam <harinik@xilinx.com>, thanks!
 > 
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> ---
+>   drivers/net/ethernet/cadence/macb.h      |   3 +
+>   drivers/net/ethernet/cadence/macb_main.c | 121 ++++++++++++++++++++---
+>   2 files changed, 109 insertions(+), 15 deletions(-)
 
-devcoredump provides a timeout already, although not configurable today.
-I believe this is sufficient, but a mentioning in the comment would be
-useful.
+[..]
 
-Regards,
-Bjorn
+> @@ -4534,23 +4564,56 @@ static int __maybe_unused macb_suspend(struct device *dev)
+>   	struct macb_queue *queue = bp->queues;
+>   	unsigned long flags;
+>   	unsigned int q;
+> +	int err;
+>   
+>   	if (!netif_running(netdev))
+>   		return 0;
+>   
+>   	if (bp->wol & MACB_WOL_ENABLED) {
+> -		macb_writel(bp, IER, MACB_BIT(WOL));
+> -		macb_writel(bp, WOL, MACB_BIT(MAG));
+> -		enable_irq_wake(bp->queues[0].irq);
+> -		netif_device_detach(netdev);
+> -	} else {
+> -		netif_device_detach(netdev);
+> +		spin_lock_irqsave(&bp->lock, flags);
+> +		/* Flush all status bits */
+> +		macb_writel(bp, TSR, -1);
+> +		macb_writel(bp, RSR, -1);
+>   		for (q = 0, queue = bp->queues; q < bp->num_queues;
+> -		     ++q, ++queue)
+> -			napi_disable(&queue->napi);
+> -		rtnl_lock();
+> -		phylink_stop(bp->phylink);
+> -		rtnl_unlock();
+> +		     ++q, ++queue) {
+> +			/* Disable all interrupts */
+> +			queue_writel(queue, IDR, -1);
+> +			queue_readl(queue, ISR);
+> +			if (bp->caps & MACB_CAPS_ISR_CLEAR_ON_WRITE)
+> +				queue_writel(queue, ISR, -1);
+> +		}
+> +		/* Change interrupt handler and
+> +		 * Enable WoL IRQ on queue 0
+> +		 */
+> +		if (macb_is_gem(bp)) {
+> +			devm_free_irq(dev, bp->queues[0].irq, bp->queues);
+> +			err = devm_request_irq(dev, bp->queues[0].irq, gem_wol_interrupt,
+> +					       IRQF_SHARED, netdev->name, bp->queues);
+> +			if (err) {
+> +				dev_err(dev,
+> +					"Unable to request IRQ %d (error %d)\n",
+> +					bp->queues[0].irq, err);
+> +				return err;
+> +			}
+> +			queue_writel(bp->queues, IER, GEM_BIT(WOL));
+> +			gem_writel(bp, WOL, MACB_BIT(MAG));
+> +		} else {
+> +			queue_writel(bp->queues, IER, MACB_BIT(WOL));
+> +			macb_writel(bp, WOL, MACB_BIT(MAG));
+> +		}
+> +		spin_unlock_irqrestore(&bp->lock, flags);
+> +
+> +		enable_irq_wake(bp->queues[0].irq);
+> +	}
+> +
+> +	netif_device_detach(netdev);
+> +	for (q = 0, queue = bp->queues; q < bp->num_queues;
+> +	     ++q, ++queue)
+> +		napi_disable(&queue->napi);
+> +
+> +	if (!(bp->wol & MACB_WOL_ENABLED)) {
+> +		phy_stop(netdev->phydev);
+> +		phy_suspend(netdev->phydev);
+
+Bug here: you must read:
+
+		rtnl_lock();
+		phylink_stop(bp->phylink);
+		rtnl_unlock();
+
+Instead of the 2 previous lines. I'll correct in v2.
+
+Sorry for the regression.
+
+
+>   		spin_lock_irqsave(&bp->lock, flags);
+>   		macb_reset_hw(bp);
+>   		spin_unlock_irqrestore(&bp->lock, flags);
+> @@ -4575,20 +4638,48 @@ static int __maybe_unused macb_resume(struct device *dev)
+
+[..]
+BTW: I have issue having a real resume event from the phy with this 
+series. I'm investigating that but didn't find anything for now.
+
+Observation #1: when the WoL is not enabled, I don't have link issue. 
+But the path in suspend/resume is far more intrusive in phy state.
+
+Observation #2: when WoL is enabled, I need to do a full ifdown/ifup 
+sequence for gain access again to the link:
+
+ip link show eth0
+2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast 
+state DOWN mode DEFAULT group default qlen 1000
+     link/ether 54:10:ec:be:50:b0 brd ff:ff:ff:ff:ff:ff
+
+ifdown eth0 && ifup eth0
+
+ip link show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast 
+state UP mode DEFAULT group default qlen 1000
+     link/ether 54:10:ec:be:50:b0 brd ff:ff:ff:ff:ff:ff
+
+Observation #3: I didn't experience this behavior while playing with the 
+WoL on my 4.19 kernel before porting to Mainline.
+
+Best regards,
+-- 
+Nicolas Ferre
