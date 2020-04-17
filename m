@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E332F1ADB88
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A467C1ADB83
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730145AbgDQKqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:46:11 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36070 "EHLO huawei.com"
+        id S1730090AbgDQKp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:45:56 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36176 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729856AbgDQKp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:45:29 -0400
+        id S1729476AbgDQKpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:45:31 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A5516EDDB903E51E6C70;
+        by Forcepoint Email with ESMTP id DCF8FAE0DC5FB7C399EA;
         Fri, 17 Apr 2020 18:45:26 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
@@ -27,9 +27,9 @@ CC:     <ak@linux.intel.com>, <linuxarm@huawei.com>,
         <zhangshaokun@hisilicon.com>,
         <linux-arm-kernel@lists.infradead.org>,
         John Garry <john.garry@huawei.com>
-Subject: [RFC PATCH v2 01/13] perf parse-events: Fix comparison of evsel and leader pmu name
-Date:   Fri, 17 Apr 2020 18:41:12 +0800
-Message-ID: <1587120084-18990-2-git-send-email-john.garry@huawei.com>
+Subject: [RFC PATCH v2 02/13] perf jevents: Add support for an extra directory level
+Date:   Fri, 17 Apr 2020 18:41:13 +0800
+Message-ID: <1587120084-18990-3-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
 References: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
@@ -42,31 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we now strdup() the pmu name for the event selector, use strcmp()
-instead of pointer equality for comparison.
+Currently we support upto a level 2 directory, and level 2 would be in the
+form vendor/platform.
 
-Fixes: d4953f7ef1a2 ("perf parse-events: Fix 3 use after frees found with clang ASANutil/parse-events.c")
+Add support for a further level, to hold specific categories of events for
+when we want to segregate them for matching purposes.
+
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
+ tools/perf/pmu-events/jevents.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-I am not 100% sure that this is the right fix....
-
- tools/perf/util/parse-events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 10107747b361..90ddade1ba23 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1629,7 +1629,7 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
- 		 * event. That can be used to distinguish the leader from
- 		 * other members, even they have the same event name.
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index fa86c5f997cc..c7868d0a7a6b 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -981,15 +981,20 @@ static int process_one_file(const char *fpath, const struct stat *sb,
+ 	int level   = ftwbuf->level;
+ 	int err = 0;
+ 
+-	if (level == 2 && is_dir) {
++	if (level >= 2 && is_dir) {
++		int count = 0;
+ 		/*
+ 		 * For level 2 directory, bname will include parent name,
+ 		 * like vendor/platform. So search back from platform dir
+ 		 * to find this.
++		 * Something similar for level 3 directory, but we're a PMU
++		 * category folder, like vendor/platform/cpu.
  		 */
--		if ((leader != evsel) && (leader->pmu_name == evsel->pmu_name)) {
-+		if ((leader != evsel) && !strcmp(leader->pmu_name, evsel->pmu_name)) {
- 			is_leader = false;
- 			continue;
+ 		bname = (char *) fpath + ftwbuf->base - 2;
+ 		for (;;) {
+ 			if (*bname == '/')
++				count++;
++			if (count == level - 1)
+ 				break;
+ 			bname--;
  		}
+@@ -1002,13 +1007,13 @@ static int process_one_file(const char *fpath, const struct stat *sb,
+ 		 level, sb->st_size, bname, fpath);
+ 
+ 	/* base dir or too deep */
+-	if (level == 0 || level > 3)
++	if (level == 0 || level > 4)
+ 		return 0;
+ 
+ 
+ 	/* model directory, reset topic */
+ 	if ((level == 1 && is_dir && is_leaf_dir(fpath)) ||
+-	    (level == 2 && is_dir)) {
++	    (level >= 2 && is_dir && is_leaf_dir(fpath))) {
+ 		if (close_table)
+ 			print_events_table_suffix(eventsfp);
+ 
 -- 
 2.16.4
 
