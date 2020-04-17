@@ -2,153 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43701AE0E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2770F1AE0DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbgDQPRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
+        id S1728758AbgDQPRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728931AbgDQPRi (ORCPT
+        by vger.kernel.org with ESMTP id S1728610AbgDQPRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:17:38 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793CBC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:17:38 -0700 (PDT)
+        Fri, 17 Apr 2020 11:17:19 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53582C061A0C;
+        Fri, 17 Apr 2020 08:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lDhK24/3VfMY+kaIKaOjzCIhlyuFHST/ho68SD7snQ4=; b=I4nMi2cz9vD+aV9R4LkIJuiyyW
-        HZQkqN3UKAw9RWzDtH5u3Ksl86EGd9EqP2L/mU8oEOEHOTC4m4SwRH9mkrKybaux+WMCT7n0khmL9
-        bR7HFGigMgvpVEHNtxa8E5zRAoGCZ7+zRgwewuGPRK5N8IBv9RD7Gnd6j05DqknyHbUkeSLixK9sH
-        Psqd2rE5OAdGC2TnVXiJMIBAkvik0DkkGSav1/PNV+3GWdDWUtW6xW5e67XNlqotENImc52uvlC9e
-        oP6Y8F186H/iDJEjJJwiLL4fWommmEvBpy4asKsvP/jHxvBurrZk8hmsA66g4pT55lRrLvl+JTS+5
-        dQsDuV6g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPSju-0002rs-Bp; Fri, 17 Apr 2020 15:17:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B025C3015D0;
-        Fri, 17 Apr 2020 17:17:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9AC622B121814; Fri, 17 Apr 2020 17:17:07 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 17:17:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH, RFC] x86/mm/pat: Restore large pages after fragmentation
-Message-ID: <20200417151707.GG20730@hirez.programming.kicks-ass.net>
-References: <20200416213229.19174-1-kirill.shutemov@linux.intel.com>
- <20200417121828.GB20730@hirez.programming.kicks-ass.net>
- <20200417144244.gdoblao656l6ktkr@box>
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=2Sku6d5v/5tZG4bRIOPaG+nWYACK0SKtPPIHhyLnIo0=; b=FQFwY8nczEZztS6HVr6BCfDfsT
+        UeqzaXQfUZpIe5Iq8oUyw+ptf8gacUFAbmTF5WxNm1iilwoIQ4uhJ4UMYXCHyKAvjXpnGQqy0gNBD
+        tF4LbGfOXBWQJ3CqV6AGg6I3OVphx8rtEMd/b02rmDKbx2W/LYsgRmPQwuc2wqGfIJUlRFe21M0HV
+        gjSrqMBFCblDNl3UNOirzmMg/vcpOFnPivVnww+X3COJt7uw9dn7lBHcyauNSNUbqWM2VHnPaQWQH
+        4TMnIP+EAtZgrpw4FapiCSl0enIzBacua5wDb7+YXVt09/FWxgj3hy/HNLrrXPwFOd9CRAFuzjZae
+        kHvntMFw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPSk3-0000sf-1F; Fri, 17 Apr 2020 15:17:19 +0000
+Subject: Re: regression 5.6.4->5.6.5 at drivers/acpi/ec.c
+To:     =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Mailing List <linux-acpi@vger.kernel.org>
+References: <fdd9ce1d-146a-5fbf-75c5-3a9384603312@gmx.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5478a950-4355-8084-ea7d-fe8b270bf2e3@infradead.org>
+Date:   Fri, 17 Apr 2020 08:17:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417144244.gdoblao656l6ktkr@box>
+In-Reply-To: <fdd9ce1d-146a-5fbf-75c5-3a9384603312@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 05:42:44PM +0300, Kirill A. Shutemov wrote:
-> On Fri, Apr 17, 2020 at 02:18:28PM +0200, Peter Zijlstra wrote:
-> Do you mean that it is not aligned to '(' on the previous line?
+[add Cc's]
+
+On 4/17/20 8:10 AM, Toralf Förster wrote:
+> At a T440s under hardened Gentoo Linux I' faced with this new spew (system seems to be working fine otherwise):
 > 
-> Okay, I'll fix it up (and change my vim setup). But I find indenting with
-> spaces disgusting.
-
-set cino=:0(0
-
-
-> > >  static void cpa_flush(struct cpa_data *data, int cache)
-> > >  {
-> > > +	LIST_HEAD(pgtables);
-> > > +	struct page *page, *tmp;
-> > 
-> > xmas fail
 > 
-> Emm. What are rules here?
+> pci 0000:02:00.0: reg 0x10: [mem 0xe0500000-0xe0500fff]
+> pci 0000:02:00.0: supports D1 D2
+> pci 0000:02:00.0: PME# supported from D1 D2 D3hot D3cold
+> pci 0000:00:1c.0: PCI bridge to [bus 02]
+> pci 0000:00:1c.0:   bridge window [mem 0xe0500000-0xe05fffff]
+> pci 0000:03:00.0: [8086:08b2] type 00 class 0x028000
+> pci 0000:03:00.0: reg 0x10: [mem 0xe0400000-0xe0401fff 64bit]
+> pci 0000:03:00.0: PME# supported from D0 D3hot D3cold
+> pci 0000:00:1c.1: PCI bridge to [bus 03]
+> pci 0000:00:1c.1:   bridge window [mem 0xe0400000-0xe04fffff]
+> ACPI: EC: interrupt unblocked
+> ACPI: EC: event unblocked
+> ACPI: EC: EC_CMD/EC_SC=0x66, EC_DATA=0x62
+> ACPI: EC: GPE=0x25
+> ACPI: \_SB_.PCI0.LPC_.EC__: Boot ECDT EC initialization complete
+> ACPI: \_SB_.PCI0.LPC_.EC__: EC: Used to handle transactions and events
+> ACPI: EC: EC_CMD/EC_SC=0x66, EC_DATA=0x62
+> ACPI: EC: GPE=0x25
+> ACPI: \_SB_.PCI0.LPC_.EC__: Boot ECDT EC initialization complete
+> ACPI: \_SB_.PCI0.LPC_.EC__: EC: Used to handle transactions and events
+> ------------[ cut here ]------------
+> Could not request EC data io port 0x62
+> WARNING: CPU: 0 PID: 1 at drivers/acpi/ec.c:1677 acpi_ec_add+0x26e/0x280
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G                T 5.6.5 #5
+> Hardware name: LENOVO 20AQCTO1WW/20AQCTO1WW, BIOS GJET92WW (2.42 ) 03/03/2017
+> RIP: 0010:acpi_ec_add+0x26e/0x280
+> Code: fe ff ff 48 8b 75 10 48 c7 c7 d0 27 9b 8d e8 81 c7 b6 ff 0f 0b e9 c9 fe ff ff 48 8b 75 18 48 c7 c7 a8 27 9b 8d e8 6a c7 b6 ff <0f> 0b e9 8a fe ff ff 41 bc f4 ff ff ff e9 ac fe ff ff 48 83 3d f8
+> RSP: 0000:ffffb45b40053c80 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: ffffa2827012b800 RCX: 0000000000000000
+> RDX: 0000000000000026 RSI: ffffffff8e26f666 RDI: ffffffff8e26fa66
+> RBP: ffffa282709b4b00 R08: 0000000089294f76 R09: 0000000000000026
+> R10: 000000000000000f R11: ffffb45b40053aa8 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000030
+> FS:  0000000000000000(0000) GS:ffffa28272600000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffa2827e5ff000 CR3: 000000008e80a001 CR4: 00000000001606f0
+> Call Trace:
+>  acpi_device_probe+0x40/0x100
+>  really_probe+0xe8/0x2d0
+>  driver_probe_device+0x57/0xd0
+>  ? driver_allows_async_probing+0x50/0x50
+>  bus_for_each_drv+0x90/0xe0
+>  __device_attach+0xea/0x160
+>  acpi_bus_register_early_device+0x4b/0x70
+>  acpi_ec_init+0x2ee/0x361
+>  acpi_init+0x410/0x4a0
+>  ? acpi_sleep_proc_init+0x4c/0x4c
+>  do_one_initcall+0x93/0x1f0
+>  kernel_init_freeable+0x3e7/0x4cc
+>  ? rest_init+0xc0/0xc0
+>  kernel_init+0x6/0x110
+>  ? rest_init+0xc0/0xc0
+>  ret_from_fork+0x35/0x40
+> ---[ end trace cd90af9f64ca9345 ]---
+> ------------[ cut here ]------------
+> Could not request EC cmd io port 0x66
+> WARNING: CPU: 0 PID: 1 at drivers/acpi/ec.c:1679 acpi_ec_add+0x257/0x280
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W       T 5.6.5 #5
+> Hardware name: LENOVO 20AQCTO1WW/20AQCTO1WW, BIOS GJET92WW (2.42 ) 03/03/2017
+> RIP: 0010:acpi_ec_add+0x257/0x280
+> Code: 8b 55 00 48 89 ef 48 89 10 e8 65 e0 ff ff 48 8b 2d 4e d7 3b 01 e9 4a fe ff ff 48 8b 75 10 48 c7 c7 d0 27 9b 8d e8 81 c7 b6 ff <0f> 0b e9 c9 fe ff ff 48 8b 75 18 48 c7 c7 a8 27 9b 8d e8 6a c7 b6
+> RAX: 0000000000000000 RBX: ffffa2827012b800 RCX: 0000000000000000
+> RDX: 0000000000000025 RSI: ffffffff8e26f665 RDI: ffffffff8e26fa65
+> RBP: ffffa282709b4b00 R08: 000000008935c8e8 R09: 0000000000000025
+> R10: 000000000000000f R11: ffffb45b40053aa8 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000030
+> FS:  0000000000000000(0000) GS:ffffa28272600000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffa2827e5ff000 CR3: 000000008e80a001 CR4: 00000000001606f0
+> Call Trace:
+>  acpi_device_probe+0x40/0x100
+>  really_probe+0xe8/0x2d0
+>  driver_probe_device+0x57/0xd0
+>  ? driver_allows_async_probing+0x50/0x50
+>  bus_for_each_drv+0x90/0xe0
+>  __device_attach+0xea/0x160
+>  acpi_bus_register_early_device+0x4b/0x70
+>  acpi_ec_init+0x2ee/0x361
+>  acpi_init+0x410/0x4a0
+>  ? acpi_sleep_proc_init+0x4c/0x4c
+>  do_one_initcall+0x93/0x1f0
+>  kernel_init_freeable+0x3e7/0x4cc
+>  ? rest_init+0xc0/0xc0
+>  kernel_init+0x6/0x110
+>  ? rest_init+0xc0/0xc0
+>  ret_from_fork+0x35/0x40
+> ---[ end trace cd90af9f64ca9346 ]---
+> iommu: Default domain type: Translated
+> pci 0000:00:02.0: vgaarb: setting as boot VGA device
+> pci 0000:00:02.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+> pci 0000:00:02.0: vgaarb: bridge control possible
+> vgaarb: loaded
+> SCSI subsystem initialized
+> libata version 3.00 loaded.
+> ACPI: bus type USB registered
+> usbcore: registered new interface driver usbfs
+> usbcore: registered new interface driver hub
+> usbcore: registered new device driver usb
+> pps_core: LinuxPPS API ver. 1 registered
+> pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+> EDAC MC: Ver: 3.0.0
+> PCI: Using ACPI for IRQ routing
+> PCI: pci_cache_line_size set to 64 bytes
+> e820: reserve RAM buffer [mem 0x0009d000-0x0009ffff]
+> e820: reserve RAM buffer [mem 0xaf70b000-0xafffffff]
+> e820: reserve RAM buffer [mem 0x33e600000-0x33fffffff]
+> hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0, 0, 0, 0, 0, 0
+> hpet0: 8 comparators, 64-bit 14.318180 MHz counter
+> clocksource: Switched to clocksource tsc-early
+> *** VALIDATE ramfs ***
+> *** VALIDATE hugetlbfs ***
+> pnp: PnP ACPI init
+> system 00:00: [mem 0x00000000-0x0009ffff] could not be reserved
+> system 00:00: [mem 0x000c0000-0x000c3fff] could not be reserved
+> system 00:00: [mem 0x000c4000-0x000c7fff] could not be reserved
+> system 00:00: [mem 0x000c8000-0x000cbfff] could not be reserved
+> system 00:00: [mem 0x000cc000-0x000cffff] could not be reserved
+> system 00:00: [mem 0x000d0000-0x000d3fff] has been reserved
+> system 00:00: [mem 0x000d4000-0x000d7fff] has been reserved
+> system 00:00: [mem 0x000d8000-0x000dbfff] has been reserved
+> system 00:00: [mem 0x000dc000-0x000dffff] has been reserved
+> system 00:00: [mem 0x000e0000-0x000e3fff] could not be reserved
+> system 00:00: [mem 0x000e4000-0x000e7fff] could not be reserved
+> system 00:00: [mem 0x000e8000-0x000ebfff] could not be reserved
+> system 00:00: [mem 0x000ec000-0x000effff] could not be reserved
+> system 00:00: [mem 0x000f0000-0x000fffff] could not be reserved
+> system 00:00: [mem 0x00100000-0xbf9fffff] could not be reserved
+> system 00:00: [mem 0xfec00000-0xfed3ffff] could not be reserved
+> system 00:00: [mem 0xfed4c000-0xffffffff] could not be reserved
+> system 00:00: Plug and Play ACPI device, IDs PNP0c01 (active)
+> pnp 00:01: [Firmware Bug]: PNP resource [mem 0xfed10000-0xfed13fff] covers only part of 0000:00:00.0 Intel MCH; extending to [mem 0xfed10000-0xfed17fff]
+> system 00:01: [io  0x1800-0x189f] has been reserved
+> system 00:01: [io  0x0800-0x087f] has been reserved
+> system 00:01: [io  0x0880-0x08ff] has been reserved
+> system 00:01: [io  0x0900-0x097f] has been reserved
+> system 00:01: [io  0x0980-0x09ff] has been reserved
+> system 00:01: [io  0x0a00-0x0a7f] has been reserved
+> system 00:01: [io  0x0a80-0x0aff] has been reserved
+> system 00:01: [io  0x0b00-0x0b7f] has been reserved
+> system 00:01: [io  0x0b80-0x0bff] has been reserved
+> system 00:01: [io  0x15e0-0x15ef] has been reserved
+> system 00:01: [io  0x1600-0x167f] has been reserved
+> system 00:01: [io  0x1640-0x165f] has been reserved
+> system 00:01: [mem 0xf8000000-0xfbffffff] has been reserved
 > 
-> > >  	struct cpa_data *cpa = data;
-> > >  	unsigned int i;
-
-Basically we (tip) strive for the inverse xmas tree thing, so here that
-would be:
-
-	struct cpa_data *cpa = data;
-+	struct page *page, *tmp;
-+	LIST_HEAD(pgtables);
-	unsigned int i;
-
-
-> > > +	pr_debug("2M restored at %#lx\n", addr);
-> > 
-> > While I appreciate it's usefulness while writing this, I do think we can
-> > do without that print once we know it works.
+> --
+> Toralf
 > 
-> Even with pr_debug()? I shouldn't be noisy for most users.
 
-I always have debug on; also there is no counterpart on split either.
 
-> > > +/*
-> > > + * Restore PMD and PUD pages in the kernel mapping around the address where
-> > > + * possible.
-> > > + *
-> > > + * Caller must flush TLB and free page tables queued on the list before
-> > > + * touching the new entries. CPU must not see TLB entries of different size
-> > > + * with different attributes.
-> > > + */
-> > > +static void restore_large_pages(unsigned long addr, struct list_head *pgtables)
-> > > +{
-> > > +	pgd_t *pgd;
-> > > +	p4d_t *p4d;
-> > > +	pud_t *pud;
-> > > +
-> > > +	addr &= PUD_MASK;
-> > > +
-> > > +	spin_lock(&pgd_lock);
-> > > +	pgd = pgd_offset_k(addr);
-> > > +	if (pgd_none(*pgd))
-> > > +		goto out;
-> > > +	p4d = p4d_offset(pgd, addr);
-> > > +	if (p4d_none(*p4d))
-> > > +		goto out;
-> > > +	pud = pud_offset(p4d, addr);
-> > > +	if (!pud_present(*pud) || pud_large(*pud))
-> > > +		goto out;
-> > > +
-> > > +	restore_pud_page(pud, addr, pgtables);
-> > > +out:
-> > > +	spin_unlock(&pgd_lock);
-> > > +}
-> > 
-> > I find this odd, at best. AFAICT this does not attempt to reconstruct a
-> > PMD around @addr when possible. When the first PMD of the PUD can't be
-> > reconstructed, we give up entirely.
-> 
-> No, you misread. If the first PMD is not suitable, we give up
-> reconstructing PUD page, but we still look at all PMD of the PUD range.
-
-Aah, indeed. I got my brain in a twist reading that pud function.
-
-> But this might be excessive. What you are proposing below should be fine
-> and more efficient. If we do everything right the rest of PMDs in the PUD
-> have to already large or not suitable for reconstructing.
-
-Just so.
-
-> We might still look at the rest of PMDs for CONFIG_CPA_DEBUG, just to make
-> sure we don't miss some corner case where we didn't restore a PMD.
-> 
-> (Also I think about s/restore/reconstruct/g)
-
-Right, and WARN if they do succeed collapsing ;-)
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
