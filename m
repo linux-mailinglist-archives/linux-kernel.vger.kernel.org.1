@@ -2,100 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D1A1ADC80
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2F31ADC8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgDQLvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 07:51:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:50264 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730410AbgDQLvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:51:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6E1530E;
-        Fri, 17 Apr 2020 04:51:18 -0700 (PDT)
-Received: from [10.57.59.184] (unknown [10.57.59.184])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 984933F6C4;
-        Fri, 17 Apr 2020 04:51:17 -0700 (PDT)
-Subject: Re: [RFC PATCH] arm64: dts: rockchip: add core devicetree for rk3318
-To:     Heiko Stuebner <heiko@sntech.de>, Johan Jonker <jbx6244@gmail.com>
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-References: <20200417105739.3718-1-jbx6244@gmail.com>
- <2141402.AJMLQ3pQEO@phil>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <6d5a1d27-8d32-eca2-007c-aa0bed81af46@arm.com>
-Date:   Fri, 17 Apr 2020 12:51:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730531AbgDQLxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 07:53:52 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:44209 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730464AbgDQLxw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 07:53:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587124430; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=c23aGFTRbhoiRak4PE8kbsHH6SCohQNSkBPKZkx8Zac=;
+ b=e5QXaXkw+B+ibA5eQlDg3821lF/nrvbapMbDcUxxLadS/sVqINTEEftZsUKOM+fzqYF21o9Q
+ YM01Ra5YnW9IizKK8a8FhvqGZYtjOg6j4QUtc+HLXaCdy8lSEGVpuDmlZ6VyhqgSAxa7/5lZ
+ 2QPYiAlv/fw3uOcweetmNuNVuGI=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9998cc.7fed12fc7dc0-smtp-out-n01;
+ Fri, 17 Apr 2020 11:53:48 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 249EDC4478F; Fri, 17 Apr 2020 11:53:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1AE2C433F2;
+        Fri, 17 Apr 2020 11:53:46 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <2141402.AJMLQ3pQEO@phil>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 17 Apr 2020 17:23:46 +0530
+From:   kgunda@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        lee.jones@linaro.org, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, daniel.thompson@linaro.org,
+        jacek.anaszewski@gmail.com, pavel@ucw.cz, mark.rutland@arm.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        linux-arm-msm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Subject: Re: [PATCH V5 1/4] backlight: qcom-wled: convert the wled bindings to
+ .yaml format
+In-Reply-To: <20200415150904.GA11174@bogus>
+References: <1586274430-28402-1-git-send-email-kgunda@codeaurora.org>
+ <1586274430-28402-2-git-send-email-kgunda@codeaurora.org>
+ <20200415150904.GA11174@bogus>
+Message-ID: <557e8bd874256271174402b5faba9c90@codeaurora.org>
+X-Sender: kgunda@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-17 12:05 pm, Heiko Stuebner wrote:
-> Hi Johan,
-> 
-> Am Freitag, 17. April 2020, 12:57:39 CEST schrieb Johan Jonker:
->> The rk3318 is basically a rk3328 with improved gpu,
->> so add a dtsi based on that.
->>
->> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> 
-> Please don't add dangling dtsi files.
-> I'd expect at least a board dts to actually use that and
-> also the updated gpu node.
-> 
->  From a cursory glance it looks like it gets upgraded from
-> 450-MP2 to 450MP3 or so, so that would at least mean
-> another set of interrupts.
-
-I'm not sure anything's "improved" - as far as the internet can tell 
-it's a special low-cost variant of RK3328 for low-end TV box vendors 
-that Rockchip don't want to talk about. The DTB for my H96 Max 3318 
-shows no appreciable difference from the BSP DT for RK3328, although I 
-wouldn't be surprised if some of the unused stuff like the external GMAC 
-was actually missing or broken. The board itself is the exact same one 
-used in a lot of other cheap RK3328 boxes (and I mean literally, it's 
-silkscreened "RK3328_8D4_V1.2").
-
-Thanks to one unexpectedly honest Aliexpress listing I stumbled across, 
-the "penta-core GPU" apparently translates from TV-box-marketing-speak 
-to mean Mali-450 MP2 (1GP + 2PP) plus the RGA plus the VOP ;)
-
-Robin.
-
-> 
-> Heiko
-> 
+On 2020-04-15 20:39, Rob Herring wrote:
+> On Tue, Apr 07, 2020 at 09:17:07PM +0530, Kiran Gunda wrote:
+>> Convert the qcom-wled bindings from .txt to .yaml format.
+>> Also replace PM8941 to WLED3 and PMI8998 to WLED4.
+>> 
+>> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+>> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+>> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
 >> ---
->>   arch/arm64/boot/dts/rockchip/rk3318.dtsi | 3 +++
->>   1 file changed, 3 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3318.dtsi
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3318.dtsi b/arch/arm64/boot/dts/rockchip/rk3318.dtsi
+>>  .../bindings/leds/backlight/qcom-wled.txt          | 154 
+>> ----------------
+>>  .../bindings/leds/backlight/qcom-wled.yaml         | 201 
+>> +++++++++++++++++++++
+>>  2 files changed, 201 insertions(+), 154 deletions(-)
+>>  delete mode 100644 
+>> Documentation/devicetree/bindings/leds/backlight/qcom-wled.txt
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+> 
+> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml 
+>> b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
 >> new file mode 100644
->> index 000000000..a32f771bc
+>> index 0000000..770e780
 >> --- /dev/null
->> +++ b/arch/arm64/boot/dts/rockchip/rk3318.dtsi
->> @@ -0,0 +1,3 @@
->> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>> +++ b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+>> @@ -0,0 +1,201 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/leds/backlight/qcom-wled.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 >> +
->> +#include "rk3328.dtsi"
->>
+>> +title: Binding for Qualcomm Technologies, Inc. WLED driver
+>> +
+>> +maintainers:
+>> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+>> +  - Kiran Gunda <kgunda@codeaurora.org>
+>> +
+>> +description: |
+>> +  WLED (White Light Emitting Diode) driver is used for controlling 
+>> display
+>> +  backlight that is part of PMIC on Qualcomm Technologies, Inc. 
+>> reference
+>> +  platforms. The PMIC is connected to the host processor via SPMI 
+>> bus.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - qcom,pm8941-wled
+>> +      - qcom,pmi8998-wled
+>> +      - qcom,pm660l-wled
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  default-brightness:
+>> +    description:
+>> +      brightness value on boot.
+>> +    minimum: 0
+>> +    maximum: 4095
+>> +    default: 2048
+>> +
+>> +  label: true
+>> +
+>> +  qcom,cs-out:
+>> +    description:
+>> +      enable current sink output.
+>> +      This property is supported only for WLED3.
+>> +    type: boolean
+>> +
+>> +  qcom,cabc:
+>> +    description:
+>> +      enable content adaptive backlight control.
+>> +    type: boolean
+>> +
+>> +  qcom,ext-gen:
+>> +    description:
+>> +      use externally generated modulator signal to dim.
+>> +      This property is supported only for WLED3.
+>> +    type: boolean
+>> +
+>> +  qcom,current-limit:
+>> +    description:
+>> +      mA; per-string current limit.
+>> +      This property is supported only for WLED3.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +    default: 20
+>> +    minimum: 0
+>> +    maximum: 25
+>> +    multipleOf: 1
 > 
+> No point in defining a multiple of 1.
 > 
+>> +
+>> +  qcom,current-limit-microamp:
+>> +    description:
+>> +      uA; per-string current limit.
+>> +    default: 25
+>> +    minimum: 0
+>> +    maximum: 30000
+>> +    multipleOf: 25
+>> +
+>> +  qcom,current-boost-limit:
+>> +    description:
+>> +      mA; boost current limit.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  qcom,switching-freq:
+>> +    description:
+>> +      kHz; switching frequency.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +      - enum: [ 600, 640, 685, 738, 800, 872, 960, 1066, 1200, 1371, 
+>> 1600, 1920, 2400, 3200, 4800, 9600 ]
+>> +
+>> +  qcom,ovp:
+>> +    description:
+>> +      V; Over-voltage protection limit.
+>> +      This property is supported only for WLED3.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +      - enum: [ 27, 29, 32, 35 ]
+>> +      - default: 29
+>> +
+>> +  qcom,ovp-millivolt:
+>> +    description:
+>> +      Over-voltage protection limit. This property is for WLED4 only.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +      - enum: [ 18100, 19600, 29600, 31100 ]
+>> +      - default: 29600
+>> +
+>> +  qcom,num-strings:
+>> +    description:
+>> +      number of led strings attached.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  qcom,enabled-strings:
+>> +    description:
+>> +      Array of the WLED strings numbered from 0 to 3. Each
+>> +      string of leds are operated individually. Specify the
+>> +      list of strings used by the device. Any combination of
+>> +      led strings can be used.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    minItems: 1
+>> +    maxItems: 4
+>> +
+>> +  qcom,external-pfet:
+>> +    description:
+>> +      Specify if external PFET control for short circuit
+>> +      protection is used. This property is supported only
+>> +      for WLED4.
+>> +    type: boolean
+>> +
+>> +  qcom,auto-string-detection:
+>> +    description:
+>> +      Enables auto-detection of the WLED string configuration.
+>> +      This feature is not supported for WLED3.
+>> +    type: boolean
+>> +
+>> +allOf:
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            const: qcom,pm8941-wled
+>> +
+>> +    then:
+>> +      properties:
+>> +        qcom,current-boost-limit:
+>> +           enum: [ 105, 385, 525, 805, 980, 1260, 1400, 1680 ]
+>> +           default: 805
+>> +
+>> +        qcom,switching-freq:
+>> +           default: 1600
+>> +
+>> +        qcom,num-strings:
+>> +           enum: [ 1, 2, 3 ]
+>> +
+>> +        interrupts:
+>> +          items:
+>> +            - description: over voltage protection interrupt.
+>> +
+>> +        interrupt-names:
+>> +          items:
+>> +            - const: ovp
+>> +
+>> +    else:
+>> +      properties:
+>> +        qcom,current-boost-limit:
+>> +           enum: [ 105, 280, 450, 620, 970, 1150, 1300, 1500 ]
+>> +           default: 970
+>> +
+>> +        qcom,switching-freq:
+>> +           default: 800
+>> +
+>> +        qcom,num-strings:
+>> +           enum: [ 1, 2, 3, 4 ]
+>> +
+>> +        interrupts:
+>> +          items:
+>> +            - description: over voltage protection interrupt.
+>> +            - description: short circuit interrupt.
+>> +
+>> +        interrupt-names:
+>> +          items:
+>> +            - const: ovp
+>> +            - const: short
 > 
+> Move these 2 props to the main section adding a 'minItems: 1'. Then 
+> just
+> define 'minItems: 2' here and 'maxItems: 1' in the 'then' clause.
 > 
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - label
 > 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> Add:
 > 
+> additionalProperties: false
+> 
+>> +
+>> +examples:
+>> +  - |
+>> +    backlight@d800 {
+>> +        compatible = "qcom,pm8941-wled";
+>> +        reg = <0xd800 0x100>;
+>> +        label = "backlight";
+>> +
+>> +        qcom,cs-out;
+>> +        qcom,current-limit = <20>;
+>> +        qcom,current-boost-limit = <805>;
+>> +        qcom,switching-freq = <1600>;
+>> +        qcom,ovp = <29>;
+>> +        qcom,num-strings = <2>;
+>> +        qcom,enabled-strings = <0 1>;
+>> +     };
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>>  a Linux Foundation Collaborative Project
+>> 
+Thanks for reviewing. I will submit the next revision with all the 
+fixes.
