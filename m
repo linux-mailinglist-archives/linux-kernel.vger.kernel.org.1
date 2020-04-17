@@ -2,187 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAE11AE432
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0B81AE44A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730370AbgDQSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:01:37 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:49226 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730278AbgDQSBg (ORCPT
+        id S1730433AbgDQSKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:10:11 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:11547 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730261AbgDQSKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:01:36 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPVJ0-0002nt-Hj; Fri, 17 Apr 2020 12:01:34 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPVIy-0006x7-Sb; Fri, 17 Apr 2020 12:01:34 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Date:   Fri, 17 Apr 2020 12:58:31 -0500
-Message-ID: <87y2quc7ug.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 17 Apr 2020 14:10:10 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200417181007epoutp03bbceebc566203e48edb827b2a8ed2276~GrctrAkFU0173901739epoutp03t
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 18:10:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200417181007epoutp03bbceebc566203e48edb827b2a8ed2276~GrctrAkFU0173901739epoutp03t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1587147007;
+        bh=oiCEJmK0tACS8TZgl1ceI/I0bD1xx/OZpcpK1o4POBw=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=nAYywgm9n8BZvjWDbJ8vVDFf3XFBfSFjt/GJ8rs1OX8dCIZKenAeMJiUkYv7I+quK
+         9IEeFH6R/eULYVZfxjJtGQwbLQij6O+/D7IRMuAc+BAkpmEDRtEHi9VNJ1deaKjrmS
+         DuybnZPtZdxN5GvgEYAlMgrElK7Dg+1B0OCyMjjI=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200417181006epcas5p24f52712e1e973832095adc673595b5fc~GrcsqvLgV0105401054epcas5p2l;
+        Fri, 17 Apr 2020 18:10:06 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7C.16.04778.EF0F99E5; Sat, 18 Apr 2020 03:10:06 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200417181006epcas5p269f8c4b94e60962a0b0318ef64a65364~Grcr_R6fc0105401054epcas5p2i;
+        Fri, 17 Apr 2020 18:10:06 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200417181006epsmtrp13c850803575bf2e50771d3d72ad4fbef~Grcr9T4P60669906699epsmtrp1D;
+        Fri, 17 Apr 2020 18:10:06 +0000 (GMT)
+X-AuditID: b6c32a4a-353ff700000012aa-07-5e99f0fe34f7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2C.D0.04024.DF0F99E5; Sat, 18 Apr 2020 03:10:05 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200417181004epsmtip1781ed587c91bb31ddc46c8aecb30bdca~GrcqI7GJd2094920949epsmtip1E;
+        Fri, 17 Apr 2020 18:10:03 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
+        krzk@kernel.org, avri.altman@wdc.com, martin.petersen@oracle.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH v6 0/10] exynos-ufs: Add support for UFS HCI
+Date:   Fri, 17 Apr 2020 23:29:34 +0530
+Message-Id: <20200417175944.47189-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jPVIy-0006x7-Sb;;;mid=<87y2quc7ug.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18A/NXNfLi9rMluPPKH7xgUBMnP76m2akk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TooManySym_01,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1259 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 14 (1.1%), b_tie_ro: 12 (0.9%), parse: 1.60
-        (0.1%), extract_message_metadata: 20 (1.6%), get_uri_detail_list: 3.7
-        (0.3%), tests_pri_-1000: 14 (1.1%), tests_pri_-950: 1.35 (0.1%),
-        tests_pri_-900: 1.15 (0.1%), tests_pri_-90: 101 (8.0%), check_bayes:
-        98 (7.8%), b_tokenize: 11 (0.9%), b_tok_get_all: 13 (1.0%),
-        b_comp_prob: 4.7 (0.4%), b_tok_touch_all: 64 (5.1%), b_finish: 1.22
-        (0.1%), tests_pri_0: 265 (21.0%), check_dkim_signature: 0.46 (0.0%),
-        check_dkim_adsp: 9 (0.7%), poll_dns_idle: 823 (65.4%), tests_pri_10:
-        2.1 (0.2%), tests_pri_500: 835 (66.4%), rewrite_mail: 0.00 (0.0%)
-Subject: [GIT PULL] Please pull proc fixes for v5.7-rc2
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsWy7bCmuu6/DzPjDH7e1rF4MG8bm8XLn1fZ
+        LD6tX8ZqMf/IOVaL8+c3sFvc3HKUxWLT42usFpd3zWGzmHF+H5NF9/UdbBbLj/9jsvi/Zwe7
+        xdKtNxkdeD0u9/UyeWxa1cnmsXlJvUfLyf0sHh+f3mLx6NuyitHj8yY5j/YD3UwBHFFcNimp
+        OZllqUX6dglcGbtPHGAsaJSsuPZ9CXMD41ThLkYODgkBE4kPDxm7GLk4hAR2M0p8X38WyvnE
+        KNG88CwrhPONUaLn2y+mLkZOsI4XH+6A2UICexklPi/ghihqYZLYeewjM0iCTUBb4u70LWBF
+        IgLCEke+tTGC2MwCN5gkHqx0AbGFBWwktq7ezQJiswioSvzuPARWzwsU72tvZoVYJi+xesMB
+        Zoi4oMTJmU9YIObISzRvnc0MslhC4DObxLL3p5khGlwktq/+B2ULS7w6voUdwpaSeNnfxg7x
+        c7ZEzy5jiHCNxNJ5x1ggbHuJA1fmsICUMAtoSqzfpQ+xik+i9/cTJohOXomONiGIalWJ5ndX
+        oTqlJSZ2d7NClHhIvJ6eDAmdWInXC2+yTWCUm4Xk/llI7p+FsGsBI/MqRsnUguLc9NRi0wKj
+        vNRyveLE3OLSvHS95PzcTYzghKTltYNx2TmfQ4wCHIxKPLwdfTPjhFgTy4orcw8xSnAwK4nw
+        HnQDCvGmJFZWpRblxxeV5qQWH2KU5mBREuedxHo1RkggPbEkNTs1tSC1CCbLxMEp1cDosML2
+        gelk/SMLq1f+F0jWO6LG+HJ+zLe81TZpOYa7a1lWzOSpM5xg47oinOf6zctbD7W37lz0a63a
+        sXCNr2nLX89N3Ps0IHBb5FP/p3mdVXllap1LdPpOLZnVsDPMz5+7YLnRIVV9O72Xvgdapq/s
+        E8i7vnUZe+mOo9krOJomv35z6FKJJlecEktxRqKhFnNRcSIAQEhZCUQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHLMWRmVeSWpSXmKPExsWy7bCSnO7fDzPjDLa8tLR4MG8bm8XLn1fZ
+        LD6tX8ZqMf/IOVaL8+c3sFvc3HKUxWLT42usFpd3zWGzmHF+H5NF9/UdbBbLj/9jsvi/Zwe7
+        xdKtNxkdeD0u9/UyeWxa1cnmsXlJvUfLyf0sHh+f3mLx6NuyitHj8yY5j/YD3UwBHFFcNimp
+        OZllqUX6dglcGbtPHGAsaJSsuPZ9CXMD41ThLkZODgkBE4kXH+4wdTFycQgJ7GaUWH5nCzNE
+        Qlri+sYJ7BC2sMTKf8/ZIYqamCTanq5jBUmwCWhL3J2+hQnEFgEqOvKtjRHEZhZ4xiRx6mEp
+        iC0sYCOxdfVuFhCbRUBV4nfnIbB6XqB4X3szK8QCeYnVGw4wQ8QFJU7OfAJUzwE0R11i/Twh
+        iJHyEs1bZzNPYOSfhaRqFkLVLCRVCxiZVzFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525i
+        BMeKluYOxstL4g8xCnAwKvHwGvTMjBNiTSwrrsw9xCjBwawkwnvQDSjEm5JYWZValB9fVJqT
+        WnyIUZqDRUmc92nesUghgfTEktTs1NSC1CKYLBMHp1QDo2dZ7N5ZrxMmfZ+8YFP+P+PiDy2T
+        bKZaO9ZFb1n/8Jzd+ZerTF93Pysrdqxj3jg/wq5RuuxXYHvm8wnTLjY7dBXfzP04X8vzbtGm
+        9KNagk+Zt0zO4WBW0ZDzcZ731ubFhl+PZH1jLq/MOD1Ln/ne52Y1t9lfGmybjtuXaR1pa+vx
+        PzkvtejKBSWW4oxEQy3mouJEAK8j1oSRAgAA
+X-CMS-MailID: 20200417181006epcas5p269f8c4b94e60962a0b0318ef64a65364
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200417181006epcas5p269f8c4b94e60962a0b0318ef64a65364
+References: <CGME20200417181006epcas5p269f8c4b94e60962a0b0318ef64a65364@epcas5p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch-set introduces UFS (Universal Flash Storage) host controller support
+for Samsung family SoC. Mostly, it consists of UFS PHY and host specific driver.
+
+- Changes since v5:
+* re-introduce various quicks which was removed because of no driver
+* consumer of those quirks, initial 4 patches does the same.
+* Added Reviewed-by tags
+* rebased on top of v5.7-rc1
+* included Kiwoong's patch in this series, which this driver needs
+
+- Changes since v4:
+* Addressed review comments from Avir and Rob 
+* Minor improvment on the ufs phy and ufshc drivers
+* Added Tested-by from Pawel
+* Change UFS binding to DT schema format
 
 
-Linus,
+- Changes since v3:
+* Addressed Kishon's and Avir's review comments
+* fixed make dt_binding_check error as pointed by Rob 
 
-Please pull the for-linus branch from the git tree:
+- Changes since v2:
+* fixed build warning by kbuild test robot 
+* Added Reported-by tags
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-linus
+- Changes since v1:
+* fixed make dt_binding_check error as pointed by Rob
+* Addressed Krzysztof's review comments
+* Added Reviewed-by tags
 
-   HEAD: 4fa3b1c417377c352208ee9f487e17cfcee32348 proc: Handle umounts cleanly
+Note: This series is based on Linux-5.7-rc1 (commit: 8f3d9f354286)
 
-While running syzbot happened to spot one more oversight in my rework of
-proc_flush_task.  The fields proc_self and proc_thread_self were not
-being reinitialized on when proc was unmounted, which could cause
-problems if the mount of proc fails.
+Alim Akhtar (9):
+  scsi: ufs: add quirk to fix mishandling utrlclr/utmrlclr
+  scsi: ufs: add quirk to disallow reset of interrupt aggregation
+  scsi: ufs: add quirk to enable host controller without hce
+  scsi: ufs: introduce UFSHCD_QUIRK_PRDT_BYTE_GRAN quirk
+  dt-bindings: phy: Document Samsung UFS PHY bindings
+  phy: samsung-ufs: add UFS PHY driver for samsung SoC
+  dt-bindings: ufs: Add DT binding documentation for ufs
+  scsi: ufs-exynos: add UFS host support for Exynos SoCs
+  arm64: dts: Add node for ufs exynos7
 
----
+Kiwoong Kim (1):
+  scsi: ufs: add quirk to fix abnormal ocs fatal error
 
-From 4fa3b1c417377c352208ee9f487e17cfcee32348 Mon Sep 17 00:00:00 2001
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed, 15 Apr 2020 12:37:27 -0500
-Subject: [PATCH] proc: Handle umounts cleanly
+ .../bindings/phy/samsung,ufs-phy.yaml         |   74 +
+ .../bindings/ufs/samsung,exynos-ufs.yaml      |   93 ++
+ .../boot/dts/exynos/exynos7-espresso.dts      |    4 +
+ arch/arm64/boot/dts/exynos/exynos7.dtsi       |   44 +-
+ drivers/phy/samsung/Kconfig                   |    9 +
+ drivers/phy/samsung/Makefile                  |    1 +
+ drivers/phy/samsung/phy-exynos7-ufs.h         |   85 ++
+ drivers/phy/samsung/phy-samsung-ufs.c         |  369 +++++
+ drivers/phy/samsung/phy-samsung-ufs.h         |  142 ++
+ drivers/scsi/ufs/Kconfig                      |   12 +
+ drivers/scsi/ufs/Makefile                     |    1 +
+ drivers/scsi/ufs/ufs-exynos.c                 | 1289 +++++++++++++++++
+ drivers/scsi/ufs/ufs-exynos.h                 |  284 ++++
+ drivers/scsi/ufs/ufshcd.c                     |  126 +-
+ drivers/scsi/ufs/ufshcd.h                     |   29 +
+ drivers/scsi/ufs/unipro.h                     |   36 +
+ 16 files changed, 2584 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/samsung,ufs-phy.yaml
+ create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+ create mode 100644 drivers/phy/samsung/phy-exynos7-ufs.h
+ create mode 100644 drivers/phy/samsung/phy-samsung-ufs.c
+ create mode 100644 drivers/phy/samsung/phy-samsung-ufs.h
+ create mode 100644 drivers/scsi/ufs/ufs-exynos.c
+ create mode 100644 drivers/scsi/ufs/ufs-exynos.h
 
-syzbot writes:
-> KASAN: use-after-free Read in dput (2)
->
-> proc_fill_super: allocate dentry failed
-> ==================================================================
-> BUG: KASAN: use-after-free in fast_dput fs/dcache.c:727 [inline]
-> BUG: KASAN: use-after-free in dput+0x53e/0xdf0 fs/dcache.c:846
-> Read of size 4 at addr ffff88808a618cf0 by task syz-executor.0/8426
->
-> CPU: 0 PID: 8426 Comm: syz-executor.0 Not tainted 5.6.0-next-20200412-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x188/0x20d lib/dump_stack.c:118
->  print_address_description.constprop.0.cold+0xd3/0x315 mm/kasan/report.c:382
->  __kasan_report.cold+0x35/0x4d mm/kasan/report.c:511
->  kasan_report+0x33/0x50 mm/kasan/common.c:625
->  fast_dput fs/dcache.c:727 [inline]
->  dput+0x53e/0xdf0 fs/dcache.c:846
->  proc_kill_sb+0x73/0xf0 fs/proc/root.c:195
->  deactivate_locked_super+0x8c/0xf0 fs/super.c:335
->  vfs_get_super+0x258/0x2d0 fs/super.c:1212
->  vfs_get_tree+0x89/0x2f0 fs/super.c:1547
->  do_new_mount fs/namespace.c:2813 [inline]
->  do_mount+0x1306/0x1b30 fs/namespace.c:3138
->  __do_sys_mount fs/namespace.c:3347 [inline]
->  __se_sys_mount fs/namespace.c:3324 [inline]
->  __x64_sys_mount+0x18f/0x230 fs/namespace.c:3324
->  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
->  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> RIP: 0033:0x45c889
-> Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007ffc1930ec48 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000001324914 RCX: 000000000045c889
-> RDX: 0000000020000140 RSI: 0000000020000040 RDI: 0000000000000000
-> RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> R13: 0000000000000749 R14: 00000000004ca15a R15: 0000000000000013
 
-Looking at the code now that it the internal mount of proc is no
-longer used it is possible to unmount proc.   If proc is unmounted
-the fields of the pid namespace that were used for filesystem
-specific state are not reinitialized.
-
-Which means that proc_self and proc_thread_self can be pointers to
-already freed dentries.
-
-The reported user after free appears to be from mounting and
-unmounting proc followed by mounting proc again and using error
-injection to cause the new root dentry allocation to fail.  This in
-turn results in proc_kill_sb running with proc_self and
-proc_thread_self still retaining their values from the previous mount
-of proc.  Then calling dput on either proc_self of proc_thread_self
-will result in double put.  Which KASAN sees as a use after free.
-
-Solve this by always reinitializing the filesystem state stored
-in the struct pid_namespace, when proc is unmounted.
-
-Reported-by: syzbot+72868dd424eb66c6b95f@syzkaller.appspotmail.com
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Fixes: 69879c01a0c3 ("proc: Remove the now unnecessary internal mount of proc")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- fs/proc/root.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/proc/root.c b/fs/proc/root.c
-index 2633f10446c3..cdbe9293ea55 100644
---- a/fs/proc/root.c
-+++ b/fs/proc/root.c
-@@ -196,6 +196,13 @@ static void proc_kill_sb(struct super_block *sb)
- 	if (ns->proc_thread_self)
- 		dput(ns->proc_thread_self);
- 	kill_anon_super(sb);
-+
-+	/* Make the pid namespace safe for the next mount of proc */
-+	ns->proc_self = NULL;
-+	ns->proc_thread_self = NULL;
-+	ns->pid_gid = GLOBAL_ROOT_GID;
-+	ns->hide_pid = 0;
-+
- 	put_pid_ns(ns);
- }
- 
+base-commit: 8f3d9f354286745c751374f5f1fcafee6b3f3136
 -- 
-2.20.1
-
-
-
-
-
+2.17.1
 
