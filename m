@@ -2,269 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA321AD73C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B8C1AD741
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728992AbgDQHRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:17:08 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:32227 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728513AbgDQHRH (ORCPT
+        id S1729029AbgDQHSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:18:16 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:57975 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728808AbgDQHSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:17:07 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 8E0A54E1AF8;
-        Fri, 17 Apr 2020 15:17:03 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, oss@buserror.net, christophe.leroy@c-s.fr,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v5,4/4] drivers: uio: new driver for fsl_85xx_cache_sram
-Date:   Fri, 17 Apr 2020 00:16:16 -0700
-Message-Id: <20200417071616.44598-5-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200417071616.44598-1-wenhu.wang@vivo.com>
-References: <20200417071616.44598-1-wenhu.wang@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVCS0pCQkJCTktPS0NCT1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PC46EAw4Tzg1OA43AwtKDhgW
-        ChRPCzdVSlVKTkNMSktMQ0lPS0hCVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUNISEo3Bg++
-X-HM-Tid: 0a7186ff81129376kuws8e0a54e1af8
+        Fri, 17 Apr 2020 03:18:15 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id PLGLjhe6v7xncPLGOj9cXk; Fri, 17 Apr 2020 09:18:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1587107893; bh=HSLs2JiZcy4OA1k/VMJ4MaHDQtFq2ylnKTJGakTcPR8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=D0shEtuyA6wOYrboGofBaD6Hcvyue0LHWkhqvWKl4cAbtlR+789ibtP1go8+npAdS
+         D0GJUT2xnk5cC3X13WO8g/7Fa6+BWe0BnzvxtPX5sgfGvl1PBgDfCCXMTipyw0iy21
+         miXGRXji8uREA4AP3zoHfQGgMK23lJVpbmtJHMud3KbXoTDg7k/iJ1Vzi4FYKaGhOB
+         9RvGs9lDNxWItdMUUytQXVk1iZ8gYrv1+i8XHXUZcyHdh7+wVoayGIwBUZtwzcTgaN
+         M8JHq2lwj72RCeNFDeBABlrTxp8HjSoTKN6BrYVUtB8IXEcr3ZbO/UtFhRxYrhCZZX
+         RvVEV+D9R0kPA==
+Subject: Re: [PATCH v2 7/9] media: MAINTAINERS: rkisp1: add path to
+ dt-bindings
+To:     Helen Koike <helen.koike@collabora.com>,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        robh+dt@kernel.org, heiko@sntech.de, kernel@collabora.com,
+        dafna.hirschfeld@collabora.com, ezequiel@collabora.com,
+        mark.rutland@arm.com, karthik.poduval@gmail.com, jbx6244@gmail.com,
+        kishon@ti.com
+References: <20200403161538.1375908-1-helen.koike@collabora.com>
+ <20200403161538.1375908-8-helen.koike@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <9a95d227-9592-2c5c-fe6d-dff9b84f4292@xs4all.nl>
+Date:   Fri, 17 Apr 2020 09:18:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20200403161538.1375908-8-helen.koike@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfN/6IaxCKZYDRmsDs68Ac7Ohz+Yi31l+n/3qIvjgojpcfRUtSJSc05kGL2CfXDapr3Rq4gYZgR4YeLxd10TX4h+NBJFBcEU+jLCtDcwIuTse6A59qRpJ
+ WiwqnAonGsAFeOerDoqNy1YmLjtUYSNLSY5LUmmSmKy0rm6DvctTMLL3W9KqFzXOfreLQuav06dYKKGgABldV/sXbi1MEA0/2ohTpssCluapKmoWm6umTG9e
+ HExIcM3ACV3iIWTi/FPC5szOfNda35Gg/qXqYmby1qh1kIs/HV8CftXHnN5/2d3NpCApcrT7MMY3/uVm+19nTEM/4gEtPEqIY9tyPN5whm6zo7Xe0SjvlqW3
+ IJCQMlQnO9vto6abRNvXyk95hQWSImEWy6sW2HSs/de9ytBnO5oQzOgIivkyTXpZwi/Fee2YnCZMiYP02i8q6QHktUWTEguBtgWDT5+tp9IJhrbyHhdZeUCv
+ 0f6v/H02P6xJWXY334V3m0VQ6GSTi8p3rJKXE/tJ4EuFT8fucFUXQTyG9nlsMApBPgbXguFq1nGWiDYo8XxIfY/JZOPhaeD78ELP20IXX39a21oQUFlNYEW8
+ Sv4OmjRKJehtX+CPvRbDgzx2v1cMFI1OQs1KvqsqqQdffVXGX/uoVqqqp+n2fnvsBb4D0CIuZgI89l2iB/T3/PoWTioEn1NwCWNUNnBSHspRLA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A driver for freescale 85xx platforms to access the Cache-Sram form
-user level. This is extremely helpful for some user-space applications
-that require high performance memory accesses.
+On 03/04/2020 18:15, Helen Koike wrote:
+> The Rockchip ISP bindings was moved out of staging.
+> Update MAINTAINERS file with the new path.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Scott Wood <oss@buserror.net>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
-Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
----
-Changes since v1:
- * Addressed comments from Greg K-H
- * Moved kfree(info->name) into uio_info_free_internal()
-Changes since v2:
- * Addressed comments from Greg, Scott and Christophe
- * Use "uiomem->internal_addr" as if condition for sram memory free,
-   and memset the uiomem entry
- * of_match_table modified to be apart from HW info which belong to
-   the HW level driver fsl_85xx_cache_sram to match
- * Use roundup_pow_of_two for align calc
- * Remove useless clear block of uiomem entries.
- * Use UIO_INFO_VER micro for info->version, and define it as
-   "devicetree,pseudo", meaning this is pseudo device and probed from
-   device tree configuration
-Changes since v3:
- * Addressed comments from Christophe(use devm_xxx memory alloc interfaces)
-Changes since v4:
- * Use module_param_string for of_match_table, no binding to devicetree
----
- drivers/uio/Kconfig                   |   9 ++
- drivers/uio/Makefile                  |   1 +
- drivers/uio/uio_fsl_85xx_cache_sram.c | 154 ++++++++++++++++++++++++++
- 3 files changed, 164 insertions(+)
- create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
+Shouldn't there be a reference to Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml
+as well in MAINTAINERS?
 
-diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
-index 202ee81cfc2b..9c3b47461b71 100644
---- a/drivers/uio/Kconfig
-+++ b/drivers/uio/Kconfig
-@@ -105,6 +105,15 @@ config UIO_NETX
- 	  To compile this driver as a module, choose M here; the module
- 	  will be called uio_netx.
- 
-+config UIO_FSL_85XX_CACHE_SRAM
-+	tristate "Freescale 85xx Cache-Sram driver"
-+	depends on FSL_SOC_BOOKE && PPC32
-+	select FSL_85XX_CACHE_SRAM
-+	help
-+	  Generic driver for accessing the Cache-Sram form user level. This
-+	  is extremely helpful for some user-space applications that require
-+	  high performance memory accesses.
-+
- config UIO_FSL_ELBC_GPCM
- 	tristate "eLBC/GPCM driver"
- 	depends on FSL_LBC
-diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
-index c285dd2a4539..be2056cffc21 100644
---- a/drivers/uio/Makefile
-+++ b/drivers/uio/Makefile
-@@ -10,4 +10,5 @@ obj-$(CONFIG_UIO_NETX)	+= uio_netx.o
- obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
- obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
- obj-$(CONFIG_UIO_FSL_ELBC_GPCM)	+= uio_fsl_elbc_gpcm.o
-+obj-$(CONFIG_UIO_FSL_85XX_CACHE_SRAM)	+= uio_fsl_85xx_cache_sram.o
- obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
-diff --git a/drivers/uio/uio_fsl_85xx_cache_sram.c b/drivers/uio/uio_fsl_85xx_cache_sram.c
-new file mode 100644
-index 000000000000..4db3648629b3
---- /dev/null
-+++ b/drivers/uio/uio_fsl_85xx_cache_sram.c
-@@ -0,0 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-+ * Copyright (C) 2020 Wang Wenhu <wenhu.wang@vivo.com>
-+ * All rights reserved.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/uio_driver.h>
-+#include <linux/stringify.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <asm/fsl_85xx_cache_sram.h>
-+
-+#define DRIVER_NAME	"uio_fsl_85xx_cache_sram"
-+#define UIO_INFO_VER	"devicetree,pseudo"
-+#define UIO_NAME	"uio_cache_sram"
-+
-+static void uio_info_free_internal(struct uio_info *info)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_UIO_MAPS; i++) {
-+		struct uio_mem *uiomem = &info->mem[i];
-+
-+		if (uiomem->internal_addr) {
-+			mpc85xx_cache_sram_free(uiomem->internal_addr);
-+			memset(uiomem, 0, sizeof(*uiomem));
-+		}
-+	}
-+}
-+
-+static int uio_fsl_85xx_cache_sram_probe(struct platform_device *pdev)
-+{
-+	struct device_node *parent = pdev->dev.of_node;
-+	struct device_node *node = NULL;
-+	struct uio_info *info;
-+	struct uio_mem *uiomem;
-+	const char *dt_name;
-+	u32 mem_size;
-+	int ret;
-+
-+	/* alloc uio_info for one device */
-+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	/* get optional uio name */
-+	if (of_property_read_string(parent, "uio_name", &dt_name))
-+		dt_name = UIO_NAME;
-+
-+	info->name = devm_kstrdup(&pdev->dev, dt_name, GFP_KERNEL);
-+	if (!info->name)
-+		return -ENOMEM;
-+
-+	uiomem = info->mem;
-+	for_each_child_of_node(parent, node) {
-+		void *virt;
-+		phys_addr_t phys;
-+
-+		ret = of_property_read_u32(node, "cache-mem-size", &mem_size);
-+		if (ret) {
-+			ret = -EINVAL;
-+			goto err_out;
-+		}
-+
-+		if (mem_size == 0) {
-+			dev_err(&pdev->dev, "error cache-mem-size should not be 0\n");
-+			ret = -EINVAL;
-+			goto err_out;
-+		}
-+
-+		virt = mpc85xx_cache_sram_alloc(mem_size, &phys,
-+						roundup_pow_of_two(mem_size));
-+		if (!virt) {
-+			/* mpc85xx_cache_sram_alloc to define the real cause */
-+			ret = -ENOMEM;
-+			goto err_out;
-+		}
-+
-+		uiomem->memtype = UIO_MEM_PHYS;
-+		uiomem->addr = phys;
-+		uiomem->size = mem_size;
-+		uiomem->name = kstrdup(node->name, GFP_KERNEL);
-+		uiomem->internal_addr = virt;
-+		uiomem++;
-+
-+		if (uiomem >= &info->mem[MAX_UIO_MAPS]) {
-+			dev_warn(&pdev->dev, "more than %d uio-maps for device.\n",
-+				 MAX_UIO_MAPS);
-+			break;
-+		}
-+	}
-+
-+	if (uiomem == info->mem) {
-+		dev_err(&pdev->dev, "error no valid uio-map configuration found\n");
-+		return -EINVAL;
-+	}
-+
-+	info->version = UIO_INFO_VER;
-+
-+	/* register uio device */
-+	if (uio_register_device(&pdev->dev, info)) {
-+		dev_err(&pdev->dev, "error uio,cache-sram registration failed\n");
-+		ret = -ENODEV;
-+		goto err_out;
-+	}
-+
-+	platform_set_drvdata(pdev, info);
-+
-+	return 0;
-+err_out:
-+	uio_info_free_internal(info);
-+	return ret;
-+}
-+
-+static int uio_fsl_85xx_cache_sram_remove(struct platform_device *pdev)
-+{
-+	struct uio_info *info = platform_get_drvdata(pdev);
-+
-+	uio_unregister_device(info);
-+
-+	uio_info_free_internal(info);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_OF
-+static struct of_device_id uio_fsl_85xx_cache_sram_of_match[] = {
-+	{ /* This is filled with module_parm */ },
-+	{ /* Sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, uio_fsl_85xx_cache_sram_of_match);
-+
-+module_param_string(of_id, uio_fsl_85xx_cache_sram_of_match[0].compatible,
-+		    sizeof(uio_fsl_85xx_cache_sram_of_match[0].compatible), 0);
-+MODULE_PARM_DESC(of_id, "platform device id to be handled by cache-sram-uio");
-+#endif
-+
-+static struct platform_driver uio_fsl_85xx_cache_sram = {
-+	.probe = uio_fsl_85xx_cache_sram_probe,
-+	.remove = uio_fsl_85xx_cache_sram_remove,
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.of_match_table	= of_match_ptr(uio_fsl_85xx_cache_sram_of_match),
-+	},
-+};
-+
-+module_platform_driver(uio_fsl_85xx_cache_sram);
-+
-+MODULE_AUTHOR("Wang Wenhu <wenhu.wang@vivo.com>");
-+MODULE_DESCRIPTION("Freescale MPC85xx Cache-Sram UIO Platform Driver");
-+MODULE_ALIAS("platform:" DRIVER_NAME);
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+Regards,
+
+	Hans
+
+> 
+> Suggested-by: Johan Jonker <jbx6244@gmail.com>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> ---
+> 
+> V2:
+> - This is a new patch in the series
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d66ac41ef5872..726044b84cf23 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14303,6 +14303,7 @@ M:	Helen Koike <helen.koike@collabora.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/staging/media/rkisp1/
+> +F:	Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+>  
+>  ROCKCHIP RASTER 2D GRAPHIC ACCELERATION UNIT DRIVER
+>  M:	Jacob Chen <jacob-chen@iotwrt.com>
+> 
 
