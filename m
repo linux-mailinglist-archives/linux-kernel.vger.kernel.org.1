@@ -2,411 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E871AE26D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340121AE279
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgDQQo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:44:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32929 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725964AbgDQQoY (ORCPT
+        id S1726728AbgDQQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgDQQrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:44:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587141861;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=iDnlDFp8LZAIQvaBjijyUwkyshz2bioFD+80EqCVbCk=;
-        b=bQvIN8yzgelDyi/Z+CbkfA7+yDiSP0dSCgt8BFfWHC0Il6CQAKk+1QA97w3QIJTUFEzJhA
-        cpWK+vWbMibn4Mfxd/NJEs8Xz3JcmmnGl8C5bBE14JAWpNS/TMe7Y6lKY6SuKkNBRWzUst
-        n6fBglb86599GVRwlSfiClwr806UFx0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-I8LXUi5lO7iizlxPTUktYQ-1; Fri, 17 Apr 2020 12:44:20 -0400
-X-MC-Unique: I8LXUi5lO7iizlxPTUktYQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 111A0801A07;
-        Fri, 17 Apr 2020 16:44:19 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E4461001920;
-        Fri, 17 Apr 2020 16:44:16 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: [PATCH 3/3] KVM: x86: move nested-related kvm_x86_ops to a separate struct
-Date:   Fri, 17 Apr 2020 12:44:13 -0400
-Message-Id: <20200417164413.71885-4-pbonzini@redhat.com>
-In-Reply-To: <20200417164413.71885-1-pbonzini@redhat.com>
-References: <20200417164413.71885-1-pbonzini@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Fri, 17 Apr 2020 12:47:53 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A854AC061A0C;
+        Fri, 17 Apr 2020 09:47:51 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id x66so3059965qkd.9;
+        Fri, 17 Apr 2020 09:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jvi5l+Cvi7+NgWuXgV5x5iR99VCJS8AvoQUrjoNh1iw=;
+        b=fwAAS0Z8VVEix3VtEOuCR8z9wpk2fNcZK7Qkvt3g3XkUfLhz/kIb5d4M7u6NpWHWJA
+         +bYMFMTScvLn9wjE031jSdS+wkhDzoHPy64Afx8sguBoLms/sM+Ty4laFKJ60kAXeCwz
+         mMD4/ReAbq8GHpRhWugXIxemWk+iLiaiBI2bHZ3oiwwa9STBZPIjkMog8sgVq/cKAf9d
+         I1SI6dig7shAOIPBVbWtWb0Ej0RC0Od3haL8GEk5/CcDpj0YVxKqxtyaypmccG0RnPBA
+         5QUsbUmiVJ57IRhgC9ungYg63FWOgNXnlMa307KvzqwoCmoEk0yz+Ck/isfocLrmZHIN
+         vLgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jvi5l+Cvi7+NgWuXgV5x5iR99VCJS8AvoQUrjoNh1iw=;
+        b=VQrbDvJZDAkXuB8Ijh5VconkwlbqUNoQbAAKcI8Ey0tfMlYXXIO7wwTyczaUUmKj4D
+         ECXnIjDBywOjcSmKwjLSk1sswCNei2+ZTXk1yfNQ9ic23OwceU7esMd5zj6cHiX6yIrm
+         U2OP//LydSOGLkA8UScjCQSBNtnS4r+1/c2/YNkhj24yGYMlcFueUu0ijbm5RXIq68XP
+         fqZxPDF126vdJd5zwd0Q7Oga6c2Bt5AP7n+OECIthbT/oyQpFCJb2sCu4uiqMrbq3sUr
+         aO9D6vn6iYmHGgMaqwbeI5SkW59wZq8XKOoWxYF1NYl8t5DEsJMfgsiOkaiK4I8KH8Ya
+         s3ng==
+X-Gm-Message-State: AGi0PubfuSN9lYmdZC3QHBp7L4SJ8C44qA5eB+7V4StAhVRcSnoSF2HE
+        QrkUQKz5JstDcEXH9SXEzg0=
+X-Google-Smtp-Source: APiQypIGbp1/VjpCIVYUMxOaqqwFJua/la/07UT+Ab8011YYmPU3sQyokDfvSOJ697BZwJE8V4RtjA==
+X-Received: by 2002:a37:508:: with SMTP id 8mr4325358qkf.265.1587142070761;
+        Fri, 17 Apr 2020 09:47:50 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id k2sm17714599qte.16.2020.04.17.09.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 09:47:49 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1FD9F409A3; Fri, 17 Apr 2020 13:47:47 -0300 (-03)
+Date:   Fri, 17 Apr 2020 13:47:47 -0300
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type printing
+Message-ID: <20200417164747.GD17973@kernel.org>
+References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up some of the patching of kvm_x86_ops, by moving kvm_x86_ops related to
-nested virtualization into a separate struct.
+Em Fri, Apr 17, 2020 at 11:42:34AM +0100, Alan Maguire escreveu:
+> To give a flavour for what the printed-out data looks like,
+> here we use pr_info() to display a struct sk_buff *.  Note
+> we specify the 'N' modifier to show type field names:
+> 
+>   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+> 
+>   pr_info("%pTN<struct sk_buff>", skb);
+> 
+> ...gives us:
+> 
+> {{{.next=00000000c7916e9c,.prev=00000000c7916e9c,{.dev=00000000c7916e9c|.dev_scratch=0}}|.rbnode={.__rb_parent_color=0,.rb_right=00000000c7916e9c,.rb_left=00000000c7916e9c}|.list={.next=00000000c7916e9c,.prev=00000000c7916e9c}},{.sk=00000000c7916e9c|.ip_defrag_offset=0},{.tstamp=0|.skb_mstamp_ns=0},.cb=['\0'],{{._skb_refdst=0,.destructor=00000000c7916e9c}|.tcp_tsorted_anchor={.next=00000000c7916e9c,.prev=00000000c7916e9c}},._nfct=0,.len=0,.data_len=0,.mac_len=0,.hdr_len=0,.queue_mapping=0,.__cloned_offset=[],.cloned=0x0,.nohdr=0x0,.fclone=0x0,.peeked=0x0,.head_frag=0x0,.pfmemalloc=0x0,.active_extensions=0,.headers_start=[],.__pkt_type_offset=[],.pkt_type=0x0,.ignore_df=0x0,.nf_trace=0x0,.ip_summed=0x0,.ooo_okay=0x0,.l4_hash=0x0,.sw_hash=0x0,.wifi_acked_valid=0x0,.wifi_acked=0x0,.no_fcs=0x0,.encapsulation=0x0,.encap_hdr_csum=0x0,.csum_valid=0x0,.__pkt_vlan_present_offset=[],.vlan_present=0x0,.csum_complete_sw=0x0,.csum_level=0x0,.csum_not_inet=0x0,.dst_pending_co
 
-As a result, these ops will always be non-NULL on VMX.  This is not a problem:
-
-* check_nested_events is only called if is_guest_mode(vcpu) returns true
-
-* get_nested_state treats VMXOFF state the same as nested being disabled
-
-* set_nested_state fails if you attempt to set nested state while
-  nesting is disabled
-
-* nested_enable_evmcs could already be called on a CPU without VMX enabled
-  in CPUID.
-
-* nested_get_evmcs_version was fixed in the previous patch
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h | 29 ++++++++++++++++-------------
- arch/x86/kvm/hyperv.c           |  4 ++--
- arch/x86/kvm/svm/nested.c       |  6 +++++-
- arch/x86/kvm/svm/svm.c          | 13 +++++--------
- arch/x86/kvm/svm/svm.h          |  3 ++-
- arch/x86/kvm/vmx/nested.c       | 16 +++++++++-------
- arch/x86/kvm/vmx/nested.h       |  2 ++
- arch/x86/kvm/vmx/vmx.c          |  7 +------
- arch/x86/kvm/x86.c              | 28 ++++++++++++++--------------
- 9 files changed, 56 insertions(+), 52 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index fc38d95e28a4..ca0d0f9b3f92 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1178,7 +1178,6 @@ struct kvm_x86_ops {
- 			       struct x86_exception *exception);
- 	void (*handle_exit_irqoff)(struct kvm_vcpu *vcpu);
+One suggestion, to make this more compact, one could have %pTNz<struct
+sk_buff>" that wouldn't print any integral type member that is zeroed
+:-)
  
--	int (*check_nested_events)(struct kvm_vcpu *vcpu);
- 	void (*request_immediate_exit)(struct kvm_vcpu *vcpu);
- 
- 	void (*sched_in)(struct kvm_vcpu *kvm, int cpu);
-@@ -1211,6 +1210,7 @@ struct kvm_x86_ops {
- 
- 	/* pmu operations of sub-arch */
- 	const struct kvm_pmu_ops *pmu_ops;
-+	const struct kvm_x86_nested_ops *nested_ops;
- 
- 	/*
- 	 * Architecture specific hooks for vCPU blocking due to
-@@ -1238,14 +1238,6 @@ struct kvm_x86_ops {
- 
- 	void (*setup_mce)(struct kvm_vcpu *vcpu);
- 
--	int (*get_nested_state)(struct kvm_vcpu *vcpu,
--				struct kvm_nested_state __user *user_kvm_nested_state,
--				unsigned user_data_size);
--	int (*set_nested_state)(struct kvm_vcpu *vcpu,
--				struct kvm_nested_state __user *user_kvm_nested_state,
--				struct kvm_nested_state *kvm_state);
--	bool (*get_vmcs12_pages)(struct kvm_vcpu *vcpu);
--
- 	int (*smi_allowed)(struct kvm_vcpu *vcpu);
- 	int (*pre_enter_smm)(struct kvm_vcpu *vcpu, char *smstate);
- 	int (*pre_leave_smm)(struct kvm_vcpu *vcpu, const char *smstate);
-@@ -1257,16 +1249,27 @@ struct kvm_x86_ops {
- 
- 	int (*get_msr_feature)(struct kvm_msr_entry *entry);
- 
--	int (*nested_enable_evmcs)(struct kvm_vcpu *vcpu,
--				   uint16_t *vmcs_version);
--	uint16_t (*nested_get_evmcs_version)(struct kvm_vcpu *vcpu);
--
- 	bool (*need_emulation_on_page_fault)(struct kvm_vcpu *vcpu);
- 
- 	bool (*apic_init_signal_blocked)(struct kvm_vcpu *vcpu);
- 	int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
- };
- 
-+struct kvm_x86_nested_ops {
-+	int (*check_nested_events)(struct kvm_vcpu *vcpu);
-+	int (*get_nested_state)(struct kvm_vcpu *vcpu,
-+				struct kvm_nested_state __user *user_kvm_nested_state,
-+				unsigned user_data_size);
-+	int (*set_nested_state)(struct kvm_vcpu *vcpu,
-+				struct kvm_nested_state __user *user_kvm_nested_state,
-+				struct kvm_nested_state *kvm_state);
-+	bool (*get_vmcs12_pages)(struct kvm_vcpu *vcpu);
-+
-+	int (*nested_enable_evmcs)(struct kvm_vcpu *vcpu,
-+				   uint16_t *vmcs_version);
-+	uint16_t (*nested_get_evmcs_version)(struct kvm_vcpu *vcpu);
-+};
-+
- struct kvm_x86_init_ops {
- 	int (*cpu_has_kvm_support)(void);
- 	int (*disabled_by_bios)(void);
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index b850f676abe4..d1a0f9294d57 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1799,8 +1799,8 @@ int kvm_vcpu_ioctl_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
- 	};
- 	int i, nent = ARRAY_SIZE(cpuid_entries);
- 
--	if (kvm_x86_ops.nested_get_evmcs_version)
--		evmcs_ver = kvm_x86_ops.nested_get_evmcs_version(vcpu);
-+	if (kvm_x86_ops.nested_ops->nested_get_evmcs_version)
-+		evmcs_ver = kvm_x86_ops.nested_ops->nested_get_evmcs_version(vcpu);
- 
- 	/* Skip NESTED_FEATURES if eVMCS is not supported */
- 	if (!evmcs_ver)
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 3e5bd739a6f6..671b883fd14e 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -784,7 +784,7 @@ static bool nested_exit_on_intr(struct vcpu_svm *svm)
- 	return (svm->nested.intercept & 1ULL);
- }
- 
--int svm_check_nested_events(struct kvm_vcpu *vcpu)
-+static int svm_check_nested_events(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	bool block_nested_events =
-@@ -825,3 +825,7 @@ int nested_svm_exit_special(struct vcpu_svm *svm)
- 
- 	return NESTED_EXIT_CONTINUE;
- }
-+
-+struct kvm_x86_nested_ops svm_nested_ops = {
-+	.check_nested_events = svm_check_nested_events,
-+};
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index a6f4e1bdb045..a91e397d6750 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3895,9 +3895,9 @@ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
- 	/*
- 	 * TODO: Last condition latch INIT signals on vCPU when
- 	 * vCPU is in guest-mode and vmcb12 defines intercept on INIT.
--	 * To properly emulate the INIT intercept, SVM should implement
--	 * kvm_x86_ops.check_nested_events() and call nested_svm_vmexit()
--	 * there if an INIT signal is pending.
-+	 * To properly emulate the INIT intercept,
-+	 * svm_check_nested_events() should call nested_svm_vmexit()
-+	 * if an INIT signal is pending.
- 	 */
- 	return !gif_set(svm) ||
- 		   (svm->vmcb->control.intercept & (1ULL << INTERCEPT_INIT));
-@@ -4025,6 +4025,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.sched_in = svm_sched_in,
- 
- 	.pmu_ops = &amd_pmu_ops,
-+	.nested_ops = &svm_nested_ops,
-+
- 	.deliver_posted_interrupt = svm_deliver_avic_intr,
- 	.dy_apicv_has_pending_interrupt = svm_dy_apicv_has_pending_interrupt,
- 	.update_pi_irte = svm_update_pi_irte,
-@@ -4039,14 +4041,9 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.mem_enc_reg_region = svm_register_enc_region,
- 	.mem_enc_unreg_region = svm_unregister_enc_region,
- 
--	.nested_enable_evmcs = NULL,
--	.nested_get_evmcs_version = NULL,
--
- 	.need_emulation_on_page_fault = svm_need_emulation_on_page_fault,
- 
- 	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
--
--	.check_nested_events = svm_check_nested_events,
- };
- 
- static struct kvm_x86_init_ops svm_init_ops __initdata = {
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index ca95204f9dde..98c2890d561d 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -398,9 +398,10 @@ int nested_svm_exit_handled(struct vcpu_svm *svm);
- int nested_svm_check_permissions(struct vcpu_svm *svm);
- int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
- 			       bool has_error_code, u32 error_code);
--int svm_check_nested_events(struct kvm_vcpu *vcpu);
- int nested_svm_exit_special(struct vcpu_svm *svm);
- 
-+extern struct kvm_x86_nested_ops svm_nested_ops;
-+
- /* avic.c */
- 
- #define AVIC_LOGICAL_ID_ENTRY_GUEST_PHYSICAL_ID_MASK	(0xFF)
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index f228339cd0a0..8597141bd1c7 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -6440,12 +6440,14 @@ __init int nested_vmx_hardware_setup(struct kvm_x86_ops *ops,
- 	exit_handlers[EXIT_REASON_INVVPID]	= handle_invvpid;
- 	exit_handlers[EXIT_REASON_VMFUNC]	= handle_vmfunc;
- 
--	ops->check_nested_events = vmx_check_nested_events;
--	ops->get_nested_state = vmx_get_nested_state;
--	ops->set_nested_state = vmx_set_nested_state;
--	ops->get_vmcs12_pages = nested_get_vmcs12_pages;
--	ops->nested_enable_evmcs = nested_enable_evmcs;
--	ops->nested_get_evmcs_version = nested_get_evmcs_version;
--
- 	return 0;
- }
-+
-+struct kvm_x86_nested_ops vmx_nested_ops = {
-+	.check_nested_events = vmx_check_nested_events,
-+	.get_nested_state = vmx_get_nested_state,
-+	.set_nested_state = vmx_set_nested_state,
-+	.get_vmcs12_pages = nested_get_vmcs12_pages,
-+	.nested_enable_evmcs = nested_enable_evmcs,
-+	.nested_get_evmcs_version = nested_get_evmcs_version,
-+};
-diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-index 1514ff4db77f..7ce9572c3d3a 100644
---- a/arch/x86/kvm/vmx/nested.h
-+++ b/arch/x86/kvm/vmx/nested.h
-@@ -278,4 +278,6 @@ static inline bool nested_cr4_valid(struct kvm_vcpu *vcpu, unsigned long val)
- #define nested_guest_cr4_valid	nested_cr4_valid
- #define nested_host_cr4_valid	nested_cr4_valid
- 
-+extern struct kvm_x86_nested_ops vmx_nested_ops;
-+
- #endif /* __KVM_X86_VMX_NESTED_H */
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 766303b31949..455cd2c8dbce 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7862,6 +7862,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.post_block = vmx_post_block,
- 
- 	.pmu_ops = &intel_pmu_ops,
-+	.nested_ops = &vmx_nested_ops,
- 
- 	.update_pi_irte = vmx_update_pi_irte,
- 
-@@ -7877,12 +7878,6 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.pre_leave_smm = vmx_pre_leave_smm,
- 	.enable_smi_window = enable_smi_window,
- 
--	.check_nested_events = NULL,
--	.get_nested_state = NULL,
--	.set_nested_state = NULL,
--	.get_vmcs12_pages = NULL,
--	.nested_enable_evmcs = NULL,
--	.nested_get_evmcs_version = NULL,
- 	.need_emulation_on_page_fault = vmx_need_emulation_on_page_fault,
- 	.apic_init_signal_blocked = vmx_apic_init_signal_blocked,
- };
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0492baeb78ab..5bcb4569196a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3442,14 +3442,14 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		r = KVM_X2APIC_API_VALID_FLAGS;
- 		break;
- 	case KVM_CAP_NESTED_STATE:
--		r = kvm_x86_ops.get_nested_state ?
--			kvm_x86_ops.get_nested_state(NULL, NULL, 0) : 0;
-+		r = kvm_x86_ops.nested_ops->get_nested_state ?
-+			kvm_x86_ops.nested_ops->get_nested_state(NULL, NULL, 0) : 0;
- 		break;
- 	case KVM_CAP_HYPERV_DIRECT_TLBFLUSH:
- 		r = kvm_x86_ops.enable_direct_tlbflush != NULL;
- 		break;
- 	case KVM_CAP_HYPERV_ENLIGHTENED_VMCS:
--		r = kvm_x86_ops.nested_enable_evmcs != NULL;
-+		r = kvm_x86_ops.nested_ops->nested_enable_evmcs != NULL;
- 		break;
- 	default:
- 		break;
-@@ -4235,9 +4235,9 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
- 		return kvm_hv_activate_synic(vcpu, cap->cap ==
- 					     KVM_CAP_HYPERV_SYNIC2);
- 	case KVM_CAP_HYPERV_ENLIGHTENED_VMCS:
--		if (!kvm_x86_ops.nested_enable_evmcs)
-+		if (!kvm_x86_ops.nested_ops->nested_enable_evmcs)
- 			return -ENOTTY;
--		r = kvm_x86_ops.nested_enable_evmcs(vcpu, &vmcs_version);
-+		r = kvm_x86_ops.nested_ops->nested_enable_evmcs(vcpu, &vmcs_version);
- 		if (!r) {
- 			user_ptr = (void __user *)(uintptr_t)cap->args[0];
- 			if (copy_to_user(user_ptr, &vmcs_version,
-@@ -4552,7 +4552,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		u32 user_data_size;
- 
- 		r = -EINVAL;
--		if (!kvm_x86_ops.get_nested_state)
-+		if (!kvm_x86_ops.nested_ops->get_nested_state)
- 			break;
- 
- 		BUILD_BUG_ON(sizeof(user_data_size) != sizeof(user_kvm_nested_state->size));
-@@ -4560,8 +4560,8 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		if (get_user(user_data_size, &user_kvm_nested_state->size))
- 			break;
- 
--		r = kvm_x86_ops.get_nested_state(vcpu, user_kvm_nested_state,
--						  user_data_size);
-+		r = kvm_x86_ops.nested_ops->get_nested_state(vcpu, user_kvm_nested_state,
-+							     user_data_size);
- 		if (r < 0)
- 			break;
- 
-@@ -4582,7 +4582,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		int idx;
- 
- 		r = -EINVAL;
--		if (!kvm_x86_ops.set_nested_state)
-+		if (!kvm_x86_ops.nested_ops->set_nested_state)
- 			break;
- 
- 		r = -EFAULT;
-@@ -4604,7 +4604,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 			break;
- 
- 		idx = srcu_read_lock(&vcpu->kvm->srcu);
--		r = kvm_x86_ops.set_nested_state(vcpu, user_kvm_nested_state, &kvm_state);
-+		r = kvm_x86_ops.nested_ops->set_nested_state(vcpu, user_kvm_nested_state, &kvm_state);
- 		srcu_read_unlock(&vcpu->kvm->srcu, idx);
- 		break;
- 	}
-@@ -7700,7 +7700,7 @@ static int inject_pending_event(struct kvm_vcpu *vcpu)
- 	 * from L2 to L1.
- 	 */
- 	if (is_guest_mode(vcpu)) {
--		r = kvm_x86_ops.check_nested_events(vcpu);
-+		r = kvm_x86_ops.nested_ops->check_nested_events(vcpu);
- 		if (r != 0)
- 			return r;
- 	}
-@@ -7762,7 +7762,7 @@ static int inject_pending_event(struct kvm_vcpu *vcpu)
- 		 * KVM_REQ_EVENT only on certain events and not unconditionally?
- 		 */
- 		if (is_guest_mode(vcpu)) {
--			r = kvm_x86_ops.check_nested_events(vcpu);
-+			r = kvm_x86_ops.nested_ops->check_nested_events(vcpu);
- 			if (r != 0)
- 				return r;
- 		}
-@@ -8185,7 +8185,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 
- 	if (kvm_request_pending(vcpu)) {
- 		if (kvm_check_request(KVM_REQ_GET_VMCS12_PAGES, vcpu)) {
--			if (unlikely(!kvm_x86_ops.get_vmcs12_pages(vcpu))) {
-+			if (unlikely(!kvm_x86_ops.nested_ops->get_vmcs12_pages(vcpu))) {
- 				r = 0;
- 				goto out;
- 			}
-@@ -8528,7 +8528,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
- static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
- {
- 	if (is_guest_mode(vcpu))
--		kvm_x86_ops.check_nested_events(vcpu);
-+		kvm_x86_ops.nested_ops->check_nested_events(vcpu);
- 
- 	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
- 		!vcpu->arch.apf.halted);
--- 
-2.18.2
-
+- Arnaldo
