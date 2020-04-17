@@ -2,85 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4261AE522
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE25E1AE530
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbgDQSwX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Apr 2020 14:52:23 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:35629 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728987AbgDQSwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:52:23 -0400
-Received: by mail-oo1-f65.google.com with SMTP id t12so303841oot.2;
-        Fri, 17 Apr 2020 11:52:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o6U3HjuhtRd7DK0wpGc2QDT8+5TzaGews9QgS65m3X4=;
-        b=ZYC+uBEAqRChfL2gEWc68a2voIC5Kp6t6JqWi6PR0tWHNq0PedF6Dqg63uEaBdCsOi
-         DDtxsGtQpfedvIbFLdIR2VX46i8ryzr2ebaGaSWNVfLUACSO/Dg0EKZTj2OpuEa8m78m
-         dOV/jseIMmpP9fclckrnHFTnYvxw0xDnevwtwj46d/dhdIjS6PN6L1fnVR+/TUZp9CsP
-         1Uxbr/9NtA6NPm26UZnmHRRk9kyMxTQVBbJAIncNxdan381ysEt5XwBRPfdB6JCDPUlB
-         ukcm4p0xt2PvkUBHRnFAG+hPxNnTvOHXVU7qMhUTcfzYC06z8cK6CgYV8bodddFUh1bO
-         z6QA==
-X-Gm-Message-State: AGi0PuaHPlo2nXF5oXSxZfYXq3y/BY8Oc8dDomwjGGyu/jxEmOsZ9StO
-        8bcvOSaAPRHa89d53gyfRj5BypQ+u7l5APEgjIzH+dbZ
-X-Google-Smtp-Source: APiQypKwGTWKkrgL7fiIOfQwUTLkd3ebOQLG/34cya2vn8IYluDQdV7RXPY2YfriKovTokL32G0AwnXZVOWyTCb0Bnw=
-X-Received: by 2002:a05:6820:348:: with SMTP id m8mr3733858ooe.38.1587149541912;
- Fri, 17 Apr 2020 11:52:21 -0700 (PDT)
+        id S1730197AbgDQSwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:52:38 -0400
+Received: from mail-mw2nam12on2058.outbound.protection.outlook.com ([40.107.244.58]:6160
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727840AbgDQSwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 14:52:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jU2ga4vbs/aijmnu59bqYns5XBXThfairKiOqdbapnalt3abqYXfWOCFrIci/JlEe49AcZIN7Zh0KjdhDSyjHme6q6K7M/fWH+ew73SfnWxX6Lfw/qIOTjWFOjo6QME5G5+/RwT4ouPlKv1SS5Jt8y4cy0RBLbVa8zMH4H68CZtGtxC+mQn8z1g5iA7aR/6bXxlA2H5VINUAy5Lcv+JZrRKPUl+/WYaUZixQvuAMQWRlPMYxskH6UfE9x2+DNGlbfLYdgfijQrzgafKW2EWD0Qjg6GA4b4DNS8vFnHdSCkPLOGLzRL/aR0TEJFA9KwJQVj0+zu3xwVhLsdl5uD7bVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VNn4oIxUx4+Kil5Tegoho2MjFXI7IdrkhSZzPqFY+8M=;
+ b=AK8lie2oBfjRVYx7qXH7+mby+MvBMiCxHsOZZYJ0o32XYMgMt5duieK79lXRDhzBpWLTPqXPG0qCuUo5ZiCyDZmCPBwrsPEhfLZyhmp4VWOKP72HU0mvRLA+MMV4k4+kYCKBwL5LyO5jrAUQinzncae/t5zuHc5ME9NbWSWLrVddsvQ66LbdtLDi6mF5Fz1SAAYcJW9zhJhWrohNFGdYRDjDq7PepiKKKfNVJRjXCmoH/f2/ixRYNJtzvd1rsJQPHj+HFR3S+6umW9RWDokYx1w0BpJIfb1MOQ6yhY/8XKhvT1GmBtb7zx8wBhV5665ZL6nlBRnV3+hbnKf2e0/XJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VNn4oIxUx4+Kil5Tegoho2MjFXI7IdrkhSZzPqFY+8M=;
+ b=oIsxMzbFST7ykM743lmesdFQPXdxgwX1fHo4eGYq4qQvslkM5AuQI90IUxkpTg1zFr2s40BX5szg8uS5bu3Xm+/XG9GKH/y4jK2YVMC69JI19nHp4jxvJeZkvWAanjOlrjrMMKyqG8oVBrN0lTFE/3FoQm/pHSida5HS9RYSIDE=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Luben.Tuikov@amd.com; 
+Received: from DM6PR12MB3355.namprd12.prod.outlook.com (2603:10b6:5:115::26)
+ by DM6PR12MB2650.namprd12.prod.outlook.com (2603:10b6:5:4a::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Fri, 17 Apr
+ 2020 18:52:19 +0000
+Received: from DM6PR12MB3355.namprd12.prod.outlook.com
+ ([fe80::cd6e:7536:4dbb:aa85]) by DM6PR12MB3355.namprd12.prod.outlook.com
+ ([fe80::cd6e:7536:4dbb:aa85%5]) with mapi id 15.20.2921.027; Fri, 17 Apr 2020
+ 18:52:19 +0000
+Subject: Re: checkpatch.pl warning for "return" with value
+To:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <a1eea414-2422-3a9f-b9bb-1ab7d6113dd6@amd.com>
+ <1a47c5c428968a0e1d0ac5b92ce7ebdd4014fd38.camel@perches.com>
+From:   Luben Tuikov <luben.tuikov@amd.com>
+Message-ID: <8859753b-c7c9-78ec-20cc-ce424b436b13@amd.com>
+Date:   Fri, 17 Apr 2020 14:52:17 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <1a47c5c428968a0e1d0ac5b92ce7ebdd4014fd38.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YTOPR0101CA0003.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::16) To DM6PR12MB3355.namprd12.prod.outlook.com
+ (2603:10b6:5:115::26)
 MIME-Version: 1.0
-References: <fdd9ce1d-146a-5fbf-75c5-3a9384603312@gmx.de> <5478a950-4355-8084-ea7d-fe8b270bf2e3@infradead.org>
- <5392275.BHAU0OPJTB@kreacher> <4b21c095-fbe5-1138-b977-a505baa41a2b@gmx.de>
-In-Reply-To: <4b21c095-fbe5-1138-b977-a505baa41a2b@gmx.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 17 Apr 2020 20:52:10 +0200
-Message-ID: <CAJZ5v0icdVL6_yGpfsorqszdi9GcLxzYdvDqTJyG4ENzkOG2pQ@mail.gmail.com>
-Subject: Re: regression 5.6.4->5.6.5 at drivers/acpi/ec.c
-To:     =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        ACPI Devel Mailing List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (108.162.131.176) by YTOPR0101CA0003.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Fri, 17 Apr 2020 18:52:18 +0000
+X-Originating-IP: [108.162.131.176]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e2e805cc-7926-469b-9548-08d7e3007468
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2650:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2650D3DF06599394D704D97E99D90@DM6PR12MB2650.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0376ECF4DD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(6486002)(86362001)(31686004)(31696002)(36756003)(81156014)(8676002)(8936002)(66556008)(26005)(6506007)(66946007)(53546011)(52116002)(66476007)(55236004)(110136005)(2906002)(316002)(5660300002)(956004)(2616005)(44832011)(6512007)(4326008)(186003)(16526019)(478600001);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H0VESOrhmd6g+FiTWD4Dm9nLygGO15NjFtoI0JbZK+YfOml/9Tl5dslOYNyBdUY5wDR5zL5aSXjhtr6VnK54v0Io+31wwA1VH648bNFWkn4o+e0mofVsJLVua3/hABAz5sEoXnhbd98JtYAU7i9QFLWTGn5rnmCLfqepKyC42JNGDF+eaGGkB2WbF26pF0YPVW27cm9QWSWI/15WUW56fQmVVWnGUCGyUi+5VIpuiRKiSiBBNOJmv8b+B8EG9INbkdSoQfheKK1lmg/243d+0pKvGHUcVCKgDizxJF/pkmXnulwJH8TP3krINU/wKN5uEgt7FKDvpvxcb6HvA6wsCwB0Cb+y02K3tgI0zj/FdE3fi6+s1HmWZ6uzUT5eTVJS/qOU4ldvExBPGII1ihY8LkzBN1VeOlS0gxuQbwPv+ijvWJTFZ5WmFPEAC9tTDNH6
+X-MS-Exchange-AntiSpam-MessageData: sYw9rPKzYQL+gKyLAzP4Q9Ayy0c1Z6MklcH/c3t785OZpTS8G9z4znWpMi3mq0BjLGlFxr2l3xcL7dtYJp+KT6NvC9IqTHVM+xU4YUfjNef+XaoIuYB/EbROAwi740SH+5O8EtDIW3pn2x8ymcX3xO1uycpec/nxCie2NI+/sBFNtesq9h8mw9Cl6xnMHfSDo4yHnJh/2Rhaatk/4Q8y18lfgvCaNhgnI+7/l7l2QqUT1TGsDGZXZaGRyE+yQK9qrCgnKF+IJXv7zxO4Sn+10CsXuBq4dQv+iJVYC3OfLfvIm9XGftDtKS3ftFY4Lf7UYLIjvwUQICne+Lnf4MFZXJJ56RAFL6QhvpcC92bmiMFpfJdf3yOyPcECwUX3ZLqN0EheOZ7mB2zi8ejmSrUZE1jxU9IohF40RUvbz65MIM9GwfzPEDCsNM122e+UvDT48qKD92q3R5+ZjtHASBJN6g4/yXY8Nhbb77pfkgq1pBP2rcQBV6f7Jl7ixg5sbXhVVHeSZY8OZpoWM7r6mwirDD5O2brHZd27Hwra+jd5ctBSbkx46j7sKuTBJ6dJzAdJHKQUSqCLCXdNiZc9c3IeHzrvgR1kUMcxntzCnAePM5S8x0aD9TgENlIP/ngVkUGhkNqgmRCIwjjrQvTk/RjjV8kLXcUROsEUz/41+K51strJS+oX7l961WotSC/YKRW1hARmYNIx6sKUhrhcZ4rd+zVAp1MWTQqfs3cAs85dUyUxFJ5pNzvKMrGwsVDYRihULFXdZVnWGklSsFjMMaO0mSXgOR+wbvCJYxspCANUZCYMIqskMG9A7fexSxO0x3lb
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2e805cc-7926-469b-9548-08d7e3007468
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 18:52:19.0999
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 44U7vEJE5MMORdJmUcIMLi8CdfnJIqWBiNU2VbFPnty+81Yt5KLbn+/RrDrGIsBi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2650
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 6:36 PM Toralf Förster <toralf.foerster@gmx.de> wrote:
->
-> On 4/17/20 5:53 PM, Rafael J. Wysocki wrote:
-> > Does the patch below (untested) make any difference?
-> >
-> > ---
-> >  drivers/acpi/ec.c |    5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > Index: linux-pm/drivers/acpi/ec.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/ec.c
-> > +++ linux-pm/drivers/acpi/ec.c
-> > @@ -2067,7 +2067,10 @@ static struct acpi_driver acpi_ec_driver
-> >               .add = acpi_ec_add,
-> >               .remove = acpi_ec_remove,
-> >               },
-> > -     .drv.pm = &acpi_ec_pm,
-> > +     .drv = {
-> > +             .probe_type = PROBE_FORCE_SYNCHRONOUS,
-> > +             .pm = &acpi_ec_pm,
-> > +     },
-> >  };
-> >
-> >  static void acpi_ec_destroy_workqueues(void)
-> I'd say no, but for completeness:
+On 2020-04-17 1:32 p.m., Joe Perches wrote:
+> On Fri, 2020-04-17 at 13:20 -0400, Luben Tuikov wrote:
+>> Hi guys,
+>>
+>> I get this warning:
+>>
+>> :32: WARNING: else is not generally useful after a break or return
+>> #32: FILE: drivers/gpu/drm/amd/amdgpu/amdgpu_job.c:55:
+>> +		return 0;
+>> +	} else {
+>>
+>> for the following code, at the bottom of a function:
+>>
+>> 	if (amdgpu_device_should_recover_gpu(ring->adev)) {
+>> 		amdgpu_device_gpu_recover(ring->adev, job);
+>> 		return 0;
+>> 	} else {
+>> 		drm_sched_suspend_timeout(&ring->sched);
+>> 		return 1;
+>> 	}
+>> }
+>>
+>> It seems like a false positive--I mean, if the else branch was
+>> taken, we'd return a different result.
+> 
+> There is an existing checkpatch exception for single line
+> if/else returns
+> like:
+> 
+> 	if (foo)
+> 		return bar;
+> 	else
+> 		return baz;
+> 
+> because that's a pretty common code style.
 
-OK, it looks like mainline commit
+Yes, that's true--and that's what I have above, except
+the braces.
 
-65a691f5f8f0 ("ACPI: EC: Do not clear boot_ec_is_ecdt in acpi_ec_add()")
+> 
+> But I personally don't think that your example fits the
+> same style.
 
-was backported into 5.6.5 by mistake.
+Why? Linguistically, it doesn't matter if a compound
+statement is used or a single one. (I mean, one could
+use a comma "," too... :-) )
 
-Can you please revert that patch and retest?
+> 
+> I think when unexpected condition should be separated from
+> the expected condition which should typically be the last
+> block of a function like:
+
+I couldn't understand this sentence because of the "when"
+and "which".
+
+> 
+> 
+> 	if (<atypical_condition>) {
+> 		...;
+> 		return <atypical_result>;
+> 	}
+> 
+> 	...;
+> 	return <typical_result>;
+> }
+> 
+> If you want to code it, and it works, go ahead, but I
+> won't attempt it because I think it's not appropriate.
+
+For error checking, when the 2nd ellipsis is
+a long, long body of the function, so that the error
+checking is done at the top, then long body,
+then at the bottom we return some computed value.
+But in the case I have above, it's a compact if-else
+at the bottom of the function.
+
+In the example I gave above, there is no "typical" or
+"atypical" condition--it's just checking a condition
+and deciding what to do, all at the bottom of
+a function. (And that condition, samples
+an external stimuli, which cannot be predicted.)
+
+Also checking and returning from a function, doesn't
+always have to be binary. It could be,
+
+	if (A) {
+		...;
+		return X;
+	} else if (B) {
+		...;
+		return Y;
+	} else {
+		...;
+		return Z;
+	}
+}
+
+And interestingly, checkpatch.pl doesn't complain for
+the triplet above. But if I remove condition B, above,
+it does complain.
+
+Since we're returning a different result and since
+it works fine with a triplet, could you fix the binary
+case above to not complain?
+
+You already seem to have an exception for it, as you stated
+above.
+
+Regards,
+Luben
+
