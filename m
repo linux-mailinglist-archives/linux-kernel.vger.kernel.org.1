@@ -2,209 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CFA1AE14E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50D41AE15E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgDQPh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45992 "EHLO
+        id S1729265AbgDQPlp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Apr 2020 11:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729008AbgDQPhz (ORCPT
+        by vger.kernel.org with ESMTP id S1729110AbgDQPlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:37:55 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C8CC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:37:55 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u11so2751489iow.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dZWbHNkoj0JZBFRa+7yN5L8lU5vuTUFT6sy1jTrj+/w=;
-        b=J+rBrCBFPfAcAzCoUBAgycYe++RupvfFwXFvaRbQpkLMxxN0S5WCn5cfjJVIlCrQ36
-         mL/IQ1yzyXK05wmytKfYtt17r1lzKS7l58phN2KOR+QZMYeOhlirBW0EDynJUSOhURcA
-         0yLVVi2Pi+WeHoYF8YGqMHXGOmXScTtxuU4ZoeUTke6WePb0YpP0ExmMFCjtbobWwjlE
-         5LJSPXy7TAM2r7eL8t3JNlDzZW9D7pRmqlUYFkZmYN+XTlAnawgyG+BuIkDsqFp510mC
-         EVLl9N0yjmJmjUtq2LqTyZsvQhM+9Fw3ZRffjIjjCSSd2GJmYx+ku80QFsStAhKZXgtw
-         5SWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dZWbHNkoj0JZBFRa+7yN5L8lU5vuTUFT6sy1jTrj+/w=;
-        b=bgVFUqfxE+RcQGVy6UH4hWRkXojpHs90saGwi7yHfGurD5crDbL97hCPxXPDg2SjXc
-         B/qSXzjJ1GnYtYJcaAF2o60nHiqgZcWrc9BJDr47UWTtgwQJ+dN7j0rTBcx2CA0oxjaT
-         7ObKGOP02xKFJGOdCZpbxlExJV5cQN6yWIOUd6wHYgwnhsTsLWx74+QzJJJWNBPU3DUE
-         oiJLVt92bppoM2BdveX1/YaI9DN8zEt/f3d2yPJjMz2r3B7jfcV1oIS+EjooLo+GXVmg
-         pziIEpIzmpE5q+tQz9+6yatCaeGodA+XM9IUyE44DhTOLmxN6KdkyZceCG4IIgICRC54
-         qwKA==
-X-Gm-Message-State: AGi0PublAtTJIOsEMhdFxY0ft812ALLyDSKRK2dDXG+TgqSfwVgRwin0
-        WGLdwFM1o4EKhHoVismFFI0QURF0AGIiRT/dGOLnQA==
-X-Google-Smtp-Source: APiQypI0krjI+mvmWnI3ESAaCfeAhP5hfOH/kONmQVYxbtIdkgljt8qhfrmnxB6jyEg7Dngv0pYSHIFhvNB4U/D3cbU=
-X-Received: by 2002:a6b:3842:: with SMTP id f63mr3467174ioa.90.1587137873074;
- Fri, 17 Apr 2020 08:37:53 -0700 (PDT)
+        Fri, 17 Apr 2020 11:41:45 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B52C061A0C;
+        Fri, 17 Apr 2020 08:41:45 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0920E2A0613;
+        Fri, 17 Apr 2020 16:41:43 +0100 (BST)
+Date:   Fri, 17 Apr 2020 17:41:40 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Marek Vasut <marex@denx.de>
+Cc:     Christophe Kerello <christophe.kerello@st.com>,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        tony@atomide.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 03/12] bus: stm32-fmc2-ebi: add STM32 FMC2 EBI
+ controller driver
+Message-ID: <20200417174140.00456f36@collabora.com>
+In-Reply-To: <c69f86f4-5904-3f35-dac1-87080402a096@denx.de>
+References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+        <1586966256-29548-4-git-send-email-christophe.kerello@st.com>
+        <20200416215328.53982fef@collabora.com>
+        <e4a21df4-b01b-1215-7a3b-fea94f099b8f@st.com>
+        <c69f86f4-5904-3f35-dac1-87080402a096@denx.de>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200304142628.8471-1-NShubin@topcon.com> <20200406113310.3041-1-nikita.shubin@maquefel.me>
- <20200406113310.3041-2-nikita.shubin@maquefel.me> <20200414164519.GA24061@xps15>
- <20200417151132.00005f8c@maquefel.me>
-In-Reply-To: <20200417151132.00005f8c@maquefel.me>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Fri, 17 Apr 2020 09:37:42 -0600
-Message-ID: <CANLsYkxeL+a43eDzwJjXyFBFSwRVXjiYd4TcTbEcuuj+wgEZdw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] remoteproc: imx_rproc: set pc on start
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Nikita Shubin <NShubin@topcon.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 at 06:12, Nikita Shubin <nikita.shubin@maquefel.me> wrote:
->
-> On Tue, 14 Apr 2020 10:45:19 -0600
-> Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
->
-> > Hi Nikita,
-> >
-> > On Mon, Apr 06, 2020 at 02:33:08PM +0300, nikita.shubin@maquefel.me
-> > wrote:
-> > > In case elf file interrupt vector is not supposed to be at OCRAM_S,
-> > > it is needed to write elf entry point to OCRAM_S + 0x4, to boot M4
-> > > firmware.
-> > >
-> > > Otherwise firmware located anywhere besides OCRAM_S won't boot.
-> > >
-> > > The firmware must set stack poiner as first instruction:
-> > >
-> > > Reset_Handler:
-> > >     ldr   sp, = __stack      /* set stack pointer */
-> > >
-> > > Signed-off-by: Nikita Shubin <NShubin@topcon.com>
-> >
-> > The address in the SoB has to match what is found in the "From:"
-> > field of the email header.  Checkpatch is complaining about that,
-> > something I would have expected to be fixed before sending this set
-> > out.
-> >
-> > > ---
-> > >  drivers/remoteproc/imx_rproc.c | 16 +++++++++++++++-
-> > >  1 file changed, 15 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/remoteproc/imx_rproc.c
-> > > b/drivers/remoteproc/imx_rproc.c index 3e72b6f38d4b..bebc58d0f711
-> > > 100644 --- a/drivers/remoteproc/imx_rproc.c
-> > > +++ b/drivers/remoteproc/imx_rproc.c
-> > > @@ -45,6 +45,8 @@
-> > >
-> > >  #define IMX7D_RPROC_MEM_MAX                8
-> > >
-> > > +#define IMX_BOOT_PC                        0x4
-> > > +
-> > >  /**
-> > >   * struct imx_rproc_mem - slim internal memory structure
-> > >   * @cpu_addr: MPU virtual address of the memory region
-> > > @@ -85,6 +87,7 @@ struct imx_rproc {
-> > >     const struct imx_rproc_dcfg     *dcfg;
-> > >     struct imx_rproc_mem
-> > > mem[IMX7D_RPROC_MEM_MAX]; struct clk                        *clk;
-> > > +   void __iomem                    *bootreg;
-> > >  };
-> > >
-> > >  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
-> > > @@ -162,11 +165,16 @@ static int imx_rproc_start(struct rproc
-> > > *rproc) struct device *dev = priv->dev;
-> > >     int ret;
-> > >
-> > > +   /* write entry point to program counter */
-> > > +   writel(rproc->bootaddr, priv->bootreg);
-> >
-> > What happens on all the other IMX systems where this fix is not
-> > needed?  Will they continue to work properly?
->
-> Mathieu you are totally correct imx6/imx7 use different addresses they
-> boot.
->
-> For imx7:
-> | On i.MX 7Dual/7Solo, the boot vector for the Cortex-M4 core is located
-> | at the start of the OCRAM_S (On Chip RAM - Secure) whose address is
-> | 0x0018_0000 from Cortex-A7.
->
-> For imx6:
-> | The Boot vector for the Cortex-M4 core is located at the start of the
-> | TCM_L whose address is 0x007F_8000 from the Cortex-A9. This is a
-> | different location than on the i.MX 7Dual/7Solo
->
-> But on imx7 0x0 is translated to 0x0018_0000 by imx_rproc_da_to_va, and
-> on imx7 0x0 is translated to 0x007F_8000, using imx_rproc_att_imx7d and
-> imx_rproc_att_imx6sx respectively.
+On Fri, 17 Apr 2020 17:31:49 +0200
+Marek Vasut <marex@denx.de> wrote:
 
-My point here is that before your patch, this driver was running on
-IMX platforms.  How does your work impact existing platforms that are
-booting properly?
+> On 4/17/20 5:29 PM, Christophe Kerello wrote:
+> > 
+> > 
+> > On 4/16/20 9:53 PM, Boris Brezillon wrote:  
+> >> On Wed, 15 Apr 2020 17:57:27 +0200
+> >> Christophe Kerello <christophe.kerello@st.com> wrote:
+> >>  
+> >>> The driver adds the support for the STMicroelectronics FMC2 EBI
+> >>> controller
+> >>> found on STM32MP SOCs.
+> >>>
+> >>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> >>> Tested-by: Marek Vasut <marex@denx.de>
+> >>> ---
+> >>> Changes in v2:
+> >>>   - call 2 APIs to manage FMC2 enable/disable instead of ops
+> >>>   - call 2 APIs to manage FMC2 NWAIT shared signal instead of ops
+> >>>
+> >>>   drivers/bus/Kconfig          |   11 +
+> >>>   drivers/bus/Makefile         |    1 +
+> >>>   drivers/bus/stm32-fmc2-ebi.c | 1091
+> >>> ++++++++++++++++++++++++++++++++++++++++++  
+> >>
+> >> Hm, I see that other memory bus controller drivers are placed under
+> >> drivers/memory/, any reason for choosing drivers/bus/? If that's where
+> >> we want to have all generic memory bus controllers to live it might be
+> >> worth moving existing drivers to the drivers/bus/ directory at some
+> >> point.
+> >>  
+> > 
+> > Hi Boris,
+> > 
+> > I see this controller as an external bus interface as we are able to
+> > attach different devices on it, like a PSRAM, an ethernet controller, a
+> > FPGA, a LCD display, ...
+> > 
+> > When I had a look at bus/Kconfig file, I have found similar drivers
+> > (like IMX_WEIM or QCOM_EBI2 drivers). These drivers are able to connect
+> > devices like NAND Flash, SRAM, ethernet adapters, FPGAs and LCD displays
+> > as it is written in the Kconfig file.
+> > 
+> > But, after checking memory/Kconfig file, it is also possible to find
+> > similar drivers (like ATMEL_EBI driver that is inspired by the WEIM bus
+> > driver).
+> > 
+> > So, I will follow the recommendation and I will move it to
+> > drivers/memory folder if it is the place where this driver should be.  
+> 
+> The EBI isn't a memory bus, you can very well have a non-memory device,
+> like an external parallel bus memory controller on it. So why should it
+> be in drivers/memory ?
 
->
-> I have no information about IMX8 (i have found none available
-> publicity), but should be the same as Cortex-M boots from 0x0.
->
-> >
-> > > +
-> > >     ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
-> > >                              dcfg->src_mask, dcfg->src_start);
-> > >     if (ret)
-> > >             dev_err(dev, "Failed to enable M4!\n");
-> > >
-> > > +   dev_info(&rproc->dev, "Started from 0x%x\n",
-> > > rproc->bootaddr); +
-> > >     return ret;
-> > >  }
-> > >
-> > > @@ -182,6 +190,9 @@ static int imx_rproc_stop(struct rproc *rproc)
-> > >     if (ret)
-> > >             dev_err(dev, "Failed to stop M4!\n");
-> > >
-> > > +   /* clear entry points */
-> > > +   writel(0, priv->bootreg);
-> > > +
-> > >     return ret;
-> > >  }
-> > >
-> > > @@ -243,7 +254,8 @@ static void *imx_rproc_da_to_va(struct rproc
-> > > *rproc, u64 da, int len) static const struct rproc_ops
-> > > imx_rproc_ops = { .start            = imx_rproc_start,
-> > >     .stop           = imx_rproc_stop,
-> > > -   .da_to_va       = imx_rproc_da_to_va,
-> > > +   .da_to_va       = imx_rproc_da_to_va,
-> > > +   .get_boot_addr  = rproc_elf_get_boot_addr,
-> >
-> > How is this useful?  Sure it will set rproc->bootaddr in
-> > rproc_fw_boot() but what good does that do when it is invariably set
-> > again in imx_rproc_start() ?
-> >
-> > >  };
-> > >
-> > >  static int imx_rproc_addr_init(struct imx_rproc *priv,
-> > > @@ -360,6 +372,8 @@ static int imx_rproc_probe(struct
-> > > platform_device *pdev) goto err_put_rproc;
-> > >     }
-> > >
-> > > +   priv->bootreg = imx_rproc_da_to_va(rproc, IMX_BOOT_PC,
-> > > sizeof(u32)); +
-> > >     /*
-> > >      * clk for M4 block including memory. Should be
-> > >      * enabled before .start for FW transfer.
-> > > --
-> > > 2.25.1
-> > >
->
+Just like most of those so-called memory bus controllers we have under
+drivers/memory/ => they are most of the time used to interact with
+memories but can also be used for other things (Christophe listed a few
+uses cases). And I'm not pushing one way or the other, all I said was
+that we should makes things consistent instead of having half of
+those controller drivers in drivers/memory/ and the other half in
+drivers/bus/.
+
