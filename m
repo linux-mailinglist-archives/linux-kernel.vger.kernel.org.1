@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A032A1AD4D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EAC1AD4D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgDQDYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 23:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726319AbgDQDYF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 23:24:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F74C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 20:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4NwRdnd1tqHPknUqRG8dZUJNk1TYuEB6jMxKNZTYnKQ=; b=U55S4Mjk3H/DrgX1Nyk3DwecPx
-        3RJmjnZtDd66aTMXfWjADMplV3gkjopia000iB+pHjew3iT1rNXZVQRbZYX/wv1l56w7iL2V9c6qV
-        RYUOD5NdhycZ5NQco7Bk7Kxhry9iDWjfeKVlIfI27M9d7tnwIUmN9tfwTn5Dr2yxoV5ZH6FwmCPTf
-        ezxvyAxZslVYOgzG+zDCxiAIMDQrmZM6H4ZMI3y3xaPLmqjUqqEj8PI8ELcj8PziQXA0lX0HgFrY8
-        oOQF3pROJzkMuGePVojzUOJaSE3G/44BKEpWlh2FflNnAviNSZWvE1tWdlOm6RgwBkvEbA15YkeCq
-        sP7+/9qA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPHbe-0005WU-5o; Fri, 17 Apr 2020 03:23:54 +0000
-Date:   Thu, 16 Apr 2020 20:23:54 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@vivo.com
-Subject: Re: [PATCH] kmalloc_index optimization(code size & runtime stable)
-Message-ID: <20200417032354.GK5820@bombadil.infradead.org>
-References: <1587089010-110083-1-git-send-email-bernard@vivo.com>
+        id S1729150AbgDQDZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 23:25:22 -0400
+Received: from mga01.intel.com ([192.55.52.88]:46448 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726123AbgDQDZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 23:25:22 -0400
+IronPort-SDR: iErVSfnI38KwtWQcH4rNDLRGacjRCeNcMdBt/L03K6KGp4kSKPATK795CQhFE6Uq6uZ4mN5Iqc
+ CrzmqAlQrtig==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 20:25:21 -0700
+IronPort-SDR: Y6NxNoqwaocfo1ldFFdrC25qBWTuSkIdagvjBrnhQfQIWAVfWzvOgqnb12F5Lnv/SZ95ck/O34
+ JjcEmikH2k1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="428084176"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.63]) ([10.254.212.63])
+  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2020 20:25:19 -0700
+Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 5/7] iommu/vt-d: Save prq descriptors in an internal
+ list
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
+ <20200415052542.30421-6-baolu.lu@linux.intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D8207B2@SHSMSX104.ccr.corp.intel.com>
+ <399dd037-b32e-30a7-013c-b68e9a3bbc7a@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <7e95de33-95e9-0647-9611-aa4ec72171c9@linux.intel.com>
+Date:   Fri, 17 Apr 2020 11:25:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587089010-110083-1-git-send-email-bernard@vivo.com>
+In-Reply-To: <399dd037-b32e-30a7-013c-b68e9a3bbc7a@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 07:03:30PM -0700, Bernard Zhao wrote:
-> kmalloc_index inline function code size optimization and runtime
-> performance stability optimization. After optimization, the function
-> kmalloc_index is more stable, the size will never affecte the function`s
-> execution efficiency.
-> And follow test data shows that the performance of new optimization
-> exceeds the original algorithm when applying for more than 512 Bytes
-> (include 512B).And new optimization runtime is more stable than before.
+Hi Kevin,
 
-That's all very well and good, but the vast majority of allocations
-are less than 512 bytes in size!  Your numbers show that on average,
-this patch makes the kernel slower!
+On 2020/4/16 9:46, Lu Baolu wrote:
+> On 2020/4/15 17:30, Tian, Kevin wrote:
+>>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>>> Sent: Wednesday, April 15, 2020 1:26 PM
+>>>
+>>> Currently, the page request interrupt thread handles the page
+>>> requests in the queue in this way:
+>>>
+>>> - Clear PPR bit to ensure new interrupt could come in;
+>>> - Read and record the head and tail registers;
+>>> - Handle all descriptors between head and tail;
+>>> - Write tail to head register.
+>>>
+>>> This might cause some descriptors to be handles multiple times.
+>>> An example sequence:
+>>>
+>>> - Thread A got scheduled with PRQ_1 and PRQ_2 in the queue;
+>>> - Thread A clear the PPR bit and record the head and tail;
+>>> - A new PRQ_3 comes and Thread B gets scheduled;
+>>> - Thread B record the head and tail which includes PRQ_1
+>>>    and PRQ_2.
+>> I may overlook something but isn't the prq interrupt thread
+>> per iommu then why would two prq threads contend here?
+> 
+> The prq interrupt could be masked by the PPR (Pending Page Request) bit
+> in Page Request Status Register. In the interrupt handling thread once
+> this bit is clear, new prq interrupts are allowed to be generated.
+> 
+> So, if a page request is in process and the PPR bit is cleared, another
+> page request from any devices under the same iommu could trigger another
+> interrupt thread.
 
->             size        time/Per 100 million times
->                         old fun		new fun with optimise
-> 		8	203777		241934
-> 		16	245611		409278
-> 		32	236384		408419
-> 		64	275499		447732
-> 		128	354909		416439
-> 		256	360472		406598
-> 		512	431072		409168
-> 		1024	463822		407401
+Rechecked the code. You are right. As long as the interrupt thread is
+per iommu, there will only single prq thread scheduled. I will change
+this accordingly in the new version. Thank you for pointing this out.
 
+Best regards,
+baolu
