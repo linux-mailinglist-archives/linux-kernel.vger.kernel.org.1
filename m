@@ -2,164 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E2D1AD49B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0661AD4A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgDQCqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 22:46:35 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:50567 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729316AbgDQCqe (ORCPT
+        id S1729386AbgDQCzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 22:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726261AbgDQCzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 22:46:34 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id C625360D;
-        Thu, 16 Apr 2020 22:46:33 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 16 Apr 2020 22:46:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=russell.cc; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
-        uBMzu65Xk32W4CUkghS8JLzUYDeM9GMYqeDoBoIfrGs=; b=Ss9Y8NoVoxUKcNfD
-        slmq5Z8mLwBPIrfS3B3BhDP8d0IWEkR/utKrpT4fotfdcbRgEN+TgirmBNkR6BdM
-        eYhwmrKkZgKiUaR2Aok05trJKoaTGXgYrPRQ/a3o13dtY7JbG1bS+1HFhKibIZia
-        oRQOBSaM90KnTO9JJYA7laDdaF8oO/aek2Rwe0k/j2EO4svRc/JoRunnMGOgYbq7
-        /nBUmaqKHugaevFQkqW9sVCLoWkwE75vBeIT+7Ru4yj6GlrcrpvvOzonMf07gbpv
-        1ziNBKpRplBOeMHr2sBIr8pOeIxzDTIg/POybLVLvgVlPTAYDdsuKnCWhlSZHu5A
-        oU/JMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=uBMzu65Xk32W4CUkghS8JLzUYDeM9GMYqeDoBoIfr
-        Gs=; b=nsENolDWAueoEGmiUWO7CIvYFaqdlN8smnGwByIyG8JPznbLktEC17NiP
-        n5D87SQjgksMoEXYrizc9Pd6yxSfUXXEY6+5XpDiIJfP1RkriqFzb3KfvWWY2HOK
-        kjmG/r7pqvDx04uTzZNnU6fLL7fqd4ez2TIj3vqo1hBwueZQr6UcLk3YIC8l2Tqa
-        KdUYOnSUMJxdTUGxupGFYJKbvsxYeDIgvnd/cKgF5OgogCMcs/ul3sb6qxCwTDYb
-        vaW9vbzYrOCcDZuGPXoPoDsTLslX2EtdWiNTl1M+s3wX2zNDVhqenMLdiZ43QN0W
-        yN/qO2HGKwVB+lA8NsK2Jqy3LkbJA==
-X-ME-Sender: <xms:iBiZXlYBbzX0KK26_zWihqBKgsSg-gzdzK9_wX496UZO5rSXNx0Z3Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfeeigdeifecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdeftddmnecujfgurhepkffuhffvffgjfhgtfggggfesthejredttder
-    jeenucfhrhhomheptfhushhsvghllhcuvehurhhrvgihuceorhhushgtuhhrsehruhhssh
-    gvlhhlrdgttgeqnecukfhppeduvddurdeghedrvdduvddrvdefleenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehruhhstghurhesrhhushhsvg
-    hllhdrtggt
-X-ME-Proxy: <xmx:iBiZXk8qh6dLy7GBTMSv2rKezmpBB4Aozb8PAXNgywBVxk4bH9m1Dw>
-    <xmx:iBiZXvChXeSNrICTNzGlfMA8nyPafkgpUxdjuQtlqju4AbN6AT-hog>
-    <xmx:iBiZXovwbuHr5tO0TziBneTOTAXu3Nvuh-y2XvP_983oSySAEJlAAA>
-    <xmx:iRiZXrySExpBHV99HNrmU01z12BfbtegutRn8BDU-MkaK2SWyAGl8g>
-Received: from crackle.ozlabs.ibm.com (ppp121-45-212-239.bras1.cbr2.internode.on.net [121.45.212.239])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B4AD63280064;
-        Thu, 16 Apr 2020 22:46:30 -0400 (EDT)
-Message-ID: <fec2e755ea20e15dc5b6fee6c856562aa42872bd.camel@russell.cc>
-Subject: Re: POWER9 crash due to STRICT_KERNEL_RWX (WAS: Re: Linux-next
- POWER9 NULL pointer NIP...)
-From:   Russell Currey <ruscur@russell.cc>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 17 Apr 2020 12:46:28 +1000
-In-Reply-To: <43EE54C0-6F20-4ADD-9948-21F24D90C5E1@lca.pw>
-References: <43EE54C0-6F20-4ADD-9948-21F24D90C5E1@lca.pw>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1 
+        Thu, 16 Apr 2020 22:55:47 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C885C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 19:55:47 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a81so1369030wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 19:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0DibPFFhioacuiAlJY3PMsjdrjXFMiXNDUjStb6tKak=;
+        b=eDmuq3YRYdXSRscLvXyn8vUlhMUSyz7Te4LydPmgbbUKHLm+qk0PQHeIzhB4n4Ig3g
+         6odFjxYoe30guB6JQChzldUuA18w/rA7cXfSsVEsMWyxeRPHzGiBhVMyqimhUZmnRjBo
+         NBChvvzlDGzHzwcxdJbtG3IWFqc/F0+czJ4Up+1IgZUKj+RKhAIix67B0uH9vKMDg5Y6
+         RvJcg8dgReOsBhlNciVqliEJ5NsHZOeHKNJJa0yrMSnU+J766LTUS6thr4ooVAKjC1W/
+         s1EzOVP4B6I2wQQsIYAmB2mm259xXGB4ilXEfdW8XLviJUMAh+Wq9DhxMA6zJ72C462j
+         atnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0DibPFFhioacuiAlJY3PMsjdrjXFMiXNDUjStb6tKak=;
+        b=mXDaMEPCUTIJ81lp3NpoZ977aDzvkgzW+hHfla3kI5On003o3St9IXnSLRRe6LLwgs
+         4lwlkI9qgj5ziWjAmRkPDZAI0ooLHLMbcYrjJN2NpUTtKmA2Lxe3ZCWmqOBZROXo0JpT
+         VnucZbbIsAIX5ckjUZ8V80JugH7XQyUWGvpEISEV8ZuvsRWVwFFRx/jAfA2q52o/Ry8I
+         cn3iKlIKBexD6zS4YRBz0CJW2V5arIiiO1B3ZkENnBVLwigpouwp9opmYlBGY2/KhMuC
+         wwNXFhOZ3XD4Ux8LOidhREug0l+8pGsQVSn+lSxysLGw4QT8B/qyFDuRhpcx696EpYOJ
+         Ex/Q==
+X-Gm-Message-State: AGi0PuZTInnCEMcL0ItllKGB/YE2iTZ9gv2KaeasrOo2WldtawDHQnS1
+        QaPTTZwPamD64vexYcIooClRFw3F2ubHKOKnqsgc67JyVZr9BmuE
+X-Google-Smtp-Source: APiQypJgPv2/C5+rAeThaQuCvauiAhxBD3c0FGqHKmy6F9qUYcHVGK2/1/0T3pR3cey6mxaJDGqS3F8P10mjk+JFk7g=
+X-Received: by 2002:a05:600c:4096:: with SMTP id k22mr877991wmh.99.1587092145594;
+ Thu, 16 Apr 2020 19:55:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200416114256.226329-1-elver@google.com>
+In-Reply-To: <20200416114256.226329-1-elver@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 17 Apr 2020 10:55:34 +0800
+Message-ID: <CABVgOSniuRdx1KjMLTZCJ3gWJo7rsrotpy0yfDhRCLqbjmgp-w@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Add missing newline in summary message
+To:     Marco Elver <elver@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Alan Maguire <alan.maguire@oracle.com>, frank.rowand@sony.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-04-16 at 22:40 -0400, Qian Cai wrote:
-> > On Apr 16, 2020, at 10:27 PM, Russell Currey <ruscur@russell.cc>
-> > wrote:
-> > 
-> > Reverting the patch with the given config will have the same effect
-> > as
-> > STRICT_KERNEL_RWX=n.  Not discounting that it could be a bug on the
-> > powerpc side (i.e. relocatable kernels with strict RWX on haven't
-> > been
-> > exhaustively tested yet), but we should definitely figure out
-> > what's
-> > going on with this bad access first.
-> 
-> BTW, this bad access only happened once. The overwhelming rest of
-> crashes are with NULL pointer NIP like below. How can you explain
-> that STRICT_KERNEL_RWX=n would also make those NULL NIP disappear if
-> STRICT_KERNEL_RWX is just a messenger?
+On Thu, Apr 16, 2020 at 7:43 PM 'Marco Elver' via KUnit Development
+<kunit-dev@googlegroups.com> wrote:
+>
+> Add missing newline, as otherwise flushing of the final summary message
+> to the console log can be delayed.
+>
+> Fixes: e2219db280e3 ("kunit: add debugfs /sys/kernel/debug/kunit/<suite>/results display")
+> Signed-off-by: Marco Elver <elver@google.com>
 
-What happens if you test with STRICT_KERNEL_RWX=y and RELOCATABLE=n,
-reverting my patch?  This would give us an idea of whether it's
-something broken recently or if there's something else going on.
+Tested-by: David Gow <davidgow@google.com>
 
-> 
-> [  215.281666][T16896] LTP: starting chown04_16
-> [  215.424203][T18297] BUG: Unable to handle kernel instruction fetch
-> (NULL pointer?)
-> [  215.424289][T18297] Faulting instruction address: 0x00000000
-> [  215.424313][T18297] Oops: Kernel access of bad area, sig: 11 [#1]
-> [  215.424341][T18297] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=256
-> DEBUG_PAGEALLOC NUMA PowerNV
-> [  215.424383][T18297] Modules linked in: loop kvm_hv kvm ip_tables
-> x_tables xfs sd_mod bnx2x mdio tg3 ahci libahci libphy libata
-> firmware_class dm_mirror dm_region_hash dm_log dm_mod
-> [  215.424459][T18297] CPU: 85 PID: 18297 Comm: chown04_16 Tainted:
-> G        W         5.6.0-next-20200405+ #3
-> [  215.424489][T18297] NIP:  0000000000000000 LR: c00800000fbc0408
-> CTR: 0000000000000000
-> [  215.424530][T18297] REGS: c000200b8606f990 TRAP: 0400   Tainted:
-> G        W          (5.6.0-next-20200405+)
-> [  215.424570][T18297] MSR:  9000000040009033
-> <SF,HV,EE,ME,IR,DR,RI,LE>  CR: 84000248  XER: 20040000
-> [  215.424619][T18297] CFAR: c00800000fbc64f4 IRQMASK: 0 
-> [  215.424619][T18297] GPR00: c0000000006c2238 c000200b8606fc20
-> c00000000165ce00 0000000000000000 
-> [  215.424619][T18297] GPR04: c000201a58106400 c000200b8606fcc0
-> 000000005f037e7d ffffffff00013bfb 
-> [  215.424619][T18297] GPR08: c000201a58106400 0000000000000000
-> 0000000000000000 c000000001652ee0 
-> [  215.424619][T18297] GPR12: 0000000000000000 c000201fff69a600
-> 0000000000000000 0000000000000000 
-> [  215.424619][T18297] GPR16: 0000000000000000 0000000000000000
-> 0000000000000000 0000000000000000 
-> [  215.424619][T18297] GPR20: 0000000000000000 0000000000000000
-> 0000000000000000 0000000000000007 
-> [  215.424619][T18297] GPR24: 0000000000000000 0000000000000000
-> c00800000fbc8688 c000200b8606fcc0 
-> [  215.424619][T18297] GPR28: 0000000000000000 000000007fffffff
-> c00800000fbc0400 c00020068b8c0e70 
-> [  215.424914][T18297] NIP [0000000000000000] 0x0
-> [  215.424953][T18297] LR [c00800000fbc0408] find_free_cb+0x8/0x30
-> [loop]
-> find_free_cb at drivers/block/loop.c:2129
-> [  215.424997][T18297] Call Trace:
-> [  215.425036][T18297] [c000200b8606fc20] [c0000000006c2290]
-> idr_for_each+0xf0/0x170 (unreliable)
-> [  215.425073][T18297] [c000200b8606fca0] [c00800000fbc2744]
-> loop_lookup.part.2+0x4c/0xb0 [loop]
-> loop_lookup at drivers/block/loop.c:2144
-> [  215.425105][T18297] [c000200b8606fce0] [c00800000fbc3558]
-> loop_control_ioctl+0x120/0x1d0 [loop]
-> [  215.425149][T18297] [c000200b8606fd40] [c0000000004eb688]
-> ksys_ioctl+0xd8/0x130
-> [  215.425190][T18297] [c000200b8606fd90] [c0000000004eb708]
-> sys_ioctl+0x28/0x40
-> [  215.425233][T18297] [c000200b8606fdb0] [c00000000003cc30]
-> system_call_exception+0x110/0x1e0
-> [  215.425274][T18297] [c000200b8606fe20] [c00000000000c9f0]
-> system_call_common+0xf0/0x278
-> [  215.425314][T18297] Instruction dump:
-> [  215.425338][T18297] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-> XXXXXXXX XXXXXXXX XXXXXXXX 
-> [  215.425374][T18297] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-> XXXXXXXX XXXXXXXX XXXXXXXX 
-> [  215.425422][T18297] ---[ end trace ebed248fad431966 ]---
-> [  215.642114][T18297] 
-> [  216.642220][T18297] Kernel panic - not syncing: Fatal exception
+Thanks a lot: this issue was starting to get annoying, and I can
+confirm this patch fixes it for me!
 
+-- David
