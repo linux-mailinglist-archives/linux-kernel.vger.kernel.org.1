@@ -2,128 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5F21ADEA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BD31ADEAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730729AbgDQNoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 09:44:05 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:54048 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730597AbgDQNoE (ORCPT
+        id S1730752AbgDQNpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 09:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730597AbgDQNpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 09:44:04 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03HDi4iG016739;
-        Fri, 17 Apr 2020 08:44:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587131044;
-        bh=8HgdONqfTSBVvtKMiJSwkisfx9dXqvr3Nfz+IeFgm9c=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UsRWRTMsdPPVJJTGhgGWOwSECgNOXbOwOVI48+g77GQ5BXRgYXNYNk3mdLk/6AUkN
-         tqPRGlay6S2OIkPBCTlIEpjeFFUoPDUIaxp3g2f3tcy3OSO+o/lKaRSt+XeeVeS80A
-         IiVQ+KUGDxpExl2gMRvp5Za1fYVZ3AuFR9BVvDVQ=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03HDi3i4048316
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Apr 2020 08:44:04 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 17
- Apr 2020 08:44:03 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 17 Apr 2020 08:44:03 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03HDi3Mp040253;
-        Fri, 17 Apr 2020 08:44:03 -0500
-Subject: Re: [PATCH v2 4/7] remoteproc: Use kstrdup_const() rather than
- kstrup()
-To:     Alex Elder <elder@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <bjorn.andersson@linaro.org>, <ohad@wizery.com>
-CC:     <Markus.Elfring@web.de>, <linux-remoteproc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200415204858.2448-1-mathieu.poirier@linaro.org>
- <20200415204858.2448-5-mathieu.poirier@linaro.org>
- <14b12ca8-823b-8115-bafa-281180e92c70@linaro.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <3f0a602a-64ff-8092-3cca-b63bab8a79f0@ti.com>
-Date:   Fri, 17 Apr 2020 08:44:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 09:45:12 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C4AC061A0C;
+        Fri, 17 Apr 2020 06:45:12 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t4so973825plq.12;
+        Fri, 17 Apr 2020 06:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9kS0cSAgo1VPJStqOCcHdT5aRZVdhxXEJVNNXkxC32E=;
+        b=aNT+4DDGzgqUGZdBxXq6BjG+qo3kEc2axfFiFWkHdAY/FVv/zbHydwt4eJLAozs/ZL
+         WbpgGQ7sYYZoiPpCs3xSI8d3G0X/vdT3d3nbfTTQrUFUnbe2iGyLZcFGKm4of8KM3W9P
+         EhSSI+1dXR86Jvx1WuAaAfc9kNLcPkV/YnvUB6triKKXLY0z2I2qNavpxcaYGuHFxpKz
+         EC9y99pg5dHX3Xd/v6sNU5SM9jv8tzDfKu0mpPShW6JGsTGa/RyRAlbI9C5ZaUc5vIPd
+         hhRRc7Ch6HG25LRoeCFVRutKLzIas9jYk+QjC8955M4kY4YlNFlTBiZkm1PoP/JFdH/P
+         E41g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9kS0cSAgo1VPJStqOCcHdT5aRZVdhxXEJVNNXkxC32E=;
+        b=RkxhiHEbH/wz6OVZra7U1iu9K68xz8vXLjdcxHrqpnSbmmr5YFaUP+Qo8nJMwNkT7w
+         WqW2mtUK6ml7X/Ypr1IX3ruowWZIHzwZ5bLzeuC0rr87eJGs1qr0ZokNmDrdrdKzzaol
+         7op6cYUzFSGm6YntF71pj9VMMo5aEAin4kSscW9ApyjKD/iKUCSspoXWz3QVYgfeioUG
+         n/W9za31PoPq/rF6iHB5mU8pUFYiwuIzdQSC1/xh9dCuoyEBOcc1Irc3CLbzg/4quIGD
+         azwIDlvkjXS+tXnvjo/jJ5HryhloDYA+16mJc/sCUnX2/Q8M0Nyx/0v7xqLKceQ/kJnr
+         GVXQ==
+X-Gm-Message-State: AGi0PuYBtmwNGkk1jzzXhxvdNPqgMPdBaWnPwxSculiYttbxmWOz+Xnp
+        Vtz8tAMfSjJYep+w6Fmn+7sdD+1XuPfaH0jemL0=
+X-Google-Smtp-Source: APiQypIubgvKFgUljd5eUdgsJU9Cc9nrqckwz8ARK+bdaJtwxs/+ldNfW5QQhVXWxg6FYF9r7akNg0PT3AQgYTo4kOM=
+X-Received: by 2002:a17:90a:364c:: with SMTP id s70mr4458977pjb.143.1587131112391;
+ Fri, 17 Apr 2020 06:45:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <14b12ca8-823b-8115-bafa-281180e92c70@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200416205428.437503-1-alexandre.belloni@bootlin.com> <20200416205428.437503-2-alexandre.belloni@bootlin.com>
+In-Reply-To: <20200416205428.437503-2-alexandre.belloni@bootlin.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 17 Apr 2020 16:45:05 +0300
+Message-ID: <CAHp75VdQ58A39HYnW-7CYJgp4+adrzcoiQ4KmTq=0snVAokH9g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] iio: adc: ti-ads8344: properly byte swap value
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/20 4:25 PM, Alex Elder wrote:
-> On 4/15/20 3:48 PM, Mathieu Poirier wrote:
->> For cases where @firmware is declared "const char *", use function
->> kstrdup_const() to avoid needlessly creating another copy on the
->> heap.
->>
->> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
-> Looks good.
-> 
-> Reviewed-by: Alex Elder <elder@linaro.org>
-> 
->> ---
->>   drivers/remoteproc/remoteproc_core.c | 4 ++--
->>   include/linux/remoteproc.h           | 2 +-
->>   2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->> index 9899467fa1cf..ebaff496ef81 100644
->> --- a/drivers/remoteproc/remoteproc_core.c
->> +++ b/drivers/remoteproc/remoteproc_core.c
->> @@ -1982,7 +1982,7 @@ static const struct device_type rproc_type = {
->>   static int rproc_alloc_firmware(struct rproc *rproc,
->>   				const char *name, const char *firmware)
->>   {
->> -	char *p;
->> +	const char *p;
->>   
->>   	if (!firmware)
->>   		/*
->> @@ -1991,7 +1991,7 @@ static int rproc_alloc_firmware(struct rproc *rproc,
->>   		 */
->>   		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
+On Thu, Apr 16, 2020 at 11:55 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> The first received byte is the MSB, followed by the LSB so the value needs
+> to be byte swapped.
+>
+> Also, the ADC actually has a delay of one clock on the SPI bus. Read three
+> bytes to get the last bit.
 
-So, to be consistent for both paths, should we be using 
-kvasprintf_const() here and kfree_const() in release. The kfree_const() 
-is needed to account for the kstrdup_const below for sure.
+> +       return adc->rx_buf[0] << 9 | adc->rx_buf[1] << 1 | adc->rx_buf[2] >> 7;
 
-regards
-Suman
+I just realize, isn't it an open coded variant of ror() / rol()?
 
->>   	else
->> -		p = kstrdup(firmware, GFP_KERNEL);
->> +		p = kstrdup_const(firmware, GFP_KERNEL);
->>   
->>   	if (!p)
->>   		return -ENOMEM;
->> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
->> index 9c07d7958c53..38607107b7cb 100644
->> --- a/include/linux/remoteproc.h
->> +++ b/include/linux/remoteproc.h
->> @@ -489,7 +489,7 @@ struct rproc {
->>   	struct list_head node;
->>   	struct iommu_domain *domain;
->>   	const char *name;
->> -	char *firmware;
->> +	const char *firmware;
->>   	void *priv;
->>   	struct rproc_ops *ops;
->>   	struct device dev;
->>
-> 
-
+-- 
+With Best Regards,
+Andy Shevchenko
