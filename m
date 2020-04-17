@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437231ADB02
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85281ADB08
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgDQKZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S1729465AbgDQK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728869AbgDQKZf (ORCPT
+        by vger.kernel.org with ESMTP id S1728830AbgDQK0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:25:35 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53659C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:25:35 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f13so2397333wrm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:25:35 -0700 (PDT)
+        Fri, 17 Apr 2020 06:26:47 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94E3C061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:26:46 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id f8so1358997lfe.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:26:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7q6Jr729CYPyB+SZq18Uo5FBiWv9vtwUqdtC6T3/0KY=;
-        b=dlO8RvCXvGGmr6yzDqAZ9YvBrhmjSkPSe8h0tKG5BmXImFbDltrIrkxQZ4TeZo04JI
-         YMJ0uhz1Yq1d50kOOWywT4WR9uo6mWknaxmFiyJnV1LZ9I3AK1KsD3Dah2xtvmE/dgRC
-         SK6RfTl50sxwT9QsPChaYauj1M1saCADdqXjl+8Lp/4lGZ8iZlKNtEjoIjEMvfYiFdP9
-         cEj9kMTHWoQSbJCIox3TvJlfLA+advfZuM78uz2H8ippl6he89qd8rKlPKIgFmd55rO2
-         WSi1LCTNtfNeE6mzhswYg9IfERLWleAwr2VeDwpeq0/Aefpa7zjJVnKgfO8AF43nn5+D
-         V0+g==
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=abDyn/jXseXxq1cb7bzkp4uCUuMQnA0AHpsOMWQZYsc=;
+        b=Ibbybj3B49zX5Erj/RuaY9e3gsgQ5r7g/GnmjSMpZ/abyKFCQAXFSZECh04pljsSDe
+         K1oL4Jtupdt6W0gpdx2hMGO0/KoQk/hbf41AWqkdYrU268L1WB5zWGC+ilh8mGKMutXl
+         eHMnHDsuvNOf09CZB1Jw6062l1EK38hwF+VraL5qIXpvAWli/rENokjYyaolv82CzlL5
+         uS5ZVkRjkmDiQYrIGv3X5lYcASPKF2cgh5QAJWSm2S0Z2nyBRDCV1P9LFq7l7+uBKdae
+         j0l41cDPgHlRH7LrYrTSQNRIkQuqfr2k4wVA4i2kPg9bpIHVQtYpZClL3HgqGeCGityA
+         L9Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7q6Jr729CYPyB+SZq18Uo5FBiWv9vtwUqdtC6T3/0KY=;
-        b=t4A6nKllHmeyaJiJwkWF+ig7MXt5AgT6alp7L64kdaF26m+NrcwiZZ4f4f0vxPlYp5
-         +7tMTB3LDYOYv59Hu9KfKQoWmGkDAvfUFqH297gc06wCjhv1rXvHfUOtv+EA1uk5CrTj
-         zd9HUdXdNicL1W5iZPWFwze+H0MYP8o8mH3UwqLui1YVqvYEyjjczlzfgNfmR9kM5Yq4
-         eg4y8E/56emUg6gw4F3RPr1S5ZZhg8NqUqnV/kRKTXFwkf0T9j2+IpxCyGtjQru3fgm6
-         w6wvgYlNSjrRy5715ytxwOEcCLJzgsz6ZUnA4ObHgHjWOUP+BvnGoCfl2sZ9/9UKbQ93
-         BbDA==
-X-Gm-Message-State: AGi0Pua4jNk7BrV83o+pZtO57+bU5zSFI2eVFVVDLL9gSoN3fjhp4Dls
-        Ejpz3sCm438DBomBrGdn54YgiPVyMHQ=
-X-Google-Smtp-Source: APiQypIesHKULrJQELVTc4QG4A4qrye3XjdCXJO3F/sfsVC3VlmxnFnm9C4pa+YIPQH5+uD+fQYmlQ==
-X-Received: by 2002:adf:eccb:: with SMTP id s11mr2953592wro.138.1587119134099;
-        Fri, 17 Apr 2020 03:25:34 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id 1sm7302840wmz.13.2020.04.17.03.25.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 03:25:33 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 11:26:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mfd: intel-lpss: Update LPSS UART #2 PCI ID for
- Jasper Lake
-Message-ID: <20200417102635.GC3737@dell>
-References: <20200414095134.80135-1-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=abDyn/jXseXxq1cb7bzkp4uCUuMQnA0AHpsOMWQZYsc=;
+        b=jHzRUXzs1N6JKA+DpnYDQ2jmJdKwUUk51BpRSGELXDPD3ln9svivg+oHozW7C+8/aJ
+         GffHLjmeZlf8GTHQ8uHh8AT3kGGS8jVsUTsrz9ZHQ6YIdJaNdgBDPk4HcoUW+XhVuceo
+         nx7M1HrclKVj97Lv40aHv1Q60qOcOaZZ13gYZDezsvxp9aeY9BoHCi1e+2CdRl9ZcWeT
+         WRVWeLpWh5ZdmaNsDjVtuNYINUSVHTFrNC7J65Jp/hnLjv/Cgt+nwbDB0gyRhJqQExQB
+         nxcNGNykcjXpdKCbSYTU3odJPolsvyvTyhig+3aLvfHNLOdSF2LyV8OUcUnFI1lBCEg4
+         PrVA==
+X-Gm-Message-State: AGi0Pubgehq7I4t8hwzRVobb6Njz6dszuj+ptx2TAoQ4UxBHbU5JFt9c
+        rkaBuSkpRjuE/Zrkvsf4JGwmvQ==
+X-Google-Smtp-Source: APiQypKjN7ryKHp7crnqULqVwMcxdcRVmUG5EbaOPwpMcWc6SP+r9a0h77F07utY1WzaZU4k1WmcKA==
+X-Received: by 2002:a19:5206:: with SMTP id m6mr1607205lfb.33.1587119205308;
+        Fri, 17 Apr 2020 03:26:45 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4680:4c27:1a2:7a5f:abbc:5b1c? ([2a00:1fa0:4680:4c27:1a2:7a5f:abbc:5b1c])
+        by smtp.gmail.com with ESMTPSA id a11sm11712142lji.62.2020.04.17.03.26.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Apr 2020 03:26:44 -0700 (PDT)
+Subject: Re: [PATCH] irqchip/irq-bcm7038-l1: make bcm7038_l1_of_init() static
+To:     Jason Yan <yanaijie@huawei.com>, f.fainelli@gmail.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        justinpopo6@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Hulk Robot <hulkci@huawei.com>
+References: <20200417074036.46594-1-yanaijie@huawei.com>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <ecb3e3e1-7761-faa7-10fa-67da69604306@cogentembedded.com>
+Date:   Fri, 17 Apr 2020 13:26:43 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200414095134.80135-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20200417074036.46594-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020, Andy Shevchenko wrote:
+Hello!
 
-> It appears that preliminary documentation has a typo in the ID list,
-> i.e. LPSS UART #2 had been advertised wrongly.
+On 17.04.2020 10:40, Jason Yan wrote:
+
+> Fix the following sparse warning:
 > 
-> Fix the driver according to the EDS v0.9.
+> drivers/irqchip/irq-bcm7038-l1.c:419:12: warning: symbol
+> 'bcm7038_l1_of_init' was not declared. Should it be static?
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 > ---
->  drivers/mfd/intel-lpss-pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/irqchip/irq-bcm7038-l1.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+> index eb9bce93cd05..fd7c537fb42a 100644
+> --- a/drivers/irqchip/irq-bcm7038-l1.c
+> +++ b/drivers/irqchip/irq-bcm7038-l1.c
+> @@ -416,7 +416,7 @@ static const struct irq_domain_ops bcm7038_l1_domain_ops = {
+>   	.map			= bcm7038_l1_map,
+>   };
+>   
+> -int __init bcm7038_l1_of_init(struct device_node *dn,
+> +static int __init bcm7038_l1_of_init(struct device_node *dn,
+>   			      struct device_node *parent)
 
-Applied, thanks.
+    Reindent the above line please, it should start under *struct* on the 1st 
+line.
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+[...]
+
+MBR, Sergei
