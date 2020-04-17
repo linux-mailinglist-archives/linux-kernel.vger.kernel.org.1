@@ -2,145 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FCE1AD3BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFB01AD3E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbgDQAqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 20:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
+        id S1728518AbgDQBAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 21:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726627AbgDQAqH (ORCPT
+        by vger.kernel.org with ESMTP id S1725858AbgDQBAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 20:46:07 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55464C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 17:46:06 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id y185so165535vsy.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 17:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jgottula-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=98QNDXNNi1/b9nh1s56044uMzWepsdxzuM+zy1ZjRxU=;
-        b=nFkxDEP5t02hVcrnliNnd9dc1y+GiLs22EKy+tLyO3fXH9tBa+cKxVG6bsGHJBqEUl
-         cs2UXX2VTUu7edfBFqgeSbwbmg+sryNav/F9LImOfjwz9sruHXCb9abixx9cdvUZAqAb
-         CdhCfHgyRm4asocPeYGS3RdX0j/kSN57fjamUpFinPwCVhasHt7uXH1JBgb1V+2RGel6
-         1iztnj+WMRqGnL27F8Z7VlBQBK4UDqzbbQOvWbYpoKwpEQedyO6Jg3Bpn2wbhglY+Zbp
-         Kh3FGd981CMRmk7rjc/JUHpdcgd/zoW1cwN3issixl0BtDdNGFZ3bkUqeh+by79V+RkS
-         0ABA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=98QNDXNNi1/b9nh1s56044uMzWepsdxzuM+zy1ZjRxU=;
-        b=WQe4z1NDyhTghYdrfLRwbOuvUBO72LxLzne78xJS8yWnZPeOFJzLovWJOMLNAfKSqC
-         mE34Wt1RUkRNaA09a9DNNOxjEe8t5x5mLCv36U9ReQSA/u3H3/UM5LrUBb5Vo7oiEnhG
-         Fdbz33IM2RinHMLKPZBIx0EOjj+uqsjo+DUdhx+B9+xdxA+aPVpQqUf8IP7JmRWHmELs
-         4EbqInqqDxoKoZJAzi+PWU0YsjZQtD/teJzNPB9y9yqkNsJya2G8o3bY0yieBFsSlO+e
-         8e2U/Nz7AFIQmUNiZo9nbogjbg8cp8AQR4cvQuZmF+qN2o0qB2c9KEqhRDVKD5OnM9LU
-         +xyg==
-X-Gm-Message-State: AGi0PuZZaAcIU6kwyFcKF3zAINvOla4epZmTjcaEUGZYctJy0ptxPvYv
-        FdrnR+7mI1c6+NQjJQ9kdGfii89ZLdxtu/T0WINZpA==
-X-Google-Smtp-Source: APiQypJT/nzaZl1RZrciK4UlldYYOjXJrnUG6cC4F7AkHx8huVmh54MdmiFbcbxJAC44wxDaul2Ok4UZA5L7skkhW6k=
-X-Received: by 2002:a67:7d10:: with SMTP id y16mr318990vsc.23.1587084365254;
- Thu, 16 Apr 2020 17:46:05 -0700 (PDT)
+        Thu, 16 Apr 2020 21:00:45 -0400
+X-Greylist: delayed 76000 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Apr 2020 18:00:45 PDT
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663ACC061A0C;
+        Thu, 16 Apr 2020 18:00:45 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 493Hp22p84z9sRN; Fri, 17 Apr 2020 11:00:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1587085242;
+        bh=g1ERQ546dSK/iDMW/vYxYEg//1XoTyotxttCfMkrVjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nfuuW22aTv5Z15ezeMLKG24F0NK/WIaRzA9pEnl6YeZIoRMNSHsrHTIENWaJm+v/y
+         rysf+XzfR1PJs5Y83K7zXL4c82mhHRPAyLLw+XtvglbTzwnw+LHNGzah11hglaA8lm
+         /WYJLFcQZUVeQFIrPX5NY0cH9c/WR1W0/JVSEBYk=
+Date:   Fri, 17 Apr 2020 10:47:28 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
+Cc:     Paul Mackerras <paulus@ozlabs.org>, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, groug@kaod.org
+Subject: Re: [PATCH] KVM: PPC: Book3S HV: Handle non-present PTEs in page
+ fault functions
+Message-ID: <20200417004728.GB2102@umbus.fritz.box>
+References: <20200416050335.GB10545@blackberry>
+ <a4e1bf29-af52-232e-d0d2-06206fa05fbe@kaod.org>
 MIME-Version: 1.0
-References: <CAKuMfTUPzPjuNk+T_GQMCKoB9ssh2arr6xRiu6VODwwB0PMdZw@mail.gmail.com>
- <20200416214649.GA60148@google.com>
-In-Reply-To: <20200416214649.GA60148@google.com>
-From:   Justin Gottula <justin@jgottula.com>
-Date:   Thu, 16 Apr 2020 17:45:31 -0700
-Message-ID: <CAKuMfTVpaetB0qQ_hm8cSowtZN8HUKXdADWhKXC=4eKd1i5oSw@mail.gmail.com>
-Subject: Re: [PATCH] zram: fix writeback_store returning zero in most situations
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Nitin Gupta <ngupta@vflare.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Disposition: inline
+In-Reply-To: <a4e1bf29-af52-232e-d0d2-06206fa05fbe@kaod.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 2:47 PM Minchan Kim <minchan@kernel.org> wrote:
-> I couldn't remember why I wanted to do continue even though we knew
-> the write was failure from the beginning.
->
-> Couldn't we just bail out whenever we encounter the error?
-> Sergey, Justin, what do you think?
->
-> IMO, it would be more consistent with other error handling.
 
-As far as being consistent with the rest of the error handling in the
-loop, I think there's a reasonable distinction that can be drawn between
-some of the error cases and others. With some, breaking out immediately is
-obviously the correct action; but with others, it's not as clear-cut.
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For the zram->wb_limit_enable && !zram->bd_wb_limit case, breaking out of
-the loop and immediately returning makes complete sense: once we've hit
-the writeback limit, there's nothing that could happen in future loop
-iterations that could cause us to somehow _not_ be at the limit anymore.
-So there's no reason to continue the loop.
+On Thu, Apr 16, 2020 at 10:07:49AM +0200, C=E9dric Le Goater wrote:
+> On 4/16/20 7:03 AM, Paul Mackerras wrote:
+> > Since cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT
+> > page fault handler", it's been possible in fairly rare circumstances to
+> > load a non-present PTE in kvmppc_book3s_hv_page_fault() when running a
+> > guest on a POWER8 host.
+> >=20
+> > Because that case wasn't checked for, we could misinterpret the non-pre=
+sent
+> > PTE as being a cache-inhibited PTE.  That could mismatch with the
+> > corresponding hash PTE, which would cause the function to fail with -EF=
+AULT
+> > a little further down.  That would propagate up to the KVM_RUN ioctl()
+> > generally causing the KVM userspace (usually qemu) to fall over.
+> >=20
+> > This addresses the problem by catching that case and returning to the g=
+uest
+> > instead, letting it fault again, and retrying the whole page fault from
+> > the beginning.
+> >=20
+> > For completeness, this fixes the radix page fault handler in the same
+> > way.  For radix this didn't cause any obvious misbehaviour, because we
+> > ended up putting the non-present PTE into the guest's partition-scoped
+> > page tables, leading immediately to another hypervisor data/instruction
+> > storage interrupt, which would go through the page fault path again
+> > and fix things up.
+> >=20
+> > Fixes: cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in H=
+PT page fault handler"
+> > Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=3D1820402
+> > Reported-by: David Gibson <david@gibson.dropbear.id.au>
+> > Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
+>=20
+> I didn't see the reported issue with the current 5.7-rc1. Anyhow I gave
+> this patch a try on a P8 host and a P9 host with a radix guest and a hash=
+=20
+> guest (using rhel6). Passthrough is fine also.
+>=20
+> Tested-by: C=E9dric Le Goater <clg@kaod.org>
+>=20
+> The code looks correct,
+>=20
+> Reviewed-by: C=E9dric Le Goater <clg@kaod.org>
 
-Similarly, for the alloc_block_bdev(zram) failure case, breaking out of
-the loop and immediately returning also makes complete sense: if we've
-already run out of blocks on the backing device, then continuing to loop
-isn't going to result in is somehow ending up with more backing device
-blocks available. So there's no reason to continue the loop in that case
-either.
+I ran my test case overnight with this patch for over 1000 iterations,
+without any apparent problems so
 
-With the zram_bvec_read and submit_bio_wait failure cases, though, it's
-not nearly as clear that a failure on the current slot _automatically_
-guarantees that all future slots would also have errors. For example, in
-the zram_bvec_read failure case, it's entirely possible that the
-decompression code in the currently-used compression backend might have
-had a problem with the current buffer; but that doesn't necessarily seem
-like a clear-cut indication that the same decompression error would
-definitely happen on later iterations of the loop: in fact, many of the
-later slots could very well be ZRAM_HUGE or ZRAM_SAME, and so they would
-avoid that type of error entirely. And in the submit_bio_wait failure
-case, it's also conceivable that the backing device may have had some sort
-of write error with the current block and data buffer, but that the same
-error might not happen again on future iterations of the loop when writing
-a different buffer to potentially an entirely different block. (Especially
-if the backing device happens to be using some kind of complicated driver,
-like one of the weirder LVM/device-mapper backends or a network block
-device.)
+Tested-by: David Gibson <david@gibson.dropbear.id.au>
 
-So, at least when it comes to "are these particular failure cases the kind
-where it would certainly make no sense to continue with future loop
-iterations because we would definitely have the same failures then too",
-there's a reasonable argument that the zram_bvec_read and submit_bio_wait
-error cases don't necessarily fit that logic and so potentially shouldn't
-immediately break and return.
+>=20
+> Thanks,
+>=20
+> C.=20
+>=20
+>=20
+> > ---
+> > This is a reworked version of the patch David Gibson sent recently,
+> > with the fix applied to the radix case as well. The commit message
+> > is mostly stolen from David's patch.
+> >=20
+> >  arch/powerpc/kvm/book3s_64_mmu_hv.c    | 9 +++++----
+> >  arch/powerpc/kvm/book3s_64_mmu_radix.c | 9 +++++----
+> >  2 files changed, 10 insertions(+), 8 deletions(-)
+> >=20
+> > diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/boo=
+k3s_64_mmu_hv.c
+> > index 3aecec8..20b7dce 100644
+> > --- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
+> > +++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+> > @@ -604,18 +604,19 @@ int kvmppc_book3s_hv_page_fault(struct kvm_run *r=
+un, struct kvm_vcpu *vcpu,
+> >  	 */
+> >  	local_irq_disable();
+> >  	ptep =3D __find_linux_pte(vcpu->arch.pgdir, hva, NULL, &shift);
+> > +	pte =3D __pte(0);
+> > +	if (ptep)
+> > +		pte =3D *ptep;
+> > +	local_irq_enable();
+> >  	/*
+> >  	 * If the PTE disappeared temporarily due to a THP
+> >  	 * collapse, just return and let the guest try again.
+> >  	 */
+> > -	if (!ptep) {
+> > -		local_irq_enable();
+> > +	if (!pte_present(pte)) {
+> >  		if (page)
+> >  			put_page(page);
+> >  		return RESUME_GUEST;
+> >  	}
+> > -	pte =3D *ptep;
+> > -	local_irq_enable();
+> >  	hpa =3D pte_pfn(pte) << PAGE_SHIFT;
+> >  	pte_size =3D PAGE_SIZE;
+> >  	if (shift)
+> > diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/=
+book3s_64_mmu_radix.c
+> > index 134fbc1..7bf94ba 100644
+> > --- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
+> > +++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+> > @@ -815,18 +815,19 @@ int kvmppc_book3s_instantiate_page(struct kvm_vcp=
+u *vcpu,
+> >  	 */
+> >  	local_irq_disable();
+> >  	ptep =3D __find_linux_pte(vcpu->arch.pgdir, hva, NULL, &shift);
+> > +	pte =3D __pte(0);
+> > +	if (ptep)
+> > +		pte =3D *ptep;
+> > +	local_irq_enable();
+> >  	/*
+> >  	 * If the PTE disappeared temporarily due to a THP
+> >  	 * collapse, just return and let the guest try again.
+> >  	 */
+> > -	if (!ptep) {
+> > -		local_irq_enable();
+> > +	if (!pte_present(pte)) {
+> >  		if (page)
+> >  			put_page(page);
+> >  		return RESUME_GUEST;
+> >  	}
+> > -	pte =3D *ptep;
+> > -	local_irq_enable();
+> > =20
+> >  	/* If we're logging dirty pages, always map single pages */
+> >  	large_enable =3D !(memslot->flags & KVM_MEM_LOG_DIRTY_PAGES);
+> >=20
+>=20
 
-A couple of other considerations came to mind while thinking about this:
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
-1. From the standpoint of the user, what should they reasonably be
-expecting to happen when writing "huge"/"idle" to the writeback file? A
-best-effort attempt at doing all possible block writebacks (of the
-requested type) that can possibly be successfully accomplished? Or,
-writeback of only as many blocks as can be done until a (possibly
-transient or not-applicable-to-all-blocks) error pops up, and then
-stopping at that point? I tend to think that the former makes a bit more
-sense, but I don't know for sure if it's the definite Right Answer.
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
 
-2. There is a bit of a predicament with the keep-going-even-if-an-error-
-happened approach. There could be multiple submit_bio_wait failures (e.g.
-due to a few blocks that couldn't be written-back due to transient write
-errors on the backing device), each with their own error return value; but
-we can only return one error code from writeback_store. So how do we even
-communicate a multiple-errors-happened situation to the user properly? My
-patch, as originally written, would give the user an errno corresponding
-to the last submit_bio_wait failure to happen; but of course that leaves
-out any other error codes that may have also come up on prior write
-attempts that failed (and those failures could have been for different
-reasons). And then also, it's entirely possible that submit_bio_wait may
-return -EIO or -ENOSPC or -ENOMEM, which would be ambiguous with the other
-meanings of those error codes from the writeback_store function itself
-(-EIO for WB limit, -ENOSPC for no free blocks on backing device, -ENOMEM
-if couldn't allocate the temporary page).
+-----BEGIN PGP SIGNATURE-----
 
-As for the main issue of whether or not to break out of the loop in the
-event of a backing device write error, I think it probably makes more
-sense not to break out. But it could probably be argued either way.
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAl6Y/J8ACgkQbDjKyiDZ
+s5KeARAArge+EauSGPsWkcx5KJ/iOjUpSUSe5mHJXFyeD7zO+1qpwNVo0QIwKzGX
+aLQMtZ+t/rcs88mFkuXQG8aZyx4e3kD8WW8I0cFM8BvaKFLpoRb5JRSrd+hwa+Yd
+imn0LHe2UZlB5MFML9IV6zBFk0juz4mdxW9vYtLzIm1Icp2+u/t7k8iQyKNjvRKC
+p4EG5NI1rwRFT/vreArPc5EwtOAnAQlQpdijOc8uSCgJ60kqX1go4pMnmP8xK25t
+99vntr3jIIFY6C0rjRHh64mOClY3DW8b+0J6tEUKTQDV710mx1uvJJm/Oxwetxpk
+mefPm9FHtRfgpuMEO5nzovCfMlms6O4cQ7zsxHVt8LcUn4W8HuP4Od0HQv13Yfuh
+vbTjpEYUS1Ls+bh2DXbpSpGtlZY33FZN+adBxcYN+rOTlYXGKrkti2kGgjO1wGiE
+MpCEJx7VXgvpm2T9Q12DACTRT0uEIa9wwun2bTNepGTcQp35uX1HedjzWjNHxZu2
+Ou8RtC2zmVbauKk8UBlueqyqmHopcPPS72ef5AC9cHZSY0zyHrMC3lGvc0Pj5J3V
++kAMpuYufu2+46aFkZZcHz2pzJnw072qqx7KuVX0wdMC0r+wDFL1ULvAS82EjDmu
+S0lWrvygkvL9zjSFcp2K+dCtU6TwAg2LJBVCdvV/Zw9jqWWvE54=
+=ivnP
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
