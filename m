@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6121AE4BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9565F1AE4B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgDQS2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726054AbgDQS2y (ORCPT
+        id S1730796AbgDQS13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:27:29 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36778 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730256AbgDQS12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:28:54 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8108CC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:28:53 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id q142so2670761pfc.21
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=DjQXy2exWjwriNyUC2GIvM8LP+AR/h3G20HFwsfL+JI=;
-        b=mZ9QoXVpKwSqhEdbDfiIzZW4ahvQi+7hy1ql2g3/YWA/QEwjtqan+6LJ7nYDMAtUWa
-         NM4L4L+FfYeJTxbuEZEX1NEyO4wGn7erzDJmXGRnnk5wyJ09W+n8IMs0gGiJAb+bEGZr
-         2Ij4P1hkNjngCzhGcgxOjTDGWcdk7+/U5YDrz3ArZs6+TsFbk1GyfM5RyWqOKRz6T31L
-         oSeS+T7VPEwrUahfHB6UlRhvna+ZbN1LEMiYG1J2imGr2tJ1Cx6gmw81Y8tSpEQO2ixY
-         uhsTQgd1uaoZfJI0Pc5L267Jqus2bdn4ZSmHZEpj46RElCoPD26yGDuJSkAyO/HzFUMe
-         iDzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=DjQXy2exWjwriNyUC2GIvM8LP+AR/h3G20HFwsfL+JI=;
-        b=gHa2Kl/6tm6q3WTRYrpSkJIEMRUEeyYtK01fIvJEkQi5o4f3ZXI/27gEpswXB05kc8
-         no6o42L9LISj6cympX87sjaWtg4oC+hGJ565wUbB3IolPOD4ULfX8jtm/nZEY1/fWLaA
-         ZUStnqFIuTPpmktnj4tc/y4HQ7x5bR8dxXJsl3VunVN3K/PmG0AmciZCaKOnngA26+JS
-         YGLkGzV0oCOZYaxV0UQ0LcEWBlbPv4wsKOEyGAHrcR6YsRl5Ce3oLf1tucjrMZC58hAC
-         VTCPeo3If6E0VWUVpC/Y5P7GVmn2qKzMyMcYXnkeinYAKXhIo5qW0Dmdgi8meMEiTFry
-         bxlw==
-X-Gm-Message-State: AGi0Pubrbk69yw2sgkmqYELwi3ZhKBJqsYZp/xCjudY61yMrUPAfMHMW
-        gEKbvjGnMB6Itn1+F4u2zE3Yiqo+oFUv
-X-Google-Smtp-Source: APiQypIzIEWLUk4Q/iplve4QGMaQej0FMSmSlAPFi1efUfUDBJ3mX9lYC+by5M40wHZJyehuhza86jwjzVP3
-X-Received: by 2002:a17:90b:2385:: with SMTP id mr5mr4843060pjb.172.1587148132890;
- Fri, 17 Apr 2020 11:28:52 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 11:28:42 -0700
-Message-Id: <20200417182842.12522-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-Subject: [PATCH] perf/core: fix parent pid/tid in task exit events
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        KP Singh <kpsingh@google.com>, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 17 Apr 2020 14:27:28 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HI3P1X066209;
+        Fri, 17 Apr 2020 14:27:28 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30fe1pyfyk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Apr 2020 14:27:28 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03HI4GrO069361;
+        Fri, 17 Apr 2020 14:27:27 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30fe1pyfy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Apr 2020 14:27:27 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03HIPnij021481;
+        Fri, 17 Apr 2020 18:27:26 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02dal.us.ibm.com with ESMTP id 30b5h7scy4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Apr 2020 18:27:26 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03HIRQe539846214
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 18:27:26 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE49AAE05C;
+        Fri, 17 Apr 2020 18:27:25 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98712AE063;
+        Fri, 17 Apr 2020 18:27:25 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.85.151.210])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 17 Apr 2020 18:27:25 +0000 (GMT)
+From:   Jared Rossi <jrossi@linux.ibm.com>
+To:     Eric Farman <farman@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] vfio-ccw: Enable transparent CCW IPL from DASD
+Date:   Fri, 17 Apr 2020 14:29:38 -0400
+Message-Id: <20200417182939.11460-1-jrossi@linux.ibm.com>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-17_08:2020-04-17,2020-04-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=693
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ malwarescore=0 spamscore=0 impostorscore=0 clxscore=1011 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170141
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current logic yields the child task as the parent.
+Remove the explicit prefetch check when using vfio-ccw devices.
+This check is not needed as all Linux channel programs are intended
+to use prefetch and will be executed in the same way regardless.
 
-Before:
-$ perf record bash -c "perf list > /dev/null"
-$ perf script -D |grep 'FORK\|EXIT'
-4387036190981094 0x5a70 [0x30]: PERF_RECORD_FORK(10472:10472):(10470:10470)
-4387036606207580 0xf050 [0x30]: PERF_RECORD_EXIT(10472:10472):(10472:10472)
-4387036607103839 0x17150 [0x30]: PERF_RECORD_EXIT(10470:10470):(10470:10470)
-                                                   ^
-  Note the repeated values here -------------------/
+Jared Rossi (1):
+  vfio-ccw: Enable transparent CCW IPL from DASD
 
-After:
-383281514043 0x9d8 [0x30]: PERF_RECORD_FORK(2268:2268):(2266:2266)
-383442003996 0x2180 [0x30]: PERF_RECORD_EXIT(2268:2268):(2266:2266)
-383451297778 0xb70 [0x30]: PERF_RECORD_EXIT(2266:2266):(2265:2265)
+ drivers/s390/cio/vfio_ccw_cp.c  | 16 ++++------------
+ drivers/s390/cio/vfio_ccw_cp.h  |  2 +-
+ drivers/s390/cio/vfio_ccw_fsm.c |  6 +++---
+ 3 files changed, 8 insertions(+), 16 deletions(-)
 
-Reported-by: KP Singh <kpsingh@google.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- kernel/events/core.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index bc9b98a9af9a..633b4ae72ed5 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -7491,10 +7491,17 @@ static void perf_event_task_output(struct perf_event *event,
- 		goto out;
- 
- 	task_event->event_id.pid = perf_event_pid(event, task);
--	task_event->event_id.ppid = perf_event_pid(event, current);
--
- 	task_event->event_id.tid = perf_event_tid(event, task);
--	task_event->event_id.ptid = perf_event_tid(event, current);
-+
-+	if (task_event->event_id.header.type == PERF_RECORD_EXIT) {
-+		task_event->event_id.ppid = perf_event_pid(event,
-+							task->real_parent);
-+		task_event->event_id.ptid = perf_event_pid(event,
-+							task->real_parent);
-+	} else {  /* PERF_RECORD_FORK */
-+		task_event->event_id.ppid = perf_event_pid(event, current);
-+		task_event->event_id.ptid = perf_event_tid(event, current);
-+	}
- 
- 	task_event->event_id.time = perf_event_clock(event);
- 
 -- 
-2.26.1.301.g55bc3eb7cb9-goog
+2.17.0
 
