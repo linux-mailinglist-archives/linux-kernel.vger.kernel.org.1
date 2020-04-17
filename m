@@ -2,102 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156FF1AD9FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83AD1ADA09
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730320AbgDQJcB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Apr 2020 05:32:01 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:40265 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730233AbgDQJcA (ORCPT
+        id S1730345AbgDQJdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:33:16 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31820 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730333AbgDQJdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:32:00 -0400
-Received: by mail-oi1-f193.google.com with SMTP id t199so1543589oif.7;
-        Fri, 17 Apr 2020 02:31:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Xdw7qE++WbJcYYYVLLUf8m1JuzUUrBMPMGWetZ3yNmk=;
-        b=umjJwxwdZaZ9suhke1DqinrYaXbobkasW/nYM7VcjfUZssTXIpgDBJ4S7TzzzcCIbU
-         3pOBuyrUOza3erBxhjDDROKuSmyQnkU5OD5JmUNHoOd4pL7qBKQ1+FE+GD2+X+TJsRg8
-         GelTKUOF0UwvvI8488HYvh6MqT0c7fiSo7lk+1R9dkCqWBqY2aER34VPCq+oC83SQghm
-         xJ0r9h1Dvr75ISlOkz9zB1v0LmXWmjCDYILCkFyX7bNVuYBXJzHnoKZ5yhJvFiBmsieR
-         6wETxkCiuNHJPxTWo+uSNN5OURyGsa/uiG8XGy4UdEZX04rMmufBwbLYz/KWTeRRbp1g
-         VN3g==
-X-Gm-Message-State: AGi0PuZcsWfKsnF4IkGOOuBUPMTYo0QvIQYsJpvuIxG8UA5UG7Yhwgs4
-        eQk6eM2AQOrNuaItQI7drBO+J+bjDhfPHnERFUA=
-X-Google-Smtp-Source: APiQypLK2MzhwAlU5maq3OzaoFcwlxith+KDd7vNSYpfBpMujUQxyS1N38HvpPJg+83Xryx07p4rjzYgxCDw7EU0uIE=
-X-Received: by 2002:a05:6808:8cf:: with SMTP id k15mr1541313oij.54.1587115918339;
- Fri, 17 Apr 2020 02:31:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200417092042.11994-1-yanaijie@huawei.com>
-In-Reply-To: <20200417092042.11994-1-yanaijie@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 17 Apr 2020 11:31:46 +0200
-Message-ID: <CAMuHMdUfwbsfLNSxJLqkwTNEQims1RHBn_EwBvBUqEZshHZHdQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: rza1: remove unused 'rza1l_swio_pins'
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Fri, 17 Apr 2020 05:33:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587115992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JhGeUvxGcTXLdmHA9NT0UPQF+FHUIR0Zeja74ZUVplA=;
+        b=TEDWZSBS/UxK9PJgwSRIxgwJ4LqRjOtYQaz9knlty0tRviOy74zJH/qBM2Ar37nJSfJ8Xa
+        rxJ2vBqU0PDmNSTQn28wZsCQNUjjgH+6XI0ziwMhANOdB/skySQemJOhR77eGcA85OqxTy
+        1rLiCvqHJ6imUnMmKU74FRfE0plg62Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-OVKHQIXwNXKHVGLh1l_TJQ-1; Fri, 17 Apr 2020 05:33:08 -0400
+X-MC-Unique: OVKHQIXwNXKHVGLh1l_TJQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3C53107ACCA;
+        Fri, 17 Apr 2020 09:33:06 +0000 (UTC)
+Received: from [10.72.13.157] (ovpn-13-157.pek2.redhat.com [10.72.13.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 86A0A5C1D6;
+        Fri, 17 Apr 2020 09:32:58 +0000 (UTC)
+Subject: Re: [PATCH V2] vhost: do not enable VHOST_MENU by default
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Chris Brandt <Chris.Brandt@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20200415024356.23751-1-jasowang@redhat.com>
+ <20200416185426-mutt-send-email-mst@kernel.org>
+ <b7e2deb7-cb64-b625-aeb4-760c7b28c0c8@redhat.com>
+ <20200417022929-mutt-send-email-mst@kernel.org>
+ <4274625d-6feb-81b6-5b0a-695229e7c33d@redhat.com>
+ <20200417042912-mutt-send-email-mst@kernel.org>
+ <fdb555a6-4b8d-15b6-0849-3fe0e0786038@redhat.com>
+ <20200417044230-mutt-send-email-mst@kernel.org>
+ <73843240-3040-655d-baa9-683341ed4786@redhat.com>
+ <20200417045454-mutt-send-email-mst@kernel.org>
+ <CAMuHMdXbzd9puG6gGri4jUtUT8rFrqnWwZ1NwP=47WQJ_eBC5g@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <2f5681bb-a8e6-fe73-57f5-24de7a5a72e8@redhat.com>
+Date:   Fri, 17 Apr 2020 17:32:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdXbzd9puG6gGri4jUtUT8rFrqnWwZ1NwP=47WQJ_eBC5g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-On Fri, Apr 17, 2020 at 10:54 AM Jason Yan <yanaijie@huawei.com> wrote:
-> Fix the following gcc warning:
+On 2020/4/17 =E4=B8=8B=E5=8D=885:25, Geert Uytterhoeven wrote:
+> Hi Michael,
 >
-> drivers/pinctrl/pinctrl-rza1.c:401:35: warning: ‘rza1l_swio_pins’
-> defined but not used [-Wunused-const-variable=]
->  static const struct rza1_swio_pin rza1l_swio_pins[] = {
->                                    ^~~~~~~~~~~~~~~
+> On Fri, Apr 17, 2020 at 10:57 AM Michael S. Tsirkin<mst@redhat.com>  wr=
+ote:
+>> On Fri, Apr 17, 2020 at 04:51:19PM +0800, Jason Wang wrote:
+>>> On 2020/4/17 =E4=B8=8B=E5=8D=884:46, Michael S. Tsirkin wrote:
+>>>> On Fri, Apr 17, 2020 at 04:39:49PM +0800, Jason Wang wrote:
+>>>>> On 2020/4/17 =E4=B8=8B=E5=8D=884:29, Michael S. Tsirkin wrote:
+>>>>>> On Fri, Apr 17, 2020 at 03:36:52PM +0800, Jason Wang wrote:
+>>>>>>> On 2020/4/17 =E4=B8=8B=E5=8D=882:33, Michael S. Tsirkin wrote:
+>>>>>>>> On Fri, Apr 17, 2020 at 11:12:14AM +0800, Jason Wang wrote:
+>>>>>>>>> On 2020/4/17 =E4=B8=8A=E5=8D=886:55, Michael S. Tsirkin wrote:
+>>>>>>>>>> On Wed, Apr 15, 2020 at 10:43:56AM +0800, Jason Wang wrote:
+>>>>>>>>>>> We try to keep the defconfig untouched after decoupling CONFI=
+G_VHOST
+>>>>>>>>>>> out of CONFIG_VIRTUALIZATION in commit 20c384f1ea1a
+>>>>>>>>>>> ("vhost: refine vhost and vringh kconfig") by enabling VHOST_=
+MENU by
+>>>>>>>>>>> default. Then the defconfigs can keep enabling CONFIG_VHOST_N=
+ET
+>>>>>>>>>>> without the caring of CONFIG_VHOST.
+>>>>>>>>>>>
+>>>>>>>>>>> But this will leave a "CONFIG_VHOST_MENU=3Dy" in all defconfi=
+gs and even
+>>>>>>>>>>> for the ones that doesn't want vhost. So it actually shifts t=
+he
+>>>>>>>>>>> burdens to the maintainers of all other to add "CONFIG_VHOST_=
+MENU is
+>>>>>>>>>>> not set". So this patch tries to enable CONFIG_VHOST explicit=
+ly in
+>>>>>>>>>>> defconfigs that enables CONFIG_VHOST_NET and CONFIG_VHOST_VSO=
+CK.
+>>>>>>>>>>>
+>>>>>>>>>>> Acked-by: Christian Borntraeger<borntraeger@de.ibm.com>    (s=
+390)
+>>>>>>>>>>> Acked-by: Michael Ellerman<mpe@ellerman.id.au>    (powerpc)
+>>>>>>>>>>> Cc: Thomas Bogendoerfer<tsbogend@alpha.franken.de>
+>>>>>>>>>>> Cc: Benjamin Herrenschmidt<benh@kernel.crashing.org>
+>>>>>>>>>>> Cc: Paul Mackerras<paulus@samba.org>
+>>>>>>>>>>> Cc: Michael Ellerman<mpe@ellerman.id.au>
+>>>>>>>>>>> Cc: Heiko Carstens<heiko.carstens@de.ibm.com>
+>>>>>>>>>>> Cc: Vasily Gorbik<gor@linux.ibm.com>
+>>>>>>>>>>> Cc: Christian Borntraeger<borntraeger@de.ibm.com>
+>>>>>>>>>>> Reported-by: Geert Uytterhoeven<geert@linux-m68k.org>
+>>>>>>>>>>> Signed-off-by: Jason Wang<jasowang@redhat.com>
+>>>>>>>>>> I rebased this on top of OABI fix since that
+>>>>>>>>>> seems more orgent to fix.
+>>>>>>>>>> Pushed to my vhost branch pls take a look and
+>>>>>>>>>> if possible test.
+>>>>>>>>>> Thanks!
+>>>>>>>>> I test this patch by generating the defconfigs that wants vhost=
+_net or
+>>>>>>>>> vhost_vsock. All looks fine.
+>>>>>>>>>
+>>>>>>>>> But having CONFIG_VHOST_DPN=3Dy may end up with the similar sit=
+uation that
+>>>>>>>>> this patch want to address.
+>>>>>>>>> Maybe we can let CONFIG_VHOST depends on !ARM || AEABI then add=
+ another
+>>>>>>>>> menuconfig for VHOST_RING and do something similar?
+>>>>>>>>>
+>>>>>>>>> Thanks
+>>>>>>>> Sorry I don't understand. After this patch CONFIG_VHOST_DPN is j=
+ust
+>>>>>>>> an internal variable for the OABI fix. I kept it separate
+>>>>>>>> so it's easy to revert for 5.8. Yes we could squash it into
+>>>>>>>> VHOST directly but I don't see how that changes logic at all.
+>>>>>>> Sorry for being unclear.
+>>>>>>>
+>>>>>>> I meant since it was enabled by default, "CONFIG_VHOST_DPN=3Dy" w=
+ill be left
+>>>>>>> in the defconfigs.
+>>>>>> But who cares?
+>>>>> FYI, please seehttps://www.spinics.net/lists/kvm/msg212685.html
+>>>> The complaint was not about the symbol IIUC.  It was that we caused
+>>>> everyone to build vhost unless they manually disabled it.
+>>> There could be some misunderstanding here. I thought it's somehow sim=
+ilar: a
+>>> CONFIG_VHOST_MENU=3Dy will be left in the defconfigs even if CONFIG_V=
+HOST is
+>>> not set.
+>>>
+>>> Thanks
+>> Hmm. So looking at Documentation/kbuild/kconfig-language.rst :
+>>
+>>          Things that merit "default y/m" include:
+>>
+>>          a) A new Kconfig option for something that used to always be =
+built
+>>             should be "default y".
+>>
+>>          b) A new gatekeeping Kconfig option that hides/shows other Kc=
+onfig
+>>             options (but does not generate any code of its own), shoul=
+d be
+>>             "default y" so people will see those other options.
+>>
+>>          c) Sub-driver behavior or similar options for a driver that i=
+s
+>>             "default n". This allows you to provide sane defaults.
+>>
+>>
+>> So it looks like VHOST_MENU is actually matching rule b).
+>> So what's the problem we are trying to solve with this patch, exactly?
+>>
+>> Geert could you clarify pls?
+> I can confirm VHOST_MENU is matching rule b), so it is safe to always
+> enable it.
 >
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-
-Thanks for your patch!
-
-> --- a/drivers/pinctrl/pinctrl-rza1.c
-> +++ b/drivers/pinctrl/pinctrl-rza1.c
-> @@ -398,15 +398,6 @@ static const struct rza1_bidir_pin rza1l_bidir_pins_p9[] = {
->         { .pin = 5, .func = 3 },
->  };
+> Gr{oetje,eeting}s,
 >
-> -static const struct rza1_swio_pin rza1l_swio_pins[] = {
-> -       { .port = 2, .pin = 8, .func = 2, .input = 0 },
-> -       { .port = 5, .pin = 6, .func = 3, .input = 0 },
-> -       { .port = 6, .pin = 6, .func = 3, .input = 0 },
-> -       { .port = 6, .pin = 10, .func = 3, .input = 0 },
-> -       { .port = 7, .pin = 10, .func = 2, .input = 0 },
-> -       { .port = 8, .pin = 2, .func = 3, .input = 0 },
-> -};
-> -
->  static const struct rza1_bidir_entry rza1l_bidir_entries[RZA1_NPORTS] = {
->         [1] = { ARRAY_SIZE(rza1l_bidir_pins_p1), rza1l_bidir_pins_p1 },
->         [3] = { ARRAY_SIZE(rza1l_bidir_pins_p3), rza1l_bidir_pins_p3 },
+>                          Geert
 
-rza1l_swio_pins[] is unused because rza1l_swio_entries[] refers to the
-wrong array. So I'd rather see a patch to fix that instead.
 
-Thanks!
+Right, so I think we can drop this patch.
 
-Gr{oetje,eeting}s,
+Thanks
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
