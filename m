@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248BF1ADAA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABDE1ADAAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgDQKBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgDQKBV (ORCPT
+        id S1728418AbgDQKD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:03:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54302 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726366AbgDQKDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:01:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E52C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/sCrLJsk9M0RFgQwNkauJ/Dtc5/K6rCJg0npReZJ/ZM=; b=G25zyJyLZs4ijof9NKQ93s/RtD
-        tp1CABmZSWsvURGWx1WS3YUul4JFfkwKfPlMdOUMLdf0WJVJTQmYH7kEnhXsJQOx0kyS3h3w+4g5E
-        s+xd6331OtUvGqwz0rttWZMMrZR+P8JR5WVKgcxW9SWh1X+w7ZXxIONjudPt4TumeaAQPaOiHvfJf
-        hqJFmA4o3d/ICe7K81YdhfKX/Cu65J5gdmf91MuW2YmlJLqzGWkPWtZYiYRHVPbv0K/7xLORS8GtG
-        SAJt6bXYa7kxdX69qaFDx4rwpwhNl0i+c4WbpER2GL+jX2fzS/+iDQNUr+t6P36U7llVMhvrYMKxh
-        yu548iOQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPNne-000501-Rg; Fri, 17 Apr 2020 10:00:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 816003010BC;
-        Fri, 17 Apr 2020 12:00:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6AB682B120750; Fri, 17 Apr 2020 12:00:39 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 12:00:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jann Horn <jannh@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 04/12] scs: disable when function graph tracing is
- enabled
-Message-ID: <20200417100039.GS20730@hirez.programming.kicks-ass.net>
-References: <20191018161033.261971-1-samitolvanen@google.com>
- <20200416161245.148813-1-samitolvanen@google.com>
- <20200416161245.148813-5-samitolvanen@google.com>
+        Fri, 17 Apr 2020 06:03:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587117804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5ElYTrTrSJKdE2tYQriD77Ds10y+cL36iV21AUMPYK8=;
+        b=WJ6FedXCjSxzHXR2Ym+0z1zXq7vuDaHcx3/n7he8xfb+zNnFspb5y2Ezq/R54s252jDtIB
+        4QMIlVOgXjSuh/U1rXOy0ukLCZOZ8iRp8GhEGFBd64jabGU9O4Iad01EGn9obxD2N5Bqbx
+        zmJu60jCA71qdNa8m+k0pmhX3lmMZVI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-F3M7daGpP2eLuDIxTvFxOQ-1; Fri, 17 Apr 2020 06:03:22 -0400
+X-MC-Unique: F3M7daGpP2eLuDIxTvFxOQ-1
+Received: by mail-wr1-f69.google.com with SMTP id r17so735418wrg.19
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:03:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=5ElYTrTrSJKdE2tYQriD77Ds10y+cL36iV21AUMPYK8=;
+        b=I0mz/FI4QyQi3mqDaSO+Ydpqgdb75xgKcsZQpR4lFk/WbXREAG0xS32Qv/2VSWCR4u
+         v6KUL+rtFMBKXctUzgIMmMqcTImJtfvMk4sdOwr8K/4lDIVFIN6oy9w0Qi/LsgF93/vu
+         Q4q5M0PtDOyNXPyzzCGAE9Pu2EnxyLQvAInemieAB1H7y5XMObPqiiB4g7JDEP5/GCam
+         ocjDqkSinWTX8M1YmvGF0FQRYQs4IfWMRf27pFpdqykj7lZWq7TkDO27pg6+e0GCoZcQ
+         7uWwtwMrMuklhkd0RCjPCMymah2rz7TlZfZuLH5sYrzy+Dga7XuPB1JwB5eTxuIF8eTM
+         cPkQ==
+X-Gm-Message-State: AGi0PuaLHuGVtcArcAHx7Ao8RMZjU0PXFAPaSyBI8BX+3TCRuLt4U+AH
+        6uumONtvzE9/JFffqvgqBx43rdNWIwk3vFJG+yRX52ImwEG0QtcozKl/SWHv8UtGrWA2oyqKX/L
+        /JLWzeBHulOyayPI1WcKcK61c
+X-Received: by 2002:adf:97cc:: with SMTP id t12mr2964674wrb.261.1587117801267;
+        Fri, 17 Apr 2020 03:03:21 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKYH+JBn8/yn3IYbL7Qlc8+A7kS9lt5b8RYcDiZb5T6r+5ekluPE9YgLZGiyQIkvKPQZtVJZg==
+X-Received: by 2002:adf:97cc:: with SMTP id t12mr2964656wrb.261.1587117801045;
+        Fri, 17 Apr 2020 03:03:21 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id s8sm1178080wru.38.2020.04.17.03.03.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 03:03:20 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     bp@alien8.de, haiyangz@microsoft.com, hpa@zytor.com,
+        kys@microsoft.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        sthemmin@microsoft.com, tglx@linutronix.de, x86@kernel.org,
+        mikelley@microsoft.com, wei.liu@kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] x86/hyperv: Suspend/resume the VP assist page for hibernation
+In-Reply-To: <1587104999-28927-1-git-send-email-decui@microsoft.com>
+References: <1587104999-28927-1-git-send-email-decui@microsoft.com>
+Date:   Fri, 17 Apr 2020 12:03:18 +0200
+Message-ID: <87blnqv389.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416161245.148813-5-samitolvanen@google.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 09:12:37AM -0700, Sami Tolvanen wrote:
-> The graph tracer hooks returns by modifying frame records on the
-> (regular) stack, but with SCS the return address is taken from the
-> shadow stack, and the value in the frame record has no effect. As we
-> don't currently have a mechanism to determine the corresponding slot
-> on the shadow stack (and to pass this through the ftrace
-> infrastructure), for now let's disable SCS when the graph tracer is
-> enabled.
-> 
-> With SCS the return address is taken from the shadow stack and the
-> value in the frame record has no effect. The mcount based graph tracer
-> hooks returns by modifying frame records on the (regular) stack, and
-> thus is not compatible. The patchable-function-entry graph tracer
-> used for DYNAMIC_FTRACE_WITH_REGS modifies the LR before it is saved
-> to the shadow stack, and is compatible.
-> 
-> Modifying the mcount based graph tracer to work with SCS would require
-> a mechanism to determine the corresponding slot on the shadow stack
-> (and to pass this through the ftrace infrastructure), and we expect
-> that everyone will eventually move to the patchable-function-entry
-> based graph tracer anyway, so for now let's disable SCS when the
-> mcount-based graph tracer is enabled.
-> 
-> SCS and patchable-function-entry are both supported from LLVM 10.x.
+Dexuan Cui <decui@microsoft.com> writes:
 
-SCS would actually provide another way to do return hooking. An arguably
-much saner model at that.
+> Unlike the other CPUs, CPU0 is never offlined during hibernation. So in the
+> resume path, the "new" kernel's VP assist page is not suspended (i.e.
+> disabled), and later when we jump to the "old" kernel, the page is not
+> properly re-enabled for CPU0 with the allocated page from the old kernel.
+>
+> So far, the VP assist page is only used by hv_apic_eoi_write().
 
-The 'normal' way is to (temporary) replace the on-stack return value,
-and then replace it back in the return handler. This is because we can't
-simply push a fake return on the stack, because that would wreck the
-expected stack layout of the regular function.
+No, not only for that ('git grep hv_get_vp_assist_page')
 
-But there is nothing that would stop us from pushing an extra entry on
-the SCS. It would in fact be a much cleaner solution. The entry hook
-sticks an extra entry on the SCS, the function ignores what's on the
-normal stack and pops from the SCS, we return to the exit handler, which
-in turn pops from the SCS stack at which point we're back to regular.
+KVM on Hyper-V also needs VP assist page to use Enlightened VMCS. In
+particular, Enlightened VMPTR is written there.
 
-The only 'funny' is that the exit handler itself should not push to the
-SCS, or we should frob the return-to-exit-handler such that it lands
-after the push.
+This makes me wonder: how does hibernation work with KVM in case we use
+Enlightened VMCS and we have VMs running? We need to make sure VP Assist
+page content is preserved.
 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> ---
->  arch/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 691a552c2cc3..c53cb9025ad2 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -542,6 +542,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
->  
->  config SHADOW_CALL_STACK
->  	bool "Clang Shadow Call Stack"
-> +	depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
->  	depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
->  	help
->  	  This option enables Clang's Shadow Call Stack, which uses a
+-- 
+Vitaly
 
-AFAICT you also need to kill KRETPROBES, which plays similar games. And
-doesn't BPF also do stuff like this?
