@@ -2,108 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CE71AD40E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C9E1AD415
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728435AbgDQBVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 21:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727799AbgDQBVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 21:21:12 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B066CC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 18:21:11 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id f8so451782lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 18:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LaONKWgXr8zyDwWe0+sivX1BYZmtza8MMh1LlYTiEOE=;
-        b=OkffA5YA/RaFqQiMJeitAab2djlVP8l0eVmlFvlB6GTDn3+tWPcEAodKyovkZtTM3T
-         FKAffdCQltGEEfdJj4fxDzc0ppZAsWnj91a9y2hgfQTgAdXt/ILpVpty+LWe2QKIYrtD
-         /71n6hpyHc6teTTY7W8I4aiRIzaJTlALpwZs8YY8Zz304GAs12TnjQP+ssu/qaqhbTp2
-         aibN9Fs6zwmz95TfDbRyCD9fjooyXEndwbDNOpwJAhyjDuMh9P69GP2yGdci4MsHsKZu
-         M3aTXJI24iPOpO0PaLdk2KQjXvCxBJXHyg0WSBh+ZRKI4dPNqxHijiEisb8nrbtFsJif
-         wzzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LaONKWgXr8zyDwWe0+sivX1BYZmtza8MMh1LlYTiEOE=;
-        b=kyXZbkshZV0OYOdCBGog+4jvGqNI+c05sC8D38jGAIwBaXl1V75ynu4Mux4kVycFUa
-         wuxDfjGk+djosqljnbYZCv1/ZaD5X7twXZYxV8b1RFxPItiN1PjVSKCE35jcjyn0HUZn
-         aW5nnm90JwR1GuaFLWliVG8L73mqjgVx5otXVTcQ8MtqyV2jo0mTnc+zk7Emi2OrasL3
-         WZw6XPDwKNRjAGLw3HDjz87LGuxkaW9KlIjGjsUb8w972ADGZeRGcly5GC/Vslz/dmtb
-         buC52ONO9HtinGW8es5yENrb9zGLaiL34UwJZ70BYsrcXvIp8d9f940K9HRF8Ed3eKOW
-         n5pw==
-X-Gm-Message-State: AGi0PuYALKaZjQDhkhvHLfqEMwu/764T9YgizodzuOe/d6Z1oMj8h/0b
-        vJNlJRdrTE08Ma2OWYPQwkuzdENugVvDHyVIBeQ=
-X-Google-Smtp-Source: APiQypL5UmwCU7kYx64cxx72h3wLekm2xKFL92eRjwC5e9YvbuJU5LL0Fk0b64YTTqT0vjhwSgT9zblFm8wfy8//wHA=
-X-Received: by 2002:a05:6512:10c9:: with SMTP id k9mr365986lfg.183.1587086470112;
- Thu, 16 Apr 2020 18:21:10 -0700 (PDT)
+        id S1728592AbgDQBYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 21:24:45 -0400
+Received: from mga18.intel.com ([134.134.136.126]:2860 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbgDQBYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 21:24:40 -0400
+IronPort-SDR: wl61fGYywOVk2JIl2gls0fNbeSBidRywl6g1OyZGvFD3kkxbhflDF0VpcFRoVgw4/DjakJijiw
+ psOM0/6g2sOg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 18:24:39 -0700
+IronPort-SDR: 8CXUmFM4/+RAR9znIWqNh3ySWJ+FaP3brx/7Ym1cFgJmOSS5OQXVwwWXWoJUJI+Wsqt8c/bTEN
+ iY488ju7hEWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="244570069"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Apr 2020 18:24:37 -0700
+Date:   Fri, 17 Apr 2020 09:24:31 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
+        lkp@lists.01.org
+Subject: [0-Day CI notification] the service will be scheduled down from 4/17
+ to 4/20
+Message-ID: <20200417012431.GA27206@intel.com>
 MIME-Version: 1.0
-References: <cover.1586757922.git.baolin.wang7@gmail.com> <ca403b816af38eae68ca7399640c82d0345a2296.1586757922.git.baolin.wang7@gmail.com>
- <CAK8P3a06fed_WVmO84iod2VpY386_3J+V=A-M+W7yE57N04a8w@mail.gmail.com>
- <CADBw62r06X6mMTx3eLY1iU5KLOK644d1vA49Kp9JXzUtm2CpCw@mail.gmail.com>
- <CAK8P3a3jnpRDjWwAOJa1EmbMzu+vKXmG3DBzhjHtVFz8NHfP8A@mail.gmail.com>
- <CADBw62oNApMo_rCz1W6_tG8Z72ENjrAtHkWZ1Z4NsN0qWFctXg@mail.gmail.com> <CAK8P3a07n=5X5Cv7crAu_XCzoLA=o1wZjmO5r6=bwdGr2nHSwQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a07n=5X5Cv7crAu_XCzoLA=o1wZjmO5r6=bwdGr2nHSwQ@mail.gmail.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Fri, 17 Apr 2020 09:20:59 +0800
-Message-ID: <CADBw62pg6F4PiD=jJnrFDmaMN6yh76PSJ1=2_DZjwMJVQ+pFdQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/3] soc: sprd: Add Spreadtrum special bits
- updating support
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Lyra Zhang <zhang.lyra@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 10:38 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Apr 16, 2020 at 3:49 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
->
-> >
-> > OK, I think adding a Spreadtrum compatible string will be an easy and
-> > clear way, so what about below sample code?
-> >
-> > DT:
-> > ap_ahb_regs: syscon@20210000 {
-> >          compatible = "sprd,sc9860-syscon", "syscon";
-> >          reg = <0 0x20210000 0 0x10000>;
-> > };
-> >
-> > /* The Spreadtrum syscon need register a real physical regmap bus with
-> > new bits updating method. */
-> > if (of_device_is_compatible(np, "sprd,sc9860-syscon") && syscon_phy_regmap_bus)
-> >        regmap = regmap_init(NULL, syscon_phy_regmap_bus, base, &syscon_config);
-> > else
-> >        regmap = regmap_init_mmio(NULL, base, &syscon_config);
->
-> Ok, sounds good. Maybe also define another compatible string that
-> is more generic than "sprd,sc9860-syscon" (but less generic than
-> "syscon") so you can still identify the chip specific syscon area if
-> necessary, while not having to list each future chip individually.
+Hi all, this is Philip who maintains the 0-Day CI test service.
+Thanks for anyone who subscribes to the service. We will have a
+regular lab clean up due to 2019-nCoV (from 4/17 5 PM to 4/20 5
+PM). 
 
-OK.
+Sorry for any inconvenience caused by this, we will recover the
+service to be online as early as possible.
 
->
-> Something like
->
-> compatible = "sprd,sc9860-syscon", "sprd,atomic-syscon", "syscon";
->
-> Also I'd add an IS_ENABLED() check so it gets the 'else' path
-> at compile-time when CONFIG_ARCH_SPRD is disabled.
+Thanks
 
-Sure. Will do in next version. Thanks for your good suggestion.
-
--- 
-Baolin Wang
