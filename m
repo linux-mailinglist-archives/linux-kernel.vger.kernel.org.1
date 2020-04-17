@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9981AD6E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156CC1AD6EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgDQHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:06:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2387 "EHLO huawei.com"
+        id S1728676AbgDQHGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:06:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2388 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728338AbgDQHGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:06:12 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E3852DE581F6460A0D08;
-        Fri, 17 Apr 2020 15:06:08 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 15:05:59 +0800
+        id S1728338AbgDQHGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:06:34 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CE01AEDE46B32705C65D;
+        Fri, 17 Apr 2020 15:06:32 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 15:06:22 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <evan.quan@amd.com>, <alexander.deucher@amd.com>,
-        <christian.koenig@amd.com>, <David1.Zhou@amd.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>, <yanaijie@huawei.com>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
+To:     <eric@anholt.net>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <p.zabel@pengutronix.de>, <yanaijie@huawei.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
 CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] drm/amd/powerplay: remove defined but not used variables
-Date:   Fri, 17 Apr 2020 15:32:19 +0800
-Message-ID: <20200417073219.40320-1-yanaijie@huawei.com>
+Subject: [PATCH] drm/v3d: remove unused 'v3d_v3d_pm_ops '
+Date:   Fri, 17 Apr 2020 15:32:43 +0800
+Message-ID: <20200417073243.40552-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
@@ -40,66 +38,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix the following gcc warning:
 
-drivers/gpu/drm/amd/amdgpu/../powerplay/hwmgr/vega10_powertune.c:710:46:
-warning: ‘PSMGCEDCThresholdConfig_vega10’ defined but not used
-[-Wunused-const-variable=]
- static const struct vega10_didt_config_reg
-PSMGCEDCThresholdConfig_vega10[] =
-^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/amd/amdgpu/../powerplay/hwmgr/vega10_powertune.c:654:46:
-warning: ‘PSMSEEDCThresholdConfig_Vega10’ defined but not used
-[-Wunused-const-variable=]
- static const struct vega10_didt_config_reg
-PSMSEEDCThresholdConfig_Vega10[] =
-^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/v3d/v3d_drv.c:73:32: warning: ‘v3d_v3d_pm_ops’ defined
+but not used [-Wunused-const-variable=]
+ static const struct dev_pm_ops v3d_v3d_pm_ops = {
+                                ^~~~~~~~~~~~~~
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- .../amd/powerplay/hwmgr/vega10_powertune.c    | 23 -------------------
- 1 file changed, 23 deletions(-)
+ drivers/gpu/drm/v3d/v3d_drv.c | 36 -----------------------------------
+ 1 file changed, 36 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_powertune.c b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_powertune.c
-index ca9b23b5abc9..9757d47dd6b8 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_powertune.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_powertune.c
-@@ -651,18 +651,6 @@ static const struct vega10_didt_config_reg   PSMSEEDCStallDelayConfig_Vega10[] =
- 	{   0xFFFFFFFF  }  /* End of list */
- };
+diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.c
+index 8d0c0daaac81..63f09c55a970 100644
+--- a/drivers/gpu/drm/v3d/v3d_drv.c
++++ b/drivers/gpu/drm/v3d/v3d_drv.c
+@@ -38,42 +38,6 @@
+ #define DRIVER_MINOR 0
+ #define DRIVER_PATCHLEVEL 0
  
--static const struct vega10_didt_config_reg   PSMSEEDCThresholdConfig_Vega10[] =
+-#ifdef CONFIG_PM
+-static int v3d_runtime_suspend(struct device *dev)
 -{
--/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-- *      Offset                             Mask                                                 Shift                                                  Value
-- * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-- */
--	/* SQ EDC THRESHOLD */
--	{   ixDIDT_SQ_EDC_THRESHOLD,           DIDT_SQ_EDC_THRESHOLD__EDC_THRESHOLD_MASK,           DIDT_SQ_EDC_THRESHOLD__EDC_THRESHOLD__SHIFT,            0x0000 },
+-	struct drm_device *drm = dev_get_drvdata(dev);
+-	struct v3d_dev *v3d = to_v3d_dev(drm);
 -
--	{   0xFFFFFFFF  }  /* End of list */
+-	v3d_irq_disable(v3d);
+-
+-	clk_disable_unprepare(v3d->clk);
+-
+-	return 0;
+-}
+-
+-static int v3d_runtime_resume(struct device *dev)
+-{
+-	struct drm_device *drm = dev_get_drvdata(dev);
+-	struct v3d_dev *v3d = to_v3d_dev(drm);
+-	int ret;
+-
+-	ret = clk_prepare_enable(v3d->clk);
+-	if (ret != 0)
+-		return ret;
+-
+-	/* XXX: VPM base */
+-
+-	v3d_mmu_set_page_table(v3d);
+-	v3d_irq_enable(v3d);
+-
+-	return 0;
+-}
+-#endif
+-
+-static const struct dev_pm_ops v3d_v3d_pm_ops = {
+-	SET_RUNTIME_PM_OPS(v3d_runtime_suspend, v3d_runtime_resume, NULL)
 -};
 -
- static const struct vega10_didt_config_reg   PSMSEEDCCtrlResetConfig_Vega10[] =
+ static int v3d_get_param_ioctl(struct drm_device *dev, void *data,
+ 			       struct drm_file *file_priv)
  {
- /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-@@ -707,17 +695,6 @@ static const struct vega10_didt_config_reg   PSMSEEDCCtrlConfig_Vega10[] =
- 	{   0xFFFFFFFF  }  /* End of list */
- };
- 
--static const struct vega10_didt_config_reg   PSMGCEDCThresholdConfig_vega10[] =
--{
--/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-- *      Offset                             Mask                                                 Shift                                                  Value
-- * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-- */
--	{   mmGC_EDC_THRESHOLD,                GC_EDC_THRESHOLD__EDC_THRESHOLD_MASK,                GC_EDC_THRESHOLD__EDC_THRESHOLD__SHIFT,                 0x0000000 },
--
--	{   0xFFFFFFFF  }  /* End of list */
--};
--
- static const struct vega10_didt_config_reg   PSMGCEDCDroopCtrlConfig_vega10[] =
- {
- /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- 
 2.21.1
 
