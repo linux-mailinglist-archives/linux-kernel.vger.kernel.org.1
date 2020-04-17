@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0661AD4A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93511AD4A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgDQCzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 22:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726261AbgDQCzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 22:55:47 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C885C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 19:55:47 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a81so1369030wmf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 19:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0DibPFFhioacuiAlJY3PMsjdrjXFMiXNDUjStb6tKak=;
-        b=eDmuq3YRYdXSRscLvXyn8vUlhMUSyz7Te4LydPmgbbUKHLm+qk0PQHeIzhB4n4Ig3g
-         6odFjxYoe30guB6JQChzldUuA18w/rA7cXfSsVEsMWyxeRPHzGiBhVMyqimhUZmnRjBo
-         NBChvvzlDGzHzwcxdJbtG3IWFqc/F0+czJ4Up+1IgZUKj+RKhAIix67B0uH9vKMDg5Y6
-         RvJcg8dgReOsBhlNciVqliEJ5NsHZOeHKNJJa0yrMSnU+J766LTUS6thr4ooVAKjC1W/
-         s1EzOVP4B6I2wQQsIYAmB2mm259xXGB4ilXEfdW8XLviJUMAh+Wq9DhxMA6zJ72C462j
-         atnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0DibPFFhioacuiAlJY3PMsjdrjXFMiXNDUjStb6tKak=;
-        b=mXDaMEPCUTIJ81lp3NpoZ977aDzvkgzW+hHfla3kI5On003o3St9IXnSLRRe6LLwgs
-         4lwlkI9qgj5ziWjAmRkPDZAI0ooLHLMbcYrjJN2NpUTtKmA2Lxe3ZCWmqOBZROXo0JpT
-         VnucZbbIsAIX5ckjUZ8V80JugH7XQyUWGvpEISEV8ZuvsRWVwFFRx/jAfA2q52o/Ry8I
-         cn3iKlIKBexD6zS4YRBz0CJW2V5arIiiO1B3ZkENnBVLwigpouwp9opmYlBGY2/KhMuC
-         wwNXFhOZ3XD4Ux8LOidhREug0l+8pGsQVSn+lSxysLGw4QT8B/qyFDuRhpcx696EpYOJ
-         Ex/Q==
-X-Gm-Message-State: AGi0PuZTInnCEMcL0ItllKGB/YE2iTZ9gv2KaeasrOo2WldtawDHQnS1
-        QaPTTZwPamD64vexYcIooClRFw3F2ubHKOKnqsgc67JyVZr9BmuE
-X-Google-Smtp-Source: APiQypJgPv2/C5+rAeThaQuCvauiAhxBD3c0FGqHKmy6F9qUYcHVGK2/1/0T3pR3cey6mxaJDGqS3F8P10mjk+JFk7g=
-X-Received: by 2002:a05:600c:4096:: with SMTP id k22mr877991wmh.99.1587092145594;
- Thu, 16 Apr 2020 19:55:45 -0700 (PDT)
+        id S1729432AbgDQC4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 22:56:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2384 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729380AbgDQC4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 22:56:54 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6BF7ABC77059A6E3C900;
+        Fri, 17 Apr 2020 10:56:51 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Apr 2020 10:56:45 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>, <kasan-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] kcsan: Use GFP_ATOMIC under spin lock
+Date:   Fri, 17 Apr 2020 02:58:37 +0000
+Message-ID: <20200417025837.49780-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200416114256.226329-1-elver@google.com>
-In-Reply-To: <20200416114256.226329-1-elver@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 17 Apr 2020 10:55:34 +0800
-Message-ID: <CABVgOSniuRdx1KjMLTZCJ3gWJo7rsrotpy0yfDhRCLqbjmgp-w@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Add missing newline in summary message
-To:     Marco Elver <elver@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Alan Maguire <alan.maguire@oracle.com>, frank.rowand@sony.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 7:43 PM 'Marco Elver' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
->
-> Add missing newline, as otherwise flushing of the final summary message
-> to the console log can be delayed.
->
-> Fixes: e2219db280e3 ("kunit: add debugfs /sys/kernel/debug/kunit/<suite>/results display")
-> Signed-off-by: Marco Elver <elver@google.com>
+A spin lock is taken here so we should use GFP_ATOMIC.
 
-Tested-by: David Gow <davidgow@google.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ kernel/kcsan/debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks a lot: this issue was starting to get annoying, and I can
-confirm this patch fixes it for me!
+diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+index 1a08664a7fab..023e49c58d55 100644
+--- a/kernel/kcsan/debugfs.c
++++ b/kernel/kcsan/debugfs.c
+@@ -230,7 +230,7 @@ static ssize_t insert_report_filterlist(const char *func)
+ 		/* initial allocation */
+ 		report_filterlist.addrs =
+ 			kmalloc_array(report_filterlist.size,
+-				      sizeof(unsigned long), GFP_KERNEL);
++				      sizeof(unsigned long), GFP_ATOMIC);
+ 		if (report_filterlist.addrs == NULL) {
+ 			ret = -ENOMEM;
+ 			goto out;
+@@ -240,7 +240,7 @@ static ssize_t insert_report_filterlist(const char *func)
+ 		size_t new_size = report_filterlist.size * 2;
+ 		unsigned long *new_addrs =
+ 			krealloc(report_filterlist.addrs,
+-				 new_size * sizeof(unsigned long), GFP_KERNEL);
++				 new_size * sizeof(unsigned long), GFP_ATOMIC);
+ 
+ 		if (new_addrs == NULL) {
+ 			/* leave filterlist itself untouched */
 
--- David
+
+
+
+
