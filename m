@@ -2,75 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAD01ADB41
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361661ADB82
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729109AbgDQKiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726632AbgDQKiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:38:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7830C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0Q4shkXgooXPUkXPVjWvprAz5T+GPx0IRz49akwY8gA=; b=H0MyrcdgRx+SjGjeXOzd4oRjUe
-        7Wjy45/9ipQWMMwgvGKojeyoouW2uK0yUOcA4PFWRCOx8pVWm0JTpJ9z6ifQeh27thKxIpwe1PpZq
-        fRyLiiZkt4aScsnFxIxMGsedYh3pO6ygaJPPnYkcr2kl0zZXK608t2tHG67zYObR+bCFCzblwIZNs
-        WUqOr1BPQEf9jn3Irnb7epVzsD1KuQKXDt2ll1ImqWbPKFeDgzvxnI+nI97dUNRGpqgdtJ1Zz3wup
-        WcPZp3bnHgNjXqpzAYoI92Lx3/pRnaYs6a/X2GfUZ0frTVQ05kb4qNt8QJPvcqYcdVI2zPj54Bnj8
-        UMtb8GEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPONu-0003Ho-Du; Fri, 17 Apr 2020 10:38:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8712C3006E0;
-        Fri, 17 Apr 2020 12:38:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6EEBB2B121452; Fri, 17 Apr 2020 12:38:08 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 12:38:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jakub Jelinek <jakub@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Michael Matz <matz@suse.de>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
-Message-ID: <20200417103808.GW20730@hirez.programming.kicks-ass.net>
-References: <20200328084858.421444-1-slyfox@gentoo.org>
- <20200413163540.GD3772@zn.tnic>
- <alpine.LSU.2.21.2004141343370.11688@wotan.suse.de>
- <20200415074842.GA31016@zn.tnic>
- <alpine.LSU.2.21.2004151445520.11688@wotan.suse.de>
- <20200415231930.19755bc7@sf>
- <20200417075739.GA7322@zn.tnic>
- <20200417080726.GS2424@tucnak>
- <20200417084224.GB7322@zn.tnic>
- <20200417085859.GU2424@tucnak>
+        id S1730067AbgDQKpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:45:55 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36148 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729905AbgDQKpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:45:32 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id C35CE454E8585F57A342;
+        Fri, 17 Apr 2020 18:45:26 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Apr 2020 18:45:18 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <will@kernel.org>
+CC:     <ak@linux.intel.com>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <qiangqing.zhang@nxp.com>,
+        <irogers@google.com>, <robin.murphy@arm.com>,
+        <zhangshaokun@hisilicon.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        John Garry <john.garry@huawei.com>
+Subject: [RFC PATCH v2 00/13] perf pmu-events: Support event aliasing for system PMUs
+Date:   Fri, 17 Apr 2020 18:41:11 +0800
+Message-ID: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417085859.GU2424@tucnak>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 10:58:59AM +0200, Jakub Jelinek wrote:
-> Or go with the for (;;);, I don't think any compiler optimizes those away;
-> GCC 10 for C++ can optimize away infinite loops that have some conditional
-> exit because the language guarantees forward progress, but the C language
-> rules are different and for unconditional infinite loops GCC doesn't
-> optimize them away even if explicitly asked to -ffinite-loops.
+Currently event aliasing for only CPU and uncore PMUs is supported. In
+fact, only uncore PMUs aliasing is supported for when the uncore PMUs are
+fixed for a CPU, which may not always be the case for certain
+architectures.
 
-'Funnily' there are people building the kernel with C++ :/
+This series adds support for PMU event aliasing for system and other
+uncore PMUs which are not tied to a specific CPU. Or, more specifically,
+CPUs which not tied to those PMUs.
+
+For this, we introduce system event tables in generated pmu-events.c,
+which contain a per-SoC table of events of all its system PMUs. Each
+per-PMU event is matched by a "COMPAT" property.
+
+When creating aliases for PMUs, we treat core/uncore* and system PMUs
+differently:
+
+- For CPU PMU, we always match for the event mapfile based on the CPUID.
+   This has not changed.
+
+- For an uncore or system PMU, we iterate through all the events in all
+   the system PMU tables.
+
+   Matches are based on the "COMPAT" property matching the PMU sysfs
+   identifier contents, in /sys/bus/event_source/devices/<PMU>/identifier
+
+* uncore PMUs may also be matched by system PMUs event support.
+
+Initial reference support is also added for ARM SMMUv3 PMCG (Performance
+Monitor Event Group) PMU for HiSilicon hip08 platform with only a single
+event so far - see driver in drivers/perf/arm_smmuv3_pmu.c for that driver.
+
+Here is a sample output with this series on Huawei D06CS board:
+
+root@ubuntu:/# ./perf list
+   [...]
+
+smmu v3 pmcg:
+   smmuv3_pmcg.config_cache_miss
+        [Configuration cache miss caused by transaction or(ATS or
+        non-ATS)translation request. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.config_struct_access
+        [Configuration structure access. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.cycles
+        [Clock cycles. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.l1_tlb
+        [SMMUv3 PMCG L1 TABLE transation. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.pcie_ats_trans_passed
+        [PCIe ATS Translated Transaction passed through SMMU. Unit: 
+smmuv3_pmcg]
+   smmuv3_pmcg.pcie_ats_trans_rq
+        [PCIe ATS Translation Request received. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.tlb_miss
+        [TLB miss caused by incomingtransaction or (ATS or non-ATS) 
+translation
+         request. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.trans_table_walk_access
+        [Translation table walk access. Unit: smmuv3_pmcg]
+   smmuv3_pmcg.transaction
+        [Transaction. Unit: smmuv3_pmcg]
+
+
+root@ubuntu:/# ./perf stat -v -e smmuv3_pmcg.l1_tlb sleep 1
+Using CPUID 0x00000000480fd010
+Using SYSID HIP08
+-> smmuv3_pmcg_200100020/event=0x8a/
+-> smmuv3_pmcg_200140020/event=0x8a/
+-> smmuv3_pmcg_100020/event=0x8a/
+-> smmuv3_pmcg_140020/event=0x8a/
+-> smmuv3_pmcg_200148020/event=0x8a/
+-> smmuv3_pmcg_148020/event=0x8a/
+smmuv3_pmcg.l1_tlb: 0 1001221690 1001221690
+smmuv3_pmcg.l1_tlb: 0 1001220090 1001220090
+smmuv3_pmcg.l1_tlb: 101 1001219660 1001219660
+smmuv3_pmcg.l1_tlb: 0 1001219010 1001219010
+smmuv3_pmcg.l1_tlb: 0 1001218360 1001218360
+smmuv3_pmcg.l1_tlb: 134 1001217850 1001217850
+
+Performance counter stats for 'system wide':
+
+                235      smmuv3_pmcg.l1_tlb 
+
+
+        1.001263128 seconds time elapsed
+
+root@ubuntu:/#
+
+Support is also added for imx8mm DDR PMU.
+
+Series is here:
+https://github.com/hisilicon/kernel-dev/commits/private-topic-perf-5.6-sys-pmu-events-v2-upstream
+
+Differences to v1:
+- Stop using SoC id and use a per-PMU identifier instead
+- Add metric group sys events support
+   - This is a bit hacky
+- Add imx8mm DDR Perf support
+- Add fix for parse events sel
+	- without it, I get this spewed for metric event:
+
+	assertion failed at util/parse-events.c:1637
+
+Patches still need to be sent to support per-PMU identifer sysfs file
+in the kernel.
+
+Thanks,
+John
+
+Joakim Zhang (1):
+  perf vendor events: Add JSON metrics for imx8mm DDR Perf
+
+John Garry (12):
+  perf parse-events: Fix comparison of evsel and leader pmu name
+  perf jevents: Add support for an extra directory level
+  perf jevents: Add support for system events tables
+  perf vendor events arm64: Relocate hip08 events
+  perf vendor events arm64: Add Architected events smmuv3-pmcg.json
+  perf vendor events arm64: Add hip08 SMMUv3 PMCG events
+  perf pmu: Add pmu_id()
+  perf pmu: Add pmu_add_sys_aliases()
+  perf metricgroup: Split up metricgroup__add_metric()
+  perf metricgroup: Split up metricgroup__print()
+  perf metricgroup: Support printing metric groups for system PMUs
+  perf metricgroup: Support adding metrics for system PMUs
+
+ .../arch/arm64/freescale/imx8mm/sys/ddrc.json      |  39 +++
+ .../arch/arm64/freescale/imx8mm/sys/metrics.json   |  18 ++
+ .../hisilicon/hip08/{ => cpu}/core-imp-def.json    |   0
+ .../hisilicon/hip08/{ => cpu}/uncore-ddrc.json     |   0
+ .../hisilicon/hip08/{ => cpu}/uncore-hha.json      |   0
+ .../hisilicon/hip08/{ => cpu}/uncore-l3c.json      |   0
+ .../arm64/hisilicon/hip08/sys/smmu-v3-pmcg.json    |  42 +++
+ tools/perf/pmu-events/arch/arm64/mapfile.csv       |   2 +-
+ tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json  |  58 ++++
+ tools/perf/pmu-events/jevents.c                    | 152 ++++++++---
+ tools/perf/pmu-events/jevents.h                    |  11 +-
+ tools/perf/pmu-events/pmu-events.h                 |   6 +
+ tools/perf/util/metricgroup.c                      | 291 ++++++++++++++-------
+ tools/perf/util/parse-events.c                     |   2 +-
+ tools/perf/util/pmu.c                              | 115 ++++++++
+ tools/perf/util/pmu.h                              |   6 +
+ 16 files changed, 612 insertions(+), 130 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
+ rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/core-imp-def.json (100%)
+ rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-ddrc.json (100%)
+ rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-hha.json (100%)
+ rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-l3c.json (100%)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip08/sys/smmu-v3-pmcg.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json
+
+-- 
+2.16.4
+
