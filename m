@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810491AE293
+	by mail.lfdr.de (Postfix) with ESMTP id ECC811AE294
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgDQQy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:54:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42404 "EHLO mx2.suse.de"
+        id S1727906AbgDQQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:55:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42424 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726105AbgDQQy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:54:57 -0400
+        id S1727840AbgDQQy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 12:54:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5D7AAAB89;
+        by mx2.suse.de (Postfix) with ESMTP id 06275AE21;
         Fri, 17 Apr 2020 16:54:55 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     saravanak@google.com, linux-kernel@vger.kernel.org,
@@ -22,9 +22,9 @@ To:     saravanak@google.com, linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     devicetree@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v2 1/2] of: property: Fix create device links for all child-supplier dependencies
-Date:   Fri, 17 Apr 2020 18:54:41 +0200
-Message-Id: <20200417165442.1856-2-nsaenzjulienne@suse.de>
+Subject: [PATCH v2 2/2] of: property: Do not link to disabled devices
+Date:   Fri, 17 Apr 2020 18:54:42 +0200
+Message-Id: <20200417165442.1856-3-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200417165442.1856-1-nsaenzjulienne@suse.de>
 References: <20200417165442.1856-1-nsaenzjulienne@suse.de>
@@ -35,41 +35,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon adding a new device from a DT node, we scan its properties and its
-children's properties in order to create a consumer/supplier
-relationship between the device and the property provider.
+When creating a consumer/supplier relationship between two devices,
+make sure the supplier node is actually active. Otherwise this will
+create a link relationship that will never be fulfilled. This, in the
+worst case scenario, will hang the system during boot.
 
-That said, it's possible for some of the node's children to be disabled,
-which will create links that'll never be fulfilled.
+Note that, in practice, the fact that a device-tree represented
+consumer/supplier relationship isn't fulfilled will not prevent devices
+from successfully probing.
 
-To get around this, use the for_each_available_child_of_node() function
-instead of for_each_available_node() when iterating over the node's
-children.
-
-Fixes: d4387cd11741 ("of: property: Create device links for all child-supplier depencencies")
+Fixes: a3e1d1a7f5fc ("of: property: Add functional dependency link from DT bindings")
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
 ---
 
 Changes since v1:
- - Slightly reword description
+ - Move availability check into the compatible search routine and bail
+   if device node disabled
 
- drivers/of/property.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/of/property.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 252e4f6001553..dc034eb45defd 100644
+index dc034eb45defd..14b6266dd054b 100644
 --- a/drivers/of/property.c
 +++ b/drivers/of/property.c
-@@ -1298,7 +1298,7 @@ static int of_link_to_suppliers(struct device *dev,
- 		if (of_link_property(dev, con_np, p->name))
- 			ret = -ENODEV;
- 
--	for_each_child_of_node(con_np, child)
-+	for_each_available_child_of_node(con_np, child)
- 		if (of_link_to_suppliers(dev, child) && !ret)
- 			ret = -EAGAIN;
- 
+@@ -1045,8 +1045,25 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
+ 	 * Find the device node that contains the supplier phandle.  It may be
+ 	 * @sup_np or it may be an ancestor of @sup_np.
+ 	 */
+-	while (sup_np && !of_find_property(sup_np, "compatible", NULL))
++	while (sup_np) {
++
++		/*
++		 * Don't allow linking a device node as consumer of a disabled
++		 * node.
++		 */
++		if (!of_device_is_available(sup_np)) {
++			dev_dbg(dev, "Not linking to %pOFP - Not available\n",
++				sup_np);
++			of_node_put(sup_np);
++			return -ENODEV;
++		}
++
++		if (of_find_property(sup_np, "compatible", NULL))
++			break;
++
+ 		sup_np = of_get_next_parent(sup_np);
++	}
++
+ 	if (!sup_np) {
+ 		dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
+ 		return -ENODEV;
 -- 
 2.26.0
 
