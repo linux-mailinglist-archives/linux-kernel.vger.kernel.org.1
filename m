@@ -2,139 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A1C1AD4A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7B91AD4B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729414AbgDQCzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 22:55:50 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:31503 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729380AbgDQCzs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 22:55:48 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200417025546epoutp0411b7511b75725d8b3338865c398530dd~Ge_YYBXt-2928429284epoutp04S
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:55:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200417025546epoutp0411b7511b75725d8b3338865c398530dd~Ge_YYBXt-2928429284epoutp04S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1587092146;
-        bh=HBC3znJv7wTOjbDwmJrvVlbQN+na6LD4DK1J6T2DOes=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=opu3YuLuFhThENhOSu4DbnC/1Ye1lqTAnRtytV+WYzW2gBxrScpdlKNqtS+YpQh7w
-         t8lYfL8yCSFfPANIdHBLA982xwv3T0N+ld1Aoqg8x2A/Ziawe6t10PNtBpWwJ7CEA+
-         78BkhSYqmpS2IcAm8Mn4M0r8P4s2Emq/s0Wv+7as=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200417025546epcas1p1dca7a0e8772cb9c060223cd6d5f54046~Ge_XxOjHo0790707907epcas1p1s;
-        Fri, 17 Apr 2020 02:55:46 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 493LLl738WzMqYkg; Fri, 17 Apr
-        2020 02:55:43 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        47.54.04744.DAA199E5; Fri, 17 Apr 2020 11:55:41 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200417025540epcas1p3c621542c72f321662f97d9a6c8392238~Ge_Spe1yW2089220892epcas1p3B;
-        Fri, 17 Apr 2020 02:55:40 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200417025540epsmtrp1e0f26c40585d46bb3bee9dd973e9834e~Ge_SoXOdq0082200822epsmtrp1q;
-        Fri, 17 Apr 2020 02:55:40 +0000 (GMT)
-X-AuditID: b6c32a38-253ff70000001288-8d-5e991aad6fc4
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2B.62.04158.CAA199E5; Fri, 17 Apr 2020 11:55:40 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200417025540epsmtip21a6192e55e306786da78fc5783428d64~Ge_Sdjgu32894428944epsmtip2q;
-        Fri, 17 Apr 2020 02:55:40 +0000 (GMT)
-Subject: Re: [PATCH] extcon: remove redundant assignment to variable idx
-To:     Colin King <colin.king@canonical.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <f88c8ae7-a9bc-1bc2-9c21-d8395fa33409@samsung.com>
-Date:   Fri, 17 Apr 2020 12:05:12 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <20200415230821.1567410-1-colin.king@canonical.com>
+        id S1729464AbgDQDFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 23:05:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42625 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgDQDFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 23:05:19 -0400
+IronPort-SDR: rTBmR8vDhK3HXJGHnUTs7JEKfNFvgEBdlQUQxn0Gxy+i5ZtaoVlNcEuOG+T9ML1IcRx81NTSeI
+ KUcmuQxKYG6w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 20:05:19 -0700
+IronPort-SDR: yx1B5KmqV9xbKw5Y+qe1SOnUCmpSn0wKegVIXGQOXmAo6nq4ZsfpUK8i29WsiZ36gNQ5rrGvmM
+ 5gk/QCHHgARw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="299490520"
+Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Apr 2020 20:05:19 -0700
+Received: from fmsmsx163.amr.corp.intel.com (10.18.125.72) by
+ FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 20:05:19 -0700
+Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
+ fmsmsx163.amr.corp.intel.com (10.18.125.72) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 20:05:19 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.59) by
+ edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Thu, 16 Apr 2020 20:05:19 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mU1UVxVoSYH2O8NWqMigDKeOhFtNcOccPnyxWTpTBImf9v+a6Yh+ryI9Qq/pNlMYGdidZL/B/32Y73QU0yQev3hhr+XQseP92Ts2wo8F6HaSAKpBPzkx/XoMd4rJ2LgP6xkyZWYwlsPluHULt8Na1c6UJDc/01a6WTn3fIFNqn9aSQluZB3eb9RkNWOShsNoNQV9m4N/1/gw7u0iQ6Fwbxp5nxagtZEGxPAG/bGnbgek2ZoTjLH4Jz5kyjRDNA4uqEDTBivdoDOwN21ff2dglYplIALrUqM8ynqRc+pirZ3WRMzQPTshS0AV34FlL/NRjHXuj7pfGp673EdNFtfjZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVgUMGnjOyhufcziJ/kUyrrl5LHowYpd7U+NPvgBmiQ=;
+ b=XJzGoE4eHt5UBS4eMpj5bAIUsf4PnNnI2xP7XhwSxZ/RtsNZP5ATap6TjWEWuqzNP4jb+om9FwU10PdNbc50lFpuUgY30jiQGFP/Beot2vkqWzu9fE5GRaCWZ8GZevU1IPN2oepcj3+GaxHFX46svfgxqcBmN43zB3bpfbn2B2RB+EcDfYim+vmGRsRaBLi8lEi9wryi7qAAnqcKu3ye01ej8VUuFiCnk8QJWrRkqIvnOIEgLPLN3Tnu1uIz1kFLfiBU7nabF9Dn/qDmuLQ2IyWHxmGNiGZJYqUy6Ews3c00m3958M5F7yKEgmfDe/qqOqydWKlVr/t8rFuDPEFwvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVgUMGnjOyhufcziJ/kUyrrl5LHowYpd7U+NPvgBmiQ=;
+ b=ZkgRuHHLjMV9/ttqEoP10DBCDHNmjODDG32cMoNgUmsh2CAGr9vJ4Y/4wk5Xo19yaPuN72iXORbjtWdS/OnlnomEy8wPuFzGGj5Ky/jK5FKot/Lbtj+mjmf8moq8NesWUI0WPRk+nLtjRs+7nM03JOxLjJ1uu6p65sjV2b2YaVI=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB3882.namprd11.prod.outlook.com (2603:10b6:5:4::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2921.25; Fri, 17 Apr 2020 03:05:17 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::98a:bb06:5551:e5a3]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::98a:bb06:5551:e5a3%3]) with mapi id 15.20.2900.028; Fri, 17 Apr 2020
+ 03:05:17 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     "Xu, Yilun" <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
+CC:     "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhu@redhat.com" <bhu@redhat.com>
+Subject: RE: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
+Thread-Topic: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
+Thread-Index: AQHWE5193+0/nQdMD0KUurSvMI7dQ6h7YzcggACVlYCAAJaugIAAEAvg
+Date:   Fri, 17 Apr 2020 03:05:16 +0000
+Message-ID: <DM6PR11MB381919B83DB49F937E3EDEEA85D90@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <1587006712-22696-1-git-send-email-yilun.xu@intel.com>
+ <1587006712-22696-2-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB3819619E9B2C7326218247E385D80@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <9b1d85e0-4f44-179b-c847-af858fcc212a@redhat.com>
+ <20200417015605.GA30618@yilunxu-OptiPlex-7050>
+In-Reply-To: <20200417015605.GA30618@yilunxu-OptiPlex-7050>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmk+LIzCtJLcpLzFFi42LZdlhTV3et1Mw4g303FC1+r+5ls9h6S9ri
-        8q45bBa3G1ewObB4zGroZfPo27KK0ePzJrkA5qhsm4zUxJTUIoXUvOT8lMy8dFsl7+B453hT
-        MwNDXUNLC3MlhbzE3FRbJRefAF23zBygZUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM/OISW6XU
-        gpScAssCveLE3OLSvHS95PxcK0MDAyNToMKE7IyepwfZC56wV/RPOcTawDiVrYuRk0NCwERi
-        +8oJQDYXh5DADkaJx1dnMEI4nxgl1vY9YYFwvjFKXF68jQmmZeuSLmaIxF5Gifnbp7BCOO8Z
-        Jc5dO8gMUiUs4CExtW8CK4gtIhAicfrCRHYQm1nAUWLd/DssIDabgJbE/hc3wA7hF1CUuPrj
-        MSOIzStgJ7FtyT+wOIuAqsSC3RfBNosKhEmc3NYCVSMocXLmE7A5nAIOEk0bn0PNF5e49WQ+
-        E4QtL7H97RywSyUEjrBJnNz7H6iIA8hxkXh/lQXiG2GJV8e3sEPYUhIv+9ug7GqJlSePsEH0
-        djBKbNl/gRUiYSyxf+lkJpA5zAKaEut36UOEFSV2/p7LCLGXT+Ld1x5WiFW8Eh1tQhAlyhKX
-        H9yFBqKkxOL2TrYJjEqzkHwzC8kHs5B8MAth2QJGllWMYqkFxbnpqcWGBSbIsb2JEZwQtSx2
-        MO4553OIUYCDUYmHN8F+RpwQa2JZcWXuIUYJDmYlEV4+U6AQb0piZVVqUX58UWlOavEhRlNg
-        YE9klhJNzgcm67ySeENTI2NjYwsTQzNTQ0Mlcd6p13PihATSE0tSs1NTC1KLYPqYODilGhg7
-        VUR/XbXWOSvI1yrV6CrzRWzWym3s3PvW/bj0/qH/7+cTSvRb5Qp1Us1X2ks9Cng7+1KvVXOU
-        5etzvfd9bLKMbly2nJ/46bPKL1fx7IzVXcFzC7+EvDRUeTN30p6lux7WPWdY+kllZsCNFX/e
-        LN2hLlbfXjTPoPTx7m+mXges4rPzQm5K5vQpsRRnJBpqMRcVJwIAUmdRzZ4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSvO4aqZlxBpvuqVr8Xt3LZrH1lrTF
-        5V1z2CxuN65gc2DxmNXQy+bRt2UVo8fnTXIBzFFcNimpOZllqUX6dglcGT1PD7IXPGGv6J9y
-        iLWBcSpbFyMnh4SAicTWJV3MXYxcHEICuxkl7j1/zwKRkJSYdvEoUIIDyBaWOHy4GKLmLaPE
-        hCmHmEBqhAU8JKb2TWAFsUUEQiRmTd/ECGIzCzhKrJt/hwWiYTKjxJedX8GK2AS0JPa/uAG2
-        mV9AUeLqj8dgDbwCdhLblvwDi7MIqEos2H0RbIGoQJjEziWPmSBqBCVOznwCdhyngINE08bn
-        7BDL1CX+zLvEDGGLS9x6Mp8JwpaX2P52DvMERuFZSNpnIWmZhaRlFpKWBYwsqxglUwuKc9Nz
-        iw0LjPJSy/WKE3OLS/PS9ZLzczcxgmNDS2sH44kT8YcYBTgYlXh4E+xnxAmxJpYVV+YeYpTg
-        YFYS4eUzBQrxpiRWVqUW5ccXleakFh9ilOZgURLnlc8/FikkkJ5YkpqdmlqQWgSTZeLglGpg
-        LLz0spwt0CRO/NPpft7/odrr7p6bnpmle6S+kyuz5ub2WWZsG/+nO9w/O+Fu7okFpgF8N6T0
-        psesc1l5W8rp6i/n6IrwizYpyx4uSbI6wvT6pd3Ojza1N1qZZqo+UTNYr9gz0eGX+8KdEvb5
-        M89dXaJo4MnkkJdsPe3UZ5lVf+ZlPBL59OHNOiWW4oxEQy3mouJEAMndIjGJAgAA
-X-CMS-MailID: 20200417025540epcas1p3c621542c72f321662f97d9a6c8392238
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200415230903epcas1p2bc2dd8edb6ca123086f44cb158406439
-References: <CGME20200415230903epcas1p2bc2dd8edb6ca123086f44cb158406439@epcas1p2.samsung.com>
-        <20200415230821.1567410-1-colin.king@canonical.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=hao.wu@intel.com; 
+x-originating-ip: [192.102.204.38]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0814a210-1728-4d59-76ea-08d7e27c2807
+x-ms-traffictypediagnostic: DM6PR11MB3882:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB388296141BC49F7C6B46269B85D90@DM6PR11MB3882.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1360;
+x-forefront-prvs: 0376ECF4DD
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(346002)(376002)(136003)(396003)(39860400002)(366004)(26005)(110136005)(71200400001)(7696005)(5660300002)(66446008)(64756008)(33656002)(316002)(54906003)(76116006)(66946007)(52536014)(66556008)(53546011)(8936002)(6506007)(66476007)(81156014)(8676002)(86362001)(4326008)(478600001)(186003)(2906002)(9686003)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8dCoz2JXlo/7TaluY8OIlW9ZzYJ6yW9tF+xpUYX8LRWRD/a/DFuk/sF7kJIOBOiKFiasnd7OBUKe4ulWv/eRx8Gpn/mG7fhr3VGunYz7XFekMWsqDDZOsp/VnUiGA6d32tP9gV71reEf6Pqkyj2C6vjxKqI/97L35dssnqSqxGQ+TDkyBdfRQbPylEcpkZT+qhOGM4zIPTT6zFQGNDDD5B/lMT9CPDvbOZIcMiAu3j+1Ej/RMXgt9tAn18OBrUweRnMX0FPAaY8PPD+0Nyay0UJ+NiIMO0zariIfBKLKPycqWa49OkwYjkBiOlFi0mPWgAz30yoOvWiOCmZ61H/+ebhH1HK8zK9xXIi4O3qVZMA1hHynQmArFL6GPK6cITD7m/2BBSt228H3H54OclyzXbnGmtRPmYH5OjN8697YLxnoHgDpn+91q1+p5dQ+RwoR
+x-ms-exchange-antispam-messagedata: ybB847/HQtrxmVcx0BurTreeMB46XTa2ivxLNgFHhX8/KSscxLh6U8zNh/glgfrZSB6kpzprp9FsfH8JN4BCyDrkrfKcJnPfXhP4QR0OwoL0sYvgHYFDjmRkc2e2hGB7N8JNJ2lYdJoN90q0wvqWTw==
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0814a210-1728-4d59-76ea-08d7e27c2807
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 03:05:17.0145
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pjuH4gTNm6+K6neXytliQTtQquZQ0hu3ZkY8Gl07rhvQIWQb+kMkxlGvnC9/2ojEttmkUvxt4VGQBfZslPP5wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3882
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/20 8:08 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable idx is being initialized with a value that is never read
-> and it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/extcon/extcon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
-> index 2dfbfec572f9..0a6438cbb3f3 100644
-> --- a/drivers/extcon/extcon.c
-> +++ b/drivers/extcon/extcon.c
-> @@ -900,7 +900,7 @@ int extcon_register_notifier(struct extcon_dev *edev, unsigned int id,
->  			     struct notifier_block *nb)
->  {
->  	unsigned long flags;
-> -	int ret, idx = -EINVAL;
-> +	int ret, idx;
->  
->  	if (!edev || !nb)
->  		return -EINVAL;
-> 
+> -----Original Message-----
+> From: Xu, Yilun <yilun.xu@intel.com>
+> Sent: Friday, April 17, 2020 9:56 AM
+> To: Tom Rix <trix@redhat.com>
+> Cc: Wu, Hao <hao.wu@intel.com>; mdf@kernel.org; linux-
+> fpga@vger.kernel.org; linux-kernel@vger.kernel.org; bhu@redhat.com
+> Subject: Re: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 're=
+t'
+>=20
+> Hi Rix:
+>=20
+> This patch is based on linux-next. There is an preceding patch
+> (3c2760b78f90 "fpga: dfl: pci: fix return value of cci_pci_sriov_configur=
+e",
+> Also see Fixes:) in linux-next but not merged in 5.7-rc1 yet.
+> This patch is to fix the lkp warning brought by the previous one.
 
-Applied it. Thanks.
+Yilun
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Is it possible that commit id may be different for master then?=20
+
+Thanks
+Hao
+
+>=20
+> Thanks.
+>=20
+> On Thu, Apr 16, 2020 at 09:56:47AM -0700, Tom Rix wrote:
+> > Please check the scope.
+> >
+> > On linus/master, the result of this change looks like
+> >
+> > static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
+> > {
+> > =A0=A0=A0 struct cci_drvdata *drvdata =3D pci_get_drvdata(pcidev);
+> > =A0=A0=A0 struct dfl_fpga_cdev *cdev =3D drvdata->cdev;
+> >
+> > =A0=A0=A0 if (!num_vfs) {
+> > =A0=A0=A0 =A0=A0=A0 /*
+> > =A0=A0=A0 =A0=A0=A0 =A0* disable SRIOV and then put released ports back=
+ to default
+> > =A0=A0=A0 =A0=A0=A0 =A0* PF access mode.
+> > =A0=A0=A0 =A0=A0=A0 =A0*/
+> > =A0=A0=A0 =A0=A0=A0 pci_disable_sriov(pcidev);
+> >
+> > =A0=A0=A0 =A0=A0=A0 dfl_fpga_cdev_config_ports_pf(cdev);
+> >
+> > =A0=A0=A0 } else {
+> > =A0=A0=A0 =A0=A0=A0 int ret; <--- defined here
+> >
+> > =A0=A0=A0 =A0=A0=A0 /*
+> > =A0=A0=A0 =A0=A0=A0 =A0* before enable SRIOV, put released ports into V=
+F access mode
+> > =A0=A0=A0 =A0=A0=A0 =A0* first of all.
+> > =A0=A0=A0 =A0=A0=A0 =A0*/
+> > =A0=A0=A0 =A0=A0=A0 ret =3D dfl_fpga_cdev_config_ports_vf(cdev, num_vfs=
+);
+> > =A0=A0=A0 =A0=A0=A0 if (ret)
+> > =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return ret;
+> >
+> > =A0=A0=A0 =A0=A0=A0 ret =3D pci_enable_sriov(pcidev, num_vfs);
+> > =A0=A0=A0 =A0=A0=A0 if (ret)
+> > =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dfl_fpga_cdev_config_ports_pf(cdev);
+> > =A0=A0=A0 }
+> >
+> > =A0=A0=A0 return ret;=A0 <---- not in scope, not defined here
+> > }
+> >
+> > Tom
