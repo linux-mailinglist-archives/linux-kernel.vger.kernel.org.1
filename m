@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EA31AD393
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB171AD39D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgDQAU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 20:20:56 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:41630 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgDQAU4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 20:20:56 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03H0KggD001366;
-        Thu, 16 Apr 2020 19:20:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587082842;
-        bh=oOw75QBlpG6pb5O0bLrWeNZVrUQRVB6S4zef2wEvNww=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=LYwsa1/ZbpUDLhWUwjm55cR6Go531gQBBWc/ZrEVGak8g7Vk1LXVfmnEUAwYavQBF
-         JJYFGKFEQ8Ag+IsmPubwW/Ma1ay+/eH58ooTGiN08oGy5xVIImlnpD/atjdqfVcB2B
-         JpSCuEENe6ryyqVu4S4cxntsDJs55jX25Rn6mpJQ=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03H0KgSR060172
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Apr 2020 19:20:42 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 16
- Apr 2020 19:20:42 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 16 Apr 2020 19:20:41 -0500
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03H0KfbN020917;
-        Thu, 16 Apr 2020 19:20:41 -0500
-Received: from localhost ([10.250.70.56])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 03H0Kfkk060529;
-        Thu, 16 Apr 2020 19:20:41 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH 2/2] remoteproc: Use a local copy for the name field
-Date:   Thu, 16 Apr 2020 19:20:36 -0500
-Message-ID: <20200417002036.24359-3-s-anna@ti.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200417002036.24359-1-s-anna@ti.com>
-References: <20200417002036.24359-1-s-anna@ti.com>
+        id S1728228AbgDQAWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 20:22:35 -0400
+Received: from ozlabs.org ([203.11.71.1]:41409 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727868AbgDQAWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 20:22:34 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 493Gxz1L00z9sP7;
+        Fri, 17 Apr 2020 10:22:30 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1587082952;
+        bh=K6Xz+b9ZpZaZKBy7AHX1iqW7FO9UPJmIgqGhaDRM/Kg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YDau4vmbX6UrTN9zPZxmLBSqeCYXlpyJCxxYfRoDteVZIp/Hg9z48rzu3+ekmQTJK
+         dV+0zXgBKxtnMfm1PHG0jKHQwBzXtjjEDrmKbzZLsUK6mlQy+qHGWVCQgEYDbn1lSc
+         R2sbVOiEiPYJhl+9MW7EpbKXQA3LJ3Gjqaqany0eGfrW9IU0E+1Xtr3QzGGJbF97Pd
+         pdWLxww8Y0e5Gk71Yz8RSIBil+1oxBYVkVxx+uIIfUNsnzFPFuA3T2S5NNvzehsAuX
+         bO3RKfc9jTfO8X0FQ0FtihOwPm3COf4SFZOZr6sIRtD0zSQGjc+fbDT+8QuyZD4BXA
+         Mjzdnul2KArqA==
+Date:   Fri, 17 Apr 2020 10:22:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: linux-next: build warning after merge of the v4l-dvb tree
+Message-ID: <20200417102226.11d54815@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/Jsndi7otJSHTGKvA8SoCyAg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current name field used in the remoteproc structure is simply
-a pointer to a name field supplied during the rproc_alloc() call.
-The pointer passed in by remoteproc drivers during registration is
-typically a dev_name pointer, but it is possible that the pointer
-will no longer remain valid if the devices themselves were created
-at runtime like in the case of of_platform_populate(), and were
-deleted upon any failures within the respective remoteproc driver
-probe function.
+--Sig_/Jsndi7otJSHTGKvA8SoCyAg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So, allocate and maintain a local copy for this name field to
-keep it agnostic of the logic used in the remoteproc drivers.
+Hi all,
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
-v1:
- - Patch baselined on top of Mathieu's rproc_alloc() refactor
-   series, and so addresses Bjorn's simplified cleanup comments
- - Switch to {kstrdup/kfree}_const variants
-v0: https://patchwork.kernel.org/patch/11456385/
+After merging the v4l-dvb tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
- drivers/remoteproc/remoteproc_core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+WARNING: unmet direct dependencies detected for MEDIA_CONTROLLER_REQUEST_API
+  Depends on [n]: MEDIA_SUPPORT [=3Dm] && MEDIA_CONTROLLER [=3Dy] && STAGIN=
+G_MEDIA [=3Dn]
+  Selected by [m]:
+  - VIDEO_VIVID [=3Dm] && MEDIA_SUPPORT [=3Dm] && MEDIA_TEST_SUPPORT [=3Dy]=
+ && V4L_TEST_DRIVERS [=3Dy] && VIDEO_DEV [=3Dm] && VIDEO_V4L2 [=3Dm] && !SP=
+ARC32 && !SPARC64 && FB [=3Dy] && HAS_DMA [=3Dy]
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index e38f627059ac..3cebface3f26 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1984,6 +1984,7 @@ static void rproc_type_release(struct device *dev)
- 
- 	kfree(rproc->firmware);
- 	kfree(rproc->ops);
-+	kfree_const(rproc->name);
- 	kfree(rproc);
- }
- 
-@@ -2069,7 +2070,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	if (!rproc)
- 		return NULL;
- 
--	rproc->name = name;
- 	rproc->priv = &rproc[1];
- 	rproc->auto_boot = true;
- 	rproc->elf_class = ELFCLASS32;
-@@ -2081,6 +2081,10 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	rproc->dev.driver_data = rproc;
- 	idr_init(&rproc->notifyids);
- 
-+	rproc->name = kstrdup_const(name, GFP_KERNEL);
-+	if (!rproc->name)
-+		goto put_device;
-+
- 	if (rproc_alloc_firmware(rproc, name, firmware))
- 		goto put_device;
- 
--- 
-2.26.0
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/Jsndi7otJSHTGKvA8SoCyAg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6Y9sIACgkQAVBC80lX
+0GyKiAf/XBZ6ambuIbtvf1vD27TjYiaC4YS5vgKm4E8PjUXGkz8+er0wOjlE1XCr
+pzV40WvVlufWm441vnFnwQm3ViZoQhUp8nth3pJcWkcKN9BX4L8uEmgdPYViKPGs
+zYTCiRZWxhlkSTI+KhVzW9mzpHiNurwuCicXV1/Rd9Wu42rsAbKo+oZcFsrcZtRg
+Vc9/dXBL8wF8aHUzKQ+x3J2Fu1FyKv16f1vbanm7AM1bP2OHgfXNfcVQKVQaJmu0
+v5oDEkTsgXDazMWs6c65eVp9I7wF8uIPRMnIorJ6sLA5oJ7q1bDNAF7ODUC5DICC
+OyWU+k1d44xZeRB8EhUzkNnsAbhAGg==
+=GCDb
+-----END PGP SIGNATURE-----
+
+--Sig_/Jsndi7otJSHTGKvA8SoCyAg--
