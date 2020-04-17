@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568B31AE756
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145901AE74B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgDQVL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:11:29 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:46498 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgDQVL3 (ORCPT
+        id S1727871AbgDQVJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727840AbgDQVJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:11:29 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPYGk-0005yL-PC; Fri, 17 Apr 2020 15:11:26 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPYGi-0003AY-UF; Fri, 17 Apr 2020 15:11:26 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20200414070142.288696-1-hch@lst.de>
-        <20200414070142.288696-3-hch@lst.de>
-Date:   Fri, 17 Apr 2020 16:08:23 -0500
-In-Reply-To: <20200414070142.288696-3-hch@lst.de> (Christoph Hellwig's message
-        of "Tue, 14 Apr 2020 09:01:36 +0200")
-Message-ID: <87pnc5akhk.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 17 Apr 2020 17:09:15 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140ECC061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:09:15 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id 8so3291014oiy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zz9iwCIr/F3QG8mgmb+B3MoXqMi0D5rT/9ckWLDoDEM=;
+        b=JIJ9eiP0d18p+Zkg+P6W3I47al2Fd/m5GOB+bsA4kAfEEP6SEguLqDnF1U4cU4Otoj
+         yGNGZ8kL394HrJzIfPQd4Xa5bLpKRbvjaGl1kCmY99Xd6DydUHPlE54AF70b9KUHL94o
+         WES7sAEMa/PKEy72T7FDyZs6YJ8bwb5U3ksHMUIHnWV39SwgV2FDMhkiBLJgNcgnxQ5r
+         Y7P8JD2YO9H9nAN6qUOS0HQYi0THeZjDwDfrUsXlpS36dkWSYh1ZwJmz+IEcezNziFG4
+         piYsepr1qBtBWXLB9aqZNXGyAk65n7/zwIQnrbLpChhpYS3hIU6jxStoubTfcoszTlJk
+         vBUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zz9iwCIr/F3QG8mgmb+B3MoXqMi0D5rT/9ckWLDoDEM=;
+        b=uCw7o1YJmMDgbFVANHCN18wh6RTxICPu92fsE8rBBZffVAKv02jedbBcxQHZo3H2iq
+         cKCmQy9IdpbMcIFVrdFuHXejO/dsqE59gF8nQt0fUIhffKZx25F7TrauKcsAxcuFvJmh
+         lYmqEEBrZmrNQlTDwKO6nNUK2tC7CfLupoe3bwjEEV2bV8lg4ackwbmVVz8vwH3YNbXQ
+         6QdOq00Lqd7XeIR9I07oA04h8L9Exxnb/kiEfNyQy3WJwawdft0xiXSiN1d4SYc65Qw/
+         wrR0JH4YyeKt2MEex97auRJfiAYiJuduNjv9VhJOjj6+8JVkpViQ5Ikj9p3U3Y+Q629I
+         jb1g==
+X-Gm-Message-State: AGi0PuaYBOIo+NKlI3BUYMPzA6xvc32KQdC13dFJgQavyMEYVF/Dt4U1
+        K+wgqdMAzGJaQl6qN7EJdJDA3NCd/4Knqf9Isf/OFg==
+X-Google-Smtp-Source: APiQypK8ir71E/2iF5VbQ56Y9/gwhbhgTxYiJSR6H1lg11vLsrlw/eq/raUXM3LbEIAhwUCfR+wycDIH61u7ER+R8JA=
+X-Received: by 2002:a54:481a:: with SMTP id j26mr3623960oij.172.1587157753792;
+ Fri, 17 Apr 2020 14:09:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jPYGi-0003AY-UF;;;mid=<87pnc5akhk.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/sMSqzlC3UCo8sLeQoBbXwuy1pdf5wSzo=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMNoVowels autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4911]
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Christoph Hellwig <hch@lst.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1372 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 14 (1.0%), b_tie_ro: 12 (0.9%), parse: 1.10
-        (0.1%), extract_message_metadata: 13 (0.9%), get_uri_detail_list: 1.38
-        (0.1%), tests_pri_-1000: 4.7 (0.3%), tests_pri_-950: 1.53 (0.1%),
-        tests_pri_-900: 1.16 (0.1%), tests_pri_-90: 62 (4.5%), check_bayes: 60
-        (4.4%), b_tokenize: 4.7 (0.3%), b_tok_get_all: 7 (0.5%), b_comp_prob:
-        1.68 (0.1%), b_tok_touch_all: 42 (3.0%), b_finish: 1.22 (0.1%),
-        tests_pri_0: 138 (10.1%), check_dkim_signature: 0.48 (0.0%),
-        check_dkim_adsp: 2.3 (0.2%), poll_dns_idle: 1114 (81.2%),
-        tests_pri_10: 2.0 (0.1%), tests_pri_500: 1132 (82.5%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH 2/8] signal: clean up __copy_siginfo_to_user32
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20200417165442.1856-1-nsaenzjulienne@suse.de> <20200417165442.1856-3-nsaenzjulienne@suse.de>
+In-Reply-To: <20200417165442.1856-3-nsaenzjulienne@suse.de>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 17 Apr 2020 14:08:37 -0700
+Message-ID: <CAGETcx81uPQLCurX6N6pMH+2jOZBcs-9u5yhBp83jQWJks0EFw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Do not link to disabled devices
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
+On Fri, Apr 17, 2020 at 9:54 AM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> When creating a consumer/supplier relationship between two devices,
+> make sure the supplier node is actually active. Otherwise this will
+> create a link relationship that will never be fulfilled. This, in the
+> worst case scenario, will hang the system during boot.
+>
+> Note that, in practice, the fact that a device-tree represented
+> consumer/supplier relationship isn't fulfilled will not prevent devices
+> from successfully probing.
+>
+> Fixes: a3e1d1a7f5fc ("of: property: Add functional dependency link from DT bindings")
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>
+> ---
+>
+> Changes since v1:
+>  - Move availability check into the compatible search routine and bail
+>    if device node disabled
+>
+>  drivers/of/property.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index dc034eb45defd..14b6266dd054b 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1045,8 +1045,25 @@ static int of_link_to_phandle(struct device *dev, struct device_node *sup_np,
+>          * Find the device node that contains the supplier phandle.  It may be
+>          * @sup_np or it may be an ancestor of @sup_np.
+>          */
+> -       while (sup_np && !of_find_property(sup_np, "compatible", NULL))
+> +       while (sup_np) {
+> +
+> +               /*
+> +                * Don't allow linking a device node as consumer of a disabled
+> +                * node.
+> +                */
 
-> Instead of an architecture specific calling convention in common code
-> just pass a flags argument with architecture specific values.
+Minor nit: I'd just say "Don't allow linking to a disabled supplier".
 
-This bothers me because it makes all architectures pay for the sins of
-x32.  Further it starts burying the details of the what is happening in
-architecture specific helpers.  Hiding the fact that there is only
-one niche architecture that does anything weird.
+> +               if (!of_device_is_available(sup_np)) {
+> +                       dev_dbg(dev, "Not linking to %pOFP - Not available\n",
+> +                               sup_np);
+> +                       of_node_put(sup_np);
+> +                       return -ENODEV;
+> +               }
 
-I am very sensitive to hiding away signal handling details right now
-because way to much of the signal handling code got hidden in
-architecture specific files and was quite buggy because as a result.
+This if block looks very similar to the one right after the loop.
+Maybe there's a nice way to combine it?
 
-My general sense is putting all of the weird details up front and center
-in kernel/signal.c is the only way for this code will be looked at
-and successfully maintained.
+If you replace this if block with this, it'll end up with the same result.
+if (!of_device_is_available(sup_np)) {
+        of_node_put(sup_np);
+        sup_np = NULL;
+}
 
-How about these patches to solve set_fs with binfmt_elf instead:
+of_get_next_parent() handles a NULL input properly. So that won't be a
+problem. And "No device" is a valid statement for both cases I think.
 
-Eric W. Biederman (2):
-      signal: Factor copy_siginfo_to_external32 from copy_siginfo_to_user32
-      signal: Remove the set_fs in binfmt_elf.c:fill_siginfo_note
+> +
+> +               if (of_find_property(sup_np, "compatible", NULL))
+> +                       break;
+> +
+>                 sup_np = of_get_next_parent(sup_np);
+> +       }
+> +
+>         if (!sup_np) {
+>                 dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_np);
+>                 return -ENODEV;
 
- fs/binfmt_elf.c        |   5 +----
- fs/compat_binfmt_elf.c |   2 +-
- include/linux/compat.h |   1 +
- include/linux/signal.h |   7 +++++++
- kernel/signal.c        | 108 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
+However, not against this patch as is if Rob/Frank like it as is.
 
-Eric
+-Saravana
