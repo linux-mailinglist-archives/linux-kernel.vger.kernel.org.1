@@ -2,105 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728981AE322
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EFD1AE325
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgDQRFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 13:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727913AbgDQRFt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 13:05:49 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1363CC061A0C;
-        Fri, 17 Apr 2020 10:05:49 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d17so3857110wrg.11;
-        Fri, 17 Apr 2020 10:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L6vSpgIMmBWZUkn/2wzSE1YfGSB1WXikRLlIM0P2tsM=;
-        b=hQeRvJhnisjkFrQAbi2gCklzGQ+A8Yh/gPgG7AvNJ+iZvw5L4O1EDuYnLhe9D+bAIG
-         wMyvk/8/wHDT9Vbjdk/Jo9VIgFAfRrT7rcOIZNKDR46hovtvdn8OOS1Bd5ZU8bKuL4yZ
-         tRXxZ8zftPK4dhm/1HoTZFhFbigx5jRJzZD3YniCudE8zw8ebFBG/ps+wftR7PB7dowo
-         PbzmYMHTxbGNt50K0zvyYDJiNWFhRGJEkU0i3tqM9LP0JhQlubg2krtZFs4KUgBBhwti
-         UznvQKHpjNL7BJ163UdxcGvu13VDOWoBH7fqLR1ElYlAMg5GtagFMF1DR9fyaVxNXPzv
-         /r8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L6vSpgIMmBWZUkn/2wzSE1YfGSB1WXikRLlIM0P2tsM=;
-        b=e8JtdQBMSvoqlZHQACHoUuhqHE1q3dK2hDZNrsyshdVw4gD8djS9Ph9Cm6yZe6D51E
-         rpwgJ6idBBw0Hq3NYJA5QZMFyD20JtKaZ4/K01WPxfJXs6iDMqrP0FSbEtQbJax54bHt
-         RMwY/Suy5gjfKboEEivrbyv7CT614p0Vo4D4WYJtTN62YEstn0ln+w9MkW+Fa9NrmM+p
-         lAC8/Hz14FI8clqLM1whAETd8atvyiilpGo8PH+oG6m+nj4hkWb3BqxxdGAmDARkP57d
-         8V4WL0BxVPN4Aifp37mwTo4sZfcKJbk95D4e89LlXVoRGdGdJzyPltl/QlymtMYDhKCS
-         dbcg==
-X-Gm-Message-State: AGi0PubQnyXHiM6EN9U0sXA2n2GxPEA0On0AJEYlcKaHYCr3+JiWxKNI
-        c/1pZOZuwmUDk01ba9iexos=
-X-Google-Smtp-Source: APiQypKD5Ch9ByBWdQAM3T/RtbqnzvMnjJN3d6GJWE47dWN1TipwNjJL8C3rgGR5diX1QS52jeQvPA==
-X-Received: by 2002:adf:db41:: with SMTP id f1mr4725933wrj.13.1587143147648;
-        Fri, 17 Apr 2020 10:05:47 -0700 (PDT)
-Received: from localhost (pD9E51D62.dip0.t-ipconnect.de. [217.229.29.98])
-        by smtp.gmail.com with ESMTPSA id u15sm30741852wrn.46.2020.04.17.10.05.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 10:05:46 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Nagarjuna Kristam <nkristam@nvidia.com>,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: tegra-xudc: Fix idle suspend/resume
-Date:   Fri, 17 Apr 2020 19:05:37 +0200
-Message-Id: <20200417170537.2540914-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728681AbgDQRGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 13:06:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40508 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727913AbgDQRGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 13:06:09 -0400
+IronPort-SDR: AjGI3eJ9pNfrxViAu4x1MyLckr+vEONQDemp9LAnMlkk0JXEsU4zRpHPWLM2SOnuNt/tdVE2GS
+ 5/HFdOwaGX6A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 10:06:08 -0700
+IronPort-SDR: oWEEqNM+7i3WPWHh2w6V/2UblrE/Y/aK9kseWVHcyzKnhHPe1gpnMAp8zjfaAHZTDBcDdg4UlE
+ ZWmfbiYUX4Yg==
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
+   d="scan'208";a="299663835"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 10:06:08 -0700
+Date:   Fri, 17 Apr 2020 10:06:07 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>,
+        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 2/3] x86/split_lock: Bits in IA32_CORE_CAPABILITIES are
+ not architectural
+Message-ID: <20200417170607.GA18267@agluck-desk2.amr.corp.intel.com>
+References: <20200416205754.21177-1-tony.luck@intel.com>
+ <20200416205754.21177-3-tony.luck@intel.com>
+ <878siumnrf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878siumnrf.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Fri, Apr 17, 2020 at 12:04:36PM +0200, Thomas Gleixner wrote:
+> Tony Luck <tony.luck@intel.com> writes:
+> > +	m = x86_match_cpu(split_lock_cpu_ids);
+> > +	if (!m)
+> > +		return;
+> > +
+> > +	if (m->driver_data && cpu_has(c, X86_FEATURE_CORE_CAPABILITIES))
+> > {
+> 
+> This condition results in the following:
+> 
+>     driver_data     MSR_CORE_CAPS	 MSR_CORE_CAPS_SLD	SLD available
+> 
+> 1       0             Don't care          Don't care               Y
+> 2       1                N                Don't care               Y
+> 3       1                Y                    Y                    Y
+> 4       1                Y                    N                    N
+> 
+> #2 does not make any sense to me.
 
-When the XUDC device is idle (i.e. powergated), care must be taken not
-to access any registers because that would lead to a crash.
+Nor to me :-(
 
-Move the call to tegra_xudc_device_mode_off() into the same conditional
-as the tegra_xudc_powergate() call to make sure we only force device
-mode off if the XUDC is actually powered up.
+I got too clever trying to combine tests.
 
-Fixes: 49db427232fe ("usb: gadget: Add UDC driver for tegra XUSB device mode controller")
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+New version taking cases one at a time so my "stuck inside the
+house for six weeks now" brain can follow the steps.
+
+-Tony
+
+From 8c9d779e358eaa239b9647b7a3fe8ebee9becd63 Mon Sep 17 00:00:00 2001
+From: Tony Luck <tony.luck@intel.com>
+Date: Thu, 16 Apr 2020 10:37:42 -0700
+Subject: [PATCH v2] x86/split_lock: Bits in IA32_CORE_CAPABILITIES are not
+ architectural
+
+The Intel Software Developers' Manual erroneously listed bit 5 of the
+IA32_CORE_CAPABILITIES register as an architectural feature. It is not.
+
+Features enumerated by IA32_CORE_CAPABILITIES are model specific and
+implementation details may vary in different cpu models. Thus it is only
+safe to trust features after checking the CPU model.
+
+Icelake client and server models are known to implement the split lock
+detect feature even though they don't enumerate IA32_CORE_CAPABILITIES
+
+Fixes: 6650cdd9a8cc ("x86/split_lock: Enable split lock detection by kernel")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- drivers/usb/gadget/udc/tegra-xudc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kernel/cpu/intel.c | 38 +++++++++++++++++++++----------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
-index 52a6add961f4..dfabc54cdc27 100644
---- a/drivers/usb/gadget/udc/tegra-xudc.c
-+++ b/drivers/usb/gadget/udc/tegra-xudc.c
-@@ -3840,11 +3840,11 @@ static int __maybe_unused tegra_xudc_suspend(struct device *dev)
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 6119deb32660..0bf0d7e3832a 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -1120,10 +1120,12 @@ void switch_to_sld(unsigned long tifn)
+ }
  
- 	flush_work(&xudc->usb_role_sw_work);
+ /*
+- * The following processors have the split lock detection feature. But
+- * since they don't have the IA32_CORE_CAPABILITIES MSR, the feature cannot
+- * be enumerated. Enable it by family and model matching on these
+- * processors.
++ * Bits in the IA32_CORE_CAPABILITIES are not architectural, so they
++ * should only be trusted if you know you are on a model that implements
++ * them.
++ * The driver_data field is set to zero to indicate CPU models like
++ * Icelake that are known to have the split-lock feature even though
++ * they do not enumerate IA32_CORE_CAPABILITIES.
+  */
+ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,           0),
+@@ -1133,19 +1135,23 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
  
--	/* Forcibly disconnect before powergating. */
--	tegra_xudc_device_mode_off(xudc);
--
--	if (!pm_runtime_status_suspended(dev))
-+	if (!pm_runtime_status_suspended(dev)) {
-+		/* Forcibly disconnect before powergating. */
-+		tegra_xudc_device_mode_off(xudc);
- 		tegra_xudc_powergate(xudc);
-+	}
+ void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
+ {
+-	u64 ia32_core_caps = 0;
++	const struct x86_cpu_id *m;
++	u64 ia32_core_caps;
  
- 	pm_runtime_disable(dev);
+-	if (c->x86_vendor != X86_VENDOR_INTEL)
++	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
++		return;
++
++	m = x86_match_cpu(split_lock_cpu_ids);
++	if (!m)
+ 		return;
+-	if (cpu_has(c, X86_FEATURE_CORE_CAPABILITIES)) {
+-		/* Enumerate features reported in IA32_CORE_CAPABILITIES MSR. */
+-		rdmsrl(MSR_IA32_CORE_CAPS, ia32_core_caps);
+-	} else if (!boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
+-		/* Enumerate split lock detection by family and model. */
+-		if (x86_match_cpu(split_lock_cpu_ids))
+-			ia32_core_caps |= MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT;
+-	}
  
+-	if (ia32_core_caps & MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT)
+-		split_lock_setup();
++	if (!m->driver_data)
++		goto setup;
++	if (!cpu_has(c, X86_FEATURE_CORE_CAPABILITIES))
++		return;
++	rdmsrl(MSR_IA32_CORE_CAPS, ia32_core_caps);
++	if (!(ia32_core_caps & MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT))
++		return;
++setup:
++	split_lock_setup();
+ }
 -- 
-2.24.1
+2.21.1
 
