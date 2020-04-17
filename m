@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AEE1ADD5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FF21ADD60
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgDQMdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:33:13 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:46091 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgDQMdM (ORCPT
+        id S1729136AbgDQMdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728196AbgDQMd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:33:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1587126791; x=1618662791;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=KoXqWzqYq/w2d+HZn8byhgpTiDLf6r5C2Ybuny75IaM=;
-  b=lEkRi338fpxiPrzC9aJzRjUyPBe7RecCPnaXou8o50KgDn+7o+3uM+0G
-   WSwSeQwyXW+AszRtYdQjG5Iny+kM6zIy40CwydmikGvFy2ljmdc+poBMT
-   gp4XRrMfDGNtcdYpTRhInq2pHfG0VcKYtI50rqDEODEae9um0Valbo5cC
-   wU+uB4SYniFp/DSGFOseJkkdY3lO+Qk8jv2GFIcZfcheV6nbl7gwn5KsV
-   DAJ2las9SXssP+ruEbrWP1AY+Q67TogET2zY2VfnEgIQct9pOXKvZ1LZq
-   kvhoeKwxSm88+skr6Kq8umRfYNKOozQZZX5Uisbo1yPzcgey8kHvwZFYZ
-   A==;
-IronPort-SDR: gWqIczFLyA96iDGpH5JnlYbjBaosq3zeGhSGMYW1MpmLw6wBaKd/m5lzsnC5A5lxqflsMkBCcl
- iK3RqGgR+ZruiKh3p0qZfV+wvJTGOrxpeOi9iag8qESRYzg2gs/CxlvksC7ml19M6F1iGRXOpa
- nd+76P8dKowiZQG9+x5WTbDs5pggHwxnCKqxAVlqgnhIbOPr3JYqNOI0fYG9beh4qv/8dkYCkD
- COoII3vOvnVHdONyprH1PlugE6r8DyEwdj1OSQ1yPjbWyp62/+406rTyTtTNE1tsmvbEtnvmp8
- eNc=
-X-IronPort-AV: E=Sophos;i="5.72,395,1580799600"; 
-   d="scan'208";a="9534003"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Apr 2020 05:33:10 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 17 Apr 2020 05:33:10 -0700
-Received: from [10.205.29.56] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Fri, 17 Apr 2020 05:32:45 -0700
-Subject: Re: [PATCH 1/5] net: macb: fix wakeup test in runtime suspend/resume
- routines
-To:     Harini Katakam <harinik@xilinx.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "pthombar@cadence.com" <pthombar@cadence.com>,
-        "sergio.prado@e-labworks.com" <sergio.prado@e-labworks.com>,
-        "antoine.tenart@bootlin.com" <antoine.tenart@bootlin.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        Michal Simek <michals@xilinx.com>,
-        Rafal Ozieblo <rafalo@cadence.com>
-References: <cover.1587058078.git.nicolas.ferre@microchip.com>
- <eba7f3605d6dcad37f875b2584d519cd6cae9fd1.1587058078.git.nicolas.ferre@microchip.com>
- <MW2PR02MB37706E6E182F19F278B35707C9D80@MW2PR02MB3770.namprd02.prod.outlook.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <ba239f44-b3e4-723e-ad3d-3fbb90e8bfc1@microchip.com>
-Date:   Fri, 17 Apr 2020 14:33:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 08:33:26 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D04C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 05:33:26 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id f19so2101385iog.5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 05:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R/DFFcAX16DLaq9WdO2qiN8rBml+MJK+Egu3pWqI85c=;
+        b=rKrnZ/ZIdm1aeUPIX2i7Z77058PYDAyNI6+iFrsFSDl7Je/8OlgZDCy9z5ii3rx9bw
+         gLH9lHRSc7kG5idpQgApSohV1Wts12wfoCocXqxJ7RGXlYL7wXut+NkfjnWBjxe+c84P
+         5zbwC5uXVCo23D5lkdwM6MYjBe7JgeBmr1VycqpHixyxRgUohE5P4qRn7FnQl4If7cRQ
+         VFaunHobZ42q9csRi2N7XlnSGOOLQgrEBaDnNLJqS+jo3hykyly0n0zAaPDNZu8TFf/f
+         pxenS/GTz2RYzFkthc5Q2EsN3kzDihUUVfhVnJQkb7OqJ+3FdagJ8GRpyNSlS2DFJdh2
+         gGcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R/DFFcAX16DLaq9WdO2qiN8rBml+MJK+Egu3pWqI85c=;
+        b=E6hRM6YHqijyHwyF20eknEyC601pqWAd8q3XnRN9pmk90mifxyfHne2yj/Lw2FIASJ
+         ow0aFU2fd4BYPoLIIpx7HvE1iON8P6ZTFsgnU1cO83kJ0nldlMpixzzUCmGb+0O0vUL/
+         ZjGo/e+nJCfVYZ/EMAvceIily8Iyf/u0AqQTPxCak3buwhJhNcMJYuhS1Kl0BDFyZZAH
+         ClX8LSh10sU2T4wVEHzBJxlNbkDS0OZJU2brdKcUOuJSdDVWBqBHrT7h3zVcAPNezU+u
+         wDwMy1pWr8zFCwAO4rnTA2eEa9PtNtbh0Kuod0tlpaY82rfZFU38fiOfY02t3YcNDcm1
+         LtLg==
+X-Gm-Message-State: AGi0PuYQgVcqqLi2eWSpVE267MZdKsqOBRZwXT8hCZfOCbB9sDZsw13Q
+        T4WBNn6Otj4pZUmLS+VfNgRHIlpjDhF2svO1EhI=
+X-Google-Smtp-Source: APiQypIMz5q9puyyBCHECnAJTResjfLLf+aqAmOmoCL1sM4QnW8xe6r7rdXvDq1VFz83xdHIPkyef4LGIVeKFPSENdQ=
+X-Received: by 2002:a5d:9494:: with SMTP id v20mr2793842ioj.101.1587126805638;
+ Fri, 17 Apr 2020 05:33:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MW2PR02MB37706E6E182F19F278B35707C9D80@MW2PR02MB3770.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200411200632.4045-1-peron.clem@gmail.com> <20200411200632.4045-2-peron.clem@gmail.com>
+ <c96f31a2-6ff4-31aa-aaac-2ce9eafb3bfe@arm.com> <CAJiuCcegkNGQ7j4jcT1rBpSLqG1c-nb8g0wq+Nbvt-dGj7am2Q@mail.gmail.com>
+ <CAJiuCceU662o7QGJ=mmT3pzVWK7uJUN=6+NKQnZ=Cfj9c2nw7A@mail.gmail.com>
+ <d6465e7e-8e05-8b7d-16bd-f40877969089@arm.com> <CAJiuCccv2XPLY6sjcgvvrG5a8ONYHa_xn9i-YUDKUDK5a0DY=A@mail.gmail.com>
+ <CAJiuCcfa9ro1V4nBzfD48cCuHpEsLaNA5P0bb-tQ3hcWUCtpkA@mail.gmail.com>
+ <000f26f4-3640-797f-c7f6-4b31a5e2669e@arm.com> <CAJiuCccF3tmbmMWNh0nC5WRJ1_iPdj6f1oH1zYMSue_pFrXsPQ@mail.gmail.com>
+ <20200414185523.GO5412@sirena.org.uk> <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
+ <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com> <5290a7a8-2a0a-cb89-9d62-270393123054@arm.com>
+In-Reply-To: <5290a7a8-2a0a-cb89-9d62-270393123054@arm.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Fri, 17 Apr 2020 14:33:14 +0200
+Message-ID: <CAJiuCccm4gTAUWhTy+gK0kt4of=8yWcz2n_JtnmeAJofcpBKeQ@mail.gmail.com>
+Subject: Re: Multiple regulators for one device [was drm/panfrost: add devfreq
+ regulator support]
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Steven Price <steven.price@arm.com>,
+        Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2020 at 20:26, Harini Katakam wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> Hi Nicolas,
-> 
->> -----Original Message-----
->> From: nicolas.ferre@microchip.com [mailto:nicolas.ferre@microchip.com]
->> Sent: Thursday, April 16, 2020 11:14 PM
->> To: linux-arm-kernel@lists.infradead.org; netdev@vger.kernel.org; Claudiu
->> Beznea <claudiu.beznea@microchip.com>; Harini Katakam
->> <harinik@xilinx.com>
->> Cc: linux-kernel@vger.kernel.org; David S. Miller <davem@davemloft.net>;
->> Alexandre Belloni <alexandre.belloni@bootlin.com>; pthombar@cadence.com;
->> sergio.prado@e-labworks.com; antoine.tenart@bootlin.com;
->> f.fainelli@gmail.com; linux@armlinux.org.uk; andrew@lunn.ch; Michal Simek
->> <michals@xilinx.com>; Nicolas Ferre <nicolas.ferre@microchip.com>; Rafal
->> Ozieblo <rafalo@cadence.com>
->> Subject: [PATCH 1/5] net: macb: fix wakeup test in runtime suspend/resume
->> routines
->>
->> From: Nicolas Ferre <nicolas.ferre@microchip.com>
->>
->> Use the proper struct device pointer to check if the wakeup flag and wakeup
->> source are positioned.
->> Use the one passed by function call which is equivalent to &bp->dev-
->>> dev.parent.
->>
->> It's preventing the trigger of a spurious interrupt in case the Wake-on-Lan
->> feature is used.
-> 
-> Sorry I have some mail issues; meant to reply earlier.
-> Tested patches 1, 2, 3 in this set and they work for me.
+Hi Robin,
 
-Brilliant! Thanks for the feedback.
+On Fri, 17 Apr 2020 at 13:10, Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2020-04-16 2:42 pm, Steven Price wrote:
+> [...]
+> > Perhaps a better approach would be for Panfrost to hand over the struct
+> > regulator objects it has already got to the OPP framework. I.e. open
+> > code dev_pm_opp_set_regulators(), but instead of calling
+> > regulator_get_optional() simply populate the regulators we already have?
+> >
+> > The other benefit of that is it would provide a clear hand-over of
+> > responsibility between Panfrost handling it's own regulators and the OPP
+> > framework picking up the work. The disadvantage is that Panfrost would
+> > have to track whether the regulators have been handed over or not.
+>
+> Sounds like the most logical thing to do is to shuffle things around so
+> we start by trying to set up an OPP table, then fall back to explicitly
+> claiming clocks and regulators if necessary. Then we can easily make the
+> devfreq decision later in probe based on how that turned out.
 
-> I'll try patch 4; it looks similar to what I'm using locally but I'll add whatever
-> tie-off queue handling is required on top of your series, thanks.
+Ok I will propose a new serie with this behavior,
 
-Alright, I'll hold my v2 for a few days then. Thanks. Best regards,
-   Nicolas
+Thanks
+Clement
 
-
--- 
-Nicolas Ferre
+>
+> Robin.
