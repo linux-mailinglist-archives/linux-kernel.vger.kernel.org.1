@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEBE1ADA34
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD111ADA14
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730417AbgDQJjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:39:07 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:49158 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730334AbgDQJjE (ORCPT
+        id S1730322AbgDQJfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730231AbgDQJfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:39:04 -0400
-X-UUID: a5014796a69e4ca3b5650e004148ca6b-20200417
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=iZuTCT/J0fHisHx7WtJAL9zKonXahC0te+mVqf6Soa0=;
-        b=WxsTLLlrQavvq6OkxUqojnXXIxiLR/1Mk2gAVpiZbI3c25gm3oBtivjnWU+ajRZIdMPzLG+FzkfuukLu7doTywFgMOXPdujZR2SP8AAVeUCrVHIvq2BCKtrWyzGuob98FogczhH76D9A6y/Ao2my2LR4E9kA8sHJfA9JSrcuRGs=;
-X-UUID: a5014796a69e4ca3b5650e004148ca6b-20200417
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1464473628; Fri, 17 Apr 2020 17:38:59 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 17 Apr 2020 17:38:57 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Apr 2020 17:38:55 +0800
-From:   <chuanjia.liu@mediatek.com>
-To:     <robh+dt@kernel.org>, <bhelgaas@google.com>,
-        <matthias.bgg@gmail.com>, <lorenzo.pieralisi@arm.com>,
-        <amurray@thegoodpenguin.co.uk>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <ryder.lee@mediatek.com>,
-        <chuanjia.liu@mediatek.com>, <jianjun.wang@mediatek.com>,
-        <srv_heupstream@mediatek.com>
-Subject: [PATCH 0/4] Spilt PCIe node to comply with hardware design
-Date:   Fri, 17 Apr 2020 17:35:01 +0800
-Message-ID: <20200417093505.13978-1-chuanjia.liu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 17 Apr 2020 05:35:45 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE37C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:35:44 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id d17so2239295wrg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eCVHboKKWOnwvWAz8+xL2mDoaCizI1H5EPD58JQK6Rk=;
+        b=T6IptGXXEQkhtJrMUTTA3jtihdAaJ+tHkexXg51Vh/hdym9qz6otEVa7epFXYPt0pg
+         TrjvTI3txaGa9GjA5HnEn3PgSx0/w3UAkIIJUYDfxEKKyvIGJse0wuWVDPGE/NxA+XaU
+         4tbwKw4ROj0kINMZRN8exQ8EmkktRpO1NQjnUDI706IXO9y+g1pQ8d7GIooWXpg2x2gp
+         MVMaRT0Y2gfp8nP0eq9iaxnfZ2+30LpGFbN8Za5fJIScOv+NQhkZUJoGDlUxSs9NTc9l
+         s/hCwy9lNBJhlGy18L9093l+xRIByTaz/sKhqo8gGGmYfcHUJLntHrf746YMhxk01acH
+         szQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eCVHboKKWOnwvWAz8+xL2mDoaCizI1H5EPD58JQK6Rk=;
+        b=RvFVL3KehAUP67jQaca55CZZn9gVJZc2WKrDh5DuiP322cz/wcGdBqsNPEM5/NDIg+
+         mQxN+hPS3M38trjqx4WQT+AB9ZJDqMeHidisGbbSTu3CrqAhGgnS1P58jshG9R0bUlWP
+         /FYEdVL6iuzGX2utyQbYQbuDwPwjhjm3gNFmFV/OfCMrihLNhUCD2lkd5H5vJf8WbRpJ
+         CUcTD4b/ykAAo0aImk0jHse4UoFRTipBesGuisHALUEmh1nTjDf2lAqa8a3Ra868KJD0
+         98KV5+FC81w496AzSjZn7mtmIov9Lwc1XLN5A+YYbaUTl5moj6CVstbU7LD9eNfSy/Fn
+         veaw==
+X-Gm-Message-State: AGi0PuamrHowKb9iqG9I0byD9s5tNkGgZYl+i549R8q6RZaWgOvGbk6i
+        o/LvfUNHFTa2CFWipjLvkEP7tKLKUpk=
+X-Google-Smtp-Source: APiQypJIfwLF/8KROwCfC+/ond22ImgZcm7Tb1JWQFyUHiQTIwCxofND0HxoXClayCvlxRkhoaJEuA==
+X-Received: by 2002:a5d:634d:: with SMTP id b13mr2843037wrw.353.1587116142734;
+        Fri, 17 Apr 2020 02:35:42 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id h188sm7519481wme.8.2020.04.17.02.35.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 17 Apr 2020 02:35:42 -0700 (PDT)
+Subject: Re: [PATCH v1] slimbus: core: Fix mismatch in of_node_get/put
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     kernel-team@android.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20200326173457.29233-1-saravanak@google.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <5b5ec594-9e17-8504-4711-0db8a6a53c22@linaro.org>
+Date:   Fri, 17 Apr 2020 10:35:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200326173457.29233-1-saravanak@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlcmUgYXJlIHR3byBpbmRlcGVuZGVudCBQQ0llIGNvbnRyb2xsZXJzIGluIE1UMjcxMi9NVDc2
-MjIgcGxhdGZvcm0sDQphbmQgZWFjaCBvZiB0aGVtIHNob3VsZCBjb250YWluIGFuIGluZGVwZW5k
-ZW50IE1TSSBkb21haW4uDQoNCkluIGN1cnJlbnQgYXJjaGl0ZWN0dXJlLCBNU0kgZG9tYWluIHdp
-bGwgYmUgaW5oZXJpdGVkIGZyb20gdGhlIHJvb3QNCmJyaWRnZSwgYW5kIGFsbCBvZiB0aGUgZGV2
-aWNlcyB3aWxsIHNoYXJlIHRoZSBzYW1lIE1TSSBkb21haW4uDQpIZW5jZSB0aGF0LCB0aGUgUENJ
-ZSBkZXZpY2VzIHdpbGwgbm90IHdvcmsgcHJvcGVybHkgaWYgdGhlIGlycSBudW1iZXINCndoaWNo
-IHJlcXVpcmVkIGlzIG1vcmUgdGhhbiAzMi4NCg0KU3BsaXQgdGhlIFBDSWUgbm9kZSBmb3IgTVQy
-NzEyL01UNzYyMiBwbGF0Zm9ybSB0byBmaXggTVNJIGlzc3VlIGFuZA0KY29tcGx5IHdpdGggdGhl
-IGhhcmR3YXJlIGRlc2lnbi4NCg0KY2h1YW5qaWEubGl1ICg0KToNCiAgZHQtYmluZGluZ3M6IFBD
-STogTWVkaWF0ZWs6IFVwZGF0ZSBQQ0llIGJpbmRpbmcNCiAgUENJOiBtZWRpYXRlazogVXNlIHJl
-Z21hcCB0byBnZXQgc2hhcmVkIHBjaWUtY2ZnIGJhc2UNCiAgYXJtNjQ6IGR0czogbWVkaWF0ZWs6
-IFNwbGl0IFBDSWUgbm9kZSBmb3IgTVQyNzEyL01UNzYyMg0KICBBUk06IGR0czogbWVkaWF0ZWs6
-IFVwZGF0ZSBtdDc2MjkgUENJZSBub2RlDQoNCiAuLi4vYmluZGluZ3MvcGNpL21lZGlhdGVrLXBj
-aWUtY2ZnLnlhbWwgICAgICAgfCAgMzggKysrKysrDQogLi4uL2RldmljZXRyZWUvYmluZGluZ3Mv
-cGNpL21lZGlhdGVrLXBjaWUudHh0IHwgMTIwICsrKysrKysrKysrKy0tLS0tLQ0KIGFyY2gvYXJt
-L2Jvb3QvZHRzL210NzYyOS1yZmIuZHRzICAgICAgICAgICAgICB8ICAgMyArLQ0KIGFyY2gvYXJt
-L2Jvb3QvZHRzL210NzYyOS5kdHNpICAgICAgICAgICAgICAgICB8ICAyMyArKy0tDQogYXJjaC9h
-cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDI3MTJlLmR0c2kgICAgIHwgIDUxICsrKysrLS0tDQog
-Li4uL2R0cy9tZWRpYXRlay9tdDc2MjItYmFuYW5hcGktYnBpLXI2NC5kdHMgIHwgIDE2ICstLQ0K
-IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLXJmYjEuZHRzICB8ICAgNiArLQ0K
-IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLmR0c2kgICAgICB8ICA2OCArKysr
-KystLS0tDQogZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLmMgICAgICAgIHwg
-IDI1ICsrKy0NCiA5IGZpbGVzIGNoYW5nZWQsIDIzNCBpbnNlcnRpb25zKCspLCAxMTYgZGVsZXRp
-b25zKC0pDQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9wY2kvbWVkaWF0ZWstcGNpZS1jZmcueWFtbA0KDQotLQ0KMi4xOC4wIA0KDQo=
 
+
+On 26/03/2020 17:34, Saravana Kannan wrote:
+> Also, remove some unnecessary NULL checks. The functions in question
+> already do NULL checks.
+> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+
+Applied Thanks,
+--srini
+
+> ---
+>   drivers/slimbus/core.c | 8 +++-----
+>   1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+> index 44228a5b246d..ae1e248a8fb8 100644
+> --- a/drivers/slimbus/core.c
+> +++ b/drivers/slimbus/core.c
+> @@ -162,11 +162,8 @@ static int slim_add_device(struct slim_controller *ctrl,
+>   	sbdev->ctrl = ctrl;
+>   	INIT_LIST_HEAD(&sbdev->stream_list);
+>   	spin_lock_init(&sbdev->stream_list_lock);
+> -
+> -	if (node) {
+> -		sbdev->dev.of_node = of_node_get(node);
+> -		sbdev->dev.fwnode = of_fwnode_handle(node);
+> -	}
+> +	sbdev->dev.of_node = of_node_get(node);
+> +	sbdev->dev.fwnode = of_fwnode_handle(node);
+>   
+>   	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
+>   				  sbdev->e_addr.manf_id,
+> @@ -285,6 +282,7 @@ EXPORT_SYMBOL_GPL(slim_register_controller);
+>   /* slim_remove_device: Remove the effect of slim_add_device() */
+>   static void slim_remove_device(struct slim_device *sbdev)
+>   {
+> +	of_node_put(sbdev->dev.of_node);
+>   	device_unregister(&sbdev->dev);
+>   }
+>   
+> 
