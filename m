@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBABB1ADEA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50ED21AE182
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730724AbgDQNmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 09:42:52 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:52164 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730597AbgDQNmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 09:42:52 -0400
-Received: by mail-wm1-f66.google.com with SMTP id x4so2977885wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 06:42:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tOZKi29bbKZWeRD8Sxlu38LfstaUnzJU2Zc3Cur0xnM=;
-        b=h+rlvybaJA+VNkmjptoomKUxP4BPxlgyEUvYZwOwrwyBET9clm/ym6zvfkHRT8GuEN
-         vOS/VhOpeHgeml1mlk6/I+PKAG2rv7l2HGRLe1rSJH3PjWYJcI9tuzr+Y33hw/V58oOH
-         TqJVvat0qghEx+K6sczI64YObTVN50t5tex0H8V/XYqZhmCRALmjjjjtGFJlLYeWxbDW
-         tVzKvL1I4V6h1Ue9hhDHzE57QQs+E1xHqMRwnJHUNwBT+S+rcs7oB1ct3LQ/0y1qkFFT
-         J+mgY4C36wZr14t56SXF2M7yPaD7iKbGMWKOgAwUxH4LYj7S0C0LB5RggIcQc5i3hLsl
-         HOTg==
-X-Gm-Message-State: AGi0PuYWQtcPbjLJihPF8t7F6uiSmX68diubox0l0VuH1gpx+hDp73wE
-        DsAe7quXe8kmYJFsjwPjwv8=
-X-Google-Smtp-Source: APiQypL3To0jq9+BZlaEy4EWLTmoEt3k92oo47UA2OKQRS/y6NtiVXIiTcRAXi9JoY0vmRUQEOUeOg==
-X-Received: by 2002:a1c:808c:: with SMTP id b134mr3636797wmd.131.1587130969654;
-        Fri, 17 Apr 2020 06:42:49 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id i97sm33878249wri.1.2020.04.17.06.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 06:42:48 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 15:42:47 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     =?utf-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@vivo.com
-Subject: Re: Re: [PATCH] kmalloc_index optimization(add kmalloc max size
- check)
-Message-ID: <20200417134247.GN26707@dhcp22.suse.cz>
-References: <20200417113928.GL26707@dhcp22.suse.cz>
- <AOsA0QC2CNKuIHXhFI2eG4oJ.3.1587125839812.Hmail.bernard@vivo.com>
+        id S1729555AbgDQPsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:48:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45404 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728593AbgDQPsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 11:48:23 -0400
+IronPort-SDR: 1jEruK9lRC/6OfrUw2b4bEI79hBHGt8DfyNEQ6GRu/BUi7GJrAcpLiYDfkjE7ns647z05t52yu
+ oMO+GNGe7/dw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 08:48:23 -0700
+IronPort-SDR: ZBwe2yhen/Cg4VzUVmdatNxrnAr9gr2mfLpMqbuIjwHNm8+JZZMJryQnFAdgH7o+9ulVtWAxwR
+ X5jV6k+GoP8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
+   d="scan'208";a="278417849"
+Received: from dsbrown-mobl.amr.corp.intel.com (HELO [10.251.128.242]) ([10.251.128.242])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Apr 2020 08:48:21 -0700
+Subject: Re: [PATCH] ASoC: Intel: atom: remove unused 'sst_mix_voip_controls'
+To:     Jason Yan <yanaijie@huawei.com>, cezary.rojewski@intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        hdegoede@redhat.com, tglx@linutronix.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Hulk Robot <hulkci@huawei.com>
+References: <20200417092344.14301-1-yanaijie@huawei.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8cd0ba8d-138d-d4da-d6fb-d2457ea2db13@linux.intel.com>
+Date:   Fri, 17 Apr 2020 08:43:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20200417092344.14301-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <AOsA0QC2CNKuIHXhFI2eG4oJ.3.1587125839812.Hmail.bernard@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17-04-20 20:17:19, 赵军奎 wrote:
-> 
-> 
-> From: Michal Hocko <mhocko@kernel.org>
-> Date: 2020-04-17 19:39:28
-> To:  Bernard Zhao <bernard@vivo.com>
-> Cc:  Christoph Lameter <cl@linux.com>,Pekka Enberg <penberg@kernel.org>,David Rientjes <rientjes@google.com>,Joonsoo Kim <iamjoonsoo.kim@lge.com>,Andrew Morton <akpm@linux-foundation.org>,linux-mm@kvack.org,linux-kernel@vger.kernel.org,kernel@vivo.com
-> Subject: Re: [PATCH] kmalloc_index optimization(add kmalloc max size check)>On Fri 17-04-20 00:09:35, Bernard Zhao wrote:
-> >> kmalloc size should never exceed KMALLOC_MAX_SIZE.
-> >> kmalloc_index realise if size is exceed KMALLOC_MAX_SIZE, e.g 64M,
-> >> kmalloc_index just return index 26, but never check with OS`s max
-> >> kmalloc config KMALLOC_MAX_SIZE. This index`s kmalloc caches maybe
-> >> not create in function create_kmalloc_caches.
-> >> We can throw an warninginfo in kmalloc at the beginning, instead of
-> >> being guaranteed by the buddy alloc behind.
-> >
-> >I am sorry but I do not follow. What does this patch optimizes? AFAICS,
-> >it adds a branch for everybody for something that is highly unlikely
-> >usage. Btw. we already do handle those impossible cases. We could argue
-> >that BUG() is a bit harsh reaction but a lack of reports suggests this
-> >is not a real problem in fact.
-> >
-> >So what exactly do you want to achieve here?
-> >
-> 
-> I'm not sure if my understanding has a gap. I think this should never happen. 
 
-Yes. Have a look at the code and how all existing sizes map to an index
-with a BUG() fallback so this is already handled. As I've said the
-existing BUG() is far from optimal but a complete lack of bug reports
-hitting this mark suggests this path is not really triggered.
 
-And I do have objection to your patch. Because a) the description
-doesn't state the problem which it is fixing and b) the patch adds a
-test which everybody going this path has to evaluate and which should
-never trigger. So despite your subject line, there is no actual
-optimization but quite contrary.
+On 4/17/20 4:23 AM, Jason Yan wrote:
+> Fix the following gcc warning:
+> 
+> sound/soc/intel/atom/sst-atom-controls.c:710:30: warning:
+> ‘sst_mix_voip_controls’ defined but not used [-Wunused-const-variable=]
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
 
--- 
-Michal Hocko
-SUSE Labs
+I'd prefer it if we didn't change this but only added __maybe_unused in 
+the macro.
+
+This is 2013/2014 legacy stuff, some parts were not upstreamed and this 
+was used by out-of-tree Android variations, and I don't know the 
+consequences of taking this out.
+
+Better just squelch the warning but not change anything, no?
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>   sound/soc/intel/atom/sst-atom-controls.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+> index 69f3af4524ab..541f0059ba7a 100644
+> --- a/sound/soc/intel/atom/sst-atom-controls.c
+> +++ b/sound/soc/intel/atom/sst-atom-controls.c
+> @@ -707,7 +707,6 @@ SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm2_controls);
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_sprot_l0_controls);
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l1_controls);
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l2_controls);
+> -SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec0_controls);
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec1_controls);
+>   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_modem_controls);
+> 
