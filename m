@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E6A1AD499
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AD11AD49F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgDQCpd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Apr 2020 22:45:33 -0400
-Received: from mga09.intel.com ([134.134.136.24]:54975 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728364AbgDQCpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 22:45:33 -0400
-IronPort-SDR: v9A73oWHJ7U3Kc97Wo0563K9l+A/HORpuIPJw0J2ivwwmOUYdpxhBuapbiuS4VmJbyAFHAjwL9
- usDf7YuYa8Fg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 19:45:32 -0700
-IronPort-SDR: eCPijPNfhNoemscwgxRcefwZ2Y8SDR6sV++TqTEKQKEU4t7fpT3657DIOrOonPGx1svabfdC4R
- GFebdUbl5iyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
-   d="scan'208";a="278222332"
-Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Apr 2020 19:45:32 -0700
-Received: from FMSMSX109.amr.corp.intel.com (10.18.116.9) by
- FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 19:45:32 -0700
-Received: from shsmsx101.ccr.corp.intel.com (10.239.4.153) by
- fmsmsx109.amr.corp.intel.com (10.18.116.9) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 19:45:32 -0700
-Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.225]) by
- SHSMSX101.ccr.corp.intel.com ([169.254.1.129]) with mapi id 14.03.0439.000;
- Fri, 17 Apr 2020 10:45:23 +0800
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Auger Eric <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-CC:     Yi L <yi.l.liu@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: RE: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
-Thread-Topic: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
-Thread-Index: AQHWCebOp12IiW87IUSByO2zgM/w7qhv6qkAgAJcu4CACNZVgIABkaSw
-Date:   Fri, 17 Apr 2020 02:45:22 +0000
-Message-ID: <AADFC41AFE54684AB9EE6CBC0274A5D19D824106@SHSMSX104.ccr.corp.intel.com>
-References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1585939334-21396-6-git-send-email-jacob.jun.pan@linux.intel.com>
- <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
- <20200410124557.4012b99b@jacob-builder>
- <6d9721a8-2198-5ecd-6c8b-fc43ff2ad7e1@redhat.com>
-In-Reply-To: <6d9721a8-2198-5ecd-6c8b-fc43ff2ad7e1@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729366AbgDQCwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 22:52:12 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:39383 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729277AbgDQCwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 22:52:11 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200417025208epoutp03ce79cb385773dd762736035443e1fc70~Ge7NGtQCW0544405444epoutp03d
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:52:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200417025208epoutp03ce79cb385773dd762736035443e1fc70~Ge7NGtQCW0544405444epoutp03d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1587091928;
+        bh=uHjnAsWICGbvd2UvAeIMZ3j2WHQsGzQDZG6azlJmziU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=JhOQXdgurggunbQNvEQMf+Z9nurqXVNpY1/hTjRmxz6jxvb8SlkmNyyAnPgc3bBmq
+         qEqxMgaDZ4dwEIoa1+f0naKlf1qy5h+9fGuFqwoguYt38xB/trlTMFW06KZvqYhJqT
+         +Yw1HSvhzvUDg645/6m1+bz28rrHJiXjLSxIDLcM=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20200417025208epcas2p38db948db38a6f7cdee1d09cf57c00699~Ge7MpVHTB3158331583epcas2p3i;
+        Fri, 17 Apr 2020 02:52:08 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 493LGY6rsgzMqYkc; Fri, 17 Apr
+        2020 02:52:05 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5B.EA.04393.5D9199E5; Fri, 17 Apr 2020 11:52:05 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200417025205epcas2p46d33e64f2de49041d2ca68ecc98fc83e~Ge7J_VXhG3180931809epcas2p4L;
+        Fri, 17 Apr 2020 02:52:05 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200417025205epsmtrp11d28438d8dbd250622344386361fc7c6~Ge7J9d1lx3164331643epsmtrp1N;
+        Fri, 17 Apr 2020 02:52:05 +0000 (GMT)
+X-AuditID: b6c32a47-667ff70000001129-a4-5e9919d584f4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7D.32.04158.5D9199E5; Fri, 17 Apr 2020 11:52:05 +0900 (KST)
+Received: from coldbrew.dsn.sec.samsung.com (unknown [12.36.155.201]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200417025205epsmtip10f68d62d315bad4db18b60a74fc0217f~Ge7JytNNp0040800408epsmtip1i;
+        Fri, 17 Apr 2020 02:52:05 +0000 (GMT)
+From:   sy0816.kang@samsung.com
+To:     mchehab@kernel.org
+Cc:     sy0816.kang@samsung.com, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: v4l2-compat-ioctl32.c: copy reserved2 field in
+ get_v4l2_buffer32
+Date:   Fri, 17 Apr 2020 11:45:23 +0900
+Message-Id: <20200417024543.66785-1-sy0816.kang@samsung.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm2znbjpfFcZW9rZudkNLSttn0KNqFxIZZSPUjJFsHPThpN3a2
+        bhCZotXKtIumU2skiIxCWybLrMxC0R+rCLtBSHbBlKQ0o7xEZzuL/Pd8z/s83/O97/cSmNwp
+        URCFJhtrNTEGShKKtz+OoeMGFtfuVxZf0tCzF3ukdElji4R+XvsOp1901Evoc613xHSTZ0ZE
+        D31Kom97qrDNhHZ66iLSetxnJNoxn0+qfdhwQ6o93+ZG2gnPcm3/5IQ0W5pjSNWzTD5rjWJN
+        eeb8QlNBGrV9t26rTpOoVMWpkukkKsrEGNk0Kj0rOy6j0MA/ioo6xBjsPJXNcBy1fmOq1Wy3
+        sVF6M2dLo1hLvsGiUlniOcbI2U0F8XlmY4pKqVRreOUBg/7K4DPc8oo44nszKCpCXqkDhRBA
+        bgBn+W/cgUIJOelFcN3Rh4TDOIKqD3UBlZz8ieDV073/HPdqm0WC6D4Cb39j0D6FoL7nC+5X
+        SchlMN5VI/HjBWQkDLWPBEQYOY2g2dERKMwnc6CuqS6AcTIahia/if1YRqbCo/ZRkRC3AkpH
+        vEjgI6Cv9mMgAOP5kjt1mP9SIDsl8Pr12aAhHar7BpGA58NIb1uwUwV8qSgL4hNQPTEhFsyV
+        CIZdvWKhkADOz6d4M8EnxEBLx3o/BHIVPHkbzJ0Hpx/PSgVaBqfL5AKMhtZxtXDHEvj69QUS
+        aC1UVFLCDHPhwc16vBKtcM7pxTmnF+f/VBfC3CiStXDGApZTWxLm/qkHBfYydpsXtfuyuhFJ
+        ICpcdmBTzX65mDnEHTV2IyAwaoFsnoanZPnM0WOs1ayz2g0s1400/KgvYIqFeWZ+y002nUqj
+        TkxUJmtoTaKaphbJPGFv9snJAsbGHmRZC2v95xMRIYoihItxteJcWFpm15oMeu29q2PGl7u+
+        15SWVl0e2/GSqLp1Mo65W63bOrO5vHvUt2tlfbh+T3jnBleRO360Z2zd0iTX4aEGRj07nJnj
+        8f5pbA7t3/JdzD40ONsyrddGO/edcazeOfB+rfRXWHrXBdXwj5RvruI1Zbkn8hZWRFSuO17e
+        TOGcnlHFYlaO+QviXd1zrQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsWy7bCSnO5VyZlxBi8/cln8nXSM3aJ58Xo2
+        i4sz77JYXN41h82iZ8NWVotlm/4wWTx6am6xedNUZgcOj9+/JjF6bFrVyebx7tw5do/9c9ew
+        e/RtWcXo8XmTnMepr5/ZA9ijuGxSUnMyy1KL9O0SuDKm37/AUnCdo+LczftMDYw72LsYOTkk
+        BEwkds9cwdTFyMUhJLCbUeLI3YUsXYwcQAlpif0bcyFqhCXutxxhhaj5wSjxZGkbI0iCTUBW
+        4tOBGWwgtoiAmMSjba9YQIqYBRqZJK5u+QCWEBaIkNjxag+YzSKgKvHo6wdWEJtXwEbi4LbX
+        TBAb5CVaX+1ghIgLSpyc+YQFxGYGijdvnc08gZFvFpLULCSpBYxMqxglUwuKc9Nziw0LjPJS
+        y/WKE3OLS/PS9ZLzczcxgkNYS2sH44kT8YcYBTgYlXh4E+xnxAmxJpYVV+YeYpTgYFYS4eUz
+        BQrxpiRWVqUW5ccXleakFh9ilOZgURLnlc8/FikkkJ5YkpqdmlqQWgSTZeLglGpg1LC9tLbS
+        pznbUHg30w8+z8tVLQYCpx5vmmjGXxA/3U7T/P69nzu8nNMPRjhcDGUonLB8Z9P539lhFa5S
+        t+sOP7t6v+YRYxxDoGD21bq4tATd9bcmvTRSEvea6s7x0fu/8KsdPY4TixOeWWut/L62fWt3
+        lOvkh+913+tcm+zsXbBXyMRMVLVdiaU4I9FQi7moOBEANh8L710CAAA=
+X-CMS-MailID: 20200417025205epcas2p46d33e64f2de49041d2ca68ecc98fc83e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200417025205epcas2p46d33e64f2de49041d2ca68ecc98fc83e
+References: <CGME20200417025205epcas2p46d33e64f2de49041d2ca68ecc98fc83e@epcas2p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Auger Eric
-> Sent: Thursday, April 16, 2020 6:43 PM
-> 
-[...]
-> >>> +	if (svm) {
-> >>> +		/*
-> >>> +		 * If we found svm for the PASID, there must be at
-> >>> +		 * least one device bond, otherwise svm should be
-> >>> freed.
-> >>> +		 */
-> >>> +		if (WARN_ON(list_empty(&svm->devs))) {
-> >>> +			ret = -EINVAL;
-> >>> +			goto out;
-> >>> +		}
-> >>> +
-> >>> +		for_each_svm_dev(sdev, svm, dev) {
-> >>> +			/* In case of multiple sub-devices of the
-> >>> same pdev
-> >>> +			 * assigned, we should allow multiple bind
-> >>> calls with
-> >>> +			 * the same PASID and pdev.
-> >>> +			 */
-> >>> +			sdev->users++;
-> >> What if this is not an mdev device. Is it also allowed?
-> > Yes. IOMMU and VT-d driver is not mdev aware. Here mdev is just an
-> > example of normal use case. You can bind the same PCI device (PF or
-> > SRIOV VF) more than once to the same PASID. Just need to unbind also.
-> 
-> I don't get the point of binding a non mdev device several times with
-> the same PASID. Do you intend to allow that at userspace level or
-> prevent this from happening in VFIO?
+From: Sunyoung Kang <sy0816.kang@samsung.com>
 
-I feel it's better to prevent this from happening, otherwise VFIO also
-needs to track the bind count and do multiple unbinds at mm_exit.
-But it's not necessary to prevent it in VFIO. We can check here
-upon whether aux_domain is valid, and if not return -EBUSY.
+get_v4l2_buffer32() didn't copy reserved2 field from userspace to driver.
+So the reserved2 value is not received through compat-ioctl32 in driver.
+This patch copy reserved2 field of v4l2_buffer in get_v4l2_buffer32().
 
-> 
-> Besides, the comment is a bit misleading as it gives the impression it
-> is only true for mdev and there is no associated check.
+Signed-off-by: Sunyoung Kang <sy0816.kang@samsung.com>
+---
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks
-Kevin
+diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+index a99e82ec9ab6..e9b2b9c0ec9a 100644
+--- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
++++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+@@ -665,6 +665,7 @@ static int get_v4l2_buffer32(struct v4l2_buffer __user *p64,
+ 	if (V4L2_TYPE_IS_OUTPUT(type))
+ 		if (assign_in_user(&p64->bytesused, &p32->bytesused) ||
+ 		    assign_in_user(&p64->field, &p32->field) ||
++		    assign_in_user(&p64->reserved2, &p32->reserved2) ||
+ 		    assign_in_user(&p64->timestamp.tv_sec,
+ 				   &p32->timestamp.tv_sec) ||
+ 		    assign_in_user(&p64->timestamp.tv_usec,
+-- 
+2.20.1
+
