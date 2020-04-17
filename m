@@ -2,146 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC231AD3B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8B81AD3C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbgDQAin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 20:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726114AbgDQAin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 20:38:43 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10AFC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 17:38:41 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t40so322236pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 17:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=40k/XtvgB9LVenFiOiVygQS7HVI2RZC9x/MgUNMGQ+8=;
-        b=DGa99OeHcgqul2lpIMRadFKqrPltY/0DTJCaYLgH/Wx7/RcFpsXtlnXMp+HFBSviDs
-         G89HKv3XqIYnZlVuoNVXNSMXVX8A8uhnzr6sUz5QZ25Gk+fMU6r7aLmEsyJE3shFQfp6
-         fuvPFrgI3jJiaXT+dvdx/4YXfAvK1h8Xf9sqvoEBSHmZBWP+rPshVdKoOd+61yubtEmp
-         J3V9hOlmoans53p8dps1e1GV7RDviUoctZikYRwb7+yW6GAaTv3nxSW0a2YAZg+KLE5Q
-         a3FoYQNrNbN06uFxKjvsuQKQ12QTNFCEwsXr9/iPOU2bYV9fa7uV9proDHzw+RY47Oml
-         u7+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=40k/XtvgB9LVenFiOiVygQS7HVI2RZC9x/MgUNMGQ+8=;
-        b=meH4uhBRZhHb/D2ZZuh398DQladnUES20OZdRebcDnON8J3YkxNONjevr7M88oS2ce
-         bh2lq8DfUR3JDXmCeozmzRA9FZc2lan/qUYDOds+XSANl/0rbs1BbBLzxzqf8L4XcPXE
-         dlMpvlTstNB2cVLSTdcF/7TV/3Pa1sS4LxaqorOnziITyHIJ6FR26uwfd4g6iw+G52Xr
-         a+f9olIFwrnYa7y+ipMKc/EBjZKXYWAzX1Rr5eLp9GyKGav2jHwe5s3WQXeYMbpJE0Mi
-         b/Ueg1+yaKHjzJ2Km7yHfrufxnL3f7HqVJHiDdncZp9hbRcNlWbQZqfc8uDVhfYvW/D2
-         QfhQ==
-X-Gm-Message-State: AGi0PuYwYCp9E69+HwiNCOxBPA+zdYYc+RiqlvcYeILYzj+P1EBO09s3
-        hpJ9aBfwlNknCZ/e4ko5N8w=
-X-Google-Smtp-Source: APiQypJ8+z2d/tbIVisTDIJOW12hGb84xkYG5Q+TvvdKi3d8H64/yGWbztz8UPvj/YRBSc0Z2kFJRg==
-X-Received: by 2002:a17:90b:1989:: with SMTP id mv9mr1147373pjb.70.1587083921013;
-        Thu, 16 Apr 2020 17:38:41 -0700 (PDT)
-Received: from google.com ([2601:647:4001:3000::50e3])
-        by smtp.gmail.com with ESMTPSA id gv7sm382543pjb.16.2020.04.16.17.38.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 17:38:39 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 17:38:37 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Jaewon Kim <jaewon31.kim@samsung.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     mgorman@suse.de, m.szyprowski@samsung.com, mina86@mina86.com,
-        riel@redhat.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, jaewon31.kim@gmail.com,
-        ytk.lee@samsung.com
-Subject: Re: [PATCH] mm/vmscan: skip layzfree page on
- reclaim_clean_pages_from_list
-Message-ID: <20200417003837.GA90471@google.com>
-References: <CGME20200416033543epcas1p2b256bef770bb1310a9bf62bda80a976a@epcas1p2.samsung.com>
- <20200416033514.6366-1-jaewon31.kim@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416033514.6366-1-jaewon31.kim@samsung.com>
+        id S1728397AbgDQAtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 20:49:50 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:54498 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgDQAtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 20:49:49 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DB8B6200F18;
+        Fri, 17 Apr 2020 02:49:46 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA1302002C9;
+        Fri, 17 Apr 2020 02:49:41 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 86727402D8;
+        Fri, 17 Apr 2020 08:49:35 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3 1/5] dt-bindings: clock: Convert i.MX6Q clock to json-schema
+Date:   Fri, 17 Apr 2020 08:41:27 +0800
+Message-Id: <1587084091-5941-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jaewon,
+Convert the i.MX6Q clock binding to DT schema format using json-schema.
 
-On Thu, Apr 16, 2020 at 12:35:14PM +0900, Jaewon Kim wrote:
-> This patch fix nr_isolate_* mismatch problem between cma and dirty
-> lazyfree page.
-> 
-> If try_to_unmap_one is used for reclaim and it detects a dirty lazyfree
-> page, then the lazyfree page is changed to a normal anon page having
-> SwapBacked by commit 18863d3a3f59 ("mm: remove SWAP_DIRTY in ttu"). Even
-> with the change, reclaim context correctly counts isolated files because
-> it uses is_file_lru to distinguish file. And the change to anon is not
-> happened if try_to_unmap_one is used for migration. So migration context
-> like compaction also correctly counts isolated files even though it uses
-> page_is_file_lru insted of is_file_lru. Recently page_is_file_cache was
-> renamed to page_is_file_lru by commit 9de4f22a60f7 ("mm: code cleanup for
-> MADV_FREE").
-> 
-> But the nr_isolate_* mismatch problem happens on cma alloc. There is
-> reclaim_clean_pages_from_list which is being used only by cma. It was
-> introduced by commit 02c6de8d757c ("mm: cma: discard clean pages during
-> contiguous allocation instead of migration") to reclaim clean file pages
-> without migration. The cma alloc uses both reclaim_clean_pages_from_list
-> and migrate_pages, and it uses page_is_file_lru to count isolated
-> files. If there are dirty lazyfree pages allocated from cma memory
-> region, the pages are counted as isolated file at the beginging but are
-> counted as isolated anon after finished.
-> 
-> Mem-Info:
-> Node 0 active_anon:3045904kB inactive_anon:611448kB active_file:14892kB inactive_file:205636kB unevictable:10416kB isolated(anon):0kB isolated(file):37664kB mapped:630216kB dirty:384kB writeback:0kB shmem:42576kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
-> 
-> Like log above, there was too much isolated file, 37664kB, which
-> triggers too_many_isolated in reclaim when there is no isolated file in
-> system wide. It could be reproducible by running two programs, doing
-> MADV_FREE, writing and doing cma alloc, respectively. Although isolated
-> anon is 0, I found that the internal value of isolated anon was the
-> negative value of isolated file.
-> 
-> Fix this by skipping anon pages on reclaim_clean_pages_from_list. The
-> lazyfree page can be checked by both PageAnon(page) and
-> page_is_file_lru. But in this case, PageAnon is enough to skip all
-> anon pages.
-> 
-> Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
-> Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V2:
+	- Force 'interrupts' minItem/maxItem to 2.
+---
+ .../devicetree/bindings/clock/imx6q-clock.txt      | 41 -------------
+ .../devicetree/bindings/clock/imx6q-clock.yaml     | 67 ++++++++++++++++++++++
+ 2 files changed, 67 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/imx6q-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/imx6q-clock.yaml
 
-Thanks for the investigation!
-The thing is MADV_FREEed page since supporting swapless could change
-his LRU status between reclaim.
+diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.txt b/Documentation/devicetree/bindings/clock/imx6q-clock.txt
+deleted file mode 100644
+index 13d36d4..0000000
+--- a/Documentation/devicetree/bindings/clock/imx6q-clock.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-* Clock bindings for Freescale i.MX6 Quad
+-
+-Required properties:
+-- compatible: Should be "fsl,imx6q-ccm"
+-- reg: Address and length of the register set
+-- interrupts: Should contain CCM interrupt
+-- #clock-cells: Should be <1>
+-
+-Optional properties:
+-- fsl,pmic-stby-poweroff: Configure CCM to assert PMIC_STBY_REQ signal
+-  on power off.
+-  Use this property if the SoC should be powered off by external power
+-  management IC (PMIC) triggered via PMIC_STBY_REQ signal.
+-  Boards that are designed to initiate poweroff on PMIC_ON_REQ signal should
+-  be using "syscon-poweroff" driver instead.
+-- clocks: list of clock specifiers, must contain an entry for each entry
+-          in clock-names
+-- clock-names: valid names are "osc", "ckil", "ckih1", "anaclk1" and "anaclk2"
+-
+-The clock consumer should specify the desired clock by having the clock
+-ID in its "clocks" phandle cell.  See include/dt-bindings/clock/imx6qdl-clock.h
+-for the full list of i.MX6 Quad and DualLite clock IDs.
+-
+-Examples:
+-
+-#include <dt-bindings/clock/imx6qdl-clock.h>
+-
+-clks: ccm@20c4000 {
+-	compatible = "fsl,imx6q-ccm";
+-	reg = <0x020c4000 0x4000>;
+-	interrupts = <0 87 0x04 0 88 0x04>;
+-	#clock-cells = <1>;
+-};
+-
+-uart1: serial@2020000 {
+-	compatible = "fsl,imx6q-uart", "fsl,imx21-uart";
+-	reg = <0x02020000 0x4000>;
+-	interrupts = <0 26 0x04>;
+-	clocks = <&clks IMX6QDL_CLK_UART_IPG>, <&clks IMX6QDL_CLK_UART_SERIAL>;
+-	clock-names = "ipg", "per";
+-};
+diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+new file mode 100644
+index 0000000..0daf789
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/imx6q-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Clock bindings for Freescale i.MX6 Quad
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++properties:
++  compatible:
++    const: fsl,imx6q-ccm
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 2
++    maxItems: 2
++
++  '#clock-cells':
++    const: 1
++
++  clocks:
++    items:
++      - description: 24m osc
++      - description: 32k osc
++      - description: ckih1 clock input
++      - description: anaclk1 clock input
++      - description: anaclk2 clock input
++
++  clock-names:
++    items:
++      - const: osc
++      - const: ckil
++      - const: ckih1
++      - const: anaclk1
++      - const: anaclk2
++
++  fsl,pmic-stby-poweroff:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      Use this property if the SoC should be powered off by external power
++      management IC (PMIC) triggered via PMIC_STBY_REQ signal.
++      Boards that are designed to initiate poweroff on PMIC_ON_REQ signal should
++      be using "syscon-poweroff" driver instead.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - '#clock-cells'
++
++examples:
++  # Clock Control Module node:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    clks: clock-controller@20c4000 {
++        compatible = "fsl,imx6q-ccm";
++        reg = <0x020c4000 0x4000>;
++        interrupts = <0 87 IRQ_TYPE_LEVEL_HIGH>,
++                     <0 88 IRQ_TYPE_LEVEL_HIGH>;
++        #clock-cells = <1>;
++    };
+-- 
+2.7.4
 
-I am worry about voiding the optimization we have kept in CMA but
-also don't have good idea, either so I tend to agree with this.
-
-Let me Cc Johannes who might have better idea.
-
-> ---
->  mm/vmscan.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b06868fc4926..9380a18eef5e 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1497,6 +1497,9 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
->  	LIST_HEAD(clean_pages);
->  
->  	list_for_each_entry_safe(page, next, page_list, lru) {
-> +		/* to avoid race with MADV_FREE anon page */
-> +		if (PageAnon(page))
-> +			continue;
->  		if (page_is_file_lru(page) && !PageDirty(page) &&
->  		    !__PageMovable(page) && !PageUnevictable(page)) {
->  			ClearPageActive(page);
-> -- 
-> 2.13.7
-> 
