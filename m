@@ -2,223 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BE11ADCE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5CF1ADCEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgDQMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:05:30 -0400
-Received: from mail-eopbgr80075.outbound.protection.outlook.com ([40.107.8.75]:6138
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726050AbgDQMFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:05:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kbP1Zf4IvZe03uIr5IvkMNSAwpgWXFR/7EzeTGSgFjze8Bvg6Jx+HNoll/m+Myoa31CprMBQECBTQN9yzNfwzcWTzR3kSRVJ1ebj0MG5AWrtGM/i9mGWxHzRsYMYuOWuMLKjndFeCQrdgXzgnqEju+dk1dFNK4qJ7YhQ5jn5ek7VrwJK/hT7DbxBaGNqLGohRa1WNYraTtTvl9Pkuv9n12VGxqeM9uK/K4gdpnpC/qKjZp6VniYoFd4IyOyzTKnhT+GGP71l+hcE2V2pzMqM+eVX3BYdck6qqDQ0LWrcIjHwRNnABLA3jkJ/YerzLnkjTxTfWpurO7Xabz6K7nmzSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IkD42ByhbNwi94QJGmnHaS5lKcIhqmgu7XnLw/6ye8M=;
- b=Q7K8EnnxgstzzrukawwTfkneXgocBvQkweIvCuejOXPFr4u+odZk//Oa9Kf7zOgW7Q3T1VQPAT7Z32gUbI1LbgZRG9GePa5IEO1QeldXxNf2N5izlYD2pZWqBwx/UDYDeazB+DCowsMgkMrklVB5d4mQyxnZ7ldrgmxLWJhEjisfLp/qaw6qT20O9cfqbbLKKpslFhSlc7FS+BfEVg4LzO1qaJjgBHARZWV3yM1ZfKp58N4pocjp+K+P/lZ/cZ9tJxcAVQAQvp/HxUnkko/b4sadekfcjykdEzyocRAoWzARxjyaRnA5zLk9MItQx+t8MpzCgoW7GD7hmYszmTLrUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nextfour.com; dmarc=pass action=none header.from=nextfour.com;
- dkim=pass header.d=nextfour.com; arc=none
+        id S1728305AbgDQMJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726050AbgDQMJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 08:09:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5691FC061A0C;
+        Fri, 17 Apr 2020 05:09:10 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g13so735011wrb.8;
+        Fri, 17 Apr 2020 05:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NextfourGroupOy.onmicrosoft.com;
- s=selector2-NextfourGroupOy-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IkD42ByhbNwi94QJGmnHaS5lKcIhqmgu7XnLw/6ye8M=;
- b=XXGCTsswxM1e9ZZMNqniPfdZxVZkgtn7C8lmuP0XoDLEZw1cimOaIr0LooycNKVAn5SyMIQdumiUv0V0+iup+A5O3bulln2hexq8ct8vDRQ7KDRM7uCpKbeXH453cVLe3cKtPlt6DELn+QBtWMKMlpIUc55xNW1nFrowPy0NBmQ=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=mika.penttila@nextfour.com; 
-Received: from HE1PR0302MB2682.eurprd03.prod.outlook.com (2603:10a6:3:f5::14)
- by HE1PR0302MB2811.eurprd03.prod.outlook.com (2603:10a6:3:ec::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25; Fri, 17 Apr
- 2020 12:05:25 +0000
-Received: from HE1PR0302MB2682.eurprd03.prod.outlook.com
- ([fe80::b10a:8b9d:1a18:6b2]) by HE1PR0302MB2682.eurprd03.prod.outlook.com
- ([fe80::b10a:8b9d:1a18:6b2%9]) with mapi id 15.20.2921.027; Fri, 17 Apr 2020
- 12:05:25 +0000
-Subject: Re: [PATCH, RFC] x86/mm/pat: Restore large pages after fragmentation
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200416213229.19174-1-kirill.shutemov@linux.intel.com>
- <0a28e6e8-3f18-0bbb-a4d0-ee88060f7e90@nextfour.com>
- <20200417114251.oy22udm3b2as32t5@box>
-From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-Message-ID: <01262964-e643-da03-5bd9-53c199ef094c@nextfour.com>
-Date:   Fri, 17 Apr 2020 15:05:22 +0300
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YQmfy5glSWEhJacmHQcBoh0P5gI+y1xLhn/MI5MwRqk=;
+        b=a0P/bUJk6o4KfMmFecVMQRsWuelunj5M3QJxQxTu6to4WAQob5LfbxChfRH0a6dwDj
+         iNR57ygB8uH7UURrRNzWkQ8vspIJVqgol9MkvvXSz/cm+AnLhC+uKmwA3jpvuOobCcgc
+         KON4uK1f+5Y1OLIVlTxIEEI3ASLbbuSLQ3NiS2NUfo5xrqJo/Q5iMZpWAjtWhx5/M0KN
+         hRvTCofOnBp3OUfJMfth7Ov6eIlNj9MXG1acK/G7uyIUgNEBLcPBcKJ+tIH80fWO6DuJ
+         rWftpSBDDApCaJzKHUzzK+sJRq2rmfLKHntuqUrJ3fCT5oPSY1tJwYLhRQuZIlZ5M9eF
+         pKXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YQmfy5glSWEhJacmHQcBoh0P5gI+y1xLhn/MI5MwRqk=;
+        b=E0jQAW5jFcsLuO3Hg8mEupkZ/V5Xa8y+1nLFnLV7EQ956stA2UWwNA8ycnAbGKSHhP
+         VlXRfAfp9V3OvD3/exmMPk0JEgFicxP3JEer8tOCTVbzcBFuCWLagwr4Z9xgjrb5N8M3
+         1PNjOAsF9EK2fHQrsir63OexZwywIog0+0RPqP2LEo9HDX4CotBaqhZSkmaCoE/ndqNe
+         M78Wub7ZXfnK6q4zoB0a27xly9wkDCHNl1kc8tr04f/7p1UUhBbuDheh92zrgQrtIFsp
+         oFWgiAsFTWZB0WHV2T2+WsLcnD15pDGKZcy8/H84gJXYBQsMCTAtkmIxIaiFsrWLcDgE
+         IXTg==
+X-Gm-Message-State: AGi0PubSyIoywME9o6jFMSwgY2F6mPzfqNOTgUVxMtkrlSiRreaLCBAi
+        F1vDnI4CZFw6/Wg72vd05YNg6GIP
+X-Google-Smtp-Source: APiQypJw9RvOMBiofKtDCRe+QcAA+eB/l83Q4b2jSf0HWRF7CviGAUhDoTYoDphSTR+uEnZgPspyVA==
+X-Received: by 2002:a5d:4485:: with SMTP id j5mr3343798wrq.427.1587125348648;
+        Fri, 17 Apr 2020 05:09:08 -0700 (PDT)
+Received: from ?IPv6:2a02:810d:340:2e50:14a4:6f21:1f15:2088? ([2a02:810d:340:2e50:14a4:6f21:1f15:2088])
+        by smtp.gmail.com with ESMTPSA id n2sm10823975wrq.74.2020.04.17.05.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Apr 2020 05:09:08 -0700 (PDT)
+Subject: Re: [PATCH v6 00/12] ARM/MIPS: DTS: add child nodes describing the
+ PVRSGX GPU present in some OMAP SoC and JZ4780 (and many more)
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        OpenPVRSGX Linux Driver Group <openpvrsgx-devgroup@letux.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        linux-mips@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org
+References: <cover.1586939718.git.hns@goldelico.com>
+ <20200415101008.zxzxca2vlfsefpdv@gilmour.lan>
+ <2E3401F1-A106-4396-8FE6-51CAB72926A4@goldelico.com>
+ <20200415130233.rgn7xrtwqicptke2@gilmour.lan>
+ <C589D06E-435E-4316-AD0A-8498325039E3@goldelico.com>
+From:   Philipp Rossak <embed3d@gmail.com>
+Message-ID: <10969e64-fe1f-d692-4984-4ba916bd2161@gmail.com>
+Date:   Fri, 17 Apr 2020 14:09:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
-In-Reply-To: <20200417114251.oy22udm3b2as32t5@box>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: HE1P191CA0007.EURP191.PROD.OUTLOOK.COM (2603:10a6:3:cf::17)
- To HE1PR0302MB2682.eurprd03.prod.outlook.com (2603:10a6:3:f5::14)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.10.99.7] (194.157.170.35) by HE1P191CA0007.EURP191.PROD.OUTLOOK.COM (2603:10a6:3:cf::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Fri, 17 Apr 2020 12:05:24 +0000
-X-Originating-IP: [194.157.170.35]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f0c2523-8425-4224-1ccc-08d7e2c79c88
-X-MS-TrafficTypeDiagnostic: HE1PR0302MB2811:
-X-Microsoft-Antispam-PRVS: <HE1PR0302MB28115FCF7A462E27DA86D72883D90@HE1PR0302MB2811.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
-X-Forefront-PRVS: 0376ECF4DD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0302MB2682.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(136003)(376002)(366004)(39830400003)(346002)(396003)(2906002)(31686004)(956004)(2616005)(16526019)(186003)(6486002)(5660300002)(66476007)(8676002)(81156014)(508600001)(4326008)(36756003)(966005)(54906003)(16576012)(6916009)(8936002)(52116002)(86362001)(316002)(26005)(7416002)(31696002)(66556008)(66946007);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nextfour.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UTfRa09WamMlHTHDqMo3Jd2vXKltSl3ZnZiySRH94x+WgnHzpSjUkxBqRIpIVzsxZlfghq1REZc0GiwtQaflFf7Zbcft5uABtILTHXtUkwj4tneqza9/zLIO2Lwe4ux0z9K48a4SgdEzgOctEt8qc+ylb+H0olIkFF4bAsdyWoJj3JKOO2QDN/9kT/5cHwnDdZk1we/JzMsqaSCrjnFJWDuJ9OjS3ghsQ7vl2clWlraYTj3UESrvsDx2QSs8d1wShltE2lD/5vdyMjMYLd8WN9LuuW1soCtF8rarLqZbLz9r2sV46bd18n7dB2zPNQtOr4opQUt/QFNXTTNWhBKa9aGWMLLj1ylkUWt/z2t5gu9FEJIGq9u6WZa3evNAxrIDNfIrakuHsKZC8IZ0a7QZjVFjDNDbvv4unIya445JgDAfWr6ET2G/pc+2X1+Xp09JbT3l40rEOht6xMF1x/B3SfkLyfdMtxMWVu9ogyoN2ZHGMHx/ZBkraEGmiH1hvblZ9PMbPWgqSFWixnfWfm5FEA==
-X-MS-Exchange-AntiSpam-MessageData: vviUZVJ46spgVf9pSrOZE5D00ZoJ8SRBlRv+TMtaMIQG5JbfISN7+jC7kQg1SE1GOwt29qeYuY4gEbOnNMdxDaWxFQOBq3Qi2OyFfEmfMDX4R54N2KNdroHb/LjVwmglDGlVgnGi4C4Ho1+z7BhmYg==
-X-OriginatorOrg: nextfour.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f0c2523-8425-4224-1ccc-08d7e2c79c88
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 12:05:25.2797
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 972e95c2-9290-4a02-8705-4014700ea294
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hewjikgtGzrrnIcxNX3o+Fucyy0d7wjy5l6e9+8m4iceUKdy0DSX+2Y/mJnKYaKJ5Fo1jFH/f+j61w9ioRJdmqy2HsAJR1hjSGXmNMuJZm8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0302MB2811
+In-Reply-To: <C589D06E-435E-4316-AD0A-8498325039E3@goldelico.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
-
-On 17.4.2020 14.42, Kirill A. Shutemov wrote:
-> On Fri, Apr 17, 2020 at 03:52:28AM +0300, Mika Penttilä wrote:
->> Hi!
+On 15.04.20 15:04, H. Nikolaus Schaller wrote:
+> 
+>> Am 15.04.2020 um 15:02 schrieb Maxime Ripard <maxime@cerno.tech>:
 >>
->> On 17.4.2020 0.32, Kirill A. Shutemov wrote:
->>> Change of attributes of the pages may lead to fragmentation of direct
->>> mapping over time and performance degradation as result.
+>> On Wed, Apr 15, 2020 at 02:41:52PM +0200, H. Nikolaus Schaller wrote:
+>>>>> The kernel modules built from this project have successfully
+>>>>> demonstrated to work with the DTS definitions from this patch set on
+>>>>> AM335x BeagleBone Black, DM3730 and OMAP5 Pyra and Droid 4. They
+>>>>> partially work on OMAP3530 and PandaBoard ES but that is likely a
+>>>>> problem in the kernel driver or the (non-free) user-space libraries
+>>>>> and binaries.
+>>>>>
+>>>>> Wotk for JZ4780 (CI20 board) is in progress and there is potential
+>>>>> to extend this work to e.g. BananaPi-M3 (A83) and some Intel Poulsbo
+>>>>> and CedarView devices.
+>>>>
+>>>> If it's not been tested on any Allwinner board yet, I'll leave it
+>>>> aside until it's been properly shown to work.
 >>>
->>> With current code it's one way road: kernel tries to avoid splitting
->>> large pages, but it doesn't restore them back even if page attributes
->>> got compatible again.
->>>
->>> Any change to the mapping may potentially allow to restore large page.
->>>
->>> Hook up into cpa_flush() path to check if there's any pages to be
->>> recovered in PUD_SIZE range around pages we've just touched.
->>>
->>> CPUs don't like[1] to have to have TLB entries of different size for the
->>> same memory, but looks like it's okay as long as these entries have
->>> matching attributes[2]. Therefore it's critical to flush TLB before any
->>> following changes to the mapping.
->>>
->>> Note that we already allow for multiple TLB entries of different sizes
->>> for the same memory now in split_large_page() path. It's not a new
->>> situation.
->>>
->>> set_memory_4k() provides a way to use 4k pages on purpose. Kernel must
->>> not remap such pages as large. Re-use one of software PTE bits to
->>> indicate such pages.
->>>
->>> [1] See Erratum 383 of AMD Family 10h Processors
->>> [2] https://lore.kernel.org/linux-mm/1da1b025-cabc-6f04-bde5-e50830d1ecf0@amd.com/
->>>
->>> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->>> ---
->>>    arch/x86/include/asm/pgtable_types.h |   2 +
->>>    arch/x86/mm/pat/set_memory.c         | 191 ++++++++++++++++++++++++++-
->>>    2 files changed, 188 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
->>> index b6606fe6cfdf..11ed34804343 100644
->>> --- a/arch/x86/include/asm/pgtable_types.h
->>> +++ b/arch/x86/include/asm/pgtable_types.h
->>> @@ -34,6 +34,7 @@
->>>    #define _PAGE_BIT_CPA_TEST	_PAGE_BIT_SOFTW1
->>>    #define _PAGE_BIT_UFFD_WP	_PAGE_BIT_SOFTW2 /* userfaultfd wrprotected */
->>>    #define _PAGE_BIT_SOFT_DIRTY	_PAGE_BIT_SOFTW3 /* software dirty tracking */
->>> +#define _PAGE_BIT_KERNEL_4K	_PAGE_BIT_SOFTW3 /* page must not be converted to large */
->>>    #define _PAGE_BIT_DEVMAP	_PAGE_BIT_SOFTW4
->>>    /* If _PAGE_BIT_PRESENT is clear, we use these: */
->>> @@ -56,6 +57,7 @@
->>>    #define _PAGE_PAT_LARGE (_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
->>>    #define _PAGE_SPECIAL	(_AT(pteval_t, 1) << _PAGE_BIT_SPECIAL)
->>>    #define _PAGE_CPA_TEST	(_AT(pteval_t, 1) << _PAGE_BIT_CPA_TEST)
->>> +#define _PAGE_KERNEL_4K	(_AT(pteval_t, 1) << _PAGE_BIT_KERNEL_4K)
->>>    #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
->>>    #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
->>>    #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
->>> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
->>> index 5414fabad1ae..7cb04a436d86 100644
->>> --- a/arch/x86/mm/pat/set_memory.c
->>> +++ b/arch/x86/mm/pat/set_memory.c
->>> @@ -344,22 +344,56 @@ static void __cpa_flush_tlb(void *data)
->>>    		__flush_tlb_one_kernel(fix_addr(__cpa_addr(cpa, i)));
->>>    }
->>> +static void restore_large_pages(unsigned long addr, struct list_head *pgtables);
->>> +
->>> +static void cpa_restore_large_pages(struct cpa_data *cpa,
->>> +		struct list_head *pgtables)
->>> +{
->>> +	unsigned long start, addr, end;
->>> +	int i;
->>> +
->>> +	if (cpa->flags & CPA_PAGES_ARRAY) {
->>> +		for (i = 0; i < cpa->numpages; i++)
->>> +			restore_large_pages(__cpa_addr(cpa, i), pgtables);
->>> +		return;
->>> +	}
->>> +
->>> +	start = __cpa_addr(cpa, 0);
->>> +	end = start + PAGE_SIZE * cpa->numpages;
->>> +
->>> +	for (addr = start; addr >= start && addr < end; addr += PUD_SIZE)
->>> +		restore_large_pages(addr, pgtables);
->>> +}
->>> +
->>>    static void cpa_flush(struct cpa_data *data, int cache)
->>>    {
->>> +	LIST_HEAD(pgtables);
->>> +	struct page *page, *tmp;
->>>    	struct cpa_data *cpa = data;
->>>    	unsigned int i;
->>>    	BUG_ON(irqs_disabled() && !early_boot_irqs_disabled);
->>> +	cpa_restore_large_pages(data, &pgtables);
->>> +
->>>    	if (cache && !static_cpu_has(X86_FEATURE_CLFLUSH)) {
->>>    		cpa_flush_all(cache);
->>> +		list_for_each_entry_safe(page, tmp, &pgtables, lru) {
->>> +			list_del(&page->lru);
->>> +			__free_page(page);
->>> +		}
->>>    		return;
->>>    	}
->>> -	if (cpa->numpages <= tlb_single_page_flush_ceiling)
->>> -		on_each_cpu(__cpa_flush_tlb, cpa, 1);
->>> -	else
->>> +	if (cpa->numpages > tlb_single_page_flush_ceiling || !list_empty(&pgtables))
->>>    		flush_tlb_all();
->>> +	else
->>> +		on_each_cpu(__cpa_flush_tlb, cpa, 1);
->>> +
->>> +	list_for_each_entry_safe(page, tmp, &pgtables, lru) {
->>> +		list_del(&page->lru);
->>> +		__free_page(page);
->>> +	}
+>>> Phillip has tested something on a83.
 >>
->> The pagetable pages are freed here but ren't you leaking the leaf 4K pages
->> (except the first which is made large)?
-> Huh? There's no way to convert one 4k to large page. We convert all pages
-> in large page region to the large page.
->
+Yes I'm currently working on the a83t demo. The kernel module is loading 
+correctly and the clocks, interrupts and resets seems to be working 
+correctly.
 
-Doh, sure and sorry , was short of coffee ...
+I'm currently working on getting the users space driver working with the 
+kernel driver. This is hopefully done soon.
 
---Mika
+>> I'm a bit skeptical on that one since it doesn't even list the
+>> interrupts connected to the GPU that the binding mandates.
+> 
+> I think he left it out for a future update.
+> But best he comments himself.
 
+I'm currently working on those bindings. They are now 90% done, but they 
+are not finished till now. Currently there is some mainline support 
+missing to add the full binding. The A83T and also the A31/A31s have a 
+GPU Power Off Gating Register in the R_PRCM module, that is not 
+supported right now in Mainline. The Register need to be written when 
+the GPU is powered on and off.
+
+@Maxime: I totally agree on your point that a demo needs to be provided 
+before the related DTS patches should be provided. That's the reason why 
+I added the gpu placeholder patches.
+Do you have an idea how a driver for the R_PRCM stuff can look like? I'm 
+not that experienced with the clock driver framework.
+
+The big question is right now how to proceed with the A83T and A31s 
+patches. I see there three options, which one do you prefer?:
+
+1. Provide now placeholder patches and send new patches, if everything 
+is clear and other things are mainlined
+2. Provide now patches as complete as possible and provide later patches 
+to complete them when the R_PRCM things are mainlined
+3. Leave them out, till the related work is mainlined and the bindings 
+are final.
+
+
+Since this GPU IP core is very flexible and the SOC manufactures can 
+configure it on their needs, I think the binding will extend in the 
+future. For example the SGX544 GPU is available in different 
+configurations: there is a SGX544 core and SGX544MPx core. The x stands 
+for the count of the USSE (Universal Scalable Shader Engine) cores. For 
+example the GPU in the A83T is a MP1 and the A31/A31s a MP2.
+In addition to that some of the GPU's have also a 2D engine.
+There might be even more differences in the GPU's that we don't know 
+right now and should be described in the Devicetree, but that's a 
+different topic that we should keep in mind.
+
+Cheers
+Philipp
