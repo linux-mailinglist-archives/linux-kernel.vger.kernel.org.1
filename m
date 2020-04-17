@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ED21AE182
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B77A1ADEA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729555AbgDQPsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:48:24 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45404 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728593AbgDQPsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:48:23 -0400
-IronPort-SDR: 1jEruK9lRC/6OfrUw2b4bEI79hBHGt8DfyNEQ6GRu/BUi7GJrAcpLiYDfkjE7ns647z05t52yu
- oMO+GNGe7/dw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 08:48:23 -0700
-IronPort-SDR: ZBwe2yhen/Cg4VzUVmdatNxrnAr9gr2mfLpMqbuIjwHNm8+JZZMJryQnFAdgH7o+9ulVtWAxwR
- X5jV6k+GoP8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
-   d="scan'208";a="278417849"
-Received: from dsbrown-mobl.amr.corp.intel.com (HELO [10.251.128.242]) ([10.251.128.242])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Apr 2020 08:48:21 -0700
-Subject: Re: [PATCH] ASoC: Intel: atom: remove unused 'sst_mix_voip_controls'
-To:     Jason Yan <yanaijie@huawei.com>, cezary.rojewski@intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        hdegoede@redhat.com, tglx@linutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     Hulk Robot <hulkci@huawei.com>
-References: <20200417092344.14301-1-yanaijie@huawei.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8cd0ba8d-138d-d4da-d6fb-d2457ea2db13@linux.intel.com>
-Date:   Fri, 17 Apr 2020 08:43:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730747AbgDQNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 09:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730597AbgDQNoI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 09:44:08 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5631C061A0C;
+        Fri, 17 Apr 2020 06:44:08 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u65so1091130pfb.4;
+        Fri, 17 Apr 2020 06:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hypx42ccjADqrNdu/0IOmFKhH6R33idYzXzHm/EnhEw=;
+        b=ZT7PjufsZsPZjTJHLwSoJ7jYG4w1hxevVhuSBlwzjSgPZHt7NlstEuYjGBT5ObI6Tw
+         WpmtoQRsZsZE3m/vdrA1mKsn/Qfilg/F+UTXImWXB+iFfw8G+xnN8RhGNNImi0WwXHbD
+         EZ2SyLUdbdcV1oeN0y8dq/hFQt7OIz+ku57gZ2fVywOZJmnvYiHRhUuooiOLC8ag/tKS
+         XJcz/YhhY5pS/tZUz/22D9MJw3NLvjPj6ph8Li6IggzolY+/tjlpBgKLET3pH5hbf+Mq
+         FfRixnoqBHXys9yK6T21BZwDgE3QmdMp+0YPkrFEU95vyBNl+MTZ4TrLYH1CSyYsGDYs
+         y1nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hypx42ccjADqrNdu/0IOmFKhH6R33idYzXzHm/EnhEw=;
+        b=NKr9xZJ36nJjF5JEa4iLQsJvcE3hQyyfs6cUaZUNUkUbjOwvZFx8lE1o3dooku9aTl
+         xO7GgOGpj5lv34kbKlZ8rjqeGjiwonf0qxmYxZF4zaWD4JJb8bqAnjJ9P6F71YpnzYn4
+         Wrgf2gTVgAmMvqBHi5oDUSsjVVcFGrxOmuL5V82qUPdc5xqXwS4+sRH235n15dkk6KV2
+         fpHqOTfFbkRdtQcZ58vUNjSqeH8UIauYOy9Z5ypMoBzfuqnRG9A4d3N72AnGQgRLWCd+
+         6mKfJvx/TzthLIYz7Xroq6+y3n3ihY7Gszo7FACaQgP/Ks7qBdksZN+Hbd3Dni5QxmsI
+         ALcA==
+X-Gm-Message-State: AGi0PuZF/Yulmazqk6hP3LpvQgMHKtlwKDS8LJc8vHZTnbhC2SE9zM4i
+        NzrpB28BrPpz2aqpzTh46gZbUXlu0dbpz313vSE=
+X-Google-Smtp-Source: APiQypLkTua337zuJMWiFuNImJfW46iP7m0JHWsWSVfhhzhf9YiUFNIAIwewwNBx/JUPCPyrCEH1en0LXSbUj+9qCE0=
+X-Received: by 2002:aa7:8f26:: with SMTP id y6mr3263398pfr.36.1587131048293;
+ Fri, 17 Apr 2020 06:44:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200417092344.14301-1-yanaijie@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200416205428.437503-1-alexandre.belloni@bootlin.com>
+ <20200416205428.437503-2-alexandre.belloni@bootlin.com> <CAHp75Vddt-UKkP+b8W2CDYjt5kzggwQ+gTjrieigeYhM=e4Tig@mail.gmail.com>
+ <CAHp75VeUdj4kkGMaapZu2i96faxmdnhC4a4GF1UoGfSKAVtg6g@mail.gmail.com> <20200417111302.GZ34509@piout.net>
+In-Reply-To: <20200417111302.GZ34509@piout.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 17 Apr 2020 16:43:59 +0300
+Message-ID: <CAHp75VcyViadqUtCzFRMhyybi4sNd=0fa=F1fBL_tGn7riyF7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] iio: adc: ti-ads8344: properly byte swap value
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 17, 2020 at 2:13 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+> On 17/04/2020 13:47:33+0300, Andy Shevchenko wrote:
+> > On Fri, Apr 17, 2020 at 1:44 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Apr 16, 2020 at 11:55 PM Alexandre Belloni
+> > > <alexandre.belloni@bootlin.com> wrote:
 
+> Both ADC families are not related, I don't think this is your issue. The
+> ADS8344 was from Burr-Brown.
 
-On 4/17/20 4:23 AM, Jason Yan wrote:
-> Fix the following gcc warning:
-> 
-> sound/soc/intel/atom/sst-atom-controls.c:710:30: warning:
-> ‘sst_mix_voip_controls’ defined but not used [-Wunused-const-variable=]
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
+Thanks for clarification.
 
-I'd prefer it if we didn't change this but only added __maybe_unused in 
-the macro.
-
-This is 2013/2014 legacy stuff, some parts were not upstreamed and this 
-was used by out-of-tree Android variations, and I don't know the 
-consequences of taking this out.
-
-Better just squelch the warning but not change anything, no?
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->   sound/soc/intel/atom/sst-atom-controls.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-> index 69f3af4524ab..541f0059ba7a 100644
-> --- a/sound/soc/intel/atom/sst-atom-controls.c
-> +++ b/sound/soc/intel/atom/sst-atom-controls.c
-> @@ -707,7 +707,6 @@ SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm2_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_sprot_l0_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l1_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l2_controls);
-> -SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec0_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec1_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_modem_controls);
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
