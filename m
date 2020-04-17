@@ -2,137 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6FE1AD400
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B3A1AD411
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgDQBNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 21:13:01 -0400
-Received: from mail-eopbgr00066.outbound.protection.outlook.com ([40.107.0.66]:6126
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725858AbgDQBM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 21:12:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJbsQ0l3p051Ye9x4t1UjKMjAc5d3+A1NfMpmw8DN83RCNTYaaEtmIsewY4G9LHm9TDAjb3kGYReDZ5y/WedvH5yvoZmfhrc5Wglkvy9zP7Ym0RaIU8peVSzD4IEMFEAxWtFFVpk5Xq8INFN0sQy1vSbsO4Pj+BY7fiEwvzfupuPoZP2Re6lFWDWdq8YoWA9J0wqhRgbUq7oN8XDxhrwZS3QXFz4eZFnN4lHu/0VUGqHv0TWqRdsSXQ0i+n8WuwLCTcQSuUDmR1aGt5A2Bo6I/F0K43H6vP5oWr2GVBLdHHfUaYvzHMoJeg9WD8zTseKcWMZ2rIcnqBu6+uvmw9G7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3908gRRsC5R9RqEQI8MM5RiPxynAWTWtPIBrXz1wJWk=;
- b=YQckjWxHge8oBoaAYfn0vBvpivCTy6sc/XahlXBhbUCDnZIWWQef0I6X+ybyiWhOOrheM5RVTgFXO1H1/y2qEGS9NWObib5tK8C0zNZaFpb6FJFwNZ7KK8iBJe7hvTlUGq1qBEuQ+Sm0hebPv7y0JAB1n1UM2UVyszg4+t++JWVuU4V9ne055T0LQwOAisaxST+1kHoM7r5zsaQNeTo+5HY8FZrz3xcnMrdSa/IGMzIS/7xJvbEI7/P/KWrITxtfgvKHsTcboHdqyZIWznoB1WpcLW/fzzIuZYsW12QwEHEYFbaoTeuho0rIE6r0N2KTnVJBomYiafsvDcl4dEfBEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3908gRRsC5R9RqEQI8MM5RiPxynAWTWtPIBrXz1wJWk=;
- b=dB3/qAoNjnX8YlylwgpIfNLVDbGcBo2hV3aTTiUBjkwkCpIfVN7e12zsPrGabL9A6yzVvsYIrlhyMnkc0+/b7SDdqvvPHVvvNYXi3p8sszPV25cSy/+cd6RzijXfn710rDgt0xNVyZ6paR5MP8UjQp2jVMmBcm8dCfH5D4Cz43g=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB6237.eurprd05.prod.outlook.com (2603:10a6:803:d8::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Fri, 17 Apr
- 2020 01:12:25 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2900.030; Fri, 17 Apr 2020
- 01:12:25 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Saeed Mahameed <saeedm@mellanox.com>, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
-        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
-        airlied@linux.ie, jernej.skrabec@siol.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [RFC PATCH 2/2] net/mlx5: Kconfig: Use "uses" instead of "imply"
-Date:   Thu, 16 Apr 2020 18:11:46 -0700
-Message-Id: <20200417011146.83973-2-saeedm@mellanox.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200417011146.83973-1-saeedm@mellanox.com>
-References: <20200417011146.83973-1-saeedm@mellanox.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR08CA0041.namprd08.prod.outlook.com
- (2603:10b6:a03:117::18) To VI1PR05MB5102.eurprd05.prod.outlook.com
- (2603:10a6:803:5e::23)
+        id S1728521AbgDQBXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 21:23:17 -0400
+Received: from mga05.intel.com ([192.55.52.43]:16242 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbgDQBXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 21:23:17 -0400
+IronPort-SDR: Sxn9gjy38VnlPxzZLo43uYCJ8ajpD6x7FYRqhz9UBqH5s1Gj/+7oD9LUazaKSz8rDSoAMOahCL
+ 4kzP1CV3U+Rg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 18:23:16 -0700
+IronPort-SDR: IDHOVINWK/2xAPTMH/rZ0FJhm7X0L/cEaGzWEIyO71lnfnLZHczxQCFdLrd9ES1fHzJ22vRA8o
+ 3po5nU1ibT9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="400870986"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by orsmga004.jf.intel.com with ESMTP; 16 Apr 2020 18:23:13 -0700
+Date:   Thu, 16 Apr 2020 21:13:34 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     "Lu, Baolu" <baolu.lu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>
+Subject: Re: [PATCH v1 0/2] vfio/pci: expose device's PASID capability to VMs
+Message-ID: <20200417011334.GB16688@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <1584880394-11184-1-git-send-email-yi.l.liu@intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D801252@SHSMSX104.ccr.corp.intel.com>
+ <ce615f64-a19b-a365-8f8e-ca29f69cc6c0@intel.com>
+ <20200416221224.GA16688@joy-OptiPlex-7040>
+ <20200416223353.GC45480@otc-nc-03>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from smtp.office365.com (73.15.39.150) by BYAPR08CA0041.namprd08.prod.outlook.com (2603:10b6:a03:117::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Fri, 17 Apr 2020 01:12:20 +0000
-X-Mailer: git-send-email 2.25.2
-X-Originating-IP: [73.15.39.150]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d4ee7aa6-cbbe-49a3-a6c2-08d7e26c6323
-X-MS-TrafficTypeDiagnostic: VI1PR05MB6237:|VI1PR05MB6237:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB62372DB416DADE4CDA71F651BED90@VI1PR05MB6237.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 0376ECF4DD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(4326008)(6512007)(316002)(66556008)(6666004)(86362001)(54906003)(26005)(66476007)(7416002)(6486002)(478600001)(36756003)(186003)(1076003)(2906002)(5660300002)(52116002)(16526019)(66946007)(8676002)(956004)(81156014)(6506007)(8936002)(2616005)(54420400002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6ZZi2itoorU+FjfkQ51ifIfclORohYCnaL+KT9PoN3gS3Sn6cpXdVkN0iFT/z0xMQesLRAezWRWQ28twNcN2UUczOsHvxVejwn0VS74RSbYeTBd20arGIelCKObllbrwkIDXGORGJRLaEmRDhjxFSjO1cigAl3TyQqIY0rN4tb3QdGxsTadgGxfYslpphB4CDX4kLZbsMFwh75H8gu/KxNysJkxX9EvHQQcTIfdutTXJm/Revxgy4qzuKj+gSMr4PVM4tADlEPVyY9izsrh0jK14y+YKEXIv39zyXnUCZot67vn2CMvblKWYhCpCV/VL66ceb4dnAnjcNIz1QtE7a1etQUCpVc4LYWaZLs1mMru28vnM/JbTmPimYgrdRhVdU3x311ZMQEg2UHdbcF8JxH0V0QmvyqZANPbO+RFFrYHsfOhZ0vsR7BuZyb/ZIm/CfEUazjPtFuTwMcjvkn/EkRIfdfer9Mto/j7k1OTQMhnY0NF59DNAzZwSEWm0P65i
-X-MS-Exchange-AntiSpam-MessageData: 83eFyu1R4fO+7UjyGhuYTL+4SAOzkjBJ3W0fnpk2q0AS8znOOBsVyYWLdWCwJMpv4VbOhaRcTMkrGBSNztqLT98hqNrvw9VMgkERQNqAHj4k6CU/x9ebZcpjdeg5G9y+FhSakdYLhdOtMCFz4feDBw==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4ee7aa6-cbbe-49a3-a6c2-08d7e26c6323
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 01:12:24.9257
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yQNpT4GCQKc9lSZiHR0L9f1wD1MN/nCT25Px1aPKByhl6epZ/uFZBI+jWK3X48wm9SkjeTEWCY7hZiQAvQXN9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6237
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416223353.GC45480@otc-nc-03>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mlx5 uses the imply keyword to force weak dependencies on the implied
-modules, to make sure they are always reachable by mlx5.
+On Fri, Apr 17, 2020 at 06:33:54AM +0800, Raj, Ashok wrote:
+> Hi Zhao
+> 
+> 
+> On Thu, Apr 16, 2020 at 06:12:26PM -0400, Yan Zhao wrote:
+> > On Tue, Mar 31, 2020 at 03:08:25PM +0800, Lu, Baolu wrote:
+> > > On 2020/3/31 14:35, Tian, Kevin wrote:
+> > > >> From: Liu, Yi L<yi.l.liu@intel.com>
+> > > >> Sent: Sunday, March 22, 2020 8:33 PM
+> > > >>
+> > > >> From: Liu Yi L<yi.l.liu@intel.com>
+> > > >>
+> > > >> Shared Virtual Addressing (SVA), a.k.a, Shared Virtual Memory (SVM) on
+> > > >> Intel platforms allows address space sharing between device DMA and
+> > > >> applications. SVA can reduce programming complexity and enhance security.
+> > > >>
+> > > >> To enable SVA, device needs to have PASID capability, which is a key
+> > > >> capability for SVA. This patchset exposes the device's PASID capability
+> > > >> to guest instead of hiding it from guest.
+> > > >>
+> > > >> The second patch emulates PASID capability for VFs (Virtual Function) since
+> > > >> VFs don't implement such capability per PCIe spec. This patch emulates such
+> > > >> capability and expose to VM if the capability is enabled in PF (Physical
+> > > >> Function).
+> > > >>
+> > > >> However, there is an open for PASID emulation. If PF driver disables PASID
+> > > >> capability at runtime, then it may be an issue. e.g. PF should not disable
+> > > >> PASID capability if there is guest using this capability on any VF related
+> > > >> to this PF. To solve it, may need to introduce a generic communication
+> > > >> framework between vfio-pci driver and PF drivers. Please feel free to give
+> > > >> your suggestions on it.
+> > > > I'm not sure how this is addressed on bate metal today, i.e. between normal
+> > > > kernel PF and VF drivers. I look at pasid enable/disable code in intel-iommu.c.
+> > > > There is no check on PF/VF dependency so far. The cap is toggled when
+> > > > attaching/detaching the PF to its domain. Let's see how IOMMU guys
+> > > > respond, and if there is a way for VF driver to block PF driver from disabling
+> > > > the pasid cap when it's being actively used by VF driver, then we may
+> > > > leverage the same trick in VFIO when emulation is provided to guest.
+> > > 
+> > > IOMMU subsystem doesn't expose any APIs for pasid enabling/disabling.
+> > > The PCI subsystem does. It handles VF/PF like below.
+> > > 
+> > > /**
+> > >   * pci_enable_pasid - Enable the PASID capability
+> > >   * @pdev: PCI device structure
+> > >   * @features: Features to enable
+> > >   *
+> > >   * Returns 0 on success, negative value on error. This function checks
+> > >   * whether the features are actually supported by the device and returns
+> > >   * an error if not.
+> > >   */
+> > > int pci_enable_pasid(struct pci_dev *pdev, int features)
+> > > {
+> > >          u16 control, supported;
+> > >          int pasid = pdev->pasid_cap;
+> > > 
+> > >          /*
+> > >           * VFs must not implement the PASID Capability, but if a PF
+> > >           * supports PASID, its VFs share the PF PASID configuration.
+> > >           */
+> > >          if (pdev->is_virtfn) {
+> > >                  if (pci_physfn(pdev)->pasid_enabled)
+> > >                          return 0;
+> > >                  return -EINVAL;
+> > >          }
+> > > 
+> > > /**
+> > >   * pci_disable_pasid - Disable the PASID capability
+> > >   * @pdev: PCI device structure
+> > >   */
+> > > void pci_disable_pasid(struct pci_dev *pdev)
+> > > {
+> > >          u16 control = 0;
+> > >          int pasid = pdev->pasid_cap;
+> > > 
+> > >          /* VFs share the PF PASID configuration */
+> > >          if (pdev->is_virtfn)
+> > >                  return;
+> > > 
+> > > 
+> > > It doesn't block disabling PASID on PF even VFs are possibly using it.
+> > >
+> > hi
+> > I'm not sure, but is it possible for pci_enable_pasid() and
+> > pci_disable_pasid() to do the same thing as pdev->driver->sriov_configure,
+> > e.g. pci_sriov_configure_simple() below.
+> > 
+> > It checks whether there are VFs are assigned in pci_vfs_assigned(dev).
+> > and we can set the VF in assigned status if vfio_pci_open() is performed
+> > on the VF.
+> 
+> But you can still unbind the PF driver that magically causes the VF's to be
+> removed from the guest image too correct? 
+> 
+> Only the IOMMU mucks with pasid_enable/disable. And it doesn't look like
+> we have a path to disable without tearing down the PF binding. 
+> 
+> We originally had some refcounts and such and would do the real disable only
+> when the refcount drops to 0, but we found it wasn't actually necessary 
+> to protect these resources like that.
+>
+right. now unbinding PF driver would cause VFs unplugged from guest.
+if we modify vfio_pci and set VFs to be assigned, then VFs could remain
+appearing in guest but it cannot function well as PF driver has been unbound.
 
-"imply" doesn't work this way any more, and it was wrong to use it in
-first place.
+thanks for explanation :)
 
-The right solution is to use: "depends on symbol || !symbol", which is
-exactly what the uses keyword is there for.
-
-Use the new "uses" keyword to replace all mlx5 implied dependencies.
-
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-index 312e0a1ad43d..4e07179217e8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-@@ -7,10 +7,10 @@ config MLX5_CORE
- 	tristate "Mellanox 5th generation network adapters (ConnectX series) core driver"
- 	depends on PCI
- 	select NET_DEVLINK
--	imply PTP_1588_CLOCK
--	imply VXLAN
--	imply MLXFW
--	imply PCI_HYPERV_INTERFACE
-+	uses PTP_1588_CLOCK
-+	uses VXLAN
-+	uses MLXFW
-+	uses PCI_HYPERV_INTERFACE
- 	default n
- 	---help---
- 	  Core driver for low level functionality of the ConnectX-4 and
--- 
-2.25.2
-
+> > 
+> > 
+> > int pci_sriov_configure_simple(struct pci_dev *dev, int nr_virtfn)
+> > {
+> >         int rc;
+> > 
+> >         might_sleep();
+> > 
+> >         if (!dev->is_physfn)
+> >                 return -ENODEV;
+> > 
+> >         if (pci_vfs_assigned(dev)) {
+> >                 pci_warn(dev, "Cannot modify SR-IOV while VFs are assigned\n");
+> >                 return -EPERM;
+> >         }
+> > 
+> >         if (nr_virtfn == 0) {
+> >                 sriov_disable(dev);
+> >                 return 0;
+> >         }
+> > 
+> >         rc = sriov_enable(dev, nr_virtfn);
+> >         if (rc < 0)
+> >                 return rc;
+> > 
+> >         return nr_virtfn;
+> > }
+> > 
+> > Thanks
+> > Yan
