@@ -2,223 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4ED1ADBA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5E81ADBAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgDQK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:56:05 -0400
-Received: from mail1.bemta26.messagelabs.com ([85.158.142.2]:61294 "EHLO
-        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729648AbgDQKzw (ORCPT
+        id S1729978AbgDQK4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:56:13 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44743 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729869AbgDQK4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:55:52 -0400
-Received: from [100.113.1.220] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-2.bemta.az-a.eu-central-1.aws.symcld.net id 0D/04-36549-43B899E5; Fri, 17 Apr 2020 10:55:48 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRWlGSWpSXmKPExsVy8MN7XV3j7pl
-  xBufecljc/3qU0eLyrjlsDkwed67tYfP4vEkugCmKNTMvKb8igTXj75KVzAUbTCo+fp7J3MD4
-  S6+LkYtDSGAdo8S1mUeZuxg5gZwKialLj7CB2LwCmRI/931jAbE5Bdwljmx+xghR4yYxb85XJ
-  hCbTcBCYvKJB2D1LAKqEr9WHwWKc3AIC/hLHHnnCWKKCKhInHtjDmIyC0RI/DnFDDFcUOLkzC
-  dgw5kFJCQOvngBdYCBxOkFjSwTGHlnISmbhaRsASPTKkbLpKLM9IyS3MTMHF1DAwNdQ0NjXWN
-  dQyMjvcQq3US91FLd5NS8kqJEoKxeYnmxXnFlbnJOil5easkmRmCwpRQyV+1gvLj8vd4hRkkO
-  JiVRXqW2mXFCfEn5KZUZicUZ8UWlOanFhxhlODiUJHhLuoBygkWp6akVaZk5wMCHSUtw8CiJ8
-  CZ2AqV5iwsSc4sz0yFSpxgVpcR5ZUD6BEASGaV5cG2waLvEKCslzMvIwMAgxFOQWpSbWYIq/4
-  pRnINRSZiXGWQKT2ZeCdz0V0CLmYAWRztMB1lckoiQkmpgslELyOn+cuVgye+gWK+pxo+ZTRQ
-  mtpx48ChKQFP6MPeqB8vOz/zxL+N0fNVmzrp/79VbQu25c/LOKeZw3lLsZ053EDu8Q/js4mXW
-  9fZdzjX2d7Z8OfN3u7hBzdYjmtLdXjaMJU3OwqpnbrzJurb8Xvq7ua8+GQZkHKrod1/mY2Mr1
-  Vw7f3KEm3mnxv3fEZ37yvk1A3vUFkyN8NeMjXd7XtGz3P71AqubuUd/HdEJWBYe+2FK5rV7Gq
-  JfbN58SAr4M+F2Wkj6Jdu7i7imypfapFTOXqaoeur5+tPb/63Y58p5O9fgBevGslX9qvzsVR0
-  r7vd+dv75eVpTk/fB7MM9s5PWpVXkSu8vsq7/fdVDiaU4I9FQi7moOBEA+gZd+zEDAAA=
-X-Env-Sender: Adam.Thomson.Opensource@diasemi.com
-X-Msg-Ref: server-34.tower-229.messagelabs.com!1587120946!3259154!1
-X-Originating-IP: [193.240.239.45]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.50.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 2145 invoked from network); 17 Apr 2020 10:55:47 -0000
-Received: from unknown (HELO NB-EX-CASHUB01.diasemi.com) (193.240.239.45)
-  by server-34.tower-229.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 17 Apr 2020 10:55:47 -0000
-Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
- NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Fri, 17 Apr 2020 12:55:46 +0200
-Received: by swsrvapps-01.diasemi.com (Postfix, from userid 22379)      id
- 201D63FBE7; Fri, 17 Apr 2020 11:55:46 +0100 (BST)
-Message-ID: <55912c9fefefdec240bde339a2da79cefc936b4e.1587120185.git.Adam.Thomson.Opensource@diasemi.com>
-In-Reply-To: <cover.1587120185.git.Adam.Thomson.Opensource@diasemi.com>
-References: <cover.1587120185.git.Adam.Thomson.Opensource@diasemi.com>
-From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date:   Fri, 17 Apr 2020 11:55:46 +0100
-Subject: [PATCH v3 2/2] mfd: da9063: Add support for latest DA silicon revision
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>
+        Fri, 17 Apr 2020 06:56:03 -0400
+Received: by mail-wr1-f67.google.com with SMTP id d17so2504021wrg.11;
+        Fri, 17 Apr 2020 03:56:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DYBfnvCIOfbYBUVMhiD0yzR/vj6W91VzUhD7daIMuuQ=;
+        b=Fz87rzfr+tPDN7+DwmWt+/vz7NG+69QbDYIkkaaAs7elfggHSuyOX7LyvI7Y8h7Xkn
+         +k+f2AqR3Itpu/l75Gq30oAjIAmPc/UR27FjuswUs+M8NOMYw2OFn9eFB2M8+/+Xpoba
+         meRIWYD8ZLdogNHlydNeJtURXAzpys63ZaVKMLcXH2BhBCOvKDKkftRe+pQ/DV4QgRdy
+         g1gidDVYKXtOYurIBLcMY3D1IjUKg6SKEWE4gkJwaF2AI7FuAsmZpJzzaHdI3ReUMP3M
+         lG+FNgky1tqTb7L3RtFT63yhGq1ZYmRh/MP+eqWU+4NBonllaQKh0QFZ0NtqHlpJbpE8
+         7OEQ==
+X-Gm-Message-State: AGi0PuahG5Xd4GLKKoOsWS41BCy3cMv9KB6TI4Nlsgvb+3mQGjEOknQB
+        FQADxcFkrDnEnyXCq7BJUeU=
+X-Google-Smtp-Source: APiQypK+ym/LoPqHMBZkBeU5WlMnH11OJtjXwSV8yRp3na8YAM9BOJIpCCmi2W1RtJxLUfAfdbHtbA==
+X-Received: by 2002:adf:eec8:: with SMTP id a8mr3121013wrp.28.1587120960891;
+        Fri, 17 Apr 2020 03:56:00 -0700 (PDT)
+Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
+        by smtp.gmail.com with ESMTPSA id h26sm7223748wmb.19.2020.04.17.03.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 03:56:00 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 11:55:58 +0100
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Dexuan Cui <decui@microsoft.com>, bp@alien8.de,
+        haiyangz@microsoft.com, hpa@zytor.com, kys@microsoft.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, sthemmin@microsoft.com, tglx@linutronix.de,
+        x86@kernel.org, mikelley@microsoft.com, wei.liu@kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] x86/hyperv: Suspend/resume the VP assist page for
+ hibernation
+Message-ID: <20200417105558.2jkqq2lih6vvoip2@debian>
+References: <1587104999-28927-1-git-send-email-decui@microsoft.com>
+ <87blnqv389.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87blnqv389.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This update adds new regmap tables to support the latest DA silicon
-which will automatically be selected based on the chip and variant
-information read from the device.
+On Fri, Apr 17, 2020 at 12:03:18PM +0200, Vitaly Kuznetsov wrote:
+> Dexuan Cui <decui@microsoft.com> writes:
+> 
+> > Unlike the other CPUs, CPU0 is never offlined during hibernation. So in the
+> > resume path, the "new" kernel's VP assist page is not suspended (i.e.
+> > disabled), and later when we jump to the "old" kernel, the page is not
+> > properly re-enabled for CPU0 with the allocated page from the old kernel.
+> >
+> > So far, the VP assist page is only used by hv_apic_eoi_write().
+> 
+> No, not only for that ('git grep hv_get_vp_assist_page')
+> 
+> KVM on Hyper-V also needs VP assist page to use Enlightened VMCS. In
+> particular, Enlightened VMPTR is written there.
+> 
+> This makes me wonder: how does hibernation work with KVM in case we use
+> Enlightened VMCS and we have VMs running? We need to make sure VP Assist
+> page content is preserved.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mfd/da9063-i2c.c        | 91 ++++++++++++++++++++++++++++++++++++-----
- include/linux/mfd/da9063/core.h |  1 +
- 2 files changed, 82 insertions(+), 10 deletions(-)
+The page itself is preserved, isn't it?
 
-diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
-index 4815489..b8217ad 100644
---- a/drivers/mfd/da9063-i2c.c
-+++ b/drivers/mfd/da9063-i2c.c
-@@ -197,7 +197,7 @@ static int da9063_get_device_type(struct i2c_client *i2c, struct da9063 *da9063)
- 	regmap_reg_range(DA9063_BB_REG_GP_ID_0, DA9063_BB_REG_GP_ID_19),
- };
- 
--static const struct regmap_range da9063_bb_volatile_ranges[] = {
-+static const struct regmap_range da9063_bb_da_volatile_ranges[] = {
- 	regmap_reg_range(DA9063_REG_PAGE_CON, DA9063_REG_EVENT_D),
- 	regmap_reg_range(DA9063_REG_CONTROL_A, DA9063_REG_CONTROL_B),
- 	regmap_reg_range(DA9063_REG_CONTROL_E, DA9063_REG_CONTROL_F),
-@@ -219,9 +219,9 @@ static int da9063_get_device_type(struct i2c_client *i2c, struct da9063 *da9063)
- 	.n_yes_ranges = ARRAY_SIZE(da9063_bb_writeable_ranges),
- };
- 
--static const struct regmap_access_table da9063_bb_volatile_table = {
--	.yes_ranges = da9063_bb_volatile_ranges,
--	.n_yes_ranges = ARRAY_SIZE(da9063_bb_volatile_ranges),
-+static const struct regmap_access_table da9063_bb_da_volatile_table = {
-+	.yes_ranges = da9063_bb_da_volatile_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(da9063_bb_da_volatile_ranges),
- };
- 
- static const struct regmap_range da9063l_bb_readable_ranges[] = {
-@@ -241,7 +241,7 @@ static int da9063_get_device_type(struct i2c_client *i2c, struct da9063 *da9063)
- 	regmap_reg_range(DA9063_BB_REG_GP_ID_0, DA9063_BB_REG_GP_ID_19),
- };
- 
--static const struct regmap_range da9063l_bb_volatile_ranges[] = {
-+static const struct regmap_range da9063l_bb_da_volatile_ranges[] = {
- 	regmap_reg_range(DA9063_REG_PAGE_CON, DA9063_REG_EVENT_D),
- 	regmap_reg_range(DA9063_REG_CONTROL_A, DA9063_REG_CONTROL_B),
- 	regmap_reg_range(DA9063_REG_CONTROL_E, DA9063_REG_CONTROL_F),
-@@ -263,9 +263,64 @@ static int da9063_get_device_type(struct i2c_client *i2c, struct da9063 *da9063)
- 	.n_yes_ranges = ARRAY_SIZE(da9063l_bb_writeable_ranges),
- };
- 
--static const struct regmap_access_table da9063l_bb_volatile_table = {
--	.yes_ranges = da9063l_bb_volatile_ranges,
--	.n_yes_ranges = ARRAY_SIZE(da9063l_bb_volatile_ranges),
-+static const struct regmap_access_table da9063l_bb_da_volatile_table = {
-+	.yes_ranges = da9063l_bb_da_volatile_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(da9063l_bb_da_volatile_ranges),
-+};
-+
-+static const struct regmap_range da9063_da_readable_ranges[] = {
-+	regmap_reg_range(DA9063_REG_PAGE_CON, DA9063_BB_REG_SECOND_D),
-+	regmap_reg_range(DA9063_REG_SEQ, DA9063_REG_ID_32_31),
-+	regmap_reg_range(DA9063_REG_SEQ_A, DA9063_REG_AUTO3_LOW),
-+	regmap_reg_range(DA9063_REG_T_OFFSET, DA9063_BB_REG_GP_ID_11),
-+	regmap_reg_range(DA9063_REG_DEVICE_ID, DA9063_REG_VARIANT_ID),
-+};
-+
-+static const struct regmap_range da9063_da_writeable_ranges[] = {
-+	regmap_reg_range(DA9063_REG_PAGE_CON, DA9063_REG_PAGE_CON),
-+	regmap_reg_range(DA9063_REG_FAULT_LOG, DA9063_REG_VSYS_MON),
-+	regmap_reg_range(DA9063_REG_COUNT_S, DA9063_BB_REG_ALARM_Y),
-+	regmap_reg_range(DA9063_REG_SEQ, DA9063_REG_ID_32_31),
-+	regmap_reg_range(DA9063_REG_SEQ_A, DA9063_REG_AUTO3_LOW),
-+	regmap_reg_range(DA9063_REG_CONFIG_I, DA9063_BB_REG_MON_REG_4),
-+	regmap_reg_range(DA9063_BB_REG_GP_ID_0, DA9063_BB_REG_GP_ID_11),
-+};
-+
-+static const struct regmap_access_table da9063_da_readable_table = {
-+	.yes_ranges = da9063_da_readable_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(da9063_da_readable_ranges),
-+};
-+
-+static const struct regmap_access_table da9063_da_writeable_table = {
-+	.yes_ranges = da9063_da_writeable_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(da9063_da_writeable_ranges),
-+};
-+
-+static const struct regmap_range da9063l_da_readable_ranges[] = {
-+	regmap_reg_range(DA9063_REG_PAGE_CON, DA9063_REG_MON_A10_RES),
-+	regmap_reg_range(DA9063_REG_SEQ, DA9063_REG_ID_32_31),
-+	regmap_reg_range(DA9063_REG_SEQ_A, DA9063_REG_AUTO3_LOW),
-+	regmap_reg_range(DA9063_REG_T_OFFSET, DA9063_BB_REG_GP_ID_11),
-+	regmap_reg_range(DA9063_REG_DEVICE_ID, DA9063_REG_VARIANT_ID),
-+};
-+
-+static const struct regmap_range da9063l_da_writeable_ranges[] = {
-+	regmap_reg_range(DA9063_REG_PAGE_CON, DA9063_REG_PAGE_CON),
-+	regmap_reg_range(DA9063_REG_FAULT_LOG, DA9063_REG_VSYS_MON),
-+	regmap_reg_range(DA9063_REG_SEQ, DA9063_REG_ID_32_31),
-+	regmap_reg_range(DA9063_REG_SEQ_A, DA9063_REG_AUTO3_LOW),
-+	regmap_reg_range(DA9063_REG_CONFIG_I, DA9063_BB_REG_MON_REG_4),
-+	regmap_reg_range(DA9063_BB_REG_GP_ID_0, DA9063_BB_REG_GP_ID_11),
-+};
-+
-+static const struct regmap_access_table da9063l_da_readable_table = {
-+	.yes_ranges = da9063l_da_readable_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(da9063l_da_readable_ranges),
-+};
-+
-+static const struct regmap_access_table da9063l_da_writeable_table = {
-+	.yes_ranges = da9063l_da_writeable_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(da9063l_da_writeable_ranges),
- };
- 
- static const struct regmap_range_cfg da9063_range_cfg[] = {
-@@ -333,7 +388,15 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
- 			da9063_regmap_config.wr_table =
- 				&da9063_bb_writeable_table;
- 			da9063_regmap_config.volatile_table =
--				&da9063_bb_volatile_table;
-+				&da9063_bb_da_volatile_table;
-+			break;
-+		case PMIC_DA9063_DA:
-+			da9063_regmap_config.rd_table =
-+				&da9063_da_readable_table;
-+			da9063_regmap_config.wr_table =
-+				&da9063_da_writeable_table;
-+			da9063_regmap_config.volatile_table =
-+				&da9063_bb_da_volatile_table;
- 			break;
- 		default:
- 			dev_err(da9063->dev,
-@@ -350,7 +413,15 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
- 			da9063_regmap_config.wr_table =
- 				&da9063l_bb_writeable_table;
- 			da9063_regmap_config.volatile_table =
--				&da9063l_bb_volatile_table;
-+				&da9063l_bb_da_volatile_table;
-+			break;
-+		case PMIC_DA9063_DA:
-+			da9063_regmap_config.rd_table =
-+				&da9063l_da_readable_table;
-+			da9063_regmap_config.wr_table =
-+				&da9063l_da_writeable_table;
-+			da9063_regmap_config.volatile_table =
-+				&da9063l_bb_da_volatile_table;
- 			break;
- 		default:
- 			dev_err(da9063->dev,
-diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/core.h
-index 5cd06ab..fa7a43f 100644
---- a/include/linux/mfd/da9063/core.h
-+++ b/include/linux/mfd/da9063/core.h
-@@ -35,6 +35,7 @@ enum da9063_variant_codes {
- 	PMIC_DA9063_AD = 0x3,
- 	PMIC_DA9063_BB = 0x5,
- 	PMIC_DA9063_CA = 0x6,
-+	PMIC_DA9063_DA = 0x7,
- };
- 
- /* Interrupts */
--- 
-1.9.1
+hv_cpu_die never frees the vp_assit page. It merely disables it.
+hv_cpu_init only allocates a new page if necessary.
 
+Wei.
+
+> 
+> -- 
+> Vitaly
+> 
