@@ -2,123 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA21AE28F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE881AE298
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgDQQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgDQQyz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:54:55 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309BBC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 09:54:55 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id l11so2367633lfc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 09:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TUjmNpTkRUHjFQU3sZOC9N/p+7Qi1HmP8jwrqOUVxtQ=;
-        b=ddRbaJFypSDnHxxSGThJ4HEJ2KvJRLqKBIxb9wqT/VQT/s5eBK5IpwBn96NG4HtT7t
-         kFH8mrSVHxTuKeOeAiSYdQ81Dw98+WKMraTxm335md7MJqUPYvX17YMDw7zaQYY0PD4A
-         2oSyQ/KPy3LJczhml0FWU+O5NYXqcMljE94r1H+c9fYoHd+b2oNMZ+xHC+yRwBdE8obM
-         ufbss3EZSs+1TL4/e7nNhsRcD3ik56iMIVfAMyo4s4aveac8VXDZvn/K1uoqL3dEHwN/
-         flRJSPWZ22wXUCLfkUaOG7kPbOtffAuMTSFASSA7stWu8UfnLXt3vTRMAzPDOius10l6
-         VwOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TUjmNpTkRUHjFQU3sZOC9N/p+7Qi1HmP8jwrqOUVxtQ=;
-        b=Uyw8eleQnXlXo5iz3jOmAZji6qRuf7ySkCdOGE78yYy3RA+TzoqW60xYNpEWsPdLd6
-         7iNw279N7YaedJAH0WrvqVnspPF8i0L5XqjPBqu1QNdHm8r9CS4me2T8SyS1AnjtPNTI
-         WgDt0wlf3eHY6zf/Koc1DN5l08ol27YDDygNYgcR7r9e68D/xoV3dIv4778rB5qUWz8O
-         iZYfYpHSAvf4bBLqBv/Kpn5knPEU30I1yH8X78+9jjE84zJ6u7f5U0/bJzgcyfo8IfdN
-         mswPsfhFnmlcyyDypEcJywiP+hd4Ajc5Ed7Q+1fGAt6JPTXZxkRrMbXuBepYHR8NrBO7
-         6M1A==
-X-Gm-Message-State: AGi0PubKdiU7f3KvBM6e4iGZ7bY1pI5g6J2o+UHZukSkBREbdFUPFDGi
-        ChPyIzv58nmXZak/vfhPWLwqWA==
-X-Google-Smtp-Source: APiQypISek1IPy+jAQOGlaH56xuChWRuYb25GbvP3uat/f4peaskDtn/5XiUSDZwhQjmFfcr8uVYFQ==
-X-Received: by 2002:ac2:522e:: with SMTP id i14mr2628298lfl.140.1587142492816;
-        Fri, 17 Apr 2020 09:54:52 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id e8sm16891517lja.3.2020.04.17.09.54.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 09:54:52 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id A16F9100AEA; Fri, 17 Apr 2020 19:54:51 +0300 (+03)
-Date:   Fri, 17 Apr 2020 19:54:51 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S1727966AbgDQQzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:55:33 -0400
+Received: from muru.com ([72.249.23.125]:49980 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727840AbgDQQzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 12:55:32 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 3D9B48047;
+        Fri, 17 Apr 2020 16:56:17 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Adam Ford <aford173@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Tero Kristo <t-kristo@ti.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH, RFC] x86/mm/pat: Restore large pages after fragmentation
-Message-ID: <20200417165451.y2mj7ta3rqtxjcdc@box>
-References: <20200416213229.19174-1-kirill.shutemov@linux.intel.com>
- <20200417154714.GI20730@hirez.programming.kicks-ass.net>
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/14] Update omaps to use drivers/clocksource timers
+Date:   Fri, 17 Apr 2020 09:55:05 -0700
+Message-Id: <20200417165519.4979-1-tony@atomide.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417154714.GI20730@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 05:47:14PM +0200, Peter Zijlstra wrote:
-> On Fri, Apr 17, 2020 at 12:32:29AM +0300, Kirill A. Shutemov wrote:
-> > +static void cpa_restore_large_pages(struct cpa_data *cpa,
-> > +		struct list_head *pgtables)
-> > +{
-> > +	unsigned long start, addr, end;
-> > +	int i;
-> > +
-> 
-> > +	start = __cpa_addr(cpa, 0);
-> > +	end = start + PAGE_SIZE * cpa->numpages;
-> > +
-> > +	for (addr = start; addr >= start && addr < end; addr += PUD_SIZE)
-> > +		restore_large_pages(addr, pgtables);
-> 
-> Isn't that loop slightly broken?
-> 
-> Consider:
-> 
-> 	         s                     e
-> 	|---------|---------|---------|---------|
->                  a0        a1        a2        a3
-> 
-> Where s,e are @start,@end resp. and a# are the consecutive values of
-> @addr with PUD sized steps.
-> 
-> Then, since a3 is >= @end, we'll not take that iteration and we'll not
-> try and merge that last PUD, even though we possibly could. One fix is
-> to truncate @start (and with that @addr) to the beginning of the PUD.
+Hi all,
 
-... or round_up() end. I'll fix it.
+Here's a series of changes to udpate omaps to use drivers/clocksource
+timers for the 32k counter and dmtimer and to remove the old legacy
+platform code. Please review and test.
 
-> Also, I'm afraid that with my proposal this loop needs to do PMD size
-> steps. In that regard your version does make some sense. But it is
-> indeed less efficient for small ranges.
-> 
-> One possible fix is to pass @start,@end into the
-> restore/reconstruct/collapse such that we can iterate the minimal set of
-> page-tables for each level.
+Daniel, if the the first two patches look OK after review, maybe you
+can again set up an immutable branch for the first two patches against
+v5.7-rc1 that I can merge in?
 
-Yeah, I'll rework it.
+Regards,
 
-I just realized I missed TLB flush: we need to flush TLB twice here. First
-to get rid of all TLB entires for change we've made (before
-reconstruction) and then the second time to get rid of small page TLB
-entries. That's unfortunate.
+Tony
+
+
+Tony Lindgren (14):
+  clocksource/drivers/timer-ti-32k: Add support for initializing
+    directly
+  clocksource/drivers/timer-ti-dm: Add clockevent and clocksource
+    support
+  clk: ti: dm816: enable sysclk6_ck on init
+  bus: ti-sysc: Ignore timer12 on secure omap3
+  ARM: OMAP2+: Add omap_init_time_of()
+  ARM: dts: Configure system timers for am335x
+  ARM: dts: Configure system timers for am437x
+  ARM: dts: Configure system timers for omap4
+  ARM: dts: Configure system timers for omap5 and dra7
+  ARM: dts: Configure system timers for omap3
+  ARM: dts: Configure system timers for ti81xx
+  ARM: dts: Configure system timers for omap2
+  ARM: OMAP2+: Drop old timer code for dmtimer and 32k counter
+  bus: ti-sysc: Timers no longer need legacy quirk handling
+
+ .../devicetree/bindings/timer/ti,timer.txt    |   2 +
+ arch/arm/boot/dts/am33xx-l4.dtsi              |   2 -
+ arch/arm/boot/dts/am33xx.dtsi                 |  12 +
+ arch/arm/boot/dts/am3517.dtsi                 |  16 +-
+ arch/arm/boot/dts/am4372.dtsi                 |  12 +
+ arch/arm/boot/dts/am437x-l4.dtsi              |   3 -
+ arch/arm/boot/dts/dm814x.dtsi                 |  66 +-
+ arch/arm/boot/dts/dm816x.dtsi                 |  70 ++-
+ arch/arm/boot/dts/dra7-l4.dtsi                |   5 -
+ arch/arm/boot/dts/dra7.dtsi                   |   6 +
+ arch/arm/boot/dts/omap2.dtsi                  |  38 +-
+ arch/arm/boot/dts/omap2420.dtsi               |  65 +-
+ arch/arm/boot/dts/omap2430.dtsi               |  65 +-
+ arch/arm/boot/dts/omap3-beagle.dts            |  16 +
+ arch/arm/boot/dts/omap3-devkit8000.dts        |  16 +
+ arch/arm/boot/dts/omap3.dtsi                  | 130 +++-
+ arch/arm/boot/dts/omap4-l4.dtsi               |   2 -
+ arch/arm/boot/dts/omap4.dtsi                  |   6 +
+ arch/arm/boot/dts/omap5-l4.dtsi               |   2 -
+ arch/arm/boot/dts/omap5.dtsi                  |   6 +
+ arch/arm/mach-omap2/Makefile                  |   4 +-
+ arch/arm/mach-omap2/board-generic.c           |  32 +-
+ arch/arm/mach-omap2/common.h                  |   7 +
+ arch/arm/mach-omap2/omap_hwmod_2420_data.c    |  20 -
+ arch/arm/mach-omap2/omap_hwmod_2430_data.c    |  19 -
+ .../omap_hwmod_2xxx_interconnect_data.c       |   8 -
+ .../mach-omap2/omap_hwmod_2xxx_ipblock_data.c |  47 --
+ .../omap_hwmod_33xx_43xx_common_data.h        |   2 -
+ .../omap_hwmod_33xx_43xx_interconnect_data.c  |   8 -
+ .../omap_hwmod_33xx_43xx_ipblock_data.c       |  62 --
+ arch/arm/mach-omap2/omap_hwmod_33xx_data.c    |  10 -
+ arch/arm/mach-omap2/omap_hwmod_3xxx_data.c    | 146 +----
+ arch/arm/mach-omap2/omap_hwmod_43xx_data.c    |  45 --
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c    |  90 ---
+ arch/arm/mach-omap2/omap_hwmod_54xx_data.c    |  89 ---
+ arch/arm/mach-omap2/omap_hwmod_7xx_data.c     | 176 ------
+ arch/arm/mach-omap2/omap_hwmod_81xx_data.c    |  74 ---
+ arch/arm/mach-omap2/omap_hwmod_common_data.h  |   3 -
+ arch/arm/mach-omap2/timer.c                   | 568 +-----------------
+ drivers/bus/ti-sysc.c                         |  25 +-
+ drivers/clk/ti/clk-816x.c                     |   1 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/timer-ti-32k.c            |  48 +-
+ drivers/clocksource/timer-ti-dm-systimer.c    | 468 +++++++++++++++
+ include/clocksource/timer-ti-dm.h             |   1 +
+ 45 files changed, 1016 insertions(+), 1478 deletions(-)
+ create mode 100644 drivers/clocksource/timer-ti-dm-systimer.c
 
 -- 
- Kirill A. Shutemov
+2.26.1
