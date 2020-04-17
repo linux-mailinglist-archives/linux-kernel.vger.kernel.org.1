@@ -2,120 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749641AE172
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCA51AE17F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgDQPqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:46:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:53060 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728542AbgDQPqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:46:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F0C81FB;
-        Fri, 17 Apr 2020 08:46:19 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 920063F73D;
-        Fri, 17 Apr 2020 08:46:16 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 16:46:14 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jann Horn <jannh@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 04/12] scs: disable when function graph tracing is
- enabled
-Message-ID: <20200417154613.GB9529@lakrids.cambridge.arm.com>
-References: <20191018161033.261971-1-samitolvanen@google.com>
- <20200416161245.148813-1-samitolvanen@google.com>
- <20200416161245.148813-5-samitolvanen@google.com>
- <20200417100039.GS20730@hirez.programming.kicks-ass.net>
- <20200417144620.GA9529@lakrids.cambridge.arm.com>
- <20200417152645.GH20730@hirez.programming.kicks-ass.net>
+        id S1729465AbgDQPrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:47:39 -0400
+Received: from forward103j.mail.yandex.net ([5.45.198.246]:60787 "EHLO
+        forward103j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728593AbgDQPrj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 11:47:39 -0400
+Received: from mxback5j.mail.yandex.net (mxback5j.mail.yandex.net [IPv6:2a02:6b8:0:1619::10e])
+        by forward103j.mail.yandex.net (Yandex) with ESMTP id A8E5D674067E;
+        Fri, 17 Apr 2020 18:47:35 +0300 (MSK)
+Received: from myt5-95c1fb78270f.qloud-c.yandex.net (myt5-95c1fb78270f.qloud-c.yandex.net [2a02:6b8:c12:1725:0:640:95c1:fb78])
+        by mxback5j.mail.yandex.net (mxback/Yandex) with ESMTP id zQhxuX0lGc-lZ0GrXhw;
+        Fri, 17 Apr 2020 18:47:35 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1587138455;
+        bh=eVjqG5u9j8b2zXtHBxXLWbpWQ20qTDLLjfd+HHxSLhI=;
+        h=In-Reply-To:Subject:Cc:To:From:References:Date:Message-ID;
+        b=t4zbscD8+tdjl730jMIAeghgThkWvEYn/2UMo23d57Ovd0Yj8m0I1pz16BJy6pRvf
+         Qdlbj2qAmwQMI3A7bwB6uOux3DMHu4pN7lzLn0Qbt0+Hni/kViXATniVHwG67eaqZM
+         u5iWDzN5d0e/3ATV39gkhVnIahMv/robo+TMC66I=
+Authentication-Results: mxback5j.mail.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt5-95c1fb78270f.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 3teiP5AzpD-lX2KZxKw;
+        Fri, 17 Apr 2020 18:47:33 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Date:   Fri, 17 Apr 2020 18:46:52 +0300
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Nikita Shubin <NShubin@topcon.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] remoteproc: imx_rproc: set pc on start
+Message-ID: <20200417184652.00002590@maquefel.me>
+In-Reply-To: <CANLsYkxeL+a43eDzwJjXyFBFSwRVXjiYd4TcTbEcuuj+wgEZdw@mail.gmail.com>
+References: <20200304142628.8471-1-NShubin@topcon.com>
+        <20200406113310.3041-1-nikita.shubin@maquefel.me>
+        <20200406113310.3041-2-nikita.shubin@maquefel.me>
+        <20200414164519.GA24061@xps15>
+        <20200417151132.00005f8c@maquefel.me>
+        <CANLsYkxeL+a43eDzwJjXyFBFSwRVXjiYd4TcTbEcuuj+wgEZdw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417152645.GH20730@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 05:26:45PM +0200, Peter Zijlstra wrote:
-> On Fri, Apr 17, 2020 at 03:46:21PM +0100, Mark Rutland wrote:
-> > > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > > index 691a552c2cc3..c53cb9025ad2 100644
-> > > > --- a/arch/Kconfig
-> > > > +++ b/arch/Kconfig
-> > > > @@ -542,6 +542,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
-> > > >  
-> > > >  config SHADOW_CALL_STACK
-> > > >  	bool "Clang Shadow Call Stack"
-> > > > +	depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
-> > > >  	depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
-> > > >  	help
-> > > >  	  This option enables Clang's Shadow Call Stack, which uses a
-> >  
-> > > AFAICT you also need to kill KRETPROBES, which plays similar games.
-> > 
-> > Hmm... how does KREPROBES work? If you can only mess with the return
-> > address when probing the first instruction in the function, it'll just
-> > work for SCS or pointer authentication, as the LR is used at that
-> > instant. If KRETPROBES tries to mess with the return address elsewhere
-> > it'd be broken today...
+On Fri, 17 Apr 2020 09:37:42 -0600
+Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+
+> On Fri, 17 Apr 2020 at 06:12, Nikita Shubin
+> <nikita.shubin@maquefel.me> wrote:
+> >
+> > On Tue, 14 Apr 2020 10:45:19 -0600
+> > Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+> >
+> > > Hi Nikita,
+> > >
+> > > On Mon, Apr 06, 2020 at 02:33:08PM +0300,
+> > > nikita.shubin@maquefel.me wrote:
+> > > > In case elf file interrupt vector is not supposed to be at
+> > > > OCRAM_S, it is needed to write elf entry point to OCRAM_S +
+> > > > 0x4, to boot M4 firmware.
+> > > >
+> > > > Otherwise firmware located anywhere besides OCRAM_S won't boot.
+> > > >
+> > > > The firmware must set stack poiner as first instruction:
+> > > >
+> > > > Reset_Handler:
+> > > >     ldr   sp, = __stack      /* set stack pointer */
+> > > >
+> > > > Signed-off-by: Nikita Shubin <NShubin@topcon.com>
+> > >
+> > > The address in the SoB has to match what is found in the "From:"
+> > > field of the email header.  Checkpatch is complaining about that,
+> > > something I would have expected to be fixed before sending this
+> > > set out.
+> > >
+> > > > ---
+> > > >  drivers/remoteproc/imx_rproc.c | 16 +++++++++++++++-
+> > > >  1 file changed, 15 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/remoteproc/imx_rproc.c
+> > > > b/drivers/remoteproc/imx_rproc.c index
+> > > > 3e72b6f38d4b..bebc58d0f711 100644 ---
+> > > > a/drivers/remoteproc/imx_rproc.c +++
+> > > > b/drivers/remoteproc/imx_rproc.c @@ -45,6 +45,8 @@
+> > > >
+> > > >  #define IMX7D_RPROC_MEM_MAX                8
+> > > >
+> > > > +#define IMX_BOOT_PC                        0x4
+> > > > +
+> > > >  /**
+> > > >   * struct imx_rproc_mem - slim internal memory structure
+> > > >   * @cpu_addr: MPU virtual address of the memory region
+> > > > @@ -85,6 +87,7 @@ struct imx_rproc {
+> > > >     const struct imx_rproc_dcfg     *dcfg;
+> > > >     struct imx_rproc_mem
+> > > > mem[IMX7D_RPROC_MEM_MAX]; struct clk
+> > > > *clk;
+> > > > +   void __iomem                    *bootreg;
+> > > >  };
+> > > >
+> > > >  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+> > > > @@ -162,11 +165,16 @@ static int imx_rproc_start(struct rproc
+> > > > *rproc) struct device *dev = priv->dev;
+> > > >     int ret;
+> > > >
+> > > > +   /* write entry point to program counter */
+> > > > +   writel(rproc->bootaddr, priv->bootreg);
+> > >
+> > > What happens on all the other IMX systems where this fix is not
+> > > needed?  Will they continue to work properly?
+> >
+> > Mathieu you are totally correct imx6/imx7 use different addresses
+> > they boot.
+> >
+> > For imx7:
+> > | On i.MX 7Dual/7Solo, the boot vector for the Cortex-M4 core is
+> > located | at the start of the OCRAM_S (On Chip RAM - Secure) whose
+> > address is | 0x0018_0000 from Cortex-A7.
+> >
+> > For imx6:
+> > | The Boot vector for the Cortex-M4 core is located at the start of
+> > the | TCM_L whose address is 0x007F_8000 from the Cortex-A9. This
+> > is a | different location than on the i.MX 7Dual/7Solo
+> >
+> > But on imx7 0x0 is translated to 0x0018_0000 by imx_rproc_da_to_va,
+> > and on imx7 0x0 is translated to 0x007F_8000, using
+> > imx_rproc_att_imx7d and imx_rproc_att_imx6sx respectively.
 > 
-> To be fair, I've not looked at the arm64 implementation. x86 does gross
-> things like ftrace does. On x86 ftrace_graph and kretprobe also can't
-> be on at the same time for the same function, there's some yuck around
-> there.
+> My point here is that before your patch, this driver was running on
+> IMX platforms.  How does your work impact existing platforms that are
+> booting properly?
 
-I can imagine the same holds true for us there.
+Well it wasn't i am pretty sure it wasn't used at all or questions
+about boot process should have to be raised earlier.
 
-> Rostedt was recently talking about cleaning some of that up.
+If we look into the first patch introduced by Oleksij Rempel
+https://lore.kernel.org/patchwork/cover/799614/
+we can that the program he used is located at 0x0018_0000 so he didn't
+have any problems with Entry Point and stack pointer being at
+0x0018_0000 and 0x0018_0004 respectively.
+
+But as i am trying to emphasize, IF elf is not supposed to be located
+starting at 0x0018_0000 it won't boot at all.
+
+Citing Oleksij:
+
+| no, currently my priority is to provide basic functionality with easy 
+| understandable target code and dependencies.
+
+Moreover it seems not tested on IMX6 by anyone. 
+
+I can limit functionality only to IMX7, until i lay hands on IMX6
+with m4 co-proc - is this is what desired ?
+
 > 
-> But if kretprobe can work on arm64, then ftrace_graph can too, but I
-> think that links back to what you said earlier, you didn't want more
-> ftrace variants or something.
+> >
+> > I have no information about IMX8 (i have found none available
+> > publicity), but should be the same as Cortex-M boots from 0x0.
+> >
+> > >
+> > > > +
+> > > >     ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
+> > > >                              dcfg->src_mask, dcfg->src_start);
+> > > >     if (ret)
+> > > >             dev_err(dev, "Failed to enable M4!\n");
+> > > >
+> > > > +   dev_info(&rproc->dev, "Started from 0x%x\n",
+> > > > rproc->bootaddr); +
+> > > >     return ret;
+> > > >  }
+> > > >
+> > > > @@ -182,6 +190,9 @@ static int imx_rproc_stop(struct rproc
+> > > > *rproc) if (ret)
+> > > >             dev_err(dev, "Failed to stop M4!\n");
+> > > >
+> > > > +   /* clear entry points */
+> > > > +   writel(0, priv->bootreg);
+> > > > +
+> > > >     return ret;
+> > > >  }
+> > > >
+> > > > @@ -243,7 +254,8 @@ static void *imx_rproc_da_to_va(struct rproc
+> > > > *rproc, u64 da, int len) static const struct rproc_ops
+> > > > imx_rproc_ops = { .start            = imx_rproc_start,
+> > > >     .stop           = imx_rproc_stop,
+> > > > -   .da_to_va       = imx_rproc_da_to_va,
+> > > > +   .da_to_va       = imx_rproc_da_to_va,
+> > > > +   .get_boot_addr  = rproc_elf_get_boot_addr,
+> > >
+> > > How is this useful?  Sure it will set rproc->bootaddr in
+> > > rproc_fw_boot() but what good does that do when it is invariably
+> > > set again in imx_rproc_start() ?
+> > >
+> > > >  };
+> > > >
+> > > >  static int imx_rproc_addr_init(struct imx_rproc *priv,
+> > > > @@ -360,6 +372,8 @@ static int imx_rproc_probe(struct
+> > > > platform_device *pdev) goto err_put_rproc;
+> > > >     }
+> > > >
+> > > > +   priv->bootreg = imx_rproc_da_to_va(rproc, IMX_BOOT_PC,
+> > > > sizeof(u32)); +
+> > > >     /*
+> > > >      * clk for M4 block including memory. Should be
+> > > >      * enabled before .start for FW transfer.
+> > > > --
+> > > > 2.25.1
+> > > >
+> >
 
-I just want to avoid yet another implementation of the underlying
-mechanism. For DYNAMIC_FTRACE_WITH_REGS we can mess with the LR before
-pauth or SCS sees it, so those definitely work.
-
-If KRETPROBES works by messing with the LR at the instnat the function
-is entered, that should work similarly. If it works by replacing the
-RET it should also work out since any pauth/SCS work will have been
-undone by that point. If it attempts to mess with the return address in
-the middle of a function then it's not reliable today.
-
-I'll take a look, since 
-
-> > > And doesn't BPF also do stuff like this?
-> > 
-> > Can BPF mess with return addresses now!?
-> 
-> At least on x86 I think it does. But what do I know, I can't operate
-> that stuff. Rostedt might know.
-
-Sounds like I might need to do some digging...
-
-Mark.
