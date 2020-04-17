@@ -2,217 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C304C1AE268
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6321AE271
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgDQQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:44:06 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42140 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgDQQoF (ORCPT
+        id S1726869AbgDQQos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:44:48 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53213 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726498AbgDQQos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:44:05 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03HGi2TM068609;
-        Fri, 17 Apr 2020 11:44:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587141842;
-        bh=C5ZM4aWfGtnuHTTZhSX2+Ie3wR/ZWNt+wWMfl4WFyjA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=I8TsQw5wscZJzhL59S3kv1u03/ko87NgrRv5Nv0IkzxyPIEVBvm+dB+rnjKVEbNFE
-         +eP8KgVWp1D6VHHrOP1/9a5ewGPTtcKCcU7giky1I3zj9fm4R8acYYpLMA6ahxJure
-         Da/JyVm797QdnsH0EhCwRLaf9hFZotdo8HveW7IM=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03HGi1SA056616
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Apr 2020 11:44:02 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 17
- Apr 2020 11:44:01 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 17 Apr 2020 11:44:01 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03HGi14L095536;
-        Fri, 17 Apr 2020 11:44:01 -0500
-Subject: Re: [PATCH 1/2] remoteproc: drop memset when loading elf segments
-To:     Peng Fan <peng.fan@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     "ohad@wizery.com" <ohad@wizery.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <1586420572-28353-1-git-send-email-peng.fan@nxp.com>
- <20200410012034.GU20625@builder.lan>
- <AM0PR04MB44816C59A9BE84465AC8F2C388DE0@AM0PR04MB4481.eurprd04.prod.outlook.com>
- <20200411015104.GJ576963@builder.lan>
- <AM0PR04MB4481CF4ACD86C69B329D5F2188DD0@AM0PR04MB4481.eurprd04.prod.outlook.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <07eb5b9f-60cd-6555-1904-7b348bdc43f2@ti.com>
-Date:   Fri, 17 Apr 2020 11:43:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <AM0PR04MB4481CF4ACD86C69B329D5F2188DD0@AM0PR04MB4481.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 17 Apr 2020 12:44:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587141887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=FFr7Xpb7/1UqdoZBjTKNeIgRsFQa+LGb0mOrrAFMJFY=;
+        b=PzpfaCEAnd4iBWwWnxx3RiNb7pvLnsO7Vno4qQCv8xQRjl35xzn+WJuy6nJa2J7Ct36LSb
+        PlOIz5V50pQOd2oSvpEqmzU+xG7PvDz4tg+hKZ0PBBPckjIDjma+ViJ/57ktvZHILqKwO/
+        lSctwX5Rne7Zir12nXV0jrTpW34SmYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-uWHtHPv_NXmCRHfLaDQP3g-1; Fri, 17 Apr 2020 12:44:45 -0400
+X-MC-Unique: uWHtHPv_NXmCRHfLaDQP3g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89D2B1934100;
+        Fri, 17 Apr 2020 16:44:14 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 007331001920;
+        Fri, 17 Apr 2020 16:44:13 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: [PATCH 0/3] KVM: x86: move nested-related kvm_x86_ops to a separate struct
+Date:   Fri, 17 Apr 2020 12:44:10 -0400
+Message-Id: <20200417164413.71885-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/20 4:05 AM, Peng Fan wrote:
-> 
->> Subject: Re: [PATCH 1/2] remoteproc: drop memset when loading elf
->> segments
->>
->> On Thu 09 Apr 18:29 PDT 2020, Peng Fan wrote:
->>
->>> Hi Bjorn,
->>>
->>>> Subject: Re: [PATCH 1/2] remoteproc: drop memset when loading elf
->>>> segments
->>>>
->>>> On Thu 09 Apr 01:22 PDT 2020, Peng Fan wrote:
->>>>
->>>>> To arm64, "dc      zva, dst" is used in memset.
->>>>> Per ARM DDI 0487A.j, chapter C5.3.8 DC ZVA, Data Cache Zero by VA,
->>>>>
->>>>> "If the memory region being zeroed is any type of Device memory,
->>>>> this instruction can give an alignment fault which is prioritized
->>>>> in the same way as other alignment faults that are determined by
->>>>> the memory type."
->>>>>
->>>>> On i.MX platforms, when elf is loaded to onchip TCM area, the
->>>>> region is ioremapped, so "dc zva, dst" will trigger abort.
->>>>>
->>>>> Since memset is not strictly required, let's drop it.
->>>>>
->>>>
->>>> This would imply that we trust that the firmware doesn't expect
->>>> remoteproc to zero out the memory, which we've always done. So I
->>>> don't think we can say that it's not required.
->>>
->>> Saying an image runs on a remote core needs Linux to help zero out BSS
->>> section, this not make sense to me.
->>
->> Maybe not, but it has always done it, so if there's firmware out there that
->> depends on it such change would break them..
-> 
-> Got it.
-> 
->>
->>> My case is as following, I need to load section 7 data.
->>> I no need to let remoteproc to memset section 8/9/10/11/12, the
->>> firmware itself could handle that. Just because the memsz is larger
->>> than filesz, remoreproc must memset?
->>
->> By having a PT_LOAD segment covering these I think it's reasonable to
->> assume that the ELF loader should be able to touch the associated memory.
->>
->>> Section Headers:
->>>    [Nr] Name              Type            Addr     Off    Size
->> ES Flg Lk Inf Al
->>>    [ 0]                   NULL            00000000 000000
->> 000000 00      0   0  0
->>>    [ 1] .interrupts       PROGBITS        1ffe0000 010000 000240 00
->> A  0   0  4
->>>    [ 2] .resource_table   PROGBITS        1ffe0240 010240 000058 00
->> A  0   0  1
->>>    [ 3] .text             PROGBITS        1ffe02a0 0102a0 009ccc 00
->> AX  0   0 16
->>>    [ 4] .ARM              ARM_EXIDX       1ffe9f6c 019f6c 000008
->> 00  AL  3   0  4
->>>    [ 5] .init_array       INIT_ARRAY      1ffe9f74 019f74 000004 04
->> WA  0   0  4
->>>    [ 6] .fini_array       FINI_ARRAY      1ffe9f78 019f78 000004 04
->> WA  0   0  4
->>>    [ 7] .data             PROGBITS        1fff9240 029240 000084
->> 00  WA  0   0  4
->>>    [ 8] .ncache.init      PROGBITS        1fff92c4 0292c4 000000 00
->> W  0   0  1
->>>    [ 9] .ncache           NOBITS          1fff92c4 0292c4 000a80
->> 00  WA  0   0  4
->>>    [10] .bss              NOBITS          1fff9d44 0292c4 01f5c0
->> 00  WA  0   0  4
->>>    [11] .heap             NOBITS          20019304 0292c4 000404
->> 00  WA  0   0  1
->>>    [12] .stack            NOBITS          20019708 0292c4 000400
->> 00  WA  0   0  1
->>>
->>>>
->>>>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
->>>>> ---
->>>>>   drivers/remoteproc/remoteproc_elf_loader.c | 7 ++-----
->>>>>   1 file changed, 2 insertions(+), 5 deletions(-)
->>>>>
->>>>> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c
->>>>> b/drivers/remoteproc/remoteproc_elf_loader.c
->>>>> index 16e2c496fd45..cc50fe70d50c 100644
->>>>> --- a/drivers/remoteproc/remoteproc_elf_loader.c
->>>>> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
->>>>> @@ -238,14 +238,11 @@ int rproc_elf_load_segments(struct rproc
->>>>> *rproc,
->>>> const struct firmware *fw)
->>>>>   			memcpy(ptr, elf_data + offset, filesz);
->>>>>
->>>>>   		/*
->>>>> -		 * Zero out remaining memory for this segment.
->>>>> +		 * No need zero out remaining memory for this segment.
->>>>>   		 *
->>>>>   		 * This isn't strictly required since dma_alloc_coherent already
->>>>> -		 * did this for us. albeit harmless, we may consider removing
->>>>> -		 * this.
->>>>> +		 * did this for us.
->>>>
->>>> In the case of recovery this comment is wrong, we do not
->>>> dma_alloc_coherent() the carveout during a recovery.
->>>
->>> Isn't the it the firmware's job to memset the region?
->>>
->>
->> I'm not aware of this being a documented requirement, we've always done it
->> here for them, so removing this call would be a change in behavior.
->>
->>>>
->>>> And in your case you ioremapped existing TCM, so it's never true.
->>>>
->>>>>   		 */
->>>>> -		if (memsz > filesz)
->>>>> -			memset(ptr + filesz, 0, memsz - filesz);
->>>>
->>>> So I think you do want to zero out this region. Question is how we do it...
->>>
->>> I have contacted our M4 owners, we no need clear it from Linux side.
->>
->> And I think _most_ firmware out there, like yours, does clear BSS etc during
->> initialization.
->>
->>> We also support booting m4 before booting Linux, at that case, Linux
->>> has noting to do with memset. It is just I try loading m4 image with
->>> Linux, and met the issue that memset trigger abort.
->>>
->>
->> Please see the proposal for attaching to already running remoteproc's from
->> Mathieu. I don't expect that you want to load your PROGBITS either in this
->> case?
-> 
-> No need to load for early boot case. It is just userspace load trigger
-> kernel panic, because memset arm64 could not work for ioremapped memory.
-> 
-> How about adding ops hooks for memset and memcpy to let driver
-> have their own implementation?
+Patch 3 follows the lead of the kvm_pmu_ops and moves callbacks related
+to nested virtualization to a separate struct.  Patches 1 and 2 are
+preparation (patch 1 mostly makes some lines shorter, while patch 2
+avoids semantic changes in KVM_GET_SUPPORTED_HV_CPUID).
 
-Hi Peng,
+While this reintroduces some pointer chasing that was removed in
+afaf0b2f9b80 ("KVM: x86: Copy kvm_x86_ops by value to eliminate layer
+of indirection", 2020-03-31), the cost is small compared to retpolines
+and anyway most of the callbacks are not even remotely on a fastpath.
+In fact, only check_nested_events should be called during normal VM
+runtime.  When static calls are merged into Linux my plan is to use them
+instead of callbacks, and that will finally make things fast again by
+removing the retpolines.
 
-The trick is to use the ioremap_wc() variant instead of ioremap() in 
-your platform driver while mapping the TCMs. I know multiple folks have 
-run into this issue. This is what most of the remoteproc drivers use, 
-and mmio-sram driver also uses the same.
+Thanks,
 
-regards
-Suman
+Paolo
+
+Paolo Bonzini (3):
+  KVM: x86: check_nested_events is never NULL
+  KVM: eVMCS: check if nesting is enabled
+  KVM: x86: move nested-related kvm_x86_ops to a separate struct
+
+ arch/x86/include/asm/kvm_host.h | 29 +++++++++++++++-------------
+ arch/x86/kvm/hyperv.c           |  4 ++--
+ arch/x86/kvm/svm/nested.c       |  6 +++++-
+ arch/x86/kvm/svm/svm.c          | 13 +++++--------
+ arch/x86/kvm/svm/svm.h          |  3 ++-
+ arch/x86/kvm/vmx/evmcs.c        |  4 +++-
+ arch/x86/kvm/vmx/nested.c       | 16 +++++++++-------
+ arch/x86/kvm/vmx/nested.h       |  2 ++
+ arch/x86/kvm/vmx/vmx.c          |  7 +------
+ arch/x86/kvm/x86.c              | 34 ++++++++++++++++-----------------
+ 10 files changed, 62 insertions(+), 56 deletions(-)
+
+-- 
+2.18.2
+
