@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29921AD7EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4534D1AD7F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729522AbgDQHsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:48:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:56236 "EHLO verein.lst.de"
+        id S1729526AbgDQHsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:48:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56056 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729049AbgDQHsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:48:12 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E8D2E68BEB; Fri, 17 Apr 2020 09:48:07 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 09:48:07 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/6] firmware_loader: remove unused exports
-Message-ID: <20200417074807.GA19954@lst.de>
-References: <20200417064146.1086644-1-hch@lst.de> <20200417064146.1086644-3-hch@lst.de> <20200417074330.GB23015@kroah.com>
+        id S1728925AbgDQHsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:48:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id BE889AF0D;
+        Fri, 17 Apr 2020 07:48:33 +0000 (UTC)
+Subject: Re: [PATCH] MAINTAINERS: Update PARAVIRT_OPS_INTERFACE and
+ VMWARE_HYPERVISOR_INTERFACE
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To:     Deep Shah <sdeep@vmware.com>, linux-kernel@vger.kernel.org
+Cc:     pv-drivers@vmware.com, thellstrom@vmware.com,
+        virtualization@lists.linux-foundation.org
+References: <20200416234520.GA1700@prme-mon-cfl-mlw-07>
+ <84f719e9-3af0-4242-f50b-990371d4768a@suse.com>
+Message-ID: <155feefc-598b-023d-1e78-56cbce9f4a1a@suse.com>
+Date:   Fri, 17 Apr 2020 09:48:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417074330.GB23015@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <84f719e9-3af0-4242-f50b-990371d4768a@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 09:43:30AM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Apr 17, 2020 at 08:41:42AM +0200, Christoph Hellwig wrote:
-> > Neither fw_fallback_config nor firmware_config_table are used by modules.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  drivers/base/firmware_loader/fallback_table.c | 2 --
-> >  1 file changed, 2 deletions(-)
+On 17.04.20 08:22, Jürgen Groß wrote:
+> On 17.04.20 01:45, Deep Shah wrote:
+>> Thomas Hellstrom will be handing over VMware's maintainership of these
+>> interfaces to Deep Shah.
+>>
+>> Signed-off-by: Deep Shah <sdeep@vmware.com>
+>> Acked-by: Thomas Hellstrom <thellstrom@vmware.com>
 > 
-> I have no objection to this patch, and can take it in my tree, but I
-> don't see how it fits in with your larger patch series...
+> Acked-by: Juergen Gross <jgross@suse.com>
 
-firmware_config_table is a sysctl table, and I looked for users but
-didn't find them.  But yes, it isn't really related and you can take
-it separately.
+BTW, I can carry this patch through the Xen tree if nobody else wants to
+take it...
+
+
+Juergen
