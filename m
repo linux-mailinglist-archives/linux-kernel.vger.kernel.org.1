@@ -2,143 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA271ADEB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860771ADEC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgDQNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 09:49:28 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:36358 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730731AbgDQNt1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 09:49:27 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03HDnQJf064011;
-        Fri, 17 Apr 2020 08:49:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587131366;
-        bh=KmKWZbZ++U2YoDUvAF4xgjoYK/bNPGnbSjD/7SOQcxc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WDLt3SaPQOr85mDKx/bGSOySyNCbdxeALFwqQH1EoLFdfU7LSPaeJwmnKVaS2yROf
-         pTo6FVpaR2/xMU4BXkpC/H70O7N+Lr9Zt22BPT8v8vEjRUrmQdzgbtxyOEliceFxy+
-         KtD9KkLaxPVu2uYSP2UExT/4EqEqxfpiG1p0s01Y=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03HDnQdq055914
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Apr 2020 08:49:26 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 17
- Apr 2020 08:49:26 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 17 Apr 2020 08:49:26 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03HDnPXh119310;
-        Fri, 17 Apr 2020 08:49:26 -0500
-Subject: Re: [PATCH v2 6/7] remoteproc: Split rproc_ops allocation from
- rproc_alloc()
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <bjorn.andersson@linaro.org>, <ohad@wizery.com>
-CC:     <elder@linaro.org>, <Markus.Elfring@web.de>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200415204858.2448-1-mathieu.poirier@linaro.org>
- <20200415204858.2448-7-mathieu.poirier@linaro.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <61497230-40ec-ffc6-3cc0-e5cb754ac859@ti.com>
-Date:   Fri, 17 Apr 2020 08:49:25 -0500
+        id S1730803AbgDQNuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 09:50:54 -0400
+Received: from mga05.intel.com ([192.55.52.43]:36603 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730709AbgDQNux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 09:50:53 -0400
+IronPort-SDR: J8WaFWawGcvGQz4HoftGNIsuiqDX+4fpj3vGJmk13qzrG3pW4fPGXFTHpNMVUvABnou3c6KJFK
+ V3rWmY+tjfwg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 06:50:52 -0700
+IronPort-SDR: 8S2Sl+OVIIW6N2PNKyR0yP64+1w762U7E5P28etcHAl0DsgqVFbAi/WKBr2IpyS2wt6JrVBwAY
+ m6lUOU6G7LuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
+   d="scan'208";a="279690455"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by orsmga008.jf.intel.com with ESMTP; 17 Apr 2020 06:50:50 -0700
+Subject: Re: [PATCH 11/16] perf intel-pt: Add support for synthesizing
+ callchains for regular events
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org
+References: <20200401101613.6201-1-adrian.hunter@intel.com>
+ <20200401101613.6201-12-adrian.hunter@intel.com>
+ <20200416151443.GA2650@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <5b8f28f5-968f-bfff-68af-ed0350a90765@intel.com>
+Date:   Fri, 17 Apr 2020 16:50:00 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200415204858.2448-7-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200416151443.GA2650@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/20 3:48 PM, Mathieu Poirier wrote:
-> Make the rproc_ops allocation a function on its own in an effort
-> to clean up function rproc_alloc().
+On 16/04/20 6:14 pm, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Apr 01, 2020 at 01:16:08PM +0300, Adrian Hunter escreveu:
+>> Currently, callchains can be synthesized only for synthesized events.
+>> Support also synthesizing callchains for regular events.
 > 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Reviewed-by: Alex Elder <elder@linaro.org>
-> ---
->   drivers/remoteproc/remoteproc_core.c | 32 +++++++++++++++++-----------
->   1 file changed, 20 insertions(+), 12 deletions(-)
+> This is super cool, I wonder if we shouldn't do it automatically or just
+> adding a new type of callchains, i.e.:
 > 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 0bfa6998705d..a5a0ceb86b3f 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -2001,6 +2001,25 @@ static int rproc_alloc_firmware(struct rproc *rproc,
->   	return 0;
->   }
->   
-> +static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
-> +{
-> +	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
-> +	if (!rproc->ops)
-> +		return -ENOMEM;
-> +
-> +	/* Default to ELF loader if no load function is specified */
-> +	if (!rproc->ops->load) {
-> +		rproc->ops->load = rproc_elf_load_segments;
-> +		rproc->ops->parse_fw = rproc_elf_load_rsc_table;
-> +		rproc->ops->find_loaded_rsc_table =
-> +						rproc_elf_find_loaded_rsc_table;
-> +		rproc->ops->sanity_check = rproc_elf_sanity_check;
-
-So, the conditional check on sanity check is dropped and the callback 
-switched here without the changelog reflecting anything why. You should 
-just rebase this patch on top of Clement's patch [1] that removes the 
-conditional flag, and also usage from the remoteproc platform drivers.
-
-regards
-Suman
-
-[1] https://patchwork.kernel.org/patch/11462013/
-
-
-> +		rproc->ops->get_boot_addr = rproc_elf_get_boot_addr;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   /**
->    * rproc_alloc() - allocate a remote processor handle
->    * @dev: the underlying device
-> @@ -2040,8 +2059,7 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->   	if (rproc_alloc_firmware(rproc, name, firmware))
->   		goto free_rproc;
->   
-> -	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
-> -	if (!rproc->ops)
-> +	if (rproc_alloc_ops(rproc, ops))
->   		goto free_firmware;
->   
->   	rproc->name = name;
-> @@ -2068,16 +2086,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->   
->   	atomic_set(&rproc->power, 0);
->   
-> -	/* Default to ELF loader if no load function is specified */
-> -	if (!rproc->ops->load) {
-> -		rproc->ops->load = rproc_elf_load_segments;
-> -		rproc->ops->parse_fw = rproc_elf_load_rsc_table;
-> -		rproc->ops->find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table;
-> -		if (!rproc->ops->sanity_check)
-> -			rproc->ops->sanity_check = rproc_elf32_sanity_check;
-> -		rproc->ops->get_boot_addr = rproc_elf_get_boot_addr;
-> -	}
-> -
->   	mutex_init(&rproc->lock);
->   
->   	INIT_LIST_HEAD(&rproc->carveouts);
+> 	perf record --call-graph pt uname
 > 
+> Should take care of all the details, i.e. do the extra steps below
+> behind the scenes.
+> 
+> Possibly even find out that the workload specified was built with
+> -fomit-frame-pointers, that the hardware has Intel PT and do all behind
+> the scenes for:
+> 
+> 	perf record -g uname
+> 
+> Alternatively we could take some less seemingly far fetched approach and
+> make this configurable via:
+> 
+> 	perf config call-graph.record-mode=pt
+> 
+> What do you think?
+
+Adding a --call-graph option sounds reasonable, and config to define default
+callgraph options.  But this was done at Andi Kleen's request, so he may
+want to comment.
 
