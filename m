@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0961B1AD8BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058EE1AD8AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgDQIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729749AbgDQIgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:36:00 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0F8C061A0C;
-        Fri, 17 Apr 2020 01:36:00 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id ay1so729613plb.0;
-        Fri, 17 Apr 2020 01:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4QLRhq6ncbx33txx+lUViw8XofjfiGIYfFDkLE6el/g=;
-        b=YVgpdYoiePmKpjkxliGptstAUcntBCNcszJR4qwGZQTaLz/TeDVK+uCgOqvkKgBshz
-         4aXtaWtvivVpQdrRYXNVxAIRDU+C1oa+F5f0pihUBgxsINbo5zi4vsPOP7Syx0e0NA7u
-         aM2GVtro1ThlIhW1LZxc0DvrgYh2gjurdWQwFS/8/n1ATtkHivQQyeIcXtf2ZNDpw+FT
-         ACtDGHsHAvV5fq9aVRzmSMncXOTsKtAq9l3tFp02efakUxXXTZ0pvc0y7Bp5gaqnp9+N
-         mbrFnBlrEBnerUATsfirA5y5XBa4ySPfPCYLsR5OAXynyVVzUMjjSREOEaWrJa9HZ+Dp
-         gxkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4QLRhq6ncbx33txx+lUViw8XofjfiGIYfFDkLE6el/g=;
-        b=H+o71ORluC6oWIhq6lH9nu4vAbs27lGQN+FvQGumr9JV9SCr+uc9kjivY/kvNOQeLI
-         GnnSqYlAgE+wQve5eoyhD12R9WcTgySiRgOx5HpwWm7CNRahvSGZ5DVXRnbe9CrG9vGP
-         nvJxYuUEq2btASYWPdDOLXlQJUbiS2dQ+Qou7EDpOXUHCFjBHrSgGz+wwgU3Pv+e4roe
-         S85NY9CBPSrrZTIUaSpCmIS0u5UByJ4l/1hslSpOskEUUgIm+Kuf/5VB66+qzIEz2R+J
-         a4NzDqzLHvNVPTSANyOceLZ3vFjAW+1xancUPSt4GJV1MsSocLn/l3u8aIuqakx3KmYN
-         vqtA==
-X-Gm-Message-State: AGi0PuYqwXluFRPebJcNlVzAGW3EefkBCH5tbpw3HwSlKhpII1e71wjZ
-        S9tNS3zGJL4FCjZPf2TUVDFSbu9b
-X-Google-Smtp-Source: APiQypJioufUW7TEzYboWDBC3g+W2H1t4WIJr8JpXuTGtM3FNYBy6u4DU/LQafZmo5+wXrkf0vEQ7A==
-X-Received: by 2002:a17:902:9a82:: with SMTP id w2mr2445787plp.117.1587112559701;
-        Fri, 17 Apr 2020 01:35:59 -0700 (PDT)
-Received: from MacBook-Pro.mshome.net ([122.224.153.228])
-        by smtp.googlemail.com with ESMTPSA id ev5sm2690522pjb.1.2020.04.17.01.35.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Apr 2020 01:35:59 -0700 (PDT)
-From:   Yanhu Cao <gmayyyha@gmail.com>
-To:     jlayton@kernel.org
-Cc:     sage@redhat.com, idryomov@gmail.com, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yanhu Cao <gmayyyha@gmail.com>
-Subject: [PATCH] ceph: if we are blacklisted, __do_request returns directly
-Date:   Fri, 17 Apr 2020 16:34:48 +0800
-Message-Id: <20200417083448.9122-1-gmayyyha@gmail.com>
-X-Mailer: git-send-email 2.24.2 (Apple Git-127)
+        id S1729806AbgDQIfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729747AbgDQIfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:35:09 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E7F32137B;
+        Fri, 17 Apr 2020 08:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587112509;
+        bh=yusZIU8mnWR2xm+iXYWk1S59cU56InGPz/fLvOeZP2I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WGjscELBkH1BA17qa3XYHeYAu0h3Za6/uxMsCdQyZ5JB1TbOgYXei5YT+CiRmINN6
+         dEwsSG45FEIUgpNpva8absThIDUhh3sfHbpuq+1cgUj4/a5rl+Nd65DhIpthEpNaZ9
+         DR0yv6JsIa3O1ASJ1Bk9lya4MhrhjcT7ElIjvSe4=
+Date:   Fri, 17 Apr 2020 10:35:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     sy0816.kang@samsung.com
+Cc:     mchehab@kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: v4l2-compat-ioctl32.c: copy reserved2 field in
+ get_v4l2_buffer32
+Message-ID: <20200417083506.GB141762@kroah.com>
+References: <CGME20200417025205epcas2p46d33e64f2de49041d2ca68ecc98fc83e@epcas2p4.samsung.com>
+ <20200417024543.66785-1-sy0816.kang@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417024543.66785-1-sy0816.kang@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
----
- fs/ceph/mds_client.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On Fri, Apr 17, 2020 at 11:45:23AM +0900, sy0816.kang@samsung.com wrote:
+> From: Sunyoung Kang <sy0816.kang@samsung.com>
+> 
+> get_v4l2_buffer32() didn't copy reserved2 field from userspace to driver.
+> So the reserved2 value is not received through compat-ioctl32 in driver.
+> This patch copy reserved2 field of v4l2_buffer in get_v4l2_buffer32().
+> 
+> Signed-off-by: Sunyoung Kang <sy0816.kang@samsung.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index 486f91f9685b..d2ea755b7c02 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -2708,6 +2708,11 @@ static void __do_request(struct ceph_mds_client *mdsc,
- 
- 	put_request_session(req);
- 
-+	if (mdsc->fsc->blacklisted) {
-+		err = -EACCES;
-+		goto finish;
-+	}
-+
- 	mds = __choose_mds(mdsc, req, &random);
- 	if (mds < 0 ||
- 	    ceph_mdsmap_get_state(mdsc->mdsmap, mds) < CEPH_MDS_STATE_ACTIVE) {
--- 
-2.24.2 (Apple Git-127)
+What driver is using the reserved fields?  They should be ignored as
+they are "reserved" for future use.
 
+thanks,
+
+greg k-h
