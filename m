@@ -2,189 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4511ADA8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D4C1ADA98
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728366AbgDQJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728102AbgDQJ4u (ORCPT
+        id S1728731AbgDQJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:58:00 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:55670 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgDQJ6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:56:50 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF43C061A0F;
-        Fri, 17 Apr 2020 02:56:49 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jPNjq-0005g1-Nv; Fri, 17 Apr 2020 11:56:46 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 606541C03A9;
-        Fri, 17 Apr 2020 11:56:46 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 09:56:46 -0000
-From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] irqchip/gic-v4.1: Add support for VPENDBASER's
- Dirty+Valid signaling
-Cc:     Zenghui Yu <yuzenghui@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Fri, 17 Apr 2020 05:58:00 -0400
+Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 58873dd5037093b4; Fri, 17 Apr 2020 11:57:56 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        USB list <linux-usb@vger.kernel.org>,
+        Linux-pm mailing list <linux-pm@vger.kernel.org>,
+        Kernel development list <linux-kernel@vger.kernel.org>
+Subject: Re: lockdep warning in urb.c:363 usb_submit_urb
+Date:   Fri, 17 Apr 2020 11:57:55 +0200
+Message-ID: <2040116.cccRbkeLkK@kreacher>
+In-Reply-To: <Pine.LNX.4.44L0.2004161036410.14937-100000@netrider.rowland.org>
+References: <Pine.LNX.4.44L0.2004161036410.14937-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Message-ID: <158711740603.28353.4181366508646401603.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Thursday, April 16, 2020 5:18:15 PM CEST Alan Stern wrote:
+> Thanks for all your help straightening this out.  I think the end 
+> result will be a distinct improvement over the old code.
 
-Commit-ID:     96806229ca033f85310bc5c203410189f8a1d2ee
-Gitweb:        https://git.kernel.org/tip/96806229ca033f85310bc5c203410189f8a1d2ee
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Fri, 10 Apr 2020 11:13:26 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 16 Apr 2020 10:28:12 +01:00
+Yes, I believe so.
 
-irqchip/gic-v4.1: Add support for VPENDBASER's Dirty+Valid signaling
+> On Thu, 16 Apr 2020, Rafael J. Wysocki wrote:
+> 
+> > This means that the dev_pm_skip_resume() logic really is relatively
+> > straightforward:
+> >  - If the current transition is RESTORE, return "false".
+> >  - Otherwise, if the current transition is THAW, return the return value
+> >    of dev_pm_skip_suspend().
+> >  - Otherwise (so the current transition is RESUME which is the only remaining
+> >    case), return the logical negation of power.must_resume.
+> > 
+> > > Also, it would mean 
+> > > that a device whose subsystem doesn't know about power.may_skip_resume 
+> > > would never be allowed to stay in runtime suspend.
+> > 
+> > Not really, because I want the core to set power.may_skip_resume for the
+> > devices for which dev_pm_skip_suspend() returns "true" if the "suspend_late"
+> > subsystem-level callback is not present.  [It might be more consistent
+> > to simply set it for all devices for which dev_pm_skip_suspend() returns
+> > "true" and let the subsystems update it should they want to?  IOW, the
+> > default value of power.may_skip_resume could be the return value of
+> > dev_pm_skip_suspend()?]
+> 
+> How about this?  Let's set power.may_skip_resume to "true" for each
+> device before issuing ->prepare.
 
-When a vPE is made resident, the GIC starts parsing the virtual pending
-table to deliver pending interrupts. This takes place asynchronously,
-and can at times take a long while. Long enough that the vcpu enters
-the guest and hits WFI before any interrupt has been signaled yet.
-The vcpu then exits, blocks, and now gets a doorbell. Rince, repeat.
+Yes, it can be set to 'true' by default for all devices.
 
-In order to avoid the above, a (optional on GICv4, mandatory on v4.1)
-feature allows the GIC to feedback to the hypervisor whether it is
-done parsing the VPT by clearing the GICR_VPENDBASER.Dirty bit.
-The hypervisor can then wait until the GIC is ready before actually
-running the vPE.
+It doesn't need to be before ->prepare, it can be before ->suspend (as it
+is now).
 
-Plug the detection code as well as polling on vPE schedule. While
-at it, tidy-up the kernel message that displays the GICv4 optional
-features.
+> The subsystem can set it to "false"
+> if it wants to during any of the suspend-side callbacks.  Following the
+> ->suspend_noirq callback, the core will do the equivalent of:
+> 
+> 	dev->power.may_skip_resume &= dev_pm_skip_suspend(dev);
+> 
+> before propagating the flag.  Any subsystem changes to support this
+> should be minimal, since only ACPI and PCI currently use
+> may_skip_resume.
 
-Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/irqchip/irq-gic-v3-its.c   | 19 +++++++++++++++++++
- drivers/irqchip/irq-gic-v3.c       | 11 +++++++----
- include/linux/irqchip/arm-gic-v3.h |  2 ++
- 3 files changed, 28 insertions(+), 4 deletions(-)
+IMO it can be simpler even.
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 54d142c..affd325 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-iommu.h>
- #include <linux/efi.h>
- #include <linux/interrupt.h>
-+#include <linux/iopoll.h>
- #include <linux/irqdomain.h>
- #include <linux/list.h>
- #include <linux/log2.h>
-@@ -3672,6 +3673,20 @@ out:
- 	return IRQ_SET_MASK_OK_DONE;
- }
- 
-+static void its_wait_vpt_parse_complete(void)
-+{
-+	void __iomem *vlpi_base = gic_data_rdist_vlpi_base();
-+	u64 val;
-+
-+	if (!gic_rdists->has_vpend_valid_dirty)
-+		return;
-+
-+	WARN_ON_ONCE(readq_relaxed_poll_timeout(vlpi_base + GICR_VPENDBASER,
-+						val,
-+						!(val & GICR_VPENDBASER_Dirty),
-+						10, 500));
-+}
-+
- static void its_vpe_schedule(struct its_vpe *vpe)
- {
- 	void __iomem *vlpi_base = gic_data_rdist_vlpi_base();
-@@ -3702,6 +3717,8 @@ static void its_vpe_schedule(struct its_vpe *vpe)
- 	val |= vpe->idai ? GICR_VPENDBASER_IDAI : 0;
- 	val |= GICR_VPENDBASER_Valid;
- 	gicr_write_vpendbaser(val, vlpi_base + GICR_VPENDBASER);
-+
-+	its_wait_vpt_parse_complete();
- }
- 
- static void its_vpe_deschedule(struct its_vpe *vpe)
-@@ -3910,6 +3927,8 @@ static void its_vpe_4_1_schedule(struct its_vpe *vpe,
- 	val |= FIELD_PREP(GICR_VPENDBASER_4_1_VPEID, vpe->vpe_id);
- 
- 	gicr_write_vpendbaser(val, vlpi_base + GICR_VPENDBASER);
-+
-+	its_wait_vpt_parse_complete();
- }
- 
- static void its_vpe_4_1_deschedule(struct its_vpe *vpe,
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 9dbc81b..d7006ef 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -873,6 +873,7 @@ static int __gic_update_rdist_properties(struct redist_region *region,
- 	gic_data.rdists.has_rvpeid &= !!(typer & GICR_TYPER_RVPEID);
- 	gic_data.rdists.has_direct_lpi &= (!!(typer & GICR_TYPER_DirectLPIS) |
- 					   gic_data.rdists.has_rvpeid);
-+	gic_data.rdists.has_vpend_valid_dirty &= !!(typer & GICR_TYPER_DIRTY);
- 
- 	/* Detect non-sensical configurations */
- 	if (WARN_ON_ONCE(gic_data.rdists.has_rvpeid && !gic_data.rdists.has_vlpis)) {
-@@ -893,10 +894,11 @@ static void gic_update_rdist_properties(void)
- 	if (WARN_ON(gic_data.ppi_nr == UINT_MAX))
- 		gic_data.ppi_nr = 0;
- 	pr_info("%d PPIs implemented\n", gic_data.ppi_nr);
--	pr_info("%sVLPI support, %sdirect LPI support, %sRVPEID support\n",
--		!gic_data.rdists.has_vlpis ? "no " : "",
--		!gic_data.rdists.has_direct_lpi ? "no " : "",
--		!gic_data.rdists.has_rvpeid ? "no " : "");
-+	if (gic_data.rdists.has_vlpis)
-+		pr_info("GICv4 features: %s%s%s\n",
-+			gic_data.rdists.has_direct_lpi ? "DirectLPI " : "",
-+			gic_data.rdists.has_rvpeid ? "RVPEID " : "",
-+			gic_data.rdists.has_vpend_valid_dirty ? "Valid+Dirty " : "");
- }
- 
- /* Check whether it's single security state view */
-@@ -1620,6 +1622,7 @@ static int __init gic_init_bases(void __iomem *dist_base,
- 	gic_data.rdists.has_rvpeid = true;
- 	gic_data.rdists.has_vlpis = true;
- 	gic_data.rdists.has_direct_lpi = true;
-+	gic_data.rdists.has_vpend_valid_dirty = true;
- 
- 	if (WARN_ON(!gic_data.domain) || WARN_ON(!gic_data.rdists.rdist)) {
- 		err = -ENOMEM;
-diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
-index 765d9b7..6c36b6c 100644
---- a/include/linux/irqchip/arm-gic-v3.h
-+++ b/include/linux/irqchip/arm-gic-v3.h
-@@ -243,6 +243,7 @@
- 
- #define GICR_TYPER_PLPIS		(1U << 0)
- #define GICR_TYPER_VLPIS		(1U << 1)
-+#define GICR_TYPER_DIRTY		(1U << 2)
- #define GICR_TYPER_DirectLPIS		(1U << 3)
- #define GICR_TYPER_LAST			(1U << 4)
- #define GICR_TYPER_RVPEID		(1U << 7)
-@@ -686,6 +687,7 @@ struct rdists {
- 	bool			has_vlpis;
- 	bool			has_rvpeid;
- 	bool			has_direct_lpi;
-+	bool			has_vpend_valid_dirty;
- };
- 
- struct irq_domain;
+Because power.may_skip_resume is taken into account along with
+MAY_SKIP_RESUME and the driver setting the latter must be prepared
+for skipping its resume callbacks regardless of the suspend side of
+things, they may always be skipped (and the device may be left in
+suspend accordingly) if there is a reason to avoid doing that.
+
+The core doesn't know about those reasons, so it has no reason to
+touch power.may_skip_resume after setting it at the outset and then
+whoever sees a reason why these callbacks should run (the subsystem
+or the driver) needs to clear power.may_skip_resume (and clearing it
+more than once obviously makes no difference).
+
+> > > What about the runtime PM usage counter?
+> > 
+> > Yes, it applies to that too.
+> > 
+> > Of course, if dev_pm_skip_suspend() returns "true", the usage counter cannot
+> > be greater than 1 (for the given device as well as for any dependent devices).
+> 
+> Well, in theory the subsystem could call pm_runtime_get_noresume().  I 
+> can't imagine why it would want to, though.
+
+Indeed.
+
+> So here's what we've got:
+> 
+> > > Transition   Conditions for dev_pm_skip_resume() to return "true"
+> > > ----------   ----------------------------------------------------
+> > > 
+> > > RESTORE      Never
+> > 
+> > Right.
+> 
+> >  THAW	         dev_pm_skip_suspend() returns "true".
+> 
+> >  RESUME        power.must_resume is clear (which requires
+> >                  MAY_SKIP_RESUME and power.may_skip_resume to be set and
+> >                  the runtime usage counter to be = 1, and which 
+> >                  propagates up from dependent devices)
+> > 
+> > Nothing else is really strictly required IMO.
+> 
+> This seems very clear and simple.  And I will repeat here some of the 
+> things posted earlier, to make the description more complete:
+> 
+> 	During the suspend side, for each of the
+> 	{suspend,freeze,poweroff}_{late,noirq} phases: If
+> 	dev_pm_skip_suspend() returns true then the subsystem should
+> 	not invoke the driver's callback, and if there is no subsystem
+> 	callback then the core will not invoke the driver's callback.
+> 
+> 	During the resume side, for each of the
+> 	{resume,thaw,restore}_{early,noirq} phases: If
+> 	dev_pm_skip_resume() returns true then the subsystem should
+> 	not invoke the driver's callback, and if there is no subsystem
+> 	callback then the core will not invoke the driver's callback.
+> 
+> 	dev_pm_skip_suspend() will return "true" if SMART_SUSPEND is
+> 	set and the device's runtime status is "suspended".
+> 
+> 	For dev_pm_skip_resume() and power.must_resume, see above.
+> 
+> 	At the start of the {resume,thaw,restore}_noirq phase, if
+> 	dev_pm_skip_resume() returns true then the core will set the
+> 	runtime status to "suspended".  Otherwise it will set the
+> 	runtime status to "active".  If this is not what the subsystem
+> 	or driver wants, it must update the runtime status itself.
+> 
+> For this to work properly, we will have to rely on subsystems/drivers
+> to call pm_runtime_resume() during the suspend/freeze transition if
+> SMART_SUSPEND is clear.
+
+That has been the case forever, though.
+
+> Otherwise we could have the following scenario:
+> 
+> Device A has a child B, and both are runtime suspended when hibernation
+> starts.  Suppose that the SMART_SUSPEND flag is set for A but not for
+> B, and suppose that B's subsystem/driver neglects to call
+> pm_runtime_resume() during the FREEZE transition.  Then during the THAW
+> transition, dev_pm_skip_resume() will return "true" for A and "false"  
+> for B.  This will lead to an error when the core tries to set B's
+> runtime status to "active" while A's status is "suspended".
+> 
+> One way to avoid this is to have the core make the pm_runtime_resume()  
+> call, but you have said that you don't like that approach.  Any 
+> suggestions?
+
+Because the core has not been calling pm_runtime_resume() during system-wide
+suspend for devices with SMART_SUSPEND clear, that should not be changed or
+we'll see regressions.
+
+I know for a fact that some drivers expect the core to be doing nothing
+with respect to that.
+
+> Should the core take some special action following ->freeze_noirq if
+> the runtime status is "suspended" and SMART_SUSPEND is clear?
+
+Again, anything like that would change the current behavior which may
+not be expected by at least some drivers, so I wouldn't change that.
+
+IOW, SMART_SUSPEND clear means to the core that *it* need not care about
+the suspend side at all (because somebody else will do that).
+
+
+
