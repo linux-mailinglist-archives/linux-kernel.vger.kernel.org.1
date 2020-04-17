@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3361ADB8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C3B1ADB97
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729801AbgDQKtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:49:02 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57522 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729301AbgDQKtC (ORCPT
+        id S1729783AbgDQKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729238AbgDQKul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:49:02 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HAluJO027657;
-        Fri, 17 Apr 2020 12:48:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : content-type : content-id :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=iaKOkD8P3V9vzBfI10Q5OH02fO1tCp/xIClsudvRayc=;
- b=AojqR0yUgJLEggzEyJNJcbFYUAtixBNt0sfjzgVA70WwmZOZSEQ1hIxyWuLEiua+ce6d
- upBUtUnkkt0nlGhKmXrjQ97Uvtj8hzzEeG99tuSmk8KLRtPp7/swlbNFIyBCKUZWWgGX
- eaX7h9lezY7diurQPhkkJLIlaEuWdTLqSf4Gi+aFR1q/04PAN5ahiQMbqVsZiAsGBNKI
- 8N/C8gUZptet33XqukunlUARxuzEXU2+ERLu5yaOqp8K0OGBuU4vuiafid+WRCcGcnPb
- gSRaor8E+yopxM8dn3s1rSuz+qpnHozPcEkDN5DUHngaO6bComVOVfUKJR0I3wBut7e8 gQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30dn760xw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Apr 2020 12:48:49 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EF62610002A;
-        Fri, 17 Apr 2020 12:48:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node3.st.com [10.75.127.18])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D34812AA9F0;
-        Fri, 17 Apr 2020 12:48:48 +0200 (CEST)
-Received: from SFHDAG6NODE2.st.com (10.75.127.17) by SFHDAG6NODE3.st.com
- (10.75.127.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
- 2020 12:48:48 +0200
-Received: from SFHDAG6NODE2.st.com ([fe80::a56f:c186:bab7:13d6]) by
- SFHDAG6NODE2.st.com ([fe80::a56f:c186:bab7:13d6%20]) with mapi id
- 15.00.1347.000; Fri, 17 Apr 2020 12:48:48 +0200
-From:   Patrice CHOTARD <patrice.chotard@st.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        "khilman@baylibre.com" <khilman@baylibre.com>,
-        Olof Johansson <olof@lixom.net>
-CC:     Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "arm@kernel.org" <arm@kernel.org>,
-        Patrice CHOTARD <patrice.chotard@st.com>,
-        Alain VOLMAT <alain.volmat@st.com>
-Subject: [GIT PULL] STi DT update for v5.8 round 1
-Thread-Topic: [GIT PULL] STi DT update for v5.8 round 1
-Thread-Index: AQHWFKXGRE1MaIpH7Eq9IiX+E6fFPQ==
-Date:   Fri, 17 Apr 2020 10:48:48 +0000
-Message-ID: <6fd7974d-a5f2-f7cd-fa7a-d761fac75b3c@st.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.48]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <387F1F919E614F4591A0EA8A484238EC@st.com>
-Content-Transfer-Encoding: base64
+        Fri, 17 Apr 2020 06:50:41 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA2AC061A0C;
+        Fri, 17 Apr 2020 03:50:41 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id z6so828850plk.10;
+        Fri, 17 Apr 2020 03:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Je/eLmrKhS3hdneu92S4cmYbnB84FusrgAZoZiZ1TmY=;
+        b=BBjGapnQsGPSilyRxQstsGW/Tdd3ArqijwGKdeFMjiK+edNoW1X135JfO/AxTH3g+V
+         lWvkkrbv5jqrlhXzNZs+DVHpQw4ZdOEDqEHVtlud2p2K7NoxC1xB7NwGj3yLaoDZeHJV
+         59J/ovTk1OQsRqvHaSaiVgAu4HpQmWHGdL1K7RS0DP8qmeHYtpMYTXm0QGnL8SvL+iHH
+         K3wUvqyl8/nLq2ueQzzFbdpvT5IC9L+4DNaLqRtGb9ucRj0C+hHTVic4+1vqgX/ISK9v
+         PvZjVoNZafw+UlP8rZz4ION2Y1iVVxoDtk8fu2lMuc66duOMdbALlmPjWHIi+evdZEq2
+         3Gig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Je/eLmrKhS3hdneu92S4cmYbnB84FusrgAZoZiZ1TmY=;
+        b=dOcCZ7ME01YITBRl2jjxM73AQMIyw75+h1gZgDh7zZ5cfE6blW/JgvAdjDstHlDvdy
+         P1rrjIsbZUrInJFv+n1OARf+ImFc/WfNfz0ybxvmNviaPDRljnaLpGOGOk12vGlLiDqV
+         lVzpbK/iBKuIO9NqgLu0fFzX9Fecf7mrTTJr2SgiLxpa4T974tI5kRGXOAGaxYY99w1e
+         dtfCpNYcBNmzs6aLxVt5DuHMfagGqbcCEgbK7J6EsOFlb0M02U+5h0MtGsU2S8fIpPya
+         ZFxHTEnZhcXnc7KncOxCrqt1utGUhVq7rloQYx4qjC7k9qbzfMx0FqKhLVj8UkH0f+GW
+         XdtQ==
+X-Gm-Message-State: AGi0PuZIWZUY+DE6kABwVTsof9bfj4yFpOru6Co/iC3cdsjbTS8m2LEt
+        o0P2Jh68LbsEr1tFVyX/6Nu3Rq93lepN+SMbTfY=
+X-Google-Smtp-Source: APiQypLBwl6Gl7xdzmrIHTDp0wku+POYI6v/91l0vZXpBhC76ZlTjBtazQvlJtnJti5DsGxyTnbzzsF2RUN7oK9sNMQ=
+X-Received: by 2002:a17:90a:364c:: with SMTP id s70mr3597676pjb.143.1587120640825;
+ Fri, 17 Apr 2020 03:50:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-17_03:2020-04-17,2020-04-17 signatures=0
+References: <20200417080549.23751-1-brgl@bgdev.pl> <20200417080549.23751-2-brgl@bgdev.pl>
+In-Reply-To: <20200417080549.23751-2-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 17 Apr 2020 13:50:29 +0300
+Message-ID: <CAHp75Vf_kBfb_oLB2Dp48iYiDgs2k_RgzpudTvQMoxNYGMz3TA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] irq: make irq_domain_reset_irq_data() available
+ even for non-V2 users
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQXJuZCwgT2xvZiwgS2V2aW4NCg0KUGxlYXNlIGZpbmQgU1RpIGR0IHVwZGF0ZSBmb3IgdjUu
-OCByb3VuZCAxOg0KDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgOGYzZDlm
-MzU0Mjg2NzQ1Yzc1MTM3NGY1ZjFmY2FmZWU2YjNmMzEzNjoNCg0KICBMaW51eCA1LjctcmMxICgy
-MDIwLTA0LTEyIDEyOjM1OjU1IC0wNzAwKQ0KDQphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVw
-b3NpdG9yeSBhdDoNCg0KICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
-bC9naXQvcGNob3RhcmQvc3RpLmdpdCBzdGktZHQtZm9yLXY1Ljgtcm91bmQxDQoNCmZvciB5b3Ug
-dG8gZmV0Y2ggY2hhbmdlcyB1cCB0byA3ZjIxYTg1MDg1YjcyMTFlYzFkMTU4M2QxMDkxMmFkMjcy
-YWI3NmJjOg0KDQogIGR0czogYXJtOiBzdGloNDA3LWZhbWlseTogcmVtb3ZlIGR1cGxpY2F0ZWQg
-cm5nIG5vZGVzICgyMDIwLTA0LTE3IDEwOjE3OjU0ICswMjAwKQ0KDQotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpTVGkgRFQg
-Zml4ZXM6DQotIFJlbW92ZSBkdXBsaWNhdGVkIHJuZyBub2RlIGluIHN0aWg0MDctZmFtaWx5LmR0
-c2kNCi0gRml4IGNvbXBsYWluIGFib3V0IElSUV9UWVBFX05PTkUgdXNhZ2UgaW4gc3RpaDQxOC5k
-dHNpDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0NCkFsYWluIFZvbG1hdCAoMik6DQogICAgICBkdHM6IGFybTogc3RpaDQx
-ODogRml4IGNvbXBsYWluIGFib3V0IElSUV9UWVBFX05PTkUgdXNhZ2UNCiAgICAgIGR0czogYXJt
-OiBzdGloNDA3LWZhbWlseTogcmVtb3ZlIGR1cGxpY2F0ZWQgcm5nIG5vZGVzDQoNCiBhcmNoL2Fy
-bS9ib290L2R0cy9zdGloNDA3LWZhbWlseS5kdHNpIHwgMTQgLS0tLS0tLS0tLS0tLS0NCiBhcmNo
-L2FybS9ib290L2R0cy9zdGloNDE4LmR0c2kgICAgICAgIHwgIDggKysrKy0tLS0NCiAyIGZpbGVz
-IGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pDQo=
+On Fri, Apr 17, 2020 at 11:13 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> irq_domain_reset_irq_data() doesn't modify the parent data, so it can be
+> made available even if irq domain hierarchy is not being built. We'll
+> subsequently use it in irq_sim code.
+
+
+> @@ -475,7 +476,6 @@ extern int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
+>  extern void irq_domain_free_irqs(unsigned int virq, unsigned int nr_irqs);
+>  extern int irq_domain_activate_irq(struct irq_data *irq_data, bool early);
+>  extern void irq_domain_deactivate_irq(struct irq_data *irq_data);
+> -
+>  static inline int irq_domain_alloc_irqs(struct irq_domain *domain,
+>                         unsigned int nr_irqs, int node, void *arg)
+>  {
+
+Seems extra hunk slipped to the patch.
+
+-- 
+With Best Regards,
+Andy Shevchenko
