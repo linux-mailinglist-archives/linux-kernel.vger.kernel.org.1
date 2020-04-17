@@ -2,126 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7741AE5B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268D81AE5B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730426AbgDQTV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 15:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730352AbgDQTV7 (ORCPT
+        id S1729928AbgDQTTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 15:19:48 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50216 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728260AbgDQTTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 15:21:59 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177D8C061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 12:21:59 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id ay1so1325472plb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 12:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zMiXOyiLL5u4PWujbjCmvRqsaMSoEDouVZ76G40OsaI=;
-        b=HOiEvn1CydEmRhsVyHkWxtwxyhRBVsz7FG8B3D11JoSSKOkTdYpUxLwVzX+cVt5lJz
-         NaNF3KChUSzVBLCGZkljHGR1IQ0eijL0VDieRE3Fp2vp1N7ISY//759ujAneqrpH8yrR
-         5ZO6ifVnydwKmU2A7i59lmaLzKI68y1+ko1vKsBwJ0J+0BPTOc32FSzercDDxGkdaIl0
-         d/a/9x89kuSakmVgjCmIQkVWTGg3NCuE3DPRsx9vqEAkurk8keqaPatIf0Xmmb5+U3S4
-         nkV2fovh4MJPftXgcSEMHaXwYVEafC4nBqtu+aUcR38/7kY8WYARpmJtvxlcZTC4ldQA
-         yRVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zMiXOyiLL5u4PWujbjCmvRqsaMSoEDouVZ76G40OsaI=;
-        b=qaKM6lHFjzQzATmy8zTe2wetm8ZPCg9Tqtae5E6ULBEp81SLhk+8z9xC2WSDPjjWVg
-         omh8vKPiCg9WoE4gaT6N4cJ80/drQgG2/pFXfzziGvb4qRVNgz0ZfHvMmqRCV7JG+rrL
-         yMJlxKiiEwE9Zao0YoYjiNcF1m77abihKlXrRa94gWRjPUCeVurkLudZGhx4AaUIxS6R
-         VWlk5ch1pgTAdzmFlk7sdNMI4bPGpYK/tfQOXk+XK4vOk7iWsO5W/U5IJOn0JrTccmJM
-         bK+i/CFp8OdMVgyulqjHFsfb97/+Lfy7UFYDhF2Kx/NSY/2fFw7js9tpvYL4JxZWt6LD
-         4scQ==
-X-Gm-Message-State: AGi0Pub0mwWvfy94ZN0Au5j9wbD6SKL7bxj0nslun7v7YC1hheZa6+iG
-        e/pfZrrxkAIa5o670XCNpj4v6w==
-X-Google-Smtp-Source: APiQypLCZ2gSD93SLEZLZ1nDN2rC1wWCt+YehOgoKcmEhMz8hMDxzJBnTZh3xOSbkmhbkcT/lDedfw==
-X-Received: by 2002:a17:902:6ac7:: with SMTP id i7mr4663865plt.116.1587151318406;
-        Fri, 17 Apr 2020 12:21:58 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id nu13sm6551802pjb.22.2020.04.17.12.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 12:21:57 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 13:21:55 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Peng Fan <peng.fan@nxp.com>, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH 2/2] remoteproc: use filesz as backup when translate
- memsz fail
-Message-ID: <20200417192155.GA6797@xps15>
-References: <1586420572-28353-1-git-send-email-peng.fan@nxp.com>
- <1586420572-28353-2-git-send-email-peng.fan@nxp.com>
- <20200410012226.GV20625@builder.lan>
+        Fri, 17 Apr 2020 15:19:48 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HJI2q5171302;
+        Fri, 17 Apr 2020 19:19:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=DddDipoAKPmmlgvP1sg97Rpg4mv9LGW+C80d1h3W6ec=;
+ b=I7htG83bvhKtkA89NMN7DzU2BDXkf96/CG1UCgWrkgvdBT6EvZe239Utpt4nkfn0yDXH
+ b+w0qkPPmxaTQJ0s0LcUPyj9K+9j+i44Hgay/mASxQK9lmdUHYDePVcy4tiNojm0ha8P
+ mQ4CSwMjP+UzqvVTWKpLsIySCvKMmWjIEMHs27nhfg1w+pXgjjToyLO2WkOoCrWfspbN
+ 3/vgz8lrtvT95kS8qPO4ozBuULlRpgL5TJiBsxO26KrfaD+EuSBi09ipQPnSwdH+Pimp
+ bPVk7wMdkDFx0GImCPVrZFV2FUw7WYV8WOZV0rmw135K9S/ERyxpGyZjEEyTanHLEDfy 0Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30e0aaecty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 19:19:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HJHadA158293;
+        Fri, 17 Apr 2020 19:19:28 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 30dn922stm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 19:19:27 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03HJJRvC014806;
+        Fri, 17 Apr 2020 19:19:27 GMT
+Received: from linux-1.home (/10.175.17.90)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Apr 2020 12:19:26 -0700
+Subject: Re: [PATCH v5 04/17] x86,ftrace: Fix ftrace_regs_caller() unwind
+To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        jpoimboe@redhat.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, mhiramat@kernel.org,
+        mbenes@suse.cz, jthierry@redhat.com
+References: <20200416114706.625340212@infradead.org>
+ <20200416115118.749606694@infradead.org>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <243918fd-fa54-a8e5-bc70-67bf2d9f16a9@oracle.com>
+Date:   Fri, 17 Apr 2020 21:24:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200410012226.GV20625@builder.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200416115118.749606694@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=790
+ suspectscore=2 malwarescore=0 spamscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=848 mlxscore=0 lowpriorityscore=0
+ suspectscore=2 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170145
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 06:22:26PM -0700, Bjorn Andersson wrote:
-> On Thu 09 Apr 01:22 PDT 2020, Peng Fan wrote:
-> 
-> > Since we no need memset if memsz is larger than filesz, we could
-> > use filesz for the da to va translation when memsz translation fail.
-> > 
-> 
-> To me this implies that the firmware has a segment that's larger than
-> the memory that it's going to run in. I think even if we're not writing
-> to the entire memsz, asking da_to_va for the entire memsz provides a
-> valuable sanity check.
-> 
-> Regards,
-> Bjorn
-> 
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  drivers/remoteproc/remoteproc_elf_loader.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
-> > index cc50fe70d50c..74d425a4b34c 100644
-> > --- a/drivers/remoteproc/remoteproc_elf_loader.c
-> > +++ b/drivers/remoteproc/remoteproc_elf_loader.c
-> > @@ -229,8 +229,16 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
-> >  		if (!ptr) {
-> >  			dev_err(dev, "bad phdr da 0x%llx mem 0x%llx\n", da,
-> >  				memsz);
-> > -			ret = -EINVAL;
-> > -			break;
-> > +
-> > +			ptr = rproc_da_to_va(rproc, da, filesz);
-> > +			if (!ptr) {
-> > +				dev_err(dev,
-> > +					"bad phdr da 0x%llx mem 0x%llx\n",
-> > +					da, filesz);
-> > +				ret = -EINVAL;
-> > +				break;
-> > +			}
-> > +
 
-Adding to Bjorn's comment, I think if rproc_da_to_va() fails with memsz but
-succeeds with filesz something went wrong with how memory was laid out in the
-DT or the ELF resources.  To me this patch offers the wrong solution - the
-focus should be on why rproc_da_to_va() fails.
+On 4/16/20 1:47 PM, Peter Zijlstra wrote:
+> The ftrace_regs_caller() trampoline does something 'funny' when there
+> is a direct-caller present. In that case it stuffs the 'direct-caller'
+> address on the return stack and then exits the function. This then
+> results in 'returning' to the direct-caller with the exact registers
+> we came in with -- an indirect tail-call without using a register.
+> 
+> This however (rightfully) confuses objtool because the function shares
+> a few instruction in order to have a single exit path, but the stack
+> layout is different for them, depending through which path we came
+> there.
+> 
+> This is currently cludged by forcing the stack state to the non-direct
+> case, but this generates actively wrong (ORC) unwind information for
+> the direct case, leading to potential broken unwinds.
+> 
+> Fix this issue by fully separating the exit paths. This results in
+> having to poke a second RET into the trampoline copy, see
+> ftrace_regs_caller_ret.
+> 
+> This brings us to a second objtool problem, in order for it to
+> perceive the 'jmp ftrace_epilogue' as a function exit, it needs to be
+> recognised as a tail call. In order to make that happen,
+> ftrace_epilogue needs to be the start of an STT_FUNC, so re-arrange
+> code to make this so.
+> 
+> Finally, a third issue is that objtool requires functions to exit with
+> the same stack layout they started with, which is obviously violated
+> in the direct case, employ the new HINT_RET_OFFSET to tell objtool
+> this is an expected exception.
+> 
+> Together, this results in generating correct ORC unwind information
+> for the ftrace_regs_caller() function and it's trampoline copies.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   arch/x86/kernel/ftrace.c    |   12 ++++++++++--
+>   arch/x86/kernel/ftrace_64.S |   32 +++++++++++++++-----------------
+>   2 files changed, 25 insertions(+), 19 deletions(-)
+> 
+> --- a/arch/x86/kernel/ftrace.c
+> +++ b/arch/x86/kernel/ftrace.c
+> @@ -282,7 +282,8 @@ static inline void tramp_free(void *tram
+>   
+>   /* Defined as markers to the end of the ftrace default trampolines */
+>   extern void ftrace_regs_caller_end(void);
+> -extern void ftrace_epilogue(void);
+> +extern void ftrace_regs_caller_ret(void);
+> +extern void ftrace_caller_end(void);
+>   extern void ftrace_caller_op_ptr(void);
+>   extern void ftrace_regs_caller_op_ptr(void);
+>   
+> @@ -334,7 +335,7 @@ create_trampoline(struct ftrace_ops *ops
+>   		call_offset = (unsigned long)ftrace_regs_call;
+>   	} else {
+>   		start_offset = (unsigned long)ftrace_caller;
+> -		end_offset = (unsigned long)ftrace_epilogue;
+> +		end_offset = (unsigned long)ftrace_caller_end;
+>   		op_offset = (unsigned long)ftrace_caller_op_ptr;
+>   		call_offset = (unsigned long)ftrace_call;
+>   	}
+> @@ -366,6 +367,13 @@ create_trampoline(struct ftrace_ops *ops
+>   	if (WARN_ON(ret < 0))
+>   		goto fail;
+>   
+> +	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
+> +		ip = trampoline + (ftrace_regs_caller_ret - ftrace_regs_caller);
 
-Thanks,
-Mathieu  
+It might be safer to use start_offset instead of ftrace_regs_caller (in
+case start_offset is ever changed to something different from ftrace_regs_caller
+in the future):
 
-> >  		}
-> >  
-> >  		/* put the segment where the remote processor expects it */
-> > -- 
-> > 2.16.4
-> > 
+          ip = trampoline + (ftrace_regs_caller_ret - start_offset);
+
+alex.
+
+> +		ret = probe_kernel_read(ip, (void *)retq, RET_SIZE);
+> +		if (WARN_ON(ret < 0))
+> +			goto fail;
+> +	}
+> +
+>   	/*
+>   	 * The address of the ftrace_ops that is used for this trampoline
+>   	 * is stored at the end of the trampoline. This will be used to
+> --- a/arch/x86/kernel/ftrace_64.S
+> +++ b/arch/x86/kernel/ftrace_64.S
+> @@ -157,8 +157,12 @@ SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBA
+>   	 * think twice before adding any new code or changing the
+>   	 * layout here.
+>   	 */
+> -SYM_INNER_LABEL(ftrace_epilogue, SYM_L_GLOBAL)
+> +SYM_INNER_LABEL(ftrace_caller_end, SYM_L_GLOBAL)
+>   
+> +	jmp ftrace_epilogue
+> +SYM_FUNC_END(ftrace_caller);
+> +
+> +SYM_FUNC_START(ftrace_epilogue)
+>   #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>   SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL)
+>   	jmp ftrace_stub
+> @@ -170,14 +174,12 @@ SYM_INNER_LABEL(ftrace_graph_call, SYM_L
+>    */
+>   SYM_INNER_LABEL_ALIGN(ftrace_stub, SYM_L_WEAK)
+>   	retq
+> -SYM_FUNC_END(ftrace_caller)
+> +SYM_FUNC_END(ftrace_epilogue)
+>   
+>   SYM_FUNC_START(ftrace_regs_caller)
+>   	/* Save the current flags before any operations that can change them */
+>   	pushfq
+>   
+> -	UNWIND_HINT_SAVE
+> -
+>   	/* added 8 bytes to save flags */
+>   	save_mcount_regs 8
+>   	/* save_mcount_regs fills in first two parameters */
+> @@ -233,7 +235,10 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+>   	movq ORIG_RAX(%rsp), %rax
+>   	movq %rax, MCOUNT_REG_SIZE-8(%rsp)
+>   
+> -	/* If ORIG_RAX is anything but zero, make this a call to that */
+> +	/*
+> +	 * If ORIG_RAX is anything but zero, make this a call to that.
+> +	 * See arch_ftrace_set_direct_caller().
+> +	 */
+>   	movq ORIG_RAX(%rsp), %rax
+>   	cmpq	$0, %rax
+>   	je	1f
+> @@ -244,20 +249,14 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+>   	movq %rax, MCOUNT_REG_SIZE(%rsp)
+>   
+>   	restore_mcount_regs 8
+> +	/* Restore flags */
+> +	popfq
+>   
+> -	jmp	2f
+> +SYM_INNER_LABEL(ftrace_regs_caller_ret, SYM_L_GLOBAL);
+> +	UNWIND_HINT_RET_OFFSET
+> +	jmp	ftrace_epilogue
+>   
+>   1:	restore_mcount_regs
+> -
+> -
+> -2:
+> -	/*
+> -	 * The stack layout is nondetermistic here, depending on which path was
+> -	 * taken.  This confuses objtool and ORC, rightfully so.  For now,
+> -	 * pretend the stack always looks like the non-direct case.
+> -	 */
+> -	UNWIND_HINT_RESTORE
+> -
+>   	/* Restore flags */
+>   	popfq
+>   
+> @@ -268,7 +267,6 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
+>   	 * to the return.
+>   	 */
+>   SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
+> -
+>   	jmp ftrace_epilogue
+>   
+>   SYM_FUNC_END(ftrace_regs_caller)
+> 
+> 
