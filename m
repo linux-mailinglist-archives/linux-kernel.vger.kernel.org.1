@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76961AE4E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E862B1AE4EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgDQSll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        id S1729095AbgDQSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727969AbgDQSlk (ORCPT
+        by vger.kernel.org with ESMTP id S1727969AbgDQSll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:41:40 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36927C061A0C;
-        Fri, 17 Apr 2020 11:41:40 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a25so4233880wrd.0;
-        Fri, 17 Apr 2020 11:41:40 -0700 (PDT)
+        Fri, 17 Apr 2020 14:41:41 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADF0C061A0C;
+        Fri, 17 Apr 2020 11:41:41 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x25so3929856wmc.0;
+        Fri, 17 Apr 2020 11:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2fCasJ2C+JC/HUKeTPHMgTsMvggIkNTYgPJZjR55RsU=;
-        b=LXPAvTODuV1mrN7GJOFr+aeOYLH/I4yhHZmBHhlvtFZi3pHvCGkvG371ONKh08DYBs
-         0EQYOXKOXY6VDC87dCc0DQkR6gdnRcWmQ6XzatNBI9cibBQEWj8xf1hoAjfjqP2oTccI
-         OtNXrfTchRt7BQmA6d15v0lzSaUxgkdEV0JUgEYnoMLlqSFqhZyDaY0sGVR9+RHKZiKK
-         jXaIAbiV9NnrssX/9tq9BtOzZulYgXZoFTeTP57WOSNgeAZPHyXpKX4bhpUa8lplaueX
-         SnirzxJglgw3QODNUjEkIplsRTLIE4VSx/R3SSid24vAn+i/CnAZo5l3ETMRXla5SLwe
-         YkNg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pDfj/QraDSKRnuL+EP//h6wcVnH2S8rr57iQRcR8OO4=;
+        b=tR8/oPjB9/ARC6Hww1D9hRyK/54LWHuBJ+pEdpKCepWwuReRyO2Nuab4w0rvaaHqK4
+         u8layFvzbJh1hpiDg2tCv5gBb6ylIeBOmfJM5ixjUs+Jro8434qaruah3qBH8byFQcva
+         Z8U2c/Fx3YrJu7x5fA58+yphQvt4/frOW6854zyDxZvbSvcu0aqEFeoUQMTTvSJT3jOm
+         l+zq2hQBC94+pkeNQrCTKmRE4lPv1e3iTsWVlXmy4FwnDdPY65zHBIEQt12kJRRiCN7F
+         0JAW3rLLWtskqYGDRpKtnZdseu5z5rLUSFUXpmvaxYbIc/w1yLBPrFcWTbeDsTCRw30i
+         Ui4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2fCasJ2C+JC/HUKeTPHMgTsMvggIkNTYgPJZjR55RsU=;
-        b=sAV4BE9R3n7cB3vTBrgSJ472tc1Riidm4YDs8yst3ESm2jMG5reAQEntlFWCl2pcM7
-         p650J5BciI7v5NRHHFI63QHFTOQVlEAX10O6MkF15UzwsjmVy7qCvP5bdenJicn0UnF0
-         gq4N7fpCeX+orcbud9uoLtPZnQqt0QCKlq3U5gx5LJZFR0sVMQ++KTzEzCFLAM8ssmwU
-         0/vSMDgGDst3uSdSlGBLrWN/NkQ5JUbVoKohTw1DKpZ+m7EJWpj3CrzWX0hVMspmTSr3
-         G3oCJi+bnqCNSlMu0wX+dKJxDXYmSCI3sGin/sdz9RspYq/pQlHYwxOAkduETZYTt8kM
-         p4eQ==
-X-Gm-Message-State: AGi0PuZEukYrjW7hY6iINaUzKFlFcnt6y84g484+IUenS/1GVVU3d6xW
-        pHyWDE6k2aZcBRogSocpDA0=
-X-Google-Smtp-Source: APiQypIIGUhAdLJvQZMeRku+d4KFp8njsgQOIbIzXEqczaUyWySh9fX7lU1ILP8NotRqPUayjCIXeg==
-X-Received: by 2002:a5d:51c6:: with SMTP id n6mr5298149wrv.314.1587148898835;
-        Fri, 17 Apr 2020 11:41:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pDfj/QraDSKRnuL+EP//h6wcVnH2S8rr57iQRcR8OO4=;
+        b=IRG3HpUHp4weXP2o9E64B6Im45yCx0JKRA2a5PHLjaq+3m547IkcxbvFPQ/mhFF1iz
+         jUHFwjxmvL7qjnhfKw97+WRBv2FNcxgzQYW4ftbvWpBjqf8f2yRsr12KeVdKrUs1a5Hg
+         g+zDIdjf0T4H6MQnvpkAJYL1ulzY70ArpRTUBX/IboTe3ktSgj56fGYNtaKVMtf2C9fV
+         Mjm9dlEaCFSKNkZ8CsSXaArZxhqihT/TzpssaguMMuiUK+rKDbldnggQ5oXytkK+D1GS
+         E9GupujN8AbeDxd6/szmQBev6+8P1UwwYZzUU0hK9+/J17w5MJoprgivnXesDCoJwSLo
+         0BVQ==
+X-Gm-Message-State: AGi0Puax3WTAwyiBXjmOd4JrthyMSURQ3nRYjJd/bcKHunSOytI0u5kl
+        ilF07qi2pRY870NI7PVCYr4=
+X-Google-Smtp-Source: APiQypK5zOAKZQ5Jv4qR6V0MqyvU1fbrwrOUGQZj8hr390Y8FhwQ0Ia7fSUa6KYL6mXnV95wrrnNkQ==
+X-Received: by 2002:a7b:c20f:: with SMTP id x15mr4506759wmi.2.1587148900114;
+        Fri, 17 Apr 2020 11:41:40 -0700 (PDT)
 Received: from localhost.localdomain (p200300F137142E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3714:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id c17sm33237391wrp.28.2020.04.17.11.41.37
+        by smtp.googlemail.com with ESMTPSA id c17sm33237391wrp.28.2020.04.17.11.41.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 11:41:38 -0700 (PDT)
+        Fri, 17 Apr 2020 11:41:39 -0700 (PDT)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
         linux-clk@vger.kernel.org
 Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 0/4] clk: meson8b: updates for video clocks / resets
-Date:   Fri, 17 Apr 2020 20:41:23 +0200
-Message-Id: <20200417184127.1319871-1-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 1/4] clk: meson: meson8b: Fix the first parent of vid_pll_in_sel
+Date:   Fri, 17 Apr 2020 20:41:24 +0200
+Message-Id: <20200417184127.1319871-2-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200417184127.1319871-1-martin.blumenstingl@googlemail.com>
+References: <20200417184127.1319871-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,47 +67,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the first batch of fixes and updates for the Meson8/8b/8m2
-clock controller driver.
+Use hdmi_pll_lvds_out as parent of the vid_pll_in_sel clock. It's not
+easy to see that the vendor kernel does the same, but it actually does.
+meson_clk_pll_ops in mainline still cannot fully recalculate all rates
+from the HDMI PLL registers because some register bits (at the time of
+writing it's unknown which bits are used for this) double the HDMI PLL
+output rate (compared to simply considering M, N and FRAC) for some (but
+not all) PLL settings.
 
-The first patch fixes the video clock hierarchy. Special thanks to
-Neil for providing a lot of details about the video clock tree!
+Update the vid_pll_in_sel parent so our clock calculation works for
+simple clock settings like the CVBS output (where no rate doubling is
+going on). The PLL ops need to be fixed later on for more complex clock
+settings (all HDMI rates).
 
-The second and third came up while testing video output on my EC-100
-(Endless Mini). This board is special because u-boot does not enable
-the video outputs like most other u-boot versions do. However, this
-is very useful for development because it shows (the hard way ;))
-where the existing code is buggy.
+Fixes: 6cb57c678bb70 ("clk: meson: meson8b: add the read-only video clock trees")
+Suggested-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ drivers/clk/meson/meson8b.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The last patch is a small improvement for the VPU clock so we
-utilize the glitch-free mux (on SoCs which support it) and avoid
-problems by changing the "live" clock tree at runtime (with the mali
-clock this resulted in system hangs/freezes).
-
-In my opinion all of these patches - including the fixes - can go to
-"next" because the relevant clock trees are still read-only.
-
-
-Changes since v1 at [0]:
-- updated the description in patch #1 to clarify that (it seems that)
-  there is no fixed pre-multiplier for the HDMI PLL (like on GXL for
-  example). Spotted by Jerome - thanks!
-- simplified the logic for the active_low resets in patch #2 by
-  shortening the if ... else. Thanks to Jerome for the suggestion.
-
-
-[0] https://patchwork.kernel.org/cover/11489079/
-
-
-Martin Blumenstingl (4):
-  clk: meson: meson8b: Fix the first parent of vid_pll_in_sel
-  clk: meson: meson8b: Fix the polarity of the RESET_N lines
-  clk: meson: meson8b: Fix the vclk_div{1,2,4,6,12}_en gate bits
-  clk: meson: meson8b: Make the CCF use the glitch-free VPU mux
-
- drivers/clk/meson/meson8b.c | 105 +++++++++++++++++++++++++-----------
- 1 file changed, 73 insertions(+), 32 deletions(-)
-
+diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
+index 7c55c695cbae..90d284ffc780 100644
+--- a/drivers/clk/meson/meson8b.c
++++ b/drivers/clk/meson/meson8b.c
+@@ -1077,7 +1077,7 @@ static struct clk_regmap meson8b_vid_pll_in_sel = {
+ 		 * Meson8m2: vid2_pll
+ 		 */
+ 		.parent_hws = (const struct clk_hw *[]) {
+-			&meson8b_hdmi_pll_dco.hw
++			&meson8b_hdmi_pll_lvds_out.hw
+ 		},
+ 		.num_parents = 1,
+ 		.flags = CLK_SET_RATE_PARENT,
 -- 
 2.26.1
 
