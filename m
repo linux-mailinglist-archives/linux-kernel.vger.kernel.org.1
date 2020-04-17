@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD0C1ADF41
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34E71ADF1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731035AbgDQOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:05:53 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:23788 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730563AbgDQOFv (ORCPT
+        id S1730874AbgDQOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:04:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40747 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730846AbgDQOE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:05:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587132351; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=SgU4rKSGD2dwYYxSBKEWf1uzpYlsHOnUpLC8NfOEvNM=; b=UuiJ0e8zjV1ZmOIMQi/RJPSe4fuCIl+yVNUBt3KgcTews+w6rA01vdOljCl9yp0iKHR3fMVs
- 7zMoDxC973+WbIo4zSJGoBeA21XihcST6Bp2Jb69/mNyL3dSDvy9hRoKE8qYa4ElJ7bCmEeL
- LElUKJsdfvIaZR2FYdyBBkkkTpM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e99b7be.7fe559322730-smtp-out-n03;
- Fri, 17 Apr 2020 14:05:50 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2D0B3C38557; Fri, 17 Apr 2020 14:05:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Fri, 17 Apr 2020 10:04:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587132295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ofPRNPiKndJ+19yFksMsIFZm5zHoy/SE96l7lsxCjLM=;
+        b=MskfxfEspysp0br21V3NFFiiLPxaU2hTh30qxCMGLc8u/kKx3EFIN5Hhr2gzg0DSzwvXjj
+        x/HxHm3yNu8iqlHMizcUjy8aIgTn6YiJIVrcAGh39l5WaJmLZ5pXez+kYwSXzoLzw5tVMw
+        lbAno58dJCYK/5/dsKUrqojmDCdksBA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-XCRqe-RjPOShM75MtGtE1g-1; Fri, 17 Apr 2020 10:04:51 -0400
+X-MC-Unique: XCRqe-RjPOShM75MtGtE1g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A33BC3855A;
-        Fri, 17 Apr 2020 14:05:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6A33BC3855A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     viresh.kumar@linaro.org, sboyd@kernel.org,
-        bjorn.andersson@linaro.org, agross@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v2 08/17] arm64: dts: sc7180: Add DSI and MDP OPP tables and power-domains
-Date:   Fri, 17 Apr 2020 19:34:30 +0530
-Message-Id: <1587132279-27659-9-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
-References: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB6521085942;
+        Fri, 17 Apr 2020 14:04:49 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C8B525C1C5;
+        Fri, 17 Apr 2020 14:04:48 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     live-patching@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com
+Subject: [PATCH v2 5/9] s390: Change s390_kernel_write() return type to match memcpy()
+Date:   Fri, 17 Apr 2020 09:04:30 -0500
+Message-Id: <8194db48a4aa32caf55fb028669a48ab9ab3c874.1587131959.git.jpoimboe@redhat.com>
+In-Reply-To: <cover.1587131959.git.jpoimboe@redhat.com>
+References: <cover.1587131959.git.jpoimboe@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the OPP tables for DSI and MDP based on the perf state/clk
-requirements, and add the power-domains property to specify the
-scalable power domain.
+s390_kernel_write()'s function type is almost identical to memcpy().
+Change its return type to "void *" so they can be used interchangeably.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Cc: linux-s390@vger.kernel.org
+Cc: heiko.carstens@de.ibm.com
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 48 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ arch/s390/include/asm/uaccess.h | 2 +-
+ arch/s390/mm/maccess.c          | 9 ++++++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index efba600..db5b3b3 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1581,6 +1581,49 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
-+		mdp_opp_table: mdp-opp-table {
-+			compatible = "operating-points-v2";
+diff --git a/arch/s390/include/asm/uaccess.h b/arch/s390/include/asm/uacc=
+ess.h
+index a470f1fa9f2a..324438889fe1 100644
+--- a/arch/s390/include/asm/uaccess.h
++++ b/arch/s390/include/asm/uaccess.h
+@@ -276,6 +276,6 @@ static inline unsigned long __must_check clear_user(v=
+oid __user *to, unsigned lo
+ }
+=20
+ int copy_to_user_real(void __user *dest, void *src, unsigned long count)=
+;
+-void s390_kernel_write(void *dst, const void *src, size_t size);
++void *s390_kernel_write(void *dst, const void *src, size_t size);
+=20
+ #endif /* __S390_UACCESS_H */
+diff --git a/arch/s390/mm/maccess.c b/arch/s390/mm/maccess.c
+index de7ca4b6718f..22a0be655f27 100644
+--- a/arch/s390/mm/maccess.c
++++ b/arch/s390/mm/maccess.c
+@@ -55,19 +55,22 @@ static notrace long s390_kernel_write_odd(void *dst, =
+const void *src, size_t siz
+  */
+ static DEFINE_SPINLOCK(s390_kernel_write_lock);
+=20
+-void notrace s390_kernel_write(void *dst, const void *src, size_t size)
++notrace void *s390_kernel_write(void *dst, const void *src, size_t size)
+ {
++	void *tmp =3D dst;
+ 	unsigned long flags;
+ 	long copied;
+=20
+ 	spin_lock_irqsave(&s390_kernel_write_lock, flags);
+ 	while (size) {
+-		copied =3D s390_kernel_write_odd(dst, src, size);
+-		dst +=3D copied;
++		copied =3D s390_kernel_write_odd(tmp, src, size);
++		tmp +=3D copied;
+ 		src +=3D copied;
+ 		size -=3D copied;
+ 	}
+ 	spin_unlock_irqrestore(&s390_kernel_write_lock, flags);
 +
-+			opp-200000000 {
-+				opp-hz = /bits/ 64 <200000000>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
-+			};
-+
-+			opp-300000000 {
-+				opp-hz = /bits/ 64 <300000000>;
-+				required-opps = <&rpmhpd_opp_svs>;
-+			};
-+
-+			opp-345000000 {
-+				opp-hz = /bits/ 64 <345000000>;
-+				required-opps = <&rpmhpd_opp_svs_l1>;
-+			};
-+
-+			opp-460000000 {
-+				opp-hz = /bits/ 64 <460000000>;
-+				required-opps = <&rpmhpd_opp_nom>;
-+			};
-+		};
-+
-+		dsi_opp_table: dsi-opp-table {
-+			compatible = "operating-points-v2";
-+
-+			opp-187500000 {
-+				opp-hz = /bits/ 64 <187500000>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
-+			};
-+
-+			opp-300000000 {
-+				opp-hz = /bits/ 64 <300000000>;
-+				required-opps = <&rpmhpd_opp_svs>;
-+			};
-+
-+			opp-358000000 {
-+				opp-hz = /bits/ 64 <358000000>;
-+				required-opps = <&rpmhpd_opp_svs_l1>;
-+			};
-+		};
-+
- 		mdss: mdss@ae00000 {
- 			compatible = "qcom,sc7180-mdss";
- 			reg = <0 0x0ae00000 0 0x1000>;
-@@ -1626,6 +1669,8 @@
- 						  <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
- 				assigned-clock-rates = <300000000>,
- 						       <19200000>;
-+				operating-points-v2 = <&mdp_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
- 
- 				interrupt-parent = <&mdss>;
- 				interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1666,6 +1711,9 @@
- 					      "iface",
- 					      "bus";
- 
-+				operating-points-v2 = <&dsi_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
-+
- 				phys = <&dsi_phy>;
- 				phy-names = "dsi";
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
++	return dst;
+ }
+=20
+ static int __no_sanitize_address __memcpy_real(void *dest, void *src, si=
+ze_t count)
+--=20
+2.21.1
+
