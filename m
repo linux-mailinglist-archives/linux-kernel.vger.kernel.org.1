@@ -2,65 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A061AD5F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 08:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221F21AD614
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 08:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgDQGQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 02:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726710AbgDQGQW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 02:16:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A387C061A0C;
-        Thu, 16 Apr 2020 23:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=mE/dOyjqqJ9UifL3Sk+D0V7qq7bhB7t90DrI6tsIv9E=; b=N/0lT/tsDvJ/dX88bNUzPMtL3Z
-        p1EXWZ4Vc/DtWTm9H9X05+yrqEFN8Nu2V/dPA1pqLtPnkYf4MCw/glE3oQOQdtbVT0riA0oIGBXf9
-        rAWt2loIuoL0NgO0MIYmKhcp/+/p/nVfXFIQQEn6NomgL10oGmMw/Q9dHh32twFe564xFag5Ahs4W
-        EdKdvbncyMl83MZU6tWvCjr/YJFjgzE0vlMTGGKTevzU/TftBTLyuYib18C+3x9svXgnZqifTOT2e
-        XA/hzVPY5zDHWcnr5KAx+ED54T4pslv2r7FltTKxE2+491ZbSsWML+QGSuM71GqMcXnEHRE9mv4pL
-        ertWKfQQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPKIU-0002vF-Uf; Fri, 17 Apr 2020 06:16:19 +0000
-Subject: Re: linux-next: Tree for Apr 17 (pinctrl-mcp23s08)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-References: <20200417145017.3932443d@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0f828695-71cc-ab94-e0f0-ae63a192b283@infradead.org>
-Date:   Thu, 16 Apr 2020 23:16:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200417145017.3932443d@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727919AbgDQGaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 02:30:46 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:56340 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727121AbgDQGaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 02:30:46 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A29C91A10E4;
+        Fri, 17 Apr 2020 08:30:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 946541A10EF;
+        Fri, 17 Apr 2020 08:30:39 +0200 (CEST)
+Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id BDDE0402EB;
+        Fri, 17 Apr 2020 14:30:33 +0800 (SGT)
+From:   Yuantian Tang <andy.tang@nxp.com>
+To:     shawnguo@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        catalin.marinas@arm.com, will.deacon@arm.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Yuantian Tang <andy.tang@nxp.com>
+Subject: [PATCH] arm64: dts: lx2160a: add more thermal zone support
+Date:   Fri, 17 Apr 2020 14:16:18 +0800
+Message-Id: <20200417061618.48032-1-andy.tang@nxp.com>
+X-Mailer: git-send-email 2.9.5
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/20 9:50 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20200416:
-> 
+There are 7 thermal zones in lx2160a soc. Add the
+rest thermal zone node to enable them.
+Also correct one of the values for tmu-calibration property.
 
-on i386:
+Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
+---
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 130 +++++++++++++++++-
+ 1 file changed, 125 insertions(+), 5 deletions(-)
 
-WARNING: modpost: missing MODULE_LICENSE() in drivers/pinctrl/pinctrl-mcp23s08.o
-
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index ae1b113ab162..abaeb587de48 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -436,19 +436,19 @@
+ 	};
  
+ 	thermal-zones {
+-		core_thermal1: core-thermal1 {
++		cluster6-7 {
+ 			polling-delay-passive = <1000>;
+ 			polling-delay = <5000>;
+ 			thermal-sensors = <&tmu 0>;
+ 
+ 			trips {
+-				core_cluster_alert: core-cluster-alert {
++				cluster6_7_alert: cluster6-7-alert {
+ 					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+ 
+-				core_cluster_crit: core-cluster-crit {
++				cluster6_7_crit: cluster6-7-crit {
+ 					temperature = <95000>;
+ 					hysteresis = <2000>;
+ 					type = "critical";
+@@ -457,7 +457,7 @@
+ 
+ 			cooling-maps {
+ 				map0 {
+-					trip = <&core_cluster_alert>;
++					trip = <&cluster6_7_alert>;
+ 					cooling-device =
+ 						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+ 						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+@@ -478,6 +478,126 @@
+ 				};
+ 			};
+ 		};
++
++		ddr-cluster5 {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 1>;
++
++			trips {
++				ddr-cluster5-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				ddr-cluster5-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		wriop {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 2>;
++
++			trips {
++				wriop-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				wriop-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		dce-qbman-hsio2 {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 3>;
++
++			trips {
++				dce-qbman-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				dce-qbman-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		ccn-dpaa-tbu {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 4>;
++
++			trips {
++				ccn-dpaa-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				ccn-dpaa-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cluster4-hsio3 {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 5>;
++
++			trips {
++				clust4-hsio3-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				clust4-hsio3-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cluster2-3 {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++			thermal-sensors = <&tmu 6>;
++
++			trips {
++				cluster2-3-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cluster2-3-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
+ 	};
+ 
+ 	soc {
+@@ -549,7 +669,7 @@
+ 				/* Calibration data group 1 */
+ 				<0x00000000 0x00000035
+ 				/* Calibration data group 2 */
+-				0x00010001 0x00000154>;
++				0x00000001 0x00000154>;
+ 			little-endian;
+ 			#thermal-sensor-cells = <1>;
+ 		};
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+2.17.1
+
