@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5401B1ADBDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9500A1ADBEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbgDQLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 07:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729468AbgDQLHa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:07:30 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAC5C061A0C;
-        Fri, 17 Apr 2020 04:07:29 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k18so851192pll.6;
-        Fri, 17 Apr 2020 04:07:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qNf9by9mVcx85HZ3Z+9xf1bxw2bCzaI4yFqKMgY25eU=;
-        b=vECTsvEYtCiUnyh0jrR2BP47JKSMnXSneOq8aE+ziAeoBultIAJ9SDL6puyx2jvJiV
-         NUzONw91rE2WxcTpdbJqDEosmKReV2pO7jDNw+nN10Xqn6mLqkiqist5rs6+Z6PXJ//E
-         IriYo9AoMojrVc9xERoXFm2dwlte/y1RVLiIp5e+JuAKVVBEWuPmYjvB0OTUHv9ICczo
-         Lc2ryHpaeuNWqSW6O+In3y/kK920Y3z4M1ULJp2XOnCpCAkSbhZe7oHUIEmHnehITapW
-         XTUcy9KiAXg+fjMKesbp1y6Oe8BXtAKobO3mJu55bQQ4p33NdVUIHhP2plp9R/rYwrlD
-         h83A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qNf9by9mVcx85HZ3Z+9xf1bxw2bCzaI4yFqKMgY25eU=;
-        b=rnPqG01RGnoqBWIAhWwfPgyedaHHhhJGSu5akoedQUvFObBZ10XE10o6hAMfJLfyCi
-         2IlzzocCG5aI2j7bCdZmh3IbDFZLGPnXCLwR37LYpU1Skg6B8mmYZOtknMdEG6eSiO0h
-         hs+cZ7ExnlRxItK1BYnB2dTreS1v7u+90VNeh5Qih+cIcb9yWm1ZHDsCpjKUGsgxSzZI
-         9ydedhufc+odD6qO84cRC0ps0xgVYBjZ4GPJymiO1EFiNfkM+gXTaT8HIcms0ryMZDKy
-         RR32KrsQHBkOcuqW1VN21pLT2WV3CTZK34tbIaWf4uv+T2i2Vsdk+B0Z3WVB9l7JJLmh
-         ihBA==
-X-Gm-Message-State: AGi0PuagntJwmoloWsEdWEmefF+hUGlFkr41LqmlEYFBM3TE6MGV9pnU
-        x8lJccRkBZFIudZR5AOpgS4=
-X-Google-Smtp-Source: APiQypK1myE3GOJyq4yhBXF+vSOhsaxqBAupzLHb28bW+kLmdZfh+X3lJzkCXKorMSM8GpuJgc45+w==
-X-Received: by 2002:a17:902:8a88:: with SMTP id p8mr2953777plo.134.1587121649228;
-        Fri, 17 Apr 2020 04:07:29 -0700 (PDT)
-Received: from MacBook-Pro.mshome.net ([122.224.153.228])
-        by smtp.googlemail.com with ESMTPSA id g3sm18011395pgd.64.2020.04.17.04.07.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Apr 2020 04:07:28 -0700 (PDT)
-From:   Yanhu Cao <gmayyyha@gmail.com>
-To:     jlayton@kernel.org
-Cc:     sage@redhat.com, idryomov@gmail.com, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yanhu Cao <gmayyyha@gmail.com>
-Subject: [v3] ceph: if we are blacklisted, __do_request returns directly
-Date:   Fri, 17 Apr 2020 19:07:23 +0800
-Message-Id: <20200417110723.12235-1-gmayyyha@gmail.com>
-X-Mailer: git-send-email 2.24.2 (Apple Git-127)
+        id S1730188AbgDQLK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 07:10:28 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60934 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729468AbgDQLK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 07:10:27 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 3A4A7F3EA52CC01CAB9E;
+        Fri, 17 Apr 2020 19:10:25 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 19:10:15 +0800
+Subject: Re: [PATCH] irqchip/irq-bcm7038-l1: make bcm7038_l1_of_init() static
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        <f.fainelli@gmail.com>, <tglx@linutronix.de>,
+        <jason@lakedaemon.net>, <justinpopo6@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20200417074036.46594-1-yanaijie@huawei.com>
+ <ecb3e3e1-7761-faa7-10fa-67da69604306@cogentembedded.com>
+ <b2f6f8cd-557c-3978-f176-e615cba8b458@huawei.com>
+ <a71e75e8e391c76bf2f260abbaad4f9d@kernel.org>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <f06da401-1083-c0c7-17a9-7a3fe0476820@huawei.com>
+Date:   Fri, 17 Apr 2020 19:10:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
+In-Reply-To: <a71e75e8e391c76bf2f260abbaad4f9d@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we mount cephfs by the recover_session option,
-__do_request can return directly until the client automatically reconnects.
 
-Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
----
- fs/ceph/mds_client.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index 486f91f9685b..16ac5e5f7f79 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -2708,6 +2708,12 @@ static void __do_request(struct ceph_mds_client *mdsc,
- 
- 	put_request_session(req);
- 
-+	if (mdsc->fsc->blacklisted &&
-+	    ceph_test_mount_opt(mdsc->fsc, CLEANRECOVER)) {
-+		err = -EBLACKLISTED;
-+		goto finish;
-+	}
-+
- 	mds = __choose_mds(mdsc, req, &random);
- 	if (mds < 0 ||
- 	    ceph_mdsmap_get_state(mdsc->mdsmap, mds) < CEPH_MDS_STATE_ACTIVE) {
--- 
-2.24.2 (Apple Git-127)
+在 2020/4/17 19:07, Marc Zyngier 写道:
+> On 2020-04-17 11:56, Jason Yan wrote:
+>> 在 2020/4/17 18:26, Sergei Shtylyov 写道:
+>>> Hello!
+>>>
+>>> On 17.04.2020 10:40, Jason Yan wrote:
+>>>
+>>>> Fix the following sparse warning:
+>>>>
+>>>> drivers/irqchip/irq-bcm7038-l1.c:419:12: warning: symbol
+>>>> 'bcm7038_l1_of_init' was not declared. Should it be static?
+>>>>
+>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+>>>> ---
+>>>>   drivers/irqchip/irq-bcm7038-l1.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/irqchip/irq-bcm7038-l1.c 
+>>>> b/drivers/irqchip/irq-bcm7038-l1.c
+>>>> index eb9bce93cd05..fd7c537fb42a 100644
+>>>> --- a/drivers/irqchip/irq-bcm7038-l1.c
+>>>> +++ b/drivers/irqchip/irq-bcm7038-l1.c
+>>>> @@ -416,7 +416,7 @@ static const struct irq_domain_ops 
+>>>> bcm7038_l1_domain_ops = {
+>>>>       .map            = bcm7038_l1_map,
+>>>>   };
+>>>> -int __init bcm7038_l1_of_init(struct device_node *dn,
+>>>> +static int __init bcm7038_l1_of_init(struct device_node *dn,
+>>>>                     struct device_node *parent)
+>>>
+>>>     Reindent the above line please, it should start under *struct* on 
+>>> the 1st line.
+>>
+>> OK, will cook a new one.
+> 
+> Please don't bother. I've picked the patch already, and it is on its way 
+> to Linus.
+> 
+
+I have send v2 before I saw this. You can just ignore it.
+
+Thanks,
+
+Jason
+
+> Thanks,
+> 
+>          M.
 
