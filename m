@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BEE1AE21D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823651AE228
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgDQQVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:21:24 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:24796 "EHLO
+        id S1730506AbgDQQWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:22:15 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:17434 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729581AbgDQQVX (ORCPT
+        by vger.kernel.org with ESMTP id S1730408AbgDQQWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:21:23 -0400
+        Fri, 17 Apr 2020 12:22:13 -0400
 Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HGADk9019643;
-        Fri, 17 Apr 2020 09:21:13 -0700
+        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HGAD3D019642;
+        Fri, 17 Apr 2020 09:22:06 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=proofpoint;
- bh=ePzRzJ4mehyx3KTFRN1b5Wxxyz2j/pVpdXMTskKAvuw=;
- b=TcODtX/IZiEEi9DB3BWGkwXTbZWHPVjO0hqAzUF+uE3BfzCJaGG+lav0oizPenvl9rlG
- R129b42gADOzOhhb7GQ3f41Sk9lO1jLcBVS7L0ikc12Yr4EULvM7l3y//E5WE8bJmJIU
- OZWg6szaxo+LNLZQBq7Ya4CUsUWn3qRClpt/Zzyh7CCJMxTDPshcvdR4wVK4lC5BmoON
- 3zqbwlMr6VW6kDWJzuQVKT+Pua/BRYO9avSmY/YNVUQMpbWun7ERarhWhwfu00/3FfeY
- RXpUHs6Evn0FLGgopjz//WBdJ9vheB8Gxdt2K3eCux7Jnfq8Mw5ZE4GY9zNvaL+mO3Pw 2g== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 30dn7954wg-1
+ bh=DDx5kvpghf7H6u3a4NRVTSRP0lg12WihRsZeZQxST1M=;
+ b=l91RhOJyxE3P+jQ1UKDvoPYgvgX/B7mx0y3G3w14dPbmt8Jmeqh5gdESbb5y3YoGKaMy
+ V6MzKOZFP/mPt9Mj98RxnRlAfvV38LTJ8s0VgJFSNymcVx+y57SOfC8cH2xuhqHrRmns
+ ZuI7IM8gajek1Pl8H35PS7ZU4B8p5c+I8Z9I/A386qhYYeCpXVWrk5U1vwld8cmlvzVl
+ qpXJwlCVCju75GvuNe2kvDMlGZRy5AFBXswZDZq+ASSK5ktYeTPXdg9ge1Icksuyazv0
+ t7BuHee4/2L6VA7Sw5ir/VyDf5VO9DnzawVkHNsnTAA5ZV2kqSc3KLIQi3inSR6bBr1+ TQ== 
+Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2054.outbound.protection.outlook.com [104.47.44.54])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 30dn79550d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Apr 2020 09:21:12 -0700
+        Fri, 17 Apr 2020 09:22:06 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ci2aGfcPYUj1/JFRkSxIDSUaCoRbOCP+FxJqM+PbZ/2Xrr7orbyqyY9Nv+A7CGkaOz6A27Alsg75S8X/a+11TPeao9xNpX0/Hu+i35O+3c61qQKHtyTevmOH5DIbM9QcDlTxGMfQr0Iw17HAudfG1jWGKwNjH6ZlxQGiPMtJTT0KgJKh67aL2/cuMvjgX6XCDDubHHNVeVrrBM0NOSJP086ZAcJ45olfRPSc26MUYMiUhvpVHBYKV6/wVzmKOznFtz0WD9/0qb5tfp557m1FyfNkPTvWFKw1IyBkiHbXXXfp4l/Jt6z0bf2Zt+Etj4ZBdfkkGi1KwTORWjLum903fg==
+ b=h8L6BG2Mg46ytO5IpgqbmMPSGYcRCVDl1QtbOHnKgbTsAnVOOOxbdxk3rVeGj4I02h87CE0WA7NGeuTQdSSwqbTdZs6iYnTR/Jt7dTAaODio+YO5h/EXFbuLqbK9tq24aw3Dfltu1B0nLApMofhu05TQ/q2YAXEBZWrh3P4N/L1hxg/UlJ6avMSs8W24roaCAScV34+MuYteGAdEal6+QuIuZh4luqc0XUm0Q4bG70Bjjy4u1VHWih2OlYsnWOailKXOwEiqrgQnCkQuyFG6WsXZ9Lrl39cBpHjFl5YBPokWkzAMbwwcJGSE9d7i87cGZFO9ROYxoq62OEIp80stQA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ePzRzJ4mehyx3KTFRN1b5Wxxyz2j/pVpdXMTskKAvuw=;
- b=Z7OkVKKeGvCum17sO4KEcleqzd9D7sg1K4M19jm6WxX1IFoV0TAP2YXR1fRXZY4cBMsbIMZzkYsGz+WskoflWsJ28QAcD+WNATbx31bK4kQZE+LdItRutdxH0ZvKhuMj3QelyIPMOf3TbDHq3DfFbqT7zjDO6M67V+Oi6BdiqoV8zBCzK7MV+kFXKfOrfFmx5vd2UTNUzBLQ2vLmRisC9Y0cUh+4F8JyzQX6ZYo2lmOej3vXDVqVa+C/WWDyHcwKq3KqhosFwY96h/oNJimzZeS+tKSfJsPA+1izSdwmZ8685/BLa+4d3LCYdvkZjUcAAkCaxzRV0X+7O3MvApnQuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
- is 158.140.1.148) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
- dmarc=temperror action=none header.from=cadence.com; dkim=none (message not
- signed); arc=none
+ bh=DDx5kvpghf7H6u3a4NRVTSRP0lg12WihRsZeZQxST1M=;
+ b=JplMAw4ZIMDgrf2BNAjEJgr11NibpWe54+A39Ynw0gf8ZFnwu40VvoTUws7XgnS2S9HHXGf7TRzkZxLKG2hMsWtikf4S3IA+4WP1DPVVWTUOWNMNWvNOACsB9DqSaJuufqu86zqlM8uqevznjRwgo96ebgYb8Vvp9WgSGqhtpFqidCXDgQcIQOG8KSZIg2gkPmxnmT0a/IJOlyLkXAjqvbs6/PQnBk7a4YYbJ4fHmTy8qEL/YvJyrinNRJcxJ057IaAN3zNkK9CIznrSgAkM8itAure43K1HDO83MrCgbnO3cEhJyv/1ClfRDYoB/qiQhBupUK9eKoRBhZ9uEJ+iIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 64.207.220.244) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ePzRzJ4mehyx3KTFRN1b5Wxxyz2j/pVpdXMTskKAvuw=;
- b=LpltpaR509BOeQYHA1XptLMVY6LDdYaQkndeV+d0zI/LqWlQWCzZut7XcOCyBcg9pvwIaB7YLdRNDVTA6jSxX0TKVLRhutB8mcCePvqV7LmCg32ROCyfGd3SaVaWvyZLIMesnqfANB/nzO1WZUjSYuYEl3jB/5KekmaYmKYCFww=
-Received: from BN4PR13CA0023.namprd13.prod.outlook.com (2603:10b6:403:3::33)
- by DM5PR07MB3893.namprd07.prod.outlook.com (2603:10b6:4:af::37) with
+ bh=DDx5kvpghf7H6u3a4NRVTSRP0lg12WihRsZeZQxST1M=;
+ b=i+0G2f+b7J/05txEufBGe7gGVUaDqChIAblb2kqf/fFMfl1bhfXDP3b11aPXvi/weWYzlBm/QgL4AuF3dolRTTOcH98Jpq4DawUSbrCyGM7X9QlznKP1gp/7pPX23oeVyEnfF2K7s7qQm8KJMf/aImd+4pn925RnPBOQ5AEecwY=
+Received: from DM5PR22CA0003.namprd22.prod.outlook.com (2603:10b6:3:101::13)
+ by CY4PR07MB2886.namprd07.prod.outlook.com (2603:10b6:903:2b::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Fri, 17 Apr
- 2020 16:21:11 +0000
-Received: from BN8NAM12FT017.eop-nam12.prod.protection.outlook.com
- (2603:10b6:403:3:cafe::9b) by BN4PR13CA0023.outlook.office365.com
- (2603:10b6:403:3::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.6 via Frontend
- Transport; Fri, 17 Apr 2020 16:21:10 +0000
-Received-SPF: TempError (protection.outlook.com: error in processing during
- lookup of cadence.com: DNS Timeout)
-Received: from sjmaillnx2.cadence.com (158.140.1.148) by
- BN8NAM12FT017.mail.protection.outlook.com (10.13.182.170) with Microsoft SMTP
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Fri, 17 Apr
+ 2020 16:22:03 +0000
+Received: from DM6NAM12FT019.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:3:101:cafe::bc) by DM5PR22CA0003.outlook.office365.com
+ (2603:10b6:3:101::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend
+ Transport; Fri, 17 Apr 2020 16:22:03 +0000
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 64.207.220.244 as permitted sender) receiver=protection.outlook.com;
+ client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com;
+Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
+ DM6NAM12FT019.mail.protection.outlook.com (10.13.178.84) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2921.12 via Frontend Transport; Fri, 17 Apr 2020 16:21:09 +0000
+ 15.20.2921.12 via Frontend Transport; Fri, 17 Apr 2020 16:22:03 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 03HGL5DO028092
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Fri, 17 Apr 2020 09:21:07 -0700
+        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 03HGM0MZ140329
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 09:22:01 -0700
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Fri, 17 Apr 2020 18:21:05 +0200
+ 15.0.1367.3; Fri, 17 Apr 2020 18:22:00 +0200
 Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Fri, 17 Apr 2020 18:21:05 +0200
+ 15.0.1367.3 via Frontend Transport; Fri, 17 Apr 2020 18:22:00 +0200
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 03HGL5Xi030275;
-        Fri, 17 Apr 2020 18:21:05 +0200
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 03HGM0ZY030839;
+        Fri, 17 Apr 2020 18:22:00 +0200
 Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 03HGL5h2030274;
-        Fri, 17 Apr 2020 18:21:05 +0200
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 03HGM0mT030836;
+        Fri, 17 Apr 2020 18:22:00 +0200
 From:   Parshuram Thombare <pthombar@cadence.com>
 To:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>
 CC:     <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
         <praneeth@ti.com>, Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v6 3/8] i3c: master: i3c mastership request and handover
-Date:   Fri, 17 Apr 2020 18:21:02 +0200
-Message-ID: <1587140462-30209-1-git-send-email-pthombar@cadence.com>
+Subject: [PATCH v6 4/8] i3c: master: defslvs processing
+Date:   Fri, 17 Apr 2020 18:21:57 +0200
+Message-ID: <1587140518-30782-1-git-send-email-pthombar@cadence.com>
 X-Mailer: git-send-email 2.2.2
 In-Reply-To: <1587140398-29473-1-git-send-email-pthombar@cadence.com>
 References: <1587140398-29473-1-git-send-email-pthombar@cadence.com>
@@ -92,29 +93,29 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(136003)(396003)(36092001)(46966005)(70586007)(478600001)(8676002)(26005)(107886003)(246002)(5660300002)(4326008)(336012)(70206006)(36906005)(426003)(86362001)(63370400001)(63350400001)(6666004)(2906002)(54906003)(42186006)(316002)(8936002)(186003)(47076004)(7636003)(356005)(82740400003)(2616005)(36756003)(110136005)(42413003);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:unused.mynethost.com;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(39860400002)(396003)(136003)(346002)(36092001)(46966005)(316002)(42186006)(70586007)(478600001)(70206006)(86362001)(36906005)(110136005)(4326008)(107886003)(26826003)(54906003)(36756003)(356005)(81166007)(6666004)(2616005)(82740400003)(81156014)(336012)(2906002)(186003)(8676002)(47076004)(8936002)(5660300002)(426003)(26005);DIR:OUT;SFP:1101;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d38169a-7b62-4a55-95c5-08d7e2eb5672
-X-MS-TrafficTypeDiagnostic: DM5PR07MB3893:
-X-Microsoft-Antispam-PRVS: <DM5PR07MB3893B51721BDE19457676459C1D90@DM5PR07MB3893.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Office365-Filtering-Correlation-Id: 2b81e04a-062e-46fb-f3b5-08d7e2eb76a4
+X-MS-TrafficTypeDiagnostic: CY4PR07MB2886:
+X-Microsoft-Antispam-PRVS: <CY4PR07MB28860D56479A7EA924E5A264C1D90@CY4PR07MB2886.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
 X-Forefront-PRVS: 0376ECF4DD
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C5ZuNSZGG9A1hyAwe0yHufVuvRw5SbmbrCsHzItvGqXmc96zZtTvPPHejlUGfZaYf3V6Vclar032MZFt9QPOwzHSC/tqRCkRcxvry/Uz+lfBBOole8RuytAUTM71miWPzHWCokQTs7bxkTdKqcjnW0iqgU9HdhiYpPzSmRdWlD+wKSLlqC/P9Wqo2eaMTliTW1nysX5xkpuEMqLNu85x8JCj7Td9T6wQ/Ha4Jc+R3MVMPXlRmol3pFkE8Q1mnVOb1pBAU0Y30uU1ZADVeGWVWq5Vky03B5meBAgN+8nb/fJ0EEgdj0gC6+S7vmJ6wLfd3lbF13wSHiklL4/kUapHAwQ28HZoP3u3yqT5bBzUek04DTv11kRGYT0dT31x67kN6u642GRXzETvKuGQ/O/KkJ9orDv+yeCX77gKKPJWRLKpJQzmhNULv3tcikBfB2aJN+wkXtn3g/cj902tXCvTTcMjIIZxKCgR8aKPSzSUTme//OnjolgjFulMxiRDEov6eHx0QXsf0QjhMeeuDhbaD/2txGA8NgCiLseTjkXo2SmGmxqd/luJNMguZtxEzf7k
+X-Microsoft-Antispam-Message-Info: NrLBOhFXk1Etm8eF9xPePPeqOTTpZwZgmJmM9dv4IXCeTprnB87fn0JM+RJ+YUFPqrdBtFL8oj26G90v76KLkEQAfYXj4hOJii3/u0oPowTghXrB7NLesSf8GvVn/maHgeo6zJ9Eq7IdWU/qdKVQ4C1I+5WCn1huB5coy8T47j8qIRrWY4FG89IddvhjcsoiK4uBSd7/mqdxq9FVKTS+/pNwSqC8jLovkX1LhIPPWWTY/EMrSxF+gaufWnqy6lxTjCgiu+mfmIHmEWjrS5E8DhAR75LqGtLmetsGusyZ2jESIQGJmwAgFyuITj5Gdw+DieOyi2iekrciRDvMqZ6mYaytKWTJ5PVcy1Y/AT5Hu8g6Z09WtLgWtzjDg1qQ/GxdD8P2ecsItbzLABMKfpSnRbctIKbbmSTT1tSEZak9tD7LdVP73dCWAYnq+XM2JanF0DjMWpsixnD9lMyl9RmTatbZDbKtHM+KExawUghH1o9KLuGTEgv0Y7ua7ye0JtSx/Ff8zYPyAplFbRx2u6uzXhBlkFsu9L4lbfvSIgjbvbw=
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 16:21:09.0417
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 16:22:03.0898
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d38169a-7b62-4a55-95c5-08d7e2eb5672
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b81e04a-062e-46fb-f3b5-08d7e2eb76a4
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR07MB3893
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR07MB2886
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-17_07:2020-04-17,2020-04-17 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 impostorscore=0
  lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=905
  suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004170129
 Sender: linux-kernel-owner@vger.kernel.org
@@ -122,327 +123,250 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add I3C mastership request and
-handover infrasturcture to I3C master subsystem.
+This patch add DEFSLVS processing code
+to I3C master subsystem.
 
 Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 ---
- drivers/i3c/master.c       | 221 +++++++++++++++++++++++++++++++++++++
- include/linux/i3c/master.h |  34 ++++++
- 2 files changed, 255 insertions(+)
+ drivers/i3c/master.c       | 200 +++++++++++++++++++++++++++++++++++++
+ include/linux/i3c/master.h |   6 ++
+ 2 files changed, 206 insertions(+)
 
 diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 0ec332e45737..3598856a0b25 100644
+index 3598856a0b25..2690910d724c 100644
 --- a/drivers/i3c/master.c
 +++ b/drivers/i3c/master.c
-@@ -1217,6 +1217,69 @@ static int i3c_master_getdcr_locked(struct i3c_master_controller *master,
- 	return ret;
+@@ -1830,6 +1830,206 @@ int i3c_master_acquire_bus(struct i3c_master_controller *master)
  }
+ EXPORT_SYMBOL_GPL(i3c_master_acquire_bus);
  
-+static int i3c_master_get_accmst_locked(struct i3c_master_controller *master,
-+					u8 addr)
++static struct i2c_dev_boardinfo *
++i3c_master_alloc_i2c_boardinfo(struct i3c_master_controller *master,
++			       u16 addr, u8 lvr)
 +{
-+	struct i3c_ccc_getaccmst *accmst;
-+	struct i3c_ccc_cmd_dest dest;
-+	struct i3c_ccc_cmd cmd;
-+	int ret;
++	struct i2c_dev_boardinfo *i2cboardinfo;
 +
-+	accmst = i3c_ccc_cmd_dest_init(&dest, addr, sizeof(*accmst));
-+	if (!accmst)
-+		return -ENOMEM;
++	i2cboardinfo = kzalloc(sizeof(*i2cboardinfo), GFP_KERNEL);
++	if (!i2cboardinfo)
++		return ERR_PTR(-ENOMEM);
 +
-+	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETACCMST, &dest, 1);
++	i2cboardinfo->base.addr = addr;
++	i2cboardinfo->lvr = lvr;
 +
-+	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
-+	if (ret)
-+		goto out;
-+
-+	if (dest.payload.len != sizeof(*accmst))
-+		ret = -EIO;
-+
-+out:
-+	i3c_ccc_cmd_dest_cleanup(&dest);
-+
-+	return ret;
++	return i2cboardinfo;
 +}
 +
-+static int i3c_master_enable_mr_events(struct i3c_master_controller *master)
++static void
++i3c_master_copy_olddev(struct i3c_master_controller *master,
++		       struct i3c_dev_desc *newdev,
++		       struct i3c_dev_desc *olddev)
 +{
++	struct i3c_ibi_setup ibireq = { };
++	bool enable_ibi = false;
 +	int ret;
 +
-+	master->ops->enable_mr_events(master);
-+	i3c_bus_maintenance_lock(&master->bus);
-+	ret = i3c_master_enec_locked(master, I3C_BROADCAST_ADDR,
-+				     I3C_CCC_EVENT_MR | I3C_CCC_EVENT_HJ);
-+	i3c_bus_maintenance_unlock(&master->bus);
++	newdev->dev = olddev->dev;
++	if (newdev->dev)
++		newdev->dev->desc = newdev;
 +
-+	return ret;
-+}
++	mutex_lock(&olddev->ibi_lock);
++	if (olddev->ibi) {
++		ibireq.handler = olddev->ibi->handler;
++		ibireq.max_payload_len = olddev->ibi->max_payload_len;
++		ibireq.num_slots = olddev->ibi->num_slots;
 +
-+static int i3c_master_getaccmst(struct i3c_master_controller *master)
-+{
-+	int ret;
-+
-+	i3c_bus_maintenance_lock(&master->bus);
-+	ret = i3c_master_get_accmst_locked(master, master->mr_addr);
-+	i3c_bus_maintenance_unlock(&master->bus);
-+
-+	return ret;
-+}
-+
-+static int i3c_master_request_mastership(struct i3c_master_controller *master)
-+{
-+	int ret;
-+
-+	/* request_mastership callback should handle EN/DIS EC MR.*/
-+	i3c_bus_maintenance_lock(&master->bus);
-+	ret = master->ops->request_mastership(master);
-+	i3c_bus_maintenance_unlock(&master->bus);
-+
-+	return ret;
-+}
-+
- static int i3c_master_retrieve_dev_info(struct i3c_dev_desc *dev)
- {
- 	struct i3c_master_controller *master = i3c_dev_get_master(dev);
-@@ -1612,6 +1675,161 @@ static void i3c_master_detach_free_devs(struct i3c_master_controller *master)
- 	}
- }
- 
-+static void i3c_mst_yield_bus(struct work_struct *work)
-+{
-+	struct i3c_master_controller *m;
-+	struct i3c_dev_desc *i3cdev;
-+	int ret;
-+
-+	m = container_of(work, struct i3c_master_controller, mst_work);
-+
-+	switch (m->mr_state) {
-+	case I3C_MR_DISEC_MR:
-+		/*
-+		 * Disable MR on all but the secondary master first
-+		 * reaching here.
-+		 */
-+		i3c_bus_for_each_i3cdev(&m->bus, i3cdev) {
-+			if (I3C_BCR_DEVICE_ROLE(i3cdev->info.bcr) !=
-+			    I3C_BCR_I3C_MASTER ||
-+			    i3cdev->info.dyn_addr == m->mr_addr ||
-+			    m->this == i3cdev)
-+				continue;
-+			i3c_bus_maintenance_lock(&m->bus);
-+			i3c_master_disec_locked(m, i3cdev->info.dyn_addr,
-+						I3C_CCC_EVENT_MR |
-+						I3C_CCC_EVENT_HJ);
-+			i3c_bus_maintenance_unlock(&m->bus);
++		if (olddev->ibi->enabled) {
++			enable_ibi = true;
++			i3c_dev_disable_ibi_locked(olddev);
 +		}
-+		m->mr_state = I3C_MR_GETACCMST;
-+		queue_work(m->wq, &m->mst_work);
-+		break;
 +
-+	case I3C_MR_GETACCMST:
-+		ret = i3c_master_getaccmst(m);
-+		if (!ret)
-+			m->mr_state = I3C_MR_DONE;
-+		else
-+			m->mr_state = I3C_MR_FAILED;
-+		queue_work(m->wq, &m->mst_work);
-+		break;
++		i3c_dev_free_ibi_locked(olddev);
++	}
++	mutex_unlock(&olddev->ibi_lock);
 +
-+	case I3C_MR_DONE:
-+		i3c_bus_for_each_i3cdev(&m->bus, i3cdev) {
-+			if (m->mr_addr == i3cdev->info.dyn_addr) {
-+				m->bus.cur_master = i3cdev;
-+				break;
++	i3c_master_detach_i3c_dev(olddev);
++	i3c_master_free_i3c_dev(olddev);
++
++	if (ibireq.handler) {
++		mutex_lock(&newdev->ibi_lock);
++		ret = i3c_dev_request_ibi_locked(newdev, &ibireq);
++		if (ret) {
++			dev_err(&master->dev,
++				"Failed to request IBI on device %d-%llx",
++				master->bus.id, newdev->info.pid);
++		} else if (enable_ibi) {
++			ret = i3c_dev_enable_ibi_locked(newdev);
++			if (ret)
++				dev_err(&master->dev,
++					"Failed to re-enable IBI on device %d-%llx",
++					master->bus.id, newdev->info.pid);
++		}
++		mutex_unlock(&newdev->ibi_lock);
++	}
++}
++
++static int i3c_master_populate_bus(struct i3c_master_controller *master)
++{
++	struct i3c_ccc_dev_desc *desc;
++	struct i2c_dev_desc *i2cdev;
++	struct i2c_dev_boardinfo *info;
++	struct i3c_dev_desc *i3cdev, *olddev, *i3ctmp;
++	struct i3c_bus *i3cbus;
++	struct list_head i3c_old;
++	int slot, ret;
++
++	INIT_LIST_HEAD(&i3c_old);
++	i3cbus = i3c_master_get_bus(master);
++	list_add(&i3c_old, &i3cbus->devs.i3c);
++	list_del(&i3cbus->devs.i3c);
++	INIT_LIST_HEAD(&i3cbus->devs.i3c);
++	desc = master->defslvs_data.devs;
++	for (slot = 1; slot <= master->defslvs_data.ndevs; slot++, desc++) {
++		if (desc->static_addr && list_empty(&master->bus.devs.i2c)) {
++			i3c_bus_set_addr_slot_status(&master->bus,
++						     desc->static_addr,
++						     I3C_ADDR_SLOT_I2C_DEV);
++			info = i3c_master_alloc_i2c_boardinfo(master,
++							      desc->static_addr,
++							      desc->lvr);
++			if (IS_ERR(info)) {
++				ret = PTR_ERR(info);
++				goto err_detach_devs;
++			}
++
++			i2cdev = i3c_master_alloc_i2c_dev(master, info);
++			if (IS_ERR(i2cdev)) {
++				ret = PTR_ERR(i2cdev);
++				goto err_detach_devs;
++			}
++
++			ret = i3c_master_attach_i2c_dev(master, i2cdev);
++			if (ret) {
++				i3c_master_free_i2c_dev(i2cdev);
++				goto err_detach_devs;
++			}
++		} else {
++			struct i3c_device_info info = {
++				.dyn_addr = desc->dyn_addr
++			};
++
++			i3cdev = i3c_master_alloc_i3c_dev(master, &info);
++			if (IS_ERR(i3cdev)) {
++				ret = PTR_ERR(i3cdev);
++				goto err_detach_devs;
++			}
++
++			ret = i3c_master_attach_i3c_dev(master, i3cdev);
++			if (ret)
++				goto err_detach_devs;
++
++			ret = i3c_master_retrieve_dev_info(i3cdev);
++			if (ret)
++				goto err_detach_devs;
++
++			list_for_each_entry(olddev, &i3c_old, common.node) {
++				if (i3cdev != olddev &&
++				    i3cdev->info.pid == olddev->info.pid)
++					i3c_master_copy_olddev(master, i3cdev,
++							       olddev);
 +			}
 +		}
-+		m->mr_state = I3C_MR_IDLE;
-+		break;
-+
-+	default:
-+	case I3C_MR_FAILED:
-+		i3c_master_enable_mr_events(m);
-+		m->mr_state = I3C_MR_IDLE;
-+		break;
 +	}
-+}
 +
-+void
-+i3c_master_yield_bus(struct i3c_master_controller *master, u8 sec_mst_dyn_addr)
-+{
-+	if (master->this && master->this == master->bus.cur_master) {
-+		master->ops->disable_mr_events(master);
-+		master->mr_addr = sec_mst_dyn_addr;
-+		master->mr_state = I3C_MR_DISEC_MR;
-+		queue_work(master->wq, &master->mst_work);
++	list_for_each_entry_safe(i3cdev, i3ctmp, &i3c_old,
++				 common.node) {
++		i3c_master_detach_i3c_dev(i3cdev);
++		i3c_master_free_i3c_dev(i3cdev);
++	}
++
++	return 0;
++
++err_detach_devs:
++	if (!master->init_done) {
++		i3c_master_detach_free_devs(master);
 +	} else {
-+		/* If not a current master, we should never come here */
-+		WARN_ON(1);
++		INIT_LIST_HEAD(&i3cbus->devs.i3c);
++		list_add(&i3cbus->devs.i3c, &i3c_old);
++		list_del(&i3c_old);
 +	}
-+}
-+EXPORT_SYMBOL_GPL(i3c_master_yield_bus);
 +
-+static void i3c_sec_mst_acquire_bus(struct work_struct *work)
++	return ret;
++}
++
++/* This function may sleep, so should not be called from atomic context */
++int i3c_master_process_defslvs(struct i3c_master_controller *master)
 +{
-+	struct i3c_master_controller *m;
 +	struct i3c_bus *i3cbus;
 +	int ret;
 +
-+	m = container_of(work, struct i3c_master_controller, sec_mst_work);
-+	i3cbus = i3c_master_get_bus(m);
++	i3cbus = i3c_master_get_bus(master);
 +
-+	switch (m->mr_state) {
-+	case I3C_MR_WAIT_DA:
-+		/* Wait until this master have dynamic address */
-+		if (m->ops->check_event_set(m, I3C_SLV_DA_UPDATE))
-+			m->mr_state = I3C_MR_REQUEST;
-+		queue_work(m->wq, &m->sec_mst_work);
-+		break;
++	i3c_bus_normaluse_lock(&master->bus);
++	ret = i3c_master_acquire_bus(master);
++	i3c_bus_normaluse_unlock(&master->bus);
++	if (ret)
++		return ret;
 +
-+	case I3C_MR_REQUEST:
-+		/* Wait until we can send MR */
-+		ret = i3c_master_request_mastership(m);
-+		if (!ret)
-+			m->mr_state = I3C_MR_WAIT_MR_DONE;
-+		queue_work(m->wq, &m->sec_mst_work);
-+		break;
++	/* Again bus_init to bus_mode, based on data received in DEFSLVS */
++	ret = i3c_bus_set_mode(i3cbus, master->defslvs_data.bus_mode);
++	if (ret)
++		return ret;
 +
-+	case I3C_MR_WAIT_MR_DONE:
-+		if (m->ops->check_event_set(m, I3C_SLV_MR_DONE)) {
-+			m->mr_state = I3C_MR_DONE;
-+			m->bus.cur_master = m->this;
-+			complete(&m->mr_comp);
-+		} else {
-+			queue_work(m->wq, &m->sec_mst_work);
++	ret = master->ops->bus_init(master);
++	if (ret)
++		goto err_cleanup_bus;
++
++	if (!ret) {
++		master->ops->master_set_info(master);
++		i3c_bus_maintenance_lock(&master->bus);
++		ret = i3c_master_populate_bus(master);
++		if (ret) {
++			i3c_bus_maintenance_unlock(&master->bus);
++			goto err_cleanup_bus;
 +		}
-+		break;
-+
-+	default:
-+		m->mr_state = I3C_MR_FAILED;
-+		complete(&m->mr_comp);
-+		break;
-+	}
-+}
-+
-+void i3c_sec_mst_mr_dis_event(struct i3c_master_controller *m)
-+{
-+	if (m->mr_state != I3C_MR_IDLE)
-+		m->mr_state = I3C_MR_WAIT_DA;
-+}
-+EXPORT_SYMBOL_GPL(i3c_sec_mst_mr_dis_event);
-+
-+/* This function is expected to be called with normaluse_lock */
-+int i3c_master_acquire_bus(struct i3c_master_controller *master)
-+{
-+	int ret = 0;
-+
-+	if (!master->this || master->this != master->bus.cur_master) {
-+		if (master->mr_state == I3C_MR_IDLE) {
-+			master->mr_state = I3C_MR_WAIT_DA;
-+			init_completion(&master->mr_comp);
-+			queue_work(master->wq, &master->sec_mst_work);
-+			/*
-+			 * Bus acquire procedure may need write lock
-+			 * so release read lock before yielding
-+			 * to bus acquire state machine
-+			 */
-+			i3c_bus_normaluse_unlock(&master->bus);
-+			wait_for_completion(&master->mr_comp);
-+			i3c_bus_normaluse_lock(&master->bus);
-+			if (master->mr_state != I3C_MR_DONE)
-+				ret = -EAGAIN;
-+			master->mr_state = I3C_MR_IDLE;
-+		} else {
-+			/*
-+			 * MR request is already in process for
-+			 * this master
-+			 */
-+			ret = -EAGAIN;
-+		}
++		i3c_master_register_new_i3c_devs(master);
++		i3c_bus_maintenance_unlock(&master->bus);
 +	}
 +
++	if (master->init_done)
++		i3c_master_enable_mr_events(master);
++	return 0;
++
++err_cleanup_bus:
++	i3c_master_enable_mr_events(master);
++	if (master->ops->bus_cleanup)
++		master->ops->bus_cleanup(master);
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(i3c_master_acquire_bus);
++EXPORT_SYMBOL_GPL(i3c_master_process_defslvs);
 +
  /**
   * i3c_master_bus_init() - initialize an I3C bus
   * @master: main master initializing the bus
-@@ -2451,6 +2669,9 @@ int i3c_master_register(struct i3c_master_controller *master,
- 	device_initialize(&master->dev);
- 	dev_set_name(&master->dev, "i3c-%d", i3cbus->id);
- 
-+	INIT_WORK(&master->sec_mst_work, i3c_sec_mst_acquire_bus);
-+	INIT_WORK(&master->mst_work, i3c_mst_yield_bus);
-+
- 	ret = of_populate_i3c_bus(master);
- 	if (ret)
- 		goto err_put_dev;
 diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-index 3dc7eafe811a..c465c7792ccb 100644
+index c465c7792ccb..cc482934803b 100644
 --- a/include/linux/i3c/master.h
 +++ b/include/linux/i3c/master.h
-@@ -259,6 +259,27 @@ enum i3c_bus_mode {
- 	I3C_BUS_MODE_MIXED_SLOW,
- };
- 
-+enum i3c_mr_state {
-+	I3C_MR_IDLE,
-+	I3C_MR_DISEC_MR,
-+	I3C_MR_SEND_DEFSLVS,
-+	I3C_MR_GETACCMST,
-+	I3C_MR_WAIT_DA,
-+	I3C_MR_CHECK_STATE,
-+	I3C_MR_REQUEST,
-+	I3C_MR_WAIT_DEFSLVS,
-+	I3C_MR_WAIT_MR_DONE,
-+	I3C_MR_DONE,
-+	I3C_MR_FAILED,
-+};
-+
-+enum i3c_event {
-+	I3C_SLV_DA_UPDATE,
-+	I3C_SLV_DEFSLVS_CCC,
-+	I3C_SLV_MR_DIS,
-+	I3C_SLV_MR_DONE,
-+};
-+
- /**
-  * enum i3c_addr_slot_status - I3C address slot status
-  * @I3C_ADDR_SLOT_FREE: address is free
-@@ -448,6 +469,11 @@ struct i3c_master_controller_ops {
- 	int (*disable_ibi)(struct i3c_dev_desc *dev);
- 	void (*recycle_ibi_slot)(struct i3c_dev_desc *dev,
- 				 struct i3c_ibi_slot *slot);
-+	int (*request_mastership)(struct i3c_master_controller *master);
-+	void (*enable_mr_events)(struct i3c_master_controller *m);
-+	void (*disable_mr_events)(struct i3c_master_controller *m);
-+	bool (*check_event_set)(struct i3c_master_controller *m,
-+				enum i3c_event);
+@@ -520,6 +520,11 @@ struct i3c_master_controller {
+ 	struct completion mr_comp;
+ 	enum i3c_mr_state mr_state;
+ 	u8 mr_addr;
++	struct {
++		u32 ndevs;
++		enum i3c_bus_mode bus_mode;
++		struct i3c_ccc_dev_desc *devs;
++	} defslvs_data;
  };
  
  /**
-@@ -489,6 +515,11 @@ struct i3c_master_controller {
- 	} boardinfo;
- 	struct i3c_bus bus;
- 	struct workqueue_struct *wq;
-+	struct work_struct mst_work;
-+	struct work_struct sec_mst_work;
-+	struct completion mr_comp;
-+	enum i3c_mr_state mr_state;
-+	u8 mr_addr;
- };
- 
- /**
-@@ -513,6 +544,9 @@ struct i3c_master_controller {
+@@ -544,6 +549,7 @@ struct i3c_master_controller {
  #define i3c_bus_for_each_i3cdev(bus, dev)				\
  	list_for_each_entry(dev, &(bus)->devs.i3c, common.node)
  
-+void i3c_master_yield_bus(struct i3c_master_controller *master,
-+			  u8 slv_dyn_addr);
-+void i3c_sec_mst_mr_dis_event(struct i3c_master_controller *m);
- int i3c_master_do_i2c_xfers(struct i3c_master_controller *master,
- 			    const struct i2c_msg *xfers,
- 			    int nxfers);
++int i3c_master_process_defslvs(struct i3c_master_controller *master);
+ void i3c_master_yield_bus(struct i3c_master_controller *master,
+ 			  u8 slv_dyn_addr);
+ void i3c_sec_mst_mr_dis_event(struct i3c_master_controller *m);
 -- 
 2.17.1
 
