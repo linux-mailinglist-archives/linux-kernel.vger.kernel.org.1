@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77CE1AD4CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8471AD4D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgDQDT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 23:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727791AbgDQDT6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 23:19:58 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919F9C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 20:19:57 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e25so524585ljg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 20:19:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JD3qiMlHd5EsQciWAFjGX//qBSPNMw64iDNLCTkUKfs=;
-        b=TB0a5lNMV5v5AvPFqVnlEKrEDHE3KUNwIu863mg6jZAtMaYxOCT5jFqDFUsawtXPrd
-         PGk1bcpvXXW+ocAzG/hBgkVpBg1L2+T8A54vPJbIYfZNHV8gqlITwAkwXGB7xccf16wI
-         spIfDfl6B9zF/fYzxhXZ+s25gGsxiEJhLUSus=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JD3qiMlHd5EsQciWAFjGX//qBSPNMw64iDNLCTkUKfs=;
-        b=ac9NrLdn6XFXf5R6UkzmyEF5FfO1SmgKN/9Hrr1Ws86hQmm5RS2m7Rabs7nwp37m3Z
-         ZzgyI8IH6siyxIlwM20hQQlKbv5yKxkA9cbU4ej3BH4AEHFHXsqSHzVCtgXPCBzhKnDm
-         aq2/WmbeE8wTmWO/qe/rrhkAgq+L7wlRe5IZd+viVFNQy7Xs5kJQqInwtLl6whrJEQZb
-         fA7z7u4tGxxrHiC9eMxLmf9NsP6ORQOFGseVkOBUHp0bpb0Mhhwur6drUvBeIo07NmjF
-         BfurS3qNU5COwMqaeYKwaWZBWuYneoUzKzHdz5zQnCIBTM93HzAMSCuSr+xaVqXnOuY9
-         0u2g==
-X-Gm-Message-State: AGi0PuZ0FrpCo2u3uraVYPh6qVDZB2KpZXX4T0AHsmv+yzYwpVrlGc9h
-        e40+1NkgZLFzbg+2To90M/tmgxoF4VU=
-X-Google-Smtp-Source: APiQypK4Rmh6pLHbgTnaSu6zL7wzlaCdP73doXwZGW7w+y2PgInKae+b5gCxGriGpTaR1bx9Y6Mr/A==
-X-Received: by 2002:a2e:9b41:: with SMTP id o1mr737922ljj.145.1587093595084;
-        Thu, 16 Apr 2020 20:19:55 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id m193sm16781385lfa.39.2020.04.16.20.19.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2020 20:19:54 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id r7so482395ljg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 20:19:54 -0700 (PDT)
-X-Received: by 2002:a05:651c:208:: with SMTP id y8mr697713ljn.280.1587093593874;
- Thu, 16 Apr 2020 20:19:53 -0700 (PDT)
+        id S1729132AbgDQDYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 23:24:15 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22715 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728444AbgDQDYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 23:24:14 -0400
+IronPort-SDR: uRabRcaaOmb+cf1MiuROWjs7h8iT0TDopivNXN8HK7fJixhXf3x2w0WDXGbGKq78/nFT2fx9rk
+ b5+qb1bOWYHA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 20:24:14 -0700
+IronPort-SDR: vm7kEmXJN0BsDyOFZzfPgeTZf2QaefCY0zx1kjPSt7pVlPucMluF6jzrfE1Y6kcew5SMLDtqeZ
+ f0IdLxZxxWtA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="254081720"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga003.jf.intel.com with ESMTP; 16 Apr 2020 20:24:11 -0700
+Date:   Fri, 17 Apr 2020 11:21:32 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhu@redhat.com" <bhu@redhat.com>
+Subject: Re: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
+Message-ID: <20200417032132.GA25293@yilunxu-OptiPlex-7050>
+References: <1587006712-22696-1-git-send-email-yilun.xu@intel.com>
+ <1587006712-22696-2-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB3819619E9B2C7326218247E385D80@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <9b1d85e0-4f44-179b-c847-af858fcc212a@redhat.com>
+ <20200417015605.GA30618@yilunxu-OptiPlex-7050>
+ <DM6PR11MB381919B83DB49F937E3EDEEA85D90@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200417030449.10601-1-grace.kao@intel.com>
-In-Reply-To: <20200417030449.10601-1-grace.kao@intel.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Thu, 16 Apr 2020 20:19:42 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXM7SLqv_9wrkc=+gnv9bLLHBox3O4vvmgwPf1H2qLyL3g@mail.gmail.com>
-Message-ID: <CA+ASDXM7SLqv_9wrkc=+gnv9bLLHBox3O4vvmgwPf1H2qLyL3g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] pinctrl: cherryview: Add missing spinlock usage in chv_gpio_irq_handler
-To:     Grace Kao <grace.kao@intel.com>
-Cc:     linux-gpio@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB381919B83DB49F937E3EDEEA85D90@DM6PR11MB3819.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Regarding subject: this says v2 -- where's v1?]
+On Fri, Apr 17, 2020 at 11:05:16AM +0800, Wu, Hao wrote:
+> > -----Original Message-----
+> > From: Xu, Yilun <yilun.xu@intel.com>
+> > Sent: Friday, April 17, 2020 9:56 AM
+> > To: Tom Rix <trix@redhat.com>
+> > Cc: Wu, Hao <hao.wu@intel.com>; mdf@kernel.org; linux-
+> > fpga@vger.kernel.org; linux-kernel@vger.kernel.org; bhu@redhat.com
+> > Subject: Re: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
+> >
+> > Hi Rix:
+> >
+> > This patch is based on linux-next. There is an preceding patch
+> > (3c2760b78f90 "fpga: dfl: pci: fix return value of cci_pci_sriov_configure",
+> > Also see Fixes:) in linux-next but not merged in 5.7-rc1 yet.
+> > This patch is to fix the lkp warning brought by the previous one.
+> 
+> Yilun
+> 
+> Is it possible that commit id may be different for master then?
 
-Hi,
+It is possible if the previous patch need a little change when merging
+to master.
 
-On Thu, Apr 16, 2020 at 8:07 PM Grace Kao <grace.kao@intel.com> wrote:
->
-> According to Braswell NDA Specification Update (#557593),
-> concurrent read accesses may result in returning 0xffffffff and write
-> instructions may be dropped. We have an established format for the
-> commit references, i.e.
-> cdca06e4e859 ("pinctrl: baytrail: Add missing spinlock usage in
-> byt_gpio_irq_handler")
->
+I'm not sure how to handle this then. But the previous patch is simple
+and is unlikely to change.
 
-Might deserve a Fixes tag and Cc stable:
-
-Fixes: 0bd50d719b00 pinctrl: cherryview: prevent concurrent access to
-GPIO controllers
-Cc: stable@vger.kernel.org>
-
-> Signed-off-by: Grace Kao <grace.kao@intel.com>
-
-Seems like you should at least give me the reporter credit, if not the
-actual authorship, since I did in fact write this patch...
-
-Reported-by: Brian Norris <briannorris@chromium.org>
-
-And since I approve of my own patch:
-
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+> 
+> Thanks
+> Hao
+> 
+> >
+> > Thanks.
+> >
+> > On Thu, Apr 16, 2020 at 09:56:47AM -0700, Tom Rix wrote:
+> > > Please check the scope.
+> > >
+> > > On linus/master, the result of this change looks like
+> > >
+> > > static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
+> > > {
+> > >     struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+> > >     struct dfl_fpga_cdev *cdev = drvdata->cdev;
+> > >
+> > >     if (!num_vfs) {
+> > >         /*
+> > >          * disable SRIOV and then put released ports back to default
+> > >          * PF access mode.
+> > >          */
+> > >         pci_disable_sriov(pcidev);
+> > >
+> > >         dfl_fpga_cdev_config_ports_pf(cdev);
+> > >
+> > >     } else {
+> > >         int ret; <--- defined here
+> > >
+> > >         /*
+> > >          * before enable SRIOV, put released ports into VF access mode
+> > >          * first of all.
+> > >          */
+> > >         ret = dfl_fpga_cdev_config_ports_vf(cdev, num_vfs);
+> > >         if (ret)
+> > >             return ret;
+> > >
+> > >         ret = pci_enable_sriov(pcidev, num_vfs);
+> > >         if (ret)
+> > >             dfl_fpga_cdev_config_ports_pf(cdev);
+> > >     }
+> > >
+> > >     return ret;  <---- not in scope, not defined here
+> > > }
+> > >
+> > > Tom
