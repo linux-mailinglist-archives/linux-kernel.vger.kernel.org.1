@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507B91AE1FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF6E1AE1FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgDQQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:15:58 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:41360 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728105AbgDQQP6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:15:58 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03HGFuc9054021;
-        Fri, 17 Apr 2020 11:15:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587140156;
-        bh=8XNtELKWzpnij+R4SB5BXR2hr1jNZvpQH8VXFu0sUks=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=GZ8kjuE85b2VfZ524qNbAeY4S3NlC6ub4zEj9qCT0khHFg+wOtwLXGfJhOe58r+Ul
-         Ob0zeSUOyRoRitpjiznPs8XzahJjjUgFMd8jxA6OEh+zhipR853asTCRT9VcYMZGPB
-         1rbUxnRc7Cd0YBaHzGOUngJR5nIBL+Afl9uURDvg=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03HGFuVF127396;
-        Fri, 17 Apr 2020 11:15:56 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 17
- Apr 2020 11:15:56 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 17 Apr 2020 11:15:56 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03HGFtos124883;
-        Fri, 17 Apr 2020 11:15:55 -0500
-Subject: Re: [v2 5/7] remoteproc: Restructure firmware name allocation
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Alex Elder <elder@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-References: <20200415204858.2448-1-mathieu.poirier@linaro.org>
- <20200415204858.2448-6-mathieu.poirier@linaro.org>
- <aa565fea-b1c4-9b5c-73ed-591244afee19@web.de>
- <e887c990-8cba-62b0-0f47-3ea0c166d603@ti.com>
- <7a978c24-945d-8d39-3a0a-30e0678d569a@web.de>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <9d3e4511-27f4-3523-a90c-2ff64d1d9c89@ti.com>
-Date:   Fri, 17 Apr 2020 11:15:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <7a978c24-945d-8d39-3a0a-30e0678d569a@web.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1730189AbgDQQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:16:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728105AbgDQQQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 12:16:02 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1680120857;
+        Fri, 17 Apr 2020 16:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587140161;
+        bh=dMnwJXovzpQ6YBUUVCY4KPofcSqzELKGUYZ13cOxUdI=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=2puiKB/0hiVpk1D9MJlEu9jeNCctSYUHooAr1pZSC9C4mMMjiYt2xjJMHYza+dh9P
+         9oGoYR4/8Z6FSOcRGaxAc49WewRgBYQ6S8UyVyNK0Fcd5Te3/KnkaMQDMiwSJ6MV9X
+         cKTvjq1ss1t31ZKGl8MG7fVht9JIrM3x+xh4qjvk=
+Date:   Fri, 17 Apr 2020 17:15:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matthias Blankertz <matthias.blankertz@cetitec.com>
+Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-renesas-soc@vger.kernel.org
+In-Reply-To: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
+References: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
+Subject: Re: [PATCH 0/2] ASoC: rsnd: Fixes for multichannel HDMI audio output
+Message-Id: <158714007098.22963.15064526974433346524.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/20 10:48 AM, Markus Elfring wrote:
->>>      p = firmware ? kstrdup_const(…) : kasprintf(…);
->>
->> For simple assignments, I too prefer the ternary operator,
+On Wed, 15 Apr 2020 16:10:15 +0200, Matthias Blankertz wrote:
+> This fixes two issues in the snd-soc-rcar driver blocking multichannel
+> HDMI audio out: The parent SSI in a multi-SSI configuration is not
+> correctly set up and started, and the SSI->HDMI channel mapping is
+> wrong.
 > 
-> Thanks for your feedback.
+> With these patches, the following device tree snippet can be used on an
+> r8a7795-based platform (Salvator-X) to enable multichannel HDMI audio on
+> HDMI0:
 > 
-> 
->> but in this case, I think it is better to leave the current code as is.
-> 
-> Would you like to consider the use of the function “kvasprintf_const”
-> according to your review comment for the update step “[PATCH v2 4/7] remoteproc:
-> Use kstrdup_const() rather than kstrup()”?
+> [...]
 
-This patch is just swapping the condition order, so will automatically 
-be adjusted for any changes in patch 4 during the rebase.
+Applied, thanks!
 
-regards
-Suman
+[1/2] ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode
+      commit: a09fb3f28a60ba3e928a1fa94b0456780800299d
+[2/2] ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
+      commit: b94e164759b82d0c1c80d4b1c8f12c9bee83f11d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
