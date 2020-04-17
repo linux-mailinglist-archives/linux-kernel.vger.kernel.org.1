@@ -2,121 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED65E1AD8B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527661AD88E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729822AbgDQIfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:35:14 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45343 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729747AbgDQIfN (ORCPT
+        id S1729774AbgDQIaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:30:01 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33589 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729756AbgDQIaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:35:13 -0400
-X-UUID: d8d986a5e78941bebdc08bacc8008b68-20200417
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=I69XZhCGCT6PHGSQl+2FE2AZcxuaF8LTOGfpLh230qU=;
-        b=jqxe+4/bHncovWXXVhvU0o0AsCAmL08SKhpRxzft9v+YWGHN/hqpG3sa/ED5QB1DEXD8Fa0Ohs2H8CN1vFBRvAsDyLaVWgjTsP9ICb8I4SgTDZ79Id48q79qrOsA7x7tXpdY4KXhg1Oa+5xAkUI8ugCyReHEstiSE66a9v2a/7k=;
-X-UUID: d8d986a5e78941bebdc08bacc8008b68-20200417
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <ran.bi@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1581973651; Fri, 17 Apr 2020 16:29:59 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs01n1.mediatek.inc
- (172.21.101.68) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 17 Apr
- 2020 16:29:57 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 17 Apr 2020 16:29:54 +0800
-Message-ID: <1587112169.12875.2.camel@mhfsdcap03>
-Subject: Re: [PATCH v12 5/6] rtc: mt6397: Add support for the MediaTek
- MT6358 RTC
-From:   Ran Bi <ran.bi@mediatek.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        "Kate Stewart" <kstewart@linuxfoundation.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        "Josef Friedl" <josef.friedl@speed.at>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Date:   Fri, 17 Apr 2020 16:29:29 +0800
-In-Reply-To: <20200416091438.GA2167633@dell>
-References: <1586333531-21641-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1586333531-21641-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <20200416091438.GA2167633@dell>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 17 Apr 2020 04:30:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587112198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sq2go4oE4wkjjJo/d/qCXW8H/F2CZmjvC27LSvnbq6k=;
+        b=E65N3BFeCQ64cCR1AlsgBIt/+E+ikZXoAxQfpToXxAdkDByFokPrMXWCn5lJO3aob4IPC9
+        z36Z9v6QNwseZoKzQijnNACMMS49ZhLzk2XDcYON02BJ91Vk8H57BtRPXrvkKkqstc6PZN
+        mZybaFYAl8xuTPLUJI0ew3elDa6nTVc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-WoaY_FbxP7KMMm4Qj1_TwQ-1; Fri, 17 Apr 2020 04:29:56 -0400
+X-MC-Unique: WoaY_FbxP7KMMm4Qj1_TwQ-1
+Received: by mail-wm1-f70.google.com with SMTP id t62so659548wma.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 01:29:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=sq2go4oE4wkjjJo/d/qCXW8H/F2CZmjvC27LSvnbq6k=;
+        b=jmdZwcs0YaC0gCntDAor2Er05jUIcTiNucOTaIFrPfGgbjyxzD8bQ7arKhudDd7f9Y
+         lgrVkwtTJOcZWDRtAA3IohEzyQZ4g/fvKRqc1LVbPcSqklO31nPA2lpntqT1mP8O4lKe
+         tKSaBzMqZ1bUj0EDWHOr1lZaCqPN67honqL7yF7rAI5dWwlW84DabveA3h+B4ATcrFhj
+         Tqg0BN3c441zpuLh3T0elTTcpEbo2CxktM6BA4qpYQjEobc4PKcWFxfuMiP0nUJBdbhg
+         NLYiA2K9joiAP8c47+BPLn/yXDaFCQwwfO749Pi4sXMD9GTQ8N/pOTBbwlxGdt3Eg9qy
+         uhYw==
+X-Gm-Message-State: AGi0PuZJLroQY8H0odn7LA+1i9PxlXnO9sq++1GLkMBWmgWRHh7Gcafa
+        TuDT+shCzT8uXSy9x841dN5XMn3boMIkPXkkclCx0CzZcNgla7RzdtomAITsS9D7adT69MefbuE
+        XQrBGd+2hauV1rxjgQ8FbUhs3
+X-Received: by 2002:a05:600c:2214:: with SMTP id z20mr2319810wml.189.1587112195127;
+        Fri, 17 Apr 2020 01:29:55 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJKNV66xDbZPbEJ9pvldY03mzn5rKaoaGWZw2nM8sRe1qQQQA0lQolXxgIpPJn0ZvUYcb5Wmw==
+X-Received: by 2002:a05:600c:2214:: with SMTP id z20mr2319790wml.189.1587112194907;
+        Fri, 17 Apr 2020 01:29:54 -0700 (PDT)
+Received: from redhat.com (bzq-79-183-51-3.red.bezeqint.net. [79.183.51.3])
+        by smtp.gmail.com with ESMTPSA id k133sm7277794wma.0.2020.04.17.01.29.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 01:29:54 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 04:29:50 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de, benh@kernel.crashing.org,
+        paulus@samba.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH V2] vhost: do not enable VHOST_MENU by default
+Message-ID: <20200417042912-mutt-send-email-mst@kernel.org>
+References: <20200415024356.23751-1-jasowang@redhat.com>
+ <20200416185426-mutt-send-email-mst@kernel.org>
+ <b7e2deb7-cb64-b625-aeb4-760c7b28c0c8@redhat.com>
+ <20200417022929-mutt-send-email-mst@kernel.org>
+ <4274625d-6feb-81b6-5b0a-695229e7c33d@redhat.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4274625d-6feb-81b6-5b0a-695229e7c33d@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA0LTE2IGF0IDEwOjE0ICswMTAwLCBMZWUgSm9uZXMgd3JvdGU6DQo+IE9u
-IFdlZCwgMDggQXByIDIwMjAsIEhzaW4tSHNpdW5nIFdhbmcgd3JvdGU6DQo+IA0KPiA+IEZyb206
-IFJhbiBCaSA8cmFuLmJpQG1lZGlhdGVrLmNvbT4NCj4gPiANCj4gPiBUaGlzIGFkZCBzdXBwb3J0
-IGZvciB0aGUgTWVkaWFUZWsgTVQ2MzU4IFJUQy4gRHJpdmVyIHVzaW5nDQo+ID4gY29tcGF0aWJs
-ZSBkYXRhIHRvIHN0b3JlIGRpZmZlcmVudCBSVENfV1JUR1IgYWRkcmVzcyBvZmZzZXQuDQo+ID4g
-VGhpcyByZXBsYWNlIFJUQ19XUlRHUiB0byBSVENfV1JUR1JfTVQ2MzIzIGluIG10NjMyMy1wb3dl
-cm9mZg0KPiA+IGRyaXZlciB3aGljaCBvbmx5IG5lZWRlZCBieSBhcm12NyBDUFUgd2l0aG91dCBB
-VEYuDQo+ID4gDQo+ID4gUmV2aWV3ZWQtYnk6IE5pY29sYXMgQm9pY2hhdCA8ZHJpbmtjYXRAY2hy
-b21pdW0ub3JnPg0KPiA+IFJldmlld2VkLWJ5OiBZaW5nam9lIENoZW4gPHlpbmdqb2UuY2hlbkBt
-ZWRpYXRlay5jb20+DQo+ID4gQWNrZWQtYnk6IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUu
-YmVsbG9uaUBib290bGluLmNvbT4NCj4gPiBBY2tlZC1ieTogU2ViYXN0aWFuIFJlaWNoZWwgPHNy
-ZUBrZXJuZWwub3JnPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJhbiBCaSA8cmFuLmJpQG1lZGlhdGVr
-LmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBIc2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53
-YW5nQG1lZGlhdGVrLmNvbT4NCj4gDQo+IFBsZWFzZSBwbGFjZSB0aGVzZSBpbiBjaHJvbm9sb2dp
-Y2FsIG9yZGVyLiAgVGhleSBzaG91bGQgcHJvdmlkZSBzb21lDQo+IGhpc3RvcnksIHJhdGhlciB0
-aGFuIGEgdW5vcmRlcmVkIHNsYWIgbGlzdCBvZiByYW5kb20gc2lnbi1vZmZzLg0KPiANCg0KSSBz
-dXBwb3NlIHRoYXQgeW91IG1lYW4gdGhlIG9yZGVyIHNob3VsZCBiZSBsaWtlIGJlbG93LCByaWdo
-dD8NClJldmlld2VkLWJ5OiBZaW5nam9lIENoZW4gPHlpbmdqb2UuY2hlbkBtZWRpYXRlay5jb20+
-DQpBY2tlZC1ieTogU2ViYXN0aWFuIFJlaWNoZWwgPHNyZUBrZXJuZWwub3JnPg0KQWNrZWQtYnk6
-IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4NClJldmll
-d2VkLWJ5OiBOaWNvbGFzIEJvaWNoYXQgPGRyaW5rY2F0QGNocm9taXVtLm9yZz4NClNpZ25lZC1v
-ZmYtYnk6IEhzaW4tSHNpdW5nIFdhbmcgPGhzaW4taHNpdW5nLndhbmdAbWVkaWF0ZWsuY29tPg0K
-U2lnbmVkLW9mZi1ieTogUmFuIEJpIDxyYW4uYmlAbWVkaWF0ZWsuY29tPg0KDQo+ID4gLS0tDQo+
-ID4gIGRyaXZlcnMvcG93ZXIvcmVzZXQvbXQ2MzIzLXBvd2Vyb2ZmLmMgfCAgMiArLQ0KPiA+ICBk
-cml2ZXJzL3J0Yy9ydGMtbXQ2Mzk3LmMgICAgICAgICAgICAgIHwgMTggKysrKysrKysrKysrKysr
-LS0tDQo+ID4gIGluY2x1ZGUvbGludXgvbWZkL210NjM5Ny9ydGMuaCAgICAgICAgfCAgOSArKysr
-KysrKy0NCj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAyNCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9u
-cygtKQ0KPiANCj4gWy4uLl0NCj4gDQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbWZk
-L210NjM5Ny9ydGMuaCBiL2luY2x1ZGUvbGludXgvbWZkL210NjM5Ny9ydGMuaA0KPiA+IGluZGV4
-IDdkZmI2M2IuLjYyMDBmM2IgMTAwNjQ0DQo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9tZmQvbXQ2
-Mzk3L3J0Yy5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9tZmQvbXQ2Mzk3L3J0Yy5oDQo+ID4g
-QEAgLTE4LDcgKzE4LDkgQEANCj4gPiAgI2RlZmluZSBSVENfQkJQVV9DQlVTWSAgICAgICAgIEJJ
-VCg2KQ0KPiA+ICAjZGVmaW5lIFJUQ19CQlBVX0tFWSAgICAgICAgICAgICgweDQzIDw8IDgpDQo+
-ID4gIA0KPiA+IC0jZGVmaW5lIFJUQ19XUlRHUiAgICAgICAgICAgICAgMHgwMDNjDQo+ID4gKyNk
-ZWZpbmUgUlRDX1dSVEdSX01UNjM1OCAgICAgICAweDNhDQo+ID4gKyNkZWZpbmUgUlRDX1dSVEdS
-X01UNjM5NyAgICAgICAweDNjDQo+IA0KPiBXaHkgcmVtb3ZlIHRoZSBsZWFkaW5nIDAwJ3M/DQo+
-IA0KPiBUaGVzZSBhcmUgbm93IGRpZmZlcmVudCB0byB0aGUgb3RoZXIgcmVncyBkZWZpbmVkIGlu
-IHRoaXMgaGVhZGVyLg0KPiANCg0KSSB3aWxsIGZpeCB0aGlzIGF0IG5leHQgcGF0Y2guDQoNCj4g
-PiArI2RlZmluZSBSVENfV1JUR1JfTVQ2MzIzICAgICAgIFJUQ19XUlRHUl9NVDYzOTcNCj4gPiAg
-DQo+ID4gICNkZWZpbmUgUlRDX0lSUV9TVEEgICAgICAgICAgICAweDAwMDINCj4gDQo+IExpa2Ug
-aGVyZSBmb3IgaW5zdGFuY2UgIC0tXg0KPiANCj4gPiAgI2RlZmluZSBSVENfSVJRX1NUQV9BTCAg
-ICAgICAgIEJJVCgwKQ0KPiA+IEBAIC02NSw2ICs2NywxMCBAQA0KPiA+ICAjZGVmaW5lIE1US19S
-VENfUE9MTF9ERUxBWV9VUyAgMTANCj4gPiAgI2RlZmluZSBNVEtfUlRDX1BPTExfVElNRU9VVCAg
-IChqaWZmaWVzX3RvX3VzZWNzKEhaKSkNCj4gPiAgDQo+ID4gK3N0cnVjdCBtdGtfcnRjX2RhdGEg
-ew0KPiA+ICsJdTMyICAgICAgICAgICAgICAgICAgICAgd3J0Z3I7DQo+ID4gK307DQo+ID4gKw0K
-PiA+ICBzdHJ1Y3QgbXQ2Mzk3X3J0YyB7DQo+ID4gIAlzdHJ1Y3QgZGV2aWNlICAgICAgICAgICAq
-ZGV2Ow0KPiA+ICAJc3RydWN0IHJ0Y19kZXZpY2UgICAgICAgKnJ0Y19kZXY7DQo+ID4gQEAgLTc0
-LDYgKzgwLDcgQEAgc3RydWN0IG10NjM5N19ydGMgew0KPiA+ICAJc3RydWN0IHJlZ21hcCAgICAg
-ICAgICAgKnJlZ21hcDsNCj4gPiAgCWludCAgICAgICAgICAgICAgICAgICAgIGlycTsNCj4gPiAg
-CXUzMiAgICAgICAgICAgICAgICAgICAgIGFkZHJfYmFzZTsNCj4gPiArCWNvbnN0IHN0cnVjdCBt
-dGtfcnRjX2RhdGEgKmRhdGE7DQo+ID4gIH07DQo+ID4gIA0KPiA+ICAjZW5kaWYgLyogX0xJTlVY
-X01GRF9NVDYzOTdfUlRDX0hfICovDQo+IA0KDQo=
+On Fri, Apr 17, 2020 at 03:36:52PM +0800, Jason Wang wrote:
+> 
+> On 2020/4/17 下午2:33, Michael S. Tsirkin wrote:
+> > On Fri, Apr 17, 2020 at 11:12:14AM +0800, Jason Wang wrote:
+> > > On 2020/4/17 上午6:55, Michael S. Tsirkin wrote:
+> > > > On Wed, Apr 15, 2020 at 10:43:56AM +0800, Jason Wang wrote:
+> > > > > We try to keep the defconfig untouched after decoupling CONFIG_VHOST
+> > > > > out of CONFIG_VIRTUALIZATION in commit 20c384f1ea1a
+> > > > > ("vhost: refine vhost and vringh kconfig") by enabling VHOST_MENU by
+> > > > > default. Then the defconfigs can keep enabling CONFIG_VHOST_NET
+> > > > > without the caring of CONFIG_VHOST.
+> > > > > 
+> > > > > But this will leave a "CONFIG_VHOST_MENU=y" in all defconfigs and even
+> > > > > for the ones that doesn't want vhost. So it actually shifts the
+> > > > > burdens to the maintainers of all other to add "CONFIG_VHOST_MENU is
+> > > > > not set". So this patch tries to enable CONFIG_VHOST explicitly in
+> > > > > defconfigs that enables CONFIG_VHOST_NET and CONFIG_VHOST_VSOCK.
+> > > > > 
+> > > > > Acked-by: Christian Borntraeger<borntraeger@de.ibm.com>  (s390)
+> > > > > Acked-by: Michael Ellerman<mpe@ellerman.id.au>  (powerpc)
+> > > > > Cc: Thomas Bogendoerfer<tsbogend@alpha.franken.de>
+> > > > > Cc: Benjamin Herrenschmidt<benh@kernel.crashing.org>
+> > > > > Cc: Paul Mackerras<paulus@samba.org>
+> > > > > Cc: Michael Ellerman<mpe@ellerman.id.au>
+> > > > > Cc: Heiko Carstens<heiko.carstens@de.ibm.com>
+> > > > > Cc: Vasily Gorbik<gor@linux.ibm.com>
+> > > > > Cc: Christian Borntraeger<borntraeger@de.ibm.com>
+> > > > > Reported-by: Geert Uytterhoeven<geert@linux-m68k.org>
+> > > > > Signed-off-by: Jason Wang<jasowang@redhat.com>
+> > > > I rebased this on top of OABI fix since that
+> > > > seems more orgent to fix.
+> > > > Pushed to my vhost branch pls take a look and
+> > > > if possible test.
+> > > > Thanks!
+> > > 
+> > > I test this patch by generating the defconfigs that wants vhost_net or
+> > > vhost_vsock. All looks fine.
+> > > 
+> > > But having CONFIG_VHOST_DPN=y may end up with the similar situation that
+> > > this patch want to address.
+> > > Maybe we can let CONFIG_VHOST depends on !ARM || AEABI then add another
+> > > menuconfig for VHOST_RING and do something similar?
+> > > 
+> > > Thanks
+> > Sorry I don't understand. After this patch CONFIG_VHOST_DPN is just
+> > an internal variable for the OABI fix. I kept it separate
+> > so it's easy to revert for 5.8. Yes we could squash it into
+> > VHOST directly but I don't see how that changes logic at all.
+> 
+> 
+> Sorry for being unclear.
+> 
+> I meant since it was enabled by default, "CONFIG_VHOST_DPN=y" will be left
+> in the defconfigs.
+
+But who cares? That does not add any code, does it?
+
+> This requires the arch maintainers to add
+> "CONFIG_VHOST_VDPN is not set". (Geert complains about this)
+> 
+> Thanks
+> 
+> 
+> > 
 
