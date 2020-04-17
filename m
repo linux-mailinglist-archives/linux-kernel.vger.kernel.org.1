@@ -2,183 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7B91AD4B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DDE1AD4B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729464AbgDQDFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 23:05:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42625 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgDQDFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 23:05:19 -0400
-IronPort-SDR: rTBmR8vDhK3HXJGHnUTs7JEKfNFvgEBdlQUQxn0Gxy+i5ZtaoVlNcEuOG+T9ML1IcRx81NTSeI
- KUcmuQxKYG6w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 20:05:19 -0700
-IronPort-SDR: yx1B5KmqV9xbKw5Y+qe1SOnUCmpSn0wKegVIXGQOXmAo6nq4ZsfpUK8i29WsiZ36gNQ5rrGvmM
- 5gk/QCHHgARw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
-   d="scan'208";a="299490520"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Apr 2020 20:05:19 -0700
-Received: from fmsmsx163.amr.corp.intel.com (10.18.125.72) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 20:05:19 -0700
-Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
- fmsmsx163.amr.corp.intel.com (10.18.125.72) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 20:05:19 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.59) by
- edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Thu, 16 Apr 2020 20:05:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mU1UVxVoSYH2O8NWqMigDKeOhFtNcOccPnyxWTpTBImf9v+a6Yh+ryI9Qq/pNlMYGdidZL/B/32Y73QU0yQev3hhr+XQseP92Ts2wo8F6HaSAKpBPzkx/XoMd4rJ2LgP6xkyZWYwlsPluHULt8Na1c6UJDc/01a6WTn3fIFNqn9aSQluZB3eb9RkNWOShsNoNQV9m4N/1/gw7u0iQ6Fwbxp5nxagtZEGxPAG/bGnbgek2ZoTjLH4Jz5kyjRDNA4uqEDTBivdoDOwN21ff2dglYplIALrUqM8ynqRc+pirZ3WRMzQPTshS0AV34FlL/NRjHXuj7pfGp673EdNFtfjZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TVgUMGnjOyhufcziJ/kUyrrl5LHowYpd7U+NPvgBmiQ=;
- b=XJzGoE4eHt5UBS4eMpj5bAIUsf4PnNnI2xP7XhwSxZ/RtsNZP5ATap6TjWEWuqzNP4jb+om9FwU10PdNbc50lFpuUgY30jiQGFP/Beot2vkqWzu9fE5GRaCWZ8GZevU1IPN2oepcj3+GaxHFX46svfgxqcBmN43zB3bpfbn2B2RB+EcDfYim+vmGRsRaBLi8lEi9wryi7qAAnqcKu3ye01ej8VUuFiCnk8QJWrRkqIvnOIEgLPLN3Tnu1uIz1kFLfiBU7nabF9Dn/qDmuLQ2IyWHxmGNiGZJYqUy6Ews3c00m3958M5F7yKEgmfDe/qqOqydWKlVr/t8rFuDPEFwvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TVgUMGnjOyhufcziJ/kUyrrl5LHowYpd7U+NPvgBmiQ=;
- b=ZkgRuHHLjMV9/ttqEoP10DBCDHNmjODDG32cMoNgUmsh2CAGr9vJ4Y/4wk5Xo19yaPuN72iXORbjtWdS/OnlnomEy8wPuFzGGj5Ky/jK5FKot/Lbtj+mjmf8moq8NesWUI0WPRk+nLtjRs+7nM03JOxLjJ1uu6p65sjV2b2YaVI=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB3882.namprd11.prod.outlook.com (2603:10b6:5:4::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2921.25; Fri, 17 Apr 2020 03:05:17 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::98a:bb06:5551:e5a3]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::98a:bb06:5551:e5a3%3]) with mapi id 15.20.2900.028; Fri, 17 Apr 2020
- 03:05:17 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     "Xu, Yilun" <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
-CC:     "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bhu@redhat.com" <bhu@redhat.com>
-Subject: RE: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
-Thread-Topic: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 'ret'
-Thread-Index: AQHWE5193+0/nQdMD0KUurSvMI7dQ6h7YzcggACVlYCAAJaugIAAEAvg
-Date:   Fri, 17 Apr 2020 03:05:16 +0000
-Message-ID: <DM6PR11MB381919B83DB49F937E3EDEEA85D90@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <1587006712-22696-1-git-send-email-yilun.xu@intel.com>
- <1587006712-22696-2-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB3819619E9B2C7326218247E385D80@DM6PR11MB3819.namprd11.prod.outlook.com>
- <9b1d85e0-4f44-179b-c847-af858fcc212a@redhat.com>
- <20200417015605.GA30618@yilunxu-OptiPlex-7050>
-In-Reply-To: <20200417015605.GA30618@yilunxu-OptiPlex-7050>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=hao.wu@intel.com; 
-x-originating-ip: [192.102.204.38]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0814a210-1728-4d59-76ea-08d7e27c2807
-x-ms-traffictypediagnostic: DM6PR11MB3882:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB388296141BC49F7C6B46269B85D90@DM6PR11MB3882.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1360;
-x-forefront-prvs: 0376ECF4DD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(346002)(376002)(136003)(396003)(39860400002)(366004)(26005)(110136005)(71200400001)(7696005)(5660300002)(66446008)(64756008)(33656002)(316002)(54906003)(76116006)(66946007)(52536014)(66556008)(53546011)(8936002)(6506007)(66476007)(81156014)(8676002)(86362001)(4326008)(478600001)(186003)(2906002)(9686003)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8dCoz2JXlo/7TaluY8OIlW9ZzYJ6yW9tF+xpUYX8LRWRD/a/DFuk/sF7kJIOBOiKFiasnd7OBUKe4ulWv/eRx8Gpn/mG7fhr3VGunYz7XFekMWsqDDZOsp/VnUiGA6d32tP9gV71reEf6Pqkyj2C6vjxKqI/97L35dssnqSqxGQ+TDkyBdfRQbPylEcpkZT+qhOGM4zIPTT6zFQGNDDD5B/lMT9CPDvbOZIcMiAu3j+1Ej/RMXgt9tAn18OBrUweRnMX0FPAaY8PPD+0Nyay0UJ+NiIMO0zariIfBKLKPycqWa49OkwYjkBiOlFi0mPWgAz30yoOvWiOCmZ61H/+ebhH1HK8zK9xXIi4O3qVZMA1hHynQmArFL6GPK6cITD7m/2BBSt228H3H54OclyzXbnGmtRPmYH5OjN8697YLxnoHgDpn+91q1+p5dQ+RwoR
-x-ms-exchange-antispam-messagedata: ybB847/HQtrxmVcx0BurTreeMB46XTa2ivxLNgFHhX8/KSscxLh6U8zNh/glgfrZSB6kpzprp9FsfH8JN4BCyDrkrfKcJnPfXhP4QR0OwoL0sYvgHYFDjmRkc2e2hGB7N8JNJ2lYdJoN90q0wvqWTw==
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1729472AbgDQDIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 23:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726261AbgDQDIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Apr 2020 23:08:06 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828DCC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 20:08:06 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id b18so787301ilf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 20:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ebTsKAwkrX51VNWdMLRx1zZug0MiTHZ+b3yQsKbwoRc=;
+        b=rq9vdWmJk2u3qMtsyyfuQzbbpeXrzZmBdZgklhUivM+t1qjrHgyeR2zBJ33I9qRY2d
+         V1dqA0m4yiMWdljeONwkdqswo8pNOl6nmRu1K0WXgSthyrzw6WXpUxR+snGhWTTLF2FL
+         OuNLoIU7nIi7olnbrSMZY+08iCdiU/UX2ISFFsJ5BX3zmMPeNpjqlMZ0p0Kegq9pGngW
+         0vKrLyuFDG0Tl4x3HFozHqCsWgVnMEnxDVPlyR7yJKIwc2nOC8q7o73TNhC/BbC+C4N5
+         zhyxI7jsN+9Ju0aAhO4eBrI2SfF2n0tRu1ki2PcQV4JDrcZGEiiZxYrQFDyB0Dn9vHh7
+         gNAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ebTsKAwkrX51VNWdMLRx1zZug0MiTHZ+b3yQsKbwoRc=;
+        b=WGZRVTxtFEQ2+x3gCzxCXJsvXqaTaRp9Dhu6/c5m5hsIDExrpTe3OtBZ0vDyci/xuN
+         LdYZvDN/x5tyf5kBKFzv/1S/UUknP85qfBmCQlyvKTcqHrQQvp6H9Cw/L6ycJo3C43/x
+         0Z+2YQRmgUk8LlsApwKpWif98M1aVbppQ6P/DvaRsSFjThbFtvp08HjRQCMRS1+adKQf
+         A8dAqilxRE5Np/iPfXehZyr+mT9DgI6k3MMXFP+qNifjvt43KzLeXn9vu7ivT/Hv82fG
+         lGB8Vj8t7Y2VjMFOr4AU1fATzjsQZZjNimGF5etifnl1o0GVHdoNm4boEmZMCXcWgEW/
+         Jf4g==
+X-Gm-Message-State: AGi0PuZdlQtNlSKbMYEPvEcIrENmSxtQpYwbdcfOc/fhgIM05NDlhaKf
+        HmNEW+7pP+WOOtFIhS7a9m4Gv01JWh++aSRYclRx+g==
+X-Google-Smtp-Source: APiQypIevhTzuycK4mJxqTSE0pgj8L3/2ibOqHV+TbEy1vK87sM+9zwDMcxbCKUZ4sxDzATmvVRy5LXZKtgwIklPhJM=
+X-Received: by 2002:a92:5f17:: with SMTP id t23mr1041397ilb.2.1587092885703;
+ Thu, 16 Apr 2020 20:08:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0814a210-1728-4d59-76ea-08d7e27c2807
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 03:05:17.0145
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pjuH4gTNm6+K6neXytliQTtQquZQ0hu3ZkY8Gl07rhvQIWQb+kMkxlGvnC9/2ojEttmkUvxt4VGQBfZslPP5wg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3882
-X-OriginatorOrg: intel.com
+References: <20200416141833.50663-1-songmuchun@bytedance.com> <20200416113502.53b33a1c@gandalf.local.home>
+In-Reply-To: <20200416113502.53b33a1c@gandalf.local.home>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 17 Apr 2020 11:07:29 +0800
+Message-ID: <CAMZfGtVxbfEi03wn_s8PSM1UiH8R-TnNSFBbx0WNyJCTma5R7A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] sched/cpuacct: Fix charge
+ cpuacct.usage_sys incorrently.
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, Peter Zijlstra <peterz@infradead.org>,
+        juri.lelli@redhat.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Benjamin Segall <bsegall@google.com>,
+        mgorman@suse.de, mingo@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Xu, Yilun <yilun.xu@intel.com>
-> Sent: Friday, April 17, 2020 9:56 AM
-> To: Tom Rix <trix@redhat.com>
-> Cc: Wu, Hao <hao.wu@intel.com>; mdf@kernel.org; linux-
-> fpga@vger.kernel.org; linux-kernel@vger.kernel.org; bhu@redhat.com
-> Subject: Re: [PATCH 1/2] fpga: dfl: pci: reduce the scope of variable 're=
-t'
->=20
-> Hi Rix:
->=20
-> This patch is based on linux-next. There is an preceding patch
-> (3c2760b78f90 "fpga: dfl: pci: fix return value of cci_pci_sriov_configur=
-e",
-> Also see Fixes:) in linux-next but not merged in 5.7-rc1 yet.
-> This patch is to fix the lkp warning brought by the previous one.
+On Thu, Apr 16, 2020 at 11:35 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 16 Apr 2020 22:18:33 +0800
+> Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> > The user_mode(task_pt_regs(tsk)) always return true for
+> > user thread, and false for kernel thread. So it means that
+> > the cpuacct.usage_sys is the time that kernel thread uses
+> > not the time that thread uses in the kernel mode. We can
+> > use get_irq_regs() instead of task_pt_regs() to fix it.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  kernel/sched/cpuacct.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
+> > index 6448b0438ffb2..edfc62554648e 100644
+> > --- a/kernel/sched/cpuacct.c
+> > +++ b/kernel/sched/cpuacct.c
+> > @@ -5,6 +5,7 @@
+> >   * Based on the work by Paul Menage (menage@google.com) and Balbir Singh
+> >   * (balbir@in.ibm.com).
+> >   */
+> > +#include <asm/irq_regs.h>
+> >  #include "sched.h"
+> >
+> >  /* Time spent by the tasks of the CPU accounting group executing in ... */
+> > @@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
+> >  {
+> >       struct cpuacct *ca;
+> >       int index = CPUACCT_STAT_SYSTEM;
+> > -     struct pt_regs *regs = task_pt_regs(tsk);
+> > +     struct pt_regs *regs = get_irq_regs();
+>
+> But get_irq_regs() is only available from interrupt context. This will be
+> NULL most the time, whereas the original way will have regs existing for
+> the task.
+>
+> >
+> >       if (regs && user_mode(regs))
+> >               index = CPUACCT_STAT_USER;
+>
+> To show this, I applied your patch then did the following:
+>
+>  # echo 'p:cpuacct cpuacct_charge+0x36 regs=%ax' > /sys/kernel/tracing/kprobe_events
+>
+> Where I found that the test of 'regs' is %rax at offset 0x36.
+>
+>  # trace-cmd start -p function -l cpuacct_charge -e kprobes
+>  # trace-cmd show
+> # tracer: function
+> #
+> # entries-in-buffer/entries-written: 70664/70664   #P:8
+> #
+> #                              _-----=> irqs-off
+> #                             / _----=> need-resched
+> #                            | / _---=> hardirq/softirq
+> #                            || / _--=> preempt-depth
+> #                            ||| /     delay
+> #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+> #              | |       |   ||||       |         |
+>            <...>-1720  [002] d..2   306.430302: cpuacct_charge <-update_curr
+>            <...>-1720  [002] d..3   306.430306: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>            <...>-1720  [002] dN.2   306.430321: cpuacct_charge <-update_curr
+>            <...>-1720  [002] dN.3   306.430322: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>            <...>-1720  [002] d..2   306.430355: cpuacct_charge <-update_curr
+>            <...>-1720  [002] d..3   306.430357: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>             bash-1652  [006] d.h2   306.430799: cpuacct_charge <-update_curr
+>             bash-1652  [006] d.h3   306.430802: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0xffffaf34012abdd8
+>            <...>-199   [005] d.h2   306.430806: cpuacct_charge <-update_curr
+>            <...>-199   [005] d.h3   306.430809: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0xffffaf3400347c38
+>            <...>-16    [001] d..2   306.430873: cpuacct_charge <-update_curr
+>            <...>-16    [001] d..3   306.430875: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>            <...>-199   [005] d..2   306.430936: cpuacct_charge <-update_curr
+>            <...>-199   [005] d..3   306.430937: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>             bash-1652  [006] d..2   306.430944: cpuacct_charge <-update_curr
+>             bash-1652  [006] d..3   306.430946: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>             sshd-1649  [000] d..2   306.430990: cpuacct_charge <-update_curr
+>             sshd-1649  [000] d..3   306.430992: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      rcu_preempt-10    [006] d..2   306.432844: cpuacct_charge <-update_curr
+>      rcu_preempt-10    [006] d..3   306.432846: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      rcu_preempt-10    [006] d..2   306.436848: cpuacct_charge <-update_curr
+>      rcu_preempt-10    [006] d..3   306.436850: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      rcu_preempt-10    [006] d..2   306.440868: cpuacct_charge <-update_curr
+>      rcu_preempt-10    [006] d..3   306.440871: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      rcu_preempt-10    [006] d..2   306.444867: cpuacct_charge <-update_curr
+>      rcu_preempt-10    [006] d..3   306.444870: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      kworker/2:1-127   [002] d..2   306.446925: cpuacct_charge <-update_curr
+>      kworker/2:1-127   [002] d..3   306.446928: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      rcu_preempt-10    [006] d..2   306.448868: cpuacct_charge <-update_curr
+>      rcu_preempt-10    [006] d..3   306.448870: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>      rcu_preempt-10    [006] d..2   306.452869: cpuacct_charge <-update_curr
+>      rcu_preempt-10    [006] d..3   306.452872: cpuacct: (cpuacct_charge+0x36/0x1f0) regs=0x0
+>
+> The only times regs has content is from the the interrupt handler (seen as
+> the 'h' in the status portion of the trace.
+>
+> -- Steve
 
-Yilun
+Thanks for your test. You are right.
 
-Is it possible that commit id may be different for master then?=20
-
-Thanks
-Hao
-
->=20
-> Thanks.
->=20
-> On Thu, Apr 16, 2020 at 09:56:47AM -0700, Tom Rix wrote:
-> > Please check the scope.
-> >
-> > On linus/master, the result of this change looks like
-> >
-> > static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
-> > {
-> > =A0=A0=A0 struct cci_drvdata *drvdata =3D pci_get_drvdata(pcidev);
-> > =A0=A0=A0 struct dfl_fpga_cdev *cdev =3D drvdata->cdev;
-> >
-> > =A0=A0=A0 if (!num_vfs) {
-> > =A0=A0=A0 =A0=A0=A0 /*
-> > =A0=A0=A0 =A0=A0=A0 =A0* disable SRIOV and then put released ports back=
- to default
-> > =A0=A0=A0 =A0=A0=A0 =A0* PF access mode.
-> > =A0=A0=A0 =A0=A0=A0 =A0*/
-> > =A0=A0=A0 =A0=A0=A0 pci_disable_sriov(pcidev);
-> >
-> > =A0=A0=A0 =A0=A0=A0 dfl_fpga_cdev_config_ports_pf(cdev);
-> >
-> > =A0=A0=A0 } else {
-> > =A0=A0=A0 =A0=A0=A0 int ret; <--- defined here
-> >
-> > =A0=A0=A0 =A0=A0=A0 /*
-> > =A0=A0=A0 =A0=A0=A0 =A0* before enable SRIOV, put released ports into V=
-F access mode
-> > =A0=A0=A0 =A0=A0=A0 =A0* first of all.
-> > =A0=A0=A0 =A0=A0=A0 =A0*/
-> > =A0=A0=A0 =A0=A0=A0 ret =3D dfl_fpga_cdev_config_ports_vf(cdev, num_vfs=
-);
-> > =A0=A0=A0 =A0=A0=A0 if (ret)
-> > =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return ret;
-> >
-> > =A0=A0=A0 =A0=A0=A0 ret =3D pci_enable_sriov(pcidev, num_vfs);
-> > =A0=A0=A0 =A0=A0=A0 if (ret)
-> > =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dfl_fpga_cdev_config_ports_pf(cdev);
-> > =A0=A0=A0 }
-> >
-> > =A0=A0=A0 return ret;=A0 <---- not in scope, not defined here
-> > }
-> >
-> > Tom
+-- 
+Yours,
+Muchun
