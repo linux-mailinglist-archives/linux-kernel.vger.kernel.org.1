@@ -2,362 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897591ADA97
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BB71ADA9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgDQJ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727840AbgDQJ5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:57:33 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF72C061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:57:33 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x18so2378776wrq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BxdOY3z0xM0CI52w6qoCNlpFo6ByBsjg8n/akR2lelc=;
-        b=r1OM7MYyPLUl1o1MFezOlO7AvDxrNPs6Xz4NAaLKl1TeAvn0VSfVhxoS0vfa7/Whv7
-         THcyu2XioGBgIj5oDSF+9361zmgyquIbS6my6peNI0bAJtf04uWiutCiT4VdZSUcguLn
-         /6zCSWZVeKEHxaSRyu6OI1F5yMOym//DYJYCLlB2PwcKGxDvuI9fczsQyuGHOTTUKATk
-         UyU9NBUqVdnPgXC7eWYrSlZ3X+QDCmPPMoREUkj+At+d6rc1t+LXvEME7+Qhg8L+xmJX
-         zktoqKg+G5CMds+vod2roisaCDjzmK8OdJn3j2tpAzF6ZPwYrfe6fMWje3JXw45cYzb7
-         k/Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BxdOY3z0xM0CI52w6qoCNlpFo6ByBsjg8n/akR2lelc=;
-        b=azmwce1y/UHTujQE3UpPF3FlbK6GJ+KnKQdP+dwk8zd+TIw4m6dZdDjz4/8UySQ7O7
-         wNpCVSjE6Cus2Rw9YO/4hbS3vCe6NqeXkuMgFKncAdfg80HsB6D8/TFBOOX8fB3sKwY+
-         EY4AKfCuZIaC1qHYw+y+JtRoFhL28vJjtAxXgPQowRnneVMgrQrtbTQnbVWnRPbkS4/d
-         oSvkRW9BzVu1CsKBrO2kNRCzMbi0fh4GUJmGSe8eiqrXTVRw1/1gKo8KZQLUrfivCekY
-         2bfAf3S4BysF4yhcZyVEMvW2HdAHx7WAzy3KVtDvrHQNWkZuv2PvoS5o4KYAhI5xOQEd
-         Hxaw==
-X-Gm-Message-State: AGi0PuZwJ0ITftjgHwW/R0tc5MLlNmGyzXxTUvufV+EJhS7J0i3TVdXE
-        mkX8iHKCG2Clid58JAukKID/yQ==
-X-Google-Smtp-Source: APiQypIue/Km0CGvOVXLRMs3dRNzNn2b+oQJbWUSRC7S+I6HZthWyFZ45PSiWlv1OzGFmHnp1EEYHg==
-X-Received: by 2002:adf:b1c8:: with SMTP id r8mr2997631wra.218.1587117452173;
-        Fri, 17 Apr 2020 02:57:32 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id h188sm7601572wme.8.2020.04.17.02.57.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 02:57:31 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 10:58:31 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Jones <rjones@gateworks.com>
-Subject: Re: [PATCH v8 1/3] dt-bindings: mfd: Add Gateworks System Controller
- bindings
-Message-ID: <20200417095831.GI2167633@dell>
-References: <1585341214-25285-1-git-send-email-tharvey@gateworks.com>
- <1585341214-25285-2-git-send-email-tharvey@gateworks.com>
+        id S1728114AbgDQJ7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:59:19 -0400
+Received: from v6.sk ([167.172.42.174]:43478 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726618AbgDQJ7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:59:18 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id F1FFD610A6;
+        Fri, 17 Apr 2020 09:58:45 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 11:58:43 +0200
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v3] leds: ariel: Add driver for status LEDs on Dell Wyse
+ 3020
+Message-ID: <20200417095041.GA448088@furthur.local>
+References: <20200322074134.79237-1-lkundrak@v3.sk>
+ <ef7e8f03-0a43-156e-b86e-3ab3887f0245@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1585341214-25285-2-git-send-email-tharvey@gateworks.com>
+In-Reply-To: <ef7e8f03-0a43-156e-b86e-3ab3887f0245@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Mar 2020, Tim Harvey wrote:
-
-> This patch adds documentation of device-tree bindings for the
-> Gateworks System Controller (GSC).
+On Fri, Apr 03, 2020 at 02:37:49PM -0500, Dan Murphy wrote:
+> Lubomir
 > 
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
-> v8:
->  - add register to fan-controller node name
+> On 3/22/20 2:41 AM, Lubomir Rintel wrote:
+> > This adds support for controlling the LEDs attached to the Embedded
+> > Controller on a Dell Wyse 3020 "Ariel" board.
+> > 
+> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> > 
+> > ---
+> > Changes since v2:
+> > - Hopefully sending out the correct patch this time...
+> > 
+> > Changes since v1:
+> > - Reduce code duplication with a loop
+> > - Drop "ariel:" prefix from led names
+> > - Do not print a message after a successful probe
+> > ---
+> >   drivers/leds/Kconfig      |  11 ++++
+> >   drivers/leds/Makefile     |   1 +
+> >   drivers/leds/leds-ariel.c | 133 ++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 145 insertions(+)
+> >   create mode 100644 drivers/leds/leds-ariel.c
+> > 
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index d82f1dea37111..66424ee54cc01 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -83,6 +83,17 @@ config LEDS_APU
+> >   	  To compile this driver as a module, choose M here: the
+> >   	  module will be called leds-apu.
+> > +config LEDS_ARIEL
+> > +	tristate "Dell Wyse 3020 status LED support"
+> > +	depends on LEDS_CLASS
+> > +	depends on (MACH_MMP3_DT && MFD_ENE_KB3930) || COMPILE_TEST
+> > +	help
+> > +	  This driver adds support for controlling the front panel status
+> > +	  LEDs on Dell Wyse 3020 (Ariel) board via the KB3930 Embedded
+> > +	  Controller.
+> > +
+> > +	  Say Y to if your machine is a Dell Wyse 3020 thin client.
+> > +
+> >   config LEDS_AS3645A
+> >   	tristate "AS3645A and LM3555 LED flash controllers support"
+> >   	depends on I2C && LEDS_CLASS_FLASH
+> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > index d7e1107753fb1..bf3b22038d113 100644
+> > --- a/drivers/leds/Makefile
+> > +++ b/drivers/leds/Makefile
+> > @@ -10,6 +10,7 @@ obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
+> >   obj-$(CONFIG_LEDS_88PM860X)		+= leds-88pm860x.o
+> >   obj-$(CONFIG_LEDS_AAT1290)		+= leds-aat1290.o
+> >   obj-$(CONFIG_LEDS_APU)			+= leds-apu.o
+> > +obj-$(CONFIG_LEDS_ARIEL)		+= leds-ariel.o
+> >   obj-$(CONFIG_LEDS_AS3645A)		+= leds-as3645a.o
+> >   obj-$(CONFIG_LEDS_AN30259A)		+= leds-an30259a.o
+> >   obj-$(CONFIG_LEDS_BCM6328)		+= leds-bcm6328.o
+> > diff --git a/drivers/leds/leds-ariel.c b/drivers/leds/leds-ariel.c
+> > new file mode 100644
+> > index 0000000000000..8fc56722e12f4
+> > --- /dev/null
+> > +++ b/drivers/leds/leds-ariel.c
+> > @@ -0,0 +1,133 @@
+> > +// SPDX-License-Identifier: BSD-2-Clause OR GPL-2.0-or-later
+> > +/*
+> > + * Dell Wyse 3020 a.k.a. "Ariel" Embedded Controller LED Driver
+> > + *
+> > + * Copyright (C) 2020 Lubomir Rintel
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/leds.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/of_platform.h>
+> > +
+> > +enum ec_index {
+> > +	EC_BLUE_LED	= 0x01,
+> > +	EC_AMBER_LED	= 0x02,
 > 
-> v7:
->  - change divider from mili-ohms to ohms
->  - add constraints for voltage divider and offset
->  - remove unnecessary ref for offset
->  - renamed fan to fan-controller and changed base prop to reg
+> Defining the value after the 0x0 is unnecessary as enums are incremental
+> only the first value needs to be defined if the following values are in
+> numerical order
+
+I believe this improves readability, especially in case such as this
+where the actual numeric values matter.
+
+> Can these also be #defined instead of an enum?� Not requesting them to be
+> just wondering about the design decision here.
+
+It seems to be that this is what enums are for and theres is no need to
+get the preprocessor involved?
+
+I guess this might be a personal preference, but it seems to me that
+both enums and preprocessor defines are used across the code base.
+
+> > +	EC_GREEN_LED	= 0x03,
+> > +};
+> > +
+> > +enum {
+> > +	EC_LED_OFF	= 0x00,
+> > +	EC_LED_STILL	= 0x01,
+> Same comment as above
+> > +	EC_LED_FADE	= 0x02,
+> > +	EC_LED_BLINK	= 0x03,
+> > +};
+> > +
+> > +struct ariel_led {
+> > +	struct regmap *ec_ram;
+> > +	enum ec_index ec_index;
+> > +	struct led_classdev led_cdev;
+> > +};
+> > +
+> > +#define led_cdev_to_ariel_led(c) container_of(c, struct ariel_led, led_cdev)
+> > +
+> > +static enum led_brightness ariel_led_get(struct led_classdev *led_cdev)
+> > +{
+> > +	struct ariel_led *led = led_cdev_to_ariel_led(led_cdev);
+> > +	unsigned int led_status = 0;
+> > +
+> > +	if (regmap_read(led->ec_ram, led->ec_index, &led_status))
+> > +		return LED_OFF;
+> > +
+> > +	if (led_status == EC_LED_STILL)
+> > +		return LED_FULL;
+> > +	else
+> else is not needed here
+> > +		return LED_OFF;
+> > +}
+
+Yes, but should it be dropped? To me it seems like explicit else is
+better than implicit fallthrough. It is better when it's obvious that
+the LED_OFF is returned precisely only when the status is not
+EC_LED_STILL and that nothing ever happens afterwards -- and the
+compiler/linter will warn when anything unreachable is added afterwards.
+
+Not that it matters too much here. It's just that I've done this
+deliberately because it seems more readable to be and would prefer to
+leave it that way unless you really really care about that.
+
+> > +
+> > +static void ariel_led_set(struct led_classdev *led_cdev,
+> > +			  enum led_brightness brightness)
+> > +{
+> > +	struct ariel_led *led = led_cdev_to_ariel_led(led_cdev);
+> > +
+> > +	if (brightness == LED_OFF)
+> > +		regmap_write(led->ec_ram, led->ec_index, EC_LED_OFF);
+> > +	else
+> > +		regmap_write(led->ec_ram, led->ec_index, EC_LED_STILL);
+> > +}
+> > +
+> > +static int ariel_blink_set(struct led_classdev *led_cdev,
+> > +			   unsigned long *delay_on, unsigned long *delay_off)
+> > +{
+> > +	struct ariel_led *led = led_cdev_to_ariel_led(led_cdev);
+> > +
+> > +	if (*delay_on == 0 && *delay_off == 0)
+> > +		return -EINVAL;
+> > +
+> > +	if (*delay_on == 0) {
+> > +		regmap_write(led->ec_ram, led->ec_index, EC_LED_OFF);
+> > +	} else if (*delay_off == 0) {
+> > +		regmap_write(led->ec_ram, led->ec_index, EC_LED_STILL);
+> > +	} else {
+> > +		*delay_on = 500;
+> > +		*delay_off = 500;
+> > +		regmap_write(led->ec_ram, led->ec_index, EC_LED_BLINK);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +#define NLEDS 3
 > 
-> v6:
->  - fix typo
->  - drop invalid description from #interrupt-cells property
->  - fix adc pattern property
->  - add unit suffix
->  - replace hwmon/adc with adc/channel
->  - changed adc type to mode and enum int
->  - add unit suffix and drop ref for voltage-divider
->  - moved fan to its own subnode with base register
+> This define needs to be more unique.
 > 
-> v5:
->  - resolve dt_binding_check issues
+> Something like EC_NLEDS or EC_NUM_LEDS and should be moved to the top of the
+> file under the #includes
 > 
-> v4:
->  - move to using pwm<n>_auto_point<m>_{pwm,temp} for FAN PWM
->  - remove unncessary resolution/scaling properties for ADCs
->  - update to yaml
->  - remove watchdog
+> > +
+> > +static int ariel_led_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct ariel_led *leds;
+> > +	struct regmap *ec_ram;
+> > +	int ret;
+> > +	int i;
+> > +
+> > +	leds = devm_kcalloc(dev, NLEDS, sizeof(*leds), GFP_KERNEL);
+> > +	if (!leds)
+> > +		return -ENOMEM;
+> > +
+> > +	ec_ram = dev_get_regmap(dev->parent, "ec_ram");
+> Maybe this should be checked before memory is allocated.
+
+Will fix in next version.
+
+> > +	if (!ec_ram)
+> > +		return -ENODEV;
+> > +
+> > +	leds[0].ec_index = EC_BLUE_LED;
+> > +	leds[0].led_cdev.name = "blue:power",
+> > +	leds[0].led_cdev.default_trigger = "default-on";
+> > +
+> > +	leds[1].ec_index = EC_AMBER_LED;
+> > +	leds[1].led_cdev.name = "amber:status",
+> > +
+> > +	leds[2].ec_index = EC_GREEN_LED;
+> > +	leds[2].led_cdev.name = "green:status",
+> > +	leds[2].led_cdev.default_trigger = "default-on";
+> > +
+> > +	for (i = 0; i < NLEDS; i++) {
 > 
-> v3:
->  - replaced _ with -
->  - remove input bindings
->  - added full description of hwmon
->  - fix unit address of hwmon child nodes
-> ---
->  .../devicetree/bindings/mfd/gateworks-gsc.yaml     | 194 +++++++++++++++++++++
->  1 file changed, 194 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+> I don't understand this loop.� i is incremented but never used.
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
-> new file mode 100644
-> index 00000000..a96751c9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
-> @@ -0,0 +1,194 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/gateworks-gsc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Gateworks System Controller multi-function device
+> should the below be leds[i]?
 
-I'd prefer if you didn't use Linuxisums in DT docs.
+Sorry for this; I ended up botching this in an attempt to fix things up.
+Will fix in the next version.
 
-A 'multi-function device' isn't a thing - we made it up.
+> 
+> > +		leds[0].ec_ram = ec_ram;
+> > +		leds[0].led_cdev.brightness_get = ariel_led_get;
+> > +		leds[0].led_cdev.brightness_set = ariel_led_set;
+> > +		leds[0].led_cdev.blink_set = ariel_blink_set;
+> > +
+> > +		ret = devm_led_classdev_register(dev, &leds[0].led_cdev);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> 
+> Dan
 
-Nowhere in the documentation [0] is the Gateworks System Controller
-described as a multi-function device.
+Thank you!
 
-[0] http://trac.gateworks.com/wiki/gsc
+Lubo
 
-> +description: |
-> +  The GSC is a Multifunction I2C slave device with the following submodules:
-
-No it isn't.  It's a:
-
-  "The Gateworks System Controller (GSC) is a device present across
-   various Gateworks product families that provides a set of system
-   related feature such as the following (refer to the board hardware
-   user manuals to see what features are present)"
-
-> +   - Watchdog Timer
-> +   - GPIO
-> +   - Pushbutton controller
-> +   - Hardware Monitor with ADC's for temperature and voltage rails and
-> +     fan controller
-
-Why is "Monitor" capitalised, but "controller" is not?
-
-I would s/Monitor/monitor/ here.
-
-> +maintainers:
-> +  - Tim Harvey <tharvey@gateworks.com>
-> +  - Robert Jones <rjones@gateworks.com>
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "gsc@[0-9a-f]{1,2}"
-> +  compatible:
-> +    const: gw,gsc
-> +
-> +  reg:
-> +    description: I2C device address
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  adc:
-> +    type: object
-> +    description: Optional Hardware Monitoring module
-
-Again, an odd thing to capitalise.
-
-> +    properties:
-> +      compatible:
-> +        const: gw,gsc-adc
-> +
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +    patternProperties:
-> +      "^channel@[0-9]+$":
-> +        type: object
-> +        description: |
-> +          Properties for a single ADC which can report cooked values
-> +          (ie temperature sensor based on thermister), raw values
-> +          (ie voltage rail with a pre-scaling resistor divider).
-
-/ie/i.e./
-
-> +        properties:
-> +          reg:
-> +            description: Register of the ADC
-> +            maxItems: 1
-> +
-> +          label:
-> +            description: Name of the ADC input
-> +
-> +          gw,mode:
-> +            description: |
-> +              conversion mode:
-> +                0 - temperature, in C*10
-> +                1 - pre-scaled voltage value
-> +                2 - scaled voltage based on an optional resistor divider
-> +                    and optional offset
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-
-Rob just submitted a patch-set to remove 'allOf's from '$ref'
-properties.
-
-> +            enum: [0, 1, 2]
-> +
-> +          gw,voltage-divider-ohms:
-> +            description: values of resistors for divider on raw ADC input
-
-s/values/Values/
-
-> +            maxItems: 2
-> +            items:
-> +             minimum: 1000
-> +             maximum: 1000000
-> +
-> +          gw,voltage-offset-microvolt:
-> +            description: |
-> +              A positive voltage offset to apply to a raw ADC
-> +              (ie to compensate for a diode drop).
-
-s/ie/i.e/
-
-> +            minimum: 0
-> +            maximum: 1000000
-> +
-> +        required:
-> +          - gw,mode
-> +          - reg
-> +          - label
-> +
-> +    required:
-> +      - compatible
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +
-> +patternProperties:
-> +  "^fan-controller@[0-9a-f]+$":
-> +    type: object
-> +    description: Optional FAN controller
-
-"Fan"
-
-> +    properties:
-> +      compatible:
-> +        const: gw,gsc-fan
-> +
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      reg:
-> +        description: The fan controller base address
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        gsc@20 {
-> +            compatible = "gw,gsc";
-> +            reg = <0x20>;
-> +            interrupt-parent = <&gpio1>;
-> +            interrupts = <4 GPIO_ACTIVE_LOW>;
-> +            interrupt-controller;
-> +            #interrupt-cells = <1>;
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            adc {
-> +                compatible = "gw,gsc-adc";
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                channel@0 { /* A0: Board Temperature */
-> +                    reg = <0x00>;
-> +                    label = "temp";
-> +                    gw,mode = <0>;
-> +                };
-> +
-> +                channel@2 { /* A1: Input Voltage (raw ADC) */
-> +                    reg = <0x02>;
-> +                    label = "vdd_vin";
-> +                    gw,mode = <1>;
-> +                    gw,voltage-divider-ohms = <22100 1000>;
-> +                    gw,voltage-offset-microvolt = <800000>;
-> +                };
-> +
-> +                channel@b { /* A2: Battery voltage */
-> +                    reg = <0x0b>;
-> +                    label = "vdd_bat";
-> +                    gw,mode = <1>;
-> +                };
-> +            };
-> +
-> +            fan-controller@2c {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                compatible = "gw,gsc-fan";
-> +                reg = <0x2c>;
-> +            };
-> +        };
-> +    };
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 
+> 
