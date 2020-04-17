@@ -2,271 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898B01AD513
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 06:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E80A1AD51D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 06:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgDQEMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 00:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725964AbgDQEMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 00:12:08 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CE7C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 21:12:06 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id np9so533561pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 21:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=iDgpXw2pau2bp9y/jowd5/O+abig4JAmmak0uCJZggI=;
-        b=bFkCTtG3AeZmwKZh1khXjfryuVQpG7hAZsVGMw2m8a6dz9B60jPJb7oAADpOY3nszw
-         2OzmJ95ZEF7fiy94V62Aba2MkvTPYmXqUTzuQQ3GYjrw6cCV6I3ZEG1M1Jhxex531PKG
-         6Lbw8Lu/OcYjs2jGlYrjiuoFxn9ItuIYObUM9Zqdkrp0x5Xii7k1FHRHKn12obzj4gte
-         63SRjYBG97rEAHvM/IRkP3ns0SZIIcwDaQlVy3QFloW0FvAi1QansIdOmhfEbZUu4usZ
-         jVA0xZfdNR3V5N5ex6QlZDhamHOBCthOYFn15pDDZzYXel8ZFoRBskMbU7cxIv2FeDgJ
-         +mnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=iDgpXw2pau2bp9y/jowd5/O+abig4JAmmak0uCJZggI=;
-        b=QRbpLkavTZqaXUgTZTaUi/EwNuml/T+JGX6LNdadIxFytQkez4Ib5NYzzW4Uj97RJV
-         8F9zclGdZLzG2SS2TtoM5+LLL2oA8AryIPdDP6CJ8fVuMxw9gYA8gbiML3GoAC+ef44s
-         yUv+IBVFABip+NmPPc/QM/qhV6D2Y1iakivNagiPH+LHMspg5g2Erc64iaLw95pNYwqU
-         PDgTuuo2JVNdC6fDnngMhPPK0SbXRoBIO1or2FgZPX/PH6otZaqAdX3iHlmZdFh1YWk6
-         iu8mzwROAzR2cnT2ugr7mIPsySVB7CgOFn1r87PxZkfK7ECcXSSVd+l2f2LSS5cJSrCn
-         3vFg==
-X-Gm-Message-State: AGi0PuZiFVzSrjuVKU7ZOgq9T9kjyUpbP3kTMzfSWR49b7PcMIzRHew2
-        TL3wuTkArPLRwPNWyXnYI/Y=
-X-Google-Smtp-Source: APiQypISYUyta1ae7nLNlolIwhC0BirbCpm9GtWpnHNzu7kS+jlrUzYr/969lKLOhWBVcWrEq4S+yA==
-X-Received: by 2002:a17:902:aa48:: with SMTP id c8mr1597948plr.95.1587096725759;
-        Thu, 16 Apr 2020 21:12:05 -0700 (PDT)
-Received: from laptop.hsd1.wa.comcast.net ([2601:600:817f:a132:df3e:521d:99d5:710d])
-        by smtp.gmail.com with ESMTPSA id 189sm18000468pfg.170.2020.04.16.21.12.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 21:12:05 -0700 (PDT)
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>,
-        Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 3/6 v2] arm64/vdso: Add time namespace page
-Date:   Thu, 16 Apr 2020 21:11:55 -0700
-Message-Id: <20200417041155.863027-1-avagin@gmail.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200416052618.804515-4-avagin@gmail.com>
-References: <20200416052618.804515-4-avagin@gmail.com>
+        id S1726437AbgDQEXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 00:23:13 -0400
+Received: from mga04.intel.com ([192.55.52.120]:25720 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725964AbgDQEXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 00:23:13 -0400
+IronPort-SDR: dADuwHyUmlgrbocEtleaCnj6uquCRXU6OLQao29VVq4kOdQCWTRQYIeeW9W0zM7BALaaHIxT+o
+ mk43r6qx1C/g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 21:23:13 -0700
+IronPort-SDR: ZhC7B5BuLPXlFlKDjxKLdbaycScUHrR5tSJTp/wx6gFkWGpHwzPoXdEqrjx8T10YayZY+Mq3rM
+ AQp2+TJ50ydw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="428097850"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2020 21:23:11 -0700
+Date:   Fri, 17 Apr 2020 12:23:44 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     'Len Brown' <lenb@kernel.org>,
+        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/3][v2] tools/power turbostat: Introduce functions to
+ accumulate RAPL consumption
+Message-ID: <20200417042344.GA27426@chenyu-office.sh.intel.com>
+References: <cover.1586782089.git.yu.c.chen@intel.com>
+ <db96fd31afd0ff65e4041665293b96c984e675bc.1586782089.git.yu.c.chen@intel.com>
+ <001901d613a4$010e0a70$032a1f50$@net>
+ <20200416170611.GA23628@chenyu-office.sh.intel.com>
+ <001201d6142f$39fcde20$adf69a60$@net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <001201d6142f$39fcde20$adf69a60$@net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate the time namespace page among VVAR pages.  Provide
-__arch_get_timens_vdso_data() helper for VDSO code to get the
-code-relative position of VVARs on that special page.
+On Thu, Apr 16, 2020 at 01:40:09PM -0700, Doug Smythies wrote:
+> On 2020.04.10:06 Chen Yu wrote:
+> > On Wed, Apr 15, 2020 at 09:03:34PM -0700, Doug Smythies wrote:
+> >> On 2020.04.15 05:57 Chen Yu wrote:
+> > 
+> >>> +	/*
+> >>> +	 * A wraparound time is calculated early.
+> >>> +	 */
+> >>> +	its.it_interval.tv_sec = rapl_joule_counter_range;
+> >> 
+> >> Would this be o.K.?
+> >> 
+> >> +	its.it_interval.tv_sec = rapl_joule_counter_range / 2;
+> >> 
+> > This should be okay. I've checked the defination of TDP, and
+> > on a wiki page it has mentioned that[1]:
+> > "Some sources state that the peak power for a microprocessor
+> > is usually 1.5 times the TDP rating"
+> > although the defination of TDP varies, using 2 * TDP should
+> > be safe.
+> 
+> O.K. Great.
+> By the way, I have already tested it (in addition to the previously e-mailed patch correction):
+> 
+> First, with this:
+> 
+> 	its.it_interval.tv_sec = rapl_joule_counter_range;
+> 
+> Result:
+> 
+> sudo ./turbostat --Summary --interval 3200 --show Avg_MHz,Busy%,Bzy_MHz,IRQ,PkgTmp,PkgWatt,GFXWatt
+> ...
+> RAPL: 2759 sec. Joule Counter Range, at 95 Watts
+> ...
+> cpu0: MSR_PKG_POWER_INFO: 0x000002f8 (95 W TDP, RAPL 0 - 0 W, 0.000000 sec.)
+> cpu0: MSR_PKG_POWER_LIMIT: 0x4283e800dd8320 (UNlocked)
+> cpu0: PKG Limit #1: ENabled (100.000000 Watts, 28.000000 sec, clamp ENabled)
+> cpu0: PKG Limit #2: ENabled (125.000000 Watts, 0.002441* sec, clamp DISabled)
+> ...
+> Avg_MHz Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
+> 4039    100.20  4031    7211202 64      18.29   0.00
+> 4033    100.22  4024    7254993 66      18.00   0.00
+> 
+> actual (using a shorter interval, that doesn't wrap around):
+> 
+> Avg_MHz Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
+> 4032    100.22  4023    676360  65      99.92   0.00
+> 4029    100.23  4019    676629  65      99.91   0.00
+> 4032    100.22  4023    676771  65      99.91   0.00
+> 4037    100.22  4028    675430  65      99.91   0.00
+> 4032    100.22  4023    675819  65      99.91   0.00
+> 4028    100.23  4019    676541  65      99.91   0.00
+> 4042    100.22  4033    675857  64      99.91   0.00
+> 4029    100.23  4020    675597  65      99.91   0.00
+> 4027    100.23  4017    676201  65      3751748943144.71        0.00
+> 4034    100.22  4025    676402  65      99.91   0.00
+> 4035    100.22  4026    674982  65      99.91   0.00
+> 4032    100.22  4023    676012  64      99.91   0.00
+> 4034    100.22  4025    723696  66      99.91   0.00
+> 4039    100.22  4030    676342  64      99.91   0.00
+> 4028    100.23  4018    676082  65      99.91   0.00
+> 4028    100.23  4019    676218  65      99.91   0.00
+> 4038    100.22  4030    675771  65      99.91   0.00
+> 4031    100.22  4022    674282  65      3751749380702.93        0.00
+> 4031    100.22  4022    676314  65      99.91   0.00
+> 4039    100.22  4030    676197  65      99.91   0.00
+> 
+> And now with this:
+> 
+> 	its.it_interval.tv_sec = rapl_joule_counter_range / 2;
+> 
+> Avg_MHz Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
+> 4032    100.22  4023    7205931 65      99.91   0.00
+> 4033    100.22  4023    7208003 65      99.91   0.00
+> 4034    100.22  4024    7205563 65      99.91   0.00
+> 
+> and using the shorter interval:
+> 
+> Avg_MHz Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt GFXWatt
+> 4028    100.23  4019    676147  64      99.92   0.00
+> 4027    100.23  4017    675857  65      99.91   0.00
+> 4036    100.22  4027    675736  65      99.91   0.00
+> 4032    100.22  4023    674758  65      99.91   0.00
+> 4032    100.22  4022    675692  65      99.91   0.00
+> 4032    100.22  4023    676275  65      99.91   0.00
+> 4043    100.22  4035    676001  66      99.91   0.00
+> 4028    100.23  4019    676277  65      99.91   0.00
+> 4028    100.23  4019    676420  65      99.91   0.00
+> 4028    100.23  4019    675884  65      99.91   0.00
+> 4037    100.22  4028    675293  65      99.91   0.00
+> 4030    100.23  4021    674025  66      99.91   0.00
+> 4031    100.22  4022    676462  65      99.91   0.00
+> 4032    100.22  4023    676007  66      99.91   0.00
+> 4047    100.21  4038    676424  65      99.91   0.00
+> 4030    100.22  4021    676853  65      99.91   0.00
+> 4028    100.23  4019    676553  65      99.91   0.00
+> 4034    100.22  4025    675880  65      99.91   0.00
+> 4036    100.22  4027    674824  65      99.91   0.00
+> 4033    100.22  4024    674577  65      99.91   0.00
+> 4031    100.22  4022    676599  65      99.91   0.00
+> 4041    100.22  4032    676675  66      99.91   0.00
+> 
+> Note that it is very much on purpose that I have set
+> TDP to 100 watts on this processor, whereas the
+> default is 95 watts. Notice the package temperature,
+> after several hours of running power throttled to
+> a CPU frequency of 4.03 GHz.
+>
+Do you mind if I add Reviewed-by and Tested-by tag from you
+in next version?
 
-If a task belongs to a time namespace then the VVAR page which contains
-the system wide VDSO data is replaced with a namespace specific page
-which has the same layout as the VVAR page. That page has vdso_data->seq
-set to 1 to enforce the slow path and vdso_data->clock_mode set to
-VCLOCK_TIMENS to enforce the time namespace handling path.
-
-The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
-update of the VDSO data is in progress, is not really affecting regular
-tasks which are not part of a time namespace as the task is spin waiting
-for the update to finish and vdso_data->seq to become even again.
-
-If a time namespace task hits that code path, it invokes the corresponding
-time getter function which retrieves the real VVAR page, reads host time
-and then adds the offset for the requested clock which is stored in the
-special VVAR page.
-
-Cc: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
----
-
-v2: cleaups suggested by Mark.
-
- arch/arm64/include/asm/vdso.h                 |  6 +++++
- .../include/asm/vdso/compat_gettimeofday.h    | 12 ++++++++++
- arch/arm64/include/asm/vdso/gettimeofday.h    |  8 +++++++
- arch/arm64/kernel/vdso.c                      | 22 ++++++++++++++++---
- arch/arm64/kernel/vdso/vdso.lds.S             |  5 ++++-
- arch/arm64/kernel/vdso32/vdso.lds.S           |  5 ++++-
- include/vdso/datapage.h                       |  1 +
- 7 files changed, 54 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/include/asm/vdso.h b/arch/arm64/include/asm/vdso.h
-index 07468428fd29..351c145d3808 100644
---- a/arch/arm64/include/asm/vdso.h
-+++ b/arch/arm64/include/asm/vdso.h
-@@ -12,6 +12,12 @@
-  */
- #define VDSO_LBASE	0x0
- 
-+#ifdef CONFIG_TIME_NS
-+#define __VVAR_PAGES    2
-+#else
-+#define __VVAR_PAGES    1
-+#endif
-+
- #ifndef __ASSEMBLY__
- 
- #include <generated/vdso-offsets.h>
-diff --git a/arch/arm64/include/asm/vdso/compat_gettimeofday.h b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-index b6907ae78e53..b7c549d46d18 100644
---- a/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-+++ b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-@@ -152,6 +152,18 @@ static __always_inline const struct vdso_data *__arch_get_vdso_data(void)
- 	return ret;
- }
- 
-+#ifdef CONFIG_TIME_NS
-+static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
-+{
-+	const struct vdso_data *ret;
-+
-+	/* See __arch_get_vdso_data(). */
-+	asm volatile("mov %0, %1" : "=r"(ret) : "r"(_timens_data));
-+
-+	return ret;
-+}
-+#endif
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_VDSO_GETTIMEOFDAY_H */
-diff --git a/arch/arm64/include/asm/vdso/gettimeofday.h b/arch/arm64/include/asm/vdso/gettimeofday.h
-index afba6ba332f8..cf39eae5eaaf 100644
---- a/arch/arm64/include/asm/vdso/gettimeofday.h
-+++ b/arch/arm64/include/asm/vdso/gettimeofday.h
-@@ -96,6 +96,14 @@ const struct vdso_data *__arch_get_vdso_data(void)
- 	return _vdso_data;
- }
- 
-+#ifdef CONFIG_TIME_NS
-+static __always_inline
-+const struct vdso_data *__arch_get_timens_vdso_data(void)
-+{
-+	return _timens_data;
-+}
-+#endif
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_VDSO_GETTIMEOFDAY_H */
-diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index 6ac9cdeac5be..ccac00919d89 100644
---- a/arch/arm64/kernel/vdso.c
-+++ b/arch/arm64/kernel/vdso.c
-@@ -46,6 +46,14 @@ enum arch_vdso_type {
- #define VDSO_TYPES		(ARM64_VDSO + 1)
- #endif /* CONFIG_COMPAT_VDSO */
- 
-+enum vvar_pages {
-+	VVAR_DATA_PAGE_OFFSET,
-+#ifdef CONFIG_TIME_NS
-+	VVAR_TIMENS_PAGE_OFFSET,
-+#endif /* CONFIG_TIME_NS */
-+	VVAR_NR_PAGES,
-+};
-+
- struct __vdso_abi {
- 	const char *name;
- 	const char *vdso_code_start;
-@@ -81,6 +89,12 @@ static union {
- } vdso_data_store __page_aligned_data;
- struct vdso_data *vdso_data = vdso_data_store.data;
- 
-+
-+struct vdso_data *arch_get_vdso_data(void *vvar_page)
-+{
-+	return (struct vdso_data *)(vvar_page);
-+}
-+
- static int __vdso_remap(enum arch_vdso_type arch_index,
- 			const struct vm_special_mapping *sm,
- 			struct vm_area_struct *new_vma)
-@@ -180,9 +194,11 @@ static int __setup_additional_pages(enum arch_vdso_type arch_index,
- 	unsigned long vdso_base, vdso_text_len, vdso_mapping_len;
- 	void *ret;
- 
-+	BUILD_BUG_ON(VVAR_NR_PAGES != __VVAR_PAGES);
-+
- 	vdso_text_len = vdso_lookup[arch_index].vdso_pages << PAGE_SHIFT;
- 	/* Be sure to map the data page */
--	vdso_mapping_len = vdso_text_len + PAGE_SIZE;
-+	vdso_mapping_len = vdso_text_len + VVAR_NR_PAGES * PAGE_SIZE;
- 
- 	vdso_base = get_unmapped_area(NULL, 0, vdso_mapping_len, 0, 0);
- 	if (IS_ERR_VALUE(vdso_base)) {
-@@ -190,13 +206,13 @@ static int __setup_additional_pages(enum arch_vdso_type arch_index,
- 		goto up_fail;
- 	}
- 
--	ret = _install_special_mapping(mm, vdso_base, PAGE_SIZE,
-+	ret = _install_special_mapping(mm, vdso_base, VVAR_NR_PAGES * PAGE_SIZE,
- 				       VM_READ|VM_MAYREAD|VM_PFNMAP,
- 				       vdso_lookup[arch_index].dm);
- 	if (IS_ERR(ret))
- 		goto up_fail;
- 
--	vdso_base += PAGE_SIZE;
-+	vdso_base += VVAR_NR_PAGES * PAGE_SIZE;
- 	mm->context.vdso = (void *)vdso_base;
- 	ret = _install_special_mapping(mm, vdso_base, vdso_text_len,
- 				       VM_READ|VM_EXEC|
-diff --git a/arch/arm64/kernel/vdso/vdso.lds.S b/arch/arm64/kernel/vdso/vdso.lds.S
-index 7ad2d3a0cd48..d808ad31e01f 100644
---- a/arch/arm64/kernel/vdso/vdso.lds.S
-+++ b/arch/arm64/kernel/vdso/vdso.lds.S
-@@ -17,7 +17,10 @@ OUTPUT_ARCH(aarch64)
- 
- SECTIONS
- {
--	PROVIDE(_vdso_data = . - PAGE_SIZE);
-+	PROVIDE(_vdso_data = . - __VVAR_PAGES * PAGE_SIZE);
-+#ifdef CONFIG_TIME_NS
-+	PROVIDE(_timens_data = _vdso_data + PAGE_SIZE);
-+#endif
- 	. = VDSO_LBASE + SIZEOF_HEADERS;
- 
- 	.hash		: { *(.hash) }			:text
-diff --git a/arch/arm64/kernel/vdso32/vdso.lds.S b/arch/arm64/kernel/vdso32/vdso.lds.S
-index a3944927eaeb..06cc60a9630f 100644
---- a/arch/arm64/kernel/vdso32/vdso.lds.S
-+++ b/arch/arm64/kernel/vdso32/vdso.lds.S
-@@ -17,7 +17,10 @@ OUTPUT_ARCH(arm)
- 
- SECTIONS
- {
--	PROVIDE_HIDDEN(_vdso_data = . - PAGE_SIZE);
-+	PROVIDE_HIDDEN(_vdso_data = . - __VVAR_PAGES * PAGE_SIZE);
-+#ifdef CONFIG_TIME_NS
-+	PROVIDE_HIDDEN(_timens_data = _vdso_data + PAGE_SIZE);
-+#endif
- 	. = VDSO_LBASE + SIZEOF_HEADERS;
- 
- 	.hash		: { *(.hash) }			:text
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index 5cbc9fcbfd45..2022e8c653c1 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -109,6 +109,7 @@ struct vdso_data {
-  * relocation, and this is what we need.
-  */
- extern struct vdso_data _vdso_data[CS_BASES] __attribute__((visibility("hidden")));
-+extern struct vdso_data _timens_data[CS_BASES] __attribute__((visibility("hidden")));
- 
- /*
-  * The generic vDSO implementation requires that gettimeofday.h
--- 
-2.24.1
-
+Thanks,
+Chenyu
+> ... Doug
+> 
+> 
