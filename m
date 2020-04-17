@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6691ADFAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78781ADFB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgDQOVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgDQOVT (ORCPT
+        id S1726475AbgDQOXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:23:35 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:15764 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725272AbgDQOXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:21:19 -0400
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9109C061A0C;
-        Fri, 17 Apr 2020 07:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587133277;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=7kjhvy86KZzZOuUOpUtvnjFtfnnF8Cv7o7DriQuJiC4=;
-        b=AdY1FakQVUpLcJ6kwEI7w6cpYt9OTc7N5UBvt+Lmn7ieBFSw11p/UEfpzmluz0KJn2
-        l90R3DaUH4LRINJ+8/huctH4/KqbB+PaAycJdB4P7OIr/qdGhZvIPd/yZr27N+HO2uad
-        PyuDKbVnNbSuuWDCvZynqkSeZ+sZYVICXdM9lQKacyU7Abd4wp1ZoVnW0nRcyV06R1S6
-        X5xxjoFLMe4LKAubpHFf0fgM8CTSvtUcOE6lDM0n4XlPrg8O9ex/rXRyTcaWBpN+auNt
-        3//HQZ9YLv2emyZtWwMZA6MeLTTxVS/rYKfoO73wvuochH9I2pm7QYhJr87P8kN4MK+6
-        LAGQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PgwDWjbQ=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.5.0 DYNA|AUTH)
-        with ESMTPSA id g06d2dw3HEL529h
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Fri, 17 Apr 2020 16:21:05 +0200 (CEST)
-Subject: Re: [PATCHv3] w1: omap-hdq: Simplify driver with PM runtime autosuspend
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20200416203309.GK37466@atomide.com>
-Date:   Fri, 17 Apr 2020 16:21:05 +0200
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Adam Ford <aford173@gmail.com>,
-        "Andrew F . Davis" <afd@ti.com>, Vignesh R <vigneshr@ti.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <C47EC6CB-CB84-4F48-994D-01DA4DB44426@goldelico.com>
-References: <20191217004048.46298-1-tony@atomide.com> <7B8C7DD9-095B-48FC-9642-695D07B79E97@goldelico.com> <20200416184638.GI37466@atomide.com> <20200416220449.17068b21@aktux> <20200416203309.GK37466@atomide.com>
-To:     Tony Lindgren <tony@atomide.com>
-X-Mailer: Apple Mail (2.3124)
+        Fri, 17 Apr 2020 10:23:35 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HELjsg018688;
+        Fri, 17 Apr 2020 16:22:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=1N4ow54NPmupUQR/g8Mm19WWT06UoLJJN1BbF2J/gJE=;
+ b=mpgY49qihD/pmvYqgPzolURf1kuNsS1fs+JsiqEsi15JOR3j0uBqpTxW5mJiUIMQvgjD
+ XSNY1fAEb08ojxakT8BwmP/Rxvg0uDDtm0eQt7m5z1eF9nU01qItWNer41sNqpjiqqfD
+ j5P34Qq5ImYaVCVxOO/LswVoX4ipSpF/igpkbwRVpeLKj9mp3dJ1UeES6gTU5tBhY6T7
+ 1HwCIviGcyiL7/+HXTFQmqGxZsPDSeONpzvkVs3ISZ2pBuSXbbgxw8xoFQ0o9l88rKIH
+ kE3WQTMIPjbFl+Ha5ZFfmzkxtR44rM81k9Pff5szWBjf4batrUn6i1eAnj2pSThrVhOY Mg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30dn8s9yhu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Apr 2020 16:22:29 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4F565100038;
+        Fri, 17 Apr 2020 16:22:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DFA832BC7B8;
+        Fri, 17 Apr 2020 16:22:27 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 17 Apr 2020 16:22:26
+ +0200
+From:   Olivier Moysan <olivier.moysan@st.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <alexandre.torgue@st.com>,
+        <olivier.moysan@st.com>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ASoC: stm32: sai: fix sai probe
+Date:   Fri, 17 Apr 2020 16:21:22 +0200
+Message-ID: <20200417142122.10212-1-olivier.moysan@st.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-17_06:2020-04-17,2020-04-17 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+pcm config must be set before snd_dmaengine_pcm_register() call.
 
-> Am 16.04.2020 um 22:33 schrieb Tony Lindgren <tony@atomide.com>:
-> 
-> * Andreas Kemnade <andreas@kemnade.info> [200416 20:05]:
->> On Thu, 16 Apr 2020 11:46:38 -0700
->> Tony Lindgren <tony@atomide.com> wrote:
->>> If that helps, likely we have a missing pm_runtime_get_sync()
->>> somewhere in the driver.
->>> 
->> I have not tested yet with v5.7-rc1 (it is compiling right now),
->> but I have not seen any problems with init=/bin/bash on v5.6
->> and only a minimal set of modules loaded on gta04. I have seen that
->> 42 for IDLEST
-> 
-> Yeah I think you did test this change on gta04 earlier based
-> on the Tested-by from you :)
+Fixes: 0d6defc7e0e4 ("ASoC: stm32: sai: manage rebind issue")
 
-I think Andreas may have simply missed my test situation.
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ sound/soc/stm/stm32_sai_sub.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-> 
->> So might be something a bit more weird.
-> 
-> OK please let us know what you find out.
-> 
-> Regards,
-> 
-> Tony
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 34a7c3d6fb91..41f01c3e639e 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1547,6 +1547,9 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
++		conf = &stm32_sai_pcm_config_spdif;
++
+ 	ret = snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
+ 	if (ret) {
+ 		if (ret != -EPROBE_DEFER)
+@@ -1556,15 +1559,10 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
+ 					 &sai->cpu_dai_drv, 1);
+-	if (ret) {
++	if (ret)
+ 		snd_dmaengine_pcm_unregister(&pdev->dev);
+-		return ret;
+-	}
+-
+-	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
+-		conf = &stm32_sai_pcm_config_spdif;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int stm32_sai_sub_remove(struct platform_device *pdev)
+-- 
+2.17.1
 
