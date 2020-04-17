@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08F11AD76C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32D51AD775
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgDQH3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbgDQH3h (ORCPT
+        id S1729072AbgDQHdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:33:00 -0400
+Received: from smtprelay0233.hostedemail.com ([216.40.44.233]:57740 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728419AbgDQHdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:29:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D2FC061A0C;
-        Fri, 17 Apr 2020 00:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+AdJjVSPFFgTfj/HyAVB1EqazKksGsV1ZI1hF7Y4UOk=; b=tczxyNyNA3+ZMs0GthRHP3fwnP
-        Sct8xH6GNEXuA/a4VryU2imFJknluHl9Vk8EpzrEwJ3/R7HYflWhJkmVNR9Hh9yqIpF9fG7hSgsuY
-        aNc2r0+qGqvQHPHO0ufRaENKrUuRl2fsrR7j+SkAzF/p9LPCM5D7P5bWjt890h/chUXHYtlnlCs8s
-        M1+p2W+QIJ/9TvQB1suAyP7Hlm/eoI7hvPiv4Zcrj52TZ2nEW9jNjv/d68eKfoQ13/olxgngM2gMQ
-        n52SMP4rb2bFzIsl9lgvXSvLDMyXA8Ikw+iNqKL8GoKb9PpOmWh5GaKuMzjhEU52rujNY7XPkbLK6
-        zb/2AdvA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPLRL-00008d-3k; Fri, 17 Apr 2020 07:29:31 +0000
-Date:   Fri, 17 Apr 2020 00:29:31 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: implicit AOP_FLAG_NOFS for grab_cache_page_write_begin
-Message-ID: <20200417072931.GA20822@infradead.org>
-References: <20200415070228.GW4629@dhcp22.suse.cz>
+        Fri, 17 Apr 2020 03:33:00 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 2884B180284E9;
+        Fri, 17 Apr 2020 07:32:59 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2198:2199:2200:2393:2559:2562:2731:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:4250:4321:5007:6742:10004:10400:10848:11232:11658:11914:12043:12048:12297:12555:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: food81_710b3da05d519
+X-Filterd-Recvd-Size: 2062
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 17 Apr 2020 07:32:56 +0000 (UTC)
+Message-ID: <df23fe6083baad4781a2b79bcbd7d3db055eecd3.camel@perches.com>
+Subject: Re: [PATCH v2 7/9] media: MAINTAINERS: rkisp1: add path to
+ dt-bindings
+From:   Joe Perches <joe@perches.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        robh+dt@kernel.org, heiko@sntech.de, kernel@collabora.com,
+        dafna.hirschfeld@collabora.com, ezequiel@collabora.com,
+        mark.rutland@arm.com, karthik.poduval@gmail.com, jbx6244@gmail.com,
+        kishon@ti.com
+Date:   Fri, 17 Apr 2020 00:30:44 -0700
+In-Reply-To: <9a95d227-9592-2c5c-fe6d-dff9b84f4292@xs4all.nl>
+References: <20200403161538.1375908-1-helen.koike@collabora.com>
+         <20200403161538.1375908-8-helen.koike@collabora.com>
+         <9a95d227-9592-2c5c-fe6d-dff9b84f4292@xs4all.nl>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415070228.GW4629@dhcp22.suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 09:02:28AM +0200, Michal Hocko wrote:
-> Hi,
-> I have just received a bug report about memcg OOM [1]. The underlying
-> issue is memcg specific but the stack trace made me look at the write(2)
-> patch and I have noticed that iomap_write_begin enforces AOP_FLAG_NOFS
-> which means that all the page cache that has to be allocated is
-> GFP_NOFS. What is the reason for this? Do all filesystems really need
-> the reclaim protection? I was hoping that those filesystems which really
-> need NOFS context would be using the scope API
-> (memalloc_nofs_{save,restore}.
+On Fri, 2020-04-17 at 09:18 +0200, Hans Verkuil wrote:
+> On 03/04/2020 18:15, Helen Koike wrote:
+> > The Rockchip ISP bindings was moved out of staging.
+> > Update MAINTAINERS file with the new path.
+> 
+> Shouldn't there be a reference to Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml
+> as well in MAINTAINERS?
 
-This comes from the historic XFS code, and this commit from Dave
-in particular:
+And please keep the file references F: fields in
+alphabetic order.
 
-commit aea1b9532143218f8599ecedbbd6bfbf812385e1
-Author: Dave Chinner <dchinner@redhat.com>
-Date:   Tue Jul 20 17:54:12 2010 +1000
-
-    xfs: use GFP_NOFS for page cache allocation
-
-    Avoid a lockdep warning by preventing page cache allocation from
-    recursing back into the filesystem during memory reclaim.
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> > @@ -14303,6 +14303,7 @@ M:	Helen Koike <helen.koike@collabora.com>
+> >  L:	linux-media@vger.kernel.org
+> >  S:	Maintained
+> >  F:	drivers/staging/media/rkisp1/
+> > +F:	Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+> >  
+> >  ROCKCHIP RASTER 2D GRAPHIC ACCELERATION UNIT DRIVER
+> >  M:	Jacob Chen <jacob-chen@iotwrt.com>
+> > 
 
