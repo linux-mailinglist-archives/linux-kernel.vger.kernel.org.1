@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870F51ADB79
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FA41ADB7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgDQKpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:45:30 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36024 "EHLO huawei.com"
+        id S1729988AbgDQKph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:45:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:39284 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729852AbgDQKp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:45:29 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 99262AD9048FCD38B932;
-        Fri, 17 Apr 2020 18:45:26 +0800 (CST)
+        id S1729932AbgDQKpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:45:33 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 99D9CE0BDA7C0A56020B;
+        Fri, 17 Apr 2020 18:45:31 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 17 Apr 2020 18:45:20 +0800
+ 14.3.487.0; Fri, 17 Apr 2020 18:45:21 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -27,9 +27,9 @@ CC:     <ak@linux.intel.com>, <linuxarm@huawei.com>,
         <zhangshaokun@hisilicon.com>,
         <linux-arm-kernel@lists.infradead.org>,
         John Garry <john.garry@huawei.com>
-Subject: [RFC PATCH v2 08/13] perf pmu: Add pmu_add_sys_aliases()
-Date:   Fri, 17 Apr 2020 18:41:19 +0800
-Message-ID: <1587120084-18990-9-git-send-email-john.garry@huawei.com>
+Subject: [RFC PATCH v2 09/13] perf vendor events: Add JSON metrics for imx8mm DDR Perf
+Date:   Fri, 17 Apr 2020 18:41:20 +0800
+Message-ID: <1587120084-18990-10-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
 References: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
@@ -42,136 +42,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pmu_add_sys_aliases() to add system PMU events aliases.
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-For adding system PMU events, we iterate through all the events per
-SoC event table in pmu_sys_event_tables[].
+Add JSON metrics for imx8mm DDR Perf.
 
-Matches must satisfy both:
-- PMU identifier matches event "compat" value
-- like uncore event matching, the event "Unit" member must match; this
-  match under return value of pmu_uncore_alias_match() (maybe rename that
-  function?)
-
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- tools/perf/util/pmu.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/pmu.h |  5 ++++
- 2 files changed, 84 insertions(+)
+ .../arch/arm64/freescale/imx8mm/sys/ddrc.json      | 39 ++++++++++++++++++++++
+ .../arch/arm64/freescale/imx8mm/sys/metrics.json   | 18 ++++++++++
+ tools/perf/pmu-events/jevents.c                    |  1 +
+ 3 files changed, 58 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 6a67c6a28d08..2f38465e8a73 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -827,6 +827,84 @@ static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
- 	pmu_add_cpu_aliases_map(head, pmu, map);
- }
- 
-+void pmu_for_each_sys_event(struct perf_pmu *pmu, pmu_sys_event_iter_fn fn,
-+			    void *data)
-+{
-+	struct pmu_event *pe;
-+	int i = 0;
+diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
+new file mode 100644
+index 000000000000..8a3dae61a48f
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
+@@ -0,0 +1,39 @@
++[
++   {
++           "BriefDescription": "ddr cycles event",
++           "EventCode": "0x00",
++           "EventName": "imx8_ddr.cycles",
++           "Unit": "imx8_ddr",
++           "Compat": "i.mx8mm"
++   },
++   {
++           "BriefDescription": "ddr read-cycles event",
++           "EventCode": "0x2a",
++           "EventName": "imx8_ddr.read_cycles",
++           "Unit": "imx8_ddr",
++           "Compat": "i.mx8mm"
++   },
++   {
++           "BriefDescription": "ddr write-cycles event",
++           "EventCode": "0x2b",
++           "EventName": "imx8_ddr.write_cycles",
++           "Unit": "imx8_ddr",
++           "Compat": "i.mx8mm"
++   },
++   {
++           "BriefDescription": "ddr read event",
++           "EventCode": "0x35",
++           "EventName": "imx8_ddr.read",
++           "Unit": "imx8_ddr",
++           "Compat": "i.mx8mm"
++   },
++   {
++           "BriefDescription": "ddr write event",
++           "EventCode": "0x38",
++           "EventName": "imx8_ddr.write",
++           "Unit": "imx8_ddr",
++           "Compat": "i.mx8mm"
++   }
++]
 +
-+	if (!pmu->id)
-+		return;
 +
-+	while (1) {
-+		struct pmu_sys_events *event_table;
-+		int j = 0;
-+
-+		event_table = &pmu_sys_event_tables[i++];
-+
-+		if (!event_table->table)
-+			break;
-+
-+		while (1) {
-+			int ret;
-+
-+			pe = &event_table->table[j++];
-+
-+			if (!pe->name && !pe->metric_group && !pe->metric_name)
-+				break;
-+
-+			ret = fn(pmu, pe, data);
-+			if (ret)
-+				break;
-+		}
-+	}
-+}
-+
-+struct pmu_sys_event_iter_data {
-+	struct list_head *head;
-+};
-+
-+static int pmu_add_sys_aliases_iter_fn(struct perf_pmu *pmu,
-+				       struct pmu_event *pe, void *data)
-+{
-+	struct pmu_sys_event_iter_data *idata = data;
-+
-+	if (!pe->name) {
-+		if (pe->metric_group || pe->metric_name)
-+			return 0;
-+		return -EINVAL;
-+	}
-+
-+	if (!pe->compat || !pe->pmu)
-+		return 0;
-+
-+	if (!strcmp(pmu->id, pe->compat) &&
-+	    pmu_uncore_alias_match(pe->pmu, pmu->name)) {
-+		__perf_pmu__new_alias(idata->head, NULL,
-+				      (char *)pe->name,
-+				      (char *)pe->desc,
-+				      (char *)pe->event,
-+				      (char *)pe->long_desc,
-+				      (char *)pe->topic,
-+				      (char *)pe->unit,
-+				      (char *)pe->perpkg,
-+				      (char *)pe->metric_expr,
-+				      (char *)pe->metric_name,
-+				      (char *)pe->deprecated);
-+	}
-+
-+	return 0;
-+}
-+
-+static void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu)
-+{
-+	struct pmu_sys_event_iter_data idata = {
-+		.head = head,
-+	};
-+
-+	pmu_for_each_sys_event(pmu, pmu_add_sys_aliases_iter_fn, &idata);
-+}
-+
- struct perf_event_attr * __weak
- perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
- {
-@@ -882,6 +960,7 @@ static struct perf_pmu *pmu_lookup(const char *name)
- 		pmu->id = pmu_id(name);
- 	pmu->max_precise = pmu_max_precise(name);
- 	pmu_add_cpu_aliases(&aliases, pmu);
-+	pmu_add_sys_aliases(&aliases, pmu);
- 
- 	INIT_LIST_HEAD(&pmu->format);
- 	INIT_LIST_HEAD(&pmu->aliases);
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 62ebca9481fe..e4bc9d192236 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -106,6 +106,11 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
- struct pmu_events_map *perf_pmu__find_map(struct perf_pmu *pmu);
- bool pmu_uncore_alias_match(const char *pmu_name, const char *name);
- 
-+typedef int (*pmu_sys_event_iter_fn)(struct perf_pmu *, struct pmu_event *pe,
-+				     void *data);
-+
-+void pmu_for_each_sys_event(struct perf_pmu *pmu, pmu_sys_event_iter_fn fn,
-+			    void *data);
- int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
- 
- #endif /* __PMU_H */
+diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
+new file mode 100644
+index 000000000000..b6a776ca7cc2
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
+@@ -0,0 +1,18 @@
++[
++   {
++	    "BriefDescription": "bytes all masters read from ddr based on read-cycles event",
++	    "MetricName": "imx8mm_ddr_read.all",
++	    "MetricExpr": "imx8_ddr.read_cycles * 4 * 4",
++	    "ScaleUnit": "9.765625e-4MB",
++	    "Unit": "imx8_ddr",
++	    "Compat": "i.mx8mm"
++    },
++   {
++	    "BriefDescription": "bytes all masters write to ddr based on write-cycles event",
++	    "MetricName": "imx8mm_ddr_write.all",
++	    "MetricExpr": "imx8_ddr.write_cycles * 4 * 4",
++	    "ScaleUnit": "9.765625e-4MB",
++	    "Unit": "imx8_ddr",
++	    "Compat": "i.mx8mm"
++    }
++]
+\ No newline at end of file
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index 76a84ec2ffc8..efdade0194af 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -257,6 +257,7 @@ static struct map {
+ 	{ "hisi_sccl,hha", "hisi_sccl,hha" },
+ 	{ "hisi_sccl,l3c", "hisi_sccl,l3c" },
+ 	/* it's not realistic to keep adding these, we need something more scalable ... */
++	{ "imx8_ddr", "imx8_ddr" },
+ 	{ "smmuv3_pmcg", "smmuv3_pmcg" },
+ 	{ "L3PMC", "amd_l3" },
+ 	{}
 -- 
 2.16.4
 
