@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969EE1AE3F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494DC1AE3FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730042AbgDQRp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 13:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46022 "EHLO mail.kernel.org"
+        id S1730217AbgDQRpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 13:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728421AbgDQRpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 13:45:23 -0400
-Subject: Re: [GIT PULL] Btrfs fix for 5.7-rc2
+        id S1729980AbgDQRpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 13:45:24 -0400
+Subject: Re: [GIT PULL] io_uring fixes for 5.7-rc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587145523;
-        bh=h9VHIl3XzVPoitHMnTRbmFfTS9rskjanMz/YQ56koSw=;
+        s=default; t=1587145524;
+        bh=wGk0LXuZYBVR4hODFAnkMfse1qV2ImAwUBFhTCPCsXU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=RPmrvLyxlhB0C4OWcxFv7d0JpN8Xo7b+AxwQhDkBKgSkiNZTOUowbIc3c06rDHLlR
-         US4Cobm490rkuHP3vsPwiC+wnlJOXWT5oOeWXlNpojWfJtNi4o/rZx6en2Yu9c83vq
-         xU6JvhPihndBvrhI/VaV5sy3h4PHHBWIF/lvQ5FQ=
+        b=D2ZS4ftf/zf8JrsZuMXHfCM9dv1zj9CKEhLL5Nt3BK1umkiDsyDxbM0PsdfJ/AWxI
+         sTJrwxQcuz6ThyHATDJCQdv1ZYqbTPslNFKD/F9cDCSjDZw/dDlLJrUZJtXzxpbRZq
+         Iq5tfAAScDaY5mwjeMBRu1z179sIeVQMWJocG6XE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1587129870.git.dsterba@suse.com>
-References: <cover.1587129870.git.dsterba@suse.com>
+In-Reply-To: <2750fd4f-8edc-18c2-1991-c1dc794a431f@kernel.dk>
+References: <2750fd4f-8edc-18c2-1991-c1dc794a431f@kernel.dk>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1587129870.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc1-tag
-X-PR-Tracked-Commit-Id: aec7db3b13a07d515c15ada752a7287a44a79ea0
+X-PR-Tracked-Message-Id: <2750fd4f-8edc-18c2-1991-c1dc794a431f@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git
+ tags/io_uring-5.7-2020-04-17
+X-PR-Tracked-Commit-Id: 31af27c7cc9f675d93a135dca99e6413f9096f1d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c5304dd59b0c26cd9744121b77ca61f014929ba8
-Message-Id: <158714552315.1625.6990943266152755880.pr-tracker-bot@kernel.org>
-Date:   Fri, 17 Apr 2020 17:45:23 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: a2286a449baf11624d393aad28c1081cee3f47fb
+Message-Id: <158714552412.1625.18228217450522878481.pr-tracker-bot@kernel.org>
+Date:   Fri, 17 Apr 2020 17:45:24 +0000
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 17 Apr 2020 15:29:54 +0200:
+The pull request you sent on Fri, 17 Apr 2020 09:16:38 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc1-tag
+> git://git.kernel.dk/linux-block.git tags/io_uring-5.7-2020-04-17
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c5304dd59b0c26cd9744121b77ca61f014929ba8
+https://git.kernel.org/torvalds/c/a2286a449baf11624d393aad28c1081cee3f47fb
 
 Thank you!
 
