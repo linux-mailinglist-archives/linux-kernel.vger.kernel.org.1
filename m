@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BDF1AD72A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F541AD792
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgDQHOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:14:15 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51094 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728159AbgDQHOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:14:15 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1293738B17AEE043B47E;
-        Fri, 17 Apr 2020 15:14:10 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 15:14:00 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <akpm@linux-foundation.org>, <khlebnikov@yandex-team.ru>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] lib/test_lockup.c: make test_inode static
-Date:   Fri, 17 Apr 2020 15:40:21 +0800
-Message-ID: <20200417074021.46411-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1727824AbgDQHkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgDQHku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:40:50 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28792C061A0C;
+        Fri, 17 Apr 2020 00:40:50 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id h2so1880775wmb.4;
+        Fri, 17 Apr 2020 00:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M6zd6QhvfNJlEwVbZDRhDx/68LHI8zgQWBMk5eF3jR0=;
+        b=FcBenMqFS5c2OoxTLCn55ksThTSSUloPM/Zc55FM/evT6+1CaYC8UMmy7FzGcra0Fl
+         VkyTyRf7ifqtgwFrnGQV574d5i51AkTBteqmekTgabH6Oz7Ka18/laSW1bXXfsUTvYLN
+         qslPQ/MTbviAHsjwiyIo0lb5UdkPgSBaKNOjFsa4N/kMzWFciQNMVrFaCPtyaTHlVg01
+         UubuxJJBZNC8UBchdmCAGde40f75hU4/lWOVq0agF5vbtKnDD4WEyQAe5PQsfVmhTPIG
+         7mhwgNeb5sECqGq3aegAmSw1JECTp5oSpiq1JziZHWrecuxS2bSfO92Vq9eKfWWYulS3
+         ZpZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M6zd6QhvfNJlEwVbZDRhDx/68LHI8zgQWBMk5eF3jR0=;
+        b=HUH3qoUxEhrR6RwlHXcfy0tv2fYp7zECUo4QHPni48yYK823GxytVHr7Fbew873WeL
+         FbLEirXyZSXiAmWoYdi6Jz0lpAhsgN/qq1xA+SDrjk35AJE/d/So2JrqQ6IIM3F42I9/
+         6LtiPq03Tf7F1UkE06CvU3RFqrUT1YGjnHwJ4b2m6Cb4yZsOz84HhwkM7zuNjD4AhRPd
+         7imyshMKvzwdwzVPsBrfGUIE5lxn8e6WEQKweDPNc1AjHVTRHW74G9FlKkOLwMJBHoPx
+         ah3C1vC+4Bgc9vATUJo1PtCHJrOISRjuqYritQoRqbcEfFddg8ODKaYTU2hl7qYl+Jcd
+         acpQ==
+X-Gm-Message-State: AGi0PuZKDrlNS2VMf3l4fKFjVToQv3ppTXhtVpUYy5OB1vj/y3PjKcoO
+        oWyyZ4tU76FdW6s8GRUZGU4=
+X-Google-Smtp-Source: APiQypKN0pm4j1A38T2NDteLwArt/IZPZZVBmjJtO+MGEg1XFX2vXkZjdyxrYCpIAipEGsrTY5p4RA==
+X-Received: by 2002:a05:600c:da:: with SMTP id u26mr2051692wmm.48.1587109248784;
+        Fri, 17 Apr 2020 00:40:48 -0700 (PDT)
+Received: from localhost.localdomain (x59cc99b1.dyn.telefonica.de. [89.204.153.177])
+        by smtp.gmail.com with ESMTPSA id a10sm30628942wrm.87.2020.04.17.00.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 00:40:48 -0700 (PDT)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Chris Rorvick <chris@rorvick.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH wireless-drivers v2] iwlwifi: actually check allocated conf_tlv pointer
+Date:   Fri, 17 Apr 2020 09:40:35 +0200
+Message-Id: <20200417074035.12214-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+From: Chris Rorvick <chris@rorvick.com>
 
-lib/test_lockup.c:145:14: warning: symbol 'test_inode' was not declared.
-Should it be static?
+Commit 71bc0334a637 ("iwlwifi: check allocated pointer when allocating
+conf_tlvs") attempted to fix a typoe introduced by commit 17b809c9b22e
+("iwlwifi: dbg: move debug data to a struct") but does not implement the
+check correctly.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Fixes: 71bc0334a637 ("iwlwifi: check allocated pointer when allocating conf_tlvs")
+Tweeted-by: @grsecurity
+Message-Id: <20200402050219.4842-1-chris@rorvick.com>
+Signed-off-by: Chris Rorvick <chris@rorvick.com>
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
 ---
- lib/test_lockup.c | 2 +-
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/test_lockup.c b/lib/test_lockup.c
-index ea09ca335b21..419fbaceba73 100644
---- a/lib/test_lockup.c
-+++ b/lib/test_lockup.c
-@@ -142,7 +142,7 @@ module_param(reallocate_pages, bool, 0400);
- MODULE_PARM_DESC(reallocate_pages, "free and allocate pages between iterations");
- 
- struct file *test_file;
--struct inode *test_inode;
-+static struct inode *test_inode;
- static char test_file_path[256];
- module_param_string(file_path, test_file_path, sizeof(test_file_path), 0400);
- MODULE_PARM_DESC(file_path, "file path to test");
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
+index ff52e69c1c80..eeb750bdbda1 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
+@@ -1467,7 +1467,7 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
+ 				kmemdup(pieces->dbg_conf_tlv[i],
+ 					pieces->dbg_conf_tlv_len[i],
+ 					GFP_KERNEL);
+-			if (!pieces->dbg_conf_tlv[i])
++			if (!drv->fw.dbg.conf_tlv[i])
+ 				goto out_free_fw;
+ 		}
+ 	}
 -- 
-2.21.1
+2.26.1
 
