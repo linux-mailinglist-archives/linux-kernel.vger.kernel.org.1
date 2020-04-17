@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F501AD399
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EA31AD393
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 02:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgDQAVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 20:21:11 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55570 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728069AbgDQAVK (ORCPT
+        id S1728109AbgDQAU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 20:20:56 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:41630 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726245AbgDQAU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 20:21:10 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03H0KfDa002983;
-        Thu, 16 Apr 2020 19:20:41 -0500
+        Thu, 16 Apr 2020 20:20:56 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03H0KggD001366;
+        Thu, 16 Apr 2020 19:20:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587082841;
-        bh=UJ6sU1CXkV+8zn2+OYXpQYb3hXIkZcekYSZxRSdyeY4=;
+        s=ti-com-17Q1; t=1587082842;
+        bh=oOw75QBlpG6pb5O0bLrWeNZVrUQRVB6S4zef2wEvNww=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=BibYI571vDaSCJ1sJE2D4Tv6DJVKh5m5SfaWc+Ut50+79W0oqUizRbvQ2sibu6Diw
-         zR917r7UtGdeatyf97DnjBc3+qbxIEYmt6DpnYPEs5Tkc5mIDk/PsE7DTAySkx0qcL
-         Bnf2Br2DFn9ceTSamB1NqRjnRWKvtvuwIUwkSXgo=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03H0KfVm023423
+        b=LYwsa1/ZbpUDLhWUwjm55cR6Go531gQBBWc/ZrEVGak8g7Vk1LXVfmnEUAwYavQBF
+         JJYFGKFEQ8Ag+IsmPubwW/Ma1ay+/eH58ooTGiN08oGy5xVIImlnpD/atjdqfVcB2B
+         JpSCuEENe6ryyqVu4S4cxntsDJs55jX25Rn6mpJQ=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03H0KgSR060172
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Apr 2020 19:20:41 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 16 Apr 2020 19:20:42 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 16
- Apr 2020 19:20:40 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2020 19:20:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 16 Apr 2020 19:20:40 -0500
+ Frontend Transport; Thu, 16 Apr 2020 19:20:41 -0500
 Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03H0KeWE074782;
-        Thu, 16 Apr 2020 19:20:40 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03H0KfbN020917;
+        Thu, 16 Apr 2020 19:20:41 -0500
 Received: from localhost ([10.250.70.56])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 03H0Ke18060525;
-        Thu, 16 Apr 2020 19:20:40 -0500
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 03H0Kfkk060529;
+        Thu, 16 Apr 2020 19:20:41 -0500
 From:   Suman Anna <s-anna@ti.com>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>
 CC:     <linux-remoteproc@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Suman Anna <s-anna@ti.com>
-Subject: [PATCH 1/2] remoteproc: Add prepare and unprepare ops
-Date:   Thu, 16 Apr 2020 19:20:35 -0500
-Message-ID: <20200417002036.24359-2-s-anna@ti.com>
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH 2/2] remoteproc: Use a local copy for the name field
+Date:   Thu, 16 Apr 2020 19:20:36 -0500
+Message-ID: <20200417002036.24359-3-s-anna@ti.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200417002036.24359-1-s-anna@ti.com>
 References: <20200417002036.24359-1-s-anna@ti.com>
@@ -63,127 +61,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Pallardy <loic.pallardy@st.com>
+The current name field used in the remoteproc structure is simply
+a pointer to a name field supplied during the rproc_alloc() call.
+The pointer passed in by remoteproc drivers during registration is
+typically a dev_name pointer, but it is possible that the pointer
+will no longer remain valid if the devices themselves were created
+at runtime like in the case of of_platform_populate(), and were
+deleted upon any failures within the respective remoteproc driver
+probe function.
 
-On some SoC architecture, it is needed to enable HW like
-clock, bus, regulator, memory region... before loading
-co-processor firmware.
+So, allocate and maintain a local copy for this name field to
+keep it agnostic of the logic used in the remoteproc drivers.
 
-This patch introduces prepare and unprepare ops to execute
-platform specific function before firmware loading and after
-stop execution.
-
-Signed-off-by: Loic Pallardy <loic.pallardy@st.com>
 Signed-off-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
 v1:
- - Make the direct ops into inline helper functions in line
-   with the comments on the MCU sync series (v1 comments).
-   No change in functionality.
- - Picked up the Reviewed-by tags
-v0: https://patchwork.kernel.org/patch/11456383/
+ - Patch baselined on top of Mathieu's rproc_alloc() refactor
+   series, and so addresses Bjorn's simplified cleanup comments
+ - Switch to {kstrdup/kfree}_const variants
+v0: https://patchwork.kernel.org/patch/11456385/
 
- drivers/remoteproc/remoteproc_core.c     | 15 ++++++++++++++-
- drivers/remoteproc/remoteproc_internal.h | 16 ++++++++++++++++
- include/linux/remoteproc.h               |  4 ++++
- 3 files changed, 34 insertions(+), 1 deletion(-)
+ drivers/remoteproc/remoteproc_core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index d681eeb962b6..e38f627059ac 100644
+index e38f627059ac..3cebface3f26 100644
 --- a/drivers/remoteproc/remoteproc_core.c
 +++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1394,12 +1394,19 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
- 		return ret;
- 	}
+@@ -1984,6 +1984,7 @@ static void rproc_type_release(struct device *dev)
  
-+	/* Prepare rproc for firmware loading if needed */
-+	ret = rproc_prepare_device(rproc);
-+	if (ret) {
-+		dev_err(dev, "can't prepare rproc %s: %d\n", rproc->name, ret);
-+		goto disable_iommu;
-+	}
+ 	kfree(rproc->firmware);
+ 	kfree(rproc->ops);
++	kfree_const(rproc->name);
+ 	kfree(rproc);
+ }
+ 
+@@ -2069,7 +2070,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 	if (!rproc)
+ 		return NULL;
+ 
+-	rproc->name = name;
+ 	rproc->priv = &rproc[1];
+ 	rproc->auto_boot = true;
+ 	rproc->elf_class = ELFCLASS32;
+@@ -2081,6 +2081,10 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 	rproc->dev.driver_data = rproc;
+ 	idr_init(&rproc->notifyids);
+ 
++	rproc->name = kstrdup_const(name, GFP_KERNEL);
++	if (!rproc->name)
++		goto put_device;
 +
- 	rproc->bootaddr = rproc_get_boot_addr(rproc, fw);
+ 	if (rproc_alloc_firmware(rproc, name, firmware))
+ 		goto put_device;
  
- 	/* Load resource table, core dump segment list etc from the firmware */
- 	ret = rproc_parse_fw(rproc, fw);
- 	if (ret)
--		goto disable_iommu;
-+		goto unprepare_rproc;
- 
- 	/* reset max_notifyid */
- 	rproc->max_notifyid = -1;
-@@ -1433,6 +1440,9 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
- 	kfree(rproc->cached_table);
- 	rproc->cached_table = NULL;
- 	rproc->table_ptr = NULL;
-+unprepare_rproc:
-+	/* release HW resources if needed */
-+	rproc_unprepare_device(rproc);
- disable_iommu:
- 	rproc_disable_iommu(rproc);
- 	return ret;
-@@ -1838,6 +1848,9 @@ void rproc_shutdown(struct rproc *rproc)
- 	/* clean up all acquired resources */
- 	rproc_resource_cleanup(rproc);
- 
-+	/* release HW resources if needed */
-+	rproc_unprepare_device(rproc);
-+
- 	rproc_disable_iommu(rproc);
- 
- 	/* Free the copy of the resource table */
-diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-index b389dc79da81..101e6be8d240 100644
---- a/drivers/remoteproc/remoteproc_internal.h
-+++ b/drivers/remoteproc/remoteproc_internal.h
-@@ -64,6 +64,22 @@ struct resource_table *rproc_elf_find_loaded_rsc_table(struct rproc *rproc,
- struct rproc_mem_entry *
- rproc_find_carveout_by_name(struct rproc *rproc, const char *name, ...);
- 
-+static inline int rproc_prepare_device(struct rproc *rproc)
-+{
-+	if (rproc->ops->prepare)
-+		return rproc->ops->prepare(rproc);
-+
-+	return 0;
-+}
-+
-+static inline int rproc_unprepare_device(struct rproc *rproc)
-+{
-+	if (rproc->ops->unprepare)
-+		return rproc->ops->unprepare(rproc);
-+
-+	return 0;
-+}
-+
- static inline
- int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
- {
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index 38607107b7cb..b8481ac969f1 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -355,6 +355,8 @@ enum rsc_handling_status {
- 
- /**
-  * struct rproc_ops - platform-specific device handlers
-+ * @prepare:	prepare device for code loading
-+ * @unprepare:	unprepare device after stop
-  * @start:	power on the device and boot it
-  * @stop:	power off the device
-  * @kick:	kick a virtqueue (virtqueue id given as a parameter)
-@@ -373,6 +375,8 @@ enum rsc_handling_status {
-  *		panic at least the returned number of milliseconds
-  */
- struct rproc_ops {
-+	int (*prepare)(struct rproc *rproc);
-+	int (*unprepare)(struct rproc *rproc);
- 	int (*start)(struct rproc *rproc);
- 	int (*stop)(struct rproc *rproc);
- 	void (*kick)(struct rproc *rproc, int vqid);
 -- 
 2.26.0
 
