@@ -2,77 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47751AD71B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E0E1AD71E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgDQHK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:10:26 -0400
-Received: from verein.lst.de ([213.95.11.211]:56075 "EHLO verein.lst.de"
+        id S1728841AbgDQHLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:11:15 -0400
+Received: from verein.lst.de ([213.95.11.211]:56086 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728419AbgDQHK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:10:26 -0400
+        id S1728414AbgDQHLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:11:14 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id A82A768BEB; Fri, 17 Apr 2020 09:10:23 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 09:10:23 +0200
+        id DFFFA68BEB; Fri, 17 Apr 2020 09:11:12 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 09:11:12 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Hellwig <hch@lst.de>,
+To:     David Rientjes <rientjes@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         Brijesh Singh <brijesh.singh@amd.com>,
         Jon Grimm <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
         linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org
-Subject: Re: [patch 5/7] dma-pool: add pool sizes to debugfs
-Message-ID: <20200417071023.GC19153@lst.de>
-References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com> <alpine.DEB.2.22.394.2004141704050.68516@chino.kir.corp.google.com> <0c7144e3-057a-959d-0b7d-4a718bd6076c@amd.com>
+Subject: Re: [patch 0/7] unencrypted atomic DMA pools with dynamic expansion
+Message-ID: <20200417071112.GD19153@lst.de>
+References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c7144e3-057a-959d-0b7d-4a718bd6076c@amd.com>
+In-Reply-To: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 08:45:08AM -0500, Tom Lendacky wrote:
->
->
-> On 4/14/20 7:04 PM, David Rientjes wrote:
->> The atomic DMA pools can dynamically expand based on non-blocking
->> allocations that need to use it.
->>
->> Export the sizes of each of these pools, in bytes, through debugfs for
->> measurement.
->>
->> Suggested-by: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: David Rientjes <rientjes@google.com>
->> ---
->>   kernel/dma/pool.c | 41 +++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 41 insertions(+)
->>
->> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
->> index cf052314d9e4..3e22022c933b 100644
->> --- a/kernel/dma/pool.c
->> +++ b/kernel/dma/pool.c
->> @@ -2,6 +2,7 @@
->>   /*
->>    * Copyright (C) 2020 Google LLC
->>    */
->> +#include <linux/debugfs.h>
->>   #include <linux/dma-direct.h>
->>   #include <linux/dma-noncoherent.h>
->>   #include <linux/dma-contiguous.h>
->> @@ -15,6 +16,11 @@
->>   static struct gen_pool *atomic_pool_dma __ro_after_init;
->>   static struct gen_pool *atomic_pool_dma32 __ro_after_init;
->>   static struct gen_pool *atomic_pool_kernel __ro_after_init;
->> +#ifdef CONFIG_DEBUG_FS
->
-> I don't think you need the #ifdef any more unless you just want to save 
-> space. All of the debugfs routines have versions for whether 
-> CONFIG_DEBUG_FS is defined or not.
-
-Agreed.  I can fix this up.
+So modulo a few comments that I can fix up myself this looks good.  Unless
+you want to resend for some reason I'm ready to pick this up once I open
+the dma-mapping tree after -rc2.
