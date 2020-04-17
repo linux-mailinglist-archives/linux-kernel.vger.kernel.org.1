@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3FF1AE7A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D23D1AE7AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbgDQVey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        id S1728254AbgDQVhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725873AbgDQVey (ORCPT
+        by vger.kernel.org with ESMTP id S1725873AbgDQVhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:34:54 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BC5C061A0C;
-        Fri, 17 Apr 2020 14:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=a/5VyyW0f5t2tlerVMS31oR1lXYo8UFpY6MnzoWeS1s=; b=V6aPo1wPf4WiRa46EFNg38APJd
-        johrUKGR/XDYNfVUHf0eM48283ZCBSx4MuyMAlwIV+SxJrbOImRk1tNC1rpJjPYyqsW2wP6apdOUv
-        yaXkH8D3dvvZx+gsidFWr30ejybsVZqGPyiitMEov95HEyKNeVwLTLkZSWUcYYvSCW4Hnj9YbGcxd
-        jZvdKh2JKbpKCQMCnp4GiZP+DRVJWB8d1ToVIsB0i9I8eVJHNYALUduRm7IXmL/XR19uC6iY0Bpay
-        x0+Wtjt70hyZw8kwtFETmSxKG5SGP1iZDoSZf0fLfB5J0FKAgV7VNNs4r2UgbZh48c5j64E3r+UR7
-        Fwqq9q8Q==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPYdM-0003Q3-1g; Fri, 17 Apr 2020 21:34:48 +0000
-Subject: Re: [PATCH] hwrng: cctrng - add missing include to linux/fips.h
-To:     Hadar Gat <hadar.gat@arm.com>, Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1587155926-32663-1-git-send-email-hadar.gat@arm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <096db769-a508-b0fa-f018-2c4c807061cb@infradead.org>
-Date:   Fri, 17 Apr 2020 14:34:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 17 Apr 2020 17:37:08 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DBAC061A0C;
+        Fri, 17 Apr 2020 14:37:08 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id b10so3276719qtt.9;
+        Fri, 17 Apr 2020 14:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oo5vR4yC5MtDvMVJ8Kcq/TzZ58lxiEoKMeIC53iSq0s=;
+        b=Ezd8MYoQKEF03PFVDXvEcZhHZRk4J4SaXaU490YvfqptHrPxFS5OAH7rJSRUi/ziUR
+         IKthdnnIULiCyJFob0vGq2t2mgO+OQvyUdoG2NSH/vvbwb4PJdR9rbD4/BmZQ3jzXZAi
+         v3FmUGbilKzK+rDAFxVZ4TCyDYWSbI3W4Qvi7u6QwM7SWIB8uEcL7SRMnTF4HHtCtKOw
+         F90BXczXLDTPkEaiJ0ipSqVk0IKNpYLBUoMqv9KrUjNn80KaF/6atBIxb13MpXsrQDCN
+         ZmYFNhrX2uLAO6UeUp+hiezeKf9gTYOrHLQaCiT7M4Ldro4s5pLL1Uexoa6LHewXAGnh
+         peGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oo5vR4yC5MtDvMVJ8Kcq/TzZ58lxiEoKMeIC53iSq0s=;
+        b=DBcjkdBfIpSZSdyj7EfcfF7fSzcSukyWK6XxW6WFiSV8RtQLy9goXp0nDFKNRIQSY9
+         tszQGjLmEXEkV4ddeQvjn+hmggYG/TaYEPuXZ52wCL0prwjZy3VnUcNj53YFu7TNVEzU
+         O5Y1co+roeR2y9hKKHbBHtRbxGUfDY44yKFAJ/EmRYmGfCQLT0o7sj7B83jAuTNYfiO7
+         2GtKmj24C2YucYfjw5HSqlHjB0tCRXSqPxebXhc5V3xNUGyW6JGvOxjNadMGN6uupq46
+         CHlqt66/oRQeTZQAB7zH1O04x+scAdijMNQygKoW2q/DjFJXCB6O1+OrZaq18sjiYhaI
+         uH5g==
+X-Gm-Message-State: AGi0PuYBIp2KFE0X6MWt/r3EwNaWG4A2Zf2DllylV4tia0pKQOiA9Y8F
+        T59r/qPK7MjRbeR0JGBLT0U=
+X-Google-Smtp-Source: APiQypLiB4CIXCAeMYTa6TZmsw814FETSiWGIk8ktp6sUlkrRJ02GLe7du3uV1SSmssOYZbhJn17nw==
+X-Received: by 2002:ac8:296f:: with SMTP id z44mr5123606qtz.18.1587159427130;
+        Fri, 17 Apr 2020 14:37:07 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id x68sm18116965qka.129.2020.04.17.14.37.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 14:37:06 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 50557409A3; Fri, 17 Apr 2020 18:37:04 -0300 (-03)
+Date:   Fri, 17 Apr 2020 18:37:04 -0300
+To:     Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 11/16] perf intel-pt: Add support for synthesizing
+ callchains for regular events
+Message-ID: <20200417213704.GB21512@kernel.org>
+References: <20200401101613.6201-1-adrian.hunter@intel.com>
+ <20200401101613.6201-12-adrian.hunter@intel.com>
+ <20200416151443.GA2650@kernel.org>
+ <5b8f28f5-968f-bfff-68af-ed0350a90765@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1587155926-32663-1-git-send-email-hadar.gat@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b8f28f5-968f-bfff-68af-ed0350a90765@intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/20 1:38 PM, Hadar Gat wrote:
-> This fixes build failure when CONFIG_CRYPTO_FIPS is defined.
+Em Fri, Apr 17, 2020 at 04:50:00PM +0300, Adrian Hunter escreveu:
+> On 16/04/20 6:14 pm, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Apr 01, 2020 at 01:16:08PM +0300, Adrian Hunter escreveu:
+> >> Currently, callchains can be synthesized only for synthesized events.
+> >> Support also synthesizing callchains for regular events.
+> > 
+> > This is super cool, I wonder if we shouldn't do it automatically or just
+> > adding a new type of callchains, i.e.:
+> > 
+> > 	perf record --call-graph pt uname
+> > 
+> > Should take care of all the details, i.e. do the extra steps below
+> > behind the scenes.
+> > 
+> > Possibly even find out that the workload specified was built with
+> > -fomit-frame-pointers, that the hardware has Intel PT and do all behind
+> > the scenes for:
+> > 
+> > 	perf record -g uname
+> > 
+> > Alternatively we could take some less seemingly far fetched approach and
+> > make this configurable via:
+> > 
+> > 	perf config call-graph.record-mode=pt
+> > 
+> > What do you think?
 > 
-> Signed-off-by: Hadar Gat <hadar.gat@arm.com>
+> Adding a --call-graph option sounds reasonable, and config to define default
+> callgraph options.  But this was done at Andi Kleen's request, so he may
+> want to comment.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Andi? My concern is that if this is the optimal solution for a good
+subset of the machines out there, then we need to make it easy to use,
+even transparent, if possible and safe to take that path.
 
-> ---
->  drivers/char/hw_random/cctrng.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/char/hw_random/cctrng.c b/drivers/char/hw_random/cctrng.c
-> index bdcd562..e82716c 100644
-> --- a/drivers/char/hw_random/cctrng.c
-> +++ b/drivers/char/hw_random/cctrng.c
-> @@ -15,6 +15,7 @@
->  #include <linux/completion.h>
->  #include <linux/of.h>
->  #include <linux/bitfield.h>
-> +#include <linux/fips.h>
->  
->  #include "cctrng.h"
->  
-> 
-
-thanks.
--- 
-~Randy
+- Arnaldo
