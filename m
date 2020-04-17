@@ -2,103 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEA61ADC1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1371ADC25
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730309AbgDQL0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 07:26:49 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42686 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730176AbgDQL0t (ORCPT
+        id S1730361AbgDQL2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 07:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730295AbgDQL2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:26:49 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HBOxtT112760;
-        Fri, 17 Apr 2020 11:26:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=2O0V3yblK/29tvWyAvBHQUZ86B8G/e/jVaheTAg9ans=;
- b=NW9h3C7l12IBiw3dwnhbItGHVe+6NB4UKB4+7UPW5vT91Y60g/arwqpQ3lh5UGmbyeqO
- p2eEbhI74qD+NqeKdDkkoIuB4UbK3eTKI13UpccLSwMuyTrAMhUBS7Hx4NMmBC7d8RyF
- SfrBD6hBkk9WWK4QQwFFqUG6A2pfMA8yLMNHvvRmVwdhBNFzBOsx7xoEHxwsPp5th4rj
- cAubsGgVjpyVHc2KT17rEZ7a6DBA19GSf91Oi8L2FNNy991jl0+tN8AAKWA1J3V3UYW2
- Zhw132HJLj0yiB5DwLmE4jRP41oym7DpKrTBxdb4TIMR42l4cgO6kQcHhT7TNBqSfQOO Wg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 30dn95xk6x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 11:26:41 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HBLMwB040528;
-        Fri, 17 Apr 2020 11:26:40 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 30dn91c893-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 11:26:40 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03HBQb78005629;
-        Fri, 17 Apr 2020 11:26:38 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 Apr 2020 04:26:37 -0700
-Date:   Fri, 17 Apr 2020 14:26:24 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
-        roland@purestorage.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
-Message-ID: <20200417112624.GS1163@kadam>
-References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
- <20200414183441.GA28870@ziepe.ca>
- <20200416130847.GP1163@kadam>
- <20200416184754.GZ5100@ziepe.ca>
+        Fri, 17 Apr 2020 07:28:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864CAC061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 04:28:41 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jPPAg-0004FF-Fj; Fri, 17 Apr 2020 13:28:34 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jPPAc-0002xV-I1; Fri, 17 Apr 2020 13:28:30 +0200
+Date:   Fri, 17 Apr 2020 13:28:30 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        kernel@pengutronix.de, David Jander <david@protonic.nl>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH v1] ethtool: provide UAPI for PHY master/slave
+ configuration.
+Message-ID: <20200417112830.mhevvmnyxpve6xvk@pengutronix.de>
+References: <20200415121209.12197-1-o.rempel@pengutronix.de>
+ <20200415215739.GI657811@lunn.ch>
+ <20200417101145.GP25745@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pykonr2qxhbolp4w"
 Content-Disposition: inline
-In-Reply-To: <20200416184754.GZ5100@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 spamscore=0 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170091
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170091
+In-Reply-To: <20200417101145.GP25745@shell.armlinux.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:26:47 up 154 days,  1:45, 169 users,  load average: 0.06, 0.02,
+ 0.03
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 03:47:54PM -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 16, 2020 at 04:08:47PM +0300, Dan Carpenter wrote:
-> > On Tue, Apr 14, 2020 at 03:34:41PM -0300, Jason Gunthorpe wrote:
-> > > The memcpy is still kind of silly right? What about this:
-> > > 
-> > > static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
-> > > {
-> > > 	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
-> > > 	int cpy_len;
-> > > 
-> > > 	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
-> > > 	if (cpy_len >= len || cpy_len < 0) {
-> > 
-> > The kernel version of snprintf() doesn't and will never return
-> > negatives.  It would cause a huge security headache if it started
-> > returning negatives.
-> 
-> Begs the question why it returns an int then :)
 
-People should use "int" as their default type.  "int i;".  It means
-"This is a normal number.  Nothing special about it.  It's not too high.
-It's not defined by hardware requirements."  Other types call attention
-to themselves, but int is the humble datatype.
+--pykonr2qxhbolp4w
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regards,
-dan carpenter
+On Fri, Apr 17, 2020 at 11:11:45AM +0100, Russell King - ARM Linux admin wr=
+ote:
+> On Wed, Apr 15, 2020 at 11:57:39PM +0200, Andrew Lunn wrote:
+> > > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_devic=
+e.c
+> > > index c8b0c34030d32..d5edf2bc40e43 100644
+> > > --- a/drivers/net/phy/phy_device.c
+> > > +++ b/drivers/net/phy/phy_device.c
+> > > @@ -604,6 +604,7 @@ struct phy_device *phy_device_create(struct mii_b=
+us *bus, int addr, u32 phy_id,
+> > >  	dev->asym_pause =3D 0;
+> > >  	dev->link =3D 0;
+> > >  	dev->interface =3D PHY_INTERFACE_MODE_GMII;
+> > > +	dev->master_slave =3D PORT_MODE_UNKNOWN;
+> >=20
+> > phydev->master_slave is how we want the PHY to be configured. I don't
+> > think PORT_MODE_UNKNOWN makes any sense in that contest. 802.3 gives
+> > some defaults. 9.12 should be 0, meaning manual master/slave
+> > configuration is disabled. The majority of linux devices are end
+> > systems. So we should default to a single point device. So i would
+> > initialise PORT_MODE_SLAVE, or whatever we end up calling that.
+>=20
+> I'm not sure that is a good idea given that we use phylib to drive
+> the built-in PHYs in DSA switches, which ought to prefer master mode
+> via the "is a multiport device" bit.
+>=20
+> Just to be clear, there are three bits that configure 1G PHYs, which
+> I've framed in briefer terminology:
+>=20
+> - 9.12: auto/manual configuration (1=3D manual 0=3D slave)
+> - 9.11: manual master/slave configuration (1=3D master, 0 =3D slave)
+> - 9.10: auto master/slave preference (1=3D multiport / master)
+>=20
+> It is recommended that multiport devices (such as DSA switches) set
+> 9.10 so they prefer to be master.
+>=20
+> It's likely that the reason is to reduce cross-talk interference
+> between neighbouring ports both inside the PHY, magnetics and the
+> board itself. I would suspect that this becomes critical when
+> operating at towards the maximum cable length.
+>=20
+> I've checked some of my DSA switches, and 9.10 appears to default to
+> one, as expected given what's in the specs.
+
+Hm..
+I've checked one of my DSA devices and 9.10 is by default 0 (proffered
+slave). It get slave even if it is preferred master and it is
+connected to a workstation (not multiport device) with a e1000e NIC.
+The e1000e is configured by default as preferred master.
+
+Grepping over current linux kernel I see following attempts to
+configure master/slave modes:
+drivers/net/ethernet/intel/e1000e/phy.c:597
+  e1000_set_master_slave_mode()
+
+all intel NICs have similar code code and do not touch preferred bit
+9.10. Only force master/slave modes. So the preferred master is probably
+PHY defaults, bootstrap or eeprom.
+
+drivers/net/ethernet/broadcom/tg3.c
+this driver seems to always force master mode
+
+drivers/net/phy/broadcom.c:39
+if ethernet controller is BCMA_CHIP_ID_BCM53573 and the PHY is PHY_ID_BCM54=
+210E
+then force master mode.
+
+drivers/net/phy/micrel.c:637
+Force master mode if devicetree property is set: micrel,force-master
+
+drivers/net/phy/realtek.c:173
+	/* RTL8211C has an issue when operating in Gigabit slave mode *=20
+	return phy_set_bits(phydev, MII_CTRL1000,
+		CTL1000_ENABLE_MASTER | CTL1000_AS_MASTER)
+
+Regards,
+Oleksij
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--pykonr2qxhbolp4w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6ZktoACgkQ4omh9DUa
+UbPEGw//VFNanq+Y6stjK9i/n3XiVe5KQ5YY8Ukr+2JLgV4Zfoeio7g62UAjWoNi
+FYLrHrXvUfsr1ZND43G7FyEyuMtVzy+FDN/Q7htTbZFTu1VHGOHXOeKpmZaLiQNN
+zlAtBTcrycqvkre+tClOz/uPmbzz3O4Ut/R1c01dTJXPf6NOlsl7ZNBPSx+b+hs2
+6idToq0yUZD6Jz4QZKdfsjZwXQ1lpdBwXjwJE3/pK+lEDrw4P274shA6hQ42I/2W
+fkx8W0w1008N5mXG8jkOBThrA1PmFd0J/J8iHxNmuAgSoPCwFOjoHUBsoXmCfHs1
+9o3UBNabwmKTrsGXxA3+5CQS61PCWo4a4h4uqEJRCjfkK+SC1iSVf2dRxw1kE5pI
+oiSHKOyVuoJsI02on3iwjOYHSkfWAtp+OrgbyKKzuTCaVllo0icK/SfEzLK3P6Ho
+UR28LrTz95Jfm5w5KbG5x97iC/SCeGvH6FMhXfBKN5kWFIj/T4TkTJVuoVSt6BVP
+pBO3gaJe1huQeOq5rV7KW5haDsZ+Sqi0hY/7ltyHGSJLKCM8ceFixnS8uHNehrzr
+uIKCQ4lg/YI35sLNtKFu+p3xgKO4jhycN2j+VL/+V/p7h9BtrOjcyzjmGF1YH0Eu
+V2Gfc2Db3zuOif+QSIcYqWjTQ0eNLwkOcrfm701eX7lXvOoZQO4=
+=Hlrq
+-----END PGP SIGNATURE-----
+
+--pykonr2qxhbolp4w--
