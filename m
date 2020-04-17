@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B8F1AD7A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0511AD7B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728987AbgDQHnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        id S1729180AbgDQHqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728770AbgDQHnq (ORCPT
+        with ESMTP id S1726405AbgDQHqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:43:46 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30092C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 00:43:45 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id t63so890800wmt.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 00:43:45 -0700 (PDT)
+        Fri, 17 Apr 2020 03:46:09 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4090BC061A0C;
+        Fri, 17 Apr 2020 00:46:09 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id h9so1885713wrc.8;
+        Fri, 17 Apr 2020 00:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=7VxUyCozUFRQ3HWyk/FR84Y855XH8vC8ACtL+uxdHOg=;
-        b=eepHxWx0UCQ3bBjYPAxbl27Om6GC70uRgirDesMlw0GcwtwctP16SCiHB+9lipG9Q0
-         MgNdJoEZVSmbzmwNbFctN8vwR/E4WL5PrBitcvaR4Mv5RZyqao5nKchsF6SAoVjQw6q8
-         1sBR/TQ8qY8RmucdLYRWbxuvwjwkdplwZck/fYRcvy1zb+UVhxu540CJET3ACX9t6WuQ
-         IAlO3q/oQ0fiIwt/0iD1Y5oFpSq3BcdbdHfOVxTsU7YR4v7fa0aOShrllZ4IZQDEdY1z
-         wcrFjOJJqsSYcm+HvrKBxOn3cHvgNXvN8UbAciWfiS7exv4J4Q6YoZlD4nsCuLB51+ze
-         HL6w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WVQ/+AhI0heLiMpL6qUSa1/GcjVQsFVijLYHxi226DU=;
+        b=MBSDz5mpJtaE1yIz/84PJyENirATfdTRv+ZFRD2B2Dv9EwB8I6aGfwg2P/6O9kQkBQ
+         6FJx2DYzNj9rmnbBL91o9MySgAP/Zy4Je67YtwA6IvpcA8tf8EplXLL5XBC2ByvAI926
+         MGlc+C78QovU0t0uShQaMpEnHKshauca6GXoGF6P8OcOPTNwL4qX4jinEHqI+WpE6eVV
+         yKqUW/rS9pJ/Vd7UfkZrl+bDU3x0kFFxX/phVZVrY+7AiLCTw6gVBk1k1SLwG9ZmmZwU
+         I2CFzKb2IJ/Nt7swn2FZqDeWxmFW0P7f6rp5Ao+NNvi5JKbVDmzpdwtuZmPR2JT2beFA
+         OBvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=7VxUyCozUFRQ3HWyk/FR84Y855XH8vC8ACtL+uxdHOg=;
-        b=ZFnJHdRDlTzMJJdH5OUTPBqea4gN58isrGWTesbV5mRckseGDMnXCuGDxFAVSqYmzX
-         j4DRVzeuhYTdllQ6l+6KLFkX2FXgth1DiFlGeJCr02qPAGLGFYhcImhEsFV2fkj6H661
-         kcRMqJoq6mTWkIAAVdFEkxj3f871UeBLbwbO3ZOpg0eu2BLIAf6loSgI3sDSgNRsyZsD
-         6NMCjW6nrbtdNxqna2UAffzKUADa0vV48+qYbEXM1JANYingF6++BGfuRcGQ7eVWa/43
-         AfvuqmSFuX5qoqRqIw0qatnM2QdZbFm2ZEAHW3EyzuW+4sihDhpy4uSWFNU2Z5cpLhWz
-         rqVw==
-X-Gm-Message-State: AGi0Pub1kVJJi7cWsrtaTJ5LdNVv33gpsNHoXwDBuAJ0QYYygis3dMq/
-        zmCevdZF2lRVi8UK4qME7CeOvg==
-X-Google-Smtp-Source: APiQypKB/8+cZvXsHO1NRHGVVpm+LapGF68siOZwDYjt2dTxd7u+tUAFWwcTxeJ3csNYW5kgsVQ09w==
-X-Received: by 2002:a05:600c:2214:: with SMTP id z20mr2124159wml.189.1587109423806;
-        Fri, 17 Apr 2020 00:43:43 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.gmail.com with ESMTPSA id l185sm6779244wml.44.2020.04.17.00.43.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WVQ/+AhI0heLiMpL6qUSa1/GcjVQsFVijLYHxi226DU=;
+        b=pOrnLfv9ZY3JtmheYvtn43+9OQ3J6S5RAlPEuodKAG6qd/jhQ7zVclglQmSkVPEBQu
+         /c8P6mgG2J3bYc6Zv/UAbdDvQ78+uyhY3uPBELAtI2pOQ3YEZtVCp9sZ3r8jeX9/WC8C
+         Pn3yKR+T74Asnhi/AFxxikb6kU8WIthfPo1ezZ95oUh9chUT6PGTcHcD/TbRKNCiKDrX
+         G57YfSFV+Ru7RU3Co6moruoDcHX2XyXmU12+YBis+0ubX7uPTxvO0JsnskV5b1x13xiO
+         5Y65sfs+xfPNfb94UMmM1172fFDBhr1hW516dcaxt7I8AfUs6XeCitH+puIcYVlTT0y6
+         H5Zw==
+X-Gm-Message-State: AGi0PubJNEsw4N/t8/IeGXgckVoDq1WUPp9ZMus2YKTcKF47irAGexsi
+        q2j3J9O5V7QZwSW0FXuuDwUkCT7ZMWU=
+X-Google-Smtp-Source: APiQypJaGbkLtt6pNYoQVWS2snH17zlJcGjRBIyl34hCnK1VQijByjh7EpfOrwXAi5vBGBPRjiIYwQ==
+X-Received: by 2002:adf:f34e:: with SMTP id e14mr2504513wrp.80.1587109568013;
+        Fri, 17 Apr 2020 00:46:08 -0700 (PDT)
+Received: from localhost.localdomain (x59cc99b1.dyn.telefonica.de. [89.204.153.177])
+        by smtp.gmail.com with ESMTPSA id m1sm25398169wro.64.2020.04.17.00.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 00:43:43 -0700 (PDT)
-References: <20200414200017.226136-1-martin.blumenstingl@googlemail.com> <20200414200017.226136-3-martin.blumenstingl@googlemail.com> <1ja73bbtqt.fsf@starbuckisacylon.baylibre.com> <CAFBinCAtSPTHfbr5KGNFFg3eo_d2p2q59fQfMXu+XkOb8WVrDQ@mail.gmail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] clk: meson: meson8b: Fix the polarity of the RESET_N lines
-In-reply-to: <CAFBinCAtSPTHfbr5KGNFFg3eo_d2p2q59fQfMXu+XkOb8WVrDQ@mail.gmail.com>
-Date:   Fri, 17 Apr 2020 09:43:42 +0200
-Message-ID: <1j8siublqp.fsf@starbuckisacylon.baylibre.com>
+        Fri, 17 Apr 2020 00:46:07 -0700 (PDT)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Chris Rorvick <chris@rorvick.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH wireless-drivers v3] iwlwifi: actually check allocated conf_tlv pointer
+Date:   Fri, 17 Apr 2020 09:45:58 +0200
+Message-Id: <20200417074558.12316-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chris Rorvick <chris@rorvick.com>
 
-On Thu 16 Apr 2020 at 20:12, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+Commit 71bc0334a637 ("iwlwifi: check allocated pointer when allocating
+conf_tlvs") attempted to fix a typoe introduced by commit 17b809c9b22e
+("iwlwifi: dbg: move debug data to a struct") but does not implement the
+check correctly.
 
-> Hi Jerome,
->
-> On Thu, Apr 16, 2020 at 12:38 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> [...]
->> >
->> >       if (id >= ARRAY_SIZE(meson8b_clk_reset_bits))
->> >               return -EINVAL;
->> >
->> >       reset = &meson8b_clk_reset_bits[id];
->> >
->> > +     if (assert == reset->active_low)
->> > +             value = 0;
->> > +     else
->> > +             value = BIT(reset->bit_idx);
->>
->> if (assert ^ reset->active_low)
->>         value = BIT(reset->bit_idx);
-> I can do that, but I prefer "!=" over "^" because the result is
-> expected to be a bool (and because I'm not used to reading "^" for
-> logical comparisons)
-> will this work for you as well?
+Fixes: 71bc0334a637 ("iwlwifi: check allocated pointer when allocating conf_tlvs")
+Tweeted-by: @grsecurity
+Message-Id: <20200402050219.4842-1-chris@rorvick.com>
+Signed-off-by: Chris Rorvick <chris@rorvick.com>
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+Changes v1->v2:
+- Fix typo s/fw.dbg_conf_tlv/fw.dbg.conf_tlv
+- Add Fixes tag as suggested by Kalle
+- v2 on top of wireless-drivers.git as suggested by Kalle
+Changes v2->v3:
+- Add Changelog
 
-yes
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
->
-> Martin
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
+index ff52e69c1c80..eeb750bdbda1 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
+@@ -1467,7 +1467,7 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
+ 				kmemdup(pieces->dbg_conf_tlv[i],
+ 					pieces->dbg_conf_tlv_len[i],
+ 					GFP_KERNEL);
+-			if (!pieces->dbg_conf_tlv[i])
++			if (!drv->fw.dbg.conf_tlv[i])
+ 				goto out_free_fw;
+ 		}
+ 	}
+-- 
+2.26.1
 
