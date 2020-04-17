@@ -2,59 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D101AD935
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869B31AD9AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729967AbgDQIzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:55:14 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55402 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729784AbgDQIzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:55:14 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E2194417BC2613B5E240;
-        Fri, 17 Apr 2020 16:55:09 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 16:54:59 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <linus.walleij@linaro.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] pinctrl: mcp23s08: add module license
-Date:   Fri, 17 Apr 2020 17:21:25 +0800
-Message-ID: <20200417092125.12513-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1730202AbgDQJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730106AbgDQJVy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:21:54 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21357C061A0C;
+        Fri, 17 Apr 2020 02:21:54 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jPNBv-000577-NU; Fri, 17 Apr 2020 11:21:43 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 329E91C0072;
+        Fri, 17 Apr 2020 11:21:43 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 09:21:42 -0000
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Drop bogus comment about mce.kflags
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200415195826.GA13681@agluck-desk2.amr.corp.intel.com>
+References: <20200415195826.GA13681@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Message-ID: <158711530270.28353.8482037623626742412.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build warning:
+The following commit has been merged into the ras/core branch of tip:
 
-WARNING: modpost: missing MODULE_LICENSE() in
-drivers/pinctrl/pinctrl-mcp23s08.o
-see include/linux/module.h for more information
+Commit-ID:     f82cdff1aa7f6dcf6625c7219342a6e5c977098d
+Gitweb:        https://git.kernel.org/tip/f82cdff1aa7f6dcf6625c7219342a6e5c977098d
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Wed, 15 Apr 2020 12:58:26 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 17 Apr 2020 11:12:21 +02:00
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+x86/mce: Drop bogus comment about mce.kflags
+
+The bit definitions for kflags are for internal use only. A
+late edit moved them from uapi/asm/mce.h to the internal
+x86 <asm/mce.h>, but the comment saying "See below" was
+accidentally left here.
+
+Delete "See below". Just labelling this field as internal
+kernel use is sufficient.
+
+Fixes: 1de08dccd383 ("x86/mce: Add a struct mce.kflags field")
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200415195826.GA13681@agluck-desk2.amr.corp.intel.com
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/uapi/asm/mce.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index cb545557dcd4..151931b593f6 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -658,3 +658,4 @@ int mcp23s08_probe_one(struct mcp23s08 *mcp, struct device *dev,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mcp23s08_probe_one);
-+MODULE_LICENSE("GPL");
--- 
-2.21.1
-
+diff --git a/arch/x86/include/uapi/asm/mce.h b/arch/x86/include/uapi/asm/mce.h
+index 5b59d80..db9adc0 100644
+--- a/arch/x86/include/uapi/asm/mce.h
++++ b/arch/x86/include/uapi/asm/mce.h
+@@ -35,7 +35,7 @@ struct mce {
+ 	__u64 ipid;		/* MCA_IPID MSR: only valid on SMCA systems */
+ 	__u64 ppin;		/* Protected Processor Inventory Number */
+ 	__u32 microcode;	/* Microcode revision */
+-	__u64 kflags;		/* Internal kernel use. See below */
++	__u64 kflags;		/* Internal kernel use */
+ };
+ 
+ #define MCE_GET_RECORD_LEN   _IOR('M', 1, int)
