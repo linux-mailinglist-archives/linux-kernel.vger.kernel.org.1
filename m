@@ -2,71 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7DB1AD73F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011451AD718
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgDQHRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:17:50 -0400
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:38929 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728808AbgDQHRt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:17:49 -0400
-X-Greylist: delayed 459 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Apr 2020 03:17:48 EDT
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 37C2C665296;
-        Fri, 17 Apr 2020 15:10:06 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] kmalloc_index optimization(add kmalloc max size check)
-Date:   Fri, 17 Apr 2020 00:09:35 -0700
-Message-Id: <1587107376-111722-1-git-send-email-bernard@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VJS09CQkJCSUhMS01LTllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Myo6EQw6ATg4LA4jAxg#CQJD
-        LTcKCz5VSlVKTkNMSktMT0tNT09CVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBSUtOQzcG
-X-HM-Tid: 0a7186f922229373kuws37c2c665296
+        id S1728912AbgDQHKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:10:03 -0400
+Received: from verein.lst.de ([213.95.11.211]:56051 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728155AbgDQHKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:10:03 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 12BF968BFE; Fri, 17 Apr 2020 09:09:59 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 09:09:58 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jon Grimm <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Subject: Re: [patch 4/7] dma-direct: atomic allocations must come from
+ atomic coherent pools
+Message-ID: <20200417070958.GB19153@lst.de>
+References: <alpine.DEB.2.22.394.2004141700480.68516@chino.kir.corp.google.com> <alpine.DEB.2.22.394.2004141703510.68516@chino.kir.corp.google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2004141703510.68516@chino.kir.corp.google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmalloc size should never exceed KMALLOC_MAX_SIZE.
-kmalloc_index realise if size is exceed KMALLOC_MAX_SIZE, e.g 64M,
-kmalloc_index just return index 26, but never check with OS`s max
-kmalloc config KMALLOC_MAX_SIZE. This index`s kmalloc caches maybe
-not create in function create_kmalloc_caches.
-We can throw an warninginfo in kmalloc at the beginning, instead of
-being guaranteed by the buddy alloc behind.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- include/linux/slab.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 6d45488..59b60d2 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -351,6 +351,10 @@ static __always_inline unsigned int kmalloc_index(size_t size)
- 	if (!size)
- 		return 0;
- 
-+	/* size should never exceed KMALLOC_MAX_SIZE. */
-+	if (size > KMALLOC_MAX_SIZE)
-+		WARN(1, "size exceed max kmalloc size!\n");
-+
- 	if (size <= KMALLOC_MIN_SIZE)
- 		return KMALLOC_SHIFT_LOW;
- 
--- 
-2.7.4
-
+The subject should say something like "atomic unencrypted allocations.."
+as many other atomic allocations are fine.  Which brings up that with
+the codebase in this patch we can't really support architectures that
+require both an atomic pool for uncached remapping for just some devices
+and unencrypted for others.  We don't have such an archicture right now,
+and I hope we don't grow one, but we probably need a little safeguard
+with a BUILD_BUG_ON if both options are set.  I can send an incremental
+patch for that if that is ok with you.
