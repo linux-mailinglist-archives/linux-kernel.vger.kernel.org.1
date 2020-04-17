@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6110A1ADB7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8A71ADB49
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgDQKpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:45:44 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:39456 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729944AbgDQKpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:45:34 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id ACD165155E2A6DD9803C;
-        Fri, 17 Apr 2020 18:45:31 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 17 Apr 2020 18:45:22 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <will@kernel.org>
-CC:     <ak@linux.intel.com>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <qiangqing.zhang@nxp.com>,
-        <irogers@google.com>, <robin.murphy@arm.com>,
-        <zhangshaokun@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [RFC PATCH v2 13/13] perf metricgroup: Support adding metrics for system PMUs
-Date:   Fri, 17 Apr 2020 18:41:24 +0800
-Message-ID: <1587120084-18990-14-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
-References: <1587120084-18990-1-git-send-email-john.garry@huawei.com>
+        id S1729399AbgDQKlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726469AbgDQKld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:41:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB24C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EUsPqAz2CAwrpD3T6QffV2gx1aiwSG8eKPhjQi/6B+8=; b=J1NVhna9GYMmhBBZbJe/JHazic
+        AfX6xvryGnz34nCQFLd+jT7u/v1eDYi2ZU30NP2zicuWiVC5daJ7IhzY58NOVbRz4tkbc1OfnRMk8
+        7nQdu3Eus+savcHoGbHwBw8uMH+0RPl34XA2pIaQFlMh/09g17BomSlzyLTg1XBsRGecywYLtfxoP
+        VLbbQeb3who1/Ks4ay5hA8JHNStZCuOcJDlEBljPxt86qMsu5/qnGvXeT2L5GufKrTwUCd9/0157T
+        vg+v1mOpJv1F7zcMTsQypctKs6cvBOpJnX3D3VcR95q09AVkRKxcCPwB3WGZTWwyd5doPtYtGJjgO
+        3VBHGaFQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPOR6-0005pt-6c; Fri, 17 Apr 2020 10:41:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94F973010BC;
+        Fri, 17 Apr 2020 12:41:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7DDA82B0DED2D; Fri, 17 Apr 2020 12:41:26 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 12:41:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Michael Matz <matz@suse.de>, Jakub Jelinek <jakub@redhat.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
+Message-ID: <20200417104126.GX20730@hirez.programming.kicks-ass.net>
+References: <20200326223501.GK11398@zn.tnic>
+ <20200328084858.421444-1-slyfox@gentoo.org>
+ <20200413163540.GD3772@zn.tnic>
+ <alpine.LSU.2.21.2004141343370.11688@wotan.suse.de>
+ <20200415074842.GA31016@zn.tnic>
+ <alpine.LSU.2.21.2004151445520.11688@wotan.suse.de>
+ <20200415231930.19755bc7@sf>
+ <20200417075739.GA7322@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417075739.GA7322@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently only adding metrics for core- or uncore-based events is
-supported. Extend this for system events.
+On Fri, Apr 17, 2020 at 09:57:39AM +0200, Borislav Petkov wrote:
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- tools/perf/util/metricgroup.c | 40 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
+> Yeah, Peter and I have been discussing something like the below
+> yesterday. I don't like the additional exports too much but would
+> disable stack protector only for the one function...
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 81a6aa04a601..85bf5333e4c6 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -593,17 +593,34 @@ static int metricgroup__add_metric_pmu_event(struct pmu_event *pe,
- 	return 0;
- }
- 
-+struct metricgroup_add_iter_data {
-+	const char *metric;
-+	struct strbuf *events;
-+	struct list_head *group_list;
-+	int *ret;
-+};
-+
-+static int metricgroup__add_metric_sys_event_iter(struct pmu_event *pe,
-+						  void *data)
-+{
-+	struct metricgroup_add_iter_data *d = data;
-+
-+	if (!match_pe_metric(pe, d->metric))
-+		return 0;
-+
-+	return (*d->ret = metricgroup__add_metric_pmu_event(pe, d->events,
-+							    d->group_list));
-+}
-+
- static int metricgroup__add_metric(const char *metric, struct strbuf *events,
- 				   struct list_head *group_list)
- {
- 	struct pmu_events_map *map = perf_pmu__find_map(NULL);
-+	struct perf_pmu *pmu = NULL;
- 	struct pmu_event *pe;
- 	int i, ret = -EINVAL;
- 
--	if (!map)
--		return 0;
--
--	for (i = 0; ; i++) {
-+	for (i = 0; map; i++) {
- 		pe = &map->table[i];
- 
- 		if (!pe->name && !pe->metric_group && !pe->metric_name)
-@@ -618,6 +635,21 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
- 				return ret;
- 		}
- 	}
-+
-+	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-+		struct metricgroup_iter_data data = {
-+			.fn = metricgroup__add_metric_sys_event_iter,
-+			.data = (void *) &(struct metricgroup_add_iter_data){
-+				.metric = metric,
-+				.events = events,
-+				.group_list = group_list,
-+				.ret = &ret,
-+			},
-+		};
-+
-+		pmu_for_each_sys_event(pmu, metricgroup__sys_event_iter, &data);
-+	}
-+
- 	return ret;
- }
- 
--- 
-2.16.4
+I did do promise you bike-shedding... so here goes :-)
+
+> -obj-$(CONFIG_SMP)		+= smpboot.o
+> +
+> +nostackprot := $(call cc-option, -fno-stack-protector)
+> +CFLAGS_smpboot_aux.o := $(nostackprot)
+> +
+> +smpboot_all-y			:= smpboot.o smpboot_aux.o
+
+So how about we call that file: smpboot_nostack.c or, since it only has
+the one function in: start_secondary.c ?
 
