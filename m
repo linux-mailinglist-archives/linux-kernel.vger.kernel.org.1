@@ -2,123 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4201AE488
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550201AE485
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730460AbgDQSNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:13:18 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:49632 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730323AbgDQSNR (ORCPT
+        id S1730495AbgDQSMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730323AbgDQSMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:13:17 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPVUJ-0004yd-Mc; Fri, 17 Apr 2020 12:13:15 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPVUH-0000Xy-J7; Fri, 17 Apr 2020 12:13:15 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        x86@kernel.org
-References: <20200414070142.288696-1-hch@lst.de>
-        <20200414070142.288696-5-hch@lst.de>
-        <CAK8P3a3HvbPKTkwfWr6PbZ96koO_NrJP1qgk8H1mgk=qUScGkQ@mail.gmail.com>
-        <20200415074514.GA1393@lst.de>
-        <CAK8P3a0QGQX85LaqKC1UuTERk6Bpr5TW6aWF+jxi2cOpa4L_AA@mail.gmail.com>
-        <20200417132714.GA6401@lst.de>
-Date:   Fri, 17 Apr 2020 13:10:12 -0500
-In-Reply-To: <20200417132714.GA6401@lst.de> (Christoph Hellwig's message of
-        "Fri, 17 Apr 2020 15:27:14 +0200")
-Message-ID: <87o8rqc7az.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 17 Apr 2020 14:12:06 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95708C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:12:06 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id c17so3032447ilk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=foA4DPbQhpo9xw/eOdopgrsDK8K+vfBDZATjTXoQh4I=;
+        b=Z0MQ60xFZB3rug8cIA+FngZ0z5QTTaKj8L2zfDYreK5DCo9VyIQsbVvoQsEixaqASV
+         Xe1eIj5eMACzhqFhfR1Ea39QY5PL+Hb/cv6dWzsZTHQF7sPy5VGNQ7qCbG/e1H2vfXzx
+         f1QUhwZOxp3lfix1qIk/TZ32m/y8uoJ4+Rxk4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=foA4DPbQhpo9xw/eOdopgrsDK8K+vfBDZATjTXoQh4I=;
+        b=NPx37Uqk5N8bCkfwd30+SyIlpyg/d9sjNVCKS54C84OcFHIethrU4bgd5iCVecYiwb
+         NSG3GIWVL1YaESIwsftYOyE5OdIoj5LHcl/ADdUa8oOpV9jSgOpg+ogoSrZpGkyfZgmV
+         ajwUHVc2NfKIg4+QwnuX3T4kdG+E+lveCO4q/cY8jRAn03bhiFGf0cGSyi82xJstufpb
+         Bq+yzr52vH8HfUkZAv+ccV/7/25R9s/0lQIZ/3efyEno7YG/ar82pqgCxi4bqqSETKk5
+         QZwHQa5G5oVHQJDEaf8JXj+Ua/WZ1SI3zWs4lsgnfNHu9TcFtKwoFCMttLaf3EJzBDoX
+         nngg==
+X-Gm-Message-State: AGi0PuY8T9lP8dLZdUXjand4fsaBK6hVpAaZM5jaKy/S3uXL08ZfouP5
+        57C53mTY3b3FPilEOT9LXZYNAg==
+X-Google-Smtp-Source: APiQypK0O3NmNw3iIF83xy1VuEtCksGeLHf4dXqAZp+DSBugDnssGyEy4+rb78xy7abwBzrMsiAKyw==
+X-Received: by 2002:a05:6e02:cd2:: with SMTP id c18mr4590069ilj.223.1587147125661;
+        Fri, 17 Apr 2020 11:12:05 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v17sm8424124ill.5.2020.04.17.11.12.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Apr 2020 11:12:05 -0700 (PDT)
+Subject: Re: Linux 5.7-rc1 reboot/poweroff hangs
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prike.Liang@amd.com, Alexander Deucher <Alexander.Deucher@amd.com>,
+        stable <stable@vger.kernel.org>
+References: <b8eaee2b-21dd-c0de-f522-d58bb9ae31da@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f6d5973a-286e-2273-cbeb-5c88707008d3@linuxfoundation.org>
+Date:   Fri, 17 Apr 2020 12:12:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jPVUH-0000Xy-J7;;;mid=<87o8rqc7az.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18JO8/Ppng68LNpdE4K4Z5+2lJxR7m8FSs=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMNoVowels,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4170]
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Christoph Hellwig <hch@lst.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1652 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 3.5 (0.2%), b_tie_ro: 2.4 (0.1%), parse: 0.62
-        (0.0%), extract_message_metadata: 9 (0.5%), get_uri_detail_list: 0.80
-        (0.0%), tests_pri_-1000: 3.9 (0.2%), tests_pri_-950: 1.02 (0.1%),
-        tests_pri_-900: 0.78 (0.0%), tests_pri_-90: 236 (14.3%), check_bayes:
-        234 (14.2%), b_tokenize: 4.6 (0.3%), b_tok_get_all: 149 (9.0%),
-        b_comp_prob: 2.5 (0.2%), b_tok_touch_all: 75 (4.6%), b_finish: 0.74
-        (0.0%), tests_pri_0: 171 (10.4%), check_dkim_signature: 0.37 (0.0%),
-        check_dkim_adsp: 2.7 (0.2%), poll_dns_idle: 1209 (73.2%),
-        tests_pri_10: 1.73 (0.1%), tests_pri_500: 1222 (74.0%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH 4/8] binfmt_elf: open code copy_siginfo_to_user to kernelspace buffer
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <b8eaee2b-21dd-c0de-f522-d58bb9ae31da@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
+On 4/17/20 12:05 PM, Shuah Khan wrote:
+> Hi Linus,
+> 
+> Linux 5.7-rc1 reboot/powereoff hangs on AMD Ryzen 5 PRO 2400GE
+> system.
+> 
+> I isolated the commit to:
+> 
+> Revering the following commit fixes the problem.
+> 
+> commit 487eca11a321ef33bcf4ca5adb3c0c4954db1b58
+> Author: Prike Liang <Prike.Liang@amd.com>
+> Date:   Tue Apr 7 20:21:26 2020 +0800
+> 
+>      drm/amdgpu: fix gfx hang during suspend with video playback (v2)
+> 
+>      The system will be hang up during S3 suspend because of SMU is
+>      pending for GC not respose the register CP_HQD_ACTIVE access
+>      request.This issue root cause of accessing the GC register under
+>      enter GFX CGGPG and can be fixed by disable GFX CGPG before perform
+>      suspend.
+> 
 
-> On Wed, Apr 15, 2020 at 10:20:11AM +0200, Arnd Bergmann wrote:
->> > I'd rather keep it out of this series and to
->> > an interested party.  Then again x32 doesn't seem to have a whole lot
->> > of interested parties..
->> 
->> Fine with me. It's on my mental list of things that we want to kill off
->> eventually as soon as the remaining users stop replying to questions
->> about it.
->> 
->> In fact I should really turn that into a properly maintained list in
->> Documentation/... that contains any options that someone has
->> asked about removing in the past, along with the reasons for keeping
->> it around and a time at which we should ask about it again.
->
-> To the newly added x86 maintainers:  Arnd brought up the point that
-> elf_core_dump writes the ABI siginfo format into the core dump. That
-> format differs for i386 vs x32.  Is there any good way to find out
-> which is the right format when are not in a syscall?
->
-> As far a I can tell x32 vs i386 just seems to be based around what
-> syscall table was used for the current syscall, but core dumps aren't
-> always in syscall context.
+I can send a revert, however it appears this is a fix for a suspend
+hang.
 
-I don't think this matters.  The i386 and x32 signal structures
-only differ for SIGCHLD.  The SIGCHLD signal does cause coredumps.
-So as long as we get the 32bit vs 64bit distinct correct all should be
-well.
-
-Eric
-
+thanks,
+-- Shuah
 
 
