@@ -2,169 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40B91AE430
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8F11AE441
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730343AbgDQSAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730315AbgDQSAq (ORCPT
+        id S1730402AbgDQSHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:07:01 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:37940 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730236AbgDQSHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:00:46 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607C1C061A41
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:00:45 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b8so1405684pfp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:00:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UOMj1CMTwdnMbS+z4qVkFuhDs1cGdfp1YT34y+yBusk=;
-        b=OvckqUd4ZmienArBUa8jPpxgm7tQccflIrBwirJ78gUp7uqVrx3mfTAwv0UxSmRrya
-         Lz37ElSMIolopvUjumNLuYbbvVA4PsZnQqyMCyd+rnrVNMnGSZf6nmpiwan6L7M+FLkl
-         4wJt5ZteoqCNiPJ+z8t2Nl9Y0ShW0V/x9H4ZI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UOMj1CMTwdnMbS+z4qVkFuhDs1cGdfp1YT34y+yBusk=;
-        b=s5h/Pvb3ab6b6J5X3vrBbYMW+07nx4O+83vy+mL6N3gqu2joKLYXwcFuiV1AYmqeno
-         6jP9dnaMLDvLAlN1PaEiTM3meTBByeOGFkwqjayBZ4BTc3PHS83VIHtLC6ZCc0IQRDuu
-         RTFk+f2zg9lWB79IMbOas7A3YnFtES7aqwMmV4/sNxN0Tdi80r43AQ6A3ngR7pvP2OlM
-         gAiPjrtn1/Aowwnzjvbz1iWo6SO82dIgBBQyv5Kq71iQl9/5RXqMPeoY4KKaeDLIGnfw
-         N0Mr28nvKLutTVMKn6qNVW833eM7FflHBdd93blROcQq6hVyWTYNrUmwzgJAkAcJuwFS
-         TD6Q==
-X-Gm-Message-State: AGi0Pua85pbmyp3ipSVJsdk6MySQRhUa3ClPweJW/cVUoORzWgJnpvXG
-        nCtpc3AO3vZx01vTH0hY+U4aNg==
-X-Google-Smtp-Source: APiQypK9eg7Gq7tr1Oc+DzJ0VwRSWi/rb9t3MDel9BaZ7Cw8P2/BSa0rmeULMt3F00M6mVyVdqN1Dw==
-X-Received: by 2002:a62:1a54:: with SMTP id a81mr4490224pfa.122.1587146443888;
-        Fri, 17 Apr 2020 11:00:43 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id w13sm5101109pfn.192.2020.04.17.11.00.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Apr 2020 11:00:42 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 11:00:41 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 01/17] tty: serial: qcom_geni_serial: Use OPP API to
- set clk/perf state
-Message-ID: <20200417180041.GD199755@google.com>
-References: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
- <1587132279-27659-2-git-send-email-rnayak@codeaurora.org>
+        Fri, 17 Apr 2020 14:07:00 -0400
+Received: from oscar.flets-west.jp (softbank060142179096.bbtec.net [60.142.179.96]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 03HI5ABN029932;
+        Sat, 18 Apr 2020 03:05:10 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 03HI5ABN029932
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587146711;
+        bh=SFGIrF50APy5dH88SntYVAB40FrC6WituPFt2il885M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=khCtS4XBOln4glzBZmoYcVnO3BquMr7u+AR+bU/tCPRR9LyZVixoBaxeoHhLDVLfV
+         lDXnnNcgNaV0Oei0lEmP/r2/vt4cxEv8O4fF2n27X7jGwyWh8glK1eUljcn0vjcU+D
+         35fBGnhLPjNGFJj662itfmv0wa5AgXX62V3RQ1MNTIPKPSFOCyOmvnnWhAHLYQBjd3
+         dkCaUuz8AmHF0vBqWk7zF4vWEdx11stnl/4UK6R84IiXdSkWpTbqqUc+yvoaeO5hwd
+         OOskfDPcclqNhE1KA9vtE2iN1Z+HQgJY7DIwJ9RDUlGQYUhlcTR363CltdrsWg8gzp
+         wdgjc8Bkxv2Ew==
+X-Nifty-SrcIP: [60.142.179.96]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Cc:     linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alex Dewar <alex.dewar@gmx.co.uk>,
+        Erel Geron <erelx.geron@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] um: do not evaluate compiler's library path when cleaning
+Date:   Sat, 18 Apr 2020 03:04:55 +0900
+Message-Id: <20200417180455.1174340-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1587132279-27659-2-git-send-email-rnayak@codeaurora.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajendra,
+Since commit a83e4ca26af8 ("kbuild: remove cc-option switch from
+-Wframe-larger-than="), 'make ARCH=um clean' emits an error message
+as follows:
 
-On Fri, Apr 17, 2020 at 07:34:23PM +0530, Rajendra Nayak wrote:
-> geni serial needs to express a perforamnce state requirement on CX
-> powerdomain depending on the frequency of the clock rates.
-> Use OPP table from DT to register with OPP framework and use
-> dev_pm_opp_set_rate() to set the clk/perf state.
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Akash Asthana <akashast@codeaurora.org>
-> Cc: linux-serial@vger.kernel.org
-> ---
->  drivers/tty/serial/qcom_geni_serial.c | 30 +++++++++++++++++++++++++-----
->  include/linux/qcom-geni-se.h          |  2 ++
->  2 files changed, 27 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index 6119090..151012c 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -9,6 +9,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_wakeirq.h>
-> @@ -128,6 +129,7 @@ struct qcom_geni_serial_port {
->  	int wakeup_irq;
->  	bool rx_tx_swap;
->  	bool cts_rts_swap;
-> +	bool opp_table;
+  $ make ARCH=um clean
+  gcc: error: missing argument to '-Wframe-larger-than='
 
-The name of the variable suggests that it holds a OPP table, something
-like 'has_opp_table' would be clearer.
+We do not care compiler flags when cleaning.
 
->  };
->  
->  static const struct uart_ops qcom_geni_console_pops;
-> @@ -961,7 +963,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
->  		goto out_restart_rx;
->  
->  	uport->uartclk = clk_rate;
-> -	clk_set_rate(port->se.clk, clk_rate);
-> +	dev_pm_opp_set_rate(uport->dev, clk_rate);
->  	ser_clk_cfg = SER_CLK_EN;
->  	ser_clk_cfg |= clk_div << CLK_DIV_SHFT;
->  
-> @@ -1198,8 +1200,11 @@ static void qcom_geni_serial_pm(struct uart_port *uport,
->  	if (new_state == UART_PM_STATE_ON && old_state == UART_PM_STATE_OFF)
->  		geni_se_resources_on(&port->se);
->  	else if (new_state == UART_PM_STATE_OFF &&
-> -			old_state == UART_PM_STATE_ON)
-> +			old_state == UART_PM_STATE_ON) {
-> +		/* Drop the performance state vote */
-> +		dev_pm_opp_set_rate(uport->dev, 0);
->  		geni_se_resources_off(&port->se);
-> +	}
->  }
->  
->  static const struct uart_ops qcom_geni_console_pops = {
-> @@ -1318,13 +1323,20 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
->  	if (of_property_read_bool(pdev->dev.of_node, "cts-rts-swap"))
->  		port->cts_rts_swap = true;
->  
-> +	port->se.opp = dev_pm_opp_set_clkname(&pdev->dev, "se");
-> +	if (IS_ERR(port->se.opp))
-> +		return PTR_ERR(port->se.opp);
-> +	/* OPP table is optional */
-> +	if (!dev_pm_opp_of_add_table(&pdev->dev))
+Use the '=' operator for lazy expansion because we do not use
+LDFLAGS_pcap.o or LDFLAGS_vde.o when cleaning.
 
-Even if the OPP table is optional you probably want to fail if the error
-is anything other than -ENODEV ("'operating-points' property is not found
-or is invalid data in device node.").
+While I was here, I removed the redundant -r option because it
+already exists in the recipe.
 
-> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-> index dd46494..737e713 100644
-> --- a/include/linux/qcom-geni-se.h
-> +++ b/include/linux/qcom-geni-se.h
-> @@ -24,6 +24,7 @@ enum geni_se_protocol_type {
->  
->  struct geni_wrapper;
->  struct clk;
-> +struct opp_table;
->  
->  /**
->   * struct geni_se - GENI Serial Engine
-> @@ -39,6 +40,7 @@ struct geni_se {
->  	struct device *dev;
->  	struct geni_wrapper *wrapper;
->  	struct clk *clk;
-> +	struct opp_table *opp;
+Fixes: a83e4ca26af8 ("kbuild: remove cc-option switch from -Wframe-larger-than=")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-This name suggests that the variable holds a single OPP ('struct
-dev_pm_opp'). Most other code uses the name 'opp_table', which
-also seems a good candidate here.
+ arch/um/drivers/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index a290821e355c..2a249f619467 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -18,9 +18,9 @@ ubd-objs := ubd_kern.o ubd_user.o
+ port-objs := port_kern.o port_user.o
+ harddog-objs := harddog_kern.o harddog_user.o
+ 
+-LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
++LDFLAGS_pcap.o = $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
+ 
+-LDFLAGS_vde.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
++LDFLAGS_vde.o = $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
+ 
+ targets := pcap_kern.o pcap_user.o vde_kern.o vde_user.o
+ 
+-- 
+2.25.1
+
