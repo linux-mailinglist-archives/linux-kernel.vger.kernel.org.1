@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C861ADEEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94C21ADF21
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730817AbgDQOB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:01:26 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17012 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730563AbgDQOB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:01:26 -0400
-IronPort-SDR: 9G5Y4n+m+tA+3V/ar4rIO5XZI6Yb6RI7j8XrjHT+4sPh9x9DXqb28r4DM5LGQvpv8KH5D2q2dd
- BZ/bAv7CJvHw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 07:01:25 -0700
-IronPort-SDR: xEz2/0SJGhLBRYrVu2I7Ws34KqqK5pqUSvSLjjTEr/7tqRLaMzE2OaYX4cGlmmJzKLKuMfyUU7
- r5HAKpcCqDyA==
-X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
-   d="scan'208";a="428234168"
-Received: from mcintra-mobl.ger.corp.intel.com (HELO localhost) ([10.249.44.191])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 07:01:20 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Pitre <nico@fluxnic.net>, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
-        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
-        airlied@linux.ie, jernej.skrabec@siol.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-In-Reply-To: <20200417122827.GD5100@ziepe.ca>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200417011146.83973-1-saeedm@mellanox.com> <87v9ly3a0w.fsf@intel.com> <20200417122827.GD5100@ziepe.ca>
-Date:   Fri, 17 Apr 2020 17:01:18 +0300
-Message-ID: <87h7xi2oup.fsf@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1730924AbgDQOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:05:12 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:43151 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730774AbgDQOFL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 10:05:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587132311; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=jOasTJk8TBKsg8tFnzipV3s1efilzTH1QAd2yaXELsc=; b=mpbUlOrNu1RARtYzEBFQFpw+W75PQH1WFzTPsBcjOjPML79CAoO/SoRtQbtz4rqa/b1DLn/V
+ +C3mP7I8GpH9McRqBFxxKzpvjzTg3QkaHUYSLzV0xeyxrqAKiTJqo1mYG034xzcfsHQZd26k
+ rIG+4/jc2Nyu0SBXSxDEtSHdtcA=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e99b795.7f3ea85c0c38-smtp-out-n04;
+ Fri, 17 Apr 2020 14:05:09 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2AEAC44799; Fri, 17 Apr 2020 14:05:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE401C4478C;
+        Fri, 17 Apr 2020 14:05:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EE401C4478C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2 00/17] DVFS for IO devices on sdm845 and sc7180
+Date:   Fri, 17 Apr 2020 19:34:22 +0530
+Message-Id: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> On Fri, Apr 17, 2020 at 09:23:59AM +0300, Jani Nikula wrote:
->
->> Which means that would have to split up to two. Not ideal, but
->> doable.
->
-> Why is this not ideal?
->
-> I think the one per line is easier to maintain (eg for merge
-> conflicts) and easier to read than a giant && expression.
->
-> I would not complicate things further by extending the boolean
-> language..
+Changes in v2:
+1. Added error handling for dev_pm_opp_set_clkname()
+and dev_pm_opp_of_add_table()
+2. Used dev_pm_opp_put_clkname() in the cleanup path
+3. Dropped the OPP patch pulled in by Viresh [1]
+4. Dropped the UFS patches since they had some major rework
+needed because of changes that were merged in the merge window
+and I don't have a UFS device currently to validate the changes.
 
-Fair enough. I only found one instance where the patch at hand does not
-cut it:
+We have had support added in the OPP core for a while now to support
+DVFS for IO devices, and this series uses that infrastructure to
+add DVFS support for various IO devices in sdm845 and sc7180 SoCs.
 
-drivers/hwmon/Kconfig:  depends on !OF || IIO=n || IIO
+[1] https://lkml.org/lkml/2020/4/14/98 
 
-That can of course be left as it is.
+Rajendra Nayak (17):
+  tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state
+  spi: spi-geni-qcom: Use OPP API to set clk/perf state
+  arm64: dts: sdm845: Add OPP table for all qup devices
+  arm64: dts: sc7180: Add OPP table for all qup devices
+  drm/msm/dpu: Use OPP API to set clk/perf state
+  drm/msm: dsi: Use OPP API to set clk/perf state
+  arm64: dts: sdm845: Add DSI and MDP OPP tables and power-domains
+  arm64: dts: sc7180: Add DSI and MDP OPP tables and power-domains
+  mmc: sdhci-msm: Use OPP API to set clk/perf state
+  arm64: dts: sdm845: Add sdhc opps and power-domains
+  arm64: dts: sc7180: Add sdhc opps and power-domains
+  media: venus: core: Add support for opp tables/perf voting
+  arm64: dts: sdm845: Add OPP tables and power-domains for venus
+  arm64: dts: sc7180: Add OPP tables and power-domains for venus
+  spi: spi-qcom-qspi: Use OPP API to set clk/perf state
+  arm64: dts: sdm845: Add qspi opps and power-domains
+  arm64: dts: sc7180: Add qspi opps and power-domains
 
-As to the bikeshedding topic, I think I'm now leaning towards Andrzej's
-suggestion:
-
-	optionally depends on FOO
-
-in [1]. But I reserve my right to change my mind. ;)
-
-BR,
-Jani.
-
-
-[1] http://lore.kernel.org/r/01f964ae-9c32-7531-1f07-2687616b6a71@samsung.com
+ arch/arm64/boot/dts/qcom/sc7180.dtsi           | 199 +++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi           | 266 ++++++++++++++++++++++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c  |   3 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c        |  20 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h        |   4 +
+ drivers/gpu/drm/msm/dsi/dsi.h                  |   2 +
+ drivers/gpu/drm/msm/dsi/dsi_cfg.c              |   4 +-
+ drivers/gpu/drm/msm/dsi/dsi_host.c             |  53 +++++
+ drivers/media/platform/qcom/venus/core.c       |  21 ++
+ drivers/media/platform/qcom/venus/core.h       |   5 +
+ drivers/media/platform/qcom/venus/pm_helpers.c |  37 +++-
+ drivers/mmc/host/sdhci-msm.c                   |  34 +++-
+ drivers/spi/spi-geni-qcom.c                    |  22 +-
+ drivers/spi/spi-qcom-qspi.c                    |  24 ++-
+ drivers/tty/serial/qcom_geni_serial.c          |  30 ++-
+ include/linux/qcom-geni-se.h                   |   2 +
+ 16 files changed, 700 insertions(+), 26 deletions(-)
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
