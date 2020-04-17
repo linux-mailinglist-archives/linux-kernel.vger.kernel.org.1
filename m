@@ -2,177 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643DC1AE780
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7D81AE785
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgDQVYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:24:10 -0400
-Received: from outils.crapouillou.net ([89.234.176.41]:36796 "EHLO
-        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgDQVYJ (ORCPT
+        id S1728037AbgDQVZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:25:01 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47405 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726129AbgDQVZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:24:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1587158647; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Fri, 17 Apr 2020 17:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587158698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WccMFp68EcyAjhnWK/SjfcUdqGevziF5O9dUK1eEzlQ=;
-        b=rC9lFw3KxDac/HzVkuO4Xp5GHw2P36PAJvhmT8SvYFcSxpbGdyJR9appFMoVeRieN3htVa
-        +8Aa42oVc1T8A/wV4nPoHkHACAc1LHnqfbyVmEmAF7tacR37/5ztZqV+/epmIzxgqrffpd
-        HgfFpjo4/1f9td3khMaNjj1K/HO176g=
-Date:   Fri, 17 Apr 2020 23:23:54 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [RESEND PATCH v5 5/5] input: joystick: Add ADC attached joystick
- driver.
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Artur Rojek <contact@artur-rojek.eu>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-input <linux-input@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-Id: <UFBY8Q.ES4D59V22INC1@crapouillou.net>
-In-Reply-To: <CAHp75VfRbnnuUhfyXpu+5dp4TutHSrHus=sX_vG_5F0dX4k0fQ@mail.gmail.com>
-References: <20200417202859.35427-1-contact@artur-rojek.eu>
-        <20200417202859.35427-5-contact@artur-rojek.eu>
-        <CAHp75VfRbnnuUhfyXpu+5dp4TutHSrHus=sX_vG_5F0dX4k0fQ@mail.gmail.com>
+        bh=676iv0NwOpTsu4j3S5YhFnzxqEtKPiConQpSqMF3tS0=;
+        b=AxSfatqXplF+C2yWSnUTJPB0x8I5264UHOjn9oQtErj5zWJxASsV20OpnqISy0W+TyLiXm
+        0y2c+0sOBSFwW8mOIgTxmJ5W5fdjRjI52CvBul11FOLkE1tsZhEBuMkpPpHWe7GLqF1Jve
+        p1tI7Nok24MzCEVTl8Q4vSaCY7SFUqw=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-mTapu7jMN76ZYTX9bhdp6g-1; Fri, 17 Apr 2020 17:24:56 -0400
+X-MC-Unique: mTapu7jMN76ZYTX9bhdp6g-1
+Received: by mail-qv1-f71.google.com with SMTP id d2so3501504qve.11
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:24:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=676iv0NwOpTsu4j3S5YhFnzxqEtKPiConQpSqMF3tS0=;
+        b=ZSoGag2+HBzw2+7/JybqjXog+7HQRXSAUgIn3hYJiWSq3DH1T/HpnBSUMYbTpkv6ep
+         oL+p7pM9+e8nfybRdB4S0dvM7MFIm/8m3pJ2RoGwRMyFfOApUnOesA+Eb5HV93OWJ7BD
+         zCONGwXPCN1gupGm6JlmIGvuY4tFs2zr7XC1GWM4mQ7GCsXxOqt3SvQdrDAj/oHug3MF
+         UEd0Q3LKJnpsMt1MM2D31js2Cen4hAtJvv5tPrbcwHBM2dl17B9P2xOa1GcENQhuQA47
+         iqOFElU9LcZZIJPFPCio2IhyQ5PemdsdlxKRW1ZU3LAQrTval4/WnsoEo1N42kth1C0c
+         88Ag==
+X-Gm-Message-State: AGi0Puah2Oj9jh5+BbS77D8JETx74CQ8PYMdBZXvYaPFKB4btoNnrsWY
+        Q2gCcjcRZsA5Ey1OeRC92tBDE6HQ/uvIP7Qnpa1tel8DzdGy2xz1rHjOvFDgYwPOLh3o+i9Myv7
+        zAUHlE2hAsliXSw8ZSm1f46FB
+X-Received: by 2002:aed:2006:: with SMTP id 6mr5259637qta.276.1587158696122;
+        Fri, 17 Apr 2020 14:24:56 -0700 (PDT)
+X-Google-Smtp-Source: APiQypI1CPeoFj+QzDX5RrxcP3toefY4DTPQMttZYrN31kNR8CA407FSN+eHTT2P82xGEdUpFktFSQ==
+X-Received: by 2002:aed:2006:: with SMTP id 6mr5259619qta.276.1587158695863;
+        Fri, 17 Apr 2020 14:24:55 -0700 (PDT)
+Received: from Ruby.lyude.net (static-173-76-190-23.bstnma.ftas.verizon.net. [173.76.190.23])
+        by smtp.gmail.com with ESMTPSA id y52sm8647286qth.38.2020.04.17.14.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 14:24:55 -0700 (PDT)
+Message-ID: <dbdf3853cc1e6fa5a05ced6bc72667e24fa7d8ef.camel@redhat.com>
+Subject: Re: [Poke: Tejun] Re: [RFC v3 03/11] drm/vblank: Add vblank works
+From:   Lyude Paul <lyude@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
+Date:   Fri, 17 Apr 2020 17:24:54 -0400
+In-Reply-To: <20200417210356.GD43469@mtj.thefacebook.com>
+References: <20200417194145.36350-1-lyude@redhat.com>
+         <20200417194145.36350-4-lyude@redhat.com>
+         <ef9da9d93022822fe4bec7e906540fcc9852ce59.camel@redhat.com>
+         <20200417210356.GD43469@mtj.thefacebook.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-Le sam. 18 avril 2020 =E0 0:10, Andy Shevchenko=20
-<andy.shevchenko@gmail.com> a =E9crit :
-> On Fri, Apr 17, 2020 at 11:21 PM Artur Rojek <contact@artur-rojek.eu>=20
-> wrote:
->>=20
->>  Add a driver for joystick devices connected to ADC controllers
->>  supporting the Industrial I/O subsystem.
->=20
+On Fri, 2020-04-17 at 17:03 -0400, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Apr 17, 2020 at 04:16:28PM -0400, Lyude Paul wrote:
+> > Hey Tejun! So I ended up rewriting the drm_vblank_work stuff so that it
+> > used
+> > kthread_worker. Things seem to work alright now. But while we're doing
+> > just
+> > fine with vblank workers on nouveau, we're still having trouble meeting
+> > the
+> > time constraints needed for using vblank works for i915's needs. There
+> > still
+> > seems to be a considerable latency between when the irq handler for the
+> > vblank
+> > interrupts fires, and when the actual drm_vblank_work we scheduled starts:
 > ...
->=20
->>  +#include <linux/of.h>
->=20
-> Do you really need this? (See below as well)
->=20
-> ...
->=20
->>  +               sign =3D=20
->> (tolower(joy->chans[i].channel->scan_type.sign) =3D=3D 's');
->=20
-> Too many parentheses. But here it's up to you,
->=20
-> ...
->=20
->>  +               case 2:
->=20
->>  +                       val =3D ((const u16 *)data)[i];
->=20
-> Can't you do this in each branch below?
->=20
->>  +                       if (endianness =3D=3D IIO_BE)
->>  +                               val =3D be16_to_cpu(val);
->>  +                       else if (endianness =3D=3D IIO_LE)
->>  +                               val =3D le16_to_cpu(val);
->>  +                       break;
->=20
-> ...
->=20
->>  +       device_for_each_child_node(dev, child) {
->>  +               ret =3D fwnode_property_read_u32(child, "reg", &i);
->>  +               if (ret || i >=3D num_axes) {
->>  +                       dev_err(dev, "reg invalid or missing");
->>  +                       goto err;
->>  +               }
->>  +
->>  +               if (fwnode_property_read_u32(child, "linux,code",
->>  +                                            &axes[i].code)) {
->>  +                       dev_err(dev, "linux,code invalid or=20
->> missing");
->>  +                       goto err;
->>  +               }
->>  +
->>  +               if (fwnode_property_read_u32_array(child,=20
->> "abs-range",
->>  +                                                  axes[i].range,=20
->> 2)) {
->>  +                       dev_err(dev, "abs-range invalid or=20
->> missing");
->>  +                       goto err;
->>  +               }
->=20
->>  +       }
->>  +
->>  +       joy->axes =3D axes;
->>  +
->>  +       return 0;
->>  +
->>  +err:
->>  +       fwnode_handle_put(child);
->=20
->>  +       return -EINVAL;
->=20
-> Can we avoid shadowing the actual error code?
->=20
-> ...
->=20
->>  +       bits =3D joy->chans[0].channel->scan_type.storagebits;
->=20
->>  +       if (!bits || (bits >> 3) > 2) {
->=20
-> Wouldn't be clear to use simple 'bits > 16'?
->=20
->>  +               dev_err(dev, "Unsupported channel storage size");
->>  +               return -EINVAL;
->>  +       }
->=20
-> ...
->=20
->>  +static const struct of_device_id adc_joystick_of_match[] =3D {
->>  +       { .compatible =3D "adc-joystick", },
->>  +       { },
->>  +};
->>  +MODULE_DEVICE_TABLE(of, adc_joystick_of_match);
->>  +
->>  +static struct platform_driver adc_joystick_driver =3D {
->>  +       .driver =3D {
->>  +               .name =3D "adc-joystick",
->=20
->>  +               .of_match_table =3D=20
->> of_match_ptr(adc_joystick_of_match),
->=20
-> Drop this a bit harmful of_match_ptr() macro. It should go with ugly
-> #ifdeffery. Here you simple introduced a compiler warning.
+> > Tejun, do you have any idea if we might be able to further reduce the
+> > latency
+> > from the scheduler here? I believe we're already using pm_qos to at least
+> > reduce the latency between when the vblank interrupt fires and the
+> > interrupt
+> > handler starts, but that still isn't enough to fix the other latency
+> > issues
+> > apparently. We're also already setting the priority of kthread_worker-
+> > >task to
+> > RT_FIFO as well.
+> 
+> I don't think the kernel can do much better than what you're seeing. I don't
+> know the time scale that you need - is it some tens of microseconds range?
+> I'm
+> definitely not an expert on the subject but on generic kernels I don't think
+> you can achieve anything sub millisec with any kind of reliability.
+yeah, it's microsecond range :(
 
-I assume you mean #ifdef around the of_device_id + module table macro?
+> 
+> If the timing is that tight and it's not a hot path, the right solution may
+> be
+> polling for it rather than yielding the cpu and hoping to get scheduled in
+> time.
+> 
+> > Also, of course, let me know if you're not happy with the
+> > __kthread_queue_work() changes/kthread_worker usage in drm_vblank_work as
+> > well
+> 
+> Just glanced over it and I still wonder whether it needs to be that tightly
+> integrated, but we can look into that once we settle on whether this is the
+> right direction.
 
-> On top of that, you are using device property API, OF use in this case
-> is contradictory (at lest to some extend).
+FWIW - I think everyone on the DRM side is happy with the concept of vblank
+workers, I think all that's really up for discussion at this point (ignoring
+the nouveau patches that need Ben's OK) is just getting the code itself
+reviewed and figuring out if we still want to use kthread_workers for this, or
+if we should just go back to using kthreadd. At least, since it sounds like
+there isn't much more we can do to improve on this latency-wise.
 
-I don't see why. The fact that the driver can work when probed from=20
-platform code, doesn't mean that it shouldn't have a table to probe=20
-from devicetree.
-
--Paul
-
->=20
->>  +       },
->>  +       .probe =3D adc_joystick_probe,
->>  +};
->=20
-> --
-> With Best Regards,
-> Andy Shevchenko
-
+> 
+> Thanks.
+> 
+-- 
+Cheers,
+	Lyude Paul (she/her)
+	Associate Software Engineer at Red Hat
 
