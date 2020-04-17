@@ -2,177 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE141ADD97
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3BD1ADD4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729862AbgDQMuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:50:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727877AbgDQMuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:50:07 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E52042083E;
-        Fri, 17 Apr 2020 12:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587127806;
-        bh=1Kssa3G/QCo5jRCKyBkgrgk7TiSh1kwDD4fBjcBMC70=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2SHu1HjYaq+TUUvOFDh4rRrPGE6erjABlIPm/oYjVffmYc3Po6EJLX6WpPqoJLKFB
-         x8U/cj4n5jria1Y1NHVeXCy8i714yrYSGRhb/Pctx6gILbNZMLN0L6RoLRqN3y4kR3
-         cY2VKGNJFQZzlfQ6mXT+bDZNQlh5C3ufeAzFZ6ZM=
-Date:   Fri, 17 Apr 2020 21:50:00 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
-        x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 05/70] x86/insn: Make inat-tables.c suitable for
- pre-decompression code
-Message-Id: <20200417215000.47141001f80005f41153d22e@kernel.org>
-In-Reply-To: <20200416152406.GB4290@8bytes.org>
-References: <20200319091407.1481-1-joro@8bytes.org>
-        <20200319091407.1481-6-joro@8bytes.org>
-        <20200325153945.GD27261@zn.tnic>
-        <20200327120232.c8e455ca100dc0d96e4ddc43@kernel.org>
-        <20200416152406.GB4290@8bytes.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729044AbgDQMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:25:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45982 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728751AbgDQMZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 08:25:22 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id EBCD24DFF128255D29B4;
+        Fri, 17 Apr 2020 20:25:16 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 20:25:07 +0800
+From:   yu kuai <yukuai3@huawei.com>
+To:     <axboe@kernel.dk>, <ming.lei@redhat.com>, <bvanassche@acm.org>
+CC:     <yukuai3@huawei.com>, <yi.zhang@huawei.com>, <yuyufen@huawei.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC] block: fix access of uninitialized pointer address in bt_for_each()
+Date:   Fri, 17 Apr 2020 20:51:34 +0800
+Message-ID: <20200417125134.45117-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 17:24:06 +0200
-Joerg Roedel <joro@8bytes.org> wrote:
+I recently got a KASAN warning like this in our 4.19 kernel:
 
-> Hi Masami,
-> 
-> On Fri, Mar 27, 2020 at 12:02:32PM +0900, Masami Hiramatsu wrote:
-> > On Wed, 25 Mar 2020 16:39:45 +0100
-> > Borislav Petkov <bp@alien8.de> wrote:
-> > 
-> > > + Masami.
-> > > 
-> > > On Thu, Mar 19, 2020 at 10:13:02AM +0100, Joerg Roedel wrote:
-> > > > From: Joerg Roedel <jroedel@suse.de>
-> > > > 
-> > > > The inat-tables.c file has some arrays in it that contain pointers to
-> > > > other arrays. These pointers need to be relocated when the kernel
-> > > > image is moved to a different location.
-> > > > 
-> > > > The pre-decompression boot-code has no support for applying ELF
-> > > > relocations, so initialize these arrays at runtime in the
-> > > > pre-decompression code to make sure all pointers are correctly
-> > > > initialized.
-> > 
-> > I need to check the whole series, but as far as I can understand from
-> > this patch, this seems not allowing to store the address value in
-> > static pointers. It may break more things, for example _kprobe_blacklist
-> > records the NOKPROBE_SYMBOL() symbol addresses at the build time.
-> 
-> The runtime-initialization function is only used in the
-> pre-decompression boot code (arch/x86/boot/compressed/) which is not
-> part of the running kernel image. At that stage of booting there is no
-> support for kprobe or tracing or any other neat features that might
-> break things here.
+ ==================================================================
+ BUG: KASAN: slab-out-of-bounds in bt_for_each+0x1dc/0x2c0
+ Read of size 8 at addr ffff8000c0865000 by task sh/2023305
 
-Ah, I got it. So you intended to port the instruction decoder to
-pre-decompression boot code, correct?
+ Call trace:
+ dump_backtrace+0x0/0x310
+ show_stack+0x28/0x38
+ dump_stack+0xd8/0x108
+ print_address_description+0x68/0x2d0
+ kasan_report+0x124/0x2e0
+ __asan_load8+0x88/0xb0
+ bt_for_each+0x1dc/0x2c0
+ blk_mq_queue_tag_busy_iter+0x1f0/0x3e8
+ blk_mq_in_flight+0xb4/0xe0
+ part_in_flight+0x124/0x178
+ part_round_stats+0x128/0x3b0
+ blk_account_io_start+0x2b4/0x3f0
+ blk_mq_bio_to_request+0x170/0x258
+ blk_mq_make_request+0x734/0xdd8
+ generic_make_request+0x388/0x740
+ submit_bio+0xd8/0x3d0
+ ext4_io_submit+0xb4/0xe0 [ext4]
+ ext4_writepages+0xb44/0x1c00 [ext4]
+ do_writepages+0xc8/0x1f8
+ __filemap_fdatawrite_range+0x200/0x2a0
+ filemap_flush+0x30/0x40
+ ext4_alloc_da_blocks+0x54/0x200 [ext4]
+ ext4_release_file+0xfc/0x150 [ext4]
+ __fput+0x15c/0x3a8
+ ____fput+0x24/0x30
+ task_work_run+0x1a4/0x208
+ do_notify_resume+0x1a8/0x1c0
+ work_pending+0x8/0x10
 
-> > > > +	print "#ifndef __BOOT_COMPRESSED\n"
-> > > > +
-> > > >  	# print escape opcode map's array
-> > > >  	print "/* Escape opcode map array */"
-> > > >  	print "const insn_attr_t * const inat_escape_tables[INAT_ESC_MAX + 1]" \
-> > > > @@ -388,6 +391,51 @@ END {
-> > > >  		for (j = 0; j < max_lprefix; j++)
-> > > >  			if (atable[i,j])
-> > > >  				print "	["i"]["j"] = "atable[i,j]","
-> > > > -	print "};"
-> > > > +	print "};\n"
-> > > > +
-> > > > +	print "#else /* !__BOOT_COMPRESSED */\n"
-> > 
-> > I think the definitions of inat_*_tables can be shared in both case.
-> > If __BOOT_COMPRESSED is set, we can define inat_init_tables() as a
-> > initialize function, and if not, it will be just a dummy "do {} while (0)".
-> 
-> The inat_*_tables are all declared const, so this way it is not possible
-> to change them at runtime.
+ Allocated by task 3515778:
+ kasan_kmalloc+0xe0/0x190
+ kmem_cache_alloc_trace+0x18c/0x418
+ alloc_pipe_info+0x74/0x240
+ create_pipe_files+0x74/0x2f8
+ __do_pipe_flags+0x48/0x168
+ do_pipe2+0xa0/0x1d0
+ __arm64_sys_pipe2+0x3c/0x50
+ el0_svc_common+0xb4/0x1d8
+ el0_svc_handler+0x50/0xa8
+ el0_svc+0x8/0xc
 
-Indeed.
+ Freed by task 3515778:
+ __kasan_slab_free+0x120/0x228
+ kasan_slab_free+0x10/0x18
+ kfree+0x88/0x3d8
+ free_pipe_info+0x150/0x178
+ put_pipe_info+0x138/0x1c0
+ pipe_release+0xe8/0x120
+ __fput+0x15c/0x3a8
+ ____fput+0x24/0x30
+ task_work_run+0x1a4/0x208
+ do_notify_resume+0x1a8/0x1c0
+ work_pending+0x8/0x10
 
-> For the running kernel image this is fine, as
-> there are ELF relocations which fix things up, but at the
-> pre-decompression boot stage there are no ELF relocations which can fix
-> the tables, so the pointers in there need to be initialized at runtime.
+ The buggy address belongs to the object at ffff8000c0864f00#012 which belongs to the cache kmalloc-256 of size 256
+ The buggy address is located 0 bytes to the right of#012 256-byte region [ffff8000c0864f00, ffff8000c0865000)
+ The buggy address belongs to the page:
+ page:ffff7e0003021900 count:1 mapcount:0 mapping:ffff80036d00fc00 index:0x0 compound_mapcount: 0
+ flags: 0xffffe0000008100(slab|head)
+ raw: 0ffffe0000008100 ffff7e0003617f88 ffff7e000d1a6208 ffff80036d00fc00
+ raw: 0000000000000000 0000000000150015 00000001ffffffff 0000000000000000
+ page dumped because: kasan: bad access detected
 
-OK.
+ Memory state around the buggy address:
+ ffff8000c0864f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8000c0864f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ >ffff8000c0865000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ^
+ ffff8000c0865080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8000c0865100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ==================================================================
 
-> 
-> > BTW, where is the __BOOT_COMPRESSED defined?
-> 
-> It is defined in arch/x86/boot/compressed/sev-es.c by patch
-> 
-> 	x86/boot/compressed/64: Setup GHCB Based VC Exception handler
-> 
-> which also includes parts of the instruction decoder into the
-> pre-decompression boot code and adds the only call-site for
-> inat_init_tables().
+After looking into it, I think it's because bt_for_each() accessed
+uninitialized pointer address:
 
-Thanks, I understand it.
+thread1			thread2
+blk_mq_alloc_tag_set
+...
+blk_mq_init_queue
+...
+submit_bio(bio1)	submit_bio(bio2)
+ blk_mq_get_request
+  blk_mq_get_tag
+  			 ...
+  			 bt_for_each
+  			  bt_iter
+  			   rq = tags->rqs[b]
+  			    rq->q		----> here
+  blk_mq_rq_ctx_init
+   tags->rqs[a] = rq
 
-> 
-> > > > +	print "static void inat_init_tables(void)"
-> > 
-> > This functions should be "inline".
-> > And I can not see the call-site of inat_init_tables() in this patch.
-> 
-> The call-site is added with the patch that includes the
-> instruction decoder into the pre-decompression code. If possible I'd
-> like to keep those things separate, as both patches are already pretty
-> big by themselfes (and they do different things, in different parts of
-> the code).
+blk_mq_get_tag() is called before blk_mq_rq_ctx_init(), which leaves a
+window for bt_for_each() to access 'tags->rqs[tag]->q' before
+'tags->rqs[tag]' is set in blk_mq_rq_ctx_init(). While blk_mq_init_tags()
+is using 'kcalloc()' for 'tags->rqs'. And I think the problem exist in
+mainline, too.
 
-OK, if you will send v2, please CC both to me.
+The problem haven't been reporduced unless I manually sleep a while
+before 'tags->rqs[tag]' is set:
 
-> 
-> > If possible, please include call-site with definition (especially
-> > new init function) so that I can check the init call timing too.
-> 
-> The function is called at the first #VC exception after a GHCB has been
-> set up. Call-path is: boot_vc_handler -> sev_es_setup_ghcb ->
-> inat_init_tables.
+@@ -275,6 +275,7 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
+        struct blk_mq_tags *tags = blk_mq_tags_from_data(data);
+        struct request *rq = tags->static_rqs[tag];
+        req_flags_t rq_flags = 0;
++       static int debug_count = 0;
 
-sound good to me. 
+        if (data->flags & BLK_MQ_REQ_INTERNAL) {
+                rq->tag = -1;
+@@ -286,6 +287,12 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
+                }
+                rq->tag = tag;
+                rq->internal_tag = -1;
++               if (!strcmp(dev_name(data->q->backing_dev_info->dev), "250:0")) {
++                       if (debug_count == 0) {
++                               debug_count++;
++                               msleep(5000);
++                       }
++               }
+                data->hctx->tags->rqs[rq->tag] = rq;
+        }
 
-Thank you,
+BTW, I noticed there is a similar problem that haven't been solved yet:
+https://lore.kernel.org/linux-block/1545261885.185366.488.camel@acm.org/
 
-> 
-> See
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/tree/arch/x86/boot/compressed/sev-es.c?h=sev-es-client-v5.6-rc6
-> 
-> for the full code there.
-> 
-> Thanks,
-> 
-> 	Joerg
+I'm trying to fix the problem by replacing 'kcalloc' as 'kzalloc' for
+'tags->rqs', and set 'tags->rqs[tag]' to 'NULL' before putting the tag.
 
+---
+ block/blk-mq.c | 3 ++-
+ block/blk-mq.h | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 7ed16ed13976..48b74d0085c7 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -485,6 +485,7 @@ static void __blk_mq_free_request(struct request *rq)
+ 	struct blk_mq_hw_ctx *hctx = blk_mq_map_queue(q, ctx->cpu);
+ 	const int sched_tag = rq->internal_tag;
+ 
++	hctx->tags->rqs[rq->tag] = NULL;
+ 	if (rq->tag != -1)
+ 		blk_mq_put_tag(hctx, hctx->tags, ctx, rq->tag);
+ 	if (sched_tag != -1)
+@@ -1999,7 +2000,7 @@ struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+ 	if (!tags)
+ 		return NULL;
+ 
+-	tags->rqs = kcalloc_node(nr_tags, sizeof(struct request *),
++	tags->rqs = kzalloc_node(nr_tags, sizeof(struct request *),
+ 				 GFP_NOIO | __GFP_NOWARN | __GFP_NORETRY,
+ 				 node);
+ 	if (!tags->rqs) {
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index a6094c27b827..2a55292d3d51 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -196,6 +196,7 @@ static inline void blk_mq_put_driver_tag_hctx(struct blk_mq_hw_ctx *hctx,
+ 	if (rq->tag == -1 || rq->internal_tag == -1)
+ 		return;
+ 
++	hctx->tags->rqs[rq->tag] = NULL;
+ 	__blk_mq_put_driver_tag(hctx, rq);
+ }
+ 
+@@ -207,6 +208,7 @@ static inline void blk_mq_put_driver_tag(struct request *rq)
+ 		return;
+ 
+ 	hctx = blk_mq_map_queue(rq->q, rq->mq_ctx->cpu);
++	hctx->tags->rqs[rq->tag] = NULL;
+ 	__blk_mq_put_driver_tag(hctx, rq);
+ }
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.21.1
+
