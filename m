@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3521ADBE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE961ADBFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729958AbgDQLKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 07:10:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:49968 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729468AbgDQLKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:10:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8616DC14;
-        Fri, 17 Apr 2020 04:10:21 -0700 (PDT)
-Received: from [10.57.59.184] (unknown [10.57.59.184])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB3DC3F6C4;
-        Fri, 17 Apr 2020 04:10:19 -0700 (PDT)
-Subject: Re: Multiple regulators for one device [was drm/panfrost: add devfreq
- regulator support]
-To:     Steven Price <steven.price@arm.com>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Nishanth Menon <nm@ti.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-References: <20200411200632.4045-1-peron.clem@gmail.com>
- <20200411200632.4045-2-peron.clem@gmail.com>
- <c96f31a2-6ff4-31aa-aaac-2ce9eafb3bfe@arm.com>
- <CAJiuCcegkNGQ7j4jcT1rBpSLqG1c-nb8g0wq+Nbvt-dGj7am2Q@mail.gmail.com>
- <CAJiuCceU662o7QGJ=mmT3pzVWK7uJUN=6+NKQnZ=Cfj9c2nw7A@mail.gmail.com>
- <d6465e7e-8e05-8b7d-16bd-f40877969089@arm.com>
- <CAJiuCccv2XPLY6sjcgvvrG5a8ONYHa_xn9i-YUDKUDK5a0DY=A@mail.gmail.com>
- <CAJiuCcfa9ro1V4nBzfD48cCuHpEsLaNA5P0bb-tQ3hcWUCtpkA@mail.gmail.com>
- <000f26f4-3640-797f-c7f6-4b31a5e2669e@arm.com>
- <CAJiuCccF3tmbmMWNh0nC5WRJ1_iPdj6f1oH1zYMSue_pFrXsPQ@mail.gmail.com>
- <20200414185523.GO5412@sirena.org.uk>
- <CAJiuCce5ekAed6RF8+x_ehruCXW3900wkFNKRXN_Xo_62MPXew@mail.gmail.com>
- <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <5290a7a8-2a0a-cb89-9d62-270393123054@arm.com>
-Date:   Fri, 17 Apr 2020 12:10:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730259AbgDQLN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 07:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729846AbgDQLN1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 07:13:27 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AAAC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 04:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Z9R8TwgFFZEdYwWvXS1m69C8jKNDkSMDggxlCSZl1WU=; b=L8F6v9W7jafZdYrltN0+Nk3whw
+        s6Meo+NJQv7L5JnhaN8h9qASZOrOcJXSAbUHL2gDOzzV90yyHnji1xkl/he04CybPyvwCE/DE5CuZ
+        RJGDNl3qhNG8TId7f4kKIrOg5IlYaqVFriwuWr7m4hoK4wnB95iD+08huaj/zPVCH8GI3wQ6MOnXD
+        +ktAJ4XpKKKZIi8U+Ek8w0uZVqGp9oiDwAE8WaKvn3erXlUgl1H9xI8ZMS05XCk+LJ9PxFalvdqac
+        AiFt4m4Ihdfoe2HBw56DHzw75lT0q8KcVhc+gGxQx6V6PUk/pcfvcsqTbHa+aLYbShky8TIGxDXWJ
+        b6Nt/E4w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPOva-0006AO-G8; Fri, 17 Apr 2020 11:12:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BFCF2304E03;
+        Fri, 17 Apr 2020 13:12:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AF8D72B1214AF; Fri, 17 Apr 2020 13:12:55 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 13:12:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     vpillai <vpillai@digitalocean.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
+        tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC PATCH 00/13] Core scheduling v5
+Message-ID: <20200417111255.GZ20730@hirez.programming.kicks-ass.net>
+References: <cover.1583332764.git.vpillai@digitalocean.com>
+ <20200414142152.GV20730@hirez.programming.kicks-ass.net>
+ <20200415163220.GA180518@google.com>
 MIME-Version: 1.0
-In-Reply-To: <5e15e7ac-1d9c-d614-8fd9-27525c88cafb@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415163220.GA180518@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-16 2:42 pm, Steven Price wrote:
-[...]
-> Perhaps a better approach would be for Panfrost to hand over the struct 
-> regulator objects it has already got to the OPP framework. I.e. open 
-> code dev_pm_opp_set_regulators(), but instead of calling 
-> regulator_get_optional() simply populate the regulators we already have?
+On Wed, Apr 15, 2020 at 12:32:20PM -0400, Joel Fernandes wrote:
+> On Tue, Apr 14, 2020 at 04:21:52PM +0200, Peter Zijlstra wrote:
+> > On Wed, Mar 04, 2020 at 04:59:50PM +0000, vpillai wrote:
+> > > TODO
+> > > ----
+> > > - Work on merging patches that are ready to be merged
+> > > - Decide on the API for exposing the feature to userland
+> > > - Experiment with adding synchronization points in VMEXIT to mitigate
+> > >   the VM-to-host-kernel leaking
+> > 
+> > VMEXIT is too late, you need to hook irq_enter(), which is what makes
+> > the whole thing so horrible.
 > 
-> The other benefit of that is it would provide a clear hand-over of 
-> responsibility between Panfrost handling it's own regulators and the OPP 
-> framework picking up the work. The disadvantage is that Panfrost would 
-> have to track whether the regulators have been handed over or not.
+> We came up with a patch to do this as well. Currently testing it more and it
+> looks clean, will share it soon.
 
-Sounds like the most logical thing to do is to shuffle things around so 
-we start by trying to set up an OPP table, then fall back to explicitly 
-claiming clocks and regulators if necessary. Then we can easily make the 
-devfreq decision later in probe based on how that turned out.
+Thomas said we actually first do VMEXIT, and then enable interrupts. So
+the VMEXIT thing should actually work, and that is indeed much saner
+than sticking it in irq_enter().
 
-Robin.
+It does however put yet more nails in the out-of-tree hypervisors.
+
+> > > - Investigate the source of the overhead even when no tasks are tagged:
+> > >   https://lkml.org/lkml/2019/10/29/242
+> > 
+> >  - explain why we're all still doing this ....
+> > 
+> > Seriously, what actual problems does it solve? The patch-set still isn't
+> > L1TF complete and afaict it does exactly nothing for MDS.
+> 
+> The L1TF incompleteness is because of cross-HT attack from Guest vCPU
+> attacker to an interrupt/softirq executing on the other sibling correct? The
+> IRQ enter pausing the other sibling should fix that (which we will share in
+> a future series revision after adequate testing).
+
+Correct, the vCPU still running can glean host (kernel) state from the
+sibling handling the interrupt in the host kernel.
+
+> > Like I've written many times now, back when the world was simpler and
+> > all we had to worry about was L1TF, core-scheduling made some sense, but
+> > how does it make sense today?
+> 
+> For ChromeOS we're planning to tag each and every task seperately except for
+> trusted processes, so we are isolating untrusted tasks even from each other.
+> 
+> Sorry if this sounds like pushing my usecase, but we do get parallelism
+> advantage for the trusted tasks while still solving all security issues (for
+> ChromeOS). I agree that cross-HT user <-> kernel MDS is still an issue if
+> untrusted (tagged) tasks execute together on same core, but we are not
+> planning to do that on our setup at least.
+
+That doesn't completely solve things I think. Even if you run all
+untrusted tasks as core exclusive, you still have a problem of them vs
+interrupts on the other sibling.
+
+You need to somehow arrange all interrupts to the core happen on the
+same sibling that runs your untrusted task, such that the VERW on
+return-to-userspace works as intended.
+
+I suppose you can try and play funny games with interrupt routing tied
+to the force-idle state, but I'm dreading what that'll look like. Or
+were you going to handle this from your irq_enter() thing too?
+
+
+Can someone go write up a document that very clearly states all the
+problems and clearly explains how to use this feature?
+
+
