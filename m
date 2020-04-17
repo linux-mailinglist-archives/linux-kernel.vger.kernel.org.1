@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05751ADABB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D3C1ADAC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728758AbgDQKKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:10:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2349 "EHLO huawei.com"
+        id S1728883AbgDQKM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:12:28 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59814 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725830AbgDQKKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:10:48 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 250A4528DE1752884006;
-        Fri, 17 Apr 2020 18:10:47 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 18:10:38 +0800
+        id S1725830AbgDQKM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:12:28 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 3DF91F30C4E3912C6557;
+        Fri, 17 Apr 2020 18:12:24 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 18:12:13 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <patrik.r.jakobsson@gmail.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] drm/gma500: remove unused variable 'hdmi_ids'
-Date:   Fri, 17 Apr 2020 18:10:32 +0800
-Message-ID: <20200417101032.8140-1-yuehaibing@huawei.com>
+To:     <computersforpeace@gmail.com>, <kdasu.kdev@gmail.com>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] mtd: rawnand: brcmnand: Remove unused including <linux/version.h>
+Date:   Fri, 17 Apr 2020 18:11:29 +0800
+Message-ID: <20200417101129.35556-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.166.215.154]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
@@ -36,34 +36,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/gpu/drm/gma500/oaktrail_hdmi.c:676:35: warning: ‘hdmi_ids’ defined but not used [-Wunused-const-variable=]
- static const struct pci_device_id hdmi_ids[] = {
-                                   ^~~~~~~~
+Remove including <linux/version.h> that don't need it.
 
-It is never used, remove it.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/gpu/drm/gma500/oaktrail_hdmi.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/gma500/oaktrail_hdmi.c b/drivers/gpu/drm/gma500/oaktrail_hdmi.c
-index b25086f252ae..a097a59a9eae 100644
---- a/drivers/gpu/drm/gma500/oaktrail_hdmi.c
-+++ b/drivers/gpu/drm/gma500/oaktrail_hdmi.c
-@@ -663,11 +663,6 @@ void oaktrail_hdmi_init(struct drm_device *dev,
- 	kfree(gma_encoder);
- }
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index e4e3ceeac38f..57076c3d98dc 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -4,7 +4,6 @@
+  */
  
--static const struct pci_device_id hdmi_ids[] = {
--	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x080d) },
--	{ 0 }
--};
--
- void oaktrail_hdmi_setup(struct drm_device *dev)
- {
- 	struct drm_psb_private *dev_priv = dev->dev_private;
+ #include <linux/clk.h>
+-#include <linux/version.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
 -- 
 2.17.1
 
